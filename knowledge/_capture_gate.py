@@ -410,6 +410,133 @@ def ratio_status():
             f"×{TAPE_TO_BILL} — n>={RATIO_FIRM_N} reached, PUT THE CONSTANT TO DAVE to rule.")
 
 
+# ============================================ ds-021 (C) — THE CROSS-INSTRUMENT UNIT GATE
+# RULED #81-D1 (Dave), shape (C) of four, with his condition attached verbatim: *"be careful,
+# i want rigorousness, check for peripheral effects."* ⚠ THE UNIT ITSELF WAS NOT REOPENED — he
+# ruled it at #54 (ONE unit, real tokens; `cl100k` a labelled estimator, "never a unit a cap is
+# stated in"). Only the ENACTMENT SHAPE was open. Blast-radius sweep, run BEFORE this code:
+# `notes/2026-08-02-81-cross-instrument-gate-blast-radius.md`.
+#
+# ⛔ WHY (C) AND NOT A BIGGER FIX — and it is the finding that picked the shape. MEASURED #81,
+# same input, same process: `_gauge_tokens.count()` reads `_CHAIN.md` at 10,766 tokens method
+# 'real'; `measure_tokens()` below reads the same file at 6,816, method 'tiktoken cl100k_base'.
+# `_capture_gate.py:58` ALREADY imports `_gauge_tokens as gauge`. The real measurer is in this
+# file's own namespace and every size stamp is produced by the other one. The defect was never a
+# missing capability — it is TWO INSTRUMENTS IN ONE PROCESS DISAGREEING ABOUT WHAT THEY MEASURE,
+# with nothing in the repo positioned to notice. That is what this gate watches.
+#
+# ★ WHAT IT CHECKS IS PRESENCE, NEVER THE LIVE READING. The tempting gate — "every size claim
+# must be a REAL measurement" — REFUSES A CORRECT STATE: a sandbox with no key and no network
+# can only estimate, honestly, and #79-D1 already ruled that an honest refusal is right there.
+# Such a gate would make the build unrunnable offline. Same class as ds-022 (d) vs `roll_2f`:
+# a new gate making a correct state unreachable. So: gate the VOCABULARY, not the number.
+#
+# ★★ AND THE ASYMMETRY IS THE PROJECT'S OWN — a DECLARED gap passes, a SILENT one fails.
+# An estimate-only measurer that SAYS SO is a WARN and ships. An unregistered one is a FAIL.
+
+TOKEN_COUNT_CALL_RE = re.compile(r"""get_encoding\(\s*["']cl100k_base["']\s*\)""")
+
+# ⚠ SCOPED TO A `return`, DELIBERATELY. Matching a bare "real" anywhere would be satisfied by
+# this very comment block — the USE-vs-MENTION problem, which no syntax reaches and only SCOPE
+# saves. A method value is something a function RETURNS; that is the only form checked.
+REAL_TIER_RE = re.compile(r"^\s*return\b.*['\"]real['\"]", re.M)
+
+# The registry. A file under `knowledge/` that counts tokens and is NOT named here FAILS — that
+# is the half which catches the NEXT instrument, and it is the whole reason Dave picked (C).
+#   'real'         — has a REAL tier; VERIFIED against source, never trusted from this table
+#   'estimate-only'— declared gap: WARNS by name, every run, and does not block
+#   'calibration'  — measures BOTH to compare them; not a measurer in service
+MEASURERS = {
+    "_gauge_tokens.py": ("real",
+        "count() returns (n, 'real') from the token-counting API; cl100k is the LABELLED "
+        "fallback and `len(text)//4` was removed at #79-D1 in favour of MeasurementRefused."),
+    "_measure_tokenizer.py": ("calibration",
+        "#53's instrument — prints a tape|real|ratio|drift table. ⚠ 0 Python consumers, "
+        "flagged by #77's periphery inventory, re-probed #81 and STILL zero. It is the "
+        "reason #80 re-derived a ruling #54 had already made: an instrument ships WITH ITS "
+        "READER, and a measurement nothing re-reads decays into a rediscovery."),
+    "_capture_gate.py": ("estimate-only",
+        "⛔ THE ds-021 DEFECT ITSELF, and the reason this gate exists. measure_tokens() can "
+        "return only 'tiktoken cl100k_base' or a bytes ESTIMATE — so measurement_degraded() "
+        "asks 'is this an estimate?' and cl100k answers 'no, healthy'. THE VOCABULARY HAS NO "
+        "WORD FOR REAL (#80's root cause, confirmed at source #81). Fixing it is a CODE "
+        "change and it moves the GM size stamps, ds-025's floor and the amber line — priced, "
+        "not smuggled into this window."),
+    "_context_gauge.py": ("estimate-only",
+        "REFUSES without tiktoken unless --estimate labels the output (#74). Honest about "
+        "estimate-vs-nothing; still blind to cl100k-vs-real."),
+    "_checkin.py": ("estimate-only",
+        "Reports THROUGHPUT in cl100k and says so in its own footer ('⚠ UNIT tape/cl100k. D1 "
+        "rules this an UNVERIFIED proxy'). Declared, which is why it warns rather than fails."),
+}
+
+
+def unit_vocabulary_audit(repo):
+    """The ds-021 (C) cross-instrument check. Returns `(failures, warnings)`.
+
+    ⚠ IT READS SOURCE, NOT BEHAVIOUR, ON PURPOSE. Behaviour depends on whether tiktoken is
+    installed and whether a key is present — both environmental, neither a property of the
+    repo. A gate whose verdict flips with the network is not a gate. What IS a repo property:
+    which files count tokens, and whether each can NAME a real tier.
+
+    Three bites, and each fails for a DISTINCT reason:
+      1. an UNREGISTERED counting site        — the next instrument, caught at birth
+      2. a registry entry whose file stopped counting — the pin rotted; stale pins are how a
+         green survives a deletion (#78's P0 was exactly an aged pin)
+      3. a 'real' claim the source does not support — the table lying about the code
+    """
+    failures, warnings = [], []
+    kdir = os.path.join(repo, "knowledge")
+    if not os.path.isdir(kdir):
+        return failures, warnings
+
+    found = {}
+    for fn in sorted(os.listdir(kdir)):
+        if not fn.endswith(".py"):
+            continue
+        try:
+            with open(os.path.join(kdir, fn), encoding="utf-8") as fh:
+                src = fh.read()
+        except OSError:
+            continue
+        # ⚠ The gate must not detect ITSELF via this very regex's own source text. The pattern
+        # is built from a character class so the literal never appears here in matchable form.
+        if TOKEN_COUNT_CALL_RE.search(src):
+            found[fn] = src
+
+    for fn, src in found.items():
+        if fn not in MEASURERS:
+            failures.append(
+                f"ds-021 (C): `knowledge/{fn}` counts tokens (cl100k) and is NOT in MEASURERS "
+                f"— an UNREGISTERED measurer. Every counting site declares whether it can name "
+                f"a REAL tier; this one declares nothing, which is how the last one got 27 "
+                f"sessions of silence. Add it to MEASURERS with 'real', 'estimate-only' or "
+                f"'calibration' and say WHY.")
+            continue
+        tier, why = MEASURERS[fn]
+        if tier == "real" and not REAL_TIER_RE.search(src):
+            failures.append(
+                f"ds-021 (C): MEASURERS claims `knowledge/{fn}` has a REAL tier, but its source "
+                f"contains no `return … 'real'` — the registry is asserting a capability the "
+                f"code does not have. A table that can lie about the code is worse than no "
+                f"table: it launders an estimate into a measurement.")
+        elif tier == "estimate-only":
+            warnings.append(
+                f"ds-021 (C) DECLARED GAP — `knowledge/{fn}` counts in cl100k and cannot name a "
+                f"REAL tier. {why}")
+        elif tier == "calibration":
+            warnings.append(f"ds-021 (C) CALIBRATION — `knowledge/{fn}`. {why}")
+
+    for fn, (tier, _why) in MEASURERS.items():
+        if fn not in found:
+            failures.append(
+                f"ds-021 (C): MEASURERS pins `knowledge/{fn}` as a '{tier}' measurer, but it no "
+                f"longer counts tokens (or no longer exists). A stale pin is a green that "
+                f"cannot fail — retire the entry deliberately, or restore the call site.")
+
+    return failures, warnings
+
+
 SIZE_STAMP_RE = re.compile(r"^\s*>?\s*\**size\**\s*[:—-]\s*(.+)$", re.I)
 SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b", re.I)  # K is REQUIRED:
 #   without it "GM 25618 tk" would parse as 25.6M and pass a drift check by accident.
@@ -2622,6 +2749,34 @@ def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False):
         f, w = check_file(p, repo)
         fails += f
         warns += w
+    # ---- ds-021 (C), RULED #81-D1. The cross-instrument unit audit, in BOTH modes.
+    f, w = unit_vocabulary_audit(repo)
+    fails += f
+    warns += w
+
+    # ---- THE TRIGGER INDEX, built #81 (Dave's open item (e)) — AND THIS IS ITS CONSUMER.
+    # ⛔ The reason it is called HERE and not offered as a command: `_measure_tokenizer.py` was a
+    # correct instrument with ZERO consumers for fourteen sessions, and #80 re-derived what it
+    # already knew. An index nothing consults repeats that exactly. The gate runs every build and
+    # every wrap, so the rulings governing today's diff are surfaced whether or not anyone
+    # thought to ask — which is the entire point, since you cannot search for what you do not
+    # suspect. [[instrument-without-a-consumer]] [[retrieval-default-hides-the-ruling]]
+    try:
+        import _governs
+        _hits = _governs.surface({_governs._norm(p) for p in _governs.changed_files()})
+        if _hits:
+            notes.append(_governs.render(_hits, "files touched this session"))
+    except Exception as _e:                                     # noqa: BLE001
+        # ⚠ A NOTE, NOT A FAIL, AND THE DISTINCTION IS RULED BY WHAT THIS THING IS. The index is
+        # a READER of decided things; it can never make a correct tree incorrect, so it must not
+        # be able to block a wrap. But it says so LOUD and NAMED — a silently absent reader is
+        # the failure it was built to end, and `IndexUnreadable` exists so this line can never
+        # degrade into "no rulings govern this".
+        notes.append(f"⚠ TRIGGER INDEX DID NOT RUN ({type(_e).__name__}: {_e}) — no ruling was "
+                     f"surfaced for this session's diff. That is NOT the same as 'nothing is "
+                     f"governed'. Run `python3 knowledge/_governs.py` by hand before assuming a "
+                     f"topic is undecided.")
+
     if mode == "wrap":
         report = None  # S-D3: wrap is stdout-only — _CAPTURE-GATE.md belongs to build mode
         f, w, n = wrap_checks(repo, today, lane=lane)
@@ -3594,6 +3749,130 @@ def selftest_units():
     return failures
 
 
+def selftest_cross_instrument_units():
+    """ds-021 (C) bites — RULED #81-D1 (Dave), with his condition attached: *"be careful, i want
+    rigorousness, check for peripheral effects."*
+
+    ★ Every bite below fails for a DISTINCT reason, and each one is MUTATION-TESTED by being
+    re-enacted against a fixture that should trip it. A suite where one broken assumption turns
+    every check red proves only that something is wrong; it cannot say WHAT, and the next
+    session re-diagnoses it from scratch — which is the #80 defect wearing a test's clothes.
+    """
+    failures = []
+
+    # ---- 1. POSITIVE CONTROL FIRST. Prove the audit passes on the LIVE repo before proving it
+    # can fail — a failure-only suite reads green after a revert that deletes the comparison.
+    live_f, live_w = unit_vocabulary_audit(REPO)
+    if live_f:
+        failures.append(f"ds-021 (C): the live repo FAILS its own unit audit ({live_f[0]}) — "
+                        f"the registry and the code have diverged")
+    if not live_w:
+        failures.append("ds-021 (C): the live audit produced NO warnings, but "
+                        "`_capture_gate.py` itself is registered 'estimate-only' and MUST warn. "
+                        "A declared gap that stopped announcing itself is an undeclared gap")
+    if not any("_capture_gate.py" in w for w in live_w):
+        failures.append("ds-021 (C): the audit did not name `_capture_gate.py` as the "
+                        "estimate-only measurer — it is the instrument the ruling is ABOUT, and "
+                        "a gate that exempts itself is the oldest false green there is")
+
+    # ---- 2. THE UNREGISTERED-MEASURER BITE. This is the half that catches the NEXT instrument,
+    # and it is the entire reason Dave chose (C) over (A), (B) or (D).
+    with tempfile.TemporaryDirectory() as td:
+        k = os.path.join(td, "knowledge")
+        os.makedirs(k)
+        # Copy the registered files' *signatures* only — a fixture repo, not a clone.
+        for fn in MEASURERS:
+            tier, _ = MEASURERS[fn]
+            body = 'get_encoding("cl100k_base")\n'
+            if tier == "real":
+                body += 'def f():\n    return n, "real"\n'
+            with open(os.path.join(k, fn), "w", encoding="utf-8") as fh:
+                fh.write(body)
+        f_clean, _w = unit_vocabulary_audit(td)
+        if f_clean:
+            failures.append(f"ds-021 (C): a fixture matching the registry exactly still FAILED "
+                            f"({f_clean[0]}) — the audit cannot be satisfied from a correct "
+                            f"state, which is the ds-022 class (a gate that forbids a legal "
+                            f"configuration)")
+        # now add an interloper — a new file that counts tokens and declares nothing
+        with open(os.path.join(k, "_new_instrument.py"), "w", encoding="utf-8") as fh:
+            fh.write('enc = get_encoding("cl100k_base")\n')
+        f_new, _w = unit_vocabulary_audit(td)
+        if not any("_new_instrument.py" in x and "UNREGISTERED" in x for x in f_new):
+            failures.append("ds-021 (C): a NEW cl100k counting site was not caught as "
+                            "UNREGISTERED — this bite IS the ruling's purpose; without it the "
+                            "gate only describes today's defect and catches no future one")
+
+    # ---- 3. THE ROTTED-PIN BITE. A registry entry whose file stopped counting is a green that
+    # cannot fail — #78's P0 was exactly an aged pin, and the red there was the reader working.
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "knowledge"))
+        with open(os.path.join(td, "knowledge", "_gauge_tokens.py"), "w", encoding="utf-8") as fh:
+            fh.write('get_encoding("cl100k_base")\ndef f():\n    return n, "real"\n')
+        f_rot, _w = unit_vocabulary_audit(td)
+        if not any("_capture_gate.py" in x and "no longer counts" in x for x in f_rot):
+            failures.append("ds-021 (C): a registry entry pointing at a file that no longer "
+                            "counts tokens did NOT fail — stale pins are how a suite stays "
+                            "green across a deletion")
+
+    # ---- 4. THE LYING-REGISTRY BITE. `real` is VERIFIED against source, never trusted from the
+    # table. A table that can lie about the code launders an estimate into a measurement.
+    with tempfile.TemporaryDirectory() as td:
+        k = os.path.join(td, "knowledge")
+        os.makedirs(k)
+        for fn in MEASURERS:
+            with open(os.path.join(k, fn), "w", encoding="utf-8") as fh:
+                fh.write('get_encoding("cl100k_base")\n')   # NB: no `return … "real"` anywhere
+        f_lie, _w = unit_vocabulary_audit(td)
+        if not any("claims" in x and "REAL tier" in x for x in f_lie):
+            failures.append("ds-021 (C): MEASURERS claimed a REAL tier for a file whose source "
+                            "has no `return … 'real'`, and the audit believed the table — the "
+                            "registry must be checked AGAINST the code, never taken on trust")
+
+    # ---- 5. THE SCOPE BITE — USE vs MENTION. `REAL_TIER_RE` is anchored to a `return` on
+    # purpose: a bare "real" anywhere would be satisfied by the gate's own comments, and this
+    # very file is stuffed with the word. Prove prose does NOT satisfy it.
+    if REAL_TIER_RE.search('# this module returns a "real" measurement, honestly\n'):
+        failures.append("ds-021 (C): REAL_TIER_RE matched a COMMENT mentioning 'real' — the "
+                        "USE-vs-MENTION hole, which no syntax closes and only SCOPE saves. The "
+                        "gate would then pass any file that merely talks about real tokens")
+    if not REAL_TIER_RE.search('    return n, "real"\n'):
+        failures.append("ds-021 (C): REAL_TIER_RE did NOT match a genuine `return n, \"real\"` — "
+                        "the scoping is too tight and every real tier now reads as absent")
+
+    # ---- 6. THE TRIGGER INDEX MUST BE PRESENT AND MUST FAIL LOUD. Its whole reason for
+    # existing is that a reader which degrades to silence is indistinguishable from a clean
+    # bill of health. If `_governs` cannot be imported, this gate's consumer is gone.
+    try:
+        import _governs
+        g_fail = _governs.selftest()
+        if g_fail:
+            failures.append(f"trigger index: `_governs.py` selftest is RED ({g_fail[0]}) — the "
+                            f"consumer of _rulings.json is broken, so rulings stop surfacing "
+                            f"and the #80 re-derivation becomes possible again")
+        if not any(r["id"] == "ds-021" for r in
+                   _governs.surface({"knowledge/_capture_gate.py"})):
+            failures.append("trigger index: editing `_capture_gate.py` surfaces no ds-021 "
+                            "ruling — the exact lookup whose absence let #80 re-derive a "
+                            "settled decision 26 sessions after Dave made it")
+    except Exception as e:                                       # noqa: BLE001
+        # ⚠ `Exception`, NOT `ImportError`. Mutation M4 made the index unreachable and
+        # `IndexUnreadable` came straight out through a narrower clause, CRASHING this function
+        # and taking all 39+ checks with it. A crash is not a fail: it reports "something died"
+        # where a named failure would say which seam broke, and the next session re-diagnoses it
+        # from a traceback. ★ Same shape #79-D1 reasoned about from the other side — there the
+        # question was whether a BaseException would slip `except Exception`; here it is whether
+        # a legitimate named refusal escapes a clause too narrow to hold it. Both answers come
+        # from the same rule: the handler's breadth is a property of the CALL SITE.
+        # [[a-crash-is-not-a-fail]]
+        failures.append(f"trigger index: `_governs.py` did not answer ({type(e).__name__}: "
+                        f"{str(e).splitlines()[0]}) — ds-021 (C) ships as a PAIR (audit + "
+                        f"reader) and half a pair is an instrument with no consumer, which is "
+                        f"the defect it was built to end")
+
+    return failures
+
+
 def selftest_growth():
     """Bite-test M6 (tiktoken heal/fallback) · #59 (measurement_degraded() + the guarded
     get_encoding() path) · M7 (§A warn) · M8 (banner) · M10 (chain) · the pinned §A digest ·
@@ -4337,6 +4616,7 @@ def selftest():
     failures = (selftest_preflight() + selftest_preflight_tokens()
                 + selftest_gauge_refusal_seam()          # #79-D1 paired half
                 + selftest_budgets() + selftest_strata_exempt() + selftest_units()
+                + selftest_cross_instrument_units()       # ds-021 (C), RULED #81-D1
                 + selftest_bare_token()
                 + selftest_gauge_continuity() + selftest_unkeyed()
                 + selftest_growth() + selftest_usage()

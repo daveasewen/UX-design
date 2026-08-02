@@ -2782,3 +2782,71 @@ available, and the ratio is not constant: ×1.79 on plain prose vs ×1.56 on thi
 ⚠ **AND IT BIT THE SESSION THAT FOUND IT.** #80's own close reads **154,330 tape** (`_checkin.py`,
 conversation half only, boot half unmeasured) — in the unit just proved wrong. **Recorded as an
 honest UNKNOWN and NOT converted**, because converting is the defect. [[measure-dont-convert-units]]
+
+---
+
+## ★ #81 — 2026-08-02 (Sun; Opus 5 solo Cowork conductor, Dave live, one window)
+
+**#81-D1 — RULED (Dave): the `ds-021` enactment shape is (C), a CROSS-INSTRUMENT GATE.**
+Offered as four shapes — (A) unit-as-type · (B) one measuring authority · (C) cross-instrument
+gate · (D) calibrate and keep cl100k. He picked (C) and attached a condition, verbatim:
+*"be careful, i want rigorousness, check for peripheral effects."* ⚠ **THE UNIT ITSELF WAS NOT
+REOPENED** — he ruled it at **#54** and an agent does not re-open his ruling; only the shape was
+open. **Second half of the same ruling: the tape/bill machinery is KEPT as labelled legacy, not
+retired** — it is pinned by three selftests and carries `ds-021 (c)`, the standing practice that
+forks the ratio constant to Dave at n≥4. Retiring it as a side effect would have killed that fork.
+
+★ **The sweep he asked for found the fix already built and unwired.** MEASURED live, same input:
+`_gauge_tokens.count()` reads `_CHAIN.md` at **10,766 tokens, method 'real'** (Anthropic
+`count_tokens`, key present); `_capture_gate.measure_tokens()` reads the same file at **6,816,
+method 'tiktoken cl100k_base'** — and `_capture_gate.py:58` already imports `_gauge_tokens as
+gauge`. **The real measurer was in the namespace of the file that sizes every artefact, uncalled.**
+
+---
+
+### ★★★ #81 — THE ROOT CAUSE, AND DAVE FOUND IT. STORAGE WAS NEVER THE PROBLEM.
+
+He stopped the session twice: *"we've identified this as a problem already, again we are going
+round in circles"* → *"we seem to have a knowledge transfer problem between sessions, isn't this
+being stored anywhere?"*
+
+**PROBED: #54's ruling lives in TEN places** — `notes/_MEMENTO-DECISIONS.md:1716`,
+`notes/_GAUGE-LOG.md:461`, `knowledge/_DS-IMPROVEMENTS.md:1422` and **eight** `_DECISION-HISTORY`
+dossiers. A `_memento_search.py` query on the topic, run this session, returned **the week's
+banners**.
+
+⇒ **THE RULE, and it generalises far past tokens:** *every mechanism for REMEMBERING is
+write-optimised; every mechanism for READING is triggered by SUSPICION — and you can only search
+for what you already suspect exists.* A settled ruling is therefore invisible **precisely to the
+session about to re-derive it**. ★ **A better search does not fix this: a better search still has
+to be CALLED.**
+
+⇒ **THE TRIGGER MUST BE THE WORK, NOT A QUERY. BUILT #81, as a PAIR:**
+- **`knowledge/_rulings.json`** — POINTER index: ruling → files/symbols it governs → where canon
+  lives. 8 rulings seeded. ⚠ **Pointers only; substance landing there makes it the eleventh copy.**
+- **`knowledge/_governs.py`** — the reader. Fires off `git diff --name-only`. `IndexUnreadable`
+  raises loud and named, because an index that fails open says *"nothing is governed"* in the same
+  voice it would use if it had checked.
+- **WIRED INTO `_capture_gate.py::run()`, BOTH MODES** — not offered as a command, deliberately:
+  `_measure_tokenizer.py` was correct, runnable and unread for fourteen sessions.
+  [[instrument-without-a-consumer]] [[retrieval-default-hides-the-ruling]]
+
+**Also built (the (C) gate itself):** `MEASURERS` + `unit_vocabulary_audit()` — a registry of every
+cl100k counting site. **Unregistered ⇒ FAIL** (the half that catches the NEXT instrument);
+**declared estimate-only ⇒ WARN by name**. Checks **vocabulary, never the live reading** — a gate
+demanding a REAL reading would refuse an honest offline estimate, which is the ds-022(d)/`roll_2f`
+shape of making a correct state unreachable.
+
+⚠ **MUTATION-TESTING FOUND TWO REAL BUGS AT BIRTH**, neither reachable by the passing selftest:
+(1) `def load(path=INDEX)` binds the default at DEFINITION time, so the module constant was not the
+source of truth and the "index unreachable" mutation stayed GREEN; (2) `except ImportError` was too
+narrow to hold `IndexUnreadable` ⇒ a CRASH that would have taken all 39+ gate checks down.
+[[a-crash-is-not-a-fail]] ★ Symmetry with **#79-D1**, which reasoned about the same seam from the
+opposite side: **the handler's breadth is a property of the CALL SITE, not of the repo.**
+Final: **5 mutations, 5 distinct named bites, revert green.**
+
+⬛ **STILL OPEN, DECLARED:** wiring `measure_tokens()` to the native counter (the cure — moves the
+GM stamps, `_CHAIN.md`'s fixed point, `ds-025`'s floor and `_validate_package_delta.py`; Dave's) ·
+`_RUNBOOK-context-gauge.md:463–505` still teaches the retired tape/bill system · `_measure_tokenizer.py`
+still 0 consumers · **seeding the trigger index further — 8 rulings is a start, not coverage, and a
+missing entry is the exact failure it exists to prevent.**
