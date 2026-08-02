@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 44,432 real and 77% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 44,514 real and 77% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -50,7 +50,7 @@
 > - ⚠ **DRILL PASS 1 (#87-D1, N=2): 1 OF 3, DECLARED NOT CLAIMED.** ✅ **reproducible counts** — `counts()` is computed from the store and bite 12 proves it follows the data. ⛔ **routing NOT fixed** — nothing on the boot path yet routes a cold session past a stale chain (#86 paid ~13K for this). ⛔ **honest certification NOT fixed** — `_git_commit.sh:144-193` still rewrites the msgfile subject from GM's `★ LATEST` banner, the seam that certified #84 at #86's first commit. **Both are PRICED TODO, not residual hand-waving; pass 1 does not count until all three hold.**
 > - ⛔ **MY OWN GROWTH, ATTRIBUTED — AND THE FIGURE IS NOT RESTATED HERE, ON PURPOSE.** The read chain opened at **10,801 real** and closed LARGER by roughly **+2,300, ALL MINE** — the generated work section plus this banner, net of #87s rolling out. ★★ **The exact figure lives in `_CHAIN.md`'s own footer and NOWHERE ELSE, because it is held there by a FIXED POINT: a size claim written into the file it measures moves the file.** I proved that twice in one wrap — stamped +1,832 (measured before this banner existed), corrected to +2,286, and the correction sentence itself added another 80. **Chasing it by hand cannot converge; that is not sloppiness, it is arithmetic**, and it is why the footer is the one home [[chain-is-a-swap-not-an-add]]. The #89 swap retires the prose index this block duplicates, which is where the growth comes back.
 > - ⬛ **DAVE'S AT THE #89 OPENER:** (a) **five items are yours and have NO close condition** — `W-0c` NEXT BUILD CANDIDATES · `W-0d` THE #67 ENACT WAVE · `W-14` YOUR FOUNDING PRINCIPLE · `W-15` LEDGER § ★ #59 · `W-16` UNHOMED PAIR. One sentence each and they become mortal. (b) **five inherited items carry ✅/CLOSED/LANDED in their own text and are STILL on the worklist** — closure is yours, so they were NOT auto-closed; say the word and they go. (c) **the graph's two lifecycle vocabularies disagree by one** — a ruling, not a tidy-up.
-> - **residual (GENERATED #88):** see the COMMIT STATE stratum · 2c roll DONE (#84 → `_GM-ARCHIVE.md`).
+> - **residual (GENERATED #88):** see the COMMIT STATE stratum · 2c roll DONE (#84 → `_GM-ARCHIVE.md`). **Full detail INSCRIBED — probe evidence, the three dead premises, the mutation runs, the drill table and the overrun: `notes/_MEMENTO-DECISIONS.md` § ★ #88.** A chat summary is not a record.
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (19 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES · `0d` ✅ THE #67 ENACT WAVE · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` ✅ PER-GATE TEST PLAN · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59 · `16` UNHOMED PAIR, copied up at the #78 2c EXIT…
@@ -105,7 +105,7 @@
 
 ---
 
-*(Chain ends. **13,272 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **13,354 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 44,432 real and stays whole for retrieval; you have paid for
+`GOOD-MORNING.md` is 44,514 real and stays whole for retrieval; you have paid for
 30% of it, and that is the intended figure, not a shortfall.)*

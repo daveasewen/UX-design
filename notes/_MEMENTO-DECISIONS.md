@@ -3108,3 +3108,178 @@ three; until then the rebuild is CLAIMED. Apollo resumes only after the second p
 sequencing stands).** This closes the #86 float (*"maybe we need to test mem before moving on"*)
 — floated → RULED. ⚠ Inscribed post-wrap via ritual step 5b (banner addendum + re-gate + commit);
 a `_rulings.json` trigger entry is part of the #88 rebuild contract, when the drill gains code.
+
+---
+
+## ★ #88 — 2026-08-02 (Sun; OPUS 5 solo Cowork, Dave live, ONE window — THE REBUILD STORE)
+
+**Commit `a39a925`.** Dave's opener picks: *parts 1–3, timeboxed* · *one window*. Sequencing from
+#86-D5 stands (Memento STABLE before Apollo). Drill thresholds were NOT asked again — **#87-D1
+already ruled them (N = 2 consecutive cold-session passes)**, and the session title still asked for
+them, so the title was stale in its second clause. Said at the opener rather than re-asked.
+
+### 1 · THE PROBE CAME FIRST, AND IT KILLED THREE OF #85'S PREMISES
+
+Delegated to a read-only sub with a brief that demanded `file:line` + quoted text per claim, and
+`UNVERIFIED` where evidence was absent. [[premise-ages-faster-than-rule]] — a handoff's inventory
+gets probed at its SOURCE before anything is built on it (#86's own lesson, applied to #85).
+
+**(1) *"`closes_when` is the missing field"* — FALSE as of #87.**
+`knowledge/_GOVERNING-RECORDS.md` already carries **17 rows** (counted by
+`grep '^|' … | wc -l`, never quoted from prose — the file says so itself at :12), each with a
+`closes_when` Dave ratified at #86 (*"Yes, firm — record them"*). ⇒ **The thing the proposal called
+missing had been built two sessions earlier.** The store ABSORBS that register; it does not
+reinvent the concept. ★ The register's own header still reads *"19/19 ratified"* against 17 rows —
+a count/row disagreement, left as-is because it is the ratification count, not the row count.
+
+**(2) *"the list only grows"* — UNPROVEN, and the reproducible series says the opposite.**
+The proposal's *"95 item-slots over 12 sessions, 84 distinct"* is reproducible by **no probe in the
+repo**; the only occurrences are the two prose docs that assert it. Replaying `DOFIRST_ITEM_RE`
+over the newest `GOOD-MORNING.md` commit of each of the last 12 sessions gives **19 distinct item
+numbers and a FLAT series: 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 19.**
+⇒ **The defect is IMMORTALITY, not growth** — a *flat* list of 19 items none of which can close.
+Same remedy, different disease. ★★ **This is the same class as #86's *"118 markers"* → ~40, by the
+same author, on the same day.** A rebuild justified by a dead number hands the next session a false
+premise, so the correction is inscribed in `_state.py`'s own docstring, not just here
+[[measure-dont-convert-units]].
+
+**(3) *"extend `_decision-graph.json` with a `process` node type — same shape it already has"* —
+FALSE, twice over.** Measured: **0 of 100 nodes carry a `type` field** (the only type-ish field is
+`kind`: anchor 6, gate 3) and **no node carries a `state` field**. Lifecycle runs in **two parallel
+vocabularies that disagree**: node `status` (accepted 85 · superseded 8 · amended 6 · proposed 1)
+and a separate top-level `state` map (LIVE 84 · DEAD 8 · AMENDED 7 · OPEN 1) — **85 vs 84 for the
+same population.** Edge types have drifted to **nine** (`refines` 65 · `relates` 38 · `verified-by`
+20 · `supersedes` 19 · `bounds` 12 · `conflicts-with` 8 · `subsumes` 1 · `diverges-from` 1 ·
+`enacted-by` 1), while the standing open item still names **six**.
+⇒ **PART 2 WAS RE-SCOPED OUT, not skipped.** Reconciling two lifecycle vocabularies is a RULING,
+Dave's — an agent quietly picking one is precisely the class the governing register exists to
+catch [[derivation-governance]]. The store LINKS to graph node ids (`links`) and leaves the graph
+alone. **⬛ The reconciliation is Dave's at #89.**
+
+*Also verified as stated (no change needed): the `DOFIRST_ITEM_RE` / 46-char / 700-token facts
+(`_capture_gate.py:1401-1403`, function at `:1416`) · `_rulings.json` (9 entries, read by
+`_governs.py:51`, wired at `_capture_gate.py:3185-3188` as a **note, never a fail**) ·
+`_gen_chain.py`'s inputs and its stale-title gate at `:221-226`, which **explicitly disclaims**
+catching a skipped wrap · `_git_commit.sh:144-193` rewriting the msgfile subject.*
+
+### 2 · WHAT WAS BUILT
+
+| file | what |
+|---|---|
+| `knowledge/_state.py` | the store + the **BLOCKING** close gate + 12 mutation-tested bites |
+| `knowledge/_state.json` | **36 items** — 17 governing (CONDITIONED) + 19 inherited (UNCONDITIONED) |
+| `knowledge/_migrate_state.py` | builds the store from its two sources — **nothing hand-typed** |
+| `knowledge/_gen_chain.py` | `state_block()` — the chain's open-work section, generated from the store |
+
+**The gate, in one sentence: you cannot open an item without stating what would end it.**
+
+⛔ **The exemption is FROZEN, not tolerated.** `LEGACY_IDS` pins the inherited 19 at birth; **any id
+outside that set is REFUSED without a checkable condition**, so the unconditioned population can
+only ever shrink. [[gate-inside-the-growth-loop]] — gate the PRESENCE of the defect, not its drift,
+or the exemption becomes the new default and the store inherits the disease it replaced.
+
+★ **The 19 arrive UNCONDITIONED on purpose.** An agent may not invent Dave's close conditions —
+that is the same overreach as inventing his ruling. A declared gap passes; a silent one fails.
+
+★ **The migration REFUSES to tidy.** Five inherited items carry ✅/CLOSED/LANDED in their own text
+while still occupying the worklist — **the immortality defect made visible**, and exactly the
+population an agent would be tempted to clear. They entered as `open` and were REPORTED as closure
+candidates. A migration that quietly closed five items would produce a smaller, wronger list and
+no receipt. Owner was **INFERRED** for 5 items (⬛ or "DAVE'S" in the prose) and each carries
+`owner_inferred: true` — a guess must not wear a measurement's clothes
+[[feedback-measuring-tool-must-not-guess]]. `opened: 0` means the birth session is UNKNOWN and is
+**not defaulted to a plausible number**.
+
+### 3 · THE GATE WAS MUTATION-TESTED, AND THE MUTATIONS WENT RED FOR THE RIGHT BITE
+
+12 bites, each asserting BOTH that the healthy form passes and that the mutated form fails **with
+the reason named**. Then the tests themselves were tested:
+
+- **MUT1** — widen the exemption so a new item may be unconditioned ⇒ **bite 2 RED**, alone.
+- **MUT2** — remove the condition-content check ⇒ **bites 4 and 5 RED**, alone.
+
+⇒ Neither bite is an assertion. [[gate-must-quote-what-it-forbids]] — *a green that cannot fail is
+an assertion*, and the only way to know is to make it fail on purpose. Bite 12 additionally proves
+`counts()` **follows the data** (mutate an item, the count moves) — it is a measurement, not a
+stored number.
+
+### 4 · CAUGHT BY RE-READING THE ARTEFACT — TWO DEFECTS, ONE READ
+
+**(a) A summary line contradicted by its own rows.** The generated block's heading asserted
+*"DAVE'S (22) — each with a ratified `closes_when`"* while **five of its own rows printed "none
+stated" four lines below it** — on the boot path, in the session whose entire subject is that typed
+claims rot. Now COMPUTED: *"17 with a ratified `closes_when`, 5 with NONE"*, and the unconditioned
+rows sort last with an explicit *"cannot close until you name one"*.
+
+**(b) A corrupted identifier published to the boot path.** `_plain()` stripped underscores as
+markdown emphasis and turned `DOFIRST_INDEX_TK_MAX` into `DOFIRSTINDEXTKMAX` — a symbol a reader
+would grep for and not find [[unmatched-grep-is-not-an-absence]]. Underscores are now explicitly
+NOT stripped, with the reason in the code.
+
+★★ **Only re-reading the GENERATED FILE ever catches this class** [[enactment-register-adr-0016]].
+Both defects passed every gate in the repo.
+
+### 5 · ★★ A SIZE CLAIM CANNOT CONVERGE INSIDE THE FILE IT MEASURES — PROVEN THREE TIMES IN ONE WRAP
+
+The growth-attribution bullet was stamped, then corrected, then corrected again:
+
+1. **+1,832** (10,801 → 12,633) — measured **before this banner existed**, so it priced the work
+   section and not the banner announcing it.
+2. **+2,286** (→ 13,087) — re-measured after the banner landed. **The correction sentence itself
+   then added 80.**
+3. **→ 13,167 → 13,261 → 13,272**, each restatement moving the thing it described.
+
+⇒ **The bullet now states the direction and magnitude in round terms and POINTS AT
+`_CHAIN.md`'s footer for the figure**, which is the one place it is held exact by a fixed point.
+**This is not sloppiness; it is arithmetic** [[chain-is-a-swap-not-an-add]], and the rule it yields
+is: *a file's size has ONE home, and every other mention must be a pointer.*
+
+Net: the read chain went **10,801 → 13,272 real, ~+2,470, ALL MINE.** ⚠ **ADDITIVE, NOT YET A
+SWAP** — the prose presence index still stands in `GOOD-MORNING.md` and the generated block
+duplicates it. Cutting it in the same motion would be a cut before a probe
+[[home-by-addition-then-cut]], **on the boot path, where a mistake costs every future session.**
+**The swap is #89's, after drill pass 2** — and it is where the growth comes back out.
+
+### 6 · ⛔ DRILL PASS 1 (#87-D1, N = 2) IS **1 OF 3** — DECLARED, NOT CLAIMED
+
+| criterion | verdict | evidence |
+|---|---|---|
+| reproducible counts | ✅ **PASS** | `_state.counts()` computed from the store; bite 12 proves it follows the data |
+| routing | ⛔ **NOT FIXED** | nothing on the boot path routes a cold session past a stale chain (#86 paid ~13K for this) |
+| honest certification | ⛔ **NOT FIXED** | `_git_commit.sh:144-193` still rewrites the msgfile subject from GM's `★ LATEST` banner — the seam that certified #84 at #86's first commit |
+
+⇒ **THE REBUILD IS CLAIMED, NOT PROVEN. Pass 1 does not count until all three hold.** Both gaps are
+PRICED TODO, not residual hand-waving [[feedback-check-ran-never-reached-plan]]. ★ The
+certification defect is guarded only by the manual verify-after-commit step, which is the same
+guard that was in place when it last fired.
+
+**Verified this wrap:** the commit subject reads **`after #88`** — correct, because the banner was
+current when the script read it. The defect is that it would be equally confident if it were not.
+
+### 7 · ⛔ THE PROCESS FAILURE, UNSOFTENED — FIFTH CONSECUTIVE SESSION PAST THE LINE
+
+Stop line **165,000** declared at the opener (200,000 − a 35K wrap, deliberately priced ABOVE
+#87's 25K because #87's wrap-surface survey is what blew its line). Building stopped **at 160,370**
+— **the line held for the session as planned.** It was then broken by Dave's post-wrap request for
+this inscription: **232,049 real, 116% of working.**
+
+★ **The distinction matters and is not an excuse:** #83, #84, #86 and #87 overran during the JOB.
+#88 stopped the job on time and overran on an ADDITION requested after the wrap had already
+committed. **The remedy is different for each** — the first four want better pricing; this one
+wants the wrap's detail to be inscribed *as it is produced*, not summarised in chat and inscribed
+afterwards on request. ⬛ **That is a shape change to the ritual and it is Dave's to rule.**
+
+### 8 · ⬛ DAVE'S AT THE #89 OPENER
+
+**(a) Five items are yours and have NO close condition** — one sentence each makes them mortal:
+`W-0c` NEXT BUILD CANDIDATES · `W-0d` THE #67 ENACT WAVE · `W-14` YOUR FOUNDING PRINCIPLE ·
+`W-15` LEDGER § ★ #59 · `W-16` UNHOMED PAIR.
+
+**(b) Five inherited items say ✅/CLOSED/LANDED in their own text and are still on the worklist** —
+`W-0b`, `W-0c`, `W-0d`, `W-10`, `W-14`. NOT auto-closed; closure is yours.
+
+**(c) The decision graph's two lifecycle vocabularies disagree by one** (`status` accepted 85 vs
+`state` LIVE 84), and its edge types have drifted to nine against a standing item that names six.
+A ruling, not a tidy-up.
+
+**(d) The ritual shape from §7** — should a session's detail be inscribed as it is produced?
