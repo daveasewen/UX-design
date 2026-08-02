@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 45,346 real and 80% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 45,521 real and 79% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -49,6 +49,7 @@
 > - ⬛ **DAVE'S AT THE #88 OPENER:** (a) **the REBUILD STORE** — his #85-D1, now with THREE measured stale-banner defects (boot routing loses to the chain · typed counts lie · `_git_commit.sh` rewrites the msgfile subject from the stale banner) · (b) **the ACCEPTANCE DRILL thresholds** — floated #86 (*"maybe we need to test mem before moving on"*), proposed shape in ledger § ★ #86: routing / reproducible counts / honest certification, N consecutive passes, HIS numbers · (c) **sequencing stands: Memento STABLE before Apollo** (#86-D5, verbatim in the ledger).
 > - **residual (GENERATED #87):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #84) — _roll_state.py · 2026-08-02
 > - **gates, RE-RUN AT THE WRAP, not quoted from the build:** exit codes in the COMMIT STATE stratum below. Ledger → `notes/_MEMENTO-DECISIONS.md` § ★ #85 / § ★ #86.
+> - ✅ **POST-WRAP ADDENDUM (#87-D1, RULED — Dave, option-select after the wrap gate ran): the ACCEPTANCE DRILL is ACCEPTED at N = 2 consecutive cold-session passes** (routing · reproducible counts · honest certification). Rebuild = CLAIMED until pass 2; Apollo resumes after. Ledger § ★ #87. *(step-5b beat: banner says the source changed; the gate re-ran; committed separately.)*
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (19 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES · `0d` ✅ THE #67 ENACT WAVE · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` ✅ PER-GATE TEST PLAN · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59 · `16` UNHOMED PAIR, copied up at the #78 2c EXIT…
@@ -66,7 +67,7 @@
 
 ---
 
-*(Chain ends. **10,626 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **10,801 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 45,346 real and stays whole for retrieval; you have paid for
-23% of it, and that is the intended figure, not a shortfall.)*
+`GOOD-MORNING.md` is 45,521 real and stays whole for retrieval; you have paid for
+24% of it, and that is the intended figure, not a shortfall.)*

@@ -3095,3 +3095,16 @@ UNMEASURED, ds-025 stands) · ~13K spent on the stale `_CHAIN.md` before the han
 measured:** `_git_commit.sh` silently rewrites the msgfile subject from the un-regenerated chain
 banner — #86's first commit certified #84 (caught, amended to `fd2a44c`; evidence in that commit's
 body).
+
+## ★ #87 — 2026-08-02 (Sun; FABLE 5 solo Cowork, Dave live — the owed-wrap ×2 / bankruptcy-execution session)
+
+**#87-D1 — RULED (Dave, post-wrap, option-select from the proposed set): the ACCEPTANCE DRILL is
+ACCEPTED at N = 2.** The Memento rebuild ships with a cold-boot drill measuring **(a) routing** —
+the cold session reads the right contract first time · **(b) counts** — every number in that
+contract reproduces when probed (no typed numbers) · **(c) certification** — the wrap/commit
+certifies the session that actually ran. Each measure maps to one of the three stale-banner
+defects on record (§ ★ #86 costs block). **PROVEN = 2 consecutive cold sessions passing all
+three; until then the rebuild is CLAIMED. Apollo resumes only after the second pass (#86-D5
+sequencing stands).** This closes the #86 float (*"maybe we need to test mem before moving on"*)
+— floated → RULED. ⚠ Inscribed post-wrap via ritual step 5b (banner addendum + re-gate + commit);
+a `_rulings.json` trigger entry is part of the #88 rebuild contract, when the drill gains code.
