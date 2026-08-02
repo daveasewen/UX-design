@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DV-D19 — mode latch on real canon (2026-08-02 v2)</title>
+<!--
+  DV-D19 REVIEW SPECIMEN v2 — THE REBUILD ON REAL CANON (owed since #76, board item c).
+  v1 (DV-D19-MODE-LATCH-PROTOTYPE-2026-08-02-v1.html) invented an .is-solo treatment and is
+  SUPERSEDED for styling judgement; it remains only as the record of the #76 enactment demo.
+
+  COMPOSITION CONTRACT (this file's whole promise):
+  - Component styling comes ONLY from knowledge/canon/canon.css (linked live, whole file) +
+    knowledge/canon/type.css. This file contains ZERO rules targeting .dv-* / .cn-* / .canon.
+    Every rule in the <style> block below is namespaced .rv- (specimen chrome: layout, readouts,
+    decision controls) — grep this file for ".dv-leg" inside <style> and the count is 0.
+  - Markup is knowledge/snippets/Chart-donut.reference.html's spider-variant figure VERBATIM,
+    composed per _RUNBOOK-compose-from-canon.md (.canon root + .cn-chart-donut scope class).
+    Sole deltas, declared: ids cd1-* remapped to cdl-* (light pane) / cdd-* (dark pane) so two
+    instances can coexist; the static state-spread strip drops role/tabindex and adds
+    aria-hidden (display-only fragments, kept out of the behaviour layer's reach).
+  - Behaviour is the REAL canon source trio, loaded by reference, no copies:
+    canon/dv-behaviour.js · canon/dv-legend.js · canon/dv-donut-sweep.js (#76-D1 split).
+-->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  /* ============ SPECIMEN CHROME ONLY — every selector namespaced .rv- ============ */
+  body{margin:0; padding:40px 32px 64px;}
+  .rv-wrap{max-width:1180px; margin:0 auto;}
+  .rv-h1{margin:0 0 8px;}
+  .rv-sub{margin:0 0 8px; max-width:72ch; opacity:.75;}
+  .rv-prose{margin:12px 0 0; max-width:72ch;}
+  .rv-section{margin:40px 0 0;}
+  .rv-section-h{margin:0 0 16px; padding-top:16px; border-top:1px solid var(--line);}
+  .rv-panes{display:flex; gap:24px; flex-wrap:wrap; align-items:stretch;}
+  .rv-pane{flex:1 1 460px; min-width:0; border:1px solid var(--line); padding:24px;}
+  .rv-pane-tag{margin:0 0 16px; opacity:.6; letter-spacing:.04em; text-transform:uppercase;}
+  .rv-grid{display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; margin-top:16px;}
+  .rv-col{flex:1 1 320px; min-width:0;}
+  .rv-card{border:1px solid var(--line); padding:16px;}
+  .rv-card + .rv-card{margin-top:16px;}
+  .rv-steps{display:flex; flex-direction:column; gap:8px; margin-top:12px;}
+  .rv-btn{display:inline-flex; align-items:center; gap:8px; text-align:left;
+    padding:9px 12px; border:1px solid var(--line); background:transparent; color:var(--text);
+    cursor:pointer;}  /* type comes from the .t-ed-body-small composite on each button */
+  .rv-btn:hover{border-color:var(--text);}
+  .rv-btn:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .rv-btn.rv-done{border-color:var(--text);}
+  .rv-btn:disabled{opacity:.45; cursor:default;}
+  .rv-readout{border:1px solid var(--line); padding:12px 14px; margin-top:12px;
+    font-variant-numeric:tabular-nums; white-space:pre-line;}
+  .rv-verdict{margin-top:12px; padding:12px 14px; border:1px solid var(--line);}
+  .rv-verdict.rv-good{border-color:var(--text); font-weight:500;}
+  .rv-verdict.rv-bad{border-color:var(--text); font-weight:500; text-decoration:underline;}
+  .rv-spread{list-style:none; display:flex; gap:24px; padding:0; margin:16px 0 0; flex-wrap:wrap;}
+  .rv-spread > div{display:flex; flex-direction:column; gap:8px; align-items:flex-start;}
+  .rv-spread-cap{opacity:.6;}
+  .rv-q{border-left:3px solid var(--text); padding:4px 0 4px 16px; margin-top:16px; max-width:72ch;}
+  .rv-quote{margin:12px 0 0; padding:12px 16px; border:1px solid var(--line); max-width:72ch;
+    font-style:italic;}
+  .rv-quote cite{display:block; margin-top:8px; font-style:normal; opacity:.6;}
+  .rv-opt{display:flex; gap:10px; align-items:flex-start; margin-top:12px; max-width:72ch;}
+  .rv-opt input{margin-top:3px; accent-color:var(--text);}
+  .rv-badge{display:inline-block; border:1px solid var(--text); padding:1px 8px; margin-left:8px;
+    letter-spacing:.04em; text-transform:uppercase;}
+  .rv-foot{margin-top:56px; padding-top:16px; border-top:1px solid var(--line); opacity:.7; max-width:80ch;}
+  .rv-code{border:1px solid var(--line); padding:0 5px;}
+  details.rv-fold{margin:16px 0 0; max-width:80ch;}
+  details.rv-fold summary{cursor:pointer; padding:8px 0;}
+  details.rv-fold table{border-collapse:collapse; margin-top:8px;}
+  details.rv-fold th, details.rv-fold td{border:1px solid var(--line); padding:4px 10px; text-align:left; vertical-align:top;}
+  @media (max-width:720px){ body{padding:24px 16px 48px;} .rv-pane{padding:16px;} }
+</style>
+</head>
+<body class="canon" data-theme="light">
+<div class="rv-wrap">
+
+  <h1 class="rv-h1 t-cm-heading">DV-D19 — the mode latch, shown on real canon</h1>
+  <p class="rv-sub t-ed-body-small">Review specimen v2 · 2026-08-02 · supersedes v1 for styling judgement (v1 invented its own legend treatment; this one invents nothing).</p>
+
+  <p class="rv-prose t-ed-body">The ruling itself is settled: you ruled DV-D19 at #75, it was enacted and you
+  ratified the behaviour at #76 — isolation and check are two modes, the first swatch click latches the set
+  into check mode, and the latch never comes undone. What you refused to rule on was my first specimen,
+  because it drew its own legend instead of yours. This page is the repair: the donut, its legend, every
+  colour, border, size and animation come straight from the design system's own files — the same stylesheet
+  and the same three behaviour scripts every real chart runs. Nothing here is re-drawn, so what you judge
+  is the product.</p>
+
+  <details class="rv-fold t-ed-body-small">
+    <summary>Technical detail — sources, composition, and the zero-override proof</summary>
+    <table>
+      <tr><th>Markup</th><td><span class="rv-code">knowledge/snippets/Chart-donut.reference.html</span> spider-variant figure, verbatim. Declared deltas only: ids <span class="rv-code">cd1-*</span> → <span class="rv-code">cdl-*</span> (light) / <span class="rv-code">cdd-*</span> (dark) so two instances coexist; the static state strip below drops <span class="rv-code">role/tabindex</span> and adds <span class="rv-code">aria-hidden</span> (display-only).</td></tr>
+      <tr><th>Styles</th><td><span class="rv-code">knowledge/canon/canon.css</span> linked whole (the RADIUS-CORNER-TUNER "reads canon live" convention) + <span class="rv-code">type.css</span>. The legend block is <span class="rv-code">canon.css:3876–3914</span> (<span class="rv-code">.cn-chart-donut .dv-leg*</span>); <span class="rv-code">.is-solo</span> at <span class="rv-code">:3883</span> = ink border + 6% ink <span class="rv-code">color-mix</span> tint; swatch 12px at <span class="rv-code">:3888</span>; 44px hit via the invisible <span class="rv-code">::before</span> at <span class="rv-code">:3890</span>.</td></tr>
+      <tr><th>Behaviour</th><td><span class="rv-code">canon/dv-behaviour.js</span> + <span class="rv-code">canon/dv-legend.js</span> + <span class="rv-code">canon/dv-donut-sweep.js</span> (the #76-D1 split), loaded by <span class="rv-code">&lt;script src&gt;</span> — no copies, no edits. The scripted sequence below dispatches real clicks on the real legend; verdicts are read from the DOM, not from my state.</td></tr>
+      <tr><th>Zero-override proof</th><td>This file's <span class="rv-code">&lt;style&gt;</span> contains 0 rules targeting <span class="rv-code">.dv-*</span>, <span class="rv-code">.cn-*</span> or <span class="rv-code">.canon</span>; every specimen-chrome selector is <span class="rv-code">.rv-</span> namespaced. Mechanically checkable: grep this file for <span class="rv-code">.dv-leg</span> between the style tags — count 0.</td></tr>
+      <tr><th>Control</th><td><span class="rv-code">node knowledge/_verify_dv_legend_members.js</span> — 116/116 on live canon, unchanged by this document (it reads only canon + snippets).</td></tr>
+      <tr><th>Ruling record</th><td>DV-D19 ruled #75, enacted + ratified #76: <span class="rv-code">knowledge/_proforma/_DATAVIZ-DECISIONS.md:802–957</span>. Dave, #76: <em>"DV-D19 is correct, but obviously it isn't styled correctly as this is a prototype."</em></td></tr>
+      <tr><th>Render-proof<br>(measured 2026-08-02)</th><td>Chromium headless, <span class="rv-code">goto(file://…)</span> on THIS page, real HSBC face confirmed (<span class="rv-code">document.fonts.check</span> true), two widths (1280 / 700 — panes stack at 700, viewBox untouched at 300×260). Both themes: swatch 12×12px; hit-area <span class="rv-code">::before</span> 44×44px min; <span class="rv-code">.is-solo</span> border = resolved <span class="rv-code">--ink</span> exactly (light <span class="rv-code">#1A1A1A</span> → rgb(26,26,26); dark <span class="rv-code">#FFFFFF</span> → rgb(255,255,255)); background = <span class="rv-code">color-mix(in srgb, var(--ink) 6%, transparent)</span>, alpha 0.059, equal channel-for-channel to the literal canon expression parsed by the same instrument. Sequence on real clicks: isolate → solo={1}, mode isolate · check → solo=∅, mode check · <b>uncheck → solo stays ∅</b> (the DV-D18 return-path defect cannot occur) · label re-click → released, all five shown, mode rest. Hover: row border lifts to ink; other actives fade to computed opacity 0.24. Control: <span class="rv-code">_verify_dv_legend_members.js</span> 116/116 with this document present (it changes no canon file).</td></tr>
+    </table>
+  </details>
+
+  <!-- ================= LIVE SPECIMENS — the real donut, both themes ================= -->
+  <div class="rv-section">
+    <h2 class="rv-section-h t-cm-section-label">The component, alive — light and dark</h2>
+    <p class="rv-prose t-ed-body-small">Both panes are the same canonical donut. The radial sweep on load,
+    the value ⇄ percent toggle, the table popover, the CSV copy and the whole legend model are the shipped
+    behaviours. Swatch = check gesture · label = isolate gesture. Resize the window: the panes stack.</p>
+
+    <div class="rv-panes">
+      <div class="rv-pane">
+        <p class="rv-pane-tag t-cm-legal">Light — data-theme="light"</p>
+        <div class="cn-chart-donut">
+          <figure class="dv" data-dv-type="donut" data-total="2320" data-surface="page" data-labelling="spider" role="group" aria-labelledby="cdl-h" data-lockup-title="Housing takes two fifths of the month's spend" data-lockup-table="cdl-tbl">
+            <figcaption id="cdl-h" class="sr-only">Spend by category this month, pounds</figcaption>
+            <div class="dv-head">
+              <h3 class="dv-title t-cm-section-label">Housing takes two fifths of the month's spend</h3>
+              <div class="dv-controls" role="group" aria-label="Chart tools">
+                <div class="seg sm" role="group" aria-label="Segment values — pounds or share">
+                  <span class="ind" aria-hidden="true"></span>
+                  <button type="button" data-dv-view-btn="value" aria-pressed="true">Value</button>
+                  <button type="button" data-dv-view-btn="percent" aria-pressed="false">Percent</button>
+                </div>
+                <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+                <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cdl-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+              </div>
+            </div>
+            <div class="dv-stage"><div class="dv-donut-row">
+              <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 300 260" width="300" height="260" role="group" aria-label="Spend by category. Total 2320 pounds.">
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Housing: 950 pounds, 41 per cent" data-tip="A · Housing: £950" data-tip-value="A · Housing: £950" data-tip-percent="A · Housing: 41%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="-90" data-a2="57.414" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M150.00 30.00 A100 100 0 0 1 203.86 214.26 L182.31 180.55 A60 60 0 0 0 150.00 70.00 Z"/>
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Groceries: 420 pounds, 18 per cent" data-tip="B · Groceries: £420" data-tip-value="B · Groceries: £420" data-tip-percent="B · Groceries: 18%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="57.414" data-a2="122.586" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M203.86 214.26 A100 100 0 0 1 96.14 214.26 L117.69 180.55 A60 60 0 0 0 182.31 180.55 Z"/>
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Savings: 300 pounds, 13 per cent" data-tip="C · Savings: £300" data-tip-value="C · Savings: £300" data-tip-percent="C · Savings: 13%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="122.586" data-a2="169.138" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M96.14 214.26 A100 100 0 0 1 51.79 148.84 L91.07 141.31 A60 60 0 0 0 117.69 180.55 Z"/>
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Leisure: 260 pounds, 11 per cent" data-tip="D · Leisure: £260" data-tip-value="D · Leisure: £260" data-tip-percent="D · Leisure: 11%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="169.138" data-a2="209.483" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M51.79 148.84 A100 100 0 0 1 62.95 80.78 L97.77 100.47 A60 60 0 0 0 91.07 141.31 Z"/>
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="5" tabindex="0" role="img" aria-label="E, Other: 390 pounds, 17 per cent" data-tip="E · Other: £390" data-tip-value="E · Other: £390" data-tip-percent="E · Other: 17%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="209.483" data-a2="270" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M62.95 80.78 A100 100 0 0 1 150.00 30.00 L150.00 70.00 A60 60 0 0 0 97.77 100.47 Z"/>
+                <polyline class="dv-leader dv-anno show" data-seq="0" data-series-group="1" points="247.9,101.4 258.5,98.3"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="0" data-series-group="1" fill="var(--ink)" x="267.1" y="102.3" text-anchor="middle">A</text>
+                <polyline class="dv-leader dv-anno show" data-seq="1" data-series-group="2" points="150.0,232.0 150.0,243.0"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="1" data-series-group="2" fill="var(--ink)" x="150.0" y="247.0" text-anchor="middle">B</text>
+                <polyline class="dv-leader dv-anno show" data-seq="2" data-series-group="3" points="65.6,187.2 56.5,193.4"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="2" data-series-group="3" fill="var(--ink)" x="49.0" y="197.4" text-anchor="middle">C</text>
+                <polyline class="dv-leader dv-anno show" data-seq="3" data-series-group="4" points="49.3,113.5 38.5,111.7"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="3" data-series-group="4" fill="var(--ink)" x="29.6" y="115.7" text-anchor="middle">D</text>
+                <polyline class="dv-leader dv-anno show" data-seq="4" data-series-group="5" points="98.6,41.9 93.1,32.4"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="4" data-series-group="5" fill="var(--ink)" x="88.5" y="36.4" text-anchor="middle">E</text>
+                <g data-dv-view="value"><text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">2320</text></g>
+                <g data-dv-view="percent" class="dv-off"><text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">100%</text></g>
+              </svg>
+              <ul class="dv-leg vert t-cm-chart-label" id="cdl-legend" role="group" aria-label="Categories — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+                <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Housing" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Housing"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Housing</span></button></li>
+                <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Groceries" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Groceries"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Groceries</span></button></li>
+                <li class="dv-legrow" data-series="3"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Savings" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="3" aria-pressed="false" aria-label="Isolate Savings"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Savings</span></button></li>
+                <li class="dv-legrow" data-series="4"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Leisure" style="--sc:var(--data-series-4)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="4" aria-pressed="false" aria-label="Isolate Leisure"><span class="dv-key t-cm-chart-key">D</span><span class="dv-leg-name">Leisure</span></button></li>
+                <li class="dv-legrow" data-series="5"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Other" style="--sc:var(--data-series-5)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="5" aria-pressed="false" aria-label="Isolate Other"><span class="dv-key t-cm-chart-key">E</span><span class="dv-leg-name">Other</span></button></li>
+                <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="cdl-legend" disabled>Reset</button></li>
+              </ul>
+              <p class="dv-sr" id="cdl-live" role="status" aria-live="polite"></p>
+            </div></div>
+            <div class="dv-tablepanel" id="cdl-tbl" role="region" aria-label="Spend by category this month, data table" tabindex="-1" hidden>
+              <table class="dv-table t-cm-legal">
+                <caption>Spend by category this month, pounds</caption>
+                <thead><tr><th scope="col">Category</th><th scope="col" data-dv-view="value">Amount (£)</th><th scope="col" data-dv-view="percent" class="dv-off">Share (%)</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Housing</th><td data-dv-view="value">950</td><td data-dv-view="percent" class="dv-off">41</td></tr>
+                  <tr><th scope="row">Groceries</th><td data-dv-view="value">420</td><td data-dv-view="percent" class="dv-off">18</td></tr>
+                  <tr><th scope="row">Savings</th><td data-dv-view="value">300</td><td data-dv-view="percent" class="dv-off">13</td></tr>
+                  <tr><th scope="row">Leisure</th><td data-dv-view="value">260</td><td data-dv-view="percent" class="dv-off">11</td></tr>
+                  <tr><th scope="row">Other</th><td data-dv-view="value">390</td><td data-dv-view="percent" class="dv-off">17</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </figure>
+        </div>
+      </div>
+
+      <div class="rv-pane canon" data-theme="dark">
+        <p class="rv-pane-tag t-cm-legal">Dark — data-theme="dark"</p>
+        <div class="cn-chart-donut">
+          <figure class="dv" data-dv-type="donut" data-total="2320" data-surface="page" data-labelling="spider" role="group" aria-labelledby="cdd-h" data-lockup-title="Housing takes two fifths of the month's spend" data-lockup-table="cdd-tbl">
+            <figcaption id="cdd-h" class="sr-only">Spend by category this month, pounds</figcaption>
+            <div class="dv-head">
+              <h3 class="dv-title t-cm-section-label">Housing takes two fifths of the month's spend</h3>
+              <div class="dv-controls" role="group" aria-label="Chart tools">
+                <div class="seg sm" role="group" aria-label="Segment values — pounds or share">
+                  <span class="ind" aria-hidden="true"></span>
+                  <button type="button" data-dv-view-btn="value" aria-pressed="true">Value</button>
+                  <button type="button" data-dv-view-btn="percent" aria-pressed="false">Percent</button>
+                </div>
+                <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+                <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cdd-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+              </div>
+            </div>
+            <div class="dv-stage"><div class="dv-donut-row">
+              <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 300 260" width="300" height="260" role="group" aria-label="Spend by category. Total 2320 pounds.">
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Housing: 950 pounds, 41 per cent" data-tip="A · Housing: £950" data-tip-value="A · Housing: £950" data-tip-percent="A · Housing: 41%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="-90" data-a2="57.414" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M150.00 30.00 A100 100 0 0 1 203.86 214.26 L182.31 180.55 A60 60 0 0 0 150.00 70.00 Z"/>
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Groceries: 420 pounds, 18 per cent" data-tip="B · Groceries: £420" data-tip-value="B · Groceries: £420" data-tip-percent="B · Groceries: 18%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="57.414" data-a2="122.586" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M203.86 214.26 A100 100 0 0 1 96.14 214.26 L117.69 180.55 A60 60 0 0 0 182.31 180.55 Z"/>
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Savings: 300 pounds, 13 per cent" data-tip="C · Savings: £300" data-tip-value="C · Savings: £300" data-tip-percent="C · Savings: 13%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="122.586" data-a2="169.138" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M96.14 214.26 A100 100 0 0 1 51.79 148.84 L91.07 141.31 A60 60 0 0 0 117.69 180.55 Z"/>
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Leisure: 260 pounds, 11 per cent" data-tip="D · Leisure: £260" data-tip-value="D · Leisure: £260" data-tip-percent="D · Leisure: 11%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="169.138" data-a2="209.483" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M51.79 148.84 A100 100 0 0 1 62.95 80.78 L97.77 100.47 A60 60 0 0 0 91.07 141.31 Z"/>
+                <path class="dv-series dv-donut-seg dv-marker" data-series-group="5" tabindex="0" role="img" aria-label="E, Other: 390 pounds, 17 per cent" data-tip="E · Other: £390" data-tip-value="E · Other: £390" data-tip-percent="E · Other: 17%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="209.483" data-a2="270" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M62.95 80.78 A100 100 0 0 1 150.00 30.00 L150.00 70.00 A60 60 0 0 0 97.77 100.47 Z"/>
+                <polyline class="dv-leader dv-anno show" data-seq="0" data-series-group="1" points="247.9,101.4 258.5,98.3"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="0" data-series-group="1" fill="var(--ink)" x="267.1" y="102.3" text-anchor="middle">A</text>
+                <polyline class="dv-leader dv-anno show" data-seq="1" data-series-group="2" points="150.0,232.0 150.0,243.0"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="1" data-series-group="2" fill="var(--ink)" x="150.0" y="247.0" text-anchor="middle">B</text>
+                <polyline class="dv-leader dv-anno show" data-seq="2" data-series-group="3" points="65.6,187.2 56.5,193.4"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="2" data-series-group="3" fill="var(--ink)" x="49.0" y="197.4" text-anchor="middle">C</text>
+                <polyline class="dv-leader dv-anno show" data-seq="3" data-series-group="4" points="49.3,113.5 38.5,111.7"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="3" data-series-group="4" fill="var(--ink)" x="29.6" y="115.7" text-anchor="middle">D</text>
+                <polyline class="dv-leader dv-anno show" data-seq="4" data-series-group="5" points="98.6,41.9 93.1,32.4"/>
+                <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="4" data-series-group="5" fill="var(--ink)" x="88.5" y="36.4" text-anchor="middle">E</text>
+                <g data-dv-view="value"><text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">2320</text></g>
+                <g data-dv-view="percent" class="dv-off"><text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">100%</text></g>
+              </svg>
+              <ul class="dv-leg vert t-cm-chart-label" id="cdd-legend" role="group" aria-label="Categories — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+                <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Housing" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Housing"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Housing</span></button></li>
+                <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Groceries" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Groceries"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Groceries</span></button></li>
+                <li class="dv-legrow" data-series="3"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Savings" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="3" aria-pressed="false" aria-label="Isolate Savings"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Savings</span></button></li>
+                <li class="dv-legrow" data-series="4"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Leisure" style="--sc:var(--data-series-4)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="4" aria-pressed="false" aria-label="Isolate Leisure"><span class="dv-key t-cm-chart-key">D</span><span class="dv-leg-name">Leisure</span></button></li>
+                <li class="dv-legrow" data-series="5"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Other" style="--sc:var(--data-series-5)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="5" aria-pressed="false" aria-label="Isolate Other"><span class="dv-key t-cm-chart-key">E</span><span class="dv-leg-name">Other</span></button></li>
+                <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="cdd-legend" disabled>Reset</button></li>
+              </ul>
+              <p class="dv-sr" id="cdd-live" role="status" aria-live="polite"></p>
+            </div></div>
+            <div class="dv-tablepanel" id="cdd-tbl" role="region" aria-label="Spend by category this month, data table" tabindex="-1" hidden>
+              <table class="dv-table t-cm-legal">
+                <caption>Spend by category this month, pounds</caption>
+                <thead><tr><th scope="col">Category</th><th scope="col" data-dv-view="value">Amount (£)</th><th scope="col" data-dv-view="percent" class="dv-off">Share (%)</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Housing</th><td data-dv-view="value">950</td><td data-dv-view="percent" class="dv-off">41</td></tr>
+                  <tr><th scope="row">Groceries</th><td data-dv-view="value">420</td><td data-dv-view="percent" class="dv-off">18</td></tr>
+                  <tr><th scope="row">Savings</th><td data-dv-view="value">300</td><td data-dv-view="percent" class="dv-off">13</td></tr>
+                  <tr><th scope="row">Leisure</th><td data-dv-view="value">260</td><td data-dv-view="percent" class="dv-off">11</td></tr>
+                  <tr><th scope="row">Other</th><td data-dv-view="value">390</td><td data-dv-view="percent" class="dv-off">17</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= THE SEQUENCE — Dave's own reproduction, scripted ================= -->
+  <div class="rv-section">
+    <h2 class="rv-section-h t-cm-section-label">The sequence that used to break — run it on the light chart</h2>
+    <p class="rv-prose t-ed-body">Four steps. Step 3 is the return path where the old derived marker brought
+    the emphasis back; under DV-D19 it cannot. Step 4 is the release you nearly lost at enactment — a
+    re-click on the isolated label still lets go and restores the mix. Every button below fires a real
+    click on the real legend; the verdicts are read back from the page, not from a script's memory.</p>
+
+    <div class="rv-grid">
+      <div class="rv-col">
+        <div class="rv-card">
+          <div class="rv-steps">
+            <button type="button" class="rv-btn t-ed-body-small" id="rv-s1">1 · Isolate Housing <span class="t-cm-legal">(click its label)</span></button>
+            <button type="button" class="rv-btn t-ed-body-small" id="rv-s2">2 · Check Groceries <span class="t-cm-legal">(click its swatch — the latch)</span></button>
+            <button type="button" class="rv-btn t-ed-body-small" id="rv-s3">3 · Uncheck Groceries <span class="t-cm-legal">(the return path)</span></button>
+            <button type="button" class="rv-btn t-ed-body-small" id="rv-s4">4 · Re-click Housing's label <span class="t-cm-legal">(the release)</span></button>
+            <button type="button" class="rv-btn t-ed-body-small" id="rv-run">▶ Run all four, watching</button>
+            <button type="button" class="rv-btn t-ed-body-small" id="rv-reset">↺ Reset the chart</button>
+          </div>
+          <div class="rv-verdict t-ed-body-small" id="rv-verdict">Run the steps in order.</div>
+        </div>
+      </div>
+      <div class="rv-col">
+        <div class="rv-card t-ed-body-small">
+          <p class="t-cm-legal" style="margin:0 0 8px; opacity:.6;">STATE — READ FROM THE DOM</p>
+          <div class="rv-readout" id="rv-readout">—</div>
+          <p class="t-cm-legal" style="margin:12px 0 0; opacity:.6;">The "announces" line is canon's own live region (#cdl-live) — what a screen reader hears.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= STATE SPREAD — canon classes, statically posed ================= -->
+  <div class="rv-section">
+    <h2 class="rv-section-h t-cm-section-label">Legend states — canon's styling, posed</h2>
+    <p class="rv-prose t-ed-body-small">These rows are the snippet's markup with canon's own state classes and
+    attributes pre-set, so the treatments can be compared side by side. They are display-only
+    (kept outside the behaviour layer); the interactive truth is the chart above. Hover is live —
+    mouse over any row in the charts to see the row border lift to ink and the other series fade to 24%.</p>
+
+    <div class="cn-chart-donut" aria-hidden="true">
+      <div class="rv-spread t-cm-chart-label">
+        <div>
+          <ul style="list-style:none; margin:0; padding:0;"><li class="dv-legrow"><span class="dv-leg-sw" aria-checked="true" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" tabindex="-1"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Housing</span></button></li></ul>
+          <p class="rv-spread-cap t-cm-legal">Rest — filled swatch, hairline row border</p>
+        </div>
+        <div>
+          <ul style="list-style:none; margin:0; padding:0;"><li class="dv-legrow is-solo"><span class="dv-leg-sw" aria-checked="true" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" tabindex="-1"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Housing</span></button></li></ul>
+          <p class="rv-spread-cap t-cm-legal">is-solo — ink border + 6% ink tint (canon.css:3883)</p>
+        </div>
+        <div>
+          <ul style="list-style:none; margin:0; padding:0;"><li class="dv-legrow"><span class="dv-leg-sw" aria-checked="false" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" tabindex="-1"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Housing</span></button></li></ul>
+          <p class="rv-spread-cap t-cm-legal">Hidden — hollow swatch (aria-checked="false")</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= OPEN DECISION 1 — the swatch at rest ================= -->
+  <div class="rv-section">
+    <h2 class="rv-section-h t-cm-section-label">Open decision 1 — what does a swatch click at rest mean?</h2>
+    <p class="rv-prose t-ed-body">DV-D19 deliberately left one thing unanswered, and it is still yours. Today,
+    clicking a swatch on an untouched chart just dims that series — classic show and hide, the chart stays
+    in its resting state. Your wording at #75 could also be read wider: that the very first swatch click
+    anywhere should put the whole legend into check mode. The narrow reading shipped because the return
+    path was what you reported, and widening it would change resting behaviour on every chart. Neither
+    option is pre-selected here; the shipped one is marked.</p>
+
+    <div class="rv-quote t-ed-body-small">"as soon as the user checks a swatch the whole set change to check mode.
+      check-mode and isolation-mode never occur at the same time."
+      <cite>Dave, #75 — knowledge/_proforma/_DATAVIZ-DECISIONS.md:808–810</cite>
+    </div>
+    <div class="rv-quote t-ed-body-small">"⬛ ONE THING DV-D19 DOES NOT SETTLE, put to Dave in the prototype and not
+      yet answered: at rest a swatch click still toggles visible[] and the mode stays 'rest'. […] The narrow
+      reading was taken deliberately: the return path is what he reported, and widening it changes resting
+      behaviour on every chart. His."
+      <cite>knowledge/_proforma/_DATAVIZ-DECISIONS.md:953–957 (retrieved 2026-08-02)</cite>
+    </div>
+
+    <div class="rv-grid">
+      <div class="rv-col">
+        <div class="rv-card t-ed-body-small">
+          <label class="rv-opt"><input type="radio" name="rv-q1" value="narrow"><span><b>Narrow reading</b><span class="rv-badge t-cm-legal">shipped today</span><br>
+            At rest a swatch click toggles that series' visibility and the mode stays <span class="rv-code">rest</span>. Check mode only ever begins from isolation.<br>
+            <em>For:</em> matches the defect you actually reported; resting behaviour on every existing chart is untouched.
+            <em>Against:</em> "check a swatch" then means two different things depending on where you started.</span></label>
+          <label class="rv-opt"><input type="radio" name="rv-q1" value="wide"><span><b>Wide reading</b><br>
+            The first swatch click anywhere enters check mode with the current visible set as the focus set.<br>
+            <em>For:</em> one consistent meaning for the swatch gesture everywhere.
+            <em>Against:</em> changes resting behaviour on every chart; the latch would then also govern plain show/hide.</span></label>
+          <p class="t-cm-legal" style="margin:12px 0 0; opacity:.6;">Selections are not persisted — rulings land in chat and the ledger. Pin a comment on this section to rule.</p>
+        </div>
+      </div>
+      <div class="rv-col">
+        <div class="rv-card t-ed-body-small">
+          <p class="t-cm-legal" style="margin:0 0 8px; opacity:.6;">SEE THE SHIPPED STATE, LIVE</p>
+          <button type="button" class="rv-btn t-ed-body-small" id="rv-restdemo">Toggle Savings' swatch at rest, on the light chart</button>
+          <div class="rv-readout" id="rv-restreadout">—</div>
+          <p class="t-cm-legal" style="margin:12px 0 0; opacity:.6;">A live flip of the WIDE reading is deliberately not built: it would mean writing non-canon behaviour into this specimen — the defect class this rebuild repairs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= OPEN DECISION 2 — the fade request, unattributed ================= -->
+  <div class="rv-section">
+    <h2 class="rv-section-h t-cm-section-label">Open decision 2 — the fade: what did you actually ask for?</h2>
+    <p class="rv-prose t-ed-body">At #75 you said you would like "the fade behavior on this chart", pointing at
+    the July legend prototype. When the record was checked, the prototype and canon turned out to define the
+    same fade ladder — full, 24% on hover, 12% ghost — and select it the same way, so no difference has been
+    found to build. Rather than guess, this control shows you the shipped fade live and asks the question
+    straight: is there a fade you are missing here, or did you mean keep this fade through the mode change
+    (which it does)? No options are offered because the record cannot yet say what the alternatives are.</p>
+
+    <div class="rv-quote t-ed-body-small">"⚠ UNPROVEN, DECLARED — the fade request is NOT yet attributed. Dave: 'I'd like
+      the fade behavior on this chart' + reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html.
+      Static comparison found NO delta: v5.5 and canon both define .is-faded .24 / .is-ghost .12 / .is-peek .24,
+      and both select by bare [data-series-group="…"] […] What this leaves: a RENDER-level comparison […] or Dave
+      meaning preserve this fade through the mode change rather than add it. Not guessed, not built."
+      <cite>knowledge/_proforma/_DATAVIZ-DECISIONS.md:835–843 (retrieved 2026-08-02)</cite>
+    </div>
+
+    <div class="rv-grid">
+      <div class="rv-col">
+        <div class="rv-card t-ed-body-small">
+          <p class="t-cm-legal" style="margin:0 0 8px; opacity:.6;">THE SHIPPED FADE LADDER, LIVE</p>
+          <button type="button" class="rv-btn t-ed-body-small" id="rv-fadedemo">Hold hover on Groceries' row (light chart)</button>
+          <button type="button" class="rv-btn t-ed-body-small" id="rv-fadeclear" style="margin-left:8px;">Clear</button>
+          <div class="rv-readout" id="rv-fadereadout">—</div>
+        </div>
+      </div>
+      <div class="rv-col">
+        <div class="rv-q t-ed-body-small"><b>The question for you, verbatim from the record:</b> watching the fade
+        above and on the July prototype side by side, is there any difference you can see? If yes, pin a comment
+        naming what differs and where. If no — was the request to <em>preserve</em> this fade through the
+        isolate → check transition (which canon does), or something else entirely? Pin a comment on this section;
+        options are deliberately not invented for you.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rv-foot t-cm-legal">
+    DV-D19-MODE-LATCH-2026-08-02-<b>v2</b> · rebuilt on real canon (canon.css + Chart-donut.reference.html markup +
+    dv-behaviour/dv-legend/dv-donut-sweep sources, all linked live) · supersedes
+    DV-D19-MODE-LATCH-PROTOTYPE-2026-08-02-v1.html for all styling judgement (v1's legend treatment was invented —
+    the #76 defect this file repairs). Selections in this document are not persisted; rulings land in chat and
+    _DATAVIZ-DECISIONS.md. Review pair generated by knowledge/_review/_make_review.py.
+  </div>
+
+</div>
+
+<!-- THE REAL BEHAVIOUR SOURCES — loaded by reference, byte-identical to what every chart runs -->
+<script src="../knowledge/canon/dv-behaviour.js"></script>
+<script src="../knowledge/canon/dv-legend.js"></script>
+<script src="../knowledge/canon/dv-donut-sweep.js"></script>
+
+<script>
+/* ============ SPECIMEN CHROME SCRIPT — drives REAL gestures, reads back the DOM ============
+   Contract: this script never sets a class or attribute on any .dv-* element. It only calls
+   .click() on canon's own controls / dispatches pointer events, and then READS the resulting
+   DOM truth. Verdicts are computed from the document, not from mirrored state. */
+(function(){
+  'use strict';
+  var leg = document.getElementById('cdl-legend');
+  function row(n){ return leg.querySelector('.dv-legrow[data-series="'+n+'"]'); }
+  function sw(n){ return row(n).querySelector('.dv-leg-sw'); }
+  function label(n){ return row(n).querySelector('.dv-leg-item'); }
+  function soloRows(){ return [].slice.call(leg.querySelectorAll('.dv-legrow.is-solo')); }
+  function checkedMap(){
+    return [].slice.call(leg.querySelectorAll('.dv-leg-sw')).map(function(s){
+      return s.closest('.dv-legrow').getAttribute('data-series')+':'+s.getAttribute('aria-checked');
+    }).join('  ');
+  }
+  function liveText(){ var el=document.getElementById('cdl-live'); return el?el.textContent:''; }
+  function mode(){ return (leg.__dv && leg.__dv.mode) || '(behaviour not initialised)'; }
+
+  var readout = document.getElementById('rv-readout');
+  function updReadout(){
+    var solo = soloRows().map(function(r){return r.getAttribute('data-series');});
+    readout.textContent =
+      'mode (internal, display only): ' + mode() + '\n' +
+      'rows with .is-solo: ' + (solo.length ? solo.join(', ') : 'none') + '\n' +
+      'swatches aria-checked: ' + checkedMap() + '\n' +
+      'announces: ' + (liveText() || '—');
+  }
+
+  var verdict = document.getElementById('rv-verdict');
+  function setVerdict(cls, txt){ verdict.className = 'rv-verdict t-ed-body-small ' + cls; verdict.textContent = txt; }
+  var stepsDone = 0;
+  function markDone(n){
+    stepsDone = n;
+    [1,2,3,4].forEach(function(i){
+      document.getElementById('rv-s'+i).classList.toggle('rv-done', i<=n);
+    });
+  }
+
+  function step(n){
+    if (n===1){ doReset(); label(1).click(); markDone(1);
+      var ok1 = row(1).classList.contains('is-solo') && label(1).getAttribute('aria-pressed')==='true';
+      setVerdict(ok1?'':'rv-bad', ok1 ? 'Step 1 — Housing isolated: its row carries canon’s is-solo (ink border + 6% ink tint); the other swatches read unchecked (blank = not in the focus).' : 'Step 1 FAILED — no is-solo row after isolating.');
+    }
+    if (n===2){ sw(2).click(); markDone(2);
+      var noSolo = soloRows().length===0;
+      setVerdict(noSolo?'rv-good':'rv-bad', noSolo ? 'Step 2 — the LATCH: checking Groceries moved the whole set to check mode. No row carries emphasis — the is-solo treatment is gone, for good.' : 'Step 2 FAILED — a row still reads is-solo after the latch.');
+    }
+    if (n===3){ sw(2).click(); markDone(3);
+      var back = soloRows().length>0;
+      setVerdict(back?'rv-bad':'rv-good', back ? 'Step 3 FAILED — the emphasis CAME BACK on the return path. This is the DV-D18 defect; it should be impossible under DV-D19.' : 'Step 3 — the return path: the focus set is a singleton again, and STILL no row is solo. The latch held. (Under the old derived marker, Housing’s emphasis returned here.)');
+    }
+    if (n===4){ label(1).click(); markDone(4);
+      var released = soloRows().length===0
+        && [].slice.call(leg.querySelectorAll('.dv-leg-sw')).every(function(s){return s.getAttribute('aria-checked')==='true';})
+        && [].slice.call(leg.querySelectorAll('.dv-leg-item')).every(function(b){return b.getAttribute('aria-pressed')==='false';});
+      setVerdict(released?'rv-good':'rv-bad', released ? 'Step 4 — release: re-clicking Housing’s label let go and restored the prior mix (all five shown). DV-D17’s bite survives — the near-miss the verifier refused at enactment.' : 'Step 4 FAILED — the label re-click did not release cleanly.');
+    }
+    updReadout();
+  }
+  function doReset(){
+    var rs = leg.querySelector('.dv-leg-reset');
+    if (rs && !rs.disabled){ rs.click(); }
+    markDone(0); updReadout();
+  }
+
+  document.getElementById('rv-s1').addEventListener('click', function(){ step(1); });
+  document.getElementById('rv-s2').addEventListener('click', function(){ if(stepsDone>=1){step(2);} else {setVerdict('','Run step 1 first.');} });
+  document.getElementById('rv-s3').addEventListener('click', function(){ if(stepsDone>=2){step(3);} else {setVerdict('','Run steps 1 and 2 first.');} });
+  document.getElementById('rv-s4').addEventListener('click', function(){ if(stepsDone>=3){step(4);} else {setVerdict('','Run steps 1–3 first.');} });
+  document.getElementById('rv-reset').addEventListener('click', function(){ doReset(); setVerdict('','Chart reset. Run the steps in order.'); });
+  document.getElementById('rv-run').addEventListener('click', function(){
+    step(1); setTimeout(function(){step(2);},900); setTimeout(function(){step(3);},1800); setTimeout(function(){step(4);},2700);
+  });
+
+  /* Open decision 1 — shipped behaviour at rest, demonstrated with a real click */
+  var restBtn = document.getElementById('rv-restdemo'), restOut = document.getElementById('rv-restreadout');
+  restBtn.addEventListener('click', function(){
+    var m0 = mode();
+    if (m0 !== 'rest'){ doReset(); }
+    sw(3).click();
+    var m1 = mode(), c = sw(3).getAttribute('aria-checked');
+    restOut.textContent = 'clicked Savings’ swatch at rest → mode stays: ' + m1 +
+      '\nSavings aria-checked: ' + c + (c==='false' ? ' (dimmed to the 12% ghost — look left)' : ' (restored)') +
+      '\nannounces: ' + liveText();
+    updReadout();
+  });
+
+  /* Open decision 2 — the shipped fade ladder, held live via canon's own hover path */
+  var fadeOut = document.getElementById('rv-fadereadout');
+  function po(el, type){ var ev; try{ ev = new PointerEvent(type,{bubbles:true}); }catch(e){ ev = new Event(type,{bubbles:true}); } el.dispatchEvent(ev); }
+  document.getElementById('rv-fadedemo').addEventListener('click', function(){
+    po(row(2), 'pointerover');
+    setTimeout(function(){
+      var fig = leg.closest('figure');
+      var op = {};
+      [1,2,3].forEach(function(n){
+        var p = fig.querySelector('.dv-series[data-series-group="'+n+'"]');
+        op[n] = getComputedStyle(p).opacity;
+      });
+      fadeOut.textContent = 'holding hover on Groceries (series 2), computed opacity after settle:' +
+        '\n  Housing (faded): ' + op[1] + '   Groceries (hovered): ' + op[2] + '   Savings (faded): ' + op[3] +
+        '\nladder: full 1 ▸ hover-fade .24 ▸ ghost .12 — canon’s values, read from the page';
+    }, 260);
+  });
+  document.getElementById('rv-fadeclear').addEventListener('click', function(){
+    po(row(2), 'pointerout');
+    setTimeout(function(){ fadeOut.textContent = 'cleared — all series back to full'; }, 260);
+  });
+
+  updReadout();
+}());
+</script>
+</body>
+</html>
