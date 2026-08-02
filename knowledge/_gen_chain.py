@@ -140,6 +140,84 @@ def unit_word(cg):
 MAX_FIXED_POINT_PASSES = 8
 
 
+def state_block():
+    """The GENERATED open-work section (#88). Rendered from `_state.json`, never from prose.
+
+    ★ WHY THIS IS ADDITIVE AND NOT YET A SWAP. The hand-authored presence index still sits in
+    `GOOD-MORNING.md` and still reaches the chain through `cg.chain_parts`. Removing it in the
+    same motion that adds this would be a cut before a probe proved the facts live elsewhere,
+    which is the one thing [[home-by-addition-then-cut]] forbids — and it would do it on the boot
+    path, where a mistake costs every future session. So: ADD now, verify against the prose for
+    the two drill passes (#87-D1, N=2), CUT at the swap. The duplication is the declared price of
+    doing it in the right order, and it is small and bounded because this block prints ids and
+    counts, not bodies.
+
+    ⛔ REFUSES rather than guesses, inheriting `build()`'s posture. A boot path that renders an
+    empty-but-plausible worklist because a store failed to load hands a cold session a confident
+    blank — strictly worse than a named refusal [[a-crash-is-not-a-fail]].
+
+    ⚠ Width-stable by construction: nothing here depends on the file-size figure the fixed point
+    is solving for, so this block cannot induce the 2-cycle that `build()` refuses on.
+    """
+    try:
+        import _state
+    except Exception as e:                                    # pragma: no cover - import guard
+        return ("\n\n---\n\n> ⛔ **OPEN WORK: NOT RENDERED** — `_state.py` did not import "
+                f"({e}). This is a REFUSAL, not an empty worklist.\n")
+    try:
+        doc = _state.load()
+        ok, fails, notes = _state.check(doc)
+        c = _state.counts(doc)
+    except _state.StateError as e:
+        return ("\n\n---\n\n> ⛔ **OPEN WORK: NOT RENDERED** — the store refused to load "
+                f"({e}). NOT read as zero items.\n")
+
+    ls = _state.live(doc)
+    dave = [i for i in ls if i["owner"] == "dave"]
+    mine = [i for i in ls if i["owner"] == "claude"]
+
+    def ids(seq):
+        return " · ".join(f"`{i['id']}`" for i in seq)
+
+    out = [
+        "\n\n---\n\n",
+        "## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**\n\n",
+        f"> **{c['total']} items · {c['live']} live · {c['by_owner']['dave']} Dave's · "
+        f"{c['by_owner']['claude']} mine · {c['conditioned']} carry a stated close condition · "
+        f"**{c['unconditioned']} UNCONDITIONED**.**\n",
+        "> *Every figure in this block is computed from the store at generation time. No number "
+        "here was typed by anyone — that is the point of it (#86 measured a typed inventory of "
+        "\"118 markers\" against a real ~40; #85's \"95 slots / 84 distinct\" is not reproducible "
+        "by any probe in this repo).*\n",
+    ]
+    if c["unconditioned"]:
+        out.append(
+            f"> ⚠ **DECLARED DEBT — {c['unconditioned']} inherited items have NO close "
+            f"condition and therefore cannot close.** They are exempt as a FROZEN set "
+            f"(`_state.LEGACY_IDS`, size {len(_state.LEGACY_IDS)}) which may only shrink; a NEW "
+            f"item is refused without one. **Each needs Dave's word — an agent inventing a "
+            f"close condition for his open work is the same overreach as inventing his "
+            f"ruling.**\n")
+    # ⛔ The heading is COMPUTED, not asserted. It read "each with a ratified `closes_when`" for
+    # exactly one render, while five of its own rows printed "none stated" directly underneath —
+    # a summary line contradicted by the data it summarises, on the boot path, in the session
+    # whose entire subject is that typed claims rot. Caught by reading the artefact, which is the
+    # only thing that ever catches it [[enactment-register-adr-0016]].
+    n_cond = sum(1 for i in dave if i["closes_when"])
+    n_un = len(dave) - n_cond
+    out.append(f">\n> **DAVE'S ({len(dave)}) — {n_cond} with a ratified `closes_when`, "
+               f"{n_un} with NONE:**\n")
+    for i in sorted(dave, key=lambda x: (x["closes_when"] is None, x["id"])):
+        cw = i["closes_when"] or "⛔ **none stated — cannot close until you name one**"
+        out.append(f"> - `{i['id']}` **{i['title']}** — *closes when:* {cw}\n")
+    out.append(f">\n> **MINE ({len(mine)}), ids only — bodies are in the store, not here:** "
+               f"{ids(mine)}\n")
+    out.append(f">\n> ⚠ store gate: **{'PASS' if ok else 'FAIL'}**"
+               + ("" if ok else f" — {len(fails)} failure(s): {fails[0]}")
+               + ". Bodies, conditions and provenance: `python3 knowledge/_state.py`.\n")
+    return "".join(out)
+
+
 def build(repo=ROOT):
     """Return `(text, detail)` for the chain file, or `(None, reason)` on refusal.
 
@@ -232,7 +310,7 @@ def build(repo=ROOT):
             title_block = f"> **TITLE THIS CHAT →** {title}\n\n---\n\n"
 
     body = gm_part if delta is None else gm_part + "\n\n---\n\n" + delta
-    body = title_block + body
+    body = title_block + body + state_block()
     # ⚠ Every published figure here is MEASURED with the gate's own tokenizer, never derived from
     # line counts or character lengths. A COUNT IS NOT A MEASUREMENT — the standing lesson.
     gm_part_tk = cg.measure_tokens(gm_part)[0]
