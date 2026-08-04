@@ -3421,3 +3421,62 @@ status: ruled (P2–P7) · floated (P1 replacement) · unruled (the lane-wrap ga
 **⚠ ALSO NOW FALSE ABOVE:** the wrap-gate FAIL was diagnosed against a `_LIVE-STATE.md` last-refreshed of 2026-08-01. At HEAD that file has moved. **The lane-wrap seam may still be real — the reasoning is structural, not state-dependent — but its receipt is stale and it must be re-run before it is ruled.**
 
 status: correction — struck at source, by addition, same window · provenance: local_cfa295ea-b60e-46f9-9918-13bcccab96c6 · 2026-08-02
+
+### ★★ THE THREE STALE RECEIPTS RE-CHECKED AT HEAD — #90 opener, on Dave's order. **ONE HELD, ONE HELD AND IS NOW RULED-NOT-ENACTED, ONE IS DEAD AND INVERTED.**
+
+**PROVENANCE.** Dave, #90 opener, verbatim: *"P4, P6 and P7 are ruled but their receipts are stale. If any window picks them up, it needs one re-check each first."* Offered four routes; he ruled **re-check all three now**. The constraint he restated was already inscribed at `:3417`/`:3419` — this entry discharges it rather than re-stating it.
+
+**CONTROL, FIRST.** The reconcile the entry above discovered was run before the first finding: `MEMORY.md` highest = **#89**, `_CHAIN.md` = **YOU ARE #90**, `HEAD` = `7e5e89e` dated **2026-08-04 11:04**, tree **clean**. Two numbers, compared. **The #89 stale-mount trap did not recur.**
+
+**⚠ P4 — HOLDS, AND THE TREND CLAIM IS NOW THE WRONG SIGN.** Re-counted at HEAD, same two files the stale probe named, plus a widened control: **27 of 49 = 55.1%** (original scope) · **27 of 50 = 54.0%** (+ `_GM-ARCHIVE.md`). Stale receipt: 21 of 39 = 53.8%. ⇒ **the rate did not move across eleven more sessions — "a stable 54% lapse" survives its own re-measurement.** But *"no downward trend"* understates it at HEAD: the last ten sessions carrying a line are **7 none = 70%**, against the stale receipt's own last-ten of 6 = 60%. ⛔ **NEW, AND NOT VISIBLE TO THE STALE RECEIPT: #88 AND #89 CARRY NO `consult-receipts` LINE AT ALL.** The highest session with one is **#87**. That is not an honest negative — it is the stratum missing, which the rate cannot count and no lapse-counter can see. `knowledge/_SESSIONS.jsonl` holds only `{"n":89,"event":"boot"}` / `{"n":89,"event":"wrap"}`, so **#89's new witness did not absorb the receipt line either.** ⇒ **the instrument's INPUT stopped arriving in the last two sessions, which outranks the lapse rate it was built to measure.** ⚠ **My own probe's defect, recorded not smoothed:** the first pass returned **0 of 50 = 0%** because the regex matched before the markdown `**` bold and no body ever began with `none`. It was caught only because 0% contradicted the word `none` visible in the same printout. **A green that cannot fail is an assertion** — the second pass is the one above.
+
+**⚠ P6 — HOLDS EXACTLY, AND IT IS NOW RULED-NOT-ENACTED.** Re-ran the probe the receipt named, unchanged: `two-fetch` · `staleness control` · `fog` · `index-drift`, across the same five standing surfaces (`GOOD-MORNING.md`, `_LIVE-STATE.md`, `_FUTURE-STATE.md`, `notes/_MEMENTO-DECISIONS.md`, `knowledge/_FIXED-FLEX-CHARTER.md`). Stale receipt: **0 hits each**. At HEAD: **1 hit each — and all four are the SAME LINE**, `notes/_MEMENTO-DECISIONS.md:3373`, which is **Dave's own ruling accepting P6**: *"P6 ACCEPTED, addition only — one `_FUTURE-STATE.md` entry homing the three orphaned forks."* **`_FUTURE-STATE.md` — the destination that ruling names — still returns 0 hits for all four terms.** ⇒ **the only surface in the corpus that mentions the three forks is the record of the decision to home them.** ★ **Control, so the zero is an absence and not a broken grep:** fork 1, the one that landed (`six edge types`), still has a standing home at `_LIVE-STATE.md:63,73`. The probe discriminates. [[unmatched-grep-is-not-an-absence]]
+
+**⛔ P7 — DEAD AS STATED, AND THE SIGN INVERTED. DO NOT ENACT IT ON THIS RECEIPT.** Stale receipt: the `size:` stamp runs **9.0–9.5% BELOW** the artefact (cl100k tape, measured at `18048db`). Re-measured at HEAD with `_gauge_tokens.count()` — **real tokens, measured on the artefact, never converted** (#54, enacted #82-D1):
+
+| file | stamped | measured | delta | |
+|---|---|---|---|---|
+| `GOOD-MORNING.md` | 44,890 | **44,464** | **+426** | **+0.96% ABOVE** |
+| `_LIVE-STATE.md` | 26,910 | **26,910** | 0 | **EXACT** |
+
+⇒ **the premise is false at HEAD and it is false in the opposite direction, an order of magnitude smaller.** Two things killed it and neither is virtue: the **#82 re-denomination** retired the unit the receipt was written in, and **#87 re-stamped after the regen**. ★ **A receipt can be stale in its UNIT as well as its STATE, and P7's was both.** ★★ **THE PROPOSAL IS UNTOUCHED AND MUST NOT DIE WITH ITS EVIDENCE.** P7 proposed a *residual clause* — when 2c/2d/2f are skipped, the residual must state that the `size:` stamp is therefore #N−1's and by roughly how much the artefact has moved. **That is structural, not state-dependent.** Dave's ruling on it stands; only the number that motivated it is dead. **Striking the finding and the remedy in one motion is how a conflated fix guarantees recurrence** [[conflated-fix-guarantees-recurrence]]. ★ **Cross-check, unasked:** `_CHAIN.md`'s own footer independently carries `GM 44,464` and `chain 13,277` — **both byte-match this measurement.** The GENERATED file is current; the HAND-AUTHORED stamp is the 426 adrift. Same shape as P7, opposite party.
+
+**⛔ THE COLLISION, NAMED SO IT CANNOT MISROUTE A WINDOW.** Two live P-sets, same 24 hours, both numbered P4/P6/P7, **opposite statuses**. A window handed *"P4, P6 and P7 are ruled"* can pick the wrong one:
+
+| | dream pass 2026-08-02 (**this set**) | handoff regime phase 2 (#78-D1) |
+|---|---|---|
+| **P4** | consult-receipt 54% lapse | orphan selftests — **ruled BUILD NOW** |
+| **P6** | worker-receipt forks unhomed | graphs — **parked, unruled** |
+| **P7** | GM `size:` stamp adrift | `memento-package/` drift — **parked, unruled** |
+
+**⬛ STILL OWED, PRICED, NOT DONE — THE REACHABILITY, WHICH IS THE HALF DAVE'S OPENER WAS ACTUALLY ABOUT.** His words were *"if any window picks them up"*, and a window cannot reach this. Measured this session: **`_CHAIN.md` = 0 hits for P4/P6/P7** · **`GOOD-MORNING.md`, `_LIVE-STATE.md`, `knowledge/_state.json` = 0 hits for the caveat** · **`_memento_search.py` with the natural query returns lane records and generic GM sections and MISSES this entry** — the identical retrieval failure #79 already logged for the sibling P-set (`_GAUGE-LOG.md:775`: *"the phase-2 P-numbers are not indexed under the vocabulary a session would naturally ask in"*). **Twice now, same defect, different set. The re-checks are discharged; the routing is not.** Dave's call, not taken here.
+
+status: re-check — three verdicts on Dave's #90 order · P4 HOLDS (+ new: #88/#89 strata absent) · P6 HOLDS, ruled-not-enacted · P7 DEAD-AND-INVERTED, proposal survives · reachability UNFIXED · 2026-08-04
+
+### ★★ #90 — THE 2f ROLL OWED SINCE #83 IS DISCHARGED. **THE READ CHAIN IS CUT 16.9%, AND ONE LINE WAS 23% OF IT.**
+
+**DAVE'S ASK.** *"lets fix what we can in this session"*, after naming his real fear: *"we got into a situation where the boot was so big that we couldn't work on anything within the context window, we're fighting two things context rot and boot bloat."*
+
+**⛔ THE FEAR IS CORRECT AND WAS ALREADY REALISED — MEASURED, NOT ARGUED.** Read chain in real tokens off `git show`, no stamp trusted: **#52 7,160 · #60 8,382 · #72 10,768 · #84 13,008 · #89 13,277 = +85%, and it never once came back down.** The header's standing boast that *"the rolls keep the floor oscillating rather than rising"* is **FALSE at this timescale** — #87 cut 5,551 bytes and #88 put 5,926 straight back, the largest single rise on record, in the session that BUILT THE STATE STORE. **A Memento fix was the biggest single contributor to the bloat Memento exists to prevent.**
+
+**★★ BUT THE CORPUS IS THE SMALL TERM, AND FIFTEEN SESSIONS FOUGHT OVER IT.** Boot measured live at #89 = **61,854**; the read chain is **13,277 of it = 21%**. The other **48,577 (24.3% of a 200,000 window)** is harness/memory/tools and **has never been itemised by anyone.** With the #59 wrap floor of 42,434, **actual room to work was 95,712 = 47.9% of the window.** ⇒ **less than half the window was available, and the term under active repair was the smallest of the three.**
+
+**✅ WHAT WAS BUILT — the cut, through the mover, not by hand.** `GM:9`'s `size:` stamp measured **3,055 real = 23% of the entire read chain**, one line, accreted from every session's own arithmetic since #79. #83 declared the roll owed; a probe found GM:9 their SOLE HOME so the cut was forbidden; **it was then deferred five consecutive sessions.** #90 re-ran the probe (17 figures, still sole home), moved the text **VERBATIM** to `notes/_GAUGE-LOG.md` § `#### 2026-08-04 #90` via `_gm_move.py`, then cut. **Move before cut, never the same motion** [[home-by-addition-then-cut]].
+
+| | #89 | #90 | delta |
+|---|---|---|---|
+| `GM:9` size stamp | 3,055 | **807** | **−2,248** |
+| `GOOD-MORNING.md` | 44,464 | **42,216** | −2,248 |
+| **`_CHAIN.md` — what a cold session PAYS** | 13,277 | **11,029** | **−2,248 (−16.9%)** |
+
+**Verified on the artefact, not the receipt:** 17/17 moved figures present in the new home, **0 lost** · block header matches `GAUGE_BLOCK_RE` · index rebuilt, 462 records · **capture gate 67 in scope, 0 fail, 2 warn** (both inherited) · GM stamp 42,216 = GM measured 42,216 · chain footer 11,029 = chain measured 11,029.
+
+**⛔⛔ I REPRODUCED THE EXACT DEFECT I HAD MEASURED THAT MORNING, IN THE LINE I WAS WRITING TO FIX IT.** The first #90 stamp wrote `GM 44,464` and a hand-written `chain 13,277` — **both PRE-CUT figures — beside the words *"measured AFTER the regen"*, which went false the instant the cut landed.** Caught by re-reading the artefact, not by any gate. ★★ **A size claim cannot converge inside the file it measures**; the corrected stamp iterates write→measure→rewrite to a **fixed point** (converged at iteration 1) and the read-chain figure is now **deliberately absent**, pointing at `_CHAIN.md`'s generated footer. **This is the third instance in one day: P7 this morning, #88 three times, me once.**
+
+**⚠ A GATE SCOPE HOLE, FOUND BY WALKING THROUGH IT, DECLARED NOT FIXED.** `CHAIN_STAMP_RE` (`_capture_gate.py:816`) exists to forbid a hand-written chain figure in the stamp — it binds only the `CHAIN … N K tape|tk` form, so **`chain 13,277 real` walked straight past the check written to forbid it.** The unit ruling at #82 retired `tape|tk` and the gate's regex was never re-scoped. [[ban-scoped-to-a-name]] — proximity to the gate is not coverage.
+
+**⬛ WHAT IS STILL OWED, PRICED, NOT DONE.** The **48,577 dark half is still dark** — the memory directory is not reachable from the sandbox, so `MEMORY.md`'s boot cost is UNMEASURED, not estimated. The mounted skills surface is **1,887 real across 13 skills**, which does not account for it. **The wrap floor (42,434 = 21.2% of the window) is larger than the entire corpus and nobody has attacked it.** ⇒ **the next cut worth making is not in the corpus.**
+
+**⚠ MISATTRIBUTION, CORRECTED IN-WINDOW:** a 45s sandbox timeout was reported as `_build_memento_index.py` exceeding the call limit. It does not — it runs in **0.21s**. The slow half was a 17-pattern repo-wide grep in the same call. **Isolate before attributing** [[attribute-the-diff]].
+
+status: built + verified · read chain −16.9% · 2f roll DISCHARGED after five deferrals · gate scope hole DECLARED, unfixed · dark half UNMEASURED · 2026-08-04

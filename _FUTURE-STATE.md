@@ -933,3 +933,28 @@ readable anyway. But this is a repo-convention call, so it is Dave's.
 **Measured floor, n=1, NOT a constant:** a lane costs ~4–6 pts of the conductor's window before it saves anything; #35's whole build was ~12 ⇒ below ~15 pts of mechanical work, delegation loses.
 
 ⚠ **PREREQUISITE, and the recommendation: do not rule sub-agents until the BOOT is measured.** If ~17 pts of every window is fixed overhead, that number alone decides whether a fresh context is cheap or ruinous — and no session here has ever measured it. Also unapplied: the pace check (§ ★★ THE THIRD TIER) already decides delegation posture and has never been used for one.
+
+## ⬛ COPIED UP AT #90's 2c EXIT CHECK — four #88/#89 deferrals that had NO standing home
+
+*Homed by ADDITION so #88's banner could roll. Probed first: `drill pass` · `1 of 3` ·
+`honest certification` · `presence index` each returned **0 hits** in `_FUTURE-STATE.md` and
+**0** in `knowledge/_state.json`. Without this they would have rolled out of live state with the
+banner — the exact 07-24 loss the EXIT CHECK exists to stop (6 of 7 deferrals lost, only the one
+with a standing home survived).*
+
+- **DRILL PASS IS 1 OF 3, DECLARED NOT CLAIMED** (#87-D1, N=2). Pass 1 landed at #88; pass 2 was
+  owed to #89 and did not run. `status: parked` `[born #90 · guards: the drill's own completeness
+  claim · until: passes 2 and 3 run, or Dave retires the drill]`
+- **THE SWAP IS STILL OWED — ADDITIVE, NOT YET A SWAP** (#89-D1's second half). The prose presence
+  index still stands in GM; cutting it in the same motion would be a cut before a probe.
+  `status: parked` `[born #90 · guards: the "chain is a SWAP not an ADD" rule against its own
+  enactment · until: the probe runs and the index is cut or ruled kept]`
+- **ROUTING + HONEST CERTIFICATION STILL UNFIXED** (#88's own declaration, carried at #89).
+  `status: parked` `[born #90 · guards: #88's rebuild claim, which is CLAIMED not proven ·
+  until: re-proven at HEAD]`
+- **`_state.json`'s FIVE UNCONDITIONED ITEMS ARE DAVE'S** — `W-0c` NEXT BUILD CANDIDATES and its
+  four siblings have no close condition, so nothing can ever retire them. `status: parked`
+  `[born #90 · guards: the store's close gate · until: Dave sets a close condition or rules them
+  standing]`
+
+*Source: `GOOD-MORNING.md` ★ PRIOR #88 banner, rolled to `_GM-ARCHIVE.md` at #90's 2c.*
