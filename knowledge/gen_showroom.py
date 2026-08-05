@@ -271,6 +271,15 @@ PAGE_TMPL = """<!doctype html>
       var d=f.contentDocument; if(!d) return;
       d.querySelectorAll('.dv-animate, figure.dv').forEach(function(el){
         el.classList.remove('dv-animate'); void el.offsetWidth; el.classList.add('dv-animate'); });
+      // second idiom (ds-029): direct `animation:` + @keyframes, no dv-animate class
+      // to toggle — restart per-element by forcing the animation off then back on.
+      d.querySelectorAll('*').forEach(function(el){
+        var cs = d.defaultView.getComputedStyle(el);
+        if (cs.animationName && cs.animationName !== 'none') {
+          var prev = el.style.animation;
+          el.style.animation = 'none'; void el.offsetWidth; el.style.animation = prev || '';
+        }
+      });
     }catch(e){}
   });
 
@@ -438,8 +447,15 @@ def build_pages():
         legacy_hits = next((m["hits"] for m in meta if m["attr"] == "legacy"), 0)
         meta_line = "%d token(s) · Legacy re-binds %d" % (len(varmap), legacy_hits)
         # Replay lives in the ONE bar (#98-D1); DISABLED where the snippet has no
-        # motion idiom (`dv-animate`) — the bar states inapplicability, never hides it.
-        has_motion = "dv-animate" in src
+        # motion idiom — the bar states inapplicability, never hides it.
+        # Two recognised idioms (ds-029): (1) the `dv-animate` class-toggle idiom,
+        # (2) direct `animation:` properties driven by @keyframes in the snippet
+        # (e.g. Confirmation.reference.html), which is ratified and NOT migrated
+        # to dv-animate for tooling's sake.
+        has_dv_animate = "dv-animate" in src
+        has_direct_keyframes = ("@keyframes" in src
+                                 and re.search(r"animation\s*:\s*[a-zA-Z]", src) is not None)
+        has_motion = has_dv_animate or has_direct_keyframes
         page = (PAGE_TMPL
                 .replace("__LABEL__", htmlmod.escape(label_of(slug)))
                 .replace("__CSS__", CHROME_CSS)

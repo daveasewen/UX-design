@@ -35,19 +35,46 @@ CANON = os.path.join(HERE, "canon", "canon.css")
 GEN = os.path.join(HERE, "..")  # generator lives in outputs at runtime; spine check is optional
 RUNTIME_VARS = {"--pct", "--demo-width", "--row-h"}
 
+def inline_scope_vars():
+    """Scan snippet + composed HTML for inline style="--x:..." definitions
+    (per-instance scope vars set on markup, e.g. style="--sc:var(--data-series-1)").
+    These are invisible to a CSS-only scan of canon.css and must be resolved
+    with a distinct provenance, never silently merged into canon.css's own defs
+    (ds-010 / #101 finding: --sc false positive)."""
+    found = set()
+    paths = glob.glob(os.path.join(HERE, "snippets", "*.html")) + \
+            glob.glob(os.path.join(HERE, "_fitness-test", "*.canon.html")) + \
+            glob.glob(os.path.join(HERE, "_proforma", "*.html")) + \
+            glob.glob(os.path.join(HERE, "_review", "*.html"))
+    for p in paths:
+        html = open(p, encoding="utf-8", errors="replace").read()
+        for style_attr in re.findall(r'style="([^"]*)"', html):
+            found |= set(re.findall(r'(--[\w-]+)\s*:', style_attr))
+    return found
+
 def check_canon():
     css = open(CANON).read()
     fails = []
+    notes = []
     defs = set(re.findall(r'(--[\w-]+)\s*:', css))
     refs = set(re.findall(r'var\((--[\w-]+)', css))
+    inline_defs = inline_scope_vars()
     missing = sorted(r for r in refs if r not in defs and r not in RUNTIME_VARS)
+    # split out vars resolved via inline-scope (set on markup, not in CSS) —
+    # report as a distinct provenance, don't fold them into "defs" or silently drop them
+    # (#101 finding: --sc is set inline in snippets, e.g. style="--sc:var(--data-series-1)",
+    # invisible to a CSS-only scan ⇒ was a false positive, not a real unresolved var)
+    inline_resolved = sorted(r for r in missing if r in inline_defs)
+    missing = sorted(r for r in missing if r not in inline_defs)
+    if inline_resolved:
+        notes.append(f"canon.css: {len(inline_resolved)} var(s) resolved via inline-scope (set in snippet markup, not CSS): {inline_resolved[:8]}")
     if missing:
         fails.append(f"canon.css: {len(missing)} unresolved var(): {missing[:8]}")
     if css.count("{") != css.count("}"):
         fails.append(f"canon.css: unbalanced braces {css.count('{')}/{css.count('}')}")
     if "AUTO-GENERATED TOKENS START" not in css:
         fails.append("canon.css: token spine markers missing")
-    return fails, len(defs), len(refs)
+    return fails, notes, len(defs), len(refs)
 
 def check_screen(path):
     html = open(path).read()
@@ -80,13 +107,15 @@ def check_screen(path):
 def main():
     report = ["# Composition gate audit\n"]
     ok = True
-    cfails, ndef, nref = check_canon()
+    cfails, cnotes, ndef, nref = check_canon()
     report.append(f"## canon.css\n- defs {ndef}, var() refs {nref}")
     if cfails:
         ok = False
         for f in cfails: report.append(f"- ❌ {f}")
     else:
         report.append("- ✅ vars resolve, braces balanced, spine markers present")
+    for n in cnotes:
+        report.append(f"- ℹ️ {n}")
     screens = sorted(glob.glob(os.path.join(HERE, "_fitness-test", "*.canon.html")))
     report.append(f"\n## composed screens ({len(screens)})")
     for s in screens:

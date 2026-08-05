@@ -104,6 +104,15 @@
       var d=f.contentDocument; if(!d) return;
       d.querySelectorAll('.dv-animate, figure.dv').forEach(function(el){
         el.classList.remove('dv-animate'); void el.offsetWidth; el.classList.add('dv-animate'); });
+      // second idiom (ds-029): direct `animation:` + @keyframes, no dv-animate class
+      // to toggle — restart per-element by forcing the animation off then back on.
+      d.querySelectorAll('*').forEach(function(el){
+        var cs = d.defaultView.getComputedStyle(el);
+        if (cs.animationName && cs.animationName !== 'none') {
+          var prev = el.style.animation;
+          el.style.animation = 'none'; void el.offsetWidth; el.style.animation = prev || '';
+        }
+      });
     }catch(e){}
   });
 

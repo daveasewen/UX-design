@@ -99,14 +99,16 @@
   .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 
-  figure.dv{margin:0; position:relative;}   /* relative = the table-popover anchor */
+  figure.dv{margin:0; position:relative; width:100%;}   /* relative = the table-popover anchor; ds-030 amend #103 — fluid container */
   /* HEAD = ONE H-stack (exemplar canon): title + controls same line; flex-wrap = the V-fallback. */
   .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
   .dv-title{margin:0;}
   .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
-  .dv-stage{overflow-x:auto; padding-bottom:4px;}
-  .dv-donut-row{display:flex; gap:28px; align-items:center; flex-wrap:wrap;}
-  .dv-svg{display:block; overflow:visible;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px; width:100%;}
+  /* fluid container, FIXED-diameter plot (ds-030 amend #103): the row is 100% width and centres its
+     content; the svg keeps its baked width/viewBox (no proportional scaling) — only its POSITION moves. */
+  .dv-donut-row{display:flex; gap:28px; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;}
+  .dv-svg{display:block; overflow:visible; flex:none; margin-inline:auto;}
 
   /* segments are FOCUS STOPS (popover reads) — data-series-group ties them to legend filter/
      isolate/highlight; hover keeps the kit's brightness lift as a second hover channel. */

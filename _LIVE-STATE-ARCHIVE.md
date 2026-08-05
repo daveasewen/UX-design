@@ -1,5 +1,14 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-05 #103 (2d) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#100**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **CANDLESTICK RULED ds-027: SOLID TWO-STATE, TABLE = A11Y FALLBACK** · ✅ **SPREAD RENDER-PROVEN, FOUR-STATE REJECTED BY EYE** · ✅ **STOP LINE RESPECTED (wrap-open 143,566) — ENACTMENT → #101**)
+
+- **#100-D1 (Dave, verbatim):** *"variant a, we can just go solid on the blocks, we're using the table as the fallback position for Ally"* — solid bodies both directions, colour = close vs open; retires #96-D1 ①'s hollow-up channel; OHLC table = a11y fallback. Four-state prior-close variant (his own reference) rejected after live spread. Standing: charts fully responsive (dv-fit), ~40-session density. Ledger § ★ #100 · ds-027.
+- **Deliverable:** `reviews/CANDLESTICK-FOURSTATE-2026-08-05-v1.html` (+ generator, seed 103) — proven 1440/760 × light/dark; first dataset rejected (4/40 divergent), retuned + `ASSERT-diverge ≥8` pinned.
+- **Stop line RESPECTED:** check-in at the enactment seam read FILL 143,566 vs 150,929 → wrap opened BEFORE the loop; enactment rolled whole.
+- **→ #101:** candlestick ENACTMENT (solid + 40 + dv-fit wiring + gates + render) · bullet flex-height · Confirmation Replay idiom · corpus fork 125/49 · #97 flag ② · `--pri-hover` residual.
+
+
 ## Rolled 2026-08-05 #102 (2d) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#99**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **OPACITY PRIMITIVES MINTED + STATE-CHANGES-ONLY LICENCE (#99-D1)** · ✅ **REVIEW D1–D4 RULED, 5 SITES MIGRATED, DIAL RETIRED, ALL GATES GREEN** · ⛔ **STOP LINE BLOWN (FILL 201,000) — EYEBALLS + CORPUS FORK → #100**)
 
