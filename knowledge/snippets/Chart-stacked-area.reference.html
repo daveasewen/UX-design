@@ -106,6 +106,8 @@
   .dv-stage{overflow-x:auto; padding-bottom:4px; padding-right:24px;}
   .dv-chart-area{width:580px;}
   .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+  figure.dv-fit-on .dv-chart-area{width:100%;}
+  figure.dv-fit-on .dv-svg{width:100%;}
 
   /* ds-020 FENCE — axis/grid CSS copied verbatim from Chart-line, not re-derived (see file header). */
   .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
@@ -113,7 +115,10 @@
   text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
 
   /* STACKED FILLS — cumulative bands at the ramp's series tokens, flat --stack-fill-alpha dial */
-  .dv-band{fill:var(--sc); fill-opacity:var(--stack-fill-alpha); stroke:none; transition:opacity var(--ease), visibility var(--ease);}
+  /* #96-D3: standing 2px separation rule for adjacent filled blocks — stacked bands share
+     edges, so a 2px page-coloured stroke marks the seam (same idiom as dv-004's donut/pie
+     segment strokes; histogram bars carry the equivalent for wave 2). */
+  .dv-band{fill:var(--sc); fill-opacity:var(--stack-fill-alpha); stroke:var(--page); stroke-width:2; transition:opacity var(--ease), visibility var(--ease);}
   .dv-band-line{fill:none; stroke:var(--sc); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
   /* in-fill letter keys — the stacked-column recipe, data/text/on-series (minted 2026-07-27, reused not re-minted) */
   text.dv-barkey{fill:var(--data-text-on-series);}
@@ -261,17 +266,20 @@
         <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">200</text>
         <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
 
+        <!-- #96-D1 ⑤: data-fx fractions on bands/lines too (fx = (x-46)/522, quarter midpoints
+             0.125/0.375/0.625/0.875) — consumed by dv-behaviour's extended fitOne() (path[data-fxs]
+             + the existing polyline[data-fxs] rule already covers .dv-band-line). -->
         <!-- BAND 1 — Current (bottom band, baseline to L1) -->
-        <path class="dv-band" data-series-group="1" style="--sc:var(--data-series-1)" d="M111.2,230 L111.2,187.9 L241.8,182.6 L372.2,177.2 L502.8,168.6 L502.8,230 Z"/>
+        <path class="dv-band" data-series-group="1" style="--sc:var(--data-series-1)" data-fxs="0.1250 0.1250 0.3750 0.6250 0.8750 0.8750" data-ys="230 187.9 182.6 177.2 168.6 230" d="M111.2,230 L111.2,187.9 L241.8,182.6 L372.2,177.2 L502.8,168.6 L502.8,230 Z"/>
         <!-- BAND 2 — Savings (L1 to L2) -->
-        <path class="dv-band" data-series-group="2" style="--sc:var(--data-series-2)" d="M111.2,112.3 L241.8,102.6 L372.2,90.7 L502.8,73.4 L502.8,168.6 L372.2,177.2 L241.8,182.6 L111.2,187.9 Z"/>
+        <path class="dv-band" data-series-group="2" style="--sc:var(--data-series-2)" data-fxs="0.1250 0.3750 0.6250 0.8750 0.8750 0.6250 0.3750 0.1250" data-ys="112.3 102.6 90.7 73.4 168.6 177.2 182.6 187.9" d="M111.2,112.3 L241.8,102.6 L372.2,90.7 L502.8,73.4 L502.8,168.6 L372.2,177.2 L241.8,182.6 L111.2,187.9 Z"/>
         <!-- BAND 3 — Investments (L2 to L3, top band) -->
-        <path class="dv-band" data-series-group="3" style="--sc:var(--data-series-3)" d="M111.2,78.8 L241.8,64.8 L372.2,48.6 L502.8,24.8 L502.8,73.4 L372.2,90.7 L241.8,102.6 L111.2,112.3 Z"/>
+        <path class="dv-band" data-series-group="3" style="--sc:var(--data-series-3)" data-fxs="0.1250 0.3750 0.6250 0.8750 0.8750 0.6250 0.3750 0.1250" data-ys="78.8 64.8 48.6 24.8 73.4 90.7 102.6 112.3" d="M111.2,78.8 L241.8,64.8 L372.2,48.6 L502.8,24.8 L502.8,73.4 L372.2,90.7 L241.8,102.6 L111.2,112.3 Z"/>
 
         <!-- top-edge strokes per band boundary (dv-line-011: straight segments only) -->
-        <polyline class="dv-band-line" style="--sc:var(--data-series-1)" points="111.2,187.9 241.8,182.6 372.2,177.2 502.8,168.6"/>
-        <polyline class="dv-band-line" style="--sc:var(--data-series-2)" points="111.2,112.3 241.8,102.6 372.2,90.7 502.8,73.4"/>
-        <polyline class="dv-band-line" style="--sc:var(--data-series-3)" points="111.2,78.8 241.8,64.8 372.2,48.6 502.8,24.8"/>
+        <polyline class="dv-band-line" style="--sc:var(--data-series-1)" data-fxs="0.1250 0.3750 0.6250 0.8750" data-ys="187.9 182.6 177.2 168.6" points="111.2,187.9 241.8,182.6 372.2,177.2 502.8,168.6"/>
+        <polyline class="dv-band-line" style="--sc:var(--data-series-2)" data-fxs="0.1250 0.3750 0.6250 0.8750" data-ys="112.3 102.6 90.7 73.4" points="111.2,112.3 241.8,102.6 372.2,90.7 502.8,73.4"/>
+        <polyline class="dv-band-line" style="--sc:var(--data-series-3)" data-fxs="0.1250 0.3750 0.6250 0.8750" data-ys="78.8 64.8 48.6 24.8" points="111.2,78.8 241.8,64.8 372.2,48.6 502.8,24.8"/>
 
         <!-- vertex markers — line exemplar's BACKGROUND mode, tip carries the PER-SERIES value -->
         <g class="dv-marker" tabindex="0" role="img" aria-label="A, Current, Q1: 40" data-tip="A · Current · Q1: 40" data-fx="0.1250"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="111.2" cy="187.9" r="4.2"/></g>
@@ -428,14 +436,15 @@
           el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
         }
       }
-      var pls = svg.querySelectorAll('polyline[data-fxs]');
+      /* #96-D1 ⑤: path[data-fxs] = .dv-band fill — same pairs, emitted M…L…Z. */
+      var pls = svg.querySelectorAll('polyline[data-fxs],path[data-fxs]');
       for (var j = 0; j < pls.length; j++) {
-        var pl = pls[j];
+        var pl = pls[j], isP = pl.tagName === 'path';
         var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
-        var ys  = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/);
         var pts = [];
         for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
-        pl.setAttribute('points', pts.join(' '));
+        pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
       }
     } catch (e) { /* leave the baked SVG intact */ }
   }

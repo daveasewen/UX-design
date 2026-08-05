@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 39,644 real and 82% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 40,599 real and 83% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -18,7 +18,7 @@
 
 ---
 
-> **YOU ARE #96. TITLE THIS CHAT →** `Apollo - #96: render-verify the 8 wave-2 charts + Dave's showroom eyeball + rule the 7 lane flags (ledger § ★ #95)`
+> **YOU ARE #97. TITLE THIS CHAT →** `Apollo - #97: showroom side tree nav (Dave's) + opacity primitives spread + eyeball candlestick/bullet re-cuts (ledger § ★ #96)`
 > *(read it back in your opener — the chat half of the ritual is ungateable, which is why this line is FIRST)*
 
 ---
@@ -37,19 +37,19 @@
 > **★ PRICE IN REAL TOKENS — THE UNIT IS `_gauge_tokens.py`, NOT A PERCENTAGE (#56, Dave's).** **amber 160,000 (PICKED) · working 200,000 (SOURCED) · hard 256,000 (SOURCED).** ⛔ **PROVENANCE CORRECTED AT SOURCE #83 — this line read *"working 200,000 (DAVE'S)"* and had done since #56, TWENTY-FIVE SESSIONS after Dave himself corrected it in code at #58b: *"the 200K and 256K come from established research, its been worked out already."* BOTH are SOURCED; 200,000 was never his to re-dial by fiat, and a header calling it his invites exactly that. AMBER likewise read `DERIVED` until #59 ruled it `PICKED` — 80% of working is a round fraction, and labelling a pick "derived" makes it immune to the rule meant to catch it. ★ `_gauge_tokens.py:63–83` carried both corrections the whole time; the READ CHAIN carried neither, so every cold session since #58b was handed the wrong provenance first.** [[read-chain-is-where-staleness-is-free]] Unit = the FULL price (boot + job + wrap); ⚠ **a DECLARED gap passes, a SILENT one fails** — that asymmetry is the mechanism. ⛔ **CORRECTED AT SOURCE #58 — this line taught the RETIRED `(45, 60, 63)` percentage band as "live in code, price against it", six sessions after #56 replaced it (*"the band was REPLACED, not CONVERTED"*), and the header is IN THE READ CHAIN, so every cold session was being handed the wrong unit first.** ★ **MEASURED, not assumed:** `_capture_gate.py:135–137` still defines `BAND_FLOOR/HARD_STOP/MARKED_MAX = 45/60/63`, `check_preflight` (lines 899–994) still implements the % path, and the selftest at **:2543** still pins the triple — but the live wrap emits **no band line**, because it matches on the stamp form and #57's stamp is in tokens. ⇒ **the % path is DORMANT, not wrong, and it was the PROSE that was stale.** ⬛ **FORKED TO DAVE, not decided here: retire the % path in code, or keep it as a pinned known-gap?** Deleting a pinned ruling of his is not an agent's move. ⚠ **THE FLOOR IS PART-UNKNOWN = `ds-025`** — disk half **RE-MEASURED #83 = 11,032 real** (the #37 figure this clause carried, *17,810 tape / ~14.0 pts*, was in TWO retired units at once — re-measured on the artefact, **never converted**, #54), harness half still unreachable ⇒ **say which half of your fill is measured.** ⛔ **CORRECTED AT SOURCE #80 — this clause read *"the gate SILENTLY ESTIMATES without it, UNDER-reporting by 414 tape"*, which #79-D1 made FALSE, and it sat IN THE READ CHAIN.** ⚠ **`pip install tiktoken --break-system-packages` FIRST in a cold sandbox:** the gauge now **REFUSES, loud and named** (`MeasurementRefused`), the paired gate reports ONE named failure, and `_build_all.py`'s P5 step is **ABORT as of #80** ⇒ without it there is no build. ★ **READ THE CHAIN ONLY.** ★ **Repo-state claims are verified against `git log` / a real run, never a banner** (#29→#38: ten consecutive).
 > ⚠ **Render sandbox is FRESH every session** (~4 calls — price it) · **retrieval FIRST:** `_memento_search.py "<q>"` → `--fetch <id>` (⚠ **it served a two-session-old record until #32 — if an answer looks stale, check the index**) · **wrap moves RUN THROUGH `_gm_move.py`** (⚠ **banner headings are BLOCKQUOTED — anchor `> ## ★ PRIOR …`**) · **PACE PANEL: ask at the opener, no gate can see it** — Dave has declined a fresh one twice and put Fable on the table for judgment work; ✅ **THE "BEHIND PACE ⇒ MORE WINDOWS" CLAUSE IS RETIRED — RULED #60: multi-window is settled, two use cases (quota catch-up AND production crank), Claude offers/Dave vetoes, cap 3 revisable. `notes/_MEMENTO-DECISIONS.md` § ★ #60-D1.** It stood from #48; at #57 he said the opposite — *"we are behind, but I'm less comfortable with multiple windows, too much to decide and consume"* ⇒ **ONE window with more delegation.** ★ **The clause optimised the wrong quantity: it treated TOKENS as the constraint when DAVE'S DECISION LOAD is what binds.** ⚠ **Reflected back #57, and #58's opener did NOT settle it** (asked as the first question; he answered pace with *"no constraint, lets just fix the problems"*). Standing home + status: §C·4.
 > *(**RENAME is delivered IN CHAT at wrap, not here — RULED #28, ENACTED in runbook step 4b by #30.**)*
-> **TITLE THE NEXT CHAT →** `Apollo - #96: render-verify the 8 wave-2 charts + Dave's showroom eyeball + rule the 7 lane flags (ledger § ★ #95)`
+> **TITLE THE NEXT CHAT →** `Apollo - #97: showroom side tree nav (Dave's) + opacity primitives spread + eyeball candlestick/bullet re-cuts (ledger § ★ #96)`
 > ✅ *(the #86 hand-patch that stood here is REMOVED by the #87 wrap, per its own text — #85/#86 are recorded as HOLE lines + ledger stubs, `notes/_GAUGE-LOG.md` / § ★ #85–#86.)*
 > *(Titles are LABELS — role comes from Dave's opener line. Bands: the ONLY copy is
 > `_RUNBOOK-context-gauge.md` § ★ THE FLOOR IS MEASURED — grep it, never recall it.)*
-> ## ★ LATEST — 2026-08-05 (Wed **#95**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **CHART WAVE 2 FIRED AND LANDED: 8 MEMBERS, 3 SONNET LANES, ONE CONDUCTOR RECONCILE** · ⛔ **STOP LINE 150,929 BLOWN BEFORE WRAP-OPEN — FILL 161,622 AT FIRST CHECK-IN** · ⚠ **RENDER-VERIFY + DAVE'S EYEBALL OWED ON ALL 8**)
+> ## ★ LATEST — 2026-08-05 (Wed **#96**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **WAVE 2 PROVEN: ALL 8 RENDER-VERIFIED, DAVE RULED ALL 7 FLAGS + 4 MORE** · ✅ **STOP LINE HELD — WRAP OPENED AT 146,639 < 150,929, CHECK-INS RODE THE LOOPS** · ⚠ **SIDE TREE NAV (DAVE'S NEW JOB) ROLLS TO #97, PRICED NOT SQUEEZED**)
 >
-> **✅ THE WAVE (Dave: "go for it"):** 3 Sonnet lanes fired in-window; receipts REPLAYED against disk before any serial edit (#57). Landed + REGISTERED: butterfly-h · butterfly-v · histogram (①) · boxplot · bullet · candlestick (②) · pie · stacked-area (③). Serials: `component-types.json` +8 `$members` (hooks MEASURED on the artefacts, not copied from receipts) · `MIGRATED_SNIPPETS` +8 · `CATEGORIES` +8 · dtype vocabulary +7, all cartesian, placed in the DV-D02-A partition in the same change (its import-time totality assertion held). Evidence: `notes/_receipts/2026-08-05-wave2-lane{1,2,3}-*.md` · ledger § ★ #95 · `_proforma/_DATAVIZ-DECISIONS.md` § ★ #95.
-> **✅ REPLAY CAUGHT FOUR WORKER GAPS, fixed as conductor serials:** lane-① token manifests + AUTO-MARKUP pairs ABSENT · pie + stacked-area dv-legend marker pairs ABSENT (generator refused, correctly) · lane-② prose-in-token-keys (manifest keys carried receipt prose) · boxplot/candlestick `--data-grid` bound to `data/grid/color` while holding the pre-DV-D07 value = measured DRIFT → **UNBOUND, not conformed** (binding would fill the fenced ds-020 gap; unbinding receipts it).
-> **✅ GATES:** dataviz · snippets · coverage · radius · behaviour · partials · blast-radius (`.seg` radius +Chart-pie, diff reviewed) · no-hardcode ALL GREEN. ⚠ **DECLARED, not fixed: type-composites and a11y were RED AT HEAD TOO** (worktree-verified baseline: 1011 TYPE violations 82/82 files · 8 a11y fails, none in wave files); the wave adds ~45 same-class TYPE-002s reproduced from its exemplars.
-> **⛔ THE STOP LINE WAS BLOWN BEFORE WRAP-OPEN — #87's CLASS, NEW MECHANISM:** serial set + full gate battery ran with NO mid-serial check-in; the FIRST fill read of the session was 161,622 > 150,929. The check-in must ride the serial loop, not follow it. **#96 re-prices from THIS wrap's cost per Dave's #59 high-end rule.**
-> **⬛ OWED → #96:** render-verify all 8 (07-24 precedent; metas honestly `UNPROVEN`) · Dave's showroom eyeball (`_REVIEW-SIGNOFF.md` has the 8 pane paths) · 7 lane flags for Dave's rulings (bullet 580×200 + un-minted range greys · candlestick dv-011 · histogram `.dv-leg-static` · stacked-area `--stack-fill-alpha` + `fitOne()` `.dv-band` gap · pie sweep `data-ri`).
-> **(dossier: SKIPPED, declared — mechanical enactment session; the WHY lives at ledger § ★ #95 + the three receipts.)**
-> **residual (GENERATED #95):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #95) — _roll_state.py · 2026-08-05
+> **✅ RENDER-VERIFY (2 Sonnet lanes, receipts replayed):** all 8 wave-2 panes PROVEN at 1180+760, font + numeric width + fit assertions (receipt `notes/_receipts/2026-08-05-96-render-verify-wave2.md`). ONE real catch: stacked-area's `figure.dv-fit-on` width overrides ABSENT — hook wired to nothing; fixed as a conductor serial matching the six-sibling precedent, re-verified 1084→664px. Metas carry the resolution note; `_REVIEW-SIGNOFF.md` updated; Dave eyeballed the 8 pane cards in-chat.
+> **✅ DAVE RULED ELEVEN THINGS (ledger § ★ #96, reflected back, "all sound good"):** **D1 ①–⑦** the lane flags — bullet 580×200 stands but height FLEXES with rows (H=80+(rows−1)·60) · bullet bands = CANON greys mirrored, nothing minted · candlestick hollow-up/filled-down redundancy · histogram static key stands · `--stack-fill-alpha` interim · fitOne() `.dv-band` NOW · pie sweep ri=0 fallback — plus his rider: **watch chart responsiveness generally**. **D2** mint an OPACITY PRIMITIVES set (he raised it twice — owed as a review spread). **D3** the **2px separation rule** for adjacent blocks = STANDING dataviz canon. **D4** gauge-log **ONE WRITER** (only roll_2f writes session sections; collisions marked exceptions by addition). **D5** behaviour PAGE budget re-dialled **32→34KB** — his pick after D1 ⑥ collided at 32,871 with the addition already shaved twice.
+> **✅ ENACTED SAME SESSION (#96-E2):** D1 ①–⑦ live in the snippets + `canon/dv-behaviour.js` (ONE merged polyline/path loop — no second pass) · partials + showroom regenerated · dataviz · radius · behaviour gates GREEN · every touched file re-render-verified (receipt `notes/_receipts/2026-08-05-96-enact-d1.md`).
+> **⛔ #95's WRAP-END FIGURE IS UNRECOVERABLE** — no late stamp exists in ledger § ★ #95 (probe named at gauge log § #96); § ★ #93-F1's legs stand. **Re-price DECLINED, not skipped** — stop line stood at 150,929 and HELD.
+> **⬛ OWED → #97:** Dave's showroom-index SIDE TREE NAV (categories→components, replaces the button sea — survey before build) · opacity primitives spread (D2) · Dave's eyeball on candlestick hollow/filled + bullet flex-height as rendered · verify the #96 strata roll under the D4 exemption at #97's ritual.
+> **(dossier: WRITTEN → `_DECISION-HISTORY/2026-08-05-the-96-rulings.md` — the flag→ruling→collision arc.)**
+> **residual (GENERATED #96):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OVER (strata 2, log #96) — _roll_state.py · 2026-08-05 *(the 2 counts #95, D4-exempt at the gate — raw count kept honest here)*
 
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (19 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES · `0d` ✅ THE #67 ENACT WAVE · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` ✅ PER-GATE TEST PLAN · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59 · `16` UNHOMED PAIR, copied up at the #78 2c EXIT…
@@ -57,12 +57,12 @@
 
 ---
 
-## ⏱ LATEST DELTA — 2026-08-05 (Wed **#95**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **WAVE 2 LANDED: 8 MEMBERS REGISTERED, GATES GREEN** · ⛔ **STOP LINE BLOWN PRE-WRAP: 161,622 FIRST READ** · ⚠ **RENDER-VERIFY + EYEBALL OWED**)
+## ⏱ LATEST DELTA — 2026-08-05 (Wed **#96**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **ALL 8 PROVEN + 11 RULINGS ENACTED** · ✅ **STOP LINE HELD (wrap-open 146,639)** · ⚠ **SIDE TREE NAV → #97**)
 
-- **8 wave-2 members landed + registered** (3 Sonnet lanes, receipts replayed before serials): butterfly-h/v · histogram · boxplot · bullet · candlestick · pie · stacked-area. Registry +8, radius ratchet +8, showroom +8, dtype vocab +7 cartesian. Ledger § ★ #95.
-- **Four worker gaps caught at conductor replay** — lane-① manifests/AUTO-MARKUP absent · dv-legend marker pairs absent (pie, stacked-area) · lane-② manifest prose keys · `--data-grid` DRIFT unbound (ds-020 receipted, not filled).
-- **Gate battery green**; type-composites + a11y red are HEAD baseline (worktree-verified), declared not fixed.
-- **Stop line 150,929 blown before wrap-open (161,622)** — no mid-serial check-in; #96 re-prices from this wrap (#59 high-end rule). OWED: render-verify ×8 + Dave eyeball + 7 flags.
+- **All 8 wave-2 panes render-verified PROVEN** (2 Sonnet lanes; stacked-area's missing `dv-fit-on` overrides caught + fixed). Receipts `2026-08-05-96-render-verify-wave2.md` / `-enact-d1.md`.
+- **Dave ruled 11:** 7 lane flags (bullet flex-height · canon greys · candlestick hollow/filled · 2px rule standing canon · fitOne .dv-band now · pie ri=0) + opacity primitives owed + gauge-log ONE WRITER + behaviour budget 32→34KB (his re-dial). Ledger § ★ #96.
+- **All enacted same session** — snippets + dv-behaviour, partials/showroom regen, gates GREEN.
+- **Stop line 150,929 stood (re-price declined — #95 wrap-end unrecoverable, § #93-F1) and HELD.** Side tree nav (Dave's) rolls to #97.
 
 
 ---
@@ -104,7 +104,7 @@
 
 ---
 
-*(Chain ends. **10,049 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **9,976 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 39,644 real and stays whole for retrieval; you have paid for
+`GOOD-MORNING.md` is 40,599 real and stays whole for retrieval; you have paid for
 25% of it, and that is the intended figure, not a shortfall.)*

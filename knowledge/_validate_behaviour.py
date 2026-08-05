@@ -34,7 +34,10 @@ MAX_BYTES = 16 * 1024
 # into a second source (dv-legend.js). Dave's ruling on the cap fork was "split AND re-scope the
 # gate", precisely so the 16KB stayed a PAGE constraint instead of silently becoming a per-file
 # one that any future split could route around. Per-source cap = legibility; page sum = weight.
-PAGE_BYTES = 32 * 1024
+PAGE_BYTES = 34 * 1024  # ⚠ RE-DIALLED 32→34KB by DAVE, #96 2026-08-05: the 32KB cap predates the
+# 8 wave-2 members; his "extend fitOne() now" (#96-D1 ⑥) collided with it at 32,871 after the
+# addition was shaved twice. His pick from three options (re-dial / marked waiver / park), receipted
+# notes/_MEMENTO-DECISIONS.md § ★ #96. The PAGE-not-per-file scope is UNCHANGED (his 07-26 ruling).
 
 BANNED = [
     (re.compile(r'\bsetInterval\s*\('), "setInterval (polling)"),

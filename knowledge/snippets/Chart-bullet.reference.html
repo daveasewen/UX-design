@@ -22,16 +22,27 @@
   CSS. This snippet's axis ticks use the PRE-DV-D07 ink-at-alpha idiom, not the minted two-channel roles.
   Declared gap, not filled here.
 
+  #96-D1 ②: CANVAS HEIGHT FORMULA (RULED — canvas must FLEX with row count, not a fixed 200).
+  Row pitch = 60px is the CONSTANT (row band: range rect 32 tall starting 8px below the row's top,
+  target tick spans row-top−8 → row-top+40). Row i's top = 18 + i·60 (i = 0-based).
+  H = 80 + (rowCount−1)·60   — derived: axisTop(10) + rowCount·60 + bottom-margin(22), simplified.
+  n=3 (this file's reference): H = 80+120 = 200 (unchanged, proves the formula against the shipped
+  demo). n=1: H=80 (a single row keeps the SAME 60px band/appearance, just no extra rows below it —
+  "single-row appearance identical" per #96-D1). n=10: H=80+540=620. viewBox/svg height/data-h and
+  .dv-empty-frame height must all move together when an instance bakes a different row count; width
+  stays 580 always. This is a BAKED-geometry contract (DV-D02) — the derivation happens at
+  authoring/bake time, not at runtime (no JS row-count scale-physics, DEF-003).
+
   WHAT'S NEWLY JUDGED for bullet (receipted for Dave's eyeball):
   · MEASURE = the primary bar, data/series/1 fill, per the brief ("measure = series-1").
   · COMPARATIVE MARKER (target) = a vertical ink tick spanning the full row height, per the brief
     ("marker = ink") — the conventional bullet-chart target indicator.
   · QUALITATIVE RANGES (poor/satisfactory/good bands behind the measure) = NEUTRAL SURFACE TINTS.
-    ⚠ GREY-TINT CHECK (feedback-grey-tint-check): these are NEW greys, not yet in the token store —
-    surfaced to Dave via the receipt, NOT auto-picked as a token. Rendered here as three steps of
-    `color-mix(in srgb, var(--ink) N%, var(--page))` (8/16/24%) so the demo is legible and stays
-    THEME-DERIVED (never a hardcoded hex) while the real token decision is pending. RECEIPTED, not
-    minted — do not treat these as a shipped token.
+    #96-D1 ③ RULED: the retired color-mix(ink,page) 8/16/24% approximation is replaced by CANON
+    greys — literal values mirroring canon.css's already-minted --color-grey-200/300/400 (light)
+    and --color-grey-dark-mode-500/400/300 (dark), MINTED NOTHING new. Z-order (bands behind bar
+    behind marker) confirmed correct — SVG paint order already follows the range→measure→target
+    DOM sequence.
   · Table mirrors measure / target / range values per row.
 
   RULES honoured: dv-017 var() fills only (ranges are the one declared exception, see grey-tint note
@@ -51,6 +62,11 @@
     --data-control-label-disabled:#9D9D9D; --data-control-swatch-off:currentColor;
     --shadow:#00000033; --pop-border:#FFFFFF00;
     --border-radius-control:0; --border-radius-surface:0;
+    /* #96-D1 ③: CANON greys, minted nothing — literal values MIRROR canon.css's already-minted
+       --color-grey-200/300/400 (#EDEDED/#D7D8D6/#B7B7B7), same convention as this file's own
+       --data-series-1 etc: this snippet doesn't link canon.css, so the value is copied verbatim,
+       not re-derived. Nearest steps to the retired color-mix(ink,page) 8/16/24% approximation. */
+    --dv-range-1:#EDEDED; --dv-range-2:#D7D8D6; --dv-range-3:#B7B7B7;
   }
   [data-theme="dark"]{
     --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
@@ -60,6 +76,10 @@
     --data-control-label-disabled:#808080; --data-control-swatch-off:currentColor;
     --shadow:#000000D9; --pop-border:#808080;
     --border-radius-control:0; --border-radius-surface:0;
+    /* #96-D1 ③: CANON greys, minted nothing — literal values MIRROR canon.css's already-minted
+       --color-grey-dark-mode-500/400/300 (#212121/#404040/#474747), copied verbatim per this
+       file's own convention (no canon.css link). */
+    --dv-range-1:#212121; --dv-range-2:#404040; --dv-range-3:#474747;
   }
   [data-contrast="high"]{ --data-series-1:var(--data-series-1-hc); }
   *{box-sizing:border-box;}
@@ -86,9 +106,12 @@
   text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
   line.dv-axis{stroke:var(--baseline); stroke-width:1;}
 
-  .dv-range-1{fill:color-mix(in srgb, var(--ink) 8%, var(--page));}
-  .dv-range-2{fill:color-mix(in srgb, var(--ink) 16%, var(--page));}
-  .dv-range-3{fill:color-mix(in srgb, var(--ink) 24%, var(--page));}
+  /* #96-D1 ③: CANON greys (not un-minted color-mix), z-order bands→bar→marker is DOM paint order
+     (SVG has no z-index) — range rects precede the measure rect precede the target line in the
+     markup below, already correct; unchanged here. */
+  .dv-range-1{fill:var(--dv-range-1);}
+  .dv-range-2{fill:var(--dv-range-2);}
+  .dv-range-3{fill:var(--dv-range-3);}
   .dv-measure{fill:var(--data-series-1); transition:filter var(--ease);}
   .dv-measure:hover{filter:brightness(1.12);}
   [data-theme="dark"] .dv-measure:hover{filter:brightness(1.22);}
@@ -183,6 +206,7 @@
     <div class="dv-stage"><div class="dv-chart-area">
       <svg class="dv-svg dv-fit" data-pl="120" data-pr="12" data-h="200" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 200" role="group" aria-label="Three KPI rows against target. Revenue: measure 82 of 100, target 75. Satisfaction: measure 58 of 100, target 70. Retention: measure 91 of 100, target 85.">
         <!-- plot 120→568 (width 448), domain 0–100. Ranges: poor 0–40 (w179.2) · satisfactory 40–60 (w89.6) · good 60–100 (w179.2) -->
+        <!-- CANVAS HEIGHT FORMULA (#96-D1 ②): H = 80 + (rowCount-1)*60, pitch=60px constant. 3 rows here: H=200. -->
         <!-- Row 1: Revenue — measure 82 (w367.36), target 75 (x=456) -->
         <g class="dv-row" style="animation-delay:0ms">
           <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="112" y="34" text-anchor="end">Revenue</text>
@@ -248,7 +272,7 @@
     ],
     "icons": {},
     "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-controls", "aria-expanded", "role=\"region\""],
-    "$note": "NET-NEW EXEMPLAR (chart-expansion programme, wave 2 lane ②, 2026-08-05). Measure = data/series/1 (brief-ruled). Target marker = ink (brief-ruled), a 3px vertical tick spanning the row. Qualitative ranges = NEUTRAL SURFACE TINTS, computed as color-mix(ink, page) at 8/16/24% — NOT a minted token, GREY-TINT CHECK surfaced to Dave via receipt, not auto-picked. ds-020 FENCE: axis idiom pre-DV-D07, declared gap. AUTO-BEHAVIOUR markers present but empty (dataviz $members registration is a conductor serial)."
+    "$note": "NET-NEW EXEMPLAR (chart-expansion programme, wave 2 lane ②, 2026-08-05). Measure = data/series/1 (brief-ruled). Target marker = ink (brief-ruled), a 3px vertical tick spanning the row. Qualitative ranges: #96-D1 ③ RULED — CANON greys (--dv-range-1/2/3 literal values mirror canon.css --color-grey-200/300/400 light, --color-grey-dark-mode-500/400/300 dark; minted nothing, retired the color-mix approximation). Canvas height: #96-D1 ② RULED — H = 80 + (rowCount-1)*60, pitch=60 constant, not a fixed 200 (this file's 3 rows = 200, unchanged). ds-020 FENCE: axis idiom pre-DV-D07, declared gap. AUTO-BEHAVIOUR markers present but empty (dataviz $members registration is a conductor serial)."
   }
   </script>
   <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
@@ -311,14 +335,15 @@
           el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
         }
       }
-      var pls = svg.querySelectorAll('polyline[data-fxs]');
+      /* #96-D1 ⑤: path[data-fxs] = .dv-band fill — same pairs, emitted M…L…Z. */
+      var pls = svg.querySelectorAll('polyline[data-fxs],path[data-fxs]');
       for (var j = 0; j < pls.length; j++) {
-        var pl = pls[j];
+        var pl = pls[j], isP = pl.tagName === 'path';
         var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
-        var ys  = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/);
         var pts = [];
         for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
-        pl.setAttribute('points', pts.join(' '));
+        pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
       }
     } catch (e) { /* leave the baked SVG intact */ }
   }

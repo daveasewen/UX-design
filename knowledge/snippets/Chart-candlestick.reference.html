@@ -27,7 +27,9 @@
     consumed here, not re-derived.
   · WICK = ink at REDUCED WEIGHT (opacity .6, per the brief: "wicks = ink at reduced weight"), 1px line
     from high to low.
-  · BODY = a rect from open to close, filled gain/loss, HOLLOW-outline-free (flat fill, dv-009).
+  · BODY = a rect from open to close. #96-D1 ① (Dave): non-colour redundancy — hollow-up (page fill,
+    gain-token stroke) vs filled-down (loss token), shape carries direction alongside colour.
+    (Supersedes the landed flat-fill form; dv-009 flat-fill note retired by this ruling.)
   · Table mirrors OHLC columns (Open/High/Low/Close) per period.
 
   RULES honoured: dv-017 var() fills only · dv-016 ≥3:1 series + axis both modes (declared, not yet
@@ -81,8 +83,11 @@
   text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
 
   .dv-wick{stroke:var(--ink); stroke-opacity:.6; stroke-width:1;}
-  .dv-body.dv-up{fill:var(--data-delta-gain);}
-  .dv-body.dv-down{fill:var(--data-delta-loss);}
+  /* dv0-96-D1 ①: non-colour redundancy channel — hollow-up (page fill, stroked in the gain token)
+     vs filled-down (loss token fill+stroke). Same data/delta/gain|loss tokens, shape carries the
+     signal for colour-blind/greyscale reading. */
+  .dv-body.dv-up{fill:var(--page); stroke:var(--data-delta-gain); stroke-width:1.5;}
+  .dv-body.dv-down{fill:var(--data-delta-loss); stroke:var(--data-delta-loss); stroke-width:1.5;}
   .dv-body[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 
   @media (prefers-reduced-motion:no-preference){
@@ -301,14 +306,15 @@
           el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
         }
       }
-      var pls = svg.querySelectorAll('polyline[data-fxs]');
+      /* #96-D1 ⑤: path[data-fxs] = .dv-band fill — same pairs, emitted M…L…Z. */
+      var pls = svg.querySelectorAll('polyline[data-fxs],path[data-fxs]');
       for (var j = 0; j < pls.length; j++) {
-        var pl = pls[j];
+        var pl = pls[j], isP = pl.tagName === 'path';
         var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
-        var ys  = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/);
         var pts = [];
         for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
-        pl.setAttribute('points', pts.join(' '));
+        pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
       }
     } catch (e) { /* leave the baked SVG intact */ }
   }

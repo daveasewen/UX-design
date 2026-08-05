@@ -6,7 +6,7 @@
     { "name": "rows", "type": "array", "$note": "One row per KPI: measure, target, and three qualitative range breakpoints." },
     { "name": "measure", "type": "number", "$note": "The primary bar — fill = data/series/1 (brief-ruled)." },
     { "name": "target", "type": "number", "$note": "Comparative marker — a 3px vertical ink tick spanning the row (brief-ruled: 'marker = ink')." },
-    { "name": "ranges", "type": "array", "$note": "Qualitative bands (poor/satisfactory/good) BEHIND the measure — NEUTRAL SURFACE TINTS, receipted, not a minted token (grey-tint check)." },
+    { "name": "ranges", "type": "array", "$note": "Qualitative bands (poor/satisfactory/good) BEHIND the measure — CANON greys (#96-D1 ③ RULED), z-order bands→bar→marker confirmed correct (DOM paint order)." },
     { "name": "data", "type": "table", "$note": "Real <table class=\"dv-table\"> mirroring measure/target/range values per row (dv-005)." },
     { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state = the Empty-state pattern by reference." }
   ],
@@ -17,7 +17,7 @@
     "font-family": "type composites via markup class — labels/values .t-cm-chart-label/-value · table .t-cm-legal",
     "series": "data/series/1 — measure fill (brief-ruled: 'measure = series-1')",
     "target": "ink (text/default) — brief-ruled: 'marker = ink'",
-    "ranges": "⚠ GREY-TINT CHECK — NOT a minted token. Rendered as color-mix(in srgb, var(--ink) 8/16/24%, var(--page)) so the demo stays THEME-DERIVED and never a hardcoded hex, but this is a WORKER-COMPUTED tint surfaced for Dave's eye, not a shipped range-band token. Receipted, do not treat as canon.",
+    "ranges": "#96-D1 ③ RULED — CANON greys, minted nothing: --dv-range-1/2/3 literal values mirror canon.css's already-minted --color-grey-200/300/400 (light) and --color-grey-dark-mode-500/400/300 (dark); this snippet doesn't link canon.css so the values are copied verbatim, same convention as --data-series-1 etc. Replaces the retired color-mix(ink,page) approximation.",
     "axis": "⛔ ds-020 RECEIPTED GAP — pre-DV-D07 ink-at-alpha idiom, not the minted two-channel roles. Copied the mark contract + toolbar per the DIVVY brief, deliberately NOT the axis/grid CSS.",
     "surface": "background/default (data-surface=\"page\")",
     "$survey": "Net-new for wave 2. Grounds its vocabulary in Chart-bar (toolbar, series-1 measure fill) and Chart-scatter (table spine)."
@@ -29,7 +29,7 @@
     "tokens": []
   },
   "responsive": {
-    "rule": "DV-D02: compress width, never scale — text must not scale. Static answer: fixed 580×200 + horizontal scroll. FIT hooks NOT wired — AUTO-BEHAVIOUR markers present but empty (conductor serial); see receipt.",
+    "rule": "DV-D02: compress width, never scale — text must not scale. Static answer: fixed 580×H + horizontal scroll, width always 580. #96-D1 ② RULED: H = 80 + (rowCount-1)*60 (pitch=60 constant, BAKED not JS-derived) — this reference's 3 rows = H 200 (unchanged, formula-verified); a 1-row instance = H 80 with the row band visually identical to any row here. FIT hooks NOT wired — AUTO-BEHAVIOUR markers present but empty (conductor serial); see receipt.",
     "tokens": []
   },
   "relationships": {

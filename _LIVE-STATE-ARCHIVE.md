@@ -1,4 +1,9 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#93**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **STOP LINE RE-PRICED: 155,789 REAL (DAVE, #93-D1)** · ⛔ **n=3 COULD NOT BE MINTED FROM THE RECORD — PROSPECTIVELY ONLY, NOW ON THREE LEGS** · ⚠ **THE STRATA HOME'S 24,579 WAS THE EARLY STAMP — CORRECTED BY ADDITION**)
+
+- **Stop line 155,789 real = 200,000 − 44,211** — high end observed, per Dave's #59 rule; the distribution ruled NON-STATIONARY (both measured points are pre-rehearsal-regime; #92's `--rehearse` removed the binding term #91-F5 named). The ±10,000 margin DECLINED. Standing until #93's own wrap point is read at #94.
+- **The chain's title died twice before the job started** — the rehearsal log holds no costs, and #92's wrap end is unrecoverable (sandbox · transcript reader text-only · host dir out of bounds) ⇒ three legs under "prospectively only"; #92's "recoverable next session" claim REFUTED, corrected by addition.
+- **Gauge-log § #91 corrected by addition (#93-D2)** — 24,579 was the early stamp; 44,211 (ledger #91-F5) is the wrap's quoted cost everywhere else.
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#92**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **THE WRAP GATE REHEARSES MID-WINDOW NOW** · ★ **FIRST LIVE CATCH IN ITS FIRST SESSION** · ⛔ **THE TITLED LANE WAS REFUTED BY #91-F5; DAVE RE-AIMED IT AT THE LOOP**)
 
 - **The chain's title ordered the runbook cut; ledger #91-F5 had already refuted it** — #91's wrap cost 44,211 real with ZERO runbook read; the binding term is the gate-failure remediation loop. Reconciled at the opener; **Dave ruled: attack the loop (#92-D1).**

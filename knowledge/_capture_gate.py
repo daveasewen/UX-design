@@ -213,7 +213,10 @@ STRATA_MAX_BLOCKS = 1
 # fail loud and come back to me." Do NOT add a fourth key here to silence a future FAIL —
 # check_budgets() below carries a dedicated fail-loud check that cross-references
 # notes/_GAUGE-LOG.md for exactly this condition rather than absorbing it quietly.
-STRATA_EXEMPT = {40, 41, 42}   # int form — matches _key_session()'s return type, read below
+STRATA_EXEMPT = {40, 41, 42, 95, 96}   # int form — matches _key_session()'s return type, read below
+# ⚠ 95/96 added on DAVE'S #96-D4 ruling (ONE WRITER: only roll_2f writes gauge-log sections;
+# pre-existing collisions are marked exceptions by addition, not merged). The #58 list of three
+# was CLOSED; extending it took his word — notes/_MEMENTO-DECISIONS.md § ★ #96-D4.
 # ds-022 (#34). ⚠ ONE SHAPE, DECLARED ONCE — `_gm_move.py` imports these rather than writing its
 # own copy. Two parsers for one line format is the drift class, and #32 was caused by exactly
 # that: a `#### ` heading one reader accepted and another refused.

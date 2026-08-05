@@ -85,7 +85,10 @@
 
   /* ds-020: no .dv-grid / text.dv-axis / text.dv-label rules here — see header note. */
 
-  rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+  /* #96-D3: standing 2px separation rule for adjacent filled blocks — histogram bars are
+     edge-to-edge (unlike bar's gapped columns), so a 2px page-coloured stroke stands in for
+     the gap (same idiom as dv-004's donut/pie segment strokes). */
+  rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease); stroke:var(--page); stroke-width:2;}
   rect.dv-series:hover{filter:brightness(1.12);}
   [data-theme="dark"] rect.dv-series:hover{filter:brightness(1.22);}
   .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
@@ -323,14 +326,15 @@
           el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
         }
       }
-      var pls = svg.querySelectorAll('polyline[data-fxs]');
+      /* #96-D1 ⑤: path[data-fxs] = .dv-band fill — same pairs, emitted M…L…Z. */
+      var pls = svg.querySelectorAll('polyline[data-fxs],path[data-fxs]');
       for (var j = 0; j < pls.length; j++) {
-        var pl = pls[j];
+        var pl = pls[j], isP = pl.tagName === 'path';
         var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
-        var ys  = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/);
         var pts = [];
         for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
-        pl.setAttribute('points', pts.join(' '));
+        pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
       }
     } catch (e) { /* leave the baked SVG intact */ }
   }

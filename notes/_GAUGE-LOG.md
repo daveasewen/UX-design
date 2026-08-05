@@ -897,3 +897,9 @@ HOLE #88 — 2026-08-02. ⛔ NOT CAPTURED — UNMEASURED. Session #88 committed 
 - **boot #95 = 65,657 real** (`message.usage` first turn; n=6: 61,854 · 64,708 · 65,636 · 65,822 · 65,539-implied · 65,657).
 - **Wrap-end figure: stamps LATE at #96** (prospective-only, three legs, § ★ #93-F1). #96 re-prices the stop line from this wrap's measured cost per Dave's #59 high-end rule.
 - Worker lanes (Sonnet, out-of-window budgets, reported by the Agent tool): lane ① 131,802 · lane ② 158,948 · lane ③ 154,629 subagent tokens — NOT fill, not summed with it (separate windows, reported for the delegation ledger).
+
+#### 2026-08-05 #96 (opener notes — ⚠ key collides with roll_2f if a GM #96 stratum also lands at wrap; convention goes to Dave as flag #8 this session)
+
+- **Stop line STANDS at 150,929 — re-price DECLINED, not skipped.** #95's stratum ordered "#96 re-prices from THIS wrap's measured cost", but the premise is dead: no latest-possible end stamp exists in ledger § ★ #95 (probe: grep "stamp|fill|real|wrap" over the § ★ #95 block — zero stamp lines), and § ★ #93-F1's two legs (transcript reader returns no `message.usage`; host session dir outside mounts) make the figure unrecoverable retrospectively. Wrap-cost n stays 3 (42,434 · 44,211 · 49,071); #59 high end stays 49,071. Prospective fix this session: check-ins RIDE the render-verify lane loop (#95-F2's mechanism).
+- **boot #96 = 65,769 real** (`message.usage` first turn; n=7: 61,854 · 64,708 · 65,636 · 65,822 · 65,539-implied · 65,657 · 65,769).
+- **Rehearsal at opener: 2 STRUCTURAL fails, both actioned** — (1) GM pre-flight legal-form: #96 token stamp written + #95's converted to the #73 refusal form, text kept by addition; (2) #95 strata dup-key vs roll_2f = NEW unrollable block, STRATA_EXEMPT is Dave's closed list of three ⇒ **flag #8 for Dave this session**.

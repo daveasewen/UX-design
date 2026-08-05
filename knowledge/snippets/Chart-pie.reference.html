@@ -24,6 +24,8 @@
   RADIAL SWEEP ENTRY RETURNS (ADR-0015/DEF-003 — data-driven geometry is legal JS): segments carry
   the sweep contract (data-cx/-cy/-ro/-a1/-a2 — NO data-ri, the pie has no inner radius) and
   annotations carry data-seq; the sweep hook itself is dv-behaviour source = CONDUCTOR'S SERIAL.
+  #96-D1 ⑦ RULED: the sweep hook reads data-ri with a PRESENCE CHECK, falling back to ri=0 when
+  absent (as here) — ONE code path shared with the donut, no pie-specific branch.
   Baked state = full wedges + .show annotations, so JS-off/reduced-motion/pre-hook all render complete.
 
   dv-pie-009 (≤6 SEGMENTS): enforced here — 5 segments in the reference data, same ceiling as the
@@ -449,14 +451,15 @@
           el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
         }
       }
-      var pls = svg.querySelectorAll('polyline[data-fxs]');
+      /* #96-D1 ⑤: path[data-fxs] = .dv-band fill — same pairs, emitted M…L…Z. */
+      var pls = svg.querySelectorAll('polyline[data-fxs],path[data-fxs]');
       for (var j = 0; j < pls.length; j++) {
-        var pl = pls[j];
+        var pl = pls[j], isP = pl.tagName === 'path';
         var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
-        var ys  = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/);
         var pts = [];
         for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
-        pl.setAttribute('points', pts.join(' '));
+        pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
       }
     } catch (e) { /* leave the baked SVG intact */ }
   }

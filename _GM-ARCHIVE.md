@@ -1,5 +1,15 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-08-05 #96 — rolled by session #96 (2c: keep ★ LATEST + ★ PRIOR)
+> ## ★ PRIOR — 2026-08-05 (Wed **#94**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **STOP LINE ENACTED AT n=3: 150,929 REAL (#93-D1's OWN CLAUSE, #59 HIGH END)** · ✅ **THE `CHAIN_STAMP_RE` HOLE IS CLOSED — AND ITS FIRST LIVE CATCH WAS THIS FILE'S OWN STAMP QUOTING THE ESCAPE** · ⚠ **CHART WAVE 2 PRICED OUT OF THE WINDOW: BRIEFS CUT, NOT FIRED**)
+>
+> **✅ STOP LINE 150,929 real = 200,000 − 49,071 — an ENACTMENT, not a new ruling:** #93-D1 stood *"until the first new-regime wrap measurement is read"*; #94 read it (§ ★ #93 late stamp) and re-priced per Dave's #59 high-end rule, per § #93's own *"#94 MUST re-price"* order. n=3: 42,434 · 44,211 · 49,071, one truncation class. Evidence: `notes/_MEMENTO-DECISIONS.md` § ★ #94-E1 · 2026-08-05.
+> **✅ `CHAIN_STAMP_RE` WIDENED (`knowledge/_capture_gate.py`) — the #90 escape's TWO defects closed:** unit vocabulary stopped at RETIRED spellings (`tape|tk`; live unit `real` since #82-D1) and only `K`-shapes matched. Old regex RE-ENACTED on the escape before widening (no match — the delta asserted); escape now VERBATIM in the selftest + K×real cell + a NEGATIVE control pinning the unit-less non-match (open 23's cost, not annexed). Suite green. ★ **First live catch, same session:** the rehearsal flagged THIS file's `size:` stamp — its #90 prose quoted the escape verbatim; defused to a POINTER (homes: gauge log § #90 · the selftest), stale *"NOT fixed here"* corrected at source. Evidence: ledger § ★ #94-F1 · rehearsal log 2026-08-05.
+> **✅ §C·1(a) CORRECTED: lane-3's "promote grouped/stacked bars (D-Q3)" was STALE** — D-Q3 LANDED 07-24 (`Chart-bar.reference.html:39`; receipt items 4–5). Queue vs canon ⇒ queue is the defect; struck at source below. Wave-2 lane 3 = pie + stacked-area, TWO items. Evidence: ledger § ★ #94-F2.
+> **⚠ DAVE PICKED STRAND (a); THE WAVE WAS PRICED OUT, NOT PREFERRED OUT:** FILL 121,848 (floor) at decision vs the 150,929 stop line — 3 lanes + replays + serial set does not fit (#87's lesson applied BEFORE the spend). Delivered: DIVVY + 3 worker briefs as files (`notes/_briefs/2026-08-05-chart-wave2-DIVVY.md` + `-lane1/2/3-*.md`) — fireable at #95 or as parallel windows (#60-D1, cap 3, Dave vetoes). **Model this session: Fable 5 (effort not set).**
+> **(dossier: SKIPPED, declared — the session's WHY is compact and already inscribed at source: ledger § ★ #94 + the gate's own comment block carry the full reasoning; a dossier would restate them.)**
+
+
 ## Batch 2026-08-05 #95 — rolled by session #95 (2c: keep ★ LATEST + ★ PRIOR live; older banners land here verbatim, newest-first)
 
 > **section-usage #94 (observed, self-report):** GM HDR:C LATEST:C PRIOR:U DOFIRST:U A:U C1:U C2:U C4:U STRATA:U · LS HDR:U LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U — consumed via `_CHAIN.md` only.
