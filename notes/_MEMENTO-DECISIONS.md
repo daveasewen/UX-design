@@ -3538,3 +3538,39 @@ one suggested.** [[a-planning-estimate-is-not-a-measurement]] [[check-after-its-
 ⬛ **TO #92: the cut is in the REMEDIATION LOOP, not only the manual — measure fails-at-wrap-open
 across sessions before trimming anything.** F3 stands as a true static price; it is NOT the
 binding term, and this file says so beside it rather than letting the tidier story stand.
+
+
+## ★ #92 — THE REHEARSAL: THE WRAP GATE RUN WHERE FIXES ARE CHEAP (2026-08-05)
+
+**#92-D1 — Dave ruled the lane at the opener.** The chain's title ordered the runbook cut; #91-F5
+(above) had refuted that premise before this session booted — the reconciliation was surfaced with
+the receipt (`#91-F5`, this file) and Dave picked **attack the remediation loop**. The title's cut
+is NOT executed and NOT abandoned: F3 stands as a true static price awaiting its own case.
+
+**#92-F1 — BUILT + CONSUMED THE SAME HOUR: `--rehearse`.** `_capture_gate.py --rehearse` is
+`run(mode="wrap")` itself — same seam, never a copy that drifts [[check-after-its-own-remedy]] —
+splitting fails into heals-at-wrap (ONLY the two date stamps ritual steps 1/2 mechanically
+rewrite, matched against the gate's own quoted fail strings, filename-scoped
+[[gate-must-quote-what-it-forbids]]) vs STRUCTURAL, fix-now. Terse: the sandbox reads, the window
+pays 1–2 lines. Consumer: `_checkin.py` runs it on every check-in (`--no-rehearse` opts out)
+[[instrument-without-a-consumer]]. Mutation-tested: out-of-scope-filename arm (a date fail on any
+OTHER file stays STRUCTURAL) + empty-input control + integration (rc · JSONL arithmetic · both
+`kind`s · no report file), wired into `_selftest_body` at write time.
+
+**#92-F2 — the instrument #91-F5 ordered: `notes/_REHEARSAL-LOG.jsonl`.** Every rehearse AND
+every real wrap-mode run appends {date, kind, fails, structural, heals_at_wrap, warns,
+structural_names} ⇒ fails-at-wrap-open builds across sessions and repeated wrap-mode lines in one
+session COUNT the remediation rounds. Deliberately NOT the gauge log — a session hand-writing its
+own post-mortem there jams `roll_2f` (#91's double-entry fail, worklist item 11's deadlock).
+
+**#92-F3 — first live catch in its first session.** A runbook edit staled the retrieval index;
+the rehearsal flagged it STRUCTURAL at check-in price, fixed in one command — the fail class #91
+paid for at peak fill. Wrap-open this session: **0 structural fails**, first wrap ever opened
+against a pre-cleared gate; the log line is the receipt.
+
+**#92-F4 — stale prose struck at source.** `_RUNBOOK-context-gauge.md` § Half 2 taught *"boot
+half printed as UNMEASURED (ds-025 item 1)"* — FALSE since #91-D1, sitting in the entry-point doc
+of the very tool that measures boot. Struck with the strike marked; rehearsal pointer added in
+the same region. [[read-chain-is-where-staleness-is-free]]
+
+status: built + mutation-tested + consumed at birth · log accrues from this wrap · 2026-08-05

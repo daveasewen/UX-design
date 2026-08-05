@@ -634,8 +634,19 @@ BUDGET for the full argument and the current numbers (160,000 / 200,000 / 256,00
 
 It reads the live session `.jsonl` from the mount directly — never loading the transcript into the
 window — and reports the conversation-half as a **`real` MEASURED headline** (`gauge.count()`, ONE
-call on the whole concatenated blob), with the boot half printed as UNMEASURED (`ds-025` item 1),
-never defaulted. Its number is **THROUGHPUT, not resident fill** — say so when quoting it. No
+call on the whole concatenated blob). *(The clause here that read "boot half printed as UNMEASURED
+(`ds-025` item 1)" went FALSE at #91 and is struck at source: the FILL block is ENACTED —
+`message.usage` gives FILL + boot + peak MEASURED, and Dave RULED ds-025 item 1 = the TOTAL,
+CLOSED. Boot's DECOMPOSITION stays dark — the smaller, separate claim.)* The headline is
+**THROUGHPUT, not resident fill**; the FILL block below it is the number a stop line compares to —
+say which you are quoting (#91-F2: they diverged 27% at one instant).
+
+**Since #92 the check-in also runs the WRAP-GATE REHEARSAL** — `run(rehearse=True)`, the same
+checks as `--wrap`, terse output, one line appended to `notes/_REHEARSAL-LOG.jsonl` per run.
+STRUCTURAL fails are printed in full: **fix them at the check-in, where a fix is a cheap edit** —
+the same fail found at wrap costs a probe→fix→re-gate round at peak fill, which #91-F5 measured
+as the wrap's binding term (44,211 real with zero runbook read). Standalone:
+`python3 knowledge/_capture_gate.py --rehearse` · opt out: `--no-rehearse`. No
 subagent, no `read_transcript`, no copy-ready prompt.
 
 ⚠ **`tape` STILL APPEARS IN THIS TOOL'S OUTPUT AND IS NOT THE RETIRED ds-021 DUALITY** (★ RETIRED

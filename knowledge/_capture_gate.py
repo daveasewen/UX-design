@@ -49,6 +49,7 @@ import datetime
 import glob
 import hashlib
 import importlib
+import json                             # #92: the rehearsal log is JSONL, machine lines only
 import os
 import re
 import subprocess
@@ -3100,8 +3101,65 @@ def wrap_checks(repo, today, lane=False):
     return fails, warns, notes
 
 
-def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False):
+# ---------------------------------------------------------------- rehearsal (#92)
+# ★ #92 — THE REHEARSAL. #91-F5 measured that the wrap's binding cost is the GATE-FAILURE
+# REMEDIATION LOOP (6 fails × probe→fix→re-gate, every round paid at the fullest point in the
+# window — 44,211 real at #91 WITHOUT the runbook read). The remedy is not a smarter gate but
+# an EARLIER one: the SAME wrap-mode run, invoked mid-window (consumer: `_checkin.py`), where a
+# fix costs a cheap edit instead of a peak-fill round trip. This is #33's read-chain cut applied
+# to the other end of the session, on the term F5 measured as binding.
+#
+# TWO RULES, both from standing memory:
+#   1. SAME SEAM, NEVER A COPY — rehearsal calls run(mode="wrap") itself. A parallel checklist
+#      would drift from the gate it predicts ([[check-after-its-own-remedy]]).
+#   2. THE ALLOWLIST QUOTES WHAT IT EXCUSES — only the two date-stamp fails that ritual steps
+#      1/2 mechanically rewrite may be classed "heals-at-wrap", matched against the gate's own
+#      fail strings, scoped to the two filenames. Anything else — including a date fail on any
+#      OTHER file — is STRUCTURAL: fix it now. ([[gate-must-quote-what-it-forbids]])
+#
+# THE LOG (`notes/_REHEARSAL-LOG.jsonl`, append-only machine lines): every rehearse AND every
+# real wrap-mode run appends {date, kind, fails, structural, heals_at_wrap, warns}. That is the
+# instrument #91-F5 ordered ("measure fails-at-wrap-open across sessions before trimming
+# anything") — wrap-open counts build the distribution, and repeated wrap-mode lines in one
+# session count the remediation rounds themselves. The log is written by the gate and read by
+# humans/sessions; it is NOT the gauge log and MUST NOT be — a session writing its own
+# post-mortem into `notes/_GAUGE-LOG.md` jams `roll_2f` (#91's own double-entry fail).
+REHEARSAL_LOG = os.path.join("notes", "_REHEARSAL-LOG.jsonl")
+
+HEALS_AT_WRAP_RES = (
+    # wrap_checks() date-stamp fails, verbatim shape, scoped to the ONLY two files whose
+    # stamps the ritual itself refreshes (steps 1/2). Quoted, not paraphrased.
+    re.compile(r'^GOOD-MORNING\.md: header date zone does not carry today \(\d{4}-\d{2}-\d{2}\)'),
+    re.compile(r'^_LIVE-STATE\.md: "Last refreshed" zone does not carry today \(\d{4}-\d{2}-\d{2}\)'),
+)
+
+
+def classify_rehearsal(fails):
+    """Split gate fails into (heals_at_wrap, structural). Scoped allowlist; default STRUCTURAL."""
+    heals, structural = [], []
+    for f in fails:
+        (heals if any(rx.match(f) for rx in HEALS_AT_WRAP_RES) else structural).append(f)
+    return heals, structural
+
+
+def _rehearsal_log_append(repo, entry):
+    """Append one JSON line. Loud + named on failure, never raises — a broken log line must
+    not block a wrap ([[a-crash-is-not-a-fail]] — the reader fails loud, the writer degrades loud)."""
+    try:
+        path = os.path.join(repo, REHEARSAL_LOG)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, sort_keys=True) + "\n")
+        return None
+    except Exception as e:  # noqa: BLE001
+        return f"⚠ REHEARSAL LOG NOT WRITTEN ({type(e).__name__}: {e}) — the fails-at-wrap-open series has a hole HERE, dated."
+
+
+def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False, rehearse=False):
     today = today or datetime.date.today()
+    if rehearse:
+        mode = "wrap"    # SAME SEAM — the rehearsal IS a wrap-mode run, only classified + logged
+        report = None
     fails, warns, notes = [], [], []
     scoped = in_scope(repo)
     for p in scoped:
@@ -3203,6 +3261,18 @@ def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False):
         fails += f
         warns += w
         notes += n
+        # ---- #92: EVERY wrap-mode run logs its fail count — rehearsals build the early series,
+        # real wraps build the fails-at-wrap-open distribution #91-F5 ordered, and repeated
+        # wrap lines within one session ARE the remediation-round count. Append-only, machine.
+        heals, structural = classify_rehearsal(fails)
+        log_err = _rehearsal_log_append(repo, {
+            "date": today.isoformat(), "kind": "rehearse" if rehearse else "wrap-open",
+            "fails": len(fails), "structural": len(structural),
+            "heals_at_wrap": len(heals), "warns": len(warns),
+            "structural_names": [s[:120] for s in structural],
+        })
+        if log_err:
+            warns.append(log_err)
 
     lines = [f"# Capture gate report — mode: {mode}",
              f"*Generated {today.isoformat()} by `_capture_gate.py`. "
@@ -3218,6 +3288,18 @@ def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False):
         with open(report, "w", encoding="utf-8") as f:
             f.write("\n".join(lines) + "\n")
 
+    if rehearse:
+        # TERSE BY DESIGN — the window pays for every printed line; the whole point of the
+        # rehearsal is that the sandbox does the reading. Structural fails in full (they are
+        # the deliverable), everything else as counts.
+        for i in structural:
+            print(f"  ⛔ STRUCTURAL {i}")
+        for i in heals:
+            print(f"  ▫️  heals-at-wrap: {i[:100]}")
+        print(f"rehearsal [wrap-gate, early]: {len(structural)} STRUCTURAL fail(s) — fix NOW, "
+              f"cheap · {len(heals)} heals-at-wrap (ritual steps 1/2) · {len(warns)} warn(s) "
+              f"(run --wrap for bodies) · logged → {REHEARSAL_LOG}")
+        return 1 if structural else 0
     for i in fails:
         print(f"  ❌ FAIL {i}")
     for i in warns:
@@ -5302,6 +5384,65 @@ def selftest():
             os.environ["CAPTURE_GATE_NO_REAL"] = _real_saved
 
 
+def selftest_rehearsal():
+    """#92 — the rehearsal's classifier, log and rc, mutation-tested WITH a control.
+    A green that can't fail is an assertion ([[six-beat-ladder-ruled]])."""
+    failures = []
+    iso = "2026-08-05"
+    gm_fail = (f"GOOD-MORNING.md: header date zone does not carry today ({iso}) — refresh it "
+               f"(ritual steps 1 / 2) before closing")
+    ls_fail = (f'_LIVE-STATE.md: "Last refreshed" zone does not carry today ({iso}) — refresh '
+               f"it (ritual steps 1 / 2) before closing")
+    structural_sample = "pre-flight: fill 40% + job 12% + wrap 5% = 57% AMBER — retired % form"
+    # ---- MUTATION: the allowlist is scoped to TWO filenames. The SAME date-fail shape on any
+    # other file must stay STRUCTURAL — an allowlist that matches by shape alone would silently
+    # excuse a real defect ([[gate-must-quote-what-it-forbids]], [[ban-scoped-to-a-name]]).
+    other_file = f"OTHER.md: header date zone does not carry today ({iso}) — refresh it"
+    heals, structural = classify_rehearsal([gm_fail, ls_fail, structural_sample, other_file])
+    if len(heals) != 2:
+        failures.append(f"rehearsal classifier: expected exactly the 2 ritual-refreshed date "
+                        f"fails as heals-at-wrap, got {len(heals)}: {heals}")
+    if structural_sample not in structural or other_file not in structural:
+        failures.append(f"rehearsal classifier: a structural fail or an out-of-scope date fail "
+                        f"escaped STRUCTURAL — allowlist over-matches: {structural}")
+    # ---- CONTROL: empty in, empty out — the classifier invents nothing.
+    if classify_rehearsal([]) != ([], []):
+        failures.append("rehearsal classifier control: non-empty output from empty input")
+    # ---- INTEGRATION on a fixture tree: rc, the JSONL log, and both `kind`s.
+    stale = datetime.date(2026, 7, 27)
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "notes"))
+        with open(os.path.join(td, "_LIVE-STATE.md"), "w", encoding="utf-8") as f:
+            f.write("Last refreshed: 2026-07-25\n")
+        with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+            f.write("header dated 2026-07-25 (stale)\n")
+        rpt = os.path.join(td, "_CG-REHEARSE-TEST.md")
+        rc = run(rehearse=True, repo=td, report=rpt, today=stale)
+        if rc != 1:
+            failures.append(f"rehearse on a fixture with structural fails returned {rc}, not 1")
+        if os.path.exists(rpt):
+            failures.append("rehearse wrote a report file — must be stdout-only like --wrap (S-D3)")
+        log = os.path.join(td, REHEARSAL_LOG)
+        if not os.path.exists(log):
+            failures.append("rehearse did not append to the rehearsal log — the fails-at-wrap-"
+                            "open series (#91-F5's ordered measurement) has no writer")
+        else:
+            entries = [json.loads(l) for l in open(log, encoding="utf-8") if l.strip()]
+            e = entries[-1]
+            if e.get("kind") != "rehearse":
+                failures.append(f"log kind: expected 'rehearse', got {e.get('kind')}")
+            if e.get("fails") != e.get("structural", 0) + e.get("heals_at_wrap", 0):
+                failures.append(f"log arithmetic broken: {e}")
+            if e.get("heals_at_wrap", 0) < 2:
+                failures.append(f"log: both date fails should classify heals-at-wrap, got {e}")
+            run(mode="wrap", repo=td, today=stale)
+            entries = [json.loads(l) for l in open(log, encoding="utf-8") if l.strip()]
+            if len(entries) != 2 or entries[-1].get("kind") != "wrap-open":
+                failures.append(f"a real wrap-mode run must append a 'wrap-open' line — got "
+                                f"{[x.get('kind') for x in entries]}")
+    return failures
+
+
 def _selftest_body():
     failures = (selftest_real_tier_reachable()
                 + selftest_preflight() + selftest_preflight_tokens()
@@ -5313,7 +5454,9 @@ def _selftest_body():
                 + selftest_gauge_continuity() + selftest_unkeyed()
                 + selftest_growth() + selftest_usage()
                 + selftest_lanes() + selftest_receipts() + selftest_index_freshness()
-                + selftest_handoff_history())
+                + selftest_handoff_history()
+                + selftest_rehearsal())    # #92 — wired HERE, at write time: a suite a new
+                                           # tier silently bypasses is #82's defect verbatim
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))
@@ -5366,5 +5509,9 @@ def _selftest_body():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(selftest())
+    if "--rehearse" in sys.argv:
+        # #92: the wrap gate run EARLY, mid-window, where a fix is cheap. Same seam as --wrap;
+        # only classification, terseness and the log differ. Consumer: _checkin.py.
+        sys.exit(run(rehearse=True, lane="--lane" in sys.argv))
     sys.exit(run(mode="wrap" if "--wrap" in sys.argv else "build",
                  lane="--lane" in sys.argv))

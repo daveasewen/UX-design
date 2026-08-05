@@ -240,6 +240,10 @@ def main() -> int:
     ap.add_argument("--window", type=int, default=None,
                     help="Denominator for a ratio. NAMED in the output. Omitted = no ratio.")
     ap.add_argument("--json", action="store_true", help="Machine-readable.")
+    ap.add_argument("--no-rehearse", action="store_true",
+                    help="Skip the wrap-gate rehearsal (#92). Default is to run it: a fail "
+                         "found at a check-in costs a cheap edit; the same fail found at wrap "
+                         "costs a probe→fix→re-gate round at peak fill (#91-F5).")
     args = ap.parse_args()
 
     path = find_transcript(args.path)
@@ -343,6 +347,21 @@ def main() -> int:
         print("               ⚠ LATE BY ONE STEP (Dave, #59): this is the prompt of the call")
         print("               that ALREADY RAN. It is a FLOOR. Price the NEXT turn, not the last.")
     print()
+    # ── REHEARSAL (#92): the wrap gate, run HERE where a fix is cheap. #91-F5 measured the
+    # wrap's binding cost as the gate-failure remediation loop, paid at peak fill. This is the
+    # same gate, same seam (run(rehearse=True)), terse output, logged to _REHEARSAL-LOG.jsonl.
+    # [[instrument-without-a-consumer]] — this call IS the consumer; without it the rehearsal
+    # is a mode nobody runs and #92 built nothing.
+    if not args.no_rehearse:
+        print("  REHEARSAL   wrap gate, early (same checks as --wrap; #92):")
+        try:
+            import _capture_gate as _cg
+            _cg.run(rehearse=True)
+        except Exception as e:  # noqa: BLE001 — loud + named, never silent, never fatal here
+            print(f"    ⛔ REHEARSAL DID NOT RUN ({type(e).__name__}: {e}) — the wrap gate's "
+                  f"state is UNKNOWN, not green. Run `python3 knowledge/_capture_gate.py "
+                  f"--rehearse` by hand.")
+        print()
     if args.window:
         if fill.get("available"):
             print(f"  ratio        {fill['now'] / args.window:.0%} of the {args.window:,} you passed"
