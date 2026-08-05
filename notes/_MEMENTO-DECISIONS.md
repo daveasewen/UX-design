@@ -3523,3 +3523,18 @@ applied to the other end of the session.** Proposed to #92, NOT built here.
 end (Dave's rule, #59). #60–#65 quote it honestly as ESTIMATED; **#90 stated it flat and titled
 #91 after it.** ⇒ the ordered cut could not have been proven against it. n is now **2**.
 [[planning-estimate-is-not-a-measurement]] [[premise-ages-faster-than-rule]]
+
+**#91-F5 — ⛔⛔ THE WRAP THAT MEASURED ITSELF PARTLY REFUTED #91-F3, IN THE SAME SESSION.**
+F3 named the ritual runbook (16,934 real = 39.9% of the floor) as where the cut is. This wrap
+**skipped that read entirely** and still cost **44,211 real (148,069 → 192,280)** — ABOVE #59's
+42,434. ⇒ **the runbook is a large STATIC line item but it is NOT the binding constraint.** What
+consumed this wrap was the **GATE-FAILURE REMEDIATION LOOP**: the wrap gate opened at 6 fails and
+each one needs a probe → fix → re-gate round trip, every trip paid at the fullest point in the
+window. Two of the six were **my own double-entry** (a #91 post-mortem written straight into
+`notes/_GAUGE-LOG.md` *and* a §C stratum for the same session, which collides with `roll_2f`'s
+duplicate-key guard — worklist item 11's known deadlock, walked into unknowingly).
+★★ **n=2 earned its keep immediately: the second data point contradicted the theory the first
+one suggested.** [[a-planning-estimate-is-not-a-measurement]] [[check-after-its-own-remedy]]
+⬛ **TO #92: the cut is in the REMEDIATION LOOP, not only the manual — measure fails-at-wrap-open
+across sessions before trimming anything.** F3 stands as a true static price; it is NOT the
+binding term, and this file says so beside it rather than letting the tidier story stand.

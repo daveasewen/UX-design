@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 44,333 real and 84% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 44,336 real and 84% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -56,6 +56,8 @@
 > **⚠ MY OWN COST, ATTRIBUTED FIRST.** A grep that failed to exclude `_memento-index.json` pulled two index blobs into the window (~8K real, declared when it happened). One mutation-test fixture asserted a wrong expected value — **the module was right and the test was wrong**; I corrected the test, not the code [[attribute-the-diff]].
 
 > **⬛ STILL OWED.** The floor is **NOT cut** — it is now *locatable*, which it was not this morning. #59's distribution stands at **n=2** (this wrap, measured below), not the 3 he asked for. The **48,577 dark half** stays dark in composition.
+
+> **residual (GENERATED #91):** 2c OVER (banners 3/2) · 2d OVER (deltas 4/3) · 2f OK (strata 1, log #90) — _roll_state.py · 2026-08-05
 
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (19 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES · `0d` ✅ THE #67 ENACT WAVE · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` ✅ PER-GATE TEST PLAN · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59 · `16` UNHOMED PAIR, copied up at the #78 2c EXIT…
@@ -112,7 +114,7 @@
 
 ---
 
-*(Chain ends. **10,443 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **10,520 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 44,333 real and stays whole for retrieval; you have paid for
+`GOOD-MORNING.md` is 44,336 real and stays whole for retrieval; you have paid for
 24% of it, and that is the intended figure, not a shortfall.)*
