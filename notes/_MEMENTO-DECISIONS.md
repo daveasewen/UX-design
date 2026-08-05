@@ -3706,3 +3706,15 @@ status: ruled → knowledge/_rulings.json ds-027
   - **Four-state prior-close convention (Dave's own reference table) REJECTED by his eye** after seeing both live — the arc worth keeping: he brought the convention, the spread showed its cost (shape decoupled from colour), he chose simplicity + table fallback.
 - **Standing (Dave, mid-flight):** *"all these charts should be fully responsive, so the 580 sizing doesn't really apply"* — chart examples carry realistic density (~40 sessions) and reflow via dv-fit. The canon candlestick snippet's candles have NO data-fx today (they do not reflow) — part of the owed enactment.
 - **⬛ ENACTMENT OWED → #101:** rewrite `Chart-candlestick.reference.html` — solid `.dv-up` fill, 40-session dataset (seed 103), `data-fx`/`data-x0` (+ rect `data-fw`) wiring, table + manifest `$note` + comment header updated to cite ds-027; then `_validate_snippets.py`, showroom regen + `--check`, render-verify. NOT started — stop line (fill 143,566 at the seam, #100 check-in) forced the wrap first; rolled whole, not squeezed.
+
+## ★ #102 · 2026-08-05 — corpus fork RULED SWEEP-NOW + enacted: 182 literal opacities → --alpha-* ladder (Dave, in-window)
+
+provenance: local_a4e13d17 · 2026-08-05
+status: ruled
+
+- **#102-D1 (Dave):** picked **"Fork: SWEEP NOW"** from the reflected pair (sweep-now vs per-component-as-opened, the exact fork #99 registered in `_DS-IMPROVEMENTS.md` § #99 residual ②); confirmed **"commit"** after seeing the value-shift table. Ruling inscribed `_rulings.json` **ds-028** (19).
+- **Enacted (ONE Sonnet build sub, 45,530 tokens; conductor re-verified every claim in-window):** all literal `opacity:.N` in `knowledge/snippets` → `opacity:var(--alpha-NN)`. Exact ladder hits pass through; non-ladder ROUND DOWN per #99-D3/ds-026: .75→72 ×20 · .55→52 ×13 · .85→84 ×5 · .7→68 ×5 · .45→44 ×4 · .5→48 ×3 · .35→32 ×2 (130 further hits exact, no visual change).
+- **Unit named (a count is not a measurement):** #99's "125 decls / 49 files" and the conductor's opener "131 / 50" counted **LINES**; the sub's grep -o counted **OCCURRENCES** — true figure **182 occurrences on 131 lines / 50 files**, delta from #99 = corpus growth (#100/#101 additions). The sub flagged the discrepancy rather than reconciling silently — kept.
+- **Verified in-window:** residual-literal grep = 0 · `--alpha-*` var-bound now 188 (182 new + 6 prior #99 sites) · snippet gate **75/0** · showroom regen (49 written) + `--check` OK · diff 100 files, 232/231 lines.
+- **Closes:** `_DS-IMPROVEMENTS.md` § #99 residual ② (the fork) **and** residual ③ (Input-fields `p.note` .75 — swept →72 under this ruling). Residual ① (`--pri-hover` stored equivalents at retired 0.70) still OPEN — a measurement + Dave's promotion, untouched.
+- **⚠ Host crash mid-wrap (Dave's machine), first wrap attempt lost at the survey step:** resumed by re-probing the repo (HEAD `01101b0`, tree intact, gates re-run) — nothing rebuilt from memory. Working-tree state survived; only the unwritten wrap prose was lost.

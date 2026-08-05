@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 41,902 real and 83% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 41,351 real and 84% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -18,7 +18,7 @@
 
 ---
 
-> **YOU ARE #102. TITLE THIS CHAT →** `Apollo - #102: bullet flex-height + Confirmation Replay idiom + 125/49 corpus fork (ledger § ★ #101)`
+> **YOU ARE #103. TITLE THIS CHAT →** `Apollo - #103: compose-audit --sc inline-scope fix + bullet flex-height + Confirmation Replay idiom (ledger § ★ #102)`
 > *(read it back in your opener — the chat half of the ritual is ungateable, which is why this line is FIRST)*
 
 ---
@@ -37,18 +37,20 @@
 > **★ PRICE IN REAL TOKENS — THE UNIT IS `_gauge_tokens.py`, NOT A PERCENTAGE (#56, Dave's).** **amber 160,000 (PICKED) · working 200,000 (SOURCED) · hard 256,000 (SOURCED).** ⛔ **PROVENANCE CORRECTED AT SOURCE #83 — this line read *"working 200,000 (DAVE'S)"* and had done since #56, TWENTY-FIVE SESSIONS after Dave himself corrected it in code at #58b: *"the 200K and 256K come from established research, its been worked out already."* BOTH are SOURCED; 200,000 was never his to re-dial by fiat, and a header calling it his invites exactly that. AMBER likewise read `DERIVED` until #59 ruled it `PICKED` — 80% of working is a round fraction, and labelling a pick "derived" makes it immune to the rule meant to catch it. ★ `_gauge_tokens.py:63–83` carried both corrections the whole time; the READ CHAIN carried neither, so every cold session since #58b was handed the wrong provenance first.** [[read-chain-is-where-staleness-is-free]] Unit = the FULL price (boot + job + wrap); ⚠ **a DECLARED gap passes, a SILENT one fails** — that asymmetry is the mechanism. ⛔ **CORRECTED AT SOURCE #58 — this line taught the RETIRED `(45, 60, 63)` percentage band as "live in code, price against it", six sessions after #56 replaced it (*"the band was REPLACED, not CONVERTED"*), and the header is IN THE READ CHAIN, so every cold session was being handed the wrong unit first.** ★ **MEASURED, not assumed:** `_capture_gate.py:135–137` still defines `BAND_FLOOR/HARD_STOP/MARKED_MAX = 45/60/63`, `check_preflight` (lines 899–994) still implements the % path, and the selftest at **:2543** still pins the triple — but the live wrap emits **no band line**, because it matches on the stamp form and #57's stamp is in tokens. ⇒ **the % path is DORMANT, not wrong, and it was the PROSE that was stale.** ⬛ **FORKED TO DAVE, not decided here: retire the % path in code, or keep it as a pinned known-gap?** Deleting a pinned ruling of his is not an agent's move. ⚠ **THE FLOOR IS PART-UNKNOWN = `ds-025`** — disk half **RE-MEASURED #83 = 11,032 real** (the #37 figure this clause carried, *17,810 tape / ~14.0 pts*, was in TWO retired units at once — re-measured on the artefact, **never converted**, #54), harness half still unreachable ⇒ **say which half of your fill is measured.** ⛔ **CORRECTED AT SOURCE #80 — this clause read *"the gate SILENTLY ESTIMATES without it, UNDER-reporting by 414 tape"*, which #79-D1 made FALSE, and it sat IN THE READ CHAIN.** ⚠ **`pip install tiktoken --break-system-packages` FIRST in a cold sandbox:** the gauge now **REFUSES, loud and named** (`MeasurementRefused`), the paired gate reports ONE named failure, and `_build_all.py`'s P5 step is **ABORT as of #80** ⇒ without it there is no build. ★ **READ THE CHAIN ONLY.** ★ **Repo-state claims are verified against `git log` / a real run, never a banner** (#29→#38: ten consecutive).
 > ⚠ **Render sandbox is FRESH every session** (~4 calls — price it) · **retrieval FIRST:** `_memento_search.py "<q>"` → `--fetch <id>` (⚠ **it served a two-session-old record until #32 — if an answer looks stale, check the index**) · **wrap moves RUN THROUGH `_gm_move.py`** (⚠ **banner headings are BLOCKQUOTED — anchor `> ## ★ PRIOR …`**) · **PACE PANEL: ask at the opener, no gate can see it** — Dave has declined a fresh one twice and put Fable on the table for judgment work; ✅ **THE "BEHIND PACE ⇒ MORE WINDOWS" CLAUSE IS RETIRED — RULED #60: multi-window is settled, two use cases (quota catch-up AND production crank), Claude offers/Dave vetoes, cap 3 revisable. `notes/_MEMENTO-DECISIONS.md` § ★ #60-D1.** It stood from #48; at #57 he said the opposite — *"we are behind, but I'm less comfortable with multiple windows, too much to decide and consume"* ⇒ **ONE window with more delegation.** ★ **The clause optimised the wrong quantity: it treated TOKENS as the constraint when DAVE'S DECISION LOAD is what binds.** ⚠ **Reflected back #57, and #58's opener did NOT settle it** (asked as the first question; he answered pace with *"no constraint, lets just fix the problems"*). Standing home + status: §C·4.
 > *(**RENAME is delivered IN CHAT at wrap, not here — RULED #28, ENACTED in runbook step 4b by #30.**)*
-> **TITLE THE NEXT CHAT →** `Apollo - #102: bullet flex-height + Confirmation Replay idiom + 125/49 corpus fork (ledger § ★ #101)`
+> **TITLE THE NEXT CHAT →** `Apollo - #103: compose-audit --sc inline-scope fix + bullet flex-height + Confirmation Replay idiom (ledger § ★ #102)`
 > ✅ *(the #86 hand-patch that stood here is REMOVED by the #87 wrap, per its own text — #85/#86 are recorded as HOLE lines + ledger stubs, `notes/_GAUGE-LOG.md` / § ★ #85–#86.)*
 > *(Titles are LABELS — role comes from Dave's opener line. Bands: the ONLY copy is
 > `_RUNBOOK-context-gauge.md` § ★ THE FLOOR IS MEASURED — grep it, never recall it.)*
-> ## ★ LATEST — 2026-08-05 (Wed **#101**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **CANDLESTICK ds-027 ENACTED: SOLID TWO-STATE LIVE IN SNIPPET · META · CANON SCOPE · SHOWROOM** · ✅ **GATES 75/0 · SHOWROOM IN SYNC · RENDER-PROVEN 1440/760 × LIGHT/DARK, TOKEN-EXACT, `n_hollow=0`** · ✅ **QUOTA ROUTING HONOURED — FABLE 88% ⇒ ORCHESTRATE-ONLY, BUILD IN THE SUB, EARLY WRAP AT FILL 128,529**)
+> ## ★ LATEST — 2026-08-05 (Wed **#102**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **#102-D1 (Dave): CORPUS FORK RULED SWEEP-NOW, ds-028 — ENACTED: 182 LITERAL OPACITIES → `--alpha-*` LADDER, 50 FILES, 0 RESIDUAL** · ✅ **GATES 75/0 · SHOWROOM REGEN + IN SYNC** · ⚠ **HOST CRASH MID-WRAP — REPO RE-PROBED, WRAP RE-RUN, NOTHING FROM MEMORY**)
 >
-> **✅ ds-027 ENACTED (Sonnet sub, conductor RE-VERIFIED every claim in-window):** `knowledge/snippets/Chart-candlestick.reference.html` rewritten — solid `.dv-up`/`.dv-down` on `--data-delta-gain`/`--data-delta-loss` BOTH directions, hollow channel REMOVED; seed-103 40-session dataset (same as the #100 spread); `data-fx`/`data-x0` candle wiring + grid/axis reflow attrs; 40-row OHLC table = a11y fallback; header comment + `#token-manifest` `$note` RECITE ds-027 (×9). Also: `Chart-candlestick.meta.json` (ds-027 cited ×12, hollow language retired, FIT recorded WIRED) · `canon.css` `.cn-chart-candlestick` scope hand-mirrored (build derivative; `_build_all.py` NOT run, per standing ban) · `showroom/chart-candlestick.html` regen. Evidence: snippet gate `75/0` · `gen_showroom.py --check` `OK — 75 in sync` (both RE-RUN by conductor) · render ×4 (1440/760 × light/dark): font true, `n_up=24 n_down=16` (=40), `n_hollow_or_none=0`, fills token-exact `#16864E/#B92F1E` light · `#1AA05C/#CC4333` dark, svg reflow 1368/688 · sub receipt in-transcript · 2026-08-05.
-> **⚠ FOUND, PRE-EXISTING, DECLARED not chased:** the regenerated `knowledge/_COMPOSE-AUDIT.md` shows canon.css `--sc` as 1 unresolved var (defs 559→775 — the audit file was STALE on HEAD). Attributed with a control: HEAD has the SAME 14 `var(--sc)` uses and 0 CSS defs; `--sc` is the per-series INLINE-scope var (`style="--sc:var(--data-series-1)"` in snippets), invisible to the audit's CSS-only view ⇒ false positive, NOT introduced by ds-027. → #102: teach the compose audit inline-scope vars; do NOT patch the ❌ away. Minor, declared: dark body bg computed `rgb(17,17,17)` vs declared `#1A1A1A` in this sandbox's headless_shell — compositor colour-space quirk, CSS value correct.
-> **✅ QUOTA-DRIVEN ROUTING (pace panel at the opener):** Fable 88% used (resets Thu ~23:00) · all-models 64% ⇒ this window = orchestration + wrap ONLY; build delegated to one Sonnet sub (118,352 shared-pool tokens); wrap opened EARLY by design at FILL 128,529 < stop 150,929, not at need.
-> **⬛ OWED → #102:** ① bullet flex-height + Confirmation Replay idiom (`_REVIEW-SIGNOFF.md`) ② the 125/49 corpus fork (`_DS-IMPROVEMENTS.md` § #99) ③ #97 flag ② (cosmetic) ④ compose-audit inline-scope-var gap (above) · residual `--pri-hover` stored equivalents at retired 0.70.
-> **(dossier: SKIPPED, declared per runbook 1b — mechanical enactment of an already-ruled spec; the WHY lives in #100's dossier `_DECISION-HISTORY/2026-08-05-100-candlestick-encoding.md`.)**
-> **residual (GENERATED #101):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OVER (strata 3, log #100) — _roll_state.py · 2026-08-05 *(the extra 2 count #95+#96, D4-exempt at the gate — raw count kept honest here)*
+> **✅ #102-D1 (Dave, two beats):** picked **SWEEP-NOW** over per-component-as-opened for the #99 literal-opacity corpus fork (`_DS-IMPROVEMENTS.md` § #99 residual ②), then **"commit"** after seeing the value-shift table. Inscribed `_rulings.json` **ds-028** (19) · ledger § ★ #102 · 2026-08-05.
+> **✅ ENACTED (Sonnet sub 45,530 tk; conductor RE-VERIFIED in-window):** every literal `opacity:.N` in `knowledge/snippets` → `var(--alpha-NN)`; exact hits pass, non-ladder ROUND DOWN (#99-D3/ds-026): .75→72 ×20 · .55→52 ×13 · .85→84 ×5 · .7→68 ×5 · .45→44 ×4 · .5→48 ×3 · .35→32 ×2; 130 further exact. Evidence: residual grep 0 · var-bound 188 (182+6 prior) · snippet gate 75/0 · showroom regen 49 + `--check` OK · diff 100 files 232/231.
+> **★ UNIT NAMED (a count is not a measurement):** #99's "125/49" and the opener's "131/50" counted LINES; the sub counted OCCURRENCES — true figure **182 occ / 131 lines / 50 files**; delta from #99 = corpus growth #100/#101. Sub flagged the discrepancy rather than reconciling to the conductor's figure — kept.
+> **✅ CLOSES #99 residuals ② AND ③** (Input-fields `p.note` .75→72 swept under D1); residual ① `--pri-hover` stored equivalents at retired 0.70 still OPEN — Dave's promotion.
+> **⚠ HOST CRASH MID-WRAP:** Dave's machine crashed after the wrap survey, before any wrap write. Resumed by re-probing (HEAD `01101b0` · tree intact · gates re-run) — sweep survived whole; only unwritten wrap prose lost.
+> **⬛ OWED → #103:** ① compose-audit `--sc` inline-scope fix (#101 find) ② bullet flex-height + Confirmation Replay idiom (`_REVIEW-SIGNOFF.md`) ③ #97 flag ② (cosmetic) · residual `--pri-hover` equivalents.
+> **(dossier: SKIPPED, declared per 1b — mechanical sweep under an already-ruled mapping; the why lives in § ★ #99 and ledger § ★ #102.)**
+> **residual (GENERATED #102):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OVER (strata 3, log #101) — _roll_state.py · 2026-08-05 *(the extra 2 count #95+#96, D4-exempt at the gate — raw count kept honest here)*
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (19 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES · `0d` ✅ THE #67 ENACT WAVE · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` ✅ PER-GATE TEST PLAN · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59 · `16` UNHOMED PAIR, copied up at the #78 2c EXIT…
@@ -56,12 +58,12 @@
 
 ---
 
-## ⏱ LATEST DELTA — 2026-08-05 (Wed **#101**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **CANDLESTICK ds-027 ENACTED: snippet · meta · canon scope · showroom, GATES 75/0, RENDER-PROVEN ×4** · ⚠ **`--sc` COMPOSE-AUDIT FALSE POSITIVE FOUND, PRE-EXISTING → #102** · ✅ **FABLE 88% ⇒ SUB-BUILD + EARLY WRAP (FILL 128,529)**)
+## ⏱ LATEST DELTA — 2026-08-05 (Wed **#102**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **#102-D1: CORPUS FORK RULED SWEEP-NOW (ds-028) + ENACTED — 182 literal opacities → `--alpha-*`, 50 files, 0 residual** · ✅ **GATES 75/0 · SHOWROOM IN SYNC** · ⚠ **HOST CRASH MID-WRAP, REPO RE-PROBED, WRAP RE-RUN**)
 
-- **ds-027 enacted end-to-end** — solid two-state candlestick live in `Chart-candlestick.reference.html` + meta + `canon.css` scope + showroom; hollow channel REMOVED (`n_hollow_or_none=0` asserted ×4); seed-103 40-session dataset; OHLC table = a11y fallback; fills token-exact both themes; dv-fit reflow 1368/688 (no fixed 580).
-- **Conductor re-verified, never took the sub's word:** snippet gate 75/0 · showroom `--check` in sync · ds-027 recited ×9/×12/×1 — all re-run in-window against the repo.
-- **Found:** `_COMPOSE-AUDIT.md` regen surfaced a pre-existing `--sc` unresolved-var FALSE POSITIVE (per-series inline-scope var, invisible to the audit's CSS-only view; HEAD control identical; audit file was stale, defs 559→775). Registered → #102 as an audit fix, not a patch-away.
-- **Routing:** pace panel read Fable 88% / all-models 64% ⇒ orchestrate-only window, build in one Sonnet sub (118,352 shared-pool tokens), wrap opened early by design.
+- **Fork closed by Dave's word:** sweep-now over as-opened; "commit" after the value-shift table (7 rounded values, ties DOWN per #99-D3). Closes #99 residuals ② + ③; ① (`--pri-hover` @0.70) stays open.
+- **Sweep verified in-window, never the sub's word:** residual grep 0 · var-bound 188 · snippet gate 75/0 · showroom regen + `--check` OK · diff 100 files 232/231. Unit named: 182 occurrences / 131 lines / 50 files.
+- **Crash resilience:** host crash between wrap survey and wrap writes; recovery = re-probe repo state (git + gates), zero reconstruction from memory.
+- **→ #103:** compose-audit `--sc` inline-scope fix · bullet flex-height · Confirmation Replay idiom · #97 flag ②.
 
 
 ---
@@ -103,7 +105,7 @@
 
 ---
 
-*(Chain ends. **10,357 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **9,869 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 41,902 real and stays whole for retrieval; you have paid for
-25% of it, and that is the intended figure, not a shortfall.)*
+`GOOD-MORNING.md` is 41,351 real and stays whole for retrieval; you have paid for
+24% of it, and that is the intended figure, not a shortfall.)*

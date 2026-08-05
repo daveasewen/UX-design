@@ -1799,3 +1799,9 @@ G11 · ledger: `notes/_MEMENTO-DECISIONS.md` § ★ #86-D1.
    chrome (`h2 .6` in ~40 files), `.45`/`.75`/`.7` strays. The #99 enactment scoped to the five
    sites in the ratified review table; the wider sweep is FORKED to Dave (sweep-now vs
    per-component-as-opened), not silently widened.
+
+**★ #102 (2026-08-05): the #99 literal-opacity corpus fork is CLOSED — Dave ruled SWEEP-NOW (#102-D1,
+ds-028).** 182 occurrences / 131 lines / 50 files migrated to the `--alpha-*` ladder in one pass,
+non-ladder values rounded DOWN per #99-D3; residual ③ (Input-fields `p.note` .75→72) swept under the
+same ruling. Residual ① (`--pri-hover` stored equivalents at 0.70) remains OPEN — Dave's promotion.
+Evidence: ledger § ★ #102 · snippet gate 75/0 · showroom `--check` OK.

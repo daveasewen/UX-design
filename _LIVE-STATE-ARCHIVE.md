@@ -1,5 +1,14 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-05 #102 (2d) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#99**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **OPACITY PRIMITIVES MINTED + STATE-CHANGES-ONLY LICENCE (#99-D1)** · ✅ **REVIEW D1–D4 RULED, 5 SITES MIGRATED, DIAL RETIRED, ALL GATES GREEN** · ⛔ **STOP LINE BLOWN (FILL 201,000) — EYEBALLS + CORPUS FORK → #100**)
+
+- **#99-D1 (Dave):** charts SOLID canonical palette; opacity = STATE CHANGES only (for now); tints = flexibility. Reversed review-D4; retired `--stack-fill-alpha`. Review D1–D3: full ladder `--alpha-04…96`, migrate-all, ties DOWN (hover 70→68 incl. ADR-0009 — his explicit pick; modal 85→84). Ledger § ★ #99 · ds-026.
+- **ENACTED + PROVEN:** `tokens/opacity.json` (24) + generator entry → 540 root vars · 5 source sites migrated (Button/Cards/Headers/Modals/Drawer/Modal-lightbox/Input-fields) · stacked-area SOLID · `_validate_snippets.py` alpha/* namespace · snippet gate 75/0 · showroom regen+selftest · 9 render asserts exact (hover 68% both modes).
+- **Spread deliverable:** `reviews/OPACITY-PRIMITIVES-2026-08-05-v1(.REVIEW).html`, render-proven before presenting; register row added (RULED IN FULL, one fork open).
+- **⛔ Stop-line blow, #95 class:** serial enactment loop ran ~30 calls with no riding check-in; first read after = FILL 201,000 vs 150,929. Wrap opened immediately; nothing squeezed.
+- **→ #100:** eyeballs (candle hollow/filled · bullet flex-height · Confirmation Replay idiom) · corpus fork 125 decls/49 files (sweep-now vs as-opened, `_DS-IMPROVEMENTS.md` § #99) · #97 flag ② · residual: `--pri-hover` stored equivalents at retired 0.70.
+
 ## Rolled 2026-08-05 #101 (2d) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#98**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **ONE-BAR ENACTED + 75 SNIPPETS PURE CANON (#98-D1)** · ✅ **44 ASSERTS ×2 WIDTHS, CONSOLE []** · ⚠ **OPACITY 4% SPREAD (D3) → #99**)
 
