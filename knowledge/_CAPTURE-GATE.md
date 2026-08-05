@@ -1,5 +1,5 @@
 # Capture gate report — mode: build
-*Generated 2026-08-05 by `_capture_gate.py`. Scope: 68 file(s) at/after cutover 2026-07-26.*
+*Generated 2026-08-05 by `_capture_gate.py`. Scope: 69 file(s) at/after cutover 2026-07-26.*
 
 ## WARN
 - ds-021 (C) DECLARED GAP — `knowledge/_context_gauge.py` counts in cl100k and cannot name a REAL tier. REFUSES without tiktoken unless --estimate labels the output (#74). Honest about estimate-vs-nothing; still blind to cl100k-vs-real.

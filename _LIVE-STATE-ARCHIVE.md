@@ -1,4 +1,13 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#94**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **STOP LINE ENACTED AT n=3: 150,929 REAL** · ✅ **`CHAIN_STAMP_RE` CLOSED; FIRST LIVE CATCH = GM's OWN STAMP** · ⚠ **WAVE 2: BRIEFS CUT, FIRING PRICED OUT**)
+
+- **Stop line 150,929 real = 200,000 − 49,071** — #93-D1's own standing clause enacted at the first new-regime read (#59 high-end rule); n=3, one truncation class. Ledger § ★ #94-E1.
+- **`CHAIN_STAMP_RE` widened** — live-unit (`real`) + full-digit forms now bite; old regex re-enacted on the #90 escape first (no match); escape verbatim in selftest + negative control (unit-less stays open 23). First live catch: GM's own `size:` stamp quoting the escape — defused to a pointer. Ledger § ★ #94-F1.
+- **§C·1(a) lane-3 D-Q3 item struck** — landed 07-24; wave-2 lane 3 = pie + stacked-area. Ledger § ★ #94-F2.
+- **Chart wave 2: DIVVY + 3 Sonnet lane briefs cut as files** (`notes/_briefs/2026-08-05-chart-wave2-*`), firing priced out of this window (FILL 121,848 floor vs 150,929) — fire at #95 or parallel windows (#60-D1).
+
+- **boot n=4 (65,822 this session)** · rehearse caught 1 structural mid-window (stale index — rebuilt at cheap price, the #92 instrument working) · one Opus sub (90,535 sub-tokens) mined the record; report replayed in-window (#57).
+
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#93**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **STOP LINE RE-PRICED: 155,789 REAL (DAVE, #93-D1)** · ⛔ **n=3 COULD NOT BE MINTED FROM THE RECORD — PROSPECTIVELY ONLY, NOW ON THREE LEGS** · ⚠ **THE STRATA HOME'S 24,579 WAS THE EARLY STAMP — CORRECTED BY ADDITION**)
 
 - **Stop line 155,789 real = 200,000 − 44,211** — high end observed, per Dave's #59 rule; the distribution ruled NON-STATIONARY (both measured points are pre-rehearsal-regime; #92's `--rehearse` removed the binding term #91-F5 named). The ±10,000 margin DECLINED. Standing until #93's own wrap point is read at #94.
@@ -1402,3 +1411,6 @@ instructions. Prior refresh: T-D12 ruling, commit `9fb1381`.*
 
 
 *(2d tail rolled 2026-08-05 #94, step 2d)* · *Previous: 2026-08-04 (Tue from `date` — #90 wrap: P4/P6/P7 re-checked on Dave's order (P4 holds · P6 holds + ruled-not-enacted · P7 DEAD and inverted) · the 2f roll owed since #83 DISCHARGED after five deferrals ⇒ read chain 13,277 → 11,029 real, −16.9% · the chain's +85% growth since #52 MEASURED · boot arithmetic published: 48,577 of 61,854 still dark, wrap floor 42,434 > the whole corpus.)*
+
+## Rolled 2026-08-05 #97 (2d trail-trim) — refresh-chain tail carried, verbatim:
+*Previous: 2026-08-05 (Wed from `date` — #92 wrap: the wrap gate REHEARSES mid-window now (`--rehearse` on the same seam, consumed by `_checkin.py` every check-in) · `notes/_REHEARSAL-LOG.jsonl` logs fails-at-wrap-open + remediation rounds, the measurement #91-F5 ordered · first live catch the same session (stale retrieval index, fixed at check-in price) · wrap-open 0 structural · #91's titled lane was refuted by its own F5 — Dave re-aimed #92 at the loop.)*  *Previous: 2026-08-05 (Wed from `date` — #91 wrap: the fill reader researched 2026-07-31 and never wired is ENACTED (`_checkin.py` had 0 refs to `input_tokens` for ~31 sessions) · the gauge and the stop line have been in different UNITS since #59 (FILL 148,069 vs THROUGHPUT 187,966 at one instant = 27%) · the wrap floor RELOCATED: the ritual runbook is 16,934 real = 39.9% of it, paid last, when the room left was 9,497 · ds-025 item 1 RULED by Dave = the TOTAL, CLOSED.)*

@@ -298,17 +298,39 @@ INDEX_TMPL = """<!doctype html>
   .count{display:inline-flex; align-items:baseline; gap:8px; font-size:13px; color:var(--mid);}
   .count strong{font-size:40px; font-weight:300; line-height:1; color:var(--ink);
     font-variant-numeric:tabular-nums; letter-spacing:-1px;}
+  .shell{display:grid; grid-template-columns:260px 1fr; min-height:calc(100vh - 57px);}
+  nav.tree{border-right:1px solid var(--line); background:#FFFFFF; padding:12px 0 24px;
+    overflow-y:auto; position:sticky; top:57px; height:calc(100vh - 57px);}
+  nav.tree details{border-bottom:1px solid var(--line);}
+  nav.tree summary{font-size:13px; font-weight:500; color:var(--ink); padding:10px 16px;
+    cursor:pointer; list-style:none; display:flex; align-items:baseline; gap:8px;}
+  nav.tree summary::-webkit-details-marker{display:none;}
+  nav.tree summary::before{content:"▸"; font-size:10px; color:var(--mid); transition:transform 140ms;}
+  nav.tree details[open] summary::before{transform:rotate(90deg);}
+  nav.tree summary .c{margin-left:auto; font-size:11px; color:var(--mid);
+    font-variant-numeric:tabular-nums;}
+  nav.tree a{display:block; font-size:13px; color:var(--ink); text-decoration:none;
+    padding:6px 16px 6px 34px; border-left:2px solid transparent;}
+  nav.tree a:hover{background:var(--wash, #F4F4F4);}
+  nav.tree a[aria-current="true"]{border-left-color:var(--ink); font-weight:500;
+    background:var(--wash, #F4F4F4);}
+  main.view{min-width:0; display:flex; flex-direction:column;}
+  .viewbar{display:none; align-items:center; gap:12px; padding:10px 24px;
+    border-bottom:1px solid var(--line); background:#FFFFFF;}
+  .viewbar .t{font-size:15px; font-weight:500;}
+  .viewbar a{font-size:12px; color:var(--mid); text-decoration:none; border:1px solid var(--line);
+    padding:4px 10px;}
+  .viewbar a:hover{border-color:var(--ink); color:var(--ink);}
+  .view iframe{display:none; border:0; width:100%; flex:1;}
+  .view.on .viewbar{display:flex;}
+  .view.on iframe{display:block;}
+  .view.on .intro{display:none;}
   .intro{padding:24px 24px 0; max-width:820px;}
   .intro p{font-size:14px; color:var(--mid); line-height:1.5; margin:4px 0 0;}
-  section{padding:8px 24px 16px;}
-  section h2{font-size:15px; font-weight:500; margin:24px 0 12px; padding-top:16px;
-    border-top:1px solid var(--line);}
-  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px;}
-  a.card{display:block; padding:14px 16px; background:#FFFFFF; border:1px solid var(--line);
-    text-decoration:none; color:var(--ink); transition:border-color 140ms;}
-  a.card:hover{border-color:var(--ink);}
-  a.card .n{font-size:15px; font-weight:500;}
-  a.card .m{font-size:12px; color:var(--mid); margin-top:6px;}
+  @media (max-width:760px){
+    .shell{grid-template-columns:1fr;}
+    nav.tree{position:static; height:auto; max-height:40vh;}
+  }
 </style>
 </head>
 <body>
@@ -318,25 +340,66 @@ INDEX_TMPL = """<!doctype html>
   <div class="seg" id="themes" role="group" aria-label="Theme">__THEME_BTNS__</div>
   <span class="note">Theme carries into every component page. Mono is the base; Legacy differs; Console renders as Mono with rounded corners; Supercharge renders as Mono.</span>
 </header>
-<div class="intro">
-  <p>Generated from the gated canon (snippets + tokens + theme cascade) — regenerate with
-  <code>python3 knowledge/gen_showroom.py</code>; never hand-edit. Each page: four themes ×
-  light/dark side by side × responsive width × the component's full live variant spread.</p>
-</div>
+<div class="shell">
+<nav class="tree" aria-label="Components">
 __SECTIONS__
+</nav>
+<main class="view" id="view">
+  <div class="viewbar"><span class="t" id="vtitle"></span>
+    <a id="vopen" href="#" target="_blank">Open page ↗</a></div>
+  <div class="intro">
+    <p>Generated from the gated canon (snippets + tokens + theme cascade) — regenerate with
+    <code>python3 knowledge/gen_showroom.py</code>; never hand-edit. Each page: four themes ×
+    light/dark side by side × responsive width × the component's full live variant spread.</p>
+    <p>Pick a component from the tree to preview it here.</p>
+  </div>
+  <iframe id="vframe" title="Component preview"></iframe>
+</main>
+</div>
 <script>
 (function(){
-  var theme='mono';
-  function relink(){ document.querySelectorAll('a.card').forEach(function(a){
-      a.href=a.dataset.slug+'.html#theme='+theme; }); }
+  var theme='mono', current=null;
+  var view=document.getElementById('view'), frame=document.getElementById('vframe');
+  var vtitle=document.getElementById('vtitle'), vopen=document.getElementById('vopen');
+  function pageURL(slug){ return slug+'.html#theme='+theme; }
+  function setHash(){ var h=[]; if(current) h.push('c='+current);
+    h.push('theme='+theme); location.hash=h.join('&'); }
+  function show(slug){
+    current=slug;
+    view.classList.add('on');
+    frame.src=pageURL(slug); vopen.href=pageURL(slug);
+    document.querySelectorAll('nav.tree a').forEach(function(a){
+      var on=(a.dataset.slug===slug);
+      a.setAttribute('aria-current', String(on));
+      if(on){ var d=a.closest('details'); if(d) d.open=true; }
+    });
+    var sel=document.querySelector('nav.tree a[data-slug="'+slug+'"]');
+    vtitle.textContent=sel?sel.textContent:slug;
+  }
+  document.querySelector('nav.tree').addEventListener('click',function(e){
+    var a=e.target.closest('a[data-slug]'); if(!a) return;
+    e.preventDefault(); show(a.dataset.slug); setHash();
+  });
   document.getElementById('themes').addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
     theme=b.dataset.theme;
     document.querySelectorAll('#themes button').forEach(function(x){
       x.setAttribute('aria-pressed', String(x.dataset.theme===theme)); });
-    relink();
+    if(current){ frame.src=pageURL(current); vopen.href=pageURL(current); }
+    setHash();
   });
-  relink();
+  function initFromHash(){
+    var h={}; location.hash.replace(/^#/,'').split('&').forEach(function(p){
+      var kv=p.split('='); if(kv[0]) h[kv[0]]=kv[1]; });
+    if(h.theme && document.querySelector('#themes button[data-theme="'+h.theme+'"]')){
+      theme=h.theme;
+      document.querySelectorAll('#themes button').forEach(function(x){
+        x.setAttribute('aria-pressed', String(x.dataset.theme===theme)); });
+    }
+    if(h.c && document.querySelector('nav.tree a[data-slug="'+h.c+'"]')) show(h.c);
+  }
+  window.addEventListener('hashchange',initFromHash);
+  initFromHash();
 })();
 </script>
 </body>
@@ -411,13 +474,13 @@ def build_pages():
         slugs = sorted(s for s, v in cards.items() if v["cat"] == cat)
         if not slugs:
             continue
-        grid = "".join(
-            '<a class="card" data-slug="%s" href="%s.html"><span class="n">%s</span>'
-            '<span class="m">%s</span></a>'
-            % (s, s, htmlmod.escape(cards[s]["label"]), htmlmod.escape(cards[s]["meta"]))
+        links = "".join(
+            '<a data-slug="%s" href="%s.html" aria-current="false" title="%s">%s</a>'
+            % (s, s, htmlmod.escape(cards[s]["meta"], quote=True),
+               htmlmod.escape(cards[s]["label"]))
             for s in slugs)
-        sections.append('<section><h2>%s · %d</h2><div class="grid">%s</div></section>'
-                        % (htmlmod.escape(cat), len(slugs), grid))
+        sections.append('<details open><summary>%s<span class="c">%d</span></summary>%s</details>'
+                        % (htmlmod.escape(cat), len(slugs), links))
     files["index.html"] = (INDEX_TMPL
                            .replace("__CSS__", CHROME_CSS)
                            .replace("__THEME_BTNS__", btns)

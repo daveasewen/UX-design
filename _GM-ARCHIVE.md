@@ -1,5 +1,17 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-08-05 #97 — rolled by session #97 (2c: keep ★ LATEST + ★ PRIOR)
+> ## ★ PRIOR — 2026-08-05 (Wed **#95**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **CHART WAVE 2 FIRED AND LANDED: 8 MEMBERS, 3 SONNET LANES, ONE CONDUCTOR RECONCILE** · ⛔ **STOP LINE 150,929 BLOWN BEFORE WRAP-OPEN — FILL 161,622 AT FIRST CHECK-IN** · ⚠ **RENDER-VERIFY + DAVE'S EYEBALL OWED ON ALL 8**)
+>
+> **✅ THE WAVE (Dave: "go for it"):** 3 Sonnet lanes fired in-window; receipts REPLAYED against disk before any serial edit (#57). Landed + REGISTERED: butterfly-h · butterfly-v · histogram (①) · boxplot · bullet · candlestick (②) · pie · stacked-area (③). Serials: `component-types.json` +8 `$members` (hooks MEASURED on the artefacts, not copied from receipts) · `MIGRATED_SNIPPETS` +8 · `CATEGORIES` +8 · dtype vocabulary +7, all cartesian, placed in the DV-D02-A partition in the same change (its import-time totality assertion held). Evidence: `notes/_receipts/2026-08-05-wave2-lane{1,2,3}-*.md` · ledger § ★ #95 · `_proforma/_DATAVIZ-DECISIONS.md` § ★ #95.
+> **✅ REPLAY CAUGHT FOUR WORKER GAPS, fixed as conductor serials:** lane-① token manifests + AUTO-MARKUP pairs ABSENT · pie + stacked-area dv-legend marker pairs ABSENT (generator refused, correctly) · lane-② prose-in-token-keys (manifest keys carried receipt prose) · boxplot/candlestick `--data-grid` bound to `data/grid/color` while holding the pre-DV-D07 value = measured DRIFT → **UNBOUND, not conformed** (binding would fill the fenced ds-020 gap; unbinding receipts it).
+> **✅ GATES:** dataviz · snippets · coverage · radius · behaviour · partials · blast-radius (`.seg` radius +Chart-pie, diff reviewed) · no-hardcode ALL GREEN. ⚠ **DECLARED, not fixed: type-composites and a11y were RED AT HEAD TOO** (worktree-verified baseline: 1011 TYPE violations 82/82 files · 8 a11y fails, none in wave files); the wave adds ~45 same-class TYPE-002s reproduced from its exemplars.
+> **⛔ THE STOP LINE WAS BLOWN BEFORE WRAP-OPEN — #87's CLASS, NEW MECHANISM:** serial set + full gate battery ran with NO mid-serial check-in; the FIRST fill read of the session was 161,622 > 150,929. The check-in must ride the serial loop, not follow it. **#96 re-prices from THIS wrap's cost per Dave's #59 high-end rule.**
+> **⬛ OWED → #96:** render-verify all 8 (07-24 precedent; metas honestly `UNPROVEN`) · Dave's showroom eyeball (`_REVIEW-SIGNOFF.md` has the 8 pane paths) · 7 lane flags for Dave's rulings (bullet 580×200 + un-minted range greys · candlestick dv-011 · histogram `.dv-leg-static` · stacked-area `--stack-fill-alpha` + `fitOne()` `.dv-band` gap · pie sweep `data-ri`).
+> **(dossier: SKIPPED, declared — mechanical enactment session; the WHY lives at ledger § ★ #95 + the three receipts.)**
+> **residual (GENERATED #95):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #95) — _roll_state.py · 2026-08-05
+
+
 ## Batch 2026-08-05 #96 — rolled by session #96 (2c: keep ★ LATEST + ★ PRIOR)
 > ## ★ PRIOR — 2026-08-05 (Wed **#94**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **STOP LINE ENACTED AT n=3: 150,929 REAL (#93-D1's OWN CLAUSE, #59 HIGH END)** · ✅ **THE `CHAIN_STAMP_RE` HOLE IS CLOSED — AND ITS FIRST LIVE CATCH WAS THIS FILE'S OWN STAMP QUOTING THE ESCAPE** · ⚠ **CHART WAVE 2 PRICED OUT OF THE WINDOW: BRIEFS CUT, NOT FIRED**)
 >
