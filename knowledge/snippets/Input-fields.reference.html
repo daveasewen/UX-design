@@ -27,7 +27,7 @@
     --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
     --ease:200ms cubic-bezier(.4,0,.2,1);
   }
-  [data-theme="light"]{
+  [data-theme="light"]{ --alpha-60:0.6; /* alpha/60 primitive, #99-D1 */
     --field-bg-default:#FFFFFF00;   /* form/background/default */
     --field-bg-hover:#F0F0F0;       /* form/background/hover */
     --border-default:#808080;       /* form/border/default */
@@ -45,7 +45,7 @@
        Fields + in-field buttons bind the CONTROL role. */
     --border-radius-control:0;
   }
-  [data-theme="dark"]{
+  [data-theme="dark"]{ --alpha-60:0.6; /* alpha/60 primitive, #99-D1 */
     --field-bg-default:#FFFFFF00;   /* form/background/default (transparent, alpha restored) */
     --field-bg-hover:#232323;       /* form/background/hover */
     --border-default:#808080;       /* form/border/default */
@@ -66,7 +66,7 @@
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   h2.sec{font:500 16px/1.3 var(--font); /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ color:var(--text);
-    opacity:.6; margin:2.5rem 0 .35rem;}
+    opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
   p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
 
   /* library icon sprite — sized 18px (icon-scale: small) */
@@ -305,6 +305,7 @@
   {
     "component": "Input fields",
     "vars": {
+      "--alpha-60": "alpha/60",
       "--field-bg-default": "form/background/default",
       "--field-bg-hover": "form/background/hover",
       "--border-default": "form/border/default",

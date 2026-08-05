@@ -1,5 +1,15 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-05 #99 (2d) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#96**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **ALL 8 PROVEN + 11 RULINGS ENACTED** · ✅ **STOP LINE HELD (wrap-open 146,639)** · ⚠ **SIDE TREE NAV → #97**)
+
+- **All 8 wave-2 panes render-verified PROVEN** (2 Sonnet lanes; stacked-area's missing `dv-fit-on` overrides caught + fixed). Receipts `2026-08-05-96-render-verify-wave2.md` / `-enact-d1.md`.
+- **Dave ruled 11:** 7 lane flags (bullet flex-height · canon greys · candlestick hollow/filled · 2px rule standing canon · fitOne .dv-band now · pie ri=0) + opacity primitives owed + gauge-log ONE WRITER + behaviour budget 32→34KB (his re-dial). Ledger § ★ #96.
+- **All enacted same session** — snippets + dv-behaviour, partials/showroom regen, gates GREEN.
+- **Stop line 150,929 stood (re-price declined — #95 wrap-end unrecoverable, § #93-F1) and HELD.** Side tree nav (Dave's) rolls to #97.
+
+
+
 ## Rolled 2026-08-05 #98 (2d) — via the mover
 *(refresh-chain tail carried at the same boundary:)* *Previous: 2026-08-05 (Wed from `date` — #94 wrap: stop line ENACTED at n=3 = 150,929 real (#93-D1's own clause, #59 high end) · `CHAIN_STAMP_RE` hole CLOSED — first live catch was GM's own stamp quoting the escape, defused to a pointer · §C·1(a) D-Q3 item struck as stale (landed 07-24) · chart wave 2 DIVVY + 3 lane briefs cut as files, firing PRICED OUT (FILL 121,848 floor vs 150,929). ⚠ this trail has NO #93 entry — #93's wrap left the #92 text at the head; its record is the #93 delta/stratum. Gap DECLARED, not repaired.)**
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#95**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **WAVE 2 LANDED: 8 MEMBERS REGISTERED, GATES GREEN** · ⛔ **STOP LINE BLOWN PRE-WRAP: 161,622 FIRST READ** · ⚠ **RENDER-VERIFY + EYEBALL OWED**)
@@ -1424,3 +1434,5 @@ instructions. Prior refresh: T-D12 ruling, commit `9fb1381`.*
 
 ## Rolled 2026-08-05 #97 (2d trail-trim) — refresh-chain tail carried, verbatim:
 *Previous: 2026-08-05 (Wed from `date` — #92 wrap: the wrap gate REHEARSES mid-window now (`--rehearse` on the same seam, consumed by `_checkin.py` every check-in) · `notes/_REHEARSAL-LOG.jsonl` logs fails-at-wrap-open + remediation rounds, the measurement #91-F5 ordered · first live catch the same session (stale retrieval index, fixed at check-in price) · wrap-open 0 structural · #91's titled lane was refuted by its own F5 — Dave re-aimed #92 at the loop.)*  *Previous: 2026-08-05 (Wed from `date` — #91 wrap: the fill reader researched 2026-07-31 and never wired is ENACTED (`_checkin.py` had 0 refs to `input_tokens` for ~31 sessions) · the gauge and the stop line have been in different UNITS since #59 (FILL 148,069 vs THROUGHPUT 187,966 at one instant = 27%) · the wrap floor RELOCATED: the ritual runbook is 16,934 real = 39.9% of it, paid last, when the room left was 9,497 · ds-025 item 1 RULED by Dave = the TOTAL, CLOSED.)*
+
+*Previous: 2026-08-05 (Wed from `date` — #95 wrap: chart wave 2 FIRED + LANDED — 8 members registered, 4 worker gaps caught at replay, gate battery green (type/a11y = HEAD baseline, declared) · ⛔ stop line 150,929 blown BEFORE wrap-open (first fill read 161,622; no mid-serial check-in — #96 re-prices) · render-verify ×8 + Dave's eyeball + 7 lane flags OWED.)*  ← rolled #99 (2d refresh-chain trim)

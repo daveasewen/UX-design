@@ -1,5 +1,21 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-08-05 #99 — rolled by session #99 (2c: keep ★ LATEST + ★ PRIOR)
+
+> **commit-state #98:** ONE wrap commit. Paths explicit — never `git add -A`: `knowledge/snippets/*.reference.html` (75, #98-D1 clean) · `knowledge/gen_showroom.py` (one-bar + bites) · `showroom/*.html` (76 regen) · `notes/_receipts/2026-08-05-98-one-bar-chrome.md` (NEW) · `_DECISION-HISTORY/2026-08-05-98-one-bar-and-pure-canon.md` (NEW) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #98) · `knowledge/_rulings.json` (+3, 16) · `knowledge/_REVIEW-SIGNOFF.md` (row narrowed) · GM/LS + both archives (2c/2d via mover) · `notes/_GAUGE-LOG.md` (roll_2f #97) · `_CHAIN.md` + `knowledge/_memento-index.json` (2g LAST) · `notes/_REHEARSAL-LOG.jsonl` (appends) · `_to_delete/` (.bak). EXCLUDED: `outputs/` scratch.
+
+> ## ★ PRIOR — 2026-08-05 (Wed **#97**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **SIDE TREE NAV BUILT + RENDER-PROVEN, AWAITING DAVE'S EYE** · ✅ **STOP LINE RESPECTED — WRAP OPENED AT FILL 108,193, OPACITY SPREAD ROLLED NOT SQUEEZED** · ✅ **#96 STRATA-ROLL VERIFY: ONE-WRITER REFUSED THE DUPLICATE, D4 EXEMPTION CONFIRMED**)
+>
+> **✅ SIDE TREE NAV (Dave's, from #96 OWED) — BUILT, generator-only:** `knowledge/gen_showroom.py` INDEX_TMPL + section-builder → left 260px tree (7 categories `<details>`, 75 component links, counts) + right inline-iframe preview with viewbar, deep-link `#c=<slug>&theme=<t>`, theme carries into frame src, ≤760px single column. Selftest 6 bites · regen 75+index · `--check` in sync. **Render-PROVEN** (runbook recipe, shared-mount staging): widths 1180+700, HSBC face true at both, numeric asserts (nav 260 · links 75/cats 7 · iframe none→block on click · hash + aria-current + deep-link restore · theme rewrites src). Shots READ. Evidence: `notes/_receipts/2026-08-05-97-side-tree-nav.md` · 2026-08-05.
+> **⚠ SHAPE IS PROPOSED, NOT RULED — AWAITING DAVE'S EYE** (registered `knowledge/_REVIEW-SIGNOFF.md`): inline-iframe preview vs plain links was Claude's pick. **Two flags:** ① doubled chrome — embedded page keeps its own header (← Library, theme seg, width slider) under the new viewbar; kept for the width slider, Dave rules. ② residual, declared: 700px stacked layout has an oversized gap tree→intro; cosmetic, desktop is the review surface, unfixed.
+> **✅ #96 STRATA-ROLL VERIFIED UNDER D4:** `roll_2f` session=96 REFUSED — `notes/_GAUGE-LOG.md` already carries § #96 (the D4-marked opener note); one-writer contract bit, nothing written, no duplicate. GM strata {95,96} stand under `STRATA_EXEMPT` (#96-D4). The refusal IS the receipt.
+> **✅ WRAP DISCIPLINE:** boot 64,728 real (n=8) · check-in AFTER the build read FILL 108,193 vs stop 150,929 with wrap n=3 at 42.4/44.2/49.1K ⇒ wrap opened immediately; the opacity spread (D2) would have been #95's blow mechanism (a build riding past the check-in) and ROLLED to #98 instead.
+> **⬛ OWED → #98 (re-ordered post-wrap — Dave RULED #97-D1 in this window, inscribed not enacted):** ① **ONE-BAR page chrome + snippet control purge** (ledger § ★ #97 — open its ⬛ a/b/c at the opener: one-pane-vs-side-by-side · Replay motion · generator-strip vs 75 source edits; survey before build) · ② opacity primitives review spread (D2) · ③ Dave's eyeball on candlestick hollow/filled + bullet flex-height · (tree-nav shape itself now part-ruled by #97-D1 — flag ① doubled-chrome is ANSWERED: the pane controls go).
+> **(dossier: SKIPPED, declared — mechanical build session; the WHY lives in the receipt + this banner.)**
+> **residual (GENERATED #97):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OVER (strata 3, log #96) — _roll_state.py · 2026-08-05 *(the extra 2 count #95+#96, D4-exempt at the gate — raw count kept honest here)*
+
+
+
 ## Batch 2026-08-05 #98 — rolled by session #98 (2c: keep ★ LATEST + ★ PRIOR)
 
 > **commit-state #97:** ONE wrap commit. Paths explicit — never `git add -A`: `knowledge/gen_showroom.py` (INDEX_TMPL + section-builder) · `showroom/index.html` (regen) · `notes/_receipts/2026-08-05-97-side-tree-nav.md` (NEW) · `knowledge/_REVIEW-SIGNOFF.md` (+1 row) · GM/LS + `_GM-ARCHIVE.md` + `_LIVE-STATE-ARCHIVE.md` (2c/2d via `_gm_move.py` + trail-trim) · `_CHAIN.md` (regen) · `knowledge/_memento-index.json` (2g LAST) · `notes/_REHEARSAL-LOG.jsonl` (appends).

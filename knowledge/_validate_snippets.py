@@ -48,6 +48,7 @@ TOK = os.path.join(ROOT, "tokens")
 sem = json.load(open(os.path.join(TOK, "semantic-colour.json")))
 layout = json.load(open(os.path.join(TOK, "layout.json")))
 motion_store = json.load(open(os.path.join(TOK, "motion.json")))
+opacity_store = json.load(open(os.path.join(TOK, "opacity.json")))  # #99-D1 alpha/* primitives
 ctypes_store = json.load(open(os.path.join(ROOT, "component-types.json")))  # ADR-0013 registry
 
 # Brand exemption (type26-019): uppercase is allowed for acronyms only. Runs made
@@ -95,6 +96,15 @@ def resolve(token, mode):
         if isinstance(v, (int, float)):
             return "0" if v == 0 else f"{v}px"
         return str(v) if v is not None else None
+    if token.startswith("alpha/"):
+        # #99-D1 opacity primitives — UNITLESS number strings, mode-less (same both themes).
+        n = opacity_store
+        for k in token.split("/"):
+            n = n.get(k) if isinstance(n, dict) else None
+            if n is None:
+                return None
+        v = n.get("$value") if isinstance(n, dict) else None
+        return str(v) if isinstance(v, (int, float)) else None
     if token.startswith(("motion/", "component-type/")):
         n = motion_store if token.startswith("motion/") else ctypes_store
         for k in token.split("/"):

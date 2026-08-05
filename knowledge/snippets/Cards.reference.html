@@ -31,9 +31,9 @@
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
-  [data-theme="light"]{ --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A; --accent:#DB0011; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; --border-radius-surface:0;
+  [data-theme="light"]{ --alpha-48:0.48; /* alpha/48 primitive, #99-D1 */ --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A; --accent:#DB0011; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; --border-radius-surface:0;
     --checked:#000000; --ctrl-border:#808080; --pressed:#626262; --reverse:#FFFFFF; }
-  [data-theme="dark"]{ --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF; --accent:#DB0011; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; --border-radius-surface:0;
+  [data-theme="dark"]{ --alpha-48:0.48; /* alpha/48 primitive, #99-D1 */ --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF; --accent:#DB0011; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; --border-radius-surface:0;
     --checked:#FFFFFF; --ctrl-border:#808080; --pressed:#1A1A1A; --reverse:#FFFFFF; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
@@ -100,7 +100,7 @@
   .card.loading{padding:16px; gap:12px;}
   .sk{background:var(--border); height:12px; animation:pulse 1.4s ease-in-out infinite;}
   .sk.title{height:16px; width:55%;} .sk.line{width:100%;} .sk.line.short{width:78%;}
-  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.5;}}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:var(--alpha-48);}}
 
   /* type 4 — Selectable option cards (radiogroup; reuses the Selection-controls radio atom) */
   .optgroup{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:20px;}
@@ -172,6 +172,7 @@
   {
     "component": "Cards",
     "vars": {
+      "--alpha-48": "alpha/48",
       "--border-radius-surface": "border-radius/surface", "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default", "--muted": "text/secondary", "--icon": "icon/default", "--accent": "primary/background/default", "--hover": "tertiary/background/hover", "--focus": "focus/ring", "--page": "background/default", "--checked": "secondary/background/default", "--ctrl-border": "form/border/default", "--pressed": "tertiary/background/pressed", "--reverse": "text/reverse" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },

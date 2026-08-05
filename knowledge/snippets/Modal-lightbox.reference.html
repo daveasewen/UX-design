@@ -32,18 +32,18 @@
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
     --ease:160ms cubic-bezier(.4,0,.2,1); --fade:140ms ease; --phys-size:44;
     --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
-  [data-theme="light"]{ --surface:#FFFFFF; --elev-bd:#FFFFFF00; --shadow:#00000033; --overlay:#00000080;
+  [data-theme="light"]{ --alpha-84:0.84; /* alpha/84 primitive, #99-D1 */ --surface:#FFFFFF; --elev-bd:#FFFFFF00; --shadow:#00000033; --overlay:#00000080;
     --text:#1A1A1A; --icon:#1A1A1A; --hoverbg:#F0F0F0; --focus:#305A85; --page:#FFFFFF; --media:#F0F0F0; --media2:#E1E1E1;
     --border-radius-control:0; --border-radius-surface:0;
     --press-travel:2; --press-darken:0.94; }
-  [data-theme="dark"]{ --surface:#1F1F1F; --elev-bd:#808080; --shadow:#000000D9; --overlay:#00000080;
+  [data-theme="dark"]{ --alpha-84:0.84; /* alpha/84 primitive, #99-D1 */ --surface:#1F1F1F; --elev-bd:#808080; --shadow:#000000D9; --overlay:#00000080;
     --text:#FFFFFF; --icon:#FFFFFF; --hoverbg:#232323; --focus:#4587A7; --page:#1A1A1A; --media:#232323; --media2:#484848;
     --border-radius-control:0; --border-radius-surface:0;
     --press-travel:2; --press-darken:0.94; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
+  .bg-content{opacity:var(--alpha-84); max-width:60ch; line-height:1.6;}
 
   /* overlay */
   .lb-overlay{position:fixed; inset:0; background:var(--overlay); display:flex; flex-direction:column;
@@ -128,6 +128,7 @@
   {
     "component": "Modal lightbox",
     "vars": {
+      "--alpha-84": "alpha/84",
       "--surface": "tertiary/background/default", "--elev-bd": "elevation/border", "--shadow": "elevation/functional",
       "--overlay": "overlay/version1", "--text": "text/default", "--icon": "icon/default",
       "--hoverbg": "tertiary/background/hover", "--focus": "focus/ring", "--page": "background/default",

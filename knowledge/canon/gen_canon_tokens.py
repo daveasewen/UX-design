@@ -21,6 +21,7 @@ CANON_CSS  = os.path.join(os.path.dirname(os.path.abspath(__file__)), "canon.css
 # knowledge/ root (its parameter halves are tokens; $members/$partials are skipped by walk).
 FILES = [
     ("colour.json",          "Primitive colour palette",        ""),
+    ("opacity.json",         "Opacity primitives (4% ladder — state changes only, #99-D1)", ""),
     ("semantic-colour.json", "Semantic colour (light / dark)",  ""),
     ("typography.json",      "Typography",                      ""),
     ("spacing.json",         "Spacing (gap / padding)",         ""),

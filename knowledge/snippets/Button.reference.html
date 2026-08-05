@@ -13,7 +13,7 @@
   REBOUND 2026-07-20 onto the Mono button/* ladder (was the Legacy red primary/* + bespoke greys):
    • PRIMARY is now MONOCHROME — NO red (B-D1). Fill button/primary/background/* → surface/action-primary*
      → color/mono/*. Default #1A1A1A/#FAFAFA · pressed #000000/#FFFFFF.
-   • PRIMARY HOVER = operational OPACITY 0.70 (ADR-0009 / B-D3): the fill fades over the page. The colour
+   • PRIMARY HOVER = operational OPACITY 0.68 (--alpha-68 primitive, #99-D1; was 0.70 under ADR-0009 / B-D3): the fill fades over the page. The colour
      equivalent (#626262/#B7B7B7, button/primary/background/hover) is STORED for colour-only / chromatic
      consumers and bound in the manifest; the render uses the opacity mechanism. Sibling tiers keep a
      COLOUR hover (distinct greys) — the per-state mechanism is selectable, exactly as ADR-0009 says.
@@ -58,7 +58,7 @@
     --press:90ms cubic-bezier(0,0,.58,1);        /* motion/duration/press + motion/easing/out — snappy depress */
     --phys-size:120;                             /* LOCAL geometry (like --h): the control's characteristic size in px — text buttons ≈120 wide (Tranche-1 size-scoping). Divides the B-D7 pixel-true travel: scale(calc(1 ± travel/size)). */
   }
-  [data-theme="light"]{
+  [data-theme="light"]{ --alpha-68:0.68; /* alpha/68 primitive, #99-D1 */
     /* PRIMARY — Mono monochrome (button/primary/*) */
     --pri-default:#1A1A1A; --pri-hover:#626262; --pri-pressed:#000000; --pri-disabled:#E1E1E1;
     --pri-label:#FFFFFF; --pri-label-disabled:#9D9D9D; --pri-icon:#FFFFFF;
@@ -77,7 +77,7 @@
     /* interaction motion — B-D7 press physics via the component-type tier (ADR-0013): projector-maintained, theme-dialable (Legacy/SC → 0 and 1) */
     --press-travel:2; --press-darken:0.94;
   }
-  [data-theme="dark"]{
+  [data-theme="dark"]{ --alpha-68:0.68; /* alpha/68 primitive, #99-D1 */
     --pri-default:#FAFAFA; --pri-hover:#B7B7B7; --pri-pressed:#FFFFFF; --pri-disabled:#484848;
     --pri-label:#333333; --pri-label-disabled:#808080; --pri-icon:#333333;
     --sec-default:#808080; --sec-hover:#9D9D9D; --sec-pressed:#B7B7B7; --sec-disabled:#484848;
@@ -122,11 +122,13 @@
   /* ===== PARTIAL press-physics END ===== */
 
   /* PRIMARY — Mono monochrome fill, inverse label; pressed inverts via the per-mode token flip.
-     HOVER renders as operational OPACITY 0.70 over the page (ADR-0009 / B-D3): color-mix flattens the
-     default fill at 70% over --page. --pri-hover holds the STORED colour-equivalent (#626262/#B7B7B7)
-     for colour-only / chromatic consumers — bound in the manifest, not used for the opacity render. */
+     HOVER renders as operational OPACITY 0.68 (--alpha-68, #99-D1 — migrated from ADR-0009/B-D3's 0.70
+     to the 4% ladder, ties round DOWN) over the page: color-mix flattens the default fill at the
+     primitive's strength over --page. --pri-hover holds the STORED colour-equivalent (#626262/#B7B7B7,
+     derived at the pre-ladder 0.70 — re-derivation registered, not silently redone) for colour-only /
+     chromatic consumers — bound in the manifest, not used for the opacity render. */
   .btn.primary{background:var(--pri-default); color:var(--pri-label);}
-  .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) 70%, var(--page));}
+  .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) calc(var(--alpha-68) * 100%), var(--page));}
   .btn.primary.is-pressed{background:var(--pri-pressed);}
   /* opacity:1 overrides the browser's native disabled fade so the token colour shows true */
   .btn:disabled{opacity:1;}
@@ -184,7 +186,7 @@
     <button class="btn primary is-disabled" disabled>Example</button>
     <button class="btn primary"><span class="spin"></span>Loading</button>
     <button class="btn primary is-success">Done</button>
-    <span class="cap">Default · pressed · disabled · processing · success (hover me — fill fades 0.70)</span>
+    <span class="cap">Default · pressed · disabled · processing · success (hover me — fill fades to --alpha-68)</span>
   </div>
 
   <h2 class="spec-h">Secondary</h2>
@@ -224,6 +226,7 @@
   {
     "component": "Button",
     "vars": {
+      "--alpha-68": "alpha/68",
       "--pri-default": "button/primary/background/default",
       "--pri-hover": "button/primary/background/hover",
       "--pri-pressed": "button/primary/background/pressed",

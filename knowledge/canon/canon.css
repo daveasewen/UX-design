@@ -240,6 +240,32 @@
   --color-supporting-apricot-orange-4: #BD877E;
   --color-supporting-apricot-orange-5: #AA7676;
 
+  /* ---- Opacity primitives (4% ladder — state changes only, #99-D1)  (opacity.json) ---- */
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+
   /* ---- Semantic colour (light / dark)  (semantic-colour.json) ---- */
   --background-default: #FFFFFF;
   --focus-ring: #305A85;
@@ -371,6 +397,7 @@
   --data-axis-alpha: 1;
   --data-grid-color: #E1E1E1;
   --data-grid-alpha: 1;
+  --data-control-label-disabled-color: #9D9D9D;
   --data-target-color: #313131;
   --data-target-alpha: 1;
   --data-text-on-series: #FFFFFF;
@@ -666,6 +693,7 @@
   --data-series-high-contrast-5: #E5C283;
   --data-axis-color: #9D9D9D;
   --data-grid-color: #484848;
+  --data-control-label-disabled-color: #808080;
   --data-target-color: #B7B7B7;
   --data-text-on-series: #FFFFFF;
   --data-delta-gain: #1AA05C;
@@ -983,11 +1011,13 @@
 }
 /* ===== PARTIAL press-physics END ===== */
 /* PRIMARY — Mono monochrome fill, inverse label; pressed inverts via the per-mode token flip.
-     HOVER renders as operational OPACITY 0.70 over the page (ADR-0009 / B-D3): color-mix flattens the
-     default fill at 70% over --page. --pri-hover holds the STORED colour-equivalent (#626262/#B7B7B7)
-     for colour-only / chromatic consumers — bound in the manifest, not used for the opacity render. */
+     HOVER renders as operational OPACITY 0.68 (--alpha-68, #99-D1 — migrated from ADR-0009/B-D3's 0.70
+     to the 4% ladder, ties round DOWN) over the page: color-mix flattens the default fill at the
+     primitive's strength over --page. --pri-hover holds the STORED colour-equivalent (#626262/#B7B7B7,
+     derived at the pre-ladder 0.70 — re-derivation registered, not silently redone) for colour-only /
+     chromatic consumers — bound in the manifest, not used for the opacity render. */
 .cn-button .btn.primary{background:var(--pri-default); color:var(--pri-label);}
-.cn-button .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) 70%, var(--page));}
+.cn-button .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) calc(var(--alpha-68) * 100%), var(--page));}
 .cn-button .btn.primary.is-pressed{background:var(--pri-pressed);}
 /* opacity:1 overrides the browser's native disabled fade so the token colour shows true */
 .cn-button .btn:disabled{opacity:1;}
@@ -1237,7 +1267,7 @@
 .cn-cards .sk.title{height:16px; width:55%;}
 .cn-cards .sk.line{width:100%;}
 .cn-cards .sk.line.short{width:78%;}
-@keyframes cn-cards-pulse{0%,100%{opacity:1;} 50%{opacity:.5;}}
+@keyframes cn-cards-pulse{0%,100%{opacity:1;} 50%{opacity:var(--alpha-48);}}
 /* type 4 — Selectable option cards (radiogroup; reuses the Selection-controls radio atom) */
 .cn-cards .optgroup{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:20px;}
 .cn-cards .card.opt{flex-direction:row; gap:12px; padding:16px; align-items:flex-start; cursor:pointer;}
@@ -1285,7 +1315,7 @@
 .cn-headers .content-header h1{flex:1; margin:0; font:400 20px/1.2 var(--font); text-align:center;}
 .cn-headers .display{padding:24px 16px;}
 .cn-headers .display h1{margin:0; font:400 32px/1.1 var(--font); letter-spacing:-.01em;}
-.cn-headers .display p{margin:8px 0 0; font:400 16px/1.5 var(--font); opacity:.8;}
+.cn-headers .display p{margin:8px 0 0; font:400 16px/1.5 var(--font); opacity:var(--alpha-80);}
 /* subtitle = REGULAR (was 300/light — too thin, Dave 2026-06-29) */
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
@@ -1476,7 +1506,7 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-modals :is(button, .cn-modals a, .cn-modals label, .cn-modals span, .cn-modals small, .cn-modals strong, .cn-modals em, .cn-modals b, .cn-modals i, .cn-modals th, .cn-modals td, .cn-modals dt, .cn-modals dd, .cn-modals li, .cn-modals figcaption, .cn-modals legend, .cn-modals caption, .cn-modals summary, .cn-modals output, .cn-modals time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* LOCAL geometry — text buttons ≈120 wide; divides the B-D7 pixel-true travel (ADR-0013) */
-.cn-modals .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
+.cn-modals .bg-content{opacity:var(--alpha-84); max-width:60ch; line-height:1.6;}
 /* canon Button, inherited (mirror of Button.reference.html) */
 .cn-modals .btn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer;
     /* type: t-cm-button (bound in canon/type.css - T-D9/T-D12) */ transition:background var(--ease), transform var(--spring), filter var(--press);}
@@ -1553,7 +1583,7 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-input-fields :is(button, .cn-input-fields a, .cn-input-fields label, .cn-input-fields span, .cn-input-fields small, .cn-input-fields strong, .cn-input-fields em, .cn-input-fields b, .cn-input-fields i, .cn-input-fields th, .cn-input-fields td, .cn-input-fields dt, .cn-input-fields dd, .cn-input-fields li, .cn-input-fields figcaption, .cn-input-fields legend, .cn-input-fields caption, .cn-input-fields summary, .cn-input-fields output, .cn-input-fields time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 .cn-input-fields h2.sec{font:500 16px/1.3 var(--font); /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ color:var(--text);
-    opacity:.6; margin:2.5rem 0 .35rem;}
+    opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
 .cn-input-fields p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
 /* library icon sprite — sized 18px (icon-scale: small) */
 .cn-input-fields .icn{width:18px; height:18px; display:block; flex-shrink:0;}
@@ -3573,6 +3603,569 @@
 }
 
 /* ============================================================
+   Chart-boxplot  (from snippets/Chart-boxplot.reference.html)
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region"
+   Scope: .cn-chart-boxplot   ============================================================ */
+.cn-chart-boxplot{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --shadow: var(--elevation-functional);
+  --data-axis: var(--data-axis-color);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
+  --data-series-1-hc: #484D6F;
+  --axis-alpha: .6;
+  --data-grid: #626262;
+  --grid-alpha: .1;
+  --data-control-swatch-off: currentColor;
+  --pop-border: #FFFFFF00;
+}
+[data-theme="dark"] .cn-chart-boxplot{
+  --data-series-1-hc: #93B6CC;
+  --data-grid: #9D9D9D;
+  --grid-alpha: .16;
+  --pop-border: #808080;
+}
+.cn-chart-boxplot [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);}
+.cn-chart-boxplot h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-boxplot .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-boxplot figure.dv{margin:0; position:relative;}
+.cn-chart-boxplot .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-boxplot .dv-title{margin:0;}
+.cn-chart-boxplot .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+.cn-chart-boxplot .dv-stage{overflow-x:auto; padding-bottom:4px;}
+.cn-chart-boxplot .dv-chart-area{width:580px;}
+.cn-chart-boxplot .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-boxplot figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-boxplot figure.dv-fit-on .dv-svg{width:100%;}
+.cn-chart-boxplot .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+.cn-chart-boxplot line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+.cn-chart-boxplot text.dv-axis, .cn-chart-boxplot text.dv-label{opacity:var(--axis-alpha);}
+.cn-chart-boxplot .dv-box{fill:var(--data-series-1); stroke:var(--ink); stroke-width:1;}
+.cn-chart-boxplot .dv-whisker, .cn-chart-boxplot .dv-cap{stroke:var(--ink); stroke-width:1; fill:none;}
+.cn-chart-boxplot .dv-median{stroke:var(--ink); stroke-width:2;}
+.cn-chart-boxplot .dv-pt{stroke:var(--page); stroke-width:1.5; vector-effect:non-scaling-stroke;}
+.cn-chart-boxplot .dv-hit{stroke:none; cursor:pointer;}
+.cn-chart-boxplot .dv-hit:focus-visible{outline:2px solid var(--ink); outline-offset:1px;}
+.cn-chart-boxplot .dv-box[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-boxplot .dv-animate g.dv-boxgroup, .cn-chart-boxplot .dv-animate g.dv-marker{opacity:0; animation:cn-chart-boxplot-dvFade var(--ease) both;}
+}
+@keyframes cn-chart-boxplot-dvFade{from{opacity:0;} to{opacity:1;}}
+/* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, copied byte-for-byte from Chart-bar/Chart-scatter ── */
+.cn-chart-boxplot .dv-tbl-toggle, .cn-chart-boxplot .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-boxplot .dv-tbl-toggle::before, .cn-chart-boxplot .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-boxplot .dv-tbl-toggle > *, .cn-chart-boxplot .dv-vt > *{position:relative; z-index:1;}
+.cn-chart-boxplot .dv-tbl-toggle:hover, .cn-chart-boxplot .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-boxplot .dv-tbl-toggle:focus-visible, .cn-chart-boxplot .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-boxplot .dv-tbl-toggle[aria-expanded="true"], .cn-chart-boxplot .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-boxplot .dv-act, .cn-chart-boxplot .dv-dd{gap:8px;}
+.cn-chart-boxplot .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-boxplot .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-boxplot .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-boxplot .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-boxplot .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-boxplot .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+.cn-chart-boxplot .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-boxplot .dv-tablepanel[hidden]{display:none;}
+.cn-chart-boxplot .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-boxplot .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-boxplot .dv-tip.on{opacity:1;}
+.cn-chart-boxplot table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-boxplot table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-boxplot table.dv-table th, .cn-chart-boxplot table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-boxplot table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-boxplot table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-boxplot .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-boxplot .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-boxplot .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-boxplot .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Chart-bullet  (from snippets/Chart-bullet.reference.html)
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region"
+   Scope: .cn-chart-bullet   ============================================================ */
+.cn-chart-bullet{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --grow: 760ms cubic-bezier(.22,.61,.36,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --shadow: var(--elevation-functional);
+  --data-axis: var(--data-axis-color);
+  --data-series-1-hc: #484D6F;
+  --axis-alpha: .6;
+  --data-control-label-disabled: #9D9D9D;
+  --data-control-swatch-off: currentColor;
+  --pop-border: #FFFFFF00;
+  --dv-range-1: #EDEDED;
+  --dv-range-2: #D7D8D6;
+  --dv-range-3: #B7B7B7;
+}
+[data-theme="dark"] .cn-chart-bullet{
+  --data-series-1-hc: #93B6CC;
+  --data-control-label-disabled: #808080;
+  --pop-border: #808080;
+  --dv-range-1: #212121;
+  --dv-range-2: #404040;
+  --dv-range-3: #474747;
+}
+.cn-chart-bullet [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);}
+.cn-chart-bullet h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-bullet .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-bullet figure.dv{margin:0; position:relative;}
+.cn-chart-bullet .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-bullet .dv-title{margin:0;}
+.cn-chart-bullet .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+.cn-chart-bullet .dv-stage{overflow-x:auto; padding-bottom:4px;}
+.cn-chart-bullet .dv-chart-area{width:580px;}
+.cn-chart-bullet .dv-svg{display:block; width:580px; height:200px; overflow:visible;}
+.cn-chart-bullet figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-bullet figure.dv-fit-on .dv-svg{width:100%;}
+.cn-chart-bullet text.dv-axis, .cn-chart-bullet text.dv-label{opacity:var(--axis-alpha);}
+.cn-chart-bullet line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+/* #96-D1 ③: CANON greys (not un-minted color-mix), z-order bands→bar→marker is DOM paint order
+     (SVG has no z-index) — range rects precede the measure rect precede the target line in the
+     markup below, already correct; unchanged here. */
+.cn-chart-bullet .dv-range-1{fill:var(--dv-range-1);}
+.cn-chart-bullet .dv-range-2{fill:var(--dv-range-2);}
+.cn-chart-bullet .dv-range-3{fill:var(--dv-range-3);}
+.cn-chart-bullet .dv-measure{fill:var(--data-series-1); transition:filter var(--ease);}
+.cn-chart-bullet .dv-measure:hover{filter:brightness(1.12);}
+.cn-chart-bullet .dv-target{stroke:var(--ink); stroke-width:3;}
+.cn-chart-bullet .dv-measure[tabindex]:focus-visible, .cn-chart-bullet .dv-target[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-bullet .dv-animate rect.dv-measure{transform-box:fill-box; transform-origin:left; animation:cn-chart-bullet-dvGrowX var(--grow) both;}
+.cn-chart-bullet .dv-animate .dv-row{opacity:0; animation:cn-chart-bullet-dvFade var(--ease) both;}
+}
+@keyframes cn-chart-bullet-dvGrowX{from{transform:scaleX(0);}}
+@keyframes cn-chart-bullet-dvFade{from{opacity:0;} to{opacity:1;}}
+/* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, copied byte-for-byte from Chart-bar/Chart-scatter ── */
+.cn-chart-bullet .dv-tbl-toggle, .cn-chart-bullet .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-bullet .dv-tbl-toggle::before, .cn-chart-bullet .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-bullet .dv-tbl-toggle > *, .cn-chart-bullet .dv-vt > *{position:relative; z-index:1;}
+.cn-chart-bullet .dv-tbl-toggle:hover, .cn-chart-bullet .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-bullet .dv-tbl-toggle:focus-visible, .cn-chart-bullet .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-bullet .dv-tbl-toggle[aria-expanded="true"], .cn-chart-bullet .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-bullet .dv-act, .cn-chart-bullet .dv-dd{gap:8px;}
+.cn-chart-bullet .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-bullet .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-bullet .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-bullet .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-bullet .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-bullet .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+.cn-chart-bullet .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-bullet .dv-tablepanel[hidden]{display:none;}
+.cn-chart-bullet .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-bullet .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-bullet .dv-tip.on{opacity:1;}
+.cn-chart-bullet table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-bullet table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-bullet table.dv-table th, .cn-chart-bullet table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-bullet table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-bullet table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-bullet .dv-empty-frame{width:580px; height:200px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-bullet .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-bullet .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-bullet .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Chart-butterfly-h  (from snippets/Chart-butterfly-h.reference.html)
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Scope: .cn-chart-butterfly-h   ============================================================ */
+.cn-chart-butterfly-h{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --grow: 760ms cubic-bezier(.22,.61,.36,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --data-series-1-hc: var(--data-series-high-contrast-1);
+  --data-series-2-hc: var(--data-series-high-contrast-2);
+  --data-series-3-hc: var(--data-series-high-contrast-3);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --data-grid: var(--data-grid-color);
+  --grid-alpha: var(--data-grid-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
+  --data-control-swatch-off: currentColor;
+}
+.cn-chart-butterfly-h block layers on top is absent here. Declared gap — receipted, .cn-chart-butterfly-h not
+  silently inherited. No gridlines are drawn at all (a butterfly's shared centre gutter substitutes
+  for a value axis; this is a geometry choice, .cn-chart-butterfly-h not a fence workaround).
+
+  GEOMETRY: two independent horizontal baselines (left series flows left from x=245, .cn-chart-butterfly-h right series
+  flows right from x=335) either side of a 90px category-label gutter centred on x=290, .cn-chart-butterfly-h so labels
+  never sit under a bar. DV-D09 cites the h-bar default fill = data/series/3 for the RIGHT
+  (positive-reading) series; the LEFT (mirrored) series takes data/series/1, .cn-chart-butterfly-h the categorical
+  default, .cn-chart-butterfly-h so the two directions read as visually distinct series, .cn-chart-butterfly-h not two shades of the same one.
+
+  LEGEND: DV-D11 chrome (dv-legend.js, .cn-chart-butterfly-h canon) — checkbox swatch + isolate label, .cn-chart-butterfly-h hollow off-state, .cn-chart-butterfly-h additive focus set, .cn-chart-butterfly-h sr-only live region. AUTO-BEHAVIOUR markers below are EMPTY (worker fence):
+  dv-behaviour.js injection + component-types.json "$members" entry are conductor serials, .cn-chart-butterfly-h handed
+  via receipt. On-chart letter keys (bar's .dv-barkey A/B) are OMITTED here — direction (left/right)
+  plus colour already disambiguate the two series without a third channel; receipted as a deliberate
+  delta from the bar contract, .cn-chart-butterfly-h not an oversight.
+
+  RULES CARRIED FORWARD: dv-017 var() fills · dv-016 ≥3:1 rendered both modes · DEF-003 CSS-only
+  motion · composites-only type · controls never dim-only (hollow-swatch off-state, .cn-chart-butterfly-h B-D4).
+  Empty state consumes the Empty-state pattern by reference.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{--font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1);
+    --grow:760ms cubic-bezier(.22,.61,.36,1);}
+.cn-chart-butterfly-h [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
+    --data-series-3:var(--data-series-3-hc);}
+.cn-chart-butterfly-h h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-butterfly-h .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-butterfly-h figure.dv{margin:0; position:relative;}
+.cn-chart-butterfly-h .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-butterfly-h .dv-title{margin:0;}
+.cn-chart-butterfly-h .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+.cn-chart-butterfly-h .dv-stage{overflow-x:auto; padding-bottom:4px;}
+.cn-chart-butterfly-h .dv-chart-area{width:580px;}
+.cn-chart-butterfly-h .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-butterfly-h figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-butterfly-h figure.dv-fit-on .dv-svg{width:100%;}
+/* ds-020: no .dv-grid / text.dv-axis / text.dv-label rules here — see header note. */
+.cn-chart-butterfly-h rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+.cn-chart-butterfly-h rect.dv-series:hover{filter:brightness(1.12);}
+.cn-chart-butterfly-h .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-butterfly-h .dv-animate rect.dv-series[data-grow="left"]{transform-box:fill-box; transform-origin:right; animation:cn-chart-butterfly-h-dvGrowXL var(--grow) both;}
+.cn-chart-butterfly-h .dv-animate rect.dv-series[data-grow="right"]{transform-box:fill-box; transform-origin:left; animation:cn-chart-butterfly-h-dvGrowX var(--grow) both;}
+}
+@keyframes cn-chart-butterfly-h-dvGrowXL{from{transform:scaleX(0);}}
+@keyframes cn-chart-butterfly-h-dvGrowX{from{transform:scaleX(0);}}
+/* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, ported from Chart-bar/Chart-line ── */
+.cn-chart-butterfly-h .dv-tbl-toggle, .cn-chart-butterfly-h .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-butterfly-h .dv-tbl-toggle::before, .cn-chart-butterfly-h .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-butterfly-h .dv-tbl-toggle > *, .cn-chart-butterfly-h .dv-vt > *{position:relative; z-index:1;}
+.cn-chart-butterfly-h .dv-tbl-toggle:hover, .cn-chart-butterfly-h .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-butterfly-h .dv-tbl-toggle:focus-visible, .cn-chart-butterfly-h .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-h .dv-tbl-toggle[aria-expanded="true"]{border-color:var(--ink);}
+.cn-chart-butterfly-h .dv-act, .cn-chart-butterfly-h .dv-dd{gap:8px;}
+.cn-chart-butterfly-h .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-butterfly-h .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-butterfly-h .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-butterfly-h .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-butterfly-h .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-butterfly-h .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+.cn-chart-butterfly-h .dv-off{display:none !important;}
+/* ================= DV-D11 LEGEND MODEL — migrated chrome, ported verbatim from Chart-bar ==== */
+.cn-chart-butterfly-h .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
+.cn-chart-butterfly-h .dv-leg.center{flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0 0;}
+.cn-chart-butterfly-h .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
+    padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
+.cn-chart-butterfly-h .dv-legrow:hover{border-color:var(--ink);}
+.cn-chart-butterfly-h .dv-legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+.cn-chart-butterfly-h .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+.cn-chart-butterfly-h .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+.cn-chart-butterfly-h .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
+.cn-chart-butterfly-h .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-h .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+    margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left; font:inherit;}
+.cn-chart-butterfly-h .dv-leg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-butterfly-h .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-h .dv-leg-item > *{position:relative; z-index:1;}
+.cn-chart-butterfly-h .dv-leg-name{white-space:nowrap;}
+.cn-chart-butterfly-h .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px;
+    border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+    transition:border-color var(--ease), color var(--ease);}
+.cn-chart-butterfly-h .dv-leg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-butterfly-h .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+.cn-chart-butterfly-h .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-h .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
+.cn-chart-butterfly-h .is-faded{opacity:.24 !important;}
+.cn-chart-butterfly-h .is-ghost{opacity:.12 !important;}
+.cn-chart-butterfly-h .is-peek{opacity:.24 !important;}
+.cn-chart-butterfly-h .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-butterfly-h .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-butterfly-h .dv-tablepanel[hidden]{display:none;}
+.cn-chart-butterfly-h .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-h .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-butterfly-h .dv-tip.on{opacity:1;}
+.cn-chart-butterfly-h table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-butterfly-h table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-butterfly-h table.dv-table th, .cn-chart-butterfly-h table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-butterfly-h table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-butterfly-h table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-butterfly-h .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-butterfly-h .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-butterfly-h .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-butterfly-h .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Chart-butterfly-v  (from snippets/Chart-butterfly-v.reference.html)
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Scope: .cn-chart-butterfly-v   ============================================================ */
+.cn-chart-butterfly-v{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --grow: 760ms cubic-bezier(.22,.61,.36,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --data-series-1-hc: var(--data-series-high-contrast-1);
+  --data-series-2-hc: var(--data-series-high-contrast-2);
+  --data-series-3-hc: var(--data-series-high-contrast-3);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --data-grid: var(--data-grid-color);
+  --grid-alpha: var(--data-grid-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
+  --data-control-swatch-off: currentColor;
+}
+.cn-chart-butterfly-v [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
+    --data-series-3:var(--data-series-3-hc);}
+.cn-chart-butterfly-v h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-butterfly-v .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-butterfly-v figure.dv{margin:0; position:relative;}
+.cn-chart-butterfly-v .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-butterfly-v .dv-title{margin:0;}
+.cn-chart-butterfly-v .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+.cn-chart-butterfly-v .dv-stage{overflow-x:auto; padding-bottom:4px;}
+.cn-chart-butterfly-v .dv-chart-area{width:580px;}
+.cn-chart-butterfly-v .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-butterfly-v figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-butterfly-v figure.dv-fit-on .dv-svg{width:100%;}
+/* ds-020: no .dv-grid / text.dv-axis / text.dv-label rules here — see header note. */
+.cn-chart-butterfly-v rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+.cn-chart-butterfly-v rect.dv-series:hover{filter:brightness(1.12);}
+.cn-chart-butterfly-v .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-butterfly-v .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:cn-chart-butterfly-v-dvGrowY var(--grow) both;}
+.cn-chart-butterfly-v .dv-animate rect.dv-series[data-grow="down"]{transform-box:fill-box; transform-origin:top; animation:cn-chart-butterfly-v-dvGrowYD var(--grow) both;}
+}
+@keyframes cn-chart-butterfly-v-dvGrowY{from{transform:scaleY(0);}}
+@keyframes cn-chart-butterfly-v-dvGrowYD{from{transform:scaleY(0);}}
+/* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, ported from Chart-bar/Chart-line ── */
+.cn-chart-butterfly-v .dv-tbl-toggle, .cn-chart-butterfly-v .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-butterfly-v .dv-tbl-toggle::before, .cn-chart-butterfly-v .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-butterfly-v .dv-tbl-toggle > *, .cn-chart-butterfly-v .dv-vt > *{position:relative; z-index:1;}
+.cn-chart-butterfly-v .dv-tbl-toggle:hover, .cn-chart-butterfly-v .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-butterfly-v .dv-tbl-toggle:focus-visible, .cn-chart-butterfly-v .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-v .dv-tbl-toggle[aria-expanded="true"]{border-color:var(--ink);}
+.cn-chart-butterfly-v .dv-act, .cn-chart-butterfly-v .dv-dd{gap:8px;}
+.cn-chart-butterfly-v .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-butterfly-v .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-butterfly-v .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-butterfly-v .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-butterfly-v .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-butterfly-v .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+.cn-chart-butterfly-v .dv-off{display:none !important;}
+/* ================= DV-D11 LEGEND MODEL — migrated chrome, ported verbatim from Chart-bar ==== */
+.cn-chart-butterfly-v .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
+.cn-chart-butterfly-v .dv-leg.center{flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0 0;}
+.cn-chart-butterfly-v .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
+    padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
+.cn-chart-butterfly-v .dv-legrow:hover{border-color:var(--ink);}
+.cn-chart-butterfly-v .dv-legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+.cn-chart-butterfly-v .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+.cn-chart-butterfly-v .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+.cn-chart-butterfly-v .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
+.cn-chart-butterfly-v .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-v .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+    margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left; font:inherit;}
+.cn-chart-butterfly-v .dv-leg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-butterfly-v .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-v .dv-leg-item > *{position:relative; z-index:1;}
+.cn-chart-butterfly-v .dv-leg-name{white-space:nowrap;}
+.cn-chart-butterfly-v .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px;
+    border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+    transition:border-color var(--ease), color var(--ease);}
+.cn-chart-butterfly-v .dv-leg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-butterfly-v .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+.cn-chart-butterfly-v .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-v .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
+.cn-chart-butterfly-v .is-faded{opacity:.24 !important;}
+.cn-chart-butterfly-v .is-ghost{opacity:.12 !important;}
+.cn-chart-butterfly-v .is-peek{opacity:.24 !important;}
+.cn-chart-butterfly-v .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-butterfly-v .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-butterfly-v .dv-tablepanel[hidden]{display:none;}
+.cn-chart-butterfly-v .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-butterfly-v .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-butterfly-v .dv-tip.on{opacity:1;}
+.cn-chart-butterfly-v table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-butterfly-v table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-butterfly-v table.dv-table th, .cn-chart-butterfly-v table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-butterfly-v table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-butterfly-v table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-butterfly-v .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-butterfly-v .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-butterfly-v .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-butterfly-v .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Chart-candlestick  (from snippets/Chart-candlestick.reference.html)
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region"
+   Scope: .cn-chart-candlestick   ============================================================ */
+.cn-chart-candlestick{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --shadow: var(--elevation-functional);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: .6;
+  --data-grid: #626262;
+  --grid-alpha: .1;
+  --data-control-label-disabled: #9D9D9D;
+  --data-control-swatch-off: currentColor;
+  --pop-border: #FFFFFF00;
+}
+[data-theme="dark"] .cn-chart-candlestick{
+  --data-grid: #9D9D9D;
+  --grid-alpha: .16;
+  --data-control-label-disabled: #808080;
+  --pop-border: #808080;
+}
+.cn-chart-candlestick h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-candlestick .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-candlestick figure.dv{margin:0; position:relative;}
+.cn-chart-candlestick .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-candlestick .dv-title{margin:0;}
+.cn-chart-candlestick .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+.cn-chart-candlestick .dv-stage{overflow-x:auto; padding-bottom:4px;}
+.cn-chart-candlestick .dv-chart-area{width:580px;}
+.cn-chart-candlestick .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-candlestick figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-candlestick figure.dv-fit-on .dv-svg{width:100%;}
+.cn-chart-candlestick .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+.cn-chart-candlestick line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+.cn-chart-candlestick text.dv-axis, .cn-chart-candlestick text.dv-label{opacity:var(--axis-alpha);}
+.cn-chart-candlestick .dv-wick{stroke:var(--ink); stroke-opacity:.6; stroke-width:1;}
+/* dv0-96-D1 ①: non-colour redundancy channel — hollow-up (page fill, stroked in the gain token)
+     vs filled-down (loss token fill+stroke). Same data/delta/gain|loss tokens, shape carries the
+     signal for colour-blind/greyscale reading. */
+.cn-chart-candlestick .dv-body.dv-up{fill:var(--page); stroke:var(--data-delta-gain); stroke-width:1.5;}
+.cn-chart-candlestick .dv-body.dv-down{fill:var(--data-delta-loss); stroke:var(--data-delta-loss); stroke-width:1.5;}
+.cn-chart-candlestick .dv-body[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-candlestick .dv-animate g.dv-candle{opacity:0; animation:cn-chart-candlestick-dvFade var(--ease) both;}
+}
+@keyframes cn-chart-candlestick-dvFade{from{opacity:0;} to{opacity:1;}}
+/* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, copied byte-for-byte from Chart-bar/Chart-scatter ── */
+.cn-chart-candlestick .dv-tbl-toggle, .cn-chart-candlestick .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-candlestick .dv-tbl-toggle::before, .cn-chart-candlestick .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-candlestick .dv-tbl-toggle > *, .cn-chart-candlestick .dv-vt > *{position:relative; z-index:1;}
+.cn-chart-candlestick .dv-tbl-toggle:hover, .cn-chart-candlestick .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-candlestick .dv-tbl-toggle:focus-visible, .cn-chart-candlestick .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-candlestick .dv-tbl-toggle[aria-expanded="true"], .cn-chart-candlestick .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-candlestick .dv-act, .cn-chart-candlestick .dv-dd{gap:8px;}
+.cn-chart-candlestick .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-candlestick .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-candlestick .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-candlestick .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-candlestick .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-candlestick .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+.cn-chart-candlestick .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-candlestick .dv-tablepanel[hidden]{display:none;}
+.cn-chart-candlestick .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-candlestick .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-candlestick .dv-tip.on{opacity:1;}
+.cn-chart-candlestick table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-candlestick table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-candlestick table.dv-table th, .cn-chart-candlestick table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-candlestick table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-candlestick table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-candlestick .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-candlestick .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-candlestick .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-candlestick .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Chart-combo  (from snippets/Chart-combo.reference.html)
    Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
    Scope: .cn-chart-combo   ============================================================ */
@@ -3947,6 +4540,97 @@
 }
 
 /* ============================================================
+   Chart-histogram  (from snippets/Chart-histogram.reference.html)
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Scope: .cn-chart-histogram   ============================================================ */
+.cn-chart-histogram{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --grow: 760ms cubic-bezier(.22,.61,.36,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --data-series-1-hc: var(--data-series-high-contrast-1);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
+}
+.cn-chart-histogram [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);}
+.cn-chart-histogram h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-histogram .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-histogram figure.dv{margin:0; position:relative;}
+.cn-chart-histogram .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-histogram .dv-title{margin:0;}
+.cn-chart-histogram .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+.cn-chart-histogram .dv-stage{overflow-x:auto; padding-bottom:4px;}
+.cn-chart-histogram .dv-chart-area{width:580px;}
+.cn-chart-histogram .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-histogram figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-histogram figure.dv-fit-on .dv-svg{width:100%;}
+/* ds-020: no .dv-grid / text.dv-axis / text.dv-label rules here — see header note. */
+/* #96-D3: standing 2px separation rule for adjacent filled blocks — histogram bars are
+     edge-to-edge (unlike bar's gapped columns), so a 2px page-coloured stroke stands in for
+     the gap (same idiom as dv-004's donut/pie segment strokes). */
+.cn-chart-histogram rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease); stroke:var(--page); stroke-width:2;}
+.cn-chart-histogram rect.dv-series:hover{filter:brightness(1.12);}
+.cn-chart-histogram .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* contiguous bins share an x-edge; a hover/focus outline on shared-edge rects can visually
+     bleed into the neighbour, so the outline goes INSET here rather than bar's outside offset. */
+.cn-chart-histogram .dv-series[tabindex]:focus-visible{outline-offset:-2px;}
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-histogram .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:cn-chart-histogram-dvGrowY var(--grow) both;}
+}
+@keyframes cn-chart-histogram-dvGrowY{from{transform:scaleY(0);}}
+/* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, ported from Chart-bar/Chart-line ── */
+.cn-chart-histogram .dv-tbl-toggle, .cn-chart-histogram .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-histogram .dv-tbl-toggle::before, .cn-chart-histogram .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-histogram .dv-tbl-toggle > *, .cn-chart-histogram .dv-vt > *{position:relative; z-index:1;}
+.cn-chart-histogram .dv-tbl-toggle:hover, .cn-chart-histogram .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-histogram .dv-tbl-toggle:focus-visible, .cn-chart-histogram .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-histogram .dv-tbl-toggle[aria-expanded="true"]{border-color:var(--ink);}
+.cn-chart-histogram .dv-act, .cn-chart-histogram .dv-dd{gap:8px;}
+.cn-chart-histogram .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-histogram .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-histogram .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-histogram .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-histogram .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-histogram .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+.cn-chart-histogram .dv-off{display:none !important;}
+/* NEW — static (non-interactive) legend key. Single-series rule: nothing to filter, so this
+     is a plain swatch + label, not the DV-D11 checkbox/isolate chrome. Not present in Chart-bar. */
+.cn-chart-histogram .dv-leg-static{list-style:none; margin:16px 0 0; padding:0; display:flex; gap:8px; align-items:center;}
+.cn-chart-histogram .dv-leg-static .sw{width:12px; height:12px; flex:none; display:inline-block; background:var(--data-series-1);}
+.cn-chart-histogram .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-histogram .dv-tablepanel[hidden]{display:none;}
+.cn-chart-histogram .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-histogram .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-histogram .dv-tip.on{opacity:1;}
+.cn-chart-histogram table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-histogram table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-histogram table.dv-table th, .cn-chart-histogram table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-histogram table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-histogram table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-histogram .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-histogram .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-histogram .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-histogram .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Chart-line  (from snippets/Chart-line.reference.html)
    Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
    Scope: .cn-chart-line   ============================================================ */
@@ -4171,8 +4855,144 @@
 }
 
 /* ============================================================
+   Chart-pie  (from snippets/Chart-pie.reference.html)
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Scope: .cn-chart-pie   ============================================================ */
+.cn-chart-pie{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --line: var(--border-subtle);
+  --data-series-1-hc: var(--data-series-high-contrast-1);
+  --data-series-2-hc: var(--data-series-high-contrast-2);
+  --data-series-3-hc: var(--data-series-high-contrast-3);
+  --data-series-4-hc: var(--data-series-high-contrast-4);
+  --data-series-5-hc: var(--data-series-high-contrast-5);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
+  --data-control-swatch-off: currentColor;
+}
+.cn-chart-pie [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
+    --data-series-2:var(--data-series-2-hc);
+    --data-series-3:var(--data-series-3-hc);
+    --data-series-4:var(--data-series-4-hc);
+    --data-series-5:var(--data-series-5-hc);}
+.cn-chart-pie h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-pie .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-pie figure.dv{margin:0; position:relative;}
+.cn-chart-pie .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-pie .dv-title{margin:0;}
+.cn-chart-pie .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+.cn-chart-pie .dv-stage{overflow-x:auto; padding-bottom:4px;}
+.cn-chart-pie .dv-donut-row{display:flex; gap:28px; align-items:center; flex-wrap:wrap;}
+.cn-chart-pie .dv-svg{display:block; overflow:visible;}
+.cn-chart-pie path.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+.cn-chart-pie path.dv-series:hover{filter:brightness(1.12);}
+.cn-chart-pie path.dv-series:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-pie .dv-anno{opacity:0; transition:opacity 300ms cubic-bezier(.4,0,.2,1);}
+.cn-chart-pie .dv-anno.show{opacity:1;}
+.cn-chart-pie .dv-leader{stroke:var(--line); stroke-width:1; fill:none; transition:opacity var(--ease), visibility var(--ease);}
+.cn-chart-pie text.dv-key-el{fill:var(--ink); transition:opacity var(--ease), visibility var(--ease);}
+.cn-chart-pie text.dv-val{fill:var(--ink);}
+.cn-chart-pie text.dv-direct{fill:var(--ink); transition:opacity var(--ease), visibility var(--ease);}
+.cn-chart-pie .dv-off{display:none !important;}
+.cn-chart-pie .dv-controls{--control-h:32px;}
+.cn-chart-pie .dv-tbl-toggle, .cn-chart-pie .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-pie .dv-tbl-toggle::before, .cn-chart-pie .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-pie .dv-tbl-toggle > *, .cn-chart-pie .dv-vt > *{position:relative; z-index:1;}
+.cn-chart-pie .dv-tbl-toggle:hover, .cn-chart-pie .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-pie .dv-tbl-toggle:focus-visible, .cn-chart-pie .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-pie .dv-tbl-toggle[aria-expanded="true"], .cn-chart-pie .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-pie .dv-act, .cn-chart-pie .dv-dd{gap:8px;}
+.cn-chart-pie .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-pie .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-pie .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-pie .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-pie .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-pie .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+.cn-chart-pie .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
+    border:1px solid var(--line); background:transparent; vertical-align:top;}
+.cn-chart-pie .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
+    transition:left var(--ease), width var(--ease);}
+.cn-chart-pie .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
+.cn-chart-pie .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
+.cn-chart-pie .seg button[aria-pressed="true"]{color:var(--page);}
+.cn-chart-pie .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+.cn-chart-pie .seg.sm button{padding:0 8px;}
+.cn-chart-pie .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+/* DV-D11 LEGEND MODEL — runs on canon/dv-legend.js, copied verbatim from the donut. */
+.cn-chart-pie .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
+.cn-chart-pie .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
+.cn-chart-pie .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
+    padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
+.cn-chart-pie .dv-leg.vert .dv-legrow{width:100%;}
+.cn-chart-pie .dv-legrow:hover{border-color:var(--ink);}
+.cn-chart-pie .dv-legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+.cn-chart-pie .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+.cn-chart-pie .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+.cn-chart-pie .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
+.cn-chart-pie .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-pie .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+    margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left; font:inherit;}
+.cn-chart-pie .dv-leg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-pie .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-pie .dv-leg-item > *{position:relative; z-index:1;}
+.cn-chart-pie .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-pie .dv-leg-name{white-space:nowrap;}
+.cn-chart-pie .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:100%;
+    border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+    transition:border-color var(--ease), color var(--ease);}
+.cn-chart-pie .dv-leg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-pie .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+.cn-chart-pie .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-pie .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
+.cn-chart-pie .is-faded{opacity:.24 !important;}
+.cn-chart-pie .is-ghost{opacity:.12 !important;}
+.cn-chart-pie .is-peek{opacity:.24 !important;}
+.cn-chart-pie .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-pie .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-pie .dv-tablepanel[hidden]{display:none;}
+.cn-chart-pie .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-pie .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-pie .dv-tip.on{opacity:1;}
+.cn-chart-pie table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-pie table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-pie table.dv-table th, .cn-chart-pie table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-pie table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-pie table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-pie .dv-empty-frame{width:400px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-pie .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:320px;}
+.cn-chart-pie .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-pie .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Chart-scatter  (from snippets/Chart-scatter.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region", role="checkbox", aria-checked, aria-pressed
    Scope: .cn-chart-scatter   ============================================================ */
 .cn-chart-scatter{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -4182,41 +5002,113 @@
   --baseline: var(--border-action-strong);
   --line: var(--border-subtle);
   --shadow: var(--elevation-functional);
-  --grid-alpha: .10;
-  --axis-alpha: .6;
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --data-grid: var(--data-grid-color);
+  --grid-alpha: var(--data-grid-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
+  --data-control-swatch-off: currentColor;
   --pop-border: #FFFFFF00;
 }
 [data-theme="dark"] .cn-chart-scatter{
-  --grid-alpha: .16;
   --pop-border: #808080;
 }
 .cn-chart-scatter h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-scatter .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-scatter figure.dv{margin:0; position:relative;}
-.cn-chart-scatter .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-scatter .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
 .cn-chart-scatter .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
 .cn-chart-scatter .dv-stage{overflow-x:auto; padding-bottom:4px;}
 /* DV-D02 static: fixed geometry, scroll — text never scales */
 .cn-chart-scatter .dv-chart-area{width:580px;}
 .cn-chart-scatter .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
-.cn-chart-scatter .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1;}
-.cn-chart-scatter line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+/* JS-on (dv-behaviour adds .dv-fit-on): width releases to the container; fitCharts relayouts
+     HORIZONTAL positions only — height + text metrics fixed, viewBox pinned 1:1 (DV-D02). */
+.cn-chart-scatter figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-scatter figure.dv-fit-on .dv-svg{width:100%;}
+.cn-chart-scatter .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+.cn-chart-scatter line.dv-axis{stroke:var(--data-axis); stroke-width:1;}
 .cn-chart-scatter text.dv-axis, .cn-chart-scatter text.dv-label{opacity:var(--axis-alpha);}
 /* points ARE the series — series-colour fill + page-colour separating stroke (overlap legibility) */
 .cn-chart-scatter .dv-pt{stroke:var(--page); stroke-width:1.5; vector-effect:non-scaling-stroke;}
+/* AA 2.5.8 — invisible 24x24 (r=12) hit target per point; carries the interactive attrs
+     (tabindex/role/aria-label/data-tip) moved off the visible mark so focus, tooltip and
+     pointer all bind to the 24px target rather than the 9px glyph. Sibling to .dv-pt within
+     the same .dv-marker <g>, so it rides the same entry-fade opacity as the visible mark
+     (the group animates as one; no separate opacity/fill animation to dodge). */
+.cn-chart-scatter .dv-hit{stroke:none; cursor:pointer;}
+.cn-chart-scatter .dv-hit:focus-visible{outline:2px solid var(--ink); outline-offset:1px;}
 /* entry motion — CSS only (DEF-003): points fade in on a gentle stagger (no line to draw against) */
 @media (prefers-reduced-motion:no-preference){
 .cn-chart-scatter .dv-animate g.dv-marker{opacity:0; animation:cn-chart-scatter-dvFade var(--ease) both;}
 }
 @keyframes cn-chart-scatter-dvFade{from{opacity:0;} to{opacity:1;}}
-.cn-chart-scatter .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
-.cn-chart-scatter .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
-.cn-chart-scatter .dv-legend .sw{width:12px; height:12px; flex:none;}
-.cn-chart-scatter .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
+/* DV-D11 legend model (dv-legend behaviour, #66-D3) — migrated from the dead static
+     `.dv-legend` list (matched-grep-≠-presence defect, `_check_legend_migration.py`). ONE row
+     per series: SWATCH = checkbox (show/dim), LABEL = isolate. Horizontal here (scatter has no
+     side gutter like donut's `.vert`); centred under the chart. Ported from the signed-off
+     reference reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html; prototype-local
+     tokens resolved to canon (--disabled-ink → --text-disabled, --border-disabled). */
+/* Legend lockup layout — keys ranged LEFT / Reset right-inline (RULED, legend v5 review-edits
+     brief 2026-07-25; recovered #69 after going unenacted — Dave: "decided over a week ago").
+     On wrap (narrow) the lockup centres; 520px is an AGENT PLACEHOLDER breakpoint, Dave's eye rules it. */
+.cn-chart-scatter .dv-leg{list-style:none; margin:16px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:16px; --hit:44px;}
+.cn-chart-scatter .dv-leg-reset-wrap{margin-left:auto;}
+@media (max-width:520px){
+.cn-chart-scatter .dv-leg{justify-content:center;}
+.cn-chart-scatter .dv-leg-reset-wrap{margin-left:0; width:100%; display:flex; justify-content:center;}
+}
+/* the row = the bordered box carrying BOTH controls; the row itself is not interactive */
+.cn-chart-scatter .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
+    padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
+.cn-chart-scatter .dv-legrow:hover{border-color:var(--ink);}
+.cn-chart-scatter .dv-legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+/* SWATCH = checkbox — filled when shown; hollow + grey-primitive border when hidden.
+     HIT AREA: Apollo 44 via an invisible ::before. The swatch is ONE component, so 44 EVERYWHERE
+     (Dave 2026-07-25, reverses the 24px dense-case proposal); it grows LEFT into the gutter so
+     its target never overlaps the isolate label. Data marks stay EXEMPT (target = data geometry). */
+.cn-chart-scatter .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+.cn-chart-scatter .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+.cn-chart-scatter .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
+.cn-chart-scatter .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* LABEL = isolate toggle-button — borderless (the row carries the box); pressed reads via .is-solo */
+.cn-chart-scatter .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+    margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left; font:inherit;}
+.cn-chart-scatter .dv-leg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-scatter .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-scatter .dv-leg-item > *{position:relative; z-index:1;}
+/* keep the key + name above the invisible target */
+.cn-chart-scatter .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-scatter .dv-leg-name{white-space:nowrap;}
+/* Reset — the B-D4 pattern: default DISABLED (token colours, still VISIBLE), enables on any
+     ghost or isolate; hover lifts the border to ink. */
+.cn-chart-scatter .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px;
+    border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+    transition:border-color var(--ease), color var(--ease);}
+.cn-chart-scatter .dv-leg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-scatter .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+.cn-chart-scatter .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-scatter .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
+/* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
+     .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
+.cn-chart-scatter .is-faded{opacity:.24 !important;}
+.cn-chart-scatter .is-ghost{opacity:.12 !important;}
+.cn-chart-scatter .is-peek{opacity:.24 !important;}
+/* sr-only live region — every legend state change is announced (DV-D11 chrome clause) */
+.cn-chart-scatter .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* -- TOOLBAR CONTROLS -- ONE SHARED HEIGHT (Dave 2026-07-24), ported verbatim from Chart-bar/line.
      DV-J2 (2026-07-28): scatter joins the dv-behaviour group with consumes:["dv-behaviour"] -- the
-     <details> disclosure it shipped with is replaced by the canon toggle + panel the injected JS drives. */
+     <details> disclosure it shipped with is replaced by the canon toggle + panel the injected JS drives.
+     DV-J2b / #66-D3 (2026-08-01): scatter's segments legend MIGRATES to the DV-D11 model --
+     consumes now ["dv-behaviour","dv-legend"], the dead static .dv-legend list is gone, the
+     segments figure carries live .dv-legrow rows subscribed to canon/dv-legend.js. */
 .cn-chart-scatter .dv-tbl-toggle, .cn-chart-scatter .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
     flex:none; transition:border-color var(--ease);}
@@ -4278,6 +5170,10 @@
 .cn-chart-sparkline .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-sparkline figure.dv{margin:0;}
+/* dv-head/.dv-title added #68 (dv-lockup): title-only header — sparkline carries no toggle/legend
+     chrome, so this is the minimal literal copy (same rule text as the other five charts). */
+.cn-chart-sparkline .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-sparkline .dv-title{margin:0;}
 .cn-chart-sparkline .dv-stage{overflow-x:auto; padding-bottom:4px;}
 /* standalone spark — 340×64 render of the 580×90 frame (kit); no text inside, so non-uniform
      scale is safe. FIT (Layer-2, lane ②): JS-on (.dv-fit-on via dv-behaviour init) releases the
@@ -4325,6 +5221,146 @@
 .cn-chart-sparkline .dv-empty-frame{width:340px; height:64px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-sparkline .dv-empty-frame p{margin:0; opacity:.6;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Chart-stacked-area  (from snippets/Chart-stacked-area.reference.html)
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Scope: .cn-chart-stacked-area   ============================================================ */
+.cn-chart-stacked-area{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --data-series-1-hc: var(--data-series-high-contrast-1);
+  --data-series-2-hc: var(--data-series-high-contrast-2);
+  --data-series-3-hc: var(--data-series-high-contrast-3);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --data-grid: var(--data-grid-color);
+  --grid-alpha: var(--data-grid-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
+  --data-control-swatch-off: currentColor;
+}
+.cn-chart-stacked-area [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
+    --data-series-2:var(--data-series-2-hc);
+    --data-series-3:var(--data-series-3-hc);}
+.cn-chart-stacked-area h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-stacked-area .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-stacked-area figure.dv{margin:0; position:relative;}
+.cn-chart-stacked-area .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-stacked-area .dv-title{margin:0;}
+.cn-chart-stacked-area .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+.cn-chart-stacked-area .dv-stage{overflow-x:auto; padding-bottom:4px; padding-right:24px;}
+.cn-chart-stacked-area .dv-chart-area{width:580px;}
+.cn-chart-stacked-area .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-stacked-area figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-stacked-area figure.dv-fit-on .dv-svg{width:100%;}
+/* ds-020 FENCE — axis/grid CSS copied verbatim from Chart-line, not re-derived (see file header). */
+.cn-chart-stacked-area .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+.cn-chart-stacked-area line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+.cn-chart-stacked-area text.dv-axis, .cn-chart-stacked-area text.dv-label{opacity:var(--axis-alpha);}
+/* STACKED FILLS — cumulative bands at the ramp's series tokens, SOLID (#99-D1: dial retired) */
+/* #96-D3: standing 2px separation rule for adjacent filled blocks — stacked bands share
+     edges, so a 2px page-coloured stroke marks the seam (same idiom as dv-004's donut/pie
+     segment strokes; histogram bars carry the equivalent for wave 2). */
+.cn-chart-stacked-area .dv-band{fill:var(--sc); stroke:var(--page); stroke-width:2; transition:opacity var(--ease), visibility var(--ease);}
+.cn-chart-stacked-area .dv-band-line{fill:none; stroke:var(--sc); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+/* in-fill letter keys — the stacked-column recipe, data/text/on-series (minted 2026-07-27, reused not re-minted) */
+.cn-chart-stacked-area text.dv-barkey{fill:var(--data-text-on-series);}
+/* markers — line exemplar's BACKGROUND mode (series fill + page stroke) */
+.cn-chart-stacked-area .dv-mk{fill:var(--sc); stroke:var(--page); stroke-width:2.5; vector-effect:non-scaling-stroke;}
+.cn-chart-stacked-area .dv-marker{outline-offset:2px;}
+.cn-chart-stacked-area .dv-marker:focus-visible{outline:2px solid var(--ink);}
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-stacked-area .dv-animate .dv-band{opacity:0; animation:cn-chart-stacked-area-dvFade 400ms cubic-bezier(.4,0,.2,1) both;}
+.cn-chart-stacked-area .dv-animate .dv-band-line{opacity:0; animation:cn-chart-stacked-area-dvFade var(--ease) both; animation-delay:400ms;}
+.cn-chart-stacked-area .dv-animate g.dv-marker{opacity:0; animation:cn-chart-stacked-area-dvFade var(--ease) both; animation-delay:500ms;}
+.cn-chart-stacked-area .dv-animate text.dv-barkey{opacity:0; animation:cn-chart-stacked-area-dvFade var(--ease) both; animation-delay:600ms;}
+}
+@keyframes cn-chart-stacked-area-dvFade{from{opacity:0;} to{opacity:1;}}
+.cn-chart-stacked-area .dv-band, .cn-chart-stacked-area .dv-band-line, .cn-chart-stacked-area g.dv-marker, .cn-chart-stacked-area text.dv-barkey{transition:opacity var(--ease), visibility var(--ease);}
+/* legend chrome — DV-D11, plain swatches (band identity = in-fill letter, not a legend glyph) */
+.cn-chart-stacked-area .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
+.cn-chart-stacked-area .dv-leg.center{flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0 0;}
+.cn-chart-stacked-area .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
+    padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
+.cn-chart-stacked-area .dv-legrow:hover{border-color:var(--ink);}
+.cn-chart-stacked-area .dv-legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+.cn-chart-stacked-area .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+.cn-chart-stacked-area .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+.cn-chart-stacked-area .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
+.cn-chart-stacked-area .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-stacked-area .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+    margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left; font:inherit;}
+.cn-chart-stacked-area .dv-leg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-stacked-area .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-stacked-area .dv-leg-item > *{position:relative; z-index:1;}
+.cn-chart-stacked-area .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-stacked-area .dv-leg-name{white-space:nowrap;}
+.cn-chart-stacked-area .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:auto;
+    border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+    transition:border-color var(--ease), color var(--ease);}
+.cn-chart-stacked-area .dv-leg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-stacked-area .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+.cn-chart-stacked-area .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-stacked-area .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
+.cn-chart-stacked-area .is-faded{opacity:.24 !important;}
+.cn-chart-stacked-area .is-ghost{opacity:.12 !important;}
+.cn-chart-stacked-area .is-peek{opacity:.24 !important;}
+.cn-chart-stacked-area .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+/* toolbar — line exemplar's, byte-identical */
+.cn-chart-stacked-area .dv-controls{--control-h:32px;}
+.cn-chart-stacked-area .dv-tbl-toggle, .cn-chart-stacked-area .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-stacked-area .dv-tbl-toggle::before, .cn-chart-stacked-area .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-stacked-area .dv-tbl-toggle > *, .cn-chart-stacked-area .dv-vt > *{position:relative; z-index:1;}
+.cn-chart-stacked-area .dv-tbl-toggle:hover, .cn-chart-stacked-area .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-stacked-area .dv-tbl-toggle:focus-visible, .cn-chart-stacked-area .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-stacked-area .dv-tbl-toggle[aria-expanded="true"], .cn-chart-stacked-area .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-stacked-area .dv-act, .cn-chart-stacked-area .dv-dd{gap:8px;}
+.cn-chart-stacked-area .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-stacked-area .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-stacked-area .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-stacked-area .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-stacked-area .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-stacked-area .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+.cn-chart-stacked-area .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-stacked-area .dv-tablepanel[hidden]{display:none;}
+.cn-chart-stacked-area .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-stacked-area .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-stacked-area .dv-tip.on{opacity:1;}
+.cn-chart-stacked-area table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-stacked-area table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-stacked-area table.dv-table th, .cn-chart-stacked-area table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-stacked-area table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-stacked-area table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-stacked-area table.dv-table td.dv-total, .cn-chart-stacked-area table.dv-table th.dv-total{font-weight:500;}
+.cn-chart-stacked-area .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-stacked-area .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-stacked-area .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-stacked-area .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -4887,7 +5923,7 @@
 }
 /* LOCAL geometry — text buttons ≈120 (B-D7 divisor) */
 .cn-drawer h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
-.cn-drawer .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
+.cn-drawer .bg-content{opacity:var(--alpha-84); max-width:60ch; line-height:1.6;}
 /* canon Button mirror — namespaced .dbtn (see header); type via composite classes in markup */
 .cn-drawer .dbtn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control);
     cursor:pointer; justify-content:center; transition:background var(--ease), transform var(--spring);}
@@ -5411,7 +6447,7 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-modal-lightbox .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
+.cn-modal-lightbox .bg-content{opacity:var(--alpha-84); max-width:60ch; line-height:1.6;}
 /* overlay */
 .cn-modal-lightbox .lb-overlay{position:fixed; inset:0; background:var(--overlay); display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:16px; padding:24px; z-index:10;
@@ -5647,6 +6683,8 @@
 .cn-segmented-control :is(button, .cn-segmented-control a, .cn-segmented-control label, .cn-segmented-control span, .cn-segmented-control small, .cn-segmented-control strong, .cn-segmented-control em, .cn-segmented-control b, .cn-segmented-control i, .cn-segmented-control th, .cn-segmented-control td, .cn-segmented-control dt, .cn-segmented-control dd, .cn-segmented-control li, .cn-segmented-control figcaption, .cn-segmented-control legend, .cn-segmented-control caption, .cn-segmented-control summary, .cn-segmented-control output, .cn-segmented-control time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 .cn-segmented-control .demo-note{font-size:12px; color:#767676; max-width:60ch; margin:.6rem 0 0;}
 /* demo-chrome — advisory-exempt */
+.cn-segmented-control .section-head-row{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+.cn-segmented-control .section-head-row h2{font-size:12px; font-weight:500; letter-spacing:.04em; color:#767676; margin:2rem 0 .75rem;}
 /* ===== the segmented control =====
      PILL PADDING FOR ALL (Dave 2026-07-24): the inset track + floating indicator — once the pill's
      alone — is now the BASE for every variant. The active fill floats inside a 2px gutter (Dave
@@ -5711,6 +6749,7 @@
   --line: var(--border-subtle);
 }
 .cn-skeleton-loader h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-skeleton-loader #resolveDemo:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
 .cn-skeleton-loader .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
     clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
 /* the bone — one element, shimmer rides the background */

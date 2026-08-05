@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Review #99 v1 — opacity primitives at 4% steps (Dave's #96-D2 + #98-D3)</title>
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{font-family:system-ui,sans-serif;margin:24px;background:#f4f4f2;color:#1a1a1a;max-width:1400px}
+  h1{font-size:19px} h2{font-size:15px;margin-top:28px;border-top:2px solid #1a1a1a;padding-top:12px}
+  p,li{max-width:78ch;line-height:1.5}
+  .decision{background:#fff;border:1px solid #ccc;border-left:4px solid #484D6F;padding:12px 16px;margin:14px 0}
+  .decision h3{margin:0 0 6px;font-size:14px}
+  .plain{font-size:14.5px}
+  details{margin:10px 0;border:1px solid #ddd;background:#fafaf8;padding:8px 12px;max-width:80ch}
+  summary{cursor:pointer;font-weight:600;font-size:13px;color:#484D6F}
+  details p,details li,details td,details th{font-size:13px}
+  .opts label{display:block;margin:4px 0;cursor:pointer}
+  .nums{font-variant-numeric:tabular-nums;background:#e8e8e4;padding:1px 5px}
+  .foot{margin-top:32px;font-size:12px;color:#555}
+
+  /* ---- the ladder ---- */
+  .ladder{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:4px;margin:10px 0;max-width:1200px}
+  .step{border:1px solid #ccc;background:#fff;text-align:center;font-size:11px;font-variant-numeric:tabular-nums}
+  .step .sw{height:40px;margin:3px}
+  .step b{display:block;padding:2px 0 4px;font-weight:600}
+  .panel{padding:14px;border:1px solid #ccc;margin:10px 0}
+  .panel.light{background:#FFFFFF}
+  .panel.dark{background:#1A1A1A;color:#fff}
+  .panel h4{margin:0 0 8px;font-size:13px;font-weight:600}
+  .panel.dark .step{background:#1A1A1A;border-color:#484848;color:#fff}
+  .rowlab{font-size:12px;margin:10px 0 2px;font-weight:600}
+
+  /* ---- live consumers ---- */
+  .pairs{display:flex;gap:16px;flex-wrap:wrap}
+  .pairs .cell{flex:1 1 420px;min-width:340px;border:1px solid #ccc;padding:12px}
+  .pairs .cell.dark{background:#1A1A1A;color:#fff;border-color:#484848}
+  .dial{display:flex;align-items:center;gap:12px;margin:12px 0;font-size:14px}
+  .dial output{font-variant-numeric:tabular-nums;font-weight:600;min-width:4ch}
+  svg text{font-family:system-ui,sans-serif}
+</style>
+</head>
+<body>
+
+<h1>Opacity primitives — the 4% ladder, for your eye (#96-D2, steps ruled #98-D3)</h1>
+<p class="plain"><strong>In one breath:</strong> the design system has no opacity values of its
+own — every see-through surface in the library today either hardcodes a number or leans on a
+temporary dial you asked us to replace. You ruled that a proper set gets minted, spaced at four
+percent, and that you promote what survives your eye. This page is that spread: the full ladder
+shown over light and dark, over the five chart colours, and driven live into the two places
+waiting for it — stacked-area bands and bullet range bands. Nothing is minted yet; four
+decisions below settle what gets promoted, what it's called, and what happens to the odd
+values already in the wild.</p>
+<details><summary>Technical detail — survey, measured 2026-08-05 on the artefact</summary>
+<p>Zero opacity primitives in <code>canon.css</code> (<code>grep -c "alpha-\|opacity-"</code> on
+the token blocks: only <code>--image-opacity-default/disabled: 100/20</code> and the
+<code>--data-axis/grid/target-alpha: 1</code> DV-D07 slots). Untokenised uses in live canon:
+<code>0.70</code> operational hover (ADR-0009 / B-D3, canon.css:986), <code>.85</code> modal
+bg-content (:1479), <code>.8</code> header sub (:1288), <code>.6</code> input hint (:1556),
+<code>.5</code> pulse keyframe (:1240). Interim dial: <code>--stack-fill-alpha</code> default 1
+(Chart-stacked-area.reference.html:70, receipted as "not a minted token", wave-2 lane ③).
+Text strength stays exempt: your 2026-07-18 ruling (type.css:175) — no muting, no opacity fade
+on text — is untouched by everything on this page.</p>
+</details>
+
+<h2>The ladder — 24 steps, 4% to 96%</h2>
+<p class="plain">Endpoints are excluded on purpose: 0% and 100% are CSS's own defaults, not
+values worth minting. Ink first, then each chart series colour, over both grounds.</p>
+
+<div class="panel light" id="ladder-ink-light">
+  <h4>Ink (#1A1A1A) over light page</h4>
+  <div class="ladder" data-ladder data-color="#1A1A1A"></div>
+</div>
+<div class="panel dark" id="ladder-ink-dark">
+  <h4>White ink over dark page (#1A1A1A ground)</h4>
+  <div class="ladder" data-ladder data-color="#FFFFFF"></div>
+</div>
+<div class="panel light" id="ladder-series-light">
+  <h4>Series 1–5 over light page</h4>
+  <div id="series-light"></div>
+</div>
+<div class="panel dark" id="ladder-series-dark">
+  <h4>Series 1–5 over dark page</h4>
+  <div id="series-dark"></div>
+</div>
+<details><summary>Technical detail — effective colour table (computed, not eyeballed)</summary>
+<p>Composite of ink at each step over its ground, with WCAG contrast of the resulting flat
+colour against the ground — generated by the page's own script at load so it can never go stale
+against the swatches above it:</p>
+<table id="contrast-table" border="1" cellpadding="3" style="border-collapse:collapse"></table>
+</details>
+
+<h2>Driven live into the waiting consumers</h2>
+<p class="plain">One dial, snapped to the 4% grid, feeds both specimens below. This is the
+stacked-area band fill (today's temporary dial) and the bullet range bands (today's flat greys)
+wearing each candidate step, light and dark side by side.</p>
+<div class="dial">
+  <label for="alpha-dial">Step:</label>
+  <input type="range" id="alpha-dial" min="4" max="96" step="4" value="24" style="flex:1;max-width:420px">
+  <output id="alpha-out">24%</output>
+</div>
+<div class="pairs">
+  <div class="cell light">
+    <h4 style="font-size:13px;margin:0 0 8px">Stacked-area bands — light</h4>
+    <svg viewBox="0 0 360 140" width="100%" data-stack>
+      <path class="bandfill" d="M0,140 L0,60 C90,40 180,80 360,50 L360,140 Z" fill="#766682"/>
+      <path class="bandfill" d="M0,140 L0,95 C120,80 240,110 360,85 L360,140 Z" fill="#A45C3A"/>
+      <path class="bandfill" d="M0,140 L0,120 C150,110 260,128 360,115 L360,140 Z" fill="#577C78"/>
+    </svg>
+  </div>
+  <div class="cell dark">
+    <h4 style="font-size:13px;margin:0 0 8px">Stacked-area bands — dark</h4>
+    <svg viewBox="0 0 360 140" width="100%" data-stack>
+      <path class="bandfill" d="M0,140 L0,60 C90,40 180,80 360,50 L360,140 Z" fill="#766682"/>
+      <path class="bandfill" d="M0,140 L0,95 C120,80 240,110 360,85 L360,140 Z" fill="#A45C3A"/>
+      <path class="bandfill" d="M0,140 L0,120 C150,110 260,128 360,115 L360,140 Z" fill="#577C78"/>
+    </svg>
+  </div>
+  <div class="cell light">
+    <h4 style="font-size:13px;margin:0 0 8px">Bullet range bands — light (ink at step, replaces flat greys)</h4>
+    <svg viewBox="0 0 360 60" width="100%" data-bullet>
+      <rect class="bandfill" x="0" y="15" width="360" height="30" fill="#1A1A1A"/>
+      <rect class="bandfill" x="0" y="15" width="270" height="30" fill="#1A1A1A"/>
+      <rect class="bandfill" x="0" y="15" width="160" height="30" fill="#1A1A1A"/>
+      <rect x="0" y="26" width="205" height="8" fill="#766682"/>
+      <line x1="240" y1="12" x2="240" y2="48" stroke="#313131" stroke-width="3"/>
+    </svg>
+  </div>
+  <div class="cell dark">
+    <h4 style="font-size:13px;margin:0 0 8px">Bullet range bands — dark (white at step)</h4>
+    <svg viewBox="0 0 360 60" width="100%" data-bullet>
+      <rect class="bandfill" x="0" y="15" width="360" height="30" fill="#FFFFFF"/>
+      <rect class="bandfill" x="0" y="15" width="270" height="30" fill="#FFFFFF"/>
+      <rect class="bandfill" x="0" y="15" width="160" height="30" fill="#FFFFFF"/>
+      <rect x="0" y="26" width="205" height="8" fill="#766682"/>
+      <line x1="240" y1="12" x2="240" y2="48" stroke="#E1E1E1" stroke-width="3"/>
+    </svg>
+  </div>
+</div>
+<details><summary>Technical detail — what the specimens are and aren't</summary>
+<p>Inline SVGs using the canon series hexes and band geometry from
+<code>Chart-stacked-area.reference.html</code> / the #96 bullet build — NOT the reference
+snippets themselves (an iframe would need copies in this directory per the #66 cross-origin
+lesson, and the property under review is a single <code>fill-opacity</code> number, which these
+carry faithfully). Bands overlap-stack here (each at the dial's alpha over the one beneath), so
+what you see includes the compositing the real charts will show. The 2px page-colour stroke
+separation rule (#96-D1 ⑤) applies in the real charts and is omitted here to keep the alpha
+readable. Before any promoted value lands in canon, it gets render-proven on the real snippets.</p>
+</details>
+
+<h2>The four decisions</h2>
+
+<div class="decision">
+<h3>D1 — What gets promoted from the ladder?</h3>
+<p class="plain">Three ways to cut it. Mint the whole ladder as the primitive tier and let roles
+bind to steps later (recommended — primitives are cheap, roles are the governed thing). Or you
+pick a shortlist from this page and only those exist. Or mint nothing yet and keep dialling
+per-consumer until a pattern earns it.</p>
+<details><summary>Technical detail</summary>
+<p>Full ladder = 24 unitless number tokens; <code>gen_canon_tokens.py:36–38</code> already
+classes <code>opacity</code>/<code>alpha</code> as UNITLESS so generation is a data change, not
+a generator change. Promotion is yours per derivation governance; whatever you rule lands via
+the serial/conductor mint path the stacked-area receipt reserved.</p>
+</details>
+<div class="opts">
+<label><input type="radio" name="d1"> Full ladder as primitives; roles bind later (recommended)</label>
+<label><input type="radio" name="d1"> Shortlist only — I'll name the steps that survive my eye</label>
+<label><input type="radio" name="d1"> Not yet — keep per-consumer dials</label>
+</div>
+</div>
+
+<div class="decision">
+<h3>D2 — Naming</h3>
+<p class="plain">The house pattern elsewhere is family-then-value. Zero-padded keeps them
+sorting correctly everywhere.</p>
+<div class="opts">
+<label><input type="radio" name="d2"> <code>--alpha-04</code> … <code>--alpha-96</code> (recommended — short, sorts, matches the existing <code>alpha</code> slots)</label>
+<label><input type="radio" name="d2"> <code>--opacity-04</code> … <code>--opacity-96</code></label>
+<label><input type="radio" name="d2"> Something else (say it in the comment)</label>
+</div>
+</div>
+
+<div class="decision warn">
+<h3>D3 — The off-grid legacy values</h3>
+<p class="plain">Five opacity numbers already live in canon and two of them don't sit on a 4%
+grid: the ruled hover strength (seventy percent) and the modal text fade (eighty-five). The
+rest land cleanly (80, 60 — and the pulse's 50 is animation, arguably exempt like text). Moving
+the hover means touching a value you ruled in ADR-0009, so it is flagged, not proposed quietly.</p>
+<details><summary>Technical detail</summary>
+<table border="1" cellpadding="3" style="border-collapse:collapse">
+<tr><th>value</th><th>home</th><th>on-grid?</th><th>nearest steps</th></tr>
+<tr><td>0.70 hover</td><td>ADR-0009 / canon.css:986</td><td>no</td><td>68 / 72</td></tr>
+<tr><td>.85 modal</td><td>canon.css:1479</td><td>no</td><td>84 / 88</td></tr>
+<tr><td>.8 header sub</td><td>canon.css:1288</td><td>yes → 80</td><td>—</td></tr>
+<tr><td>.6 input hint</td><td>canon.css:1556</td><td>yes → 60</td><td>—</td></tr>
+<tr><td>.5 pulse anim</td><td>canon.css:1240</td><td>yes → 48/52? (it's 50)</td><td>animation — exempt candidate</td></tr>
+</table>
+<p>⚠ .8/.6 on header/input text sit near your no-text-fade ruling's border — binding them is
+also implicitly re-ratifying that they are allowed to exist. Declared, not decided here.</p>
+</details>
+<div class="opts">
+<label><input type="radio" name="d3"> Migrate on-grid values to primitives now; off-grid ones stay put, revisit each when its component is next open (recommended)</label>
+<label><input type="radio" name="d3"> Migrate everything to nearest step, including the ADR-0009 hover</label>
+<label><input type="radio" name="d3"> Leave all legacy values unbound — primitives are for new work only</label>
+</div>
+</div>
+
+<div class="decision">
+<h3>D4 — The waiting dials</h3>
+<p class="plain">Stacked-area's temporary dial and the bullet greys are the two consumers that
+asked for this. Once you've picked their step on the dial above, do they re-bind to the
+primitive in the same enactment, or wait for a separate pass?</p>
+<div class="opts">
+<label><input type="radio" name="d4"> Re-bind both in the same enactment, render-proven on the real snippets (recommended)</label>
+<label><input type="radio" name="d4"> Separate pass — mint first, consumers later</label>
+</div>
+<p class="plain" style="margin-top:8px">And the step itself, from the dial: say the number in
+the comment (e.g. "stacked 24, bullet 8/12/16").</p>
+</div>
+
+<p class="foot">Selections aren't persisted — export via the review overlay; rulings land in chat
++ the ledger. v1, 2026-08-05, session #99. Supersedes nothing. Figures measured on the artefact
+2026-08-05. Recommended options are marked, none pre-selected.</p>
+
+<script>
+(function(){
+  var STEPS=[]; for(var s=4;s<=96;s+=4) STEPS.push(s);
+
+  // ladders
+  document.querySelectorAll('[data-ladder]').forEach(function(l){
+    var c=l.getAttribute('data-color');
+    STEPS.forEach(function(s){
+      var d=document.createElement('div'); d.className='step';
+      d.innerHTML='<div class="sw" style="background:'+c+';opacity:'+(s/100)+'"></div><b>'+s+'</b>';
+      l.appendChild(d);
+    });
+  });
+
+  // series rows
+  var SERIES=['#766682','#A45C3A','#577C78','#7F7B45','#A37E94'];
+  ['series-light','series-dark'].forEach(function(id){
+    var host=document.getElementById(id);
+    SERIES.forEach(function(hex,i){
+      var lab=document.createElement('div'); lab.className='rowlab';
+      lab.textContent='series-'+(i+1)+' '+hex; host.appendChild(lab);
+      var row=document.createElement('div'); row.className='ladder';
+      STEPS.forEach(function(s){
+        var d=document.createElement('div'); d.className='step';
+        d.innerHTML='<div class="sw" style="background:'+hex+';opacity:'+(s/100)+'"></div><b>'+s+'</b>';
+        row.appendChild(d);
+      });
+      host.appendChild(row);
+    });
+  });
+
+  // contrast table (flat composite vs ground)
+  function lum(r,g,b){function f(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);}
+    return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b);}
+  function mix(fg,bg,a){return [0,1,2].map(function(i){return Math.round(fg[i]*a+bg[i]*(1-a));});}
+  var INK=[26,26,26], WHITE=[255,255,255], LIGHT=[255,255,255], DARK=[26,26,26];
+  var t=document.getElementById('contrast-table');
+  t.innerHTML='<tr><th>step</th><th>ink/light → flat</th><th>contrast:1</th><th>white/dark → flat</th><th>contrast:1</th></tr>';
+  STEPS.forEach(function(s){
+    var a=s/100;
+    var m1=mix(INK,LIGHT,a), m2=mix(WHITE,DARK,a);
+    var c1=((Math.max(lum.apply(null,m1),lum.apply(null,LIGHT))+0.05)/(Math.min(lum.apply(null,m1),lum.apply(null,LIGHT))+0.05)).toFixed(2);
+    var c2=((Math.max(lum.apply(null,m2),lum.apply(null,DARK))+0.05)/(Math.min(lum.apply(null,m2),lum.apply(null,DARK))+0.05)).toFixed(2);
+    function hx(v){return '#'+v.map(function(x){return x.toString(16).padStart(2,'0');}).join('').toUpperCase();}
+    t.insertAdjacentHTML('beforeend','<tr><td>'+s+'%</td><td>'+hx(m1)+'</td><td>'+c1+'</td><td>'+hx(m2)+'</td><td>'+c2+'</td></tr>');
+  });
+
+  // the dial
+  var dial=document.getElementById('alpha-dial'), out=document.getElementById('alpha-out');
+  function apply(){
+    var a=parseInt(dial.value,10)/100;
+    out.textContent=dial.value+'%';
+    document.querySelectorAll('.bandfill').forEach(function(el){
+      el.setAttribute('fill-opacity',a);
+    });
+  }
+  dial.addEventListener('input',apply);
+  apply();
+})();
+</script>
+</body>
+</html>

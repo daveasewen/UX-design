@@ -15,11 +15,11 @@
   ★ WAVE-2 LANE ③ (2026-08-05, worker — brief notes/_briefs/2026-08-05-chart-wave2-lane3-pie-area.md):
   new member.
     1. STACKED FILLS — three cumulative bands (Current / Savings / Investments) drawn as closed
-       polygons (top boundary forward, bottom boundary back) at the ramp's STACKED opacities —
-       series fills bound to the existing `data/series/*` tokens (NOT minted; a flat opacity dial
-       `--stack-fill-alpha` is receipted below as the one new tunable, default 1 — solid stacked
-       fills read cleanly against the page in both modes without needing translucency, so nothing
-       is minted here either; the var exists so Dave can dial it down later without a new token).
+       polygons (top boundary forward, bottom boundary back) — series fills bound to the existing
+       `data/series/*` tokens, SOLID. The interim `--stack-fill-alpha` dial (wave-2 lane ③,
+       default 1) is RETIRED #99-D1 (Dave, 2026-08-05): charts stick to the solid canonical
+       palette; opacity primitives (--alpha-04…96, tokens/opacity.json) are for STATE CHANGES
+       only, for now. Any future band translucency is a ruling, not a dial.
     2. TOP-EDGE STROKES — one polyline per band boundary (dv-line-011: straight segments only,
        same as the line exemplar), stroke = the series colour, width 2, on top of its own fill.
     3. VALUE POPOVER — vertex markers stay the line exemplar's BACKGROUND-mode circle (series fill
@@ -67,7 +67,6 @@
     --data-control-label-disabled:#9D9D9D; --data-control-swatch-off:currentColor;
     --data-grid:#E1E1E1; --grid-alpha:1;
     --data-text-on-series:#FFFFFF;
-    --stack-fill-alpha:1;
     --shadow:#00000033; --pop-border:#FFFFFF00;
     --border-radius-control:0; --border-radius-surface:0;
   }
@@ -79,7 +78,6 @@
     --data-control-label-disabled:#808080; --data-control-swatch-off:currentColor;
     --data-grid:#484848; --grid-alpha:1;
     --data-text-on-series:#FFFFFF;
-    --stack-fill-alpha:1;
     --shadow:#000000D9; --pop-border:#808080;
     --border-radius-control:0; --border-radius-surface:0;
   }
@@ -110,11 +108,11 @@
   line.dv-axis{stroke:var(--baseline); stroke-width:1;}
   text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
 
-  /* STACKED FILLS — cumulative bands at the ramp's series tokens, flat --stack-fill-alpha dial */
+  /* STACKED FILLS — cumulative bands at the ramp's series tokens, SOLID (#99-D1: dial retired) */
   /* #96-D3: standing 2px separation rule for adjacent filled blocks — stacked bands share
      edges, so a 2px page-coloured stroke marks the seam (same idiom as dv-004's donut/pie
      segment strokes; histogram bars carry the equivalent for wave 2). */
-  .dv-band{fill:var(--sc); fill-opacity:var(--stack-fill-alpha); stroke:var(--page); stroke-width:2; transition:opacity var(--ease), visibility var(--ease);}
+  .dv-band{fill:var(--sc); stroke:var(--page); stroke-width:2; transition:opacity var(--ease), visibility var(--ease);}
   .dv-band-line{fill:none; stroke:var(--sc); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
   /* in-fill letter keys — the stacked-column recipe, data/text/on-series (minted 2026-07-27, reused not re-minted) */
   text.dv-barkey{fill:var(--data-text-on-series);}
@@ -363,7 +361,7 @@
     ],
     "icons": {},
     "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-label", "aria-pressed", "aria-controls", "aria-expanded", "role=\"region\""],
-    "$note": "WAVE-2 LANE ③ (2026-08-05): new member. Line-family frame/toolbar ported from Chart-line.reference.html (2026-07-23 exemplar); stacking recipe (cumulative bands, in-fill letter keys on data/text/on-series, table Total column) ported from Chart-bar.reference.html's stacked-column figure (D-Q3, LANDED 2026-07-24 — consumed here, not re-promoted). ONE new tunable, NOT a minted token: --stack-fill-alpha (default 1, flat) so band opacity can be dialled later without minting — receipted, token minting stays a serial/conductor act. ds-020 FENCE INHERITED KNOWINGLY: axis/grid CSS (.dv-grid/.dv-axis/tick text) copied verbatim from Chart-line, not re-derived — see file header comment; receipted, not filled. WORKER FENCE: AUTO-MARKUP/AUTO-BEHAVIOUR markers pre-landed EMPTY — membership + injection are the conductor's serial (component-types.json $members; the fit/behaviour hook needs a stacked-area sub-contract, since `.dv-band`/`.dv-band-line` are new element classes the current dv-behaviour selectors don't touch — receipted to conductor same as Chart-bar's per-capability split)."
+    "$note": "WAVE-2 LANE ③ (2026-08-05): new member. Line-family frame/toolbar ported from Chart-line.reference.html (2026-07-23 exemplar); stacking recipe (cumulative bands, in-fill letter keys on data/text/on-series, table Total column) ported from Chart-bar.reference.html's stacked-column figure (D-Q3, LANDED 2026-07-24 — consumed here, not re-promoted). The interim --stack-fill-alpha tunable (default 1, flat) was receipted here at landing and RETIRED #99-D1 (Dave, 2026-08-05: charts solid canonical palette; opacity primitives are state-change-only) — bands are SOLID, no dial. ds-020 FENCE INHERITED KNOWINGLY: axis/grid CSS (.dv-grid/.dv-axis/tick text) copied verbatim from Chart-line, not re-derived — see file header comment; receipted, not filled. WORKER FENCE: AUTO-MARKUP/AUTO-BEHAVIOUR markers pre-landed EMPTY — membership + injection are the conductor's serial (component-types.json $members; the fit/behaviour hook needs a stacked-area sub-contract, since `.dv-band`/`.dv-band-line` are new element classes the current dv-behaviour selectors don't touch — receipted to conductor same as Chart-bar's per-capability split)."
   }
   </script>
   <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->

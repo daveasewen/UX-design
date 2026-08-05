@@ -1783,3 +1783,19 @@ GOVERNING RECORD (G11).** Dave accepted the close condition via the ratified rev
 value** — four candidates incl. `#9D9D9D`, still explicitly NOT a recommendation, per the
 ⛔ STILL-UNRULED block above (unchanged by this entry). Register: `knowledge/_GOVERNING-RECORDS.md`
 G11 · ledger: `notes/_MEMENTO-DECISIONS.md` § ★ #86-D1.
+
+## 2026-08-05 #99 — opacity primitives enactment: two registered follow-ons (agent's, not rulings)
+
+1. **`--pri-hover` stored colour-equivalents are now derived at a retired strength.** #99-D1 migrated
+   the primary-hover mix from 0.70 (ADR-0009/B-D3) to `--alpha-68`; the STORED chromatic equivalents
+   (`#626262`/`#B7B7B7`, `button/primary/background/hover`, bound in manifests for colour-only
+   consumers) were derived at 0.70 and are NOT re-derived here — a re-derivation is a measurement on
+   the rendered mix (light ≈ `#636363`, MEASURED #99 render: srgb 0.389333 = 99.28), not an
+   arithmetic conversion, and touching a stored token is Dave's promotion. Registered, declared in
+   the Button snippet header comment.
+2. **The literal-opacity corpus is far wider than the five migrated sites.** Sweep MEASURED #99:
+   125 literal `opacity:.N` declarations across 49 snippet files (`grep -rE 'opacity:\s*\.'`,
+   var()-bound and 0/1 excluded) — chart state classes (`.is-faded:.24`, `.is-ghost:.12`), harness
+   chrome (`h2 .6` in ~40 files), `.45`/`.75`/`.7` strays. The #99 enactment scoped to the five
+   sites in the ratified review table; the wider sweep is FORKED to Dave (sweep-now vs
+   per-component-as-opened), not silently widened.
