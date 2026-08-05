@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph engineering — field scan and Apollo/Memento audit</title>
+<style>
+:root{
+  --accent:#B92F1E;
+  --black:#000000;
+  --white:#FFFFFF;
+  --grey-1:#F3F3F3;
+  --grey-2:#EDEDED;
+  --grey-3:#D7D8D6;
+  --grey-5:#9B9B9B;
+  --grey-6:#767676;
+  --grey-7:#545454;
+  --grey-8:#333333;
+
+  --display:6rem;
+  --title1:5.25rem;
+  --title2:3.5625rem;
+  --head1:2.6875rem;
+  --head2:2.125rem;
+  --head3:1.1875rem;
+  --body1:1rem;
+  --caption1:0.875rem;
+  --caption2:0.75rem;
+
+  --s1:0.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem;
+  --s5:3rem;   --s6:4rem; --s7:6rem;   --s8:8rem;
+
+  --max-width:1200px;
+  --gutter:2rem;
+}
+html[data-theme="dark"]{
+  --accent:#E4614F;
+  --black:#F2F2F2;
+  --white:#0E0E0E;
+  --grey-1:#161616;
+  --grey-2:#242424;
+  --grey-3:#333333;
+  --grey-5:#6E6E6E;
+  --grey-6:#9A9A9A;
+  --grey-7:#B8B8B8;
+  --grey-8:#D6D6D6;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  background:var(--white);
+  color:var(--black);
+  font-size:var(--body1);
+  font-weight:400;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--gutter)}
+
+/* ---------- progress ---------- */
+#progress{
+  position:fixed;top:0;left:0;height:2px;width:100%;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;
+  z-index:100;
+}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:90;
+  background:var(--white);
+  border-bottom:1px solid var(--grey-2);
+}
+nav .wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;gap:var(--s4);
+}
+.backlink{
+  font-size:var(--caption1);font-weight:500;letter-spacing:0.04em;
+  color:var(--black);text-decoration:none;white-space:nowrap;
+}
+.backlink span{color:var(--grey-6);font-weight:400}
+.navlinks{display:flex;gap:var(--s3);list-style:none}
+.navlinks a{
+  font-size:var(--caption1);color:var(--grey-6);text-decoration:none;
+  letter-spacing:0.04em;
+}
+.navlinks a:hover{color:var(--black)}
+.navmeta{display:flex;align-items:center;gap:var(--s3)}
+.navdate{font-size:var(--caption2);color:var(--grey-6);letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap}
+#themeToggle{
+  font-family:inherit;font-size:var(--caption2);letter-spacing:0.06em;
+  text-transform:uppercase;font-weight:500;
+  background:none;border:0;border-bottom:1px solid var(--accent);
+  color:var(--black);cursor:pointer;padding:2px 0;
+}
+
+/* ---------- label ---------- */
+.label{
+  font-size:var(--caption2);font-weight:500;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:var(--s1);
+}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.label--mute{color:var(--grey-6)}
+.label--mute::before{background:var(--grey-5)}
+
+/* ---------- rules ---------- */
+.rule{border:0;border-top:1px solid var(--grey-2);width:100%}
+
+/* ---------- header ---------- */
+header.profile{padding:var(--s7) 0 var(--s6)}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:end}
+h1{
+  font-size:var(--title2);font-weight:300;line-height:1.04;letter-spacing:0;
+  margin-top:var(--s3);
+}
+.subject-org{font-size:var(--caption1);color:var(--grey-6);margin-top:var(--s3);letter-spacing:0.04em}
+.tagline{font-size:var(--head3);font-weight:400;line-height:1.5}
+.meta{margin-top:var(--s4);display:grid;grid-template-columns:1fr 1fr;gap:var(--s2) var(--s4)}
+.meta dt{font-size:var(--caption2);letter-spacing:0.12em;text-transform:uppercase;color:var(--grey-6)}
+.meta dd{font-size:var(--caption1);line-height:1.5;margin-top:2px}
+
+/* ---------- diagram ---------- */
+section.diagram{padding:var(--s6) 0}
+.diagram-grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.frame{border:1px solid var(--grey-2);padding:var(--s4)}
+.frame svg{display:block;width:100%;height:auto}
+.aside-note{font-size:var(--caption1);color:var(--grey-7);margin-top:var(--s3);line-height:1.6}
+
+/* ---------- dimensions ---------- */
+section.dimension{padding:var(--s7) 0}
+.dim-grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dim-index{
+  font-size:var(--head1);font-weight:200;color:var(--grey-3);
+  line-height:1;letter-spacing:0;
+}
+.dim-title{font-size:var(--head2);font-weight:300;line-height:1.15;margin-top:var(--s2)}
+.dim-body > * + *{margin-top:var(--s3)}
+.dim-body p{max-width:62ch}
+.dim-body h3{font-size:var(--head3);font-weight:500;line-height:1.3;margin-top:var(--s5)}
+.dim-body ul{list-style:none;max-width:62ch}
+.dim-body ul li{padding-left:var(--s3);position:relative;margin-top:var(--s2)}
+.dim-body ul li::before{content:'';position:absolute;left:0;top:0.85em;width:10px;height:1px;background:var(--grey-5)}
+.dim-body strong{font-weight:700}
+
+/* ---------- tables ---------- */
+table{border-collapse:collapse;width:100%;font-size:var(--caption1);line-height:1.55}
+th,td{text-align:left;vertical-align:top;padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-2)}
+thead th{
+  font-size:var(--caption2);letter-spacing:0.12em;text-transform:uppercase;
+  font-weight:500;color:var(--grey-6);border-bottom:1px solid var(--grey-3);
+  padding-bottom:var(--s1);
+}
+td:last-child,th:last-child{padding-right:0}
+.verdict{font-weight:500;white-space:nowrap}
+.verdict--gap{color:var(--accent)}
+
+/* ---------- code receipt ---------- */
+.receipt{
+  border-left:1px solid var(--accent);
+  padding:var(--s2) 0 var(--s2) var(--s3);
+  margin-top:var(--s4);
+}
+.receipt code,.receipt pre{
+  font-family:"SF Mono",Menlo,Consolas,monospace;
+  font-size:var(--caption1);line-height:1.6;
+}
+.receipt pre{white-space:pre-wrap;word-break:break-word}
+.receipt .src{
+  display:block;font-family:"SF Mono",Menlo,Consolas,monospace;
+  font-size:var(--caption2);color:var(--grey-6);margin-bottom:var(--s1);
+}
+
+/* ---------- pull quote ---------- */
+.pullquote{
+  border-top:1px solid var(--grey-2);
+  padding-top:var(--s3);margin-top:var(--s5);
+  font-size:var(--head3);font-weight:400;line-height:1.5;max-width:52ch;
+}
+.pullquote cite{display:block;font-size:var(--caption2);font-style:normal;color:var(--grey-6);letter-spacing:0.08em;text-transform:uppercase;margin-top:var(--s2)}
+
+/* ---------- comparison band ---------- */
+section.comparison{background:var(--grey-1);padding:var(--s7) 0;border-top:1px solid var(--grey-2);border-bottom:1px solid var(--grey-2)}
+.comp-grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.comp-statement{font-size:var(--head2);font-weight:300;line-height:1.15;margin-top:var(--s3)}
+.distinction{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);margin-top:var(--s5)}
+.distinction > div{background:var(--white);padding:var(--s4)}
+.distinction h4{font-size:var(--caption2);letter-spacing:0.12em;text-transform:uppercase;font-weight:500;color:var(--grey-6)}
+.distinction .own h4{color:var(--accent)}
+.distinction p{font-size:var(--caption1);line-height:1.6;margin-top:var(--s2)}
+
+/* ---------- sources ---------- */
+section.sources{padding:var(--s7) 0}
+.src-grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.src-list{list-style:none}
+.src-list li{padding:var(--s2) 0;border-bottom:1px solid var(--grey-2)}
+.src-list li:first-child{border-top:1px solid var(--grey-3);}
+.src-list a{color:var(--black);text-decoration:none;border-bottom:1px solid var(--grey-3);font-size:var(--caption1);font-weight:500}
+.src-list a:hover{border-bottom-color:var(--accent)}
+.src-kind{display:block;font-size:var(--caption2);letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);margin-top:4px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--grey-2);padding:var(--s5) 0}
+.footer-grid{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s4);flex-wrap:wrap}
+footer p{font-size:var(--caption2);color:var(--grey-6);letter-spacing:0.06em}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  :root{--title2:2.75rem;--head1:2.125rem;--head2:1.625rem;--s7:4rem;--s6:2.5rem}
+  .profile-grid,.diagram-grid,.dim-grid,.comp-grid,.src-grid{grid-template-columns:1fr;gap:var(--s4)}
+  .distinction{grid-template-columns:1fr}
+  .navlinks{display:none}
+  .meta{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  :root{--gutter:1.25rem;--title2:2.25rem}
+  .navdate{display:none}
+  table{font-size:var(--caption2)}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav>
+  <div class="wrap">
+    <a class="backlink" href="#top">Apollo SDS <span>· Research</span></a>
+    <ul class="navlinks">
+      <li><a href="#d1">Provenance</a></li>
+      <li><a href="#d2">Four graphs</a></li>
+      <li><a href="#d3">Apollo</a></li>
+      <li><a href="#d4">The gap</a></li>
+      <li><a href="#d5">Take</a></li>
+      <li><a href="#d6">Ignore</a></li>
+    </ul>
+    <div class="navmeta">
+      <span class="navdate">5 Aug 2026</span>
+      <button id="themeToggle" type="button">Dark</button>
+    </div>
+  </div>
+</nav>
+
+<header class="profile" id="top">
+  <div class="wrap">
+    <div class="profile-grid">
+      <div>
+        <p class="label">Field scan · internal audit</p>
+        <h1>Graph<br>engineering</h1>
+        <p class="subject-org">A term aged 18 days, measured against a system built over 103 sessions</p>
+      </div>
+      <div>
+        <p class="tagline">The buzzword is thin. The taxonomy underneath it is not — and it is the first external vocabulary that describes what Apollo/Memento already does.</p>
+        <dl class="meta">
+          <div>
+            <dt>Term age</dt>
+            <dd>18 days (18 Jul → 5 Aug 2026)</dd>
+          </div>
+          <div>
+            <dt>Sources read</dt>
+            <dd>Primary: LangChain, Turing Post, Anthropic. Secondary: 2026 arXiv memory/GraphRAG corpus</dd>
+          </div>
+          <div>
+            <dt>Apollo verdict</dt>
+            <dd>Three of four graph types present. One is stronger than the published state of the art.</dd>
+          </div>
+          <div>
+            <dt>Finding</dt>
+            <dd>One real gap, with a receipt — the knowledge graph is not on the retrieval path</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</header>
+
+<hr class="rule">
+
+<section class="diagram">
+  <div class="wrap">
+    <div class="diagram-grid">
+      <aside>
+        <p class="label label--mute">Schematic</p>
+        <p class="aside-note">“Graph” is being used for four different things. They share a shape and nothing else. Sorting them is the entire value of the discussion — the rest is naming.</p>
+        <p class="aside-note">Taxonomy after Turing Post FOD#159, 20 July 2026. Apollo status assessed against the repository on 5 August 2026.</p>
+      </aside>
+      <div class="frame">
+        <svg viewBox="0 0 720 300" role="img" aria-label="Four types of graph: control, knowledge, execution trace, improvement — with Apollo status for each">
+          <defs>
+            <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="var(--grey-6)"/>
+            </marker>
+            <marker id="ara" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+
+          <!-- dividers -->
+          <line x1="360" y1="10" x2="360" y2="290" stroke="var(--grey-2)" stroke-width="1"/>
+          <line x1="10" y1="150" x2="710" y2="150" stroke="var(--grey-2)" stroke-width="1"/>
+
+          <!-- Q1 control graph -->
+          <text x="10" y="26" font-size="11" font-weight="500" letter-spacing="1.6" fill="var(--grey-6)">01 · CONTROL GRAPH</text>
+          <circle cx="40" cy="62" r="6" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <circle cx="120" cy="46" r="6" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <circle cx="120" cy="82" r="6" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <circle cx="200" cy="62" r="6" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <line x1="47" y1="59" x2="110" y2="48" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <line x1="47" y1="65" x2="110" y2="80" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <line x1="127" y1="48" x2="190" y2="59" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <line x1="127" y1="80" x2="190" y2="65" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <text x="10" y="112" font-size="12" fill="var(--black)">What runs next, under what condition</text>
+          <text x="10" y="130" font-size="11" fill="var(--grey-6)">LangGraph · Google ADK — Apollo: partial — future tense unbuilt</text>
+
+          <!-- Q2 knowledge graph -->
+          <text x="380" y="26" font-size="11" font-weight="500" letter-spacing="1.6" fill="var(--grey-6)">02 · KNOWLEDGE GRAPH</text>
+          <circle cx="410" cy="50" r="6" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <circle cx="490" cy="44" r="6" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <circle cx="470" cy="88" r="6" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <circle cx="556" cy="74" r="6" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <line x1="417" y1="49" x2="480" y2="45" stroke="var(--grey-6)" stroke-width="1"/>
+          <line x1="412" y1="57" x2="464" y2="82" stroke="var(--grey-6)" stroke-width="1"/>
+          <line x1="491" y1="51" x2="474" y2="80" stroke="var(--grey-6)" stroke-width="1"/>
+          <line x1="477" y1="86" x2="548" y2="76" stroke="var(--grey-6)" stroke-width="1"/>
+          <line x1="496" y1="47" x2="549" y2="69" stroke="var(--grey-6)" stroke-width="1"/>
+          <text x="586" y="48" font-size="10" fill="var(--grey-6)">typed</text>
+          <text x="586" y="61" font-size="10" fill="var(--grey-6)">edges</text>
+          <text x="380" y="112" font-size="12" fill="var(--black)">Entities and typed relationships</text>
+          <text x="380" y="130" font-size="11" fill="var(--grey-6)">MS GraphRAG — Apollo: ahead of the field</text>
+
+          <!-- Q3 execution trace -->
+          <text x="10" y="176" font-size="11" font-weight="500" letter-spacing="1.6" fill="var(--grey-6)">03 · EXECUTION TRACE</text>
+          <circle cx="40" cy="212" r="5" fill="var(--grey-7)"/>
+          <circle cx="95" cy="212" r="5" fill="var(--grey-7)"/>
+          <circle cx="150" cy="212" r="5" fill="var(--grey-7)"/>
+          <circle cx="205" cy="212" r="5" fill="var(--grey-7)"/>
+          <circle cx="260" cy="212" r="5" fill="var(--grey-7)"/>
+          <line x1="46" y1="212" x2="86" y2="212" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <line x1="101" y1="212" x2="141" y2="212" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <line x1="156" y1="212" x2="196" y2="212" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <line x1="211" y1="212" x2="251" y2="212" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <text x="10" y="252" font-size="12" fill="var(--black)">What happened in one run</text>
+          <text x="10" y="270" font-size="11" fill="var(--grey-6)">Agent traces — Apollo: unusually rigorous</text>
+
+          <!-- Q4 improvement graph -->
+          <text x="380" y="176" font-size="11" font-weight="500" letter-spacing="1.6" fill="var(--accent)">04 · IMPROVEMENT GRAPH</text>
+          <circle cx="430" cy="212" r="18" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <path d="M430 194 A18 18 0 1 1 429 194" fill="none" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <text x="430" y="216" font-size="9" text-anchor="middle" fill="var(--grey-6)">opt</text>
+          <circle cx="510" cy="212" r="18" fill="none" stroke="var(--accent)" stroke-width="1.2"/>
+          <path d="M510 194 A18 18 0 1 1 509 194" fill="none" stroke="var(--accent)" stroke-width="1" marker-end="url(#ara)"/>
+          <text x="510" y="216" font-size="9" text-anchor="middle" fill="var(--accent)">check</text>
+          <circle cx="590" cy="212" r="18" fill="none" stroke="var(--grey-7)" stroke-width="1.2"/>
+          <path d="M590 194 A18 18 0 1 1 589 194" fill="none" stroke="var(--grey-6)" stroke-width="1" marker-end="url(#ar)"/>
+          <text x="590" y="216" font-size="9" text-anchor="middle" fill="var(--grey-6)">audit</text>
+          <line x1="450" y1="212" x2="490" y2="212" stroke="var(--grey-6)" stroke-width="1"/>
+          <line x1="530" y1="212" x2="570" y2="212" stroke="var(--grey-6)" stroke-width="1"/>
+          <text x="380" y="252" font-size="12" fill="var(--black)">Loops that optimise, check and audit each other</text>
+          <text x="380" y="270" font-size="11" fill="var(--grey-6)">Rarest of the four — Apollo: present and enforced</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="dimension" id="d1">
+  <div class="wrap">
+    <div class="dim-grid">
+      <div>
+        <p class="dim-index">01</p>
+        <p class="label">Provenance</p>
+        <h2 class="dim-title">The term is eighteen days old</h2>
+      </div>
+      <div class="dim-body">
+        <p>Worth establishing before anything is compared: this is not a research development. It is a naming event, and its whole documented history fits in a paragraph.</p>
+        <ul>
+          <li><strong>7 June 2026</strong> — Addy Osmani publishes the essay that popularises “loop engineering”, building on Peter Steinberger's slogan and on Boris Cherny's line that he no longer prompts Claude, he writes the loops that do.</li>
+          <li><strong>18 July 2026</strong> — Steinberger asks on X: “Are we still talking loops or did we shift to graphs yet?” Hours later Hamel Husain posts the obituary: “Loop Engineering Is Dead. Enter Graph Engineering.”</li>
+          <li><strong>By 19 July</strong> — courses, roadmaps and tool stacks. Threads claiming Microsoft, Stanford and Anthropic had all discovered graph engineering simultaneously.</li>
+          <li><strong>20 July 2026</strong> — Turing Post fact-checks the wave.</li>
+          <li><strong>22 July 2026</strong> — LangChain responds directly, in a post titled around the three years they had already been doing it.</li>
+        </ul>
+        <p>Loop engineering lasted six weeks. Someone has already proposed “metagraph engineering”. The useful posture is therefore not adoption — it is extraction: take the taxonomy, discard the frame.</p>
+        <div class="pullquote">
+          “Graph engineering isn't a new idea. It's the latest name for a well established approach to building reliable agents.”
+          <cite>Sydney Runkle &amp; Harrison Chase, LangChain — 22 July 2026</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="dimension" id="d2">
+  <div class="wrap">
+    <div class="dim-grid">
+      <div>
+        <p class="dim-index">02</p>
+        <p class="label">Taxonomy</p>
+        <h2 class="dim-title">“Graph” now means four different things</h2>
+      </div>
+      <div class="dim-body">
+        <p>This is the part worth keeping. Turing Post's separation is clean, and it is the frame the rest of this document uses. Anything connected qualifies as a graph, so the word is technically available to everyone — but the four describe entirely different problems.</p>
+        <table>
+          <thead>
+            <tr><th style="width:22%">Type</th><th style="width:42%">Describes</th><th>Used for</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Control graph</strong></td><td>What runs next, and under which conditions</td><td>Orchestrating agent workflows — LangGraph, Google ADK</td></tr>
+            <tr><td><strong>Knowledge graph</strong></td><td>Entities and relationships inside data</td><td>Improving retrieval and reasoning — Microsoft GraphRAG</td></tr>
+            <tr><td><strong>Execution trace</strong></td><td>What happened during one particular run</td><td>Debugging and observability</td></tr>
+            <tr><td><strong>Improvement graph</strong></td><td>Loops that optimise, check and audit one another</td><td>Controlling self-improving systems</td></tr>
+          </tbody>
+        </table>
+        <p class="aside-note">A note on rows 1 and 2, made explicit in section 03: this four-row frame is the field's taxonomy, not Apollo's own. In Apollo's target definition (<code>_STATE-MACHINE-TARGET.md</code> §2), the control graph and the knowledge graph are not two separate things — they are one mechanism read at two tenses, past (decisions, the knowledge graph as built) and future (goals, the control graph as unbuilt). Sorting them into four independent rows here is useful for comparing against the field's vocabulary, but it imports that vocabulary's split over Dave's own ruling that they are the same object.</p>
+        <h3>What LangChain learned in three years of it</h3>
+        <ul>
+          <li><strong>Agent graphs are usually not DAGs.</strong> Production needs cycles — retrying failed calls, asking for missing information, revising after validation, pausing for a human.</li>
+          <li><strong>A loop is already a graph.</strong> Specifically, a directed cyclic graph. Loop engineering was never an alternative; it was the one-node case.</li>
+          <li><strong>Dynamic transitions matter.</strong> You do not always know the edges up front. Map-reduce is the classic case: the number of workers depends on the input.</li>
+          <li><strong>What is actually new is what fits inside a node.</strong> Early on a node was deterministic code or a single model call. Agents are now reliable enough that a node can be a full agent run. That is the honest delta, and it is a small one.</li>
+        </ul>
+        <h3>The claims that did not survive checking</h3>
+        <table>
+          <thead>
+            <tr><th style="width:48%">Viral claim</th><th>What the evidence shows</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Graph engineering replaced RAG at Microsoft</td><td>Microsoft describes GraphRAG as a <em>type</em> of RAG, not a replacement</td></tr>
+            <tr><td>Stanford independently adopted it</td><td>DSPy optimises language-model programs; it is not a knowledge-graph system</td></tr>
+            <tr><td>Anthropic launched graph engineering</td><td>Anthropic uses coded orchestration. It has announced no such discipline.</td></tr>
+            <tr><td>18% higher accuracy, 85% lower cost</td><td>Figures come from one paper applying GraphRAG to industrial engineering diagrams. Narrow setting, promoted into a general law.</td></tr>
+          </tbody>
+        </table>
+        <div class="pullquote">
+          When someone says it improved accuracy by 18%, ask three questions. What kind of graph? Improved compared with what? And where did that number come from?
+          <cite>Turing Post FOD#159 — 20 July 2026</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="dimension" id="d3">
+  <div class="wrap">
+    <div class="dim-grid">
+      <div>
+        <p class="dim-index">03</p>
+        <p class="label">Comparison</p>
+        <h2 class="dim-title">Where Apollo and Memento already sit</h2>
+      </div>
+      <div class="dim-body">
+        <p>Measured against the taxonomy rather than the slogan, three of the four are present and one of them is stronger than what the field is publishing.</p>
+        <table>
+          <thead>
+            <tr><th style="width:20%">Type</th><th style="width:52%">In Apollo / Memento</th><th>Standing</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Control graph</strong></td>
+              <td>Runbooks, the gate suite, the six-beat ladder, model routing by phase. Encoded as procedure and CI gates rather than declared topology. <em>Partial</em> is precise here in a narrower sense than the phrase first suggests: §2 of <code>_STATE-MACHINE-TARGET.md</code> rules that decisions and goals are the same object at different tenses — one context-machine graph, not two. §6 declares ten edge types; the ADR-0012 builder implements nine, overlapping on exactly one (<code>supersedes</code>). Every past-tense edge is built; every future-tense edge (<code>depends-on</code>, <code>blocks</code>, <code>realises</code>, <code>spun-off-from</code>, <code>evidences</code>) is absent. The control graph is not a parallel, separate thing that is half-present — it is the unbuilt future-tense half of the one knowledge graph.</td>
+              <td class="verdict">Partial — future tense unbuilt</td>
+            </tr>
+            <tr>
+              <td><strong>Knowledge graph</strong></td>
+              <td><code>_DECISION-GRAPH.md</code> — 100 nodes, 165 edges, seven typed edge types under ADR-0012, generated from an audited seed. Plus <code>_GRAPH-REPORT.md</code> — a token-to-component blast-radius graph over 67 components and 945 tokens.</td>
+              <td class="verdict">Ahead of the field</td>
+            </tr>
+            <tr>
+              <td><strong>Execution trace</strong></td>
+              <td><code>_CHAIN.md</code>, the session witness, <code>_ENACTMENT-REGISTER.md</code> under ADR-0016, and the gauge log.</td>
+              <td class="verdict">Present, rigorous</td>
+            </tr>
+            <tr>
+              <td><strong>Improvement graph</strong></td>
+              <td>The optimiser is the build; the counter-metric is the context gauge and stop line; the audit loop is the wrap gate, the capture ritual and the dream pass. Enactment proof closes it — a ruling must be provably live, not merely inscribed.</td>
+              <td class="verdict">Present and enforced</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>The edge taxonomy is the standout</h3>
+        <p>ADR-0012 defines seven edge types with qualifiers. Three of them make distinctions that did not appear anywhere in the 2026 GraphRAG or agent-memory literature reviewed for this document:</p>
+        <ul>
+          <li><code>bounds(X, scope=…)</code> — limits a ruling's scope without killing it. Scoped supersession, not binary supersession.</li>
+          <li><code>supersedes(X, claim=…)</code> — kills one assertion inside a node that stays otherwise live.</li>
+          <li><code>diverges-from(X, reason=…)</code> — a <em>deliberate</em> divergence the reconciliation gate must never try to resolve. Published systems have no vocabulary for “these two disagree on purpose”.</li>
+        </ul>
+        <p>A conflict gate with no way to record intentional divergence flags that pair forever. That problem was found and solved here before the field named the discipline.</p>
+        <h3>An external convergence worth knowing</h3>
+        <p>Anthropic's <strong>Dreaming</strong> — a research preview announced at Code with Claude in May 2026 — lets an agent inspect its previous sessions, work out what it missed, and self-improve. The open-source OpenClaw Auto-Dream project implements the same idea as a scheduled cycle that scans, extracts, organises, scores, links and prunes a knowledge base asynchronously. The 2026 literature frames both as hippocampal replay: strengthen important traces during idle time, prune the rest.</p>
+        <p>That is the dream-pass lane, arrived at independently. The practical value is not validation — it is that there is now a body of external work to steal from, and a shared name to search under.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="dimension" id="d4">
+  <div class="wrap">
+    <div class="dim-grid">
+      <div>
+        <p class="dim-index">04</p>
+        <p class="label">Finding</p>
+        <h2 class="dim-title">The graph is not on the retrieval path</h2>
+      </div>
+      <div class="dim-body">
+        <p>One real gap, and it is structural rather than cosmetic. The 165 typed edges are inscribed, parsed, and rendered into a dashboard. Then nothing reads them again. Recall does not traverse them.</p>
+        <p>The Memento door and the DS-decisions door both sit on one retrieval spine, and that spine has exactly one scorer:</p>
+        <div class="receipt">
+          <span class="src">knowledge/_search_core.py — score_record()</span>
+          <pre>return matched_original * 2 + matched_expanded</pre>
+        </div>
+        <p>Token overlap against a curated synonym lexicon, doubled for literal matches. No traversal. No hops. No awareness of whether a returned node has been superseded by something the corpus already knows about.</p>
+        <h3>Why this matters more here than elsewhere</h3>
+        <p>In a generic corpus, lexical retrieval returning a stale document is an inconvenience. In a decision corpus it is a specific and recorded failure mode: retrieval hands back a ruling that a later ruling already killed, with nothing marking it dead. The reader — human or model — then builds on it.</p>
+        <p>That failure has been hit before and treated at the symptom. The <code>--all</code> flag widens the net so the governing ruling is more likely to appear somewhere in the results. It does not tell you which of the results is the live one. The edges do. They are just not consulted.</p>
+        <p>This is precisely, and only, what GraphRAG's multi-hop claim amounts to — applied to a corpus that has already done the hard part, which is typing the edges honestly.</p>
+        <div class="pullquote">
+          The corpus knows which ruling superseded which. The search does not ask it.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="dimension" id="d5">
+  <div class="wrap">
+    <div class="dim-grid">
+      <div>
+        <p class="dim-index">05</p>
+        <p class="label">Worth taking</p>
+        <h2 class="dim-title">Six candidates, cheapest first</h2>
+      </div>
+      <div class="dim-body">
+        <table>
+          <thead>
+            <tr><th style="width:5%">#</th><th style="width:33%">Change</th><th style="width:42%">What it fixes</th><th>Size</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><strong>One-hop edge expansion at retrieval.</strong> After the lexical hit, pull the <code>supersedes</code> / <code>refines</code> / <code>bounds</code> neighbours of every result and attach them.</td>
+              <td>The structural version of the “retrieval hides the governing ruling” defect. Edges already exist in the audited seed JSON — this is a lookup and a merge, not a new data structure.</td>
+              <td class="verdict">Small</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>Supersession-aware ranking.</strong> Any node that something else <code>supersedes</code> is demoted and visibly marked in the result list.</td>
+              <td>Stops a dead ruling presenting as live. Same file as #1; no new index.</td>
+              <td class="verdict">Small</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><strong>Adopt the three questions as a claim gate.</strong> What kind of graph? Improved versus what? Where did the number come from?</td>
+              <td>Generalises past graphs — it is a measurement-honesty rule that would have caught more than one prior claim. Costs nothing but a line in the runbook.</td>
+              <td class="verdict">Trivial</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><strong>Build the temporal half of ADR-0007.</strong> The ADR is literally titled <em>temporal</em> decision-graph; the main live thread in 2026 GraphRAG research is timestamped edges with validity intervals.</td>
+              <td><code>_STATE-MACHINE-TARGET.md</code> §8 already names Graphiti's <code>t_valid → t_invalid</code> as "the named graduation path" — researched 2026-07-05, unbuilt. This is specified, not unknown; no probe is owed, only a build decision.</td>
+              <td class="verdict">Specified, unbuilt</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><strong>Blast radius as pre-flight, not report.</strong> <code>_GRAPH-REPORT.md</code> computes that <code>text/default</code> reaches 55 components. A human reads that. A gate could.</td>
+              <td>Turns a generated dashboard into a control edge — the one place where the knowledge graph would start doing control-graph work.</td>
+              <td class="verdict">Medium</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Items 1 and 2 are the same change to the same function and should be priced as one piece of work. They are also the only two that close the finding in section 04.</p>
+        <table>
+          <thead>
+            <tr><th style="width:5%">#</th><th style="width:33%">Change</th><th style="width:42%">What it fixes</th><th>Size</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>6</td>
+              <td><strong>Build compile views 2–6.</strong> <code>_STATE-MACHINE-TARGET.md</code> §7 names six views over the typed-node graph; item 1, the drift report, is built (<code>_build_live_state.py</code>). Items 2–6 — period digest, goal tree, spin-off register, tool catalog, decision trail — are unbuilt. §7 calls these views "the point of the machine".</td>
+              <td>The narrative-compilation capability the whole mechanism was built toward, one-sixth realised. This reconcile itself is a live case for it: the check that caught §9's generator checkbox stale against code was a manual grep, exactly the drift class a compile view exists to catch automatically. In the same audit, §9's ⬜ generator status is itself stale against the repository — <code>_build_live_state.py:130 render_lifecycle_block</code> and <code>:197 splice_block</code> exist and generate the decision-lifecycle block; only the riskier full-generation migration is deferred, named verbatim at <code>:9</code> ("without the risky full-generation migration"). Correct status: generator PARTIAL, not absent.</td>
+              <td class="verdict">Large</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="dimension" id="d6">
+  <div class="wrap">
+    <div class="dim-grid">
+      <div>
+        <p class="dim-index">06</p>
+        <p class="label">Worth ignoring</p>
+        <h2 class="dim-title">What not to do about this</h2>
+      </div>
+      <div class="dim-body">
+        <p>Both primary sources spend as much space on restraint as on advocacy, which is the most credible thing about them.</p>
+        <ul>
+          <li><strong>Do not rebuild the session runner as a declared control graph.</strong> Adding a graph framework means adding state management, routing logic, debugging work, and more places for the workflow to break. Where the path must be discovered as it goes, a harness beats a graph — LangChain's own deep-research product moved <em>away</em> from a predefined graph to an agentic core loop, and GPT Researcher made the same move.</li>
+          <li><strong>Do not chase the performance numbers.</strong> They came from one industrial-diagram study and do not generalise.</li>
+          <li><strong>Do not rename anything.</strong> Loop engineering lasted six weeks; graph engineering is on the same clock. The internal vocabulary — rulings, edges, gates, enactment — is more precise than the imported one.</li>
+          <li><strong>Do not treat the taxonomy as a scorecard.</strong> A missing control graph is not a deficiency here, but the reason is narrower than it looks and should not be overclaimed. Dave ruled the edge set closed on 1 August (#75): an edge type outside the ruled set is a loud named failure, never a silent store — and enumerating the offenders into the structural set was the fix he <em>rejected</em>, verbatim in <code>_build_decision_graph.py:44–49</code> ("that clears the six and lets the seventh walk in tomorrow"). Any work on the goal-tree edges (<code>depends-on</code>, <code>blocks</code>, <code>realises</code>, <code>spun-off-from</code>, <code>evidences</code>) crosses that ruled boundary. Choosing not to cross it without Dave is the only defensible sense in which this is "partial by choice" — not a considered architectural stance on control graphs in general.</li>
+        </ul>
+        <div class="pullquote">
+          “If the workflow is linear, keep it linear. A box-and-arrow diagram does not make an agent more advanced. Sometimes it only documents the traffic jam you designed.”
+          <cite>Turing Post FOD#159</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="comparison">
+  <div class="wrap">
+    <div class="comp-grid">
+      <div>
+        <p class="label">Verdict</p>
+        <p class="comp-statement">You are doing this already — under better names, with one wire missing.</p>
+      </div>
+      <div>
+        <p>The honest read is that graph engineering is a name for a cluster of practices, of which Apollo/Memento independently implements three and skips the fourth for a stated reason. The typed-edge convention is more expressive than the published state of the art, because it was derived from a real corpus with real scoped supersessions rather than from a benchmark.</p>
+        <p>The gap is narrow and specific. The graph exists, it is typed, it is audited, and it is generated — and then recall reaches past it to a token-overlap scorer. Closing that is a small change to one function, and it is the only item in this document that changes what the system can do rather than what it is called.</p>
+        <div class="distinction">
+          <div>
+            <h4>The buzzword's claim</h4>
+            <p>Build a graph and retrieval gets multi-hop, accuracy rises 18%, cost falls 85%. Adopt a framework; the topology is the product.</p>
+          </div>
+          <div class="own">
+            <h4>The version that survives</h4>
+            <p>Typed edges are worth having because they record <em>why</em> a relationship exists — scoped, claim-level, deliberate. Traversal at recall time is then a small consequence, not a framework purchase.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sources">
+  <div class="wrap">
+    <div class="src-grid">
+      <div>
+        <p class="label label--mute">Sources</p>
+        <p class="aside-note">Primary sources first. The term generated a large volume of low-quality secondary content in late July 2026; that material is deliberately excluded.</p>
+        <p class="aside-note">Repository claims in sections 03 and 04 were read directly from the working tree on 5 August 2026, not recalled.</p>
+      </div>
+      <div>
+        <ul class="src-list">
+          <li>
+            <a href="https://www.turingpost.com/p/is-graph-engineering-real-why-everyone-is-talking-about-it">FOD#159: Is Graph Engineering Real? Why Everyone Is Talking About It</a>
+            <span class="src-kind">Turing Post · Ksenia Se · 20 Jul 2026 · the four-graph taxonomy and the fact-check</span>
+          </li>
+          <li>
+            <a href="https://www.langchain.com/blog/3-years-of-graph-engineering-with-langgraph">3 Years of Graph Engineering with LangGraph</a>
+            <span class="src-kind">LangChain · Runkle &amp; Chase · 22 Jul 2026 · the practitioner rebuttal</span>
+          </li>
+          <li>
+            <a href="https://simonwillison.net/2026/May/6/code-w-claude-2026/">Live blog: Code w/ Claude 2026</a>
+            <span class="src-kind">Simon Willison · May 2026 · first-hand record of the Dreaming research preview</span>
+          </li>
+          <li>
+            <a href="https://www.anthropic.com/news/memory">Bringing memory to teams</a>
+            <span class="src-kind">Anthropic · agent memory, primary</span>
+          </li>
+          <li>
+            <a href="https://arxiv.org/pdf/2512.13564">Memory in the Age of AI Agents</a>
+            <span class="src-kind">arXiv survey · hybrid vector + knowledge-graph convergence</span>
+          </li>
+          <li>
+            <a href="https://arxiv.org/pdf/2606.03979">Language Models Need Sleep: Learning to Self-Modify and Consolidate Memories</a>
+            <span class="src-kind">arXiv · the consolidation / dream-pass lineage</span>
+          </li>
+          <li>
+            <a href="https://arxiv.org/pdf/2604.22085">Memanto: Typed Semantic Memory with Information-Theoretic Retrieval for Long-Horizon Agents</a>
+            <span class="src-kind">arXiv · closest published analogue to the typed-edge approach</span>
+          </li>
+          <li>
+            <a href="https://arxiv.org/pdf/2606.30306">Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents</a>
+            <span class="src-kind">arXiv survey · governance and provenance in long-running agents</span>
+          </li>
+          <li>
+            <a href="https://addyosmani.com/blog/loop-engineering/">Loop Engineering</a>
+            <span class="src-kind">Addy Osmani · 7 Jun 2026 · the term this one replaced</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <p>Apollo SDS · Research · Graph engineering field scan v2</p>
+      <p>Compiled 5 August 2026 · Reconciled against session #105 · Nothing in this document was written to the knowledge corpus · Responsive behaviour UNPROVEN — no chromium render check was available for this build</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var bar = document.getElementById('progress');
+  function onScroll(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var p = h > 0 ? window.scrollY / h : 0;
+    bar.style.transform = 'scaleX(' + p + ')';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  function set(mode){
+    root.setAttribute('data-theme', mode);
+    btn.textContent = mode === 'dark' ? 'Light' : 'Dark';
+  }
+  set(prefersDark ? 'dark' : 'light');
+  btn.addEventListener('click', function(){
+    set(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+})();
+</script>
+</body>
+</html>

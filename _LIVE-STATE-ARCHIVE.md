@@ -1,5 +1,14 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-05 #105 (2d) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#102**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **#102-D1: CORPUS FORK RULED SWEEP-NOW (ds-028) + ENACTED — 182 literal opacities → `--alpha-*`, 50 files, 0 residual** · ✅ **GATES 75/0 · SHOWROOM IN SYNC** · ⚠ **HOST CRASH MID-WRAP, REPO RE-PROBED, WRAP RE-RUN**)
+
+- **Fork closed by Dave's word:** sweep-now over as-opened; "commit" after the value-shift table (7 rounded values, ties DOWN per #99-D3). Closes #99 residuals ② + ③; ① (`--pri-hover` @0.70) stays open.
+- **Sweep verified in-window, never the sub's word:** residual grep 0 · var-bound 188 · snippet gate 75/0 · showroom regen + `--check` OK · diff 100 files 232/231. Unit named: 182 occurrences / 131 lines / 50 files.
+- **Crash resilience:** host crash between wrap survey and wrap writes; recovery = re-probe repo state (git + gates), zero reconstruction from memory.
+- **→ #103:** compose-audit `--sc` inline-scope fix · bullet flex-height · Confirmation Replay idiom · #97 flag ②.
+
+
 ## Rolled 2026-08-05 #104 (2d) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#101**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **CANDLESTICK ds-027 ENACTED: snippet · meta · canon scope · showroom, GATES 75/0, RENDER-PROVEN ×4** · ⚠ **`--sc` COMPOSE-AUDIT FALSE POSITIVE FOUND, PRE-EXISTING → #102** · ✅ **FABLE 88% ⇒ SUB-BUILD + EARLY WRAP (FILL 128,529)**)
 
@@ -1483,3 +1492,8 @@ instructions. Prior refresh: T-D12 ruling, commit `9fb1381`.*
 *Previous: 2026-08-05 (Wed from `date` — #92 wrap: the wrap gate REHEARSES mid-window now (`--rehearse` on the same seam, consumed by `_checkin.py` every check-in) · `notes/_REHEARSAL-LOG.jsonl` logs fails-at-wrap-open + remediation rounds, the measurement #91-F5 ordered · first live catch the same session (stale retrieval index, fixed at check-in price) · wrap-open 0 structural · #91's titled lane was refuted by its own F5 — Dave re-aimed #92 at the loop.)*  *Previous: 2026-08-05 (Wed from `date` — #91 wrap: the fill reader researched 2026-07-31 and never wired is ENACTED (`_checkin.py` had 0 refs to `input_tokens` for ~31 sessions) · the gauge and the stop line have been in different UNITS since #59 (FILL 148,069 vs THROUGHPUT 187,966 at one instant = 27%) · the wrap floor RELOCATED: the ritual runbook is 16,934 real = 39.9% of it, paid last, when the room left was 9,497 · ds-025 item 1 RULED by Dave = the TOTAL, CLOSED.)*
 
 *Previous: 2026-08-05 (Wed from `date` — #95 wrap: chart wave 2 FIRED + LANDED — 8 members registered, 4 worker gaps caught at replay, gate battery green (type/a11y = HEAD baseline, declared) · ⛔ stop line 150,929 blown BEFORE wrap-open (first fill read 161,622; no mid-serial check-in — #96 re-prices) · render-verify ×8 + Dave's eyeball + 7 lane flags OWED.)*  ← rolled #99 (2d refresh-chain trim)
+
+
+### Last-refreshed chain tail — trimmed at #105 (2d boundary)
+*Previous: 2026-08-05 (Wed from `date` — #101 wrap: candlestick ds-027 ENACTED end-to-end (snippet + meta + canon scope + showroom; hollow channel removed, gates 75/0, render-proven 1440/760 × light/dark token-exact) via ONE Sonnet build sub, conductor re-verified in-window · `--sc` compose-audit false positive found pre-existing, registered → #102 · Fable 88% quota ⇒ orchestrate-only window, wrap opened early at FILL 128,529.)*
+*Previous: 2026-08-05 (Wed from `date` — #100 wrap: candlestick RULED ds-027 (#100-D1, Dave: solid two-state, table = a11y fallback; #96-D1 ① hollow channel retired; four-state rejected by eye after live spread `reviews/CANDLESTICK-FOURSTATE-2026-08-05-v1.html`) · standing: charts fully responsive, ~40-session density · stop line RESPECTED (wrap-open 143,566 < 150,929, enactment ROLLED to #101).)*
