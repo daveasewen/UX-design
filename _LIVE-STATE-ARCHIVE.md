@@ -1,5 +1,14 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-05 #100 (2d) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#97**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **SIDE TREE NAV BUILT + RENDER-PROVEN, AWAITING DAVE** · ✅ **STOP LINE RESPECTED (wrap-open 108,193)** · ⚠ **OPACITY SPREAD (D2) → #98**)
+
+- **Showroom side tree nav (Dave's job) BUILT** — generator-only (`gen_showroom.py` INDEX_TMPL + section-builder): 260px category tree → inline-iframe preview, deep-link `#c=<slug>&theme=<t>`, ≤760px stacks. Selftest/regen/`--check` green; render-proven 1180+700, shots read. Receipt `notes/_receipts/2026-08-05-97-side-tree-nav.md`.
+- **Shape PROPOSED not ruled** — registered in `_REVIEW-SIGNOFF.md`; flags: ① doubled chrome in preview (embedded page header under viewbar) · ② 700px tree→intro gap (cosmetic, declared).
+- **#96 strata-roll verify CLOSED:** `roll_2f` refused the duplicate (§ #96 exists in gauge log, D4-marked); one-writer bit; GM strata {95,96} stand exempt.
+- **Wrap opened at FILL 108,193 < 150,929 with wrap n=3 42.4–49.1K priced** — opacity spread rolled to #98, not squeezed (#95's mechanism avoided).
+
+
 ## Rolled 2026-08-05 #99 (2d) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#96**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **ALL 8 PROVEN + 11 RULINGS ENACTED** · ✅ **STOP LINE HELD (wrap-open 146,639)** · ⚠ **SIDE TREE NAV → #97**)
 
