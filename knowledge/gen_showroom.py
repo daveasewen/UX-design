@@ -146,7 +146,11 @@ CATEGORIES = [
                            # chart-expansion programme, prove-one-then-wave exemplar (2026-07-22):
                            "chart-scatter",
                            # chart-revisit wave, net-new bar+line-overlay combo (2026-07-24):
-                           "chart-combo"]),
+                           "chart-combo",
+                           # chart wave 2 (2026-08-05, #95 — 3 Sonnet lanes, conductor-registered):
+                           "chart-butterfly-h", "chart-butterfly-v", "chart-histogram",
+                           "chart-boxplot", "chart-bullet", "chart-candlestick",
+                           "chart-pie", "chart-stacked-area"]),
 ]
 CAT_OF = {slug: cat for cat, slugs in CATEGORIES for slug in slugs}
 

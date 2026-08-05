@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Box plot — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Box plot (Apollo MONO) — median/IQR/whiskers/outliers, one box per category.
+  ★ NET-NEW EXEMPLAR — chart-expansion programme WAVE 2, lane ② statistical/gauge (worker, Sonnet,
+  2026-08-05, brief notes/_briefs/2026-08-05-chart-wave2-lane2-statistical.md). Built to the Chart-scatter
+  Layer-1 pattern (toolbar + table spine + token-manifest), NOT the full DV-D11 legend machinery —
+  a box plot's categories are not filterable series here (single box per category, no multi-series split).
+
+  WHAT'S REUSED, verbatim, from the promoted kit vocabulary (Chart-bar/Chart-scatter are the source):
+  580×260 frame; plot 46→568 / 14→230; --data-series-1 fill for the box; toolbar chrome (.dv-vt/.dv-csv/
+  .dv-tbl-toggle/.dv-tablepanel) BYTE-FOR-BYTE; AUTO-MARKUP dv-lockup-title/dv-lockup-table comment
+  blocks (content matches what gen_component_partials.py would inject — registration is a CONDUCTOR
+  SERIAL, see receipt); outlier markers reuse the Chart-scatter ENLARGED marker family canon
+  (circle r5.5, page-colour separating stroke 1.5) per the brief's citation.
+  AUTO-BEHAVIOUR markers present but EMPTY, same precedent as the 2026-07-24 lane-1 receipt: dataviz
+  membership (component-types.json `$members`) is a conductor serial, not a worker fence.
+
+  ⛔ ds-020 FENCE (DIVVY-inherited, all wave-2 lanes): copy the mark contract + toolbar, NOT the axis/grid
+  CSS. This snippet's axis/grid use the PRE-DV-D07 ink-at-alpha idiom (text/default @ alpha), not the
+  minted data/axis + data/grid two-channel roles Chart-bar/Chart-scatter carry post-migration. That is a
+  KNOWN, DECLARED gap — inherited knowingly, not filled here (receipted).
+
+  WHAT'S NEWLY JUDGED for box plot (receipted for Dave's eyeball):
+  · Whisker = ink line, 1px, min→Q1 and Q3→max, with a short horizontal cap at each end.
+  · Box = data/series/1 fill (the "measure" of the chart), Q1→Q3, ink 1px stroke.
+  · Median = an ink line spanning the box width, 2px (heavier than the box stroke so it reads at a glance).
+  · Outliers = the Chart-scatter marker family (circle r5.5, page-colour stroke), fill = data/series/1
+    (same series, not a new channel — colour is not carrying extra meaning here, dv-011 N/A: outliers are
+    the SAME series, just outside the whisker range).
+  · Table mirrors the FIVE-NUMBER SUMMARY per category (min / Q1 / median / Q3 / max) + an outliers column.
+
+  RULES honoured: dv-017 var() fills only · dv-016 ≥3:1 series + axis both modes (declared, not yet
+  render-verified — see receipt) · composites-only type (DV-D05/DV-D08 12px floor) · DEF-003 CSS-only
+  motion · role-token radius only. Empty state consumes the Empty-state pattern by reference.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682;
+    --data-series-1-hc:#484D6F;
+    --data-axis:#626262; --axis-alpha:.6;
+    --data-grid:#626262; --grid-alpha:.1;
+    --data-control-label-disabled:#9D9D9D; --data-control-swatch-off:currentColor;
+    --shadow:#00000033; --pop-border:#FFFFFF00;
+    --border-radius-control:0; --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-series-1:#766682;
+    --data-series-1-hc:#93B6CC;
+    --data-axis:#9D9D9D; --axis-alpha:.6;
+    --data-grid:#9D9D9D; --grid-alpha:.16;
+    --data-control-label-disabled:#808080; --data-control-swatch-off:currentColor;
+    --shadow:#000000D9; --pop-border:#808080;
+    --border-radius-control:0; --border-radius-surface:0;
+  }
+  [data-contrast="high"]{ --data-series-1:var(--data-series-1-hc); }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0; position:relative;}
+  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+  .dv-title{margin:0;}
+  .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}
+  .dv-chart-area{width:580px;}
+  .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+  figure.dv-fit-on .dv-chart-area{width:100%;}
+  figure.dv-fit-on .dv-svg{width:100%;}
+
+  .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
+
+  .dv-box{fill:var(--data-series-1); stroke:var(--ink); stroke-width:1;}
+  .dv-whisker,.dv-cap{stroke:var(--ink); stroke-width:1; fill:none;}
+  .dv-median{stroke:var(--ink); stroke-width:2;}
+  .dv-pt{stroke:var(--page); stroke-width:1.5; vector-effect:non-scaling-stroke;}
+  .dv-hit{stroke:none; cursor:pointer;}
+  .dv-hit:focus-visible{outline:2px solid var(--ink); outline-offset:1px;}
+  .dv-box[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate g.dv-boxgroup,.dv-animate g.dv-marker{opacity:0; animation:dvFade var(--ease) both;}
+  }
+  @keyframes dvFade{from{opacity:0;} to{opacity:1;}}
+
+  /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, copied byte-for-byte from Chart-bar/Chart-scatter ── */
+  .dv-tbl-toggle,.dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+  .dv-tbl-toggle::before,.dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+  .dv-tbl-toggle > *,.dv-vt > *{position:relative; z-index:1;}
+  .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
+  .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-tbl-toggle[aria-expanded="true"],.dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  .dv-act,.dv-dd{gap:8px;}
+  .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+  .dv-csv .dv-ico-tick{display:none;}
+  .dv-csv.is-copied .dv-ico-copy{display:none;}
+  .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+  .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+
+  .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+  .dv-tablepanel[hidden]{display:none;}
+  .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+  .dv-tip.on{opacity:1;}
+
+  table.dv-table{border-collapse:collapse; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+  .dv-empty-frame .empty h3{margin:0;}
+  .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="contrastToggle" type="button" aria-pressed="false">◑ High contrast</button>
+    <button id="replay" type="button">↻ Replay motion</button>
+    <span>Box plot — canonical reference (Mono · median/IQR/whiskers/outliers · no data)</span>
+  </div>
+
+  <h2>Box plot — four categories (median · IQR · whiskers · outliers)</h2>
+  <figure class="dv dv-animate" data-dv-type="boxplot" data-domain-min="0" data-domain-max="100" data-surface="page" role="group" aria-labelledby="cbp1-h" data-lockup-title="Team C carries the widest spread — and its lone standout" data-lockup-table="cbp1-tbl">
+    <figcaption id="cbp1-h" class="sr-only">Score distribution by team, 0 to 100</figcaption>
+    <div class="dv-head">
+      <!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-title", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+      <h3 class="dv-title t-cm-section-label">Team C carries the widest spread — and its lone standout</h3>
+      <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cbp1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+      <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Score distribution by team, 0 to 100. Team A median 50, IQR 35 to 65, whiskers 10 to 90, one low outlier at 5. Team B median 55, IQR 40 to 70, whiskers 20 to 95. Team C median 40, IQR 25 to 55, whiskers 5 to 80, one high outlier at 98. Team D median 60, IQR 45 to 75, whiskers 15 to 100.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end">25</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end">50</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end">75</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end">100</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)"/>
+
+        <!-- Team A: min10 q1 35 med 50 q3 65 max90, outlier 5 -->
+        <g class="dv-boxgroup" style="animation-delay:0ms">
+          <line class="dv-whisker" x1="111.25" y1="35.6" x2="111.25" y2="89.6"/>
+          <line class="dv-cap" x1="97.25" y1="35.6" x2="125.25" y2="35.6"/>
+          <line class="dv-whisker" x1="111.25" y1="154.4" x2="111.25" y2="208.4"/>
+          <line class="dv-cap" x1="97.25" y1="208.4" x2="125.25" y2="208.4"/>
+          <rect class="dv-box" x="83.25" y="89.6" width="56" height="64.8" tabindex="0" role="img" aria-label="Team A: median 50, IQR 35 to 65" data-tip="Team A: median 50, IQR 35 to 65"></rect>
+          <line class="dv-median" x1="83.25" y1="122" x2="139.25" y2="122"/>
+          <g class="dv-marker"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="111.25" cy="219.2" r="5.5"></circle><circle class="dv-hit" fill="transparent" cx="111.25" cy="219.2" r="12" tabindex="0" role="img" aria-label="Team A outlier: 5" data-tip="Team A outlier: 5"/></g>
+        </g>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.25" y="246" text-anchor="middle">Team A</text>
+
+        <!-- Team B: min20 q1 40 med 55 q3 70 max95 -->
+        <g class="dv-boxgroup" style="animation-delay:90ms">
+          <line class="dv-whisker" x1="241.75" y1="24.8" x2="241.75" y2="78.8"/>
+          <line class="dv-cap" x1="227.75" y1="24.8" x2="255.75" y2="24.8"/>
+          <line class="dv-whisker" x1="241.75" y1="143.6" x2="241.75" y2="186.8"/>
+          <line class="dv-cap" x1="227.75" y1="186.8" x2="255.75" y2="186.8"/>
+          <rect class="dv-box" x="213.75" y="78.8" width="56" height="64.8" tabindex="0" role="img" aria-label="Team B: median 55, IQR 40 to 70" data-tip="Team B: median 55, IQR 40 to 70"></rect>
+          <line class="dv-median" x1="213.75" y1="111.2" x2="269.75" y2="111.2"/>
+        </g>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.75" y="246" text-anchor="middle">Team B</text>
+
+        <!-- Team C: min5 q1 25 med 40 q3 55 max80, outlier 98 -->
+        <g class="dv-boxgroup" style="animation-delay:180ms">
+          <line class="dv-whisker" x1="372.25" y1="57.2" x2="372.25" y2="111.2"/>
+          <line class="dv-cap" x1="358.25" y1="57.2" x2="386.25" y2="57.2"/>
+          <line class="dv-whisker" x1="372.25" y1="176" x2="372.25" y2="219.2"/>
+          <line class="dv-cap" x1="358.25" y1="219.2" x2="386.25" y2="219.2"/>
+          <rect class="dv-box" x="344.25" y="111.2" width="56" height="64.8" tabindex="0" role="img" aria-label="Team C: median 40, IQR 25 to 55" data-tip="Team C: median 40, IQR 25 to 55"></rect>
+          <line class="dv-median" x1="344.25" y1="143.6" x2="400.25" y2="143.6"/>
+          <g class="dv-marker"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="372.25" cy="18.3" r="5.5"></circle><circle class="dv-hit" fill="transparent" cx="372.25" cy="18.3" r="12" tabindex="0" role="img" aria-label="Team C outlier: 98" data-tip="Team C outlier: 98"/></g>
+        </g>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.25" y="246" text-anchor="middle">Team C</text>
+
+        <!-- Team D: min15 q1 45 med 60 q3 75 max100 -->
+        <g class="dv-boxgroup" style="animation-delay:270ms">
+          <line class="dv-whisker" x1="502.75" y1="14" x2="502.75" y2="68"/>
+          <line class="dv-cap" x1="488.75" y1="14" x2="516.75" y2="14"/>
+          <line class="dv-whisker" x1="502.75" y1="132.8" x2="502.75" y2="197.6"/>
+          <line class="dv-cap" x1="488.75" y1="197.6" x2="516.75" y2="197.6"/>
+          <rect class="dv-box" x="474.75" y="68" width="56" height="64.8" tabindex="0" role="img" aria-label="Team D: median 60, IQR 45 to 75" data-tip="Team D: median 60, IQR 45 to 75"></rect>
+          <line class="dv-median" x1="474.75" y1="100.4" x2="530.75" y2="100.4"/>
+        </g>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.75" y="246" text-anchor="middle">Team D</text>
+      </svg>
+    </div></div>
+    <div class="dv-tablepanel" id="cbp1-tbl" role="region" aria-label="Score distribution by team, data table" tabindex="-1" hidden>
+      <table class="dv-table t-cm-legal">
+        <caption>Score distribution by team, five-number summary + outliers, 0 to 100</caption>
+        <thead><tr><th scope="col">Team</th><th scope="col">Min</th><th scope="col">Q1</th><th scope="col">Median</th><th scope="col">Q3</th><th scope="col">Max</th><th scope="col">Outliers</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Team A</th><td>10</td><td>35</td><td>50</td><td>65</td><td>90</td><td>5</td></tr>
+          <tr><th scope="row">Team B</th><td>20</td><td>40</td><td>55</td><td>70</td><td>95</td><td>—</td></tr>
+          <tr><th scope="row">Team C</th><td>5</td><td>25</td><td>40</td><td>55</td><td>80</td><td>98</td></tr>
+          <tr><th scope="row">Team D</th><td>15</td><td>45</td><td>60</td><td>75</td><td>100</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+
+  <h2>No data — the Empty-state pattern, consumed by reference</h2>
+  <div class="dv-stage"><div class="dv-empty-frame" role="group" aria-label="Score distribution, no data">
+    <div class="empty">
+      <h3 class="t-cm-caption">No data to display</h3>
+      <p class="t-cm-legal">Distributions appear here once a team has enough scored activity for the selected period.</p>
+    </div>
+  </div></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Box plot",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--baseline": "border/action-strong",
+              "--line": "border/subtle", "--shadow": "elevation/functional",
+              "--data-series-1": "data/series/1",
+              "--data-axis": "data/axis/color",
+              "--data-control-label-disabled": "data/control/label-disabled/color",
+              "--border-radius-control": "border-radius/control", "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-controls", "aria-expanded", "role=\"region\""],
+    "$note": "ds-020 UNBOUND: --data-grid stays a LOCAL custom property (pre-DV-D07 ink-at-alpha value #626262/#9D9D9D), deliberately NOT bound to data/grid/color \u2014 binding it would either lie or fill the fenced gap; caught as DRIFT by _validate_snippets at conductor replay. NET-NEW EXEMPLAR (chart-expansion programme, wave 2 lane ②, 2026-08-05). Box = data/series/1 fill (dv-016 measure pending render-verify — see receipt). Whiskers/caps/median = ink strokes (median 2px, heavier than the 1px box stroke, for at-a-glance read). Outliers reuse the Chart-scatter ENLARGED marker family (circle r5.5, page-colour stroke 1.5) — same series, not a new colour channel. ds-020 FENCE: axis/grid NOT migrated to the DV-D07 two-channel roles — pre-existing ink-at-alpha idiom kept deliberately, receipted not filled. AUTO-BEHAVIOUR markers present but empty (dataviz $members registration is a conductor serial)."
+  }
+  </script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-behaviour.js (behaviour "dv-behaviour", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-behaviour — the dataviz interaction layer (ADR-0015, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   Modules: value POPOVER (dvTip) · responsive FIT reflow (DV-D02: text never scales) ·
+   TABLE-VIEW POPOVER panel · LEGEND-AS-FILTER. Performance contract (GATED by
+   _validate_behaviour.py): source ≤16KB raw · no setInterval/network/polling · ONE
+   rAF-debounced resize listener · events DELEGATED (document-level, not per-element) ·
+   progressive enhancement — every entry wrapped; the baked SVG renders if this never runs.
+   DEF-003 boundary: behaviour + data-driven geometry ONLY — no JS scale-physics. */
+(function () {
+  'use strict';
+  if (window.__dvBehaviour) { return; } window.__dvBehaviour = true;
+
+  /* ---------- FIT — responsive width-compression (proforma fitCharts, ported).
+     Only HORIZONTAL positions relayout to the container width; height + text are fixed.
+     Geometry rides data-fx/data-fw/data-dx/data-x0/data-fx2 + polyline data-fxs/data-ys;
+     plot frame per-svg via data-pl/data-pr/data-h (defaults = the kit's 46/12/260).
+     JS-ON opt-in: .dv-fit-on lands on the figure, releasing the fixed-width CSS —
+     JS-off keeps the DV-D02 static answer (fixed geometry + horizontal scroll). */
+  function fitCharts() {
+    var svgs = document.querySelectorAll('svg.dv-fit');
+    for (var i = 0; i < svgs.length; i++) { fitOne(svgs[i]); }
+  }
+  function fitOne(svg) {
+    try {
+      var PL = parseFloat(svg.getAttribute('data-pl') || '46');
+      var PR = parseFloat(svg.getAttribute('data-pr') || '12');
+      var H  = parseFloat(svg.getAttribute('data-h')  || '260');
+      var W = Math.round(svg.getBoundingClientRect().width);
+      if (!W) { return; }
+      var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
+      var X = function (f) { return PL + parseFloat(f) * plotW; };
+      var els = svg.querySelectorAll('[data-fx]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], x = X(el.getAttribute('data-fx')), tag = el.tagName.toLowerCase();
+        if (tag === 'rect') {
+          el.setAttribute('x', x.toFixed(1));
+          var fw = el.getAttribute('data-fw');
+          if (fw !== null) { el.setAttribute('width', (parseFloat(fw) * plotW).toFixed(1)); }
+        } else if (tag === 'text') {
+          var dx = parseFloat(el.getAttribute('data-dx') || '0');
+          el.setAttribute('x', (x + dx).toFixed(1));
+        } else if (tag === 'line') {
+          el.setAttribute('x1', x.toFixed(1));
+          var fx2 = el.getAttribute('data-fx2');
+          if (fx2 !== null) { el.setAttribute('x2', X(fx2).toFixed(1)); }
+        } else if (tag === 'g') {
+          var x0 = parseFloat(el.getAttribute('data-x0') || '0');
+          el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
+        }
+      }
+      var pls = svg.querySelectorAll('polyline[data-fxs]');
+      for (var j = 0; j < pls.length; j++) {
+        var pl = pls[j];
+        var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
+        var ys  = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var pts = [];
+        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
+        pl.setAttribute('points', pts.join(' '));
+      }
+    } catch (e) { /* leave the baked SVG intact */ }
+  }
+  var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
+  window.addEventListener('resize', function () {
+    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); });
+  });
+
+  /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
+     Replaces native <title> tooltips (values stay in sync with the table — one source).
+     Edge-flips at the viewport bounds. role=status/aria-live=polite (proforma posture). */
+  var dvTip = document.createElement('div');
+  dvTip.className = 'dv-tip t-cm-chart-value'; dvTip.id = 'dvTip';   /* type via composite (T-D14 markup class) */
+  dvTip.setAttribute('role', 'status'); dvTip.setAttribute('aria-live', 'polite');
+  document.body.appendChild(dvTip);
+  function tipAt(text, x, y) {
+    dvTip.textContent = text; dvTip.classList.add('on');
+    var r = dvTip.getBoundingClientRect();
+    if (x + r.width  > window.innerWidth  - 8) { x = x - r.width  - 28; }
+    if (y + r.height > window.innerHeight - 8) { y = y - r.height - 28; }
+    dvTip.style.left = x + 'px'; dvTip.style.top = y + 'px';
+  }
+  function tipHide() { dvTip.classList.remove('on'); }
+  document.addEventListener('pointermove', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (el) { tipAt(el.getAttribute('data-tip'), e.clientX + 14, e.clientY + 14); }
+    else { tipHide(); }
+  });
+  document.addEventListener('focusin', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (!el) { return; }
+    var b = el.getBoundingClientRect();
+    tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40);
+  });
+  document.addEventListener('focusout', function () { tipHide(); });
+
+  /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
+     surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
+     aria-controls + aria-expanded; panel is a labelled region, tabindex=-1 for the
+     focus hand-off; Esc dismisses and returns focus to its toggle. */
+  function tblToggle(btn) {
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (!panel) { return; }
+    var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
+    if (open) {
+      panel.removeAttribute('hidden');
+      /* anchor the panel just BELOW its trigger, never over it — the fixed top was brittle
+         once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
+         offsetParent resolves; fall back gracefully. */
+      var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
+      if (op) {
+        var bt = btn.getBoundingClientRect(), ot = op.getBoundingClientRect();
+        panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+        /* anchor horizontally UNDER the trigger too — right:0 pinned the panel to the figure's edge,
+           wrong when the trigger sits mid-figure (e.g. donut + side legend). Left-align to the
+           trigger, clamp so it never spills past the offsetParent's right edge (keeps bar/line right-anchored). */
+        var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+        panel.style.left = lx + 'px'; panel.style.right = 'auto';
+      }
+    } else { panel.setAttribute('hidden', ''); }
+    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
+    if (open) { panel.focus(); }
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
+    if (btn) { tblToggle(btn); return; }
+    var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
+    if (vt) { viewToggle(vt); return; }
+    var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
+    if (sw) { segView(sw); return; }
+    var cp = e.target.closest && e.target.closest('button.dv-csv');
+    if (cp) { copyCsv(cp); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') { return; }
+    var panel = e.target.closest && e.target.closest('.dv-tablepanel');
+    if (!panel || panel.hasAttribute('hidden')) { return; }
+    panel.setAttribute('hidden', '');
+    var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
+    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
+  });
+
+  /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
+     computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */
+  function setView(fig, name, show) {
+    var els = fig.querySelectorAll('[data-dv-view~="' + name + '"]');
+    for (var i = 0; i < els.length; i++) { els[i].classList.toggle('dv-off', !show); }
+  }
+  function viewToggle(btn) {
+    var on = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', String(!on));
+    setView(btn.closest('figure') || document, btn.getAttribute('data-dv-toggle'), !on);
+  }
+  /* SEGMENTED INDICATOR (Dave, 2026-07-24): the view switch CONSUMES the Segmented-control atom —
+     behaviour drives the sliding fill (.ind) the atom's way: measure the pressed button's box and
+     slide. rect-based so the 2px inset + 1px border don't offset the measurement (the .ind
+     containing block is .seg's padding box — subtract seg.clientLeft). */
+  function moveSeg(seg) {
+    if (!seg) { return; }
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
+    ind.style.width = br.width + 'px';
+  }
+  function placeSegs() {
+    var segs = document.querySelectorAll('.seg');
+    for (var i = 0; i < segs.length; i++) { moveSeg(segs[i]); }
+  }
+  /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
+     to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
+     each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
+     an overlay's toggle governs both copies, so it works in whichever view is up. Nothing ever
+     disables. */
+  function segView(btn) {
+    if (btn.getAttribute('aria-pressed') === 'true') { return; }
+    var fig = btn.closest('figure') || document;
+    var active = btn.getAttribute('data-dv-view-btn');
+    var segs = fig.querySelectorAll('button[data-dv-view-btn]');
+    for (var i = 0; i < segs.length; i++) {
+      var v = segs[i].getAttribute('data-dv-view-btn');
+      segs[i].setAttribute('aria-pressed', String(v === active));
+      setView(fig, v, v === active);
+    }
+    moveSeg(btn.closest('.seg'));                 /* slide the indicator to the newly active view */
+  }
+  /* COPY CSV (menu pick 10): the figure's real table, serialised — no network, table = truth. */
+  function copyCsv(btn) {
+    var fig = btn.closest('figure') || document;
+    var rows = fig.querySelectorAll('table tr');
+    var out = [];
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].querySelectorAll('th,td'), line = [];
+      for (var j = 0; j < cells.length; j++) { line.push('"' + cells[j].textContent.trim().replace(/"/g, '""') + '"'); }
+      out.push(line.join(','));
+    }
+    var csv = out.join('\n');
+    function done() {
+      /* label stays put; the copy icon swaps to a tick briefly (Dave 2026-07-24) */
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(csv).then(done, done);
+    } else { done(); }
+  }
+
+  /* ---------- INIT — opt the page into fit (JS-on releases the fixed width), first pass. */
+  var figs = document.querySelectorAll('figure.dv');
+  for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
+  fitCharts();
+  placeSegs();                                    /* initial indicator position (widths depend on layout) */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeSegs); }   /* re-place once the web font settles */
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
+
+  <script>
+    var themeToggle = document.getElementById('themeToggle');
+    var contrastToggle = document.getElementById('contrastToggle');
+    var replay = document.getElementById('replay');
+    if (themeToggle) { themeToggle.addEventListener('click', function () {
+      var b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    }); }
+    if (contrastToggle) { contrastToggle.addEventListener('click', function () {
+      var on = contrastToggle.getAttribute('aria-pressed') === 'true';
+      contrastToggle.setAttribute('aria-pressed', String(!on));
+      document.body.setAttribute('data-contrast', !on ? 'high' : 'normal');
+    }); }
+    if (replay) { replay.addEventListener('click', function () {
+      document.querySelectorAll('.dv-animate').forEach(function (fig) {
+        fig.classList.remove('dv-animate'); void fig.offsetWidth; fig.classList.add('dv-animate');
+      });
+    }); }
+  </script>
+</body>
+</html>

@@ -96,6 +96,7 @@ that single pass.** Running list of what it must cover:
   ⬛ And the same render surfaced **ds-012**: all six h-bar category labels are clipped at the left
   (worst 16.8px) — a 38px gutter sized against a fallback face, not the real cut. Logged, NOT fixed.
 - **Five chart showroom panes (added 2026-07-26, P4):** `showroom/chart-{bar,line,donut,combo,sparkline}.html` — the DataViz sign-off = Dave eyeballs the 5 panes → canon flips provisional-agent→canon (open-014). Same object as the "DataViz sign-off" line above — pane paths pinned here so the eyeball has its list.
+- **Eight wave-2 chart panes (added 2026-08-05, #95):** `showroom/chart-{butterfly-h,butterfly-v,histogram,boxplot,bullet,candlestick,pie,stacked-area}.html` — render-verify OWED (07-24 precedent) + Dave's eyeball; all 8 metas honestly `UNPROVEN`. Per-lane flags for Dave are listed in `_proforma/_DATAVIZ-DECISIONS.md` § ★ #95 (bullet proportions + grey tints · candlestick dv-011 · histogram static key · stacked-area alpha dial + fit gap · pie sweep data-ri).
 
 Method + template controls (live variant/state spread from meta · light/dark toggle · responsive slider · comment
 overlay) per the **Method** section. Pointer in `_LIVE-STATE.md` PLANNED/TARGET; memory `full-review-pending`.

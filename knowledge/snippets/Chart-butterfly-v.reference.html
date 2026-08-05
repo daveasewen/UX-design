@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Butterfly chart (vertical) — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Butterfly chart, vertical orientation (Apollo MONO) — same contract as
+  Chart-butterfly-h.reference.html, rotated: mirrored columns above/below one shared horizontal
+  baseline, one category axis running left-to-right. ★ CHART-EXPANSION WAVE 2, lane ① (2026-08-05,
+  worker — brief notes/_briefs/2026-08-05-chart-wave2-lane1-bar-family.md). Ported from
+  Chart-bar.reference.html's column geometry (x-positions REUSED verbatim — same 6-slot layout,
+  same data-fx/data-fw fractions — only the y-axis treatment differs) and Chart-line's Layer-2
+  state model + a11y constraint (CANON). WORKER FENCE: no component-types.json / dv-behaviour.js /
+  MIGRATED_SNIPPETS / CATEGORIES / spine docs / git touched here — conductor serials, handed via
+  the receipt notes/_receipts/2026-08-05-wave2-lane1-bar-family.md. Meta notes cross-reference
+  Chart-butterfly-h's meta by design (DIVVY: "shared meta notes may cross-reference, files stay
+  separate") — the two snippet files themselves are fully independent.
+
+  MARK CONTRACT (copied from Chart-bar, verbatim): rect.dv-series presentation-attribute fill is
+  the single source of series colour (ds-010 lesson); popover value == table value, one source
+  (data-tip); bars carry tabindex 0 + aria-label; entry motion = CSS-only grow-from-baseline
+  (DEF-003, mirrored: up bars grow from the shared baseline UP, down bars grow from it DOWN); type
+  = composites only (DV-D08 ladder).
+
+  ⛔ ds-020 FENCE (DIVVY-instructed, do not fill): the axis/grid CSS ladder (.dv-grid, text.dv-axis,
+  text.dv-label opacity-via-var(--axis-alpha)) is DELIBERATELY NOT ported from Chart-bar. The one
+  shared baseline here carries colour via inline stroke="var(--baseline)" only (bar's
+  belt-and-braces presentation attribute), with none of bar's CSS-side DV-D07 two-channel role
+  layered on top, and no gridlines at all. Declared gap — receipted, not silently inherited.
+
+  GEOMETRY: baseline moved from bar's y=230 (bottom) to y=110 (upper-middle) so both directions
+  have room; SAME scale (0.9 px/unit) used both up and down so the two series stay visually
+  comparable — a butterfly that scaled its halves independently would misrepresent the data.
+  Category labels sit in bar's reserved bottom margin (y=246), same position bar uses for its
+  own column labels, so they never collide with either bar direction.
+
+  ⚠ dv-bar-009 (zero baseline) is NOT violated: the baseline IS zero, values are simply plotted in
+  both directions from it (a diverging/mirrored column is that rule's intended reading, not an
+  exception to it) — noted because it looks unusual against a single-direction column at first
+  glance.
+
+  LEGEND: DV-D11 chrome (dv-legend.js, canon), same as the -h sibling. AUTO-BEHAVIOUR markers below
+  are EMPTY (worker fence). On-chart letter keys OMITTED (up/down direction + colour already
+  disambiguate the two series) — same deliberate delta as -h, receipted there, repeated here for a
+  reader who opens only this file.
+
+  RULES CARRIED FORWARD: dv-017 var() fills · dv-016 ≥3:1 rendered both modes · DEF-003 CSS-only
+  motion · composites-only type · controls never dim-only (hollow-swatch off-state, B-D4).
+  Empty state consumes the Empty-state pattern by reference.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1);
+    --grow:760ms cubic-bezier(.22,.61,.36,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --data-series-1-hc:#484D6F; --data-series-2-hc:#97482C; --data-series-3-hc:#385F4F;
+    --data-axis:#626262; --axis-alpha:1;
+    --data-control-label-disabled:#9D9D9D; --data-control-swatch-off:currentColor;
+    --data-grid:#E1E1E1; --grid-alpha:1;
+    --data-text-on-series:#FFFFFF;
+    --shadow:#00000033; --pop-border:#FFFFFF00;
+    --border-radius-control:0; --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --data-series-1-hc:#93B6CC; --data-series-2-hc:#E5A78F; --data-series-3-hc:#90BA9B;
+    --data-axis:#9D9D9D; --axis-alpha:1;
+    --data-control-label-disabled:#808080; --data-control-swatch-off:currentColor;
+    --data-grid:#484848; --grid-alpha:1;
+    --data-text-on-series:#FFFFFF;
+    --shadow:#000000D9; --pop-border:#808080;
+    --border-radius-control:0; --border-radius-surface:0;
+  }
+  [data-contrast="high"]{
+    --data-series-1:var(--data-series-1-hc);
+    --data-series-3:var(--data-series-3-hc);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0; position:relative;}
+  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+  .dv-title{margin:0;}
+  .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}
+  .dv-chart-area{width:580px;}
+  .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+  figure.dv-fit-on .dv-chart-area{width:100%;}
+  figure.dv-fit-on .dv-svg{width:100%;}
+
+  /* ds-020: no .dv-grid / text.dv-axis / text.dv-label rules here — see header note. */
+
+  rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+  rect.dv-series:hover{filter:brightness(1.12);}
+  [data-theme="dark"] rect.dv-series:hover{filter:brightness(1.22);}
+  .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:dvGrowY var(--grow) both;}
+    .dv-animate rect.dv-series[data-grow="down"]{transform-box:fill-box; transform-origin:top; animation:dvGrowYD var(--grow) both;}
+  }
+  @keyframes dvGrowY{from{transform:scaleY(0);}}
+  @keyframes dvGrowYD{from{transform:scaleY(0);}}
+
+  /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, ported from Chart-bar/Chart-line ── */
+  .dv-tbl-toggle,.dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+  .dv-tbl-toggle::before,.dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+  .dv-tbl-toggle > *,.dv-vt > *{position:relative; z-index:1;}
+  .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
+  .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-tbl-toggle[aria-expanded="true"]{border-color:var(--ink);}
+  .dv-act,.dv-dd{gap:8px;}
+  .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+  .dv-csv .dv-ico-tick{display:none;}
+  .dv-csv.is-copied .dv-ico-copy{display:none;}
+  .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+  .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+
+  .dv-off{display:none !important;}
+
+  /* ================= DV-D11 LEGEND MODEL — migrated chrome, ported verbatim from Chart-bar ==== */
+  .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
+  .dv-leg.center{flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0 0;}
+  .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
+    padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
+  .dv-legrow:hover{border-color:var(--ink);}
+  .dv-legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+  .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+  .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+  .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
+  .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+    margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left; font:inherit;}
+  .dv-leg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+  .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-leg-item > *{position:relative; z-index:1;}
+  .dv-leg-name{white-space:nowrap;}
+  .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px;
+    border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+    transition:border-color var(--ease), color var(--ease);}
+  .dv-leg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+  .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+  .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
+  .is-faded{opacity:.24 !important;}
+  .is-ghost{opacity:.12 !important;}
+  .is-peek{opacity:.24 !important;}
+  .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+  .dv-tablepanel[hidden]{display:none;}
+  .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+  .dv-tip.on{opacity:1;}
+
+  table.dv-table{border-collapse:collapse; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+  .dv-empty-frame .empty h3{margin:0;}
+  .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="contrastToggle" type="button" aria-pressed="false">◑ High contrast</button>
+    <button id="replay" type="button">↻ Replay motion</button>
+    <span>Butterfly chart, vertical — canonical reference (Mono · mirrored columns · two series)</span>
+  </div>
+
+  <h2>Butterfly — vertical, mirrored two-series (legend-as-filter · isolate · highlight)</h2>
+  <figure class="dv dv-animate" data-dv-type="butterfly-v" data-domain-min="0" data-surface="page" role="group" aria-labelledby="cbv1-h" data-lockup-title="Q3 actual beat forecast by the widest margin" data-lockup-table="cbv1-tbl">
+    <figcaption id="cbv1-h" class="sr-only">Actual versus forecast by quarter, thousands, mirrored vertical</figcaption>
+    <div class="dv-head">
+      <!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-title", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+      <h3 class="dv-title t-cm-section-label">Q3 actual beat forecast by the widest margin</h3>
+      <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cbv1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+      <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Actual versus forecast by quarter, thousands. Q1: actual 42, forecast 35. Q2: actual 18, forecast 24. Q3: actual 95, forecast 80. Q4: actual 26, forecast 30. Q5: actual 21, forecast 19. Q6: actual 30, forecast 33.">
+        <line class="dv-axis" x1="46" y1="110" x2="568" y2="110" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+
+        <rect class="dv-series" data-series-group="actual" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="65.1" y="72.2" width="48.7" height="37.8" data-fx="0.0366" data-fw="0.0933" tabindex="0" role="img" aria-label="Q1 actual: 42" data-tip="Q1 actual: 42"></rect>
+        <rect class="dv-series" data-series-group="forecast" data-grow="down" style="animation-delay:0ms" fill="var(--data-series-3)" x="65.1" y="110" width="48.7" height="31.5" data-fx="0.0366" data-fw="0.0933" tabindex="0" role="img" aria-label="Q1 forecast: 35" data-tip="Q1 forecast: 35"></rect>
+        <text class="t-cm-chart-label" fill="var(--data-axis)" x="89.4" y="246" text-anchor="middle" data-fx="0.0832">Q1</text>
+
+        <rect class="dv-series" data-series-group="actual" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-1)" x="152.1" y="93.8" width="48.7" height="16.2" data-fx="0.2033" data-fw="0.0933" tabindex="0" role="img" aria-label="Q2 actual: 18" data-tip="Q2 actual: 18"></rect>
+        <rect class="dv-series" data-series-group="forecast" data-grow="down" style="animation-delay:45ms" fill="var(--data-series-3)" x="152.1" y="110" width="48.7" height="21.6" data-fx="0.2033" data-fw="0.0933" tabindex="0" role="img" aria-label="Q2 forecast: 24" data-tip="Q2 forecast: 24"></rect>
+        <text class="t-cm-chart-label" fill="var(--data-axis)" x="176.4" y="246" text-anchor="middle" data-fx="0.2499">Q2</text>
+
+        <rect class="dv-series" data-series-group="actual" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-1)" x="239.1" y="24.5" width="48.7" height="85.5" data-fx="0.3699" data-fw="0.0933" tabindex="0" role="img" aria-label="Q3 actual: 95" data-tip="Q3 actual: 95"></rect>
+        <rect class="dv-series" data-series-group="forecast" data-grow="down" style="animation-delay:90ms" fill="var(--data-series-3)" x="239.1" y="110" width="48.7" height="72" data-fx="0.3699" data-fw="0.0933" tabindex="0" role="img" aria-label="Q3 forecast: 80" data-tip="Q3 forecast: 80"></rect>
+        <text class="t-cm-chart-label" fill="var(--data-axis)" x="263.4" y="246" text-anchor="middle" data-fx="0.4166">Q3</text>
+
+        <rect class="dv-series" data-series-group="actual" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-1)" x="326.1" y="86.6" width="48.7" height="23.4" data-fx="0.5366" data-fw="0.0933" tabindex="0" role="img" aria-label="Q4 actual: 26" data-tip="Q4 actual: 26"></rect>
+        <rect class="dv-series" data-series-group="forecast" data-grow="down" style="animation-delay:135ms" fill="var(--data-series-3)" x="326.1" y="110" width="48.7" height="27" data-fx="0.5366" data-fw="0.0933" tabindex="0" role="img" aria-label="Q4 forecast: 30" data-tip="Q4 forecast: 30"></rect>
+        <text class="t-cm-chart-label" fill="var(--data-axis)" x="350.5" y="246" text-anchor="middle" data-fx="0.5832">Q4</text>
+
+        <rect class="dv-series" data-series-group="actual" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-1)" x="413.1" y="91.1" width="48.7" height="18.9" data-fx="0.7033" data-fw="0.0933" tabindex="0" role="img" aria-label="Q5 actual: 21" data-tip="Q5 actual: 21"></rect>
+        <rect class="dv-series" data-series-group="forecast" data-grow="down" style="animation-delay:180ms" fill="var(--data-series-3)" x="413.1" y="110" width="48.7" height="17.1" data-fx="0.7033" data-fw="0.0933" tabindex="0" role="img" aria-label="Q5 forecast: 19" data-tip="Q5 forecast: 19"></rect>
+        <text class="t-cm-chart-label" fill="var(--data-axis)" x="437.5" y="246" text-anchor="middle" data-fx="0.7499">Q5</text>
+
+        <rect class="dv-series" data-series-group="actual" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-1)" x="500.1" y="83" width="48.7" height="27" data-fx="0.8699" data-fw="0.0933" tabindex="0" role="img" aria-label="Q6 actual: 30" data-tip="Q6 actual: 30"></rect>
+        <rect class="dv-series" data-series-group="forecast" data-grow="down" style="animation-delay:225ms" fill="var(--data-series-3)" x="500.1" y="110" width="48.7" height="29.7" data-fx="0.8699" data-fw="0.0933" tabindex="0" role="img" aria-label="Q6 forecast: 33" data-tip="Q6 forecast: 33"></rect>
+        <text class="t-cm-chart-label" fill="var(--data-axis)" x="524.5" y="246" text-anchor="middle" data-fx="0.9166">Q6</text>
+      </svg>
+    </div></div>
+    <ul class="dv-leg center t-cm-chart-label" id="cbv1-legend" role="group" aria-label="Series — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+      <li class="dv-legrow" data-series="actual">
+        <span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" style="--sc:var(--data-series-1)"></span>
+        <button type="button" class="dv-leg-item" aria-pressed="false"><span class="dv-leg-name">Actual</span></button>
+      </li>
+      <li class="dv-legrow" data-series="forecast">
+        <span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" style="--sc:var(--data-series-3)"></span>
+        <button type="button" class="dv-leg-item" aria-pressed="false"><span class="dv-leg-name">Forecast</span></button>
+      </li>
+      <button type="button" class="dv-leg-reset" disabled>Reset</button>
+      <li class="dv-sr" id="cbv1-live" role="status" aria-live="polite"></li>
+    </ul>
+    <div class="dv-tablepanel" id="cbv1-tbl" role="region" aria-label="Actual versus forecast by quarter, data table" tabindex="-1" hidden>
+      <table class="dv-table t-cm-legal">
+        <caption>Actual versus forecast by quarter, thousands</caption>
+        <thead><tr><th scope="col">Quarter</th><th scope="col">Actual</th><th scope="col">Forecast</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Q1</th><td>42</td><td>35</td></tr>
+          <tr><th scope="row">Q2</th><td>18</td><td>24</td></tr>
+          <tr><th scope="row">Q3</th><td>95</td><td>80</td></tr>
+          <tr><th scope="row">Q4</th><td>26</td><td>30</td></tr>
+          <tr><th scope="row">Q5</th><td>21</td><td>19</td></tr>
+          <tr><th scope="row">Q6</th><td>30</td><td>33</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+
+  <div class="dv-empty-frame" hidden>
+    <div class="empty">
+      <h3 class="t-cm-section-label">No data for this period</h3>
+      <p class="t-cm-chart-label">Try a different date range or clear your filters.</p>
+    </div>
+  </div>
+
+  <div class="dv-tip" role="status" aria-hidden="true"></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Butterfly chart (vertical)",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--baseline": "border/action-strong",
+              "--line": "border/subtle",
+              "--data-series-1": "data/series/1", "--data-series-2": "data/series/2", "--data-series-3": "data/series/3",
+              "--data-series-4": "data/series/4", "--data-series-5": "data/series/5",
+              "--data-series-1-hc": "data/series-high-contrast/1", "--data-series-2-hc": "data/series-high-contrast/2", "--data-series-3-hc": "data/series-high-contrast/3",
+              "--data-axis": "data/axis/color", "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color", "--grid-alpha": "data/grid/alpha",
+              "--data-control-label-disabled": "data/control/label-disabled/color",
+              "--data-text-on-series": "data/text/on-series",
+              "--shadow": "elevation/functional", "--pop-border": "elevation/border",
+              "--border-radius-control": "border-radius/control",
+              "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/3", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-label", "aria-pressed", "aria-controls", "aria-expanded", "role=\"region\""],
+    "$note": "NET-NEW (chart-expansion wave 2 lane 1, 2026-08-05; manifest added by the CONDUCTOR at registration \u2014 the worker landed the snippet without one, caught by _validate_snippets replay). Two mirrored series bind data/series/1 + data/series/3 (DV-D09 h-bar right-direction default cited in the receipt). ds-020: the DV-D07 axis/grid CSS bundle (.dv-grid / text.dv-axis opacity ladder) was deliberately NOT ported \u2014 inline stroke=var(--baseline) only, no gridlines drawn; inherited knowingly, receipted not filled."
+  }
+  </script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-behaviour.js (behaviour "dv-behaviour", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-behaviour — the dataviz interaction layer (ADR-0015, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   Modules: value POPOVER (dvTip) · responsive FIT reflow (DV-D02: text never scales) ·
+   TABLE-VIEW POPOVER panel · LEGEND-AS-FILTER. Performance contract (GATED by
+   _validate_behaviour.py): source ≤16KB raw · no setInterval/network/polling · ONE
+   rAF-debounced resize listener · events DELEGATED (document-level, not per-element) ·
+   progressive enhancement — every entry wrapped; the baked SVG renders if this never runs.
+   DEF-003 boundary: behaviour + data-driven geometry ONLY — no JS scale-physics. */
+(function () {
+  'use strict';
+  if (window.__dvBehaviour) { return; } window.__dvBehaviour = true;
+
+  /* ---------- FIT — responsive width-compression (proforma fitCharts, ported).
+     Only HORIZONTAL positions relayout to the container width; height + text are fixed.
+     Geometry rides data-fx/data-fw/data-dx/data-x0/data-fx2 + polyline data-fxs/data-ys;
+     plot frame per-svg via data-pl/data-pr/data-h (defaults = the kit's 46/12/260).
+     JS-ON opt-in: .dv-fit-on lands on the figure, releasing the fixed-width CSS —
+     JS-off keeps the DV-D02 static answer (fixed geometry + horizontal scroll). */
+  function fitCharts() {
+    var svgs = document.querySelectorAll('svg.dv-fit');
+    for (var i = 0; i < svgs.length; i++) { fitOne(svgs[i]); }
+  }
+  function fitOne(svg) {
+    try {
+      var PL = parseFloat(svg.getAttribute('data-pl') || '46');
+      var PR = parseFloat(svg.getAttribute('data-pr') || '12');
+      var H  = parseFloat(svg.getAttribute('data-h')  || '260');
+      var W = Math.round(svg.getBoundingClientRect().width);
+      if (!W) { return; }
+      var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
+      var X = function (f) { return PL + parseFloat(f) * plotW; };
+      var els = svg.querySelectorAll('[data-fx]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], x = X(el.getAttribute('data-fx')), tag = el.tagName.toLowerCase();
+        if (tag === 'rect') {
+          el.setAttribute('x', x.toFixed(1));
+          var fw = el.getAttribute('data-fw');
+          if (fw !== null) { el.setAttribute('width', (parseFloat(fw) * plotW).toFixed(1)); }
+        } else if (tag === 'text') {
+          var dx = parseFloat(el.getAttribute('data-dx') || '0');
+          el.setAttribute('x', (x + dx).toFixed(1));
+        } else if (tag === 'line') {
+          el.setAttribute('x1', x.toFixed(1));
+          var fx2 = el.getAttribute('data-fx2');
+          if (fx2 !== null) { el.setAttribute('x2', X(fx2).toFixed(1)); }
+        } else if (tag === 'g') {
+          var x0 = parseFloat(el.getAttribute('data-x0') || '0');
+          el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
+        }
+      }
+      var pls = svg.querySelectorAll('polyline[data-fxs]');
+      for (var j = 0; j < pls.length; j++) {
+        var pl = pls[j];
+        var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
+        var ys  = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var pts = [];
+        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
+        pl.setAttribute('points', pts.join(' '));
+      }
+    } catch (e) { /* leave the baked SVG intact */ }
+  }
+  var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
+  window.addEventListener('resize', function () {
+    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); });
+  });
+
+  /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
+     Replaces native <title> tooltips (values stay in sync with the table — one source).
+     Edge-flips at the viewport bounds. role=status/aria-live=polite (proforma posture). */
+  var dvTip = document.createElement('div');
+  dvTip.className = 'dv-tip t-cm-chart-value'; dvTip.id = 'dvTip';   /* type via composite (T-D14 markup class) */
+  dvTip.setAttribute('role', 'status'); dvTip.setAttribute('aria-live', 'polite');
+  document.body.appendChild(dvTip);
+  function tipAt(text, x, y) {
+    dvTip.textContent = text; dvTip.classList.add('on');
+    var r = dvTip.getBoundingClientRect();
+    if (x + r.width  > window.innerWidth  - 8) { x = x - r.width  - 28; }
+    if (y + r.height > window.innerHeight - 8) { y = y - r.height - 28; }
+    dvTip.style.left = x + 'px'; dvTip.style.top = y + 'px';
+  }
+  function tipHide() { dvTip.classList.remove('on'); }
+  document.addEventListener('pointermove', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (el) { tipAt(el.getAttribute('data-tip'), e.clientX + 14, e.clientY + 14); }
+    else { tipHide(); }
+  });
+  document.addEventListener('focusin', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (!el) { return; }
+    var b = el.getBoundingClientRect();
+    tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40);
+  });
+  document.addEventListener('focusout', function () { tipHide(); });
+
+  /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
+     surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
+     aria-controls + aria-expanded; panel is a labelled region, tabindex=-1 for the
+     focus hand-off; Esc dismisses and returns focus to its toggle. */
+  function tblToggle(btn) {
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (!panel) { return; }
+    var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
+    if (open) {
+      panel.removeAttribute('hidden');
+      /* anchor the panel just BELOW its trigger, never over it — the fixed top was brittle
+         once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
+         offsetParent resolves; fall back gracefully. */
+      var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
+      if (op) {
+        var bt = btn.getBoundingClientRect(), ot = op.getBoundingClientRect();
+        panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+        /* anchor horizontally UNDER the trigger too — right:0 pinned the panel to the figure's edge,
+           wrong when the trigger sits mid-figure (e.g. donut + side legend). Left-align to the
+           trigger, clamp so it never spills past the offsetParent's right edge (keeps bar/line right-anchored). */
+        var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+        panel.style.left = lx + 'px'; panel.style.right = 'auto';
+      }
+    } else { panel.setAttribute('hidden', ''); }
+    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
+    if (open) { panel.focus(); }
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
+    if (btn) { tblToggle(btn); return; }
+    var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
+    if (vt) { viewToggle(vt); return; }
+    var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
+    if (sw) { segView(sw); return; }
+    var cp = e.target.closest && e.target.closest('button.dv-csv');
+    if (cp) { copyCsv(cp); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') { return; }
+    var panel = e.target.closest && e.target.closest('.dv-tablepanel');
+    if (!panel || panel.hasAttribute('hidden')) { return; }
+    panel.setAttribute('hidden', '');
+    var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
+    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
+  });
+
+  /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
+     computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */
+  function setView(fig, name, show) {
+    var els = fig.querySelectorAll('[data-dv-view~="' + name + '"]');
+    for (var i = 0; i < els.length; i++) { els[i].classList.toggle('dv-off', !show); }
+  }
+  function viewToggle(btn) {
+    var on = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', String(!on));
+    setView(btn.closest('figure') || document, btn.getAttribute('data-dv-toggle'), !on);
+  }
+  /* SEGMENTED INDICATOR (Dave, 2026-07-24): the view switch CONSUMES the Segmented-control atom —
+     behaviour drives the sliding fill (.ind) the atom's way: measure the pressed button's box and
+     slide. rect-based so the 2px inset + 1px border don't offset the measurement (the .ind
+     containing block is .seg's padding box — subtract seg.clientLeft). */
+  function moveSeg(seg) {
+    if (!seg) { return; }
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
+    ind.style.width = br.width + 'px';
+  }
+  function placeSegs() {
+    var segs = document.querySelectorAll('.seg');
+    for (var i = 0; i < segs.length; i++) { moveSeg(segs[i]); }
+  }
+  /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
+     to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
+     each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
+     an overlay's toggle governs both copies, so it works in whichever view is up. Nothing ever
+     disables. */
+  function segView(btn) {
+    if (btn.getAttribute('aria-pressed') === 'true') { return; }
+    var fig = btn.closest('figure') || document;
+    var active = btn.getAttribute('data-dv-view-btn');
+    var segs = fig.querySelectorAll('button[data-dv-view-btn]');
+    for (var i = 0; i < segs.length; i++) {
+      var v = segs[i].getAttribute('data-dv-view-btn');
+      segs[i].setAttribute('aria-pressed', String(v === active));
+      setView(fig, v, v === active);
+    }
+    moveSeg(btn.closest('.seg'));                 /* slide the indicator to the newly active view */
+  }
+  /* COPY CSV (menu pick 10): the figure's real table, serialised — no network, table = truth. */
+  function copyCsv(btn) {
+    var fig = btn.closest('figure') || document;
+    var rows = fig.querySelectorAll('table tr');
+    var out = [];
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].querySelectorAll('th,td'), line = [];
+      for (var j = 0; j < cells.length; j++) { line.push('"' + cells[j].textContent.trim().replace(/"/g, '""') + '"'); }
+      out.push(line.join(','));
+    }
+    var csv = out.join('\n');
+    function done() {
+      /* label stays put; the copy icon swaps to a tick briefly (Dave 2026-07-24) */
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(csv).then(done, done);
+    } else { done(); }
+  }
+
+  /* ---------- INIT — opt the page into fit (JS-on releases the fixed width), first pass. */
+  var figs = document.querySelectorAll('figure.dv');
+  for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
+  fitCharts();
+  placeSegs();                                    /* initial indicator position (widths depend on layout) */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeSegs); }   /* re-place once the web font settles */
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-legend START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-legend.js (behaviour "dv-legend", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-legend — the LEGEND INTERACTION MODEL (DV-D11 · DV-D13), hand-authored SOURCE.
+   The SECOND registered behaviour source for the dataviz group: dv-behaviour.js carries
+   fit/tip/table/seg/csv, this file carries the legend. Injected into registered chart snippets
+   between AUTO-BEHAVIOUR dv-legend markers by gen_component_partials.py — edit HERE and
+   regenerate, never between a consumer's markers.
+
+   WHY A SECOND SOURCE (Dave ruled 2026-07-26, ADR-0015 §4 amended): this model is ~14KB and
+   dv-behaviour.js already sat at 15.5KB of the 16KB per-source cap. The split came WITH a
+   re-scoped gate — a per-PAGE sum budget — so the cap stayed a page constraint instead of
+   silently becoming a per-file one.
+
+   ⛔ DV-D12 (the donut radial sweep) LIVES NEXT DOOR in canon/dv-donut-sweep.js as of
+   2026-08-02 (#76-D1, Dave) — this file was 651 B over the ADR-0015 per-source cap. Do NOT
+   re-merge it: the seam is DV-D12's own (zero references to the interaction model), and the
+   group's 32 KB page budget means merging back buys nothing and re-breaks the per-source cap.
+
+   Reference implementation: reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html.
+   The models are inscribed in _proforma/_DATAVIZ-DECISIONS.md — this file ENACTS them and does
+   not restate the arc. Source contract still binds per ADR-0015: no polling/network, DELEGATED
+   events (no per-row listeners), progressive enhancement — the baked SVG renders if this never
+   runs — and the DEF-003 boundary (no JS scale-physics). */
+(function () {
+  'use strict';
+  if (window.__dvLegend) { return; } window.__dvLegend = true;
+
+  var GHOST = 'is-ghost', FADE = 'is-faded', PEEK = 'is-peek';
+
+  /* ---------- STATE — one record per legend, parked on the host element. Delegated listeners
+     resolve host → record, so no per-row listener ever exists (the ADR-0015 events clause). */
+  function rec(host) {
+    if (host.__dv) { return host.__dv; }
+    var rows = [].slice.call(host.querySelectorAll('.dv-legrow'));
+    var st = {
+      host: host, fig: host.closest('figure') || document, rows: rows,
+      ids: rows.map(function (r) { return r.getAttribute('data-series'); }),
+      visible: {}, isolated: null, focus: null, lastHi: null, vals: null, total: 0,
+      /* ★ DV-D19 — the MODE is LATCHED, never derived. See isSolo(). */
+      mode: 'rest',
+      live: document.getElementById(String(host.id).replace('-legend', '-live')),
+      reset: host.querySelector('.dv-leg-reset')
+    };
+    st.ids.forEach(function (id) { st.visible[id] = true; });
+    centreData(st);
+    host.__dv = st;
+    return st;
+  }
+  function series(st, id) { return st.fig.querySelectorAll('[data-series-group="' + id + '"]'); }
+  /* ★ DV-D19 — 'rest' reads visible[]; BOTH focus modes read the focus set, so moving from
+     isolate to check does not move a single mark. Nothing jumps: the focus set BECOMES the
+     checked set (Dave refused reverting to the pre-isolation mix). */
+  function active(st) { return st.mode === 'rest' ? st.visible : st.focus; }
+  /* ★ DV-D19 (Dave, #75; enacted #76) — ISOLATION AND CHECK ARE MODES, NEVER SIMULTANEOUS.
+     Verbatim: "as soon as the user checks a swatch the whole set change to check mode.
+     check-mode and isolation-mode never occur at the same time."
+     ⛔ WHAT WAS BROKEN WAS THE RETURN PATH, NOT THE TWO STATES. DV-D18 rightly de-seeded the
+     marker and derived it from set size — but a DERIVED predicate can become true AGAIN:
+     `isolate D -> check E -> uncheck E` put count(focus) back to 1, so D's emphasis returned
+     while the user was plainly in check mode. * A PREDICATE CAN BECOME TRUE AGAIN; A MODE CANNOT.
+     => emphasis is now a read of a LATCHED mode. DV-D19 REFINES DV-D18, it does not reverse it:
+     the additive focus set (DV-D11/DV-D18) is untouched, and DV-D17's original complaint — "the
+     isolated key item stays active when I check others on" — is still answered, now by a latch
+     that cannot un-latch rather than by a count that can.
+     ANTI-FALSE-FIX: do NOT restore `count(st, st.focus) === 1` here. It reads EQUIVALENT on the
+     first two clicks of every sequence and diverges only on the RETURN — the one path Dave
+     reported. The mutation test re-enacts exactly that. */
+  function isSolo(st, id) { return st.mode === 'isolate' && !!st.focus && !!st.focus[id]; }
+  function count(st, m) { var n = 0; st.ids.forEach(function (id) { if (m[id]) { n++; } }); return n; }
+  function nameOf(st, id) {
+    var el = st.host.querySelector('.dv-legrow[data-series="' + id + '"] .dv-leg-name');
+    return el ? el.textContent : id;
+  }
+  function announce(st, msg) { if (st.live) { st.live.textContent = msg; } }
+
+  /* ---------- DV-D13 — the centre figure follows the SELECTION. Values parse ONCE from each
+     series' data-tip-value (LAST number in the string, so a series name may carry digits);
+     percent = the active sum's share of the GRAND total. No-ops where a figure has no centre
+     readout, so the one source serves donut, bar and combo alike. */
+  function centreData(st) {
+    if (!st.fig.querySelector('[data-dv-view="value"] .dv-val')) { return; }
+    var vals = {}, n = 0;
+    st.ids.forEach(function (id) {
+      var el = st.fig.querySelector('.dv-series[data-series-group="' + id + '"]');
+      var raw = el && el.getAttribute('data-tip-value');
+      var all = raw && raw.match(/\d[\d,]*(?:\.\d+)?/g);
+      if (all) { vals[id] = parseFloat(all[all.length - 1].replace(/,/g, '')); n++; }
+    });
+    if (n !== st.ids.length) { return; }
+    st.vals = vals;
+    st.ids.forEach(function (id) { st.total += vals[id]; });
+  }
+  function updateCentre(st) {
+    if (!st.vals || !st.total) { return; }
+    var m = active(st), sum = 0;
+    st.ids.forEach(function (id) { if (m[id]) { sum += st.vals[id]; } });
+    var v = st.fig.querySelector('[data-dv-view="value"] .dv-val');
+    var p = st.fig.querySelector('[data-dv-view="percent"] .dv-val');
+    if (v) { v.textContent = String(sum); }
+    if (p) { p.textContent = Math.round(sum / st.total * 100) + '%'; }
+  }
+
+  /* ---------- DV-D11 — TWO render levels only: full · ghost(12%). Nothing ever fully
+     disappears, so an unchecked series and an isolate-ghosted one are visually identical
+     mid-chart; the legend row disambiguates. Opacity lives in CSS (decorative motion stays
+     CSS); layout is preserved, so the chart never reflows under a toggle. */
+  function paint(st, id, ghost) {
+    var els = series(st, id);
+    for (var i = 0; i < els.length; i++) {
+      els[i].classList.toggle(GHOST, ghost);
+      els[i].style.pointerEvents = ghost ? 'none' : '';
+    }
+  }
+  function clearFade(st) {
+    var f = st.fig.querySelectorAll('.' + FADE + ', .' + PEEK);
+    for (var i = 0; i < f.length; i++) { f[i].classList.remove(FADE); f[i].classList.remove(PEEK); }
+    st.lastHi = null;
+  }
+  /* Hover fires in BOTH modes: hovering an ACTIVE row fades the other actives to 24% (ghosts
+     stay at 12%); hovering a GHOSTED row PEEKS it at 24% — a preview of what checking would do. */
+  function highlight(st, id) {
+    if (st.lastHi === id) { return; }
+    clearFade(st);
+    st.lastHi = id;
+    var m = active(st), els, i;
+    if (m[id]) {
+      if (count(st, m) <= 1) { return; }
+      st.ids.forEach(function (x) {
+        if (!m[x] || x === id) { return; }
+        var e = series(st, x);
+        for (var j = 0; j < e.length; j++) { e[j].classList.add(FADE); }
+      });
+    } else {
+      els = series(st, id);
+      for (i = 0; i < els.length; i++) { els[i].classList.add(PEEK); }
+    }
+  }
+  function render(st) {
+    var m = active(st);
+    st.rows.forEach(function (r) {
+      var id = r.getAttribute('data-series'), solo = isSolo(st, id);
+      var sw = r.querySelector('.dv-leg-sw'), it = r.querySelector('.dv-leg-item');
+      /* in isolate the boxes show MEMBERSHIP of the focus set — blank until added (DV-D11) */
+      if (sw) { sw.setAttribute('aria-checked', String(!!m[id])); }
+      if (it) { it.setAttribute('aria-pressed', String(solo)); }
+      r.classList.toggle('is-solo', solo);
+    });
+    st.ids.forEach(function (id) { paint(st, id, !m[id]); });
+    if (st.reset) { st.reset.disabled = (count(st, st.visible) === st.ids.length && st.mode === 'rest'); }
+    updateCentre(st);
+    clearFade(st);
+  }
+
+  /* ---------- GESTURES. SWATCH = checkbox (show/hide) · LABEL = isolate. Isolate is a
+     ONE-SERIES MODE the next swatch click ENDS (★ DV-D17; additive until 2026-07-27).
+     visible[] is untouched while isolated, so release restores the prior mix by construction. */
+  function toggleSwatch(st, id) {
+    var m = active(st);
+    /* ★ DV-D18 (Dave, 2026-08-01, #70) — THE ADDITIVE BRANCH IS BACK, and it is ONE path for
+       both modes: while isolated `m` IS st.focus, so this grows and shrinks the focus SET;
+       visible[] stays untouched, so release restores the prior mix by construction (DV-D17's
+       bite (i) survives untouched). The stale-marker complaint DV-D17 was raised for is handled
+       in isSolo() instead — the moment the set stops being a singleton, NO row reads solo.
+       ⚠ DV-D17's release-on-add branch is DELETED, not commented: left in place it pre-empts
+       this path on the very first click. Arc: _DATAVIZ-DECISIONS.md § Batch 10 + § ★ #70. */
+    /* ★ DV-D19 — THE LATCH. A swatch click while isolated moves the WHOLE SET to check mode
+       and it never returns. The set itself is untouched, so nothing jumps. */
+    if (st.mode === 'isolate') { st.mode = 'check'; }
+    if (m[id] && count(st, m) === 1) {
+      announce(st, st.isolated ? 'At least one series must stay in the focus' : 'At least one series must stay shown');
+      return;
+    }
+    m[id] = !m[id];
+    announce(st, nameOf(st, id) + (st.isolated
+      ? (m[id] ? ' added to the focus' : ' removed from the focus')
+      : (m[id] ? ' shown' : ' dimmed')));
+    render(st);
+  }
+  function isolate(st, id) {
+    /* ★ DV-D19 — the gesture split, Dave's words: "clicking on the label is isolation-mode and
+       clicking on the swatch is check-mode." A label re-click releases; any other label click
+       ENTERS isolation, including out of check mode — which is how the user gets back. */
+    /* ⚠ THE RELEASE TEST IS SEED-BASED AND STAYS SO — it is NOT gated on the mode. Gating it
+       on `mode === 'isolate'` was tried at enactment and the member verifier refused it (check 22,
+       4 members): after `isolate a -> check b`, the mode is 'check', so a re-click on `a` fell to
+       the ELSE branch and RE-ISOLATED instead of releasing, destroying DV-D17 bite (i) — release
+       restores visible[], not all-on. DV-D19 refines DV-D18; it reverses neither it nor DV-D17. */
+    if (st.isolated === id) {
+      st.mode = 'rest'; st.isolated = null; st.focus = null; announce(st, 'Isolation released');
+    } else {
+      st.mode = 'isolate'; st.isolated = id; st.focus = {}; st.focus[id] = true;
+      announce(st, 'Showing only ' + nameOf(st, id) + ' — check a blank swatch to add a series');
+    }
+    render(st);
+  }
+  function resetAll(st) {
+    st.mode = 'rest'; st.isolated = null; st.focus = null;
+    st.ids.forEach(function (id) { st.visible[id] = true; });
+    announce(st, 'All series shown');
+    render(st);
+  }
+
+  /* ---------- DELEGATED EVENTS — document-level, resolved to a legend by closest('.dv-leg'). */
+  function hostOf(el) { return el && el.closest ? el.closest('.dv-leg') : null; }
+  document.addEventListener('click', function (e) {
+    var t = e.target, host = hostOf(t);
+    if (!host) { return; }
+    var sw = t.closest('.dv-leg-sw');
+    if (sw) { toggleSwatch(rec(host), sw.closest('.dv-legrow').getAttribute('data-series')); return; }
+    var it = t.closest('.dv-leg-item');
+    if (it) { isolate(rec(host), it.getAttribute('data-series')); return; }
+    var rs = t.closest('.dv-leg-reset');
+    if (rs && !rs.disabled) { resetAll(rec(host)); }
+  });
+  /* swatch keyboard: Space / Enter toggles the checkbox (it is a role=checkbox span, so the
+     native button activation the label gets for free has to be supplied here). */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== ' ' && e.key !== 'Spacebar' && e.key !== 'Enter') { return; }
+    var sw = e.target.closest && e.target.closest('.dv-leg-sw');
+    var host = hostOf(sw);
+    if (!sw || !host) { return; }
+    e.preventDefault();
+    toggleSwatch(rec(host), sw.closest('.dv-legrow').getAttribute('data-series'));
+  });
+  /* hover / focus preview — keyed off the whole ROW (either control) and off the marks
+     themselves. pointerover/out delegate where mouseenter/leave cannot (they do not bubble);
+     the lastHi guard makes the repeated child-to-child crossings idempotent. */
+  function hiTarget(e) {
+    var el = e.target.closest && e.target.closest('.dv-legrow, .dv-series[data-series-group]');
+    if (!el) { return null; }
+    var host = el.classList.contains('legrow') ? hostOf(el)
+      : (el.closest('figure') || document).querySelector('.dv-leg');
+    if (!host || !host.querySelector('.dv-legrow')) { return null; }
+    return { st: rec(host), id: el.getAttribute('data-series') || el.getAttribute('data-series-group') };
+  }
+  document.addEventListener('pointerover', function (e) {
+    var t = hiTarget(e); if (t) { highlight(t.st, t.id); }
+  });
+  document.addEventListener('pointerout', function (e) {
+    var t = hiTarget(e);
+    if (t && !(e.relatedTarget && e.relatedTarget.closest && hiTarget({ target: e.relatedTarget }))) {
+      clearFade(t.st);
+    }
+  });
+  document.addEventListener('focusin', function (e) {
+    var t = hiTarget(e); if (t) { highlight(t.st, t.id); }
+  });
+  document.addEventListener('focusout', function (e) {
+    var t = hiTarget(e); if (t) { clearFade(t.st); }
+  });
+
+  /* ---------- DV-D13 — the Value⇄Percent seg rewrites each mark's data-tip from
+     data-tip-value / data-tip-percent, so the tip carries ONLY the selected number-type.
+     dv-behaviour reads data-tip live at hover-time, so this needs no re-wire there.
+     aria-labels deliberately keep BOTH forms: a screen-reader user should not lose data to a
+     toggle they may never perceive (flagged in DV-D13, confirm at the a11y pass). */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('button[data-dv-view-btn]');
+    if (!btn) { return; }
+    var fig = btn.closest('figure'); if (!fig) { return; }
+    var mode = btn.getAttribute('data-dv-view-btn');
+    var els = fig.querySelectorAll('[data-tip-' + mode + ']');
+    for (var i = 0; i < els.length; i++) {
+      els[i].setAttribute('data-tip', els[i].getAttribute('data-tip-' + mode));
+    }
+  });
+
+  /* ---------- INIT — discover every legend and render its resting state.
+     Wrapped: a malformed legend must never take the baked SVG down with it. */
+  try {
+    var legs = document.querySelectorAll('.dv-leg');
+    for (var i = 0; i < legs.length; i++) {
+      if (legs[i].querySelector('.dv-legrow')) { render(rec(legs[i])); }
+    }
+  } catch (e) { /* leave the baked SVG intact */ }
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-legend END ===== -->
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.getElementById('contrastToggle').addEventListener('click', function(){ const b=document.body; const hi=b.getAttribute('data-contrast')==='high'; if(hi){ b.removeAttribute('data-contrast'); } else { b.setAttribute('data-contrast','high'); } this.setAttribute('aria-pressed', String(!hi)); });
+    document.getElementById('replay').addEventListener('click', ()=>{ document.querySelectorAll('figure.dv').forEach(f=>{ f.classList.remove('dv-animate'); void f.offsetWidth; f.classList.add('dv-animate'); }); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+{
+  "name": "Stacked area chart",
+  "category": "organism",
+  "purpose": "Trend over time as cumulative stacked fills, multi-series — line-family frame/toolbar ported from Chart-line.reference.html (2026-07-23 exemplar), stacking recipe (cumulative bands, in-fill letter keys, table Total column) ported from Chart-bar.reference.html's stacked-column figure (D-Q3, landed 2026-07-24, consumed here not re-promoted). New member, wave-2 lane ③ (2026-08-05).",
+  "props": [
+    { "name": "series", "type": "number", "$note": "1–5 supported by the token ramp; 3 in the reference. Each band carries colour (data/series/N) + an in-fill letter key (A/B/C, data/text/on-series) — colour is never the only channel." },
+    { "name": "data", "type": "table", "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel. Mirrors PER-SERIES values plus a computed Total column (the bands' sum) — parity between chart and table is scriptable the same way as the stacked-column check." },
+    { "name": "fillAlpha", "type": "string", "$note": "--stack-fill-alpha, default 1 (flat/solid). NOT a minted token — a receipted CSS dial so band opacity can be tuned later without a token-minting pass (token minting stays a serial/conductor act)." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state = the Empty-state pattern by reference." },
+    { "name": "title", "type": "string", "$note": "Optional visible title slot (.dv-title, dv-006), a type composite heading; sr-only figcaption still names the chart when absent." },
+    { "name": "tablePopover", "type": "boolean", "default": true, "$note": "Table-view POPOVER panel, ported from the line exemplar verbatim." },
+    { "name": "legendFilter", "type": "boolean", "default": true, "$note": "DV-D11 legend chrome, plain swatches (band identity is the in-fill letter, not a legend glyph — matches Chart-bar's stacked-column legend, not Chart-line's shaped-swatch set)." },
+    { "name": "highContrast", "type": "boolean", "default": false, "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only)." }
+  ],
+  "variants": [
+    { "name": "3-series stack", "use": "Quarterly composition of a total (e.g. balances by product), one band per series, cumulative." },
+    { "name": "no data", "use": "Empty-state pattern in the chart frame." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — DV-D08 ladder: axis ticks + on-chart values .t-cm-chart-value (12/500 tabular) · quarter labels + legend text .t-cm-chart-label (12/500) · in-fill/legend letter-keys .t-cm-chart-key (12/700); table .t-cm-legal; title .t-cm-section-label",
+    "series": "data/series/1–3 (same tokens/measurements as Chart-line/Chart-bar)",
+    "onSeriesText": "data/text/on-series (minted 2026-07-27 for Chart-bar's stacked columns — REUSED here, not re-minted)",
+    "axis": "ds-020 FENCE — data/axis + data/grid roles, CSS copied verbatim from Chart-line (not re-derived by this lane; receipted as an inherited gap, not filled)",
+    "markers": "fill = the series token, stroke = background/default (page) at 2.5 — line exemplar's BACKGROUND mode, halation-aware on dark",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "ONE new CSS var, not a token: --stack-fill-alpha (default 1). No new colour token minted."
+  },
+  "motion": {
+    "entry": "Bands fade in (400ms), top-edge strokes follow (+400ms delay), markers (+500ms), in-fill keys (+600ms) — a staggered reveal built for this file, distinct from the line's dasharray draw (an area fill can't stroke-draw the same way); CSS-only, DEF-003 compliant.",
+    "hover": "Interactive value POPOVER (dvTip) on each vertex marker — same delegated behaviour partial as every other member, once registered.",
+    "reducedMotion": "Global collapse present; entry fades sit inside prefers-reduced-motion:no-preference.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Declared data-fx fractions on all elements (grid/axis/markers/keys/labels) for the standard fit hook, but .dv-band/.dv-band-line are NEW element classes the current dv-behaviour fitOne() selector set does not touch — until that's extended, the chart is JS-off-fixed-width (580×260 + scroll), same static answer as every member pre-fit. Receipted to the conductor, not built here.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Balances and trend views", "Reports"],
+    "mustNotNeighbour": ["A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)", "A stacked-column view of the identical series (pick one composition idiom)"],
+    "commonPatterns": ["balances by product over time", "cumulative spend build-up", "quarterly composition trend"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\" + aria-label; table panel role=\"region\".",
+    "name": "Figcaption names the chart; markers carry aria-label == data-tip == table values (PER-SERIES, not cumulative); the real table is the full data surface with a Total column.",
+    "keyboard": "Markers = focus stops (tabindex 0 + aria-label; popover shows on focus). Legend filter buttons + table toggle keyboard-operable; panel takes focus on open (tabindex -1), Esc returns to toggle.",
+    "focus": "2px ink outline on markers/buttons/panel (focus-visible), offset 2.",
+    "nonText": "Band fills ≥3:1 vs the page both modes (inherited series tokens, dv-016); identity = in-fill letter + legend name + table, never colour alone.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover"]
+  },
+  "antiPatterns": [
+    "Curved/smoothed band boundaries (dv-line-011 — straight segments only)",
+    "Colour as the only band identity (in-fill letter + legend name + table, always)",
+    "A stacked area without its real data table + Total column (dv-005-adjacent)",
+    "Legend filter hiding a middle band without declaring the reflow gap (same known caveat as Chart-bar's stacked columns — bands don't reflow on filter)",
+    "Minting a new opacity token for the fill instead of using --stack-fill-alpha (receipted CSS dial, not a token)",
+    "Re-deriving the axis/grid CSS instead of citing the ds-020 fence inherited from Chart-line",
+    "Re-typing dv-behaviour locally (ADR-0015 — consume the AUTO-BEHAVIOUR partial once registered)"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-05",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "UNPROVEN — vars declared against known-PASS tokens (same series/axis/grid/on-series bindings already measured clean on Chart-line/Chart-bar); this file has not itself been run through the DataViz/contrast gate by the worker (fenced from tool access to the gate runner). Conductor: run the gate pass before promoting past PROVISIONAL.",
+    "$note": "New member, WAVE-2 LANE ③ (2026-08-05). PROVISIONAL-AGENT — no dataviz sign-off. ds-020 fence inherited knowingly (axis/grid copied from Chart-line verbatim). Registration in component-types.json + dv-behaviour fit-selector extension for .dv-band/.dv-band-line = conductor's serial."
+  },
+  "provenance": {
+    "source": "code",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Chart-line.reference.html"
+  }
+}

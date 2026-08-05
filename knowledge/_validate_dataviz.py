@@ -76,6 +76,10 @@ DTYPE_CANON = {
 KNOWN_DTYPES = {
     "column", "bar", "grouped", "stacked", "combo",
     "line", "multiline", "spark", "kpi", "donut", "pie", "scatter",
+    # Chart wave 2 (2026-08-05, #95) — placed in the DV-D02-A partition below in the same change,
+    # per the import-time totality assertion (a new dtype must not skip the rule in silence):
+    "butterfly-h", "butterfly-v", "histogram",
+    "boxplot", "bullet", "candlestick", "stacked-area",
 }
 
 # ---------------------------------------------------------------------------
@@ -95,6 +99,11 @@ KNOWN_DTYPES = {
 # here is an ImportError, not a silent pass.
 CARTESIAN_DTYPES = {
     "column", "bar", "grouped", "stacked", "combo", "line", "multiline", "scatter",
+    # Chart wave 2 (2026-08-05, #95): all seven new frames are x/y plots — width-compression with
+    # non-scaling text applies exactly as DV-D02 states. Measured on the artefacts, not assumed:
+    # every one carries a 580-wide cartesian plot region (bullet's is 580x200, receipted).
+    "butterfly-h", "butterfly-v", "histogram",
+    "boxplot", "bullet", "candlestick", "stacked-area",
 }
 # Out of scope — and the REASON travels with the exclusion, per Dave's standing terms
 # ("correctness, standardisation with flexibility rather than expediency"). A gate that encodes a

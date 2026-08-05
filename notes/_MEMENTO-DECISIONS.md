@@ -3654,3 +3654,12 @@ as #59/#91/#93, DECLARED; n=4). ⛔ The 150,929 stop line was BLOWN at this wrap
 at the #94 stratum (the #87 trail-surgery class); **#95 re-prices from THIS reading, not smoothed.**
 Gate: 68 in scope · 0 fail in ONE remediation round (1 stamp-form fail, freshly authored line — the
 #93 lesson re-observed: a rehearsal cannot pre-catch lines that do not yet exist).
+
+---
+
+## ★ #95 · 2026-08-05 — chart wave 2 fired: 8 members, 3 Sonnet lanes, one conductor reconcile
+
+- **#95-E1 (enactment, Dave's "go for it"):** wave 2 fired IN-WINDOW as 3 Sonnet lanes (#60-D1 posture). Receipts replayed against disk before any serial edit (#57). 8 members landed + registered: butterfly-h · butterfly-v · histogram · boxplot · bullet · candlestick · pie · stacked-area. Serials: registry +8 (hooks measured on artefacts) · `MIGRATED_SNIPPETS` +8 · `CATEGORIES` +8 · `_validate_dataviz.py` dtype vocab +7 cartesian (DV-D02-A partition, same change per its totality assertion). Full narrative: `_proforma/_DATAVIZ-DECISIONS.md` § ★ #95.
+- **#95-F1 (finding):** conductor replay caught FOUR worker-gap classes: lane-① manifests + AUTO-MARKUP pairs absent · dv-legend marker pairs absent (pie, stacked-area — generator refused, correctly) · lane-② receipt prose inside manifest token KEYS · boxplot/candlestick `--data-grid` DRIFT (pre-DV-D07 value bound to the minted path) → **UNBOUND, not conformed** — binding would FILL the fenced ds-020 gap; unbinding receipts it. Lesson for the next divvy: the worker brief should pin the manifest contract (present · prose-free keys · bind only what matches the store).
+- **#95-F2 (finding, ⛔):** stop line blown BEFORE wrap-open — FILL 161,622 at first check-in vs 150,929. Mechanism: no check-in riding the serial loop. Gauge log § #95. #96 re-prices (#59 high-end rule).
+- **⬛ 7 flags awaiting Dave** (listed at `_DATAVIZ-DECISIONS.md` § ★ #95 · sign-off register has the 8 pane paths): bullet 580×200 · bullet range greys (un-minted, grey-tint check) · candlestick dv-011 · histogram `.dv-leg-static` folding · stacked-area `--stack-fill-alpha` · stacked-area `fitOne()` `.dv-band` gap · pie sweep `data-ri` fallback.

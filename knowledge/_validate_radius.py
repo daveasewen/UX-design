@@ -89,6 +89,15 @@ MIGRATED_SNIPPETS = {
     "Chart-sparkline.reference.html",
     "Chart-scatter.reference.html",
     "Chart-combo.reference.html",
+    # Chart wave 2 (2026-08-05, #95) — born on role tokens, strict from birth:
+    "Chart-butterfly-h.reference.html",
+    "Chart-butterfly-v.reference.html",
+    "Chart-histogram.reference.html",
+    "Chart-boxplot.reference.html",
+    "Chart-bullet.reference.html",
+    "Chart-candlestick.reference.html",
+    "Chart-pie.reference.html",
+    "Chart-stacked-area.reference.html",
 }
 
 ADVISORY_GLOBS = [

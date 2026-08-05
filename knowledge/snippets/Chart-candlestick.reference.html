@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Candlestick chart — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Candlestick chart (Apollo MONO) — OHLC, one candle per period.
+  ★ NET-NEW EXEMPLAR — chart-expansion programme WAVE 2, lane ② statistical/gauge (worker, Sonnet,
+  2026-08-05, brief notes/_briefs/2026-08-05-chart-wave2-lane2-statistical.md). Built to the
+  Chart-scatter Layer-1 pattern (toolbar + table spine + token-manifest).
+
+  WHAT'S REUSED, verbatim: 580×260 frame; plot 46→568 / 14→230; toolbar chrome (.dv-vt/.dv-csv/
+  .dv-tbl-toggle/.dv-tablepanel) BYTE-FOR-BYTE from Chart-bar/Chart-scatter; AUTO-MARKUP
+  dv-lockup-title/dv-lockup-table comment blocks (content matches what gen_component_partials.py would
+  inject — registration is a CONDUCTOR SERIAL, see receipt). AUTO-BEHAVIOUR markers present but EMPTY,
+  same precedent as the 2026-07-24 lane-1 receipt.
+
+  ⛔ ds-020 FENCE (DIVVY-inherited, all wave-2 lanes): copy the mark contract + toolbar, NOT the axis/grid
+  CSS. This snippet's axis/grid use the PRE-DV-D07 ink-at-alpha idiom, not the minted two-channel roles.
+  Declared gap, not filled here.
+
+  WHAT'S NEWLY JUDGED for candlestick (receipted for Dave's eyeball):
+  · UP/DOWN = `data/delta/gain` (close ≥ open) · `data/delta/loss` (close < open) — RULED, per the
+    brief's §C·1(a) binding citation. These are the SAME tokens the RAG/delta colour workstream owns
+    (canon.css `--data-delta-gain`/`--data-delta-loss`, light #16864E/#B92F1E · dark #1AA05C/#CC4333) —
+    consumed here, not re-derived.
+  · WICK = ink at REDUCED WEIGHT (opacity .6, per the brief: "wicks = ink at reduced weight"), 1px line
+    from high to low.
+  · BODY = a rect from open to close, filled gain/loss, HOLLOW-outline-free (flat fill, dv-009).
+  · Table mirrors OHLC columns (Open/High/Low/Close) per period.
+
+  RULES honoured: dv-017 var() fills only · dv-016 ≥3:1 series + axis both modes (declared, not yet
+  render-verified — see receipt) · composites-only type (DV-D05/DV-D08 12px floor) · DEF-003 CSS-only
+  motion · role-token radius only. Empty state consumes the Empty-state pattern by reference.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-delta-gain:#16864E; --data-delta-loss:#B92F1E;
+    --data-axis:#626262; --axis-alpha:.6;
+    --data-grid:#626262; --grid-alpha:.1;
+    --data-control-label-disabled:#9D9D9D; --data-control-swatch-off:currentColor;
+    --shadow:#00000033; --pop-border:#FFFFFF00;
+    --border-radius-control:0; --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-delta-gain:#1AA05C; --data-delta-loss:#CC4333;
+    --data-axis:#9D9D9D; --axis-alpha:.6;
+    --data-grid:#9D9D9D; --grid-alpha:.16;
+    --data-control-label-disabled:#808080; --data-control-swatch-off:currentColor;
+    --shadow:#000000D9; --pop-border:#808080;
+    --border-radius-control:0; --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0; position:relative;}
+  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+  .dv-title{margin:0;}
+  .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}
+  .dv-chart-area{width:580px;}
+  .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+  figure.dv-fit-on .dv-chart-area{width:100%;}
+  figure.dv-fit-on .dv-svg{width:100%;}
+
+  .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
+
+  .dv-wick{stroke:var(--ink); stroke-opacity:.6; stroke-width:1;}
+  .dv-body.dv-up{fill:var(--data-delta-gain);}
+  .dv-body.dv-down{fill:var(--data-delta-loss);}
+  .dv-body[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate g.dv-candle{opacity:0; animation:dvFade var(--ease) both;}
+  }
+  @keyframes dvFade{from{opacity:0;} to{opacity:1;}}
+
+  /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, copied byte-for-byte from Chart-bar/Chart-scatter ── */
+  .dv-tbl-toggle,.dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+  .dv-tbl-toggle::before,.dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+  .dv-tbl-toggle > *,.dv-vt > *{position:relative; z-index:1;}
+  .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
+  .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-tbl-toggle[aria-expanded="true"],.dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  .dv-act,.dv-dd{gap:8px;}
+  .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+  .dv-csv .dv-ico-tick{display:none;}
+  .dv-csv.is-copied .dv-ico-copy{display:none;}
+  .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+  .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+
+  .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+  .dv-tablepanel[hidden]{display:none;}
+  .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+  .dv-tip.on{opacity:1;}
+
+  table.dv-table{border-collapse:collapse; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+  .dv-empty-frame .empty h3{margin:0;}
+  .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="replay" type="button">↻ Replay motion</button>
+    <span>Candlestick chart — canonical reference (Mono · OHLC · gain/loss delta · no data)</span>
+  </div>
+
+  <h2>Candlestick — ten sessions (OHLC, gain/loss = data/delta tokens)</h2>
+  <figure class="dv dv-animate" data-dv-type="candlestick" data-domain-min="0" data-surface="page" role="group" aria-labelledby="ccs1-h" data-lockup-title="A choppy fortnight closed higher than it opened" data-lockup-table="ccs1-tbl">
+    <figcaption id="ccs1-h" class="sr-only">Share price, open high low close, ten sessions, pounds</figcaption>
+    <div class="dv-head">
+      <!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-title", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+      <h3 class="dv-title t-cm-section-label">A choppy fortnight closed higher than it opened</h3>
+      <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="ccs1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+      <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Share price over ten sessions, pounds. Ranges from a low of 96 to a high of 132, opening 100 and closing 124.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end">95</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end">105</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end">115</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end">125</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end">135</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)"/>
+        <!-- y(v) = 230 - 5.4*(v-95) [domain 95→135 over plot 230→14]. cx: 67,119,171,223,275,327,379,431,483,535 (10 sessions). -->
+        <g class="dv-candle" style="animation-delay:0ms"><line class="dv-wick" x1="67" y1="165.2" x2="67" y2="224.6"></line><rect class="dv-body dv-up" x="59" y="181.4" width="16" height="21.6" tabindex="0" role="img" aria-label="Session 1: open 100, high 107, low 96, close 104" data-tip="Session 1: open 100, high 107, low 96, close 104"></rect></g>
+        <g class="dv-candle" style="animation-delay:36ms"><line class="dv-wick" x1="119" y1="29.8" x2="119" y2="159.8"></line><rect class="dv-body dv-up" x="111" y="111.2" width="16" height="70.2" tabindex="0" role="img" aria-label="Session 2: open 104, high 132, low 108, close 117" data-tip="Session 2: open 104, high 132, low 108, close 117"></rect></g>
+        <g class="dv-candle" style="animation-delay:72ms"><line class="dv-wick" x1="171" y1="95.0" x2="171" y2="208.4"></line><rect class="dv-body dv-up" x="163" y="84.2" width="16" height="27.0" tabindex="0" role="img" aria-label="Session 3: open 117, high 120, low 99, close 122" data-tip="Session 3: open 117, high 120, low 99, close 122"></rect></g>
+        <g class="dv-candle" style="animation-delay:108ms"><line class="dv-wick" x1="223" y1="89.6" x2="223" y2="165.2"></line><rect class="dv-body dv-down" x="215" y="84.2" width="16" height="59.4" tabindex="0" role="img" aria-label="Session 4: open 122, high 121, low 107, close 111" data-tip="Session 4: open 122, high 121, low 107, close 111"></rect></g>
+        <g class="dv-candle" style="animation-delay:144ms"><line class="dv-wick" x1="275" y1="116.6" x2="275" y2="192.2"></line><rect class="dv-body dv-up" x="267" y="122.0" width="16" height="21.6" tabindex="0" role="img" aria-label="Session 5: open 111, high 116, low 102, close 115" data-tip="Session 5: open 111, high 116, low 102, close 115"></rect></g>
+        <g class="dv-candle" style="animation-delay:180ms"><line class="dv-wick" x1="327" y1="100.4" x2="327" y2="176.0"></line><rect class="dv-body dv-up" x="319" y="89.6" width="16" height="32.4" tabindex="0" role="img" aria-label="Session 6: open 115, high 119, low 105, close 121" data-tip="Session 6: open 115, high 119, low 105, close 121"></rect></g>
+        <g class="dv-candle" style="animation-delay:216ms"><line class="dv-wick" x1="379" y1="68.0" x2="379" y2="143.6"></line><rect class="dv-body dv-down" x="371" y="89.6" width="16" height="27.0" tabindex="0" role="img" aria-label="Session 7: open 121, high 125, low 111, close 116" data-tip="Session 7: open 121, high 125, low 111, close 116"></rect></g>
+        <g class="dv-candle" style="animation-delay:252ms"><line class="dv-wick" x1="431" y1="95.0" x2="431" y2="170.6"></line><rect class="dv-body dv-up" x="423" y="100.4" width="16" height="16.2" tabindex="0" role="img" aria-label="Session 8: open 116, high 120, low 106, close 119" data-tip="Session 8: open 116, high 120, low 106, close 119"></rect></g>
+        <g class="dv-candle" style="animation-delay:288ms"><line class="dv-wick" x1="483" y1="52.4" x2="483" y2="181.4"></line><rect class="dv-body dv-up" x="475" y="63.2" width="16" height="37.2" tabindex="0" role="img" aria-label="Session 9: open 119, high 128, low 104, close 126" data-tip="Session 9: open 119, high 128, low 104, close 126"></rect></g>
+        <g class="dv-candle" style="animation-delay:324ms"><line class="dv-wick" x1="535" y1="36.2" x2="535" y2="138.2"></line><rect class="dv-body dv-down" x="527" y="63.2" width="16" height="10.2" tabindex="0" role="img" aria-label="Session 10: open 126, high 131, low 112, close 124" data-tip="Session 10: open 126, high 131, low 112, close 124"></rect></g>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="46" y="246" text-anchor="middle">S1</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="568" y="246" text-anchor="middle">S10</text>
+      </svg>
+    </div></div>
+    <div class="dv-tablepanel" id="ccs1-tbl" role="region" aria-label="Share price OHLC, data table" tabindex="-1" hidden>
+      <table class="dv-table t-cm-legal">
+        <caption>Share price, open high low close, ten sessions, pounds</caption>
+        <thead><tr><th scope="col">Session</th><th scope="col">Open</th><th scope="col">High</th><th scope="col">Low</th><th scope="col">Close</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">S1</th><td>100</td><td>107</td><td>96</td><td>104</td></tr>
+          <tr><th scope="row">S2</th><td>104</td><td>132</td><td>108</td><td>117</td></tr>
+          <tr><th scope="row">S3</th><td>117</td><td>120</td><td>99</td><td>122</td></tr>
+          <tr><th scope="row">S4</th><td>122</td><td>121</td><td>107</td><td>111</td></tr>
+          <tr><th scope="row">S5</th><td>111</td><td>116</td><td>102</td><td>115</td></tr>
+          <tr><th scope="row">S6</th><td>115</td><td>119</td><td>105</td><td>121</td></tr>
+          <tr><th scope="row">S7</th><td>121</td><td>125</td><td>111</td><td>116</td></tr>
+          <tr><th scope="row">S8</th><td>116</td><td>120</td><td>106</td><td>119</td></tr>
+          <tr><th scope="row">S9</th><td>119</td><td>128</td><td>104</td><td>126</td></tr>
+          <tr><th scope="row">S10</th><td>126</td><td>131</td><td>112</td><td>124</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+
+  <h2>No data — the Empty-state pattern, consumed by reference</h2>
+  <div class="dv-stage"><div class="dv-empty-frame" role="group" aria-label="Share price, no data">
+    <div class="empty">
+      <h3 class="t-cm-caption">No data to display</h3>
+      <p class="t-cm-legal">Candles appear here once pricing activity exists for the selected period.</p>
+    </div>
+  </div></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Candlestick chart",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--baseline": "border/action-strong",
+              "--line": "border/subtle", "--shadow": "elevation/functional",
+              "--data-delta-gain": "data/delta/gain", "--data-delta-loss": "data/delta/loss",
+              "--data-axis": "data/axis/color",
+              "--border-radius-control": "border-radius/control", "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/delta/gain", "bg": "background/default", "context": "ui" },
+      { "fg": "data/delta/loss", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-controls", "aria-expanded", "role=\"region\""],
+    "$note": "ds-020 UNBOUND: --data-grid stays a LOCAL custom property (pre-DV-D07 ink-at-alpha value #626262/#9D9D9D), deliberately NOT bound to data/grid/color \u2014 binding it would either lie or fill the fenced gap; caught as DRIFT by _validate_snippets at conductor replay. NET-NEW EXEMPLAR (chart-expansion programme, wave 2 lane ②, 2026-08-05). Up/down = data/delta/gain·data/delta/loss (RULED, brief §C·1(a) — reused from canon.css, not re-derived). Wick = ink @ .6 alpha, 1px (brief-ruled 'reduced weight'). Body = flat fill, no stroke (dv-009). ds-020 FENCE: axis/grid idiom pre-DV-D07, declared gap. AUTO-BEHAVIOUR markers present but empty (dataviz $members registration is a conductor serial)."
+  }
+  </script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-behaviour.js (behaviour "dv-behaviour", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-behaviour — the dataviz interaction layer (ADR-0015, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   Modules: value POPOVER (dvTip) · responsive FIT reflow (DV-D02: text never scales) ·
+   TABLE-VIEW POPOVER panel · LEGEND-AS-FILTER. Performance contract (GATED by
+   _validate_behaviour.py): source ≤16KB raw · no setInterval/network/polling · ONE
+   rAF-debounced resize listener · events DELEGATED (document-level, not per-element) ·
+   progressive enhancement — every entry wrapped; the baked SVG renders if this never runs.
+   DEF-003 boundary: behaviour + data-driven geometry ONLY — no JS scale-physics. */
+(function () {
+  'use strict';
+  if (window.__dvBehaviour) { return; } window.__dvBehaviour = true;
+
+  /* ---------- FIT — responsive width-compression (proforma fitCharts, ported).
+     Only HORIZONTAL positions relayout to the container width; height + text are fixed.
+     Geometry rides data-fx/data-fw/data-dx/data-x0/data-fx2 + polyline data-fxs/data-ys;
+     plot frame per-svg via data-pl/data-pr/data-h (defaults = the kit's 46/12/260).
+     JS-ON opt-in: .dv-fit-on lands on the figure, releasing the fixed-width CSS —
+     JS-off keeps the DV-D02 static answer (fixed geometry + horizontal scroll). */
+  function fitCharts() {
+    var svgs = document.querySelectorAll('svg.dv-fit');
+    for (var i = 0; i < svgs.length; i++) { fitOne(svgs[i]); }
+  }
+  function fitOne(svg) {
+    try {
+      var PL = parseFloat(svg.getAttribute('data-pl') || '46');
+      var PR = parseFloat(svg.getAttribute('data-pr') || '12');
+      var H  = parseFloat(svg.getAttribute('data-h')  || '260');
+      var W = Math.round(svg.getBoundingClientRect().width);
+      if (!W) { return; }
+      var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
+      var X = function (f) { return PL + parseFloat(f) * plotW; };
+      var els = svg.querySelectorAll('[data-fx]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], x = X(el.getAttribute('data-fx')), tag = el.tagName.toLowerCase();
+        if (tag === 'rect') {
+          el.setAttribute('x', x.toFixed(1));
+          var fw = el.getAttribute('data-fw');
+          if (fw !== null) { el.setAttribute('width', (parseFloat(fw) * plotW).toFixed(1)); }
+        } else if (tag === 'text') {
+          var dx = parseFloat(el.getAttribute('data-dx') || '0');
+          el.setAttribute('x', (x + dx).toFixed(1));
+        } else if (tag === 'line') {
+          el.setAttribute('x1', x.toFixed(1));
+          var fx2 = el.getAttribute('data-fx2');
+          if (fx2 !== null) { el.setAttribute('x2', X(fx2).toFixed(1)); }
+        } else if (tag === 'g') {
+          var x0 = parseFloat(el.getAttribute('data-x0') || '0');
+          el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
+        }
+      }
+      var pls = svg.querySelectorAll('polyline[data-fxs]');
+      for (var j = 0; j < pls.length; j++) {
+        var pl = pls[j];
+        var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
+        var ys  = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var pts = [];
+        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
+        pl.setAttribute('points', pts.join(' '));
+      }
+    } catch (e) { /* leave the baked SVG intact */ }
+  }
+  var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
+  window.addEventListener('resize', function () {
+    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); });
+  });
+
+  /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
+     Replaces native <title> tooltips (values stay in sync with the table — one source).
+     Edge-flips at the viewport bounds. role=status/aria-live=polite (proforma posture). */
+  var dvTip = document.createElement('div');
+  dvTip.className = 'dv-tip t-cm-chart-value'; dvTip.id = 'dvTip';   /* type via composite (T-D14 markup class) */
+  dvTip.setAttribute('role', 'status'); dvTip.setAttribute('aria-live', 'polite');
+  document.body.appendChild(dvTip);
+  function tipAt(text, x, y) {
+    dvTip.textContent = text; dvTip.classList.add('on');
+    var r = dvTip.getBoundingClientRect();
+    if (x + r.width  > window.innerWidth  - 8) { x = x - r.width  - 28; }
+    if (y + r.height > window.innerHeight - 8) { y = y - r.height - 28; }
+    dvTip.style.left = x + 'px'; dvTip.style.top = y + 'px';
+  }
+  function tipHide() { dvTip.classList.remove('on'); }
+  document.addEventListener('pointermove', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (el) { tipAt(el.getAttribute('data-tip'), e.clientX + 14, e.clientY + 14); }
+    else { tipHide(); }
+  });
+  document.addEventListener('focusin', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (!el) { return; }
+    var b = el.getBoundingClientRect();
+    tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40);
+  });
+  document.addEventListener('focusout', function () { tipHide(); });
+
+  /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
+     surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
+     aria-controls + aria-expanded; panel is a labelled region, tabindex=-1 for the
+     focus hand-off; Esc dismisses and returns focus to its toggle. */
+  function tblToggle(btn) {
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (!panel) { return; }
+    var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
+    if (open) {
+      panel.removeAttribute('hidden');
+      /* anchor the panel just BELOW its trigger, never over it — the fixed top was brittle
+         once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
+         offsetParent resolves; fall back gracefully. */
+      var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
+      if (op) {
+        var bt = btn.getBoundingClientRect(), ot = op.getBoundingClientRect();
+        panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+        /* anchor horizontally UNDER the trigger too — right:0 pinned the panel to the figure's edge,
+           wrong when the trigger sits mid-figure (e.g. donut + side legend). Left-align to the
+           trigger, clamp so it never spills past the offsetParent's right edge (keeps bar/line right-anchored). */
+        var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+        panel.style.left = lx + 'px'; panel.style.right = 'auto';
+      }
+    } else { panel.setAttribute('hidden', ''); }
+    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
+    if (open) { panel.focus(); }
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
+    if (btn) { tblToggle(btn); return; }
+    var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
+    if (vt) { viewToggle(vt); return; }
+    var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
+    if (sw) { segView(sw); return; }
+    var cp = e.target.closest && e.target.closest('button.dv-csv');
+    if (cp) { copyCsv(cp); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') { return; }
+    var panel = e.target.closest && e.target.closest('.dv-tablepanel');
+    if (!panel || panel.hasAttribute('hidden')) { return; }
+    panel.setAttribute('hidden', '');
+    var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
+    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
+  });
+
+  /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
+     computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */
+  function setView(fig, name, show) {
+    var els = fig.querySelectorAll('[data-dv-view~="' + name + '"]');
+    for (var i = 0; i < els.length; i++) { els[i].classList.toggle('dv-off', !show); }
+  }
+  function viewToggle(btn) {
+    var on = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', String(!on));
+    setView(btn.closest('figure') || document, btn.getAttribute('data-dv-toggle'), !on);
+  }
+  /* SEGMENTED INDICATOR (Dave, 2026-07-24): the view switch CONSUMES the Segmented-control atom —
+     behaviour drives the sliding fill (.ind) the atom's way: measure the pressed button's box and
+     slide. rect-based so the 2px inset + 1px border don't offset the measurement (the .ind
+     containing block is .seg's padding box — subtract seg.clientLeft). */
+  function moveSeg(seg) {
+    if (!seg) { return; }
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
+    ind.style.width = br.width + 'px';
+  }
+  function placeSegs() {
+    var segs = document.querySelectorAll('.seg');
+    for (var i = 0; i < segs.length; i++) { moveSeg(segs[i]); }
+  }
+  /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
+     to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
+     each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
+     an overlay's toggle governs both copies, so it works in whichever view is up. Nothing ever
+     disables. */
+  function segView(btn) {
+    if (btn.getAttribute('aria-pressed') === 'true') { return; }
+    var fig = btn.closest('figure') || document;
+    var active = btn.getAttribute('data-dv-view-btn');
+    var segs = fig.querySelectorAll('button[data-dv-view-btn]');
+    for (var i = 0; i < segs.length; i++) {
+      var v = segs[i].getAttribute('data-dv-view-btn');
+      segs[i].setAttribute('aria-pressed', String(v === active));
+      setView(fig, v, v === active);
+    }
+    moveSeg(btn.closest('.seg'));                 /* slide the indicator to the newly active view */
+  }
+  /* COPY CSV (menu pick 10): the figure's real table, serialised — no network, table = truth. */
+  function copyCsv(btn) {
+    var fig = btn.closest('figure') || document;
+    var rows = fig.querySelectorAll('table tr');
+    var out = [];
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].querySelectorAll('th,td'), line = [];
+      for (var j = 0; j < cells.length; j++) { line.push('"' + cells[j].textContent.trim().replace(/"/g, '""') + '"'); }
+      out.push(line.join(','));
+    }
+    var csv = out.join('\n');
+    function done() {
+      /* label stays put; the copy icon swaps to a tick briefly (Dave 2026-07-24) */
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(csv).then(done, done);
+    } else { done(); }
+  }
+
+  /* ---------- INIT — opt the page into fit (JS-on releases the fixed width), first pass. */
+  var figs = document.querySelectorAll('figure.dv');
+  for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
+  fitCharts();
+  placeSegs();                                    /* initial indicator position (widths depend on layout) */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeSegs); }   /* re-place once the web font settles */
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
+
+  <script>
+    var themeToggle = document.getElementById('themeToggle');
+    var replay = document.getElementById('replay');
+    if (themeToggle) { themeToggle.addEventListener('click', function () {
+      var b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    }); }
+    if (replay) { replay.addEventListener('click', function () {
+      document.querySelectorAll('.dv-animate').forEach(function (fig) {
+        fig.classList.remove('dv-animate'); void fig.offsetWidth; fig.classList.add('dv-animate');
+      });
+    }); }
+  </script>
+</body>
+</html>

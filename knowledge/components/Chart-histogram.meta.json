@@ -1,0 +1,65 @@
+{
+  "name": "Histogram",
+  "category": "organism",
+  "purpose": "Single-series frequency distribution as contiguous column bins (no inter-bar gap) — e.g. transaction value distribution, response-time distribution. Semantic SVG in the DOM, styled by tokens, animated by CSS, behaviour by the ONE generated dv-behaviour partial (ADR-0015, worker fence — markers empty). CHART-EXPANSION WAVE 2 lane 1 (2026-08-05); ported from Chart-bar.reference.html's column geometry (canvas, axis mark contract, toolbar) with the bin-width arithmetic changed to close the inter-bar gap.",
+  "props": [
+    { "name": "bins", "type": "array", "$note": "Contiguous value ranges; rect width == category slot width exactly (no bar-style inset), adjacent rects share an x-edge. DERIVED from Chart-bar's column geometry — see the snippet header for the exact arithmetic (8 bins, 522px plot area, 65.25px/bin)." },
+    { "name": "data", "type": "table", "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005)." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state consumes the Empty-state pattern by reference." }
+  ],
+  "variants": [
+    { "name": "contiguous single-series", "use": "Show the shape of a distribution across value bins. ONE colour (dv-014) — a histogram is not a categorical comparison, so bar's multi-hue categorical set does not apply." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class (DV-D08): .t-cm-chart-label / .t-cm-chart-value = 12/500 · table .t-cm-legal 12/400 · title .t-cm-section-label · static legend key text (new, see below) also .t-cm-chart-label",
+    "series": "data/series/1 (column default per DV-D09 — reused unmodified; a histogram has no orientation choice to trigger the h-bar/series-3 branch); high-contrast remap data/series-1-hc (data-contrast=\"high\")",
+    "axis": "DECLARED GAP (ds-020, DIVVY-instructed): Chart-bar's DV-D07 two-channel axis/grid CSS role is NOT ported. The baseline carries colour via inline stroke=\"var(--baseline)\" only, no gridlines drawn at all.",
+    "elevation": "table popover + value tip = surface ground + elevation/functional shadow + elevation/border (anchored-overlay recipe, same as Chart-bar)",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "Bin geometry hand-derived from Chart-bar's column plotting math with the gap removed (rect width = slot width, not bar's ~44%-inset). Layer-2 machinery ported by REFERENCE, not yet injected — AUTO-BEHAVIOUR markers are empty (worker fence). NO dv-legend AUTO-BEHAVIOUR marker pair in this file (see accessibility.nonText — the legend is static, not interactive, so there is nothing for dv-legend.js to drive)."
+  },
+  "motion": {
+    "entry": "Bins grow from the baseline (scaleY, transform-box:fill-box), 760ms cubic-bezier(.22,.61,.36,1), 32ms per-bin stagger (tighter than bar's 45ms — 8 contiguous bins read better with a faster sweep), CSS only (DEF-003).",
+    "hover": "brightness(1.12) light / (1.22) dark on the bin. Focus outline goes INSET (outline-offset:-2px) rather than bar's outside offset, because adjacent bins share an x-edge and an outside outline would visually bleed into the neighbour — a new, receipted delta from the bar contract.",
+    "reducedMotion": "Entry inside prefers-reduced-motion:no-preference; global collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "DV-D02: compress width, never scale text. data-pl=\"46\" data-pr=\"12\" — Chart-bar's own column margins, reused unmodified. data-fx/data-fw on rects (fw is a flat 0.125 for all 8 bins — an exact 1/8 of the 522px plot area, the contiguous-bin geometry's one simplification), data-fx on the baseline and bin labels.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Analytics and distribution views", "Reports"],
+    "mustNotNeighbour": ["A Stat-card making the identical claim in the same view", "A grouped/stacked Bar chart in the same view — histogram's bins and bar's categories read as the same shape and are easy to conflate"],
+    "commonPatterns": ["transaction value distribution", "response-time distribution", "age or tenure distribution"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\" with a full-sentence data aria-label reading every bin.",
+    "name": "The figcaption names the chart; each bin carries aria-label + data-tip naming its value range and count (popover value == table value, one source, once dv-behaviour is wired).",
+    "keyboard": "Bins are focus stops (tabindex 0 + aria-label → value popover on focus, once dv-behaviour is wired); table toggle = dropdown (aria-controls/expanded, Esc dismiss → refocus). No legend interaction — see nonText.",
+    "focus": ":focus-visible = 2px ink outline, INSET (outline-offset:-2px — see motion.hover for why).",
+    "nonText": "Series fill ≥3:1 vs the page both modes (dv-016). SINGLE-SERIES RULE (brief-instructed): the legend key is STATIC — a plain swatch + \"Transactions\" label marked aria-hidden=\"true\", NOT the interactive DV-D11 filter/isolate chrome Chart-bar's multi-series legends use. There is exactly one series, so there is nothing to filter or isolate; the chart's own aria-label + figcaption already name the data, so the static key is a visual affordance only and correctly excluded from the a11y tree, not a redundant a11y gap.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover", "2.1.1 Keyboard", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "A gap between bins (dv-005-adjacent: a histogram's bins are a continuous domain — a gap misreads as a categorical bar chart)",
+    "Multiple series on one histogram (use small multiples or an overlay pattern instead — not this component)",
+    "A non-zero baseline (dv-bar-009: data-domain-min=\"0\" always)",
+    "Gradient/3D/shadow fills (dv-009 flat fills only)",
+    "Raw hex series fills (dv-017 — var() tokens only)",
+    "A chart without its real data table (dv-005)",
+    "Scaling the whole SVG down responsively (DV-D02 — text must never scale)"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-05",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "UNPROVEN — worker fence: DataViz gate 0 / census / radius / coverage / type-blast are conductor-run after component-types.json registration; this snippet has not been through the gate yet. Series fill reuses Chart-bar's already-validated data/series/1 token (no new colour minted), so a PASS is expected but not yet measured on this file.",
+    "$note": "CHART-EXPANSION WAVE 2 lane 1 (2026-08-05). ds-020 gap declared (axis/grid CSS not ported). NEW pattern flagged for review: .dv-leg-static (~10 lines CSS, not in Chart-bar) — conductor should confirm this doesn't want folding into a shared canon rule before other single-series charts reinvent it independently. Render-verify OWED per the brief's sandbox-kill precedent (07-24 wave) — not run this session; static geometry review only."
+  },
+  "provenance": {
+    "source": "worker-composition",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Chart-bar.reference.html, knowledge/snippets/Chart-line.reference.html"
+  }
+}

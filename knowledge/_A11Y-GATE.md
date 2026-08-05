@@ -1,6 +1,6 @@
 # A11y gate — _validate_a11y.py
 
-**67 snippet(s)** · **8 failure(s)** · **26 warning(s)**
+**75 snippet(s)** · **8 failure(s)** · **31 warning(s)**
 
 Gating: reduced-motion (2.3.3) · target size <24 floor (2.5.8, aid-009 ruling 2026-07-03). Reported: target size 24–43 vs the 44×44 HSBC default (aid-009).
 
@@ -24,6 +24,12 @@ Library bar (aqa-003, ruled 2026-07-03): the canon is LIBRARY-GRADE — guidelin
 ## Chart-bar
 - 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
 
+## Chart-butterfly-h
+- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+
+## Chart-butterfly-v
+- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+
 ## Chart-combo
 - 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
 
@@ -33,6 +39,15 @@ Library bar (aqa-003, ruled 2026-07-03): the canon is LIBRARY-GRADE — guidelin
 ## Chart-line
 - 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
 - 🟡 warn — `.dv-leg-sw.sw-diamond` is 8×8px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+
+## Chart-pie
+- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+
+## Chart-scatter
+- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+
+## Chart-stacked-area
+- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
 
 ## Data-grid
 - 🔴 FAIL — `.sort .ic` is 16×16px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)

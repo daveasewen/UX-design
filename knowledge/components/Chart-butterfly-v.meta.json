@@ -1,0 +1,64 @@
+{
+  "name": "Butterfly chart (vertical)",
+  "category": "organism",
+  "purpose": "Same contract as Chart-butterfly-h, rotated: two-series comparison per category as mirrored columns above/below one shared horizontal baseline — e.g. actual versus forecast by quarter. Semantic SVG in the DOM, styled by tokens, animated by CSS, behaviour by the ONE generated dv-behaviour partial (ADR-0015, worker fence — markers empty). CHART-EXPANSION WAVE 2 lane 1 (2026-08-05); ported from Chart-bar.reference.html's column x-geometry (REUSED verbatim) and Chart-line.reference.html's Layer-2 state model. Meta notes cross-reference Chart-butterfly-h.meta.json by DIVVY instruction; the two snippet files are independent.",
+  "props": [
+    { "name": "series", "type": "pair", "$note": "Exactly two series, one per direction. UP takes data/series/1 (column default, DV-D09); DOWN takes data/series/3, paired for visual contrast with the -h sibling's LEFT/RIGHT choice." },
+    { "name": "data", "type": "table", "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005)." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state consumes the Empty-state pattern by reference." }
+  ],
+  "variants": [
+    { "name": "mirrored vertical, two series", "use": "Compare two measures per category over a category axis that reads left-to-right (time, rank), both directions on the SAME scale so the halves stay comparable." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class (DV-D08): .t-cm-chart-label / .t-cm-chart-value = 12/500 · table .t-cm-legal 12/400 · title .t-cm-section-label",
+    "series": "UP = data/series/1, DOWN = data/series/3; high-contrast remap data/series-1-hc / data/series-3-hc (data-contrast=\"high\")",
+    "axis": "DECLARED GAP (ds-020, DIVVY-instructed): Chart-bar's DV-D07 two-channel axis/grid CSS role is NOT ported. The one shared baseline carries colour via inline stroke=\"var(--baseline)\" only, no gridlines drawn at all.",
+    "elevation": "table popover + value tip = surface ground + elevation/functional shadow + elevation/border (anchored-overlay recipe, same as Chart-bar)",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "x-geometry (6-slot layout, all data-fx/data-fw fractions) is IDENTICAL to Chart-bar's column chart — reused verbatim, only the baseline y and the up/down y math are new. Layer-2 machinery ported by REFERENCE, not yet injected — AUTO-BEHAVIOUR markers are empty (worker fence)."
+  },
+  "motion": {
+    "entry": "Columns grow from the shared baseline (scaleY, transform-box:fill-box) — UP grows from its bottom edge (data-grow=\"up\", bar's own convention, reused unmodified), DOWN grows from its top edge (data-grow=\"down\", new keyframe dvGrowYD), 760ms cubic-bezier(.22,.61,.36,1), 45ms per-column stagger, CSS only (DEF-003).",
+    "hover": "brightness(1.12) light / (1.22) dark on the bar; legend hover/focus fades the other active series 24%, peeks a ghosted one at 24% (DV-D11, once dv-legend.js is wired).",
+    "reducedMotion": "Entry inside prefers-reduced-motion:no-preference; global collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "DV-D02: compress width, never scale text. data-pl=\"46\" data-pr=\"12\" — Chart-bar's own column margins, reused unmodified since the x-geometry is identical. data-fx/data-fw on rects, data-fx on the baseline and category labels.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Budget vs actual views", "Reports"],
+    "mustNotNeighbour": ["A Stat-card making the identical claim in the same view"],
+    "commonPatterns": ["actual vs forecast by quarter", "planned vs spent by month", "target vs achieved by period"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\" with a full-sentence data aria-label reading both series per category.",
+    "name": "The figcaption names the chart; each bar carries aria-label + data-tip naming its category, series and value (popover value == table value, one source).",
+    "keyboard": "Bars are focus stops (tabindex 0 + aria-label → value popover on focus, once dv-behaviour is wired); legend rows are filter buttons (once dv-legend is wired); table toggle = dropdown (aria-controls/expanded, Esc dismiss → refocus).",
+    "focus": ":focus-visible = 2px ink outline (house pattern).",
+    "nonText": "Both series fills ≥3:1 vs the page both modes (dv-016). DIRECTION (up/down) plus colour disambiguate the two series — on-chart letter keys deliberately OMITTED, same delta as the -h sibling, receipted there and repeated here.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover", "2.1.1 Keyboard", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "More than two series (the mirrored-baseline geometry only reads for a pair)",
+    "Different scales for the up and down halves (breaks the visual comparability a butterfly exists to give)",
+    "Gradient/3D/shadow fills (dv-009 flat fills only)",
+    "Raw hex series fills (dv-017 — var() tokens only)",
+    "A chart without its real data table (dv-005)",
+    "Scaling the whole SVG down responsively (DV-D02 — text must never scale)"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-05",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "UNPROVEN — worker fence: DataViz gate 0 / census / radius / coverage / type-blast are conductor-run after component-types.json registration; this snippet has not been through the gate yet. Series fills reuse Chart-bar's already-validated data/series/1 and data/series/3 tokens (no new colour minted), so a PASS is expected but not yet measured on this file.",
+    "$note": "CHART-EXPANSION WAVE 2 lane 1 (2026-08-05). ds-020 gap declared (axis/grid CSS not ported). Render-verify OWED per the brief's sandbox-kill precedent (07-24 wave) — not run this session; static geometry review only."
+  },
+  "provenance": {
+    "source": "worker-composition",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Chart-bar.reference.html, knowledge/snippets/Chart-line.reference.html"
+  }
+}

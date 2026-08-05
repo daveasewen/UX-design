@@ -1,0 +1,64 @@
+{
+  "name": "Butterfly chart (horizontal)",
+  "category": "organism",
+  "purpose": "Two-series comparison per category as mirrored horizontal bars flowing outward from a shared centre gutter — e.g. this-year versus last-year, actual versus target, inflow versus outflow. Semantic SVG in the DOM, styled by tokens, animated by CSS, behaviour by the ONE generated dv-behaviour partial (ADR-0015, worker fence — markers empty). CHART-EXPANSION WAVE 2 lane 1 (2026-08-05); ported from Chart-bar.reference.html's mark contract and Chart-line.reference.html's Layer-2 state model.",
+  "props": [
+    { "name": "series", "type": "pair", "$note": "Exactly two series, one per direction. LEFT takes data/series/1 (categorical default); RIGHT takes data/series/3 (DV-D09's h-bar default, cited here for the positive-reading direction)." },
+    { "name": "data", "type": "table", "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005), surfaced by the same TABLE-VIEW POPOVER Chart-bar uses." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state consumes the Empty-state pattern by reference." }
+  ],
+  "variants": [
+    { "name": "mirrored horizontal, two series", "use": "Compare two measures per category, both readable at a glance without stacking or grouping side-by-side." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class (DV-D08): .t-cm-chart-label / .t-cm-chart-value = 12/500 · table .t-cm-legal 12/400 · title .t-cm-section-label",
+    "series": "LEFT = data/series/1, RIGHT = data/series/3 (DV-D09 cite — orientation-appropriate default reused for the positive-reading direction); high-contrast remap data/series-1-hc / data/series-3-hc (data-contrast=\"high\")",
+    "axis": "DECLARED GAP (ds-020, DIVVY-instructed): Chart-bar's DV-D07 two-channel axis/grid CSS role is NOT ported. The two baselines carry colour via inline stroke=\"var(--baseline)\" only, no CSS-side alpha role layered on top, no gridlines drawn at all.",
+    "elevation": "table popover + value tip = surface ground + elevation/functional shadow + elevation/border (anchored-overlay recipe, same as Chart-bar)",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "Geometry hand-derived from Chart-bar's column/bar plotting math (two independent baselines either side of a 90px label gutter); Layer-2 machinery (fit/tip/CSV/table-toggle) ported by REFERENCE, not yet injected — AUTO-BEHAVIOUR markers are empty (worker fence)."
+  },
+  "motion": {
+    "entry": "Bars grow outward from their own baseline (scaleX, transform-box:fill-box) — LEFT grows from its right edge (data-grow=\"left\"), RIGHT grows from its left edge (data-grow=\"right\"), 760ms cubic-bezier(.22,.61,.36,1), 45ms per-row stagger, CSS only (DEF-003).",
+    "hover": "brightness(1.12) light / (1.22) dark on the bar; legend hover/focus fades the other active series 24%, peeks a ghosted one at 24% (DV-D11, once dv-legend.js is wired).",
+    "reducedMotion": "Entry inside prefers-reduced-motion:no-preference; global collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "DV-D02: compress width, never scale text. data-pl=\"60\" data-pr=\"60\" reserves symmetric margins either side of the 460px plot area so both directions have equal room; data-fx/data-fw on rects, data-fx on the two baselines and category labels — same responsive-fit contract as Chart-bar, values recomputed for this file's own geometry.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Year-on-year comparison views", "Reports"],
+    "mustNotNeighbour": ["A Stat-card making the identical claim in the same view"],
+    "commonPatterns": ["this year vs last year by line of business", "actual vs target by team", "inflow vs outflow by category"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\" with a full-sentence data aria-label reading both series per category.",
+    "name": "The figcaption names the chart; each bar carries aria-label + data-tip naming its category, series and value (popover value == table value, one source).",
+    "keyboard": "Bars are focus stops (tabindex 0 + aria-label → value popover on focus, once dv-behaviour is wired); legend rows are filter buttons (aria-pressed; Shift+Enter isolates, once dv-legend is wired); table toggle = dropdown (aria-controls/expanded, Esc dismiss → refocus).",
+    "focus": ":focus-visible = 2px ink outline (house pattern).",
+    "nonText": "Both series fills ≥3:1 vs the page both modes (dv-016). DIRECTION (left/right) plus colour disambiguate the two series — on-chart letter keys (bar's .dv-barkey) are deliberately OMITTED here since a third channel is redundant with direction; receipted as a delta from the bar contract, not an oversight.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover", "2.1.1 Keyboard", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "More than two series (the mirrored-gutter geometry only reads for a pair; use grouped/stacked bar instead)",
+    "Negative values inside either series (dv-bar-007-style — the mirror direction already encodes the second series, a negative value inside one direction is ambiguous)",
+    "Gradient/3D/shadow fills (dv-009 flat fills only)",
+    "Raw hex series fills (dv-017 — var() tokens only)",
+    "A chart without its real data table (dv-005)",
+    "Scaling the whole SVG down responsively (DV-D02 — text must never scale)"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-05",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "UNPROVEN — worker fence: DataViz gate 0 / census / radius / coverage / type-blast are conductor-run after component-types.json registration; this snippet has not been through the gate yet. Series fills reuse Chart-bar's already-validated data/series/1 and data/series/3 tokens (no new colour minted), so a PASS is expected but not yet measured on this file.",
+    "$note": "CHART-EXPANSION WAVE 2 lane 1 (2026-08-05). ds-020 gap declared (axis/grid CSS not ported). Render-verify OWED per the brief's sandbox-kill precedent (07-24 wave) — not run this session; static geometry review only."
+  },
+  "provenance": {
+    "source": "worker-composition",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Chart-bar.reference.html, knowledge/snippets/Chart-line.reference.html"
+  }
+}

@@ -1024,3 +1024,29 @@ GOVERNING RECORDS**, close conditions ratified by Dave via the review export
   agent's calls, see the ⚠ ONE-ENACTMENT-CALL entry at :567 above) → **closes at Dave's sign-off
   eye** (already on `_REVIEW-SIGNOFF.md`'s backlog).
 - **G16** — that :567 enactment call itself → **closes when Dave ratifies or reverses it.**
+
+---
+
+**★ #95 (2026-08-05, chart wave 2 — 3 Sonnet lanes + conductor serials):** EIGHT new members
+landed and registered: butterfly-h · butterfly-v · histogram (lane ①), boxplot · bullet ·
+candlestick (lane ②), pie · stacked-area (lane ③; the queue's "promote grouped/stacked bars
+(D-Q3)" was struck STALE at #94 — landed 07-24). Receipts:
+`notes/_receipts/2026-08-05-wave2-lane{1,2,3}-*.md` (replayed against disk by the conductor
+before any serial edit). Serials enacted: `component-types.json` +8 `$members` (hand JSON per
+receipts; hooks measured on the artefacts, not copied from the receipts),
+`MIGRATED_SNIPPETS` +8, `CATEGORIES` +8, dtype vocabulary +7 in `_validate_dataviz.py`
+(all seven cartesian, placed in the DV-D02-A partition in the same change per its import-time
+totality assertion). Conductor fixes at replay: lane-① AUTO-MARKUP pairs + token manifests
+(landed absent), pie + stacked-area dv-legend marker pairs, lane-② manifest prose-in-token-keys
+stripped, boxplot/candlestick `--data-grid` UNBOUND (binding the pre-DV-D07 value to
+`data/grid/color` was a measured DRIFT — unbinding receipts the ds-020 gap instead of filling it).
+Gates: dataviz · snippets · coverage · radius · behaviour · partials · blast-radius · no-hardcode
+all GREEN. ⚠ DECLARED, not fixed: type-composites gate was ALREADY red at HEAD (1011 violations,
+82/82 files); the wave adds ~45 of the SAME classes (body font-family / h2 / th font-weight,
+reproduced from its exemplars). a11y gate red at HEAD too, 8 fails, none in wave files.
+⬛ OWED: render-verify all 8 (07-24 precedent) + Dave's showroom eyeball; all 8 metas carry
+`tokenValidation.result: UNPROVEN` honestly. Lane flags for Dave: bullet 580×200 proportion ·
+bullet range-band greys (color-mix, un-minted — grey-tint check) · candlestick colour-direction
+redundancy (dv-011 partial) · histogram `.dv-leg-static` canon-folding candidate ·
+stacked-area `--stack-fill-alpha` dial · stacked-area `fitOne()` `.dv-band` gap ·
+pie sweep-hook `data-ri` fallback.

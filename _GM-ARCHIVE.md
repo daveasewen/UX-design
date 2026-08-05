@@ -1,5 +1,22 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-08-05 #95 — rolled by session #95 (2c: keep ★ LATEST + ★ PRIOR live; older banners land here verbatim, newest-first)
+
+> **section-usage #94 (observed, self-report):** GM HDR:C LATEST:C PRIOR:U DOFIRST:U A:U C1:U C2:U C4:U STRATA:U · LS HDR:U LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U — consumed via `_CHAIN.md` only.
+
+> **consult-receipts #94:** `_memento_search.py` "#93 stratum wrap point 49,071" → ledger:93-… (fetched) · --fetch gm:C1 · --fetch gm:C4 — all consumed in-window; targeted greps on named artefacts (gate source · Chart-bar reference · receipts) — declared.
+> **commit-state #94:** ONE wrap commit. Paths explicit — never `git add -A`: `knowledge/_capture_gate.py` (CHAIN_STAMP_RE widened + parser + selftests) · `GOOD-MORNING.md` (stamp defuse · #94 banner · #93 demoted · #92 rolled · D-Q3 strike · this stratum · titles) · `_GM-ARCHIVE.md` (batch #94 + #93 commit-state) · `_LIVE-STATE.md` (#94 delta · #93 demoted · trail head #94) · `_LIVE-STATE-ARCHIVE.md` (#91 delta + 2d tail) · `notes/_GAUGE-LOG.md` (#93 stratum via roll_2f ONLY) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #94 + late stamp) · `notes/_briefs/2026-08-05-chart-wave2-*.md` (×4 NEW) · `_CHAIN.md` (regen) · `knowledge/_memento-index.json` (2g LAST) · `notes/_REHEARSAL-LOG.jsonl` (appends).
+
+> ## ★ PRIOR — 2026-08-05 (Wed **#93**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **THE STOP LINE IS RE-PRICED: 155,789 REAL, THE HIGH END OBSERVED, RULED** · ⛔ **THE TITLE'S PREMISE DIED TWICE — THE REHEARSAL LOG PRICES NOTHING AND #92's WRAP END IS GONE** · ⚠ **THE CANONICAL STRATA HOME TAUGHT A 44%-LOW WRAP COST**)
+>
+> **#93-D1 (Dave's) — STOP LINE = 155,789 real = 200,000 − 44,211 (#91-F5's stamp, the high end observed per Dave's #59 rule), STANDING until the first NEW-REGIME wrap measurement is read.** The measured distribution (n=2: 42,434 · 44,211) is PRE-rehearsal-regime — #91-F5 named the gate-failure remediation loop the binding term and #92's `--rehearse` removed it (wrap-open: 0 structural, 0 rounds) ⇒ the distribution is NON-STATIONARY; the ±10,000 margin option was DECLINED as over-reserving against a mitigated mechanism. Full reasoning + probes: ledger `notes/_MEMENTO-DECISIONS.md` § ★ #93.
+> **⛔ n STAYS 2 — the chain's title could not be executed as written:** `notes/_REHEARSAL-LOG.jsonl` carries gate outcomes ONLY (keys date/fails/heals_at_wrap/kind/structural/structural_names/warns — no token field, every line read), and #92's wrap-end figure is UNRECOVERABLE: the Cowork transcript reader returns message TEXT without `message.usage` and the host session directory is outside connected folders (probes named, § ★ #93-F1) ⇒ *"wrap cost is measurable PROSPECTIVELY ONLY"* now stands on THREE legs, and #92's *"recoverable next session"* claim is REFUTED — corrected by addition, its stratum untrimmed [[header-wins-over-audit]].
+> **⚠ #93-F2 — the gauge log's § #91 stratum recorded the EARLY stamp (24,579) as the wrap cost; 44,211 is the SAME wrap read 19,701 later.** Sole appearance repo-wide, at the exact home a scout reads first. **CORRECTED BY ADDITION (#93-D2, Dave's)** — one line at the stratum, ratified text untouched.
+> **boot n=4:** 61,854 · 64,708 · 65,636 · **65,822 (#93, `message.usage` turn one)** — spread 6.4%. **#93's wrap = the FIRST new-regime point:** wrap-start FILL **103,928**; the latest-possible end stamp goes to ledger § ★ #93 (the #91 form), truncation declared exactly as at #59/#91.
+> **residual (GENERATED #93):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #92) — _roll_state.py · 2026-08-05
+
+
+
 ## Batch 2026-08-05 #94 — rolled by session #94 (2c: keep ★ LATEST + 1 PRIOR; 2f: #93 commit-state below)
 
 > **commit-state #93:** ONE wrap commit. Paths explicit — never `git add -A`: `notes/_GAUGE-LOG.md` (correction by addition, § #91) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #93 + late stamp) · `GOOD-MORNING.md` · `_LIVE-STATE.md` · `_GM-ARCHIVE.md` · `_LIVE-STATE-ARCHIVE.md` · `_CHAIN.md` (regen) · `knowledge/_memento-index.json` (2g) · `notes/_REHEARSAL-LOG.jsonl` (appends) · `knowledge/_SESSIONS.jsonl` (witness).

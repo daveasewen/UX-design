@@ -1,4 +1,12 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#92**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **THE WRAP GATE REHEARSES MID-WINDOW NOW** · ★ **FIRST LIVE CATCH IN ITS FIRST SESSION** · ⛔ **THE TITLED LANE WAS REFUTED BY #91-F5; DAVE RE-AIMED IT AT THE LOOP**)
+
+- **The chain's title ordered the runbook cut; ledger #91-F5 had already refuted it** — #91's wrap cost 44,211 real with ZERO runbook read; the binding term is the gate-failure remediation loop. Reconciled at the opener; **Dave ruled: attack the loop (#92-D1).**
+- **`--rehearse` BUILT on the wrap gate's own seam** — `run(mode="wrap")` itself, fails classified heals-at-wrap (only the two ritual-rewritten date stamps, quoted + filename-scoped) vs STRUCTURAL; terse output; **consumed at birth: `_checkin.py` runs it every check-in.**
+- **`notes/_REHEARSAL-LOG.jsonl`** — every rehearse + every wrap-mode run logs {fails, structural, heals, warns} ⇒ the fails-at-wrap-open distribution and per-wrap remediation rounds, the measurement #91-F5 ordered. NOT the gauge log (roll_2f jam).
+- **First live catch, same session:** a runbook edit staled the retrieval index → STRUCTURAL at check-in price, fixed in one command. **Wrap-open: 0 structural.**
+- **Stale prose struck at source:** the gauge runbook's "boot UNMEASURED (ds-025 item 1)" went FALSE at #91-D1 and sat in the entry-point doc — corrected, strike marked.
+- Mutation tests: classifier scope ×2 (out-of-scope filename stays STRUCTURAL) + empty-input control + integration (rc · JSONL arithmetic · both `kind`s · no report file), wired into `_selftest_body` at write time.
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#91**, OPUS 5 solo Cowork, Dave live, ONE window — ★★ **THE WRAP'S INSTRUCTION MANUAL IS 39.9% OF THE WRAP FLOOR** · ⛔ **FILL vs THROUGHPUT: A 27% UNIT ERROR STANDING SINCE #59**)
 
 - **THE TITLE'S NUMBER FAILED RETRIEVAL FIRST.** `42,434` is n=1, truncated (*"STILL CLIMBING"*), 32 sessions stale, and #59 itself ruled it *"a POINT not a LAW"* needing 2–3 more. #90 dropped the caveat. ⇒ **no cut could have been proven against it**; the lane became re-measurement, on Dave's ruling.
