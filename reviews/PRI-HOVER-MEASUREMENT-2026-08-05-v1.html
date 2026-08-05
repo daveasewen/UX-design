@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>--pri-hover measurement specimen — 2026-08-05</title>
+<style>
+  :root{
+    --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    /* ---- ground truth, quoted verbatim from the token store (see .md for citations) ---- */
+    --page-l:#FFFFFF; --page-d:#1A1A1A;           /* background/default */
+    --card-l:#FFFFFF; --card-d:#1F1F1F;           /* tertiary/background/default — Modals/Drawer's own panel */
+    --pri-l:#1A1A1A;  --pri-d:#FAFAFA;            /* button/primary/background/default */
+    --label-l:#FFFFFF; --label-d:#333333;         /* button/primary/label/default (== icon/default) */
+    --stored-l:#626262; --stored-d:#B7B7B7;       /* button/primary/background/hover $value == surface/action-primary-hover == color/mono/7 & /10 */
+    --alpha-68:0.68;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:var(--font); margin:0; padding:24px; background:#EDEDED; color:#1A1A1A;}
+  h1{font-size:19px; margin:0 0 4px;}
+  .sub{font-size:13px; color:#484848; margin:0 0 20px; max-width:74ch; line-height:1.5;}
+  .legend{display:flex; gap:18px; flex-wrap:wrap; font-size:12px; margin-bottom:22px; color:#333;}
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .swatch-key{width:14px; height:14px; border-radius:3px; display:inline-block; border:1px solid #0002;}
+  .grid{display:grid; grid-template-columns:1fr; gap:14px;}
+  @media (min-width:900px){ .grid{grid-template-columns:1fr 1fr;} }
+  .row{background:#fff; border:1px solid #DDD; border-radius:8px; padding:14px 16px;}
+  .row h2{font-size:14px; margin:0 0 2px; display:flex; align-items:center; gap:8px;}
+  .tag{font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; padding:2px 7px; border-radius:99px; background:#E1E1E1; color:#333;}
+  .tag.ref{background:#CFE8CF; color:#1B5E20;}
+  .tag.a{background:#DCE8F5; color:#0D3A66;}
+  .tag.b{background:#F5E6CE; color:#6B4A00;}
+  .row .file{font-size:11px; color:#767676; margin:0 0 10px; font-family:ui-monospace,Menlo,monospace;}
+  .panels{display:flex; gap:10px; flex-wrap:wrap;}
+  .panel{flex:1 1 200px; border-radius:6px; padding:10px; }
+  .panel.light{background:var(--card-bg-l,#F7F7F7); border:1px solid #E4E4E4;}
+  .panel.dark{background:var(--card-bg-d,#141414); border:1px solid #000;}
+  .panel h3{font-size:10px; text-transform:uppercase; letter-spacing:.06em; margin:0 0 8px; opacity:.65;}
+  .panel.light h3{color:#333;}
+  .panel.dark h3{color:#ddd;}
+  .chips{display:flex; gap:10px;}
+  .chip{flex:1; text-align:center;}
+  .btnmock{display:inline-flex; align-items:center; justify-content:center; width:100%; height:36px; border-radius:6px; font-size:12px; font-weight:500;}
+  .capt{font-size:10px; margin-top:5px; line-height:1.4; font-family:ui-monospace,Menlo,monospace;}
+  .capt b{font-family:var(--font); font-weight:600;}
+  .panel.light .capt{color:#484848;}
+  .panel.dark .capt{color:#B7B7B7;}
+  .delta0{color:#1B5E20 !important; font-weight:600;}
+  .deltaflag{color:#8A5A00 !important; font-weight:600;}
+  footer{margin-top:24px; font-size:11px; color:#767676; max-width:74ch; line-height:1.5;}
+</style>
+</head>
+<body>
+  <h1>--pri-hover: current render vs the --alpha-68 primitive</h1>
+  <p class="sub">Every site that consumes the Mono primary-hover value, at its CURRENT rendered
+  colour and at the value it would take if promoted to the already-ratified <code>--alpha-68</code>
+  primitive (#99-D1, ds-026). Swatches are real CSS <code>color-mix()</code> or the literal stored
+  hex — the browser is painting these, not a pre-rendered image. Numbers below each chip are
+  measured via <code>knowledge/_contrast_utils.py</code>, not eyeballed. This is a MEASUREMENT for
+  Dave's review — nothing here has been promoted.</p>
+  <div class="legend">
+    <span><span class="tag ref">reference</span> already enacted (#99) — the target other rows are compared against</span>
+    <span><span class="tag a">group A</span> live <code>color-mix(...70%...)</code> today — exact-swap candidates</span>
+    <span><span class="tag b">group B</span> flat <code>var(--pri-hover)</code>, frozen at the stored token — needs a mechanism call too</span>
+  </div>
+
+  <div class="grid" id="rows"></div>
+
+  <footer>
+    Ground truth: <code>knowledge/tokens/semantic-colour.json</code> (button/primary/background/*,
+    surface/action-primary-hover), <code>knowledge/tokens/opacity.json</code> (alpha ladder),
+    <code>knowledge/tokens/colour.json</code> (color/mono ramp). Full citations, deltas and the
+    contrast table are in the companion .md. Rendered specimen only — not a promotion.
+  </footer>
+
+<script>
+// Each row: [tag, tagClass, name, sourceFile, mechanism, currentCSS(l,d), proposedCSS(l,d), surface(l,d,label), captions]
+const PAGE_L='#FFFFFF', PAGE_D='#1A1A1A', CARD_D='#1F1F1F';
+const PRI_L='#1A1A1A', PRI_D='#FAFAFA';
+const LABEL_L='#FFFFFF', LABEL_D='#333333';
+const STORED_L='#626262', STORED_D='#B7B7B7';
+
+function mixCSS(pct){ return `color-mix(in srgb, var(--pri) ${pct}%, var(--pg))`; }
+
+const rows = [
+  {
+    tag:'reference', tagClass:'ref', name:'Button', file:'knowledge/snippets/Button.reference.html — .cn-button .btn.primary:hover',
+    surface:'page', bgD: PAGE_D,
+    currentPct:68, proposedPct:68, currentIsStored:false,
+    capt:{lightCur:'#636363 · label 6.01:1 · fill/page 6.01:1', lightProp:'#636363 · unchanged (already the target)',
+          darkCur:'#B2B2B2 · label 5.96:1 · fill/page 8.21:1', darkProp:'#B2B2B2 · unchanged (already the target)'},
+    deltaNote:'delta0'
+  },
+  {
+    tag:'group A', tagClass:'a', name:'Icon-button', file:'knowledge/snippets/Icon-button.reference.html — .cn-icon-button .iconbtn.primary:hover',
+    surface:'page', bgD: PAGE_D,
+    currentPct:70, proposedPct:68, currentIsStored:false,
+    capt:{lightCur:'#5F5F5F · glyph 6.39:1 · fill/page 6.39:1', lightProp:'#636363 · glyph 6.01:1 · Δ+4/255 (page)',
+          darkCur:'#B7B7B7 · glyph 6.3:1 · fill/page 8.68:1', darkProp:'#B2B2B2 · glyph 5.96:1 · Δ−5/255'},
+    deltaNote:''
+  },
+  {
+    tag:'group A', tagClass:'a', name:'Empty-state', file:'knowledge/snippets/Empty-state.reference.html — .ebtn:hover',
+    surface:'page', bgD: PAGE_D,
+    currentPct:70, proposedPct:68, currentIsStored:false,
+    capt:{lightCur:'#5F5F5F · label 6.39:1 · fill/page 6.39:1', lightProp:'#636363 · label 6.01:1 · Δ+4/255',
+          darkCur:'#B7B7B7 · label 6.3:1 · fill/page 8.68:1', darkProp:'#B2B2B2 · label 5.96:1 · Δ−5/255'},
+    deltaNote:''
+  },
+  {
+    tag:'group A', tagClass:'a', name:'Form-layout', file:'knowledge/snippets/Form-layout.reference.html — .fl-btn.fl-primary:hover',
+    surface:'page', bgD: PAGE_D,
+    currentPct:70, proposedPct:68, currentIsStored:false,
+    capt:{lightCur:'#5F5F5F · label 6.39:1 · fill/page 6.39:1', lightProp:'#636363 · label 6.01:1 · Δ+4/255',
+          darkCur:'#B7B7B7 · label 6.3:1 · fill/page 8.68:1', darkProp:'#B2B2B2 · label 5.96:1 · Δ−5/255'},
+    deltaNote:''
+  },
+  {
+    tag:'group A', tagClass:'a', name:'Stepper', file:'knowledge/snippets/Stepper.reference.html — .st-nav .st-primary:hover',
+    surface:'page', bgD: PAGE_D,
+    currentPct:70, proposedPct:68, currentIsStored:false,
+    capt:{lightCur:'#5F5F5F · label 6.39:1 · fill/page 6.39:1', lightProp:'#636363 · label 6.01:1 · Δ+4/255',
+          darkCur:'#B7B7B7 · label 6.3:1 · fill/page 8.68:1', darkProp:'#B2B2B2 · label 5.96:1 · Δ−5/255'},
+    deltaNote:''
+  },
+  {
+    tag:'group B', tagClass:'b', name:'Modals', file:'knowledge/snippets/Modals.reference.html — .cn-modals .btn.primary:hover',
+    surface:'card', bgD: CARD_D,
+    currentPct:null, proposedPct:68, currentIsStored:true,
+    capt:{lightCur:'#626262 (stored) · label 6.1:1 · fill/card 6.1:1', lightProp:'#636363 · label 6.01:1 · Δ+1/255',
+          darkCur:'#B7B7B7 (stored) · label 6.3:1 · fill/card 8.22:1', darkProp:'#B2B2B2 · label 5.96:1 · Δ−5/255'},
+    deltaNote:''
+  },
+  {
+    tag:'group B', tagClass:'b', name:'Action-bar', file:'knowledge/snippets/Action-bar.reference.html — .cn-action-bar .btn.primary:hover',
+    surface:'page', bgD: PAGE_D,
+    currentPct:null, proposedPct:68, currentIsStored:true,
+    capt:{lightCur:'#626262 (stored) · label 6.1:1 · fill/page 6.1:1', lightProp:'#636363 · label 6.01:1 · Δ+1/255',
+          darkCur:'#B7B7B7 (stored) · label 6.3:1 · fill/page 8.68:1', darkProp:'#B2B2B2 · label 5.96:1 · Δ−5/255'},
+    deltaNote:''
+  },
+  {
+    tag:'group B', tagClass:'b', name:'Confirmation', file:'knowledge/snippets/Confirmation.reference.html — .cn-confirmation .confirm .btn.primary:hover',
+    surface:'page', bgD: PAGE_D,
+    currentPct:null, proposedPct:68, currentIsStored:true,
+    capt:{lightCur:'#626262 (stored) · label 6.1:1 · fill/page 6.1:1', lightProp:'#636363 · label 6.01:1 · Δ+1/255',
+          darkCur:'#B7B7B7 (stored) · label 6.3:1 · fill/page 8.68:1', darkProp:'#B2B2B2 · label 5.96:1 · Δ−5/255'},
+    deltaNote:''
+  },
+  {
+    tag:'group B', tagClass:'b', name:'Drawer', file:'knowledge/snippets/Drawer.reference.html — .cn-drawer .dbtn.primary:hover',
+    surface:'card', bgD: CARD_D,
+    currentPct:null, proposedPct:68, currentIsStored:true,
+    capt:{lightCur:'#626262 (stored) · label 6.1:1 · fill/card 6.1:1', lightProp:'#636363 · label 6.01:1 · Δ+1/255',
+          darkCur:'#B7B7B7 (stored) · label 6.3:1 · fill/card 8.22:1', darkProp:'#B2B2B2 · label 5.96:1 · Δ−5/255'},
+    deltaNote:''
+  },
+];
+
+const wrap = document.getElementById('rows');
+for(const r of rows){
+  const el = document.createElement('div');
+  el.className='row';
+  const bgDvar = r.bgD;
+  const curBg = r.currentIsStored ? 'var(--stored)' : mixCSS(r.currentPct);
+  const propBg = mixCSS(r.proposedPct);
+  el.innerHTML = `
+    <h2><span class="tag ${r.tagClass}">${r.tag}</span> ${r.name}</h2>
+    <p class="file">${r.file}${r.surface==='card' ? '  · sits on its OWN card surface (tertiary/background/default), not the page' : ''}</p>
+    <div class="panels">
+      <div class="panel light" style="--card-bg-l:${PAGE_L}; --pri:${PRI_L}; --pg:${PAGE_L}; --stored:${STORED_L}; --label:${LABEL_L};">
+        <h3>Light</h3>
+        <div class="chips">
+          <div class="chip">
+            <div class="btnmock" style="background:${curBg}; color:var(--label);">Primary</div>
+            <div class="capt">current<br><b>${r.capt.lightCur}</b></div>
+          </div>
+          <div class="chip">
+            <div class="btnmock" style="background:${propBg}; color:var(--label);">Primary</div>
+            <div class="capt ${r.deltaNote}">→ --alpha-68<br><b>${r.capt.lightProp}</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel dark" style="--card-bg-d:${bgDvar}; --pri:${PRI_D}; --pg:${bgDvar}; --stored:${STORED_D}; --label:${LABEL_D}; background:${bgDvar};">
+        <h3>Dark</h3>
+        <div class="chips">
+          <div class="chip">
+            <div class="btnmock" style="background:${curBg}; color:var(--label);">Primary</div>
+            <div class="capt">current<br><b>${r.capt.darkCur}</b></div>
+          </div>
+          <div class="chip">
+            <div class="btnmock" style="background:${propBg}; color:var(--label);">Primary</div>
+            <div class="capt ${r.deltaNote}">→ --alpha-68<br><b>${r.capt.darkProp}</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  wrap.appendChild(el);
+}
+</script>
+</body>
+</html>

@@ -277,7 +277,12 @@ PAGE_TMPL = """<!doctype html>
         var cs = d.defaultView.getComputedStyle(el);
         if (cs.animationName && cs.animationName !== 'none') {
           var prev = el.style.animation;
-          el.style.animation = 'none'; void el.offsetWidth; el.style.animation = prev || '';
+          // getBoundingClientRect(), not offsetWidth: offsetWidth is undefined on
+          // SVGElement (HTMLElement-only per CSSOM View), so on a bare <svg> the
+          // reflow never flushed and the none->prev toggle silently no-opped.
+          // getBoundingClientRect() is defined on Element and forces layout for
+          // both HTML and SVG.
+          el.style.animation = 'none'; void el.getBoundingClientRect(); el.style.animation = prev || '';
         }
       });
     }catch(e){}
@@ -335,7 +340,7 @@ INDEX_TMPL = """<!doctype html>
   .intro{padding:24px 24px 0; max-width:820px;}
   .intro p{font-size:14px; color:var(--mid); line-height:1.5; margin:4px 0 0;}
   @media (max-width:760px){
-    .shell{grid-template-columns:1fr;}
+    .shell{grid-template-columns:1fr; align-content:start;}
     nav.tree{position:static; height:auto; max-height:40vh;}
   }
 </style>

@@ -1,5 +1,14 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-05 #104 (2d) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#101**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **CANDLESTICK ds-027 ENACTED: snippet · meta · canon scope · showroom, GATES 75/0, RENDER-PROVEN ×4** · ⚠ **`--sc` COMPOSE-AUDIT FALSE POSITIVE FOUND, PRE-EXISTING → #102** · ✅ **FABLE 88% ⇒ SUB-BUILD + EARLY WRAP (FILL 128,529)**)
+
+- **ds-027 enacted end-to-end** — solid two-state candlestick live in `Chart-candlestick.reference.html` + meta + `canon.css` scope + showroom; hollow channel REMOVED (`n_hollow_or_none=0` asserted ×4); seed-103 40-session dataset; OHLC table = a11y fallback; fills token-exact both themes; dv-fit reflow 1368/688 (no fixed 580).
+- **Conductor re-verified, never took the sub's word:** snippet gate 75/0 · showroom `--check` in sync · ds-027 recited ×9/×12/×1 — all re-run in-window against the repo.
+- **Found:** `_COMPOSE-AUDIT.md` regen surfaced a pre-existing `--sc` unresolved-var FALSE POSITIVE (per-series inline-scope var, invisible to the audit's CSS-only view; HEAD control identical; audit file was stale, defs 559→775). Registered → #102 as an audit fix, not a patch-away.
+- **Routing:** pace panel read Fable 88% / all-models 64% ⇒ orchestrate-only window, build in one Sonnet sub (118,352 shared-pool tokens), wrap opened early by design.
+
+
 ## Rolled 2026-08-05 #103 (2d) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#100**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **CANDLESTICK RULED ds-027: SOLID TWO-STATE, TABLE = A11Y FALLBACK** · ✅ **SPREAD RENDER-PROVEN, FOUR-STATE REJECTED BY EYE** · ✅ **STOP LINE RESPECTED (wrap-open 143,566) — ENACTMENT → #101**)
 

@@ -1,5 +1,21 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-08-05 #104 — rolled by session #104 (2c: keep ★ LATEST + ★ PRIOR)
+
+> **commit-state #103:** ONE wrap commit. Paths explicit — never `git add -A`: `knowledge/_validate_compose.py` + `knowledge/_COMPOSE-AUDIT.md` (inline-scope) · `knowledge/gen_showroom.py` (ds-029) · `knowledge/snippets/Chart-donut.reference.html` + `Chart-pie.reference.html` (ds-030 amendment) · `showroom/` regen · `knowledge/_rulings.json` (ds-029+ds-030, 21) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #103) · `knowledge/_REVIEW-SIGNOFF.md` (#98 row narrowed) · GM/LS + both archives (2c/2d/2f via mover) · `notes/_GAUGE-LOG.md` (roll_2f writer) · `_CHAIN.md` (regen) · `knowledge/_memento-index.json` (2g LAST) · `notes/_REHEARSAL-LOG.jsonl` (appends) · `_to_delete/_103_sub_bak/` (moved mutation backups, never rm). EXCLUDED: outputs/ scratch. Context gauge at authoring: 🟡 AMBER — FILL 147,193 MEASURED mid-wrap; riding it.
+
+> ## ★ PRIOR — 2026-08-05 (Wed **#102**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **#102-D1 (Dave): CORPUS FORK RULED SWEEP-NOW, ds-028 — ENACTED: 182 LITERAL OPACITIES → `--alpha-*` LADDER, 50 FILES, 0 RESIDUAL** · ✅ **GATES 75/0 · SHOWROOM REGEN + IN SYNC** · ⚠ **HOST CRASH MID-WRAP — REPO RE-PROBED, WRAP RE-RUN, NOTHING FROM MEMORY**)
+>
+> **✅ #102-D1 (Dave, two beats):** picked **SWEEP-NOW** over per-component-as-opened for the #99 literal-opacity corpus fork (`_DS-IMPROVEMENTS.md` § #99 residual ②), then **"commit"** after seeing the value-shift table. Inscribed `_rulings.json` **ds-028** (19) · ledger § ★ #102 · 2026-08-05.
+> **✅ ENACTED (Sonnet sub 45,530 tk; conductor RE-VERIFIED in-window):** every literal `opacity:.N` in `knowledge/snippets` → `var(--alpha-NN)`; exact hits pass, non-ladder ROUND DOWN (#99-D3/ds-026): .75→72 ×20 · .55→52 ×13 · .85→84 ×5 · .7→68 ×5 · .45→44 ×4 · .5→48 ×3 · .35→32 ×2; 130 further exact. Evidence: residual grep 0 · var-bound 188 (182+6 prior) · snippet gate 75/0 · showroom regen 49 + `--check` OK · diff 100 files 232/231.
+> **★ UNIT NAMED (a count is not a measurement):** #99's "125/49" and the opener's "131/50" counted LINES; the sub counted OCCURRENCES — true figure **182 occ / 131 lines / 50 files**; delta from #99 = corpus growth #100/#101. Sub flagged the discrepancy rather than reconciling to the conductor's figure — kept.
+> **✅ CLOSES #99 residuals ② AND ③** (Input-fields `p.note` .75→72 swept under D1); residual ① `--pri-hover` stored equivalents at retired 0.70 still OPEN — Dave's promotion.
+> **⚠ HOST CRASH MID-WRAP:** Dave's machine crashed after the wrap survey, before any wrap write. Resumed by re-probing (HEAD `01101b0` · tree intact · gates re-run) — sweep survived whole; only unwritten wrap prose lost.
+> **⬛ OWED → #103:** ① compose-audit `--sc` inline-scope fix (#101 find) ② bullet flex-height + Confirmation Replay idiom (`_REVIEW-SIGNOFF.md`) ③ #97 flag ② (cosmetic) · residual `--pri-hover` equivalents.
+> **(dossier: SKIPPED, declared per 1b — mechanical sweep under an already-ruled mapping; the why lives in § ★ #99 and ledger § ★ #102.)**
+> **residual (GENERATED #102):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OVER (strata 3, log #101) — _roll_state.py · 2026-08-05 *(the extra 2 count #95+#96, D4-exempt at the gate — raw count kept honest here)*
+>
+
 ## Batch 2026-08-05 #103 — rolled by session #103 (2c: keep ★ LATEST + ★ PRIOR)
 
 > **commit-state #102:** ONE wrap commit. Paths explicit — never `git add -A`: `knowledge/snippets/` (50 swept refs) · `showroom/` (regen 49) · `knowledge/_rulings.json` (ds-028, 19) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #102) · `knowledge/_DS-IMPROVEMENTS.md` (§ #102 fork closed) · GM/LS + both archives (2c/2d/2f via mover) · `notes/_GAUGE-LOG.md` (roll_2f writer) · `_CHAIN.md` (regen) · `knowledge/_memento-index.json` (2g LAST) · `notes/_REHEARSAL-LOG.jsonl` (appends). EXCLUDED: outputs/ scratch. Context gauge at authoring: 🟢 GREEN — FILL 87,734 MEASURED at the seam; wrap riding it.

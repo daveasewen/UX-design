@@ -45,7 +45,17 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 **Status (2026-07-26 evening, ruling session): DAVE RULED THE DREAM — P1–P5+P7+P8 accept-enact-now (ENACTED), P6 deferred to its own session (parked `_FUTURE-STATE.md`), rejections: none; S-D1 schedule EARNED (`memento-dream-pass` weekly, Sun 07:10, per A-D2) · S-D2 lane flag (`--wrap --lane`) + S-D3 stdout-only wrap BUILT + bite-tested — both wrap-gate warts CLOSED.** Full rulings + WHY + enactment receipt: `notes/_MEMENTO-DECISIONS.md`. Headline enactments on main-queue surfaces (by ruling, per proposal): `_LIVE-STATE-ARCHIVE.md` (this file 205KB→62KB, ritual step 2d) · `knowledge/_git_commit.sh` + runbook · render-verify runbook fold · GM count/tuner/ds-010 lines · `_FUTURE-STATE` corrections. **Lane is now STEADY-STATE: the weekly task dreams; Dave rules; sessions enact.** Owed unchanged: convergence `-v2` (blocked on re-attach) · D6 before any Shape C. ⚠ `ec4c2f3` was UNPUSHED at this session's start — push the whole stack via Desktop.
 **Status (2026-07-26 evening, weekly-run session): SECOND DREAM PASS RUN + RULED SAME SESSION — V2-P1–P4 ENACTED, V2-P5 HELD.** Pass ran cold per the lane checklist (Fable conductor + 1 Opus dreamer, repo-first forensics); 5 proposals → `notes/_dream/2026-07-26-proposals-v2.md` (commit `d777aaa`, 4/4 conductor spot-checks held). Dave ruled in plain language same session: V2-P1 six 07-24 chart deferrals RESTORED to GM §C·2 as **17–22** + compaction EXIT CHECK in ritual 2c/2d · V2-P2 emitter determinism FIXED (7 `sorted()` sites, 4 scripts; advisory 6/6 identical under random hash, §C·4 line closed; dated-banner mentions left historical) · V2-P3 ds-011 logged (G/H/N advisory promotions + triggers, incl. WCAG 2.4.1 Level A ×5 screens) · V2-P4 `_REVIEW-SIGNOFF.md` fed 4 strands (legend v5.x · tuner v1+v2 · hit-area rule brief · 5 chart panes) + ritual step-1 feed-the-register clause. **V2-P5(a) ENACTED same session — Dave re-attached the note; saved verbatim to `notes/2026-07-26-convergence-anthropic-dreaming.md` (+fields, gate 0 fail); the three-session blocker is DEAD.** V2-P5(b) (runbook save-uploads clause) pencilled, awaits his word. Ledger rows V2-P1–P5 in `notes/_MEMENTO-DECISIONS.md`. Build 55/55 GREEN post-enactment. **Continuation same session (Dave: "love your work continue"): V2-P5(b) ENACTED (save-cited-uploads clause, ritual step 1; read as the yes, vetoable) + convergence `-v2` WRITTEN** — `notes/2026-07-26-convergence-anthropic-dreaming-v2.md` (Opus worker + Fable 4/4 spot-check incl. independent transcript grep; supersedes v1 in-part, v1 stays as filed; §3-verification fixes + databases-Q&A recorded OWED in its §7). **Lane's owed list — CORRECTED 2026-07-28 #22 (dream-pass-3 P4a; the 07-26 'only' was false within a day): the ledger `notes/_MEMENTO-DECISIONS.md` is the owed list's home, never this line — at correction time it held: M12's first unattended Sunday fire (08-02 07:10; M11 CLOSED #21 `0ee1634`) · D6 (Dave, before Shape C) · `-v2`'s §7 leftovers · the #21 dreamer hunt-list follow-ons.** **S-D4 (same evening): conductor sequence inscribed → `knowledge/_RUNBOOK-dream-pass.md`; Cowork skill `dream-pass` + the weekly task prompt are thin pointers to it — "run dream pass" is now the whole invocation.**
 
-## ⏱ LATEST DELTA — 2026-08-05 (Wed **#103**, FABLE 5 conductor + THREE Sonnet build subs, Dave live, ONE window — ★★ **ds-029 + ds-030 RULED (Dave) + ENACTED: showroom Replay SECOND IDIOM · CHARTS FULLY HORIZONTALLY RESPONSIVE (12/14 already fluid; donut/pie = fluid container + fixed circle)** · ✅ **`--sc` COMPOSE-AUDIT INLINE-SCOPE TAUGHT — #101 FALSE POSITIVE CLOSED** · ✅ **GATES 75/0 · SHOWROOM IN SYNC · COMPOSE PASS**)
+## ⏱ LATEST DELTA — 2026-08-05 (Wed **#104**, OPUS 5 conductor + FOUR Sonnet build subs, Dave live, ONE window — ✅ **#97 FLAG ② CLOSED** · ⛔ **ds-029 #103 ENACTMENT DEFECT CAUGHT + FIXED (REPLAY VISUAL CONFIRM PAID OFF)** · ⬛ **LEGEND-CENTRING + `--pri-hover` MEASURED, NOT DECIDED** · ⛔ **CHAIN-DIET PREMISE WAS CROSS-UNIT, RE-MEASURED** · FABLE 5 UNAVAILABLE TILL THU 11PM ⇒ NO NEW RULING BATCHES)
+
+- **#97 flag ② CLOSED:** `.shell{align-content:start}` at ≤760px, `gen_showroom.py:338`; gap 700px 322.5→24px, 375px 259→24px, 1180px byte-identical.
+- **ds-029 defective enactment CAUGHT + FIXED:** #103's mutation-tested claim covered the DETECTION clause only; the RESTART mechanism (`offsetWidth` undefined on SVGElement) silently failed for `svg.success`. Fixed `getBoundingClientRect()`, `gen_showroom.py:285`; all four Confirmation elements restart; mutation-tested both directions.
+- **Legend-centring + `--pri-hover`:** both MEASURED not decided — `reviews/LEGEND-CENTRING-SPREAD-2026-08-05-v1.html` (Option A −109px off-centre, constant; Option B = 0px) · `reviews/PRI-HOVER-MEASUREMENT-2026-08-05-v1.md` + `.html` (no problem-hue; Group A swap quantified, Group B exact, Legacy/SC not promotable).
+- **Chain-diet:** the opener's own premise was a tape-vs-real cross-unit comparison; re-measured both units — `_CHAIN.md` OVER by 34% (tape), not ~109%. Cut sized ~2,000–2,600 real, NOT enacted. `notes/_briefs/2026-08-05-104-chain-diet-measurement-brief.md`.
+- **New, pre-existing, unruled:** `type.css:180` dark-mode specificity collision (`#111` beats `#1A1A1A`), observed on `confirmation.html` + `chart-donut.html`.
+- **⚠ Unattributed:** `_RESEARCH-graph-engineering-2026-08-05-v1.html`, untracked, NOT staged.
+- **→ #105:** chain-diet cut (enact at wrap-open) · memory compaction (count 113) · Dave's eye: legend-centring A-vs-B · Dave's word: `--pri-hover` promotion · `type.css:180` ruling · ds-029 first-idiom line flagged (`gen_showroom.py:273`, no current SVG consumer).
+
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#103**, FABLE 5 conductor + THREE Sonnet build subs, Dave live, ONE window — ★★ **ds-029 + ds-030 RULED (Dave) + ENACTED: showroom Replay SECOND IDIOM · CHARTS FULLY HORIZONTALLY RESPONSIVE (12/14 already fluid; donut/pie = fluid container + fixed circle)** · ✅ **`--sc` COMPOSE-AUDIT INLINE-SCOPE TAUGHT — #101 FALSE POSITIVE CLOSED** · ✅ **GATES 75/0 · SHOWROOM IN SYNC · COMPOSE PASS**)
 
 - **ds-029 (Dave):** Replay detection gains a second idiom (direct `@keyframes`/`animation:`); Confirmation NOT migrated — no canon change to ratified components for tooling. `gen_showroom.py` enacted: selftest 11 bites, enable/disable mutation both ways, dv-animate charts unaffected.
 - **ds-030 (Dave, firm, whole corpus) + Amendment #103:** all charts fully horizontally responsive; survey found 11 dv-fit + sparkline ALREADY fluid (ADR-0015, #96 wave-2 receipts) — donut/pie swept to fluid-container/fixed-circle, render-proven 1180/760 (svg width invariant 592/300, container tracks, centring exact no-legend).
@@ -59,13 +69,6 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 - **Sweep verified in-window, never the sub's word:** residual grep 0 · var-bound 188 · snippet gate 75/0 · showroom regen + `--check` OK · diff 100 files 232/231. Unit named: 182 occurrences / 131 lines / 50 files.
 - **Crash resilience:** host crash between wrap survey and wrap writes; recovery = re-probe repo state (git + gates), zero reconstruction from memory.
 - **→ #103:** compose-audit `--sc` inline-scope fix · bullet flex-height · Confirmation Replay idiom · #97 flag ②.
-
-## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#101**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **CANDLESTICK ds-027 ENACTED: snippet · meta · canon scope · showroom, GATES 75/0, RENDER-PROVEN ×4** · ⚠ **`--sc` COMPOSE-AUDIT FALSE POSITIVE FOUND, PRE-EXISTING → #102** · ✅ **FABLE 88% ⇒ SUB-BUILD + EARLY WRAP (FILL 128,529)**)
-
-- **ds-027 enacted end-to-end** — solid two-state candlestick live in `Chart-candlestick.reference.html` + meta + `canon.css` scope + showroom; hollow channel REMOVED (`n_hollow_or_none=0` asserted ×4); seed-103 40-session dataset; OHLC table = a11y fallback; fills token-exact both themes; dv-fit reflow 1368/688 (no fixed 580).
-- **Conductor re-verified, never took the sub's word:** snippet gate 75/0 · showroom `--check` in sync · ds-027 recited ×9/×12/×1 — all re-run in-window against the repo.
-- **Found:** `_COMPOSE-AUDIT.md` regen surfaced a pre-existing `--sc` unresolved-var FALSE POSITIVE (per-series inline-scope var, invisible to the audit's CSS-only view; HEAD control identical; audit file was stale, defs 559→775). Registered → #102 as an audit fix, not a patch-away.
-- **Routing:** pace panel read Fable 88% / all-models 64% ⇒ orchestrate-only window, build in one Sonnet sub (118,352 shared-pool tokens), wrap opened early by design.
 
 ## 🕓 OPEN — Latin Univers **WEBFONT**: waiting on brand (raised 2026-07-18, reframed same week)
 
@@ -342,6 +345,24 @@ Latin webfont" rests on absence of files, not on any document.
   designing") lives in `GOOD-MORNING.md` §A until the tool makes it mechanical.
 
 ## OPEN — propagation gaps + parked threads
+
+### ⛔ NEW #104 — `type.css:180` dark-mode specificity collision, corpus-wide, UNRULED
+`knowledge/canon/type.css:180` ships `[data-theme="dark"]{background:#111;color:#fff}`. Its
+attribute-selector specificity (0-1-0) beats any component's plain `body{background:var(--page)}`
+(0-0-1), so **every dark-mode pane renders `rgb(17,17,17)` instead of the declared `#1A1A1A`**
+even though `--page` resolves correctly. Observed live (real Dark button) on
+`showroom/confirmation.html` and `showroom/chart-donut.html`; pre-existing, NOT introduced this
+session. `type.css` NOT touched — needs Dave's word (raise the selector's specificity, or accept
+`#111` as the dark ground). [born #104 · guards: this line + GM DO-FIRST 19 · until: ruled]
+
+### ⚠ UNATTRIBUTED PATH, working-tree — #104
+`_RESEARCH-graph-engineering-2026-08-05-v1.html` (39,447 bytes, repo root, untracked, mtime 20:09)
+appeared during the #104 window and **no sub reported writing it**. **NOT staged, not committed.**
+Every other untracked/modified path this window is accounted for (the chain-diet brief, the two
+`reviews/PRI-HOVER-MEASUREMENT-*` files, `reviews/LEGEND-CENTRING-SPREAD-*`, `gen_showroom.py`'s
+two one-line fixes, the 75 regenerated `showroom/*.html`, `notes/_REHEARSAL-LOG.jsonl`'s appends).
+This one file is not — flagged, awaiting Dave, do not stage until claimed. [born #104 · guards:
+this line · until: attributed or Dave rules it]
 
 ### ✅ CLOSED (2026-07-19) — `gen_rules_index.py` truncation fixed
 The `chunk[:500]` cap in `rule_text()` was cutting 11+ rules mid-sentence in `_RECONCILIATION.md` and making

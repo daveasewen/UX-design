@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legend centring — group vs independent svg (#103 named, #104 review)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --data-axis:#626262; --axis-alpha:1;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --data-axis:#9D9D9D; --axis-alpha:1;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  /* type.css ships a generic `[data-theme="dark"]{background:#111;color:#fff}` fallback for bare
+     type-specimen pages (its own "dark mode — step-up" block). That attribute selector (0-1-0)
+     outranks the plain `body{...}` rule above (0-0-1) on specificity alone, regardless of source
+     order, so it silently wins and this page's own --page/--ink tokens lose. Re-assert with a
+     selector that includes the attribute so THIS review's tokens are what Dave actually sees. */
+  body[data-theme]{background:var(--page); color:var(--ink);}
+  h1{font-size:18px; font-weight:500; margin:0 0 6px;}
+  h2{font-size:14px; opacity:var(--alpha-60,.6); margin:2.25rem 0 .6rem; font-weight:500;}
+  .vnote{opacity:var(--alpha-60,.6); max-width:80ch; margin:.2rem 0 1rem; font-size:14px; line-height:1.5;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  /* ── live controller bar ── */
+  .ctlbar{position:sticky; top:0; z-index:20; display:flex; flex-wrap:wrap; gap:20px; align-items:center;
+    padding:12px 16px; margin:0 0 1.75rem; background:var(--page); border-bottom:1px solid var(--line);}
+  .ctlgrp{display:flex; align-items:center; gap:8px;}
+  .ctlgrp .lbl{font-size:12px; opacity:var(--alpha-60,.6);}
+  .seg{display:inline-flex; border:1px solid var(--line);}
+  .seg button{font:inherit; font-family:var(--font); font-size:12px; height:32px; padding:0 14px; border:0;
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .seg button + button{border-left:1px solid var(--line);}
+  .seg button[aria-pressed="true"]{background:var(--ink); color:var(--page);}
+  .readout{font-size:12px; opacity:var(--alpha-60,.6);}
+
+  /* ── test containers ── */
+  .pairing{display:flex; flex-direction:column; gap:32px; margin:0 0 2.5rem;}
+  .optlabel{font-size:13px; font-weight:500; margin:0 0 4px;}
+  .optnote{font-size:12px; opacity:var(--alpha-60,.6); margin:0 0 12px; max-width:72ch; line-height:1.5;}
+  .testwrap{position:relative; outline:1px dashed var(--line); outline-offset:0; padding-top:20px;}
+  .testwrap::after{content:""; position:absolute; left:50%; top:20px; bottom:0; width:0;
+    border-left:1px dashed var(--data-axis); opacity:.55; pointer-events:none;}
+  .centretag{position:absolute; left:50%; top:2px; transform:translateX(-50%); font-size:10px;
+    opacity:var(--alpha-60,.6); white-space:nowrap; letter-spacing:.02em; text-transform:uppercase;}
+
+  /* ================= chart chrome — copied verbatim (Chart-donut.reference.html / Chart-pie.reference.html) ================= */
+  figure.dv{margin:0; position:relative; width:100%;}
+  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+  .dv-title{margin:0;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px; width:100%;}
+  /* fluid container, FIXED-diameter plot (ds-030 amend #103): current behaviour — the row is
+     100% width and centres its CONTENT (svg+legend as one group); the svg keeps its baked
+     width/viewBox — only its position moves with the row. */
+  .dv-donut-row{display:flex; gap:28px; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;}
+  .dv-svg{display:block; overflow:visible; flex:none; margin-inline:auto;}
+
+  /* Option B ONLY — review-specimen addition, NOT canon: a hidden spacer the same width as the
+     legend column, placed on the opposite side of the svg. `.dv-donut-row` needs no override —
+     centring a symmetric [spacer | svg | legend] row puts the SVG on the container's true centre
+     as a side effect, and the legend still follows immediately to its right. */
+  .dv-leg-spacer{visibility:hidden; flex:none; min-width:190px;}
+
+  path.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+  .dv-anno{opacity:0; transition:opacity 300ms cubic-bezier(.4,0,.2,1);}
+  .dv-anno.show{opacity:1;}
+  .dv-leader{stroke:var(--line); stroke-width:1; fill:none;}
+  text.dv-key-el{fill:var(--ink);}
+  text.dv-val{fill:var(--ink);}
+
+  /* DV-D11 legend chrome — copied verbatim (canon/dv-legend.js drives the live version; this
+     specimen keeps the real markup + look but does not wire the filter/isolate behaviour —
+     out of scope for a pure LAYOUT/centring comparison). */
+  .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
+  .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
+  .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control,0);
+    padding:4px 8px; background:transparent;}
+  .dv-leg.vert .dv-legrow{width:100%;}
+  .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block;
+    background:var(--sc); border:1px solid var(--sc);}
+  .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+    margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:default; text-align:left; font:inherit;}
+  .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:var(--alpha-72,.72);}
+  .dv-leg-name{white-space:nowrap;}
+  .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:100%;
+    border:1px solid var(--line); background:transparent; color:var(--data-control-label-disabled,#9D9D9D); cursor:default;}
+  .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  @media (prefers-reduced-motion: reduce){ *{transition-duration:.01ms !important;} }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="ctlbar">
+  <div class="ctlgrp">
+    <span class="lbl">Theme</span>
+    <div class="seg" id="themeseg" role="group" aria-label="Theme">
+      <button type="button" data-t="light" aria-pressed="true">Light</button>
+      <button type="button" data-t="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+  <div class="ctlgrp">
+    <span class="lbl">Container width</span>
+    <div class="seg" id="widthseg" role="group" aria-label="Container width">
+      <button type="button" data-w="1180" aria-pressed="true">1180</button>
+      <button type="button" data-w="760" aria-pressed="false">760</button>
+    </div>
+  </div>
+  <span class="readout" id="wreadout">1180px container · both options resize together</span>
+</div>
+
+<h1>Legend centring — named at #103, not decided</h1>
+<p class="vnote">Donut/pie's vertical legend sits beside the ring in one flex row
+(<code>.dv-donut-row</code>). Today that row centres the <strong>svg + legend as one group</strong>
+(<code>justify-content:center</code> on the pair), so the ring's own centre sits left of the
+container's true centre by roughly half the legend's footprint. Option B decouples them: the ring
+centres on the container regardless of the legend, and the legend follows to its right. The dashed
+vertical guide marks the container's true horizontal centre in every panel below — compare it to
+each ring's centre by eye. <strong>Not enacted anywhere</strong> — an isolated review specimen only;
+promotion is Dave's call.</p>
+
+<h2>Donut — "Housing takes two fifths of the month's spend" (5-series, with legend)</h2>
+<div class="pairing">
+  <div>
+    <p class="optlabel">Option A — current: group centred</p>
+    <p class="optnote"><code>.dv-donut-row{justify-content:center}</code> centres the flex row as a
+      whole. The ring drifts left of true-centre by roughly half the legend's width + gap.</p>
+    <div class="testwrap" data-wrap>
+      <span class="centretag">container centre</span>
+      <figure class="dv" data-dv-type="donut" data-total="2320" role="group" aria-labelledby="da-h">
+        <figcaption id="da-h" class="sr-only">Spend by category this month, pounds</figcaption>
+        <div class="dv-head"><h3 class="dv-title t-cm-section-label">Housing takes two fifths of the month's spend</h3></div>
+        <div class="dv-stage"><div class="dv-donut-row">
+          <svg class="dv-svg" viewBox="0 0 300 260" width="300" height="260" role="group" aria-label="Spend by category. Total 2320 pounds.">
+            <path class="dv-series" data-series-group="1" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M150.00 30.00 A100 100 0 0 1 203.86 214.26 L182.31 180.55 A60 60 0 0 0 150.00 70.00 Z"/>
+            <path class="dv-series" data-series-group="2" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M203.86 214.26 A100 100 0 0 1 96.14 214.26 L117.69 180.55 A60 60 0 0 0 182.31 180.55 Z"/>
+            <path class="dv-series" data-series-group="3" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M96.14 214.26 A100 100 0 0 1 51.79 148.84 L91.07 141.31 A60 60 0 0 0 117.69 180.55 Z"/>
+            <path class="dv-series" data-series-group="4" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M51.79 148.84 A100 100 0 0 1 62.95 80.78 L97.77 100.47 A60 60 0 0 0 91.07 141.31 Z"/>
+            <path class="dv-series" data-series-group="5" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M62.95 80.78 A100 100 0 0 1 150.00 30.00 L150.00 70.00 A60 60 0 0 0 97.77 100.47 Z"/>
+            <polyline class="dv-leader dv-anno show" data-series-group="1" points="247.9,101.4 258.5,98.3"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="267.1" y="102.3" text-anchor="middle">A</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="2" points="150.0,232.0 150.0,243.0"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="150.0" y="247.0" text-anchor="middle">B</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="3" points="65.6,187.2 56.5,193.4"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="49.0" y="197.4" text-anchor="middle">C</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="4" points="49.3,113.5 38.5,111.7"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="29.6" y="115.7" text-anchor="middle">D</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="5" points="98.6,41.9 93.1,32.4"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="88.5" y="36.4" text-anchor="middle">E</text>
+            <text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">2320</text>
+          </svg>
+          <ul class="dv-leg vert t-cm-chart-label" id="da-legend" role="group" aria-label="Categories">
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-1)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Housing</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-2)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Groceries</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-3)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Savings</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-4)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">D</span><span class="dv-leg-name">Leisure</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-5)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">E</span><span class="dv-leg-name">Other</span></span></li>
+            <li><button type="button" class="dv-leg-reset t-cm-chart-label" disabled>Reset</button></li>
+          </ul>
+        </div></div>
+      </figure>
+    </div>
+  </div>
+
+  <div>
+    <p class="optlabel">Option B — svg centred independently, legend follows (NOT enacted)</p>
+    <p class="optnote">A hidden spacer mirrors the legend's width on the opposite side of the ring, so
+      the pair stays symmetric around the ring — the ring's own centre lands on the container's true
+      centre; the legend sits to its right, wherever that falls.</p>
+    <div class="testwrap" data-wrap>
+      <span class="centretag">container centre</span>
+      <figure class="dv" data-dv-type="donut" data-total="2320" role="group" aria-labelledby="db-h">
+        <figcaption id="db-h" class="sr-only">Spend by category this month, pounds</figcaption>
+        <div class="dv-head"><h3 class="dv-title t-cm-section-label">Housing takes two fifths of the month's spend</h3></div>
+        <div class="dv-stage"><div class="dv-donut-row">
+          <div class="dv-leg-spacer" aria-hidden="true"></div>
+          <svg class="dv-svg" viewBox="0 0 300 260" width="300" height="260" role="group" aria-label="Spend by category. Total 2320 pounds.">
+            <path class="dv-series" data-series-group="1" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M150.00 30.00 A100 100 0 0 1 203.86 214.26 L182.31 180.55 A60 60 0 0 0 150.00 70.00 Z"/>
+            <path class="dv-series" data-series-group="2" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M203.86 214.26 A100 100 0 0 1 96.14 214.26 L117.69 180.55 A60 60 0 0 0 182.31 180.55 Z"/>
+            <path class="dv-series" data-series-group="3" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M96.14 214.26 A100 100 0 0 1 51.79 148.84 L91.07 141.31 A60 60 0 0 0 117.69 180.55 Z"/>
+            <path class="dv-series" data-series-group="4" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M51.79 148.84 A100 100 0 0 1 62.95 80.78 L97.77 100.47 A60 60 0 0 0 91.07 141.31 Z"/>
+            <path class="dv-series" data-series-group="5" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M62.95 80.78 A100 100 0 0 1 150.00 30.00 L150.00 70.00 A60 60 0 0 0 97.77 100.47 Z"/>
+            <polyline class="dv-leader dv-anno show" data-series-group="1" points="247.9,101.4 258.5,98.3"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="267.1" y="102.3" text-anchor="middle">A</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="2" points="150.0,232.0 150.0,243.0"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="150.0" y="247.0" text-anchor="middle">B</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="3" points="65.6,187.2 56.5,193.4"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="49.0" y="197.4" text-anchor="middle">C</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="4" points="49.3,113.5 38.5,111.7"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="29.6" y="115.7" text-anchor="middle">D</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="5" points="98.6,41.9 93.1,32.4"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="88.5" y="36.4" text-anchor="middle">E</text>
+            <text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">2320</text>
+          </svg>
+          <ul class="dv-leg vert t-cm-chart-label" id="db-legend" role="group" aria-label="Categories">
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-1)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Housing</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-2)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Groceries</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-3)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Savings</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-4)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">D</span><span class="dv-leg-name">Leisure</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-5)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">E</span><span class="dv-leg-name">Other</span></span></li>
+            <li><button type="button" class="dv-leg-reset t-cm-chart-label" disabled>Reset</button></li>
+          </ul>
+        </div></div>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<h2>Pie — "Housing dominates the month's spend" (5-series, with legend)</h2>
+<div class="pairing">
+  <div>
+    <p class="optlabel">Option A — current: group centred</p>
+    <p class="optnote">Same mechanism as the donut above — <code>.dv-donut-row</code> is byte-identical
+      CSS between the two chart types.</p>
+    <div class="testwrap" data-wrap>
+      <span class="centretag">container centre</span>
+      <figure class="dv" data-dv-type="pie" data-total="2320" role="group" aria-labelledby="pa-h">
+        <figcaption id="pa-h" class="sr-only">Spend by category this month, pounds</figcaption>
+        <div class="dv-head"><h3 class="dv-title t-cm-section-label">Housing dominates the month's spend</h3></div>
+        <div class="dv-stage"><div class="dv-donut-row">
+          <svg class="dv-svg" viewBox="0 0 300 260" width="300" height="260" role="group" aria-label="Spend by category. Total 2320 pounds.">
+            <path class="dv-series" data-series-group="1" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L150.00 30.00 A100 100 0 0 1 203.86 214.26 Z"/>
+            <path class="dv-series" data-series-group="2" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L203.86 214.26 A100 100 0 0 1 96.14 214.26 Z"/>
+            <path class="dv-series" data-series-group="3" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L96.14 214.26 A100 100 0 0 1 51.79 148.84 Z"/>
+            <path class="dv-series" data-series-group="4" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L51.79 148.84 A100 100 0 0 1 62.95 80.78 Z"/>
+            <path class="dv-series" data-series-group="5" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L62.95 80.78 A100 100 0 0 1 150.00 30.00 Z"/>
+            <polyline class="dv-leader dv-anno show" data-series-group="1" points="247.9,101.4 258.5,98.3"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="267.1" y="102.3" text-anchor="middle">A</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="2" points="150.0,232.0 150.0,243.0"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="150.0" y="247.0" text-anchor="middle">B</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="3" points="65.6,187.2 56.5,193.4"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="49.0" y="197.4" text-anchor="middle">C</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="4" points="49.3,113.5 38.5,111.7"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="29.6" y="115.7" text-anchor="middle">D</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="5" points="98.6,41.9 93.1,32.4"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="88.5" y="36.4" text-anchor="middle">E</text>
+          </svg>
+          <ul class="dv-leg vert t-cm-chart-label" id="pa-legend" role="group" aria-label="Categories">
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-1)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Housing</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-2)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Groceries</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-3)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Savings</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-4)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">D</span><span class="dv-leg-name">Leisure</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-5)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">E</span><span class="dv-leg-name">Other</span></span></li>
+            <li><button type="button" class="dv-leg-reset t-cm-chart-label" disabled>Reset</button></li>
+          </ul>
+        </div></div>
+      </figure>
+    </div>
+  </div>
+
+  <div>
+    <p class="optlabel">Option B — svg centred independently, legend follows (NOT enacted)</p>
+    <p class="optnote">Same hidden-spacer technique as the donut above.</p>
+    <div class="testwrap" data-wrap>
+      <span class="centretag">container centre</span>
+      <figure class="dv" data-dv-type="pie" data-total="2320" role="group" aria-labelledby="pb-h">
+        <figcaption id="pb-h" class="sr-only">Spend by category this month, pounds</figcaption>
+        <div class="dv-head"><h3 class="dv-title t-cm-section-label">Housing dominates the month's spend</h3></div>
+        <div class="dv-stage"><div class="dv-donut-row">
+          <div class="dv-leg-spacer" aria-hidden="true"></div>
+          <svg class="dv-svg" viewBox="0 0 300 260" width="300" height="260" role="group" aria-label="Spend by category. Total 2320 pounds.">
+            <path class="dv-series" data-series-group="1" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L150.00 30.00 A100 100 0 0 1 203.86 214.26 Z"/>
+            <path class="dv-series" data-series-group="2" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L203.86 214.26 A100 100 0 0 1 96.14 214.26 Z"/>
+            <path class="dv-series" data-series-group="3" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L96.14 214.26 A100 100 0 0 1 51.79 148.84 Z"/>
+            <path class="dv-series" data-series-group="4" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L51.79 148.84 A100 100 0 0 1 62.95 80.78 Z"/>
+            <path class="dv-series" data-series-group="5" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M150.00 130.00 L62.95 80.78 A100 100 0 0 1 150.00 30.00 Z"/>
+            <polyline class="dv-leader dv-anno show" data-series-group="1" points="247.9,101.4 258.5,98.3"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="267.1" y="102.3" text-anchor="middle">A</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="2" points="150.0,232.0 150.0,243.0"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="150.0" y="247.0" text-anchor="middle">B</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="3" points="65.6,187.2 56.5,193.4"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="49.0" y="197.4" text-anchor="middle">C</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="4" points="49.3,113.5 38.5,111.7"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="29.6" y="115.7" text-anchor="middle">D</text>
+            <polyline class="dv-leader dv-anno show" data-series-group="5" points="98.6,41.9 93.1,32.4"/>
+            <text class="dv-key-el dv-anno show t-cm-chart-key" fill="var(--ink)" x="88.5" y="36.4" text-anchor="middle">E</text>
+          </svg>
+          <ul class="dv-leg vert t-cm-chart-label" id="pb-legend" role="group" aria-label="Categories">
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-1)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Housing</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-2)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Groceries</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-3)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Savings</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-4)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">D</span><span class="dv-leg-name">Leisure</span></span></li>
+            <li class="dv-legrow"><span class="dv-leg-sw" style="--sc:var(--data-series-5)"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">E</span><span class="dv-leg-name">Other</span></span></li>
+            <li><button type="button" class="dv-leg-reset t-cm-chart-label" disabled>Reset</button></li>
+          </ul>
+        </div></div>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<p class="vnote" id="residual-note"><strong>Scope:</strong> layout/centring only — legend swatches
+and the reset button are real markup but are not wired to filter/isolate behaviour here (irrelevant
+to the centring question, and canon/dv-legend.js is not included in this isolated specimen).
+Value/percent toggle, CSV, and table-view controls are omitted for the same reason.</p>
+
+<script>
+(function(){
+  var themeseg = document.getElementById('themeseg');
+  var widthseg = document.getElementById('widthseg');
+  var wreadout = document.getElementById('wreadout');
+  var wraps = document.querySelectorAll('[data-wrap]');
+
+  themeseg.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    document.body.setAttribute('data-theme', b.dataset.t);
+    themeseg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+  });
+
+  widthseg.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    var w = b.dataset.w;
+    wraps.forEach(function(el){ el.style.width = w + 'px'; });
+    wreadout.textContent = w + 'px container · both options resize together';
+    widthseg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+  });
+
+  wraps.forEach(function(el){ el.style.width = '1180px'; });
+})();
+</script>
+</body>
+</html>
