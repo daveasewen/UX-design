@@ -1,5 +1,29 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-08-05 #93 — rolled by session #93 (2c: keep ★ LATEST + 1 PRIOR; 2f: #92 commit-state below)
+
+> **commit-state #92:** ONE wrap commit. Paths explicit — never `git add -A`: `knowledge/_capture_gate.py` (--rehearse mode + classifier + JSONL writer + selftest arm, suite green) · `knowledge/_checkin.py` (consumer + `--no-rehearse`) · `knowledge/_RUNBOOK-context-gauge.md` (stale boot-claim STRUCK + rehearsal pointer) · `notes/_REHEARSAL-LOG.jsonl` (NEW — contract: append-only machine lines, written by the gate itself on every rehearse/wrap run, read at wrap-pricing; created by the gate, not the mover) · `GOOD-MORNING.md` (#92 banner · #91 demoted · #90+#89 rolled · #91 stratum rolled via roll_2f · this stratum · forward title) · `_GM-ARCHIVE.md` (batch #92) · `_LIVE-STATE.md` (#92 delta · #91 demoted · Last refreshed) · `_LIVE-STATE-ARCHIVE.md` (#87 + #84) · `notes/_GAUGE-LOG.md` (#91 post-mortem via roll_2f ONLY — nothing hand-written) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #92) · `_CHAIN.md` (regenerated) · `knowledge/_memento-index.json` (2g, LAST). Subject verified against the regenerated banner AFTER the commit (#86's defect class).
+> **section-usage #92 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:U A:U C1:U C2:U C4:U STRATA:C · LS HDR:C LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U
+
+> ## ★ PRIOR — 2026-08-05 (Wed **#91**, OPUS 5 solo Cowork, Dave live, ONE window — ★★ **THE WRAP FLOOR'S BIGGEST LINE ITEM IS THE INSTRUCTION MANUAL, AND IT IS PAID LAST** · ⛔ **THE GAUGE HAS BEEN IN THE WRONG UNIT SINCE #59** · ✅ **THE FILL READER RESEARCHED 07-31 AND NEVER WIRED IS ENACTED**)
+
+> **⛔ THE TITLE'S OWN NUMBER DID NOT SURVIVE RETRIEVAL.** `42,434` is **n=1** (#59's words: *"a POINT not a LAW … the distribution needs 2–3 more"*), **truncated** (recorded *"STILL CLIMBING"* — it stopped at the banner stamp, before commit/index/rename) and **32 sessions stale**. #60–#65 quote it honestly as `ESTIMATED`; **#90 dropped the caveat and stated it flat**, and that flat figure is what this session was titled to attack ⇒ **the cut it ordered could not have been proven against it.** [[planning-estimate-is-not-a-measurement]]
+
+> **⛔ AND NOBODY COULD SEE THE WRAP, BECAUSE THE GAUGE WAS IN THE WRONG UNIT.** The stop line is FILL; `_checkin.py` reported THROUGHPUT and its own docstring forbids converting between them ⇒ **every reading compared to the stop line from #59 to #90 was a unit error.** #90's banner says both *"THROUGHPUT IS NOT FILL and is NOT converted to one"* and *"Stop line 157,566; every reading past it"* — **both cannot be operative.** MEASURED live: **FILL 148,069 (74%) vs THROUGHPUT 187,966 (94%) — 27% overstatement.**
+
+> **✅ ENACTED, NOT DISCOVERED — the attribution IS the finding.** `notes/_briefs/2026-07-31-compaction-and-fill-research.md` § Q3 had it on **2026-07-31**: Anthropic's own `total_input_tokens = cache_read + cache_creation + input`, primary-sourced, applied, boot **61,582**. **`_checkin.py` carried 0 refs to `input_tokens` for ~31 sessions after.** The research was right; the consumer was never built [[instrument-without-a-consumer]]. Built now: FILL + boot + peak, compaction and >10%-drop alarms, synthetic/zero skip (#59's trap), dedupe per `message.id`. **6/6 mutation tests INCLUDING A CONTROL** — a healthy series keeps both alarms silent, so the greens are evidence, not a stuck light. Live: **boot 64,708 · cache continuity 22/22** (each turn's `cache_read` reconstructs its predecessor's total exactly; a cumulative log cannot).
+
+> **★★ WHERE THE CUT ACTUALLY IS — MEASURED, and it is not where the title said.** `_RUNBOOK-capture-ritual.md` is **16,934 real = 39.9% of the 42,434 floor**, paid **EVERY session, LAST, when the window is fullest.** Room to the stop line at this wrap: **9,497 — less than the runbook.** ⇒ **reading how to wrap costs more than the room left when the wrap fires.** The gauge log carries **18 HOLE sessions** that closed with no wrap; Dave's *"its not your decision to not wrap!!"* (#86) now has a MECHANISM behind it, not a character flaw. **The cut is in the wrap's INSTRUCTIONS, not its actions — #33's read-chain cut, applied to the other end of the session.**
+
+> **✅ DAVE RULED, owed since 2026-07-31:** `ds-025` item 1 is **the TOTAL — CLOSED.** The brief asked which claim it made and never put it to him. Boot is measured directly (64,708 here, 61,582 there) and the inherited *"~17–20K ±8,000"* is falsified by more than double. **The DECOMPOSITION of boot stays dark — a smaller, separate claim.**
+
+> **⚠ MY OWN COST, ATTRIBUTED FIRST.** A grep that failed to exclude `_memento-index.json` pulled two index blobs into the window (~8K real, declared when it happened). One mutation-test fixture asserted a wrong expected value — **the module was right and the test was wrong**; I corrected the test, not the code [[attribute-the-diff]].
+
+> **⬛ STILL OWED.** The floor is **NOT cut** — it is now *locatable*, which it was not this morning. #59's distribution stands at **n=2** (this wrap, measured below), not the 3 he asked for. The **48,577 dark half** stays dark in composition.
+
+> **residual (GENERATED #91):** 2c OVER (banners 3/2) · 2d OVER (deltas 4/3) · 2f OK (strata 1, log #90) — _roll_state.py · 2026-08-05
+
+
 ## Batch 2026-08-05 #92 — rolled by session #92 (2c: keep ★ LATEST + 1 PRIOR)
 
 > **commit-state #91:** ONE commit before the wrap (`e8eb9fb`, DECLARED not-a-wrap) carrying the fill reader + banner/delta roll + chain regen + both ledger appends; the wrap commit follows. Subject VERIFIED against the chain banner after the write — `_git_commit.sh` restamps it from the banner, which is how #86 certified the wrong session.

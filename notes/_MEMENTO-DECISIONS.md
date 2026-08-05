@@ -3574,3 +3574,39 @@ of the very tool that measures boot. Struck with the strike marked; rehearsal po
 the same region. [[read-chain-is-where-staleness-is-free]]
 
 status: built + mutation-tested + consumed at birth · log accrues from this wrap · 2026-08-05
+
+## ★ #93 — THE STOP LINE RE-PRICED, AND THE PREMISE THAT DIED TWICE (2026-08-05)
+
+**#93-F1 — the title's premise died twice before the job started.** (a) `notes/_REHEARSAL-LOG.jsonl`
+holds gate outcomes only — keys are date/fails/heals_at_wrap/kind/structural/structural_names/warns,
+no token field (probe: every line read in full). (b) n=3 cannot be minted retrospectively: #92's
+wrap-end figure is unrecoverable — the Cowork transcript reader returns message TEXT without
+`message.usage` (probed on #92's own session), and the host session directory is outside connected
+folders (Glob refused, named). ⇒ the #59-era caveat "wrap cost is measurable PROSPECTIVELY ONLY"
+now stands on three legs. **n stays 2.** #92's post-mortem claim *"recoverable next session from
+the transcript + the log"* is REFUTED — corrected here by addition, the #92 stratum untrimmed
+[[header-wins-over-audit]].
+
+**#93-F2 — the canonical strata home carried the early stamp.** `notes/_GAUGE-LOG.md` § #91
+recorded the wrap as 24,579 (end stamp 172,648) — the same wrap as #91-F5's 44,211 (end stamp
+192,280), read 19,701 tokens earlier. Sole appearance repo-wide; every downstream artefact quotes
+44,211. **Dave ruled #93-D2: correct by addition** — one correction line appended at the stratum,
+ratified text untouched. ENACTED this session.
+
+**#93-D1 (Dave's) — STOP LINE = 155,789 real (200,000 − 44,211), STANDING until the first
+new-regime wrap measurement.** Reasoning ratified with the ruling: #59 (42,434) and #91 (44,211)
+are both PRE-rehearsal-regime points — #91-F5 named the gate-failure remediation loop the binding
+term, and #92's `--rehearse` removed that term (wrap-open: 0 structural, 0 remediation rounds).
+The distribution is NON-STATIONARY; the 146K option (adding the ±10,000 old-regime margin) was
+DECLINED as over-reserving against a mitigated mechanism. High end observed is reserved per Dave's
+#59 rule. **#93's own wrap is the first new-regime point:** wrap-start and latest-possible stamps
+taken this session, truncation declared exactly as at #59/#91.
+
+**#93 late stamp (post-gate, pre-commit — the #91 form; this append itself is post-gate and DECLARED):**
+wrap-start FILL 103,928 → **152,999 real at this stamp** = **49,071 real and CLIMBING** for the FIRST
+new-regime wrap (the commit that follows is NOT in it — same truncation as #59/#91, DECLARED). Gate:
+68 in scope · 0 fail in ONE remediation round (14 stamp-vocabulary fails, all in freshly authored strata
+lines — a rehearsal cannot pre-catch lines that do not yet exist). ⚠ **THE POINT EXCEEDS THE 44,211
+RESERVE #93-D1 PRICED FROM** — the new regime killed the remediation LOOP but not the authoring +
+re-stamp cycle (size fixed point ×2 · chain regen ×3 · index ×2 · gate ×3). **#94 MUST re-price against
+this reading, not smooth it** — n=3 in the SAME truncation class as its siblings: 42,434 · 44,211 · 49,071.
