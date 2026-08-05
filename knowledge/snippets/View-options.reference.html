@@ -23,9 +23,6 @@
   [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   /* segmented switcher with a SLIDING selected-fill */
   .seg{position:relative; display:inline-flex; border:1px solid var(--border); background:var(--surface);}
   .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
@@ -47,8 +44,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>View options — canonical reference</span></div>
-
+  
   <div class="seg" role="group" aria-label="View as">
     <span class="ind" aria-hidden="true"></span>
     <button type="button" aria-pressed="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></svg>List</button>
@@ -68,7 +64,7 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    
     const seg=document.querySelector('.seg'), ind=seg.querySelector('.ind');
     function moveInd(){ const a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
       ind.style.left=a.offsetLeft+'px'; ind.style.width=a.offsetWidth+'px'; }

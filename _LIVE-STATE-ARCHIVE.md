@@ -1,4 +1,14 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+
+## Rolled 2026-08-05 #98 (2d) — via the mover
+*(refresh-chain tail carried at the same boundary:)* *Previous: 2026-08-05 (Wed from `date` — #94 wrap: stop line ENACTED at n=3 = 150,929 real (#93-D1's own clause, #59 high end) · `CHAIN_STAMP_RE` hole CLOSED — first live catch was GM's own stamp quoting the escape, defused to a pointer · §C·1(a) D-Q3 item struck as stale (landed 07-24) · chart wave 2 DIVVY + 3 lane briefs cut as files, firing PRICED OUT (FILL 121,848 floor vs 150,929). ⚠ this trail has NO #93 entry — #93's wrap left the #92 text at the head; its record is the #93 delta/stratum. Gap DECLARED, not repaired.)**
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#95**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **WAVE 2 LANDED: 8 MEMBERS REGISTERED, GATES GREEN** · ⛔ **STOP LINE BLOWN PRE-WRAP: 161,622 FIRST READ** · ⚠ **RENDER-VERIFY + EYEBALL OWED**)
+
+- **8 wave-2 members landed + registered** (3 Sonnet lanes, receipts replayed before serials): butterfly-h/v · histogram · boxplot · bullet · candlestick · pie · stacked-area. Registry +8, radius ratchet +8, showroom +8, dtype vocab +7 cartesian. Ledger § ★ #95.
+- **Four worker gaps caught at conductor replay** — lane-① manifests/AUTO-MARKUP absent · dv-legend marker pairs absent (pie, stacked-area) · lane-② manifest prose keys · `--data-grid` DRIFT unbound (ds-020 receipted, not filled).
+- **Gate battery green**; type-composites + a11y red are HEAD baseline (worktree-verified), declared not fixed.
+- **Stop line 150,929 blown before wrap-open (161,622)** — no mid-serial check-in; #96 re-prices from this wrap (#59 high-end rule). OWED: render-verify ×8 + Dave eyeball + 7 flags.
+
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#94**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **STOP LINE ENACTED AT n=3: 150,929 REAL** · ✅ **`CHAIN_STAMP_RE` CLOSED; FIRST LIVE CATCH = GM's OWN STAMP** · ⚠ **WAVE 2: BRIEFS CUT, FIRING PRICED OUT**)
 
 - **Stop line 150,929 real = 200,000 − 49,071** — #93-D1's own standing clause enacted at the first new-regime read (#59 high-end rule); n=3, one truncation class. Ledger § ★ #94-E1.

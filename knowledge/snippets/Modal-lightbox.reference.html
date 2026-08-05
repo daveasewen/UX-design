@@ -43,12 +43,6 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
-    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
-  .demo-controls button:hover{background:var(--hoverbg);}
-  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .demo-controls button:disabled{opacity:.4; cursor:not-allowed;}
   .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
 
   /* overlay */
@@ -109,10 +103,7 @@
   </svg>
 
   <div class="page" id="page">
-    <div class="demo-controls">
-      <button id="themeToggle" type="button">◐ Toggle theme</button>
-      <button id="open" type="button" aria-haspopup="dialog">View statement pages…</button>
-    </div>
+    <button id="open" type="button" aria-haspopup="dialog">View statement pages…</button>
     <p class="bg-content">The lightbox is the modal family's viewer: it shows a thing rather than asking a
       question. Dialog mechanics are inherited from Modals — trapped focus, Escape, inert background,
       focus return — plus previous/next navigation with arrow keys and a captioned stage.</p>
@@ -154,9 +145,6 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    });
     const pages=[
       {cap:'March statement — page 1: account summary.'},
       {cap:'March statement — page 2: transactions in detail.'},

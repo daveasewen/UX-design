@@ -55,10 +55,6 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:var(--border-radius-control); cursor:pointer;
-    border:1px solid var(--border-default); background:transparent; color:var(--text);}
-  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
   p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
   .icn{width:18px; height:18px; display:block; flex-shrink:0;}
@@ -119,11 +115,7 @@
     <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
   </svg>
 
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
-    <span>Textarea — multi-line entry · Input-fields state channel stretched vertically</span>
-  </div>
-
+  
   <h2 class="sec">Live — with counter</h2>
   <p class="note">Same state channel as Input-fields, stretched vertically. The counter turns
     prominent (weight, not colour) at 90% of the limit and the remaining count is announced politely.
@@ -208,9 +200,7 @@
   </script>
 
   <script>
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    });
+    
     const root = document.documentElement;
     addEventListener('keydown', e => { if (e.key === 'Tab') root.dataset.modality = 'keyboard'; });
     addEventListener('mousedown', () => root.dataset.modality = 'pointer');

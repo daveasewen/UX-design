@@ -58,14 +58,6 @@
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
 
   /* ---- demo controls ---- */
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:1rem 1.25rem; align-items:center; flex-wrap:wrap; font-size:13px;}
-  .demo-controls > button{font:inherit; font-size:13px; padding:8px 12px; border-radius:var(--border-radius-control); cursor:pointer;
-    border:1px solid var(--border); background:transparent; color:var(--text); transition:background var(--ease);}
-  .demo-controls > button:hover{background:var(--hover);}
-  .demo-controls > button:active{transform:translateY(1px);}
-  .demo-controls > button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
-  .demo-controls input[type=range]{accent-color:var(--focus);}
 
   /* segmented control — headerType variant switcher (the active segment is disabled = a real state) */
   .seg{display:inline-flex; border:1px solid var(--border);}
@@ -145,14 +137,10 @@
 </head>
 <body data-theme="light">
 
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
-    <div class="seg" role="group" aria-label="Header type">
-      <button type="button" data-mode="both"   aria-pressed="true"  disabled>Row + column</button>
-      <button type="button" data-mode="row"     aria-pressed="false">Column only</button>
-      <button type="button" data-mode="column"  aria-pressed="false">Row only</button>
-    </div>
-    <label>Container width <input id="w" type="range" min="300" max="900" value="760"> <span id="wv">760</span>px</label>
+  <div class="seg" role="group" aria-label="Header type">
+    <button type="button" data-mode="both"   aria-pressed="true"  disabled>Row + column</button>
+    <button type="button" data-mode="row"     aria-pressed="false">Column only</button>
+    <button type="button" data-mode="column"  aria-pressed="false">Row only</button>
   </div>
 
   <div class="wrap" id="wrap">
@@ -240,12 +228,6 @@
   </script>
 
   <script>
-    // theme
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      const b = document.body;
-      b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    });
-
     // headerType variant switcher — re-scopes the real table so AT structure matches the visual
     const tbl = document.getElementById('tbl');
     const segButtons = Array.from(document.querySelectorAll('.seg button'));
@@ -264,10 +246,6 @@
       });
     }
     segButtons.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
-
-    // width — lets the reviewer watch the card-collapse happen
-    const w = document.getElementById('w'), wv = document.getElementById('wv'), wrap = document.getElementById('wrap');
-    w.addEventListener('input', () => { wrap.style.setProperty('--demo-width', w.value + 'px'); wv.textContent = w.value; });
   </script>
 </body>
 </html>

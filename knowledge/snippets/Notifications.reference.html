@@ -44,11 +44,6 @@
     --border-radius-surface:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--info); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--info); outline-offset:2px;}
-  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
-  .demo-controls input[type=range]{accent-color:var(--text);}
   h2{/* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.9rem 0 .7rem;}
 
   .nwrap{ width:var(--demo-width, 540px); max-width:100%; container-type:inline-size; }
@@ -148,12 +143,7 @@
     <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
   </svg>
 
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
-    <label>Width <input id="w" type="range" min="300" max="560" value="540"> <span id="wv">540</span>px</label>
-    <span>Notifications — canonical reference</span>
-  </div>
-
+  
   <div class="nwrap" id="nwrap">
 
     <h2 class="spec-h">Contextual</h2>
@@ -208,9 +198,9 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
-    const w=document.getElementById('w'), wv=document.getElementById('wv'), nw=document.getElementById('nwrap');
-    w.addEventListener('input', ()=>{ nw.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; });
+    
+    
+    
     document.querySelectorAll('.note .x').forEach(x=> x.addEventListener('click', ()=>{
       const n=x.closest('.note'); n.style.maxHeight=n.offsetHeight+'px';
       requestAnimationFrame(()=> n.classList.add('removing'));

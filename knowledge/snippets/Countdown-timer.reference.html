@@ -23,9 +23,6 @@
   [data-theme="dark"]{ --track:#484848; --fill:#FFFFFF; --text:#FFFFFF; --page:#1A1A1A; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--track); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
   .timer{display:inline-flex; flex-direction:column; align-items:center; gap:12px;}
   .dial{position:relative; width:84px; height:84px;}                          /* ring + centred number share this box */
   .ring{position:absolute; inset:0; width:84px; height:84px; transform:rotate(-90deg);}   /* rotate so depletion starts at 12 o'clock */
@@ -41,8 +38,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Countdown timer — canonical reference (ring sweeps only in the final 5s)</span></div>
-
+  
   <div class="timer">
     <div class="dial" role="timer" aria-live="polite" aria-label="Session timeout countdown">
       <svg class="ring" data-bespoke="countdown progress ring — functional SVG graphic (track + animated stroke-dashoffset fill), not a library icon" viewBox="0 0 84 84" aria-hidden="true"><circle class="track" cx="42" cy="42" r="36"/><circle class="fill" cx="42" cy="42" r="36"/></svg>
@@ -63,7 +59,7 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    
 
     const fill=document.querySelector('.fill'), num=document.getElementById('t');
     const C=2*Math.PI*36;                 // ring circumference (~226.19)

@@ -31,11 +31,6 @@
     --border-radius-control:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
-  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
-  .demo-controls input[type=range]{accent-color:var(--text);}
   .stateLabel{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); opacity:.7; margin:1.5rem 0 .5rem;}
 
   /* ---- Action bar ---- */
@@ -71,12 +66,6 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
-    <label>Bar width <input id="w" type="range" min="300" max="640" value="560"> <span id="wv">560</span>px</label>
-    <span>Action bar — canonical reference</span>
-  </div>
-
   <div class="stateLabel">default · Back + Cancel + Confirm (drag width → ≤420px stacks: primary top, Back bottom)</div>
   <div class="action-bar-region" id="region">
     <div class="action-bar">
@@ -118,11 +107,6 @@
     "requiredAria": ["<button"]
   }
   </script>
-  <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
-    const w=document.getElementById('w'), wv=document.getElementById('wv'), region=document.getElementById('region');
-    function setW(){ region.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; }
-    w.addEventListener('input', setW); setW();
-  </script>
+
 </body>
 </html>

@@ -31,9 +31,6 @@
        black automatically (was #00847F + black cutout = 2.77, failed the ≥4.5 mark leg). */
   *{box-sizing:border-box;}
   body{margin:0; padding:2rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
 
   /* ---- Confirmation / success ---- */
   .confirm{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:12px; max-width:380px; margin:0 auto; padding:40px 24px; }
@@ -71,8 +68,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><button id="replay" type="button">↺ Replay animation</button><span>Confirmation / success — canonical reference (narrow the window to see mobile centring)</span></div>
-
+  
   <div class="confirm" role="group" aria-labelledby="cf-title">
     <svg class="success" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM7.22 13.55L3.59 9.92L4.86 8.65L7.22 11.01L13.15 5.08L14.42 6.35L7.22 13.55Z"/></svg>
     <h2 class="confirm__title" id="cf-title">Payment sent</h2>
@@ -111,9 +107,5 @@
     "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\""]
   }
   </script>
-  <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
-    document.getElementById('replay').addEventListener('click', ()=>{ const c=document.querySelector('.confirm'); c.style.display='none'; void c.offsetWidth; c.style.display=''; });
-  </script>
-</body>
+  </body>
 </html>

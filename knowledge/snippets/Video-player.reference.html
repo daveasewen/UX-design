@@ -31,9 +31,6 @@
   :root{ --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }   /* Button motion tokens */
   *{box-sizing:border-box;}
   body{margin:0; padding:2rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--muted); outline-offset:2px;}
   .player{position:relative; width:100%; max-width:560px; aspect-ratio:16/9; background:linear-gradient(135deg,#2a2a30,#0e0e12); overflow:hidden;}
   .bigplay{position:absolute; inset:0; margin:auto; width:64px; height:64px; border:0; border-radius:var(--border-radius-control); background:var(--onvideo-fill); color:var(--accent-label); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
     transition:transform var(--spring), filter var(--press);}   /* SQUARE — brand angular; carries the Button scale-physics.
@@ -62,8 +59,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Video player — canonical reference (baseline)</span></div>
-
+  
   <div class="player" role="group" aria-label="Video player">
     <button class="bigplay" aria-label="Play video"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.39922 2.08L14.3992 9L2.39922 15.92V2.08ZM1.19922 0V18L16.7992 9L1.19922 0Z"/></svg></button>
     <div class="bar">
@@ -89,6 +85,5 @@
     "requiredAria": ["aria-label", "role=\"slider\""]
   }
   </script>
-  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
-</body>
+  </body>
 </html>

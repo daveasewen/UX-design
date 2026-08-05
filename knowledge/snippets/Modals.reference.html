@@ -52,12 +52,6 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:var(--border-radius-control); cursor:pointer;
-    border:1px solid var(--sec-bd); background:transparent; color:var(--text); transition:background var(--ease);}
-  .demo-controls button:hover{background:var(--sec-hover);}
-  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .demo-controls button:disabled{opacity:.4; cursor:not-allowed;}
   .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
 
   /* canon Button, inherited (mirror of Button.reference.html) */
@@ -106,10 +100,7 @@
 </head>
 <body data-theme="light">
   <div class="page" id="page">
-    <div class="demo-controls">
-      <button id="themeToggle" type="button">◐ Toggle theme</button>
-      <button id="open" type="button" aria-haspopup="dialog">Make payment…</button>
-    </div>
+    <button id="open" type="button" aria-haspopup="dialog">Make payment…</button>
     <p class="bg-content">Page content sits behind the modal. When the dialog opens it's dimmed by the
       overlay and made <code>inert</code>; focus moves into the dialog, Tab is trapped within it, and
       Escape closes it and returns focus to the trigger.</p>
@@ -148,9 +139,6 @@
   </script>
 
   <script>
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    });
     const ov = document.getElementById('overlay'), page = document.getElementById('page');
     const openBtn = document.getElementById('open'), dialog = ov.querySelector('.dialog');
     const focusable = () => [...dialog.querySelectorAll('button,[href],[tabindex]:not([tabindex="-1"])')].filter(el => !el.disabled);

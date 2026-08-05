@@ -16,9 +16,6 @@
   [data-theme="dark"]{ --rule:#808080; --text:#FFFFFF; --icon:#FFFFFF; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button.tg{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--icon); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button.tg:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .acc{max-width:560px;}
   .acc .item{border-top:1px solid var(--rule);}
   .acc .item:last-child{border-bottom:1px solid var(--rule);}
@@ -38,8 +35,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button class="tg" id="themeToggle" type="button">◐ Toggle theme</button><span>Accordion — canonical reference</span></div>
-
+  
   <div class="acc">
     <div class="item">
       <button class="head" aria-expanded="true" aria-controls="p1"><span>How do I set up a standing order?</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z"/></svg></span></button>
@@ -63,7 +59,7 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    
     document.querySelectorAll('.acc .head').forEach(h=> h.addEventListener('click', ()=>{ const open=h.getAttribute('aria-expanded')==='true'; h.setAttribute('aria-expanded', String(!open));
       const p=document.getElementById(h.getAttribute('aria-controls')); p.style.maxHeight = open ? '0' : p.firstElementChild.scrollHeight+30+'px'; }));
   </script>

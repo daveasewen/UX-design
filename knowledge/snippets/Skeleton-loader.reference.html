@@ -38,12 +38,9 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
-    background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
   h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
   .cap{font-size:12px; opacity:.45; width:100%; margin-top:8px;}
+  #resolveDemo:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
 
   .visually-hidden{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
     clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap; }
@@ -75,10 +72,8 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
+  <div>
     <button id="resolveDemo" type="button">Simulate content arriving</button>
-    <span>Skeleton loader — canonical reference (Mono · blocks + shimmer, no spinners)</span>
   </div>
 
   <h2>Text block — heading + three lines</h2>
@@ -123,7 +118,6 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
     // Simulate resolution: aria-busy flips false, sr-text removed, bones swap for content
     document.getElementById('resolveDemo').addEventListener('click', ()=>{
       const region=document.getElementById('cardDemo');

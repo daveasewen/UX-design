@@ -6,13 +6,14 @@ One separate file per component + one master categorised index (showroom/), asse
 FROM the canon (snippets + tokens + the theme cascade stay the gated source) so it
 cannot rot. reviews/ is demoted to scratch; THIS is the human-navigable library.
 
-Each component page is the UNIVERSAL REVIEW HARNESS (build-out Phase 0):
-  * theme switch — all four [data-apollo-theme] slots (ADR-0011); Console/Supercharge
-    render as Mono where their override sets are empty, labelled as such
-  * light + dark panes SIDE BY SIDE (both grounds always visible)
-  * responsive width slider driving both panes
-  * the snippet's own live variant/state spread inside each pane
-  * open-↗ per pane (current theme × mode baked into a standalone doc)
+Each component page is the UNIVERSAL REVIEW HARNESS (build-out Phase 0), ONE BAR
+(#98-D1, Dave 2026-08-05 — controls consolidated, snippet sources are pure canon):
+  * title · details · theme seg (all four [data-apollo-theme] slots, ADR-0011;
+    Console/Supercharge render as Mono where their override sets are empty, labelled)
+  * light/dark TOGGLE driving ONE pane (replaces the side-by-side spread)
+  * responsive width slider · ↻ Replay (disabled where the snippet has no
+    `dv-animate` motion idiom) · Open ↗ (theme × mode baked into a standalone doc)
+  * the snippet's own live variant/state spread inside the pane
 
 Mechanism: the reference snippet document is embedded VERBATIM (base64) with TWO
 generated additions — (1) the per-snippet theme CSS from gen_theme_cascade.snippet_theme_css()
@@ -170,8 +171,11 @@ CHROME_CSS = """
   header{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:16px 24px;
     background:#FFFFFF; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5;}
   header h1{font-size:18px; font-weight:500; margin:0 16px 0 0;}
-  header a.back{color:var(--mid); text-decoration:none; font-size:13px;}
-  header a.back:hover{color:var(--ink); text-decoration:underline;}
+  header>button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--line);
+    background:#FFFFFF; color:var(--ink); cursor:pointer;}
+  header>button:hover:not(:disabled){border-color:var(--ink);}
+  header>button:disabled{color:var(--mid); cursor:default; opacity:.5;}
+  header>button:focus-visible{outline:2px solid #305A85; outline-offset:2px;}
   .seg{display:inline-flex; border:1px solid var(--ink);}
   .seg button{font:inherit; font-size:13px; padding:8px 14px; border:0; background:transparent;
     color:var(--ink); cursor:pointer; border-right:1px solid var(--line);}
@@ -181,15 +185,8 @@ CHROME_CSS = """
   .note{font-size:12px; color:var(--mid);}
   .wctl{display:flex; gap:8px; align-items:center; font-size:13px;}
   .wctl input[type=range]{width:180px; accent-color:var(--ink);}
-  main{padding:24px; display:grid; grid-template-columns:1fr 1fr; gap:24px;}
-  @media (max-width:1100px){ main{grid-template-columns:1fr;} }
-  .pane{min-width:0;}
-  .pane .bar{display:flex; justify-content:space-between; align-items:center; margin:0 0 8px;}
-  .pane .bar .t{font-size:13px; font-weight:500;}
-  .pane .bar button{font:inherit; font-size:12px; padding:4px 10px; border:1px solid var(--line);
-    background:#FFFFFF; color:var(--ink); cursor:pointer;}
-  .pane .bar button:hover{border-color:var(--ink);}
-  .frame{border:1px solid var(--line); background:#FFFFFF; overflow:auto; resize:vertical; height:72vh;}
+  main{padding:24px;}
+  .frame{border:1px solid var(--line); background:#FFFFFF; overflow:auto; resize:vertical; height:82vh;}
   .frame.dark{background:var(--dark);}
   .frame iframe{display:block; width:100%; height:100%; border:0; margin:0 auto;}
 """
@@ -204,23 +201,22 @@ PAGE_TMPL = """<!doctype html>
 </head>
 <body>
 <header>
-  <a class="back" href="index.html">← Library</a>
   <h1>__LABEL__</h1>
+  <span class="note" id="meta">__META__</span>
   <div class="seg" id="themes" role="group" aria-label="Theme">__THEME_BTNS__</div>
+  <div class="seg" id="modes" role="group" aria-label="Light or dark">
+    <button data-mode="light" aria-pressed="true">Light</button>
+    <button data-mode="dark" aria-pressed="false">Dark</button>
+  </div>
   <div class="wctl"><label for="w">Width</label>
     <input id="w" type="range" min="320" max="1600" step="20" value="1600">
     <span id="wv">full</span></div>
+  <button id="replay" type="button"__REPLAY_ATTR__>↻ Replay</button>
+  <button id="open" type="button">Open ↗</button>
   <span class="note" id="themenote"></span>
 </header>
 <main>
-  <div class="pane">
-    <div class="bar"><span class="t">Light</span><button data-open="light">Open ↗</button></div>
-    <div class="frame light"><iframe id="f-light" title="__LABEL__ — light"></iframe></div>
-  </div>
-  <div class="pane">
-    <div class="bar"><span class="t">Dark</span><button data-open="dark">Open ↗</button></div>
-    <div class="frame dark"><iframe id="f-dark" title="__LABEL__ — dark"></iframe></div>
-  </div>
+  <div class="frame light" id="frame"><iframe id="f" title="__LABEL__"></iframe></div>
 </main>
 <script id="payload" type="application/octet-stream">__B64__</script>
 <script>
@@ -228,58 +224,67 @@ PAGE_TMPL = """<!doctype html>
   var THEMES=__THEMES_JSON__;                       // [{attr,label,hits,note}]
   var b64=document.getElementById('payload').textContent.trim();
   var src=new TextDecoder().decode(Uint8Array.from(atob(b64),function(c){return c.charCodeAt(0)}));
-  var frames={light:document.getElementById('f-light'),dark:document.getElementById('f-dark')};
-  var state={theme:'mono',w:null};
+  var f=document.getElementById('f'), frameBox=document.getElementById('frame');
+  var state={theme:'mono',mode:'light',w:null};
 
   function hash(){ var h={}; location.hash.replace(/^#/,'').split('&').forEach(function(kv){
       var p=kv.split('='); if(p[0]) h[p[0]]=decodeURIComponent(p[1]||''); }); return h; }
-  function setHash(){ var parts=['theme='+state.theme]; if(state.w) parts.push('w='+state.w);
+  function setHash(){ var parts=['theme='+state.theme,'m='+state.mode];
+    if(state.w) parts.push('w='+state.w);
     history.replaceState(null,'','#'+parts.join('&')); }
 
-  function apply(mode){
-    var f=frames[mode]; if(!f) return;
+  function apply(){
     try{
       var d=f.contentDocument; if(!d||!d.documentElement) return;
       d.documentElement.setAttribute('data-apollo-theme',state.theme);
-      if(d.body) d.body.setAttribute('data-theme',mode);
+      if(d.body) d.body.setAttribute('data-theme',state.mode);
     }catch(e){}
-  }
-  function applyAll(){ apply('light'); apply('dark');
+    frameBox.className='frame '+state.mode;
     var t=THEMES.find(function(x){return x.attr===state.theme});
     document.getElementById('themenote').textContent=t&&t.note?t.note:'';
     document.querySelectorAll('#themes button').forEach(function(b){
       b.setAttribute('aria-pressed', String(b.dataset.theme===state.theme)); });
+    document.querySelectorAll('#modes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.mode===state.mode)); });
     setHash(); }
 
-  Object.keys(frames).forEach(function(mode){
-    frames[mode].addEventListener('load',function(){ apply(mode); });
-    frames[mode].srcdoc=src;
-  });
+  f.addEventListener('load',apply);
+  f.srcdoc=src;
 
   document.getElementById('themes').addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
-    state.theme=b.dataset.theme; applyAll();
+    state.theme=b.dataset.theme; apply();
+  });
+  document.getElementById('modes').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    state.mode=b.dataset.mode; apply();
   });
 
   var w=document.getElementById('w'), wv=document.getElementById('wv');
   function setW(){ var full=(+w.value>=1600); state.w=full?null:+w.value;
-    Object.keys(frames).forEach(function(m){ frames[m].style.width=full?'100%':w.value+'px'; });
+    f.style.width=full?'100%':w.value+'px';
     wv.textContent=full?'full':w.value+'px'; setHash(); }
   w.addEventListener('input',setW);
 
-  document.querySelectorAll('[data-open]').forEach(function(b){
-    b.addEventListener('click',function(){
-      var mode=b.dataset.open;
-      var doc=src.replace(/(<body[^>]*data-theme=")[a-z]+(")/,'$1'+mode+'$2')
-                 .replace(/<html/,'<html data-apollo-theme="'+state.theme+'" ');
-      window.open(URL.createObjectURL(new Blob([doc],{type:'text/html'})));
-    });
+  document.getElementById('replay').addEventListener('click',function(){
+    try{
+      var d=f.contentDocument; if(!d) return;
+      d.querySelectorAll('.dv-animate, figure.dv').forEach(function(el){
+        el.classList.remove('dv-animate'); void el.offsetWidth; el.classList.add('dv-animate'); });
+    }catch(e){}
+  });
+
+  document.getElementById('open').addEventListener('click',function(){
+    var doc=src.replace(/(<body[^>]*data-theme=")[a-z]+(")/,'$1'+state.mode+'$2')
+               .replace(/<html/,'<html data-apollo-theme="'+state.theme+'" ');
+    window.open(URL.createObjectURL(new Blob([doc],{type:'text/html'})));
   });
 
   function initFromHash(){ var h=hash();
     if(h.theme&&THEMES.some(function(t){return t.attr===h.theme})) state.theme=h.theme;
+    if(h.m==='light'||h.m==='dark') state.mode=h.m;
     if(h.w){ w.value=h.w; setW(); }
-    applyAll(); }
+    apply(); }
   window.addEventListener('hashchange',initFromHash);
   initFromHash();
 })();
@@ -315,14 +320,7 @@ INDEX_TMPL = """<!doctype html>
   nav.tree a[aria-current="true"]{border-left-color:var(--ink); font-weight:500;
     background:var(--wash, #F4F4F4);}
   main.view{min-width:0; display:flex; flex-direction:column;}
-  .viewbar{display:none; align-items:center; gap:12px; padding:10px 24px;
-    border-bottom:1px solid var(--line); background:#FFFFFF;}
-  .viewbar .t{font-size:15px; font-weight:500;}
-  .viewbar a{font-size:12px; color:var(--mid); text-decoration:none; border:1px solid var(--line);
-    padding:4px 10px;}
-  .viewbar a:hover{border-color:var(--ink); color:var(--ink);}
   .view iframe{display:none; border:0; width:100%; flex:1;}
-  .view.on .viewbar{display:flex;}
   .view.on iframe{display:block;}
   .view.on .intro{display:none;}
   .intro{padding:24px 24px 0; max-width:820px;}
@@ -337,20 +335,18 @@ INDEX_TMPL = """<!doctype html>
 <header>
   <h1>Apollo component library</h1>
   <span class="count" aria-label="__COUNT__ components"><strong>__COUNT__</strong> components</span>
-  <div class="seg" id="themes" role="group" aria-label="Theme">__THEME_BTNS__</div>
-  <span class="note">Theme carries into every component page. Mono is the base; Legacy differs; Console renders as Mono with rounded corners; Supercharge renders as Mono.</span>
+  <span class="note">Every control lives on the component page's one bar (#98-D1).</span>
 </header>
 <div class="shell">
 <nav class="tree" aria-label="Components">
 __SECTIONS__
 </nav>
 <main class="view" id="view">
-  <div class="viewbar"><span class="t" id="vtitle"></span>
-    <a id="vopen" href="#" target="_blank">Open page ↗</a></div>
   <div class="intro">
     <p>Generated from the gated canon (snippets + tokens + theme cascade) — regenerate with
-    <code>python3 knowledge/gen_showroom.py</code>; never hand-edit. Each page: four themes ×
-    light/dark side by side × responsive width × the component's full live variant spread.</p>
+    <code>python3 knowledge/gen_showroom.py</code>; never hand-edit. Each page: ONE bar
+    (title · details · theme · light/dark · width · replay · open) over the component's
+    full live variant spread. Snippet sources are pure canon — no demo controls (#98-D1).</p>
     <p>Pick a component from the tree to preview it here.</p>
   </div>
   <iframe id="vframe" title="Component preview"></iframe>
@@ -358,44 +354,27 @@ __SECTIONS__
 </div>
 <script>
 (function(){
-  var theme='mono', current=null;
+  var current=null;
   var view=document.getElementById('view'), frame=document.getElementById('vframe');
-  var vtitle=document.getElementById('vtitle'), vopen=document.getElementById('vopen');
-  function pageURL(slug){ return slug+'.html#theme='+theme; }
-  function setHash(){ var h=[]; if(current) h.push('c='+current);
-    h.push('theme='+theme); location.hash=h.join('&'); }
+  function pageURL(slug){ return slug+'.html'; }
+  function setHash(){ location.hash=current?('c='+current):''; }
   function show(slug){
     current=slug;
     view.classList.add('on');
-    frame.src=pageURL(slug); vopen.href=pageURL(slug);
+    frame.src=pageURL(slug);
     document.querySelectorAll('nav.tree a').forEach(function(a){
       var on=(a.dataset.slug===slug);
       a.setAttribute('aria-current', String(on));
       if(on){ var d=a.closest('details'); if(d) d.open=true; }
     });
-    var sel=document.querySelector('nav.tree a[data-slug="'+slug+'"]');
-    vtitle.textContent=sel?sel.textContent:slug;
   }
   document.querySelector('nav.tree').addEventListener('click',function(e){
     var a=e.target.closest('a[data-slug]'); if(!a) return;
     e.preventDefault(); show(a.dataset.slug); setHash();
   });
-  document.getElementById('themes').addEventListener('click',function(e){
-    var b=e.target.closest('button'); if(!b) return;
-    theme=b.dataset.theme;
-    document.querySelectorAll('#themes button').forEach(function(x){
-      x.setAttribute('aria-pressed', String(x.dataset.theme===theme)); });
-    if(current){ frame.src=pageURL(current); vopen.href=pageURL(current); }
-    setHash();
-  });
   function initFromHash(){
     var h={}; location.hash.replace(/^#/,'').split('&').forEach(function(p){
       var kv=p.split('='); if(kv[0]) h[kv[0]]=kv[1]; });
-    if(h.theme && document.querySelector('#themes button[data-theme="'+h.theme+'"]')){
-      theme=h.theme;
-      document.querySelectorAll('#themes button').forEach(function(x){
-        x.setAttribute('aria-pressed', String(x.dataset.theme===theme)); });
-    }
     if(h.c && document.querySelector('nav.tree a[data-slug="'+h.c+'"]')) show(h.c);
   }
   window.addEventListener('hashchange',initFromHash);
@@ -456,17 +435,24 @@ def build_pages():
             payload += inject
         b64 = base64.b64encode(payload.encode("utf-8")).decode("ascii")
         meta = theme_meta(themes, varmap)
+        legacy_hits = next((m["hits"] for m in meta if m["attr"] == "legacy"), 0)
+        meta_line = "%d token(s) · Legacy re-binds %d" % (len(varmap), legacy_hits)
+        # Replay lives in the ONE bar (#98-D1); DISABLED where the snippet has no
+        # motion idiom (`dv-animate`) — the bar states inapplicability, never hides it.
+        has_motion = "dv-animate" in src
         page = (PAGE_TMPL
                 .replace("__LABEL__", htmlmod.escape(label_of(slug)))
                 .replace("__CSS__", CHROME_CSS)
                 .replace("__THEME_BTNS__", btns)
                 .replace("__THEMES_JSON__", json.dumps(meta))
+                .replace("__META__", htmlmod.escape(meta_line))
+                .replace("__REPLAY_ATTR__",
+                         "" if has_motion else ' disabled title="No motion in this component"')
                 .replace("__B64__", b64))
         files[slug + ".html"] = page
-        legacy_hits = next((m["hits"] for m in meta if m["attr"] == "legacy"), 0)
         cards[slug] = {"label": label_of(slug),
                        "cat": CAT_OF.get(slug, "More"),
-                       "meta": ("%d token(s) · Legacy re-binds %d" % (len(varmap), legacy_hits))}
+                       "meta": meta_line}
     # index
     sections = []
     cats = [c for c, _ in CATEGORIES] + (["More"] if any(v["cat"] == "More" for v in cards.values()) else [])
@@ -539,13 +525,27 @@ def selftest():
     bite("5b · query/fragment suffixes survive the existence check",
          out, '<link href="../knowledge/canon/type.css?v=2#x">')
 
+    # 6 · #98-D1 ONE-BAR contract, pinned on the templates themselves: no back-CTA,
+    # no per-pane bars, ONE iframe, replay + open IN the bar; index carries no viewbar.
+    bite("6 · page template has no Library back-CTA (#98-D1)",
+         'class="back"' in PAGE_TMPL or "← Library" in PAGE_TMPL, False)
+    bite("6b · ONE pane — a single iframe in the page template",
+         PAGE_TMPL.count("<iframe"), 1)
+    bite("6c · replay + open live in the ONE bar",
+         'id="replay"' in PAGE_TMPL and 'id="open"' in PAGE_TMPL, True)
+    bite("6d · index has no duplicate viewbar",
+         "viewbar" in INDEX_TMPL, False)
+    bite("6e · index has no theme seg — controls live on the page bar only (#98)",
+         'id="themes"' in INDEX_TMPL, False)
+
     if fails:
         print("gen_showroom --selftest: %d BITE(S) FAILED" % len(fails))
         for f in fails:
             print("  ❌ " + f)
         sys.exit(1)
     print("gen_showroom --selftest OK — %d bites (rebase · fragments · absolutes · "
-          "double-rebase fails loud · missing-target gate · query suffix)." % len(ran))
+          "double-rebase fails loud · missing-target gate · query suffix · "
+          "#98-D1 one-bar contract ×4)." % len(ran))
 
 def main():
     if "--selftest" in sys.argv:

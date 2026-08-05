@@ -26,9 +26,6 @@
   [data-theme="dark"]{ --surface:#1F1F1F; --border:#808080; --muted:#FFFFFF; --text:#FFFFFF; --sel-bg:#FFFFFF; --sel-fg:#333333; --focus:#4587A7; --shadow:#000000D9; --page:#1A1A1A; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
   .stateLabel{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--muted); margin:1.75rem 0 .6rem;}
 
   /* ---- Tab bar (bottom navigation) ---- */
@@ -82,8 +79,7 @@
     <symbol id="ic-menu-a" viewBox="0 0 18 18"><path d="M0 15.6H18V13.6H0V15.6ZM0 2.40002V4.40002H18V2.40002H0ZM0 10H18V8.00002H0V10Z"/></symbol>
   </svg>
 
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Tab bar — tap a destination (interactive)</span></div>
-
+  
   <div class="stateLabel">A · standard bar with labels — tap to switch</div>
   <nav class="tabbar" data-tabgroup aria-label="Primary">
     <a class="tabbar__item is-active" href="#" aria-current="page"><svg class="ic-line" aria-hidden="true"><use href="#ic-home"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#ic-home-a"/></svg>Home</a>
@@ -129,7 +125,7 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    
     /* A) standard bar — radio set: tapping a destination makes it current (filled glyph + aria-current) */
     document.querySelectorAll('.tabbar[data-tabgroup]').forEach(group=>{
       group.addEventListener('click', e=>{

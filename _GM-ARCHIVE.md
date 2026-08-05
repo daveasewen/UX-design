@@ -1,5 +1,22 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-08-05 #98 — rolled by session #98 (2c: keep ★ LATEST + ★ PRIOR)
+
+> **commit-state #97:** ONE wrap commit. Paths explicit — never `git add -A`: `knowledge/gen_showroom.py` (INDEX_TMPL + section-builder) · `showroom/index.html` (regen) · `notes/_receipts/2026-08-05-97-side-tree-nav.md` (NEW) · `knowledge/_REVIEW-SIGNOFF.md` (+1 row) · GM/LS + `_GM-ARCHIVE.md` + `_LIVE-STATE-ARCHIVE.md` (2c/2d via `_gm_move.py` + trail-trim) · `_CHAIN.md` (regen) · `knowledge/_memento-index.json` (2g LAST) · `notes/_REHEARSAL-LOG.jsonl` (appends).
+
+> ## ★ PRIOR — 2026-08-05 (Wed **#96**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **WAVE 2 PROVEN: ALL 8 RENDER-VERIFIED, DAVE RULED ALL 7 FLAGS + 4 MORE** · ✅ **STOP LINE HELD — WRAP OPENED AT 146,639 < 150,929, CHECK-INS RODE THE LOOPS** · ⚠ **SIDE TREE NAV (DAVE'S NEW JOB) ROLLS TO #97, PRICED NOT SQUEEZED**)
+>
+> **✅ RENDER-VERIFY (2 Sonnet lanes, receipts replayed):** all 8 wave-2 panes PROVEN at 1180+760, font + numeric width + fit assertions (receipt `notes/_receipts/2026-08-05-96-render-verify-wave2.md`). ONE real catch: stacked-area's `figure.dv-fit-on` width overrides ABSENT — hook wired to nothing; fixed as a conductor serial matching the six-sibling precedent, re-verified 1084→664px. Metas carry the resolution note; `_REVIEW-SIGNOFF.md` updated; Dave eyeballed the 8 pane cards in-chat.
+> **✅ DAVE RULED ELEVEN THINGS (ledger § ★ #96, reflected back, "all sound good"):** **D1 ①–⑦** the lane flags — bullet 580×200 stands but height FLEXES with rows (H=80+(rows−1)·60) · bullet bands = CANON greys mirrored, nothing minted · candlestick hollow-up/filled-down redundancy · histogram static key stands · `--stack-fill-alpha` interim · fitOne() `.dv-band` NOW · pie sweep ri=0 fallback — plus his rider: **watch chart responsiveness generally**. **D2** mint an OPACITY PRIMITIVES set (he raised it twice — owed as a review spread). **D3** the **2px separation rule** for adjacent blocks = STANDING dataviz canon. **D4** gauge-log **ONE WRITER** (only roll_2f writes session sections; collisions marked exceptions by addition). **D5** behaviour PAGE budget re-dialled **32→34KB** — his pick after D1 ⑥ collided at 32,871 with the addition already shaved twice.
+> **✅ ENACTED SAME SESSION (#96-E2):** D1 ①–⑦ live in the snippets + `canon/dv-behaviour.js` (ONE merged polyline/path loop — no second pass) · partials + showroom regenerated · dataviz · radius · behaviour gates GREEN · every touched file re-render-verified (receipt `notes/_receipts/2026-08-05-96-enact-d1.md`).
+> **⛔ #95's WRAP-END FIGURE IS UNRECOVERABLE** — no late stamp exists in ledger § ★ #95 (probe named at gauge log § #96); § ★ #93-F1's legs stand. **Re-price DECLINED, not skipped** — stop line stood at 150,929 and HELD.
+> **⬛ OWED → #97:** Dave's showroom-index SIDE TREE NAV (categories→components, replaces the button sea — survey before build) · opacity primitives spread (D2) · Dave's eyeball on candlestick hollow/filled + bullet flex-height as rendered · verify the #96 strata roll under the D4 exemption at #97's ritual.
+> **(dossier: WRITTEN → `_DECISION-HISTORY/2026-08-05-the-96-rulings.md` — the flag→ruling→collision arc.)**
+> **residual (GENERATED #96):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OVER (strata 2, log #96) — _roll_state.py · 2026-08-05 *(the 2 counts #95, D4-exempt at the gate — raw count kept honest here)*
+
+> **residual (GENERATED #94):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #93) — _roll_state.py · 2026-08-05
+
+
 ## Batch 2026-08-05 #97 — rolled by session #97 (2c: keep ★ LATEST + ★ PRIOR)
 > ## ★ PRIOR — 2026-08-05 (Wed **#95**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **CHART WAVE 2 FIRED AND LANDED: 8 MEMBERS, 3 SONNET LANES, ONE CONDUCTOR RECONCILE** · ⛔ **STOP LINE 150,929 BLOWN BEFORE WRAP-OPEN — FILL 161,622 AT FIRST CHECK-IN** · ⚠ **RENDER-VERIFY + DAVE'S EYEBALL OWED ON ALL 8**)
 >

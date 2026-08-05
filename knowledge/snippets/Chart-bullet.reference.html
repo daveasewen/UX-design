@@ -85,10 +85,6 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
-    background:transparent; color:var(--ink); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
   h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
   .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
@@ -174,13 +170,6 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
-    <button id="contrastToggle" type="button" aria-pressed="false">◑ High contrast</button>
-    <button id="replay" type="button">↻ Replay motion</button>
-    <span>Bullet chart — canonical reference (Mono · measure · target · ranges · no data)</span>
-  </div>
-
   <h2>Bullet — three KPI rows (measure vs target, qualitative ranges)</h2>
   <figure class="dv dv-animate" data-dv-type="bullet" data-domain-min="0" data-domain-max="100" data-surface="page" role="group" aria-labelledby="cbl1-h" data-lockup-title="Revenue is ahead of target; satisfaction lags" data-lockup-table="cbl1-tbl">
     <figcaption id="cbl1-h" class="sr-only">KPI performance against target and qualitative ranges</figcaption>
@@ -501,23 +490,5 @@
 </script>
   <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
 
-  <script>
-    var themeToggle = document.getElementById('themeToggle');
-    var contrastToggle = document.getElementById('contrastToggle');
-    var replay = document.getElementById('replay');
-    if (themeToggle) { themeToggle.addEventListener('click', function () {
-      var b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-    }); }
-    if (contrastToggle) { contrastToggle.addEventListener('click', function () {
-      var on = contrastToggle.getAttribute('aria-pressed') === 'true';
-      contrastToggle.setAttribute('aria-pressed', String(!on));
-      document.body.setAttribute('data-contrast', !on ? 'high' : 'normal');
-    }); }
-    if (replay) { replay.addEventListener('click', function () {
-      document.querySelectorAll('.dv-animate').forEach(function (fig) {
-        fig.classList.remove('dv-animate'); void fig.offsetWidth; fig.classList.add('dv-animate');
-      });
-    }); }
-  </script>
 </body>
 </html>

@@ -41,11 +41,9 @@
   [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A; --hit:44px; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .demo-controls h2{font-size:12px; font-weight:500; letter-spacing:.04em; color:#767676; margin:2rem 0 .75rem;}
   .demo-note{font-size:12px; color:#767676; max-width:60ch; margin:.6rem 0 0;}   /* demo-chrome — advisory-exempt */
+  .section-head-row{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .section-head-row h2{font-size:12px; font-weight:500; letter-spacing:.04em; color:#767676; margin:2rem 0 .75rem;}
 
   /* ===== the segmented control =====
      PILL PADDING FOR ALL (Dave 2026-07-24): the inset track + floating indicator — once the pill's
@@ -102,9 +100,8 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Segmented control — canonical reference (promoted from View options, 2026-07-24)</span></div>
-
-  <div class="demo-controls" style="margin:0;"><h2>Label · square · md (default)</h2></div>
+  
+  <div class="section-head-row"><h2>Label · square · md (default)</h2></div>
   <div class="seg md" role="group" aria-label="View as">
     <span class="ind" aria-hidden="true"></span>
     <button type="button" aria-pressed="true">List</button>
@@ -112,7 +109,7 @@
     <button type="button" aria-pressed="false">Table</button>
   </div>
 
-  <div class="demo-controls" style="margin:0;"><h2>Label · square · lg (16 · prominent)</h2></div>
+  <div class="section-head-row"><h2>Label · square · lg (16 · prominent)</h2></div>
   <div class="seg lg" role="group" aria-label="Range">
     <span class="ind" aria-hidden="true"></span>
     <button type="button" aria-pressed="true">Day</button>
@@ -120,7 +117,7 @@
     <button type="button" aria-pressed="false">Month</button>
   </div>
 
-  <div class="demo-controls" style="margin:0;"><h2>Label · square · sm (12 · dense — the chart's view switch consumes this)</h2></div>
+  <div class="section-head-row"><h2>Label · square · sm (12 · dense — the chart's view switch consumes this)</h2></div>
   <div class="seg sm" role="group" aria-label="Chart view">
     <button type="button" aria-pressed="true">Monthly</button>
     <button type="button" aria-pressed="false">Year to date</button>
@@ -129,7 +126,7 @@
   <p class="demo-note">The sm segments are 28px visible, but each carries an
     invisible <code>::before</code> target &ge; 44px — the whole control clears the HSBC 44 default without looking heavy.</p>
 
-  <div class="demo-controls" style="margin:0;"><h2>Icon-only · square · md (44px cells, accessible names)</h2></div>
+  <div class="section-head-row"><h2>Icon-only · square · md (44px cells, accessible names)</h2></div>
   <div class="seg md icons" role="group" aria-label="View as">
     <span class="ind" aria-hidden="true"></span>
     <button type="button" aria-pressed="true" aria-label="List view"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></svg></button>
@@ -149,7 +146,7 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); requestAnimationFrame(placeAll); });
+    
     /* SLIDING INDICATOR — one handler for every .seg on the page. Single-select: click sets
        aria-pressed on the group, the indicator measures the pressed button's box and slides. */
     function moveInd(seg){ const ind=seg.querySelector('.ind'); if(!ind) return;

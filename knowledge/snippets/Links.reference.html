@@ -37,10 +37,6 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
     font-size:var(--fs); line-height:1.6; -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text-disabled); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
-  .demo-controls input[type=range]{accent-color:var(--text);}
   h2{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.6rem 0 .5rem;}
   p{max-width:60ch;}
 
@@ -97,12 +93,7 @@
 <body data-theme="light">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ic-download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/></symbol></svg>
 
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
-    <label>Related-list width <input id="w" type="range" min="300" max="600" value="560"> <span id="wv">560</span>px</label>
-    <span>Links — canonical reference</span>
-  </div>
-
+  
   <h2>Inline text link</h2>
   <p>Manage your account in <a class="lnk" href="#">your settings</a>, or <a class="lnk" href="#">download your statement (PDF)</a>. A <a class="lnk" aria-disabled="true" href="#">disabled link</a> is not actionable.</p>
 
@@ -156,11 +147,5 @@
     "requiredAria": ["<a ", "href", "aria-disabled", "aria-current"]
   }
   </script>
-  <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body;
-      b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
-    const w=document.getElementById('w'), wv=document.getElementById('wv'), related=document.getElementById('related');
-    w.addEventListener('input', ()=>{ related.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; });
-  </script>
-</body>
+  </body>
 </html>

@@ -21,9 +21,6 @@
   [data-theme="dark"]{ --filled:#FFFFFF; --unfilled:#1F1F1F; --handle:#1F1F1F; --handle-bd:#808080; --text:#FFFFFF; --focus:#4587A7; --page:#1A1A1A; --border-radius-indicator:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--filled); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .field{max-width:360px;} .field label{display:block; font:500 14px/1.3 var(--font); margin-bottom:12px;}
   .field .val{float:right; font-weight:400;}
   input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:24px; background:transparent; cursor:pointer;}
@@ -43,8 +40,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Slider — canonical reference</span></div>
-
+  
   <div class="field">
     <label for="r1">Monthly budget <span class="val" id="v">£600</span></label>
     <input type="range" id="r1" min="0" max="1000" step="50" value="600" aria-label="Monthly budget in pounds" style="--pct:60%;">
@@ -61,7 +57,7 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    
     const r=document.getElementById('r1'), v=document.getElementById('v');
     r.addEventListener('input', ()=>{ v.textContent='£'+r.value; r.style.setProperty('--pct',(r.value/10)+'%'); });
   </script>

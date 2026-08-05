@@ -52,10 +52,6 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
-    background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
   h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
 
   /* per-status glyph colour (no tint surfaces here — elevation is the chrome) */
@@ -127,11 +123,9 @@
     <symbol id="to-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
   </svg>
 
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
+  <div>
     <button id="spawnOk" type="button">Spawn success</button>
     <button id="spawnInfo" type="button">Spawn information</button>
-    <span>Toast — canonical reference (Mono · transient · no error variant)</span>
   </div>
 
   <h2>Anatomy — statuses (static specimens)</h2>
@@ -170,7 +164,6 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
     const region=document.getElementById('toastRegion');
     const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
     function spawn(status, msg, glyph){

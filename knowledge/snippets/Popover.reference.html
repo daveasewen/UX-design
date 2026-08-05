@@ -37,11 +37,6 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button, .pop-trigger{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
-    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
-  .demo-controls button:hover, .pop-trigger:hover{background:var(--hoverbg);}
-  .demo-controls button:focus-visible, .pop-trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   p.intro{max-width:60ch; line-height:1.6; opacity:.85;}
   .row{display:flex; margin:36px 0; gap:16px; flex-wrap:wrap;}
 
@@ -99,11 +94,7 @@
     <symbol id="po-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
   </svg>
 
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
-    <span>Popover — canonical reference (Mono · click-anchored rich content · non-modal)</span>
-  </div>
-
+  
   <p class="intro">A popover opens on activation and can hold focusable content — Tooltip's interactive
   sibling. It flips above/below the trigger, clamps to the viewport, and closes on Escape, outside
   click, or toggling the trigger. Focus is not trapped: it is a non-modal dialog.</p>
@@ -157,7 +148,7 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    
     let openWrap=null;
     function closePop(w){
       if(!w) return;

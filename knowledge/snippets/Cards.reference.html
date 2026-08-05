@@ -37,10 +37,6 @@
     --checked:#FFFFFF; --ctrl-border:#808080; --pressed:#1A1A1A; --reverse:#FFFFFF; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.75rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
-  .demo-controls button.tg{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button.tg:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--accent);}
 
   .wrap{ width:var(--demo-width, 760px); max-width:100%; }
   .row{ display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }   /* responsive, no JS */
@@ -124,11 +120,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls">
-    <button class="tg" id="themeToggle" type="button">◐ Toggle theme</button>
-    <label>Width <input id="w" type="range" min="300" max="900" value="760"> <span id="wv">760</span>px</label>
-  </div>
-
+  
   <div class="wrap"><div class="row">
 
     <!-- Type 1: Action card (static surface → <article>) -->
@@ -192,9 +184,9 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
-    const w=document.getElementById('w'), wv=document.getElementById('wv');
-    w.addEventListener('input', ()=>{ document.querySelector('.wrap').style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; });
+    
+    
+    
     // Selectable cards — radiogroup with roving Arrow/Home/End (reuses the Selection-controls radio model)
     const grp=document.querySelector('.optgroup'), opts=[...grp.querySelectorAll('[role="radio"]')];
     function selOpt(i){ opts.forEach((o,j)=>{ const on=i===j; o.setAttribute('aria-checked', on); o.tabIndex=on?0:-1; }); opts[i].focus(); }

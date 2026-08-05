@@ -43,10 +43,6 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--label); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   h2{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:0 0 16px;}
-  .demo-controls{margin-bottom:1.75rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
-  .demo-controls button.tg{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--neutral); background:transparent; color:var(--label); cursor:pointer;}
-  .demo-controls button.tg:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--info);}
 
   .wrap{ width:var(--demo-width, 460px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size; }
 
@@ -78,11 +74,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls">
-    <button class="tg" id="themeToggle" type="button">◐ Toggle theme</button>
-    <label>Width <input id="w" type="range" min="300" max="640" value="460"> <span id="wv">460</span>px</label>
-  </div>
-
+  
   <!-- ===== A. Inline dot + label (label carries meaning — 1.4.1) ===== -->
   <div class="wrap">
     <h2 class="spec-h">Inline — dot + label</h2>
@@ -145,9 +137,9 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
-    const w=document.getElementById('w'), wv=document.getElementById('wv');
-    w.addEventListener('input', ()=>{ document.querySelectorAll('.wrap').forEach(el=>el.style.setProperty('--demo-width', w.value+'px')); wv.textContent=w.value; });
+    
+    
+    
 
     // Live status cycle — demonstrates the aria-live announcement (4.1.3). The button disables briefly (a real :disabled state).
     const cycle=[['ok','Approved'],['warn','Pending review'],['inf','In progress'],['err','Declined'],['neu','Cancelled']];
