@@ -1,4 +1,10 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#103**, FABLE 5 conductor + THREE Sonnet build subs, Dave live, ONE window — ★★ **ds-029 + ds-030 RULED (Dave) + ENACTED: showroom Replay SECOND IDIOM · CHARTS FULLY HORIZONTALLY RESPONSIVE (12/14 already fluid; donut/pie = fluid container + fixed circle)** · ✅ **`--sc` COMPOSE-AUDIT INLINE-SCOPE TAUGHT — #101 FALSE POSITIVE CLOSED** · ✅ **GATES 75/0 · SHOWROOM IN SYNC · COMPOSE PASS**)
+
+- **ds-029 (Dave):** Replay detection gains a second idiom (direct `@keyframes`/`animation:`); Confirmation NOT migrated — no canon change to ratified components for tooling. `gen_showroom.py` enacted: selftest 11 bites, enable/disable mutation both ways, dv-animate charts unaffected.
+- **ds-030 (Dave, firm, whole corpus) + Amendment #103:** all charts fully horizontally responsive; survey found 11 dv-fit + sparkline ALREADY fluid (ADR-0015, #96 wave-2 receipts) — donut/pie swept to fluid-container/fixed-circle, render-proven 1180/760 (svg width invariant 592/300, container tracks, centring exact no-legend).
+- **`--sc` closed:** `_validate_compose.py` `inline_scope_vars()` — inline-scope = distinct ℹ provenance, never merged; mutation-tested (strip → FAIL ×1 `--sc`, restore → PASS).
+- **⚠ Named, not decided → Dave:** legend variants centre svg+legend GROUP not svg alone · replay restart logic-verified not click-observed · stacked-area 24px offset carried.
 
 ## Rolled 2026-08-05 #105 (2d) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#102**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **#102-D1: CORPUS FORK RULED SWEEP-NOW (ds-028) + ENACTED — 182 literal opacities → `--alpha-*`, 50 files, 0 residual** · ✅ **GATES 75/0 · SHOWROOM IN SYNC** · ⚠ **HOST CRASH MID-WRAP, REPO RE-PROBED, WRAP RE-RUN**)

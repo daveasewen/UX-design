@@ -3757,3 +3757,53 @@ rule + a pointer to this section. The ceiling itself (`CHAIN_BUDGET_TK`, tape) i
 ### ★ #105-D1 (Dave, 2026-08-05) — research doc lineage
 
 *"yes wrap but v3 needs to adopt this change, I want it to be honest, so stage with the wrap."* ⇒ **(a)** v1+v2 STAGED at the #105 wrap; **(b)** a `-v3` is OWED whose header framing adopts the one-mechanism finding (rows 1+2 = one graph at two tenses, per `_STATE-MACHINE-TARGET.md` §2) in place of the imported four-type taxonomy. Version-don't-overwrite applies. Registered: `knowledge/_REVIEW-SIGNOFF.md`.
+
+---
+
+## ★ #106 — RULINGS DAY (Dave live, Opus 5 conductor, ONE window)
+
+**Context.** Four items rolled in from #105. Retrieval found that **two of them were already built at #104
+and had been riding the roll for two sessions** — `reviews/LEGEND-CENTRING-SPREAD-2026-08-05-v1.html` and
+`reviews/PRI-HOVER-MEASUREMENT-2026-08-05-v1.{html,md}`. No sub was needed; the planned build step was
+INVALIDATED by the probe, not performed. Both artefacts were verified against their own contents (quoted-line
+greps for Option A/B, `dv-leg-spacer`, `min-width:190px`, both widths, light+dark; and for the four hex
+deltas + the 6.39/6.01 contrast pair) — never against `_REVIEW-SIGNOFF.md`'s banner [[ritual-output-is-not-evidence]].
+
+**#106-D1 (Dave's, legend-centring) — OPTION A, KEEP AS-IS.** The donut/pie ring stays 109px left of true
+container centre. The offset is legend-footprint-driven, not proportional: exactly (legend 190 + gap 28)/2,
+CONSTANT at 1180px and 760px. Option B (hidden `.dv-leg-spacer{min-width:190px}` → 0px offset) NOT taken.
+Ruled by eye on the #104 spread. **Closes:** the DV legend-centring row in `_REVIEW-SIGNOFF.md`.
+
+**#106-D2 (Dave's, `--pri-hover`) — `--alpha-68` APPROVED, BUT SCOPED TO THE BUTTON ATOM.** Dave's words:
+*"if these are just all buttons from different components they should all be using the one button atom to
+build from. So there should be one ruling on buttons alone, the alpha-68 is fine."*
+⚠ **This is a bigger ruling than the question asked.** The question offered a Group-A/Group-B pick; Dave
+answered with a COMPOSITION ruling and approved the value in passing. Recorded as he said it, not as it was asked.
+**His "if" was CHECKED, not assumed** [[feedback-verify-before-asking]]: all eight sites map `--pri-hover` to the
+IDENTICAL token `"button/primary/background/hover"`, and each re-declares the hex locally (`#626262`/`#B7B7B7`).
+Premise HOLDS. This is ADR-0013's defect by name — a sub-atom re-typed per component.
+**NOT ENACTED** — Dave then ruled the blast radius must be measured before the scope ruling (below).
+
+**#106-D3 (`type.css:180`) — NOT RULED, SPECIMEN OWED.** `[data-theme="dark"]{background:#111;color:#fff}`
+at 0-1-0 beats every component's `body{background:var(--page)}` at 0-0-1, so every dark pane renders `#111`
+not the declared `#1A1A1A`. Conductor RECOMMENDED raising the selector's specificity (a literal outranking a
+token means the theming DNA is not in control — ADR-0014). **Dave declined to rule without seeing it:**
+`#1A1A1A` vs `#111` is 9/255 on a dark ground. **→ #107 builds the specimen.** ⚠ Dave is astigmatic and
+red/yellow-unstable; this is a neutral-ground pair, so the usual problem-hue caveat does NOT apply
+[[colour-stability-red-yellow-problem]].
+
+**BLAST RADIUS — MEASURED #106 (Dave's call: measure first, then rule).**
+`grep` over `knowledge/snippets/*.html`:
+- **58 literal declarations** of the button/primary family (`--pri`, `--pri-hover`, `--pri-pressed`, `--pri-disabled`, `--on-pri`)
+- across **10 of 77 snippet files**
+- per-token file counts: `--pri:` 6 · `--pri-hover:` 9 · `--pri-pressed:` 4 · `--pri-disabled:` 4 · `--on-pri:` 6 · `--sec-hover:` 6 · `--ter-hover:` 3 · `--sec:` 1
+
+⚠ **UNRECONCILED UNIT DELTA — DECLARED, NOT RESOLVED.** The #104 artefact counts **8 SITES** (Group A 4 +
+Group B 4); this probe counts **9 FILES** declaring `--pri-hover:`. **These are different units and the
+gap was NOT chased** [[measure-dont-convert-units]] [[unmatched-grep-is-not-an-absence]]. It may be one extra
+file or a site/file mismatch. **#107 must reconcile before any sweep** — a sweep sized on the wrong unit is
+the #104 class of error repeating.
+
+**→ #107:** type.css:180 specimen (Dave's eye) · reconcile the 8-sites/9-files delta · THEN Dave's scope
+ruling on the 58 declarations (one governing ruling vs refactor to a single button atom) · -v3 honesty fix
+(still owed from #105-D1, NOT touched this window) · memory compaction remainder · ds-029 first-idiom flag.
