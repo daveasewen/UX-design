@@ -3610,3 +3610,47 @@ lines — a rehearsal cannot pre-catch lines that do not yet exist). ⚠ **THE P
 RESERVE #93-D1 PRICED FROM** — the new regime killed the remediation LOOP but not the authoring +
 re-stamp cycle (size fixed point ×2 · chain regen ×3 · index ×2 · gate ×3). **#94 MUST re-price against
 this reading, not smooth it** — n=3 in the SAME truncation class as its siblings: 42,434 · 44,211 · 49,071.
+
+---
+
+## ★ #94 — THE STOP LINE ENACTED AT n=3, AND THE GATE'S FIRST LIVE CATCH WAS ITS OWN STAMP (2026-08-05)
+
+**#94-E1 — STOP LINE 150,929 real = 200,000 − 49,071. An ENACTMENT of #93-D1's own standing
+clause, not a new ruling:** #93-D1 stood *"until the first new-regime wrap measurement is read"*;
+#94 read it (49,071, § ★ #93 late stamp, truncated-declared like its siblings) and re-priced per
+Dave's #59 high-end rule. The § #93 instruction *"#94 MUST re-price against this reading, not
+smooth it"* is discharged. n=3: 42,434 · 44,211 · 49,071, one truncation class.
+
+**#94-F1 — `CHAIN_STAMP_RE` SCOPE HOLE CLOSED (the #90 escape, declared #90, close ordered by the
+#94 chain title).** TWO defects read off the escape itself: (a) the unit alternation stopped at the
+RETIRED spellings (`tape|tk`) while the live unit has been `real` since #82-D1 — the gate forbade
+only the forms nobody would write; (b) only `K`-shapes matched, so a full-digit `13,277` never
+could. Method receipts: the OLD regex was re-enacted on the escape BEFORE widening (no match —
+the delta asserted, [[invariant-cannot-discriminate-reversal]]); the widened gate carries the
+escape VERBATIM in its selftest plus the K×real cell (declared non-observed); a NEGATIVE control
+pins the documented non-match (`chain 4,065 → 4,400`, unit-less) as a continuing pass — open 23's
+declared cost, not annexed. Selftest suite green. ★ **FIRST LIVE CATCH, same session:** the
+rehearsal flagged GM:9's own `size:` stamp — its #90 post-mortem prose QUOTED the escape verbatim,
+and the widened regex cannot tell a mention from a use inside its scope. Legal form found, not
+fought [[honest-refusal-needs-a-legal-form]]: the quote is defused to a POINTER (homes: gauge log
+§ #90 · the gate's selftest), and the stamp's stale *"NOT fixed here"* corrected at source.
+
+**#94-F2 — §C·1(a)'s lane-3 item "promote grouped/stacked bars (D-Q3)" was STALE.** D-Q3 LANDED
+at the 07-24 wave (`Chart-bar.reference.html:39` "PROMOTED"; receipt items 4–5). Queue vs canon
+disagree ⇒ the queue is the defect; struck at source by addition. Wave 2 lane 3 = pie +
+stacked-area, TWO items.
+
+**#94 job — Dave picked strand (a); the wave was PRICED OUT of this window, not deferred by
+preference:** at decision time FILL was 121,848 real (floor) against the 150,929 stop line —
+three lanes + replays + serial set does not fit (#87's wrap-surface lesson applied in advance).
+Delivered instead: the DIVVY PLAN + three worker briefs as files
+(`notes/_briefs/2026-08-05-chart-wave2-*.md` — lane fences, Sonnet workers, conductor serial set,
+ds-020 inheritance named), fireable at #95 or as parallel windows per #60-D1 (cap 3, Dave vetoes).
+
+**#94 late stamp (post-gate, pre-commit — the #91 form; this append itself is post-gate and DECLARED):**
+wrap-authoring FILL 209,618 real at this stamp — job complete at 121,848, so wrap + rolls + trail surgery
+= **87,770 real and CLIMBING** for the SECOND new-regime wrap (commit NOT in it — same truncation class
+as #59/#91/#93, DECLARED; n=4). ⛔ The 150,929 stop line was BLOWN at this wrap's own hand — cause named
+at the #94 stratum (the #87 trail-surgery class); **#95 re-prices from THIS reading, not smoothed.**
+Gate: 68 in scope · 0 fail in ONE remediation round (1 stamp-form fail, freshly authored line — the
+#93 lesson re-observed: a rehearsal cannot pre-catch lines that do not yet exist).

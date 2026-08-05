@@ -1,4 +1,13 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#91**, OPUS 5 solo Cowork, Dave live, ONE window — ★★ **THE WRAP'S INSTRUCTION MANUAL IS 39.9% OF THE WRAP FLOOR** · ⛔ **FILL vs THROUGHPUT: A 27% UNIT ERROR STANDING SINCE #59**)
+
+- **THE TITLE'S NUMBER FAILED RETRIEVAL FIRST.** `42,434` is n=1, truncated (*"STILL CLIMBING"*), 32 sessions stale, and #59 itself ruled it *"a POINT not a LAW"* needing 2–3 more. #90 dropped the caveat. ⇒ **no cut could have been proven against it**; the lane became re-measurement, on Dave's ruling.
+- **THE FILL READER IS ENACTED — researched 2026-07-31, never wired.** `_checkin.py` had **0 refs to `input_tokens`** for ~31 sessions while the brief's Q3 formula sat correct and unused. Now: FILL/boot/peak + compaction + >10%-drop alarms + synthetic-zero skip + per-`message.id` dedupe; **6/6 mutation tests with a CONTROL** proving the alarms are not stuck on.
+- **THE UNIT ERROR, MEASURED:** FILL **148,069 (74% of 200,000)** vs THROUGHPUT **187,966 (94%)**. The stop line is in FILL. Every comparison to it since #59 used the other number.
+- **WHERE THE CUT IS:** `_RUNBOOK-capture-ritual.md` **16,934 real = 39.9% of the wrap floor**, paid every session, LAST. Room to the stop line here was **9,497 — less than the runbook itself.** **18 HOLE sessions** closed with no wrap; the mechanism is now measured, not moral.
+- **DAVE RULED `ds-025` item 1 = the TOTAL, CLOSED** (owed since 2026-07-31). Boot measured 64,708; the inherited ~17–20K ±8,000 is falsified by >2×. Decomposition stays dark, named as the smaller claim.
+- **⚠ MY OWN COST:** an unexcluded `_memento-index.json` grep pulled ~8K of index blobs into the window, declared when it happened; and a mutation-test fixture was wrong where the module was right — test corrected, not code.
+
 ## ⏱ PRIOR DELTA — 2026-08-04 (Tue **#90**, OPUS 5 solo Cowork, Dave live, ONE window — ★★ **THE READ CHAIN IS CUT 16.9%; ONE LINE WAS 23% OF IT** · ⛔ **THE CHAIN HAD GROWN +85% SINCE #52 AND NEVER COME BACK DOWN**)
 
 - **P4/P6/P7 RE-CHECKED at HEAD on Dave's order** — his opener restated a constraint already inscribed at `notes/_MEMENTO-DECISIONS.md:3417`/`:3419`, so the answer was re-check, not re-record. **P4 HOLDS** (27/49 = 55.1%; last ten with a line **70% none**; ⛔ NEW — #88/#89 carried no `consult-receipts` line at all). **P6 HOLDS, RULED-NOT-ENACTED** (all four terms return the same line: Dave's own ruling accepting P6; `_FUTURE-STATE.md` still 0 hits). **P7 DEAD AND INVERTED** (stamp +0.96% ABOVE, not 9–9.5% below; stale in UNIT as well as STATE — its PROPOSAL survives). Ledger § ★★ THE THREE STALE RECEIPTS RE-CHECKED AT HEAD.
@@ -1378,3 +1387,5 @@ instructions. Prior refresh: T-D12 ruling, commit `9fb1381`.*
 - **Queued to #64 with prices:** `_gm_usage.py` matrix (gate 5) · capture phase 2 · mover count reconciliation. **Apollo: six sessions unmoved — #64 opens there (chart-expansion STEP 2 / §C·2 batch) unless Dave redirects.**
 
 
+
+*(2d tail rolled 2026-08-05 #94, step 2d)* · *Previous: 2026-08-04 (Tue from `date` — #90 wrap: P4/P6/P7 re-checked on Dave's order (P4 holds · P6 holds + ruled-not-enacted · P7 DEAD and inverted) · the 2f roll owed since #83 DISCHARGED after five deferrals ⇒ read chain 13,277 → 11,029 real, −16.9% · the chain's +85% growth since #52 MEASURED · boot arithmetic published: 48,577 of 61,854 still dark, wrap floor 42,434 > the whole corpus.)*

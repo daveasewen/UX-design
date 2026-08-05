@@ -814,8 +814,26 @@ SIZE_TOLERANCE = 0.10      # a stamp is a claim about a measurable thing; 10% dr
 # imagined: `chain **4.4K tape` (#44) · `chain 3.56K tape` (#39) · `chain 34.7K tk` (legacy unit,
 # #30) · `_CHAIN.md **4.6K tape`. `\D{0,12}?` spans the markdown (`**`, `~`, `(`) without ever
 # crossing a digit, so `chain 4,065 → 4,400` and the `417-tape` wrapper prose do not match.
-CHAIN_STAMP_RE = re.compile(r"(?<![A-Za-z])_?CHAIN(?:\.md)?\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b",
-                            re.I)
+#
+# ⛔ WIDENED #94 — the #90 escape, closed where it happened. #90's first stamp wrote
+# `chain 13,277 real` beside "measured AFTER the regen", and this regex — bound to the
+# `… N K tape|tk` form — walked it straight past the check written to forbid it (caught by
+# re-reading the artefact, DECLARED at GM's `size:` line #90, left OPEN; the #94 chain title
+# carried the close order). TWO holes, both read off the escape itself, not imagined:
+#   (a) the unit vocabulary stopped at the RETIRED spellings (`tape|tk`) — the live unit has
+#       been `real` since #82-D1 (ruled #54), so the gate forbade only the forms nobody would
+#       write and missed the one everybody would;
+#   (b) only `K`-forms matched — a full-digit figure (`13,277`) never could.
+# Units are normalised ONCE (tape|tk|real|bill|tokens), not enumerated per session
+# [[scope-blindness-gate-vocabulary]]. Group layout: (1)=K-form number, (2)=full-digit number,
+# (3)=unit — the open-15 consumer at `chain_hand` parses (1)*1000 or (2) de-commaed.
+# A unit-less figure (`chain 4,065 → 4,400`) STILL passes: that is open 23's declared cost,
+# deliberately unchanged — closing it silently here would annex a hole Dave knows is open.
+CHAIN_STAMP_RE = re.compile(
+    r"(?<![A-Za-z])_?CHAIN(?:\.md)?\b\D{0,12}?"
+    r"(?:([\d.]+)\s*K|(\d{1,3}(?:,\d{3})+|\d{4,}))\s*"
+    r"(tape|tk|real|bill|tokens?)\b",
+    re.I)
 
 # ---------------------------------------------------------------- open 25, built 2026-07-30 #51
 # `BARE_TOKEN_RE` — ds-021's rule finally gets an enforcer instead of a sentence.
@@ -2060,7 +2078,10 @@ def check_budgets(repo):
             if chain_file is None:
                 truth = f"UNMEASURED — {chain_file_detail}"
             else:
-                hand = float(chain_hand.group(1)) * 1000
+                # #94: group(1) = K-form (`4.4K`), group(2) = full-digit form (`13,277`) —
+                # the widened regex guarantees exactly one is non-None.
+                hand = (float(chain_hand.group(1)) * 1000 if chain_hand.group(1) is not None
+                        else float(chain_hand.group(2).replace(",", "")))
                 drift = abs(hand - chain_file) / max(chain_file, 1)
                 truth = (f"the FILE measures {chain_file:,} tape right now, so this copy is already "
                          f"{drift * 100:.1f}% out" if drift > SIZE_TOLERANCE else
@@ -4756,8 +4777,14 @@ def selftest_growth():
             failures.append("open 15: an ORDINARY stamp tripped the chain-figure ban. The check "
                             "fires on everything, which makes it noise and gets it routed around")
         # The forms are REAL — every one taken from `git log` on GOOD-MORNING.md, not invented:
-        # `chain **4.4K tape` (#44) · `chain 3.56K tape` (#39) · `chain 34.7K tk` (#30, legacy unit).
-        for hand in ("chain **4.4K tape**", "chain 3.56K tape", "chain 34.7K tk"):
+        # `chain **4.4K tape` (#44) · `chain 3.56K tape` (#39) · `chain 34.7K tk` (#30, legacy unit)
+        # · `chain 13,277 real` (#90 — THE ESCAPE VERBATIM: live unit, full digits, no K; this is
+        #   the form the pre-#94 regex demonstrably passed — re-enacted before widening, no match).
+        # `chain 13.3K real` is the one non-observed form here, DECLARED as such: it is the K×real
+        # cell the unit-normalisation opens, one keystroke from the escape, tested so the vocabulary
+        # widening is proven on both digit shapes rather than assumed.
+        for hand in ("chain **4.4K tape**", "chain 3.56K tape", "chain 34.7K tk",
+                     "chain 13,277 real", "chain 13.3K real"):
             f_, _w, _n3 = _warns_for(td, stamp=f"> **size:** GM 1.00K tape · {hand} · measured x")
             hit = next((x for x in f_ if "HAND-WRITTEN chain figure" in x), None)
             if hit is None:
@@ -4769,6 +4796,16 @@ def selftest_growth():
                 failures.append(f"open 15: the refusal for {hand!r} does not name the retirement "
                                 f"or the figure's real home. A gate that only forbids teaches the "
                                 f"next session nothing — report the measurement. Was: {hit}")
+        # ★ NEGATIVE CONTROL, #94: the documented non-match stays a non-match after the widening.
+        # `chain 4,065 → 4,400` is the regex comment's own example of unit-less transition prose;
+        # if the widened alternation catches it, the ban has grown past what it quotes — open 23's
+        # bare-figure cost is DECLARED open and must not be annexed silently by this fix.
+        f_, _w, _n5 = _warns_for(td, stamp="> **size:** GM 1.00K tape · chain 4,065 → 4,400 · "
+                                           "measured x")
+        if any("HAND-WRITTEN chain figure" in x for x in f_):
+            failures.append("open 15 #94 SCOPE: the unit-less transition `chain 4,065 → 4,400` "
+                            "tripped the ban — the widening escaped its declared scope; open 23's "
+                            "cost was meant to stay open, not be closed by accident")
         # ★★ THE SCOPE CONTROL, and it is the load-bearing bite. `GOOD-MORNING.md:488` really does
         # carry `the CHAIN only (**~4.1K tape**` inside a dated stratum — a TRUE record of one
         # session's boot cost. A repo-wide ban would forge a defect out of correct history. This

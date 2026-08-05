@@ -1,5 +1,27 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-08-05 #94 — rolled by session #94 (2c: keep ★ LATEST + 1 PRIOR; 2f: #93 commit-state below)
+
+> **commit-state #93:** ONE wrap commit. Paths explicit — never `git add -A`: `notes/_GAUGE-LOG.md` (correction by addition, § #91) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #93 + late stamp) · `GOOD-MORNING.md` · `_LIVE-STATE.md` · `_GM-ARCHIVE.md` · `_LIVE-STATE-ARCHIVE.md` · `_CHAIN.md` (regen) · `knowledge/_memento-index.json` (2g) · `notes/_REHEARSAL-LOG.jsonl` (appends) · `knowledge/_SESSIONS.jsonl` (witness).
+> **section-usage #93 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:U A:U C1:U C2:U C4:U STRATA:C · LS HDR:U LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U
+
+> ## ★ PRIOR — 2026-08-05 (Wed **#92**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **THE WRAP GATE NOW REHEARSES MID-WINDOW — SAME SEAM, TERSE, CONSUMED AT BIRTH** · ✅ **FIRST LIVE CATCH IN ITS FIRST SESSION** · ⛔ **THE CHAIN'S TITLE ORDERED A CUT #91's OWN WRAP HAD REFUTED**)
+
+> **⛔ THE TITLE'S PREMISE WAS DEAD BEFORE BOOT — AND THE LEDGER SAID SO.** The chain titled #92 at the runbook cut (16,934 real, 39.9% of the floor); ledger **#91-F5**, stamped after the title, had measured #91's wrap at **44,211 real WITHOUT the runbook read** ⇒ the binding term is the **GATE-FAILURE REMEDIATION LOOP** — probe → fix → re-gate per fail, every round paid at peak fill. Reconciled at the opener against the ledger, not the banner [[trust-the-spine-not-the-prose]]; **Dave RULED the lane: attack the loop (#92-D1).**
+
+> **✅ BUILT + CONSUMED THE SAME HOUR: `--rehearse`.** `_capture_gate.py --rehearse` IS `run(mode="wrap")` — the same seam, never a parallel checklist that drifts [[check-after-its-own-remedy]] — classifying fails into **heals-at-wrap** (ONLY the two date stamps ritual steps 1/2 mechanically rewrite, matched against the gate's own quoted fail strings, scoped to the two filenames [[gate-must-quote-what-it-forbids]]) vs **STRUCTURAL — fix now, cheap**. Terse by design: the sandbox reads the tree, the window pays 1–2 lines. Consumer: **`_checkin.py` runs it on every check-in** (`--no-rehearse` to opt out) [[instrument-without-a-consumer]].
+
+> **✅ THE INSTRUMENT #91-F5 ORDERED EXISTS: `notes/_REHEARSAL-LOG.jsonl`.** Every rehearse AND every real wrap-mode run appends one machine line ({fails, structural, heals_at_wrap, warns}) ⇒ the **fails-at-wrap-open distribution builds across sessions**, and repeated wrap-mode lines inside one session COUNT the remediation rounds. Deliberately NOT the gauge log — a session writing its own post-mortem there jams `roll_2f` (#91's own double-entry fail).
+
+> **★ FIRST LIVE CATCH, IN THE SESSION THAT BUILT IT:** a runbook edit staled the retrieval index; the rehearsal flagged it STRUCTURAL at check-in price and it was fixed in one command — the same fail class #91 paid for at peak fill. **Wrap-open here: 0 structural fails** (logged) ⇒ this wrap is the thesis's own test, and the log line is its receipt.
+
+> **✅ STALE PROSE STRUCK AT SOURCE:** `_RUNBOOK-context-gauge.md` § Half 2 still taught *"boot half printed as UNMEASURED (ds-025 item 1)"* — FALSE since #91-D1 (Dave: item 1 = the TOTAL, CLOSED; boot MEASURED). Struck with the strike marked, rehearsal pointer added in the same region [[read-chain-is-where-staleness-is-free]].
+
+> **⚠ MY OWN COST, DECLARED:** the wrap-surface reads (mover docstring, strata, LS headers) pushed FILL past amber before the stamp — the #87 lesson re-paid in milder form; priced at the stratum, not smoothed.
+
+> **residual (GENERATED #92):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #91) — _roll_state.py · 2026-08-05
+
+
 ## Batch 2026-08-05 #93 — rolled by session #93 (2c: keep ★ LATEST + 1 PRIOR; 2f: #92 commit-state below)
 
 > **commit-state #92:** ONE wrap commit. Paths explicit — never `git add -A`: `knowledge/_capture_gate.py` (--rehearse mode + classifier + JSONL writer + selftest arm, suite green) · `knowledge/_checkin.py` (consumer + `--no-rehearse`) · `knowledge/_RUNBOOK-context-gauge.md` (stale boot-claim STRUCK + rehearsal pointer) · `notes/_REHEARSAL-LOG.jsonl` (NEW — contract: append-only machine lines, written by the gate itself on every rehearse/wrap run, read at wrap-pricing; created by the gate, not the mover) · `GOOD-MORNING.md` (#92 banner · #91 demoted · #90+#89 rolled · #91 stratum rolled via roll_2f · this stratum · forward title) · `_GM-ARCHIVE.md` (batch #92) · `_LIVE-STATE.md` (#92 delta · #91 demoted · Last refreshed) · `_LIVE-STATE-ARCHIVE.md` (#87 + #84) · `notes/_GAUGE-LOG.md` (#91 post-mortem via roll_2f ONLY — nothing hand-written) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #92) · `_CHAIN.md` (regenerated) · `knowledge/_memento-index.json` (2g, LAST). Subject verified against the regenerated banner AFTER the commit (#86's defect class).
