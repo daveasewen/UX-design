@@ -1,5 +1,15 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-05 #101 (2d) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#98**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **ONE-BAR ENACTED + 75 SNIPPETS PURE CANON (#98-D1)** · ✅ **44 ASSERTS ×2 WIDTHS, CONSOLE []** · ⚠ **OPACITY 4% SPREAD (D3) → #99**)
+
+- **#97-D1 ENACTED end-to-end + #98-D1 RULED (Dave):** purge lands in the SOURCES — 75/75 snippets cleaned of demo chrome (−931/+171, Sonnet sub, conductor re-verified; real state controls KEPT — modal openers, toast spawns, density). Survey first: unguarded `themeToggle` listeners made generator-strip JS-hazardous; Dave: library = sole interface, snippets pure canonical. Ledger § ★ #98 · receipt `notes/_receipts/2026-08-05-98-one-bar-chrome.md`.
+- **ONE bar per page:** title · meta · theme seg · Light/Dark seg (ONE pane replaces side-by-side) · width · ↻ Replay in-bar (`disabled` where no `dv-animate`; bar-side contentDocument re-toggle) · Open ↗. ← Library gone; index viewbar gone; **index theme seg gone too (#98-D2, Dave mid-window screenshot)**. Selftest 11 bites (+5 pin the contract on the templates).
+- **Render-proven:** 44 asserts × 1440/760, HSBC face true in pane, **console errors [] = no orphaned JS**; index re-proven after D2 (0 segs, nav + `#c=` intact).
+- **Residuals declared:** Confirmation Replay disabled (display-toggle idiom, not dv-animate — Dave's call, registered) · narrow bar wraps 2 rows (cosmetic) · `.bak` stray moved to `_to_delete/`.
+- **#98-D3:** opacity primitives = 4% steps; spread ROLLED to #99 (wrap opened on stop-line discipline, #97's shape). Rehearsal at opener: 1 STRUCTURAL fail (pre-flight #97 refusal+numbers one line) FIXED at source by split, form only.
+
+
 ## Rolled 2026-08-05 #100 (2d) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#97**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **SIDE TREE NAV BUILT + RENDER-PROVEN, AWAITING DAVE** · ✅ **STOP LINE RESPECTED (wrap-open 108,193)** · ⚠ **OPACITY SPREAD (D2) → #98**)
 
@@ -20,6 +30,7 @@
 
 
 ## Rolled 2026-08-05 #98 (2d) — via the mover
+*(refresh-chain tail carried at the same boundary, #101 2d:)* *Previous: 2026-08-05 (Wed from `date` — #98 wrap: ONE-BAR enacted + 75 snippets PURE CANON (#98-D1, sources cleaned after survey exposed unguarded-listener hazard; receipt `2026-08-05-98-one-bar-chrome.md`) · index viewbar + theme seg removed (#98-D2) · 44 render asserts ×2 widths, console [] · opacity 4% steps ruled (#98-D3), spread → #99.)*
 *(refresh-chain tail carried at the same boundary:)* *Previous: 2026-08-05 (Wed from `date` — #94 wrap: stop line ENACTED at n=3 = 150,929 real (#93-D1's own clause, #59 high end) · `CHAIN_STAMP_RE` hole CLOSED — first live catch was GM's own stamp quoting the escape, defused to a pointer · §C·1(a) D-Q3 item struck as stale (landed 07-24) · chart wave 2 DIVVY + 3 lane briefs cut as files, firing PRICED OUT (FILL 121,848 floor vs 150,929). ⚠ this trail has NO #93 entry — #93's wrap left the #92 text at the head; its record is the #93 delta/stratum. Gap DECLARED, not repaired.)**
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#95**, FABLE 5 solo Cowork, Dave live, ONE window — ★★ **WAVE 2 LANDED: 8 MEMBERS REGISTERED, GATES GREEN** · ⛔ **STOP LINE BLOWN PRE-WRAP: 161,622 FIRST READ** · ⚠ **RENDER-VERIFY + EYEBALL OWED**)
 

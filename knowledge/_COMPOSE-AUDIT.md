@@ -1,8 +1,8 @@
 # Composition gate audit
 
 ## canon.css
-- defs 559, var() refs 217
-- ✅ vars resolve, braces balanced, spine markers present
+- defs 775, var() refs 360
+- ❌ canon.css: 1 unresolved var(): ['--sc']
 
 ## composed screens (5)
 - ✅ canon-gallery.canon.html — 38 canon classes, 0 rogue hex, 0 redefines, all resolve
