@@ -3480,3 +3480,46 @@ status: re-check — three verdicts on Dave's #90 order · P4 HOLDS (+ new: #88/
 **⚠ MISATTRIBUTION, CORRECTED IN-WINDOW:** a 45s sandbox timeout was reported as `_build_memento_index.py` exceeding the call limit. It does not — it runs in **0.21s**. The slow half was a 17-pattern repo-wide grep in the same call. **Isolate before attributing** [[attribute-the-diff]].
 
 status: built + verified · read chain −16.9% · 2f roll DISCHARGED after five deferrals · gate scope hole DECLARED, unfixed · dark half UNMEASURED · 2026-08-04
+
+
+## ★ #91 — ds-025 ITEM 1 RULED, AND THE WRAP FLOOR RELOCATED (2026-08-05)
+
+**#91-D1 — DAVE RULED: `ds-025` item 1 is THE TOTAL, and it is CLOSED.**
+Asked by `notes/_briefs/2026-07-31-compaction-and-fill-research.md` § "What remains genuinely
+unobservable" on 2026-07-31 — *"Dave should rule which claim he needs before this is called
+closed"* — and **never put to him until now.** The concern it recorded was that boot was being
+priced against an inherited *"~17–20K ±8,000"* estimate. That total is MEASURED: **61,582** in the
+brief, **64,708** in this window, both via `message.usage`. The inherited figure is falsified by
+more than double. **The DECOMPOSITION of boot into system-prompt vs tool-schemas vs MEMORY.md
+remains unobservable and is recorded as a SMALLER, SEPARATE claim — closing the total does not
+close it.**
+
+**#91-F1 — the fill formula was RULED-NOT-ENACTED for ~31 sessions.** The brief's Q3 carried
+Anthropic's own `total_input_tokens = cache_read + cache_creation + input`, primary-sourced and
+applied, on 2026-07-31. `_checkin.py` carried **0 references to `input_tokens`** until this
+session. [[instrument-without-a-consumer]] — the research was never wrong; the consumer was never
+built. ENACTED #91 with compaction + >10%-drop alarms, a synthetic/zero skip (#59's trap), and
+per-`message.id` dedupe; **6/6 mutation tests including a CONTROL** that proves the alarms are not
+stuck on.
+
+**#91-F2 — the gauge and the stop line have been in different units since #59.** The stop line
+(157,566 = 200,000 − 42,434) is FILL. `_checkin.py` reported THROUGHPUT and its own docstring
+forbids converting between them. MEASURED at one instant this window: FILL **148,069 (74%)** vs
+THROUGHPUT **187,966 (94%)**. ⇒ **every stop-line comparison from #59 to #90 was a unit error**,
+including #90's own banner, which asserts both *"THROUGHPUT IS NOT FILL and is NOT converted to
+one"* and *"Stop line 157,566; every reading past it."*
+
+**#91-F3 — ★★ THE WRAP FLOOR'S LARGEST SINGLE LINE ITEM IS ITS OWN INSTRUCTION MANUAL.**
+`_RUNBOOK-capture-ritual.md` = **16,934 real = 39.9% of the 42,434 floor**, paid EVERY session,
+LAST, when the window is fullest. At this wrap the room to the stop line was **9,497 — less than
+the runbook.** ⇒ **reading how to wrap costs more than the room left when the wrap fires.** The
+gauge log carries **18 HOLE sessions** that closed with no wrap record; Dave's #86 *"its not your
+decision to not wrap!!"* now has a measured MECHANISM behind it rather than a character
+explanation. **The cut is in the wrap's INSTRUCTIONS, not its actions — #33's read-chain cut,
+applied to the other end of the session.** Proposed to #92, NOT built here.
+
+**#91-F4 — `42,434` never survived retrieval.** #59 recorded it as **n=1**, *"a POINT not a LAW"*,
+**truncated** (*"STILL CLIMBING"*), needing 2–3 more before the stop line could reserve the high
+end (Dave's rule, #59). #60–#65 quote it honestly as ESTIMATED; **#90 stated it flat and titled
+#91 after it.** ⇒ the ordered cut could not have been proven against it. n is now **2**.
+[[planning-estimate-is-not-a-measurement]] [[premise-ages-faster-than-rule]]

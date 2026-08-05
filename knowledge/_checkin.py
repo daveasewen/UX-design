@@ -13,10 +13,23 @@ mounted read-only into the sandbox and written LIVE (verified #53: last record
 the reading costs nothing it is measuring.
 
   MEASURED   the conversation half — user / assistant / attachment records.
-  UNMEASURED the boot half — system prompt, tool schemas, MEMORY.md index.
-             `ds-025` item 1 STANDS: no `system` record type exists in that
-             file. It is printed as UNMEASURED and is NEVER defaulted to a
-             constant [[feedback-measuring-tool-must-not-guess]].
+             THROUGHPUT: cumulative, not resident.
+  MEASURED   the FILL half — resident context, off `message.usage` (ENACTED #91).
+             ⛔ THIS PARAGRAPH USED TO READ "UNMEASURED … `ds-025` item 1 STANDS:
+             no `system` record type exists in that file." The premise was true and
+             the conclusion did not follow: there is no `system` RECORD, but the
+             `usage` field prices the whole call — "prompt caching references the
+             entire prompt — tools, system, and messages" (Anthropic, quoted in
+             `notes/_briefs/2026-07-31-compaction-and-fill-research.md` § Q3).
+             That brief MEASURED boot at 61,582 on 2026-07-31 and this module went
+             ~31 sessions still printing UNMEASURED, because nobody wired it
+             [[instrument-without-a-consumer]] [[premise-ages-faster-than-rule]].
+  UNMEASURED the DECOMPOSITION of boot into system-prompt vs tool-schemas vs
+             MEMORY.md. The `usage` field gives the call's sum, not a breakdown.
+             ⬛ DAVE'S RULING OWED, asked by the brief 2026-07-31 and never put to
+             him: is `ds-025` item 1 the TOTAL (now closeable) or the harness-only
+             DECOMPOSITION (still dark)? NEVER defaulted to a constant either way
+             [[feedback-measuring-tool-must-not-guess]].
 
   UNIT       HEADLINE = REAL Claude tokens, via `_gauge_tokens.count()` — #83 (c)
              wires this reader to #82's unit. ONE call on the WHOLE concatenated
@@ -117,6 +130,110 @@ def measure_real(text: str) -> tuple[int, str]:
     return n, method
 
 
+# ── FILL — the resident-context half. ENACTED #91; RESEARCHED #59-era and never wired. ──
+#
+# `notes/_briefs/2026-07-31-compaction-and-fill-research.md` § Q3 established this five days
+# and ~31 sessions before this function existed: the answer was already in the transcript,
+# unused, while the live gauge kept reporting THROUGHPUT and the read chain kept saying the
+# boot half was unmeasurable. [[instrument-without-a-consumer]] — the research was right, the
+# consumer was never built. This is the consumer.
+#
+# Anthropic's documented formula, QUOTED by that brief from primary source:
+#     total_input_tokens = cache_read_input_tokens + cache_creation_input_tokens + input_tokens
+# and: "Prompt caching references the entire prompt — tools, system, and messages (in that
+# order)". So this is NOT a conversation-only proxy: the harness and system prompt are inside
+# the number. That is what makes it FILL and not throughput.
+#
+# ⛔ IT IS NEVER CONVERTED TO OR FROM THE THROUGHPUT HEADLINE. They measure different objects.
+#    [[measure-dont-convert-units]]
+FILL_FIELDS = ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens")
+COMPACTION_DROP = 0.10          # the brief's own threshold: no drop >10% ⇒ no compaction
+
+
+def _total_in(usage: dict) -> int:
+    return sum(int(usage.get(f, 0) or 0) for f in FILL_FIELDS)
+
+
+def read_fill(path: str) -> dict:
+    """Resident context per turn, read off the API's own accounting.
+
+    REFUSES rather than guesses, in three named ways:
+      * no usage records at all      -> available=False, reason NAMED. Never a constant.
+      * synthetic / all-zero records -> SKIPPED and counted (#59 found a `model:"<synthetic>"`
+                                        record with all-zero usage that "would read as 0 if it
+                                        landed last" — silently reading 0 as a fill of 0 is the
+                                        exact ds-025 defect).
+      * records != turns             -> deduped on `message.id`; #59 verified usage is
+                                        byte-identical within an id (35 records / 20 turns).
+
+    Two checks that CAN FAIL, so a green here is evidence and not an assertion
+    [[six-beat-ladder-ruled]]:
+      * `compaction_records` — any `usage.iterations[].type == "compaction"`. The brief proves
+        this marker exists and is left behind when compaction fires.
+      * `drops` — any turn whose total falls >10% below its predecessor. Fill is monotonic
+        absent compaction; a drop is either compaction or a broken read, and BOTH must surface.
+    """
+    turns: list[dict] = []
+    seen: set[str] = set()
+    skipped_synthetic = 0
+    compaction_records = 0
+
+    with open(path, encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            msg = rec.get("message") or {}
+            usage = msg.get("usage")
+            if not isinstance(usage, dict):
+                continue
+            for it in usage.get("iterations") or []:
+                if isinstance(it, dict) and it.get("type") == "compaction":
+                    compaction_records += 1
+            total = _total_in(usage)
+            model = msg.get("model") or "?"
+            if total == 0 or "synthetic" in str(model):
+                skipped_synthetic += 1
+                continue
+            mid = msg.get("id") or rec.get("uuid") or f"anon-{len(turns)}"
+            if mid in seen:
+                continue
+            seen.add(mid)
+            turns.append({"id": mid, "model": model, "total": total,
+                          "raw_in": int(usage.get("input_tokens", 0) or 0),
+                          "cache_read": int(usage.get("cache_read_input_tokens", 0) or 0),
+                          "out": int(usage.get("output_tokens", 0) or 0)})
+
+    if not turns:
+        return {"available": False,
+                "reason": ("no `message.usage` record in this transcript — this is an ABSENCE "
+                           "OF A MATCH, not a proven absence [[unmatched-grep-is-not-an-absence]]. "
+                           "NOT defaulted to a constant."),
+                "skipped_synthetic": skipped_synthetic}
+
+    drops = [i for i in range(1, len(turns))
+             if turns[i]["total"] < turns[i - 1]["total"] * (1 - COMPACTION_DROP)]
+    # Cache continuity: turn N's cache_read + raw_in should reconstruct turn N-1's total.
+    # It holds while the cache boundary is stable; a re-creation legitimately breaks it, so
+    # this is REPORTED as a count, never asserted as a pass/fail.
+    continuous = sum(1 for i in range(1, len(turns))
+                     if turns[i]["cache_read"] + turns[i]["raw_in"] == turns[i - 1]["total"])
+    return {"available": True,
+            "boot": turns[0]["total"],
+            "now": turns[-1]["total"],
+            "peak": max(t["total"] for t in turns),
+            "turns": len(turns),
+            "continuous": continuous,
+            "continuity_of": len(turns) - 1,
+            "drops": drops,
+            "compaction_records": compaction_records,
+            "skipped_synthetic": skipped_synthetic}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="On-demand context check-in.")
     ap.add_argument("path", nargs="?", help="Transcript jsonl (default: newest mounted).")
@@ -126,6 +243,7 @@ def main() -> int:
     args = ap.parse_args()
 
     path = find_transcript(args.path)
+    fill = read_fill(path)   # FILL — read off `usage`, independent of every tape figure below
     enc = encoder()
 
     by_type: dict[str, int] = {}
@@ -176,7 +294,11 @@ def main() -> int:
             "measured_real": real_measured, "measured_real_method": real_method,
             "measured_tape_cl100k": measured, "by_type": by_type,
             "records": records, "lag_seconds": lag,
-            "boot_half": None,
+            "fill": fill,
+            "fill_unit": ("REAL Claude tokens, resident context — Anthropic's own "
+                          "total_input_tokens (cache_read + cache_creation + input). "
+                          "SEPARATE OBJECT from the throughput headline; never converted."),
+            "boot_half": (fill.get("boot") if fill.get("available") else None),
             "unit": (f"headline: REAL Claude tokens, method={real_method} — ONE call, "
                      "#82/#83 (c); breakdown: tape/cl100k (D1: UNVERIFIED proxy), SHAPE "
                      "ONLY, does NOT sum to the headline, NEVER scaled to match it"),
@@ -197,12 +319,39 @@ def main() -> int:
         print(f"    {k:<10} {by_type[k]:>9,}")
     print("               ⛔ different UNIT from the headline above — does NOT sum to it, and")
     print("               is NEVER scaled/converted to match it (converting is #54's defect).")
-    print(f"  UNMEASURED   {'boot half':>9}  system prompt + tool schemas + MEMORY.md")
-    print("               ds-025 item 1 STANDS — no `system` record exists here.")
-    print("               NOT defaulted to a constant.")
+    # ── FILL — the block this module went 31 sessions without. ENACTED #91. ──
+    if not fill.get("available"):
+        print(f"  FILL         {'UNAVAILABLE':>9}  ⛔ {fill.get('reason')}")
+    else:
+        print(f"  FILL         {fill['now']:>9,} real  RESIDENT CONTEXT — what the last call actually sent")
+        print(f"    boot       {fill['boot']:>9,} real  first turn = system + tools + MEMORY.md + CLAUDE.md")
+        print(f"    peak       {fill['peak']:>9,} real  across {fill['turns']} turns")
+        print("               ⛔ ds-025 item 1's TOTAL is MEASURED, not unmeasurable — the")
+        print("               `usage` field covers tools + system + messages (Anthropic, quoted")
+        print("               in the #59-era brief). What stays dark is the DECOMPOSITION of")
+        print("               boot into its sub-parts. Say which of the two you mean.")
+        if fill["compaction_records"]:
+            print(f"               ⛔ {fill['compaction_records']} COMPACTION record(s) in `usage.iterations`"
+                  " — fill is post-compaction.")
+        if fill["drops"]:
+            print(f"               ⛔ {len(fill['drops'])} turn(s) DROPPED >10% — compaction or a broken"
+                  f" read, at turn index {fill['drops'][:5]}.")
+        if fill["skipped_synthetic"]:
+            print(f"               ⚠ {fill['skipped_synthetic']} synthetic/zero-usage record(s) SKIPPED (#59).")
+        print(f"               ⚠ cache continuity {fill['continuous']}/{fill['continuity_of']}"
+              " — reported, not asserted; a cache re-creation breaks it legitimately.")
+        print("               ⚠ LATE BY ONE STEP (Dave, #59): this is the prompt of the call")
+        print("               that ALREADY RAN. It is a FLOOR. Price the NEXT turn, not the last.")
     print()
     if args.window:
-        print(f"  ratio        {real_measured / args.window:.0%} of the {args.window:,} you passed  ({real_method})")
+        if fill.get("available"):
+            print(f"  ratio        {fill['now'] / args.window:.0%} of the {args.window:,} you passed"
+                  "  — ON FILL, the comparable unit")
+            print("               ★ THIS is the ratio to compare against a stop line. The stop")
+            print("               line is in FILL; comparing THROUGHPUT to it is a unit error and")
+            print("               it was made every session from #59 to #90.")
+        print(f"  ratio (thru) {real_measured / args.window:.0%} of {args.window:,}  ({real_method})"
+              " — ⛔ NOT comparable to a fill budget")
         print("               ⚠ that denominator is YOURS, not observed. The absolute")
         print("               figure above is the only honest one (D2 c).")
     else:
@@ -212,7 +361,9 @@ def main() -> int:
     print("          wired here at #83 (c). Breakdown = tape/cl100k (tiktoken); D1 rules that")
     print("          an UNVERIFIED proxy, kept for SHAPE only, never summed/scaled to the")
     print("          headline above.")
-    print("  ⚠ KIND  THROUGHPUT, cumulative. Not a fill reading; compaction unobservable.")
+    print("  ⚠ KIND  TWO OBJECTS, REPORTED SEPARATELY, NEVER SUMMED OR CONVERTED:")
+    print("          headline = THROUGHPUT (cumulative log) · FILL = RESIDENT CONTEXT (`usage`).")
+    print("          A stop line is in FILL. Compare FILL to it. #59→#90 compared the other one.")
     return 0
 
 
