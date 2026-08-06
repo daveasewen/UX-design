@@ -1,5 +1,15 @@
 # #116 — the hit-area checker redesign, and the molecule Dave's question found
 
+```
+provenance: session-116 · 2026-08-06
+status: observed
+```
+
+*(⚠ **The provenance/status block above was ADDED at #118's recovery wrap, not by #116.** It is
+mandatory on every dossier dated ≥ 2026-07-26 and `_capture_gate.py` was failing the build on its
+absence; the repair is CLERICAL and **no prose of #116's was edited**. `observed` and not `ruled` —
+`ruled` is reserved and promotion is Dave's alone.)*
+
 **2026-08-06 · Opus conductor · Dave live · ONE window · 1 Opus build sub · commit `2a231f9`**
 
 ## What this session was for, and what it became
