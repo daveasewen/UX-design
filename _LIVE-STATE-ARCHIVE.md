@@ -1,4 +1,13 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#105**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **CROSS-LANE RECONCILE: ALL RESEARCH-LANE CLAIMS HELD, NO RULING SUPERSEDED** · ✅ **-v2 BUILT (SUB) + VERIFIED · v1+v2 STAGED (Dave)** · ✅ **CHAIN-DIET CUT ENACTED AT WRAP-OPEN** · ⬛ **-v3 HONESTY FIX OWED**)
+
+- **Cross-lane reconcile:** no superseding ruling (search --all + `_rulings.json`); all STEP-1 probes re-derived — one deviation (`spinoff`=1) attributed to `_gm_usage.py` label regex, lane did NOT move; #104's unattributed path = the research lane's v1; §9 generator checkbox STALE vs code (PARTIAL — `_build_live_state.py:130/:197/:9`). Brief: `notes/_briefs/2026-08-05-105-cross-lane-reconcile-brief.md`.
+- **-v2:** `_RESEARCH-graph-engineering-2026-08-05-v2.html` 43,118 B — six changes; contrast independently recomputed 6.02:1 L / 5.63:1 D; responsive UNPROVEN declared. **#105-D1 (Dave): stage v1+v2 — and `git log` shows v1 ALREADY entered `954c37f` (#104's own wrap), so #104's "NOT staged" commit-state claim is FALSE against its own commit (ritual-output ≠ ritual-ran class; v2 newly staged here); -v3 OWED — adopt the one-mechanism finding into the header framing ("I want it to be honest").** Registered `_REVIEW-SIGNOFF.md`.
+- **Chain-diet:** H1/H2/H4 provenance homed verbatim (`_MEMENTO-DECISIONS.md` § ★ #105 CHAIN-DIET, hash-verified) then cut to live rule + pointer; ceiling untouched (G5 Dave's). Post-cut MEASURED both units: chain −2,001 real (10,292→8,291) · 5,323 tape vs 4,917 warn = **406 tape RESIDUAL over WARN** (block 6,417 CLEAR) — the brief's "whole overshoot" prediction was optimistic; deeper cut NOT taken beyond the sized brief, G5 ratification first. Figures: the chain's own footer.
+- **→ #106:** -v3 honesty fix · legend-centring A/B (eye) · `--pri-hover` (word) · `type.css:180` ruling · memory compaction remainder · ds-029 first-idiom flag.
+
+## Rolled 2026-08-06 #108 (2d) — via the mover
+
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#104**, OPUS 5 conductor + FOUR Sonnet build subs, Dave live, ONE window — ✅ **#97 FLAG ② CLOSED** · ⛔ **ds-029 #103 ENACTMENT DEFECT CAUGHT + FIXED (REPLAY VISUAL CONFIRM PAID OFF)** · ⬛ **LEGEND-CENTRING + `--pri-hover` MEASURED, NOT DECIDED** · ⛔ **CHAIN-DIET PREMISE WAS CROSS-UNIT, RE-MEASURED** · FABLE 5 UNAVAILABLE TILL THU 11PM ⇒ NO NEW RULING BATCHES)
 
 - **#97 flag ② CLOSED:** `.shell{align-content:start}` at ≤760px, `gen_showroom.py:338`; gap 700px 322.5→24px, 375px 259→24px, 1180px byte-identical.

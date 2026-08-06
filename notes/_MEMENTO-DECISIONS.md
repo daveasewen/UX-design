@@ -3871,3 +3871,107 @@ the banner.
 `type.css:180` ruling (specimen built and waiting) · `ds-032` enactment · memory compaction (owed since
 #104, re-asked #107, still not done) · ds-029 first-idiom flag. Posture: production crank — parallel
 subs, keep conductor fill low, price sub reports as fill.
+
+---
+
+## ★ #108 — MEMORY COMPACTION PAID + THE `--pri-hover` "FORK" IS THE THEME LAYER (Dave live, Opus conductor, ONE window; wrap delegated off-window to a Sonnet sub)
+
+**Context.** Work order (#108-D0, Dave's opener): compaction → rulings → crank; pace posture same as
+#107 — crank. Memory compaction, owed since #104 and slipped across #105–#107, was paid this window.
+A probe into the button/primary blast radius, extending #107-D1's partition, measured a live
+`--pri-hover`/`--sec-hover` "fork" across `.cn-button`/`.cn-modals`/`.cn-action-bar` and first read it
+as a defect. Dave reframed it: the four-theme architecture is SUPPOSED to diverge on shared token
+names, by his own standing requirement (below). The measurement holds; the conclusion drawn from it
+does not.
+
+**★★ HEADLINE — the `--pri-hover` "fork" is almost certainly the theme layer working, not debt, and
+the correction came from Dave, not from a gate.** Measured in live `knowledge/canon/canon.css`:
+`--pri-hover` = `#BA1110` (red) at `:root` vs `#626262`/`#B7B7B7` (grey) under `.cn-button`/`.cn-modals`;
+`--sec-hover` resolves to three different upstream tokens across `.cn-button`/`.cn-modals`/`.cn-action-bar`.
+The measurement STANDS. Its conclusion — that Option A would trip over this as a defect — does NOT,
+once Dave's four-theme requirement is applied. ★ **The session's real lesson: a probe can be clean at
+every step and still answer the wrong question — ask what a difference is FOR before pricing its
+removal.** ⇒ `ds-034`'s sweep spec CHANGES: test value agreement PER THEME, not globally; a global
+sweep would have manufactured ~35 false findings. Full write-up:
+`outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` (gitignored `outputs/`, not
+committed; Dave reads it locally).
+
+**✅ #108-D1 (Dave) — `type.css:180` ink = `#1A1A1A`, not `#111111`.** Ruled by eye off
+`reviews/TYPE-CSS-180-SPECIMEN-2026-08-06-v1.html`. Both candidates were AAA and achromatic (delta +9
+on R,G,B identically, neutral ground so the red/amber instability caveat does not apply); this was
+preference, not contrast. Inscribed `ds-033`. **NOT ENACTED** — the literal at `type.css:180` still
+reads `#111`; #109's job.
+
+**✅ #108-D2 (Dave) — on the button/primary scope question: measure the other 35 colliding token names
+BEFORE ruling scope.** Only 5 of 40 were value-checked. Extends his own #107-D1 "partition first, then
+rule" one level deeper. Inscribed `ds-034`. ⚠ **Its execution spec is corrected by this same session's
+own headline finding: test value agreement PER THEME, not globally** — a global sweep would have
+manufactured roughly 35 false findings, since divergence between themes on one token name is the
+expected shape, not drift.
+
+**✅ #108-D3 / STANDING CONSTRAINT (Dave, verbatim — inscribed `ds-035`, reinforces `_LIVE-STATE.md`
+R-D15):** *"we have 4 themes, mono, legacy, console, and supercharge. they have a lot of overlap but
+they also diverge, especially the colour palette of legacy and the others, and the grey ramp for
+supercharge and the others. I just want the flexibility to have these themes and create more."* Plus,
+explicitly NOT NOW, his timing: *"I will also be revisiting the grey ramp for mono, i think we've
+calculated wrong."*
+
+**Delivered.** `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` (the measurement,
+both self-corrections, and the addendum recording Dave's reframe). **Memory compaction PAID** (owed
+since #104, slipped four sessions #105–#107): 14 entries moved to `MEMORY-ARCHIVE.md` under a new
+`## Batch 2026-08-06 #108` header, 5 hooks trimmed. `MEMORY.md` measured **19,190 bytes / 105 lines**
+(measured fresh at this wrap) against the `consolidate-memory` skill's ~25KB/200-line ceiling —
+comfortably under; moved-lines measured 2,877 B, the hook-trim half DECLARED UNMEASURED not estimated.
+Three memory files written/updated: `four-themes-flexibility-is-the-requirement.md` (new),
+`canon-pri-hover-fork-108.md` (new), `memory-compaction-mechanics.md` (rewritten, corrections below).
+
+**⛔ Corrections and self-inflicted costs — inscribed, not softened.**
+1. ⛔ **A 16-day-old memory's central claim was FALSE.** `memory-compaction-mechanics` said the memory
+   dir is not mounted in the bash sandbox. It IS — read-only at `/sessions/<session>/mnt/.auto-memory/`.
+   Prior compaction passes therefore guessed at sizes that could have been measured. Memory rewritten;
+   the same false claim also sat at `GOOD-MORNING.md` DO-FIRST item 18 and in the enact-queue's
+   memory-index paragraph — both corrected at source this wrap (2c EXIT CHECK's own principle, applied
+   proactively rather than waiting for a roll to force it).
+2. ⛔ **`find . -name canon.css | head -1` returned a Jul-14 packaged skill snapshot**, not live canon.
+   A whole pass of figures (28 collisions, an apparent `--pri-pressed` disagreement) was VOID. Caught
+   only by checking whether `:338-339` matched #107's quoted destination.
+3. ⛔ **`grep -l canon.css` "found" 6 linking snippets — all 6 were prose in comments**, two saying the
+   opposite outright. #107's zero-link claim HOLDS. Quoting the lines is what killed my own reading
+   [[unmatched-grep-is-not-an-absence]].
+4. ⛔ **The `theming-dna-adr-0014` memory was archived as settled canon, and Dave raised themes
+   unprompted within the hour.** The selection rule mis-fired: it was a notice-unprompted entry, not a
+   settled one. RESTORED to the live index with the mis-fire noted inline.
+5. ⛔ **A grep that reached `/sessions/*/mnt/.claude/projects/` dumped session-transcript JSONL into the
+   window** — real self-inflicted fill. Now warned about in the compaction memory.
+
+**Quota/pace posture (Dave, opener, #108-D0):** compaction → rulings → crank; same posture as #107 —
+production crank.
+
+**Gauge (§ ★ #108):** boot 65,041 real (`_checkin.py`, `message.usage`, n=12; #107 was 65,046, #106
+65,011). ONE check-in, 151,858 real FILL at 34 turns — PAST the 150,929 stop line, runway 48,142 to the
+200,000 working ceiling, against a historical wrap cost of 42,434–49,071 (n=3). ⛔ **The blow mechanism
+this session was PROBE SPRAWL, and only one check-in was taken — the second failure is the worse one.**
+#107's lesson (sub-report ingestion) was avoided; a new mechanism was walked into instead: an
+~8-bash-call-deep probe chain with no gauge reading riding it. ★ The check-in is a throttle, not a
+thermometer — running it once, late, is the same defect as estimating. ⚠ `_checkin.py` REFUSED first
+with `MeasurementRefused` until `pip install tiktoken --break-system-packages` — working as designed
+(#80); the next cold sandbox should install it at BOOT, not mid-probe. Mitigation ENACTED, declared not
+concealed: this wrap was delegated off-window to a Sonnet sub.
+
+**(dossier: SKIPPED, declared per 1b.)** This wrap was composed off-window from a facts brief, not
+lived in-window by the agent writing it — a from-scratch `_DECISION-HISTORY/` narrative here would risk
+inventing an arc not actually witnessed. This ledger entry carries the WHY the brief supplied (the
+headline reasoning, Dave's verbatim rulings, the five corrections) as its substitute; a richer dossier
+is available to write later from the live transcript if Dave wants one.
+
+**Residual, none softened:** ⬛ #108-D2's sweep (35 colliding names, PER THEME) — not started, #109's
+first job · ⬛ `ds-032` enactment — not touched · ⬛ ds-029 first-idiom flag — not touched · ⬛
+`type.css:180` ENACTMENT — ruled, code not changed · ⬛ **#89-D2 is still RULED-NOT-ENACTED, and this
+session confirmed something new: `_state.json` does not contain it.** Its 36 ids are `G1`–`G17` and
+`W-01`–`W-16`; #89-D2 is inscribed only at this ledger's own `§ #89` (`:3294`, `:3337`), never entered
+the store. ⇒ the chain's "36 items IS the count" is true of the STORE, not of Dave's open RULINGS —
+worth raising with him directly.
+
+**→ #109:** #108-D2's per-theme sweep (35 names) · `type.css:180` enactment · `ds-032` enactment ·
+ds-029 first idiom · put the `_state.json`-vs-open-rulings gap to Dave. Posture: crank, but check in on
+the gauge between probe batches, not once at the end.
