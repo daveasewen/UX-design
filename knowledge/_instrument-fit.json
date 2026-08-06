@@ -1,11 +1,11 @@
 {
- "total": 465,
+ "total": 471,
  "tally": {
   "UNGATED": 165,
-  "UNTAGGED": 279,
+  "UNTAGGED": 283,
+  "FIT": 6,
   "UNDER-INSTRUMENTED": 12,
-  "EYE-ONLY": 4,
-  "FIT": 5
+  "EYE-ONLY": 5
  },
  "rows": [
   {
@@ -35,6 +35,37 @@
    "gates": [],
    "gate_instrument": null,
    "verdict": "UNGATED"
+  },
+  {
+   "id": "aca-003",
+   "file": "accessibility-content-authoring.md",
+   "destiny": "BLOCKING",
+   "rule": "CA-3 \u2014 unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears.",
+   "needs": "UNKNOWN",
+   "confidence": "none",
+   "evidence": [],
+   "gates": [
+    "knowledge/_validate_compose.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNTAGGED"
+  },
+  {
+   "id": "aca-004",
+   "file": "accessibility-content-authoring.md",
+   "destiny": "BLOCKING",
+   "rule": "CA-4 \u2014 link text uniquely describes the target (SC 2.4.4 A): unique link/nav text, in context; audio-labelled repeats (\"Info\", \"Add to favourites\") must be made unique.",
+   "needs": "I0-STATIC",
+   "confidence": "high",
+   "evidence": [
+    "literal declared value (I0-STATIC: 'must be')"
+   ],
+   "gates": [
+    "knowledge/_validate_advisory.py",
+    "knowledge/_validate_snippets.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "FIT"
   },
   {
    "id": "aca-005",
@@ -445,6 +476,23 @@
    "verdict": "UNGATED"
   },
   {
+   "id": "aid-009",
+   "file": "accessibility-interaction-design.md",
+   "destiny": "BLOCKING",
+   "rule": "ID-26 [introduced 2024] \u2014 target size, the formal 2.2 rule: HSBC DEFAULT 44\u00d744, minimum exception 24\u00d724 (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/ inline/UA/essential outs; \"HSBC already has formal design guidance\u2026 44\u00d744 is therefore considered the default requirement.\"",
+   "needs": "I3-EYE",
+   "confidence": "low",
+   "evidence": [
+    "discretionary (I3-EYE: 'consider')"
+   ],
+   "gates": [
+    "knowledge/_validate_a11y.py",
+    "knowledge/compliance/_build_verification_edges.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "EYE-ONLY"
+  },
+  {
    "id": "aid-010",
    "file": "accessibility-interaction-design.md",
    "destiny": "ADVISORY",
@@ -533,6 +581,20 @@
    "gates": [],
    "gate_instrument": null,
    "verdict": "UNGATED"
+  },
+  {
+   "id": "aid-020",
+   "file": "accessibility-interaction-design.md",
+   "destiny": "ADVISORY",
+   "rule": "ID-28 \u2014 authentication flexible, no cognitive-function-test-only step (SC 3.3.8): offer in-app notification/biometric/OTP alternatives; mechanisms like pasting from password managers must work; applies to existing-user auth only; legal/regulatory exemptions possible.",
+   "needs": "UNKNOWN",
+   "confidence": "none",
+   "evidence": [],
+   "gates": [
+    "knowledge/_validate_advisory.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNTAGGED"
   },
   {
    "id": "appf-002",
@@ -637,6 +699,21 @@
    "gates": [],
    "gate_instrument": null,
    "verdict": "UNGATED"
+  },
+  {
+   "id": "avd-006",
+   "file": "accessibility-visual-design.md",
+   "destiny": "BLOCKING",
+   "rule": "VD-7 \u2014 every non-text element gets a purpose-alt (SC 1.1.1 A): alt describes PURPOSE; actionable images describe the ACTION (\"Play\", not the picture); decorative images are AT-ignorable; never \"Image of\u2026\", \"Link to\u2026\", \"Picture of\u2026\", \"Add button\"; verbose alts harm speech-output users; unclear-purpose images should be replaced with ones that tell the story (HSBC's text-heavy pages especially). Visual designers deliver alt-text WITH assets.",
+   "needs": "UNKNOWN",
+   "confidence": "none",
+   "evidence": [],
+   "gates": [
+    "knowledge/_validate_advisory.py",
+    "knowledge/_validate_snippets.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNTAGGED"
   },
   {
    "id": "avd-008",
@@ -2864,6 +2941,7 @@
    ],
    "gates": [
     "knowledge/_build_all.py",
+    "knowledge/_build_decision_graph.py",
     "knowledge/_build_memento_index.py",
     "knowledge/_validate_dataviz.py",
     "knowledge/_verify_dv_stacked_enactment.py"
@@ -4044,6 +4122,21 @@
    ],
    "gate_instrument": "I0-STATIC",
    "verdict": "EYE-ONLY"
+  },
+  {
+   "id": "nam-001",
+   "file": "naming.md",
+   "destiny": "BLOCKING",
+   "rule": "Never possessive with product names \u2014 \"HSBC should not appear in the possessive form\": never \"HSBC's Credit Card\" / \"HSBC's Easy Invest\"; write \"An HSBC Credit Card\" / \"HSBC Easy Invest\".",
+   "needs": "UNKNOWN",
+   "confidence": "none",
+   "evidence": [],
+   "gates": [
+    "knowledge/_validate_advisory.py",
+    "knowledge/_validate_snippets.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNTAGGED"
   },
   {
    "id": "nam-002",
@@ -6105,6 +6198,7 @@
   "knowledge/_validate_icons.py": "I0-STATIC",
   "knowledge/_validate_legacy_leak.py": "I0-STATIC",
   "knowledge/_validate_no_hardcode.py": "I0-STATIC",
+  "knowledge/_validate_package_delta.py": "I0-STATIC",
   "knowledge/_validate_partials.py": "I0-STATIC",
   "knowledge/_validate_proforma.py": "I0-STATIC",
   "knowledge/_validate_property_resolves.py": "I0-STATIC",
@@ -6131,32 +6225,10 @@
   "knowledge/compliance/_build_verification_edges.py": "I0-STATIC"
  },
  "dangling_citations": {
-  "aca-003": [
-   "knowledge/_validate_compose.py"
-  ],
-  "aca-004": [
-   "knowledge/_validate_advisory.py",
-   "knowledge/_validate_snippets.py"
-  ],
-  "aid-009": [
-   "knowledge/_validate_a11y.py",
-   "knowledge/compliance/_build_verification_edges.py"
-  ],
-  "aid-020": [
-   "knowledge/_validate_advisory.py"
-  ],
-  "avd-006": [
-   "knowledge/_validate_advisory.py",
-   "knowledge/_validate_snippets.py"
-  ],
   "axs-003": [
    "knowledge/_validate_a11y.py"
-  ],
-  "nam-001": [
-   "knowledge/_validate_advisory.py",
-   "knowledge/_validate_snippets.py"
   ]
  },
  "declared_anchors": 698,
- "untagged_anchors": 265
+ "untagged_anchors": 259
 }

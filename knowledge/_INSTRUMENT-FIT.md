@@ -17,10 +17,10 @@
 |---|---:|---|
 | **UNDER-INSTRUMENTED** | 12 | a gate names it but sits BELOW the rung its property needs — passes without observing |
 | **UNGATED** | 165 | no gate names it; the rung shown is the COST of gating it |
-| **UNTAGGED** | 279 | the pattern table could not classify the rule — a finding about THIS TOOL, never filed as I0 |
-| **EYE-ONLY** | 4 | needs judgment; correctly ungateable |
-| **FIT** | 5 | the gate's instrument reaches the property |
-| **TOTAL** | 465 | |
+| **UNTAGGED** | 283 | the pattern table could not classify the rule — a finding about THIS TOOL, never filed as I0 |
+| **EYE-ONLY** | 5 | needs judgment; correctly ungateable |
+| **FIT** | 6 | the gate's instrument reaches the property |
+| **TOTAL** | 471 | |
 
 **12 rules carry a gate that cannot observe them; 2 of those are BLOCKING.** A BLOCKING rule with an under-powered gate is the `aid-009` shape: green, and blind.
 
@@ -28,17 +28,11 @@
 
 ## ⚠ Dangling citations — gates enforcing rules the INDEX cannot see
 
-*`guidelines/*.md` declares **698** rule anchors. `_rules-index.json` holds the **465** that carry an enforcement-destiny tag. The other **265** are invisible to the index, to `_consult.py`, and to this register — and the following are cited by a LIVE GATE as its authority.*
+*`guidelines/*.md` declares **698** rule anchors. `_rules-index.json` holds the **471** that carry an enforcement-destiny tag. The other **259** are invisible to the index, to `_consult.py`, and to this register — and the following are cited by a LIVE GATE as its authority.*
 
 | cited rule | not in index | cited by |
 |---|---|---|
-| `aca-003` | ✗ | `knowledge/_validate_compose.py` |
-| `aca-004` | ✗ | `knowledge/_validate_advisory.py`, `knowledge/_validate_snippets.py` |
-| `aid-009` | ✗ | `knowledge/_validate_a11y.py`, `knowledge/compliance/_build_verification_edges.py` |
-| `aid-020` | ✗ | `knowledge/_validate_advisory.py` |
-| `avd-006` | ✗ | `knowledge/_validate_advisory.py`, `knowledge/_validate_snippets.py` |
 | `axs-003` | ✗ | `knowledge/_validate_a11y.py` |
-| `nam-001` | ✗ | `knowledge/_validate_advisory.py`, `knowledge/_validate_snippets.py` |
 
 ⚠ **This is ds-015 inverted.** There, the gate could not see the component; here the INDEX cannot see the rule. Same signature: the markup is correct, the lookup fails, and nothing reports it. `aid-009` — Dave's 2026-07-03 hit-area ruling and the founding case of ds-015 — is on this list: its anchor line carries no destiny tag, so the rule the a11y gate enforces cannot be retrieved by any tool that reads the index.
 
@@ -78,6 +72,7 @@
 | `knowledge/_validate_icons.py` | I0-STATIC |
 | `knowledge/_validate_legacy_leak.py` | I0-STATIC |
 | `knowledge/_validate_no_hardcode.py` | I0-STATIC |
+| `knowledge/_validate_package_delta.py` | I0-STATIC |
 | `knowledge/_validate_partials.py` | I0-STATIC |
 | `knowledge/_validate_proforma.py` | I0-STATIC |
 | `knowledge/_validate_property_resolves.py` | I0-STATIC |
@@ -104,8 +99,9 @@
 
 ## Untagged — what the pattern table cannot classify
 
-*279 rules. This count is a finding about the tool, not the corpus. They are NOT filed as I0: an unclassified rule recorded as 'static is adequate' is the exact lie this register exists to expose.*
+*283 rules. This count is a finding about the tool, not the corpus. They are NOT filed as I0: an unclassified rule recorded as 'static is adequate' is the exact lie this register exists to expose.*
 
+- `aca-003` (BLOCKING) — CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears
 - `aca-005` (ADVISORY) — CA-5 — repeated links to one target are ONE link (SC 1.1.1 + 2.4.4 A): adjacent image + text with the same tar
 - `aca-014` (ADVISORY) — CA-13 — transcripts for all audio and video (SC 1.2.3 A): podcasts, silent video (visual description), sound v
 - `aca-018` (ADVISORY) — CA-17 (guideline) — visual cues accompany all audio alerts (SC 1.3.3 A): new- message/error/overtype audio cue
@@ -121,15 +117,14 @@
 - `aid-013` (ADVISORY) — ID-18 — layout must let users PREDICT where things are: consistent, logical placement + orientation aids (back
 - `aid-015` (ADVISORY) — ID-20 — line length ≤70 characters HARD, 55–60 target (SC 1.4.8 basis): adapted to screen width; no sideways s
 - `aid-017` (ADVISORY) — ID-22 — minimise text input: lists-of-choices over typing; autocomplete.
+- `aid-020` (ADVISORY) — ID-28 — authentication flexible, no cognitive-function-test-only step (SC 3.3.8): offer in-app notification/bi
 - `appf-002` (BLOCKING) — iOS: use Dynamic Type and test that the layout adapts to ALL accessibility font sizes, including the largest.
 - `appf-003` (ADVISORY) — Titles/section headers/subtitles use S4 and above (≥19px); page titles/subtitles in light + regular weight; su
 - `appf-008` (REVIEW) — No app-specific grid/spacing/forms pages exist under app foundations. Web has six foundation subpages, app has
 - `aqa-003` (ADVISORY) — Scope rule — standards always; CORE-PORTFOLIO products (global style guides, UI LIBRARIES) test against ALL gu
 - `avd-001` (ADVISORY) — VD-1 — colour is never the only carrier of meaning (SC 1.4.1 A): information conveyed with colour must also be
+- `avd-006` (BLOCKING) — VD-7 — every non-text element gets a purpose-alt (SC 1.1.1 A): alt describes PURPOSE; actionable images descri
 - `avd-008` (ADVISORY) — VD-8 — never prompt the same information twice in a journey (SC 3.3.7, 2022/ framework-2024): auto-populate or
 - `axf-002` (ADVISORY) — Two-element standard — (1) international legal compliance (the WCAG 2.2 bar above); (2) assured experience: th
-- `bra26-001` (REVIEW) — The no-gen-AI-imagery rule (photo26-002) is the sharpest pipeline constraint in the refresh set — it draws the
-- `col25-003` (ADVISORY) — Correct palette for the use case — never cross-use: illustration palette only for illustrations, data-vis pale
-- `col25-005` (ADVISORY) — Exceptions to the palettes need brand-design-team approval — the palettes are closed sets ("Don't introduce co
-- *… 254 more in `_instrument-fit.json`*
+- *… 258 more in `_instrument-fit.json`*
 

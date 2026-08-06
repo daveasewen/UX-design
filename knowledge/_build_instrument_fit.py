@@ -376,12 +376,17 @@ def selftest():
     ok(r is not None and r["verdict"] == "UNGATED",
        "bite1b: icon-005 is UNGATED — no check names it", "got %s" % (r and r["verdict"]))
 
-    # BITE 1c — TODAY'S FINDING, found by bite 1 failing on its first run. The gate that
-    # does exist cites `aid-009`, which the index does not contain. If this bite ever goes
-    # quiet, either the tag was added (good — confirm) or the detector broke (bad).
-    ok("aid-009" in dangling,
-       "bite1c: aid-009 is cited by a gate but ABSENT from the rules index",
-       "dangling set = %s" % sorted(dangling))
+    # BITE 1c — the original finding, now CLOSED and INVERTED (#114). It used to assert
+    # aid-009 was dangling: cited by a gate, absent from the index. Its own comment said
+    # "if this bite ever goes quiet, either the tag was added (good — confirm) or the
+    # detector broke (bad)". Confirmed: the ID-26 anchor was re-filed to a [BLOCKING …]
+    # destiny tag and the index regenerated, so the citation now RESOLVES. The bite is
+    # inverted rather than deleted, so it still reds — if the tag is removed or downgraded
+    # out of the indexed destinies, if the index regen is skipped, or if the citation
+    # resolver breaks.
+    ok("aid-009" in by and "aid-009" not in dangling,
+       "bite1c: aid-009 is cited by a gate AND present in the rules index (not dangling)",
+       "in-index=%s dangling set = %s" % ("aid-009" in by, sorted(dangling)))
     ok(len(dangling) >= 1 and untagged_n > 0,
        "bite1d: the untagged-anchor population is reported, not silently zero",
        "untagged=%d dangling=%d" % (untagged_n, len(dangling)))

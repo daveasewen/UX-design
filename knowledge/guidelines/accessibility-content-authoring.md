@@ -19,16 +19,17 @@ work" (self-check duty again).*
   programmatically determinable. [ADVISORY — composition-layer rule; DOM order =
   reading order in canon, keep it that way when composing] {#aca-002}
 - **CA-3 — unique, concise page/frame/iframe titles** (SC 2.4.2 A + 4.1.2 A): first
-  thing a speech-output user hears. [GATED — RULED BLOCKING 2026-07-03 (sweep-batch
+  thing a speech-output user hears. [BLOCKING — GATED, RULED BLOCKING 2026-07-03 (sweep-batch
   ruling): compose gate check 8, every `*.canon.html` carries a non-empty <title>,
   unique across the composed set; showcase/fitness-test surfaces exempt by scope (the
-  cold-A/cold-B duplicate is a deliberate A/B pair). Bite-tested] {#aca-003}
+  cold-A/cold-B duplicate is a deliberate A/B pair). Bite-tested, enforced per-screen
+  via compose gate, not a _build_all step] {#aca-003}
 
 ## Links (rules)
 
 - **CA-4 — link text uniquely describes the target** (SC 2.4.4 A): unique link/nav text,
   in context; audio-labelled repeats ("Info", "Add to favourites") must be made unique.
-  [SPLIT RULING 2026-07-03: **bare-phrase half GATED** (RULED STRAIGHT TO BLOCKING;
+  [BLOCKING — SPLIT RULING 2026-07-03: **bare-phrase half GATED** (RULED STRAIGHT TO BLOCKING;
   pre-swept 0 signals) — "click here"-class link labels = snippet gate check 7,
   bite-tested. **Uniqueness-in-context half** stays composition-layer (screen-scope,
   needs assembled-screen DOM)] {#aca-004}
