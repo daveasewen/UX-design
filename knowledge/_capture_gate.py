@@ -1431,7 +1431,7 @@ LS_DELTA_RE = re.compile(r"^##\s*⏱")
 OUT_CHAIN = "_CHAIN.md"          # must match `_gen_chain.OUT_NAME` — asserted in selftest
 DOFIRST_ITEM_RE = re.compile(r"^>\s*\*\*(\d+[a-z]?)\.\s*(.+)$")
 DOFIRST_HOOK_MAX = 46            # chars per hook — a BYTE bound, deliberately
-DOFIRST_INDEX_TK_MAX = 800       # ⚠ the whole index, MEASURED — see below
+DOFIRST_INDEX_TK_MAX = 700       # ⚠ the whole index, MEASURED — see below
 # ⛔ RAISED 420 → 700 AT #82, DELIBERATELY AND WITH THE REASON, because the gate itself demands
 # exactly that rather than a silent drift. ★ NOTHING GREW. The ceiling was calibrated against a
 # `cl100k` measurement and #82-D1 changed the INSTRUMENT underneath it, so the same index that
@@ -3040,6 +3040,44 @@ def dofirst_index_present_check(repo):
 
 BOOT_DRIFT_WINDOW = 6          # how many of the most recent samples form the band
 
+# ★★ #111-D1 (Dave) — THE LEGAL DECLARED-AND-PROCEED FORM.
+# Dave, #111, on being asked warn-vs-block: *"Keep it BLOCKING, but the gate as built has
+# no legal discharge — that's the defect, not the tier … That way the gate bites SILENCE,
+# not reality, which is the asymmetry this repo already runs on: a declared gap passes, a
+# silent one fails. As built it bites reality, so it traps a session that has done nothing
+# wrong and can't legally proceed. No session should ever be blocked with no honest way
+# forward."*
+#
+# ⚠ THE DECLARATION CANNOT LAUNDER. It discharges ONLY if the mean, constant, error bar
+# and delta it states MATCH what this gate independently computes. A declaration carrying
+# different numbers is a WORSE failure than no declaration at all — that is a session
+# writing itself a pass — and it is failed separately and louder below.
+# ⚠ IT ALSO CANNOT GO STALE. It is matched against the CURRENT computation, so last
+# session's declaration cannot discharge this session's drift [[read-chain-is-where-staleness-is-free]].
+BOOT_DRIFT_DECL_RE = re.compile(
+    r"boot-drift\s+DECLARED\s+#(?P<sess>\d+)"
+    r".{0,40}?mean\s+(?P<mean>[\d,]+)"
+    r".{0,60}?constant\s+(?P<const>[\d,]+)\s*(?:±|\+/-)\s*(?P<err>[\d,]+)"
+    r".{0,60}?delta\s+(?P<delta>[+-]?[\d,]+)"
+    r".{0,200}?refresh\s+PUT\s+TO\s+DAVE",
+    re.I | re.S)
+
+BOOT_DRIFT_LEGAL_FORM = (
+    "> **boot-drift DECLARED #<N> (<YYYY-MM-DD>):** mean <M> · constant <C> ±<E> · "
+    "delta <+/-D> · refresh PUT TO DAVE, unruled.")
+
+
+def _parse_boot_drift_declarations(text):
+    """Every declared-drift entry in the gauge log, as dicts. Never raises."""
+    out = []
+    for m in BOOT_DRIFT_DECL_RE.finditer(text):
+        try:
+            out.append({k: int(m.group(k).replace(",", "").replace("+", ""))
+                        for k in ("sess", "mean", "const", "err", "delta")})
+        except (ValueError, AttributeError):
+            continue
+    return out
+
 
 def _parse_boot_samples(text):
     """Pull (session, real-tokens) boot samples out of the gauge log.
@@ -3141,15 +3179,60 @@ def boot_constant_drift_check(repo):
                     len(recent), len(ordered), delta))
 
     if abs(delta) > err:
-        fails.append(
+        drift_msg = (
             "boot-drift: `_gauge_tokens.BOOT_FIRSTTURN_TK` = %s ±%s, but the last %d "
             "measured boots average %s — drift %+d, OUTSIDE the constant's own error "
-            "bar. Samples: %s. ⚠ This is the #109 defect recurring: the constant is "
-            "stale and only a measurement can correct it. Re-measure, put the new "
-            "figure to Dave, and update the constant — do NOT widen the error bar to "
-            "make this pass."
+            "bar. Samples: %s."
             % (f"{const:,}", f"{err:,}", len(recent), f"{mean:,.0f}", delta,
                " · ".join(f"{s:,}" for s in recent)))
+
+        # ★ #111-D1 — is the drift DECLARED? Silence fails; an honest declaration passes.
+        with open(log, encoding="utf-8") as f:
+            decls = _parse_boot_drift_declarations(f.read())
+        matched = [d for d in decls
+                   if d["const"] == const and d["err"] == err
+                   and abs(d["mean"] - mean) <= 1 and abs(d["delta"] - delta) <= 1]
+        mismatched = [d for d in decls if d not in matched]
+
+        if matched:
+            d = matched[-1]
+            notes.append(
+                "%s ✅ DECLARED at #%d and DISCHARGED (#111-D1): the declaration states "
+                "the same mean, constant, error bar and delta this gate computed, and "
+                "records that the refresh is PUT TO DAVE and unruled. The drift is real "
+                "and is NOT hidden — that is the whole bar. ⚠ It is still UNFIXED: only "
+                "Dave's ruling on the constant closes it."
+                % (drift_msg, d["sess"]))
+        elif mismatched:
+            d = mismatched[-1]
+            fails.append(
+                "%s ⛔ A boot-drift declaration EXISTS (#%d) but its numbers do NOT match "
+                "this gate's computation — it states mean %s / constant %s ±%s / delta "
+                "%+d against a measured mean %s / constant %s ±%s / delta %+d. A "
+                "declaration that mis-states the drift is worse than none: it is a "
+                "session writing itself a pass. Correct the figures — do NOT widen the "
+                "error bar and do NOT edit the constant to fit "
+                "[[gate-must-quote-what-it-forbids]]."
+                % (drift_msg, d["sess"], f"{d['mean']:,}", f"{d['const']:,}",
+                   f"{d['err']:,}", d["delta"], f"{mean:,.0f}", f"{const:,}",
+                   f"{err:,}", delta))
+        else:
+            fails.append(
+                "%s ⛔ AND IT IS UNDECLARED. ⚠ This is the #109 defect recurring: the "
+                "constant is stale and only a measurement can correct it. Re-measure, "
+                "put the new figure to Dave, and update the constant — do NOT widen the "
+                "error bar to make this pass.\n"
+                "    ★ #111-D1 (Dave) — THERE IS A LEGAL WAY FORWARD AND THIS GATE OWES "
+                "IT TO YOU. You are not required to fix the drift to close your wrap; "
+                "you are required not to hide it. Add ONE line to notes/_GAUGE-LOG.md, "
+                "exactly this shape:\n"
+                "      %s\n"
+                "    filled with the figures above: mean %s · constant %s ±%s · delta "
+                "%+d. The declaration must MATCH what this gate computes — wrong figures "
+                "fail louder than none. Then this check passes and the constant refresh "
+                "goes to Dave as its OWN decision, not as the price of unblocking a wrap."
+                % (drift_msg, BOOT_DRIFT_LEGAL_FORM, f"{mean:,.0f}", f"{const:,}",
+                   f"{err:,}", delta))
     return fails, notes
 
 

@@ -4171,3 +4171,117 @@ research candidates 1+2 not started.
 the 40,648 chase · P2 (now correctly priced small) · P4 `_CHAIN.md` trim · per-theme sweep (35
 names) · `type.css:180` enactment · `ds-032` · ds-029 first idiom · the `_state.json`-vs-open-
 rulings gap · research candidates 1+2. Posture: his rulings above gate what opens next.
+
+## ★ #111 — THE BOOT-DRIFT GATE GETS A LEGAL DISCHARGE, AND #110's RESIDUAL PREMISE IS RULED UNSAFE (Dave live, OPUS conductor, ONE window, attribution probe run INLINE not delegated)
+
+**#111-D1 (Dave) — `BOOT_DRIFT_BLOCKING` stays BLOCKING; the defect was the missing legal
+discharge, not the tier.** Verbatim: "Keep it BLOCKING, but the gate as built has no legal
+discharge — that's the defect, not the tier … the gate bites SILENCE, not reality … No session
+should ever be blocked with no honest way forward." ENACTED this window.
+
+**#111-D2 (Dave) — do NOT refresh the constant yet.** Verbatim: "Don't fit a constant across a
+structural break." #103–#109 cluster at ~65,300; #110 = 62,462 and #111 = 55,733 are two record
+lows in a row, the second 6,729 below the first. Re-base on post-change samples only, declare
+small n — "do not borrow precision from a configuration that no longer exists." DEFERRED, declared.
+
+**#111-D3 (Dave) — do NOT rule the residual on an unattributed number.** Verbatim: "The 9,308 drop
+has NOT been attributed to the residual. It has been assumed to be." #110's "the residual is
+harness-owned" is the premise under the whole P2 question and Dave ruled it UNSAFE. Measure, then
+attribute. OPEN.
+
+**#111-D4 (Dave) — `DOFIRST_INDEX_TK_MAX` REVERSED 800 → 700.** ENACTED this window, index shaved
+to 681 tape, gate PASSES. #110's wrap sub raised it 700→800 to clear its own gate; Dave reversed
+that with: "A cap raised to clear its own gate is not a cap."
+
+**#111-D5 (Dave) — `MEMORY.md` compaction is #112's FIRST act, not a rolled pointer.** Verbatim:
+"it has slipped twice that way. Better: make the size check BLOCK at boot instead of warning at
+wrap. It fired twice during #110 and was ignored both times, which is the #109 defect again."
+
+**Enacted this window:**
+- `knowledge/_capture_gate.py` — `DOFIRST_INDEX_TK_MAX` 800 → 700 (#111-D4).
+- `knowledge/_capture_gate.py` — `BOOT_DRIFT_DECL_RE` + `BOOT_DRIFT_LEGAL_FORM` +
+  `_parse_boot_drift_declarations()` + a 3-way branch in `boot_constant_drift_check()` (#111-D1).
+- `GOOD-MORNING.md` — 21 DO-FIRST headings shaved; index 726 → 681 tape, PASSES 700.
+- `notes/_GAUGE-LOG.md` — #110 boot recovered, #111 boot logged, boot-drift DECLARED #111.
+
+**Receipts — driven, not claimed:** T1 control, no drift → PASS. T2 drift undeclared → FAIL, and
+the failure quotes the legal form + supplies the figures. T3 drift declared correctly → PASS,
+discharged. T4 drift declared with wrong figures → FAIL, distinct and louder ("worse than none").
+T5 the gate's own comma-less wording (`delta -1995`) → discharges, the realistic copy-paste path.
+T6 declaration missing `refresh PUT TO DAVE` → correctly refused. MUTATION `if matched:` →
+`if False:` ⇒ T3 FAILS ⇒ the discharge clause is load-bearing. Live tree: boot-drift PASS (drift
+visible, declared, unfixed) · index PASS (681/700).
+
+**Findings — measured on the CONDUCTOR's own surface.** This removes #110's declared caveat:
+#110's P1 sub measured its own injected surface, not the conductor's; #111 measured the
+conductor's, inline.
+- boot #111 = 55,733 real — lowest in the series (#109 was 64,778).
+- `MEMORY.md` = 9,178 real, up +708 since #109's 8,470. It grew while boot fell — it is not the
+  cause, it pushes the other way.
+- Deferred-tool list = 3,709 real, 148 tools, 14 servers (#110's sub read 4,012 on its own
+  surface).
+- Deferred-only servers: mean 262 real — Figma 990 · Slack 721 · Gmail 598 · chrome 429 ·
+  computer-use 389 · … · cowork-onboarding 30.
+- MCP instruction blocks: 2,797 real for 3 — computer-use 1,660 · Figma 749 · chrome 388; mean
+  932/server.
+- RATIO 3.6× — Dave's hypothesis CONFIRMED: a server that injects an instruction block costs 3.6×
+  one that only contributes deferred tool names.
+- But it cuts both ways on P2. The five that left (Asana, Atlassian, Intercom, Linear, Notion)
+  were deferred-class. #110's ~530/server is above the measured deferred mean of 262, so #110 may
+  have over-priced them. Remaining named candidates: Slack 721 + duplicate Figma 115 = 836 real —
+  lower than #110's 1,500–3,000, not higher.
+- The real money is duplication, which per-server framing could not see. computer-use (389 names +
+  1,660 block) and chrome (429 + 388) each have their guidance injected twice — once as a
+  system-prompt section, once as an MCP instruction block. Measured on one copy only; the second is
+  near-identical by inspection and is NOT separately measured — declared.
+- UUID server ids cost ~37 real/tool vs ~14 for short-named ones — the 36-char UUID repeats in
+  every tool name. 4 UUID servers, 64 tools, 2,388 real, for zero function.
+
+**Attribution verdict (#111-D3) — half answered, and the other half is answerable.**
+- #109 → #110 (−2,316): server-attributable — #110 measured the five departures at −2,646.
+- #110 → #111 (−6,729): UNATTRIBUTED — no server #110 named has left. Slack still present,
+  duplicate Figma still present. #110 never recorded a conductor surface, only its sub's, so there
+  is nothing to diff against.
+- Remedy, cheap and owed: record the conductor's own surface decomposition at every wrap. Then the
+  next step change is attributable instead of argued about — the same shape as the #109 boot-floor
+  defect, where the samples were never written down next to the constant.
+
+**Two method findings worth inscribing:**
+- Shaving CHARACTERS from a hook truncated at 46 chars does NOT shave TOKENS. First attempt cut 81
+  characters across 5 headings and the index went UP 4 tape. The lever is cheap tokens inside the
+  46-char window — plain ASCII; backticks, ★, ✅ and quotes are expensive — not fewer characters.
+  `DOFIRST_HOOK_MAX` is a byte bound and `DOFIRST_INDEX_TK_MAX` is a tape bound; they do not
+  compose the way they look like they do.
+- Retrieval served a stale index again (the #32 defect). `_memento_search.py --fetch gm:DOFIRST`
+  returned pre-edit content while the live file had already changed — it reported 726 twice after
+  real edits had taken it to 707. Measured against the live file instead. Rebuild the index at
+  ritual step 2g and do not trust a fetch to reflect an edit made this session.
+
+**Flag, don't fix.** DO-FIRST items 10 and 14 carry a roll term from #64 — ~44 sessions overdue.
+#110's wrap sub spotted them and correctly left them alone. Nobody has ruled them. #111
+deliberately excluded both from the index shave so the flag is not quietly erased by a cosmetic
+edit. Needs Dave.
+
+**Gauge (§ ★ #111):** boot 55,733 real. Check-ins 82,046 → 114,524 → 156,152 FILL. STOP LINE
+150,929 BLOWN by 5,223, declared in-chat at the reading, not at the wrap. Mechanism: (1) the
+attribution probe required reproducing the injected surface into files to measure it — ~32K fill,
+unavoidable but not priced in advance; (2) a four-round-trip index shave that one measurement
+would have collapsed to one trip — the cheaper lesson. Quota: 73% used / 27% left, resets in
+9h56m. Fable 95% used — HELD, untouched, per Dave. The attribution probe ran INLINE (~32K fill)
+rather than as a sub — #110 spent 158,736 quota on the equivalent; that is the #110 delegation
+finding working, and it removed #110's own declared caveat.
+
+**Residual:** `MEMORY.md` compaction (9,178 real) — #112's FIRST act by #111-D5 · the attribution
+re-probe (#111-D3) + the constant refresh (#111-D2), in that order · P2 re-priced (836 real on
+named candidates) · P4 `_CHAIN.md` trim (10,499) · enact queue untouched (`type.css:180` ·
+`ds-032` · ds-029 first idiom · per-theme collision sweep) · the `_state.json`-vs-open-rulings gap
+(item 22).
+
+**Dossier WRITTEN** (reasoning-heavy: a gate given a legal discharge, a premise ruled unsafe, a
+method lesson on byte-vs-tape bounds):
+`_DECISION-HISTORY/2026-08-06-111-boot-drift-discharge-and-cap-reversal.md`.
+
+**→ #112:** `MEMORY.md` compaction FIRST (#111-D5) · the attribution re-probe (#111-D3) then the
+constant refresh (#111-D2) · P2 re-priced (836 real) · P4 `_CHAIN.md` trim (10,499) · enact queue
+(`type.css:180` · `ds-032` · ds-029 first idiom · per-theme sweep) · the `_state.json`-vs-open-
+rulings gap. Posture: Dave's rulings above gate what opens next.

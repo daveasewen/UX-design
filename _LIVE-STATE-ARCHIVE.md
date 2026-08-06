@@ -1,4 +1,18 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-06 (Thu **#108**, OPUS conductor, Dave live, ONE window — ★★ **THE --pri-hover "FORK" IS THE THEME LAYER WORKING, NOT DEBT — CORRECTION CAME FROM DAVE, NOT A GATE** · ✅ **#108-D1 type.css:180 = #1A1A1A** · ✅ **MEMORY COMPACTION PAID** · ⛔ **STOP LINE BLOWN — ONE LATE CHECK-IN**)
+
+- **`--pri-hover` "fork" reframed, not fixed:** measured live in `canon.css` (`--pri-hover` `#BA1110` at `:root` vs `#626262`/`#B7B7B7` under `.cn-button`/`.cn-modals`; `--sec-hover` three different upstream tokens across three components). The MEASUREMENT stands; the DEFECT conclusion does not, once Dave's four-theme requirement applies. Lesson: a clean probe can still answer the wrong question. Write-up: `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md`.
+- **`#108-D1` (Dave):** `type.css:180` ink = `#1A1A1A` (`ds-033`). Ruled by eye; both AAA/achromatic, preference not contrast. NOT enacted — literal still reads `#111`.
+- **`#108-D2` (Dave):** measure the other 35 colliding names before ruling scope (`ds-034`), only 5/40 checked — CORRECTED by this session's own finding to run PER THEME, not globally.
+- **`#108-D3` / standing constraint (Dave, verbatim, `ds-035`):** four themes overlap AND diverge on purpose; wants the flexibility to add more. Grey-ramp-for-Mono recheck explicitly NOT NOW.
+- **Memory compaction PAID** (owed since #104, slipped four sessions): 14 entries → `MEMORY-ARCHIVE.md` under `## Batch 2026-08-06 #108`, 5 hooks trimmed; `MEMORY.md` measured 19,190 B / 105 ln vs the skill's ~25KB/200-ln ceiling.
+- **Five corrections inscribed, not softened:** the memory-mount claim was false (dir IS reachable, read-only) — corrected at three sources · a stale packaged-skill `canon.css` voided a whole probe pass (28 collisions, VOID) · 6 "linking" grep hits were all comment prose, #107's zero-link claim holds · `theming-dna-adr-0014` mis-archived then restored · a transcript-JSONL grep dumped self-inflicted fill.
+- **Gauge:** boot 65,041 real (n=12). ONE check-in, 151,858 real FILL at 34 turns — past the 150,929 stop line, runway 48,142 to the 200K working ceiling. Blow mechanism = probe sprawl, ~8 bash calls deep with no check-in riding it — a NEW mechanism, distinct from #107's sub-report ingestion. Wrap delegated off-window as the mitigation.
+- **Residual:** #108-D2's per-theme sweep (35 names) not started · `ds-032` enactment not touched · ds-029 first idiom not touched · `type.css:180` ruled, not enacted · #89-D2 confirmed ABSENT from `_state.json`'s 36 ids (`G1`–`G17`, `W-01`–`W-16`) — only in the ledger, raise with Dave.
+- **→ #109:** per-theme sweep · type.css:180 enactment · ds-032 · ds-029 first idiom · the `_state.json`-vs-open-rulings gap. Posture: crank, check in between probe batches not once at the end.
+
+## Rolled 2026-08-06 #111 (2d) — via the mover
+
 ## ⏱ PRIOR DELTA — 2026-08-06 (Thu **#107**, OPUS conductor, Dave live, ONE window — ★★ **#106’S BLAST-RADIUS MEASUREMENT NOT REPRODUCIBLE (78/11, NOT 58/10) — DEFECT MISDIAGNOSED, UNIT DELTA NEVER EXISTED** · ✅ **#107-D1 PARTITION FIRST → #108 RULES** · ✅ **#107-D2 WRAP SCOPE: 3/4 PAID, MEMORY COMPACTION SLIPPED**)
 
 - **Blast-radius reconciled:** 78 literal declarations / 11 of 77 files (not 58/10) — every file declares each token twice (light+dark), 39 file-token pairs × 2 = 78. The "8 sites vs 9 files" delta never existed — both FILES, different SCOPE not unit; the real unit error was #106’s own sentence (per-token breakdown sums to 39, under a DECLARATIONS headline). 58 stays unexplained (not 157 = +canon.css). `ds-032`’s premise still holds. Write-up: `outputs/_FINDING-blast-radius-reconcile-2026-08-06-v1.md`.
