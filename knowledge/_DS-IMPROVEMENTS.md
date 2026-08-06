@@ -1826,3 +1826,38 @@ ds-028).** 182 occurrences / 131 lines / 50 files migrated to the `--alpha-*` la
 non-ladder values rounded DOWN per #99-D3; residual ③ (Input-fields `p.note` .75→72) swept under the
 same ruling. Residual ① (`--pri-hover` stored equivalents at 0.70) remains OPEN — Dave's promotion.
 Evidence: ledger § ★ #102 · snippet gate 75/0 · showroom `--check` OK.
+
+---
+
+## ds-037 — The rules index cannot tell an ENFORCED rule from a BLOCKING-DERIVABLE CANDIDATE (2026-08-06, session #114, measured — agent's finding, NOT a ruling)
+
+**Status:** LOGGED #114, per this register's own 2026-07-03 governance section (*log the
+recommendation here, with supporting artifacts, and move on*). ⛔ **Nothing here is promoted, and no
+tier is changed** — enforcement tiers are Dave's alone.
+
+**Finding (the SECOND index defect, surfaced by the ds-016 dossier — the first is ds-016 itself).**
+The rules-index extraction regex reads only the literal alternation `[BLOCKING|ADVISORY|TASTE|REVIEW`.
+That vocabulary has no term for a rule that is *derivable as blocking* but *not enforced by any live
+gate* — so both collapse into the same `BLOCKING` bucket. **Measured: 51 of the index's `BLOCKING`
+entries are BLOCKING-DERIVABLE CANDIDATES, not enforced rules.**
+
+**Why it matters, and it is the ds-016 failure one level up.** ds-016's headline — *7 live gates cite
+rules the index cannot see* — is about rules MISSING from the index. This is the mirror image:
+**rules PRESENT in the index under a status the index cannot actually justify.** A count of "blocking
+rules" taken off this index is therefore an over-count of enforcement by up to 51, and every
+downstream instrument-fit number inherits it [[measure-dont-convert-units]]. ★ The general form: **a
+vocabulary with no word for a state cannot report that state — it reports the nearest word it has,
+confidently** [[scope-blindness-gate-vocabulary]] [[honest-refusal-needs-a-legal-form]].
+
+**Evidence:** the ds-016 dossier work of #114 (remedy (b) enactment, `0678f7f`); the regex itself in
+the rules-index builder; `knowledge/guidelines/_rules-index.json`.
+
+**Prepared-but-unpromoted candidate remedy (evidence, not canon):** widen the status vocabulary by
+one term — e.g. `BLOCKING-DERIVABLE` — and make the extractor **FAIL LOUD on an unregistered status
+word** rather than bucketing it, the dv-vocab pattern already used by `_gm_usage.py`. ⚠ **This would
+re-price ds-016's published figures**, which is exactly why it is logged rather than done: the
+numbers Dave has already been shown were derived under the old vocabulary.
+
+**Blast radius if adopted:** `knowledge/guidelines/_rules-index.json` · the rules-index builder ·
+`knowledge/_instrument-fit.json` / `_INSTRUMENT-FIT.md` · every published "N blocking rules" count,
+including the ones in ds-016's own entry.

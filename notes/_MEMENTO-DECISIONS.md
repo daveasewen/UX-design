@@ -4288,6 +4288,46 @@ rulings gap. Posture: Dave's rulings above gate what opens next.
 
 ---
 
+## ★ #112 — FOUR METHOD RULINGS ON HOW THE OPENER ASKED, AND ONE BUILD RULED-NOT-BUILT (Dave live, OPUS conductor, ONE window, compaction lane run INLINE)
+
+⚠ **WRITTEN CLERICALLY AT #114's WRAP, NOT AT #112's — and that provenance is the point.** #113
+flagged the gap in its own commit-state: *"`notes/_MEMENTO-DECISIONS.md` has NO `## ★ #112` section
+and `knowledge/_rulings.json` has NO `s112-*` entries — #112's five rulings live only in its banner
+(now in `_GM-ARCHIVE.md`). Gap in the record, not in the evidence. NEEDS A CALL."* At #114 the 2c
+EXIT CHECK reached the same state from the other side: **#112's banner was the last LIVE copy and was
+about to roll out of live state.** So this section is a **verbatim transfer from that banner**, by
+ADDITION — **nothing here is re-derived, re-worded or ruled by an agent.** Source of every quote:
+`_GM-ARCHIVE.md`, batch `#### 2026-08-06 #113`, the `> ## ★ PRIOR — … #112` banner.
+
+**#112-D1 (Dave) — build the RECORDER first, inside the attribution lane, never as a competing
+option.** Verbatim: *"otherwise #112 measures one number and #113 is blind again — that is the #109
+defect a third time."* ⇒ RULED #112, **NOT BUILT #112** (the budget went on the compaction overrun),
+**BUILT AND DISCHARGED #113** (`knowledge/_surface_recorder.py` + `_surface-samples.json`).
+
+**#112-D2 (Dave) — never re-put a SETTLED ruling as an option.** Verbatim: *"it invites me to reverse
+it by accident when I only meant to reorder work."* The offending question put attribution-before-
+constant to him as "choice 1" when it was already settled at #111-D2/D3.
+
+**#112-D3 (Dave) — do not ask him to rank lanes that have not been priced.** Verbatim: *"I can't
+choose between a 30K inline probe and a 400K sub when the menu hides which is which."*
+
+**#112-D4 (Dave) — quota is a PAIR, not a percentage.** Used/left AND time to reset, Fable reported
+separately. Verbatim: *"27% with 9 hours is a working session; 27% with one hour is wrap-and-stop."*
+⇒ **pin the delta; never bake a live state into a question that fires later.**
+
+**#112-D5 (Dave, ruled at #111, PAID at #112) — the `MEMORY.md` compaction.** Measured on the artefact
+after the write: `9,178 → 7,996 real · 20,600 → 18,098 b · 108 → 100 lines`. 9 entries MOVED, 21 hooks
+TRIMMED, 1 ADDED (`budget-vs-quota-vocabulary`, owed by Dave #111). ⛔ **2 REFUSALS RECORDED** —
+`live-radius-corner-tuner` and `dataviz-pillar-progress`, both notice-unprompted. ⚠ Landed **998 b
+above** the 17.1KB target and STOPPED rather than archive notice-unprompted entries to hit a round
+number — **Dave may overrule.**
+
+**⛔ #112's gauge, for the record:** stop line 150,929 **BLOWN by 10,680** — the #111 mechanism re-run
+one session later. Full post-mortem: `notes/_GAUGE-LOG.md` § `#### 2026-08-06 #112`. Nothing in this
+section is new; if it conflicts with the banner, **the banner is the source.**
+
+---
+
 ## ★ #113 — THE CONDUCTOR-SURFACE RECORDER IS BUILT, AND IT SHIPPED WITH A SCOPE ERROR ITS OWN GREEN SUITE COULD NOT SEE (Dave live, OPUS conductor, ONE window, wrap DELEGATED to an Opus sub on Dave's explicit pick)
 
 **Dave's opening direction (not a ruling, an order of work):** *"lets get these done in order, lets go
@@ -4360,3 +4400,94 @@ ruled, never entered `_state.json`) · P4 `_CHAIN.md` trim, now **11,345** not 1
 queue, PARKED by Dave.
 
 **Dossier:** `_DECISION-HISTORY/2026-08-06-113-surface-recorder-and-the-scope-error-a-green-suite-could-not-see.md`
+
+---
+
+## ★ #114 — SEVEN RULINGS, TWO ENACTED IN THE WAVE, TWO BUILDS ORDERED AND ROLLED — AND A RETRIEVAL SELF-MISS: BOTH "UNKNOWNS" WERE IN THE RECORD (Dave live, FABLE conductor, ONE window, 5 Opus subs, wrap DELEGATED to an Opus sub)
+
+**Conductor: FABLE**, Dave live, ONE window, subs-by-default. **Four mid-wave commits landed before
+the wrap**: `92f8011` (scope-wall / ASSERT-007) · `0678f7f` (ds-016 remedy (b)) · `994cd25` (hit-area
+D3) · `48403b7` (memento-package re-sync). ⚠ **ALL FOUR CARRY #113's BANNER SUBJECT** — `_git_commit.sh`
+rewrites the subject from the chain banner, and mid-wave commits therefore inherit the PREVIOUS
+session's headline. Known convention, **flagged here so the chain cannot be read as certifying the
+wrong session** [[wrap-skipped-chain-certifies-wrong-session]]. Verify by hash, not by subject.
+
+**#114-D1 (Dave) — ds-016 remedy (b): the 5 category-4 anchors are re-filed as CLERICAL recording of
+his EXISTING 2026-07-03 tiers.** Verbatim: *"I'm happy for you to do that clerical re-filing."*
+`aid-020` = **ADVISORY** — verbatim: *"Advisory is good"*. ⛔ **Promotion was explicitly NOT ruled**;
+nothing here promotes a rule to blocking. **ENACTED `0678f7f`** (`knowledge/guidelines/_rules-index.json`
++ 4 guideline files + `_instrument-fit.json`/`_INSTRUMENT-FIT.md` regen).
+⛔ **ds-016 IS NOT CLOSED:** **259 untagged anchors of 698 remain**, so *"12 under-instrumented"* is
+still a **FLOOR**, not a count [[measure-dont-convert-units]].
+
+**#114-D2 (Dave) — remedy (a), the ADOPTION-TIME CITATION GATE: BUILD RULED, with four binding
+conditions.** (1) ships **ADVISORY** with the 7 named rules; (2) a **NAMED PROMOTION TRIGGER in
+code**, not in prose; (3) the waiver is **a legal form an agent can use honestly** — declare + name
+the rule + price the fix [[honest-refusal-needs-a-legal-form]]; (4) **detection and discharge are
+mutation-tested as SEPARATE clauses** [[mutation-tests-the-clause-not-the-feature]]. Promotion to
+strict is **a separate later decision of Dave's**. ★ **Confirmed overlap, cite don't re-rule:** this
+IS DO-FIRST item 5(2)'s adoption-time half, ruled COMPLEMENTARY at #4 — `_FUTURE-STATE.md:184–204`.
+⛔ **NOT BUILT — ROLLS TO #115.**
+
+**#114-D3 (Dave) — apply the hidden hit-area expander to the 8 sub-24px floor offenders.** Verbatim:
+*"yes expand the hit area..."* **OUTCOME, and it is not what the gate claimed:** only **2 of the 8
+were real controls** (`.fl-tip`, `.help-btn` — fixed, `994cd25`); the other **6 are DECORATIONS of
+≥44px parents**, i.e. a **gate-SCOPING defect**, not eight a11y failures. His nuance is inscribed in
+`notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`: chart tooltip trigger-points are a
+lesser concern, the table fallback always exists, and a11y rulings there are more nuanced.
+
+**#114-D4 (Dave) — versioned releases are FROZEN.** Verbatim: *"anything that is a versioned release
+shouldn't change."* ⇒ the `designer-skills-v1` guideline edits were **REVERTED** — verbatim: *"Yes I
+think the pack should revert."* DONE; `designer-skills-v1` is gitignored, so no commit was needed
+[[designer-skills-packs-are-releases]].
+
+**#114-D5 (Dave) — the hit-area checker MEASUREMENT REDESIGN is SIGNED OFF.** Verbatim: *"good lets
+do it."* Markup-driven, per the pending half of the 2026-07-25 brief. **ONE build owns BOTH** the 6
+phantom failures (D3's decorations) AND the `axs-003` detector quirk — a conflated symptom set with a
+single cause [[conflated-fix-guarantees-recurrence]]. ⛔ **NOT BUILT — ROLLS TO #115, and it is ①.**
+
+**#114-D6 (Dave) — 44px promoted to BLOCKING for controls.** Verbatim: *"Promoting 44 to blocking for
+controls, good."* ⛔ **ORDERED AFTER D5 LANDS** — promoting before the measurement redesign would
+break day one on the six phantom failures D5 exists to remove. **Sequence is part of the ruling.**
+
+**#114-D7 (Dave) — the memento-package stays a LIVE tracking mirror.** Verbatim: *"lets keep it live
+and do the fix... versioning in the git only. lets call it and experiment."* Re-sync **ENACTED
+`48403b7`**; the delta-audit is a clean **PASS**. ⚠ Note the deliberate tension with D4: a *versioned
+release* is frozen, a *tracking mirror* is not — the package is the second kind, by his word, and is
+labelled an EXPERIMENT.
+
+**★★ FINDING — A RETRIEVAL SELF-MISS, and it is the conductor's.** BOTH "unknowns" put to Dave this
+session were **already in the record and already indexed**: the designer-pack v2 purpose
+(`notes/_receipts/2026-07-21-worker-designer-pack-v2.md`) and the hit-area solution
+(`notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`). **Two causes, both nameable:**
+(1) the conductor **did not search before asking** — [[feedback-verify-before-asking]] is standing and
+was not run; (2) **vocabulary drift** — Dave's words and the record's words do not collide lexically,
+so a lexical search on HIS phrasing misses a document that answers HIS question. ★ The general form:
+**a question is not evidence of a gap in the record until a retrieval has actually failed** — an
+unrun search reads exactly like an absent document [[unmatched-grep-is-not-an-absence]].
+
+**✅ ASSERT-007 — `MEMORY.md` mount-reachability is now GATED** (`92f8011`). Roots: repo + mount;
+`recheck_days 30`; **off-sandbox runs go RED BY DESIGN**, which is the honest state for a predicate
+about a mount that is not present. Closes the loop on #113's finding that the file had been sitting
+in a hidden `.auto-memory/` dir for ~113 sessions [[memory-md-is-in-the-mount]].
+
+**★ SECOND INDEX DEFECT FOUND IN THE ds-016 DOSSIER — HOMED, NOT RULED.** The rules-index regex reads
+only `[BLOCKING|ADVISORY|TASTE|REVIEW`, and **51 of the index's BLOCKING entries are
+BLOCKING-DERIVABLE CANDIDATES, not enforced rules** — the index cannot tell an enforced rule from a
+derivable one. Logged as **`ds-037`** in `knowledge/_DS-IMPROVEMENTS.md` (the stated home for DS
+errors, per its own 2026-07-03 governance section: *log the recommendation, move on*). ⛔ **NOT a
+ruling and NOT a promotion** — the tier decision is Dave's alone.
+
+**⛔ DO-NOT-RULE, carried intact:** `BOOT_FIRSTTURN_TK` 65,400 · published floor 75,899 · the
+`_gauge_tokens.py` chain-line constant · `DOFIRST_INDEX_TK_MAX = 700` · `BOOT_DRIFT_BLOCKING = True` ·
+no invented close conditions for the 19 `_state.LEGACY_IDS` · `G1`–`G17` untouched. **None was touched
+by this wrap**, and the wrap sub was briefed that it may not raise a cap to clear its own gate
+[[sub-ruled-daves-open-item-110]].
+
+**residual → #115:** ① **D5 checker redesign** (+ the `axs-003` detector) · ② **D6 44-promote**, AFTER
+① · ③ **D2 citation gate** with all four conditions · ④ **attribution re-probe (#111-D3), stage
+`deferred_tools` FIRST** — NOT REACHED #114, rolled intact from #113 · ⑤ **P4 `_CHAIN.md` trim,
+11,345** · ⑥ the 19 `_state.LEGACY_IDS` housework + DO-FIRST item 22 · ⑦ Apollo enact queue, **still
+PARKED by Dave**.
+
+**Dossier:** `_DECISION-HISTORY/2026-08-06-114-the-clerical-refile-and-the-retrieval-self-miss.md`
