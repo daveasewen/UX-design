@@ -9,7 +9,7 @@
 
 **Claim:** No Latin Univers WEBFONT pack is present. Only the five SCRIPT companions have webfonts.
 
-- check: `0 matches`
+- check: `0 matches in root=repo`
 - consequence: Shareable real-face material is blocked by ASSET DELIVERY, not permission — there is nothing to embed. Licence side is renewal-pending; Dave assesses the gap as procedural and low-risk (ruled 2026-07-18, do not re-litigate). REFRAMED from 'blocker' the same week: within-HSBC distribution is CLOSED, ruled 'leave'.
 - clears when: The Latin webfont files (WOFF + WOFF2) physically land in knowledge/assets/fonts/. Watch for Ultralight in the pack — a sixth weight below Thin = a TYPE RULING, not an asset drop.
 - asserted in: `knowledge/_proforma/_TYPE-DECISIONS.md`, `_LIVE-STATE.md`, `GOOD-MORNING.md`, `memory:univers-webfont-blocker`
@@ -19,7 +19,7 @@
 
 **Claim:** The licensed Latin Univers DESKTOP set IS present and readable (TTF + OTF).
 
-- check: `1 match(es)`
+- check: `1 match(es) in root=repo`
 - consequence: Real-face rendering and metric measurement are available in-sandbox. Any doc still claiming 'the sandbox has no Univers' is STALE.
 - asserted in: `knowledge/_proforma/_TYPE-DECISIONS.md`, `memory:sandbox-html-rendering`, `memory:univers-measured-facts`
 - last verified: 2026-07-18
@@ -28,7 +28,7 @@
 
 **Claim:** No text-transform:uppercase survives in the pro-forma surface (type26-019, BLOCKING).
 
-- check: `needle='text-transform:uppercase'`
+- check: `needle='text-transform:uppercase' in root=repo`
 - consequence: The gate in _validate_proforma.py is the primary enforcement; this is a belt-and-braces canary on the file that carried two of the five breaches.
 - asserted in: `knowledge/_validate_proforma.py`, `memory:gate-glob-scope-rule`
 - last verified: 2026-07-18
@@ -37,7 +37,7 @@
 
 **Claim:** Licensed font binaries are gitignored and must never be committed.
 
-- check: `needle='knowledge/assets/fonts/'`
+- check: `needle='knowledge/assets/fonts/' in root=repo`
 - consequence: Keeps font binaries out of future commits. NOTE the 2026-07-18 reframe: the four files already embedding base64 woff2 at 24accd0 are CLOSED, ruled 'leave' (private repo, HSBC-only recipients) — no git rm, no BFG. And WebfontUserGuide-2024.pdf is generic Monotype guidance, NOT an entitlement record; the entitlement sits with brand/procurement, unseen.
 - asserted in: `.gitignore`, `knowledge/_proforma/_TYPE-DECISIONS.md`, `memory:univers-webfont-blocker`
 - last verified: 2026-07-18
@@ -46,6 +46,16 @@
 
 **Claim:** The HSBC Latin Univers DESKTOP TTFs are present and installable for real-font sandbox rendering. Renders are NOT layout-only.
 
-- check: `1 match(es)`
+- check: `1 match(es) in root=repo`
 - asserted in: `GOOD-MORNING.md`, `memory:sandbox-html-rendering`, `knowledge/_RUNBOOK-capture-ritual.md`
 - last verified: 2026-07-18
+
+## ✓ ASSERT-007 — blocker
+
+**Claim:** MEMORY.md is REACHABLE ON DISK in the sandbox mount at .auto-memory/MEMORY.md — bash can read it, and any number in it can be obtained at ZERO fill.
+
+- check: `1 match(es) in root=mount`
+- consequence: Any session pricing a 'reproduce it to measure it' lane must CHECK DISK FIRST: `ls`/`grep` under <mount>/.auto-memory/ costs zero fill; reading the file into context costs 8–9K. Note the dir is HIDDEN — a plain `ls` of the mount does not show it.
+- clears when: The mount layout changes and .auto-memory/ is no longer reachable from the shell — at which point the zero-fill route is genuinely gone and every doc telling a session to check disk first is wrong.
+- asserted in: `memory:memory-md-is-in-the-mount`, `_LIVE-STATE.md`
+- last verified: 2026-08-06

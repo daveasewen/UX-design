@@ -62,45 +62,107 @@ REGISTRY = os.path.join(HERE, "_assertions.json")
 REPORT = os.path.join(HERE, "_ASSERTIONS.md")
 
 
+# ---------------------------------------------------------------- roots
+# A predicate used to assume ROOT — the repo — and so could only ever express
+# "present in the repo". Some true, checkable, expensive-to-not-know facts live
+# OUTSIDE the repo but INSIDE the sandbox mount: sessions #109/#111/#112 each paid
+# 8–9K of fill reading .auto-memory/MEMORY.md into context for a number that
+# `bash` produces at zero fill, because nothing said the file was reachable on disk.
+#
+# So the root is now a NAMED, EXPLICIT part of the predicate record. It is not
+# inferred from the glob and it is not silently assumed: an assertion that omits
+# it is malformed and the selftest says so. `repo` preserves the old behaviour
+# exactly, so no existing assertion changes meaning.
+#
+# `mount` is resolved by walking up from ROOT for a `.../<session>/mnt` ancestor —
+# the sandbox layout. Off-sandbox there is no such ancestor and the root is
+# UNRESOLVED, which is reported LOUD and NAMED rather than defaulted to ROOT.
+# Defaulting it would make a mount claim quietly re-assert a repo fact — the exact
+# class of error this registry exists to stop.
+
+class RootUnresolved(Exception):
+    pass
+
+
+def _mount_root():
+    p = ROOT
+    while True:
+        parent = os.path.dirname(p)
+        if parent == p:
+            raise RootUnresolved(
+                f"root 'mount' unresolvable: no '<session>/mnt' ancestor of ROOT={ROOT} "
+                f"(running outside the sandbox mount)")
+        if os.path.basename(p) == "mnt":
+            return p
+        p = parent
+
+
+ROOTS = {
+    "repo": lambda: ROOT,
+    "mount": _mount_root,
+}
+DEFAULT_ROOT = "repo"          # behaviour-preserving for callers that pass no root
+ROOT_KEY = "root"
+
+
+def resolve_root(a):
+    """Named root → absolute path. Unknown name fails LOUD and NAMED, never defaults."""
+    name = a.get(ROOT_KEY, DEFAULT_ROOT)
+    if name not in ROOTS:
+        raise RootUnresolved(f"unknown root {name!r} (known: {sorted(ROOTS)})")
+    return name, ROOTS[name]()
+
+
 # ---------------------------------------------------------------- predicates
 # Deliberately tiny. No eval, no arbitrary code, no imports from the registry.
 # If a claim cannot be expressed here, it either needs a native check (see NATIVE
 # below) or it is not an environment claim and does not belong in the registry.
 
-def _matches(pattern):
-    return globlib.glob(os.path.join(ROOT, pattern), recursive=True)
+def _matches(a):
+    name, base = resolve_root(a)
+    return name, base, globlib.glob(os.path.join(base, a["glob"]), recursive=True)
 
 
 def p_path_exists(a):
-    hits = _matches(a["glob"])
-    return bool(hits), f"{len(hits)} match(es)"
+    name, _, hits = _matches(a)
+    return bool(hits), f"{len(hits)} match(es) in root={name}"
 
 
 def p_path_absent(a):
-    hits = _matches(a["glob"])
-    return not hits, (f"{len(hits)} match(es): {[os.path.relpath(h, ROOT) for h in hits[:4]]}"
-                      if hits else "0 matches")
+    name, base, hits = _matches(a)
+    return not hits, (f"{len(hits)} match(es) in root={name}: "
+                      f"{[os.path.relpath(h, base) for h in hits[:4]]}"
+                      if hits else f"0 matches in root={name}")
 
 
 def p_glob_count(a):
-    n = len(_matches(a["glob"]))
+    name, _, hits = _matches(a)
+    n = len(hits)
     op, want = a.get("op", "eq"), a["n"]
     ok = {"eq": n == want, "gte": n >= want, "lte": n <= want}[op]
-    return ok, f"count={n} (want {op} {want})"
+    return ok, f"count={n} (want {op} {want}) in root={name}"
+
+
+def _read(a):
+    name, base = resolve_root(a)
+    path = os.path.join(base, a["path"])
+    if not os.path.exists(path):
+        return name, None
+    return name, open(path, errors="ignore").read()
 
 
 def p_file_contains(a):
-    path = os.path.join(ROOT, a["path"])
-    if not os.path.exists(path):
-        return False, f"file missing: {a['path']}"
-    return a["needle"] in open(path, errors="ignore").read(), f"needle={a['needle']!r}"
+    name, text = _read(a)
+    if text is None:
+        return False, f"file missing in root={name}: {a['path']}"
+    return a["needle"] in text, f"needle={a['needle']!r} in root={name}"
 
 
 def p_file_lacks(a):
-    path = os.path.join(ROOT, a["path"])
-    if not os.path.exists(path):
-        return False, f"file missing: {a['path']}"
-    return a["needle"] not in open(path, errors="ignore").read(), f"needle={a['needle']!r}"
+    name, text = _read(a)
+    if text is None:
+        return False, f"file missing in root={name}: {a['path']}"
+    return a["needle"] not in text, f"needle={a['needle']!r} in root={name}"
 
 
 VERBS = {
@@ -147,7 +209,12 @@ def check(a):
     verb = VERBS.get(pred["verb"])
     if not verb:
         return False, f"unknown predicate verb {pred['verb']!r}"
-    return verb(pred)
+    try:
+        return verb(pred)
+    except RootUnresolved as e:
+        # LOUD and NAMED. A root we cannot resolve is NOT a pass and NOT silently
+        # re-pointed at ROOT — the assertion is simply not testable here, and says so.
+        return False, f"ROOT UNRESOLVED — {e}"
 
 
 def stale_blocker(a):
@@ -226,6 +293,21 @@ def run():
     return 0
 
 
+def wellformed(a):
+    """Registry well-formedness. Raises AssertionError, named, on the offending id."""
+    assert a["asserted_in"], f"{a['id']} must declare where it is asserted — that field IS the fix"
+    assert a["predicate"]["verb"] in VERBS or a["id"] in NATIVE, f"{a['id']} bad verb"
+    assert ROOT_KEY in a["predicate"], (
+        f"{a['id']} predicate must declare its root EXPLICITLY — an assumed root is how a "
+        f"mount claim silently becomes a repo claim")
+    # .get, not [] — if the clause above is ever weakened this must still fail NAMED, not crash.
+    assert a["predicate"].get(ROOT_KEY) in ROOTS, \
+        f"{a['id']} unknown root {a['predicate'].get(ROOT_KEY)!r} (known: {sorted(ROOTS)})"
+    assert a.get("kind") != "blocker" or "recheck_days" in a, \
+        f"{a['id']} is a blocker and must carry recheck_days"
+    return True
+
+
 def selftest():
     """Bite-test every verb. A gate that cannot fail is worse than no gate — it
     manufactures confidence. (Lesson from the type gate that reported clean on the
@@ -234,6 +316,23 @@ def selftest():
     assert ok, "path_exists must find a file that is there"
     ok, _ = p_path_exists({"glob": "knowledge/__nope__/*.xyz"})
     assert not ok, "path_exists must fail on a missing file"
+
+    # --- explicit root, both directions -------------------------------------
+    ok, d = p_path_exists({"root": "repo", "glob": "knowledge/_assertions.json"})
+    assert ok and "root=repo" in d, "explicit root=repo must behave exactly as the old default"
+    try:
+        mnt = _mount_root()
+    except RootUnresolved:
+        mnt = None
+    if mnt:
+        # HIT: a file that exists in the mount but NOT in the repo.
+        ok, d = p_path_exists({"root": "mount", "glob": ".auto-memory/MEMORY.md"})
+        assert ok and "root=mount" in d, f"root=mount must reach outside the repo — got {d}"
+        # MISS: same glob under the repo root finds nothing — the roots are distinct.
+        ok, _ = p_path_exists({"root": "repo", "glob": ".auto-memory/MEMORY.md"})
+        assert not ok, "the mount file must NOT be reachable from root=repo (roots must differ)"
+    ok, d = p_path_exists({"root": "repo", "glob": "knowledge/__nope__/*.xyz"})
+    assert not ok, "explicit root must still miss a missing file"
     ok, _ = p_path_absent({"glob": "knowledge/__nope__/*.xyz"})
     assert ok, "path_absent must pass when nothing matches"
     ok, _ = p_path_absent({"glob": "knowledge/_assertions.json"})
@@ -248,11 +347,57 @@ def selftest():
     ids = [a["id"] for a in reg["assertions"]]
     assert len(ids) == len(set(ids)), "assertion ids must be unique"
     for a in reg["assertions"]:
-        assert a["asserted_in"], f"{a['id']} must declare where it is asserted — that field IS the fix"
-        assert a["predicate"]["verb"] in VERBS or a["id"] in NATIVE, f"{a['id']} bad verb"
+        wellformed(a)
+    mutation_tests()
     print(f"selftest OK — {len(VERBS)} verbs bite-tested, {len(NATIVE)} native check(s), "
-          f"{len(ids)} assertion(s) well-formed.")
+          f"{len(ids)} assertion(s) well-formed, 3 mutation(s) killed.")
     return 0
+
+
+def mutation_tests():
+    """Each mutation re-enacts a WRONG version of one clause and asserts a check dies.
+    A mutation proves the CLAUSE it kills — not the feature. Named accordingly."""
+
+    # M1 — kills the clause "root 'mount' resolves to the MOUNT, not to ROOT".
+    # This is the literal old behaviour (predicates assumed ROOT). If the mount root
+    # were still ROOT, the mount-reachability assertion would read as FALSE.
+    if _mount_root_or_none():
+        orig = ROOTS["mount"]
+        ROOTS["mount"] = lambda: ROOT
+        try:
+            ok, _ = p_path_exists({"root": "mount", "glob": ".auto-memory/MEMORY.md"})
+            assert not ok, "M1 did not kill: assumed-ROOT mount still found the mount file"
+        finally:
+            ROOTS["mount"] = orig
+        ok, _ = p_path_exists({"root": "mount", "glob": ".auto-memory/MEMORY.md"})
+        assert ok, "M1 restore failed — mount root not put back"
+
+    # M2 — kills the clause "an UNKNOWN root fails LOUD and NAMED, never defaults to repo".
+    # Mutant premise: a bogus root silently falls back to ROOT and the check passes.
+    ok, detail = check({"id": "MUT-002", "predicate":
+                        {"verb": "path_exists", "root": "no-such-root",
+                         "glob": "knowledge/_assertions.json"}})
+    assert not ok, "M2 did not kill: an unknown root defaulted instead of failing"
+    assert "ROOT UNRESOLVED" in detail and "no-such-root" in detail, \
+        f"M2 did not kill: failure is not NAMED — {detail!r}"
+
+    # M3 — kills the clause "every registry predicate declares its root EXPLICITLY".
+    # Mutant: a rootless assertion record. The well-formedness clause must reject it.
+    bad = {"id": "MUT-003", "kind": "environment", "asserted_in": ["mutation"],
+           "predicate": {"verb": "path_exists", "glob": "x"}}
+    killed = False
+    try:
+        wellformed(bad)
+    except AssertionError as e:
+        killed = "EXPLICITLY" in str(e)
+    assert killed, "M3 did not kill: wellformed() accepted a rootless predicate"
+
+
+def _mount_root_or_none():
+    try:
+        return _mount_root()
+    except RootUnresolved:
+        return None
 
 
 if __name__ == "__main__":

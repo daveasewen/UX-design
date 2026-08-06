@@ -25,12 +25,19 @@
     "the repo, invisible to the shell), but it CAN name them in the failure so the human knows what to",
     "go and fix. That converts an invisible dependency into a visible instruction.",
     "",
+    "EVERY PREDICATE DECLARES ITS ROOT, EXPLICITLY. 'root' is a NAMED root, never a path:",
+    "  repo   the git repo — what every predicate used to ASSUME.",
+    "  mount  the sandbox mount, the repo's '<session>/mnt' ancestor. This is what lets an",
+    "         assertion say 'reachable in the mount', which a repo-only root cannot express.",
+    "It is REQUIRED, not defaulted: an assumed root is how a mount claim silently becomes a repo",
+    "claim. An unknown or unresolvable root fails LOUD and NAMED — it never falls back to the repo.",
+    "",
     "PREDICATE VERBS — deliberately tiny, no eval, no arbitrary code:",
-    "  path_exists   {glob}            at least one match",
-    "  path_absent   {glob}            zero matches",
-    "  glob_count    {glob, op, n}     op in eq|gte|lte",
-    "  file_contains {path, needle}",
-    "  file_lacks    {path, needle}",
+    "  path_exists   {root, glob}            at least one match",
+    "  path_absent   {root, glob}            zero matches",
+    "  glob_count    {root, glob, op, n}     op in eq|gte|lte",
+    "  file_contains {root, path, needle}",
+    "  file_lacks    {root, path, needle}",
     "",
     "'recheck_days' on a BLOCKER: a blocker stops work, and therefore stops the work that would",
     "disprove it — the highest-rot-risk claim in the system. Past its window the gate warns even",
@@ -43,6 +50,7 @@
       "claim": "No Latin Univers WEBFONT pack is present. Only the five SCRIPT companions have webfonts.",
       "predicate": {
         "verb": "path_absent",
+        "root": "repo",
         "glob": "knowledge/assets/fonts/**/*[Ll]atin*.woff*"
       },
       "consequence": "Shareable real-face material is blocked by ASSET DELIVERY, not permission — there is nothing to embed. Licence side is renewal-pending; Dave assesses the gap as procedural and low-risk (ruled 2026-07-18, do not re-litigate). REFRAMED from 'blocker' the same week: within-HSBC distribution is CLOSED, ruled 'leave'.",
@@ -63,6 +71,7 @@
       "claim": "The licensed Latin Univers DESKTOP set IS present and readable (TTF + OTF).",
       "predicate": {
         "verb": "path_exists",
+        "root": "repo",
         "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
       },
       "consequence": "Real-face rendering and metric measurement are available in-sandbox. Any doc still claiming 'the sandbox has no Univers' is STALE.",
@@ -80,6 +89,7 @@
       "claim": "No text-transform:uppercase survives in the pro-forma surface (type26-019, BLOCKING).",
       "predicate": {
         "verb": "file_lacks",
+        "root": "repo",
         "path": "knowledge/_proforma/Tranche-3-interactive.html",
         "needle": "text-transform:uppercase"
       },
@@ -97,6 +107,7 @@
       "claim": "Licensed font binaries are gitignored and must never be committed.",
       "predicate": {
         "verb": "file_contains",
+        "root": "repo",
         "path": ".gitignore",
         "needle": "knowledge/assets/fonts/"
       },
@@ -116,6 +127,7 @@
       "kind": "environment",
       "predicate": {
         "verb": "path_exists",
+        "root": "repo",
         "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
       },
       "asserted_in": [
@@ -125,6 +137,26 @@
       ],
       "note": "Recipe: mkdir -p ~/.fonts && cp knowledge/assets/fonts/_desktop/TTF/*.ttf ~/.fonts/ && fc-cache -f ; CSS family 'HSBC_MtUnivers_Latin'. ALWAYS the HSBC cut, never stock Univers Next Pro (both are in _desktop/; Dave's ruling 2026-07-18). DESKTOP licence renders, it does not ship — ASSERT-001 (no Latin WEBFONT) is untouched by this.",
       "last_verified": "2026-07-18"
+    },
+    {
+      "id": "ASSERT-007",
+      "kind": "blocker",
+      "claim": "MEMORY.md is REACHABLE ON DISK in the sandbox mount at .auto-memory/MEMORY.md — bash can read it, and any number in it can be obtained at ZERO fill.",
+      "why": "Sessions #109, #111 and #112 each paid 8–9K of fill reading memory INTO CONTEXT to get a figure that `grep` produces for nothing, because nothing in the repo said the file was on disk. Three sessions, same cost, independently. This is a blocker in the exact sense the registry means: the belief 'memory is outside the shell, unreachable' stopped the cheap work that would have disproved it. It could not be expressed before this assertion because predicates assumed the repo root, and this file is outside the repo but inside the mount.",
+      "predicate": {
+        "verb": "path_exists",
+        "root": "mount",
+        "glob": ".auto-memory/MEMORY.md"
+      },
+      "consequence": "Any session pricing a 'reproduce it to measure it' lane must CHECK DISK FIRST: `ls`/`grep` under <mount>/.auto-memory/ costs zero fill; reading the file into context costs 8–9K. Note the dir is HIDDEN — a plain `ls` of the mount does not show it.",
+      "clears_when": "The mount layout changes and .auto-memory/ is no longer reachable from the shell — at which point the zero-fill route is genuinely gone and every doc telling a session to check disk first is wrong.",
+      "asserted_in": [
+        "memory:memory-md-is-in-the-mount",
+        "_LIVE-STATE.md"
+      ],
+      "recheck_days": 30,
+      "last_verified": "2026-08-06",
+      "provenance": "Verified 2026-08-06 in-sandbox: /sessions/<session>/mnt/.auto-memory/ lists MEMORY.md and MEMORY-ARCHIVE.md alongside the per-entry .md files. RESIDUAL, declared UNPROVEN: off-sandbox (e.g. a checkout with no '<session>/mnt' ancestor) the root is UNRESOLVED and this assertion reports ROOT UNRESOLVED and FAILS rather than passing quietly — deliberate, per 'UNKNOWN is never defaulted'. Not exercised outside the sandbox."
     }
   ]
 }
