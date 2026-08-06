@@ -4612,3 +4612,35 @@ exempt"* — which READS as a Dave verbatim. It is not. It is prefixed *"likely 
 *"Recommend: … CONFIRM with Dave."* **An agent's proposal wearing a ruling's clothes.** Caught only by
 reading the surrounding lines rather than the matched one
 [[feedback-dont-launder-a-premise-into-a-ruling]] [[unmatched-grep-is-not-an-absence]].
+
+**#116-D4 (Dave) — s114-D6 IS RE-PRICED, NOT AUTO-PROMOTED.** The 44-promote was ruled on a
+**six-failure premise**; the rebuilt gate MEASURED **72 controls in the 24–43 band**. Dave's ruling
+STANDS — its PREMISE is corrected first. ⛔ **DO NOT flip `CONTROL_TIER_44`.** ★ The general form:
+*a ruling enforced against a falsified premise is not the ruling Dave made*
+[[premise-ages-faster-than-rule]].
+
+**#116-D5 (Dave) — the 107 sub-24 marks STAY AT `warn`.** Nothing waived, nothing enforced.
+Characterisation + a RENDERED example owed before he decides. ⚠ **The +11 UNMEASURED marks (10 pie
+free-form paths, 1 sparkline polyline) are NOT clean — they are unmeasured**
+[[measure-dont-convert-units]].
+
+**⚠ TWO CONDUCTOR ERRORS THIS SESSION, ONE SHAPE — both trusted a COUNT instead of measuring.**
+(1) The molecule conversion was priced at **4 charts**; it is **13**. (2) The render-verifier
+asserted `.dv-tbl-toggle count == 0` and reported **12 FAILS** — the class was RETAINED on
+`<summary>` for styling; zero legacy `<button>` remain. **A matched class asserted as an element
+type** [[unmatched-grep-is-not-an-absence]]. The verifier's own defect, not the build's.
+
+**✅ RENDER-VERIFY — THE SUB DECLARED IT UNDONE AND THE CONDUCTOR DROVE IT.** bar/donut/line/
+sparkline × {1280, 375} × {JS-OFF, JS-ON}: **JS-OFF geometry byte-identical to JS-ON** (the
+progressive-enhancement claim, DRIVEN not asserted) · **0 panels `[hidden]`** · summary hit
+**44×113** (sparkline 44×84) · no overflow at 375 (right 339 < 375). ★ The sub's own words were
+*"structural assertion only"* — a structural claim is the same shape as a mutation test that proves
+the CLAUSE and not the FEATURE [[mutation-tests-the-clause-not-the-feature]].
+
+**⛔ PRE-EXISTING RED, DECLARED NOT FIXED:** `_validate_behaviour.py --selftest` is red at HEAD —
+page budget **32.9KB reported PASS against a 32 cap**. The sub kept its JS +6 bytes and did NOT
+touch the cap (correctly — a cap raised to clear its own gate is not a cap
+[[sub-ruled-daves-open-item-110]]).
+
+**⚠ COMMIT SUBJECT REWRITTEN AGAIN:** `2a231f9` carries **#115's** banner subject. Third consecutive
+session. **Verify by hash and diff, never by subject** [[wrap-skipped-chain-certifies-wrong-session]].
