@@ -102,7 +102,7 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # 20,000 — 5.6x outside the +/-8,000 bar. And "boot = disk + harness" added a file read at
 # turn TWO (`_CHAIN.md`) to a constant standing for turn ONE: two different moments summed as
 # if they were halves of one thing. The +/-4% defence was sound arithmetic on a wrong premise;
-# 44,778 against the 150,929 stop line is 30%, and that DOES flip a go/no-go.
+# 45,400 against the 150,929 stop line is 30%, and that DOES flip a go/no-go.
 #
 # WHAT IS NOW MEASURED (real tokens, `message.usage` first turn, n=5 — #103 65,023 ·
 # #104 64,765 · #105 67,370 · #107 65,046 · #109 64,778; err = half-range, and that spread
