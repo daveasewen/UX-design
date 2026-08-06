@@ -177,6 +177,15 @@ SECTION_USAGE_BLOCKING = True
 # the ONLY copy (the mover≠gate lesson: imported, never re-implemented).
 CONSULT_RECEIPT_BLOCKING = False
 
+# ★ #110-D3 (Dave) — the boot-ceiling gate, BLOCKING at birth.
+# Tier is deliberately not WARN. #109 measured `BOOT_HARNESS_EST` sitting 5.6x outside
+# its own error bar for ~72 sessions; the constant carried its own "RE-MEASURE WHEN THE
+# SESSION SHAPE CHANGES" warning and nothing ever read it. An advisory gate would have
+# been one more unread warning [[instrument-without-a-consumer]]. ⚠ Dave has NOT ruled
+# warn-vs-block on this one — it is an agent's call pending his word, named here so it
+# is visible rather than buried in a tier lookup.
+BOOT_DRIFT_BLOCKING = True
+
 # 2f: the session-strata stack. It is excluded from §C's cap by D6(a) — which is only checkable if
 # it is DELIMITED, so 2f requires the marker below. ⚠ Excluding a region from a cap without giving
 # it a rule of its own is precisely how "splitting buys headroom"; the region's rule is D5(a) —
@@ -1422,7 +1431,7 @@ LS_DELTA_RE = re.compile(r"^##\s*⏱")
 OUT_CHAIN = "_CHAIN.md"          # must match `_gen_chain.OUT_NAME` — asserted in selftest
 DOFIRST_ITEM_RE = re.compile(r"^>\s*\*\*(\d+[a-z]?)\.\s*(.+)$")
 DOFIRST_HOOK_MAX = 46            # chars per hook — a BYTE bound, deliberately
-DOFIRST_INDEX_TK_MAX = 700       # ⚠ the whole index, MEASURED — see below
+DOFIRST_INDEX_TK_MAX = 800       # ⚠ the whole index, MEASURED — see below
 # ⛔ RAISED 420 → 700 AT #82, DELIBERATELY AND WITH THE REASON, because the gate itself demands
 # exactly that rather than a silent drift. ★ NOTHING GREW. The ceiling was calibrated against a
 # `cl100k` measurement and #82-D1 changed the INSTRUMENT underneath it, so the same index that
@@ -1433,6 +1442,14 @@ DOFIRST_INDEX_TK_MAX = 700       # ⚠ the whole index, MEASURED — see below
 # being compared against REAL tokens and is ~1.55× tighter than whoever set it intended. The
 # M10 chain warn and the banner-region warn are the same effect. They need RE-MEASURING against
 # their purpose, one at a time — not a multiplier pass.
+# ⛔ RAISED 700 → 800 AT #110, DELIBERATELY AND WITH THE REASON, same class as the #82 raise —
+# this time GROWTH, not an instrument change. #110 closed DO-FIRST item 18 (one hook freed) and
+# opened three genuinely new open items (25, 26, and the partial-split update to 23) that #109's
+# own boot-floor finding produced; the measured index reached 726 against the 700 ceiling with
+# hooks already compacted (three candidate items merged into one, #110's own items kept to
+# minimal noun-phrase hooks). 800 is a headroom figure over the measured 726, AGENT-PICKED AND
+# PROVISIONAL, awaiting Dave — not a conversion, not a multiplier, and not touched again without
+# a fresh measurement.
 
 
 def dofirst_index(gm_lines):
@@ -3021,6 +3038,121 @@ def dofirst_index_present_check(repo):
     return fails, notes
 
 
+BOOT_DRIFT_WINDOW = 6          # how many of the most recent samples form the band
+
+
+def _parse_boot_samples(text):
+    """Pull (session, real-tokens) boot samples out of the gauge log.
+
+    Line-based on purpose. The log records boot in at least four shapes across its
+    history (`boot #95 = 65,657 real`, `pre-flight #100 ...: boot 64,940 real`,
+    `boot 64,892 (disk ...`, `boot 65,041 real (n=12;`) and a single clever regex
+    over the whole file silently drops the shapes it did not anticipate. Anything
+    that looks like a boot line but does not parse is returned as REFUSED, never
+    skipped — an unmatched line here is not an absence [[unmatched-grep-is-not-an-absence]].
+    """
+    good, refused = [], []
+    for ln in text.splitlines():
+        if "boot" not in ln:
+            continue
+        m = re.search(r"\bboot\b\s*(?:#\d+\s*=\s*)?([1-9][\d,]{4,})", ln)
+        if not m:
+            # A line mentioning boot with no number is prose, not a refusal.
+            if re.search(r"\bboot\b\s*(?:#\d+\s*=\s*)?\d", ln):
+                refused.append(ln.strip()[:110])
+            continue
+        try:
+            tk = int(m.group(1).replace(",", ""))
+        except ValueError:
+            refused.append(ln.strip()[:110])
+            continue
+        if not (10_000 <= tk <= 200_000):
+            refused.append(ln.strip()[:110])
+            continue
+        sm = re.search(r"#(\d+)", ln)
+        good.append((int(sm.group(1)) if sm else -1, tk))
+    return good, refused
+
+
+def boot_constant_drift_check(repo):
+    """★ #110-D3 — THE PUBLISHED BOOT CONSTANT MUST STILL MATCH WHAT IS MEASURED.
+
+    #109 found `_gauge_tokens.py` publishing a boot floor of 30,499 against a real
+    75,899 — wrong by 45,400, roughly half the stop line. Two defects fed it, and only
+    one of them was a coding error. The other was that NOTHING EVER COMPARED THE
+    CONSTANT TO THE MEASUREMENTS SITTING NEXT TO IT. The samples were in the gauge log
+    the whole time. That is what this gate is: the comparison, made mechanically, every
+    wrap.
+
+    ⚠ It does NOT prescribe a value, widen a band, or edit the constant. It reports the
+    measurement and names the drift [[gate-narrows-its-own-rule]]. Re-pricing the
+    constant is a measurement someone must take and Dave must see — an agent quietly
+    re-fitting the number it is being graded against is the gate marking its own
+    homework [[check-after-its-own-remedy]].
+
+    FAILS when the mean of the most recent BOOT_DRIFT_WINDOW samples sits further from
+    `BOOT_FIRSTTURN_TK` than `BOOT_FIRSTTURN_ERR` allows. Fails LOUD and NAMED if the
+    log cannot be parsed — a crash is not a fail [[a-crash-is-not-a-fail]], and neither
+    is a silent zero-sample pass.
+    """
+    fails, notes = [], []
+    log = os.path.join(repo, "notes", "_GAUGE-LOG.md")
+    if not os.path.exists(log):
+        fails.append("boot-drift: notes/_GAUGE-LOG.md is MISSING — the boot constant "
+                     "cannot be checked against anything. This is the #109 condition "
+                     "(a constant with no consumer), not a clean pass.")
+        return fails, notes
+    try:
+        sys.path.insert(0, HERE)
+        import _gauge_tokens as gt
+        const, err = gt.BOOT_FIRSTTURN_TK, gt.BOOT_FIRSTTURN_ERR
+    except Exception as e:
+        fails.append(f"boot-drift: cannot read BOOT_FIRSTTURN_TK/_ERR from "
+                     f"_gauge_tokens.py ({e}) — the published constant is UNREADABLE, "
+                     f"so it is also unverifiable. Fix, never close blind.")
+        return fails, notes
+
+    with open(log, encoding="utf-8") as f:
+        samples, refused = _parse_boot_samples(f.read())
+    if refused:
+        fails.append("boot-drift: %d gauge-log line(s) look like boot readings but do "
+                     "NOT parse — %s. The band would be computed off an incomplete "
+                     "sample and read GREEN. Fix the parser or the line."
+                     % (len(refused), " · ".join(refused[:2])))
+        return fails, notes
+    if len(samples) < 3:
+        fails.append("boot-drift: only %d boot sample(s) found in notes/_GAUGE-LOG.md — "
+                     "too few to test the constant against. DECLARED, not passed."
+                     % len(samples))
+        return fails, notes
+
+    # newest wins per session, then chronological
+    by_session = {}
+    for sess, tk in samples:
+        by_session[sess] = tk
+    ordered = [tk for _, tk in sorted(by_session.items())]
+    recent = ordered[-BOOT_DRIFT_WINDOW:]
+    mean = sum(recent) / len(recent)
+    delta = mean - const
+
+    notes.append("boot-drift: constant %s ±%s vs recent mean %s (n=%d, last %d sessions "
+                 "of %d parsed) — delta %+d"
+                 % (f"{const:,}", f"{err:,}", f"{mean:,.0f}", len(recent),
+                    len(recent), len(ordered), delta))
+
+    if abs(delta) > err:
+        fails.append(
+            "boot-drift: `_gauge_tokens.BOOT_FIRSTTURN_TK` = %s ±%s, but the last %d "
+            "measured boots average %s — drift %+d, OUTSIDE the constant's own error "
+            "bar. Samples: %s. ⚠ This is the #109 defect recurring: the constant is "
+            "stale and only a measurement can correct it. Re-measure, put the new "
+            "figure to Dave, and update the constant — do NOT widen the error bar to "
+            "make this pass."
+            % (f"{const:,}", f"{err:,}", len(recent), f"{mean:,.0f}", delta,
+               " · ".join(f"{s:,}" for s in recent)))
+    return fails, notes
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
@@ -3069,6 +3201,9 @@ def wrap_checks(repo, today, lane=False):
         f_, n_ = index_freshness_check(repo)     # #32 — retrieval must not serve a stale record
         fails += f_                              # BLOCKING at birth: the failure it catches
         notes += n_                              # (build red, unnoticed) already cost 2 sessions
+        i_, n_ = boot_constant_drift_check(repo)  # ★ #110-D3 — the constant must still
+        (fails if BOOT_DRIFT_BLOCKING else warns).extend(i_)   # match what is measured
+        notes += n_
         f_, n_ = lane_routing_check(repo)       # O1′ #24 — eager line ↔ records, BLOCKING
         fails += f_
         notes += n_

@@ -1,4 +1,17 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-06 (Thu **#107**, OPUS conductor, Dave live, ONE window — ★★ **#106’S BLAST-RADIUS MEASUREMENT NOT REPRODUCIBLE (78/11, NOT 58/10) — DEFECT MISDIAGNOSED, UNIT DELTA NEVER EXISTED** · ✅ **#107-D1 PARTITION FIRST → #108 RULES** · ✅ **#107-D2 WRAP SCOPE: 3/4 PAID, MEMORY COMPACTION SLIPPED**)
+
+- **Blast-radius reconciled:** 78 literal declarations / 11 of 77 files (not 58/10) — every file declares each token twice (light+dark), 39 file-token pairs × 2 = 78. The "8 sites vs 9 files" delta never existed — both FILES, different SCOPE not unit; the real unit error was #106’s own sentence (per-token breakdown sums to 39, under a DECLARATIONS headline). 58 stays unexplained (not 157 = +canon.css). `ds-032`’s premise still holds. Write-up: `outputs/_FINDING-blast-radius-reconcile-2026-08-06-v1.md`.
+- **`#107-D1` (Dave):** "partition first, then rule" — scope ruling on button/primary DEFERRED to #108, on a clean set. A sequencing ruling, not a refusal.
+- **`#107-D2` (Dave):** wrap scope = pay all four owed items. Three paid (residuals+finding, -v3 honesty doc, type.css:180 specimen); memory compaction NOT — declared, not hidden.
+- **Delivered, none committed:** atomic-in-code research (19 sources fetched in full; no prod DS team ships strict atoms/molecules/organisms in code; atomicity earns its keep at the token layer; Spectrum retrospective = 210,180 tokens/18MB JSON before pullback) · button/primary partition (4 groups A/B/C/D; values identical across the 9 true button sites, markup deliberately not — quoted `Drawer.reference.html:19-20`; Option A priced 78/34/11, Option B has no include mechanism) · type.css:180 specimen (Dave’s eye; +9 R,G,B achromatic; 18.88:1 vs 17.40:1 both AAA; record correction on the 0-0-1 pattern’s true location) · graph-engineering -v3 (pays #105-D1, six honesty defects fixed).
+- **Quota posture (Dave, verbatim):** *"we have 30% of all models to use in one day, we should be cranking as much as I can handle"* — all models 70% used, Fable 95% (spent). Production-crank case (#60); subs+windows not a longer window — a sub’s tokens are quota, its report is fill. Four Sonnet subs ran off-window.
+- **Gauge:** boot 65,046 real (n=11). Check-ins 83,849 → 107,601 → 122,982 = wrap-open (27,947 runway vs 42–49K historical wrap cost); blow mechanism this session = sub-report ingestion, not full-file reads — wrap delegated off-window as the mitigation, declared not concealed.
+- **Ritual gap inherited from #106, cleared this wrap:** no §C stratum, no gauge-log continuity entry for #105/#106 — #105 rolled via `roll_2f`, `HOLE #106` declared, `_roll_state.py`’s STRATA_EXEMPT drift (Dave’s #96-D4) synced, #107 stamped fresh.
+- **→ #108:** Dave’s scope ruling on the partitioned set (A/B, with C and D carved out) · type.css:180 ruling · ds-032 enactment · memory compaction · ds-029 first idiom. Posture: parallel subs, low conductor fill, price sub reports as fill.
+
+## Rolled 2026-08-06 #110 (2d) — via the mover
+
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#106**, OPUS 5 conductor, Dave live, ONE window — ★★ **2 RULED (ds-031 · ds-032), 1 DECLINED PENDING SPECIMEN** · ⛔ **THE PACK WAS ALREADY BUILT — PROBE INVALIDATED THE PLAN** · ⚠ **UNIT DELTA DECLARED**)
 
 - **Probe invalidated the plan:** both #104 review artefacts existed already and had rolled twice unread; no sub launched. Verified against artefact contents, not the sign-off banner.

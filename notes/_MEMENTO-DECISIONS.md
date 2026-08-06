@@ -4080,3 +4080,94 @@ gap (#89-D2) — still not raised with Dave.
 `_CHAIN.md` trim), awaiting Dave's confirm to open · per-theme sweep · `type.css:180` · `ds-032` ·
 ds-029 first idiom · research candidates 1+2 · the `_state.json` gap. Posture: Dave's call at the
 opener.
+
+## ★ #110 — THE BOOT-DRIFT GATE: BUILT, WIRED, AND IT CAUGHT ITS OWN CRASH (Dave live, OPUS conductor, ONE window, delegate-hard, wrap delegated off-window)
+
+**Pace panel (Dave, opener, ungateable):** 28% of all-models quota for the whole day, 11h34m to
+reset; Fable 95% used, 5% left, offered "if we are careful." Claude recommended HOLDING the Fable
+remainder — nothing in this lane was judgment work. Fable NOT spent.
+
+**#110-D1 (Dave):** open the four-phase boot-rent plan (`ds-036`); P1 delegated to a Sonnet sub.
+Chosen over P2-first, over cranking the design queue, and over research candidates 1+2.
+
+**#110-D2 (Dave):** posture — crank, delegate hard.
+
+**#110-D3 (Dave) — P3, gate the floor.** Chosen over banking P2's small win and over closing the
+boot lane. Taken AFTER the P1 finding below re-priced P2 downward.
+
+**★★ HEADLINE — P2's ceiling is low, and P2 as scoped is a sticking plaster by Dave's own #109-D4
+standard.** Five MCP servers (Asana, Atlassian, Intercom, Linear, Notion) had already dropped out
+of the tool surface between #109 and #110; measured gross saving ~2,646 real, roughly 530 per
+server. The remaining candidates (Slack, the duplicate Figma, the unauthenticated one) are worth
+~1,500–3,000 total — 2–4% of the 75,899 floor. Corroborated against the conductor's OWN tool
+surface, not only the sub's. The money is the 40,648 residual, which is harness-owned (base system
+prompt + pre-loaded tool schemas) and probably not cuttable at all. This finding is what redirected
+the lane from P2 to P3.
+
+**P1 result (Sonnet sub, 158,736 sub tokens) — 15,660 of the 56,308 attributed:** skill catalog
+4,725 · deferred-tool list 4,012 · MCP server instructions 2,863 · `AGENTS.md` 2,799 (UNCONFIRMED
+as boot-injected) · agent-types list 930 · plugin manifests 331. Residual by subtraction 40,648 —
+base system prompt + full JSON schemas of pre-loaded tools; labelled residual, NOT a measured
+quantity. `MEMORY.md` re-measured 8,800, up 330 on #109's 8,470.
+
+**Finding — there is no `CLAUDE.md` anywhere in the mount.** `find -iname CLAUDE.md` returns zero
+hits. `_checkin.py:331` labels that boot slot "CLAUDE.md" generically. `AGENTS.md` (2,799) is the
+candidate but its boot-injection status is confirmed neither way.
+
+**Caveat, declared not buried:** the P1 sub measured ITS OWN injected surface, not the conductor's.
+The tool-list half corroborates from the conductor's context; the remainder is plausible but
+UNVERIFIED.
+
+**Enacted** `knowledge/_capture_gate.py`: `boot_constant_drift_check()` + `_parse_boot_samples()` +
+`BOOT_DRIFT_BLOCKING = True` + `BOOT_DRIFT_WINDOW = 6`, wired into `wrap_checks()` immediately
+before `lane_routing_check`. It compares `_gauge_tokens.BOOT_FIRSTTURN_TK`/`_ERR` against the boot
+samples recorded in `notes/_GAUGE-LOG.md` and fails when the recent mean drifts outside the
+constant's own error bar. It reports the measurement and NEVER edits the constant or widens the
+band.
+
+**Receipts, run not claimed:** in situ PASS, delta −43 (constant 65,400±1,400 vs recent mean
+65,356; n=6 of 21 samples parsed) · MUTATION to #109's stale constant (20,000±8,000) FAILS, drift
++45,356 — a near-exact reproduction of #109's recorded 45,400 (differs by 44 because this window is
+n=6 and #109's figure was n=5) · REVERSE MUTATION (constant pinned 65,200±1,400) PASSES — proving
+it is not an always-red gate · REACHABILITY: appears in a real `python3 knowledge/_capture_gate.py
+--wrap` run, exit 0 — wired, not merely written · the first in-situ run CRASHED (`NameError: io` —
+`io` is not imported in that module) rather than failing cleanly; the AST check passed it, caught
+only by DRIVING it. Fixed to `open()`.
+
+**Declared limitation — the gate is ONE SESSION BEHIND by construction.** It grades the constant
+against the LOGGED history, and the current session's boot only lands in the log at wrap. A drift
+is therefore caught the session AFTER it appears. Named, not hidden.
+
+**Live drift signal:** #110's boot measured 62,462 — 2,894 below the constant and below the
+±1,400 band floor. It does not fire the gate yet because it is not in the log. If the next sessions
+hold near 62.5K the mean crosses the bar and the gate fires. Correct behaviour, delayed.
+
+**Unruled, needs Dave — homed as DO-FIRST item 26:** (a) `BOOT_DRIFT_BLOCKING = True` is an
+agent's call — Dave has not ruled warn-vs-block; (b) whether to refresh `BOOT_FIRSTTURN_TK` given
+#110's 62,462; (c) whether to stop chasing the 40,648 residual at all, given it is harness-owned.
+
+**Self-inflicted cost:** the conductor opened `GOOD-MORNING.md` head-80 at boot despite the chain's
+explicit instruction not to. Duplicate fill, declared at the opener rather than concealed.
+
+**Retrieval repaired at the opener:** the rehearsal gate caught `_memento-index.json` stale against
+GM/`_LIVE-STATE` (the #32 defect — `_memento_search.py` was serving a previous session's record).
+Rebuilt: 554 records.
+
+**Gauge (§ ★ #110):** boot 62,462 real. Check-ins 61,065 → 90,240 → 105,029 → 129,768 FILL against
+the 150,929 stop line. STOP LINE HELD — wrap opened at 129,768 with 21,161 runway and DELEGATED
+off-window (#107 mechanism) rather than ridden. This session ran only ONE substantial delegation
+plus inline work; the P1 sub's 158,736 tokens are QUOTA, not conductor fill.
+
+**Dossier WRITTEN** (reasoning-heavy: a re-priced plan, a live crash caught by driving the thing,
+two corrected premises): `_DECISION-HISTORY/2026-08-06-110-boot-drift-gate-built.md`.
+
+**Residual:** P2 (now correctly priced small) not enacted · P4 `_CHAIN.md` trim (10,499, 14% of the
+floor) not touched · per-theme sweep (35 names, item 21) not started · `type.css:180` enactment
+(item 19) ruled not enacted · `ds-032` enactment (item 25) not touched · ds-029 first-idiom flag
+(item 20) not touched · the `_state.json`-vs-open-rulings gap (item 22) not raised with Dave ·
+research candidates 1+2 not started.
+
+**→ #111:** Dave to rule the gate tier (warn vs block) + the constant refresh + whether to abandon
+the 40,648 chase · P2 (now correctly priced small) · P4 `_CHAIN.md` trim · per-theme sweep (35
+names) · `type.css:180` enactment · `ds-032` · ds-029 first idiom · the `_state.json`-vs-open-
+rulings gap · research candidates 1+2. Posture: his rulings above gate what opens next.
