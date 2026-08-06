@@ -189,6 +189,10 @@ def print_human(buckets, totals, query, expanded, all_results):
             # #115 step 1 (ADVISORY)
             for line in r.get("_graph_neighbours", []):
                 print(f"      {line}")
+            # #115 observation recorder — DISPLAYED marks only; loud on write failure.
+            notice = _graph_edges.record_observation("consult", query, r)
+            if notice:
+                print(f"      {notice}")
 
 
 def print_fetch(index, record_id):

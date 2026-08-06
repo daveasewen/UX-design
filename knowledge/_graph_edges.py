@@ -28,11 +28,12 @@ Degrade LOUDLY, never silently (repo convention, ds-016 class): if the mention m
 the decision graph is missing on disk, `available()` returns False and callers must
 print `unavailable_notice()` once — they must NOT attach nothing and say nothing.
 """
-import json, os
+import json, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 GRAPH_PATH = os.path.join(HERE, "_decision-graph.json")
 MENTION_MAP_PATH = os.path.join(HERE, "_graph-mention-map.json")
+OBSERVATIONS_PATH = os.path.join(HERE, "_graph-mark-observations.jsonl")
 
 # Closed set (#75) — the only edge types step 1 ever surfaces as "neighbours".
 NEIGHBOUR_TYPES = {"supersedes", "refines", "bounds"}
@@ -147,3 +148,125 @@ def superseded_lines(entry):
                 seen.add(line)
                 lines.append(line)
     return lines
+
+
+# ------------------------------------------------- observation recorder (#115 step-4 evidence)
+def record_observation(door, query, entry, path=OBSERVATIONS_PATH):
+    """Append one JSONL line per DISPLAYED result that carried a ⌁/⛔ mark — called by
+    the doors' print loops (post-cap: it records what Dave/a session actually SAW, not
+    what decorate computed and never showed). This is the instrument for the mark
+    observation window: demote (brief item 4) gets ruled on this log's save-vs-noise
+    tally, not on anyone's recollection.
+
+    Returns None on success, or a LOUD one-line notice string the caller must print —
+    a silent write failure would make the window blind while looking instrumented
+    [measuring-tool-must-not-guess]. Never raises into the door: an advisory recorder
+    must not take retrieval down."""
+    neigh = entry.get("_graph_neighbours") or []
+    sup = entry.get("_graph_superseded") or []
+    if not neigh and not sup:
+        return None
+    import datetime
+    rec = {
+        "date": datetime.date.today().isoformat(),
+        "door": door,
+        "query": query,
+        "record": entry.get("id"),
+        "neighbour_lines": len(neigh),
+        "superseded_by": sorted({l.rsplit(" ", 1)[-1] for l in sup}),
+    }
+    try:
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, sort_keys=True) + "\n")
+        return None
+    except OSError as e:
+        return (f"⚠ mark observation NOT recorded ({e}) — the observation window is "
+                f"blind for this query; declared, not silent")
+
+
+def tally(path=OBSERVATIONS_PATH):
+    """The recorder's reader (an instrument ships WITH its reader). Prints marks fired,
+    by record and by query, superseded-marks separated — the shape the demote ruling
+    needs. Refuses loudly on a missing/empty log rather than printing a zero that could
+    read as 'no marks fired'."""
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        print(f"tally REFUSED: {os.path.basename(path)} is missing or empty — either no "
+              f"door has run since the recorder landed, or the recorder is broken. "
+              f"An empty window is a claim that needs that distinction made, not a zero.")
+        return 1
+    rows = []
+    with open(path, encoding="utf-8") as f:
+        for i, ln in enumerate(f, 1):
+            ln = ln.strip()
+            if not ln:
+                continue
+            try:
+                rows.append(json.loads(ln))
+            except json.JSONDecodeError as e:
+                print(f"tally REFUSED: line {i} unparseable ({e}) — fix the log, never skip")
+                return 1
+    marked = [r for r in rows if r.get("superseded_by")]
+    print(f"mark observations: {len(rows)} displayed result(s) carried marks, "
+          f"{len(marked)} carried a ⛔ SUPERSEDED mark, "
+          f"{len({r['query'] for r in rows})} distinct query(ies), "
+          f"{len({r['record'] for r in rows})} distinct record(s)")
+    by_rec = {}
+    for r in marked:
+        by_rec.setdefault(r["record"], []).append(r)
+    for rid, rs in sorted(by_rec.items(), key=lambda kv: -len(kv[1])):
+        bys = sorted({b for r in rs for b in r["superseded_by"]})
+        qs = sorted({r["query"] for r in rs})
+        print(f"  ⛔ [{rid}] ×{len(rs)} — superseded-by {', '.join(bys)} — "
+              f"queries: {', '.join(qs[:4])}{' …' if len(qs) > 4 else ''}")
+    if not marked:
+        print("  (no ⛔ marks displayed yet — only ⌁ neighbour attachments)")
+    print("verdict material, not a verdict: save-vs-noise is judged per record above "
+          "— a ledger record ABOUT a supersession is noise; a live-looking ruling that "
+          "IS superseded is a save.")
+    return 0
+
+
+def _recorder_selftest():
+    """Bites that can FAIL: a mark writes a line; a no-mark entry writes nothing; a
+    write failure returns a LOUD notice, never raises; tally refuses an empty log."""
+    import tempfile
+    fails = []
+
+    def bite(name, cond):
+        print(f"[{'OK' if cond else 'FAIL'}] {name}")
+        if not cond:
+            fails.append(name)
+
+    with tempfile.TemporaryDirectory() as td:
+        p = os.path.join(td, "obs.jsonl")
+        marked = {"id": "X-1", "_graph_neighbours": ["⌁ a refines b"],
+                  "_graph_superseded": ["⛔ SUPERSEDED by ADR-9"]}
+        unmarked = {"id": "X-2", "_graph_neighbours": [], "_graph_superseded": []}
+        bite("recorder: marked entry returns None (success)",
+             record_observation("memento", "q", marked, path=p) is None)
+        bite("recorder: line landed and parses with superseded_by",
+             json.loads(open(p).read().strip())["superseded_by"] == ["ADR-9"])
+        n_before = os.path.getsize(p)
+        bite("recorder: unmarked entry writes NOTHING",
+             record_observation("memento", "q", unmarked, path=p) is None
+             and os.path.getsize(p) == n_before)
+        notice = record_observation("memento", "q", marked,
+                                    path=os.path.join(td, "no-such-dir", "obs.jsonl"))
+        bite("recorder: write failure returns a LOUD notice, no raise",
+             notice is not None and "NOT recorded" in notice)
+        bite("tally: refuses a missing log", tally(os.path.join(td, "absent.jsonl")) == 1)
+        bite("tally: reads the real shape", tally(p) == 0)
+    if fails:
+        print(f"recorder selftest FAILED — {fails}")
+        return 1
+    print("recorder selftest OK — writes, skips, fails loud, and the reader reads.")
+    return 0
+
+
+if __name__ == "__main__":
+    if "--tally" in sys.argv:
+        sys.exit(tally())
+    if "--selftest" in sys.argv:
+        sys.exit(_recorder_selftest())
+    print(__doc__)
+    sys.exit(0)

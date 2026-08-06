@@ -115,6 +115,11 @@ def print_human(buckets, totals, query, expanded, all_results):
             # #115 step 1 (ADVISORY)
             for line in r.get("_graph_neighbours", []):
                 print(f"      {line}")
+            # #115 observation recorder — logs DISPLAYED marks only (post-cap), the
+            # evidence base for the demote ruling. Loud on write failure, never raises.
+            notice = _graph_edges.record_observation("memento", query, r)
+            if notice:
+                print(f"      {notice}")
 
 
 def print_fetch(index, record_id):
