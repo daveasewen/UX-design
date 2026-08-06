@@ -17,7 +17,7 @@ FOUR ARMS.
      the shim's docstring names the exact functions/constants it says it ported and the
      commit each chain was ported from. Two chains, both declared in the shim's own
      docstring:
-       (a) `knowledge/_capture_gate.py` @ commit 91d7528 — chain_parts, read_chain_tk,
+       (a) `knowledge/_capture_gate.py` @ commit c853b0a (re-ported #114; was 91d7528) — chain_parts, read_chain_tk,
            measure_tokens, measurement_degraded, dofirst_index, _heal_tiktoken, plus the
            six named constants (BYTES_PER_TOKEN, DOFIRST_ITEM_RE, DOFIRST_HOOK_MAX,
            DOFIRST_INDEX_TK_MAX, LS_DELTA_RE, _TIKTOKEN_HEAL_TRIED).
@@ -80,8 +80,13 @@ KNOWN_FILES = set(VERBATIM_SET) | {SHIM_NAME, "_consult-lexicon.json", "_MACHINE
 # job; a gate that silently widened this pattern would be the scope-blindness defect instead.
 IGNORE_DIRS = {"__pycache__"}
 
-# ---- Provenance chain (a): knowledge/_capture_gate.py @ 91d7528 -------------------------
-PORT_COMMIT_A = "91d7528"
+# ---- Provenance chain (a): knowledge/_capture_gate.py @ c853b0a -------------------------
+PORT_COMMIT_A = "c853b0a"   # ★ #114 RE-PORT: measure_tokens / measurement_degraded /
+# DOFIRST_INDEX_TK_MAX had drifted since 91d7528 (the #82-D1 three-tier cascade, and the
+# constant's 700). All three were re-reviewed and re-ported into the shim, the shim's docstring
+# now declares this commit, and this constant follows it — the gate's own remedy path ("the shim
+# was re-ported and the gate was not updated to match"). ⚠ No VALUE was changed by the sync:
+# DOFIRST_INDEX_TK_MAX is 700 on BOTH sides (Dave's, #111-D4).
 SHIM_SOURCE_FILE_A = "knowledge/_capture_gate.py"
 PORTED_FUNCS_A = ("chain_parts", "read_chain_tk", "measure_tokens", "measurement_degraded",
                   "dofirst_index", "_heal_tiktoken")
@@ -505,13 +510,18 @@ def selftest():
     try:
         shim_path = os.path.join(d, COPY_A, SHIM_NAME)
         text = open(shim_path, encoding="utf-8").read()
-        assert "91d7528" in text
-        text = text.replace("91d7528", "deadbee")
+        # ⚠ #114: parametrised on PORT_COMMIT_A, never a hard-coded hash. The old literal
+        # ("91d7528") rotted the moment the shim was legitimately re-ported, and it mutated
+        # every OTHER mention of that hash in the docstring too — so the bite silently stopped
+        # exercising the DECLARED-provenance line it exists to test.
+        m = DOCSTRING_COMMIT_RE_A.search(text)
+        assert m and m.group(1) == PORT_COMMIT_A
+        text = text[:m.start(1)] + "deadbee" + text[m.end(1):]
         open(shim_path, "w", encoding="utf-8").write(text)
         found = check_shim_provenance(d, ROOT)
         bite("ARM2(d) mutation: shim docstring's claimed commit no longer matches the "
              "gate's expectation — caught, names both hashes",
-             any("deadbee" in x and "91d7528" in x for x in found))
+             any("deadbee" in x and PORT_COMMIT_A in x for x in found))
         if found:
             print(f"      quoted: {[x for x in found if 'deadbee' in x][0]}")
     finally:

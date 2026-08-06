@@ -9,18 +9,28 @@ Apollo-laced lines (provenance/status gates, section-size budgets, band arithmet
 module that reproduces the behaviour of those four functions and nothing else, so the package
 does not have to drag Apollo's gate machinery along for the ride.
 
-PROVENANCE. Ported from `knowledge/_capture_gate.py` @ HEAD `91d7528` (2026-07-31, that file's own
-last touch; repo HEAD at port time was `13433cc`), these line ranges:
-  - `chain_parts`            lines 1164-1243
-  - `read_chain_tk`          lines 1246-1267
-  - `measure_tokens`         lines 1350-1374
-  - `measurement_degraded`   lines 1377-1395
-  - `dofirst_index`          lines 1097-1161   (helper `chain_parts` calls internally)
-  - `_heal_tiktoken`         lines 1330-1347   (helper `measure_tokens` calls internally)
-  - `_TIKTOKEN_HEAL_TRIED`   line  1327
-  - `BYTES_PER_TOKEN`        line  361
-  - `DOFIRST_ITEM_RE` / `DOFIRST_HOOK_MAX` / `DOFIRST_INDEX_TK_MAX`   lines 1092-1094
-  - `LS_DELTA_RE`            line  1072
+PROVENANCE. Ported from `knowledge/_capture_gate.py` @ HEAD `c853b0a` (2026-08-06, that file's own
+last touch), these names — ⚠ names, not line ranges: the source file has grown well past 4,000
+lines since the first port, so its line numbers no longer address the right text and the
+delta-audit gate addresses everything BY NAME (AST source-segment hashing):
+  - `chain_parts`            (unchanged since the first port @ `91d7528`)
+  - `read_chain_tk`          (unchanged since `91d7528`)
+  - `measure_tokens`         ★ RE-PORTED #114 — the #82-D1 three-tier cascade (real → cl100k →
+                             ESTIMATE) plus `_TIERS_SEEN` bookkeeping; see its own docstring for
+                             the one DECLARED difference (optional `_gauge_tokens` import)
+  - `measurement_degraded`   ★ RE-PORTED #114 — now `_tier_probe() == "estimate"`; MEANING
+                             unchanged on purpose (still "is this a GUESS?", not "is this REAL?")
+  - `dofirst_index`          (unchanged since `91d7528`; helper `chain_parts` calls internally)
+  - `_heal_tiktoken`         (unchanged since `91d7528`; helper `measure_tokens` calls internally)
+  - `_TIKTOKEN_HEAL_TRIED`   (unchanged since `91d7528`)
+  - `BYTES_PER_TOKEN`        (unchanged since `91d7528`)
+  - `DOFIRST_ITEM_RE` / `DOFIRST_HOOK_MAX` / `DOFIRST_INDEX_TK_MAX`  — ★ `DOFIRST_INDEX_TK_MAX`
+                             RE-PORTED #114 at its source VALUE **700** (raised in the source
+                             after the first port; the value is Dave's, #111-D4, and is the same
+                             700 on both sides — this port carries it, it does not set it)
+  - `LS_DELTA_RE`            (unchanged since `91d7528`)
+  Two names introduced by the re-port and ported with it: `_REAL_TIER_ENV` / `_TIERS_SEEN`, and
+  the helpers `_tier_of` / `_tier_probe` that `measurement_degraded` now reads through.
 
 ★ A DEPENDENCY THE MANIFEST DID NOT NAME. `chain_parts` (and, through it, `dofirst_index`) reads
 two small vocabularies — `GM_VOCAB` and `LS_VOCAB` — from a SEPARATE 833-line module,
@@ -48,7 +58,11 @@ INVENTORY — ported vs left behind.
     `measurement_degraded`, so none of it is here.
 
 BEHAVIOUR HELD IDENTICAL, ON PURPOSE:
-  - tiktoken (`cl100k_base`) is the real instrument when it is importable and its encoding file
+  - the cascade is three-tier since #82-D1 (REAL Claude tokens where a gauge is reachable, then
+    tiktoken, then the byte divisor) and every tier LABELS itself; inside this package the real
+    tier is normally unreachable (`_gauge_tokens` is not shipped), so the effective cascade is
+    tiktoken → ESTIMATE — which is exactly what the source does when the gauge reaches nothing.
+    tiktoken (`cl100k_base`) is the instrument when it is importable and its encoding file
     loads; the byte-divisor fallback (`BYTES_PER_TOKEN = 3.53`) is used ONLY when tiktoken is
     absent or its encoder is unloadable, and it labels itself "ESTIMATE" rather than passing
     silently as a real measurement.
@@ -74,7 +88,7 @@ BYTES_PER_TOKEN = 3.53     # MEASURED on GM, tiktoken cl100k_base, 2026-07-27. N
 # THE PRESENCE-INDEX CONSTANTS. Ported verbatim, `knowledge/_capture_gate.py` lines 1092-1094.
 DOFIRST_ITEM_RE = re.compile(r"^>\s*\*\*(\d+[a-z]?)\.\s*(.+)$")
 DOFIRST_HOOK_MAX = 46            # chars per hook — a BYTE bound, deliberately
-DOFIRST_INDEX_TK_MAX = 420       # ⚠ the whole index, MEASURED — see below
+DOFIRST_INDEX_TK_MAX = 700       # ⚠ the whole index, MEASURED — see below
 
 # `knowledge/_capture_gate.py` line 1072.
 LS_DELTA_RE = re.compile(r"^##\s*⏱")
@@ -145,40 +159,112 @@ def _heal_tiktoken():
         return False
 
 
-def measure_tokens(text):
-    """Returns (tokens, method). tiktoken when present (OBSERVED); otherwise the MEASURED byte
-    divisor, labelled ESTIMATE. Both are declared and they are never silently mixed — a number
-    whose method is unstated is the thing this gate exists to prevent.
+# ---------------------------------------------------------------------------------------------
+# THE TIER VOCABULARY (#82-D1 in the source). Ported with the three-tier cascade below.
+_REAL_TIER_ENV = "CAPTURE_GATE_NO_REAL"   # set to force the pre-#82 cascade (selftests use it)
+_TIERS_SEEN = set()                       # every tier this PROCESS has actually measured with
 
-    Ported verbatim, `knowledge/_capture_gate.py` lines 1350-1374 (including the #59 fix: the
+
+def _real_gauge():
+    """The source's REAL tier comes from `import _gauge_tokens as gauge` — a `knowledge/` module
+    that is NOT in this package and is not going to be (it is Apollo-side budget machinery; see
+    LEFT BEHIND in the module docstring). The source's own cascade already treats an unreachable
+    real tier as "fall through to tiktoken, labelled", so the honest port is an OPTIONAL import:
+    where `_gauge_tokens` is importable the shim behaves exactly like the source; where it is
+    not — the normal case inside this package — the cascade is tiktoken → ESTIMATE, which is
+    precisely the source's own behaviour when `gauge.count()` cannot reach anything. No tier is
+    ever returned unlabelled on either path."""
+    try:
+        return importlib.import_module("_gauge_tokens")
+    except Exception:
+        return None
+
+
+def _tier_of(method):
+    """The TIER a method string belongs to: `'real'` · `'cl100k'` · `'estimate'`. ONE place,
+    because two readers of one vocabulary is the drift class this entire file argues against.
+
+    Ported verbatim, `knowledge/_capture_gate.py` `_tier_of`."""
+    if method == "real":
+        return "real"
+    return "estimate" if "ESTIMATE" in method else "cl100k"
+
+
+def measure_tokens(text):
+    """Returns (tokens, method). REAL Claude tokens when reachable (#82-D1, Dave's); otherwise
+    tiktoken when present (OBSERVED); otherwise the MEASURED byte divisor, labelled ESTIMATE.
+    All three are declared and they are never silently mixed — a number whose method is unstated
+    is the thing this gate exists to prevent.
+
+    Ported from `knowledge/_capture_gate.py`'s `measure_tokens` (including the #59 fix: the
     `get_encoding()` call is guarded too, not just the import — a healthy `import tiktoken`
     followed by a failed cold-cache fetch of the cl100k_base ranks file must fall back to the
-    ESTIMATE path, not crash)."""
+    ESTIMATE path, not crash). The one DECLARED difference from the source: the real tier is
+    reached through `_real_gauge()` (optional import) rather than a hard module-level
+    `import _gauge_tokens`, because that module is deliberately not shipped here — see
+    `_real_gauge`'s docstring."""
+    # ---- #82-D1: the REAL tier. ⚠ `count()` raises when it can reach NOTHING, and that is not
+    # this function's failure to report: control falls into the cascade below, which labels
+    # itself. Never to silence — there is no path here that returns an unlabelled number.
+    if not os.environ.get(_REAL_TIER_ENV):
+        gauge = _real_gauge()
+        if gauge is not None:
+            try:
+                n, how = gauge.count(text)
+                if how == "real":
+                    _TIERS_SEEN.add("real")
+                    return n, "real"
+            except Exception:
+                pass
     try:
         tiktoken = importlib.import_module("tiktoken")
     except Exception:
         if not _heal_tiktoken():
+            _TIERS_SEEN.add("estimate")
             return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
                     f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken absent)")
         tiktoken = importlib.import_module("tiktoken")
     try:
-        return len(tiktoken.get_encoding("cl100k_base").encode(text)), "tiktoken cl100k_base"
+        out = len(tiktoken.get_encoding("cl100k_base").encode(text)), "tiktoken cl100k_base"
     except Exception:
+        _TIERS_SEEN.add("estimate")
         return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
                 f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken installed, encoder unloadable)")
+    _TIERS_SEEN.add("cl100k")
+    return out
+
+
+def _tier_probe():
+    """The tier a measurement taken RIGHT NOW would use — WITHOUT recording it.
+
+    ★ The snapshot/restore is the point. A health probe is not a measurement, and a probe that
+    wrote into `_TIERS_SEEN` would let a mixed-tier check fire on its own footprint — an
+    instrument manufacturing the very condition it reports.
+
+    Ported verbatim, `knowledge/_capture_gate.py` `_tier_probe`."""
+    snapshot = set(_TIERS_SEEN)
+    try:
+        return _tier_of(measure_tokens("x")[1])
+    finally:
+        _TIERS_SEEN.clear()
+        _TIERS_SEEN.update(snapshot)
 
 
 def measurement_degraded():
     """True iff `measure_tokens()` is running on the ESTIMATE fallback right now, rather than
-    the real tiktoken encoder. Probes a 1-character string — cheap, and it is the SAME call a
-    real measurement makes, so this cannot drift from what a real measurement would report.
+    a real encoder. Probes a 1-character string — cheap, and it is the SAME call a real
+    measurement makes, so this cannot drift from what a real measurement would report.
 
     Call this to gate a VERDICT (stale vs. cannot-measure-reliably), never to gate a MEASUREMENT
     itself — a caller that skips measuring because this returned True would just be adding a
     second, undeclared fallback next to the one this file already owns.
 
-    Ported verbatim, `knowledge/_capture_gate.py` lines 1377-1395."""
-    return "ESTIMATE" in measure_tokens("x")[1]
+    ⛔ #82-D1 — ITS MEANING IS UNCHANGED ON PURPOSE. It still asks *"is this reading a GUESS?"*,
+    NOT *"is this reading REAL?"*. Widening it to mean 'not real' would turn `_gen_chain.py`'s
+    refusal into an offline build-killer.
+
+    Ported verbatim, `knowledge/_capture_gate.py` `measurement_degraded`."""
+    return _tier_probe() == "estimate"
 
 
 def dofirst_index(gm_lines):
