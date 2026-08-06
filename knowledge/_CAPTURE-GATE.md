@@ -7,55 +7,20 @@
 
 ## NOTE
 - ⚠ RULINGS ALREADY GOVERN WHAT YOU ARE TOUCHING (files touched this session) — 3 found. READ BEFORE RE-DERIVING:
-  ▸ chain-cut — RULED GM-D7-am / #33 (2026-07-28, Dave): _CHAIN.md is the WHOLE read chain. Everything else is retrieval, never a reading list. Do not open GOOD-MORNING.md to 'check'.
-      status: ENACTED #33, held 7 consecutive sessions
-      ⚠ _gen_chain.py iterates to a FIXED POINT — the footer states the size of the file containing it. Any unit change must re-converge.
-      evidence: _DECISION-HISTORY/2026-07-28-cutting-the-eager-read-chain.md
-  ▸ ds-021-D1-82 — RULED #82-D1 (2026-08-02, Dave): WIRE measure_tokens() to the native counter AND re-stamp the LIVE budget claims in the SAME pass. Historical readings are NOT re-denominated -- re-denominating history is a false inscription.
-      status: RULED #82-D1 (Dave) and ENACTED the same window. measure_tokens() returns (n,'real'); MEASURERS registers _capture_gate.py 'real'; GM size: stamp (45,869) and _CHAIN.md footer (10,830) re-stamped in real tokens and verified against the artefacts. History in notes/_GAUGE-LOG.md and the archived strata was NOT re-denominated -- that would be a false inscription.
-      evidence: notes/_MEMENTO-DECISIONS.md
-      evidence: _DECISION-HISTORY/2026-08-02-the-real-tier.md
-      evidence: notes/2026-08-02-81-cross-instrument-gate-blast-radius.md
-      evidence: knowledge/_capture_gate.py
-  ▸ gauge-log-one-writer — RULED #96 (2026-08-05, Dave): ONE WRITER: only roll_2f creates gauge-log session sections; wraps never hand-write them. Collisions are marked exceptions by addition.
-      status: unstated
-      evidence: n
-      evidence: o
-      evidence: t
-      evidence: e
-      evidence: s
-      evidence: /
-      evidence: _
-      evidence: M
-      evidence: E
-      evidence: M
-      evidence: E
-      evidence: N
-      evidence: T
-      evidence: O
-      evidence: -
-      evidence: D
-      evidence: E
-      evidence: C
-      evidence: I
-      evidence: S
-      evidence: I
-      evidence: O
-      evidence: N
-      evidence: S
-      evidence: .
-      evidence: m
-      evidence: d
-      evidence:  
-      evidence: §
-      evidence:  
-      evidence: ★
-      evidence:  
-      evidence: #
-      evidence: 9
-      evidence: 6
-      evidence: -
-      evidence: D
-      evidence: 4
+  ▸ ds-021 — RULED #54 (2026-07-30, Dave): ONE unit: REAL Claude tokens. cl100k/tiktoken is a LABELLED estimator and is 'never a unit a cap is stated in'.
+      status: RULED #54, ENACTMENT SHAPE (C) ruled #81-D1, enactment IN PROGRESS #81
+      ⚠ The three homes were declared UNTOUCHED at #54 and were still untouched at #80. Do not re-derive the ratio; it is measured and ruled.
+      evidence: notes/_MEMENTO-DECISIONS.md:1716-1785
+      evidence: _DECISION-HISTORY/2026-07-30-the-gauge-re-denomination.md
+      evidence: notes/_GAUGE-LOG.md:461
+      evidence: knowledge/_DS-IMPROVEMENTS.md:1422
+  ▸ gauge-band — RULED #56 (2026-07-31, Dave): Budget in ABSOLUTE real tokens: amber 160,000 · working 200,000 (Dave's) · hard 256,000 (sourced). The 45/60/63 percentage band was REPLACED, not converted.
+      status: RULED #56; the % path is DORMANT in code, retire-or-pin FORKED TO DAVE and still open
+      ⚠ Read the band table from the runbook; never recall it. It has been misquoted from memory twice in one day.
+      evidence: knowledge/_RUNBOOK-context-gauge.md:27
+  ▸ gauge-refusal — RULED #79-D1 (2026-08-02, Dave): The gauge must REFUSE rather than guess. MeasurementRefused, paired with a handler that records refusal as a FAILURE — an unmeasurable floor is not a cleared floor.
+      status: BUILT #80, mutation-tested x3
+      ⚠ NOT SystemExit — count() is a library function inside a 39+-check gate and BaseException would slip _arm()'s except Exception. A precedent is a claim about a CALL SITE, not a repo.
+      evidence: _DECISION-HISTORY/2026-08-02-the-79-dossier.md
   ⛔ These are DECIDED. Re-deriving one is the #80 defect; re-opening one is Dave's alone.
 

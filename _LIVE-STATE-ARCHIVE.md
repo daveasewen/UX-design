@@ -1,4 +1,16 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#106**, OPUS 5 conductor, Dave live, ONE window — ★★ **2 RULED (ds-031 · ds-032), 1 DECLINED PENDING SPECIMEN** · ⛔ **THE PACK WAS ALREADY BUILT — PROBE INVALIDATED THE PLAN** · ⚠ **UNIT DELTA DECLARED**)
+
+- **Probe invalidated the plan:** both #104 review artefacts existed already and had rolled twice unread; no sub launched. Verified against artefact contents, not the sign-off banner.
+- **`ds-031` (Dave, eye):** legend centring **Option A, keep as-is** — 109px offset accepted, legend-footprint-driven, constant at 1180/760. Option B not taken.
+- **`ds-032` (Dave):** `--alpha-68` approved **scoped to the button atom**, not 8 per-component edits. Premise checked: all 8 sites map to one token `button/primary/background/hover` and each re-declares the hex. ADR-0013 defect. NOT ENACTED — measure-first ruled.
+- **`type.css:180`:** NOT ruled — specimen owed (`#1A1A1A` vs `#111`, 9/255, neutral ground). Conductor recommended raising specificity.
+- **Blast radius MEASURED:** 58 literal button/primary declarations across 10 of 77 snippet files. ⛔ **8 SITES (artefact) vs 9 FILES (probe) — different units, UNRECONCILED, #107 closes it before any sweep.**
+- **Self-caught defect:** `_rulings.json` append hit `_README` not `rulings` (first-list-found); repaired + re-read from disk and asserted.
+- **⬛ Dave's closer (deferred to #107, verbatim):** *"My instinct is to have this system fully atomic, however this might have implications for builds… research best practice for atomic systems in code builds rather than in design."* — the GENERAL case of `ds-032`; may govern the 58-declaration scope ruling, so research FIRST.
+- **→ #107:** type.css:180 specimen · reconcile the unit delta · scope ruling on the 58 · -v3 honesty fix (owed #105) · memory compaction · ds-029 first idiom. · atomic-in-code-builds research (Dave's) — BEFORE the scope ruling.
+
+## Rolled 2026-08-06 #109 (2d) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#105**, FABLE 5 conductor + ONE Sonnet build sub, Dave live, ONE window — ★★ **CROSS-LANE RECONCILE: ALL RESEARCH-LANE CLAIMS HELD, NO RULING SUPERSEDED** · ✅ **-v2 BUILT (SUB) + VERIFIED · v1+v2 STAGED (Dave)** · ✅ **CHAIN-DIET CUT ENACTED AT WRAP-OPEN** · ⬛ **-v3 HONESTY FIX OWED**)
 
 - **Cross-lane reconcile:** no superseding ruling (search --all + `_rulings.json`); all STEP-1 probes re-derived — one deviation (`spinoff`=1) attributed to `_gm_usage.py` label regex, lane did NOT move; #104's unattributed path = the research lane's v1; §9 generator checkbox STALE vs code (PARTIAL — `_build_live_state.py:130/:197/:9`). Brief: `notes/_briefs/2026-08-05-105-cross-lane-reconcile-brief.md`.

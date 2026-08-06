@@ -1294,7 +1294,10 @@ separately — [[gate-inside-the-growth-loop]], caught inside ten minutes by the
    `((45,"GREEN"),(60,"AMBER"),…)` at `_capture_gate.py:79`. #37 enacted the recalibration in the
    gate and left the gauge behind.
 5. **`"Measured, adjustable."`** annotates both `DEFAULT_WINDOW` and `DEFAULT_BASELINE`; `ds-025`
-   item 1 records the boot was never measured in 36 sessions. **Open 17's class, second specimen.**
+   item 1 records ~~the boot was never measured in 36 sessions~~ **[RETIRED AS FALSE #109 — the boot
+   IS measured (75,899 real via `message.usage` first turn + `_CHAIN.md`); see § ★ #109. Item 1 now
+   means the decomposition of the unattributed 56,308 remainder.]**. **Open 17's class, second
+   specimen.**
 
 **✅ SETTLED — open 2 does NOT home the gauge denominator, but three receipts do.** `ds-025`'s three
 numbers are boot·bill·fill, all numerators. The denominator is homed at `_FUTURE-STATE.md:742` and in
@@ -1396,7 +1399,7 @@ instrument exists and speaks only once, at the moment it is least useful.
 ### ⬛ THE FIRST JOB IS A MEASUREMENT WINDOW — THREE NUMBERS, NONE OF THEM CURRENTLY MEASURED
 
 1. **The tokenizer** (D1) — `cl100k` is OpenAI's; `p50k` reads **+8.6–11.1%** on this corpus.
-2. **The boot / front-load** — Dave's *"front loading of context, memory files etc."* `DEFAULT_BASELINE = 35_000` is annotated *"Measured, adjustable."* while `ds-025` item 1 records it was **NEVER MEASURED IN 36 SESSIONS**. ★ **If front-load is a large fraction, "60% of window" and "absolute tokens since boot" are not the same line at all** — which is D2 (c)'s whole point.
+2. **The boot / front-load** — Dave's *"front loading of context, memory files etc."* `DEFAULT_BASELINE = 35_000` is annotated *"Measured, adjustable."* while `ds-025` item 1 records it was ~~**NEVER MEASURED IN 36 SESSIONS**~~ **[RETIRED AS FALSE #109 — measured 75,899 real; § ★ #109. Item 1 now = split the unattributed 56,308 remainder.]**. ★ **If front-load is a large fraction, "60% of window" and "absolute tokens since boot" are not the same line at all** — which is D2 (c)'s whole point.
 3. **The wrap reserve** — **newly required by D3's amber**, which cannot be computed without it. ⚠ **Not currently measured anywhere.**
 
 ⇒ **Those three make D2's throttle, D3's edges and D9's warn ALL computable. None is settable
@@ -1559,7 +1562,10 @@ occurred**, so cumulative ≈ resident. **A cumulative log is not a fill reading
    not three mistakes; it is one habit, and the check-in reader will not fix it.**
 2. ⛔ **`ds-025` IS PART-FALSIFIED, AND THE SCOPE MATTERS:** the **conversation** half is observable
    and free. The **boot / system-prompt / tool-schema** half is **NOT in this file** — no `system`
-   record type exists in it — so **`ds-025` item 1 (boot never measured in 36 sessions) STANDS.**
+   record type exists in it — so ~~**`ds-025` item 1 (boot never measured in 36 sessions) STANDS.**~~
+   **[RETIRED AS FALSE #109 — the boot half was reachable a different way (`message.usage` first
+   turn, not this transcript file); measured 75,899 real, § ★ #109. Item 1 now = split the
+   unattributed 56,308 remainder.]**
    ⚠ Do not read this as "ds-025 is dead."
 3. ⛔ **EVERY "disk half" READING THIS PROJECT HAS PUBLISHED MASSIVELY UNDERSTATES.** This session's
    own disk half was **42,342 tape = 6.9%** of the measured conversation figure. **Ten consecutive
@@ -3975,3 +3981,102 @@ worth raising with him directly.
 **→ #109:** #108-D2's per-theme sweep (35 names) · `type.css:180` enactment · `ds-032` enactment ·
 ds-029 first idiom · put the `_state.json`-vs-open-rulings gap to Dave. Posture: crank, but check in on
 the gauge between probe batches, not once at the end.
+
+---
+
+## ★ #109 — THE BOOT FLOOR WAS MEASURED, AND THE GAUGE WAS WRONG BY 45,400 (Dave live, OPUS conductor, ONE window; wrap delegated off-window to a Sonnet sub, the #107 mechanism)
+
+**Context.** #109 opened on the generated title's punch list (per-theme collision sweep, `type.css:180`
+enactment, `ds-032`), but the boot-floor measurement work took priority once the gauge's own published
+figure was checked against `message.usage` and found to be 45,400 short. Dave retitled the session to
+this lane and RULED the generated title's items roll to #110 as an explicit pointer, not dropped.
+
+**★★ HEADLINE — `knowledge/_gauge_tokens.py` published boot as 30,499 ± 8,000; it now publishes
+75,899 ± 1,400. TWO defects, not one.** (a) STALE CONSTANT: `BOOT_HARNESS_EST = 20_000 ± 8_000` sat
+5.6x outside its own error bar against the measured first-turn figure of ~65,400 real; the file's own
+warning — *"RE-MEASURE WHEN THE SESSION SHAPE CHANGES"* — went unactioned for roughly 72 sessions
+[[instrument-without-a-consumer]] [[premise-ages-faster-than-rule]]. (b) STRUCTURAL: `measure_boot()`
+computed `boot = disk + harness`, summing TURN ONE (harness) and TURN TWO (`_CHAIN.md`, read fresh each
+session) as though they were two halves of one moment. `_CHAIN.md` was never inside the floor; it sits
+on top of it, previously uncounted. ⚠ **#105's gauge-log entry** derived *"harness ~55,780"* by
+subtracting disk from boot — the identical conflation, now superseded, not deleted.
+
+**The measured floor, all real tokens:** first turn **65,400 ± 1,400** (`message.usage`, n=5: #103
+65,023 · #104 64,765 · #105 67,370 · #107 65,046 · #109 64,778) — of which `MEMORY.md` is **8,470**
+(measured #109, tokenised off the mounted `.auto-memory/`) and **56,308** remains unattributed (system
+prompt + tool schemas + deferred-tool list + MCP instructions + CLAUDE.md — bounded and named, not
+split) — **plus** `_CHAIN.md` **10,499**, ADDITIVE, landing at turn 2. **Floor = 75,899**, published as
+30,499. Room for job+wrap fell **169,501 → 124,101**.
+
+**The enactment (applied, uncommitted going into this wrap — `knowledge/_gauge_tokens.py`, +35/-10):**
+`BOOT_HARNESS_EST`/`_ERR` → `BOOT_FIRSTTURN_TK = 65_400` / `BOOT_FIRSTTURN_ERR = 1_400`; dict keys
+`disk`/`disk_method` → `chain`/`chain_method`, `harness*` → `firstturn*`; method label now states
+MEASURED with sample count and coverage. The original ±4%-style defence (estimate it, label it, carry
+the error bar) was left INTACT and marked — the reasoning was sound, the premise under it had rotted.
+No budget/threshold/gate touched: amber 160,000, working 200,000, stop 150,929 unchanged.
+
+**Receipts, run not claimed.** MUTATION TEST two-way: re-enacting the OLD constant (20,000) reproduced
+the OLD published figure EXACTLY (30,499), delta 45,400 — the constant is CONSUMED, not cosmetic.
+`python3 knowledge/_gauge_tokens.py --selftest` → OK (5 fixtures exact). The #53 floor guard re-run on
+the corrected floor clears (75,899 < 200,000). Grep for external consumers of `BOOT_HARNESS_*` and
+`boot['disk']`: zero outside the file; the one outside caller (`_capture_gate.py:3456`) uses the
+returned failure LIST, not the keys. `_checkin.py --window 200000` mid-session: FILL 98,070 real, boot
+64,778 real, cache continuity 8/10, rehearsal 0 structural fails / 16 warns.
+
+**✅ #109-D1 (Dave) — lane: fix the boot number first, then the research candidates.** Chosen over a
+full harness audit or candidates-1+2-only or a corpus trim.
+
+**✅ #109-D2 (Dave) — retitle #109 to this lane.** The generated chain title's own punch list
+(per-theme collision sweep · `type.css:180` · `ds-032`) ROLLS to #110 as an explicit pointer, not
+dropped.
+
+**✅ #109-D3 (Dave) — `ds-025` item 1: KEEP OPEN, RE-SCOPED.** The boot TOTAL is measured and that
+half is CLOSED. Item 1 now means the DECOMPOSITION only: `MEMORY.md` 8,470 lit, 56,308 remains
+unsplit; closes when the 56,308 splits, not when the total is known. ⚠ Dave asked to understand the
+re-scope before ruling — *"keep open but I need to understand what I'm approving"* — and approved the
+RE-SCOPE; he has **not** signed off `_gauge_tokens.py`'s code change line-by-line. **The code is
+ENACTED + UNRATIFIED.** Inscribed `_rulings.json` id `ds-025` (first entry there for this id).
+
+**✅ #109-D4 (Dave, verbatim) — "Lets fix this properly, no patches no sticking plasters."** Governs
+the #110 follow-on plan below. Inscribed `ds-036`.
+
+**⛔ RETIRED AS FALSE, struck through at source (not deleted):** the wording at this ledger's own
+`:1297`, `:1399` and `:1562` (found in the same pass, not separately named by the brief) claiming the
+boot was *"NEVER MEASURED IN 36 SESSIONS."* True when written at #52; false since `message.usage`
+first-turn became available as the instrument and never chased. Same false claim also lived in
+`GOOD-MORNING.md`'s standing header and a §C pointer — corrected at both this wrap.
+
+**The #110 roll (four phases, priced, Dave has seen it, awaiting his confirm to open):** **P1** split
+the 56,308 by tokenising what is actually on disk (skill frontmatter at the mounted + RPM skill paths,
+CLAUDE.md, plugin manifests); the Cowork system prompt falls out as the residual by subtraction. ★
+METHOD CORRECTION: attribution was assumed to need one fresh throwaway session boot per config (6–8
+sessions); most of it is tokenisable directly in one pass — collapses P1 from a project to a morning.
+**P2** cut what doesn't earn its boot rent — seven MCP servers load unauthenticated (Asana, Atlassian,
+Intercom, Linear, Notion, Slack, Figma) plus a duplicate second Figma server; re-measure boot after each
+drop; needs Dave's call per server. **P3** gate it — a boot-ceiling gate that fails loud on drift, the
+mechanical form of #109-D4. **P4** `_CHAIN.md`'s 10,499, the old corpus-trim option, now correctly
+priced at 14% of the floor, not the main event. **Also rolled, not started:** research candidates 1+2
+(one-hop edge expansion + supersession-aware ranking, priced as one piece) from
+`_RESEARCH-graph-engineering-2026-08-05-v3.html` § "Six candidates, cheapest first" · the generated
+title's per-theme sweep (35 unmeasured colliding names) · `type.css:180` specimen · `ds-032`.
+
+**Gauge (§ ★ #109):** pre-flight boot 64,778 real (n=12, `message.usage`) + job + wrap 42–49K est
+against stop 150,929. ✅ **STOP LINE HELD** via the #97 mechanism — check-in at the seam (FILL 98,070),
+then wrap-opened EARLY and ROLLED candidates 1+2 rather than riding them. This wrap DELEGATED
+off-window (the #107 mechanism): its drafting cost sub quota, not conductor fill.
+**Consult-receipts #109:** targeted greps/reads on NAMED artefacts (`_CHAIN.md` head · `_GAUGE-LOG.md`
+tail · `_gauge_tokens.py` · `_checkin.py` · `_MEMENTO-DECISIONS.md` ds-025 hits · the -v3 research
+HTML) — 0 `_memento_search` fetches this session, declared not excused.
+
+**Dossier WRITTEN** (reasoning-heavy: two distinguishable defects, a mutation test, a superseded prior
+entry, a re-scoped open item): `_DECISION-HISTORY/2026-08-06-109-boot-floor-measured.md`.
+
+**Residual:** ⬛ the 56,308 remainder — UNSPLIT, #110's P1 · ⬛ #108-D2's per-theme sweep (35 names) —
+still not started · ⬛ `type.css:180` enactment — still ruled, not enacted · ⬛ `ds-032` enactment —
+still not touched · ⬛ ds-029 first-idiom flag — still not touched · ⬛ the `_state.json`-vs-open-rulings
+gap (#89-D2) — still not raised with Dave.
+
+**→ #110:** the four-phase plan (P1 split · P2 cut unauthenticated MCP servers · P3 gate it · P4
+`_CHAIN.md` trim), awaiting Dave's confirm to open · per-theme sweep · `type.css:180` · `ds-032` ·
+ds-029 first idiom · research candidates 1+2 · the `_state.json` gap. Posture: Dave's call at the
+opener.

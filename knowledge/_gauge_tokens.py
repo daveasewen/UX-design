@@ -96,8 +96,29 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # guess" governs what we assert as fact; it was never a ban on estimating, and reading it as one
 # is what produced thirteen blank stamps. So: estimate it, LABEL it, carry the error bar, move on.
 # ⚠ RE-MEASURE WHEN THE SESSION SHAPE CHANGES — a new MCP server or plugin moves this figure.
-BOOT_HARNESS_EST = 20_000
-BOOT_HARNESS_ERR = 8_000
+# ⛔ #109 — THE NUMBER ABOVE WAS WRONG BY 3.3x AND THE MODEL UNDER IT WAS WRONG TOO.
+# The ARGUMENT survives untouched: estimate it, label it, carry the error bar, move on. What
+# failed was (a) the value and (b) the SHAPE. Measured first-turn boot is ~65,400 real, not
+# 20,000 — 5.6x outside the +/-8,000 bar. And "boot = disk + harness" added a file read at
+# turn TWO (`_CHAIN.md`) to a constant standing for turn ONE: two different moments summed as
+# if they were halves of one thing. The +/-4% defence was sound arithmetic on a wrong premise;
+# 44,778 against the 150,929 stop line is 30%, and that DOES flip a go/no-go.
+#
+# WHAT IS NOW MEASURED (real tokens, `message.usage` first turn, n=5 — #103 65,023 ·
+# #104 64,765 · #105 67,370 · #107 65,046 · #109 64,778; err = half-range, and that spread
+# IS the session-shape variation the old warning below was worried about):
+#     first turn      ~65,400  MEASURED whole
+#       MEMORY.md       8,470  MEASURED (#109, tokenised off the mounted auto-memory)
+#       remainder      56,308  system prompt + tool schemas + deferred-tool list + MCP
+#                              server instructions + CLAUDE.md -- BOUNDED and NAMED, but
+#                              not yet split. THIS is what `ds-025` item 1 still means.
+#     + _CHAIN.md      10,499  MEASURED, and ADDITIVE -- it lands at turn 2, on TOP of boot
+#     = floor         ~75,900  before a word of work
+# ⚠ RE-MEASURE WHEN THE SESSION SHAPE CHANGES — a new MCP server or plugin moves this figure.
+#   That warning was already here, correct, and unactioned for ~72 sessions. It is not a note;
+#   it is a task. [[instrument-without-a-consumer]] [[premise-ages-faster-than-rule]]
+BOOT_FIRSTTURN_TK = 65_400
+BOOT_FIRSTTURN_ERR = 1_400
 
 
 def _cache() -> dict:
@@ -213,11 +234,15 @@ def measure_boot(repo: str = REPO) -> dict:
         with open(chain, encoding="utf-8") as f:
             disk, method = count(f.read())
     return {
-        "disk": disk, "disk_method": method,
-        "harness": BOOT_HARNESS_EST, "harness_err": BOOT_HARNESS_ERR,
-        "harness_method": "estimate — UNREACHABLE from any mount (ds-025 item 1)",
-        "total": disk + BOOT_HARNESS_EST,
-        "err": BOOT_HARNESS_ERR,
+        "chain": disk, "chain_method": method,
+        "firstturn": BOOT_FIRSTTURN_TK, "firstturn_err": BOOT_FIRSTTURN_ERR,
+        "firstturn_method": (
+            "MEASURED — `message.usage` first turn, n=5; err = half-range. Covers system "
+            "prompt + tool schemas + deferred-tool list + MCP instructions + MEMORY.md + "
+            "CLAUDE.md. Its INTERNAL split is what `ds-025` item 1 now means (MEMORY.md "
+            "8,470 lit at #109; 56,308 remainder still unsplit)."),
+        "total": disk + BOOT_FIRSTTURN_TK,
+        "err": BOOT_FIRSTTURN_ERR,
     }
 
 
@@ -233,7 +258,7 @@ def assert_budget_clears_floor(repo: str = REPO) -> list[str]:
     if BUDGET_WORKING <= boot["total"]:
         fails.append(
             f"BUDGET_WORKING ({BUDGET_WORKING:,}) is at or under the measured floor "
-            f"({boot['total']:,} = disk {boot['disk']:,} + harness ~{boot['harness']:,}). "
+            f"({boot['total']:,} = first turn {boot['firstturn']:,} + chain {boot['chain']:,}). "
             f"Compliance is arithmetically impossible — the #53 defect. RAISE the budget or "
             f"CUT the floor; do NOT ask sessions to shave live record to fit.")
     if BUDGET_AMBER >= BUDGET_WORKING or BUDGET_WORKING >= BUDGET_HARD:
@@ -265,8 +290,8 @@ def main() -> int:
     print(f"  budget   amber {BUDGET_AMBER:,} · working {BUDGET_WORKING:,} (Dave #56) · "
           f"hard {BUDGET_HARD:,} (SOURCED — 93% MRCR v2)")
     print(f"  boot     {boot['total']:,} ± {boot['err']:,}")
-    print(f"    disk      {boot['disk']:>8,}  {boot['disk_method']}")
-    print(f"    harness   {boot['harness']:>8,}  ± {boot['harness_err']:,} — {boot['harness_method']}")
+    print(f"    + chain   {boot['chain']:>8,}  {boot['chain_method']} — ADDITIVE, lands at turn 2")
+    print(f"    first turn{boot['firstturn']:>8,}  ± {boot['firstturn_err']:,} — {boot['firstturn_method']}")
     print(f"  ⇒ room for job + wrap: ~{BUDGET_WORKING - boot['total']:,} tokens")
     for f in assert_budget_clears_floor():
         print(f"  ❌ {f}")

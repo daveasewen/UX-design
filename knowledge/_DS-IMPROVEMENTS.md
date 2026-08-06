@@ -1727,6 +1727,27 @@ that depends on it:**
    ⇒ **`ds-025` is NOT closed; item 1 is narrowed.** ★ Found because Dave used the check-in
    mechanism he ruled the same hour (*"how hot are we now?"*) — **an instrument's first run
    disconfirmed the premise it was built on.** → `notes/_MEMENTO-DECISIONS.md` § ★★ #52.
+
+   ⛔⛔ **RE-SCOPED #109 (2026-08-06), RULED #109-D3 — THE HEADLINE CLAIM ABOVE ("the boot is still
+   unmeasured after 36 sessions") IS NOW FALSE AND THIS IS THE CORRECTION AT SOURCE.** The harness
+   half IS observable — not from disk, but directly via `message.usage` at first turn, which was
+   available the whole time and simply not used as the boot instrument. **Measured, n=5 (#103 65,023
+   · #104 64,765 · #105 67,370 · #107 65,046 · #109 64,778): first turn 65,400 ± 1,400 real.** Plus
+   `_CHAIN.md` (10,499 real), which lands ADDITIVELY at turn 2, not inside the boot figure — the prior
+   `boot = disk + harness` shape summed two different conversation MOMENTS as though they were two
+   halves of one thing, a second defect independent of the stale `20,000` constant it was carrying.
+   **Corrected floor: 75,899, published as 30,499 — under-reported by 45,400.** Enacted in
+   `knowledge/_gauge_tokens.py` (`BOOT_FIRSTTURN_TK`/`BOOT_FIRSTTURN_ERR`, replacing
+   `BOOT_HARNESS_EST`/`_ERR`); Dave approved the RE-SCOPE below, not yet the code line-by-line
+   (ENACTED + UNRATIFIED). ⇒ **item 1 NARROWS AGAIN, not closes:** the boot TOTAL is measured and
+   that half is done; item 1 now means the DECOMPOSITION of the 65,400 first-turn figure only —
+   `MEMORY.md` 8,470 is split out and measured (#109), **56,308 remains unattributed** (system prompt
+   + tool schemas + deferred-tool list + MCP server instructions + CLAUDE.md — bounded and named, not
+   yet split). Closes when the 56,308 splits, not before. Four-phase plan (split · cut unauthenticated
+   MCP boot rent · gate the ceiling · the smaller `_CHAIN.md` trim) priced for #110, governed by
+   `ds-036` (#109-D4, verbatim: *"no patches no sticking plasters"*), awaiting Dave's confirm to open.
+   Full arc: `_DECISION-HISTORY/2026-08-06-109-boot-floor-measured.md`. → `notes/_MEMENTO-DECISIONS.md`
+   § ★ #109.
 2. **`bill`.** ds-021(c) requires one `tape`/`bill` pair per wrap and sends the constant to Dave at
    **n≥4**. Measured at #37: `notes/_GAUGE-LOG.md` has **never contained a single pair** (`grep -i
    bill` → 0 hits, all sessions). `TAPE_TO_BILL = 1.57` is still the original **n=2** from #30. The
