@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 47,195 real and 84% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 47,580 real and 84% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -59,7 +59,7 @@
 > **⚙ gauge:** boot **55,733 real**. Check-ins **82,046 → 114,524 → 156,152 FILL**. ⛔ **STOP LINE 150,929 BLOWN by 5,223**, declared in-chat at the reading, not at the wrap. Mechanism, named: (1) the attribution probe required reproducing the injected surface into files to measure it — ~32K fill, unavoidable for that measurement but not priced in advance; (2) a four-round-trip index shave that one measurement would have collapsed to one trip — characters were shaved three times before measuring what the 46-char window actually cost; that second one is method, not mechanics, and it is the cheaper lesson. Quota: **73% used / 27% left, resets in 9h56m.** Fable 95% used — **HELD, untouched**, per Dave. ✅ The attribution probe ran INLINE (~32K fill) rather than as a sub — #110 spent 158,736 quota on the equivalent; the #110 delegation finding working, and it removed #110's own declared caveat (the conductor measured itself, not a sub measuring itself).
 > **residual:** ⬛ `MEMORY.md` compaction (9,178 real) — #112's FIRST act by #111-D5, not a rolled pointer; also make the size check BLOCK at boot, not warn at wrap · ⬛ the attribution re-probe (#111-D3) + the constant refresh (#111-D2), in that order · ⬛ P2 re-priced (836 real on named candidates; duplication + UUID-prefix cost are the larger, newly-measured targets) · ⬛ P4 `_CHAIN.md` trim (10,499) · ⬛ enact queue untouched (`type.css:180` ink → `#1A1A1A` · `ds-032` · ds-029 first idiom · per-theme collision sweep, 35 names, PER THEME not globally) · ⬛ `_state.json`-vs-open-rulings gap (item 22).
 > **residual (GENERATED #111):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #110) — _roll_state.py · 2026-08-06
-> **→ #112:** `MEMORY.md` compaction FIRST (#111-D5) · the attribution re-probe (#111-D3) then the constant refresh (#111-D2) · P2 re-priced (836 real) · P4 `_CHAIN.md` trim (10,499) · enact queue (`type.css:180` · `ds-032` · ds-029 first idiom · per-theme sweep) · `_state.json`-vs-open-rulings gap. ★ Posture: Dave's rulings above gate what opens next.
+> **→ #112:** `MEMORY.md` compaction FIRST (#111-D5) · the attribution re-probe (#111-D3) then the constant refresh (#111-D2) · P2 re-priced (836 real) · P4 `_CHAIN.md` trim (10,499) · enact queue (`type.css:180` · `ds-032` · ds-029 first idiom · per-theme sweep) · `_state.json`-vs-open-rulings gap. ★ Posture: Dave's rulings above gate what opens next. ⚠ **THE COMPACTION PASS OWES ONE ADDED INDEX LINE** (Dave, #111, given AFTER the wrap): `- [★★ BUDGET vs QUOTA — two different budgets](budget-vs-quota-vocabulary.md) — Dave's word BUDGET = window − boot − wrap, one window, real tokens; QUOTA = the DAY allowance across all windows and subs. ⛔ a sub costs nothing in budget and 5–10× in quota — a MARKUP, not a transfer. NAME WHICH BINDS before picking a posture` — the topic file is ALREADY WRITTEN (`budget-vs-quota-vocabulary.md`, 2,303 b, VERIFIED present and VERIFIED unindexed: 0 hits in `MEMORY.md`). ★ **ADD IT DURING THE PASS, NOT BEFORE** — the file is already over its 17.1KB target and this line grows it. ⛔ **TARGETED EDIT ONLY — do NOT rewrite `MEMORY.md` wholesale; #110 is holding a stale read of it.**
 
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (28 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ENCODE BEFORE THE WAVE, part-consumed 28 · `0c` NEXT BUILD CANDIDATES · `0d` THE 67 ENACT WAVE, landed · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, none superseded · `9` DELEGATION TOPOLOGY · `10` ✅ PER-GATE TEST PLAN · `11` 2c-ROLL / INDEX-VOCAB DEADLOCK · `12` #57 1b DOSSIER · `13` tmp RUNBOOK EXPOSURE, unfixed · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59 · `16` UNHOMED PAIR (#78 2c EXIT CHECK) · `17` CHAIN-DIET CUT · `19` type.css 180 dark-mode specificity · `20` ds-029 FIRST IDIOM · `21` PER-THEME COLLISION SWEEP · `22` 89-D2 ruled not enacted, absent from state · `23` ds-025 re-scoped 109, not closed · `24` 110 boot-rent plan · `25` ds-032 enactment, ruled 106 · `26` ✅ boot-drift gate rulings
@@ -121,7 +121,7 @@
 
 ---
 
-*(Chain ends. **12,023 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **12,408 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 47,195 real and stays whole for retrieval; you have paid for
-25% of it, and that is the intended figure, not a shortfall.)*
+`GOOD-MORNING.md` is 47,580 real and stays whole for retrieval; you have paid for
+26% of it, and that is the intended figure, not a shortfall.)*
