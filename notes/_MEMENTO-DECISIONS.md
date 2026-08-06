@@ -4491,3 +4491,69 @@ by this wrap**, and the wrap sub was briefed that it may not raise a cap to clea
 PARKED by Dave**.
 
 **Dossier:** `_DECISION-HISTORY/2026-08-06-114-the-clerical-refile-and-the-retrieval-self-miss.md`
+
+
+---
+
+## ★ #115 — THREE GRAPH CANDIDATES LANDED, AND DAVE'S CATCH TURNED AN OBSERVATION WINDOW INTO AN INSTRUMENT (Dave live, OPUS conductor, ONE window, 1 Opus build sub, wrap DELEGATED to an Opus sub)
+
+**`#115-D1` (Dave) — open the graph candidates now, defer the titled lane.** Verbatim: *"no lets get
+these done now."* Candidates **1**, **3** and the **mark-half of 2** from
+`_RESEARCH-graph-engineering-2026-08-05-v3.html`, taken ahead of the lane #115 was TITLED for
+(#114-D5's checker measurement redesign and #114-D2's citation gate). ★ **The deferral is HIS**, and is
+recorded as a ruling rather than as a slipped item: the graph candidates were blocked on a join that
+did not exist, the titled lane is blocked on nothing. **ENACTED** `9b47152` · `6a16633` · `ce0cc7f`.
+
+**`#115-D2` (Dave) — an observation window must be INSTRUMENTED, never human-remembered.** His catch,
+verbatim: *"so I should be looking out for these manually?… do I have to write these down on a postit
+or something??"* ⇒ [[feedback-measuring-tool-must-not-guess]] pointed at a human rather than a script.
+**BUILT THE SAME SESSION** (`ce0cc7f`): the doors append one JSONL line per **DISPLAYED (post-cap)**
+marked result to `knowledge/_graph-mark-observations.jsonl`; **the reader ships with the writer**
+(`_graph_edges.py --tally`) [[instrument-without-a-consumer]]; write failure prints **LOUD** and never
+raises into the door; **6 recorder selftest bites**; the selftests are **proven not to pollute the real
+log**, which matters because that log is the evidence a later ruling will be made from. First real
+tally: **15 marked results, 4 carrying ⛔**; `ls:LIFECYCLE` alone holds **17 dead-node mentions** and is
+the **predicted noise class — a section ABOUT supersessions**.
+
+**`#115-D3` (Dave) — "lets wrap."** Taken at the check-in seam on the conductor's recommendation
+(FILL 130,074 vs the 150,929 stop line; the next lane priced above the runway).
+
+**⛔ EXPLICITLY NOT RULED — DEMOTION (the pricing brief's item 4).** It is neither ruled nor scheduled.
+It gets decided on `python3 knowledge/_graph_edges.py --tally` — **save-vs-noise evidence, not
+recollection**. Any session presenting demotion as ruled or queued is misreporting this record.
+
+**★ THE MEASUREMENT THAT RE-PRICED THE DOC.** Node-id ↔ record-id overlap: **0 of 575**. There was no
+join to extend, so candidate 1's *"Small"* in the research doc is wrong and the work is **Medium**.
+An estimate inside a delivered artefact is still an estimate; the tree is the arbiter.
+
+**★ THE ⛔ MARK'S SEMANTIC, inscribed so the window is read correctly:** it means the result **MENTIONS**
+a superseded node — **NOT** that the result is dead. Mis-reading it produces a confident false verdict
+from a correct instrument.
+
+**⚠ DECLARED, NOT SMOOTHED — three residuals.** (1) **One commit, not two:** the sandbox delete-guard
+blocks the mv-aside the 1-vs-3 split needed; declared at the commit, and the separability that matters
+(**mark vs demote**) is preserved. (2) **The retrieval index went honestly STALE** — the new brief and
+runbook are corpus members — and **the commit script's own rehearsal probe caught it**; `6a16633`
+regenerates 575→**576**, and the **+1 `notes/_REHEARSAL-LOG.jsonl` lines inside `9b47152`/`ce0cc7f` are
+that probe's records, not corruption**. (3) **A PRE-EXISTING memento known-answer FAIL**
+(`runbook:context-gauge`, slug *"…the-only-cop"*) was present **at HEAD before this lane**, verified by
+stash, **declared and deliberately NOT fixed**; the honest repair is a re-pin off the rebuilt index and
+it sits in GM §C·4 with **no owner**.
+
+**⚠ ALL THREE COMMITS CARRY #114's BANNER SUBJECT** — `_git_commit.sh` rewrites the subject from the
+chain banner, so a mid-wave commit inherits the previous session's headline. Flagged at #114 and again
+here: **verify by hash and diff, never by subject** [[wrap-skipped-chain-certifies-wrong-session]].
+
+**⚙ gauge.** ONE check-in, at the D5 seam: **FILL 130,074 real** vs **150,929** — runway **20,855**;
+the wrap was **opened rather than a >15K lane ridden** (#97's mechanism, named at the time). **No
+mid-lane blow.** Sub quota: **build sub 122,030** + this wrap sub, whose figure is **not observable
+from inside it**. ⛔ **Dave gave no day-quota reading this session — UNKNOWN, and no stale number was
+substituted** [[feedback-measuring-tool-must-not-guess]].
+
+**Residual → #116:** ① D5 checker measurement redesign (+ the `axs-003` detector) · ② D6 44-promote,
+AFTER ① · ③ D2 citation gate, four binding conditions · ④ **the attribution re-probe (#111-D3) —
+THIRD CONSECUTIVE SESSION ROLLED**, `deferred_tools` staged FIRST, still intact · ⑤ P4 `_CHAIN.md`
+trim, 11,345 · ⑥ the 19 `_state.LEGACY_IDS` + DO-FIRST item 22 · ⑦ Apollo enact queue, still PARKED by
+Dave · ⑧ the observation-window tally, then Dave rules demote · ⑨ re-pin the known-answer test.
+
+**Dossier:** `_DECISION-HISTORY/2026-08-06-115-graph-candidates-and-the-observation-window.md`
