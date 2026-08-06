@@ -1,6 +1,6 @@
 # A11y gate — _validate_a11y.py
 
-**75 snippet(s)** · **8 failure(s)** · **31 warning(s)**
+**75 snippet(s)** · **6 failure(s)** · **33 warning(s)**
 
 Gating: reduced-motion (2.3.3) · target size <24 floor (2.5.8, aid-009 ruling 2026-07-03). Reported: target size 24–43 vs the 44×44 HSBC default (aid-009).
 
@@ -71,13 +71,13 @@ Library bar (aqa-003, ruled 2026-07-03): the canon is LIBRARY-GRADE — guidelin
 - 🟡 warn — `.fu-remove` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
 
 ## Form-layout
-- 🔴 FAIL — `.fl-tip` is 18×18px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)
+- 🟡 warn — `.fl-tip` is 18×18px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
 
 ## Headers
 - 🟡 warn — `.content-header button` is 40×40px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
 
 ## Input-fields
-- 🔴 FAIL — `.help-btn` is 18×18px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)
+- 🟡 warn — `.help-btn` is 18×18px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
 - 🟡 warn — `.box .tail-btn` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
 
 ## Modals

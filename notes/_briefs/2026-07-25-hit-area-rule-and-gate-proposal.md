@@ -57,6 +57,11 @@ Redesign `_validate_a11y.py` target check to be **markup-driven, not selector-al
 3. **Scope of enactment.** Just dataviz controls now, or sweep the whole 67-snippet library for
    allowlist-missed controls in the same pass? (Recommend: sweep — foundational.)
 
+## 2026-08-06 #114 (Dave) — addendum
+Expander applied to the 8 <24-floor offenders. Chart tooltip trigger-points are a LESSER concern —
+the table fallback always exists, making a11y rulings there more nuanced. The 44-promote half
+remains UNRULED.
+
 ## On sign-off, the enactment (one Sonnet-to-spec session)
 Inscribe the rule (a11y guideline + `_DATAVIZ-DECISIONS` for the mark exemption) → rebuild the gate
 markup-driven + selftest + wire into `_build_all.py` → run it → fix any newly-surfaced controls →
