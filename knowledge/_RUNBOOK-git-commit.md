@@ -16,7 +16,7 @@ bash knowledge/_git_commit.sh --reconciled <msgfile>  # clear · stage · clear 
 The script mechanises the whole sequence below, refuses to stage while any `.git/*.lock` exists,
 refuses an empty/stale msgfile, verifies HEAD advanced AND the message matches, and clears locks as
 its last action. It cannot do step 0.5's judgment — the `--reconciled` flag is your attestation that
-every dirty path is accounted for (worktree-reconcile rule). WHY a script: 5 of 7 commit sessions (3 of 5 at ruling 2026-07-26; #36 and #41 since — the count is maintained because it is the evidence for this tool)
+every dirty path is accounted for (worktree-reconcile rule). WHY a script: 7 of 9 commit sessions (3 of 5 at ruling 2026-07-26; #36, #41, #56 and #109 since — the count is maintained because it is the evidence for this tool. ⚠ #109 hand-rolled the lock `mv` AND ran a control probe to re-derive the 0-byte/mtime diagnostic already written in Gotchas below, then found the script — Dave caught it with "there s a commit runbook". The memory hook, not the runbook, was the misfire: it carried "ask if GitHub Desktop is open" WITHOUT the diagnostic that answers it. Hook corrected #109)
 reconstructed this sequence from memory under wrap heat and hit the lock failure first; a hot agent
 can call one script (`feedback-gate-dont-patch`). Everything below is the reference the script
 implements — read it when the script surprises you, don't re-derive it.
