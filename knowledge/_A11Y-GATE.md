@@ -1,111 +1,439 @@
 # A11y gate — _validate_a11y.py
 
-**75 snippet(s)** · **6 failure(s)** · **33 warning(s)**
+**75 snippet(s)** · **0 failure(s)** · **179 warning(s)** · **143 note(s)**
 
-Gating: reduced-motion (2.3.3) · target size <24 floor (2.5.8, aid-009 ruling 2026-07-03). Reported: target size 24–43 vs the 44×44 HSBC default (aid-009).
+Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **446 control(s)** and **201 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
+
+Gating: reduced-motion (2.3.3) · unknown ARIA role · CONTROL target under the 24px floor (2.5.8, aid-009). Reported: CONTROL 24–43 vs the 44 HSBC default (axs-003; `s114-D6` promotes this to blocking, ordered after this rebuild) · DATA MARK under 24 (`s116-D1`) · UNMEASURED boxes.
 
 Library bar (aqa-003, ruled 2026-07-03): the canon is LIBRARY-GRADE — guideline and recommendation tiers bind it, not just standards.
 
+## Owed measurement — data marks below 24 (`s116-D1`, for Dave)
+
+**107 focusable data mark(s) fall below the 24px dense-case minimum**, across 6 snippet(s):
+
+- `Chart-bar` — 6
+- `Chart-butterfly-h` — 12
+- `Chart-butterfly-v` — 5
+- `Chart-combo` — 12
+- `Chart-line` — 60
+- `Chart-stacked-area` — 12
+
+NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the mark tier goes blocking. `MARK_TIER` in this file is the single switch.
+
+## Accordion
+- ⚪ note — `button.head` — UNMEASURED: one axis declared (autox56), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.head` — UNMEASURED: one axis declared (autox56), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+
 ## Account-selector
-- 🔴 FAIL — `.as-trigger .chev` is 16×16px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)
+- ⚪ note — `button#asTrigger.as-trigger` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.as-opt` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.as-opt` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.as-opt` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Alert
-- 🟡 warn — `.alert .x` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
-
-## Avatar
-- 🟡 warn — `.avatar.sm` is 32×32px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Banner
-- 🟡 warn — `.banner .x` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+
+## Breadcrumbs
+- ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Cards
-- 🔴 FAIL — `.card.opt .radio` is 22×22px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)
+- ⚪ note — `a.linkcard` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.headline` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.arrow` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.arrow` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `div.card.opt` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `div.card.opt` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `div.card.opt` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Chart-bar
-- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — DATA MARK `rect.dv-series` — 219.2x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 94.0x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 495.9x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 135.7x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 109.6x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 156.6x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
 
 ## Chart-butterfly-h
-- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — DATA MARK `rect.dv-series` — 133.2x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 162.8x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 83.2x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 112.8x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 55.5x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 46.2x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 166.5x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 175.8x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 107.3x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 74.0x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 37.0x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 61.0x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
 
 ## Chart-butterfly-v
-- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — DATA MARK `rect.dv-series` — 48.7x16.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 48.7x21.6 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 48.7x23.4 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 48.7x18.9 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `rect.dv-series` — 48.7x17.1 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
 
 ## Chart-combo
-- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
-
-## Chart-donut
-- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Chart-line
-- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
-- 🟡 warn — `.dv-leg-sw.sw-diamond` is 8×8px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Chart-pie
-- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
+- ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
 
-## Chart-scatter
-- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+## Chart-sparkline
+- ⚪ note — DATA MARK `polyline.dv-series` — UNMEASURED: polyline (trend line): its target is stroke width x hit band, which is a render-axis fact
 
 ## Chart-stacked-area
-- 🟡 warn — `.dv-leg-sw` is 12×12px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
 
 ## Data-grid
-- 🔴 FAIL — `.sort .ic` is 16×16px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)
-- 🟡 warn — `.dgs-clear` is 24×24px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
-- 🟡 warn — `.fchip .x` is 24×24px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
+- 🟡 warn — `button.dgs-clear` — 24x24 is under the 44 default (aid-009)
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 
 ## Date-picker
-- 🟡 warn — `.dp-box .tail-btn` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — `button#dp-open.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
 
 ## Date-range-picker
-- 🟡 warn — `.dr-box .tail-btn` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — `button#dr-open-from.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button#dr-open-to.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
 
 ## Drawer
-- 🟡 warn — `.sheet .close` is 36×36px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- ⚪ note — `button#open` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Dropdown
-- 🔴 FAIL — `.opt .tick` is 16×16px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)
+- ⚪ note — `button#ddTrigger1.trigger` — UNMEASURED: one axis declared (autox52), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#ddTrigger2.trigger` — UNMEASURED: one axis declared (autox52), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+
+## Empty-state
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## File-upload
-- 🔴 FAIL — `.fu-remove .icn` is 14×14px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)
-- 🟡 warn — `.fu-remove` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
-
-## Form-layout
-- 🟡 warn — `.fl-tip` is 18×18px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — `button.fu-remove` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.fu-remove` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.fu-remove` — ::before hit-expander 36x36 — under the 44 default
 
 ## Headers
-- 🟡 warn — `.content-header button` is 40×40px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
+- 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)
+- 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)
+
+## Hero
+- ⚪ note — `button.cta` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.arrow` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Input-fields
-- 🟡 warn — `.help-btn` is 18×18px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
-- 🟡 warn — `.box .tail-btn` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+
+## Links
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.arrow` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.arrow.back` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.icon-lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.icon-lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.arrow.back` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.arrow.back` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.arrow.back` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+
+## List-items
+- ⚪ note — `button.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.is-hover.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.is-pressed.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+
+## Modal-lightbox
+- ⚪ note — `button#open` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Modals
-- 🟡 warn — `.dialog .close` is 36×36px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
+- 🟡 warn — `button#close.close` — 36x36 is under the 44 default (aid-009)
+- ⚪ note — `button#open` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+
+## Navigations
+- ⚪ note — `a` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+
+## Notifications
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Popover
-- 🟡 warn — `.pop .x` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- ⚪ note — `button.pop-trigger` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pop-trigger` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pop-trigger` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+
+## Progress-tracker
+- ⚪ note — `button#back` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#next` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+
+## Quick-actions
+- ⚪ note — `button.qa` — UNMEASURED: one axis declared (autox88), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.qa` — UNMEASURED: one axis declared (autox88), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.qa` — UNMEASURED: one axis declared (autox88), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.qa` — UNMEASURED: one axis declared (autox88), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 
 ## Reorder
-- 🟡 warn — `.handle` is 32×32px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
-- 🟡 warn — `.moves button` is 30×30px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
+- 🟡 warn — `button.handle` — 32x32 is under the 44 default (aid-009)
+- 🟡 warn — `button` — 30x30 is under the 44 default (aid-009)
+- 🟡 warn — `button` — 30x30 is under the 44 default (aid-009)
+- 🟡 warn — `button.handle` — 32x32 is under the 44 default (aid-009)
+- 🟡 warn — `button` — 30x30 is under the 44 default (aid-009)
+- 🟡 warn — `button` — 30x30 is under the 44 default (aid-009)
+- 🟡 warn — `button.handle` — 32x32 is under the 44 default (aid-009)
+- 🟡 warn — `button` — 30x30 is under the 44 default (aid-009)
+- 🟡 warn — `button` — 30x30 is under the 44 default (aid-009)
 
 ## Search-field
-- 🟡 warn — `.clear` is 24×24px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
-
-## Secure-entry
-- 🟡 warn — `.se-cell` is 40×48px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
+- 🟡 warn — `button.clear` — 24x24 is under the 44 default (aid-009)
+- 🟡 warn — `button.clear` — 24x24 is under the 44 default (aid-009)
 
 ## Selection-controls
-- 🟡 warn — `.chip .x` is 18×18px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — `button.chip` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.chip` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.chip` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.chip` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.chip` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.chip` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.chip` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.chip` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+
+## Skeleton-loader
+- ⚪ note — `button#resolveDemo` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+
+## Status-indicator
+- ⚪ note — `button#sim.sim` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+
+## Tab-bar
+- ⚪ note — `a.is-active.tabbar__item` — UNMEASURED: one axis declared (autox56), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.tabbar__item` — UNMEASURED: one axis declared (autox56), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.tabbar__item` — UNMEASURED: one axis declared (autox56), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.tabbar__item` — UNMEASURED: one axis declared (autox56), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.seg__item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.seg__item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.seg__item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.seg__item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+
+## Table
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+
+## Tabs
+- ⚪ note — `button#t1.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#t2.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#t3.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#t4.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#t5.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#t6.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#ovTrigger.overflow__trigger` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+
+## Tags
+- 🟡 warn — `a.link.tag` — autox34.4 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `a.link.tag` — autox34.4 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `a.link.tag` — autox34.4 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `a.link.tag` — autox34.4 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `a.link.tag` — autox34.4 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
 
 ## Time-picker
-- 🔴 FAIL — `.tp-opt .tick` is 16×16px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)
-- 🟡 warn — `.tp-box .tail-btn` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — `button#tp-open.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- ⚪ note — `li.t-cm-figure-5.tp-opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.t-cm-figure-5.tp-opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.t-cm-figure-5.tp-opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li.t-cm-figure-5.tp-opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 
 ## Toast
-- 🟡 warn — `.toast .x` is 24×24px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- ⚪ note — `button#spawnOk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#spawnInfo` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.act.t-cm-button.t-cm-slot` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.act.t-cm-button.t-cm-slot` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 
 ## Tooltip
-- 🟡 warn — `.trigger` is 22×22px — EXEMPT via a ::before hit-area expander, NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; the render-axis hit-area gate owes this one.
+- 🟡 warn — `button.trigger` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.trigger` — ::before hit-expander 24x24 — under the 44 default
+- 🟡 warn — `button.trigger` — ::before hit-expander 24x24 — under the 44 default
+
+## Video-player
+- 🟡 warn — `button` — 32x32 is under the 44 default (aid-009)
+- 🟡 warn — `button` — 32x32 is under the 44 default (aid-009)
+- 🟡 warn — `button` — 32x32 is under the 44 default (aid-009)
+
+## View-options
+- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
 

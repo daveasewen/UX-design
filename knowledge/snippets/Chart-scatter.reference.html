@@ -173,16 +173,28 @@
   .dv-tbl-toggle > *,.dv-vt > *{position:relative; z-index:1;}
   .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
   .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-  .dv-tbl-toggle[aria-expanded="true"],.dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
   .dv-act,.dv-dd{gap:8px;}
   .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
   .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 
   .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-  .dv-tablepanel[hidden]{display:none;}
+  /* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+  details.dv-tbl{position:static; margin:0;}
+  details.dv-tbl > summary{list-style:none; cursor:pointer;}
+  details.dv-tbl > summary::-webkit-details-marker{display:none;}
+  details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+  details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
   .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 
   .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
@@ -223,13 +235,29 @@
       <h3 class="dv-title t-cm-section-label">Savings rise with monthly income</h3>
       <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
       <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
         <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
       <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
      registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
      between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
      regenerate: python3 knowledge/gen_component_partials.py -->
-        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cs1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="cs1-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
       <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+          <div class="dv-tablepanel" id="cs1-tbl" role="region" aria-label="Monthly income against savings, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal">
+          <caption>Monthly income against savings, per customer, pounds thousands</caption>
+          <thead><tr><th scope="col">Income</th><th scope="col">Savings</th></tr></thead>
+          <tbody>
+          <tr><th scope="row">28</th><td>6</td></tr><tr><th scope="row">35</th><td>9</td></tr>
+          <tr><th scope="row">42</th><td>8</td></tr><tr><th scope="row">55</th><td>14</td></tr>
+          <tr><th scope="row">61</th><td>12</td></tr><tr><th scope="row">68</th><td>18</td></tr>
+          <tr><th scope="row">77</th><td>17</td></tr><tr><th scope="row">85</th><td>22</td></tr>
+          <tr><th scope="row">96</th><td>26</td></tr><tr><th scope="row">108</th><td>31</td></tr>
+          <tr><th scope="row">122</th><td>38</td></tr><tr><th scope="row">140</th><td>47</td></tr>
+          </tbody>
+          </table>
+          </div>
+        </details>
       </div>
     </div>
     <div class="dv-stage"><div class="dv-chart-area">
@@ -273,20 +301,6 @@
         <g class="dv-marker" data-fx="0.9333" data-x0="533.2" style="animation-delay:990ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="533.2" cy="102.1" r="4.5"></circle><circle class="dv-hit" fill="transparent" cx="533.2" cy="102.1" r="12" tabindex="0" role="img" aria-label="£140k income · £47k saved" data-tip="£140k income · £47k saved"/></g>
       </svg>
     </div></div>
-    <div class="dv-tablepanel" id="cs1-tbl" role="region" aria-label="Monthly income against savings, data table" tabindex="-1" hidden>
-      <table class="dv-table t-cm-legal">
-        <caption>Monthly income against savings, per customer, pounds thousands</caption>
-        <thead><tr><th scope="col">Income</th><th scope="col">Savings</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">28</th><td>6</td></tr><tr><th scope="row">35</th><td>9</td></tr>
-          <tr><th scope="row">42</th><td>8</td></tr><tr><th scope="row">55</th><td>14</td></tr>
-          <tr><th scope="row">61</th><td>12</td></tr><tr><th scope="row">68</th><td>18</td></tr>
-          <tr><th scope="row">77</th><td>17</td></tr><tr><th scope="row">85</th><td>22</td></tr>
-          <tr><th scope="row">96</th><td>26</td></tr><tr><th scope="row">108</th><td>31</td></tr>
-          <tr><th scope="row">122</th><td>38</td></tr><tr><th scope="row">140</th><td>47</td></tr>
-        </tbody>
-      </table>
-    </div>
   </figure>
 
   <h2>Scatter — segments (shape + letter + colour, colour never the only channel)</h2>
@@ -301,13 +315,38 @@
       <h3 class="dv-title t-cm-section-label">Savings rise with income across every segment</h3>
       <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
       <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
         <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
       <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
      registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
      between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
      regenerate: python3 knowledge/gen_component_partials.py -->
-        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cs2-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="cs2-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
       <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+          <div class="dv-tablepanel" id="cs2-tbl" role="region" aria-label="Monthly income against savings by segment, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal">
+          <caption>Monthly income against savings by customer segment, pounds thousands</caption>
+          <thead><tr><th scope="col">Income</th><th scope="col">Segment</th><th scope="col">Savings</th></tr></thead>
+          <tbody>
+          <tr><th scope="row">30</th><td>Everyday</td><td>4</td></tr>
+          <tr><th scope="row">52</th><td>Everyday</td><td>7</td></tr>
+          <tr><th scope="row">74</th><td>Everyday</td><td>9</td></tr>
+          <tr><th scope="row">98</th><td>Everyday</td><td>13</td></tr>
+          <tr><th scope="row">128</th><td>Everyday</td><td>17</td></tr>
+          <tr><th scope="row">34</th><td>Saver</td><td>11</td></tr>
+          <tr><th scope="row">58</th><td>Saver</td><td>18</td></tr>
+          <tr><th scope="row">82</th><td>Saver</td><td>24</td></tr>
+          <tr><th scope="row">104</th><td>Saver</td><td>33</td></tr>
+          <tr><th scope="row">132</th><td>Saver</td><td>41</td></tr>
+          <tr><th scope="row">40</th><td>Investor</td><td>20</td></tr>
+          <tr><th scope="row">66</th><td>Investor</td><td>31</td></tr>
+          <tr><th scope="row">90</th><td>Investor</td><td>42</td></tr>
+          <tr><th scope="row">116</th><td>Investor</td><td>54</td></tr>
+          <tr><th scope="row">144</th><td>Investor</td><td>66</td></tr>
+          </tbody>
+          </table>
+          </div>
+        </details>
       </div>
     </div>
     <div class="dv-stage"><div class="dv-chart-area">
@@ -363,29 +402,6 @@
       <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="cs2-legend" disabled>Reset</button></li>
     </ul>
     <p class="dv-sr" id="cs2-live" role="status" aria-live="polite"></p>
-    <div class="dv-tablepanel" id="cs2-tbl" role="region" aria-label="Monthly income against savings by segment, data table" tabindex="-1" hidden>
-      <table class="dv-table t-cm-legal">
-        <caption>Monthly income against savings by customer segment, pounds thousands</caption>
-        <thead><tr><th scope="col">Income</th><th scope="col">Segment</th><th scope="col">Savings</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">30</th><td>Everyday</td><td>4</td></tr>
-          <tr><th scope="row">52</th><td>Everyday</td><td>7</td></tr>
-          <tr><th scope="row">74</th><td>Everyday</td><td>9</td></tr>
-          <tr><th scope="row">98</th><td>Everyday</td><td>13</td></tr>
-          <tr><th scope="row">128</th><td>Everyday</td><td>17</td></tr>
-          <tr><th scope="row">34</th><td>Saver</td><td>11</td></tr>
-          <tr><th scope="row">58</th><td>Saver</td><td>18</td></tr>
-          <tr><th scope="row">82</th><td>Saver</td><td>24</td></tr>
-          <tr><th scope="row">104</th><td>Saver</td><td>33</td></tr>
-          <tr><th scope="row">132</th><td>Saver</td><td>41</td></tr>
-          <tr><th scope="row">40</th><td>Investor</td><td>20</td></tr>
-          <tr><th scope="row">66</th><td>Investor</td><td>31</td></tr>
-          <tr><th scope="row">90</th><td>Investor</td><td>42</td></tr>
-          <tr><th scope="row">116</th><td>Investor</td><td>54</td></tr>
-          <tr><th scope="row">144</th><td>Investor</td><td>66</td></tr>
-        </tbody>
-      </table>
-    </div>
   </figure>
 
   <h2>No data — the Empty-state pattern, consumed by reference</h2>
@@ -415,7 +431,7 @@
       { "fg": "data/axis/color", "bg": "background/default", "context": "text" }
     ],
     "icons": {},
-    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-controls", "aria-expanded", "role=\"region\"", "role=\"checkbox\"", "aria-checked", "aria-pressed"],
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-controls", "role=\"region\"", "role=\"checkbox\"", "aria-checked", "aria-pressed"],
     "$note": "NET-NEW EXEMPLAR (chart-expansion programme, prove-one-then-wave, 2026-07-22) — PROVISIONAL-AGENT until Dave eyeballs the lock-up. Points ARE the series (class dv-series so the gate reads the fills; dv-016 ≥3:1 both modes). Two quantitative axes → both-axis gridlines + numeric ticks + compact axis titles (new-for-scatter vs line/bar's single quantitative axis). Per-series marker shapes (circle/square/diamond) + letters + names so colour is never the only channel (dv-011/§04.3). Page-colour separating stroke for overlap legibility. Axis/grid = DV-D07 two-channel roles, data/axis + data/grid at alpha 1 (MIGRATED 2026-08-01 #69, ds-020 enact — supersedes the promotion-time ink-at-alpha judgment previously recorded here; scatter was the last cartesian member on the old idiom). Legend MIGRATED to the DV-D11 model (#66-D3, 2026-08-01) — dual gesture (swatch=checkbox, label=isolate), subscribed to `canon/dv-legend.js`; supersedes the dead static `.dv-legend` list. No trend line (Layer-2 option for Dave). Motion = CSS-only staggered fade (DEF-003)."
   }
   </script>
@@ -525,35 +541,39 @@
   document.addEventListener('focusout', function () { tipHide(); });
 
   /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
-     surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
-     aria-controls + aria-expanded; panel is a labelled region, tabindex=-1 for the
-     focus hand-off; Esc dismisses and returns focus to its toggle. */
-  function tblToggle(btn) {
-    var panel = document.getElementById(btn.getAttribute('aria-controls'));
-    if (!panel) { return; }
-    var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
-    if (open) {
-      panel.removeAttribute('hidden');
-      /* anchor the panel just BELOW its trigger, never over it — the fixed top was brittle
-         once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
-         offsetParent resolves; fall back gracefully. */
-      var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
-      if (op) {
-        var bt = btn.getBoundingClientRect(), ot = op.getBoundingClientRect();
-        panel.style.top = (bt.bottom - ot.top + 6) + 'px';
-        /* anchor horizontally UNDER the trigger too — right:0 pinned the panel to the figure's edge,
-           wrong when the trigger sits mid-figure (e.g. donut + side legend). Left-align to the
-           trigger, clamp so it never spills past the offsetParent's right edge (keeps bar/line right-anchored). */
-        var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
-        panel.style.left = lx + 'px'; panel.style.right = 'auto';
-      }
-    } else { panel.setAttribute('hidden', ''); }
-    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
-    if (open) { panel.focus(); }
+     surface ground + border + soft shadow, NOT a frosted drawer).
+     s116-D2 (#116): the disclosure is NATIVE <details>/<summary>, panel = its child,
+     so THE FALLBACK WORKS WITH JS OFF — which is what makes s116-D1's 24px mark floor
+     honest. All of this is PROGRESSIVE ENHANCEMENT and none of it may become
+     load-bearing: clamp, focus hand-off, Escape. Delete it and the table still works. */
+  function clampPanel(det) {
+    var sum = det.querySelector('summary');
+    var panel = det.querySelector('.dv-tablepanel');
+    if (!sum || !panel) { return null; }
+    /* anchor just BELOW the trigger, never over it — a fixed top was brittle once a title
+       pushed the toolbar down (Dave 2026-07-24). Measured after open so offsetParent
+       resolves; falls back to the CSS anchor. */
+    var op = panel.offsetParent;
+    if (op) {
+      var bt = sum.getBoundingClientRect(), ot = op.getBoundingClientRect();
+      panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+      /* horizontally UNDER the trigger too — right:0 pinned it to the figure edge, wrong when
+         the trigger sits mid-figure (donut + side legend); clamped to the right edge. */
+      var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+      panel.style.left = lx + 'px'; panel.style.right = 'auto';
+    }
+    return panel;
   }
+  /* `toggle` does NOT bubble: delegation rides capture. Still ONE document listener. */
+  document.addEventListener('toggle', function (e) {
+    var det = e.target;
+    if (!det.classList || !det.classList.contains('dv-tbl')) { return; }
+    var panel = det.open ? clampPanel(det) : det.querySelector('.dv-tablepanel');
+    if (!panel) { return; }
+    if (det.open) { panel.focus(); }
+    else { panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; }
+  }, true);
   document.addEventListener('click', function (e) {
-    var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
-    if (btn) { tblToggle(btn); return; }
     var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
     if (vt) { viewToggle(vt); return; }
     var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
@@ -563,11 +583,11 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') { return; }
-    var panel = e.target.closest && e.target.closest('.dv-tablepanel');
-    if (!panel || panel.hasAttribute('hidden')) { return; }
-    panel.setAttribute('hidden', '');
-    var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
-    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
+    var det = e.target.closest && e.target.closest('details.dv-tbl');
+    if (!det || !det.open) { return; }
+    det.open = false;                                  /* fires `toggle` -> cleanup above */
+    var sum = det.querySelector('summary');
+    if (sum) { sum.focus(); }                          /* label static (Dave 2026-07-24) */
   });
 
   /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never

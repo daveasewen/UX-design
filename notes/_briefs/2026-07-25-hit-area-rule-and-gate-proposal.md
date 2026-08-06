@@ -28,7 +28,7 @@ v5.1 enacted it on surfaces that were missed:
 ## Proposed RULE (candidate text — for the a11y guideline / _DATAVIZ-DECISIONS)
 > *Every interactive **control** presents a target ≥ `target/min` (44 HSBC default; 24 the WCAG 2.5.8
 > dense-case floor with an exception out) — met by the visible box or the canon invisible `::before`
-> expander. **Data marks are EXEMPT**: a chart mark's target is its data geometry, and its accessible
+> expander. **Data marks are held to the 24×24 dense-case MINIMUM** ⚠ SUPERSEDED-CORRECTION #116 (`s116-D1`, Dave): they are exempt from the **44** control target, NOT from the check. The recommendation below ("no min floor") was NOT taken. ~~EXEMPT~~: a chart mark's target is its data geometry, and its accessible
 > path is keyboard focus + the table view + the tooltip (all already wired). A control is any
 > `button`, `summary`, `a[href]`, or `[role=button|checkbox|switch|tab|option]`; a data mark is any
 > `.dv-series` / `.dv-marker` / dataviz `rect|path` carrying `data-series-group`.*
@@ -54,16 +54,42 @@ Redesign `_validate_a11y.py` target check to be **markup-driven, not selector-al
    `summary` is an interactive control at ~text height — **not** yet ≥44, and a different mechanism
    (a `summary` can't take the same `::before` cleanly; it needs padding or a wrapping target).
    Fold it into this same ruling? (Recommend: yes — it's the same principle, different fix.)
-3. **Scope of enactment.** Just dataviz controls now, or sweep the whole 67-snippet library for
+3. **Scope of enactment.** Just dataviz controls now, or sweep the whole **75**-snippet library (67 was STALE — measured 75 at #116, `s116-D3`) for
    allowlist-missed controls in the same pass? (Recommend: sweep — foundational.)
 
 ## 2026-08-06 #114 (Dave) — addendum
 Expander applied to the 8 <24-floor offenders. Chart tooltip trigger-points are a LESSER concern —
-the table fallback always exists, making a11y rulings there more nuanced. The 44-promote half
-remains UNRULED.
+the table fallback always exists, making a11y rulings there more nuanced. The 44-promote half was **RULED THE SAME SESSION** by `s114-D6`
+(*"Promoting 44 to blocking for controls, good"*), ordered AFTER `s114-D5` lands — this line's
+earlier "remains UNRULED" was STALE and is corrected at #116.
 
 ## On sign-off, the enactment (one Sonnet-to-spec session)
 Inscribe the rule (a11y guideline + `_DATAVIZ-DECISIONS` for the mark exemption) → rebuild the gate
 markup-driven + selftest + wire into `_build_all.py` → run it → fix any newly-surfaced controls →
 build green → feed the decision-graph seed same hour. Legend model inscribes in the same beat once
 you sign off the v5.1 render.
+
+## 2026-08-06 #116 — ENACTED (`s114-D5` / `s116-D1` / `s116-D2` / `s116-D3`)
+
+**The gate half is BUILT.** `_validate_a11y.py` no longer measures CSS selector text: the
+measurement engine is `knowledge/_a11y_target.py` — a real element tree, a subject-aware
+cascade and resolved custom properties. It enumerates controls from the MARKUP, so the six
+PHANTOM failures and the `axs-003` detector quirk close together, as one cause. Measured on the
+library: **446 controls + 201 focusable data marks across 75 snippets**, 0 failures.
+
+**What the rebuild also killed:** the old blanket `::before` exemption. An expander's
+`min-width:var(--hit,44px)` is a NUMBER once var() resolves, so expanders are now MEASURED.
+That converted 30-odd silent "NOT MEASURED" passes into honest 36×36 / 24×24 warnings.
+
+**⚠ THE 44-PROMOTE IS BIGGER THAN IT LOOKED.** `s114-D6` is now unblocked, but the sweep
+measures **72 controls in the 24–43 band**, not six. Flipping `CONTROL_TIER_44` to `"fail"`
+without clearing them is a gate that fails on the library it governs. That is a remediation
+lane for Dave to scope, not a flag flip.
+
+**Sub-24 data marks (the OWED measurement, `s116-D1`): 107**, across 6 snippets —
+`Chart-line` 60 · `Chart-butterfly-h` 12 · `Chart-combo` 12 · `Chart-stacked-area` 12 ·
+`Chart-bar` 6 · `Chart-butterfly-v` 5. Not waived, not remedied: Dave's call.
+
+**Scope boundary, declared:** form FIELDS (`input`/`textarea`/`select`) are outside the ruled
+control set and are UNSWEPT — sweeping them re-created the phantom shape (every `width:100%`
+field read as 0px, every visually-hidden native checkbox as 0×0). UNSWEPT is not clean.

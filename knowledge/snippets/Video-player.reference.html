@@ -47,7 +47,14 @@
   .bar button svg{width:18px; height:18px; fill:currentColor;}
   .bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .scrub{flex:1; height:4px; background:rgba(255,255,255,.3); position:relative;}
-  .scrub .played{position:absolute; left:0; top:0; bottom:0; width:35%; background:var(--accent);}
+  /* 2.5.8 target — the seek bar is a role="slider" CONTROL, so the 4px visual track
+     is not its target. Canon invisible ::before expander (aid-009), same mechanism as
+     .dv-vt / .tail-btn. SURFACED #116 by the markup-driven rebuild: the old
+     selector-allowlist gate had no name for `.scrub` and no rule for role="slider",
+     so this control was never checked at all — it passed by omission. */
+  .scrub::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+  .scrub .played{position:absolute; left:0; top:0; bottom:0; width:35%; background:var(--accent); z-index:1;}
   .time{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--controls); min-width:78px; text-align:right;}
   .caption{margin-top:16px; font:500 14px/1.4 var(--font); color:var(--text);}
 

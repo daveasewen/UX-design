@@ -707,7 +707,7 @@
    "by": "Dave",
    "says": "The hit-area checker MEASUREMENT REDESIGN (markup-driven, per the pending half of the 2026-07-25 brief) is SIGNED OFF. Verbatim: 'good lets do it.' ONE build owns BOTH the 6 phantom failures AND the axs-003 detector quirk — one cause, two symptom sets; splitting them guarantees recurrence.",
    "governs": [
-    "knowledge/_validate_hit_area (the checker)",
+    "knowledge/_validate_a11y.py (the checker — CORRECTED #116: no _validate_hit_area file exists)",
     "knowledge/_A11Y-GATE.md",
     "axs-003",
     "notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md"
@@ -715,8 +715,8 @@
    "evidence": [
     "notes/_MEMENTO-DECISIONS.md § ★ #114"
    ],
-   "status": "RULED #114, NOT BUILT — rolls to #115 as residual ①",
-   "watch": "Must land BEFORE s114-D6. One build, both symptom sets — a fix that closes only the phantoms leaves axs-003 to re-open the class."
+   "status": "RULED #114, ENACTED #116 — _validate_a11y.py rebuilt markup-driven on _a11y_target.py; 25-clause selftest wired into _build_all.py; 16/16 mutations killed",
+   "watch": "Both symptom sets closed by ONE cause: the 6 phantoms and the axs-003 detector quirk were the same selector-text measurement. s114-D6 is now UNBLOCKED — but the sweep found 72 controls in the 24–43 band, not 6, so the promote is a remediation lane, not a flag flip."
   },
   {
    "id": "s114-D6",
@@ -794,6 +794,60 @@
    ],
    "status": "RULED #115, ENACTED #115 (ce0cc7f) — the WINDOW is open, the verdict is not in",
    "watch": "DEMOTION (pricing brief item 4) is NOT RULED and NOT SCHEDULED: it is decided on `_graph_edges.py --tally` evidence, and the ruling is Dave's. The mark's semantic: a result MENTIONS a superseded node; it is not itself dead."
+  },
+  {
+   "id": "s116-D1",
+   "ruled": "#116",
+   "date": "2026-08-06",
+   "by": "Dave",
+   "says": "Data marks are held to the 24x24 WCAG 2.5.8 dense-case MINIMUM — exempt from the 44 CONTROL target, NOT exempt from the check. Verbatim: 'the marks on charts such as data points that trigget a tooltip can pass with the 24x minimum, all chats cary the table fall back for Ally.' The table fallback is the stated justification. This is STRICTER than the 2026-07-25 brief's recommendation ('EXEMPT, no min floor') and SUPERSEDES that brief's rule text at line 31.",
+   "governs": [
+    "knowledge/_validate_a11y.py",
+    "notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md:31",
+    "the data-mark set (.dv-series / .dv-marker / dataviz rect|path with data-series-group)"
+   ],
+   "evidence": [
+    "notes/_MEMENTO-DECISIONS.md § ★ #116"
+   ],
+   "status": "RULED #116, MEASUREMENT DELIVERED #116, BLOCKING HALF NOT ENACTED — 107 marks measured below 24; MARK_TIER in _validate_a11y.py stays 'warn' pending Dave's call on that population",
+   "watch": "OWED MEASUREMENT before the gate goes blocking: how many marks fall BELOW 24 (thin donut slices, narrow bars). Measure it; do not assume either way."
+  },
+  {
+   "id": "s116-D2",
+   "ruled": "#116",
+   "date": "2026-08-06",
+   "by": "Dave",
+   "says": "The table control is ONE MOLECULE consumed by all charts. Verbatim: 'why is it different? the table button and pop-over should be a molecule consumed by all of teh charts.' The button-in-4 / <details>-in-1 split IS the defect. DIRECTION RULED: all charts converge on the NATIVE <details>/<summary>, confirmed as an HTML/CSS solution ('just to confirm, this is an html/css solution' — answered YES). Edge-clamping, Escape-to-close and focus-move are rebuilt as PROGRESSIVE ENHANCEMENT: works fully without JS, JS improves it.",
+   "governs": [
+    "knowledge/snippets/Chart-bar.reference.html",
+    "knowledge/snippets/Chart-combo.reference.html",
+    "knowledge/snippets/Chart-donut.reference.html",
+    "knowledge/snippets/Chart-line.reference.html",
+    "knowledge/snippets/Chart-sparkline.reference.html",
+    "knowledge/canon/dv-behaviour.js"
+   ],
+   "evidence": [
+    "notes/_MEMENTO-DECISIONS.md § ★ #116"
+   ],
+   "status": "RULED #116, ENACTED #116 — 21 panels across 13 charts converged onto native <details>/<summary>; `hidden` removed; dv-behaviour.js table module rebuilt as progressive enhancement",
+   "watch": "MEASURED FINDING under this ruling: .dv-tablepanel ships `hidden` (Chart-bar.reference.html:367) and ONLY dv-behaviour.js removes it — with JS off the table fallback is UNREACHABLE on 4 of 5 charts. That is the justification s116-D1 rests on, so D2's convergence is what makes D1 honest. Do not land D1's 24 floor while the fallback is still JS-gated."
+  },
+  {
+   "id": "s116-D3",
+   "ruled": "#116",
+   "date": "2026-08-06",
+   "by": "Dave",
+   "says": "The hit-area sweep scope is ALL CONTROLS across the whole canon snippet library. Verbatim: 'all controls' + 'yes 75'. The 2026-07-25 brief's '67-snippet library' figure is STALE — measured 75 at #116.",
+   "governs": [
+    "knowledge/_validate_a11y.py",
+    "knowledge/snippets/*.reference.html",
+    "notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md:57"
+   ],
+   "evidence": [
+    "notes/_MEMENTO-DECISIONS.md § ★ #116"
+   ],
+   "status": "RULED #116, ENACTED #116 — the gate sweeps all 75 snippets and reports the count it measured",
+   "watch": "75 files, not 67. A sweep that reports 67 has used the stale figure and did not measure."
   }
  ]
 }

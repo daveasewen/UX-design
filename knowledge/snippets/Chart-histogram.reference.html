@@ -106,14 +106,12 @@
   .dv-tbl-toggle > *,.dv-vt > *{position:relative; z-index:1;}
   .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
   .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-  .dv-tbl-toggle[aria-expanded="true"]{border-color:var(--ink);}
   .dv-act,.dv-dd{gap:8px;}
   .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
   .dv-csv .dv-ico-tick{display:none;}
   .dv-csv.is-copied .dv-ico-copy{display:none;}
   .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
   .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 
   .dv-off{display:none !important;}
 
@@ -125,7 +123,20 @@
   .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-  .dv-tablepanel[hidden]{display:none;}
+  /* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+  details.dv-tbl{position:static; margin:0;}
+  details.dv-tbl > summary{list-style:none; cursor:pointer;}
+  details.dv-tbl > summary::-webkit-details-marker{display:none;}
+  details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+  details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
   .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 
   .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
@@ -168,13 +179,31 @@
       <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
       <div class="dv-controls" role="group" aria-label="Chart tools">
         <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
         <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
       <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
      registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
      between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
      regenerate: python3 knowledge/gen_component_partials.py -->
-        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="ch1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="ch1-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
       <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+          <div class="dv-tablepanel" id="ch1-tbl" role="region" aria-label="Transaction count by value band, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal">
+          <caption>Transaction count by value band, pounds</caption>
+          <thead><tr><th scope="col">Band</th><th scope="col">Count</th></tr></thead>
+          <tbody>
+          <tr><th scope="row">£0–50</th><td>12</td></tr>
+          <tr><th scope="row">£50–100</th><td>28</td></tr>
+          <tr><th scope="row">£100–150</th><td>45</td></tr>
+          <tr><th scope="row">£150–200</th><td>60</td></tr>
+          <tr><th scope="row">£200–250</th><td>52</td></tr>
+          <tr><th scope="row">£250–300</th><td>33</td></tr>
+          <tr><th scope="row">£300–350</th><td>18</td></tr>
+          <tr><th scope="row">£350–400</th><td>7</td></tr>
+          </tbody>
+          </table>
+          </div>
+        </details>
       </div>
     </div>
     <div class="dv-stage"><div class="dv-chart-area">
@@ -209,22 +238,6 @@
     <ul class="dv-leg-static t-cm-chart-label" aria-hidden="true">
       <li><span class="sw"></span><span>Transactions</span></li>
     </ul>
-    <div class="dv-tablepanel" id="ch1-tbl" role="region" aria-label="Transaction count by value band, data table" tabindex="-1" hidden>
-      <table class="dv-table t-cm-legal">
-        <caption>Transaction count by value band, pounds</caption>
-        <thead><tr><th scope="col">Band</th><th scope="col">Count</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">£0–50</th><td>12</td></tr>
-          <tr><th scope="row">£50–100</th><td>28</td></tr>
-          <tr><th scope="row">£100–150</th><td>45</td></tr>
-          <tr><th scope="row">£150–200</th><td>60</td></tr>
-          <tr><th scope="row">£200–250</th><td>52</td></tr>
-          <tr><th scope="row">£250–300</th><td>33</td></tr>
-          <tr><th scope="row">£300–350</th><td>18</td></tr>
-          <tr><th scope="row">£350–400</th><td>7</td></tr>
-        </tbody>
-      </table>
-    </div>
   </figure>
 
   <div class="dv-empty-frame" hidden>
@@ -252,7 +265,7 @@
       { "fg": "data/series/1", "bg": "background/default", "context": "ui" }
     ],
     "icons": {},
-    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-label", "aria-pressed", "aria-controls", "aria-expanded", "role=\"region\""],
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-label", "aria-pressed", "aria-controls", "role=\"region\""],
     "$note": "NET-NEW (chart-expansion wave 2 lane 1, 2026-08-05; manifest added by the CONDUCTOR at registration \u2014 the worker landed the snippet without one, caught by _validate_snippets replay). Single series on data/series/1 (column default), zero-gap contiguous bins. Static non-interactive legend key (.dv-leg-static, aria-hidden) \u2014 no dv-legend behaviour, flagged as a possible canon-folding candidate. ds-020: axis/grid CSS bundle deliberately NOT ported; inline baseline strokes only."
   }
   </script>
@@ -362,35 +375,39 @@
   document.addEventListener('focusout', function () { tipHide(); });
 
   /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
-     surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
-     aria-controls + aria-expanded; panel is a labelled region, tabindex=-1 for the
-     focus hand-off; Esc dismisses and returns focus to its toggle. */
-  function tblToggle(btn) {
-    var panel = document.getElementById(btn.getAttribute('aria-controls'));
-    if (!panel) { return; }
-    var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
-    if (open) {
-      panel.removeAttribute('hidden');
-      /* anchor the panel just BELOW its trigger, never over it — the fixed top was brittle
-         once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
-         offsetParent resolves; fall back gracefully. */
-      var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
-      if (op) {
-        var bt = btn.getBoundingClientRect(), ot = op.getBoundingClientRect();
-        panel.style.top = (bt.bottom - ot.top + 6) + 'px';
-        /* anchor horizontally UNDER the trigger too — right:0 pinned the panel to the figure's edge,
-           wrong when the trigger sits mid-figure (e.g. donut + side legend). Left-align to the
-           trigger, clamp so it never spills past the offsetParent's right edge (keeps bar/line right-anchored). */
-        var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
-        panel.style.left = lx + 'px'; panel.style.right = 'auto';
-      }
-    } else { panel.setAttribute('hidden', ''); }
-    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
-    if (open) { panel.focus(); }
+     surface ground + border + soft shadow, NOT a frosted drawer).
+     s116-D2 (#116): the disclosure is NATIVE <details>/<summary>, panel = its child,
+     so THE FALLBACK WORKS WITH JS OFF — which is what makes s116-D1's 24px mark floor
+     honest. All of this is PROGRESSIVE ENHANCEMENT and none of it may become
+     load-bearing: clamp, focus hand-off, Escape. Delete it and the table still works. */
+  function clampPanel(det) {
+    var sum = det.querySelector('summary');
+    var panel = det.querySelector('.dv-tablepanel');
+    if (!sum || !panel) { return null; }
+    /* anchor just BELOW the trigger, never over it — a fixed top was brittle once a title
+       pushed the toolbar down (Dave 2026-07-24). Measured after open so offsetParent
+       resolves; falls back to the CSS anchor. */
+    var op = panel.offsetParent;
+    if (op) {
+      var bt = sum.getBoundingClientRect(), ot = op.getBoundingClientRect();
+      panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+      /* horizontally UNDER the trigger too — right:0 pinned it to the figure edge, wrong when
+         the trigger sits mid-figure (donut + side legend); clamped to the right edge. */
+      var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+      panel.style.left = lx + 'px'; panel.style.right = 'auto';
+    }
+    return panel;
   }
+  /* `toggle` does NOT bubble: delegation rides capture. Still ONE document listener. */
+  document.addEventListener('toggle', function (e) {
+    var det = e.target;
+    if (!det.classList || !det.classList.contains('dv-tbl')) { return; }
+    var panel = det.open ? clampPanel(det) : det.querySelector('.dv-tablepanel');
+    if (!panel) { return; }
+    if (det.open) { panel.focus(); }
+    else { panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; }
+  }, true);
   document.addEventListener('click', function (e) {
-    var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
-    if (btn) { tblToggle(btn); return; }
     var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
     if (vt) { viewToggle(vt); return; }
     var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
@@ -400,11 +417,11 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') { return; }
-    var panel = e.target.closest && e.target.closest('.dv-tablepanel');
-    if (!panel || panel.hasAttribute('hidden')) { return; }
-    panel.setAttribute('hidden', '');
-    var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
-    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
+    var det = e.target.closest && e.target.closest('details.dv-tbl');
+    if (!det || !det.open) { return; }
+    det.open = false;                                  /* fires `toggle` -> cleanup above */
+    var sum = det.querySelector('summary');
+    if (sum) { sum.focus(); }                          /* label static (Dave 2026-07-24) */
   });
 
   /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never

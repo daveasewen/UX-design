@@ -220,7 +220,7 @@
   .dv-tbl-toggle > *,.dv-vt > *{position:relative; z-index:1;}
   .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
   .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-  .dv-tbl-toggle[aria-expanded="true"],.dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
   .dv-act,.dv-dd{gap:8px;}
   .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
   /* CSV action — the copy icon swaps to a tick on success; the LABEL never changes (Dave 2026-07-24) */
@@ -229,7 +229,6 @@
   .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
   /* table DROPDOWN — SOLID arrow (icon asset arrow-down, not a chevron); rotates on open, label static */
   .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 
   /* single TOGGLES (Target line · Last year) = LITERALLY single-cell segmented controls (Dave
      2026-07-24): 2px inset + 1px frame, the fill FLOATS in the gutter — the view switch's exact
@@ -267,7 +266,20 @@
   .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-  .dv-tablepanel[hidden]{display:none;}
+  /* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+  details.dv-tbl{position:static; margin:0;}
+  details.dv-tbl > summary{list-style:none; cursor:pointer;}
+  details.dv-tbl > summary::-webkit-details-marker{display:none;}
+  details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+  details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
   .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 
   /* the value popover (dvTip) — created by dv-behaviour, styled here (token-bound) */
@@ -318,13 +330,35 @@
         <div class="dv-toggle-seg"><span class="ind" aria-hidden="true"></span><button type="button" class="t-cm-chart-label" data-dv-toggle="target" aria-pressed="false">Target line</button></div>
         <div class="dv-toggle-seg"><span class="ind" aria-hidden="true"></span><button type="button" class="t-cm-chart-label" data-dv-toggle="ghost" aria-pressed="false">Last year</button></div>
         <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
         <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
       <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
      registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
      between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
      regenerate: python3 knowledge/gen_component_partials.py -->
-        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cl1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="cl1-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
       <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+          <div class="dv-tablepanel" id="cl1-tbl" role="region" aria-label="Account balance by month, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal">
+          <caption>Account balance by month, pounds thousands († above the 90 target)</caption>
+          <thead><tr><th scope="col">Month</th><th scope="col">Balance</th><th scope="col">Last year</th><th scope="col">Year to date</th></tr></thead>
+          <tbody>
+          <tr><th scope="row">Jan</th><td>82</td><td>76</td><td>82</td></tr>
+          <tr><th scope="row">Feb</th><td>80</td><td>75</td><td>162</td></tr>
+          <tr><th scope="row">Mar</th><td>85</td><td>78</td><td>247</td></tr>
+          <tr><th scope="row">Apr</th><td>83</td><td>80</td><td>330</td></tr>
+          <tr><th scope="row">May</th><td>88</td><td>82</td><td>418</td></tr>
+          <tr><th scope="row">Jun</th><td>90</td><td>85</td><td>508</td></tr>
+          <tr><th scope="row">Jul</th><td>87</td><td>84</td><td>595</td></tr>
+          <tr><th scope="row">Aug</th><td>92 †</td><td>86</td><td>687</td></tr>
+          <tr><th scope="row">Sep</th><td>95 †</td><td>88</td><td>782</td></tr>
+          <tr><th scope="row">Oct</th><td>93 †</td><td>87</td><td>875</td></tr>
+          <tr><th scope="row">Nov</th><td>98 †</td><td>90</td><td>973</td></tr>
+          <tr><th scope="row">Dec</th><td>104 †</td><td>95</td><td>1077</td></tr>
+          </tbody>
+          </table>
+          </div>
+        </details>
       </div>
     </div>
     <div class="dv-stage"><div class="dv-chart-area">
@@ -393,26 +427,6 @@
         <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="568" y="246" text-anchor="middle" data-fx="1">Dec</text>
       </svg>
     </div></div>
-    <div class="dv-tablepanel" id="cl1-tbl" role="region" aria-label="Account balance by month, data table" tabindex="-1" hidden>
-      <table class="dv-table t-cm-legal">
-        <caption>Account balance by month, pounds thousands († above the 90 target)</caption>
-        <thead><tr><th scope="col">Month</th><th scope="col">Balance</th><th scope="col">Last year</th><th scope="col">Year to date</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Jan</th><td>82</td><td>76</td><td>82</td></tr>
-          <tr><th scope="row">Feb</th><td>80</td><td>75</td><td>162</td></tr>
-          <tr><th scope="row">Mar</th><td>85</td><td>78</td><td>247</td></tr>
-          <tr><th scope="row">Apr</th><td>83</td><td>80</td><td>330</td></tr>
-          <tr><th scope="row">May</th><td>88</td><td>82</td><td>418</td></tr>
-          <tr><th scope="row">Jun</th><td>90</td><td>85</td><td>508</td></tr>
-          <tr><th scope="row">Jul</th><td>87</td><td>84</td><td>595</td></tr>
-          <tr><th scope="row">Aug</th><td>92 †</td><td>86</td><td>687</td></tr>
-          <tr><th scope="row">Sep</th><td>95 †</td><td>88</td><td>782</td></tr>
-          <tr><th scope="row">Oct</th><td>93 †</td><td>87</td><td>875</td></tr>
-          <tr><th scope="row">Nov</th><td>98 †</td><td>90</td><td>973</td></tr>
-          <tr><th scope="row">Dec</th><td>104 †</td><td>95</td><td>1077</td></tr>
-        </tbody>
-      </table>
-    </div>
   </figure>
 
   <h2>Multi-series — shapes + letters + legend filter (colour never the only channel)</h2>
@@ -428,13 +442,35 @@
       <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
       <div class="dv-controls" role="group" aria-label="Chart tools">
         <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
         <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
       <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
      registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
      between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
      regenerate: python3 knowledge/gen_component_partials.py -->
-        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cl2-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="cl2-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
       <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+          <div class="dv-tablepanel" id="cl2-tbl" role="region" aria-label="Balances by product by month, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal">
+          <caption>Balances by product by month, pounds thousands</caption>
+          <thead><tr><th scope="col">Month</th><th scope="col">Current</th><th scope="col">Savings</th><th scope="col">Investments</th></tr></thead>
+          <tbody>
+          <tr><th scope="row">Jan</th><td>12</td><td>82</td><td>40</td></tr>
+          <tr><th scope="row">Feb</th><td>11</td><td>80</td><td>42</td></tr>
+          <tr><th scope="row">Mar</th><td>13</td><td>85</td><td>41</td></tr>
+          <tr><th scope="row">Apr</th><td>12</td><td>83</td><td>45</td></tr>
+          <tr><th scope="row">May</th><td>14</td><td>88</td><td>44</td></tr>
+          <tr><th scope="row">Jun</th><td>13</td><td>90</td><td>48</td></tr>
+          <tr><th scope="row">Jul</th><td>15</td><td>87</td><td>47</td></tr>
+          <tr><th scope="row">Aug</th><td>14</td><td>92</td><td>52</td></tr>
+          <tr><th scope="row">Sep</th><td>16</td><td>95</td><td>55</td></tr>
+          <tr><th scope="row">Oct</th><td>15</td><td>93</td><td>53</td></tr>
+          <tr><th scope="row">Nov</th><td>17</td><td>98</td><td>58</td></tr>
+          <tr><th scope="row">Dec</th><td>18</td><td>104</td><td>62</td></tr>
+          </tbody>
+          </table>
+          </div>
+        </details>
       </div>
     </div>
     <div class="dv-stage"><div class="dv-chart-area">
@@ -520,26 +556,6 @@
       <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="cl2-legend" disabled>Reset</button></li>
     </ul>
     <p class="dv-sr" id="cl2-live" role="status" aria-live="polite"></p>
-    <div class="dv-tablepanel" id="cl2-tbl" role="region" aria-label="Balances by product by month, data table" tabindex="-1" hidden>
-      <table class="dv-table t-cm-legal">
-        <caption>Balances by product by month, pounds thousands</caption>
-        <thead><tr><th scope="col">Month</th><th scope="col">Current</th><th scope="col">Savings</th><th scope="col">Investments</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Jan</th><td>12</td><td>82</td><td>40</td></tr>
-          <tr><th scope="row">Feb</th><td>11</td><td>80</td><td>42</td></tr>
-          <tr><th scope="row">Mar</th><td>13</td><td>85</td><td>41</td></tr>
-          <tr><th scope="row">Apr</th><td>12</td><td>83</td><td>45</td></tr>
-          <tr><th scope="row">May</th><td>14</td><td>88</td><td>44</td></tr>
-          <tr><th scope="row">Jun</th><td>13</td><td>90</td><td>48</td></tr>
-          <tr><th scope="row">Jul</th><td>15</td><td>87</td><td>47</td></tr>
-          <tr><th scope="row">Aug</th><td>14</td><td>92</td><td>52</td></tr>
-          <tr><th scope="row">Sep</th><td>16</td><td>95</td><td>55</td></tr>
-          <tr><th scope="row">Oct</th><td>15</td><td>93</td><td>53</td></tr>
-          <tr><th scope="row">Nov</th><td>17</td><td>98</td><td>58</td></tr>
-          <tr><th scope="row">Dec</th><td>18</td><td>104</td><td>62</td></tr>
-        </tbody>
-      </table>
-    </div>
   </figure>
 
   <h2>No data — the Empty-state pattern, consumed by reference</h2>
@@ -576,7 +592,7 @@
       { "fg": "data/target/color", "bg": "background/default", "context": "ui" }
     ],
     "icons": {},
-    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-label", "aria-pressed", "aria-controls", "aria-expanded", "role=\"region\""],
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-label", "aria-pressed", "aria-controls", "role=\"region\""],
     "$note": "CHART-REVISIT EXEMPLAR (2026-07-23): Layer-2 restored per Dave's ruling (proforma = the interaction bar) via the ADR-0015 behaviour partial (dv-behaviour, AUTO-BEHAVIOUR markers, ≤16KB gated). DV-D07 ENACTED: axis/grid = two-channel roles (data/axis + data/grid, colour snapped to the neutral ramp + declared alpha slot 1.0) — supersedes the promotion-time 'ink at alpha' judgment. DV-D08 ENACTED: chart text ladder 12/500 floor (.t-cm-chart-label/-value) + 12/700 emphasis (.t-cm-chart-key) — supersedes t-cm-legal/-caption binds; month labels 14→12. Gridline contrast is decorative-exempt (1.4.11) — dv-016 advisory by design, no contrastPair declared. Legend buttons + table toggle = QUIET utility pressables, NOT B-D7 (Q5 standing). Markers = keyboard focus stops (tabindex 0 + aria-label; sub-24px geometry receipted — they are focus/read points, not click targets; pointer reads ride pointermove). Straight polylines (dv-line-011); marker shapes + letters + names (colour never the only channel); markers BACKGROUND mode (White/Background comparison UNRESOLVED kit-side, receipted). MENU ENACTED (Dave ruled all 11 IN, 2026-07-23 evening — line-shaped set here): isolate (shift/double-click legend), hover/focus highlight (.dv-quiet dims DATA only), year-to-date + target + last-year as BAKED variant groups (data-dv-view — geometry generated, behaviour only toggles), CSV copy from the table. data/target minted (DV-D07 pattern, agent-PROPOSED values — Dave re-dials). A11Y DECISION (Dave, refined 2026-07-23 evening; OPEN for his adviser): legend OFF state = HOLLOWED swatch (grey outline) + swatch and text in the data/axis grey (6.10:1 L / 6.42:1 D — AA-passing, mode-aware, no new token; letter-key drops its resting .6 dim to hold the floor). No strike-through, nothing dims below AA; dimming is reserved for the data layer."
   }
   </script>
@@ -686,35 +702,39 @@
   document.addEventListener('focusout', function () { tipHide(); });
 
   /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
-     surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
-     aria-controls + aria-expanded; panel is a labelled region, tabindex=-1 for the
-     focus hand-off; Esc dismisses and returns focus to its toggle. */
-  function tblToggle(btn) {
-    var panel = document.getElementById(btn.getAttribute('aria-controls'));
-    if (!panel) { return; }
-    var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
-    if (open) {
-      panel.removeAttribute('hidden');
-      /* anchor the panel just BELOW its trigger, never over it — the fixed top was brittle
-         once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
-         offsetParent resolves; fall back gracefully. */
-      var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
-      if (op) {
-        var bt = btn.getBoundingClientRect(), ot = op.getBoundingClientRect();
-        panel.style.top = (bt.bottom - ot.top + 6) + 'px';
-        /* anchor horizontally UNDER the trigger too — right:0 pinned the panel to the figure's edge,
-           wrong when the trigger sits mid-figure (e.g. donut + side legend). Left-align to the
-           trigger, clamp so it never spills past the offsetParent's right edge (keeps bar/line right-anchored). */
-        var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
-        panel.style.left = lx + 'px'; panel.style.right = 'auto';
-      }
-    } else { panel.setAttribute('hidden', ''); }
-    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
-    if (open) { panel.focus(); }
+     surface ground + border + soft shadow, NOT a frosted drawer).
+     s116-D2 (#116): the disclosure is NATIVE <details>/<summary>, panel = its child,
+     so THE FALLBACK WORKS WITH JS OFF — which is what makes s116-D1's 24px mark floor
+     honest. All of this is PROGRESSIVE ENHANCEMENT and none of it may become
+     load-bearing: clamp, focus hand-off, Escape. Delete it and the table still works. */
+  function clampPanel(det) {
+    var sum = det.querySelector('summary');
+    var panel = det.querySelector('.dv-tablepanel');
+    if (!sum || !panel) { return null; }
+    /* anchor just BELOW the trigger, never over it — a fixed top was brittle once a title
+       pushed the toolbar down (Dave 2026-07-24). Measured after open so offsetParent
+       resolves; falls back to the CSS anchor. */
+    var op = panel.offsetParent;
+    if (op) {
+      var bt = sum.getBoundingClientRect(), ot = op.getBoundingClientRect();
+      panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+      /* horizontally UNDER the trigger too — right:0 pinned it to the figure edge, wrong when
+         the trigger sits mid-figure (donut + side legend); clamped to the right edge. */
+      var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+      panel.style.left = lx + 'px'; panel.style.right = 'auto';
+    }
+    return panel;
   }
+  /* `toggle` does NOT bubble: delegation rides capture. Still ONE document listener. */
+  document.addEventListener('toggle', function (e) {
+    var det = e.target;
+    if (!det.classList || !det.classList.contains('dv-tbl')) { return; }
+    var panel = det.open ? clampPanel(det) : det.querySelector('.dv-tablepanel');
+    if (!panel) { return; }
+    if (det.open) { panel.focus(); }
+    else { panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; }
+  }, true);
   document.addEventListener('click', function (e) {
-    var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
-    if (btn) { tblToggle(btn); return; }
     var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
     if (vt) { viewToggle(vt); return; }
     var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
@@ -724,11 +744,11 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') { return; }
-    var panel = e.target.closest && e.target.closest('.dv-tablepanel');
-    if (!panel || panel.hasAttribute('hidden')) { return; }
-    panel.setAttribute('hidden', '');
-    var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
-    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
+    var det = e.target.closest && e.target.closest('details.dv-tbl');
+    if (!det || !det.open) { return; }
+    det.open = false;                                  /* fires `toggle` -> cleanup above */
+    var sum = det.querySelector('summary');
+    if (sum) { sum.focus(); }                          /* label static (Dave 2026-07-24) */
   });
 
   /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never

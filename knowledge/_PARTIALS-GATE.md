@@ -7,7 +7,7 @@ generated AUTO-PARTIAL block. STRICT = registry members on their mapped control 
 
 ## ✅ STRICT clean — no member re-implements a registered partial
 
-## ⚠ CENSUS — press-physics outside the registry (32 rule(s))
+## ⚠ CENSUS — press-physics outside the registry (30 rule(s))
 
 *Candidates for future group membership (accrete from OBSERVED duplication —
 ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
@@ -28,7 +28,6 @@ ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
 - `Pagination` → `.pg a:active, .pg .ctrl:not([disabled]):active`
 - `Quick-actions` → `.qa:hover`
 - `Quick-actions` → `.qa:active`
-- `Selection-controls` → `.demo-controls button:active`
 - `Selection-controls` → `label:hover .box,label:hover .radio`
 - `Selection-controls` → `label:hover .switch`
 - `Selection-controls` → `input:active + label .box,input:active + label .radio`
@@ -36,7 +35,6 @@ ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
 - `Selection-controls` → `.chip:hover`
 - `Selection-controls` → `.chip:active`
 - `Status-indicator` → `.sim:active`
-- `Table` → `.demo-controls > button:active`
 - `Table` → `.seg button:active`
 - `Tags` → `.tag.link:hover`
 - `Tags` → `.tag.link:active`

@@ -186,6 +186,12 @@ STEPS = [
     ("token-tier gate (_STANDARDS.md §1)", "_validate_token_tiers.py"),
     ("icon-source gate", "_validate_icons.py"),
     ("a11y gate", "_validate_a11y.py"),
+    # WIRED #116 (s114-D5): the target check was rebuilt MARKUP-DRIVEN, so it ships its
+    # bite-test in the same pass — "every new gate ships one AND wires it". The clauses
+    # are split DETECTION / DECORATION / REMEDIATION / HONESTY on purpose: #104's lesson
+    # is that a mutation which only exercises detection never proves remediation. All 25
+    # clauses were mutation-tested at #116; 16 mutations of _a11y_target.py, 16 killed.
+    ("a11y target-measurement selftest (s114-D5)", "_validate_a11y.py", ["--selftest"]),
     ("coverage gate", "_validate_coverage.py"),
     ("pro-forma universal gate", "_validate_proforma.py"),
     ("pro-forma CSS-governed motion gate (DEF-003)", "_validate_css_governed.py"),

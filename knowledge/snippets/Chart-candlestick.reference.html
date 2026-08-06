@@ -109,19 +109,31 @@
   .dv-tbl-toggle > *,.dv-vt > *{position:relative; z-index:1;}
   .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
   .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-  .dv-tbl-toggle[aria-expanded="true"],.dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
   .dv-act,.dv-dd{gap:8px;}
   .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
   .dv-csv .dv-ico-tick{display:none;}
   .dv-csv.is-copied .dv-ico-copy{display:none;}
   .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
   .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 
   .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-  .dv-tablepanel[hidden]{display:none;}
+  /* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+  details.dv-tbl{position:static; margin:0;}
+  details.dv-tbl > summary{list-style:none; cursor:pointer;}
+  details.dv-tbl > summary::-webkit-details-marker{display:none;}
+  details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+  details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
   .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 
   .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
@@ -163,13 +175,63 @@
       <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
       <div class="dv-controls" role="group" aria-label="Chart tools">
         <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
         <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
       <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
      registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
      between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
      regenerate: python3 knowledge/gen_component_partials.py -->
-        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="ccs1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="ccs1-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
       <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+          <div class="dv-tablepanel" id="ccs1-tbl" role="region" aria-label="Share price OHLC, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal">
+          <caption>Share price, open high low close, forty sessions, pounds — the accessibility fallback (ds-027)</caption>
+          <thead><tr><th scope="col">Session</th><th scope="col">Open</th><th scope="col">High</th><th scope="col">Low</th><th scope="col">Close</th></tr></thead>
+          <tbody>
+          <tr><th scope="row">S1</th><td>101.25</td><td>102.06</td><td>99.75</td><td>100.59</td></tr>
+          <tr><th scope="row">S2</th><td>99.85</td><td>100.55</td><td>97.61</td><td>97.83</td></tr>
+          <tr><th scope="row">S3</th><td>97.52</td><td>99.4</td><td>97.3</td><td>98.42</td></tr>
+          <tr><th scope="row">S4</th><td>97.34</td><td>98.27</td><td>95.71</td><td>95.84</td></tr>
+          <tr><th scope="row">S5</th><td>95.12</td><td>95.35</td><td>92.59</td><td>93.21</td></tr>
+          <tr><th scope="row">S6</th><td>92.39</td><td>93.22</td><td>90.74</td><td>91.56</td></tr>
+          <tr><th scope="row">S7</th><td>91.34</td><td>93.89</td><td>90.41</td><td>93.22</td></tr>
+          <tr><th scope="row">S8</th><td>92.57</td><td>93.63</td><td>91.52</td><td>92.95</td></tr>
+          <tr><th scope="row">S9</th><td>93.25</td><td>94.36</td><td>92.87</td><td>94.01</td></tr>
+          <tr><th scope="row">S10</th><td>93.27</td><td>96.86</td><td>92.28</td><td>95.88</td></tr>
+          <tr><th scope="row">S11</th><td>95.95</td><td>97.95</td><td>95.37</td><td>97.55</td></tr>
+          <tr><th scope="row">S12</th><td>96.63</td><td>97.54</td><td>96.43</td><td>97.19</td></tr>
+          <tr><th scope="row">S13</th><td>98.28</td><td>99.19</td><td>96.88</td><td>97.68</td></tr>
+          <tr><th scope="row">S14</th><td>96.61</td><td>98.51</td><td>95.53</td><td>97.41</td></tr>
+          <tr><th scope="row">S15</th><td>97.57</td><td>100.21</td><td>97.18</td><td>99.4</td></tr>
+          <tr><th scope="row">S16</th><td>99.53</td><td>101.23</td><td>98.61</td><td>100.73</td></tr>
+          <tr><th scope="row">S17</th><td>100.59</td><td>100.95</td><td>100.04</td><td>100.79</td></tr>
+          <tr><th scope="row">S18</th><td>99.6</td><td>100.57</td><td>98.79</td><td>99.43</td></tr>
+          <tr><th scope="row">S19</th><td>99.6</td><td>99.93</td><td>98.85</td><td>99.34</td></tr>
+          <tr><th scope="row">S20</th><td>99.54</td><td>100.02</td><td>98.79</td><td>99.37</td></tr>
+          <tr><th scope="row">S21</th><td>98.93</td><td>99.71</td><td>98.0</td><td>98.43</td></tr>
+          <tr><th scope="row">S22</th><td>98.91</td><td>100.1</td><td>97.83</td><td>99.46</td></tr>
+          <tr><th scope="row">S23</th><td>98.97</td><td>100.06</td><td>98.51</td><td>99.78</td></tr>
+          <tr><th scope="row">S24</th><td>100.6</td><td>101.32</td><td>98.85</td><td>99.82</td></tr>
+          <tr><th scope="row">S25</th><td>100.97</td><td>102.98</td><td>100.54</td><td>102.53</td></tr>
+          <tr><th scope="row">S26</th><td>102.87</td><td>103.0</td><td>101.23</td><td>102.21</td></tr>
+          <tr><th scope="row">S27</th><td>102.54</td><td>103.07</td><td>101.84</td><td>102.23</td></tr>
+          <tr><th scope="row">S28</th><td>103.19</td><td>104.14</td><td>102.34</td><td>103.32</td></tr>
+          <tr><th scope="row">S29</th><td>102.85</td><td>103.48</td><td>102.35</td><td>102.85</td></tr>
+          <tr><th scope="row">S30</th><td>103.1</td><td>104.27</td><td>102.58</td><td>103.38</td></tr>
+          <tr><th scope="row">S31</th><td>102.43</td><td>105.32</td><td>101.65</td><td>104.32</td></tr>
+          <tr><th scope="row">S32</th><td>104.44</td><td>107.72</td><td>104.33</td><td>106.68</td></tr>
+          <tr><th scope="row">S33</th><td>106.65</td><td>107.08</td><td>105.48</td><td>105.82</td></tr>
+          <tr><th scope="row">S34</th><td>105.72</td><td>108.22</td><td>105.36</td><td>107.26</td></tr>
+          <tr><th scope="row">S35</th><td>105.99</td><td>108.52</td><td>105.34</td><td>107.63</td></tr>
+          <tr><th scope="row">S36</th><td>106.63</td><td>107.66</td><td>104.23</td><td>104.86</td></tr>
+          <tr><th scope="row">S37</th><td>105.8</td><td>107.52</td><td>104.9</td><td>106.67</td></tr>
+          <tr><th scope="row">S38</th><td>106.03</td><td>106.56</td><td>104.1</td><td>104.97</td></tr>
+          <tr><th scope="row">S39</th><td>105.73</td><td>107.19</td><td>105.15</td><td>106.51</td></tr>
+          <tr><th scope="row">S40</th><td>105.71</td><td>106.92</td><td>105.1</td><td>106.16</td></tr>
+          </tbody>
+          </table>
+          </div>
+        </details>
       </div>
     </div>
     <div class="dv-stage"><div class="dv-chart-area">
@@ -229,54 +291,6 @@
         <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="568" y="246" text-anchor="middle" data-fx="0.9875">S40</text>
       </svg>
     </div></div>
-    <div class="dv-tablepanel" id="ccs1-tbl" role="region" aria-label="Share price OHLC, data table" tabindex="-1" hidden>
-      <table class="dv-table t-cm-legal">
-        <caption>Share price, open high low close, forty sessions, pounds — the accessibility fallback (ds-027)</caption>
-        <thead><tr><th scope="col">Session</th><th scope="col">Open</th><th scope="col">High</th><th scope="col">Low</th><th scope="col">Close</th></tr></thead>
-        <tbody>
-<tr><th scope="row">S1</th><td>101.25</td><td>102.06</td><td>99.75</td><td>100.59</td></tr>
-          <tr><th scope="row">S2</th><td>99.85</td><td>100.55</td><td>97.61</td><td>97.83</td></tr>
-          <tr><th scope="row">S3</th><td>97.52</td><td>99.4</td><td>97.3</td><td>98.42</td></tr>
-          <tr><th scope="row">S4</th><td>97.34</td><td>98.27</td><td>95.71</td><td>95.84</td></tr>
-          <tr><th scope="row">S5</th><td>95.12</td><td>95.35</td><td>92.59</td><td>93.21</td></tr>
-          <tr><th scope="row">S6</th><td>92.39</td><td>93.22</td><td>90.74</td><td>91.56</td></tr>
-          <tr><th scope="row">S7</th><td>91.34</td><td>93.89</td><td>90.41</td><td>93.22</td></tr>
-          <tr><th scope="row">S8</th><td>92.57</td><td>93.63</td><td>91.52</td><td>92.95</td></tr>
-          <tr><th scope="row">S9</th><td>93.25</td><td>94.36</td><td>92.87</td><td>94.01</td></tr>
-          <tr><th scope="row">S10</th><td>93.27</td><td>96.86</td><td>92.28</td><td>95.88</td></tr>
-          <tr><th scope="row">S11</th><td>95.95</td><td>97.95</td><td>95.37</td><td>97.55</td></tr>
-          <tr><th scope="row">S12</th><td>96.63</td><td>97.54</td><td>96.43</td><td>97.19</td></tr>
-          <tr><th scope="row">S13</th><td>98.28</td><td>99.19</td><td>96.88</td><td>97.68</td></tr>
-          <tr><th scope="row">S14</th><td>96.61</td><td>98.51</td><td>95.53</td><td>97.41</td></tr>
-          <tr><th scope="row">S15</th><td>97.57</td><td>100.21</td><td>97.18</td><td>99.4</td></tr>
-          <tr><th scope="row">S16</th><td>99.53</td><td>101.23</td><td>98.61</td><td>100.73</td></tr>
-          <tr><th scope="row">S17</th><td>100.59</td><td>100.95</td><td>100.04</td><td>100.79</td></tr>
-          <tr><th scope="row">S18</th><td>99.6</td><td>100.57</td><td>98.79</td><td>99.43</td></tr>
-          <tr><th scope="row">S19</th><td>99.6</td><td>99.93</td><td>98.85</td><td>99.34</td></tr>
-          <tr><th scope="row">S20</th><td>99.54</td><td>100.02</td><td>98.79</td><td>99.37</td></tr>
-          <tr><th scope="row">S21</th><td>98.93</td><td>99.71</td><td>98.0</td><td>98.43</td></tr>
-          <tr><th scope="row">S22</th><td>98.91</td><td>100.1</td><td>97.83</td><td>99.46</td></tr>
-          <tr><th scope="row">S23</th><td>98.97</td><td>100.06</td><td>98.51</td><td>99.78</td></tr>
-          <tr><th scope="row">S24</th><td>100.6</td><td>101.32</td><td>98.85</td><td>99.82</td></tr>
-          <tr><th scope="row">S25</th><td>100.97</td><td>102.98</td><td>100.54</td><td>102.53</td></tr>
-          <tr><th scope="row">S26</th><td>102.87</td><td>103.0</td><td>101.23</td><td>102.21</td></tr>
-          <tr><th scope="row">S27</th><td>102.54</td><td>103.07</td><td>101.84</td><td>102.23</td></tr>
-          <tr><th scope="row">S28</th><td>103.19</td><td>104.14</td><td>102.34</td><td>103.32</td></tr>
-          <tr><th scope="row">S29</th><td>102.85</td><td>103.48</td><td>102.35</td><td>102.85</td></tr>
-          <tr><th scope="row">S30</th><td>103.1</td><td>104.27</td><td>102.58</td><td>103.38</td></tr>
-          <tr><th scope="row">S31</th><td>102.43</td><td>105.32</td><td>101.65</td><td>104.32</td></tr>
-          <tr><th scope="row">S32</th><td>104.44</td><td>107.72</td><td>104.33</td><td>106.68</td></tr>
-          <tr><th scope="row">S33</th><td>106.65</td><td>107.08</td><td>105.48</td><td>105.82</td></tr>
-          <tr><th scope="row">S34</th><td>105.72</td><td>108.22</td><td>105.36</td><td>107.26</td></tr>
-          <tr><th scope="row">S35</th><td>105.99</td><td>108.52</td><td>105.34</td><td>107.63</td></tr>
-          <tr><th scope="row">S36</th><td>106.63</td><td>107.66</td><td>104.23</td><td>104.86</td></tr>
-          <tr><th scope="row">S37</th><td>105.8</td><td>107.52</td><td>104.9</td><td>106.67</td></tr>
-          <tr><th scope="row">S38</th><td>106.03</td><td>106.56</td><td>104.1</td><td>104.97</td></tr>
-          <tr><th scope="row">S39</th><td>105.73</td><td>107.19</td><td>105.15</td><td>106.51</td></tr>
-          <tr><th scope="row">S40</th><td>105.71</td><td>106.92</td><td>105.1</td><td>106.16</td></tr>
-        </tbody>
-      </table>
-    </div>
   </figure>
 
   <h2>No data — the Empty-state pattern, consumed by reference</h2>
@@ -301,7 +315,7 @@
       { "fg": "data/delta/loss", "bg": "background/default", "context": "ui" }
     ],
     "icons": {},
-    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-controls", "aria-expanded", "role=\"region\""],
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-controls", "role=\"region\""],
     "$note": "ds-027 ENACTED (Dave, ruled #100, 2026-08-05): SOLID two-state — colour = close vs open only, fill in BOTH directions, #96-D1 \u2460 hollow-up channel RETIRED. OHLC table = accessibility fallback for Ally. Standing rule (#100): 40-session realistic density, seed 103 (same dataset as the decision spread), fully responsive via dv-fit (data-fx/data-x0 wired on every candle group + axis). ds-020 UNBOUND: --data-grid stays a LOCAL custom property (pre-DV-D07 ink-at-alpha value #626262/#9D9D9D), deliberately NOT bound to data/grid/color \u2014 declared gap, unchanged by this enactment."
   }
   </script>
@@ -411,35 +425,39 @@
   document.addEventListener('focusout', function () { tipHide(); });
 
   /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
-     surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
-     aria-controls + aria-expanded; panel is a labelled region, tabindex=-1 for the
-     focus hand-off; Esc dismisses and returns focus to its toggle. */
-  function tblToggle(btn) {
-    var panel = document.getElementById(btn.getAttribute('aria-controls'));
-    if (!panel) { return; }
-    var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
-    if (open) {
-      panel.removeAttribute('hidden');
-      /* anchor the panel just BELOW its trigger, never over it — the fixed top was brittle
-         once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
-         offsetParent resolves; fall back gracefully. */
-      var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
-      if (op) {
-        var bt = btn.getBoundingClientRect(), ot = op.getBoundingClientRect();
-        panel.style.top = (bt.bottom - ot.top + 6) + 'px';
-        /* anchor horizontally UNDER the trigger too — right:0 pinned the panel to the figure's edge,
-           wrong when the trigger sits mid-figure (e.g. donut + side legend). Left-align to the
-           trigger, clamp so it never spills past the offsetParent's right edge (keeps bar/line right-anchored). */
-        var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
-        panel.style.left = lx + 'px'; panel.style.right = 'auto';
-      }
-    } else { panel.setAttribute('hidden', ''); }
-    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
-    if (open) { panel.focus(); }
+     surface ground + border + soft shadow, NOT a frosted drawer).
+     s116-D2 (#116): the disclosure is NATIVE <details>/<summary>, panel = its child,
+     so THE FALLBACK WORKS WITH JS OFF — which is what makes s116-D1's 24px mark floor
+     honest. All of this is PROGRESSIVE ENHANCEMENT and none of it may become
+     load-bearing: clamp, focus hand-off, Escape. Delete it and the table still works. */
+  function clampPanel(det) {
+    var sum = det.querySelector('summary');
+    var panel = det.querySelector('.dv-tablepanel');
+    if (!sum || !panel) { return null; }
+    /* anchor just BELOW the trigger, never over it — a fixed top was brittle once a title
+       pushed the toolbar down (Dave 2026-07-24). Measured after open so offsetParent
+       resolves; falls back to the CSS anchor. */
+    var op = panel.offsetParent;
+    if (op) {
+      var bt = sum.getBoundingClientRect(), ot = op.getBoundingClientRect();
+      panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+      /* horizontally UNDER the trigger too — right:0 pinned it to the figure edge, wrong when
+         the trigger sits mid-figure (donut + side legend); clamped to the right edge. */
+      var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+      panel.style.left = lx + 'px'; panel.style.right = 'auto';
+    }
+    return panel;
   }
+  /* `toggle` does NOT bubble: delegation rides capture. Still ONE document listener. */
+  document.addEventListener('toggle', function (e) {
+    var det = e.target;
+    if (!det.classList || !det.classList.contains('dv-tbl')) { return; }
+    var panel = det.open ? clampPanel(det) : det.querySelector('.dv-tablepanel');
+    if (!panel) { return; }
+    if (det.open) { panel.focus(); }
+    else { panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; }
+  }, true);
   document.addEventListener('click', function (e) {
-    var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
-    if (btn) { tblToggle(btn); return; }
     var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
     if (vt) { viewToggle(vt); return; }
     var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
@@ -449,11 +467,11 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') { return; }
-    var panel = e.target.closest && e.target.closest('.dv-tablepanel');
-    if (!panel || panel.hasAttribute('hidden')) { return; }
-    panel.setAttribute('hidden', '');
-    var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
-    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
+    var det = e.target.closest && e.target.closest('details.dv-tbl');
+    if (!det || !det.open) { return; }
+    det.open = false;                                  /* fires `toggle` -> cleanup above */
+    var sum = det.querySelector('summary');
+    if (sum) { sum.focus(); }                          /* label static (Dave 2026-07-24) */
   });
 
   /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never

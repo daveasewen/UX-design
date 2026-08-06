@@ -4557,3 +4557,58 @@ trim, 11,345 · ⑥ the 19 `_state.LEGACY_IDS` + DO-FIRST item 22 · ⑦ Apollo 
 Dave · ⑧ the observation-window tally, then Dave rules demote · ⑨ re-pin the known-answer test.
 
 **Dossier:** `_DECISION-HISTORY/2026-08-06-115-graph-candidates-and-the-observation-window.md`
+
+---
+
+## ★ #116 — HIT-AREA: THE MOLECULE RULING, AND A JS-OFF FINDING UNDER IT
+
+**#116-D1 (Dave) — DATA MARKS ARE HELD TO 24, NOT EXEMPT.** Verbatim: *"the marks on charts such as
+data points that trigget a tooltip can pass with the 24x minimum, all chats cary the table fall back
+for Ally."* ⇒ marks are exempt from the **44** control target, **not** from the check: they must meet
+the **24×24** WCAG 2.5.8 dense-case floor, and the **table fallback is the stated justification**.
+⛔ **THIS CORRECTS THE CONDUCTOR'S DECLARED READING.** #116's opener read the 2026-07-25 brief's
+sign-off as carrying *"data marks EXEMPT, no min floor"* (the brief's own recommendation, sub-question
+1). Dave ruled STRICTER than the recommendation. The brief's rule text at
+`notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md:31` (*"Data marks are EXEMPT"*) is
+**SUPERSEDED BY THIS LINE** and must be re-inscribed as a 24 floor.
+⚠ **OPEN, MEASURED-NOT-YET:** thin donut slices and narrow bars may not clear 24. The conductor owes
+a MEASUREMENT of how many marks fall below 24 before the gate goes blocking — not an assumption
+either way [[measure-dont-convert-units]].
+
+**#116-D2 (Dave) — THE TABLE CONTROL IS ONE MOLECULE, CONSUMED BY ALL CHARTS.** Verbatim: *"why is it
+different? the table button and pop-over should be a molecule consumed by all of teh charts."* ⇒ the
+existing split — a `<button class="dv-tbl-toggle">` in bar/combo/donut/line, a native
+`<details>/<summary>` in sparkline — **is itself the defect**. The fix is convergence, not a patch to
+the sparkline. **DIRECTION RULED: all charts converge on the NATIVE `<details>/<summary>`** (Dave's
+pick of option 1, with *"just to confirm, this is an html/css solution"* answered YES).
+
+**★★ FINDING THAT D2's QUESTION EXPOSED — THE TABLE FALLBACK IS JS-GATED ON 4 OF 5 CHARTS.**
+MEASURED: `.dv-tablepanel` ships with the `hidden` attribute in markup
+(`knowledge/snippets/Chart-bar.reference.html:367`, and 5 panels in that file alone) and **only**
+`knowledge/canon/dv-behaviour.js` (`tblToggle`, :128/:142) removes it. **With JS off, the table
+fallback is UNREACHABLE on bar/combo/donut/line.** The sparkline's native `<details>` works without
+JS. ⇒ **The sparkline was not the odd one out because it was worse — it was the only one that was
+right.** ⚠ **This bears directly on D1**, whose stated justification is that *"all chats cary the
+table fall back"*: they carry it, but on 4 of 5 it is JS-gated, so the justification was
+half-true until D2's convergence repairs it. ★ Dave's *"why is it different?"* is what surfaced this;
+the conductor had priced a sparkline padding-patch and would not have found it
+[[instruction-right-cause-wrong]].
+
+**#116-D3 (Dave) — SWEEP SCOPE IS ALL CONTROLS.** Verbatim: *"all controls"*, and *"yes 75"*
+confirming the library size. ⚠ **The 2026-07-25 brief's *"67-snippet library"* (line 57) is STALE —
+the canon library is 75** (`ls knowledge/snippets/*.reference.html | wc -l` = 75, measured #116).
+
+**⚠ TWO STALE RECORDS FOUND AND OWED A FIX (agents' errors, not Dave's):**
+1. `knowledge/_rulings.json` `s114-D5.governs` names **`knowledge/_validate_hit_area (the checker)`**
+   — **NO SUCH FILE EXISTS.** The checker is `knowledge/_validate_a11y.py`. Dave's word is unaffected;
+   the pointer misdirects [[unmatched-grep-is-not-an-absence]].
+2. `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md:63` still reads *"The 44-promote half
+   remains UNRULED"* — **STALE**: `s114-D6` ruled it the SAME session (#114).
+
+**★ A NEAR-MISS WORTH THE INK.** Searching whether "data marks exempt" was already ruled, the
+conductor hit `notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md:66` quoting
+*"every interactive CONTROL presents ≥ target/min via invisible `::before` + 9-point pin; data-marks
+exempt"* — which READS as a Dave verbatim. It is not. It is prefixed *"likely INSCRIBE:"* under
+*"Recommend: … CONFIRM with Dave."* **An agent's proposal wearing a ruling's clothes.** Caught only by
+reading the surrounding lines rather than the matched one
+[[feedback-dont-launder-a-premise-into-a-ruling]] [[unmatched-grep-is-not-an-absence]].

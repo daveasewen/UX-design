@@ -98,35 +98,39 @@
   document.addEventListener('focusout', function () { tipHide(); });
 
   /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
-     surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
-     aria-controls + aria-expanded; panel is a labelled region, tabindex=-1 for the
-     focus hand-off; Esc dismisses and returns focus to its toggle. */
-  function tblToggle(btn) {
-    var panel = document.getElementById(btn.getAttribute('aria-controls'));
-    if (!panel) { return; }
-    var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
-    if (open) {
-      panel.removeAttribute('hidden');
-      /* anchor the panel just BELOW its trigger, never over it — the fixed top was brittle
-         once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
-         offsetParent resolves; fall back gracefully. */
-      var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
-      if (op) {
-        var bt = btn.getBoundingClientRect(), ot = op.getBoundingClientRect();
-        panel.style.top = (bt.bottom - ot.top + 6) + 'px';
-        /* anchor horizontally UNDER the trigger too — right:0 pinned the panel to the figure's edge,
-           wrong when the trigger sits mid-figure (e.g. donut + side legend). Left-align to the
-           trigger, clamp so it never spills past the offsetParent's right edge (keeps bar/line right-anchored). */
-        var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
-        panel.style.left = lx + 'px'; panel.style.right = 'auto';
-      }
-    } else { panel.setAttribute('hidden', ''); }
-    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
-    if (open) { panel.focus(); }
+     surface ground + border + soft shadow, NOT a frosted drawer).
+     s116-D2 (#116): the disclosure is NATIVE <details>/<summary>, panel = its child,
+     so THE FALLBACK WORKS WITH JS OFF — which is what makes s116-D1's 24px mark floor
+     honest. All of this is PROGRESSIVE ENHANCEMENT and none of it may become
+     load-bearing: clamp, focus hand-off, Escape. Delete it and the table still works. */
+  function clampPanel(det) {
+    var sum = det.querySelector('summary');
+    var panel = det.querySelector('.dv-tablepanel');
+    if (!sum || !panel) { return null; }
+    /* anchor just BELOW the trigger, never over it — a fixed top was brittle once a title
+       pushed the toolbar down (Dave 2026-07-24). Measured after open so offsetParent
+       resolves; falls back to the CSS anchor. */
+    var op = panel.offsetParent;
+    if (op) {
+      var bt = sum.getBoundingClientRect(), ot = op.getBoundingClientRect();
+      panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+      /* horizontally UNDER the trigger too — right:0 pinned it to the figure edge, wrong when
+         the trigger sits mid-figure (donut + side legend); clamped to the right edge. */
+      var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+      panel.style.left = lx + 'px'; panel.style.right = 'auto';
+    }
+    return panel;
   }
+  /* `toggle` does NOT bubble: delegation rides capture. Still ONE document listener. */
+  document.addEventListener('toggle', function (e) {
+    var det = e.target;
+    if (!det.classList || !det.classList.contains('dv-tbl')) { return; }
+    var panel = det.open ? clampPanel(det) : det.querySelector('.dv-tablepanel');
+    if (!panel) { return; }
+    if (det.open) { panel.focus(); }
+    else { panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; }
+  }, true);
   document.addEventListener('click', function (e) {
-    var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
-    if (btn) { tblToggle(btn); return; }
     var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
     if (vt) { viewToggle(vt); return; }
     var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
@@ -136,11 +140,11 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') { return; }
-    var panel = e.target.closest && e.target.closest('.dv-tablepanel');
-    if (!panel || panel.hasAttribute('hidden')) { return; }
-    panel.setAttribute('hidden', '');
-    var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
-    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
+    var det = e.target.closest && e.target.closest('details.dv-tbl');
+    if (!det || !det.open) { return; }
+    det.open = false;                                  /* fires `toggle` -> cleanup above */
+    var sum = det.querySelector('summary');
+    if (sum) { sum.focus(); }                          /* label static (Dave 2026-07-24) */
   });
 
   /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
