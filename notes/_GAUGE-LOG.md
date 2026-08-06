@@ -997,3 +997,14 @@ HOLE #106 — session wrote no §C stratum in GOOD-MORNING.md and left no contin
 > **pre-flight #110:** boot 62,462 real (`message.usage` first turn) + job 67,306 measured (wrap-open FILL 129,768 minus boot) + wrap 49,071 est (n=3 high end, #94-E1) = 178,839 of 200,000 — AMBER (over amber 160,000, inside working 200,000).
 > **post-mortem #110 — ✅ STOP LINE HELD, the #97 mechanism:** check-ins 61,065 → 90,240 → 105,029 → 129,768 FILL against the 150,929 stop line; wrap opened at 129,768 with 21,161 runway (150,929−129,768) and DELEGATED off-window rather than ridden. P1 ran as a delegated Sonnet sub (158,736 sub tokens — quota, not conductor fill); P3 was built and driven in-window, catching a live `NameError: io` crash the AST check had passed. P2/P4 and the research candidates were ROLLED to #111 rather than ridden. ⛔ Self-inflicted: `GOOD-MORNING.md` head-80 opened at boot despite the chain's explicit ⛔ against it, declared not concealed. ✅ Retrieval repaired at the opener: stale `_memento-index.json` (#32 defect) rebuilt to 554 records.
 > **consult-receipts #110:** UNOBSERVED by this delegated capture pass — the live session's own retrieval activity is not in the record handed to this wrap. This pass's own reads were targeted Reads/greps on NAMED artefacts (`_capture_gate.py`, `_gm_move.py`, `_rulings.json`, GM/LS/archive anchors, `notes/_GAUGE-LOG.md` tail, `notes/_MEMENTO-DECISIONS.md` tail) — 0 `_memento_search` fetches, declared not excused.
+
+#### 2026-08-06 #111
+
+> **post-mortem #111 — ADDED AT #112, discharge by ADDITION not a HOLE.** #111's post-mortem was written into its
+> ★ LATEST banner and never reached this log, so ritual 2f's split was half-done. The evidence was never missing, only
+> the record — [[gap-in-record-vs-gap-in-evidence]]. Reproduced verbatim from the #111 banner: boot **55,733 real**;
+> check-ins **82,046 → 114,524 → 156,152 FILL**; **STOP LINE 150,929 BLOWN by 5,223**, declared in-chat at the reading.
+> Mechanism: (1) the attribution probe required reproducing the injected surface into files to measure it — ~32K fill,
+> unavoidable for that measurement but not priced in advance; (2) a four-round-trip index shave that one measurement
+> would have collapsed to one trip. Quota 73% used / 27% left, reset in 9h56m; Fable 95%, HELD. The attribution probe
+> ran INLINE (~32K fill) where #110 spent 158,736 quota on the equivalent.
