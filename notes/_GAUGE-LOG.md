@@ -1008,3 +1008,39 @@ HOLE #106 — session wrote no §C stratum in GOOD-MORNING.md and left no contin
 > unavoidable for that measurement but not priced in advance; (2) a four-round-trip index shave that one measurement
 > would have collapsed to one trip. Quota 73% used / 27% left, reset in 9h56m; Fable 95%, HELD. The attribution probe
 > ran INLINE (~32K fill) where #110 spent 158,736 quota on the equivalent.
+
+#### 2026-08-06 #112
+
+**post-mortem**
+
+> **post-mortem #112 — ⛔ STOP LINE BLOWN BY 10,680, the #111 mechanism re-run one session later:** boot **55,025 real**
+> (3rd consecutive low: 62,462 · 55,733 · 55,025). Check-ins **76,988 → 161,609 FILL** — two readings, ~11 turns apart,
+> **nothing between**. Stop line 150,929. Named mechanism: (1) the MEMORY.md compaction lane was priced at 6–10K fill and
+> cost **~85K** — an ~8× estimate miss, the conductor's; (2) **a multi-round-trip lane ran with no check-in riding it** —
+> precisely the failure #111's own post-mortem named, re-run within the hour; (3) one `Glob` returned 100 full absolute
+> paths (~5K fill) to check a single filename, then `MEMORY.md` was Read (9,178) and written back (~5,500) in-window.
+> **boot-drift DECLARED #112:** `_gauge_tokens.BOOT_FIRSTTURN_TK` = 65,400 ±1,400 vs recent mean, drift outside the error
+> bar, refresh PUT TO DAVE and unruled — #111-D2 stands ("don't fit a constant across a structural break"); #112 adds a
+> third post-break sample (55,025) and deliberately did NOT re-base.
+> **★ measurement banked, free:** #112 boot 55,025 vs #111 55,733 = **−708 with an unchanged server set and unchanged
+> `MEMORY.md`** ⇒ a **NOISE FLOOR**, which makes the unattributed #110→#111 −6,729 ≈**9.5× noise, i.e. real signal.**
+> **quota (Dave's screen, pinned as a delta):** #111 wrap 73% used / 9h56m → #112 wrap-open **74% used / resets 22:46**.
+> Fable 95%, HELD untouched. ⚠ the two reset readings differ by 52 min that 8 min of wall clock cannot explain —
+> #111's chain figure is SUSPECT, Dave's live reading authoritative. Named, not chased.
+> **wrap posture:** INLINE on Dave's ruling — a delegated wrap measured 452,623 quota at #110 and QUOTA binds today.
+> **boot-drift DECLARED #112 (2026-08-06):** mean 61348 · constant 65400 ±1400 · delta -4052 · refresh PUT TO DAVE, unruled.
+> *(#111's declaration is now STALE by construction — #112's 55,025 sample moved the mean 63,405 → 61,348, and the gate
+> caught it and failed LOUD. That is T4 doing its job one session after it was built. ⛔ The figures are corrected, NOT
+> the constant and NOT the error bar: #111-D2 stands — "don't fit a constant across a structural break." Three
+> post-break samples now exist (62,462 · 55,733 · 55,025); the re-base is Dave's, on post-break samples only, n declared.)*
+> **boot-drift DECLARED #112 (2026-08-06):** mean 61348 · constant 65400 ±1400 · delta -4052 · refresh PUT TO DAVE, unruled.
+> *(#111's declaration is now STALE by construction — #112's 55,025 sample moved the mean 63,405 to 61,348, and the gate
+> caught it and failed LOUD. That is T4 doing its job one session after it was built. Corrected the FIGURES, never the
+> constant and never the error bar: #111-D2 stands — "don't fit a constant across a structural break." Three post-break
+> samples now exist (62,462 · 55,733 · 55,025); the re-base is Dave's, on post-break samples only, with n declared.)*
+
+
+- **boot #113 = 54,038 real** (`message.usage` first turn, measured at the opener by `_checkin.py`) — the LOWEST sample in the series and the FOURTH consecutive post-break low (62,462 · 55,733 · 55,025 · 54,038). ⚠ Written here at #113's own wrap, ahead of its `#### 2026-08-06 #113` key, so the sample cannot be lost the way #110's was; the key arrives with #114's `roll_2f`, as it did for #111.
+- **surface decomposition #113 (`knowledge/_surface-samples.json`, `_surface_recorder.py`):** boot 54,038 · `memory_md` 8,188 in-boot · `chain_md` 11,345 ADDITIVE · floor 65,383 · 45,850 unattributed BY SUBTRACTION, 5 components DECLARED not measured. ⛔ The unattributed figure is ARRIVED AT BY SUBTRACTION, not measured — #111-D3 governs it.
+> **boot-drift DECLARED #113 (2026-08-06):** mean 59513 · constant 65400 ±1400 · delta -5887 · refresh PUT TO DAVE, unruled.
+> *(#112's declaration is STALE BY CONSTRUCTION — #113's 54,038 sample moved the mean 61,348 → 59,513 and the gate failed LOUD on the mismatch. That is #111-D1's T4 branch doing its job for the second consecutive session. ⛔ The FIGURES are corrected; the constant and the error bar are NOT touched — **#111-D2 stands**: "don't fit a constant across a structural break." Four post-break samples now exist (62,462 · 55,733 · 55,025 · 54,038) and the series is still DESCENDING, which is the stated reason this wrap DECLARES rather than re-bases. ⛔ A wrap sub may not rule this: the re-base is Dave's, on post-break samples only, with n declared.)*

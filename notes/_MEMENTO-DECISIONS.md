@@ -4285,3 +4285,78 @@ method lesson on byte-vs-tape bounds):
 constant refresh (#111-D2) · P2 re-priced (836 real) · P4 `_CHAIN.md` trim (10,499) · enact queue
 (`type.css:180` · `ds-032` · ds-029 first idiom · per-theme sweep) · the `_state.json`-vs-open-
 rulings gap. Posture: Dave's rulings above gate what opens next.
+
+---
+
+## ★ #113 — THE CONDUCTOR-SURFACE RECORDER IS BUILT, AND IT SHIPPED WITH A SCOPE ERROR ITS OWN GREEN SUITE COULD NOT SEE (Dave live, OPUS conductor, ONE window, wrap DELEGATED to an Opus sub on Dave's explicit pick)
+
+**Dave's opening direction (not a ruling, an order of work):** *"lets get these done in order, lets go
+for it, forget apollo work for now"* — recorder → attribution → harness (conditional) → housework. The
+Apollo design-system enact queue was **PARKED by him** for this session.
+
+**✅ #112-D1 DISCHARGED — at the fourth attempt.** `knowledge/_surface_recorder.py` + store
+`knowledge/_surface-samples.json`. Records the conductor's OWN boot-surface decomposition in real
+tokens; **hashes** each component so an unchanged one is recognised next session; diffs consecutive
+sessions into **ATTRIBUTED vs UNATTRIBUTED delta** — the quantity #111-D3 ruled had been *assumed*
+rather than measured. Refuses on a **SILENT** gap; a **DECLARED** gap passes; a figure carried forward
+with no hash match is recorded **UNVERIFIED**. Receipts: `selftest` ALL GREEN, **19 tests**; **6
+mutations**, each killing a distinct clause — M1 (silent-gap refusal) kills T2 and **not** T3, proving
+detection and discharge are separate clauses; M6 (scope) kills the T11 cluster only. ⚠ Declared, not
+smoothed: M4's `sed` matched BOTH `raise CaptureRefused(` sites, so that mutation was **compound, not
+minimal**. Prior failures: #109 did not write samples next to the constant · #110 measured a SUB's
+surface · #111 named the remedy and did not build it · #112 ruled it and spent the budget elsewhere.
+
+**★★ FINDING — `MEMORY.md` IS IN THE SANDBOX MOUNT**, at `/sessions/<session>/mnt/.auto-memory/`, a
+HIDDEN directory missed by every `ls` for ~113 sessions. #109, #111 and #112 each measured it by
+READING it into context — **8,470 / 9,178 / 7,996 real** of fill — for a number `bash` produces at
+zero. ★ **The general form: anything on disk stages at ZERO fill; reading it to measure it IS the
+fill.** ⚠ `CLAUDE.md` is still NOT in the mount (re-checked #113, `find -iname`, zero hits);
+`AGENTS.md` IS, at repo root.
+
+**★★ FINDING — A GREEN SUITE CANNOT SEE ITS OWN SCOPE ERROR.** `_CHAIN.md` is **ADDITIVE** (it lands
+at turn 2, on top of boot) but was being netted **OFF** the boot total, understating the residual by
+**11,345**. At that moment: 19 tests green, 5 mutations killing 5 clauses. **Synthetic fixtures have
+no scope, so no test could express the defect.** Caught by DRIVING it on real data — the #104 lesson
+arriving from a new direction. Fixed: `ADDITIVE` set · `boot_measured_tk`/`additive_tk`/`floor_tk`
+split · T11 added · M6 confirms the split is load-bearing.
+
+**MEASURED #113 (first real sample, in the store):** boot first-turn **54,038 real** (4th consecutive
+post-break low: 62,462 · 55,733 · 55,025 · 54,038) · `memory_md` **8,188** in-boot · `chain_md`
+**11,345 ADDITIVE** · floor **65,383** · **45,850 unattributed BY SUBTRACTION**, 5 components DECLARED
+not measured (`deferred_tools` · `mcp_blocks` · `skill_catalog` · `agent_types` · `system_prompt`),
+each with its prior figure and a price.
+
+**⛔ THREE CONSTANTS MEASURABLY STALE — PUT TO DAVE, RULED BY NOBODY.** `BOOT_FIRSTTURN_TK` 65,400 →
+54,038 (−11,362) · published floor 75,899 → 65,383 (−10,516) · `_gauge_tokens.py` comment-block chain
+line 10,499 → 11,345 (**+846**). **None changed.** #111-D2 stands — *"Don't fit a constant across a
+structural break."* Conductor's stated read, explicitly NOT a ruling: don't re-base the first two, the
+series is still DESCENDING so it is drift in progress not a new plateau; **the third is GROWTH, not a
+break, and it means the P4 `_CHAIN.md` trim target GREW.** Discharged legally at the wrap gate via
+#111-D1's declared form (`boot-drift DECLARED #113`: mean 59,513 · constant 65,400 ±1,400 · delta
+−5,887 · refresh PUT TO DAVE, unruled).
+
+**✅ STOP LINE HELD — first in three sessions, and the mechanism is nameable.** Boot 54,038; one
+mid-lane check-in at FILL **117,731** against the **150,929** stop line. The check-in fired **INSIDE
+the lane**, not at its ends — the exact remedy inscribed after #112 blew the line by 10,680 the same
+way #111 blew it by 5,223. The re-price it forced is why attribution / harness / housework were
+**ROLLED rather than ridden**. Quota at wrap-open (Dave's live screen): 74% used / 26% left, resets in
+8h24m; Fable 95%, HELD untouched. Wrap DELEGATED to an Opus sub on Dave's explicit pick — **BUDGET
+bound, not QUOTA**.
+
+**⚠ RAISED, NOT RULED — for Dave:** (a) the three constants above; (b) the figure **2,460** in his
+housework framing has **no source anywhere in this repo** (nearest 2,388 UUID tool-name prefixes,
+2,646 five departed MCP servers) — asked at #113, unanswered, **do not map it**; (c) `notes/_MEMENTO-DECISIONS.md`
+carried **no § ★ #112** and `knowledge/_rulings.json` carries **no `s112-*` ids** — #112's five rulings
+live only in its banner (now `_GM-ARCHIVE.md`); a gap in the record, not in the evidence, flagged by
+#113's wrap and deliberately NOT reconstructed by an agent; (d) a stray `> **pre-flight #112:**` line
+sits inside the EXEMPT `#### 2026-08-05 #96` stratum block in GM §C — misfiled by #112's wrap, left in
+place rather than edited under wrap pressure.
+
+**Residual → #114:** attribution re-probe (#111-D3), **stage `deferred_tools` FIRST** (2,388 real of
+UUID-prefix waste) · harness/P2 **only if** attribution says there is something to pull (named
+candidates 836 real ≈ 1.1% of floor; the live UNTESTED hypothesis is **DUPLICATION** — `computer-use`
+and `chrome` guidance each injected twice) · housework: the 19 `_state.LEGACY_IDS` + item 22 (#89-D2
+ruled, never entered `_state.json`) · P4 `_CHAIN.md` trim, now **11,345** not 10,499 · Apollo enact
+queue, PARKED by Dave.
+
+**Dossier:** `_DECISION-HISTORY/2026-08-06-113-surface-recorder-and-the-scope-error-a-green-suite-could-not-see.md`
