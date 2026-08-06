@@ -9,7 +9,7 @@ only in the artefact it governs dies the first time that artefact is rewritten �
 **This index is generated from the filesystem**, because a hand-maintained list of runbooks is exactly
 the thing that rots when someone adds the tenth one and forgets the list.
 
-**16 runbooks**, last generated 2026-08-01.
+**17 runbooks**, last generated 2026-08-06.
 
 ### `_RUNBOOK-capture-ritual.md`
 **Runbook — end-of-session capture ritual**
@@ -50,6 +50,11 @@ Stood up 2026-07-19 (Dave: "maybe an adversarial set of agents might sharpen thi
 **Runbook — dream-pass CONDUCTOR (the "run dream pass" sequence)**
 
 Single source for the conductor side of the Memento dream-pass lane, exactly as `dreamer.md` is single source for the dreamer side (A-D3 discipline: task prompts, skills and dispatches say "read + follow" — they never restate). Stood up…
+
+### `_RUNBOOK-external-claims.md`
+**Runbook — external claims (the three-questions gate)**
+
+Adopted 2026-08-06 #115, candidate 3 of `_RESEARCH-graph-engineering-2026-08-05-v3.html` § "Worth taking" (Dave: "lets get these done now"). Source of the form: Turing Post FOD#159. Advisory by convention, applied at writing time — a…
 
 ### `_RUNBOOK-gated-component.md`
 **Runbook — build a gated component**

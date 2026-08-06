@@ -41,6 +41,7 @@ import json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import _search_core as core
+import _graph_edges  # #115 steps 1+3: ADVISORY edge attachment, display-only
 
 INDEX_PATH = os.path.join(HERE, "_consult-index.json")
 LEXICON_PATH = os.path.join(HERE, "_consult-lexicon.json")
@@ -145,6 +146,13 @@ def search(query, index, lexicon, all_results=False):
     def decorate(entry):
         if entry["kind"] == "rule":
             entry["_enforcement"] = enforcement_for_rule(entry, gates)
+        # #115 step 1 (ADVISORY): ~79/635 DS-door records ARE graph nodes directly
+        # (ADR-*/R-D*/DV-D*/T-D* ids match `_decision-graph.json` node ids one-for-one) —
+        # `_graph_edges.nodes_for_record` finds those via direct id match, same call as
+        # the Memento door's mention-map lookup. Adds keys only, never re-scores/-sorts.
+        entry["_graph_neighbours"] = _graph_edges.neighbour_lines(entry)
+        # #115 step 3 (MARK-ONLY, separate function/hunk from step 1 above).
+        entry["_graph_superseded"] = _graph_edges.superseded_lines(entry)
 
     buckets, totals, original, expanded = core.search(
         index["records"], query, lexicon, bucket_for, DEFAULT_CAP,
@@ -161,6 +169,8 @@ def print_human(buckets, totals, query, expanded, all_results):
         print("  no matches. Consider adding a synonym to knowledge/_consult-lexicon.json"
               " if this is a real miss.")
         return
+    if not _graph_edges.available():
+        print(f"  ({_graph_edges.unavailable_notice()})")
     for kind in KIND_ORDER:
         rows = buckets.get(kind, [])
         if not rows:
@@ -173,6 +183,12 @@ def print_human(buckets, totals, query, expanded, all_results):
             if kind in ("rule-blocking", "rule-advisory"):
                 print(f"      -> {r['_enforcement']}")
             print(f"      source: {r['file']}  (stage 2: --fetch {r['id']})")
+            # #115 step 3 (MARK-ONLY) before step 1's neighbour lines
+            for line in r.get("_graph_superseded", []):
+                print(f"      {line}")
+            # #115 step 1 (ADVISORY)
+            for line in r.get("_graph_neighbours", []):
+                print(f"      {line}")
 
 
 def print_fetch(index, record_id):
@@ -224,6 +240,32 @@ def run_selftest(index, lexicon):
     refused = record is None and err and "REFUSING" in err
     print(f"[{'OK' if refused else 'FAIL'}] --fetch unknown id REFUSES (fail-loud)")
     ok = ok and bool(refused)
+    # #115 steps 1+3: same edge-attachment bites as the Memento door, on synthetic
+    # state so they can FAIL independent of disk state. Real state saved/restored.
+    saved = dict(_graph_edges._state)
+    try:
+        _graph_edges._state.update({
+            "loaded": True,
+            "graph": {"nodes": {"ADR-X": {}, "ADR-Y": {}},
+                      "edges": [{"from": "ADR-Y", "type": "supersedes", "to": "ADR-X"}]},
+            "reverse": {},
+        })
+        no_mention = _graph_edges.neighbour_lines({"id": "some-other-id"})
+        bite_a = no_mention == []
+        print(f"[{'OK' if bite_a else 'FAIL'}] edge attach: record with no mention gets no attachment")
+        ok = ok and bite_a
+        # DS door: direct id match — a record whose id IS a graph node
+        hit_lines = _graph_edges.neighbour_lines({"id": "ADR-X"})
+        bite_b = "⌁ ADR-X superseded-by ADR-Y" in hit_lines
+        print(f"[{'OK' if bite_b else 'FAIL'}] edge attach: injected fabricated edge appears via direct id match")
+        ok = ok and bite_b
+        mark_lines = _graph_edges.superseded_lines({"id": "ADR-X"})
+        bite_c = mark_lines == ["⛔ SUPERSEDED by ADR-Y"]
+        print(f"[{'OK' if bite_c else 'FAIL'}] step 3 mark: target-of-supersedes record gets the ⛔ line")
+        ok = ok and bite_c
+    finally:
+        _graph_edges._state.clear()
+        _graph_edges._state.update(saved)
     if ok:
         print("selftest OK — all regression queries surfaced their known-answer record(s).")
     else:

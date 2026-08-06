@@ -226,6 +226,19 @@ STEPS = [
      "_build_memento_index.py", ["--selftest"]),
     ("memento search selftest — known-answer retrieval + fetch refusal (O2′ #25)",
      "_memento_search.py", ["--selftest"]),
+    # #115 graph-candidates-pricing-brief, step 0: `_decision-graph.json` node ids and
+    # `_memento-index.json` record ids have ZERO overlap — edges cannot be joined by id.
+    # The mention map is the missing join (node-id -> record ids whose blob mentions it),
+    # regenerated every build so it cannot rot; --check is the content-compared freshness
+    # gate (never mtime), same shape as the memento index directly above. Runs AFTER the
+    # memento index (needs its records) and after the decision graph (already fresh on
+    # disk earlier in the run).
+    ("graph mention map — the decision-graph/memento-index join (#115 step 0)",
+     "_build_graph_mention_map.py"),
+    ("graph mention map determinism check (#115 step 0)",
+     "_build_graph_mention_map.py", ["--check"]),
+    ("graph mention map selftest — hit/miss/refusal bites (#115 step 0)",
+     "_build_graph_mention_map.py", ["--selftest"]),
     # ★ #41: the read chain as a FILE. Measured that morning: the contract prices the chain at
     # 3,838 tape and the opener paid 28,653 — because `Read` cannot read less than a file, so a
     # cold session buys all 18,434 tape of GOOD-MORNING.md to learn it should have stopped at
@@ -415,6 +428,9 @@ ROUTE_ROWS = [
     ("memento index determinism check (O2′ #25)", ABORT, None),
     ("memento index selftest — contract refusals + determinism (O2′ #25)", ABORT, None),
     ("memento search selftest — known-answer retrieval + fetch refusal (O2′ #25)", ABORT, None),
+    ("graph mention map — the decision-graph/memento-index join (#115 step 0)", ABORT, None),
+    ("graph mention map determinism check (#115 step 0)", ABORT, None),
+    ("graph mention map selftest — hit/miss/refusal bites (#115 step 0)", ABORT, None),
     ("read chain file — _CHAIN.md, the cold-start door (#41)", ABORT, None),
     ("read chain determinism check — stale _CHAIN.md serves a PREVIOUS session's record (#41)", ABORT, None),
     ("read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)", ABORT, None),

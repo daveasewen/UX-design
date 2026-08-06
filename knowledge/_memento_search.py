@@ -32,6 +32,7 @@ import json, os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import _search_core as core
+import _graph_edges  # #115 steps 1+3: ADVISORY edge attachment, display-only
 
 INDEX_PATH = os.path.join(HERE, "_memento-index.json")
 LEXICON_PATH = os.path.join(HERE, "_consult-lexicon.json")
@@ -68,9 +69,22 @@ def bucket_for(record):
     return record["kind"] if record["kind"] in KIND_ORDER else None
 
 
+# #115 step 1 (ADVISORY, decorate hook): attach supersedes/refines/bounds neighbour
+# lines to any result whose graph node the mention map (or a direct id match) finds.
+# ABSOLUTE CONSTRAINT (brief): this decorate ONLY adds keys to `entry` — it never
+# touches `_score`, never reorders, never changes bucket membership or caps. `_search_core.search`
+# sorts/caps on the entry AFTER decorate runs, from fields decorate never writes.
+def _decorate_edges(entry):
+    entry["_graph_neighbours"] = _graph_edges.neighbour_lines(entry)
+    # #115 step 3 (MARK-ONLY, separate function/hunk from step 1 above — same decorate
+    # call site because both need the one decorate hook, but the two concerns are
+    # independent: step 1 can be reverted without touching step 3, and vice versa).
+    entry["_graph_superseded"] = _graph_edges.superseded_lines(entry)
+
+
 def search(query, index, lexicon, all_results=False):
     return core.search(index["records"], query, lexicon, bucket_for, DEFAULT_CAP,
-                       all_results=all_results)
+                       all_results=all_results, decorate=_decorate_edges)
 
 
 def print_human(buckets, totals, query, expanded, all_results):
@@ -83,6 +97,8 @@ def print_human(buckets, totals, query, expanded, all_results):
               "knowledge/_consult-lexicon.json (one lexicon, both doors) — "
               "curation is part of the job.")
         return
+    if not _graph_edges.available():
+        print(f"  ({_graph_edges.unavailable_notice()})")
     for kind in KIND_ORDER:
         rows = buckets.get(kind, [])
         if not rows:
@@ -92,6 +108,13 @@ def print_human(buckets, totals, query, expanded, all_results):
         for r in rows:
             print(f"  [{r['id']}] {r['head'][:120]}")
             print(f"      source: {r['file']}:{r['line']}  (stage 2: --fetch {r['id']})")
+            # #115 step 3 (MARK-ONLY) — printed before step 1's neighbour lines so a
+            # supersession reads first; neither line changes this row's position.
+            for line in r.get("_graph_superseded", []):
+                print(f"      {line}")
+            # #115 step 1 (ADVISORY)
+            for line in r.get("_graph_neighbours", []):
+                print(f"      {line}")
 
 
 def print_fetch(index, record_id):
@@ -143,6 +166,35 @@ def run_selftest(index, lexicon):
     refused = record is None and err and "REFUSING" in err
     print(f"[{'OK' if refused else 'FAIL'}] --fetch unknown id REFUSES with near-misses")
     ok = ok and bool(refused)
+    # #115 steps 1+3: edge-attachment bites, on synthetic state so they can FAIL
+    # independent of whatever's on disk right now (a mutation-test posture, not a
+    # green-by-construction one). Real state is saved/restored around the probe.
+    saved = dict(_graph_edges._state)
+    try:
+        _graph_edges._state.update({
+            "loaded": True,
+            "graph": {"nodes": {"ADR-X": {}, "ADR-Y": {}},
+                      "edges": [{"from": "ADR-Y", "type": "supersedes", "to": "ADR-X"}]},
+            "reverse": {"gm:HIT": ["ADR-X"]},
+        })
+        no_mention = _graph_edges.neighbour_lines({"id": "gm:NOWHERE"})
+        bite_a = no_mention == []
+        print(f"[{'OK' if bite_a else 'FAIL'}] edge attach: record with no mention gets no attachment")
+        ok = ok and bite_a
+        hit_lines = _graph_edges.neighbour_lines({"id": "gm:HIT"})
+        bite_b = "⌁ ADR-X superseded-by ADR-Y" in hit_lines
+        print(f"[{'OK' if bite_b else 'FAIL'}] edge attach: injected fabricated edge appears for a mentioning record")
+        ok = ok and bite_b
+        mark_lines = _graph_edges.superseded_lines({"id": "gm:HIT"})
+        bite_c = mark_lines == ["⛔ SUPERSEDED by ADR-Y"]
+        print(f"[{'OK' if bite_c else 'FAIL'}] step 3 mark: target-of-supersedes record gets the ⛔ line")
+        ok = ok and bite_c
+        bite_d = _graph_edges.superseded_lines({"id": "gm:NOWHERE"}) == []
+        print(f"[{'OK' if bite_d else 'FAIL'}] step 3 mark: non-mentioning record gets no mark")
+        ok = ok and bite_d
+    finally:
+        _graph_edges._state.clear()
+        _graph_edges._state.update(saved)
     if ok:
         print("selftest OK — the memento corpus answers its known questions, and fetch "
               "refuses the unknown.")
