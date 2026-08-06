@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account card — reference candidate (gap-pattern → review)</title>
+<!-- CANDIDATE REFERENCE for Account card (surfaced by the payments-journey gap report; NOT yet
+     design-reviewed — meta carries REVIEW flags). A passive summary card for one account: label
+     (name · masked number), the balance in the display/amount type (tabular-nums, tight tracking),
+     and an optional meta row that REUSES the Tags atom (account type) + Status-indicator chip
+     (RAG status). Square (card angular-rule). Decorative status dot → meaning carried by the label
+     (1.4.1). Grouped via role="group" + aria-labelledby so a screen reader announces it as a unit. -->
+<link rel="stylesheet" href="type-fixed.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{
+    --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --muted:#1A1A1A; --page:#FFFFFF;
+    --tag-border:#808080; --ok:#2B7E4F; --ok-tint:#DCEDE3; --warn:#C58900; --warn-tint:#F6E5CC;
+    /* shape — semantic radius tier (ADR-0010): card shell=surface, tag/chip atoms=indicator (matches canon census) */
+    --border-radius-surface:0; --border-radius-indicator:0;
+  }
+  [data-theme="dark"]{
+    --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --muted:#FFFFFF; --page:#1A1A1A;
+    --tag-border:#808080; --ok:#4A9568; --ok-tint:#12291D; --warn:#C58900; --warn-tint:#3C2C13;
+    --border-radius-surface:0; --border-radius-indicator:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .stateLabel{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--muted); margin:1.5rem 0 .5rem;}
+
+  /* ---- Account card ---- */
+  .account-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface); padding:16px;
+    display:flex; flex-direction:column; gap:8px; max-width:380px; }
+  .account-card .label{ font:400 14px/1.3 var(--font); color:var(--muted); }
+  .account-card .balance{ font:400 32px/1.1 var(--font); color:var(--text); font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+  .account-card .meta-row{ display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap; }
+
+  /* ---- reused Tags atom (SQUARE outline; from Tags.reference) ---- */
+  .tag{ display:inline-flex; align-items:center; height:24px; padding:0 8px; border:1px solid var(--tag-border);
+    border-radius:var(--border-radius-indicator); font:400 12px/1 var(--font); color:var(--text); white-space:nowrap; }
+
+  /* ---- reused Status-indicator chip (RAG tint; from Status-indicator.reference) ---- */
+  .chip{ display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:var(--border-radius-indicator);
+    /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); white-space:nowrap; }
+  .chip .dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+  .chip.ok{ background:var(--ok-tint); }   .chip.ok .dot{ background:var(--ok); }
+  .chip.warn{ background:var(--warn-tint); } .chip.warn .dot{ background:var(--warn); }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+  
+  <div class="stateLabel">default · with type tag + status chip</div>
+  <div class="account-card" role="group" aria-labelledby="ac1">
+    <span class="label" id="ac1">Current account · ···4821</span>
+    <span class="balance">£3,248.55</span>
+    <span class="meta-row">
+      <span class="tag">Everyday</span>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span>Up to date</span></span>
+    </span>
+  </div>
+
+  <div class="stateLabel">minimal · label + balance only</div>
+  <div class="account-card" role="group" aria-labelledby="ac2">
+    <span class="label" id="ac2">Savings · ···9930</span>
+    <span class="balance">£12,000.00</span>
+  </div>
+
+  <div class="stateLabel">attention · warning status</div>
+  <div class="account-card" role="group" aria-labelledby="ac3">
+    <span class="label" id="ac3">Credit card · ···1180</span>
+    <span class="balance">−£842.10</span>
+    <span class="meta-row">
+      <span class="tag">Rewards</span>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span>Payment due in 3 days</span></span>
+    </span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Account card",
+    "type": "molecule",
+    "vars": {
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--tag-border": "form/border/default",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--page": "background/default"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\""],
+    "reuses": ["Tags (square chip)", "Status-indicator (RAG tint chip)"],
+    "knownFindings": [
+      "Status dot is < 3:1 standalone (1.4.11) so meaning is carried by the label text (1.4.1) — same handled finding as the Status-indicator atom.",
+      "Balance uses a display/amount type (30px, tabular-nums, -0.01em) with NO dedicated type token yet — flagged in the gap report (display/amount + money-format)."
+    ]
+  }
+  </script>
+  </body>
+</html>

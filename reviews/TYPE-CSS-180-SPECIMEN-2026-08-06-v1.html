@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>type.css:180 — dark background specimen, by eye (#107)</title>
+<style>
+  body{font-family:system-ui,sans-serif;margin:24px;background:#f4f4f2;color:#1a1a1a;max-width:1400px;line-height:1.55}
+  h1{font-size:20px;margin-bottom:6px}
+  h2{font-size:15px;margin-top:30px;border-top:2px solid #1a1a1a;padding-top:12px}
+  p,li{max-width:76ch;line-height:1.6;font-size:15px}
+  .plain{font-size:15px}
+  .callout{background:#eef2f6;border:1px solid #c3d0dd;border-left:4px solid #305A85;padding:12px 16px;margin:14px 0;max-width:76ch}
+  .callout p{margin:0;font-size:14.5px}
+  .decision{background:#fff;border:1px solid #ccc;border-left:4px solid #484D6F;padding:12px 16px;margin:14px 0;max-width:76ch}
+  .decision h3{margin:0 0 6px;font-size:14px}
+  details{margin:10px 0;border:1px solid #ddd;background:#fafaf8;padding:10px 14px;max-width:82ch}
+  summary{cursor:pointer;font-weight:600;font-size:13px;color:#484D6F}
+  details p,details li{font-size:13px;max-width:78ch}
+  details table{font-size:12.5px;border-collapse:collapse;margin:8px 0}
+  details td,details th{border:1px solid #ddd;padding:4px 8px;text-align:left}
+  code{background:#eee;padding:1px 5px;font-size:0.92em}
+  .nums{font-variant-numeric:tabular-nums;background:#e8e8e4;padding:1px 5px}
+  .opts label{display:block;margin:6px 0;cursor:pointer;font-size:14.5px}
+
+  .scrollwrap{overflow-x:auto;padding-bottom:10px;margin:10px 0 4px}
+  .scrollhint{font-size:12px;color:#666;margin:0 0 6px}
+  .pair{display:flex;gap:0;width:max-content;box-shadow:0 0 0 1px #999}
+  .pane{display:flex;flex-direction:column}
+  .paneLabel{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:6px 10px;background:#fff;border-bottom:1px solid #999}
+  .paneLabel b{font-size:12.5px}
+  .paneLabel .hex{font-variant-numeric:tabular-nums;font-family:ui-monospace,Consolas,monospace}
+  .paneA .paneLabel{border-right:1px solid #999}
+  iframe{display:block;border:0}
+  .seamnote{font-size:12px;color:#666;margin:2px 0 0}
+
+  table.readout{border-collapse:collapse;margin:10px 0;font-size:14px}
+  table.readout th,table.readout td{border:1px solid #ccc;padding:6px 12px;text-align:left}
+  table.readout th{background:#eaeaea}
+  table.readout td.hex{font-family:ui-monospace,Consolas,monospace}
+
+  .foot{margin-top:34px;font-size:12px;color:#555;border-top:1px solid #ccc;padding-top:12px}
+  .norec{font-weight:600}
+</style>
+</head>
+<body>
+
+<h1>type.css line 180 — the dark-mode background — which shade should win?</h1>
+<p class="plain">Rolled from #106 (declined blind) to #107. This page does not pick a side —
+Option A and Option B are both shown live below; you rule by eye. Radios are unselected on
+purpose.</p>
+
+<p class="plain">Every dark-mode screen in Apollo is meant to use one near-black shade:
+<strong>#1A1A1A</strong>. Right now it doesn't. One styling rule inside <code>type.css</code> is
+written more strongly than the rule that carries the correct colour, so every dark pane actually
+renders a different shade: <strong>#111</strong>. The two shades sit nine steps apart on a
+0–255 scale — close enough that no one sentence can settle it. That's why this is a specimen and
+not a written description.</p>
+
+<div class="callout">
+<p><strong>Both shades here are pure grey.</strong> Red, green and blue are equal in each one —
+there is no hue anywhere on this page. Your usual caution about red and amber shifting unstably
+on screen does not apply here; this is a lightness call only.</p>
+</div>
+
+<p class="plain">Below is the same real component — an account-card screen from the component
+library, unedited except for the theme switch — rendered twice, side by side, at the project's
+two standard widths. <strong>Left = Option A, today's actual render. Right = Option B, the
+declared token value.</strong> The two panes are pushed edge-to-edge on purpose: a nine-step
+difference is easiest to catch exactly where the two backgrounds touch, in the middle.</p>
+
+<h2>Live comparison — 1180px</h2>
+<p class="scrollhint">Rendered at true pixel width — scroll to see both panes if your window is
+narrower than ~2360px.</p>
+<div class="scrollwrap">
+  <div class="pair">
+    <div class="pane paneA">
+      <div class="paneLabel"><b>A — today</b><span class="hex">#111111</span></div>
+      <iframe src="_assets/type-css-180-specimen/pane-a-today.html" width="1180" height="580" title="Option A at 1180px — renders today's #111"></iframe>
+    </div>
+    <div class="pane paneB">
+      <div class="paneLabel"><b>B — as declared</b><span class="hex">#1A1A1A</span></div>
+      <iframe src="_assets/type-css-180-specimen/pane-b-declared.html" width="1180" height="580" title="Option B at 1180px — the declared #1A1A1A token"></iframe>
+    </div>
+  </div>
+</div>
+
+<h2>Live comparison — 760px</h2>
+<p class="scrollhint">Rendered at true pixel width — scroll to see both panes if your window is
+narrower than ~1520px.</p>
+<div class="scrollwrap">
+  <div class="pair">
+    <div class="pane paneA">
+      <div class="paneLabel"><b>A — today</b><span class="hex">#111111</span></div>
+      <iframe src="_assets/type-css-180-specimen/pane-a-today.html" width="760" height="640" title="Option A at 760px — renders today's #111"></iframe>
+    </div>
+    <div class="pane paneB">
+      <div class="paneLabel"><b>B — as declared</b><span class="hex">#1A1A1A</span></div>
+      <iframe src="_assets/type-css-180-specimen/pane-b-declared.html" width="760" height="640" title="Option B at 760px — the declared #1A1A1A token"></iframe>
+    </div>
+  </div>
+</div>
+
+<h2>The numbers, alongside the picture</h2>
+<table class="readout">
+<tr><th>Pane</th><th>Hex (measured)</th><th>RGB (measured)</th><th>Body-text contrast vs white</th></tr>
+<tr><td>A — today</td><td class="hex">#111111</td><td class="hex">rgb(17, 17, 17)</td><td>18.88 : 1</td></tr>
+<tr><td>B — as declared</td><td class="hex">#1A1A1A</td><td class="hex">rgb(26, 26, 26)</td><td>17.40 : 1</td></tr>
+</table>
+<p class="plain">Delta: <span class="nums">+9</span> on every one of R, G and B — confirming
+it's a pure lightness step, not a colour shift. Both shades comfortably clear WCAG AAA body text
+(7:1) against white, so this is not an accessibility question either way — it's whether the
+system's declared value is the one that actually reaches the screen.</p>
+
+<div class="decision">
+<h3>Which shade should the dark background be?</h3>
+<div class="opts">
+<label><input type="radio" name="type180"> Option A — keep today's render (#111, no code change)</label>
+<label><input type="radio" name="type180"> Option B — switch to the declared token (#1A1A1A)</label>
+</div>
+</div>
+
+<details>
+<summary>Technical detail — the rules, the measurement, and what the #106 record got right and loose</summary>
+
+<p><strong>Confirmed against the live file</strong> (<code>knowledge/canon/type.css</code>,
+read 2026-08-06):</p>
+<table>
+<tr><th>Line</th><th>Rule</th><th>Specificity</th></tr>
+<tr><td>180</td><td><code>[data-theme="dark"]{background:#111;color:#fff;}</code></td><td>0-1-0 (one attribute selector)</td></tr>
+</table>
+<p>This matches the #106 record exactly: value, line number, and specificity all check out.</p>
+
+<p><strong>One thing the record's shorthand doesn't quite say:</strong> there is no literal
+<code>body{background:var(--page)}</code> line inside <code>type.css</code> itself. That exact
+pattern — <code>body{margin:0;padding:2.5rem;…background:var(--page);color:var(--text);…}</code>
+at specificity 0-0-1 — lives in <em>every consuming snippet's own local stylesheet</em> (e.g.
+<code>knowledge/snippets/Account-card.reference.html:32</code>, the file this specimen uses).
+Each snippet also declares its own local <code>[data-theme="dark"]{--page:#1A1A1A;…}</code>
+block that sets the custom property (not <code>background</code> directly). So the cascade fight
+is real and produces exactly the outcome #106 recorded — the record's phrasing just names the
+generic pattern rather than a single line inside <code>type.css</code>. Independently, canon's
+own token chain agrees on the value: <code>canon.css:568</code>
+<code>--background-default:var(--surface-digital-black)</code> →
+<code>canon.css:742</code> <code>--surface-digital-black:#1A1A1A</code>. Three independent
+sources (the record, every snippet's local token, and canon's token chain) agree the intended
+dark background is #1A1A1A; only <code>type.css:180</code>'s literal <code>#111</code> disagrees.</p>
+
+<p><strong>A second, currently-silent instance of the same defect:</strong> line 180 also sets
+<code>color:#fff</code> at 0-1-0, beating each snippet's own <code>color:var(--text)</code> at
+0-0-1. Today this is invisible because every snippet's dark <code>--text</code> also resolves to
+white — but it's the same literal-over-token pattern ADR-0014 flags, just with no visible
+consequence yet. Worth knowing regardless of how the background is ruled.</p>
+
+<p><strong>Not the same bug, don't conflate:</strong> line 177's <code>.spec-h{…color:var(--text,#111);}</code>
+also contains the string <code>#111</code>, but that's an unrelated <code>var()</code> fallback
+(used only if <code>--text</code> is undefined) — it plays no part in this cascade fight.</p>
+
+<p><strong>How Option B was built for this specimen:</strong> a scratch copy of
+<code>type.css</code> (<code>reviews/_assets/type-css-180-specimen/type-fixed.css</code>, NOT
+canon, never loaded by anything else) with line 180's value changed from <code>background:#111</code>
+to <code>background:var(--page)</code> — same selector, same specificity, only the value swapped
+to reference the token instead of the literal. That is one possible mechanical fix among others
+(raising the specificity of the token-carrying rule instead is another); this specimen shows the
+resulting colour only, not a prescribed code change — which mechanism ships is a separate,
+later decision.</p>
+
+<p><strong>Render-verification</strong> (per <code>knowledge/_RUNBOOK-render-verify.md</code>:
+Playwright + <code>chromium-headless-shell</code> in-sandbox, <code>goto("file://…")</code>,
+never <code>set_content()</code>). Both fixtures loaded directly and re-checked inside this
+review page's own iframes:</p>
+<table>
+<tr><th>Assertion</th><th>Result</th></tr>
+<tr><td><code>document.fonts.check('16px HSBC_MtUnivers_Latin')</code>, both panes, both widths</td><td>true (×4)</td></tr>
+<tr><td><code>getComputedStyle(document.body).backgroundColor</code>, Pane A, 1180px &amp; 760px</td><td><code>rgb(17, 17, 17)</code> at both widths (identical)</td></tr>
+<tr><td><code>getComputedStyle(document.body).backgroundColor</code>, Pane B, 1180px &amp; 760px</td><td><code>rgb(26, 26, 26)</code> at both widths (identical)</td></tr>
+<tr><td><code>getComputedStyle(document.body).color</code>, both panes</td><td><code>rgb(255, 255, 255)</code> — identical across A/B (confirms the colour collision above is currently silent)</td></tr>
+<tr><td>Control: <code>getComputedStyle(.account-card).backgroundColor</code>, both panes</td><td><code>rgb(31, 31, 31)</code> (#1F1F1F) — identical across A/B, proving only the page background is affected, not the card surface</td></tr>
+</table>
+<p>Contrast ratios (WCAG relative-luminance formula, computed from the measured RGB above, not
+recalled): white vs <code>rgb(17,17,17)</code> = 18.88:1; white vs <code>rgb(26,26,26)</code> =
+17.40:1.</p>
+
+<p><strong>Fixture provenance</strong> — both panes are the unedited markup of
+<code>knowledge/snippets/Account-card.reference.html</code>, copied (not hand-retyped) into
+<code>reviews/_assets/type-css-180-specimen/</code>, with exactly two lines changed per pane:
+the <code>&lt;body data-theme="…"&gt;</code> attribute (light → dark, both panes) and which
+stylesheet it links (Pane A → the real <code>type.css</code>, byte-identical copy; Pane B → the
+one-line scratch variant above). No canon file was edited. Nothing here was built with, or feeds,
+<code>_build_all.py</code>.</p>
+
+<p><strong>Trade-off, stated plainly, not as a recommendation:</strong> Option A needs no code
+change — it's what ships today. Option B needs a one-line edit at <code>type.css:180</code> (or
+an equivalent specificity fix elsewhere) before it would actually render this way outside this
+specimen.</p>
+
+</details>
+
+<p class="norec">This page recommends nothing. Rule by eye, in chat or on the ledger.</p>
+
+<div class="foot">
+Measured 2026-08-06, session #107, against <code>knowledge/canon/type.css</code> as it stands
+today. Fixtures: <code>reviews/_assets/type-css-180-specimen/</code> (pane-a-today.html,
+pane-b-declared.html, type.css, type-fixed.css). Rendered with Playwright +
+chromium-headless-shell per <code>knowledge/_RUNBOOK-render-verify.md</code>; raw measurement
+JSON alongside the screenshots this session produced. Selections on this page are not persisted —
+give the ruling in chat. Version 1 — first version, nothing superseded.
+</div>
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+/* Apollo type composites — HAND-AUTHORED. Editorial + Component.
+   (The header said "generated 2026-07-17" for a day. Nothing has ever generated this file; the
+   line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
+   Metrics: cap 0.723em, descender 0.232em (Univers Next, USE_TYPO_METRICS off).
+   BRAND RULE: no light/ultra on body sizes (font-5/6/7 min regular 400; no dark step-up there). */
+:root{--uf:"Univers Next HSBC","Helvetica Neue",Arial,sans-serif;--cap:0.723;--desc:0.232;}
+/* ===== EDITORIAL — full line-height ===== */
+.t-ed-display-1{font-family:var(--uf);font-size:52px;line-height:60px;font-weight:250;}
+.t-ed-display-1 .em,.t-ed-display-1.em{font-weight:350;}
+.t-ed-display-2{font-family:var(--uf);font-size:40px;line-height:48px;font-weight:300;}
+.t-ed-display-2 .em,.t-ed-display-2.em{font-weight:400;}
+.t-ed-heading-1{font-family:var(--uf);font-size:32px;line-height:40px;font-weight:300;}
+.t-ed-heading-1 .em,.t-ed-heading-1.em{font-weight:400;}
+.t-ed-heading-2{font-family:var(--uf);font-size:28px;line-height:36px;font-weight:300;}
+.t-ed-heading-2 .em,.t-ed-heading-2.em{font-weight:400;}
+.t-ed-heading-3{font-family:var(--uf);font-size:24px;line-height:32px;font-weight:300;}
+.t-ed-heading-3 .em,.t-ed-heading-3.em{font-weight:400;}
+.t-ed-heading-4{font-family:var(--uf);font-size:20px;line-height:28px;font-weight:300;}
+.t-ed-heading-4 .em,.t-ed-heading-4.em{font-weight:400;}
+.t-ed-body{font-family:var(--uf);font-size:16px;line-height:24px;font-weight:400;}
+.t-ed-body .em,.t-ed-body.em{font-weight:500;}
+.t-ed-body-small{font-family:var(--uf);font-size:14px;line-height:20px;font-weight:400;}
+.t-ed-body-small .em,.t-ed-body-small.em{font-weight:500;}
+.t-ed-caption{font-family:var(--uf);font-size:12px;line-height:16px;font-weight:400;}
+.t-ed-caption .em,.t-ed-caption.em{font-weight:500;}
+
+/* ===== COMPONENT — TYPE and BOX are SEPARATE (T-D12 proposal, 2026-07-18) =====
+   BINDING MECHANISM (Dave ruling T-D9): components bind by being APPENDED TO THE SELECTOR LIST
+   of the composite they use. Plain CSS — no generator, no build step, no markup change.
+   LOAD ORDER IS LOAD-BEARING: `.t-cm-button` and `.btn` are both specificity 0-1-0, so source
+   order decides. type.css MUST load BEFORE component CSS. Gated by _validate_type_composites.py.
+
+   WHY THE SPLIT (T-D11 evidence): the old `.t-cm` conflated two separable things, and binding it
+   to elements that were not already single-line controls handed them a LAYOUT change wearing a
+   type change's clothing - 13 of 21 files moved, 2 changed page height.
+
+     TYPE  = font-family / font-size / font-weight.        Safe to bind ANYWHERE.
+     BOX   = display / align-items / line-height / min-height / cap-trim.
+             Safe ONLY where the element is already shaped as a single-line control.
+
+   TWO LISTS, TWO QUESTIONS. Joining `.t-cm-<size>` answers "what does it look like"; joining
+   `.t-cm-slot` answers "is it a single-line control". An element may join the first without the
+   second - that is the whole point, and it is what makes the `/1` batch a genuine no-op.
+
+   The slot HEIGHT travels with the type via `--slot`, declared on each type composite. A custom
+   property is INERT unless something reads it, so a type-only binding carries no box consequence.
+
+   TRIM SITS ON THE ELEMENT, not on a child (variant D, observed 2026-07-18 in real HSBC Univers).
+   `display:inline-flex` + `align-items:center` is what optically centres the cap box in a taller
+   slot; an inline-block variant TOP-ALIGNS and is wrong. No padding is authored anywhere. */
+
+/* ---- TYPE - family, size, weight, and the slot height the box WOULD use ---- */
+.t-cm-figure-1{font-family:var(--uf);font-size:52px;font-weight:300;line-height:1;--slot:64px;}
+.t-cm-figure-2{font-family:var(--uf);font-size:40px;font-weight:300;line-height:1;--slot:48px;}
+/* figure-3 — 24px numeric display rung (ds-005 close-out, RULED Dave 2026-07-19: "add 24 to the ramp").
+   weight 500 PRESERVES the countdown numeral's shipped value (zero-visual-change enactment); figure-1/2 are
+   300 because large display reads light, a small numeric display needs the weight-up (weight is per-role in
+   the component composites, not monotonic — cf. heading 400 / section-label 500). First consumer: the
+   Countdown numeral, bound via the `.t-cm-figure-3` CLASS (bare `.num` can't be appended globally — it would
+   collide with `.cn-table td.num`). Multi-size 20/24/32 lands when the timer gains size variants. */
+.t-cm-figure-3{font-family:var(--uf);font-size:24px;font-weight:500;line-height:1;--slot:28px;}
+/* figure-4 — 32px display/amount rung (PREPARED 2026-07-19, awaiting Dave's vouch — promotes the
+   money-format token the Account-card $balance-type-finding flagged; 32 is on-ramp, apply_type_snap
+   maps 30->32). weight 400 matches .t-cm-heading (a 32px numeric display reads at book weight, not the
+   300 large-display uses). Carries font-variant-numeric:tabular-nums because this is the NUMERIC display
+   token — columns of money must align; figure-1/2/3 do not carry it yet (follow-up: add tabular-nums to
+   the whole figure family — they are all numeric displays). Ordinal name (4th figure added); by SIZE it
+   sits between figure-2/40 and figure-3/24. First consumer: Amount-display, bound via the CLASS. */
+.t-cm-figure-4{font-family:var(--uf);font-size:32px;font-weight:400;line-height:1;--slot:40px;font-variant-numeric:tabular-nums;}
+/* figure-5 / figure-6 — 16px + 14px money/amount rungs (PREPARED 2026-07-19, awaiting Dave's vouch —
+   "number styles sized for money"). Same as label/caption in size+weight but they carry tabular-nums, so
+   inline + dense money amounts render as true numeric figures (columns align). Ordinal names continue the
+   figure family (5th/6th added); by SIZE they are the small end of the ramp. Consumer: Amount-display default+small. */
+.t-cm-figure-5{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;font-variant-numeric:tabular-nums;}
+.t-cm-figure-6{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;font-variant-numeric:tabular-nums;}
+/* chart-label / chart-value / chart-key — the DV-D08 chart text ladder (RULED Dave 2026-07-23, ledger
+   _proforma/_DATAVIZ-DECISIONS.md; settles the Q8 label-weight seam the bar audit surfaced). At the 12px
+   chart floor MEDIUM is the floor ("at 12 — medium is the floor"): labels · axis ticks · legend text ·
+   on-chart values = 12/500. chart-value carries tabular-nums (numeric columns/ticks align). Emphasis
+   channel = 700 (chart-key): legend letter-keys + on-chart keys — the kit's reviewed 400/600/700 ladder
+   maps onto the brand set {100,300,400,500,700}; 600 stays admitted NOWHERE. Supersedes both the kit's
+   400-label/600-value pair and the 07-22 uniform-500 snap. Bound via markup CLASS (T-D14 pattern — no
+   appended selectors, so no _type-bindings entry; the blast-radius gate tracks appended selectors only).
+   First consumers: Chart-* canon snippets (chart-revisit lane). Mini chart ramp 12–20 = PARKED. */
+.t-cm-chart-label{font-family:var(--uf);font-size:12px;font-weight:500;line-height:1;--slot:16px;}
+.t-cm-chart-value{font-family:var(--uf);font-size:12px;font-weight:500;line-height:1;--slot:16px;font-variant-numeric:tabular-nums;}
+.t-cm-chart-key{font-family:var(--uf);font-size:12px;font-weight:700;line-height:1;--slot:16px;font-variant-numeric:tabular-nums;}
+/* mini control ramp (T-D15, Dave 2026-07-24): label/control size variants 12/14/16.
+   Weight 500 at 12+14 (control), 400 at 16 (larger reads fine at regular — Dave's ruling).
+   Bound to the segmented-control atom sizes; any label/control class may adopt a step. */
+.t-cm-ctl-12,
+.seg.sm button{font-family:var(--uf);font-size:12px;font-weight:500;line-height:1;--slot:16px;}
+.t-cm-ctl-14,
+.seg.md button{font-family:var(--uf);font-size:14px;font-weight:500;line-height:1;--slot:20px;}
+.t-cm-ctl-16,
+.seg.lg button{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-heading{font-family:var(--uf);font-size:32px;font-weight:400;line-height:1;--slot:40px;}
+.t-cm-section-label{font-family:var(--uf);font-size:20px;font-weight:500;line-height:1;--slot:24px;}
+.t-cm-label,
+.loader,
+.pg a, .pg .ctrl,
+.search input{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-button,
+.btn,
+.action-bar .btn,
+.confirm .btn,
+.hero .cta,
+.nav button,
+.note.global .actions button,
+.qbtn,
+nav.main a{font-family:var(--uf);font-size:16px;font-weight:500;line-height:1;--slot:20px;}
+.t-cm-input{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-link{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-caption,
+.avatar,
+.badge,
+.eyebrow,
+.label,
+.seg button,
+.sim{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-tooltip{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-legal,
+.chip,
+.stateLabel,
+.status,
+.tabbar .tabbar__item,
+.time{font-family:var(--uf);font-size:12px;font-weight:400;line-height:1;--slot:16px;}
+
+/* ---- BOX - the slot. OPT-IN. Only for elements already shaped as single-line controls ---- */
+.t-cm-slot,
+.btn,
+.action-bar .btn,
+.avatar,
+.badge,
+.chip,
+.confirm .btn,
+.hero .cta,
+.loader,
+.note.global .actions button,
+.pg a, .pg .ctrl,
+.qbtn,
+.seg button,
+.status,
+.tabbar .tabbar__item,
+nav.main a{display:inline-flex;align-items:center;min-height:var(--slot);}
+@supports (text-box-trim: trim-both){
+ .t-cm-slot,
+ .btn,
+.action-bar .btn,
+.avatar,
+.badge,
+.chip,
+.confirm .btn,
+.hero .cta,
+.loader,
+.note.global .actions button,
+.pg a, .pg .ctrl,
+.qbtn,
+.seg button,
+.status,
+.tabbar .tabbar__item,
+nav.main a{text-box:trim-both cap alphabetic;}
+}
+@supports not (text-box-trim: trim-both){
+ .t-cm-slot::before,
+ .btn::before{content:"";display:table;margin-bottom:calc((0.5 - 0.65 + (1.068 - var(--cap)))*-1em);}
+ .t-cm-slot::after,
+ .btn::after{content:"";display:table;margin-top:calc((0.5 - 0.65 + var(--desc))*-1em);}
+}
+
+/* ===== SPECIMEN CHROME — NOT a canon composite =====
+   .spec-h = the section-label headings inside reference/specimen docs ("Inline — dot + label").
+   Document structure (each is a real <h2>), styled as a small full-strength label. Deliberately
+   standalone, NOT joined to a type composite — specimen scaffolding is not product type. Full
+   strength by ruling (Dave 2026-07-18): no muting, no opacity fade (opacity is untokenised and
+   dodges the contrast gate). Replaces the former bare global `h2` binding (T-D13). */
+.spec-h{font-family:var(--uf);font-size:12px;font-weight:400;line-height:1;color:var(--text,#111);}
+
+/* ===== dark mode — step-up (-V2) on display+heading only; body stays regular ===== */
+[data-theme="dark"]{background:#111;color:#fff;}
+[data-theme="dark"] .t-ed-display-1{font-weight:300;}
+[data-theme="dark"] .t-ed-display-1 .em{font-weight:400;}
+[data-theme="dark"] .t-ed-display-2{font-weight:350;}
+[data-theme="dark"] .t-ed-display-2 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-1{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-1 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-2{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-2 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-3{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-3 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-4{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-4 .em{font-weight:500;}

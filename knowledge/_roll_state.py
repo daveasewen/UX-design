@@ -68,7 +68,12 @@ STRATA_KEY_RE = re.compile(r"^####\s+\d{4}-\d{2}-\d{2}\s+#\d+\b")
 _SESSION_NO_RE = re.compile(r"#(\d+)\b")
 # #58 (Dave): the closed exempt list — permanently-unrollable strata, never a licence to
 # accumulate a fourth. DUPLICATED from `_capture_gate.py`'s `STRATA_EXEMPT` (see module note).
-STRATA_EXEMPT = {40, 41, 42}
+# ⚠ 95/96 added on DAVE'S #96-D4 ruling (ONE WRITER: only roll_2f writes gauge-log sections;
+# pre-existing collisions are marked exceptions by addition, not merged) — SYNCED #107, found
+# drifted: `_capture_gate.py` carried {40,41,42,95,96} while this copy still read {40,41,42},
+# which is exactly the parity failure this module's own selftest cross-check exists to catch
+# (it never ran between #96 and #107, or it would have failed loud).
+STRATA_EXEMPT = {40, 41, 42, 95, 96}
 GM_ARCHIVE_BATCH_RE = re.compile(r"^##\s*Batch\s+\d{4}-\d{2}-\d{2}\s+#(\d+)\b", re.M)
 LS_ARCHIVE_BATCH_RE = re.compile(r"^##\s*⏱\s*PRIOR DELTA\b.*?#(\d+)\b", re.M)
 

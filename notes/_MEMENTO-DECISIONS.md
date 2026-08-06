@@ -3807,3 +3807,67 @@ the #104 class of error repeating.
 **→ #107:** type.css:180 specimen (Dave's eye) · reconcile the 8-sites/9-files delta · THEN Dave's scope
 ruling on the 58 declarations (one governing ruling vs refactor to a single button atom) · -v3 honesty fix
 (still owed from #105-D1, NOT touched this window) · memory compaction remainder · ds-029 first-idiom flag.
+
+---
+
+## ★ #107 — BLAST-RADIUS RECONCILE + PARTITION-FIRST (Dave live, Opus conductor, ONE window)
+
+**Context.** #106's blast-radius measurement (58 declarations / 10 files) was re-derived and did NOT
+reproduce. Corrected: **78 literal declarations across 11 of 77 snippet files** — every file declares
+each token twice (`[data-theme="light"]` + `[data-theme="dark"]`), so 39 file-token pairs × 2 = 78,
+every per-token count exactly 2×. The "8 SITES vs 9 FILES" unit delta #106 declared unreconciled
+**never existed**: both figures are FILES — `reviews/PRI-HOVER-MEASUREMENT-2026-08-05-v1.md` itself says
+*"Nine snippet files declare `--pri-hover`"* and numbers its rows 0–8 (row 0 = Button, already enacted
+#99). Same unit, different SCOPE — #106 diagnosed a unit error where the cause was a scope error. The
+REAL unit error sat inside #106's own sentence: its per-token breakdown sums to 39 — exactly the
+per-token FILE-count sum — under a headline claiming DECLARATIONS. 58 stays declared UNEXPLAINED, not
+back-derived (+`canon.css`'s 118 literal decl lines gives 157, not 58). `ds-032`'s premise still HOLDS.
+Full write-up: `outputs/_FINDING-blast-radius-reconcile-2026-08-06-v1.md`.
+
+**#107-D1 (Dave) — "PARTITION FIRST, THEN RULE."** He declined to rule scope on the corrected 78/11 set
+until it is separated into things that are actually the same problem. **Enacted same session:**
+`outputs/_PARTITION-button-primary-2026-08-06-v1.md` — four data-driven groups (A full button ladder ·
+B simple CTA · C brand scope, not a button case · D secondary only); values identical across the 9 true
+button sites, markup deliberately divergent and documented as such. **The scope ruling on Groups A/B
+(with C and D carved out) is DEFERRED to #108.** Not a refusal — a sequencing ruling.
+
+**#107-D2 (Dave) — wrap scope: pay all four owed items.** Selected residuals+finding, the -v3 honesty
+doc, memory compaction, AND the type.css:180 specimen — all four, not a pick. Three were paid this
+session (residuals+finding, -v3, type.css:180 specimen); **memory compaction was NOT — declared as the
+one owed item that slipped**, not left to look paid alongside the other three.
+
+**Quota posture (Dave, verbatim, informs #108's routing):** *"we have 30% of all models to use in one
+day, we should be cranking as much as I can handle"* — all models 70% used (resets in 15h53m at the
+time of the reading), **Fable 95% used** (effectively spent — no judgment work should route there).
+#60's "production crank" case. Four Sonnet subs ran off-window this session; this wrap itself was
+composed and enacted off-window by a delegated sub, on the same logic — a sub's tokens are quota, its
+REPORT is fill, and the conductor's own fill stayed low by design.
+
+**Delivered, not yet committed:** `outputs/_RESEARCH-atomic-in-code-2026-08-06-v1.md` (pays Dave's #106
+closer — 19 sources fetched in full; no production DS team ships a strict atoms/molecules/organisms
+hierarchy in code; atomicity earns its keep at the TOKEN layer, not the component layer; Adobe
+Spectrum's own retrospective is the measured failure mode, 210,180 tokens in an 18MB JSON file before
+pulling back; declared gap: no literature on enforcing "no local re-declaration" in a no-build HTML
+snippet system) · `outputs/_PARTITION-button-primary-2026-08-06-v1.md` (above) ·
+`reviews/TYPE-CSS-180-SPECIMEN-2026-08-06-v1.html` (above) · `_RESEARCH-graph-engineering-2026-08-05-v3.html`
+(pays #105-D1, above).
+
+**Gauge (§ ★ #107):** boot 65,046 real (n=11). Check-ins 83,849 → 107,601 → 122,982 = wrap-open, runway
+27,947 against a historical wrap cost of 42,434–49,071 (n=3). ⛔ **New blow-mechanism observation:**
+sub-report ingestion — four Sonnet sub reports landing in-window each cost real conductor fill, distinct
+from the #87/#94 full-line-read mechanism and the #95/#99 serial-loop-no-check-in mechanism. Mitigation
+enacted, not merely noted: this wrap ran off-window.
+
+**Ritual gap inherited from #106, cleared at this wrap.** #106 wrote no `#### <date> #106` stratum in
+GOOD-MORNING.md and left `notes/_GAUGE-LOG.md` with neither a #105 block nor a #106 continuity entry —
+found by this session's boot rehearsal. Cleared: #105's complete stratum finally rolled via `roll_2f`;
+`HOLE #106` declared in `notes/_GAUGE-LOG.md` (a positive claim, not a guess — ds-022's legal form);
+`knowledge/_roll_state.py`'s own `STRATA_EXEMPT` copy was found drifted from `_capture_gate.py`'s
+(Dave's #96-D4 ruling `{40,41,42,95,96}` — the duplicate copy still read `{40,41,42}`, silently failing
+this file's own cross-check selftest since #96); synced. #107 stamped its own fresh stratum, matching
+the banner.
+
+**→ #108:** Dave's scope ruling on the partitioned set (Groups A/B, with C and D carved out) · his
+`type.css:180` ruling (specimen built and waiting) · `ds-032` enactment · memory compaction (owed since
+#104, re-asked #107, still not done) · ds-029 first-idiom flag. Posture: production crank — parallel
+subs, keep conductor fill low, price sub reports as fill.

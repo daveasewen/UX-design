@@ -1,4 +1,18 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#104**, OPUS 5 conductor + FOUR Sonnet build subs, Dave live, ONE window — ✅ **#97 FLAG ② CLOSED** · ⛔ **ds-029 #103 ENACTMENT DEFECT CAUGHT + FIXED (REPLAY VISUAL CONFIRM PAID OFF)** · ⬛ **LEGEND-CENTRING + `--pri-hover` MEASURED, NOT DECIDED** · ⛔ **CHAIN-DIET PREMISE WAS CROSS-UNIT, RE-MEASURED** · FABLE 5 UNAVAILABLE TILL THU 11PM ⇒ NO NEW RULING BATCHES)
+
+- **#97 flag ② CLOSED:** `.shell{align-content:start}` at ≤760px, `gen_showroom.py:338`; gap 700px 322.5→24px, 375px 259→24px, 1180px byte-identical.
+- **ds-029 defective enactment CAUGHT + FIXED:** #103's mutation-tested claim covered the DETECTION clause only; the RESTART mechanism (`offsetWidth` undefined on SVGElement) silently failed for `svg.success`. Fixed `getBoundingClientRect()`, `gen_showroom.py:285`; all four Confirmation elements restart; mutation-tested both directions.
+- **Legend-centring + `--pri-hover`:** both MEASURED not decided — `reviews/LEGEND-CENTRING-SPREAD-2026-08-05-v1.html` (Option A −109px off-centre, constant; Option B = 0px) · `reviews/PRI-HOVER-MEASUREMENT-2026-08-05-v1.md` + `.html` (no problem-hue; Group A swap quantified, Group B exact, Legacy/SC not promotable).
+- **Chain-diet:** the opener's own premise was a tape-vs-real cross-unit comparison; re-measured both units — `_CHAIN.md` OVER by 34% (tape), not ~109%. Cut sized ~2,000–2,600 real, NOT enacted. `notes/_briefs/2026-08-05-104-chain-diet-measurement-brief.md`.
+- **New, pre-existing, unruled:** `type.css:180` dark-mode specificity collision (`#111` beats `#1A1A1A`), observed on `confirmation.html` + `chart-donut.html`.
+- **⚠ Unattributed:** `_RESEARCH-graph-engineering-2026-08-05-v1.html`, untracked, NOT staged.
+- **→ #105:** chain-diet cut (enact at wrap-open) · memory compaction (count 113) · Dave's eye: legend-centring A-vs-B · Dave's word: `--pri-hover` promotion · `type.css:180` ruling · ds-029 first-idiom line flagged (`gen_showroom.py:273`, no current SVG consumer).
+
+- **→ #104:** #97 flag ② (cosmetic) · `--pri-hover` stored equivalents (Dave's promotion) · legend-centring eyeball · replay visual confirm.
+
+## Rolled 2026-08-06 #107 (2d) — via the mover
+
 ## ⏱ PRIOR DELTA — 2026-08-05 (Wed **#103**, FABLE 5 conductor + THREE Sonnet build subs, Dave live, ONE window — ★★ **ds-029 + ds-030 RULED (Dave) + ENACTED: showroom Replay SECOND IDIOM · CHARTS FULLY HORIZONTALLY RESPONSIVE (12/14 already fluid; donut/pie = fluid container + fixed circle)** · ✅ **`--sc` COMPOSE-AUDIT INLINE-SCOPE TAUGHT — #101 FALSE POSITIVE CLOSED** · ✅ **GATES 75/0 · SHOWROOM IN SYNC · COMPOSE PASS**)
 
 - **ds-029 (Dave):** Replay detection gains a second idiom (direct `@keyframes`/`animation:`); Confirmation NOT migrated — no canon change to ratified components for tooling. `gen_showroom.py` enacted: selftest 11 bites, enable/disable mutation both ways, dv-animate charts unaffected.
