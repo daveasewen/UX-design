@@ -4653,3 +4653,163 @@ session. **Verify by hash and diff, never by subject** [[wrap-skipped-chain-cert
 **Enactment receipts:** C2 87 files / 0 failures, PROMOTED `--strict` (was ADVISORY) · `gen_token_ramp.py` NEW, 6-bite selftest, wired (97-step routing selftest green; wiring gate 30·29·1·0) · `gen_snippet_tokens.py` `alpha/` route fixed (29 UNRESOLVED→0) · pro-forma gate AUTO-TOKENS strip MUTATION-TESTED (planted `#DEADBF` outside the span bites) · `_gen_titles.py` off-by-one FIXED (residual is addressed to N+1; fixtures corrected; selftest green).
 
 **Declared, untouched:** memento-package delta-audit red (PRE-EXISTING #120's `_memento_search.py` re-pin) — re-syncing would rule Dave's #64/#114 open items [[sub-ruled-daves-open-item-110]]. ⚠ PROVISIONAL debt registered in s121-D1 `watch`: mark whites + Empty-state `--phys-size` 120.
+
+---
+
+## ★ #125 — THREE RULINGS, ONE NOT ENACTED, AND ONE CLASS FOUND THREE TIMES IN ONE SESSION (Dave live, OPUS conductor, ONE window + 3 Opus subs, wrap DELEGATED to an Opus sub at FILL 143,686)
+
+⚠ **SHAPE FIRST: the session was opened as *"the schematic — memento drawn whole"* and Dave redirected at
+the opener — *"lets repair what we have to first"*. THE SCHEMATIC WAS NOT BUILT.** #125 is a **repair
+session**. The title is a label, not a deliverable claim. Arc:
+`_DECISION-HISTORY/2026-08-07-125-the-repair-session-and-the-claim-that-went-false.md`.
+
+### The three rulings — all Dave's, all by explicit option-select
+
+**`s125-D1` — RULED, ⛔ NOT ENACTED, ROLLS TO #126.** The chain banner's build-step count stops being a
+typed number and becomes a **GENERATED figure**: `_gen_chain.py` reads `len(STEPS)` out of
+`_build_all.py`'s AST at generation. **Dave chose this explicitly OVER a third re-stamp.** The general
+form of his reason: *a value that has gone stale twice will go stale a third time; the fix is not a
+fresher value, it is removing the human from the loop that produces it.*
+⚠ **The window ran out. The banner still says 75; disk measured 98 at the wrap.** The figure is marked
+**KNOWN-STALE in place** rather than re-stamped — **re-stamping is the act the ruling forbids**, so doing
+it "just to be accurate" would enact the alternative Dave rejected under cover of tidiness.
+
+**`s125-D2` — RULED + ENACTED.** `_validate_state_contrast.py` **un-exempted** and **wired** into
+`_build_all.py` with its exact-label `ROUTE_ROWS` row. **`EXEMPT` is now empty**, and `check()` gained an
+optional `exempt_map` so the four wiring selftest bites survive an empty dict — the tempting alternative
+was to keep one token exemption so `next(iter(EXEMPT))` kept working, i.e. **making the test pass by
+preserving the defect**. ★ **An exemption carries a REASON, and a reason is a CLAIM.** The wiring gate
+could check that an exemption was *named* and *dated*; it could never check that its reason was still
+**true**. **Gates, re-run at the wrap:** wiring **30/30 wired · 0 exempt · 0 failures rc=0** · wiring
+selftest **4 bites · 0 fail rc=0** · `_build_all.py --selftest` **PASS, 98 steps, rc=0**. Both changes
+mutation-tested.
+
+**`s125-D3` — RULED + ENACTED.** `parse()` now reads `color(srgb …)` — how chromium serialises every
+`color-mix()` result — and **REFUSES unreadable syntax BY NAME** (`StateContrastParseError`, carrying
+value · prop · element) instead of returning `null`. A refusal is reported as **UNMEASURED: a hole, not a
+pass and not a failure.** ★ **Teaching the parser one more syntax fixes today's inputs; refusing by name
+fixes every future input**, because the set of syntaxes chromium can emit is open-ended.
+**Measured: 20 false failures removed · 4 newly surfaced and REAL · 42 pre-existing.** Observed reversals:
+Button `.primary` hover **1:1 → 6.01:1**; Stepper "Next" **1:1 → 6.39:1**.
+⛔ **MUTATION RESULT, the sharpest evidence of the session:** the OLD code, fed `oklab()`, returned a
+**fabricated `{"ratio":1}` with no warning** — an invented catastrophic failure, indistinguishable from a
+real one, reported silently on every build.
+
+### ★★★ The finding — ONE CLASS, THREE TIMES, ONE SESSION
+
+> **A claim that was true when it was written, went false, and had nothing that re-checks it.**
+
+Three instances, differing in **medium**, identical in **mechanism**:
+1. **the 75** — *prose*. The gate audits the `size:` **stamp** (regex-matched, tolerance-checked);
+   **no gate parses prose** [[no-gate-parses-the-artefact]].
+2. **the exemption reason** — *a code comment*. Disproven by #124 **on its own date**, never propagated
+   [[assertion-propagation-gap]].
+3. **`parse()`** — *a return value*. An **INPUT** that nothing re-checks; a silent `null` treated as data
+   [[silent-lookup-failure-class]] [[measuring-tool-must-not-guess]].
+
+★ Each was found by a **different** method — git archaeology, a first-hand environment probe, a mutation
+test — and **none of the three methods would have found the other two.** There is no single instrument
+here, which is why the class keeps recurring.
+
+### The 75-vs-97 probe, RESOLVED — and the class recurred on its own line
+
+`git show 18c7789:knowledge/_build_all.py` → `len(STEPS)=75`, distinct labels **75**. HEAD → **97**,
+labels **97**. **1:1 at both ends ⇒ the same object; the banner is stale by 22**, not incomparable.
+⚠ It had been re-stamped **72→75** before and classified *"Perishable reading"* at
+`notes/_MEMENTO-DECISIONS.md:813` — **the class recurred on the very line that named it.**
+★ *Classifying a defect is not remedying it:* the classification told a future session what kind of thing
+the number was; it gave nothing the job of re-reading it.
+⚠ **DECLARED LIMIT: only the COUNT was proven. The GREEN verdict was NOT** — a full single-process
+`_build_all.py` run is sandbox-impossible and belongs to CI on push.
+
+### A Memento schematic ALREADY EXISTS, and nothing points at it
+
+`reviews/MEMENTO-SCHEMATIC-2026-07-26-v1.html` (commit `f783008`), **hand-authored, referenced by NO
+generator**. It asserts *"27 blocking validators in a 55-step build"*; disk today is **30 validators, 98
+steps** — and it draws a **different subject** (the dream-pass lane), not the six subsystems #125 was
+asked for. **Dave's disposition: v2 GENERATED, v1 KEPT and TOMBSTONED.** ⛔ **Neither happened; both roll.**
+
+### ⚠⚠ A CONTRADICTION — RECORDED, NOT ADJUDICATED
+
+Two Opus subs, one session, **opposite first-hand environmental readings**, both recorded verbatim in
+`_LIVE-STATE.md` § OPEN:
+- **Sub 1:** the browser download **SUCCEEDS**; the installer then throws `EPERM … rmdir '__dirlock'` —
+  a failure message **after** a success, a shape `_RUNBOOK-render-verify.md` explicitly banks.
+- **Sub 2:** the node downloader **IS TLS-blocked** on all 3 CDNs; `NODE_EXTRA_CA_CERTS` does **not** fix
+  it, while `curl` reaches the same URLs fine. Chromium installed **by hand** to `/tmp/pw-browsers`.
+- **Third datapoint, at the wrap, adjudicating NOTHING:** the hand-installed browser was still present and
+  a real chromium launched from it, while playwright's default `~/.cache/ms-playwright/` did not exist.
+  **The workaround persists; nothing was learned about the downloader, because no download was attempted.**
+
+⛔ **No winner picked, nothing averaged, `_RUNBOOK-render-verify.md` NOT edited on either basis.**
+★ The cheap move — pick the reading that matches the runbook and call the other sub mistaken — produces a
+**tidy, confident, possibly false** record, and #124 was burned by exactly that. **A re-verify is owed at
+#126.** Until then neither reading may be carried forward as a fact
+[[premise-ages-faster-than-rule]].
+
+### ⬛ Two defects found and DELIBERATELY NOT FIXED
+
+Both found while proving `s125-D3`, both **scoped out on purpose** so the mutation test proved **one
+clause** rather than a bundle [[mutation-tests-the-clause-not-the-feature]].
+- **`effBg` walks ANCESTORS ONLY** — it cannot see an absolutely-positioned **sibling** painting the
+  selected pill ⇒ **32 FALSE failures** (Segmented-control ×12 · Charts ×16 · View-options ×4). Real
+  rendering is fine. A **geometry** defect, distinct from `s125-D3`'s **parse** defect
+  [[conflated-fix-guarantees-recurrence]].
+- **`out[3] = <headline>` OVERWRITES** the first snippet's heading. `_STATE-CONTRAST-AUDIT.md` claims
+  *"across 38 snippet(s)"* and contains **37** (`Accordion` eaten); the artefact is **stale by 37** —
+  38 covered vs **75** on disk. ⚠ **Two additions measured AT THE WRAP:** with **zero** snippets the same
+  line **crashes** (`IndexError: list assignment index out of range`), and the script has **no
+  `--selftest` flag** — it silently treats an unrecognised argument as a snippet-name **filter**, which is
+  how the crash was reached. **An unknown defaulted rather than named, in the file just repaired for
+  guessing.**
+
+### ⬛ FOUR REAL FAILURES NOW SURFACING — DAVE'S TO RULE
+
+⛔ **Not fixed, not closed, not waived; no threshold touched.** Banner `.abtn:active` **4.09:1** (needs
+4.5), **light AND dark**, `canon.css:3963`/`:3975` — NEW. Pre-existing and also real: Tabs ×2 dark
+**1.00:1** (`.cn-tabs .ovcount`, `canon.css:2496` — a genuine token collision, white on white in dark) ·
+Selection-controls ×8 (light/pressed **3.95:1** ×6, dark **3.66:1**).
+★ Note the shape: **the instrument improved and the failure count went UP where it matters.** A repair
+that only ever reduces the red count should be suspected.
+
+### ⛔ What we got wrong
+
+**(a)** The conductor's first repair-set probe reported *"0 test arms"* and *"1 unwired validator"* —
+**both were the INSTRUMENT, not the repo** (arms are `arm_*` not `test_*`; the validator was exempt **by
+name**). Caught before publishing, **but it is the same guessing class the session was convened to
+repair, committed by the session repairing it.** ★ Knowing the class does not immunise you against it;
+only an instrument that refuses on the unknown does.
+**(b)** `_STATE-CONTRAST-AUDIT.md` was overwritten during proving and restored via `git show >` rather
+than `git checkout`, because of a stale `.git/index.lock`. Named, not smoothed over.
+
+### ⚙ Gauge — one datapoint RECORDED and NOT acted on
+
+**boot 53,681 real** (`message.usage`, first turn). ⚠ **The published floor is 75,899 and this is the
+FOURTH datapoint below it**, consistent with the post-break n=3 mean of 54,859. ⛔ **The re-base is
+DAVE'S and remains UNTAKEN — recorded, nothing re-based.** ★ The session's own discipline applied to its
+own instrument: *a measurement that disagrees with a published constant is evidence, not authority.*
+FILL **74,857 → 117,087 → 128,026 → 143,686** vs stop line **150,929**; **wrap delegated at 143,686**
+(roll-not-ride). Conversation-half throughput **214,164 real**. ✅ Quota GIVEN: **session 6% ·
+all-models 10% · Fable 16%, resets Thu.** ⚠ `tiktoken` refused on the first `pip` attempt, installed on
+retry — noted, not chased. ★ **Delegation inversion again:** 3 subs spent ~246K subagent tokens; the
+conductor paid only their reports — **cheap in FILL, expensive in QUOTA**
+[[delegation-cost-inversion-110]].
+
+### ⛔ DO-NOT-RULE — respected in full by the delegated wrap
+
+`G1`–`G17` · floor **75,899** and the re-base · recorder constants · the v1 pack sync question · mono grey
+ramp · SC dark · `G8` · type-ratchet debt **1,101 (may only ever shrink)** · the 19 `LEGACY_IDS`
+unconditioned items · **32.9-vs-32 RED** · `ds-025` · `ds-032` · boot-rent plan · attribution re-probe ·
+the fall-through-class remedy · the UNPROVEN msgfile attribution · **the 4 real contrast failures** ·
+**the render-runbook contradiction**.
+**This wrap ruled nothing, changed no value, and edited no gate, threshold or fence.**
+★ The list exists because at #110 a delegated wrap ruled one of Dave's open items to clear its own gate —
+*"a cap raised to clear its own gate is not a cap"* [[sub-ruled-daves-open-item-110]].
+
+### ⚠ Observed at the wrap, recorded and NOT fixed
+
+**This ledger has no `## ★ #<n>` section for #117–#120 or #122–#124**, while banners and `_rulings.json`
+entries cite *"`notes/_MEMENTO-DECISIONS.md` § ★ #124"* and similar. The pointers resolve to the **file**
+(which is what the gate checks) but not to a **section**. Recorded as a gap in the record; **not
+back-filled here**, because inventing seven session sections after the fact is confident false
+inscription, and the honest marker for an unknown is that it is unknown [[gap-in-record-vs-gap-in-evidence]].

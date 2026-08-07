@@ -210,6 +210,37 @@ STEPS = [
     # fix at _validate_screen.py:63, the only call site. Repaired + mutation-tested #120
     # (injected unguarded transition → named 2.3.3 FAIL, rc=1); exemption removed same pass.
     ("screen gate — compose+icons+a11y over fitness fixtures (re-wired #120)", "_validate_screen.py"),
+    # WIRED #125 (s125-D2, Dave) — exempt as ENVIRONMENTAL since #120 on the grounds that the
+    # chromium download was TLS-blocked in-sandbox. DISPROVEN by observation at #125: the
+    # _RUNBOOK-render-verify.md recipe was followed literally, the headless-shell download
+    # landed, chromium launched, and the validator ran and emitted output. The exemption had
+    # read the installer's __dirlock/host-validation non-zero exit as a download refusal.
+    # ⚠ TWO PRE-EXISTING DEFECTS FOUND IN THE VALIDATOR AT WIRING (the #125 wiring worker was
+    # fenced to _validate_wiring.py + _build_all.py, so it could not repair them here):
+    #   (1) its MEASURE parse() regex matched only rgba?(...), so a background Chromium
+    #       serialises as color(srgb ...) — every color-mix() hover in canon.css — was skipped
+    #       and treated as measured. White-on-#5F5F5F (6.4:1, a PASS) was reported as 1:1.
+    #       ✅ FIXED LATER THE SAME SESSION by s125-D3: parse() reads color(srgb ...) AND
+    #       REFUSES unreadable syntax by name (StateContrastParseError) instead of returning
+    #       null. 20 false failures removed; 4 REAL ones surfaced (Dave's to rule).
+    #   (2) `out[3] = <headline>` overwrites the FIRST snippet's "## " heading instead of
+    #       inserting — provable in the committed artefact, which claims 38 snippets and
+    #       contains 37 headings (Accordion's, alphabetically first, is the one eaten).
+    #       ⛔ STILL OPEN — rolls to #126, with two additions measured at the #125 wrap: with
+    #       ZERO snippets in scope the same line raises IndexError, and an unrecognised argv
+    #       entry is silently taken as a snippet-name FILTER (there is no --selftest flag).
+    # ⚠ CORRECTED AT THE #125 WRAP: this comment previously ended "THIS GATE WILL BE RED UNTIL
+    # (1) IS FIXED", which went false inside its own session once s125-D3 landed — the exact
+    # class #125 was convened to repair (a claim true when written, with nothing re-checking
+    # it). CURRENT POSITION: the gate is RED, but on DIFFERENT grounds — 4 REAL contrast
+    # failures awaiting Dave's ruling, plus ~32 FALSE ones from a THIRD, distinct defect:
+    # effBg() walks ANCESTORS ONLY and cannot see an absolutely-positioned SIBLING painting the
+    # selected pill (Segmented-control, Charts, View-options). That one is a GEOMETRY defect,
+    # not a parse defect, and is deliberately unfixed — see _LIVE-STATE.md § OPEN.
+    # Wired anyway because the ruled premise (it cannot run) is disproven and the wiring gate
+    # admits no half-state; the bites themselves are Dave's to rule on.
+    ("state-contrast gate — driven hover/pressed, light+dark (un-exempted #125)",
+     "_validate_state_contrast.py"),
     # WIRED #119 at tier (b) SHRINK-ONLY RATCHET — Dave's ruling 2026-08-07. Baseline
     # 1,101 MEASURED at wiring (not copied), declared debt in _type_ratchet.json, may
     # only shrink. Risk named to Dave and accepted: shape of "a cap raised to clear its
@@ -447,6 +478,8 @@ ROUTE_ROWS = [
      "\n❌ compose gate failed (exit {code}) — see knowledge/_validate_compose.py"),
     ("screen gate — compose+icons+a11y over fitness fixtures (re-wired #120)", GATE,
      "\n❌ screen gate failed (exit {code}) — a _fitness-test canon fixture fails compose/icon-source/a11y; see knowledge/_validate_screen.py output"),
+    ("state-contrast gate — driven hover/pressed, light+dark (un-exempted #125)", GATE,
+     "\n❌ state-contrast gate failed (exit {code}) — a driven hover/pressed state measures below 4.5:1 (large 3.0:1) in light or dark; see knowledge/_STATE-CONTRAST-AUDIT.md. ⚠ #125: verify the reading before treating it as a design defect — the validator's parse() cannot read color(srgb ...) backgrounds (every color-mix() hover), and mis-reports those as ~1:1."),
     ("type-composites ratchet — tier (b), debt 1101 shrink-only (Dave #119)", GATE,
      "\n❌ type-composites ratchet failed (exit {code}) — NEW violation(s) above the declared debt in knowledge/_type_ratchet.json; the ratchet only shrinks (s119-D1). Fix the new violations; do NOT raise the baseline."),
     ("type-composites selftest", ABORT, None),

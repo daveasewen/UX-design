@@ -26,32 +26,45 @@ SELF = "_validate_wiring.py"
 EXEMPT: dict[str, tuple[str, str]] = {
     # _validate_screen.py UN-EXEMPTED #120 — the #118 "ROTTED" verdict was a drifted
     # a11y.check() call signature; repaired, bite-tested, WIRED in _build_all.py same pass.
-    "_validate_state_contrast.py": (
-        "ENVIRONMENTAL, re-diagnosed #120 — playwright module installs, but chromium download "
-        "is blocked by sandbox TLS (UNABLE_TO_GET_ISSUER_CERT_LOCALLY on all 3 CDNs); needs an "
-        "env with CA trust to playwright's CDN or a pre-cached browser. Not rot: never exercised.",
-        "2026-08-07"),
+    # _validate_state_contrast.py UN-EXEMPTED #125 (s125-D2, Dave). Its reason claimed the
+    # chromium download was "blocked by sandbox TLS (UNABLE_TO_GET_ISSUER_CERT_LOCALLY on all
+    # 3 CDNs)". DISPROVEN by direct observation, not by argument: _RUNBOOK-render-verify.md was
+    # followed literally and the download SUCCEEDED (chromium_headless_shell-1234 in the cache),
+    # chromium launched, and the validator ran and produced output. The installer's non-zero
+    # exit is the __dirlock EPERM the runbook banks as "a failure message AFTER a success" —
+    # the original diagnosis read that exit as a refusal. ⇒ an environmental fence is verified
+    # against the thing itself, never carried forward from a prior session's banner.
+    # EMPTY IS A LEGITIMATE STATE: selftest bites 3+4 use a SYNTHETIC exemption so they keep
+    # biting with no real entries here — a bite that needs a real exemption to exist is a bite
+    # that can silently stop existing.
 }
 
 
-def check(build_text: str, disk: list[str]) -> list[str]:
-    """Return failure strings. Pure so the selftest can bite it."""
+def check(build_text: str, disk: list[str],
+          exempt_map: dict[str, tuple[str, str]] | None = None) -> list[str]:
+    """Return failure strings. Pure so the selftest can bite it.
+
+    `exempt_map` defaults to the module's EXEMPT; passing it explicitly is what lets the
+    selftest bite the exemption clauses with a SYNTHETIC entry instead of borrowing a real
+    one (#125 — EXEMPT is legitimately empty now, and `next(iter(EXEMPT))` would have raised).
+    """
+    exempt_map = EXEMPT if exempt_map is None else exempt_map
     fails = []
     for name in sorted(disk):
         wired = re.search(r'["\']' + re.escape(name) + r'["\']', build_text)
-        exempt = name in EXEMPT
+        is_exempt = name in exempt_map
         if name == SELF:
             # the wiring gate itself must be wired — an unwired wiring gate is a joke
             if not wired:
                 fails.append(f"ORPHAN (the gate itself): {name} has no STEPS entry in _build_all.py")
             continue
-        if not wired and not exempt:
+        if not wired and not is_exempt:
             fails.append(f"ORPHAN: {name} exists on disk but has no STEPS entry in _build_all.py "
                          f"and no named exemption. Wire it or exempt it BY NAME with a reason.")
-        if wired and exempt:
+        if wired and is_exempt:
             fails.append(f"STALE EXEMPTION: {name} is wired AND exempt "
-                         f"({EXEMPT[name][0]!r}, {EXEMPT[name][1]}). Remove the exemption.")
-    for name in EXEMPT:
+                         f"({exempt_map[name][0]!r}, {exempt_map[name][1]}). Remove the exemption.")
+    for name in exempt_map:
         if name not in disk:
             fails.append(f"DANGLING EXEMPTION: {name} is exempt but not on disk. Remove it.")
     return fails
@@ -85,14 +98,20 @@ def selftest() -> int:
                for f in check(build_text, disk + ["_validate_fake_orphan.py"])):
         fails.append("bite 2 FAILED: a fake orphan on disk did not fire")
     # bite 3 (REMEDIATION clause, not just detection — #104's lesson): a stale
-    # exemption (exempt AND wired) must fire, proving the exempt list can't absorb a fix silently
-    exempt_name = next(iter(EXEMPT))
-    wired_plus = build_text + f'\n# ("x", "{exempt_name}"),\n("x", "{exempt_name}")'
-    if not any("STALE EXEMPTION" in f and exempt_name in f for f in check(wired_plus, disk)):
-        fails.append(f"bite 3 FAILED: stale exemption for {exempt_name} did not fire")
+    # exemption (exempt AND wired) must fire, proving the exempt list can't absorb a fix silently.
+    # SYNTHETIC name, not a borrowed real one (#125): these two bites used to read
+    # `next(iter(EXEMPT))`, so emptying EXEMPT would have crashed the selftest — and "make the
+    # crash go away" would have meant deleting the two bites that police the exemption list
+    # exactly when nothing is exempt. The clause must be testable when the list is empty.
+    synth = "_validate_synthetic_exemption.py"
+    synth_map = {synth: ("SYNTHETIC — selftest fixture only, never a real exemption", "2026-08-07")}
+    wired_plus = build_text + f'\n# ("x", "{synth}"),\n("x", "{synth}")'
+    if not any("STALE EXEMPTION" in f and synth in f
+               for f in check(wired_plus, disk + [synth], synth_map)):
+        fails.append(f"bite 3 FAILED: stale exemption for {synth} did not fire")
     # bite 4: a dangling exemption (exempt, not on disk) must fire
-    disk_minus = [n for n in disk if n != exempt_name]
-    if not any("DANGLING EXEMPTION" in f for f in check(build_text, disk_minus)):
+    if not any("DANGLING EXEMPTION" in f and synth in f
+               for f in check(build_text, disk, synth_map)):
         fails.append("bite 4 FAILED: dangling exemption did not fire")
     print(f"wiring selftest: 4 bites · {len(fails)} failure(s)")
     for f in fails:

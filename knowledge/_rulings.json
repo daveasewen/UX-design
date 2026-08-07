@@ -1091,6 +1091,64 @@
     "knowledge/_memento_search.py / _search_core.py — no demotion/re-ranking on _graph_superseded; decorate stays additive-only (the #115 ABSOLUTE CONSTRAINT is now permanent, not provisional)"
    ],
    "enacted": "#124 — nothing to build; the ruling forbids a build. The #115 observation window CLOSES: instrumented, tallied, judged, ruled."
+  },
+  {
+   "id": "s125-D1",
+   "ruled": "#125",
+   "date": "2026-08-07",
+   "by": "Dave",
+   "says": "The chain banner's BUILD-STEP COUNT stops being a typed number and becomes a GENERATED figure: _gen_chain.py reads len(STEPS) out of _build_all.py's AST at generation time. Dave chose this explicitly OVER a third re-stamp. Reason, in the general form: a value that has gone stale twice will go stale a third time, so the fix is not a fresher value but removing the human from the loop that produces it. The count had already been re-stamped 72->75 once and classified 'Perishable reading' (notes/_MEMENTO-DECISIONS.md:813) - the class recurred on the very line that named it.",
+   "governs": [
+    "knowledge/_gen_chain.py - the build-step count in the generated chain banner must be READ from _build_all.py's AST, never typed",
+    "GOOD-MORNING.md - the '75 STEPS' figure in the standing header is the stale instance; it may NOT be hand-re-stamped, that is the act this ruling forbids"
+   ],
+   "status": "RULED #125, NOT ENACTED - rolls to #126. The window ran out. The banner still reads 75; disk measured 98 at the #125 wrap (AST, len(STEPS)). The stale figure is MARKED KNOWN-STALE in place with a pointer to this ruling rather than re-stamped.",
+   "watch": "A future session 'helpfully' correcting 75 to 98 by hand would enact the alternative Dave rejected, under cover of tidiness. The only legal fix is the generator.",
+   "evidence": [
+    "git show 18c7789:knowledge/_build_all.py -> len(STEPS)=75, distinct labels 75; HEAD -> 97, labels 97. 1:1 at both ends => same object, banner stale by 22.",
+    "_LIVE-STATE.md SS OPEN - the s125-D1 standing block",
+    "_DECISION-HISTORY/2026-08-07-125-the-repair-session-and-the-claim-that-went-false.md",
+    "notes/_MEMENTO-DECISIONS.md SS #125"
+   ]
+  },
+  {
+   "id": "s125-D2",
+   "ruled": "#125",
+   "date": "2026-08-07",
+   "by": "Dave",
+   "says": "_validate_state_contrast.py is UN-EXEMPTED from the wiring gate and WIRED into _build_all.py. Its exemption reason - 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY on all 3 CDNs, so the validator cannot run in-sandbox' - WAS NEVER TRUE and had in any case been disproven by #124 on its own date without the disproof ever propagating to the comment. An exemption carries a REASON, and a reason is a CLAIM: the wiring gate could check that an exemption was named and dated, never that its reason was still true.",
+   "governs": [
+    "knowledge/_validate_wiring.py - EXEMPT is now EMPTY; check() takes an optional exempt_map so the selftest can inject a synthetic map instead of the real one being kept non-empty to keep the test working",
+    "knowledge/_build_all.py - _validate_state_contrast.py is a registered step with its exact-label ROUTE_ROWS row"
+   ],
+   "status": "RULED #125, ENACTED #125. Both changes mutation-tested.",
+   "watch": "The tempting repair for the empty EXEMPT was to leave one token exemption in place so next(iter(EXEMPT)) kept working - i.e. making the test pass by preserving the defect. exempt_map exists so that is never necessary.",
+   "enacted": "#125 - wiring gate: 30 validators on disk, 30 wired, 0 exempt, 0 failures, rc=0 - wiring selftest: 4 bites, 0 failures, rc=0 - _build_all.py --selftest: PASS, exact-ID routing over 98 steps, rc=0. All three RE-RUN at the #125 wrap.",
+   "evidence": [
+    "knowledge/_validate_wiring.py EXEMPT block, un-exemption comment dated #125",
+    "_LIVE-STATE.md LATEST DELTA #125",
+    "_DECISION-HISTORY/2026-08-07-125-the-repair-session-and-the-claim-that-went-false.md",
+    "notes/_MEMENTO-DECISIONS.md SS #125"
+   ]
+  },
+  {
+   "id": "s125-D3",
+   "ruled": "#125",
+   "date": "2026-08-07",
+   "by": "Dave",
+   "says": "parse() in _validate_state_contrast.py reads color(srgb ...) - how chromium serialises every color-mix() result - and REFUSES unreadable colour syntax BY NAME (StateContrastParseError, carrying value, prop and element) instead of returning null. A refusal is reported as UNMEASURED: a hole, not a pass and not a failure. General form: teaching the parser one more syntax fixes today's inputs; refusing by name fixes every future input, because the set of syntaxes chromium can emit is open-ended.",
+   "governs": [
+    "knowledge/_validate_state_contrast.py - parse() and the audit report; a snippet with a refusal may NOT be reported clean"
+   ],
+   "status": "RULED #125, ENACTED #125. Mutation-proven.",
+   "watch": "MUTATION RESULT, and it is the sharpest evidence in the session: the OLD code, fed oklab(), returned a FABRICATED {'ratio':1} with no warning - an invented catastrophic failure indistinguishable from a real one. 4 REAL failures are now surfacing and are DAVE'S to rule; they were not fixed, closed or waived, and no threshold was touched.",
+   "enacted": "#125 - 20 false failures removed, 4 newly surfaced and REAL, 42 pre-existing. Observed reversals: Button .primary hover 1:1 -> 6.01:1; Stepper 'Next' 1:1 -> 6.39:1.",
+   "evidence": [
+    "knowledge/_validate_state_contrast.py - StateContrastParseError at :51, color(srgb) branch at :60, refusal reporting at :92/:184/:192",
+    "_LIVE-STATE.md SS OPEN - the 4 REAL failures block (Dave's) and the two-defects block (effBg / out[3], NOT fixed by ruling)",
+    "_DECISION-HISTORY/2026-08-07-125-the-repair-session-and-the-claim-that-went-false.md",
+    "notes/_MEMENTO-DECISIONS.md SS #125"
+   ]
   }
  ]
 }
