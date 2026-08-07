@@ -226,10 +226,59 @@ DEFAULT_TARGETS = (
     + sorted(glob.glob(os.path.join(HERE, "_proforma", "*.html")))
 )
 
+RATCHET_FILE = os.path.join(HERE, "_type_ratchet.json")
+
+
+def run_ratchet(paths):
+    """Tier (b) — SHRINK-ONLY RATCHET, ruled by Dave #119 (2026-08-07).
+
+    Enforces today against any NEW violation; existing debt is DECLARED in
+    _type_ratchet.json and may only shrink. Named risk (put to Dave, accepted):
+    a baseline set to today's count has the shape of "a cap raised to clear its
+    own gate" — the claimed difference is it may ONLY shrink and is carried as
+    declared debt, never absorbed as a pass. The baseline was MEASURED at wiring,
+    not copied from _HANDOFF-118 (whose 1,101 was a dated measurement).
+    """
+    import io, json
+    buf, real = io.StringIO(), sys.stdout
+    sys.stdout = buf
+    try:
+        run(paths)
+    finally:
+        sys.stdout = real
+    # count from the SUMMARY line only — per-violation ✗ lines truncate at 6/file
+    count = _ratchet_count_from_summary(buf.getvalue())
+    with open(RATCHET_FILE, encoding="utf-8") as f:
+        state = json.load(f)
+    base = state["baseline"]
+    if count > base:
+        print(f"TYPE RATCHET FAIL — {count} violation(s) > declared debt {base}. "
+              f"{count - base} NEW violation(s); the ratchet only shrinks.")
+        return 1
+    if count < base:
+        state["baseline"] = count
+        state["shrunk"] = f"{base} -> {count} on {__import__('datetime').date.today()}"
+        with open(RATCHET_FILE, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=2)
+        print(f"TYPE RATCHET PASS — debt shrank {base} -> {count}; baseline ratcheted down.")
+        return 0
+    print(f"TYPE RATCHET PASS — declared debt holds at {base} (0 new). "
+          f"This is DEBT, not a pass of the underlying gate.")
+    return 0
+
+
+def _ratchet_count_from_summary(text):
+    import re as _re
+    m = _re.search(r"TYPE GATE FAIL — (\d+) violation", text)
+    return int(m.group(1)) if m else 0
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     if args and args[0] == "--selftest":
         sys.exit(selftest())
+    if args and args[0] == "--ratchet":
+        sys.exit(run_ratchet([p for p in DEFAULT_TARGETS if os.path.exists(p)]))
     if args and args[0] == "--inventory":
         rest = args[1:] or [p for p in DEFAULT_TARGETS if os.path.exists(p)]
         sys.exit(run(rest, inventory=True))

@@ -218,6 +218,18 @@ def selftest() -> list[str]:
                                 f"an entry that cannot point a reader at canon IS canon, and "
                                 f"this file must never become the eleventh copy")
         for e in r.get("evidence", []):
+            # #119: `commit <sha>` is a LEGAL pointer form — verified against git, not the
+            # filesystem. Before this, an honest commit pointer had no legal form here and
+            # real hashes were reported as rot ([[honest-refusal-needs-a-legal-form]] class).
+            if e.startswith("commit "):
+                sha = e.split()[1]
+                ok = subprocess.run(["git", "cat-file", "-e", f"{sha}^{{commit}}"],
+                                    cwd=REPO, capture_output=True).returncode == 0
+                if not ok:
+                    failures.append(f"_governs: ruling {r['id']} points at `{e}` which is not "
+                                    f"a commit in this repo — a pointer index whose pointers "
+                                    f"rot is worse than none")
+                continue
             p = os.path.join(REPO, e.split(":")[0])
             if not os.path.exists(p):
                 failures.append(f"_governs: ruling {r['id']} points at `{e}` which does not "

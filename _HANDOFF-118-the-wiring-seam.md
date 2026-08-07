@@ -156,8 +156,33 @@ gate pass** — `_validate_behaviour.py`'s 32.9-vs-32 red is PRE-EXISTING and DE
   seam) and built neither. The wiring gate is spec'd above. **The stale-mount seam has no gate yet and
   may have none available** — if so, say so plainly and retire it rather than carrying it as a
   reproach.
-- **Dirty at handoff:** `notes/_REHEARSAL-LOG.jsonl` (appends only) · `_TRIAGE-118-bucket-sort-v1.md`
-  (new) · this file (new). Memory files are outside git.
+- ✅ **#118 IS WRAPPED AND COMMITTED** — `813b501`, subject self-certifies as #118 (verified by hash +
+  `git show --stat`, 12 files, +971/−390). Full ritual ran: 2c 2/2 · 2d 3/3 · 2f strata 1 · index
+  rebuilt LAST (588 records) · chain regenerated to a fixed point in 2 passes, `--check` FRESH.
+  **0 structural fails, 0 heals-at-wrap.** 0 git locks. **Safe for Dave to push via GitHub Desktop.**
+- ✅ **Capture-ritual step 3 (memory) DONE by the conductor** — `feedback-type-composites-mandatory`
+  corrected at source, `unwired-validators-are-a-class` and `stale-mount-corroborates-a-stale-premise`
+  minted, `MEMORY.md` index updated.
+- **Dirty at handoff:** `notes/_REHEARSAL-LOG.jsonl` (the check-in probe's own append — known class).
+
+---
+
+## ⚠⚠ TWO NEW FACTS FROM THE #118 WRAP — BOTH MATERIAL, NEITHER IN THE PLAN ABOVE
+
+**① §C WILL HIT ITS BLOCK AT THE NEXT WRAP.** §C measures **216 charged lines against a 150 warn cap
+and a 225 BLOCK**. #118 added 11 (the mandatory EXIT-CHECK copy-ups before the 2c roll). ⇒ **nine lines
+of headroom.** #119's wrap will be REFUSED unless §C is compacted first.
+⛔ **Do NOT compact it under wrap heat** — that means trimming ratified queue entries at the worst
+possible moment, which this project has ruled against. **Do it EARLY in #119, as its own lane, by
+ADDITION first** (home the content elsewhere, then cut) [[home-by-addition-then-cut]].
+⚠ And **do not raise the cap** — a cap raised to clear its own gate is not a cap.
+
+**② THE BOOT PLATEAU IS ONE SAMPLE STALE.** #118's boot = **54,404**. The post-break plateau now
+stands at **n=4, mean 54,746** — so **the 54,859 ±850 figure Dave was shown at #117 is itself out of
+date**, and the re-base decision he still holds (item 1, bucket A) is being asked against a stale
+number. ⛔ **This is a MEASUREMENT, not a proposal.** `BOOT_FIRSTTURN_TK = 65_400` is untouched and the
+drift declaration quotes the gate's own computation (mean 56,078 · constant 65,400 ±1,400 · delta
+−9,321). **When item 1 is next put to Dave, put it with the CURRENT number, not #117's.**
 - ⚠ A 0-byte `.git/index.lock` recurs from ordinary read-only `git status`. **It is the delete-guard
   signature — stale and safe.** `mv` it to `_to_delete/_stale_locks/`, **never `rm`**; a `mv` to
   `/tmp` FAILS. **Do NOT ask Dave whether GitHub Desktop is open** — he pushes via Desktop by design

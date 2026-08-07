@@ -192,6 +192,21 @@ STEPS = [
     # is that a mutation which only exercises detection never proves remediation. All 25
     # clauses were mutation-tested at #116; 16 mutations of _a11y_target.py, 16 killed.
     ("a11y target-measurement selftest (s114-D5)", "_validate_a11y.py", ["--selftest"]),
+    # WIRED #119: #118 found the wiring seam — 29 validators on disk, 25 wired, 4 orphans,
+    # each unwired for a DIFFERENT reason. Building is gated; wiring wasn't. This gate
+    # asserts every _validate_*.py is in this list or exempt BY NAME with a reason.
+    # 4 bites mutation-tested at #119 (both directions + stale/dangling exemption).
+    ("wiring gate — no orphaned validators (#118 seam)", "_validate_wiring.py"),
+    ("wiring gate selftest — 4 bites", "_validate_wiring.py", ["--selftest"]),
+    # WIRED #119: pure oversight orphan from #118's table — green at both drives, zero risk.
+    ("compose gate (orphan wired #119)", "_validate_compose.py"),
+    # WIRED #119 at tier (b) SHRINK-ONLY RATCHET — Dave's ruling 2026-08-07. Baseline
+    # 1,101 MEASURED at wiring (not copied), declared debt in _type_ratchet.json, may
+    # only shrink. Risk named to Dave and accepted: shape of "a cap raised to clear its
+    # own gate"; the difference claimed is shrink-only + declared-as-debt.
+    ("type-composites ratchet — tier (b), debt 1101 shrink-only (Dave #119)",
+     "_validate_type_composites.py", ["--ratchet"]),
+    ("type-composites selftest", "_validate_type_composites.py", ["--selftest"]),
     ("coverage gate", "_validate_coverage.py"),
     ("pro-forma universal gate", "_validate_proforma.py"),
     ("pro-forma CSS-governed motion gate (DEF-003)", "_validate_css_governed.py"),
@@ -407,6 +422,18 @@ ROUTE_ROWS = [
     ("icon-source gate", GATE,
      "\n❌ icon-source gate failed (exit {code}) — see knowledge/_ICON-SOURCE-AUDIT.md"),
     ("a11y gate", GATE, "\n❌ a11y gate failed (exit {code}) — see knowledge/_A11Y-GATE.md"),
+    # ⚠ #119 FOUND: this row was MISSING since the step was registered at #116 — check_routes
+    # aborted every full build before step 1, so the full build cannot have run since. The
+    # wiring-seam class again: registered but unroutable. Added #119, declared in the chain.
+    ("a11y target-measurement selftest (s114-D5)", ABORT, None),
+    ("wiring gate — no orphaned validators (#118 seam)", GATE,
+     "\n❌ wiring gate failed (exit {code}) — a _validate_*.py is on disk with no STEPS entry and no named exemption; wire it or exempt it BY NAME (knowledge/_validate_wiring.py)"),
+    ("wiring gate selftest — 4 bites", ABORT, None),
+    ("compose gate (orphan wired #119)", GATE,
+     "\n❌ compose gate failed (exit {code}) — see knowledge/_validate_compose.py"),
+    ("type-composites ratchet — tier (b), debt 1101 shrink-only (Dave #119)", GATE,
+     "\n❌ type-composites ratchet failed (exit {code}) — NEW violation(s) above the declared debt in knowledge/_type_ratchet.json; the ratchet only shrinks (s119-D1). Fix the new violations; do NOT raise the baseline."),
+    ("type-composites selftest", ABORT, None),
     ("coverage gate", GATE, "\n❌ coverage gate failed (exit {code}) — see knowledge/_COVERAGE-GATE.md"),
     ("pro-forma universal gate", GATE,
      "\n❌ pro-forma universal gate failed (exit {code}) — see knowledge/_PROFORMA-GATE.md"),
