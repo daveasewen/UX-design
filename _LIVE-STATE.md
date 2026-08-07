@@ -161,12 +161,15 @@ Latin webfont" rests on absence of files, not on any document.
   white, 6.25 on `#111`; required by `{#dv-016}` (≥3:1 series fills, blocking).
 - **Rule 1 — amber is always paired with black text. Rule 2 — amber is not a DIRECTIONAL delta
   colour**; it remains valid for status and tolerance.
-- **White is the RAG text colour universally; dark-text variant DROPPED** (R-D1) — amber the sole
+- **White is the RAG text colour universally; dark-text variant DROPPED** (R-D1, claim carried live
+  by R-D7/R-D15 — cite those; R-D1 itself is superseded · s124 tally SAVE) — amber the sole
   exception, always was.
 - **`#000000` retained in the KB as brand source of truth**; `#1A1A1A` = digital black for screens;
   `#1D1D1D` dropped; `#333333` canon, stays.
 - **Incumbent RAG values NOT deleted** — retired into a future legacy theme. Tombstone, keep.
-- **R-D4 (2026-07-18): matting rungs RULED — green + blue matted 15%** (`#2B7E4F` / `#306EC6`),
+- **R-D4 (2026-07-18): matting rungs RULED — green + blue matted 15%** (`#2B7E4F` / `#306EC6` —
+  ⚠ SUPERSEDED as fill values (R-D12.B): light later RESOLVED `#5DAC7B`/`#7DABCD`, dark stays
+  R-D10's `#43AD6F`/`#5F92B9`, see below · s124 tally SAVE),
   red as-is, one level across both. **Role tokens PROMOTED** into `semantic-colour.json` as
   `rag/<hue>-background` + `rag/<hue>-glyph` (additive; incumbents untouched; zero components
   rebound yet — rebinding waits for the blast-radius gate). Green promoted **light-only**: the
@@ -474,7 +477,9 @@ ignore a red build.
 - **§1 RAG manifestation — OPEN.** Which forms are canon: Status-indicator dot+label (existing canon) · filled
   cell/badge · bar/edge; tags+pills EXCLUDED by canon (ctkt). Decision sheet built
   (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`), awaiting Dave's canon pick (A / A+B / A+B+C). Then a
-  Sonnet build: rebind Status-indicator to R-D10, spec cell/bar as gated components (cells need more vertical padding).
+  Sonnet build: rebind Status-indicator to the R-D10 dark set **as amended by R-D11** (R-D10's
+  mode-stability claim is dead — a build citing R-D10 alone re-enacts it · s124 tally SAVE), spec
+  cell/bar as gated components (cells need more vertical padding).
 - ~~**`.tag` COLLISION**~~ **RESOLVED 2026-07-18.** Was three things under one name: the tag component
   (14px), a smaller reuse (12px), and a masthead descriptor `.h .tag`. Ruled (Dave): tag atom = 3
   variants (dismissible/bordered/plain) × 2 sizes (`.tag`/`.tag--sm`), `.tag--plain` for borderless;

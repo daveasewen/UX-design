@@ -9,7 +9,7 @@ title-block + stale-title refusal) in BOTH in-package copies, undetected, until 
 it. This gate is the enforcement the ruling always implied.
 
 FOUR ARMS.
-  1. VERBATIM SET — `_gen_chain.py` / `_memento_search.py` / `_search_core.py` must be
+  1. VERBATIM SET — `_gen_chain.py` / `_memento_search.py` / `_search_core.py` / `_graph_edges.py` must be
      byte-identical to their `knowledge/` originals, in BOTH package copies.
   2. THE SHIM — `_capture_gate.py` in the package is NOT a copy, by design (its own
      docstring: a purpose-written standalone shim reproducing four functions' behaviour).
@@ -47,8 +47,8 @@ substantially — i.e. the method correctly stayed GREEN on real, heavy, UNRELAT
 a whole-file hash could never have distinguished from a real break.
 
 GATE-GLOB-SCOPE: this gate globs `memento-package/` explicitly and ONLY (plus reads, never
-writes, `knowledge/_gen_chain.py` / `_memento_search.py` / `_search_core.py` / `_capture_gate.py`
-/ `_gm_usage.py` as comparison SOURCES). It does not touch, read the content of for grading, or
+writes, `knowledge/_gen_chain.py` / `_memento_search.py` / `_search_core.py` / `_graph_edges.py`
+/ `_capture_gate.py` / `_gm_usage.py` as comparison SOURCES). It does not touch, read the content of for grading, or
 widen any other gate's glob (gate-glob-scope-rule).
 
 USAGE
@@ -72,7 +72,11 @@ COPY_A = "memento-package/machinery"
 COPY_B = "memento-package/claude-plugin/memento/machinery"
 SHIM_NAME = "_capture_gate.py"
 
-VERBATIM_SET = ("_gen_chain.py", "_memento_search.py", "_search_core.py")
+# s124: _graph_edges.py joined the set — the #115 sync made _memento_search.py import it, and a
+# green audit over a copy with a dead import is the no-gate-parses-the-artefact class (#122).
+# Its data files (_decision-graph.json etc.) deliberately do NOT ship: _graph_edges degrades
+# loud-and-named via available()/unavailable_notice() when they're absent.
+VERBATIM_SET = ("_gen_chain.py", "_memento_search.py", "_search_core.py", "_graph_edges.py")
 KNOWN_FILES = set(VERBATIM_SET) | {SHIM_NAME, "_consult-lexicon.json", "_MACHINERY-MANIFEST.md"}
 # ⚠ NAMED, deliberate, narrow exclusion — NOT a blanket ignore-list. __pycache__ is Python's
 # own bytecode cache, gitignored (.gitignore:8 `__pycache__/`, :9 `*.pyc`), regenerates on
