@@ -1102,14 +1102,18 @@
     "knowledge/_gen_chain.py - the build-step count in the generated chain banner must be READ from _build_all.py's AST, never typed",
     "GOOD-MORNING.md - the '75 STEPS' figure in the standing header is the stale instance; it may NOT be hand-re-stamped, that is the act this ruling forbids"
    ],
-   "status": "RULED #125, NOT ENACTED - rolls to #126. The window ran out. The banner still reads 75; disk measured 98 at the #125 wrap (AST, len(STEPS)). The stale figure is MARKED KNOWN-STALE in place with a pointer to this ruling rather than re-stamped.",
+   "status": "RULED #125, ENACTED #126. The figure is GENERATED: _gen_chain.build_verdict_line() reads len(STEPS) from _build_all.py's AST for the WORKING TREE and from `git show 18c7789:knowledge/_build_all.py` for the commit behind the '#62 green' claim, and computes the shortfall. The chain now reads '75 of 98 steps green (#62, 18c7789) - 23 steps have NEVER been in a green verdict'. NOTHING was re-stamped by hand.",
    "watch": "A future session 'helpfully' correcting 75 to 98 by hand would enact the alternative Dave rejected, under cover of tidiness. The only legal fix is the generator.",
    "evidence": [
     "git show 18c7789:knowledge/_build_all.py -> len(STEPS)=75, distinct labels 75; HEAD -> 97, labels 97. 1:1 at both ends => same object, banner stale by 22.",
     "_LIVE-STATE.md SS OPEN - the s125-D1 standing block",
     "_DECISION-HISTORY/2026-08-07-125-the-repair-session-and-the-claim-that-went-false.md",
-    "notes/_MEMENTO-DECISIONS.md SS #125"
-   ]
+    "notes/_MEMENTO-DECISIONS.md SS #125",
+    "#126 MEASURED: len(STEPS)=98 on disk, 98 distinct labels; 75/75 at 18c7789. Note the count moved 97->98 between the #125 probe and the #126 enactment (s125-D2 wired a validator) - the figure went stale AGAIN inside one day, which is the ruling's premise demonstrating itself.",
+    "#126 MUTATION BATTERY, 12 bites, 0 fail: adding a step moves the figure 98->99 and the gap 23->24; renaming STEPS REFUSES BY NAME and publishes NO count; a non-literal STEPS refuses; an unreachable VERDICT_SHA declares the COVERAGE unmeasured while keeping the live count; a duplicated label is surfaced, not counted as growth. _build_all.py restored byte-exact (sha256) after every mutation.",
+    "#126 WIRED: 5 permanent bites added to _gen_chain.selftest(), which is already a registered build step. The load-bearing one RE-DERIVES len(STEPS) from disk at test time and asserts the chain publishes THAT - it is the answer to 'what re-checks this?'. Green: _gen_chain --selftest all bites pass; --check FRESH; _validate_wiring 30/30 wired 0 exempt 0 fail; _build_all --selftest PASS 98 steps; check_budgets 0 blocking failures."
+   ],
+   "enacted": "#126 2026-08-07. THREE decisions inside the enactment, all declared: (1) TWO numbers, not one - substituting only the live count would have published 'ALL 98 STEPS ASKED AND GREEN (#62)', a sentence nobody ever measured, manufactured by the fix meant to stop manufactured claims. Both ends are read from an AST and the 23-step shortfall is computed. (2) The SPLICE lives in _capture_gate.chain_parts, not _gen_chain, although the ruling names _gen_chain: chain_parts is THE ONE SLICER - read_chain_tk measures exactly what it returns and _gen_chain writes exactly what it returns, so text injected downstream would be WRITTEN BUT NOT MEASURED (the #41 second-consumer drift). The AST READER is in _gen_chain.py as ruled; only the splice moved. Same reason dofirst_index is composed there. (3) VERDICT_SHA is typed on purpose - it names a fixed historical event, so it cannot go stale the way a COUNT does; everything derived from it is measured."
   },
   {
    "id": "s125-D2",

@@ -4813,3 +4813,138 @@ entries cite *"`notes/_MEMENTO-DECISIONS.md` § ★ #124"* and similar. The poin
 (which is what the gate checks) but not to a **section**. Recorded as a gap in the record; **not
 back-filled here**, because inventing seven session sections after the fact is confident false
 inscription, and the honest marker for an unknown is that it is unknown [[gap-in-record-vs-gap-in-evidence]].
+
+---
+
+## ★ #126 — `s125-D1` ENACTED, AND THE PREMISE DEMONSTRATED ITSELF INSIDE ONE DAY (Dave live, OPUS conductor, ONE window, no subs until the wrap, wrap DELEGATED to an Opus sub at FILL 135,735)
+
+⚠ **SHAPE FIRST: the title Dave confirmed at the opener by explicit option-select (*"Title lane as
+written"*) was `Apollo - #126: enact s125-D1, then draw the schematic` — TWO named halves, and ONE
+landed. THE SCHEMATIC WAS NOT BUILT.** The window ran out and the wrap was delegated at FILL 135,735
+against the 150,929 stop line — roll, not ride. The title is a **LABEL**, not a deliverable claim.
+Arc: `_DECISION-HISTORY/2026-08-07-126-the-generated-verdict-and-the-figure-that-went-stale-in-a-day.md`.
+
+⛔ **NOTHING WAS RULED AT #126.** No value changed; no gate, threshold or fence was edited — including
+`G4`, whose §C 164-vs-150 warn the mover printed and proceeded past (warn ≠ block); **the cap was not
+moved.** This section records an ENACTMENT of a #125 ruling, plus two findings and one new open item.
+
+### `s125-D1` — RULED #125, ✅ ENACTED #126
+
+`knowledge/_gen_chain.py` gained `BUILD_VERDICT_MARK` · `VERDICT_SHA = "18c7789"` · `BuildStepCountError` ·
+`_steps_in()` (AST) · `build_steps_now()` · `build_steps_at()` · `build_verdict_line()`.
+`knowledge/_capture_gate.py`'s `chain_parts()` gained a **20-line purely additive block (0 deleted lines)**
+splicing the rendered verdict at the `{{BUILD_VERDICT}}` marker. `GOOD-MORNING.md` line 10's **371-char
+typed segment became the 17-char marker**, its narrative homed FIRST (§ OPEN + § ★ #125), with the full
+reasoning now living as comments in `_gen_chain.py` [[home-by-addition-then-cut]].
+
+**`_CHAIN.md` now reads:** *"⛔ BUILD VERDICT: 75 of 98 steps green (#62, `18c7789`) — 23 steps have NEVER
+been in a green verdict. Both counts GENERATED from `_build_all.py`'s AST at each end; the shortfall is
+computed (`s125-D1`)."*
+
+### THREE decisions taken INSIDE the enactment — all declared, all visible to Dave
+
+**(a) TWO numbers, not one.** The obvious enactment — substitute the live count — would have published
+***"ALL 98 STEPS ASKED AND GREEN (#62)"***. `#62`'s green was taken against a tree with **75** steps in
+it; the other 23 were never in that run. ⇒ **a sentence nobody ever measured, manufactured by the very
+fix meant to stop manufactured claims.** So both ends are read from an AST and the **23-step shortfall is
+COMPUTED**. ★ **General form, and it is not in the ruling's text:** a ruling that says *"generate the
+number"* does not say *"and check the sentence around the number is still true once you do"* — **the
+generator inherits the sentence.**
+
+**(b) The SPLICE lives in `_capture_gate.chain_parts`, NOT in `_gen_chain`, although the ruling names
+`_gen_chain`.** `chain_parts` is **THE ONE SLICER**: `read_chain_tk` measures exactly what it returns and
+`_gen_chain` writes exactly what it returns, so text injected downstream would be **WRITTEN BUT NOT
+MEASURED** — the #41 second-consumer drift that this function was extracted to make impossible (identical
+reason to why `dofirst_index` is composed there). **The AST READER is in `_gen_chain.py` as ruled; only
+the splice moved, and it moved TOWARD the measurement.** ⚠ **RECORDED AS AN IMPLEMENTATION
+RECONCILIATION, NOT A RE-RULING, and flagged as visible to Dave** [[instruction-right-cause-wrong]].
+
+**(c) `VERDICT_SHA` is TYPED ON PURPOSE.** It names a **fixed historical event**, so it cannot go stale
+the way a COUNT does — the past acquires no new build steps. Everything derived from it is measured, and
+an unreachable sha **declares the coverage unmeasured** rather than quietly publishing the live count
+alone. *A declared gap passes; a silent one fails.*
+
+### ★★ FINDING 1 — the premise demonstrated itself inside ONE DAY
+
+#125 measured `len(STEPS)` = **97**. #126 measured **98**. The difference is **`s125-D2`** — #125's own
+other ruling — which wired `_validate_state_contrast.py` into `_build_all.py` **between the probe and the
+enactment**. ⇒ **the figure went stale again in under 24 hours, inside the session pair convened to stop
+it going stale.** Nothing failed; the number is simply attached to a thing that changes whenever the
+project works properly. ★ **That is the entire argument for a generator over a fresher value, and it
+argued itself.**
+
+### ★★ FINDING 2 — 23 BUILD STEPS HAVE NEVER BEEN INSIDE ANY GREEN VERDICT (new, not a restatement)
+
+While the figure was one typed number the gap was **unstatable**: you cannot notice a verdict
+under-covering the tree when verdict and tree are the same number by construction. Measuring both ends
+produced it as a by-product. ⚠ **It says nothing about whether those 23 PASS** — it says the published
+verdict has never covered them. A full single-process `_build_all.py` run is sandbox-impossible (~49s vs
+the ~45s call kill), so closing it belongs to CI. **Standing at `_LIVE-STATE.md` § OPEN — not ruled, not
+scheduled, not waived.**
+
+### What re-checks this — the answer the ruling exists to force
+
+**5 permanent bites wired into `_gen_chain.selftest()`** (already a registered build step). The
+load-bearing one **RE-DERIVES `len(STEPS)` from disk at test time and asserts the chain publishes THAT** —
+it cannot be satisfied by a constant. **MUTATION BATTERY: 12 bites, 0 fail** — a new step moves the figure
+**98→99** and the gap **23→24** · renaming `STEPS` **REFUSES BY NAME and publishes NO count** · a
+non-literal `STEPS` refuses · an **unreachable `VERDICT_SHA` declares the COVERAGE unmeasured while still
+publishing the live count** · a duplicated label is **surfaced, not counted as growth**. `_build_all.py`
+restored **byte-exact (sha256 verified)** after every mutation.
+
+**GREEN, rc=0 each:** `_gen_chain.py --selftest` · `_gen_chain.py --check` **FRESH** · `_validate_wiring.py`
+**30 on disk / 30 wired / 0 exempt / 0 failures** · `_build_all.py --selftest` **PASS, 98 steps** ·
+`check_budgets()` **0 blocking failures**.
+
+### ⬛ NEW OPEN ITEM — `_governs.py` selftest RED (`s121-D1` pointer rot), FOUND AND NOT FIXED
+
+`_capture_gate.py --selftest` fails inside `_governs.py`: **`s121-D1` points at `canon.css:5548`, which
+does not exist.** **PRE-EXISTING** — attribution was *checked*, not assumed: `_governs.py` and `canon.css`
+are untouched in `git status`, and #126's `_capture_gate.py` diff is 20 lines / **0 deletions** / gated
+behind `if "{{BUILD_VERDICT}}" in gm_part` [[attribute-the-diff]]. ★ **The same class in a FOURTH medium
+— prose · a comment · a return value · and now A POINTER.** ⛔ **Not fixed: a wrap that repairs whatever
+it trips over is a wrap that ruled its own scope.** Standing at `_LIVE-STATE.md` § OPEN.
+
+### Also found, also not fixed
+
+The DO-FIRST pointer *"The build does NOT fit one ≤45s call — MEASURED #62: ~49s for all 75 steps"*
+carries the same stale **75**. It is honest as a *dated #62 measurement*, and its conclusion is **more**
+true at 98 steps than at 75, so it misleads in the safe direction — but it is the same class, and
+hand-correcting a historical measurement is the act `s125-D1` forbids. **Recorded, left.**
+
+### ⚠ A working-tree reconcile, declared
+
+`knowledge/_rulings.json` arrived at this wrap with a **2,310-line diff for ONE semantic change** — it had
+been re-serialised at `indent=2` with a trailing newline, where the committed form is `indent=1` with
+none. **A control was run before anything was touched:** `json.dumps(HEAD_parse, indent=1,
+ensure_ascii=False)` reproduces the committed bytes **exactly** (sha256 match). Re-serialising the working
+copy identically collapsed the diff to **10 lines**, and a parsed old-vs-new comparison confirms
+`s125-D1` is the **only** entry that differs (65 rulings before and after; `_README` untouched).
+★ **Formatting churn that buries the one real change is not cosmetic — it is a diff nobody can audit**
+[[attribute-the-diff]].
+
+### ⚙ Gauge
+
+**Boot 53,997 real** (`message.usage`, first turn) — the **FIFTH datapoint below the published 75,899
+floor**, consistent with the post-break n=3 mean of **54,859**. ⛔ **RECORDED, NOT re-based — the re-base
+is DAVE'S and remains UNTAKEN** [[boot-floor-measured-109]]; five readings disagreeing with a published
+constant are **evidence, not authority**. FILL **74,120 → 135,735** vs stop line **150,929**; **wrap
+DELEGATED at 135,735 — roll, not ride**, and the schematic was not started for exactly that reason.
+Throughput at the seam **175,569 real**. ⚠ **Dave's quota panel was ASKED FOR at the opener and NOT
+GIVEN — recorded UNKNOWN, never estimated** [[quota-panel-has-three-numbers]].
+
+### ★★ POST-AUTHORING — THE NEW BITES BIT THIS VERY WRAP, ON ITS OWN PROSE
+
+The marker-leak bite (*"the build-verdict marker NEVER leaks into the chain unrendered"*) went **RED
+during #126's own wrap**: the ★ LATEST banner and the ⏱ LATEST delta, as first written, **mentioned the
+marker literally** while describing the enactment — and both are chain-resident, so the raw marker string
+appeared twice in `_CHAIN.md`.
+
+★ **A MENTION inside chain-resident text is indistinguishable, to a cold reader, from a FAILED
+SUBSTITUTION** — which is exactly the state the bite exists to forbid [[gate-must-quote-what-it-forbids]].
+
+⛔ **The gate was right and the prose was the defect. The prose was rewritten to name the marker without
+spelling it; the bite was NOT touched, NOT scoped, NOT exempted.** ★ This is the thing a green selftest
+can never provide: **an instrument driven on real data, failing, on the day it was built**
+[[green-tests-cannot-see-scope]] [[mutation-tests-the-clause-not-the-feature]]. The 12-bite battery proved
+the clauses; **this proved the feature.**
