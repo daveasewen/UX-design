@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 46,003 real and 86% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 46,136 real and 86% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -51,7 +51,7 @@
 > **⛔ DO-NOT-RULE — respected, with one item moving OFF it BY DAVE'S OWN WORD (the type-gate tier, ruled live):** `CONTROL_TIER_44` · `MARK_TIER` warn · `BOOT_FIRSTTURN_TK` · floor 75,899 · re-base UNTAKEN · `DOFIRST_INDEX_TK_MAX` 700 · recorder constants (isolated, NOT refreshed) · `G1`–`G17` (G4 enacted-pending-ratify as above) · graph-mark demotion · v1 pack · mono ramp · SC dark · dv-lockup titles · G8. ⛔ 32.9-vs-32 still RED, untouched.
 > **⚙ gauge #119:** boot NOT CAPTURED at opener (declared, the legal form) · mid-session check-in FILL **99,528** vs stop line **150,929** BEFORE the wrap lane — wrap opened at the seam, roll-not-ride. Quota targets are DAVE'S STATED SHAPE this session: **14%/day all-models · 7%/day Fable** — routing chosen to fit it (Sonnet subs burn all-models, spare Fable).
 > **residual (GENERATED #119):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #118) — _roll_state.py · 2026-08-07
-> **residual → #120:** ⬛ **① commit-seam harness fixture drift (`SESSION_N`)** — priced small, pre-existing, declared · ⬛ **② full `_build_all.py` end-to-end green** — #119 unblocked steps 1–13, aborts at 14 (the harness); nothing past 14 has run for weeks and MORE pre-existing reds may sit behind it · ⬛ **③ repair-or-retire the two exempt validators** · ⬛ **④ item 13 stale-queue close by addition at `_DS-IMPROVEMENTS.md:676`** · ⬛ **⑤ Dave: P1 confirm-to-open (asked, unanswered) + G4 ratify + recorder-constants refresh** · ⬛ **⑥ carried: `s116-D4`/`s116-D5` characterisations · `s114-D2` · stale-mount seam (gate or retire) · P4 chain trim.**
+> **residual → #120:** ⬛ **⓪ MECHANISE TITLING (Dave, #119 post-wrap): `_gen_titles.py` derives RENAME + NEXT-TITLE from the banner headline + top residual; wrap gate asserts BOTH lines present, `RENAME` naming SESSION_N; bite-test, wired same pass. Chat delivery becomes a paste, never prose recall** · ⬛ **① commit-seam harness fixture drift (`SESSION_N`)** — priced small, pre-existing, declared · ⬛ **② full `_build_all.py` end-to-end green** — #119 unblocked steps 1–13, aborts at 14 (the harness); nothing past 14 has run for weeks and MORE pre-existing reds may sit behind it · ⬛ **③ repair-or-retire the two exempt validators** · ⬛ **④ item 13 stale-queue close by addition at `_DS-IMPROVEMENTS.md:676`** · ⬛ **⑤ Dave: P1 confirm-to-open (asked, unanswered) + G4 ratify + recorder-constants refresh** · ⬛ **⑥ carried: `s116-D4`/`s116-D5` characterisations · `s114-D2` · stale-mount seam (gate or retire) · P4 chain trim.**
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (28 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ENCODE BEFORE THE WAVE, part-consumed 28 · `0c` NEXT BUILD CANDIDATES · `0d` THE 67 ENACT WAVE, landed · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, PART-RULED #114 · `7` ds-017, UNRULED · `8` STILL OWED, none superseded · `9` DELEGATION TOPOLOGY · `10` ✅ PER-GATE TEST PLAN · `11` 2c-ROLL / INDEX-VOCAB DEADLOCK · `12` #57 1b DOSSIER · `13` tmp RUNBOOK EXPOSURE, unfixed · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59 · `16` UNHOMED PAIR (#78 2c EXIT CHECK) · `17` CHAIN-DIET CUT · `19` type.css 180 dark-mode specificity · `20` ds-029 FIRST IDIOM · `21` PER-THEME COLLISION SWEEP · `22` 89-D2 ruled not enacted, absent from state · `23` ds-025 re-scoped 109, not closed · `24` 110 boot-rent plan · `25` ds-032 enactment, ruled 106 · `26` ✅ boot-drift gate rulings
@@ -103,7 +103,7 @@
 
 ---
 
-*(Chain ends. **9,657 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **9,790 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 46,003 real and stays whole for retrieval; you have paid for
+`GOOD-MORNING.md` is 46,136 real and stays whole for retrieval; you have paid for
 21% of it, and that is the intended figure, not a shortfall.)*
