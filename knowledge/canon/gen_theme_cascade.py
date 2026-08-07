@@ -197,7 +197,8 @@ def load_themes():
     out = []
     for key, t in sorted(reg["themes"].items(), key=lambda kv: kv[1].get("order", 99)):
         entry = {"key": key, "attr": t.get("attr") or key.replace("apollo-", ""),
-                 "label": t.get("label", key), "status": t.get("status"), "overrides": {}}
+                 "label": t.get("label", key), "status": t.get("status"), "overrides": {},
+                 "marks": {}}
         oset = t.get("overrideSet")
         if oset and t.get("status") != "base":
             data = json.load(open(os.path.join(TOK, oset)))
@@ -223,6 +224,21 @@ def load_themes():
                     entry["overrides"][path] = {"modeless": vl} if vl == vd else {"light": vl, "dark": vd}
                 elif "$value" in node:
                     entry["overrides"][path] = {"modeless": css_value(path, node["$value"])}
+            # MARKS (s121-D1 mechanism, extended #122 for s122-D3): --mark-* is NOT a store
+            # token — its source atom lives in canon.css (TOKENS marks) and is distributed by
+            # gen_token_ramp.py. A theme that re-rules the knockout carries it in a sibling
+            # "marks" key here, so the override set stays the ONE source for that theme.
+            for status, node in (data.get("marks") or {}).items():
+                if node is None:
+                    continue                          # ADR-0010 declared-but-unset
+                pair = {}
+                for m in MODES:
+                    if isinstance(node.get(m), dict) and "$value" in node[m]:
+                        pair[m] = str(node[m]["$value"])
+                if len(pair) != len(MODES):
+                    raise KeyError(f"{key}: marks/{status} must declare BOTH modes "
+                                   f"(no base --mark-* token exists to fall back to)")
+                entry["marks"][status] = pair
         out.append(entry)
     amap = alias_map()
     for entry in out:
@@ -263,11 +279,14 @@ def _decls(pairs, mode, indent="  "):
 def theme_block(theme, manifests):
     """Full canon.css cascade for one theme ('' for the base theme)."""
     ov = theme["overrides"]
-    if not ov:
+    mk = theme.get("marks") or {}
+    if not ov and not mk:
         return ""
     a = theme["attr"]
     lines = [f'/* ---- {theme["label"]}  [data-apollo-theme="{a}"]  '
-             f'({len(ov)} override path(s), {theme["key"]}.overrides) ---- */']
+             f'({len(ov)} override path(s)'
+             + (f", {len(mk)} mark(s)" if mk else "")
+             + f', {theme["key"]}.overrides) ---- */']
     # ROOT tier
     root_light, root_dark = {}, {}
     for path, vals in sorted(ov.items()):
@@ -277,6 +296,10 @@ def theme_block(theme, manifests):
         else:
             root_light[vn] = {"light": vals["light"]}
             root_dark[vn] = {"dark": vals["dark"]}
+    for status, vals in sorted(mk.items()):
+        vn = f"--mark-{normalize(status)}"
+        root_light[vn] = {"light": vals["light"]}
+        root_dark[vn] = {"dark": vals["dark"]}
     lines.append(f'[data-apollo-theme="{a}"]{{')
     lines.append(_decls(root_light, "light"))
     lines.append("}")

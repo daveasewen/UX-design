@@ -140,7 +140,15 @@ def gen_one(path):
     html = open(path).read()
     name = os.path.basename(path).replace(".reference.html", "")
     sc = "cn-" + slug(name)
-    style = re.search(r"<style>(.*?)</style>", html, re.S).group(1)
+    # ds-039 (#122): strip HTML comments BEFORE harvesting — a '<style>' merely MENTIONED
+    # in a documentation comment (Chart-butterfly-h) made the lazy regex swallow the
+    # comment tail + <link> tag into canon.css, killing the CSS parser at that line and
+    # silently dropping EVERY rule after it (the whole AUTO-THEMES block included).
+    html_nc = re.sub(r"<!--.*?-->", "", html, flags=re.S)
+    style = re.search(r"<style>(.*?)</style>", html_nc, re.S).group(1)
+    if "<" in re.sub(r"/\*.*?\*/", "", style, flags=re.S):
+        raise SystemExit(f"gen_canon_components: HARVEST NOT CSS — literal '<' outside comments "
+                         f"in harvested <style> of {os.path.basename(path)}; refusing to inject markup into canon.css (ds-039)")
     mm = re.search(r'id="token-manifest">(.*?)</script>', html, re.S)
     manifest = json.loads(mm.group(1)) if mm else {}
     vars_map = manifest.get("vars", {})

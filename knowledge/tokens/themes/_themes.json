@@ -58,18 +58,24 @@
         "$note": "Sibling of Mono — SAME opacity values, same snap ramp (color/mono/1-15). Fenced."
       },
       "fencedPaths": {
-        "$note": "ADR-0014 sibling fence (enforced by gen_theme_cascade --selftest): Console's override set may not touch these prefixes — divergence here would break the {mono,console} DNA. Ruled FIRM 2026-07-22.",
+        "$note": "ADR-0014 sibling fence (enforced by gen_theme_cascade --selftest): Console's override set may not touch these prefixes — divergence here would break the {mono,console} DNA. Ruled FIRM 2026-07-22. | s122-D4 (Dave, #122, 2026-08-07): the fence is LIFTED for rag/* — Console MAY diverge from Mono on RAG, unblocking the console half of s122-D3. Verbatim: 'just ditch that rule for now, I don't think I'll change my mind on this, but nothing will stop us if I do ;)'. Reversible by his word — re-add the prefix to restore. Every other prefix STANDS.",
         "prefixes": [
-          "rag/",
           "color/neutral/",
           "color/mono/",
           "color/warm/",
           "dataviz/",
           "data-vis/",
-          "badge/",
           "progress/",
-          "tabs/"
-        ]
+          "tabs/active",
+          "tabs/background",
+          "tabs/overflow-background",
+          "tabs/overflow-border",
+          "tabs/standard-border",
+          "tabs/hover",
+          "tabs/pressed",
+          "tabs/inactive"
+        ],
+        "$liftNote": "s122-D4 lift, minimum surface: 'rag/' is gone outright. 'badge/' is gone because its ONLY member is badge/background, which follows a rag alias and is therefore pulled in by the s122-D3 console RAG map. 'tabs/' was expanded to its member paths so that tabs/badge/background (the other rag-alias follower) is free while every other tabs path STAYS fenced. Nothing else moved."
       }
     },
     "apollo-supercharge": {

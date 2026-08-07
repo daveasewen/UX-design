@@ -677,6 +677,12 @@ its target on `.dv-leg-sw::before{min-width:var(--hit,44px)}`.
 2. **Parse** — the expander is `min-width:var(--hit,44px)`; the gate's regex reads literal `(\d+)px`.
    **It cannot parse a token.**
 3. **Exemption** — `::before` present → `continue`.
+
+> **✅ CLOSED BY ADDITION (2026-08-07, #122):** blindness 1 is RETIRED — the hand-maintained `CTRL` regex
+> was replaced in the #115 markup rebuild (`2a231f9`) by ARIA-role classification in `_validate_a11y.py`
+> that **fails loud on unknown roles** ("CTRL vocabulary: unknown ARIA role(s) … cannot classify"),
+> verified #119. This queue line was the stale record. Blindnesses 2 (token parse) and 3 (`::before`
+> exemption) and the transform-consequence class remain open, owed to the render-axis hit-area gate below.
 ⚠ **And the actual defect is a TRANSFORM consequence** (the `rotate(45deg)` rotated the 44px target onto
 its corner). **No static box measurement can see that in principle**, not merely in this implementation.
 It was caught by `elementFromPoint` probes at render, by hand, during the legend wave — and that snippet's
@@ -1864,3 +1870,56 @@ numbers Dave has already been shown were derived under the old vocabulary.
 **Blast radius if adopted:** `knowledge/guidelines/_rules-index.json` · the rules-index builder ·
 `knowledge/_instrument-fit.json` / `_INSTRUMENT-FIT.md` · every published "N blocking rules" count,
 including the ones in ds-016's own entry.
+
+---
+
+## ds-038 — Legacy dark RAG values in the theme overrides drifted from the token store; RULED + CLOSED same session (2026-08-07, #122, s122-D1)
+
+**Found:** Dave's eye against the mark-map controller v4 KG fixtures. `apollo-legacy.overrides.json` minted per-mode
+dark values — error `#DB0011`, information `#4587A7` — with `$notes` citing "registry ownsHexes". The token store
+(`semantic-color/dark.tokens.json`, the spine) holds NO dark variance: `rag/error #A8000B`, `rag/information #305A85`,
+identical to light. The KG standard ({#col25-017}) names one value per role, no per-mode fork.
+
+**Ruled (s122-D1, Dave verbatim):** *"there are no dark mode changes they stay the same in both modes, keep them the
+same as light mode. the white progress bar is fine."*
+
+**Enacted #122:** 5 override paths flattened (error / error-glyph / error-background → #A8000B; information /
+information-glyph → #305A85), old values retired into the `$notes`; `gen_theme_cascade.py` regenerated (159 paths,
+204 projections); legacy-leak 0 · property-resolves 0-of-87 · theme-provenance 37 pre-existing at HEAD (attributed).
+
+**Declared scope residual:** per-mode TINT pairs (`*-tint`) were NOT put to Dave and remain as-built; the ds-001/ds-002
+receipts that motivated the old dark values stand as history, not authority.
+
+---
+
+## ds-039 — `canon.css` was HALF DEAD since #99: a documentation comment injected HTML into it and the CSS parser dropped 2,067 rules (2026-08-07, session #122, measured — agent's finding, NOT a ruling)
+
+**Status:** FOUND + FIXED #122. The defect is closed at its cause; the entry is the record, and the
+generalisable half is the last paragraph.
+
+**What was wrong.** `gen_canon_components.py` harvests `<style>` blocks out of the reference snippets.
+Its harvest regex was lazy and comment-blind, so a `<style>` **merely MENTIONED inside a documentation
+comment** in `Chart-butterfly-h.reference.html` was harvested as if it were real CSS. What landed in
+`knowledge/canon/canon.css` at ~line 4580 was therefore **markup** — a `<link>` tag plus a comment tail —
+and a CSS parser, on hitting `<`, discards everything after it.
+
+**Measured:** `tinycss2` parsed **1,252 rules** before the fix and **3,319** after ⇒ **2,067 rules were
+dead**, including **all four theme blocks**. Post-fix parse: **0 errors.** The file had been in this state
+since **#99 (`ba02920`)** — twenty-three sessions.
+
+**How it was found, and this is the part worth keeping.** Not by a gate. Dave's eye: *"legacy hasn't
+picked up the colours."* The mark-map controller's v4 KG fixtures then made the mismatch **attributable**
+rather than merely visible, and a `tinycss2` parse — the first time anything in this repo had parsed
+`canon.css` **as CSS** — located it. **19+ green gates stood over this file and not one of them parses
+it**; they measured its CONTENT, never its PARSEABILITY.
+
+**Fixed:** HTML comments are stripped BEFORE harvest, and `gen_one()` carries a **HARVEST-NOT-CSS refusal
+clause** that fails loud and named rather than injecting markup. Mutation-tested: a literal `<` planted in
+a harvested style BITES.
+
+**★ The class.** A green that cannot fail is an assertion — and a gate suite that never applies the
+target format's own parser to the target file is exactly that shape. The owed visual confirm caught what
+the numeric gates could not [[mutation-tests-the-clause-not-the-feature]].
+
+**Evidence:** `knowledge/canon/gen_canon_components.py` (comment-strip + refusal clause, lines ~143–151) ·
+`knowledge/canon/canon.css` (regenerated, parses clean) · `_DECISION-HISTORY/2026-08-07-mark-map-pass-and-the-half-dead-canon.md`.
