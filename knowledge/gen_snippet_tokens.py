@@ -52,7 +52,7 @@ def _unitless(path):
     """Number tokens that take no px — the motion press-physics factors, the
     component-type parameters that cache them (ADR-0013 / B-D7), and the DV-D07
     two-channel alpha slots (data/*/alpha — an opacity factor, never a length)."""
-    return (path.startswith("motion/press/")
+    return (path.startswith(("motion/press/", "alpha/"))  # alpha/* = the #99 opacity ladder, a factor never a length (s121-D1)
             or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken", "alpha"))
 
 def _fmt(val, path=""):
@@ -78,6 +78,11 @@ def resolve(path, mode):
         src = "motion.json"
     elif path.startswith("component-type/"):
         src = "../component-types.json"       # the ADR-0013 registry (knowledge/ root)
+    elif path.startswith("alpha/"):
+        src = "opacity.json"                  # the #99-D1 opacity ladder; manifests bound
+                                              # alpha/* at #99 but this router was never
+                                              # taught the store — the ds-018 silent-lookup
+                                              # class in the projector itself (s121-D1, #121)
     else:
         src = "semantic-colour.json"
     node = store(src)

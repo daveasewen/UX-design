@@ -111,21 +111,25 @@ def extract_headline(banner_line):
 
 
 def extract_top_residual(gm_text, session_no):
-    """The first ⬛ bullet under `residual → #<session_no>:` — the single biggest open item,
-    which is what a forward title exists to name. Refuses if the residual line for THIS
-    session number isn't present (a stale residual would silently mis-title the wrong future
-    session)."""
+    """The first ⬛ bullet under `residual → #<session_no + 1>:` — the single biggest open
+    item, which is what a forward title exists to name. The residual line is ADDRESSED TO
+    the INCOMING session (`residual → #N+1`), so the wrapping session N expects N+1 here.
+    ⚠ OFF-BY-ONE FIXED #121: this check compared found_no == session_no, which forced the
+    #120 wrap to declare --session 121 to pass, which then minted NEXT-TITLE #122 for a
+    session whose residual said #121 — the receipt and the GM header disagreed by one.
+    Refuses if the residual doesn't name session_no + 1 (a stale residual would silently
+    mis-title the wrong future session)."""
     m = RESIDUAL_RE.search(gm_text)
     if not m:
         raise TitleDeriveError(
             "no `> **residual → #N:**` line found in GOOD-MORNING.md — cannot derive "
             "NEXT-TITLE without it.")
     found_no, rest = int(m.group(1)), m.group(2)
-    if found_no != session_no:
+    if found_no != session_no + 1:
         raise TitleDeriveError(
             f"residual line names #{found_no}, but --session {session_no} was declared — "
-            f"the residual is for a DIFFERENT session than the one titling now. Refusing "
-            f"rather than mis-titling; re-check which session is running.")
+            f"a wrap at #{session_no} expects the residual addressed to #{session_no + 1}. "
+            f"Refusing rather than mis-titling; re-check which session is running.")
     if "⬛" not in rest:
         raise TitleDeriveError(
             f"residual → #{found_no} line has no ⬛ bullet — cannot find a top item. "
@@ -206,10 +210,10 @@ def selftest():
 
     # control: well-formed fixture derives cleanly
     try:
-        rename, next_title, meta = derive(_FIXTURE_GM, session_no=120)
+        rename, next_title, meta = derive(_FIXTURE_GM, session_no=119)
         if "#119" not in rename or "wiring seam is closed" not in rename.lower():
             fails.append(f"control: RENAME derived wrong: {rename!r}")
-        if "#121" not in next_title or "mechanise titling" not in next_title.lower():
+        if "#120" not in next_title or "mechanise titling" not in next_title.lower():
             fails.append(f"control: NEXT-TITLE derived wrong: {next_title!r}")
     except TitleDeriveError as e:
         fails.append(f"control: well-formed fixture REFUSED — should have derived: {e}")
@@ -237,7 +241,7 @@ def selftest():
     # bite 3: residual line names a DIFFERENT session than declared -> refuses, never mistitles
     mutant = _FIXTURE_GM.replace("residual → #120:", "residual → #999:")
     try:
-        derive(mutant, session_no=120)
+        derive(mutant, session_no=119)
         fails.append("bite 3: mismatched residual session did NOT refuse")
     except TitleDeriveError as e:
         if "names #999" not in str(e):
@@ -248,7 +252,7 @@ def selftest():
         "✅ **THE WIRING SEAM IS CLOSED: stuff BUILT + WIRED, 4 BITES GREEN**",
         "✅ **" + ("VERY LONG HEADLINE TEXT THAT WILL EXCEED THE TAPE CAP " * 4) + "**")
     try:
-        derive(mutant, session_no=120)
+        derive(mutant, session_no=119)
         fails.append("bite 4: over-cap headline did NOT refuse")
     except TitleDeriveError as e:
         if "cap" not in str(e):
@@ -260,7 +264,7 @@ def selftest():
     # is the paired positive already exercised by the control above; re-stated here so a
     # reader sees the negative bites are contrasted against a live positive, not a stub).
     try:
-        derive(_FIXTURE_GM, session_no=120)
+        derive(_FIXTURE_GM, session_no=119)
     except TitleDeriveError as e:
         fails.append(f"bite 5 (control re-check): unmutated fixture now refuses too: {e}")
 

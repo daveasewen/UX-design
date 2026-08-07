@@ -42,6 +42,13 @@ def check_file(path):
     css = m.group(1)
     # strip theme token blocks + top-bar scaffold selectors (colour lives only there)
     css = re.sub(r'\[data-theme="(light|dark)"\]\{[^}]*\}', "", css)
+    # strip the generated AUTO-TOKENS span (s121-D1): canon token-set DEFINITIONS
+    # distributed by gen_token_ramp.py — definitions are literals by construction,
+    # same standing as the [data-theme] blocks above. SCOPE: exactly the marker
+    # pair below, nothing else — a use-site hex outside it still fails rule 1.
+    css = re.sub(
+        r'/\* ===== AUTO-TOKENS START[^\n]*===== \*/.*?/\* ===== AUTO-TOKENS END ===== \*/',
+        "", css, flags=re.S)
     for sel in SCAFFOLD_SELECTORS:
         css = re.sub(re.escape(sel) + r'[^{]*\{[^}]*\}', "", css)
     # 1 — no hardcoded colour in component CSS (hex / rgb() / rgba())

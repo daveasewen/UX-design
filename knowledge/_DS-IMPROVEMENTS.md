@@ -816,6 +816,9 @@ a new task"* → *"should be teh pre-flight work, is that correct?"*). **No gate
 
 ## ds-018 — Legend Reset renders its DISABLED state as the HOVER state (2026-07-27, Dave by eye)
 
+> **★ #121 (2026-08-07) — RULED `s121-D1` + ENACTED: C2 0-of-114, PROMOTED `--strict`.** A1 generator-inject (`gen_token_ramp.py`, 4th injection type) · B1″ per-status mark map (values PROVISIONAL — Dave's combination pass owed) · C1 measured `--phys-size` (Alert 24 · Popover 24 · Empty-state 120 provisional-from-receipt). Projector's missing `alpha/` route (since #99) fixed same pass. Cases: `notes/_ds-018-C2-cases.md` · dossier: `_DECISION-HISTORY/2026-08-07-121-ds018-token-schema-ruling.md`.
+
+
 > ### ✅✅ ENACTED + BUILD-GREEN 2026-07-27 (session #12). **A2 · B2 · C2 are all in. Do not re-enact.**
 > **Build `62/62` GREEN, exit 0** (58→62: C2 + its selftest added two steps, and two generators re-ran).
 > **⚠ NOT RENDER-PROVEN.** Deferred by Dave's ruling this session — the env was cold and the proof was

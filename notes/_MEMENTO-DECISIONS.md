@@ -4644,3 +4644,12 @@ touch the cap (correctly — a cap raised to clear its own gate is not a cap
 
 **⚠ COMMIT SUBJECT REWRITTEN AGAIN:** `2a231f9` carries **#115's** banner subject. Third consecutive
 session. **Verify by hash and diff, never by subject** [[wrap-skipped-chain-certifies-wrong-session]].
+
+
+## ★ #121 — 2026-08-07 — ds-018 ruled + enacted (`s121-D1`)
+
+**RULED (Dave, reflected back + confirmed in-chat):** A1 generator-inject alpha ramp · B1″ per-status `--mark` map (structure NOW, combinations SOON — his verbatim: *"we will mint the actual combinations soon but we need this flexibility now"*) · C1 component-scoped measured `--phys-size`. Full text: `_rulings.json` s121-D1 · cases: `notes/_ds-018-C2-cases.md` · arc: `_DECISION-HISTORY/2026-08-07-121-ds018-token-schema-ruling.md`.
+
+**Enactment receipts:** C2 87 files / 0 failures, PROMOTED `--strict` (was ADVISORY) · `gen_token_ramp.py` NEW, 6-bite selftest, wired (97-step routing selftest green; wiring gate 30·29·1·0) · `gen_snippet_tokens.py` `alpha/` route fixed (29 UNRESOLVED→0) · pro-forma gate AUTO-TOKENS strip MUTATION-TESTED (planted `#DEADBF` outside the span bites) · `_gen_titles.py` off-by-one FIXED (residual is addressed to N+1; fixtures corrected; selftest green).
+
+**Declared, untouched:** memento-package delta-audit red (PRE-EXISTING #120's `_memento_search.py` re-pin) — re-syncing would rule Dave's #64/#114 open items [[sub-ruled-daves-open-item-110]]. ⚠ PROVISIONAL debt registered in s121-D1 `watch`: mark whites + Empty-state `--phys-size` 120.

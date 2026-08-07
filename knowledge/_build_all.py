@@ -153,6 +153,11 @@ STEPS = [
     # the ratchet makes local re-implementation of a registered partial a build failure.
     ("component-partials sync — AUTO-PARTIAL injection + contracts (ADR-0013)", "gen_component_partials.py", ["--check"]),
     ("component-partials selftest (ADR-0013)", "gen_component_partials.py", ["--selftest"]),
+    # s121-D1: the FOURTH injection type — canon token-set atoms (alpha ramp, status-mark
+    # map) distributed into standalone snippets/_proforma files. Closes the ds-018 C2
+    # reachability class; the C2 gate below is promoted to --strict in the same session.
+    ("token-set distribution sync — AUTO-TOKENS injection (s121-D1)", "gen_token_ramp.py", ["--check"]),
+    ("token-set distribution selftest (s121-D1)", "gen_token_ramp.py", ["--selftest"]),
     # ADR-0015 (2026-07-23): behaviour partials — the dataviz interaction layer is ONE
     # hand-authored JS source injected between AUTO-BEHAVIOUR markers (sync rides the
     # partials --check above). This gate owns the PERFORMANCE CONTRACT on the source:
@@ -228,7 +233,7 @@ STEPS = [
     # resolves nowhere in its own scope is a build failure, not a silent fallback."
     # Ships ADVISORY only until its first-run backlog is cleared — see the script's __main__
     # for why, and promote with ["--strict"] the moment that list is empty.
-    ("property-resolves gate C2 — silent-lookup class (advisory, ds-018)", "_validate_property_resolves.py"),
+    ("property-resolves gate C2 — silent-lookup class (BLOCKING, ds-018, promoted s121-D1)", "_validate_property_resolves.py", ["--strict"]),
     ("property-resolves gate C2 selftest — 4 bites + a bite-the-bite", "_validate_property_resolves.py", ["--selftest"]),
     ("reverse-text edge-extremity check {#col26-020} (advisory)", "_validate_edge_extremity.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
@@ -401,6 +406,10 @@ ROUTE_ROWS = [
      "\n❌ dark-surface gate failed (exit {code}) — see knowledge/_DARK-SURFACE-AUDIT.md"),
     ("component-partials sync — AUTO-PARTIAL injection + contracts (ADR-0013)", GATE, _PARTIALS),
     ("component-partials selftest (ADR-0013)", GATE, _PARTIALS),
+    ("token-set distribution sync — AUTO-TOKENS injection (s121-D1)", GATE,
+     "\n❌ token-set distribution failed (exit {code}) — an AUTO-TOKENS block is out of sync with its canon.css TOKENS source atom (alpha ramp / status-mark map). Run: python3 knowledge/gen_token_ramp.py (s121-D1)"),
+    ("token-set distribution selftest (s121-D1)", GATE,
+     "\n❌ gen_token_ramp selftest failed (exit {code}) — knowledge/gen_token_ramp.py --selftest (s121-D1)"),
     ("Behaviour contract gate — dv-behaviour size + banned patterns (ADR-0015)", GATE, _BEHAVIOUR),
     ("Behaviour contract selftest (ADR-0015)", GATE, _BEHAVIOUR),
     ("canon components — regenerate from snippets (ADR-0013 ruling 4)", GATE, _CANON),  # was misrouted to the SNIPPET remedy ("snippets" in the label)
@@ -456,7 +465,8 @@ ROUTE_ROWS = [
      "\n❌ descender-clip gate (ds-005) failed (exit {code}) — a truncating label (text-overflow:ellipsis) lacks `text-box-edge:text text`, so cap-alphabetic trim will clip its descenders (g/y/p/q). This is NOT a stray override to remove — the override IS the fix; add it. See _validate_descender_clip.py + _DS-IMPROVEMENTS.md ds-005."),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", GATE, _DATAVIZ),
     ("DataViz gate selftest — bite-tests dv-004 + the dtype vocabulary (ds-014)", GATE, _DATAVIZ),
-    ("property-resolves gate C2 — silent-lookup class (advisory, ds-018)", ADVISORY, None),
+    ("property-resolves gate C2 — silent-lookup class (BLOCKING, ds-018, promoted s121-D1)", GATE,
+     "\n❌ property-resolves gate C2 failed (exit {code}) — a var() resolves to NOTHING and the property silently takes its INITIAL value (ds-018). knowledge/_validate_property_resolves.py — if the name is an --alpha-*/--mark token, run: python3 knowledge/gen_token_ramp.py"),
     ("property-resolves gate C2 selftest — 4 bites + a bite-the-bite", ABORT, None),
     ("reverse-text edge-extremity check {#col26-020} (advisory)", ADVISORY, None),
     ("compliance verification edges — applies_to vs verified_by (advisory)", ADVISORY, None),
