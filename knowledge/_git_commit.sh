@@ -206,8 +206,15 @@ if len(headline) > 120:
     headline = headline[:117] + "…"
 with open(msgfile, encoding="utf-8") as f:
     body_lines = f.read().splitlines()
+body = body_lines[1:]
+# #124 — SUBJECT-FOLD GATE. git's %s folds ALL consecutive non-blank lines into the subject:
+# commit 0eacf2d (a JSONL body with no separator) shipped an ~83,000-char subject that broke
+# every git-log consumer at the next boot. A blank line after the headline is therefore
+# STRUCTURAL, not cosmetic — insert it whenever the body doesn't already start blank.
+if body and body[0].strip():
+    body = [""] + body
 with open(msgfile, "w", encoding="utf-8") as f:
-    f.write("\n".join([headline] + body_lines[1:]) + "\n")
+    f.write("\n".join([headline] + body) + "\n")
 if fallback_note:
     print(fallback_note)
 print(f"— T3 headline: {headline[:100]}{'…' if len(headline) > 100 else ''}")
@@ -228,7 +235,12 @@ git -c user.name="Claude" -c user.email="claude@anthropic.com" commit -F "$MSGFI
   grep -v 'unable to unlink' || true
 AFTER=$(git rev-parse HEAD)
 [ "$BEFORE" != "$AFTER" ] || fail "HEAD did not advance — commit did not land"
-echo "— committed: $(git log --oneline -1)"
+echo "— committed: $(git log -1 --format='%h %s' | cut -c1-120)"
+# #124 subject-fold consumer — the T3 blank-line insert is the remedy; this check sits at the
+# seam where a folded subject becomes DURABLE (the commit), so it cannot be blinded by its own
+# remedy. 0eacf2d shipped ~83,000 chars as %s and broke every git-log consumer at the next boot.
+SUBJ_LEN=$(git log -1 --format=%s | wc -c)
+[ "$SUBJ_LEN" -le 200 ] || fail "commit subject is ${SUBJ_LEN} chars (cap 200) — the 0eacf2d subject-fold class: no blank line after the headline, so git folded the body into %s. The commit LANDED; fix the msgfile and amend BEFORE Dave pushes."
 git log -1 --format=%s | head -1 | grep -qF "$(head -1 "$MSGFILE" | cut -c1-40)" ||
   echo "⚠ HEAD message does not match msgfile head — CHECK for the stale-msgfile trap"
 

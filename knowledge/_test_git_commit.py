@@ -43,11 +43,13 @@ GM_NO_BANNER = "# GOOD-MORNING\n\nNo latest banner here at all.\n"
 EXPECT_NONWRAP = "after #77 2026-08-02 — ✅ **SUMMARY GLYPHS**"
 EXPECT_WRAP = "#77 2026-08-02 — ✅ **SUMMARY GLYPHS**"
 
-# ⚠ blank separator line is deliberate: git's %s subject folds ALL lines up to the first
-# blank line into one subject. The script preserves body lines verbatim (T3 rewrites only
-# line 1), so a msgfile whose body starts on line 2 with no blank line gets its body folded
-# into the git subject. That is git behaviour, not a script defect — but it means real
-# msgfiles should carry a blank line 2 (declared in the harness report).
+# ⚠ blank separator line: git's %s subject folds ALL lines up to the first blank line into
+# one subject. This comment used to say "git behaviour, not a script defect — real msgfiles
+# should carry a blank line 2". Commit 0eacf2d (#123→#124 seam) proved that a documented-but-
+# ungated hazard is a scheduled defect: a JSONL body with no separator shipped an ~83,000-char
+# subject and broke every git-log consumer at the next boot. #124: T3 now INSERTS the blank
+# line (remedy) and a post-commit 200-char subject cap fails loud (consumer) — arms
+# subject_fold_* below pin both.
 MSG_BODY = "PLACEHOLDER-HEADLINE-to-be-replaced-by-T3\n\nbody: fixture arm detail line\n"
 
 RESULTS = []
@@ -451,7 +453,41 @@ def arm_wrap_session_witness_refusal_blocks(script_text):
         return True, ""
 
 
+def arm_subject_fold(script_text):
+    """#124 — a msgfile whose body starts on line 2 with NO blank separator (the 0eacf2d
+    shape) must still land with a SHORT subject: T3 inserts the blank line."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        write(os.path.join(root, "msg.txt"),
+              "PLACEHOLDER-HEADLINE\n" + '{"date":"x","fails":0,"kind":"rehearse"}\n' * 6)
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        if rc != 0:
+            return False, "exit %d; out tail: %s" % (rc, out[-400:])
+        subj = head_subject(root)
+        if subj != EXPECT_NONWRAP:
+            return False, "folded/wrong subject (len=%d): %r" % (len(subj), subj[:120])
+        rc, body = sh(["git", "log", "-1", "--format=%b"], cwd=root)
+        if '"kind":"rehearse"' not in body:
+            return False, "body lines lost by the blank-line insert"
+        return True, ""
+
+
 # ---------------- mutation controls (the arm must go RED against a broken copy) ---------
+
+def mutation_blank_insert_removed(script_text):
+    """#124 — with the T3 blank-line insert deleted, the fold arm must go RED (the post-commit
+    subject cap is the backstop that makes the failure loud rather than silent)."""
+    target = 'if body and body[0].strip():\n    body = [""] + body'
+    if target not in script_text:
+        raise RuntimeError("mutation target not found — the #124 blank-insert block moved; "
+                           "update the mutation control")
+    mutated = script_text.replace(target, "pass  # MUTATED: blank-insert removed")
+    ok, detail = arm_subject_fold(mutated)
+    if ok:
+        return False, "arm_subject_fold stayed GREEN with the blank-insert deleted — harness cannot fail"
+    return True, "went RED as required: %s" % detail
+
+
 
 def mutation_prefix_removed(script_text):
     target = 'prefix = "" if wrap == "1" else "after "'
@@ -497,6 +533,8 @@ ARMS = [
     ("missing_banner_fails_loud", arm_missing_banner_fails_loud),
     ("wrap_undeclared_session_blocks_120", arm_wrap_undeclared_session_blocks),
     ("wrap_session_witness_refusal_blocks_120", arm_wrap_session_witness_refusal_blocks),
+    ("subject_fold_blank_line_inserted_124", arm_subject_fold),
+    ("MUTATION_blank_insert_removed_bites_124", mutation_blank_insert_removed),
     ("MUTATION_prefix_stripped_bites", mutation_prefix_removed),
     ("MUTATION_lockclear_removed_bites", mutation_lockclear_removed),
 ]
