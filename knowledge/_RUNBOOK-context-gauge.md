@@ -470,6 +470,22 @@ that handoff had to be corrected at close.
   ⚠ **But never economise by skipping the READING of the band table** — that is the one instrument whose
   omission caused a wrong band twice, and it costs a `grep`.
 
+**⛔ A CHEAP-LOOKING PROBE CAN HAVE AN EXPENSIVE CORPUS IN SCOPE — inscribed #124, measured #123.**
+**Exclude `knowledge/_memento-index.json` from every repo-wide `grep`.** #123's wrap ran one grep for
+`confirm-to-open`; it hit the index, which **embeds banner text**, and returned **several thousand tokens**
+from a probe priced as a one-liner. The index is a RETRIEVAL artefact — reach it through
+`_memento_search.py`, never through a text sweep. ★ **The general form: price a probe by what it can MATCH,
+not by what you expect it to match** — a `grep` over a corpus that contains copies of the corpus is a read
+of the whole record wearing a one-line cost estimate.
+*(Homed here by the #124 wrap's 2c/2f EXIT CHECK: the lesson lived only in #123's post-mortem stratum, and
+a dated home does not count.)*
+
+**⛔ AND THE SAME CLASS IN PICTURES — MEASURED #124.** The session crossed the stop line
+(**FILL 174,347 real vs 150,929**) and the swallow was **two full-page PNG reads**. An image read is priced
+by the reader, not by the file: **a render you have already asserted numerically does not need to be read
+back at full page height.** ⇒ **Price a screenshot before taking it, and prefer the smallest crop that can
+carry the verdict.**
+
 ### ★ THE FLOOR IS MEASURED, NEVER ASSUMED (GM-D9)
 
 *(Ruled 2026-07-27, `notes/_MEMENTO-DECISIONS.md` § GM growth-contracts. **Dave's reframe, and it is the

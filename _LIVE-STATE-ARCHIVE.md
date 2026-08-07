@@ -1,5 +1,17 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-07 #124 (2d) — via the mover
+
+> **EXIT CHECK run FIRST on the rolling #121 delta.** Its ⚠/⬛ items: the **mark values PROVISIONAL** flag was **closed at #122** (`s122-D2`…`s122-D5`) · the **memento-package delta-audit red**, which sat on Dave's #64/#114 open questions, is **CLOSED at #124** — the word was taken and superseded by its own enactment, and it is stated on the live **⏱ LATEST DELTA** *and* in § OPEN. **No item lived only on the rolling delta.**
+
+> **Rolled *Last refreshed* stamp (2d boundary trim, #124), verbatim — the #121 stamp:** *Last refreshed: 2026-08-07 (Fri from `date` — **#121 wrap**: ds-018 RULED (`s121-D1`: A1 generator-inject · B1″ per-status mark map, values PROVISIONAL pending Dave's combination pass · C1 measured `--phys-size`) and ENACTED same session — C2 gate 0 of 114, PROMOTED `--strict`; `gen_token_ramp.py` built+wired as the 4th injection type; the token projector's own missing `alpha/` route (since #99) found and fixed; 96/97 build steps driven, sole undeclared-red none — memento-package delta-audit red is PRE-EXISTING #120 and sits on Dave's #64/#114 open questions, untouched.)*
+## ⏱ PRIOR DELTA — 2026-08-07 (Fri **#121**, FABLE conductor, Dave live, ONE window, no subs — ✅ **ds-018 RULED `s121-D1` (A1 · B1″ · C1) + ENACTED: C2 0-of-114, PROMOTED `--strict`** · ✅ **`gen_token_ramp.py` BUILT+WIRED (4th injection type)** · ★ **PROJECTOR HAD THE SAME CLASS: `alpha/*` unrouted since #99, fixed** · ⚠ **MARK VALUES PROVISIONAL — combination pass is DAVE'S**)
+
+**Landed (evidence per claim):** ruling `s121-D1` in `_rulings.json` (52nd) + cases doc `notes/_ds-018-C2-cases.md` · canon.css TOKENS atoms (alpha markers + marks map + carriers; warning=black RULED, whites PROVISIONAL) · `gen_token_ramp.py` (6-bite selftest, 61 files injected, mutation-bitten) · C2 87 files 0 failures, `--strict` + GATE route in `_build_all.py` (97 steps, routing selftest green) · `gen_snippet_tokens.py` `alpha/` route + unitless fix (29 UNRESOLVED→0, 2,388 bindings in sync) · `--phys-size`: Alert 24 + Popover 24 MEASURED, Empty-state 120 PROVISIONAL-from-receipt · showroom regen (52 pages) · pro-forma gate AUTO-TOKENS strip, mutation-tested (`#DEADBF` outside the span bites) · 96/97 steps driven; declared reds: memento-package delta-audit (PRE-EXISTING #120, sits on #64 + open #114 — untouched) · 32.9-vs-32.
+
+- **→ #122:** ① mark-map combination pass (**DAVE**) · ② package delta re-baseline (Dave's word) · ③ item 13 close-by-addition · ④ carried set unchanged.
+
+
 ## Rolled 2026-08-07 #123 (2d) — via the mover
 
 > **EXIT CHECK run FIRST on the rolling #120 delta.** Its Dave-owed items: **P1 confirm-to-open** is standing (`GOOD-MORNING.md` §C·4 item 24 + `_DS-IMPROVEMENTS.md` `ds-036` + `_rulings.json` `ds-036`) · **G4 ratify** is standing (§C·4 register row `GM:C4-119`) · **recorder-constants refresh** is standing (§C·4 item 26). ⛔ **ONE ITEM HAD NO STANDING HOME — the 3 chart-meta PROVENANCE-ENUM edits**, which lived only on this delta and on rolling banners. **It was COPIED UP to `_LIVE-STATE.md` § OPEN BEFORE this roll**, per ritual 2c/2d. Nothing else lived only on the rolling delta.

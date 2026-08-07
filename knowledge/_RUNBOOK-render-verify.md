@@ -11,6 +11,19 @@ Polaroid failure. **Every step below was run and OBSERVED working 2026-07-23** i
 (contrast maths, `node --check`, gates). **HTML is what Dave reviews, never PNGs.** A standing
 "render-verify OWED" note clears only when a render has been *seen*, not when the pipeline exists.
 
+⛔ **THIS RUNBOOK WAS DECLARED DEAD BY A SESSION THAT NEVER OPENED IT — RE-VERIFIED WORKING #124.**
+#123 declared a render gap on the grounds that *"chromium is TLS-blocked in-sandbox"*; #124 carried that
+claim forward as fact and Dave caught it (*"and there is a runbook for chromium and playwright"*). The
+recipe below was then run **end to end and it WORKS** — headless-shell download, no-root libs, render
+**and drive** at 1180/480, PNGs seen. ⇒ ★★ **A FENCE INHERITED AS A FACT IS A PREMISE, AND PREMISES AGE
+FASTER THAN RULES.** Before declaring a render gap, **run the recipe** — an environmental fence is
+verified like repo state, against the thing itself, never quoted from a prior session's banner.
+⚠ Scope, stated honestly: this says the RECIPE works. It says nothing about
+`_validate_state_contrast.py`'s exemption, which is a separate record and is **not touched here.**
+⚠ **Price the read, not just the render (#124):** two FULL-PAGE PNG reads were the swallow that crossed
+that session's stop line. Assert numerically first, then read **the smallest crop that carries the
+verdict** — `_RUNBOOK-context-gauge.md` § PRICE THE INSTRUMENT.
+
 ---
 
 ## The recipe (headless shell — the default)
