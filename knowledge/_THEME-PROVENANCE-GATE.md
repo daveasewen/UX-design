@@ -1,6 +1,6 @@
 # Theme-provenance gate (ADR-0011, R-D19) — ADVISORY
 
-Scanned **94** Mono-designated library files (snippets, _proforma, _review). Foreign-theme hexes checked: #00847F, #A8000B, #DB0011.
+Scanned **104** Mono-designated library files (snippets, _proforma, _review). Foreign-theme hexes checked: #00847F, #A8000B, #DB0011.
 
 **37** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
 

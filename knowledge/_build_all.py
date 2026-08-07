@@ -200,6 +200,11 @@ STEPS = [
     ("wiring gate selftest — 4 bites", "_validate_wiring.py", ["--selftest"]),
     # WIRED #119: pure oversight orphan from #118's table — green at both drives, zero risk.
     ("compose gate (orphan wired #119)", "_validate_compose.py"),
+    # RE-WIRED #120: exempt as ROTTED since #118 — root cause was a drifted a11y.check()
+    # call signature (3-tuple unpack vs the 6-tuple the s114-D5 rebuild returns), one-line
+    # fix at _validate_screen.py:63, the only call site. Repaired + mutation-tested #120
+    # (injected unguarded transition → named 2.3.3 FAIL, rc=1); exemption removed same pass.
+    ("screen gate — compose+icons+a11y over fitness fixtures (re-wired #120)", "_validate_screen.py"),
     # WIRED #119 at tier (b) SHRINK-ONLY RATCHET — Dave's ruling 2026-08-07. Baseline
     # 1,101 MEASURED at wiring (not copied), declared debt in _type_ratchet.json, may
     # only shrink. Risk named to Dave and accepted: shape of "a cap raised to clear its
@@ -431,6 +436,8 @@ ROUTE_ROWS = [
     ("wiring gate selftest — 4 bites", ABORT, None),
     ("compose gate (orphan wired #119)", GATE,
      "\n❌ compose gate failed (exit {code}) — see knowledge/_validate_compose.py"),
+    ("screen gate — compose+icons+a11y over fitness fixtures (re-wired #120)", GATE,
+     "\n❌ screen gate failed (exit {code}) — a _fitness-test canon fixture fails compose/icon-source/a11y; see knowledge/_validate_screen.py output"),
     ("type-composites ratchet — tier (b), debt 1101 shrink-only (Dave #119)", GATE,
      "\n❌ type-composites ratchet failed (exit {code}) — NEW violation(s) above the declared debt in knowledge/_type_ratchet.json; the ratchet only shrinks (s119-D1). Fix the new violations; do NOT raise the baseline."),
     ("type-composites selftest", ABORT, None),

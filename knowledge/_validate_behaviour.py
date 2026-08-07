@@ -172,12 +172,14 @@ def selftest():
         fails.append("two resize listeners across a group not caught")
     if not any("resize" in x for x in check_group(["var x=1;"], "T")[0]):
         fails.append("zero resize listeners across a group not caught (fit must respond to resize)")
-    # two sources that EACH pass the 16KB per-source cap but together blow the 32KB page budget —
-    # the exact evasion the re-scope exists to close.
+    # sources that EACH pass the 16KB per-source cap but together blow the 34KB page budget
+    # (PAGE_BYTES re-dialled 32->34KB by Dave, #96 2026-08-05) — the exact evasion the
+    # re-scope exists to close. Two max-size pads (2*16KB=32KB) no longer exceed 34KB on
+    # their own, so the bite needs a third pad to still exercise the invariant post re-dial.
     pad = "var x=1;/*" + "y" * (MAX_BYTES - 20) + "*/"
     if check_source(pad, "T")[0]:
         fails.append("page-budget bite is malformed — each pad must pass the per-source cap")
-    if not any("page budget" in x for x in check_group([ok_src, pad, pad], "T")[0]):
+    if not any("page budget" in x for x in check_group([ok_src, pad, pad, pad], "T")[0]):
         fails.append("page budget not caught — splitting a source must not buy headroom")
     if not check_member('<script src="https://cdn.example/x.js"></script>', "T"):
         fails.append("external script src not caught")

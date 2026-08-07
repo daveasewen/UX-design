@@ -60,7 +60,7 @@ def main():
         report.append("- icon-source: " + ("✅ all paths library-matched" if not icf
                       else f"❌ {len(icf)} UNKNOWN — " + "; ".join(icf[:6])))
         # 3. a11y
-        _, af, aw = a11y.check(path)
+        _, af, aw, *_rest = a11y.check(path)
         report.append("- a11y: " + ("✅" if not af else "❌ " + "; ".join(af)) +
                       (f"  (warn: {'; '.join(aw)})" if aw else ""))
         if cf or icf or af:

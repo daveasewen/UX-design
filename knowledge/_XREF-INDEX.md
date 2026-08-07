@@ -2,7 +2,7 @@
 
 > One traversable record per component joining **tokens · god-nodes · WCAG SCs · guidelines · anti-patterns · deprecated bindings**. Generated derived view over the canon (Graphify-borrow #4); regenerate after editing metas/tokens/compliance KG/the guideline map: `python3 knowledge/_build_xref_index.py`. Machine-readable detail in `_XREF-INDEX.json`.
 
-**Totals:** 67 components · 19 with deprecated bindings · 27 god-nodes (blast≥7).
+**Totals:** 75 components · 19 with deprecated bindings · 28 god-nodes (blast≥7).
 
 **Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode, focus-indicators.
 
@@ -18,18 +18,23 @@
 | Avatar | ato | 12 | border/subtle, icon/default, icon/default-reverse, icon/disabled… | 1.1.1, 1.4.10, 1.4.4, 2.4.7, 2.5.8 | imagery, hexagon-masks, typography-usage | 6 |
 | Badge | ato | 6 | color/primary, icon/disabled, background/default, text/reverse… | 1.4.1, 1.4.11, 4.1.2 | typography-usage |  |
 | Banner | mol | 4 | border-radius/surface | 1.4.1, 1.4.10, 1.4.3, 2.5.8, 4.1.3 | — |  |
-| Bar chart | org | 12 | background/default, elevation/border, elevation/functional, rag/error… | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
+| Bar chart | org | 12 | background/default, series/1, elevation/border, elevation/functional… | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
+| Box plot | org | 3 | background/default, series/1, text/default | 1.3.1, 1.4.11, 1.4.13 | — |  |
 | Breadcrumbs | mol | 2 | text/default, font-family/default | 1.4.1, 2.4.7, 2.4.8, 4.1.2 | platform-web, tone-of-voice |  |
+| Bullet chart | org | 3 | background/default, series/1, text/default | 1.3.1, 1.4.11, 1.4.13 | — |  |
+| Butterfly chart (horizontal) | org | 5 | background/default, series/1, elevation/border, elevation/functional | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
+| Butterfly chart (vertical) | org | 6 | background/default, series/1, elevation/border, elevation/functional | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
 | Button | ato | 23 | icon/default, icon/default-reverse, icon/disabled, background/default… | 1.4.11, 1.4.3, 2.1.1, 2.4.7, 2.5.8, 4.1.2 | calls-to-action |  |
+| Candlestick chart | org | 4 | background/default, text/default | 1.3.1, 1.4.11, 1.4.13 | — |  |
 | Cards | mol | 14 | background/default, border/subtle, color/primary, icon/default… | 1.4.11, 1.4.3, 2.1.1, 2.4.7 | elevation, imagery, hexagon-masks, icons | 1 |
-| Combo chart | org | 6 | background/default, border-radius/surface, elevation/border, elevation/functional | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
+| Combo chart | org | 6 | background/default, border-radius/surface, series/1, elevation/border… | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
 | Confirmation | org | 8 | background/default, rag/success, background/hover, text/default… | 1.3.1, 1.4.1, 1.4.3 | — |  |
 | Countdown timer | mol | 4 | text/default, font-family/default | 1.4.1, 2.2.1, 2.3.3, 4.1.3 | time-based-indicators |  |
 | Data grid | org | 14 | background/default, border-radius/control, background/hover, border/active… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 4.1.2 | — |  |
 | Date picker | mol | 8 | background/default, border-radius/control, border-radius/surface, elevation/border… | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.1.2, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.2 | — |  |
 | Date-range picker | org | 8 | background/default, border-radius/control, border-radius/surface, elevation/border… | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.1.2, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.2, 4.1.3 | — |  |
 | Divider | ato | 5 | border/subsection | 1.3.1, 1.4.11 | elevation | 2 |
-| Donut chart | org | 4 | background/default, border/subtle, text/default | 1.3.1, 1.4.1, 1.4.11 | — |  |
+| Donut chart | org | 4 | background/default, border/subtle, series/1, text/default | 1.3.1, 1.4.1, 1.4.11 | — |  |
 | Drawer | org | 5 | border/subtle, elevation/border, elevation/functional, background/default | 1.3.2, 2.1.2, 2.4.3, 2.4.7, 2.5.8, 4.1.2 | — |  |
 | Dropdown | mol | 19 | background/default, border/subsection, elevation/functional, background/hover… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 4.1.2 | forms, elevation, icons | 9 |
 | Empty state | mol | 3 | border-radius/surface, border/subtle, text/default | 1.3.1, 2.4.6, 2.4.7, 2.5.8 | — |  |
@@ -38,9 +43,10 @@
 | Form layout | org | 5 | border-radius/control, rag/error, rag/success, text/default | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
 | Headers | mol | 3 | icon/default, text/default, font-family/default | 1.3.1, 2.4.6, 2.5.8, 4.1.3 | typography-usage, platform-web, logos | 3 |
 | Hero | org | 11 | border/subtle, color/primary, icon/default-reverse, background/default… | 1.3.1, 1.4.3, 2.2.2, 2.3.3, 2.4.6 | imagery, hexagon-masks, calls-to-action, typography-usage | 8 |
+| Histogram | org | 4 | background/default, series/1, elevation/border, elevation/functional | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
 | Icon button | ato | 24 | icon/default, icon/default-reverse, icon/disabled, background/default… | 1.4.11, 2.1.1, 2.4.4, 2.4.7, 2.5.8, 4.1.2 | — |  |
 | Input fields | mol | 17 | background/default, border/subsection, elevation/functional, background/hover… | 1.3.1, 1.3.5, 1.4.1, 2.1.1, 2.4.7, 3.3.1, 3.3.2, 4.1.2 | forms, tone-of-voice | 2 |
-| Line chart | org | 5 | background/default, elevation/border, elevation/functional | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
+| Line chart | org | 5 | background/default, series/1, elevation/border, elevation/functional | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
 | Links | mol | 8 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.4.1, 1.4.11, 1.4.3, 2.4.4, 2.4.7 | calls-to-action, tone-of-voice | 4 |
 | List items | mol | 16 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.3.1, 1.4.3, 2.5.7, 2.5.8, 4.1.2, 4.1.3 | typography-usage, icons |  |
 | Loading indicator | ato | 4 | icon/default, icon/default-reverse, text/default, text/reverse | 1.1.1, 2.2.2, 2.3.3, 4.1.3 | time-based-indicators |  |
@@ -49,18 +55,20 @@
 | Navigations | org | 15 | background/default, border/subtle, color/primary, border/subsection… | 1.3.1, 1.4.1, 2.1.2, 2.4.1, 2.4.11, 2.4.5, 2.5.8, 4.1.2 | platform-web, platform-app, icons | 6 |
 | Notifications | mol | 16 | elevation/functional, icon/default, icon/default-reverse, rag/error… | 1.4.1, 1.4.3, 3.3.1, 4.1.3 | tone-of-voice, cookie-notifications, icons | 2 |
 | Pagination | mol | 12 | background/default, border/subsection, border/active, icon/default… | 1.3.1, 1.4.1, 2.4.4, 2.5.8, 4.1.2 | platform-web, horizontal-scroll | 7 |
+| Pie chart | org | 4 | background/default, border/subtle, series/1, text/default | 1.3.1, 1.4.1, 1.4.11 | — |  |
 | Popover | mol | 6 | background/default, border-radius/surface, elevation/border, elevation/functional… | 1.4.13, 2.1.2, 2.4.3, 2.4.7, 2.5.8, 4.1.2 | — |  |
 | Progress tracker | mol | 3 | text/default | 1.3.1, 1.4.1, 4.1.3 | time-based-indicators |  |
 | Quick actions | mol | 3 | icon/default, text/default, text/disabled | 1.1.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | calls-to-action, icons | 6 |
 | Reorder | ato | 3 | icon/default, rag/success, background/hover | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | icons |  |
-| Scatter plot | org | 4 | background/default, text/default | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
+| Scatter plot | org | 4 | background/default, series/1, text/default | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
 | Search field | mol | 13 | background/default, border/subsection, elevation/functional, background/hover… | 1.3.5, 1.4.10, 1.4.4, 2.4.11, 2.4.7, 3.3.2, 4.1.2 | forms, icons | 1 |
 | Secure entry | mol | 4 | border-radius/control, rag/error, rag/success, text/default | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
 | Segmented control | ato | 10 | border/default, icon/default, background/default, background/default… | 1.4.1, 2.1.1, 2.3.3, 2.5.8, 4.1.2 | — |  |
 | Selection controls | mol | 13 | background/default, border/default, icon/default, icon/default-reverse… | 1.3.1, 1.4.1, 2.4.7, 2.5.8, 3.3.1, 4.1.2 | forms | 13 |
 | Skeleton loader | mol | 5 | background/default, border-radius/surface, border/subtle, background/hover | 1.4.11, 2.3.3, 4.1.3 | — |  |
 | Slider | mol | 9 | background/default, border/subtle, border/default, background/default… | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | forms | 1 |
-| Sparkline | mol | 3 | background/default, text/default | 1.1.1, 1.3.1, 1.4.11 | — |  |
+| Sparkline | mol | 3 | background/default, series/1, text/default | 1.1.1, 1.3.1, 1.4.11 | — |  |
+| Stacked area chart | org | 3 | background/default, series/1 | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
 | Stat card | mol | 6 | border-radius/surface, border/subtle, rag/error, rag/success… | 1.3.1, 1.4.1, 1.4.11 | — |  |
 | Status indicator | ato | 9 | rag/error, rag/success, text/default, text/disabled | 1.4.1, 1.4.11, 1.4.3, 4.1.3 | tone-of-voice, time-based-indicators, icons | 1 |
 | Stepper | org | 7 | border-radius/control, rag/error, text/default, text/on-inverse | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |

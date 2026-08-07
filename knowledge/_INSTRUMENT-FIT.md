@@ -86,6 +86,7 @@
 | `knowledge/_validate_token_tiers.py` | I0-STATIC |
 | `knowledge/_validate_type_blast_radius.py` | I0-STATIC |
 | `knowledge/_validate_type_composites.py` | I0-STATIC |
+| `knowledge/_validate_wiring.py` | I0-STATIC |
 
 *Detected from `sync_playwright` / `.chromium.launch` / `page.evaluate` and DOM-parser imports — **never from bare words**. A word-based detector reads `_validate_proforma.py` as RENDER because the file says *monochrome* and *demo-chrome*, overstating gate strength (MEASURED 2026-07-27; bite 2 pins it).*
 

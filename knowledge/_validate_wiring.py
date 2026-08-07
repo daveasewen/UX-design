@@ -24,11 +24,12 @@ SELF = "_validate_wiring.py"
 
 # name -> (reason, date). May only shrink without a new declared reason.
 EXEMPT: dict[str, tuple[str, str]] = {
-    "_validate_screen.py": (
-        "ROTTED at #118 drive — ValueError, data shape moved under it; repair-or-retire pending",
-        "2026-08-07"),
+    # _validate_screen.py UN-EXEMPTED #120 — the #118 "ROTTED" verdict was a drifted
+    # a11y.check() call signature; repaired, bite-tested, WIRED in _build_all.py same pass.
     "_validate_state_contrast.py": (
-        "ENVIRONMENTAL at #118 drive — ModuleNotFoundError: playwright; judge in an env that has it",
+        "ENVIRONMENTAL, re-diagnosed #120 — playwright module installs, but chromium download "
+        "is blocked by sandbox TLS (UNABLE_TO_GET_ISSUER_CERT_LOCALLY on all 3 CDNs); needs an "
+        "env with CA trust to playwright's CDN or a pre-cached browser. Not rot: never exercised.",
         "2026-08-07"),
 }
 

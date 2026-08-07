@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 60/67 components clean · 7 leak a primitive. Store: 189 semantic colour tokens (light+dark), 54 flat (dark==light), 225 primitives.
+**Coverage:** 68/75 components clean · 7 leak a primitive. Store: 189 semantic colour tokens (light+dark), 54 flat (dark==light), 225 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -30,8 +30,13 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Badge | 🔴 LEAK | `color/primary` | `primary/background/default`, `text/reverse` |
 | Banner | ✅ clean | — | `rag/text/on-dark`, `rag/text/on-light`, `text/on-success` |
 | Bar chart | ✅ clean | — | `data/series/1`, `data/series/3`, `rag/warning` |
+| Box plot | ✅ clean | — | `data/series/1` |
 | Breadcrumbs | ✅ clean | — | — |
+| Bullet chart | ✅ clean | — | `data/series/1` |
+| Butterfly chart (horizontal) | ✅ clean | — | `data/series/1`, `data/series/3` |
+| Butterfly chart (vertical) | ✅ clean | — | `data/series/1`, `data/series/3` |
 | Button | ✅ clean | — | `icon/default-reverse`, `primary/background/default`, `primary/background/hover`, `text/reverse` |
+| Candlestick chart | ✅ clean | — | — |
 | Cards | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `text/reverse` |
 | Combo chart | ✅ clean | — | `data/series/1`, `data/series/2` |
 | Confirmation | ✅ clean | — | `primary/background/default`, `primary/background/hover`, `text/reverse` |
@@ -49,6 +54,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Form layout | ✅ clean | — | — |
 | Headers | ✅ clean | — | — |
 | Hero | 🔴 LEAK | `color/grey/transparent/white-75`, `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
+| Histogram | ✅ clean | — | `data/series/1` |
 | Icon button | ✅ clean | — | `icon/default-reverse` |
 | Input fields | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
 | Line chart | ✅ clean | — | `data/series/1` |
@@ -60,6 +66,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Navigations | 🔴 LEAK | `color/black`, `color/primary`, `color/white` | `overlay/version1`, `primary/border/default` |
 | Notifications | ✅ clean | — | `icon/default-reverse`, `rag/text/on-dark`, `rag/text/on-light`, `rag/warning` |
 | Pagination | ✅ clean | — | `form/background/default` |
+| Pie chart | ✅ clean | — | `data/series/1` |
 | Popover | ✅ clean | — | — |
 | Progress tracker | ✅ clean | — | — |
 | Quick actions | ✅ clean | — | — |
@@ -72,6 +79,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Skeleton loader | ✅ clean | — | — |
 | Slider | ✅ clean | — | `form/border/default` |
 | Sparkline | ✅ clean | — | `data/series/1` |
+| Stacked area chart | ✅ clean | — | `data/series/1`, `data/text/on-series` |
 | Stat card | ✅ clean | — | — |
 | Status indicator | ✅ clean | — | `rag/warning` |
 | Stepper | ✅ clean | — | — |

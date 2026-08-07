@@ -139,7 +139,7 @@ def print_fetch(index, record_id):
 # record. Fix the lexicon or ranking on a miss — never special-case the query string.
 SELFTEST_CASES = [
     ("band table amber threshold remaining budget",
-     {"runbook:context-gauge:the-floor-is-measured-never-assumed-and-this-is-the-only-cop"}),
+     {"runbook:context-gauge:the-floor-is-measured-never-assumed-gm-d9"}),
     ("lane routing check blocking records",
      {"lane:lane-1-memento"}),
     ("retirement receipts proxy promoted blocking",

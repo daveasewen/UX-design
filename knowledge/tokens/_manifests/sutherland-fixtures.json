@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 67,
+  "componentCount": 75,
   "fixtures": [
     {
       "component": "Accordion",
@@ -813,7 +813,6 @@
           "aria-label",
           "aria-pressed",
           "aria-controls",
-          "aria-expanded",
           "role=\"region\""
         ],
         "contrastPairs": [
@@ -938,6 +937,69 @@
       }
     },
     {
+      "component": "Box plot",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-boxplot.reference.html",
+      "meta": "components/Chart-boxplot.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--shadow": "elevation/functional",
+          "--data-series-1": "data/series/1",
+          "--data-axis": "data/axis/color",
+          "--data-control-label-disabled": "data/control/label-disabled/color",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "role=\"img\"",
+          "aria-label",
+          "aria-controls",
+          "role=\"region\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "categories",
+            "type": "array",
+            "$note": "One box per category; each carries min/Q1/median/Q3/max + optional outliers."
+          },
+          {
+            "name": "outliers",
+            "type": "array",
+            "$note": "Points outside the whisker range, drawn with the Chart-scatter ENLARGED marker family (circle r5.5, page-colour stroke) — same series, not a new colour channel."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "Real <table class=\"dv-table\"> mirroring the five-number summary + outliers per category (dv-005)."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state = the Empty-state pattern by reference."
+          }
+        ]
+      }
+    },
+    {
       "component": "Breadcrumbs",
       "category": "molecule",
       "referenceSnippet": "snippets/Breadcrumbs.reference.html",
@@ -976,12 +1038,235 @@
       }
     },
     {
+      "component": "Bullet chart",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-bullet.reference.html",
+      "meta": "components/Chart-bullet.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--shadow": "elevation/functional",
+          "--data-series-1": "data/series/1",
+          "--data-axis": "data/axis/color",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "role=\"img\"",
+          "aria-label",
+          "aria-controls",
+          "role=\"region\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "rows",
+            "type": "array",
+            "$note": "One row per KPI: measure, target, and three qualitative range breakpoints."
+          },
+          {
+            "name": "measure",
+            "type": "number",
+            "$note": "The primary bar — fill = data/series/1 (brief-ruled)."
+          },
+          {
+            "name": "target",
+            "type": "number",
+            "$note": "Comparative marker — a 3px vertical ink tick spanning the row (brief-ruled: 'marker = ink')."
+          },
+          {
+            "name": "ranges",
+            "type": "array",
+            "$note": "Qualitative bands (poor/satisfactory/good) BEHIND the measure — CANON greys (#96-D1 ③ RULED), z-order bands→bar→marker confirmed correct (DOM paint order)."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "Real <table class=\"dv-table\"> mirroring measure/target/range values per row (dv-005)."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state = the Empty-state pattern by reference."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Butterfly chart (horizontal)",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-butterfly-h.reference.html",
+      "meta": "components/Chart-butterfly-h.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-3": "data/series/3",
+          "--data-series-4": "data/series/4",
+          "--data-series-5": "data/series/5",
+          "--data-series-1-hc": "data/series-high-contrast/1",
+          "--data-series-2-hc": "data/series-high-contrast/2",
+          "--data-series-3-hc": "data/series-high-contrast/3",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--data-grid": "data/grid/color",
+          "--grid-alpha": "data/grid/alpha",
+          "--data-control-label-disabled": "data/control/label-disabled/color",
+          "--data-text-on-series": "data/text/on-series",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "aria-label",
+          "aria-pressed",
+          "aria-controls",
+          "role=\"region\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/3",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "series",
+            "type": "pair",
+            "$note": "Exactly two series, one per direction. LEFT takes data/series/1 (categorical default); RIGHT takes data/series/3 (DV-D09's h-bar default, cited here for the positive-reading direction)."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005), surfaced by the same TABLE-VIEW POPOVER Chart-bar uses."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state consumes the Empty-state pattern by reference."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Butterfly chart (vertical)",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-butterfly-v.reference.html",
+      "meta": "components/Chart-butterfly-v.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-3": "data/series/3",
+          "--data-series-4": "data/series/4",
+          "--data-series-5": "data/series/5",
+          "--data-series-1-hc": "data/series-high-contrast/1",
+          "--data-series-2-hc": "data/series-high-contrast/2",
+          "--data-series-3-hc": "data/series-high-contrast/3",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--data-grid": "data/grid/color",
+          "--grid-alpha": "data/grid/alpha",
+          "--data-control-label-disabled": "data/control/label-disabled/color",
+          "--data-text-on-series": "data/text/on-series",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "aria-label",
+          "aria-pressed",
+          "aria-controls",
+          "role=\"region\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/3",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "series",
+            "type": "pair",
+            "$note": "Exactly two series, one per direction. UP takes data/series/1 (column default, DV-D09); DOWN takes data/series/3, paired for visual contrast with the -h sibling's LEFT/RIGHT choice."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005)."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state consumes the Empty-state pattern by reference."
+          }
+        ]
+      }
+    },
+    {
       "component": "Button",
       "category": "atom",
       "referenceSnippet": "snippets/Button.reference.html",
       "meta": "components/button.meta.json",
       "contract": {
         "tokenBindings": {
+          "--alpha-68": "alpha/68",
           "--pri-default": "button/primary/background/default",
           "--pri-hover": "button/primary/background/hover",
           "--pri-pressed": "button/primary/background/pressed",
@@ -1116,12 +1401,86 @@
       }
     },
     {
+      "component": "Candlestick chart",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-candlestick.reference.html",
+      "meta": "components/Chart-candlestick.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--shadow": "elevation/functional",
+          "--data-delta-gain": "data/delta/gain",
+          "--data-delta-loss": "data/delta/loss",
+          "--data-axis": "data/axis/color",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "role=\"img\"",
+          "aria-label",
+          "aria-controls",
+          "role=\"region\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/delta/gain",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/delta/loss",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "sessions",
+            "type": "array",
+            "$note": "One candle per session: open/high/low/close. Canon example: 40 sessions, seed 103 (ds-027 standing density rule)."
+          },
+          {
+            "name": "up",
+            "type": "boolean",
+            "$note": "close ≥ open — body SOLID fill = data/delta/gain (ds-027, ruled #100)."
+          },
+          {
+            "name": "down",
+            "type": "boolean",
+            "$note": "close < open — body SOLID fill = data/delta/loss (ds-027, ruled #100)."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "Real <table class=\"dv-table\"> mirroring OHLC columns per session (dv-005) — THE accessibility fallback per ds-027, not decorative."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state = the Empty-state pattern by reference."
+          }
+        ]
+      }
+    },
+    {
       "component": "Cards",
       "category": "molecule",
       "referenceSnippet": "snippets/Cards.reference.html",
       "meta": "components/cards.meta.json",
       "contract": {
         "tokenBindings": {
+          "--alpha-48": "alpha/48",
           "--border-radius-surface": "border-radius/surface",
           "--surface": "tertiary/background/default",
           "--border": "border/subtle",
@@ -1245,7 +1604,6 @@
           "aria-label",
           "aria-pressed",
           "aria-controls",
-          "aria-expanded",
           "role=\"region\""
         ],
         "contrastPairs": [
@@ -1861,7 +2219,6 @@
           "aria-label",
           "aria-pressed",
           "aria-controls",
-          "aria-expanded",
           "role=\"region\""
         ],
         "contrastPairs": [
@@ -1978,6 +2335,7 @@
       "meta": "components/drawer.meta.json",
       "contract": {
         "tokenBindings": {
+          "--alpha-84": "alpha/84",
           "--surface": "tertiary/background/default",
           "--elev-bd": "elevation/border",
           "--shadow": "elevation/functional",
@@ -2517,6 +2875,7 @@
       "meta": "components/headers.meta.json",
       "contract": {
         "tokenBindings": {
+          "--alpha-80": "alpha/80",
           "--surface": "background/default",
           "--text": "text/default",
           "--icon": "icon/default",
@@ -2677,6 +3036,66 @@
       }
     },
     {
+      "component": "Histogram",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-histogram.reference.html",
+      "meta": "components/Chart-histogram.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-1-hc": "data/series-high-contrast/1",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "aria-label",
+          "aria-pressed",
+          "aria-controls",
+          "role=\"region\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "bins",
+            "type": "array",
+            "$note": "Contiguous value ranges; rect width == category slot width exactly (no bar-style inset), adjacent rects share an x-edge. DERIVED from Chart-bar's column geometry — see the snippet header for the exact arithmetic (8 bins, 522px plot area, 65.25px/bin)."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005)."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state consumes the Empty-state pattern by reference."
+          }
+        ]
+      }
+    },
+    {
       "component": "Icon button",
       "category": "atom",
       "referenceSnippet": "snippets/Icon-button.reference.html",
@@ -2798,6 +3217,7 @@
       "meta": "components/input-fields.meta.json",
       "contract": {
         "tokenBindings": {
+          "--alpha-60": "alpha/60",
           "--field-bg-default": "form/background/default",
           "--field-bg-hover": "form/background/hover",
           "--border-default": "form/border/default",
@@ -2928,7 +3348,6 @@
           "aria-label",
           "aria-pressed",
           "aria-controls",
-          "aria-expanded",
           "role=\"region\""
         ],
         "contrastPairs": [
@@ -3361,6 +3780,7 @@
       "meta": "components/modal-lightbox.meta.json",
       "contract": {
         "tokenBindings": {
+          "--alpha-84": "alpha/84",
           "--surface": "tertiary/background/default",
           "--elev-bd": "elevation/border",
           "--shadow": "elevation/functional",
@@ -3421,6 +3841,7 @@
       "meta": "components/modals.meta.json",
       "contract": {
         "tokenBindings": {
+          "--alpha-84": "alpha/84",
           "--surface": "tertiary/background/default",
           "--elev-bd": "elevation/border",
           "--shadow": "elevation/functional",
@@ -3744,6 +4165,144 @@
       }
     },
     {
+      "component": "Pie chart",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-pie.reference.html",
+      "meta": "components/chart-pie.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-3": "data/series/3",
+          "--data-series-4": "data/series/4",
+          "--data-series-5": "data/series/5",
+          "--data-series-1-hc": "data/series-high-contrast/1",
+          "--data-series-2-hc": "data/series-high-contrast/2",
+          "--data-series-3-hc": "data/series-high-contrast/3",
+          "--data-series-4-hc": "data/series-high-contrast/4",
+          "--data-series-5-hc": "data/series-high-contrast/5",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--data-control-label-disabled": "data/control/label-disabled/color",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "aria-label",
+          "aria-pressed",
+          "aria-controls",
+          "role=\"region\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/4",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/5",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/4",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/5",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/axis/color",
+            "bg": "background/default",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "labelling",
+            "type": "enum",
+            "values": [
+              "spider",
+              "direct"
+            ],
+            "default": "spider",
+            "$note": "spider = letter on a short leader outside the ring + vertical legend [swatch][letter][name]; direct = name + value in place, no legend. D-Q2 (spider vs direct default) stays OPEN — cited, not re-decided; both variants shown, same posture as the donut."
+          },
+          {
+            "name": "slices",
+            "type": "number",
+            "$note": "Maximum 6 (dv-pie-009); more → combine smallest into 'Other'. Values must sum to the total carried on data-total (dv-pie-010) even though no centre figure displays it."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state = the Empty-state pattern by reference."
+          },
+          {
+            "name": "valueMode",
+            "type": "enum",
+            "values": [
+              "value",
+              "percent"
+            ],
+            "default": "value",
+            "$note": "Segmented-control atom (.seg.sm) drives BAKED variant groups (data-dv-view) — direct labels AND the table column mirror the active mode. JS-off = value view."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "Optional visible title (.dv-title, t-cm-section-label) in the H-stack head; sr-only figcaption still names the chart when absent."
+          }
+        ]
+      }
+    },
+    {
       "component": "Popover",
       "category": "molecule",
       "referenceSnippet": "snippets/Popover.reference.html",
@@ -4017,6 +4576,12 @@
           "--data-series-1": "data/series/1",
           "--data-series-2": "data/series/2",
           "--data-series-3": "data/series/3",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--data-grid": "data/grid/color",
+          "--grid-alpha": "data/grid/alpha",
+          "--data-control-label-disabled": "data/control/label-disabled/color",
+          "--border-radius-control": "border-radius/control",
           "--border-radius-surface": "border-radius/surface"
         },
         "requiredAria": [
@@ -4025,8 +4590,10 @@
           "role=\"img\"",
           "aria-label",
           "aria-controls",
-          "aria-expanded",
-          "role=\"region\""
+          "role=\"region\"",
+          "role=\"checkbox\"",
+          "aria-checked",
+          "aria-pressed"
         ],
         "contrastPairs": [
           {
@@ -4048,6 +4615,11 @@
             "fg": "data/series/3",
             "bg": "background/default",
             "context": "ui"
+          },
+          {
+            "fg": "data/axis/color",
+            "bg": "background/default",
+            "context": "text"
           }
         ],
         "props": [
@@ -4610,6 +5182,147 @@
             "type": "boolean",
             "default": false,
             "$note": "Compact Empty-state adaptation: dashed frame + single title line (receipted scale adaptation of the pattern)."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Stacked area chart",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-stacked-area.reference.html",
+      "meta": "components/chart-stacked-area.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-3": "data/series/3",
+          "--data-series-1-hc": "data/series-high-contrast/1",
+          "--data-series-2-hc": "data/series-high-contrast/2",
+          "--data-series-3-hc": "data/series-high-contrast/3",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--data-grid": "data/grid/color",
+          "--grid-alpha": "data/grid/alpha",
+          "--data-text-on-series": "data/text/on-series",
+          "--data-control-label-disabled": "data/control/label-disabled/color",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "aria-label",
+          "aria-pressed",
+          "aria-controls",
+          "role=\"region\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/axis/color",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/text/on-series",
+            "bg": "data/series/1",
+            "context": "text"
+          },
+          {
+            "fg": "data/text/on-series",
+            "bg": "data/series/2",
+            "context": "text"
+          },
+          {
+            "fg": "data/text/on-series",
+            "bg": "data/series/3",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "series",
+            "type": "number",
+            "$note": "1–5 supported by the token ramp; 3 in the reference. Each band carries colour (data/series/N) + an in-fill letter key (A/B/C, data/text/on-series) — colour is never the only channel."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel. Mirrors PER-SERIES values plus a computed Total column (the bands' sum) — parity between chart and table is scriptable the same way as the stacked-column check."
+          },
+          {
+            "name": "fillAlpha",
+            "type": "string",
+            "$note": "--stack-fill-alpha, default 1 (flat/solid). NOT a minted token — a receipted CSS dial so band opacity can be tuned later without a token-minting pass (token minting stays a serial/conductor act)."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state = the Empty-state pattern by reference."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "Optional visible title slot (.dv-title, dv-006), a type composite heading; sr-only figcaption still names the chart when absent."
+          },
+          {
+            "name": "tablePopover",
+            "type": "boolean",
+            "default": true,
+            "$note": "Table-view POPOVER panel, ported from the line exemplar verbatim."
+          },
+          {
+            "name": "legendFilter",
+            "type": "boolean",
+            "default": true,
+            "$note": "DV-D11 legend chrome, plain swatches (band identity is the in-fill letter, not a legend glyph — matches Chart-bar's stacked-column legend, not Chart-line's shaped-swatch set)."
+          },
+          {
+            "name": "highContrast",
+            "type": "boolean",
+            "default": false,
+            "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only)."
           }
         ]
       }

@@ -1584,7 +1584,7 @@
 .cn-input-fields :is(button, .cn-input-fields a, .cn-input-fields label, .cn-input-fields span, .cn-input-fields small, .cn-input-fields strong, .cn-input-fields em, .cn-input-fields b, .cn-input-fields i, .cn-input-fields th, .cn-input-fields td, .cn-input-fields dt, .cn-input-fields dd, .cn-input-fields li, .cn-input-fields figcaption, .cn-input-fields legend, .cn-input-fields caption, .cn-input-fields summary, .cn-input-fields output, .cn-input-fields time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 .cn-input-fields h2.sec{font:500 16px/1.3 var(--font); /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ color:var(--text);
     opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
-.cn-input-fields p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-input-fields p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 /* library icon sprite — sized 18px (icon-scale: small) */
 .cn-input-fields .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 /* ---------- shared field scaffold ---------- */
@@ -1595,6 +1595,9 @@
 /* (?) optional help label — a real button, accessible name + tooltip */
 .cn-input-fields .help-btn{position:relative; width:18px; height:18px; padding:0; border:0; background:transparent;
     color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; border-radius:var(--border-radius-control);}
+/* #114 — 44 hit target via the canon invisible ::before expander (aid-009; idiom copied from .dv-vt/.dv-tbl-toggle). */
+.cn-input-fields .help-btn::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-input-fields .help-btn > *{position:relative; z-index:1;}
 .cn-input-fields .help-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-input-fields .help-btn:active{transform:scale(.92);}
 .cn-input-fields .help-btn .tip{position:absolute; left:50%; transform:translateX(-50%); bottom:calc(100% + 8px);
@@ -1672,7 +1675,7 @@
 .cn-input-fields .uctrl:has(input:focus)::after{transform:scaleX(1);}
 .cn-input-fields .uctrl input:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 :root[data-modality="pointer"] .cn-input-fields .uctrl input:focus-visible{outline:none;}
-.cn-input-fields .uhelp{font:400 12px/16px var(--font); color:var(--text); opacity:.75; margin:8px 0 0;}
+.cn-input-fields .uhelp{font:400 12px/16px var(--font); color:var(--text); opacity:var(--alpha-72); margin:8px 0 0;}
 .cn-input-fields .uic{position:absolute; right:2px; top:28px; transform:translateY(-50%); display:flex; color:var(--success); --mark:var(--page);}
 /* rag roundel policy: shape = rag colour, mark knocks to page */
 /* policy dark: WHITE shape + black mark */
@@ -1682,7 +1685,7 @@
 .cn-input-fields .ufield.is-disabled label{color:var(--text-disabled);}
 .cn-input-fields .ufield + .ufield{margin-top:28px;}
 .cn-input-fields .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
-.cn-input-fields .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */}
+.cn-input-fields .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */}
 @media (prefers-reduced-motion: reduce){
 .cn-input-fields .box .tail-btn:hover, .cn-input-fields .box .tail-btn:active{transform:none !important;}
 /* scale affordance off under reduced motion (Notifications × precedent) */
@@ -1741,7 +1744,7 @@
 .cn-progress-tracker .dot svg{width:14px; height:14px; fill:currentColor;}
 .cn-progress-tracker li.done .dot{background:var(--complete); color:var(--on-complete);}
 .cn-progress-tracker li.current .dot{background:var(--page); color:var(--text); box-shadow:inset 0 0 0 3px var(--complete);}
-.cn-progress-tracker .step-label{opacity:.85;}
+.cn-progress-tracker .step-label{opacity:var(--alpha-84);}
 .cn-progress-tracker li.current .step-label{font-weight:500; opacity:1;}
 /* ── COLLAPSED form — the 1784-86051 head + continuous track (narrow containers) ── */
 .cn-progress-tracker .collapse{display:none;}
@@ -2077,12 +2080,12 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-divider :is(button, .cn-divider a, .cn-divider label, .cn-divider span, .cn-divider small, .cn-divider strong, .cn-divider em, .cn-divider b, .cn-divider i, .cn-divider th, .cn-divider td, .cn-divider dt, .cn-divider dd, .cn-divider li, .cn-divider figcaption, .cn-divider legend, .cn-divider caption, .cn-divider summary, .cn-divider output, .cn-divider time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 .cn-divider h2{font:400 16px/1.4 var(--font); margin:0;}
-.cn-divider p{margin:.4rem 0 0; opacity:.7; font-size:14px; max-width:52ch;}
+.cn-divider p{margin:.4rem 0 0; opacity:var(--alpha-68); font-size:14px; max-width:52ch;}
 .cn-divider hr{border:0; margin:20px 0;}
 .cn-divider hr.section{border-top:1px solid var(--section);}
 .cn-divider hr.subsection{border-top:1px solid var(--subsection);}
 .cn-divider hr.break{border-top:1px solid var(--break);}
-.cn-divider .label{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ opacity:.5;}
+.cn-divider .label{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ opacity:var(--alpha-48);}
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
 
@@ -2217,7 +2220,7 @@
 .cn-tabs .tablist{position:relative; display:flex; gap:var(--tab-gap); align-items:stretch;
     background:var(--tabs-background); border-bottom:var(--track-h) solid var(--tabs-standard-border);}
 .cn-tabs .tab{position:relative; appearance:none; border:0; background:transparent; border-radius:var(--border-radius-control); flex:0 0 auto;
-    font:inherit; font-weight:var(--weight); color:var(--text-default); opacity:.75;
+    font:inherit; font-weight:var(--weight); color:var(--text-default); opacity:var(--alpha-72);
     height:var(--tab-h); padding:0 var(--tab-pad-x); display:inline-flex; align-items:center; gap:8px;
     cursor:pointer; white-space:nowrap; transition:opacity var(--fade), background var(--fade);}
 .cn-tabs .tab[hidden]{display:none;}
@@ -2226,7 +2229,7 @@
 .cn-tabs .tab:active{background:var(--tertiary-hover);}
 /* softer press (no dark inversion) */
 .cn-tabs .tab[aria-selected="true"]{opacity:1;}
-.cn-tabs .tab:disabled{opacity:.35; cursor:not-allowed;}
+.cn-tabs .tab:disabled{opacity:var(--alpha-32); cursor:not-allowed;}
 .cn-tabs .tab:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
 .cn-tabs .indicator{position:absolute; bottom:calc(-1 * var(--track-h)); height:var(--indicator-h);
     background:var(--tabs-active); border-radius:var(--border-radius-indicator); transition:left var(--move), width var(--move), opacity var(--fade);}
@@ -2238,7 +2241,7 @@
 .cn-tabs .overflow[hidden]{display:none;}
 .cn-tabs .overflow__trigger{appearance:none; font:inherit; font-weight:var(--weight); height:var(--tab-h);
     padding:0 16px; display:inline-flex; align-items:center; gap:8px; background:transparent;
-    color:var(--text-default); border:0; cursor:pointer; border-radius:var(--border-radius-control); opacity:.75; white-space:nowrap;}
+    color:var(--text-default); border:0; cursor:pointer; border-radius:var(--border-radius-control); opacity:var(--alpha-72); white-space:nowrap;}
 .cn-tabs .overflow__trigger:hover{background:var(--tertiary-hover); opacity:1;}
 .cn-tabs .overflow__trigger:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
 .cn-tabs .ovcount{display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px;
@@ -2255,11 +2258,11 @@
     min-height:44px; border-radius:var(--border-radius-control);}
 .cn-tabs .overflow__item:hover{background:var(--tertiary-hover);}
 .cn-tabs .overflow__item:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-2px;}
-.cn-tabs .overflow__item:disabled{opacity:.35; cursor:not-allowed;}
+.cn-tabs .overflow__item:disabled{opacity:var(--alpha-32); cursor:not-allowed;}
 .cn-tabs .panel{padding:1.75rem .25rem; color:var(--text-default); animation:cn-tabs-fade var(--fade); max-width:52ch;}
 .cn-tabs .panel[hidden]{display:none;}
 .cn-tabs .panel h2{margin:0 0 .5rem; font-size:20px;}
-.cn-tabs .panel p{margin:0; opacity:.8;}
+.cn-tabs .panel p{margin:0; opacity:var(--alpha-80);}
 @keyframes cn-tabs-fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
 
 /* ============================================================
@@ -2361,7 +2364,7 @@
     border:0; background:transparent; color:inherit; padding:0; font:inherit; line-height:1; cursor:pointer; border-radius:var(--border-radius-control);}
 .cn-selection-controls .chip .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px;}
 /* 24×24 hit target (2.5.8 floor; aid-009 ruling 2026-07-03 — Tooltip house pattern; 44 would overlap adjacent chips) */
-.cn-selection-controls .chip .x:hover{opacity:.6;}
+.cn-selection-controls .chip .x:hover{opacity:var(--alpha-60);}
 .cn-selection-controls .chip .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-selection-controls .chip-del{padding-right:4px;}
 /* ===== EXPERIMENT (2026-06-22, NOT yet doctrine) — attract-on-hover + depress-on-press, same scale-physics
@@ -2414,7 +2417,7 @@
 .cn-search-field .search .mag{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; color:var(--icon); margin:0 12px 0 2px;}
 .cn-search-field .search .mag svg{width:20px; height:20px; fill:currentColor;}
 .cn-search-field .search input{flex:1; min-width:0; height:100%; border:0; background:var(--bg); color:var(--text); /* type: t-cm-label (bound in canon/type.css - T-D9/T-D12) */ outline:none;}
-.cn-search-field .search input::placeholder{color:var(--text); opacity:.5;}
+.cn-search-field .search input::placeholder{color:var(--text); opacity:var(--alpha-48);}
 /* suppress the browser's NATIVE search clear — we supply our own, so no double cross */
 .cn-search-field .search input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
 .cn-search-field .search:hover{background:var(--hover);}
@@ -2450,13 +2453,13 @@
 .cn-breadcrumbs .stack{display:flex; flex-direction:column; gap:28px;}
 .cn-breadcrumbs nav ol{list-style:none; display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0; padding:0; font:400 14px/1.5 var(--font);}
 .cn-breadcrumbs nav li{display:inline-flex; align-items:center; gap:8px;}
-.cn-breadcrumbs .sep{color:var(--text); opacity:.55; display:inline-flex; align-items:center;}
+.cn-breadcrumbs .sep{color:var(--text); opacity:var(--alpha-52); display:inline-flex; align-items:center;}
 .cn-breadcrumbs .sep .chev{width:11px; height:11px; display:block; fill:currentColor;}
 /* library chevron, sized down to a separator */
 .cn-breadcrumbs a.crumb{color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
 .cn-breadcrumbs a.crumb:hover{text-decoration-thickness:2px;}
 .cn-breadcrumbs a.crumb:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -2px 0 var(--text);}
-.cn-breadcrumbs [aria-current="page"]{font-weight:500; opacity:.85;}
+.cn-breadcrumbs [aria-current="page"]{font-weight:500; opacity:var(--alpha-84);}
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
 
@@ -2495,7 +2498,7 @@
 .cn-pagination .pg [aria-current="page"]{border-color:var(--current-bd); font-weight:500;}
 .cn-pagination .pg .ctrl[disabled]{color:var(--disabled); cursor:not-allowed;}
 .cn-pagination .pg svg{width:16px; height:16px; fill:currentColor;}
-.cn-pagination .ellipsis{min-width:24px; text-align:center; opacity:.6;}
+.cn-pagination .ellipsis{min-width:24px; text-align:center; opacity:var(--alpha-60);}
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
 .cn-pagination .pg a:active, .cn-pagination .pg .ctrl:active{transform:none !important;}
@@ -2529,7 +2532,7 @@
 .cn-accordion .acc .head[aria-expanded="true"] .chev{transform:rotate(180deg);}
 .cn-accordion .acc .chev svg{width:16px; height:16px; fill:var(--icon);}
 .cn-accordion .acc .panel{overflow:hidden; max-height:0; transition:max-height var(--ease);}
-.cn-accordion .acc .panel .inner{padding:0 4px 16px; font:400 16px/1.5 var(--font); opacity:.85; max-width:52ch;}
+.cn-accordion .acc .panel .inner{padding:0 4px 16px; font:400 16px/1.5 var(--font); opacity:var(--alpha-84); max-width:52ch;}
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
 
@@ -2839,7 +2842,7 @@
        bare `.num` can't be appended to type.css globally — it collides with `.cn-table td.num`. Box stays local. */
     color:var(--text); font-variant-numeric:tabular-nums;}
 /* number CENTRED in the roundel */
-.cn-countdown-timer .label{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); opacity:.7;}
+.cn-countdown-timer .label{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); opacity:var(--alpha-68);}
 /* subtitle = REGULAR (was 300/light) */
 @media(prefers-reduced-motion:reduce){ .ring .fill{transition:none !important;} }
 
@@ -2929,7 +2932,14 @@
 .cn-video-player .bar button svg{width:18px; height:18px; fill:currentColor;}
 .cn-video-player .bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-video-player .scrub{flex:1; height:4px; background:rgba(255,255,255,.3); position:relative;}
-.cn-video-player .scrub .played{position:absolute; left:0; top:0; bottom:0; width:35%; background:var(--accent);}
+/* 2.5.8 target — the seek bar is a role="slider" CONTROL, so the 4px visual track
+     is not its target. Canon invisible ::before expander (aid-009), same mechanism as
+     .dv-vt / .tail-btn. SURFACED #116 by the markup-driven rebuild: the old
+     selector-allowlist gate had no name for `.scrub` and no rule for role="slider",
+     so this control was never checked at all — it passed by omission. */
+.cn-video-player .scrub::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-video-player .scrub .played{position:absolute; left:0; top:0; bottom:0; width:35%; background:var(--accent); z-index:1;}
 .cn-video-player .time{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--controls); min-width:78px; text-align:right;}
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
@@ -3020,9 +3030,9 @@
   --page: var(--background-default);
   --focus: var(--focus-ring);
 }
-.cn-account-selector h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-account-selector h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-account-selector .as{position:relative; width:360px; max-width:100%;}
-.cn-account-selector .as-label{display:block; margin:0 0 4px; opacity:.6;}
+.cn-account-selector .as-label{display:block; margin:0 0 4px; opacity:var(--alpha-60);}
 /* the trigger — field chrome (Dropdown recipe): underline border, active bottom accent */
 .cn-account-selector .as-trigger{width:100%; min-height:44px; display:flex; align-items:center; gap:8px; padding:8px 12px;
     border:1px solid var(--border); border-radius:var(--border-radius-control); background:transparent;
@@ -3031,7 +3041,7 @@
 .cn-account-selector .as-trigger[aria-expanded="true"]{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active);}
 .cn-account-selector .as-trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-account-selector .as-trigger .who{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px;}
-.cn-account-selector .as-trigger .mask16{opacity:.6;}
+.cn-account-selector .as-trigger .mask16{opacity:var(--alpha-60);}
 .cn-account-selector .as-trigger .bal{flex:none; font-variant-numeric:tabular-nums;}
 .cn-account-selector .as-trigger .chev{flex:none; width:16px; height:16px; transition:transform var(--ease);}
 .cn-account-selector .as-trigger .chev svg{width:16px; height:16px; display:block; fill:currentColor;}
@@ -3043,7 +3053,7 @@
 .cn-account-selector .as-menu.open{display:block;}
 .cn-account-selector .as-opt{display:flex; align-items:center; gap:8px; padding:12px; cursor:pointer;}
 .cn-account-selector .as-opt .who{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px;}
-.cn-account-selector .as-opt .mask16{opacity:.6;}
+.cn-account-selector .as-opt .mask16{opacity:var(--alpha-60);}
 .cn-account-selector .as-opt .bal{flex:none; font-variant-numeric:tabular-nums;}
 .cn-account-selector .as-opt:hover{background:var(--hoverbg);}
 .cn-account-selector .as-opt[aria-selected="true"]{background:var(--hoverbg); box-shadow:inset 4px 0 0 0 var(--border-active);}
@@ -3051,9 +3061,9 @@
 /* the masked account chip — namespaced .acchip (never .chip: type.css blast radius) */
 .cn-account-selector .acchip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
     border:1px solid var(--border); border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
-.cn-account-selector .acchip .mask16{opacity:.6;}
+.cn-account-selector .acchip .mask16{opacity:var(--alpha-60);}
 .cn-account-selector .chiprow{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
-.cn-account-selector .chiprow .ctx{opacity:.6;}
+.cn-account-selector .chiprow .ctx{opacity:var(--alpha-60);}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -3144,7 +3154,7 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-alert h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-alert h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-alert .awrap{width:var(--demo-width, 560px); max-width:100%;}
 /* per-status tokens — accent (glyph/border) + tint (surface); retrieval only, R-D20 */
 .cn-alert .alert.err{--accent:var(--err); --tint:var(--err-t);}
@@ -3268,8 +3278,8 @@
   --success: var(--rag-success);
   --focus: var(--focus-ring);
 }
-.cn-amount-input h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
-.cn-amount-input p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-amount-input h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-amount-input p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 .cn-amount-input .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 /* ---------- field group (Input-fields anatomy — change it there) ---------- */
 .cn-amount-input .ai-group{max-width:380px; margin:0 0 32px;}
@@ -3306,7 +3316,7 @@
 .cn-amount-input .ai-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
 /* message stays INK */
 .cn-amount-input .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
-.cn-amount-input .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+.cn-amount-input .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -3336,7 +3346,7 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-banner h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-banner h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-banner .bwrap{width:var(--demo-width, 720px); max-width:100%; container-type:inline-size;}
 /* per-variant fill + ink — each ink is its most specific ruled role (see header) */
 .cn-banner .banner.err{--fill:var(--err-bg); --ink:var(--on-dark);}
@@ -3402,7 +3412,7 @@
 
 /* ============================================================
    Chart-bar  (from snippets/Chart-bar.reference.html)
-   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, role="region"
    Scope: .cn-chart-bar   ============================================================ */
 .cn-chart-bar{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -3432,7 +3442,7 @@
 .cn-chart-bar [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
     --data-series-2:var(--data-series-2-hc);
     --data-series-3:var(--data-series-3-hc);}
-.cn-chart-bar h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-bar h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-bar .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-bar figure.dv{margin:0; position:relative;}
@@ -3486,14 +3496,13 @@
 .cn-chart-bar .dv-tbl-toggle > *, .cn-chart-bar .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-bar .dv-tbl-toggle:hover, .cn-chart-bar .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-bar .dv-tbl-toggle:focus-visible, .cn-chart-bar .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-bar .dv-tbl-toggle[aria-expanded="true"], .cn-chart-bar .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-bar .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-bar .dv-act, .cn-chart-bar .dv-dd{gap:8px;}
 .cn-chart-bar .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-bar .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-bar .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-bar .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-bar .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-bar .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 /* the SORT switch CONSUMES the Segmented-control atom (sliding indicator, 2px inset, square Mono) */
 .cn-chart-bar .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
     border:1px solid var(--line); background:transparent; vertical-align:top;}
@@ -3555,7 +3564,7 @@
 .cn-chart-bar .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-bar .dv-leg-item > *{position:relative; z-index:1;}
 /* keep the key + name above the invisible target */
-.cn-chart-bar .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-bar .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:var(--alpha-72);}
 .cn-chart-bar .dv-leg-name{white-space:nowrap;}
 /* Reset — the B-D4 pattern: default DISABLED (token colours, still VISIBLE), enables on any
      ghost or isolate; hover lifts the border to ink. Full-width in a vertical legend; intrinsic
@@ -3571,16 +3580,29 @@
 .cn-chart-bar .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
 /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
      .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
-.cn-chart-bar .is-faded{opacity:.24 !important;}
-.cn-chart-bar .is-ghost{opacity:.12 !important;}
-.cn-chart-bar .is-peek{opacity:.24 !important;}
+.cn-chart-bar .is-faded{opacity:var(--alpha-24) !important;}
+.cn-chart-bar .is-ghost{opacity:var(--alpha-12) !important;}
+.cn-chart-bar .is-peek{opacity:var(--alpha-24) !important;}
 /* sr-only live region — every legend state change is announced (DV-D11 chrome clause) */
 .cn-chart-bar .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-bar .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-bar .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-bar details.dv-tbl{position:static; margin:0;}
+.cn-chart-bar details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-bar details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-bar details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-bar details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-bar .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-bar .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -3588,23 +3610,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-bar .dv-tip.on{opacity:1;}
 .cn-chart-bar table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-bar table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-bar table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-bar table.dv-table th, .cn-chart-bar table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-bar table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-bar table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-bar table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-bar .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-bar .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-bar .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-bar .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-bar .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-boxplot  (from snippets/Chart-boxplot.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, role="region"
    Scope: .cn-chart-boxplot   ============================================================ */
 .cn-chart-boxplot{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -3630,7 +3652,7 @@
   --pop-border: #808080;
 }
 .cn-chart-boxplot [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);}
-.cn-chart-boxplot h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-boxplot h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-boxplot .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-boxplot figure.dv{margin:0; position:relative;}
@@ -3664,18 +3686,30 @@
 .cn-chart-boxplot .dv-tbl-toggle > *, .cn-chart-boxplot .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-boxplot .dv-tbl-toggle:hover, .cn-chart-boxplot .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-boxplot .dv-tbl-toggle:focus-visible, .cn-chart-boxplot .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-boxplot .dv-tbl-toggle[aria-expanded="true"], .cn-chart-boxplot .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-boxplot .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-boxplot .dv-act, .cn-chart-boxplot .dv-dd{gap:8px;}
 .cn-chart-boxplot .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-boxplot .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-boxplot .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-boxplot .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-boxplot .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-boxplot .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-boxplot .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-boxplot .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-boxplot details.dv-tbl{position:static; margin:0;}
+.cn-chart-boxplot details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-boxplot details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-boxplot details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-boxplot details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-boxplot .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-boxplot .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -3683,23 +3717,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-boxplot .dv-tip.on{opacity:1;}
 .cn-chart-boxplot table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-boxplot table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-boxplot table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-boxplot table.dv-table th, .cn-chart-boxplot table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-boxplot table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-boxplot table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-boxplot table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-boxplot .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-boxplot .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-boxplot .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-boxplot .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-boxplot .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-bullet  (from snippets/Chart-bullet.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, role="region"
    Scope: .cn-chart-bullet   ============================================================ */
 .cn-chart-bullet{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -3729,7 +3763,7 @@
   --dv-range-3: #474747;
 }
 .cn-chart-bullet [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);}
-.cn-chart-bullet h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-bullet h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-bullet .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-bullet figure.dv{margin:0; position:relative;}
@@ -3767,18 +3801,30 @@
 .cn-chart-bullet .dv-tbl-toggle > *, .cn-chart-bullet .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-bullet .dv-tbl-toggle:hover, .cn-chart-bullet .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-bullet .dv-tbl-toggle:focus-visible, .cn-chart-bullet .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-bullet .dv-tbl-toggle[aria-expanded="true"], .cn-chart-bullet .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-bullet .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-bullet .dv-act, .cn-chart-bullet .dv-dd{gap:8px;}
 .cn-chart-bullet .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-bullet .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-bullet .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-bullet .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-bullet .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-bullet .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-bullet .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-bullet .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-bullet details.dv-tbl{position:static; margin:0;}
+.cn-chart-bullet details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-bullet details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-bullet details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-bullet details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-bullet .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-bullet .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -3786,23 +3832,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-bullet .dv-tip.on{opacity:1;}
 .cn-chart-bullet table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-bullet table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-bullet table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-bullet table.dv-table th, .cn-chart-bullet table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-bullet table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-bullet table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-bullet table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-bullet .dv-empty-frame{width:580px; height:200px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-bullet .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-bullet .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-bullet .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-bullet .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-butterfly-h  (from snippets/Chart-butterfly-h.reference.html)
-   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, role="region"
    Scope: .cn-chart-butterfly-h   ============================================================ */
 .cn-chart-butterfly-h{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -3850,7 +3896,7 @@
     --grow:760ms cubic-bezier(.22,.61,.36,1);}
 .cn-chart-butterfly-h [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
     --data-series-3:var(--data-series-3-hc);}
-.cn-chart-butterfly-h h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-butterfly-h h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-butterfly-h .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-butterfly-h figure.dv{margin:0; position:relative;}
@@ -3880,14 +3926,12 @@
 .cn-chart-butterfly-h .dv-tbl-toggle > *, .cn-chart-butterfly-h .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-butterfly-h .dv-tbl-toggle:hover, .cn-chart-butterfly-h .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-butterfly-h .dv-tbl-toggle:focus-visible, .cn-chart-butterfly-h .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-butterfly-h .dv-tbl-toggle[aria-expanded="true"]{border-color:var(--ink);}
 .cn-chart-butterfly-h .dv-act, .cn-chart-butterfly-h .dv-dd{gap:8px;}
 .cn-chart-butterfly-h .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-butterfly-h .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-butterfly-h .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-butterfly-h .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-butterfly-h .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-butterfly-h .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-butterfly-h .dv-off{display:none !important;}
 /* ================= DV-D11 LEGEND MODEL — migrated chrome, ported verbatim from Chart-bar ==== */
 .cn-chart-butterfly-h .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
@@ -3918,15 +3962,28 @@
 .cn-chart-butterfly-h .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
 .cn-chart-butterfly-h .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-butterfly-h .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
-.cn-chart-butterfly-h .is-faded{opacity:.24 !important;}
-.cn-chart-butterfly-h .is-ghost{opacity:.12 !important;}
-.cn-chart-butterfly-h .is-peek{opacity:.24 !important;}
+.cn-chart-butterfly-h .is-faded{opacity:var(--alpha-24) !important;}
+.cn-chart-butterfly-h .is-ghost{opacity:var(--alpha-12) !important;}
+.cn-chart-butterfly-h .is-peek{opacity:var(--alpha-24) !important;}
 .cn-chart-butterfly-h .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-butterfly-h .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-butterfly-h .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-butterfly-h details.dv-tbl{position:static; margin:0;}
+.cn-chart-butterfly-h details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-butterfly-h details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-butterfly-h details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-butterfly-h details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-butterfly-h .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-butterfly-h .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -3934,23 +3991,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-butterfly-h .dv-tip.on{opacity:1;}
 .cn-chart-butterfly-h table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-butterfly-h table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-butterfly-h table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-butterfly-h table.dv-table th, .cn-chart-butterfly-h table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-butterfly-h table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-butterfly-h table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-butterfly-h table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-butterfly-h .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-butterfly-h .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-butterfly-h .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-butterfly-h .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-butterfly-h .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-butterfly-v  (from snippets/Chart-butterfly-v.reference.html)
-   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, role="region"
    Scope: .cn-chart-butterfly-v   ============================================================ */
 .cn-chart-butterfly-v{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -3974,7 +4031,7 @@
 }
 .cn-chart-butterfly-v [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
     --data-series-3:var(--data-series-3-hc);}
-.cn-chart-butterfly-v h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-butterfly-v h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-butterfly-v .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-butterfly-v figure.dv{margin:0; position:relative;}
@@ -4004,14 +4061,12 @@
 .cn-chart-butterfly-v .dv-tbl-toggle > *, .cn-chart-butterfly-v .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-butterfly-v .dv-tbl-toggle:hover, .cn-chart-butterfly-v .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-butterfly-v .dv-tbl-toggle:focus-visible, .cn-chart-butterfly-v .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-butterfly-v .dv-tbl-toggle[aria-expanded="true"]{border-color:var(--ink);}
 .cn-chart-butterfly-v .dv-act, .cn-chart-butterfly-v .dv-dd{gap:8px;}
 .cn-chart-butterfly-v .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-butterfly-v .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-butterfly-v .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-butterfly-v .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-butterfly-v .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-butterfly-v .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-butterfly-v .dv-off{display:none !important;}
 /* ================= DV-D11 LEGEND MODEL — migrated chrome, ported verbatim from Chart-bar ==== */
 .cn-chart-butterfly-v .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
@@ -4042,15 +4097,28 @@
 .cn-chart-butterfly-v .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
 .cn-chart-butterfly-v .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-butterfly-v .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
-.cn-chart-butterfly-v .is-faded{opacity:.24 !important;}
-.cn-chart-butterfly-v .is-ghost{opacity:.12 !important;}
-.cn-chart-butterfly-v .is-peek{opacity:.24 !important;}
+.cn-chart-butterfly-v .is-faded{opacity:var(--alpha-24) !important;}
+.cn-chart-butterfly-v .is-ghost{opacity:var(--alpha-12) !important;}
+.cn-chart-butterfly-v .is-peek{opacity:var(--alpha-24) !important;}
 .cn-chart-butterfly-v .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-butterfly-v .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-butterfly-v .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-butterfly-v details.dv-tbl{position:static; margin:0;}
+.cn-chart-butterfly-v details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-butterfly-v details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-butterfly-v details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-butterfly-v details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-butterfly-v .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-butterfly-v .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -4058,23 +4126,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-butterfly-v .dv-tip.on{opacity:1;}
 .cn-chart-butterfly-v table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-butterfly-v table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-butterfly-v table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-butterfly-v table.dv-table th, .cn-chart-butterfly-v table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-butterfly-v table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-butterfly-v table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-butterfly-v table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-butterfly-v .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-butterfly-v .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-butterfly-v .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-butterfly-v .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-butterfly-v .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-candlestick  (from snippets/Chart-candlestick.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, role="region"
    Scope: .cn-chart-candlestick   ============================================================ */
 .cn-chart-candlestick{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -4098,7 +4166,7 @@
   --data-control-label-disabled: #808080;
   --pop-border: #808080;
 }
-.cn-chart-candlestick h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-candlestick h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-candlestick .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-candlestick figure.dv{margin:0; position:relative;}
@@ -4113,7 +4181,7 @@
 .cn-chart-candlestick .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
 .cn-chart-candlestick line.dv-axis{stroke:var(--baseline); stroke-width:1;}
 .cn-chart-candlestick text.dv-axis, .cn-chart-candlestick text.dv-label{opacity:var(--axis-alpha);}
-.cn-chart-candlestick .dv-wick{stroke:var(--ink); stroke-opacity:.6; stroke-width:1;}
+.cn-chart-candlestick .dv-wick{stroke:var(--ink); stroke-opacity:var(--alpha-60); stroke-width:1;}
 /* ds-027 (Dave, #100): SOLID two-state — colour = close vs open ONLY, fill = the direction
      token in BOTH directions. The #96-D1 ① hollow-up stroke-only channel is RETIRED; the OHLC
      table is the accessibility fallback (colour-blind/greyscale reading), not a second shape channel. */
@@ -4132,18 +4200,30 @@
 .cn-chart-candlestick .dv-tbl-toggle > *, .cn-chart-candlestick .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-candlestick .dv-tbl-toggle:hover, .cn-chart-candlestick .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-candlestick .dv-tbl-toggle:focus-visible, .cn-chart-candlestick .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-candlestick .dv-tbl-toggle[aria-expanded="true"], .cn-chart-candlestick .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-candlestick .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-candlestick .dv-act, .cn-chart-candlestick .dv-dd{gap:8px;}
 .cn-chart-candlestick .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-candlestick .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-candlestick .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-candlestick .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-candlestick .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-candlestick .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-candlestick .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-candlestick .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-candlestick details.dv-tbl{position:static; margin:0;}
+.cn-chart-candlestick details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-candlestick details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-candlestick details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-candlestick details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-candlestick .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-candlestick .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -4151,23 +4231,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-candlestick .dv-tip.on{opacity:1;}
 .cn-chart-candlestick table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-candlestick table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-candlestick table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-candlestick table.dv-table th, .cn-chart-candlestick table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-candlestick table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-candlestick table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-candlestick table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-candlestick .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-candlestick .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-candlestick .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-candlestick .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-candlestick .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-combo  (from snippets/Chart-combo.reference.html)
-   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, role="region"
    Scope: .cn-chart-combo   ============================================================ */
 .cn-chart-combo{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -4193,7 +4273,7 @@
 }
 .cn-chart-combo [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
     --data-series-2:var(--data-series-2-hc);}
-.cn-chart-combo h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-combo h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-combo .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-combo figure.dv{margin:0; position:relative;}
@@ -4286,7 +4366,7 @@
 .cn-chart-combo .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-combo .dv-leg-item > *{position:relative; z-index:1;}
 /* keep the key + name above the invisible target */
-.cn-chart-combo .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-combo .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:var(--alpha-72);}
 .cn-chart-combo .dv-leg-name{white-space:nowrap;}
 /* Reset — the B-D4 pattern: default DISABLED (token colours, still VISIBLE), enables on any
      ghost or isolate; hover lifts the border to ink. */
@@ -4301,9 +4381,9 @@
 .cn-chart-combo .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
 /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
      .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
-.cn-chart-combo .is-faded{opacity:.24 !important;}
-.cn-chart-combo .is-ghost{opacity:.12 !important;}
-.cn-chart-combo .is-peek{opacity:.24 !important;}
+.cn-chart-combo .is-faded{opacity:var(--alpha-24) !important;}
+.cn-chart-combo .is-ghost{opacity:var(--alpha-12) !important;}
+.cn-chart-combo .is-peek{opacity:var(--alpha-24) !important;}
 /* sr-only live region — every legend state change is announced (DV-D11 chrome clause) */
 .cn-chart-combo .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
@@ -4317,14 +4397,13 @@
 .cn-chart-combo .dv-tbl-toggle > *, .cn-chart-combo .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-combo .dv-tbl-toggle:hover, .cn-chart-combo .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-combo .dv-tbl-toggle:focus-visible, .cn-chart-combo .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-combo .dv-tbl-toggle[aria-expanded="true"], .cn-chart-combo .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-combo .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-combo .dv-act, .cn-chart-combo .dv-dd{gap:8px;}
 .cn-chart-combo .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-combo .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-combo .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-combo .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-combo .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-combo .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 /* single TOGGLE (Target rate) = single-cell segmented control (Dave 2026-07-24) */
 .cn-chart-combo .dv-toggle-seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
     padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;}
@@ -4342,7 +4421,20 @@
 .cn-chart-combo .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-combo .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-combo details.dv-tbl{position:static; margin:0;}
+.cn-chart-combo details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-combo details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-combo details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-combo details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-combo .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-combo .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -4350,23 +4442,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-combo .dv-tip.on{opacity:1;}
 .cn-chart-combo table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-combo table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-combo table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-combo table.dv-table th, .cn-chart-combo table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-combo table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-combo table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-combo table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-combo .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-combo .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-combo .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-combo .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-combo .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-donut  (from snippets/Chart-donut.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-pressed, aria-controls, role="region"
    Scope: .cn-chart-donut   ============================================================ */
 .cn-chart-donut{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -4391,18 +4483,20 @@
     --data-series-3:var(--data-series-3-hc);
     --data-series-4:var(--data-series-4-hc);
     --data-series-5:var(--data-series-5-hc);}
-.cn-chart-donut h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-donut h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-donut .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-.cn-chart-donut figure.dv{margin:0; position:relative;}
-/* relative = the table-popover anchor */
+.cn-chart-donut figure.dv{margin:0; position:relative; width:100%;}
+/* relative = the table-popover anchor; ds-030 amend #103 — fluid container */
 /* HEAD = ONE H-stack (exemplar canon): title + controls same line; flex-wrap = the V-fallback. */
 .cn-chart-donut .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
 .cn-chart-donut .dv-title{margin:0;}
 .cn-chart-donut .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
-.cn-chart-donut .dv-stage{overflow-x:auto; padding-bottom:4px;}
-.cn-chart-donut .dv-donut-row{display:flex; gap:28px; align-items:center; flex-wrap:wrap;}
-.cn-chart-donut .dv-svg{display:block; overflow:visible;}
+.cn-chart-donut .dv-stage{overflow-x:auto; padding-bottom:4px; width:100%;}
+/* fluid container, FIXED-diameter plot (ds-030 amend #103): the row is 100% width and centres its
+     content; the svg keeps its baked width/viewBox (no proportional scaling) — only its POSITION moves. */
+.cn-chart-donut .dv-donut-row{display:flex; gap:28px; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;}
+.cn-chart-donut .dv-svg{display:block; overflow:visible; flex:none; margin-inline:auto;}
 /* segments are FOCUS STOPS (popover reads) — data-series-group ties them to legend filter/
      isolate/highlight; hover keeps the kit's brightness lift as a second hover channel. */
 .cn-chart-donut path.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
@@ -4428,14 +4522,13 @@
 .cn-chart-donut .dv-tbl-toggle > *, .cn-chart-donut .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-donut .dv-tbl-toggle:hover, .cn-chart-donut .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-donut .dv-tbl-toggle:focus-visible, .cn-chart-donut .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-donut .dv-tbl-toggle[aria-expanded="true"], .cn-chart-donut .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-donut .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-donut .dv-act, .cn-chart-donut .dv-dd{gap:8px;}
 .cn-chart-donut .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-donut .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-donut .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-donut .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-donut .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-donut .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 /* the value ⇄ % pair CONSUMES the Segmented-control atom (exemplar canon): sliding indicator,
      2px inset track, square (Mono), --control-h matched; type = .seg.sm button (12/500, T-D15). */
 .cn-chart-donut .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
@@ -4493,7 +4586,7 @@
 .cn-chart-donut .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-donut .dv-leg-item > *{position:relative; z-index:1;}
 /* keep the key + name above the invisible target */
-.cn-chart-donut .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-donut .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:var(--alpha-72);}
 .cn-chart-donut .dv-leg-name{white-space:nowrap;}
 /* Reset — the B-D4 pattern: default DISABLED (token colours, still VISIBLE), enables on any
      ghost or isolate; hover lifts the border to ink. */
@@ -4507,9 +4600,9 @@
 .cn-chart-donut .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
 /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
      .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
-.cn-chart-donut .is-faded{opacity:.24 !important;}
-.cn-chart-donut .is-ghost{opacity:.12 !important;}
-.cn-chart-donut .is-peek{opacity:.24 !important;}
+.cn-chart-donut .is-faded{opacity:var(--alpha-24) !important;}
+.cn-chart-donut .is-ghost{opacity:var(--alpha-12) !important;}
+.cn-chart-donut .is-peek{opacity:var(--alpha-24) !important;}
 /* sr-only live region — every legend state change is announced (DV-D11 chrome clause) */
 .cn-chart-donut .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
@@ -4517,7 +4610,20 @@
 .cn-chart-donut .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-donut .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-donut details.dv-tbl{position:static; margin:0;}
+.cn-chart-donut details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-donut details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-donut details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-donut details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-donut .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-donut .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -4525,23 +4631,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-donut .dv-tip.on{opacity:1;}
 .cn-chart-donut table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-donut table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-donut table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-donut table.dv-table th, .cn-chart-donut table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-donut table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-donut table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-donut table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-donut .dv-empty-frame{width:400px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-donut .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:320px;}
 .cn-chart-donut .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-donut .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-donut .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-histogram  (from snippets/Chart-histogram.reference.html)
-   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, role="region"
    Scope: .cn-chart-histogram   ============================================================ */
 .cn-chart-histogram{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -4558,7 +4664,7 @@
   --pop-border: var(--elevation-border);
 }
 .cn-chart-histogram [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);}
-.cn-chart-histogram h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-histogram h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-histogram .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-histogram figure.dv{margin:0; position:relative;}
@@ -4592,14 +4698,12 @@
 .cn-chart-histogram .dv-tbl-toggle > *, .cn-chart-histogram .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-histogram .dv-tbl-toggle:hover, .cn-chart-histogram .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-histogram .dv-tbl-toggle:focus-visible, .cn-chart-histogram .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-histogram .dv-tbl-toggle[aria-expanded="true"]{border-color:var(--ink);}
 .cn-chart-histogram .dv-act, .cn-chart-histogram .dv-dd{gap:8px;}
 .cn-chart-histogram .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-histogram .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-histogram .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-histogram .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-histogram .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-histogram .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-histogram .dv-off{display:none !important;}
 /* NEW — static (non-interactive) legend key. Single-series rule: nothing to filter, so this
      is a plain swatch + label, not the DV-D11 checkbox/isolate chrome. Not present in Chart-bar. */
@@ -4608,7 +4712,20 @@
 .cn-chart-histogram .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-histogram .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-histogram details.dv-tbl{position:static; margin:0;}
+.cn-chart-histogram details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-histogram details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-histogram details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-histogram details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-histogram .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-histogram .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -4616,23 +4733,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-histogram .dv-tip.on{opacity:1;}
 .cn-chart-histogram table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-histogram table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-histogram table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-histogram table.dv-table th, .cn-chart-histogram table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-histogram table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-histogram table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-histogram table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-histogram .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-histogram .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-histogram .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-histogram .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-histogram .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-line  (from snippets/Chart-line.reference.html)
-   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, role="region"
    Scope: .cn-chart-line   ============================================================ */
 .cn-chart-line{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -4661,7 +4778,7 @@
 .cn-chart-line [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
     --data-series-2:var(--data-series-2-hc);
     --data-series-3:var(--data-series-3-hc);}
-.cn-chart-line h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-line h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-line .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-line figure.dv{margin:0; position:relative;}
@@ -4749,7 +4866,7 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-line .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-line .dv-leg-item > *{position:relative; z-index:1;}
-.cn-chart-line .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-line .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:var(--alpha-72);}
 .cn-chart-line .dv-leg-name{white-space:nowrap;}
 .cn-chart-line .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:100%;
     border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
@@ -4761,9 +4878,9 @@
 .cn-chart-line .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-line .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
 /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. .is-peek MUST sit after .is-ghost. */
-.cn-chart-line .is-faded{opacity:.24 !important;}
-.cn-chart-line .is-ghost{opacity:.12 !important;}
-.cn-chart-line .is-peek{opacity:.24 !important;}
+.cn-chart-line .is-faded{opacity:var(--alpha-24) !important;}
+.cn-chart-line .is-ghost{opacity:var(--alpha-12) !important;}
+.cn-chart-line .is-peek{opacity:var(--alpha-24) !important;}
 /* sr-only live region — every legend state change is announced (DV-D11 chrome clause) */
 .cn-chart-line .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
@@ -4784,7 +4901,7 @@
 .cn-chart-line .dv-tbl-toggle > *, .cn-chart-line .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-line .dv-tbl-toggle:hover, .cn-chart-line .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-line .dv-tbl-toggle:focus-visible, .cn-chart-line .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-line .dv-tbl-toggle[aria-expanded="true"], .cn-chart-line .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-line .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-line .dv-act, .cn-chart-line .dv-dd{gap:8px;}
 .cn-chart-line .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 /* CSV action — the copy icon swaps to a tick on success; the LABEL never changes (Dave 2026-07-24) */
@@ -4793,7 +4910,6 @@
 .cn-chart-line .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 /* table DROPDOWN — SOLID arrow (icon asset arrow-down, not a chevron); rotates on open, label static */
 .cn-chart-line .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-line .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 /* single TOGGLES (Target line · Last year) = LITERALLY single-cell segmented controls (Dave
      2026-07-24): 2px inset + 1px frame, the fill FLOATS in the gutter — the view switch's exact
      construction, one cell. ON = fill shows (aria-pressed, via :has); OFF = empty framed cell. */
@@ -4825,13 +4941,26 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-line .dv-off{display:none !important;}
 /* baked-variant switching (menu 6/7/9) — geometry generated, never computed */
-.cn-chart-line .dv-ghost{stroke:var(--data-series-1); fill:none; opacity:.45; stroke-width:2; stroke-dasharray:8 4;}
+.cn-chart-line .dv-ghost{stroke:var(--data-series-1); fill:none; opacity:var(--alpha-44); stroke-width:2; stroke-dasharray:8 4;}
 .cn-chart-line .dv-target{stroke:var(--data-target); opacity:var(--target-alpha); stroke-width:1.5; stroke-dasharray:8 4;}
 .cn-chart-line .dv-target-label{fill:var(--data-target);}
 .cn-chart-line .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-line .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-line details.dv-tbl{position:static; margin:0;}
+.cn-chart-line details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-line details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-line details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-line details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-line .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 /* the value popover (dvTip) — created by dv-behaviour, styled here (token-bound) */
 .cn-chart-line .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
@@ -4840,23 +4969,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-line .dv-tip.on{opacity:1;}
 .cn-chart-line table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-line table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-line table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-line table.dv-table th, .cn-chart-line table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-line table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-line table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-line table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-line .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-line .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-line .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-line .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-line .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-pie  (from snippets/Chart-pie.reference.html)
-   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, role="region"
    Scope: .cn-chart-pie   ============================================================ */
 .cn-chart-pie{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -4881,16 +5010,19 @@
     --data-series-3:var(--data-series-3-hc);
     --data-series-4:var(--data-series-4-hc);
     --data-series-5:var(--data-series-5-hc);}
-.cn-chart-pie h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-pie h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-pie .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-.cn-chart-pie figure.dv{margin:0; position:relative;}
+.cn-chart-pie figure.dv{margin:0; position:relative; width:100%;}
+/* ds-030 amend #103 — fluid container */
 .cn-chart-pie .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
 .cn-chart-pie .dv-title{margin:0;}
 .cn-chart-pie .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
-.cn-chart-pie .dv-stage{overflow-x:auto; padding-bottom:4px;}
-.cn-chart-pie .dv-donut-row{display:flex; gap:28px; align-items:center; flex-wrap:wrap;}
-.cn-chart-pie .dv-svg{display:block; overflow:visible;}
+.cn-chart-pie .dv-stage{overflow-x:auto; padding-bottom:4px; width:100%;}
+/* fluid container, FIXED-diameter plot (ds-030 amend #103): the row is 100% width and centres its
+     content; the svg keeps its baked width/viewBox (no proportional scaling) — only its POSITION moves. */
+.cn-chart-pie .dv-donut-row{display:flex; gap:28px; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;}
+.cn-chart-pie .dv-svg{display:block; overflow:visible; flex:none; margin-inline:auto;}
 .cn-chart-pie path.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
 .cn-chart-pie path.dv-series:hover{filter:brightness(1.12);}
 .cn-chart-pie path.dv-series:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
@@ -4909,14 +5041,13 @@
 .cn-chart-pie .dv-tbl-toggle > *, .cn-chart-pie .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-pie .dv-tbl-toggle:hover, .cn-chart-pie .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-pie .dv-tbl-toggle:focus-visible, .cn-chart-pie .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-pie .dv-tbl-toggle[aria-expanded="true"], .cn-chart-pie .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-pie .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-pie .dv-act, .cn-chart-pie .dv-dd{gap:8px;}
 .cn-chart-pie .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-pie .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-pie .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-pie .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-pie .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-pie .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-pie .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
     border:1px solid var(--line); background:transparent; vertical-align:top;}
 .cn-chart-pie .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
@@ -4950,7 +5081,7 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-pie .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-pie .dv-leg-item > *{position:relative; z-index:1;}
-.cn-chart-pie .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-pie .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:var(--alpha-72);}
 .cn-chart-pie .dv-leg-name{white-space:nowrap;}
 .cn-chart-pie .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:100%;
     border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
@@ -4960,15 +5091,28 @@
 .cn-chart-pie .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
 .cn-chart-pie .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-pie .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
-.cn-chart-pie .is-faded{opacity:.24 !important;}
-.cn-chart-pie .is-ghost{opacity:.12 !important;}
-.cn-chart-pie .is-peek{opacity:.24 !important;}
+.cn-chart-pie .is-faded{opacity:var(--alpha-24) !important;}
+.cn-chart-pie .is-ghost{opacity:var(--alpha-12) !important;}
+.cn-chart-pie .is-peek{opacity:var(--alpha-24) !important;}
 .cn-chart-pie .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-pie .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-pie .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-pie details.dv-tbl{position:static; margin:0;}
+.cn-chart-pie details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-pie details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-pie details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-pie details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-pie .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-pie .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -4976,23 +5120,23 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-pie .dv-tip.on{opacity:1;}
 .cn-chart-pie table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-pie table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-pie table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-pie table.dv-table th, .cn-chart-pie table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-pie table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-pie table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-pie table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-pie .dv-empty-frame{width:400px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-pie .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:320px;}
 .cn-chart-pie .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-pie .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-pie .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-scatter  (from snippets/Chart-scatter.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region", role="checkbox", aria-checked, aria-pressed
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, role="region", role="checkbox", aria-checked, aria-pressed
    Scope: .cn-chart-scatter   ============================================================ */
 .cn-chart-scatter{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -5013,7 +5157,7 @@
 [data-theme="dark"] .cn-chart-scatter{
   --pop-border: #808080;
 }
-.cn-chart-scatter h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-scatter h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-scatter .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-scatter figure.dv{margin:0; position:relative;}
@@ -5083,7 +5227,7 @@
 .cn-chart-scatter .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-scatter .dv-leg-item > *{position:relative; z-index:1;}
 /* keep the key + name above the invisible target */
-.cn-chart-scatter .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-scatter .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:var(--alpha-72);}
 .cn-chart-scatter .dv-leg-name{white-space:nowrap;}
 /* Reset — the B-D4 pattern: default DISABLED (token colours, still VISIBLE), enables on any
      ghost or isolate; hover lifts the border to ink. */
@@ -5097,9 +5241,9 @@
 .cn-chart-scatter .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
 /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
      .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
-.cn-chart-scatter .is-faded{opacity:.24 !important;}
-.cn-chart-scatter .is-ghost{opacity:.12 !important;}
-.cn-chart-scatter .is-peek{opacity:.24 !important;}
+.cn-chart-scatter .is-faded{opacity:var(--alpha-24) !important;}
+.cn-chart-scatter .is-ghost{opacity:var(--alpha-12) !important;}
+.cn-chart-scatter .is-peek{opacity:var(--alpha-24) !important;}
 /* sr-only live region — every legend state change is announced (DV-D11 chrome clause) */
 .cn-chart-scatter .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
@@ -5117,15 +5261,27 @@
 .cn-chart-scatter .dv-tbl-toggle > *, .cn-chart-scatter .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-scatter .dv-tbl-toggle:hover, .cn-chart-scatter .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-scatter .dv-tbl-toggle:focus-visible, .cn-chart-scatter .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-scatter .dv-tbl-toggle[aria-expanded="true"], .cn-chart-scatter .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-scatter .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-scatter .dv-act, .cn-chart-scatter .dv-dd{gap:8px;}
 .cn-chart-scatter .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-scatter .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-scatter .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-scatter .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-scatter .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-scatter details.dv-tbl{position:static; margin:0;}
+.cn-chart-scatter details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-scatter details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-scatter details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-scatter details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-scatter .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-scatter .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -5133,16 +5289,16 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-scatter .dv-tip.on{opacity:1;}
 .cn-chart-scatter table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
-.cn-chart-scatter table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+.cn-chart-scatter table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:4px;}
 .cn-chart-scatter table.dv-table th, .cn-chart-scatter table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-scatter table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-scatter table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-scatter table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-scatter .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-scatter .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-scatter .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-scatter .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-scatter .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -5166,7 +5322,7 @@
 [data-theme="dark"] .cn-chart-sparkline{
   --grid-alpha: .16;
 }
-.cn-chart-sparkline h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-sparkline h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-sparkline .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-sparkline figure.dv{margin:0;}
@@ -5192,7 +5348,7 @@
 .cn-chart-sparkline .spark-inline .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2;
     stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;}
 .cn-chart-sparkline .spark-inline .dv-end{fill:var(--data-series-1);}
-.cn-chart-sparkline .spark-caption{opacity:.6; margin:4px 0 0;}
+.cn-chart-sparkline .spark-caption{opacity:var(--alpha-60); margin:4px 0 0;}
 /* entry motion — CSS only (DEF-003): the draw, at each scale's reviewed pace */
 @media (prefers-reduced-motion:no-preference){
 .cn-chart-sparkline .dv-animate .spark-standalone polyline.dv-series{stroke-dasharray:2400; stroke-dashoffset:2400; animation:cn-chart-sparkline-dvDraw var(--draw-slow) forwards;}
@@ -5210,24 +5366,32 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-sparkline .dv-tip.on{opacity:1;}
 .cn-chart-sparkline details.dv-tabledetails{margin:8px 0 0;}
-.cn-chart-sparkline details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+.cn-chart-sparkline details.dv-tabledetails summary{position:relative; cursor:pointer; opacity:var(--alpha-60); width:max-content;}
+/* 2.5.8 target on the SUMMARY (s114-D5 sweep, #116). A <summary> is an interactive
+     control and was never checked by the old selector-allowlist gate — it sat at text
+     height. The ::before slot belongs to the disclosure affordance here (the native
+     marker is kept: this is the compact posture, no toolbar chrome), so the expander
+     rides ::after — the same canon mechanism in the free pseudo-element slot. */
+.cn-chart-sparkline details.dv-tabledetails summary::after{content:""; position:absolute; z-index:0;
+    min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%;
+    top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-sparkline details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
 .cn-chart-sparkline details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
 .cn-chart-sparkline table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
-.cn-chart-sparkline table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+.cn-chart-sparkline table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:4px;}
 .cn-chart-sparkline table.dv-table th, .cn-chart-sparkline table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-sparkline table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-sparkline table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-sparkline table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-sparkline .dv-empty-frame{width:340px; height:64px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
-.cn-chart-sparkline .dv-empty-frame p{margin:0; opacity:.6;}
+.cn-chart-sparkline .dv-empty-frame p{margin:0; opacity:var(--alpha-60);}
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Chart-stacked-area  (from snippets/Chart-stacked-area.reference.html)
-   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, role="region"
    Scope: .cn-chart-stacked-area   ============================================================ */
 .cn-chart-stacked-area{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -5251,7 +5415,7 @@
 .cn-chart-stacked-area [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
     --data-series-2:var(--data-series-2-hc);
     --data-series-3:var(--data-series-3-hc);}
-.cn-chart-stacked-area h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-stacked-area h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-stacked-area .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-stacked-area figure.dv{margin:0; position:relative;}
@@ -5307,7 +5471,7 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-stacked-area .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-stacked-area .dv-leg-item > *{position:relative; z-index:1;}
-.cn-chart-stacked-area .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-stacked-area .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:var(--alpha-72);}
 .cn-chart-stacked-area .dv-leg-name{white-space:nowrap;}
 .cn-chart-stacked-area .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:auto;
     border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
@@ -5317,9 +5481,9 @@
 .cn-chart-stacked-area .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
 .cn-chart-stacked-area .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-stacked-area .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
-.cn-chart-stacked-area .is-faded{opacity:.24 !important;}
-.cn-chart-stacked-area .is-ghost{opacity:.12 !important;}
-.cn-chart-stacked-area .is-peek{opacity:.24 !important;}
+.cn-chart-stacked-area .is-faded{opacity:var(--alpha-24) !important;}
+.cn-chart-stacked-area .is-ghost{opacity:var(--alpha-12) !important;}
+.cn-chart-stacked-area .is-peek{opacity:var(--alpha-24) !important;}
 .cn-chart-stacked-area .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* toolbar — line exemplar's, byte-identical */
@@ -5331,18 +5495,30 @@
 .cn-chart-stacked-area .dv-tbl-toggle > *, .cn-chart-stacked-area .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-stacked-area .dv-tbl-toggle:hover, .cn-chart-stacked-area .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-stacked-area .dv-tbl-toggle:focus-visible, .cn-chart-stacked-area .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-stacked-area .dv-tbl-toggle[aria-expanded="true"], .cn-chart-stacked-area .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-stacked-area .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
 .cn-chart-stacked-area .dv-act, .cn-chart-stacked-area .dv-dd{gap:8px;}
 .cn-chart-stacked-area .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
 .cn-chart-stacked-area .dv-csv .dv-ico-tick{display:none;}
 .cn-chart-stacked-area .dv-csv.is-copied .dv-ico-copy{display:none;}
 .cn-chart-stacked-area .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 .cn-chart-stacked-area .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-.cn-chart-stacked-area .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-stacked-area .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
     border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
-.cn-chart-stacked-area .dv-tablepanel[hidden]{display:none;}
+/* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+.cn-chart-stacked-area details.dv-tbl{position:static; margin:0;}
+.cn-chart-stacked-area details.dv-tbl > summary{list-style:none; cursor:pointer;}
+.cn-chart-stacked-area details.dv-tbl > summary::-webkit-details-marker{display:none;}
+.cn-chart-stacked-area details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+.cn-chart-stacked-area details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
 .cn-chart-stacked-area .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-stacked-area .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
     border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
@@ -5350,17 +5526,17 @@
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-stacked-area .dv-tip.on{opacity:1;}
 .cn-chart-stacked-area table.dv-table{border-collapse:collapse; color:var(--ink);}
-.cn-chart-stacked-area table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-stacked-area table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
 .cn-chart-stacked-area table.dv-table th, .cn-chart-stacked-area table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-stacked-area table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-stacked-area table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-stacked-area table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
 .cn-chart-stacked-area table.dv-table td.dv-total, .cn-chart-stacked-area table.dv-table th.dv-total{font-weight:500;}
 .cn-chart-stacked-area .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-stacked-area .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
     padding:24px; max-width:480px;}
 .cn-chart-stacked-area .dv-empty-frame .empty h3{margin:0;}
-.cn-chart-stacked-area .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-chart-stacked-area .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -5485,7 +5661,7 @@
 /* ================= THE GRID ================= */
 .cn-data-grid .dg{width:var(--demo-width, 760px); max-width:100%;}
 .cn-data-grid .dg-head{display:flex; align-items:baseline; gap:12px; margin-bottom:12px;}
-.cn-data-grid .dg-count{opacity:.6; margin-left:auto;}
+.cn-data-grid .dg-count{opacity:var(--alpha-60); margin-left:auto;}
 /* toolbar — search filter.
      ===== FIELD-CHROME-COPY (from snippets/Search-field boxed + Input-fields active recipe;
      field-family accretion evidence, ADR-0013 ruling 3 — see worker receipt) ===== */
@@ -5497,7 +5673,7 @@
     color:var(--icon); margin:0 12px 0 2px;}
 .cn-data-grid .dgsearch .mag svg{width:20px; height:20px; fill:currentColor;}
 .cn-data-grid .dgsearch input{flex:1; min-width:0; height:100%; border:0; background:transparent; color:var(--text); outline:none;}
-.cn-data-grid .dgsearch input::placeholder{color:var(--text); opacity:.5;}
+.cn-data-grid .dgsearch input::placeholder{color:var(--text); opacity:var(--alpha-48);}
 .cn-data-grid .dgsearch input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
 .cn-data-grid .dgsearch:hover{background:var(--fhover);}
 .cn-data-grid .dgsearch:focus-within{border-color:var(--bar); box-shadow:inset 0 -4px 0 0 var(--bar); background:var(--page);}
@@ -5586,7 +5762,7 @@
 /* empty (no matches) — message + a real recovery action */
 .cn-data-grid .dg-empty{padding:48px 24px; text-align:center;}
 .cn-data-grid .dg-empty .why{display:block; margin-bottom:4px;}
-.cn-data-grid .dg-empty .try{display:block; opacity:.6; margin-bottom:16px;}
+.cn-data-grid .dg-empty .try{display:block; opacity:var(--alpha-60); margin-bottom:16px;}
 .cn-data-grid .clearbtn{display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:8px 16px;
     border:1px solid var(--fborder); border-radius:var(--border-radius-control); background:transparent; color:var(--text);
     cursor:pointer; transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
@@ -5596,7 +5772,7 @@
 /* footer — range read-out · rows-per-page · pagination (Pagination recipe: 44px targets,
      aria-current border, inverting colour press; scale comes from the partial, never locally) */
 .cn-data-grid .dg-foot{display:flex; gap:12px 16px; align-items:center; flex-wrap:wrap; margin-top:12px;}
-.cn-data-grid .dg-range{opacity:.6;}
+.cn-data-grid .dg-range{opacity:var(--alpha-60);}
 .cn-data-grid .dg-pp{display:flex; gap:8px; align-items:center; margin-left:auto;}
 .cn-data-grid .dg-pp select{height:44px; padding:0 8px; border:1px solid var(--fborder); border-radius:var(--border-radius-control);
     background:transparent; color:var(--text);}
@@ -5628,7 +5804,7 @@
 .cn-data-grid :is(.dg .sort, .cn-data-grid .dg .fchip .x, .cn-data-grid .dg .clearbtn, .cn-data-grid .dg .pbtn):hover, .cn-data-grid :is(.dg .sort, .cn-data-grid .dg .fchip .x, .cn-data-grid .dg .clearbtn, .cn-data-grid .dg .pbtn):active{transform:none !important; filter:none !important;}
 }
 /* ===== AUTO-PARTIAL press-physics END ===== */
-.cn-data-grid .hint{margin-top:16px; font:400 12px/1.5 var(--font); color:var(--text); opacity:.6; max-width:64ch;}
+.cn-data-grid .hint{margin-top:16px; font:400 12px/1.5 var(--font); color:var(--text); opacity:var(--alpha-60); max-width:64ch;}
 .cn-data-grid .hint kbd{font:inherit; border:1px solid var(--border); padding:1px 4px; border-radius:var(--border-radius-indicator);}
 @media (prefers-reduced-motion: reduce){
 .cn-data-grid .bone{animation:none; background-image:none;}
@@ -5660,8 +5836,8 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-date-picker h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
-.cn-date-picker p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-date-picker h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-date-picker p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 .cn-date-picker .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 /* ---------- field group — Input-fields anatomy (lock-step; change it THERE) ---------- */
 .cn-date-picker .dp{max-width:420px; position:relative;}
@@ -5737,7 +5913,7 @@
 }
 /* ===== AUTO-PARTIAL press-physics END ===== */
 .cn-date-picker .dp-week{display:grid; grid-template-columns:repeat(7,40px); gap:4px; margin:0 0 4px;}
-.cn-date-picker .dp-week span{display:flex; align-items:center; justify-content:center; height:24px; color:var(--text); opacity:.6;}
+.cn-date-picker .dp-week span{display:flex; align-items:center; justify-content:center; height:24px; color:var(--text); opacity:var(--alpha-60);}
 .cn-date-picker .dp-grid{display:grid; grid-template-columns:repeat(7,40px); gap:4px;}
 .cn-date-picker .dp-day{width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;
     padding:0; border:0; background:transparent; color:var(--text); cursor:pointer;
@@ -5752,7 +5928,7 @@
 .cn-date-picker .dp-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
 .cn-date-picker .dp-day.is-empty{visibility:hidden; pointer-events:none;}
 .cn-date-picker .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
-.cn-date-picker .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+.cn-date-picker .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -5788,8 +5964,8 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-date-range-picker h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
-.cn-date-range-picker p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-date-range-picker h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-date-range-picker p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 .cn-date-range-picker .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 .cn-date-range-picker .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
 /* ---------- pair of field groups — Input-fields anatomy in the Form-layout pair row ---------- */
@@ -5865,7 +6041,7 @@
 }
 /* ===== AUTO-PARTIAL press-physics END ===== */
 .cn-date-range-picker .dr-week{display:grid; grid-template-columns:repeat(7,40px); gap:4px; margin:0 0 4px;}
-.cn-date-range-picker .dr-week span{display:flex; align-items:center; justify-content:center; height:24px; color:var(--text); opacity:.6;}
+.cn-date-range-picker .dr-week span{display:flex; align-items:center; justify-content:center; height:24px; color:var(--text); opacity:var(--alpha-60);}
 .cn-date-range-picker .dr-grid{display:grid; grid-template-columns:repeat(7,40px); gap:4px;}
 .cn-date-range-picker .dr-day{width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;
     padding:0; border:0; background:transparent; color:var(--text); cursor:pointer;
@@ -5881,7 +6057,7 @@
 .cn-date-range-picker .dr-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
 .cn-date-range-picker .dr-day.is-empty{visibility:hidden; pointer-events:none;}
 .cn-date-range-picker .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
-.cn-date-range-picker .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+.cn-date-range-picker .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -5922,7 +6098,7 @@
   --press-darken: var(--component-type-button-family-press-darken);
 }
 /* LOCAL geometry — text buttons ≈120 (B-D7 divisor) */
-.cn-drawer h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-drawer h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-drawer .bg-content{opacity:var(--alpha-84); max-width:60ch; line-height:1.6;}
 /* canon Button mirror — namespaced .dbtn (see header); type via composite classes in markup */
 .cn-drawer .dbtn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control);
@@ -6008,15 +6184,15 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-empty-state h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-empty-state h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 /* the empty state — centred column inside whatever region is empty */
 .cn-empty-state .empty{display:flex; flex-direction:column; align-items:center; text-align:center;
     gap:12px; padding:48px 24px; max-width:480px; margin:0 auto;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
-.cn-empty-state .empty .glyph{width:48px; height:48px; color:var(--text); opacity:.4;}
+.cn-empty-state .empty .glyph{width:48px; height:48px; color:var(--text); opacity:var(--alpha-40);}
 .cn-empty-state .empty .glyph svg{width:48px; height:48px; display:block; fill:currentColor;}
 .cn-empty-state .empty h3{margin:0;}
-.cn-empty-state .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-empty-state .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
 .cn-empty-state .empty .gap{height:4px;}
 /* one grid step between copy and action */
 /* primary action — canon Button mirror, namespaced .ebtn (see header); colour-only states */
@@ -6098,8 +6274,8 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-file-upload h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
-.cn-file-upload p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-file-upload h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-file-upload p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 .cn-file-upload .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 .cn-file-upload .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
 /* ---------- label + help — Input-fields anatomy ---------- */
@@ -6113,7 +6289,7 @@
     transition:border-color var(--ease), background var(--ease);}
 .cn-file-upload .fu-zone .icn{width:24px; height:24px; margin:0 auto 8px;}
 .cn-file-upload .fu-zone p{margin:0 0 4px; color:var(--text);}
-.cn-file-upload .fu-zone .fu-or{margin:0 0 12px; color:var(--text); opacity:.6;}
+.cn-file-upload .fu-zone .fu-or{margin:0 0 12px; color:var(--text); opacity:var(--alpha-60);}
 .cn-file-upload .fu-zone.is-over{border-style:solid; border-color:var(--border-active); background:var(--field-bg-hover);}
 .cn-file-upload .fu.is-disabled .fu-zone{border-color:var(--border-disabled); color:var(--icon-disabled);}
 .cn-file-upload .fu.is-disabled .fu-zone p, .cn-file-upload .fu.is-disabled .fu-lblrow label, .cn-file-upload .fu.is-disabled .fu-help{color:var(--text-disabled);}
@@ -6138,7 +6314,7 @@
 .cn-file-upload .fu-row .fname .nm{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
     text-box-edge:text text;}
 /* ds-005: descender-safe trim on a truncating label — the override IS the fix */
-.cn-file-upload .fu-row .fname .sz{flex-shrink:0; color:var(--text); opacity:.6;}
+.cn-file-upload .fu-row .fname .sz{flex-shrink:0; color:var(--text); opacity:var(--alpha-60);}
 .cn-file-upload .fu-row .fstate{flex-shrink:0; display:inline-flex; align-items:center; gap:8px;}
 .cn-file-upload .fu-row .fstate .ic{color:var(--success); --mark:var(--page);}
 .cn-file-upload .fu-row.is-error .fstate .ic{color:var(--error);}
@@ -6177,7 +6353,7 @@
 }
 /* ===== AUTO-PARTIAL press-physics END ===== */
 .cn-file-upload .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
-.cn-file-upload .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+.cn-file-upload .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -6219,8 +6395,8 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-form-layout h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
-.cn-form-layout p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-form-layout h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-form-layout p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 .cn-form-layout .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 /* ---------- field group (label + help + box + message) — Input-fields anatomy ---------- */
 .cn-form-layout .fl-form{max-width:420px;}
@@ -6236,6 +6412,9 @@
 /* (?) help — a real button, accessible name + tooltip (Input-fields pattern) */
 .cn-form-layout .fl-tip{position:relative; width:18px; height:18px; padding:0; border:0; background:transparent;
     color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; border-radius:var(--border-radius-control);}
+/* #114 — 44 hit target via the canon invisible ::before expander (aid-009; idiom copied from .dv-vt/.dv-tbl-toggle). */
+.cn-form-layout .fl-tip::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-form-layout .fl-tip > *{position:relative; z-index:1;}
 .cn-form-layout .fl-tip:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-form-layout .fl-tip .tipbody{position:absolute; left:50%; transform:translateX(-50%); bottom:calc(100% + 8px);
     background:var(--text); color:var(--page); font:500 12px/16px var(--font); padding:4px 8px; width:max-content;   /* 500: the 12px edge-weight floor */
@@ -6327,7 +6506,7 @@
 .cn-form-layout .fl-btn{width:100%;}
 }
 .cn-form-layout .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
-.cn-form-layout .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+.cn-form-layout .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -6369,7 +6548,7 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-icon-button h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-icon-button h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-icon-button .row{display:flex; gap:16px; flex-wrap:wrap; align-items:center;}
 /* the atom — 44×44 hit area, 20px glyph, corners on the CONTROL radius role */
 .cn-icon-button .iconbtn{width:var(--target); height:var(--target); min-width:var(--target); min-height:var(--target);
@@ -6460,7 +6639,7 @@
 .cn-modal-lightbox .lb-ctl svg{width:18px; height:18px; display:block; fill:currentColor;}
 .cn-modal-lightbox .lb-ctl:hover{background:var(--hoverbg);}
 .cn-modal-lightbox .lb-ctl:active{background:var(--hoverbg); filter:brightness(var(--press-darken));}
-.cn-modal-lightbox .lb-ctl:disabled{opacity:.4; cursor:not-allowed; filter:none;}
+.cn-modal-lightbox .lb-ctl:disabled{opacity:var(--alpha-40); cursor:not-allowed; filter:none;}
 .cn-modal-lightbox .lb-ctl:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
 /* INJECTED from Button.reference.html (partial "press-physics", group button-family —
@@ -6489,7 +6668,7 @@
     background:var(--surface); border:1px solid var(--elev-bd); border-radius:var(--border-radius-surface);
     box-shadow:0 2px 8px var(--shadow); padding:12px 16px;}
 .cn-modal-lightbox .lb-caption p{margin:0; flex:1 1 auto; min-width:0;}
-.cn-modal-lightbox .lb-caption .count{flex:none; opacity:.7;}
+.cn-modal-lightbox .lb-caption .count{flex:none; opacity:var(--alpha-68);}
 @media (max-width:560px){
 .cn-modal-lightbox .lb-row{gap:8px;}
 .cn-modal-lightbox .lb-media{height:280px;}
@@ -6517,7 +6696,7 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-popover p.intro{max-width:60ch; line-height:1.6; opacity:.85;}
+.cn-popover p.intro{max-width:60ch; line-height:1.6; opacity:var(--alpha-84);}
 .cn-popover .row{display:flex; margin:36px 0; gap:16px; flex-wrap:wrap;}
 /* the popover — fixed, JS-placed; tail tracks the trigger (Tooltip mechanics) */
 .cn-popover .pop{--tail-x:50%; position:fixed; z-index:50; width:max-content; max-width:320px;
@@ -6591,8 +6770,8 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-secure-entry h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
-.cn-secure-entry p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-secure-entry h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-secure-entry p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 .cn-secure-entry .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 /* ---------- the code group ---------- */
 .cn-secure-entry .se-group{margin:0 0 32px;}
@@ -6650,7 +6829,7 @@
 .cn-secure-entry .se-btn:disabled{background:transparent; color:var(--quat-label-disabled); cursor:not-allowed;}
 .cn-secure-entry .se-wait{color:var(--text);}
 .cn-secure-entry .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
-.cn-secure-entry .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+.cn-secure-entry .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -6748,7 +6927,7 @@
   --text: var(--text-default);
   --line: var(--border-subtle);
 }
-.cn-skeleton-loader h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-skeleton-loader h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-skeleton-loader #resolveDemo:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
 .cn-skeleton-loader .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
     clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
@@ -6788,12 +6967,12 @@
   --up: var(--rag-success);
   --down: var(--rag-error);
 }
-.cn-stat-card h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-stat-card h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-stat-card .board{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px; max-width:800px;}
 /* the tile — Cards surface recipe */
 .cn-stat-card .stat-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
     padding:16px; display:flex; flex-direction:column; gap:8px;}
-.cn-stat-card .stat-card .lbl16{margin:0; opacity:.6;}
+.cn-stat-card .stat-card .lbl16{margin:0; opacity:var(--alpha-60);}
 /* the value — Amount-display pattern verbatim (figure composites, tabular, copy-025) */
 .cn-stat-card .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
     font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
@@ -6803,7 +6982,7 @@
 .cn-stat-card .delta .arrow svg{width:16px; height:16px; display:block; fill:currentColor;}
 .cn-stat-card .delta.up .arrow{color:var(--up);}
 .cn-stat-card .delta.down .arrow{color:var(--down);}
-.cn-stat-card .delta .per{opacity:.6; margin-left:4px;}
+.cn-stat-card .delta .per{opacity:var(--alpha-60); margin-left:4px;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -6842,8 +7021,8 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-stepper h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
-.cn-stepper p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-stepper h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-stepper p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 .cn-stepper .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 .cn-stepper .sr-live{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
 .cn-stepper .st{width:var(--demo-width, 520px); max-width:100%; container-type:inline-size;}
@@ -6865,7 +7044,7 @@
 .cn-stepper .st .dot svg{width:14px; height:14px; fill:currentColor;}
 .cn-stepper .st li.done .dot{background:var(--complete); color:var(--on-complete);}
 .cn-stepper .st li.current .dot{background:var(--page); color:var(--text); box-shadow:inset 0 0 0 3px var(--complete);}
-.cn-stepper .st .step-label{opacity:.85; color:var(--text);}
+.cn-stepper .st .step-label{opacity:var(--alpha-84); color:var(--text);}
 .cn-stepper .st li.current .step-label{font-weight:500; opacity:1;}
 /* PT state emphasis, consumed */
 /* ── COLLAPSED head + track (≤520px container) — Progress-tracker 1784-86051 form ── */
@@ -7059,8 +7238,8 @@
   --error: var(--rag-error);
   --focus: var(--focus-ring);
 }
-.cn-textarea h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
-.cn-textarea p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-textarea h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-textarea p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 .cn-textarea .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 /* ---------- field group (Input-fields anatomy, stretched vertically) ---------- */
 .cn-textarea .tx-group{max-width:480px; margin:0 0 32px;}
@@ -7099,7 +7278,7 @@
 .cn-textarea .tx-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
 /* message stays INK */
 .cn-textarea .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
-.cn-textarea .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+.cn-textarea .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -7128,8 +7307,8 @@
   --menu-border: var(--elevation-border);
   --shadow: var(--elevation-functional);
 }
-.cn-time-picker h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
-.cn-time-picker p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-time-picker h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-time-picker p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 .cn-time-picker .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 /* ---------- field group — Input-fields anatomy (lock-step; change it THERE) ---------- */
 .cn-time-picker .tp{max-width:420px; position:relative;}
@@ -7184,7 +7363,7 @@
 .cn-time-picker .tp-opt .tick path{stroke:var(--icon); stroke-width:2.4; fill:none;}
 .cn-time-picker .tp-opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 .cn-time-picker .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
-.cn-time-picker .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+.cn-time-picker .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -7213,7 +7392,7 @@
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
-.cn-toast h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-toast h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 /* per-status glyph colour (no tint surfaces here — elevation is the chrome) */
 .cn-toast .toast.warn{--accent:var(--warn);}
 .cn-toast .toast.ok{--accent:var(--ok);}
@@ -7537,6 +7716,51 @@
   --status-info: #4587A7;
   --status-watch: #FFBB33;
 }
+[data-apollo-theme="legacy"] .cn-chart-boxplot{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-boxplot,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-boxplot{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
+[data-apollo-theme="legacy"] .cn-chart-bullet{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-bullet,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-bullet{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
+[data-apollo-theme="legacy"] .cn-chart-butterfly-h{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-butterfly-h,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-butterfly-h{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
+[data-apollo-theme="legacy"] .cn-chart-butterfly-v{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-butterfly-v,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-butterfly-v{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
+[data-apollo-theme="legacy"] .cn-chart-candlestick{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-candlestick,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-candlestick{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
 [data-apollo-theme="legacy"] .cn-chart-combo{
   --ink: #333333;
   --line: #D7D8D6;
@@ -7555,12 +7779,30 @@
   --ink: #FFFFFF;
   --line: #404040;
 }
+[data-apollo-theme="legacy"] .cn-chart-histogram{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-histogram,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-histogram{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
 [data-apollo-theme="legacy"] .cn-chart-line{
   --ink: #333333;
   --line: #D7D8D6;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-line,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-line{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
+[data-apollo-theme="legacy"] .cn-chart-pie{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-pie,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-pie{
   --ink: #FFFFFF;
   --line: #404040;
 }
@@ -7579,6 +7821,15 @@
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-sparkline,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-sparkline{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
+[data-apollo-theme="legacy"] .cn-chart-stacked-area{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-stacked-area,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-stacked-area{
   --ink: #FFFFFF;
   --line: #404040;
 }
@@ -8253,6 +8504,51 @@
   --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
+[data-apollo-theme="console"] .cn-chart-boxplot{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-boxplot,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-boxplot{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-bullet{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-bullet,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-bullet{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-butterfly-h{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-butterfly-h,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-butterfly-h{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-butterfly-v{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-butterfly-v,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-butterfly-v{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-candlestick{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-candlestick,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-candlestick{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
 [data-apollo-theme="console"] .cn-chart-combo{
   --border-radius-control: 4px;
   --border-radius-surface: 12px;
@@ -8271,6 +8567,15 @@
   --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
+[data-apollo-theme="console"] .cn-chart-histogram{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-histogram,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-histogram{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
 [data-apollo-theme="console"] .cn-chart-line{
   --border-radius-control: 4px;
   --border-radius-surface: 12px;
@@ -8280,11 +8585,22 @@
   --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
+[data-apollo-theme="console"] .cn-chart-pie{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-pie,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-pie{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
 [data-apollo-theme="console"] .cn-chart-scatter{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-scatter,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-scatter{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-chart-sparkline{
@@ -8292,6 +8608,15 @@
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-sparkline,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-sparkline{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-stacked-area{
+  --border-radius-control: 4px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-stacked-area,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-stacked-area{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-confirmation{
@@ -9047,6 +9372,95 @@
   --page: #1A1A1A;
   --pop-border: #524842;
 }
+[data-apollo-theme="supercharge"] .cn-chart-boxplot{
+  --baseline: #13110E;
+  --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-boxplot,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-boxplot{
+  --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --data-control-label-disabled: #524842;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+}
+[data-apollo-theme="supercharge"] .cn-chart-bullet{
+  --baseline: #13110E;
+  --data-axis: #493F39;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-bullet,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-bullet{
+  --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+}
+[data-apollo-theme="supercharge"] .cn-chart-butterfly-h{
+  --baseline: #13110E;
+  --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
+  --data-grid: #CDC8C6;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-butterfly-h,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-butterfly-h{
+  --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --data-control-label-disabled: #524842;
+  --data-grid: #413934;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+  --pop-border: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-chart-butterfly-v{
+  --baseline: #13110E;
+  --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
+  --data-grid: #CDC8C6;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-butterfly-v,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-butterfly-v{
+  --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --data-control-label-disabled: #524842;
+  --data-grid: #413934;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+  --pop-border: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-chart-candlestick{
+  --baseline: #13110E;
+  --data-axis: #493F39;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-candlestick,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-candlestick{
+  --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+}
 [data-apollo-theme="supercharge"] .cn-chart-combo{
   --baseline: #13110E;
   --data-axis: #493F39;
@@ -9087,6 +9501,23 @@
   --page: #1A1A1A;
   --pop-border: #524842;
 }
+[data-apollo-theme="supercharge"] .cn-chart-histogram{
+  --baseline: #13110E;
+  --data-axis: #493F39;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-histogram,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-histogram{
+  --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+  --pop-border: #524842;
+}
 [data-apollo-theme="supercharge"] .cn-chart-line{
   --baseline: #13110E;
   --data-axis: #493F39;
@@ -9110,8 +9541,28 @@
   --page: #1A1A1A;
   --pop-border: #524842;
 }
+[data-apollo-theme="supercharge"] .cn-chart-pie{
+  --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-pie,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-pie{
+  --data-axis: #635750;
+  --data-control-label-disabled: #524842;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+  --pop-border: #524842;
+}
 [data-apollo-theme="supercharge"] .cn-chart-scatter{
   --baseline: #13110E;
+  --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
+  --data-grid: #CDC8C6;
   --ink: #13110E;
   --line: #CDC8C6;
   --page: #F7F6F4;
@@ -9119,6 +9570,9 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-scatter,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-scatter{
   --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --data-control-label-disabled: #524842;
+  --data-grid: #413934;
   --ink: #F7F6F4;
   --line: #524842;
   --page: #1A1A1A;
@@ -9131,6 +9585,27 @@
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-sparkline,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-sparkline{
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+  --pop-border: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-chart-stacked-area{
+  --baseline: #13110E;
+  --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
+  --data-grid: #CDC8C6;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-stacked-area,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-stacked-area{
+  --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --data-control-label-disabled: #524842;
+  --data-grid: #413934;
   --ink: #F7F6F4;
   --line: #524842;
   --page: #1A1A1A;

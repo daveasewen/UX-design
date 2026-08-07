@@ -96,6 +96,8 @@ def build_fixture(root, script_text, banner):
           STUB_TMPL.format(var="STUB_CAPTURE_GATE_EXIT", name="_capture_gate.py"))
     write(os.path.join(know, "_build_live_state.py"),
           STUB_TMPL.format(var="STUB_LIVE_STATE_EXIT", name="_build_live_state.py"))
+    write(os.path.join(know, "_session.py"),
+          STUB_TMPL.format(var="STUB_SESSION_EXIT", name="_session.py"))
     write(os.path.join(root, "pystubs", "tiktoken.py"), FAKE_TIKTOKEN)
     write(os.path.join(root, "GOOD-MORNING.md"), banner)
     write(os.path.join(root, "README.md"), "fixture repo\n")
@@ -120,6 +122,12 @@ def build_fixture(root, script_text, banner):
         "STUB_GEN_CHAIN_EXIT": "0",
         "STUB_CAPTURE_GATE_EXIT": "0",
         "STUB_LIVE_STATE_EXIT": "0",
+        "STUB_SESSION_EXIT": "0",
+        # #120: the SESSION_N session-witness gate (post-#116) BLOCKS a --wrap commit
+        # without a declared session. Fixtures declare #77 to match BANNER_PRIMARY;
+        # the gate's own clauses get dedicated arms (wrap_undeclared_session_blocks,
+        # wrap_session_witness_refusal_blocks).
+        "SESSION_N": "77",
     })
     return env
 
@@ -405,6 +413,44 @@ def arm_missing_banner_fails_loud(script_text):
         return True, ""
 
 
+# #120: the post-#116 session-witness gate's own clauses. BLOCK side: a --wrap commit with
+# no SESSION_N and no SESSION_ACK refuses pre-stage. REFUSAL side: a declared SESSION_N whose
+# _session.py --declare exits non-zero refuses pre-stage. Both assert nothing staged, HEAD held.
+
+def arm_wrap_undeclared_session_blocks(script_text):
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        del env["SESSION_N"]
+        before = head_hash(root)
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"])
+        if rc == 0:
+            return False, "--wrap with no SESSION_N did NOT block"
+        if "the FINAL commit must declare its session" not in out:
+            return False, "SESSION_N blocking message missing; out tail: %s" % out[-400:]
+        if not staged_empty(root):
+            return False, "staged despite SESSION_N block"
+        if head_hash(root) != before:
+            return False, "HEAD advanced despite SESSION_N block"
+        return True, ""
+
+
+def arm_wrap_session_witness_refusal_blocks(script_text):
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        env["STUB_SESSION_EXIT"] = "1"
+        before = head_hash(root)
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"])
+        if rc == 0:
+            return False, "refused session witness did NOT block"
+        if "_session.py REFUSED" not in out:
+            return False, "witness-refusal message missing; out tail: %s" % out[-400:]
+        if not staged_empty(root):
+            return False, "staged despite witness refusal"
+        if head_hash(root) != before:
+            return False, "HEAD advanced despite witness refusal"
+        return True, ""
+
+
 # ---------------- mutation controls (the arm must go RED against a broken copy) ---------
 
 def mutation_prefix_removed(script_text):
@@ -449,6 +495,8 @@ ARMS = [
     ("stale_index_lock_moved_aside", arm_stale_lock_moved),
     ("banner_fallback_note_printed", arm_banner_fallback),
     ("missing_banner_fails_loud", arm_missing_banner_fails_loud),
+    ("wrap_undeclared_session_blocks_120", arm_wrap_undeclared_session_blocks),
+    ("wrap_session_witness_refusal_blocks_120", arm_wrap_session_witness_refusal_blocks),
     ("MUTATION_prefix_stripped_bites", mutation_prefix_removed),
     ("MUTATION_lockclear_removed_bites", mutation_lockclear_removed),
 ]

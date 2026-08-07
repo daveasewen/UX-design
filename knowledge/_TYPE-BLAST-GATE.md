@@ -5,7 +5,7 @@ Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_
 | radius | kind | selector | status |
 |---:|---|---|---|
 | 12 | class | `.btn` | PASS |
-| 9 | scoped-element | `.seg button` | PASS |
+| 8 | scoped-element | `.seg button` | PASS |
 | 7 | class | `.stateLabel` | PASS |
 | 5 | class | `.spec-h` | PASS |
 | 5 | scoped-element | `.seg.sm button` | PASS |
@@ -35,6 +35,10 @@ Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_
 ## Findings
 
 - ✓ every appended selector is registered and within its acknowledged blast radius.
+
+## Housekeeping (non-gating)
+
+- shrunk: `.seg button` no longer matches ['Tab-bar.reference.html'] (safe; tidy the registry with --update).
 
 ---
 Guard-rail for the T-D9 binding mechanism (T-D12 §5). Waived entries are DEBT to burn down (namespace them) — priority `h2` (25 files) in the non-/1 batch. This gate does NOT reopen T-D9.

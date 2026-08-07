@@ -3236,6 +3236,66 @@ def boot_constant_drift_check(repo):
     return fails, notes
 
 
+def title_generation_check(repo):
+    """#120 residual ⓪ (Dave, #119 post-wrap): both wrap-time titles must be MECHANISED, not
+    hand-authored prose. `_gen_titles.py` derives RENAME (chat-only, RULED #28 — never written
+    into GOOD-MORNING.md) and NEXT-TITLE (written to the GM header, already gated separately by
+    TITLE_LINE_RE/TITLE_CAP_TAPE above). Because RENAME is never persisted to GOOD-MORNING.md by
+    design, the ONLY witness that it was generated (rather than typed from memory) is the
+    receipt `_gen_titles_receipt.json` that `_gen_titles.py` writes alongside its stdout print.
+    This check asserts BOTH lines are present in that receipt, well-formed, and generated
+    against the banner still on disk (not a stale receipt from a prior session's wrap).
+    BLOCKING at birth — same posture as the wiring gate: an un-consulted witness is a witness
+    that does not exist. Returns (fails, notes)."""
+    fails, notes = [], []
+    receipt_path = os.path.join(repo, "knowledge", "_gen_titles_receipt.json")
+    if not os.path.exists(receipt_path):
+        fails.append(
+            "TITLE GENERATION: no `knowledge/_gen_titles_receipt.json` found — "
+            "`python3 knowledge/_gen_titles.py --session <N>` was not run this wrap. RENAME "
+            "and NEXT-TITLE must be MECHANISED (#120 residual ⓪), never hand-authored prose.")
+        return fails, notes
+    try:
+        with open(receipt_path, encoding="utf-8") as f:
+            receipt = json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        fails.append(f"TITLE GENERATION: `_gen_titles_receipt.json` unreadable "
+                     f"({type(e).__name__}: {e}) — re-run `_gen_titles.py`.")
+        return fails, notes
+
+    rename = receipt.get("rename", "")
+    next_title = receipt.get("next_title", "")
+    if not rename or not rename.startswith("RENAME THIS SESSION →"):
+        fails.append(f"TITLE GENERATION: receipt's `rename` line missing or malformed: {rename!r}")
+    if not next_title or not next_title.startswith("NEXT SESSION TITLE →"):
+        fails.append(f"TITLE GENERATION: receipt's `next_title` line missing or malformed: "
+                     f"{next_title!r}")
+
+    gm_path = os.path.join(repo, "GOOD-MORNING.md")
+    if os.path.exists(gm_path):
+        with open(gm_path, encoding="utf-8") as f:
+            gm_text = f.read()
+        m = re.search(r"^>\s*##\s*★\s*LATEST\s*—.*$", gm_text, re.M)
+        if m:
+            sm = re.search(r"\*\*#(\d+)\*\*", m.group(0))
+            if sm:
+                current_banner_session = int(sm.group(1))
+                receipt_banner_session = receipt.get("meta", {}).get("banner_session")
+                if receipt_banner_session != current_banner_session:
+                    fails.append(
+                        f"TITLE GENERATION: receipt was generated against banner #"
+                        f"{receipt_banner_session}, but GOOD-MORNING.md's banner is now #"
+                        f"{current_banner_session} — STALE receipt from an earlier wrap. "
+                        f"Re-run `_gen_titles.py` after this session's own banner is written.")
+
+    if not fails:
+        notes.append(f"TITLE GENERATION: receipt present, both lines well-formed "
+                     f"(RENAME session #{receipt.get('meta', {}).get('declared_session')}, "
+                     f"NEXT-TITLE for #{receipt.get('meta', {}).get('next_session')}) — "
+                     f"#120 residual ⓪.")
+    return fails, notes
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
@@ -3310,6 +3370,9 @@ def wrap_checks(repo, today, lane=False):
         (fails if ROLL_CLAIM_BLOCKING else warns).extend(f_)   # cross-check, wired at the R3
         warns += w_                              # commit seam via the existing #74-D1 consumer
         notes += n_                              # (this call, inside wrap_checks() itself).
+        f_, n_ = title_generation_check(repo)    # #120 residual ⓪ — RENAME+NEXT-TITLE must be
+        fails += f_                              # MECHANISED (`_gen_titles.py`), not hand-typed
+        notes += n_                              # prose; BLOCKING, receipt is the only witness.
         notes.append(f"PRE-FLIGHT stamp: graded in REAL TOKENS (Dave #56 — amber "
                      f"{gauge.BUDGET_AMBER:,} · working {gauge.BUDGET_WORKING:,} · hard "
                      f"{gauge.BUDGET_HARD:,}); the % band's enforcement was RETIRED #74-D3 "
