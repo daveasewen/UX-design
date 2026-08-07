@@ -59,3 +59,13 @@
 - clears when: The mount layout changes and .auto-memory/ is no longer reachable from the shell — at which point the zero-fill route is genuinely gone and every doc telling a session to check disk first is wrong.
 - asserted in: `memory:memory-md-is-in-the-mount`, `_LIVE-STATE.md`
 - last verified: 2026-08-06
+
+## ✓ ASSERT-008 — environment
+
+**Claim:** The GENERATED Memento schematic v2 is on disk at reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html.
+
+- check: `1 match(es) in root=repo`
+- consequence: If this flips, v1's tombstone points at nothing and its 'read figures at v2' instruction sends the reader back to the stale figures it was written to fence off. Regenerate via `python3 knowledge/_gen_schematic.py`, or re-point the tombstone.
+- clears when: The schematic is re-versioned (a -v3 supersedes v2) AND v1's tombstone plus every doc named below is re-pointed in the same pass.
+- asserted in: `reviews/MEMENTO-SCHEMATIC-2026-07-26-v1.html`, `knowledge/_REVIEW-SIGNOFF.md`, `_LIVE-STATE.md`, `GOOD-MORNING.md`
+- last verified: 2026-08-07

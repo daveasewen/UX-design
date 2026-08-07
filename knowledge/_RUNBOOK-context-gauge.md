@@ -720,6 +720,25 @@ trigger is **tiered** — a cheap save at Amber, the full handoff at Red:
   recorded cause *(in the pre-#56 vocabulary, "60")*, and it is the single most-repeated misreading of
   this runbook. **Compute the stop line from your priced wrap and fire THERE.** An expensive wrap must
   stop the session earlier; the line moves, it is not a constant.
+⛔ **AND THE MIRROR-IMAGE MISREADING, MEASURED #127 — A RESERVE ON A RESERVE.** The stop line is **ALREADY
+NET OF THE WRAP.** #127's opener took the derived figure (**150,929**) as if it were the CEILING and
+**subtracted the wrap from it a second time**, reporting **~30K** of job room when the real figure was
+**79,012**. Dave corrected it in his own words: *"150,929 is the line at which it is recommended you start
+the wrap, not the limit"* — **200,000 is WORKING, 256,000 is the absolute hard stop, and 150,929 is DERIVED
+as `wall − wrap`.** ★ **The defect is named in `_gauge_tokens.py`'s own comments, eleven lines above the
+constant that was quoted** — the guard existed and was not read [[read-chain-is-where-staleness-is-free]].
+⚠ **Not a cosmetic slip: it materially changed a delegation decision at #127**, which was then declared
+RE-OPENABLE rather than settled. **THE ARITHMETIC, WRITTEN ONCE SO IT CANNOT BE RE-DERIVED WRONG:**
+**`job room = stop line − CURRENT FILL`. The wrap is already inside the stop line. Never subtract it twice.**
+*(recorded at the #127 wrap; **no constant was moved and no cap was touched** — this is a correction to a
+READING, not to a number.)*
+
+★ **AND THE PRICING LESSON #126 PROVED AND #127 PAID OFF** *(inscribed here at #127's 2f EXIT CHECK, so it
+outlives the stratum that carried it)*: at #125 and #126 the schematic was **the second item on a two-item
+lane**, and both times the window ran out before it was started — *"it has never had a window of its own."*
+#127 gave it the OPENING lane and it landed the same day. ⇒ **When a lane names two items and one of them is
+a build, the build is not "second" — it is the lane, or it is not in the lane.** *(evidence: `_LIVE-STATE.md`
+§ OPEN, the schematic block — born #125, CLOSED #127 · 2026-08-07)*
 
 ## The Red trigger — wired to the existing ritual
 

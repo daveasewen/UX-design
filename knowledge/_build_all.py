@@ -239,8 +239,27 @@ STEPS = [
     # not a parse defect, and is deliberately unfixed — see _LIVE-STATE.md § OPEN.
     # Wired anyway because the ruled premise (it cannot run) is disproven and the wiring gate
     # admits no half-state; the bites themselves are Dave's to rule on.
+    #
+    # ⛔⛔ CORRECTED AGAIN AT #127 — AND THAT IS THE FINDING, NOT THE CORRECTION.
+    # The paragraph ABOVE is now false in its turn: the ~32 FALSE failures were FIXED at #127
+    # (effBg now composites the browser's own hit stack; before/after proved the delta is
+    # exactly 32 removed, 0 added, and all 4 REAL failures survive with identical ratios).
+    # Coverage also went 38 -> 75 snippets once the out[3] overwrite became an insert.
+    # ⚠ THIS COMMENT HAS NOW GONE FALSE TWICE, IN TWO CONSECUTIVE SESSIONS, INSIDE THE FILE
+    # THAT ENFORCES THE RULE AGAINST EXACTLY THIS. The standing remedy for a claim that goes
+    # stale twice is GENERATE IT, DO NOT RE-STAMP IT (s125-D1's precedent: a typed figure that
+    # rotted twice was replaced by an AST reader plus permanent bites). A THIRD hand-correction
+    # is the move that ruling exists to forbid — so this stratum is left as EVIDENCE and the
+    # remedy is raised to Dave rather than taken here. [[no-gate-parses-the-artefact]]
+    # CURRENT POSITION, #127: RED on Dave's 4 real failures ONLY (14 records across variants).
     ("state-contrast gate — driven hover/pressed, light+dark (un-exempted #125)",
      "_validate_state_contrast.py"),
+    # WIRED #127. Precedent, stated in this same file: "a selftest not in STEPS is a gate that
+    # does not run." 19 arms, incl. the boundary bite that catches a "fix" which stops failing
+    # by ceasing to report. ⚠ Like the gate row above it, this row NEEDS A BROWSER —
+    # knowledge/_tests/test_gates.py:23 still correctly excludes both from CI's static suite.
+    ("state-contrast gate selftest — paint stack, report arithmetic, named args",
+     "_validate_state_contrast.py", ["--selftest"]),
     # WIRED #119 at tier (b) SHRINK-ONLY RATCHET — Dave's ruling 2026-08-07. Baseline
     # 1,101 MEASURED at wiring (not copied), declared debt in _type_ratchet.json, may
     # only shrink. Risk named to Dave and accepted: shape of "a cap raised to clear its
@@ -324,6 +343,21 @@ STEPS = [
      "_gen_chain.py", ["--check"]),
     ("read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)",
      "_gen_chain.py", ["--selftest"]),
+    # WIRED #127 — Dave's call at the opener. The Memento schematic v2: one generated HTML
+    # diagram of the six subsystems (chain · store · search · marks · gates · package), every
+    # figure read off disk at generation time. v1 was HAND-AUTHORED, referenced by no generator,
+    # and asserted "27 blocking validators in a 55-step build" against a disk of 30 and 98 — it
+    # is KEPT and TOMBSTONED (Dave's #125 disposition), not corrected and not deleted.
+    # ★ The artefact computes, per panel, WHICH of these steps re-check it, and renders a red
+    # "NOTHING RE-CHECKS THIS" where the answer is none. Until this row existed it fired that
+    # about ITSELF — which is the whole argument for the row. Build-step counts come from
+    # _gen_chain._steps_in, the function itself and never a copy (one slicer, s125-D1).
+    ("memento schematic — the six subsystems, generated from the file inventory (#127)",
+     "_gen_schematic.py"),
+    ("memento schematic determinism check — a stale diagram publishes a PREVIOUS tree (#127)",
+     "_gen_schematic.py", ["--check"]),
+    ("memento schematic selftest — figure provenance, caption geometry, self-recheck (#127)",
+     "_gen_schematic.py", ["--selftest"]),
     # #79: enforces Dave's #64 boundary ruling (memento-package/_PACKAGE-SPEC.md:13-14 —
     # "copies only, and every copy is delta-audited"). Nothing enforced this until
     # _gen_chain.py was found to have silently regressed 54 lines behind
@@ -480,6 +514,15 @@ ROUTE_ROWS = [
      "\n❌ screen gate failed (exit {code}) — a _fitness-test canon fixture fails compose/icon-source/a11y; see knowledge/_validate_screen.py output"),
     ("state-contrast gate — driven hover/pressed, light+dark (un-exempted #125)", GATE,
      "\n❌ state-contrast gate failed (exit {code}) — a driven hover/pressed state measures below 4.5:1 (large 3.0:1) in light or dark; see knowledge/_STATE-CONTRAST-AUDIT.md. ⚠ #125: verify the reading before treating it as a design defect — the validator's parse() cannot read color(srgb ...) backgrounds (every color-mix() hover), and mis-reports those as ~1:1."),
+    # ⚠ #127, FOUND AND DELIBERATELY NOT REWRITTEN: the remedy line above still carries the
+    # #125 caveat "parse() cannot read color(srgb ...) backgrounds ... mis-reports those as
+    # ~1:1". That was s125-D3, and s125-D3 WAS FIXED AT #125 — #127 measured 0 parse refusals
+    # across all 75 snippets, before and after. So this remedy text is a THIRD instance, in a
+    # THIRD place, of the same claim-gone-false class this file already documents twice above.
+    # ⛔ NOT re-stamped, for the reason given in that block: the standing remedy for a claim
+    # that keeps rotting is to GENERATE it, and taking a third hand-correction here would be
+    # the exact move s125-D1 exists to forbid. Raised to Dave as a decision. [[gate-don-t-patch]]
+    ("state-contrast gate selftest — paint stack, report arithmetic, named args", ABORT, None),
     ("type-composites ratchet — tier (b), debt 1101 shrink-only (Dave #119)", GATE,
      "\n❌ type-composites ratchet failed (exit {code}) — NEW violation(s) above the declared debt in knowledge/_type_ratchet.json; the ratchet only shrinks (s119-D1). Fix the new violations; do NOT raise the baseline."),
     ("type-composites selftest", ABORT, None),
@@ -517,6 +560,9 @@ ROUTE_ROWS = [
     ("read chain file — _CHAIN.md, the cold-start door (#41)", ABORT, None),
     ("read chain determinism check — stale _CHAIN.md serves a PREVIOUS session's record (#41)", ABORT, None),
     ("read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)", ABORT, None),
+    ("memento schematic — the six subsystems, generated from the file inventory (#127)", ABORT, None),
+    ("memento schematic determinism check — a stale diagram publishes a PREVIOUS tree (#127)", ABORT, None),
+    ("memento schematic selftest — figure provenance, caption geometry, self-recheck (#127)", ABORT, None),
     ("memento-package delta-audit — #64 boundary enforcement (#79)", GATE, _PKGDELTA),
     ("memento-package delta-audit selftest — mutation-tested, all 4 arms (#79)", GATE, _PKGDELTA),
     ("enactment register — is each ruling IN FORCE? (advisory, ADR-0016)", ADVISORY, None),

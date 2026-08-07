@@ -157,6 +157,27 @@
       "recheck_days": 30,
       "last_verified": "2026-08-06",
       "provenance": "Verified 2026-08-06 in-sandbox: /sessions/<session>/mnt/.auto-memory/ lists MEMORY.md and MEMORY-ARCHIVE.md alongside the per-entry .md files. RESIDUAL, declared UNPROVEN: off-sandbox (e.g. a checkout with no '<session>/mnt' ancestor) the root is UNRESOLVED and this assertion reports ROOT UNRESOLVED and FAILS rather than passing quietly — deliberate, per 'UNKNOWN is never defaulted'. Not exercised outside the sandbox."
+    },
+    {
+      "id": "ASSERT-008",
+      "kind": "environment",
+      "claim": "The GENERATED Memento schematic v2 is on disk at reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html.",
+      "why": "v1's tombstone (added #127) tells every reader 'read figures there, never here' and links to v2 by relative href. That pointer is a claim, and a pointer that goes stale is the exact class v1 exists to illustrate — a claim that was true when written with nothing re-checking it. Registering it means the tombstone's redirect is re-tested on every build instead of being trusted.",
+      "predicate": {
+        "verb": "path_exists",
+        "root": "repo",
+        "glob": "reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html"
+      },
+      "consequence": "If this flips, v1's tombstone points at nothing and its 'read figures at v2' instruction sends the reader back to the stale figures it was written to fence off. Regenerate via `python3 knowledge/_gen_schematic.py`, or re-point the tombstone.",
+      "clears_when": "The schematic is re-versioned (a -v3 supersedes v2) AND v1's tombstone plus every doc named below is re-pointed in the same pass.",
+      "asserted_in": [
+        "reviews/MEMENTO-SCHEMATIC-2026-07-26-v1.html",
+        "knowledge/_REVIEW-SIGNOFF.md",
+        "_LIVE-STATE.md",
+        "GOOD-MORNING.md"
+      ],
+      "last_verified": "2026-08-07",
+      "provenance": "Registered at the #127 wrap, ritual step 3 ('if you wrote a checkable claim about the environment, register it'). Verified in-sandbox 2026-08-07: the file is present and is the artefact _gen_schematic.py --check compares against."
     }
   ]
 }

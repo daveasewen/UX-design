@@ -95,6 +95,72 @@ def _norm(s: str) -> str:
     return s.strip().replace("\\", "/").lstrip("./").lower()
 
 
+# ── ⚓ THE DURABLE POINTER FORM, built #127 ───────────────────────────────────────────────────
+ANCHOR_SEP = "#"
+
+
+def is_anchor_pointer(pointer: str) -> bool:
+    """`<path>#<literal text>` — and nothing else may claim to be one.
+
+    ⚠ DELIBERATELY NARROW. `notes/_MEMENTO-DECISIONS.md SS #125` also contains a `#`; if this
+    predicate claimed it, a broken PROSE pointer would be re-diagnosed as a broken ANCHOR and its
+    real error message would be lost. A path with a space in it is not a path.
+    """
+    path, sep, anchor = pointer.partition(ANCHOR_SEP)
+    return bool(sep) and bool(anchor.strip()) and bool(path.strip()) and " " not in path.strip()
+
+
+def resolve_anchor(pointer: str) -> tuple[int | None, str]:
+    """Resolve `<path>#<literal>` to the line it sits on TODAY. Returns `(lineno, error)`.
+
+    ⛔ THE DEFECT THIS EXISTS TO KILL, found #127, stated once so it is never re-derived.
+
+    `s121-D1` carried `canon.css:5548 RAG roundel policy`. That pointer was TRUE WHEN WRITTEN: at
+    `e3174d1` — the tree the ruling was made against — `knowledge/canon/canon.css:5548` IS the
+    `Drift: RAG ROUNDEL POLICY` note the ruling cites as its >=4.5:1 precedent. Five sessions
+    later the construct sits at 6451 and line 5548 is `--alpha-84: 0.84;`, an unrelated token in
+    an unrelated block.
+
+    ★ AND NOTHING COULD EVER HAVE CAUGHT IT. The evidence check verifies `e.split(":")[0]` — the
+    FILE — and never looks at the integer at all. A line number in a file that moved 903 lines in
+    five sessions was GREEN BY CONSTRUCTION. This entry only went red because its file part was
+    also wrong: a bare `canon.css` never resolvable from the repo root, so it was born red at
+    #121 and five green wraps reported the file, never the line. ⇒ Repointing it at
+    `knowledge/canon/canon.css:5548` would have restored green WHILE POINTING AT THE WRONG
+    CONSTRUCT. That is the re-stamp, and avoiding it is the whole reason this function exists.
+
+    ⇒ Same shape as `_gen_chain._steps_in()` (`s125-D1`, enacted #126): a figure that keeps going
+    stale is not hand-corrected, it is DERIVED. The index stores the ANCHOR — durable, meaningful,
+    greppable — and the integer is computed here on every run and stored nowhere at all. This is
+    the answer to "what re-checks this?": the resolver does, on every selftest and every render.
+
+    AMBIGUITY IS RED, never a best guess. A pointer resolving to three places has not been
+    re-checked, it has been guessed, and a guess wearing a line number is exactly the
+    confident-false inscription the project exists to prevent.
+    """
+    path, _, anchor = pointer.partition(ANCHOR_SEP)
+    path, anchor = path.strip(), anchor.strip()
+    full = os.path.join(REPO, path)
+    if not os.path.isfile(full):
+        return None, (f"points at `{pointer}` whose FILE `{path}` does not exist — a pointer "
+                      f"index whose pointers rot is worse than none")
+    try:
+        with open(full, encoding="utf-8", errors="replace") as fh:
+            hits = [i for i, ln in enumerate(fh, 1) if anchor in ln]
+    except OSError as exc:
+        return None, (f"cannot READ `{path}` to resolve anchor `{anchor}` ({exc}) — unreadable is "
+                      f"not absent, and must never be reported as a clean miss")
+    if not hits:
+        return None, (f"points at `{pointer}` — the file is there but the ANCHOR TEXT IS GONE. "
+                      f"The construct was renamed, moved out or deleted: say WHICH. Do not "
+                      f"repoint at whatever currently looks right — that is the #127 re-stamp")
+    if len(hits) > 1:
+        shown = ", ".join(str(h) for h in hits[:5]) + ("…" if len(hits) > 5 else "")
+        return None, (f"points at `{pointer}` — the anchor matches {len(hits)} lines ({shown}). "
+                      f"An ambiguous anchor is not a pointer; narrow the literal until unique")
+    return hits[0], ""
+
+
 def matches(ruling: dict, targets: set[str]) -> bool:
     """A ruling governs a target if any `governs` entry matches a path (by suffix, so a
     repo-relative entry matches an absolute path) or a bare symbol name.
@@ -144,6 +210,14 @@ def render(hits: list[dict], because: str) -> str:
         if r.get("watch"):
             lines.append(f"      ⚠ {r['watch']}")
         for e in r.get("evidence", []):
+            # ★ THE INTEGER IS DERIVED HERE, at read time, and stored nowhere (#127). A reader
+            #   gets a line number that is true NOW, or an explicit refusal — never a stale one
+            #   presented in the same confident voice as a checked one.
+            if is_anchor_pointer(e):
+                path, _, anchor = e.partition(ANCHOR_SEP)
+                ln, err = resolve_anchor(e)
+                e = (f"{path.strip()}:{ln} — {anchor.strip()}" if ln
+                     else f"{e}  ⛔ UNRESOLVED — {err}")
             lines.append(f"      evidence: {e}")
     lines.append("  ⛔ These are DECIDED. Re-deriving one is the #80 defect; re-opening one is "
                  "Dave's alone.")
@@ -230,10 +304,71 @@ def selftest() -> list[str]:
                                     f"a commit in this repo — a pointer index whose pointers "
                                     f"rot is worse than none")
                 continue
+            # ⚓ #127: the ANCHOR form is checked by CONTENT, not by an integer. See
+            # `resolve_anchor` for the defect it kills; the legacy `<path>` and `<path>:<int>`
+            # forms fall through to the existence check below, unchanged.
+            if is_anchor_pointer(e):
+                _ln, err = resolve_anchor(e)
+                if err:
+                    failures.append(f"_governs: ruling {r['id']} {err}")
+                continue
             p = os.path.join(REPO, e.split(":")[0])
             if not os.path.exists(p):
                 failures.append(f"_governs: ruling {r['id']} points at `{e}` which does not "
                                 f"exist — a pointer index whose pointers rot is worse than none")
+
+    # 6. ⚓ THE ANCHOR FORM (#127) — ONE BITE PER CLAUSE. A bundle proved by a single bite is a
+    #    bundle that is not proved. Fixtures are REAL repo files on purpose: a tempfile cannot
+    #    exercise the REPO-relative resolution, which is the thing under test.
+
+    # 6a. POSITIVE CONTROL FIRST, again. Everything below is failure-only, and a failure-only
+    #     suite reads green after a revert that deletes the feature entirely.
+    anchored = [(r["id"], e) for r in rulings for e in r.get("evidence", [])
+                if is_anchor_pointer(e)]
+    if not anchored:
+        failures.append("_governs: NO evidence pointer is in anchor form — either the form was "
+                        "reverted out of the index or it never landed. The anchor bites below "
+                        "cannot fail, so they are asserting, not testing")
+    for rid, e in anchored:
+        ln, err = resolve_anchor(e)
+        if err or ln is None:
+            failures.append(f"_governs: anchor positive control — ruling {rid}'s `{e}` did not "
+                            f"resolve ({err or 'no line returned'})")
+            continue
+        # 6b. ROUND TRIP. Re-read the resolved line and prove it really holds the anchor. Without
+        #     this the bite passes on ANY integer the resolver cares to return — the #125
+        #     `parse()`-faking-`{"ratio":1}` shape, where a return value was the stale claim.
+        path, _, anchor = e.partition(ANCHOR_SEP)
+        with open(os.path.join(REPO, path.strip()), encoding="utf-8", errors="replace") as fh:
+            got = fh.readlines()[ln - 1]
+        if anchor.strip() not in got:
+            failures.append(f"_governs: anchor ROUND TRIP failed for {rid} — resolved "
+                            f"{path.strip()}:{ln} does not contain `{anchor.strip()}`. The "
+                            f"resolver is returning a number, not a location")
+
+    # ⚠ ASSEMBLED AT RUNTIME, NOT WRITTEN AS ONE LITERAL. Spelled out whole it would occur in
+    #   THIS file, and the day a fixture points here the 'absent' bite would find ITSELF and pass
+    #   for the wrong reason. The self-reference trap is cheap to fall into and free to avoid.
+    absent = "zzz" + "_anchor_absent_" + "xyzzy"
+    # 6c. Anchor text GONE from a file that exists — the case the old check could not see at all.
+    if not resolve_anchor(f"knowledge/_rulings.json{ANCHOR_SEP}{absent}")[1]:
+        failures.append("_governs: an ABSENT anchor resolved — the anchor form is checking the "
+                        "file's EXISTENCE and not its CONTENT, which is the old defect wearing "
+                        "new syntax")
+    # 6d. Missing file — the legacy guarantee must survive inside the new form.
+    if not resolve_anchor(f"knowledge/_no_such_file_{absent}.py{ANCHOR_SEP}x")[1]:
+        failures.append("_governs: an anchor on a MISSING FILE resolved")
+    # 6e. Ambiguity is RED, not a first-match guess.
+    if not resolve_anchor(f"knowledge/_governs.py{ANCHOR_SEP}failures.append(")[1]:
+        failures.append("_governs: an AMBIGUOUS anchor resolved to a single line — a pointer "
+                        "matching many places has been guessed, not re-checked")
+    # 6f. PREDICATE NEGATIVE CONTROL. These two must NOT be claimed as anchors, or a broken
+    #     legacy/prose pointer is re-diagnosed as a broken anchor and its real error is lost.
+    for not_anchor in ("canon.css:5548 RAG roundel policy",
+                       "notes/_MEMENTO-DECISIONS.md SS #125"):
+        if is_anchor_pointer(not_anchor):
+            failures.append(f"_governs: `{not_anchor}` was claimed as an anchor pointer — the "
+                            f"predicate is too loose and the legacy path check is bypassed")
     return failures
 
 

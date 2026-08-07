@@ -4948,3 +4948,110 @@ spelling it; the bite was NOT touched, NOT scoped, NOT exempted.** ★ This is t
 can never provide: **an instrument driven on real data, failing, on the day it was built**
 [[green-tests-cannot-see-scope]] [[mutation-tests-the-clause-not-the-feature]]. The 12-bite battery proved
 the clauses; **this proved the feature.**
+
+---
+
+## ★ #127 — THE SCHEMATIC LANDED, AND THE RECORD OF A DEFECT WAS WRONG ABOUT THE DEFECT (Dave live, OPUS conductor, ONE window + 3 OPUS subs, wrap DELEGATED to an OPUS sub at FILL 135,896)
+
+⚠ **SHAPE FIRST, and for once it is the plain one:** the title `Apollo - #127: the schematic v2` names a
+lane that **landed**. It had been named at #125 and again at #126 and died both times as the second item on
+a two-item lane. #127 made it the OPENING lane and it shipped the same day.
+Arc: `_DECISION-HISTORY/2026-08-07-127-the-schematic-and-the-record-that-was-wrong-about-its-own-defect.md`.
+
+⛔ **NO `s127-D*` RULING ID WAS MINTED, AND THAT IS DELIBERATE.** Dave made one call in-session (wire the
+schematic rows; the build went 98 → 102) and it was **enacted the same hour**, so there is no ruled-but-
+unenacted state to carry. Everything else this session produced is a **finding, a repair, or a question put
+to him** — and minting an id for an agent's own repair would make the ledger claim a ruling that was never
+made. **Promotion is Dave's alone.** The four open questions below are listed as questions, not as `D`s.
+
+### What landed
+
+**① THE SCHEMATIC IS GENERATED, NOT DRAWN.** `knowledge/_gen_schematic.py` (~1,058 lines) →
+`reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html`. Seven panels (six subsystems — chain · store · search ·
+marks · gates · package — plus a self panel), 39 rows, **every figure read off disk at generation time**,
+inline SVG, no CDN. **Build-step counts come from `_gen_chain._steps_in` — the function itself, never a
+copy**: `s125-D1` established ONE slicer, and a schematic re-implementing the AST read would have been a
+second slicer with the same name and a different answer. ★ **Each panel computes its own *"what re-checks
+this"*** from `STEPS` × `ROUTE_ROWS` and renders a red **NOTHING RE-CHECKS THIS** where the answer is none —
+**and it fired that about ITSELF** until the wiring landed. **v1 KEPT + TOMBSTONED (+29/−0, purely
+additive), its stale figures deliberately uncorrected**, because a corrected v1 destroys the only worked
+evidence that the class is real. *(Dave's #125 disposition, enacted verbatim.)*
+
+**② 98 → 102 STEPS, DAVE'S CALL — AND FOUR ROWS WERE WIRED, NOT THREE.** Three schematic rows (build ·
+`--check` · `--selftest`) plus **one contrast-selftest row**, added under the file's own stated precedent
+(*"a selftest not in STEPS is a gate that does not run"*). ⚠ **Declared to Dave in chat at the time, not
+buried in the diff** — recorded here in the same words, because a deviation mentioned once reads as drift
+later [[attribute-the-diff]].
+
+**★★ ③ `s125-D1` DEMONSTRATED ITSELF A THIRD TIME, LIVE.** The wiring moved the published build figure
+**98 → 102** and the never-verified shortfall **23 → 27**, **with nothing typed**. Ruled #125, enacted #126,
+self-updating #127 — three consecutive sessions, one ruling, no re-stamp.
+
+**④ `_governs.py` REPAIRED — AND THE STANDING RECORD WAS FALSE IN BOTH HALVES.** `_LIVE-STATE.md:457`
+stated that `s121-D1` points at `knowledge/canon/canon.css:5548` and that *"that line does not exist"*.
+**(a)** The ruling points at **bare `canon.css`**; the record had **silently added the prefix**, and that
+addition is what hid the real defect — a bare path is **never resolvable from repo root**, so the entry was
+**BORN RED at #121**, not rotted into red. **(b) Line 5548 exists** — today `--alpha-84: 0.84;`.
+⚠ **A repair driven off that sentence would have gone GREEN pointing at an unrelated token.** The construct
+actually cited (the RAG roundel policy) had drifted **5548 → 6451**, 903 lines in 5 sessions.
+**Fix:** anchor pointer `<path>#<literal>` in `knowledge/_governs.py` — `is_anchor_pointer()`,
+`resolve_anchor()`, wired into `render()` and `selftest()`, **+135/−0 purely additive** — with the **line
+number derived at read time and stored nowhere** (the `_steps_in` shape). `_rulings.json` ±2 lines,
+**round-trip byte-verified before writing** [[serializer-defaults-reformat-the-file]]. **7 mutation bites,
+all RED as designed, every restore sha256 byte-exact.** `_governs --selftest` **32 → 30**.
+★ **THE GENERAL LESSON, and it is sharper than the fix: the RECORD OF A DEFECT is itself a claim that can
+go false, and it is the claim a repair reads first.** Nothing re-checks a diagnosis
+[[no-gate-parses-the-artefact]] [[premise-ages-faster-than-rule]].
+
+**⑤ BOTH `_validate_state_contrast.py` DEFECTS FIXED, WITH THE BOUNDARY PROVEN.** `effBg` **modelled the
+paint stack as the ancestor chain when painting is a z-ordered geometry of boxes** — ancestors are a
+subset, so it was blind *by construction*; naming it "ancestors only" would have produced a patch that fails
+on the next geometry. It now composites the browser's own hit stack. `out[3]` was **a derived summary
+written into a positional slot the loop above owns** — now an insert. **TEXT failures 46 → 14: exactly the
+32 named false failures removed, ZERO added, and all 4 REAL failures survive with identical ratios, still
+red, nothing waived or re-thresholded.** **Confirmed by a second instrument sharing no code** — screenshot
+pixels **21.0:1** where the gate said 1:1. **8 mutation bites, byte-exact restore after each, including M5:
+a "fix" that stops failing by ceasing to report goes RED** — that bite exists because the cheapest way to
+green this gate is to make it measure less [[green-tests-cannot-see-scope]].
+
+### What was found and deliberately NOT taken
+
+**⑥ A CLAIM GONE FALSE A THIRD TIME, IN A THIRD PLACE — AND NOT RE-STAMPED.** `_build_all.py`'s
+state-contrast comment (hand-corrected once at #125, inside the session that falsified it) went false again;
+**and its `ROUTE_ROWS` remedy string still carries the `s125-D3` parse caveat, fixed at #125** — #127
+measured **0 parse refusals across all 75 snippets**, before and after. ⛔ **The comment was corrected; the
+remedy was deliberately left as EVIDENCE and the question raised to Dave**, because the standing rule is
+*stale twice ⇒ GENERATE, don't re-stamp*, and a third hand-correction is the exact move `s125-D1` exists to
+forbid [[gate-dont-patch]].
+
+**⑦ "ONE ROTTEN POINTER" WAS NEVER ONE.** The gate reports only `fs[0]`; **30 entries remain** — class B
+(18) missing `evidence`/`status` where **filling the field means asserting what Dave ruled**, class C (12)
+prose-in-`evidence`, **+11 legacy `<path>:<int>` entries that are green, unverifiable and invisible.**
+★ **A form that cannot fail is not a passing form.** Recorded, left.
+
+### The four questions PUT TO DAVE, none pre-selected
+
+1. **DECLARE vs REFUSE** on the 15 remaining un-hit-testable boxes — a stated approximation, or a named hole.
+2. **GENERATE vs RE-STAMP** for the `_build_all.py` comment *and* the `ROUTE_ROWS` remedy string.
+3. **⛔/★ GLYPHS vs ASCII** in generated review artefacts.
+4. **THE BOOT-FLOOR RE-BASE** — #127's boot was **54,375 real**, the **SIXTH** datapoint below the published
+   75,899. ⛔ Recorded, not re-based, for the sixth time.
+
+### What we got wrong — a reserve on a reserve
+
+The opener treated **150,929 as the ceiling and then subtracted the wrap AGAIN**, reporting ~30K of job room
+against a real **79,012**. Dave, verbatim: *"150,929 is the line at which it is recommended you start the
+wrap, not the limit"* — 200,000 is working, 256,000 is the hard stop, **150,929 is DERIVED as `wall − wrap`**.
+★ **The defect is named in `_gauge_tokens.py`'s own comments eleven lines above the constant that was
+quoted** — the guard existed and was not read [[read-chain-is-where-staleness-is-free]]. ⚠ **It materially
+affected a decision**: the schematic was delegated against an understated budget. **The delegation succeeded;
+the stated reason did not, so the pick was declared RE-OPENABLE, not settled** [[dont-launder-a-premise-into-a-ruling]].
+Inscribed **by ADDITION** at `knowledge/_RUNBOOK-context-gauge.md` § The Red trigger:
+**`job room = stop line − CURRENT FILL`; the wrap is already inside the stop line; never subtract it twice.**
+**No constant was moved and no cap was touched.**
+
+### And the one Dave asked for that he did not get
+
+⛔ **THE DREAM PASS.** Raised mid-session; **a sub's report alone cost more FILL than remained before the
+wrap-open line**, so it was **rolled to #128 as item ①, deliberately, rather than started and abandoned**
+[[stop-line-repriced-93]]. Recorded as **OVERDUE**, which is a different word from *queued*.

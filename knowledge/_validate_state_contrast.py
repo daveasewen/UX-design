@@ -16,17 +16,44 @@ ICONS (svg) below 3.0 are reported as WARN (many are aria-hidden/decorative — 
 DISABLED controls are skipped (WCAG-exempt from contrast).
 UNPARSEABLE colour syntax REFUSES — `StateContrastParseError`, named and attributable, counted
 and exit-non-zero. It is never measured against a guessed background (s125-D3, Dave 2026-08-07).
+THE EFFECTIVE BACKGROUND IS THE PAINT STACK under the element, read from the browser's own hit
+stack, not the ancestor chain: an absolutely-positioned SIBLING paints the selected pill in every
+`.seg` in canon.css and an ancestor walk cannot see it (2026-08-07). Where the box is not
+hit-testable, the OLD ancestor walk runs as a DECLARED fallback and the audit says so per snippet.
 
 Usage:  python3 _validate_state_contrast.py [name-filter ...]   (default: all snippets)
-Needs:  headless Chromium via Playwright (see memory: sandbox-html-rendering).
+        python3 _validate_state_contrast.py --selftest          (bites, no snippets)
+        An unknown option is a NAMED failure, never a silent name-filter, and a name-filter
+        that matches no snippet is a NAMED failure too — a filter that quietly selects
+        nothing writes an empty audit that looks like a clean one.
+Needs:  headless Chromium via Playwright (see memory: sandbox-html-rendering) — for --selftest
+        as well: this gate cannot be proven without a browser, so an unavailable browser is a
+        selftest FAILURE, never a silent skip.
 Writes: _STATE-CONTRAST-AUDIT.md.  Exit non-zero on any TEXT failure.
 """
-import os, sys, glob
+import os, re, sys, glob, tempfile
 from playwright.sync_api import sync_playwright
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SNIP = os.path.join(HERE, "snippets")
 SEL = 'a, button, [role="radio"], [role="button"], [role="switch"], [role="tab"], [tabindex]:not([tabindex="-1"]), label, summary'
+
+
+class StateContrastArgError(Exception):
+    """An argument this script cannot honour. NAMED — never quietly defaulted to a name-filter."""
+
+
+class StateContrastReportError(Exception):
+    """The rendered audit disagrees with the counters it was rendered from."""
+
+
+class StateContrastSelftestError(Exception):
+    """The selftest could not be RUN. That is a failure, not a skip."""
+
+
+def _fallback_wheres(records):
+    """Distinct elements whose background took the declared ancestor-walk fallback."""
+    return sorted({r[2]["where"] for r in records if r[2]["kind"] == "fallback"})
 
 MEASURE = r"""
 (el) => {
@@ -70,7 +97,65 @@ MEASURE = r"""
       return parts.length>1?[r[0],r[1],r[2],a]:r;}
     throw refuse(s,prop,node);                            // oklab()/lab()/hwb()/anything new: never guess
   };
-  function effBg(node){while(node){const cs=getComputedStyle(node);const p=parse(cs.backgroundColor,'background-color',node);if(p){const a=p.length===4?p[3]:1;if(a>=1)return [p[0],p[1],p[2]];const u=node.parentElement?effBg(node.parentElement):[255,255,255];return [Math.round(p[0]*a+u[0]*(1-a)),Math.round(p[1]*a+u[1]*(1-a)),Math.round(p[2]*a+u[2]*(1-a))]}node=node.parentElement}return [255,255,255]}
+  // ---- effective background: a PAINT STACK, not an ancestor chain (2026-08-07) ---------------
+  // THE CLASS: the old effBg() walked node.parentElement upwards, which models the paint stack as
+  // the ANCESTOR CHAIN. CSS does not paint that way — it paints BOXES in z-order, and any box that
+  // geometrically covers the element and paints beneath it contributes, ancestor or not. Ancestors
+  // are a SUBSET of that set, so an ancestor walk is not a cheap approximation; it is blind by
+  // construction to the commonest idiom in canon.css: `.seg .ind{position:absolute; background:
+  // var(--sel); z-index:0}` slides UNDER a `position:relative; z-index:1` button whose own
+  // background is `transparent`. The selected pill's label was therefore measured against a pale
+  // ANCESTOR and reported 1:1 (light) / 1.3:1 (dark) where it renders far above threshold.
+  // 32 FALSE failures: Segmented-control x12, Charts x16, View-options x4. Rendering was fine.
+  // Distinct from s125-D3, which was a PARSE defect in the same function's neighbour: that one
+  // misread a colour, this one reads the right colour off the wrong box.
+  // document.elementsFromPoint() IS the browser's own hit stack in paint order (topmost first), so
+  // the fix borrows the engine's stacking rules instead of re-implementing z-index, stacking
+  // contexts and paint phases — a re-implementation would be a second model to go silently wrong.
+  // KNOWN AND MEASURED RESIDUAL: hit-testing skips `pointer-events:none` boxes, so a painted
+  // overlay that opts out of hit-testing would still be missed by the stack walk. Measured across
+  // all 75 snippets in light+dark on 2026-08-07: exactly ONE painted such element exists
+  // (Dropdown's `li.sep`, a 1px flow separator overlapping no text). Named, not defended against
+  // speculatively. The other half — a MEASURED node that is itself un-hit-testable — is real and
+  // common (tooltips, decorative svg, cells below the fold) and takes the declared fallback below.
+  const samplePoint=(node)=>{                     // a point inside the node AND inside the viewport
+    const r=node.getBoundingClientRect();
+    if(!(r.width>0&&r.height>0)) return null;
+    const l=Math.max(r.left,0), t=Math.max(r.top,0);
+    const rt=Math.min(r.right,innerWidth-1), bt=Math.min(r.bottom,innerHeight-1);
+    if(!(rt>=l&&bt>=t)) return null;               // nothing of the node is on screen
+    return [(l+rt)/2,(t+bt)/2];
+  };
+  // A box's paint is scaled by its own `opacity` AND by every opacity above it. MEASURED, not
+  // assumed: `.dv-toggle-seg .ind{background:var(--ink); opacity:0}` on the UNPRESSED toggles in
+  // Chart-line/Chart-combo is a fully-opaque background that paints NOTHING. Reading its
+  // background-color and ignoring its opacity invented 12 fresh false failures at 1.17:1 — the
+  // same class of wrong answer this whole change exists to remove, one property to the left.
+  const groupAlpha=(el)=>{let o=1;for(let n=el;n&&n.nodeType===1;n=n.parentElement){
+    const v=parseFloat(getComputedStyle(n).opacity); if(isFinite(v)) o*=v; if(o<=0) break} return o};
+  // The DECLARED FALLBACK, kept verbatim from the pre-2026-08-07 implementation: hit-testing sees
+  // neither an off-screen box nor a `pointer-events:none` one (tooltips, decorative svg, a header
+  // cell below the fold). For those the paint stack is not observable, so the OLD ancestor walk
+  // runs and the audit SAYS SO per snippet. It is deliberately unimproved — being byte-for-byte
+  // the previous algorithm is what makes the before/after delta of this change attributable.
+  function ancestorBg(node){while(node){const cs=getComputedStyle(node);const p=parse(cs.backgroundColor,'background-color',node);if(p){const a=p.length===4?p[3]:1;if(a>=1)return [p[0],p[1],p[2]];const u=node.parentElement?ancestorBg(node.parentElement):[255,255,255];return [Math.round(p[0]*a+u[0]*(1-a)),Math.round(p[1]*a+u[1]*(1-a)),Math.round(p[2]*a+u[2]*(1-a))]}node=node.parentElement}return [255,255,255]}
+  function effBg(node){
+    const pt=samplePoint(node);
+    const stack=pt?document.elementsFromPoint(pt[0],pt[1]):[];
+    const i=stack.indexOf(node);
+    // Not hit-testable here. DECLARED, never hidden: a record is emitted so the audit can say
+    // which backgrounds carry the weaker measurement. It is not a failure and not a hole.
+    if(i<0){out.push({kind:'fallback',where:desc(node),text:(node.textContent||'').trim().slice(0,32)});
+            return ancestorBg(node);}
+    let R=0,G=0,B=0,rem=1;                          // src-over compositing, top-down from the node
+    for(let k=i;k<stack.length&&rem>0.0005;k++){
+      const p=parse(getComputedStyle(stack[k]).backgroundColor,'background-color',stack[k]);
+      if(!p) continue;                              // absent paint: keep descending, as before
+      const a=(p.length===4?p[3]:1)*groupAlpha(stack[k]); if(!(a>0)) continue;
+      R+=rem*a*p[0]; G+=rem*a*p[1]; B+=rem*a*p[2]; rem*=(1-a);
+    }
+    return [Math.round(R+rem*255),Math.round(G+rem*255),Math.round(B+rem*255)];   // canvas base = white
+  }
   const out=[], nodes=[el, ...el.querySelectorAll('*')];
   for(const n of nodes){
    try{
@@ -140,6 +225,12 @@ def run(filters):
     files = sorted(glob.glob(os.path.join(SNIP, "*.reference.html")))
     if filters:
         files = [f for f in files if any(x.lower() in os.path.basename(f).lower() for x in filters)]
+        # A filter that matches nothing used to write an EMPTY audit, which reads exactly like a
+        # clean one. Same class as the unknown-option default: the tool guessed what you meant.
+        if not files:
+            raise StateContrastArgError(
+                "no snippet matches " + ", ".join(repr(x) for x in filters) +
+                " — refusing to write an empty audit that would read as a clean one")
     results = {}
     with sync_playwright() as p:
         b = p.chromium.launch(args=["--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--force-color-profile=srgb"])
@@ -157,14 +248,43 @@ def run(filters):
         b.close()
     return results
 
-def main():
-    res = run(sys.argv[1:])
+HEADLINE_RE = re.compile(r"^\*\*(\d+) text failure\(s\) across (\d+) snippet\(s\)\.\*\*$", re.M)
+
+def verify_report(text, n_snippets, total_text):
+    """Re-READ the rendered artefact and check it says what the counters say.
+
+    The committed audit claimed "across 38 snippet(s)" and carried 37 sections for three sessions:
+    a stated figure with nothing re-checking it. A number computed in the same breath as the prose
+    it describes is not a check — parsing the artefact back, in the artefact's own grammar, is.
+    """
+    lines = text.split("\n")
+    heads = [l for l in lines if l.startswith("## ")]
+    fails = [l for l in lines if l.startswith("- ❌ TEXT ")]
+    m = HEADLINE_RE.search(text)
+    if not m:
+        raise StateContrastReportError("the audit carries no headline count line")
+    said_fail, said_snips = int(m.group(1)), int(m.group(2))
+    if said_snips != n_snippets or len(heads) != n_snippets:
+        raise StateContrastReportError(
+            f"snippet count disagrees — headline says {said_snips}, counters say {n_snippets}, "
+            f"artefact carries {len(heads)} section heading(s)")
+    if said_fail != total_text or len(fails) != total_text:
+        raise StateContrastReportError(
+            f"text-failure count disagrees — headline says {said_fail}, counters say {total_text}, "
+            f"artefact carries {len(fails)} failure line(s)")
+
+def render_report(res):
+    """Render the audit markdown from a results dict.
+
+    PURE — no browser, no IO — so --selftest can bite the report's own arithmetic without
+    rendering anything. Returns (text, total_text, refused, ancestor_fallbacks).
+    """
     out = ["# State-contrast audit — rendered hover / pressed states (light + dark)",
            "*Drives each interactive element's real hover/pressed states and measures computed foreground "
            "vs effective background. TEXT < 4.5 (large < 3.0) FAILS; svg ICONS < 3.0 WARN (many decorative). "
            "Disabled controls skipped (WCAG-exempt). Closes the declared-pairs blind spot (Dave, 2026-06-22).*",
            ""]
-    total = 0; refused = 0
+    total = 0; refused = 0; fellback = 0
     for name in sorted(res):
         seen=set(); uniq=[]
         for theme,state,fl in res[name]:
@@ -172,33 +292,228 @@ def main():
             if k in seen: continue
             seen.add(k); uniq.append((theme,state,fl))
         tf=[u for u in uniq if u[2]["kind"]=="text"]; iw=[u for u in uniq if u[2]["kind"]=="icon"]
-        rf=[u for u in uniq if u[2]["kind"]=="refusal"]
-        total += len(tf); refused += len(rf)
+        rf=[u for u in uniq if u[2]["kind"]=="refusal"]; fb=_fallback_wheres(uniq)
+        total += len(tf); refused += len(rf); fellback += len(fb)
         bits=[]
         if tf: bits.append(f"❌ {len(tf)} TEXT fail(s)")
         # a refusal is UNMEASURED, so this snippet may NOT be reported as clean
         if rf: bits.append(f"⛔ {len(rf)} PARSE REFUSAL(s) — UNMEASURED")
         if iw: bits.append(f"{len(iw)} icon warn(s)")
+        # provenance, not a verdict: these backgrounds carry the weaker ancestor-only measurement
+        if fb: bits.append(f"⚠ {len(fb)} ancestor-fallback background(s)")
         out.append(f"## {name} — {' · '.join(bits) if bits else '✅ clean'}")
         for theme,state,fl in tf: out.append(f"- ❌ TEXT [{theme}/{state}] {fl['ratio']}:1 (need {fl['thr']}) — \"{fl['text']}\"")
         for theme,state,fl in rf: out.append(f"- ⛔ StateContrastParseError [{theme}/{state}] cannot parse {fl['prop']}: `{fl['value']}` on {fl['where']}")
         for theme,state,fl in iw: out.append(f"- 🟡 icon [{theme}/{state}] {fl['ratio']}:1 (need 3.0){' (decorative)' if fl.get('ariaHidden') else ''}")
+        for w in fb: out.append(f"- ⚠ ancestor-fallback background (not hit-testable) — {w}")
         out.append("")
-    out[3] = f"**{total} text failure(s) across {len(res)} snippet(s).**"
+    # INSERT the headline — do NOT assign it. `out[3] = …` overwrote whatever already occupied
+    # index 3, which was the FIRST snippet's heading (Accordion, eaten; the audit then claimed 38
+    # sections and carried 37), and raised IndexError outright when no snippet was in scope,
+    # because index 3 only exists once a section has been appended. A summary is a NEW line.
+    out[3:3] = [f"**{total} text failure(s) across {len(res)} snippet(s).**", ""]
     if refused:
-        # appended at the END on purpose: out[3] is a known separate defect (it overwrites the
-        # first snippet's heading rather than inserting) and is NOT in this change's scope.
         out += ["---",
                 f"**⛔ {refused} PARSE REFUSAL(s) — `StateContrastParseError`.** A colour value above "
                 "could not be READ, so nothing was measured against it. These are not passes and not "
                 "failures: they are holes. Teach `parse()` the syntax, or the value is wrong (s125-D3).",
                 ""]
-    open(os.path.join(HERE,"_STATE-CONTRAST-AUDIT.md"),"w",encoding="utf-8").write("\n".join(out))
-    print("\n".join(out))
+    if fellback:
+        out += ["---",
+                f"**⚠ {fellback} background(s) took the ANCESTOR-WALK FALLBACK.** Their box is not "
+                "hit-testable (`pointer-events:none`, or entirely off-screen at measurement time), so "
+                "the paint stack under it cannot be observed and the pre-2026-08-07 ancestor-only walk "
+                "ran instead. Those measurements are as good as they always were — and no better: an "
+                "overlapping sibling would still be missed. Provenance, not a verdict.",
+                ""]
+    text = "\n".join(out)
+    verify_report(text, len(res), total)
+    return text, total, refused, fellback
+
+def parse_args(argv):
+    """Bare words are snippet-name filters; anything starting with '-' must be a KNOWN flag.
+
+    The old code handed sys.argv[1:] straight to run() as filters, so `--selftest` — or any typo —
+    became a filter that matched nothing, silently. An unknown argument is now named and refused.
+    """
+    filters, want_selftest = [], False
+    for a in argv:
+        if a == "--selftest":
+            want_selftest = True
+        elif a in ("-h", "--help"):
+            print((__doc__ or "").strip()); raise SystemExit(0)
+        elif a.startswith("-"):
+            raise StateContrastArgError(
+                f"unknown option {a!r} — valid: --selftest, --help, or bare snippet-name filters")
+        else:
+            filters.append(a)
+    if want_selftest and filters:
+        raise StateContrastArgError(
+            f"--selftest takes no name-filters (got {filters!r}) — it drives its own fixtures")
+    return filters, want_selftest
+
+# --- selftest fixtures: real files, loaded with goto("file://…"). set_content() is BANNED
+# (_RUNBOOK-render-verify.md) because it silently drops linked CSS. -----------------------------
+_FIX_HEAD = ('<!doctype html><meta charset="utf-8"><title>state-contrast selftest</title>'
+             '<style>body{margin:0;background:#ffffff;font:16px/1.4 sans-serif}'
+             '.seg{position:relative;display:inline-flex;background:#ffffff}'
+             '.ind{position:absolute;top:0;bottom:0;left:0;width:120px;z-index:0}'
+             '.seg button{position:relative;z-index:1;width:120px;height:40px;border:0;'
+             'background:transparent;color:#ffffff;font:inherit}</style>')
+FIXTURES = {
+    # canon.css's commonest idiom in miniature: an absolutely-positioned SIBLING paints the pill.
+    # White label on BLACK renders 21:1; the ancestor walk measured the white .seg and said 1:1.
+    "sibling_paint_is_seen":
+        _FIX_HEAD + '<div class="seg"><span class="ind" style="background:#000000"></span>'
+                    '<button id="target" type="button">Sel</button></div>',
+    # THE NEGATIVE CONTROL, and the load-bearing arm: same geometry, sibling painted WHITE.
+    # White on white is a REAL failure and must still be reported. Without this arm, a fix that
+    # simply stopped reporting anything would pass every other arm in this file.
+    "white_on_white_still_fails":
+        _FIX_HEAD + '<div class="seg"><span class="ind" style="background:#ffffff"></span>'
+                    '<button id="target" type="button">Sel</button></div>',
+    # The ANCESTOR path must survive the rewrite — no sibling at all, painted parent.
+    "ancestor_paint_is_seen":
+        _FIX_HEAD + '<div class="seg" style="background:#000000">'
+                    '<button id="target" type="button">Sel</button></div>',
+    # s125-D3's clause, guarded against THIS change: unreadable syntax still refuses BY NAME.
+    "unreadable_colour_still_refuses":
+        _FIX_HEAD + '<div class="seg" style="background:#000000">'
+                    '<button id="target" type="button" style="color:oklab(0.5 0 0)">Sel</button></div>',
+    # A sibling that paints an OPAQUE colour at opacity:0 paints NOTHING. Reading its
+    # background-color and ignoring its opacity invented 12 false failures on the chart toggles.
+    # Ink label on a white control, with an INK indicator hidden at opacity:0 sitting between them:
+    # honouring opacity gives 18:1 (no failure); ignoring it gives 1:1 (an invented failure).
+    "opacity_zero_sibling_paints_nothing":
+        _FIX_HEAD + '<div class="seg"><span class="ind" style="background:#111111;opacity:0"></span>'
+                    '<button id="target" type="button" style="color:#111111">Sel</button></div>',
+    # The measured node is not hit-testable, so the paint stack under it cannot be observed. The
+    # old ancestor walk runs and the run DECLARES it — a fallback that is counted, not hidden.
+    "unhittable_node_declares_its_fallback":
+        _FIX_HEAD + '<div class="seg" style="background:#000000">'
+                    '<button id="target" type="button" style="pointer-events:none">Sel</button></div>',
+}
+
+def _measure_fixtures():
+    """Load each fixture and return {name: MEASURE records for #target}."""
+    tmp = tempfile.mkdtemp(prefix="state-contrast-selftest-")
+    got = {}
+    with sync_playwright() as p:
+        try:
+            b = p.chromium.launch(args=["--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--force-color-profile=srgb"])
+        except Exception as e:                     # a gate that needs a browser cannot be proven
+            raise StateContrastSelftestError(      # without one — FAILURE, never a silent skip
+                f"chromium would not launch ({e!r}); this gate cannot be proven without a browser")
+        try:
+            for name, html in FIXTURES.items():
+                path = os.path.join(tmp, name + ".html")
+                open(path, "w", encoding="utf-8").write(html)
+                pg = b.new_page(viewport={"width":400,"height":200})
+                pg.goto("file://" + path)
+                got[name] = pg.evaluate(MEASURE, pg.query_selector("#target"))
+                pg.close()
+        finally:
+            b.close()
+    return got
+
+def selftest():
+    fails = []
+    ARMS_RUN = []
+    def check(name, cond, detail=""):
+        ARMS_RUN.append(name)
+        (print(f"  ok   {name}") if cond else fails.append(f"{name}: {detail}"))
+
+    # ---- report shape: the out[3] defect, both of its faces ----------------------------------
+    fake = {"Aaa-first":  [("light","hover",{"kind":"text","text":"Eaten?","ratio":1.0,"thr":4.5})],
+            "Bbb-second": [("light","hover",{"kind":"fallback","where":'span.tip "Tip"',"text":"Tip"}),
+                           ("dark","hover", {"kind":"fallback","where":'span.tip "Tip"',"text":"Tip"})],
+            "Ccc-third":  [("dark","pressed",{"kind":"icon","ratio":2.0,"thr":3.0,"ariaHidden":True})]}
+    text, total, refused, fellback = render_report(fake)
+    check("arm_first_heading_survives_the_headline", "## Aaa-first" in text,
+          "the first snippet's heading was eaten — headline ASSIGNED, not inserted")
+    check("arm_all_sections_present", text.count("\n## ") == 3, f"expected 3 sections, got {text.count(chr(10)+'## ')}")
+    check("arm_headline_counts_are_right", "**1 text failure(s) across 3 snippet(s).**" in text, text.split("\n")[3])
+    check("arm_fallback_is_declared_not_clean",
+          fellback == 1 and "⚠ 1 ancestor-fallback background(s)" in text and "Bbb-second — ✅ clean" not in text,
+          f"a fallback must be declared per snippet and must not read as clean (fellback={fellback})")
+    check("arm_fallback_is_not_a_failure", total == 1 and "- ❌ TEXT" in text and text.count("- ❌ TEXT") == 1,
+          "a fallback must not be counted as a text failure")
+    try:
+        zero_text, zt, _, _ = render_report({})
+        check("arm_zero_snippets_does_not_crash", "**0 text failure(s) across 0 snippet(s).**" in zero_text, zero_text)
+    except Exception as e:
+        check("arm_zero_snippets_does_not_crash", False, f"{type(e).__name__}: {e}")
+    for wrong, why in ((("n", 99, total), "snippet count"), (("t", 3, total + 7), "failure count")):
+        try:
+            verify_report(text, wrong[1], wrong[2]); check(f"arm_verify_report_bites_on_{why.split()[0]}", False, "no raise")
+        except StateContrastReportError:
+            check(f"arm_verify_report_bites_on_{why.split()[0]}", True)
+
+    # ---- arguments: named, never guessed ------------------------------------------------------
+    check("arm_selftest_flag_is_a_flag", parse_args(["--selftest"]) == ([], True))
+    check("arm_bare_word_is_a_filter", parse_args(["Button"]) == (["Button"], False))
+    for bad, label in ((["--wat"], "unknown_option"), (["--selftest", "Button"], "selftest_plus_filter")):
+        try:
+            parse_args(bad); check(f"arm_{label}_is_named", False, f"{bad} was accepted silently")
+        except StateContrastArgError as e:
+            check(f"arm_{label}_is_named", str(e) != "", "raised with no message")
+    try:
+        run(["definitely-not-a-snippet-name"]); check("arm_unmatched_filter_is_named", False, "empty audit accepted")
+    except StateContrastArgError:
+        check("arm_unmatched_filter_is_named", True)
+
+    # ---- geometry: driven in a real browser, on real files ------------------------------------
+    got = _measure_fixtures()
+    sib = got["sibling_paint_is_seen"]
+    check("arm_sibling_paint_is_seen", sib == [], f"expected no failure, got {sib}")
+    wow = [r for r in got["white_on_white_still_fails"] if r["kind"] == "text"]
+    check("arm_white_on_white_still_fails", len(wow) == 1 and wow[0]["ratio"] == 1,
+          f"a REAL white-on-white failure was not reported: {got['white_on_white_still_fails']}")
+    anc = got["ancestor_paint_is_seen"]
+    check("arm_ancestor_paint_is_seen", anc == [], f"the ancestor path regressed: {anc}")
+    ref = [r for r in got["unreadable_colour_still_refuses"] if r["kind"] == "refusal"]
+    check("arm_unreadable_colour_still_refuses", len(ref) == 1 and ref[0]["prop"] == "color",
+          f"s125-D3's refusal clause regressed: {got['unreadable_colour_still_refuses']}")
+    op = got["opacity_zero_sibling_paints_nothing"]
+    check("arm_opacity_zero_sibling_paints_nothing", op == [],
+          f"an opacity:0 box was composited as if it painted: {op}")
+    fbk = got["unhittable_node_declares_its_fallback"]
+    check("arm_unhittable_node_declares_its_fallback",
+          [r["kind"] for r in fbk] == ["fallback"],
+          f"an un-hit-testable box must measure by ancestor walk AND declare it: {fbk}")
+
+    if fails:
+        print(f"selftest FAILED — {len(fails)} bite(s):", file=sys.stderr)
+        for f in fails: print(f"  ✗ {f}", file=sys.stderr)
+        return 1
+    print(f"selftest OK — {len(ARMS_RUN)} arms. Headline INSERTED (first heading survives, 0 snippets "
+          "does not crash); artefact re-parsed against its own counters; unknown/unmatched arguments "
+          "named; sibling paint seen; opacity:0 paints nothing; ancestor paint still seen; "
+          "white-on-white STILL FAILS; un-hit-testable box falls back and declares it; "
+          "s125-D3's refusal intact.")
+    return 0
+
+def main(argv):
+    filters, want_selftest = parse_args(argv)
+    if want_selftest:
+        return selftest()
+    res = run(filters)
+    text, total, refused, fellback = render_report(res)
+    open(os.path.join(HERE,"_STATE-CONTRAST-AUDIT.md"),"w",encoding="utf-8").write(text)
+    print(text)
     if refused:
         print(f"StateContrastParseError: {refused} unreadable colour value(s) — see _STATE-CONTRAST-AUDIT.md",
               file=sys.stderr)
-    sys.exit(1 if (total or refused) else 0)
+    if fellback:
+        # NOT a failure: the measurement happened, by the older and weaker method. Said out loud
+        # so it is countable, never inferred from silence.
+        print(f"note: {fellback} background(s) took the ancestor-walk fallback (not hit-testable) "
+              "— see _STATE-CONTRAST-AUDIT.md", file=sys.stderr)
+    return 1 if (total or refused) else 0
 
 if __name__ == "__main__":
-    main()
+    try:
+        sys.exit(main(sys.argv[1:]))
+    except (StateContrastArgError, StateContrastReportError, StateContrastSelftestError) as e:
+        print(f"{type(e).__name__}: {e}", file=sys.stderr)
+        sys.exit(2)
