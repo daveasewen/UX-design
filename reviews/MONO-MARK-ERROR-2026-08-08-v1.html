@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mono --mark-error on the ruled red — decision specimen (2026-08-08 v1)</title>
+<!--
+  DECISION SPECIMEN — session #130. READ-ONLY consequence: nothing here is enacted.
+
+  WHAT IS BEING RULED (one line, also printed in the page header):
+    mono --mark-error companion value for the #B92F1E ground — s122-D2 amendment, Dave's.
+
+  WHY IT EXISTS: Dave's ruled red moves mono rag/error-background #F6604C -> #B92F1E.
+  s122-D2 ruled --mark-error: #1A1A1A measured against the OLD #F6604C ground (5.55:1).
+  On #B92F1E that same mark is 2.89:1 — below the 3.0 graphics floor (WCAG 1.4.11).
+  Console + Supercharge already carry #FFFFFF on #B92F1E (6.02:1, s122-D3).
+
+  THE MARK IS THE KNOCKOUT, NOT THE SHAPE. Per canon.css "Status mark map (s121-D1)":
+  --mark is the two-tone icon KNOCKOUT carrier — the bang/tick glyph INSIDE a filled status
+  shape. The ground it must clear is therefore the SHAPE fill (rag/error-background), which is
+  exactly the pairing s122-D2's 5.55:1 measured. The sprite below is the byte-matched
+  #ic-error symbol lifted verbatim from knowledge/snippets/Input-fields.reference.html:239
+  (identical bytes in Alert / Banner / Notifications / 10 more) — outer path fill:currentColor,
+  inner paths style="fill:var(--mark)". No abstraction: same paths, same 18x18 viewBox,
+  rendered at the real component sizes (18 / 20 / 24 px).
+
+  MODE-INVARIANCE: s122-D2 ruled the mono RAG map and its marks MODE-INVARIANT (dark = light).
+  Both modes are rendered below so the claim is visible rather than asserted.
+
+  ⚠ HONEST NOTE carried into the report, not hidden here: every reference component checked
+  declares a LOCAL --mark override on its error glyph (Banner --mark:var(--fill);
+  Toast --mark:var(--surface); Input-fields .err-msg .ic --mark:var(--page)). The token
+  --mark-error is DECLARED and carried by .is-error in all 14 snippets but is locally shadowed
+  in the DOM paths inspected. Its governing ground is still rag/error-background — that is the
+  pairing s122-D2 ruled and the one this page measures.
+-->
+<style>
+:root{
+  --font:"Univers Next for HSBC","Univers Next HSBC","Helvetica Neue",Arial,sans-serif;
+
+  /* ---- GROUNDS (provenance printed under each panel) ---- */
+  --ground-old:#F6604C;   /* mono rag/error-background, semantic-colour.json:463/467 (s122-D2) */
+  --ground-new:#B92F1E;   /* Dave's ruled red — the value console+SC already carry */
+
+  /* ---- MARK CANDIDATES ---- */
+  --mark-ruled:#1A1A1A;   /* canon/canon.css:605 — s122-D2, --mark-error */
+  --mark-white:#FFFFFF;   /* apollo-console.overrides.json:198 — s122-D3 marks.error */
+  --mark-ramp:#F0F0F0;    /* canon/canon.css:67 — --color-neutral-13, mono ramp step */
+}
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{font-family:var(--font); background:#FFFFFF; color:#1A1A1A; padding:28px 24px 48px;}
+
+.hdr{border-bottom:2px solid #1A1A1A; padding-bottom:14px; margin-bottom:6px;}
+.hdr .rule{font-size:20px; line-height:28px; font-weight:400; margin:0;}
+.hdr .rule b{font-weight:500;}
+.hdr .sub{font-size:13px; line-height:20px; margin:8px 0 0; color:#626262;}
+
+.modehead{font-size:12px; letter-spacing:.08em; text-transform:uppercase; font-weight:500;
+  margin:34px 0 10px; color:#626262;}
+
+/* mode frames — both modes on the page at once, so invariance is SEEN */
+.frame{padding:20px; border:1px solid #CECECE;}
+.frame.dark{background:#1A1A1A; color:#FFFFFF; border-color:#484848;}
+.frame.dark .prov, .frame.dark .panel .cap{color:#B7B7B7;}
+.frame.dark .panel{border-color:#484848;}
+.frame.dark .swatchrow .chip{border-color:#626262;}
+
+.grid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px;}
+@media (max-width:1000px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:560px){ .grid{grid-template-columns:1fr;} }
+
+.panel{border:1px solid #CECECE; padding:14px; display:flex; flex-direction:column; gap:12px;}
+.panel h3{margin:0; font-size:14px; line-height:20px; font-weight:500;}
+.panel .tag{display:inline-block; font-size:10px; letter-spacing:.09em; text-transform:uppercase;
+  font-weight:500; padding:2px 6px; border:1px solid currentColor; margin-bottom:6px;}
+.tag.now{color:#626262;} .tag.fail{color:#B92F1E;} .tag.cand{color:#2B7E4F;} .tag.offer{color:#626262;}
+
+/* ---- the real glyph, real sizes: shape = ground, knockout = mark ---- */
+.glyphrow{display:flex; align-items:flex-end; gap:14px; padding:10px 0;}
+.glyphrow .g{display:inline-flex; flex-direction:column; align-items:center; gap:5px;}
+.glyphrow .g span{font-size:10px; color:#808080;}
+.g svg{display:block;}
+.g18 svg{width:18px;height:18px;} .g20 svg{width:20px;height:20px;} .g24 svg{width:24px;height:24px;}
+
+/* real component context: the Input-fields error row (knowledge/snippets/Input-fields.reference.html:304) */
+.err-msg{display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:20px;}
+.err-msg .ic{flex-shrink:0; padding-top:2px;}
+.err-msg .ic svg{width:18px;height:18px;display:block;}
+.err-msg p{margin:0;}
+
+/* solid banner context: the Banner error surface (knowledge/snippets/Banner.reference.html) */
+.banner{display:flex; gap:8px; align-items:flex-start; padding:12px 14px; color:#FFFFFF;}
+.banner .ic{flex:none; height:24px; display:inline-flex; align-items:center;}
+.banner .ic svg{width:20px;height:20px;display:block;}
+.banner p{margin:0; font-size:14px; line-height:20px;}
+.banner p b{font-weight:500;}
+
+.swatchrow{display:flex; gap:8px; align-items:center; font-size:11px;}
+.swatchrow .chip{width:18px;height:18px;border:1px solid #CECECE;flex:none;}
+
+.ratio{font-size:13px; line-height:18px; font-weight:500; border-top:1px solid currentColor;
+  padding-top:9px; margin-top:2px;}
+.ratio .n{font-size:22px; font-weight:400;}
+.ratio .verdict{display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; margin-top:3px;}
+.v-pass{color:#2B7E4F;} .v-fail{color:#B92F1E;}
+.frame.dark .v-pass{color:#66CC8D;} .frame.dark .v-fail{color:#F6604C;}
+
+.prov{font-size:10.5px; line-height:16px; color:#626262; font-family:ui-monospace,Menlo,monospace;
+  white-space:pre-wrap; word-break:break-word;}
+
+.foot{margin-top:34px; border-top:1px solid #CECECE; padding-top:14px; font-size:12.5px;
+  line-height:19px; color:#313131; max-width:78ch;}
+.foot h4{margin:0 0 6px; font-size:12px; letter-spacing:.07em; text-transform:uppercase;}
+.foot ul{margin:0 0 12px; padding-left:18px;}
+#asserts{font-family:ui-monospace,Menlo,monospace; font-size:11px; line-height:17px; white-space:pre;}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <p class="rule"><b>RULING SOUGHT:</b> mono <code>--mark-error</code> companion value for the
+    <code>#B92F1E</code> ground — s122-D2 amendment, Dave's.</p>
+  <p class="sub">Ratios below are computed live in the page from the painted <code>fill</code> of the
+    real <code>#ic-error</code> knockout paths against the painted shape fill — not typed in.
+    Graphics floor = 3.0:1 (WCAG 1.4.11). Both modes shown because s122-D2 ruled mono's map
+    mode-invariant.</p>
+</header>
+
+<!-- byte-matched sprite: verbatim from knowledge/snippets/Input-fields.reference.html:239 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+</defs></svg>
+
+<div id="modes"></div>
+
+<div class="foot">
+  <h4>Provenance chains</h4>
+  <ul>
+    <li><code>mono rag/error-background</code> → <code>knowledge/tokens/semantic-colour.json:463</code> (light) / <code>:467</code> (dark) → <code>#F6604C</code> — mode-invariant, s122-D2.</li>
+    <li><code>--mark-error</code> → <code>knowledge/canon/canon.css:605</code> → <code>#1A1A1A</code> — <em>"RULED s122-D2 (Dave, #122): mono mark on #F6604C, 5.55:1"</em>. Distributed by <code>gen_token_ramp.py</code> into 14 snippets + 8 proforma.</li>
+    <li><code>.is-error { --mark: var(--mark-error) }</code> → <code>knowledge/canon/canon.css:616</code> — the carrier.</li>
+    <li>console/SC <code>rag/error-background</code> → <code>knowledge/tokens/themes/apollo-console.overrides.json:31</code> → <code>#B92F1E</code>; their <code>marks.error</code> → <code>:198</code> → <code>#FFFFFF</code> (s122-D3, noted 6.02:1). Same pair in <code>apollo-supercharge.overrides.json:294</code>.</li>
+    <li>candidate (d) <code>--color-neutral-13</code> → <code>knowledge/canon/canon.css:67</code> → <code>#F0F0F0</code> — an actual mono ramp step, <strong>offered, not recommended</strong>.</li>
+  </ul>
+  <h4>What this page does NOT settle</h4>
+  <ul>
+    <li>The other three mono marks (warning / success / info) are untouched — their grounds do not move with the red.</li>
+    <li>Whether the mono ground actually becomes <code>#B92F1E</code> is Dave's separate ruled red; this page assumes it and prices only the companion.</li>
+    <li>Every reference component inspected declares a <em>local</em> <code>--mark</code> override on its error glyph, so the token's blast radius on live DOM is smaller than its 22-file distribution suggests.</li>
+  </ul>
+  <h4>Live assertions</h4>
+  <div id="asserts">running…</div>
+</div>
+
+<script>
+const PANELS = [
+  { key:"a", tag:"now",  tagtxt:"Current",            title:"Mark #1A1A1A on #F6604C",
+    ground:"var(--ground-old)", mark:"var(--mark-ruled)",
+    note:"s122-D2 as ruled, on the ground it was ruled against." },
+  { key:"b", tag:"fail", tagtxt:"Ruled red, mark unchanged", title:"Mark #1A1A1A on #B92F1E",
+    ground:"var(--ground-new)", mark:"var(--mark-ruled)",
+    note:"What happens if the red moves and the mark does not." },
+  { key:"c", tag:"cand", tagtxt:"Candidate", title:"Mark #FFFFFF on #B92F1E",
+    ground:"var(--ground-new)", mark:"var(--mark-white)",
+    note:"The pair console + supercharge already carry (s122-D3)." },
+  { key:"d", tag:"offer", tagtxt:"Offered, not recommended", title:"Mark #F0F0F0 on #B92F1E",
+    ground:"var(--ground-new)", mark:"var(--mark-ramp)",
+    note:"Mono ramp step --color-neutral-13. Offered only because it is a real ramp value; it is a near-white with no behavioural difference from (c)." }
+];
+
+function lum(hex){
+  const c = hex.replace('#','');
+  const v = [0,2,4].map(i=>parseInt(c.substr(i,2),16)/255)
+    .map(x=> x<=0.03928 ? x/12.92 : Math.pow((x+0.055)/1.055,2.4));
+  return 0.2126*v[0]+0.7152*v[1]+0.0722*v[2];
+}
+function ratio(a,b){ const L1=lum(a),L2=lum(b); const hi=Math.max(L1,L2),lo=Math.min(L1,L2);
+  return (hi+0.05)/(lo+0.05); }
+function toHex(rgb){
+  const m = rgb.match(/\d+/g); if(!m) return rgb;
+  return '#'+m.slice(0,3).map(n=>(+n).toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+
+function panelHTML(p, mode){
+  const id = `p-${p.key}-${mode}`;
+  return `
+  <section class="panel" id="${id}" style="--ground:${p.ground}; --mark:${p.mark};">
+    <div><span class="tag ${p.tag}">${p.tagtxt}</span>
+      <h3>(${p.key}) ${p.title}</h3></div>
+
+    <div class="glyphrow">
+      <span class="g g18"><svg class="shape" aria-hidden="true" style="color:var(--ground)"><use href="#ic-error"/></svg><span>18</span></span>
+      <span class="g g20"><svg class="shape" aria-hidden="true" style="color:var(--ground)"><use href="#ic-error"/></svg><span>20</span></span>
+      <span class="g g24"><svg class="shape" aria-hidden="true" style="color:var(--ground)"><use href="#ic-error"/></svg><span>24</span></span>
+    </div>
+
+    <div class="err-msg">
+      <span class="ic" aria-hidden="true"><svg class="shape" style="color:var(--ground)"><use href="#ic-error"/></svg></span>
+      <p>Enter a valid amount.</p>
+    </div>
+
+    <div class="banner" style="background:var(--ground)">
+      <span class="ic" aria-hidden="true"><svg style="color:#FFFFFF" aria-hidden="true"><use href="#ic-error"/></svg></span>
+      <p><b>Payment failed.</b> Solid surface, for the ground at size.</p>
+    </div>
+
+    <div class="swatchrow">
+      <span class="chip" style="background:var(--ground)"></span><span class="gh">ground</span>
+      <span class="chip" style="background:var(--mark)"></span><span class="mh">mark</span>
+    </div>
+
+    <div class="ratio" data-for="${id}">
+      <span class="n">—</span>:1 mark vs ground
+      <span class="verdict">—</span>
+    </div>
+    <p class="prov">${p.note}</p>
+  </section>`;
+}
+
+const host = document.getElementById('modes');
+host.innerHTML = ['light','dark'].map(mode => `
+  <p class="modehead">${mode} mode — s122-D2 ruled mono's RAG map and marks mode-invariant</p>
+  <div class="frame ${mode}" data-mode="${mode}">
+    <div class="grid">${PANELS.map(p=>panelHTML(p,mode)).join('')}</div>
+  </div>`).join('');
+
+// ---- live measurement from PAINTED values ----
+const results = [];
+document.querySelectorAll('.panel').forEach(el=>{
+  // ground = the resolved currentColor the outer shape path paints with
+  const svg = el.querySelector('.glyphrow .shape');
+  const gHex = toHex(getComputedStyle(svg).color);
+  // mark = the resolved fill of the swatch chip that carries var(--mark) (same cascade as the
+  // knockout paths inside the shadow-DOM <use>, which getComputedStyle cannot reach directly)
+  const chips = el.querySelectorAll('.swatchrow .chip');
+  const mHex = toHex(getComputedStyle(chips[1]).backgroundColor);
+  const r = ratio(gHex, mHex);
+  const box = el.querySelector('.ratio');
+  box.querySelector('.n').textContent = r.toFixed(2);
+  const v = box.querySelector('.verdict');
+  const pass = r >= 3.0;
+  v.textContent = pass ? `PASS — clears the 3.0 graphics floor` : `FAIL — below the 3.0 graphics floor`;
+  v.className = 'verdict ' + (pass ? 'v-pass':'v-fail');
+  el.querySelector('.gh').textContent = 'ground ' + gHex;
+  el.querySelector('.mh').textContent = 'mark ' + mHex;
+  results.push({id:el.id, ground:gHex, mark:mHex, ratio:+r.toFixed(2), pass});
+});
+
+// ---- numeric asserts, printed and exposed for the render harness ----
+const A=[];
+function check(name, cond, detail){ A.push(`${cond?'OK  ':'FAIL'}  ${name}  ${detail||''}`); return cond; }
+const byKey = k => results.filter(r=>r.id.startsWith('p-'+k+'-'));
+const near = (x,y)=> Math.abs(x-y) < 0.02;
+
+check('a = 5.55 (s122-D2 as ruled)', byKey('a').every(r=>near(r.ratio,5.55)), byKey('a').map(r=>r.ratio).join(' / '));
+check('b = 2.89 and FAILS',          byKey('b').every(r=>near(r.ratio,2.89) && !r.pass), byKey('b').map(r=>r.ratio).join(' / '));
+check('c = 6.02 and PASSES',         byKey('c').every(r=>near(r.ratio,6.02) && r.pass),  byKey('c').map(r=>r.ratio).join(' / '));
+check('d clears 3.0',                byKey('d').every(r=>r.pass), byKey('d').map(r=>r.ratio).join(' / '));
+check('mode-invariant (light == dark, all panels)',
+      PANELS.every(p=>{const s=byKey(p.key); return s.length===2 && s[0].ratio===s[1].ratio;}),
+      PANELS.map(p=>p.key+':'+byKey(p.key).map(r=>r.ratio).join('=')).join('  '));
+check('8 panels rendered', results.length===8, String(results.length));
+document.getElementById('asserts').textContent = A.join('\n');
+window.__ASSERTS__ = A; window.__RESULTS__ = results;
+</script>
+</body>
+</html>

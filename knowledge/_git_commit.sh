@@ -179,43 +179,83 @@ fi
 # shaped unusually (no " — " inside the parenthetical) is not a hard failure — it falls back to
 # the original first-em-dash reading and prints a one-line note naming the fallback. Only a
 # WHOLLY MISSING ★ LATEST heading still fails loud (nothing to derive a headline from at all).
-python3 - "$MSGFILE" "$WRAP" <<'PYEOF' || fail "T3 headline generation failed (see traceback above) — the ★ LATEST banner in GOOD-MORNING.md could not be parsed. Nothing has been staged."
+# ⛔ s130-D3 (Dave, #130) — GENERATE, NEVER INHERIT. The #128 defect: a NON-wrap commit read
+# whatever banner was ON DISK, so a session that wrote no banner inherited the PRIOR session's
+# subject ("after #127 …" on #128's commits), and the subject assert compared the REWRITTEN
+# file, so it was true and useless. Remedy, per Dave's ruling:
+#   - NON-wrap: the banner is NEVER read. The subject is generated from current-session
+#     sources only: the SESSION_N witness (verified by _session.py at the seam above), today's
+#     `date`, and the msgfile's OWN first line, written this session by its author. If
+#     SESSION_N is absent there is no current-session source and T3 REFUSES loudly —
+#     inheriting a stale banner is no longer a reachable behaviour.
+#   - --wrap: banner derivation stands (the wrap writes its banner first), but T3 now ASSERTS
+#     the banner's #N equals the declared SESSION_N and REFUSES on mismatch — the banner is a
+#     VERIFIED current-session source, not an assumed one.
+python3 - "$MSGFILE" "$WRAP" "${SESSION_N:-}" "$(date +%F)" <<'PYEOF' || fail "T3 headline generation REFUSED (reason printed above) — s130-D3: a subject is generated from a current-session source or not at all; a stale on-disk banner is never inherited. Non-wrap commits require SESSION_N=<n>. Nothing has been staged."
 import re, sys
 msgfile = sys.argv[1]
 wrap = sys.argv[2]  # "1" on --wrap commits, "0" otherwise (#78-D3)
-with open("GOOD-MORNING.md", encoding="utf-8") as f:
-    gm = f.read()
-m = re.search(r"^\s*>?\s*#{1,6}\s*★\s*LATEST\s*—\s*(\d{4}-\d{2}-\d{2}).*?\*\*#(\d+)\*\*.*$",
-              gm, re.M)
-if not m:
-    sys.exit("T3: no `> ## ★ LATEST — <date> (... **#N** ...)` banner heading found in "
-             "GOOD-MORNING.md — cannot derive the commit headline.")
-date, n, line = m.group(1), m.group(2), m.group(0)
-
-# Primary parse: the parenthetical's content AFTER ITS OWN first " — ", skipping the role
-# clause to reach the summary glyphs. The parenthetical is the outermost "(...)" on the line —
-# first "(" to the LAST ")" at line-end — so nested parens inside the summary (e.g. "(banners
-# 2/2)") are swallowed whole, not mistaken for the close.
-after, fallback_note = None, None
-paren_m = re.search(r"\((.*)\)\s*$", line)
-if paren_m:
-    parts = paren_m.group(1).split(" — ", 1)
-    if len(parts) == 2 and parts[1].strip():
-        after = parts[1].strip()
-if after is None:
-    # FALLBACK — cosmetics must never block a commit. The primary parse found no " — " of its
-    # own inside the parenthetical (an unusual or malformed heading); fall back to the reading
-    # this block used before the #77 refinement: everything after the heading's OWN first
-    # em-dash (the LATEST—date separator). Still readable, just carries the role clause as noise.
-    after = line.split("—", 1)[1].strip()
-    fallback_note = ("— T3 NOTE: primary headline parse (role-clause skip) found no ' — ' of "
-                     "its own inside the ★ LATEST parenthetical — fell back to the first-em-dash "
-                     "reading. Heading: " + line.strip()[:200])
-
-# #78-D3: a NON-wrap commit derives its headline from the PRIOR session's banner — prefix it
-# "after " so git log never attributes a mid-session commit to that session. Wrap = unprefixed.
-prefix = "" if wrap == "1" else "after "
-headline = f"{prefix}#{n} {date} — {after}"
+session_n = sys.argv[3].strip()  # boot-witness-verified by _session.py above (s130-D3)
+today = sys.argv[4].strip()      # from `date`, never from belief (T-D12)
+fallback_note = None
+if wrap == "1":
+    # --wrap: the banner was written THIS session by the wrap itself; derive from it as before,
+    # but VERIFY that claim against the session witness (s130-D3) instead of assuming it.
+    with open("GOOD-MORNING.md", encoding="utf-8") as f:
+        gm = f.read()
+    m = re.search(r"^\s*>?\s*#{1,6}\s*★\s*LATEST\s*—\s*(\d{4}-\d{2}-\d{2}).*?\*\*#(\d+)\*\*.*$",
+                  gm, re.M)
+    if not m:
+        sys.exit("T3: no `> ## ★ LATEST — <date> (... **#N** ...)` banner heading found in "
+                 "GOOD-MORNING.md — cannot derive the commit headline.")
+    date, n, line = m.group(1), m.group(2), m.group(0)
+    # s130-D3 REFUSAL: a wrap subject certifies the declared session or nobody. SESSION_N is
+    # mandatory on --wrap (enforced at the seam above), so a mismatch here means the banner on
+    # disk is NOT this session's — committing would certify the wrong session (#128's defect).
+    if not session_n:
+        sys.exit("T3 REFUSES (s130-D3): --wrap with no SESSION_N reached T3 — the session seam "
+                 "above should have blocked this; nothing to verify the banner against.")
+    if n != session_n:
+        sys.exit(f"T3 REFUSES (s130-D3): GOOD-MORNING.md's ★ LATEST banner says #{n} but the "
+                 f"declared session is #{session_n} — the on-disk banner is another session's "
+                 "and a subject derived from it certifies the WRONG session (the #128 defect). "
+                 "Write this session's banner (ritual step 2), then re-run.")
+    # Primary parse: the parenthetical's content AFTER ITS OWN first " — ", skipping the role
+    # clause to reach the summary glyphs. The parenthetical is the outermost "(...)" on the
+    # line — first "(" to the LAST ")" at line-end — so nested parens inside the summary
+    # (e.g. "(banners 2/2)") are swallowed whole, not mistaken for the close.
+    after = None
+    paren_m = re.search(r"\((.*)\)\s*$", line)
+    if paren_m:
+        parts = paren_m.group(1).split(" — ", 1)
+        if len(parts) == 2 and parts[1].strip():
+            after = parts[1].strip()
+    if after is None:
+        # FALLBACK — cosmetics must never block a commit. The primary parse found no " — " of
+        # its own inside the parenthetical; fall back to the pre-#77 first-em-dash reading.
+        after = line.split("—", 1)[1].strip()
+        fallback_note = ("— T3 NOTE: primary headline parse (role-clause skip) found no ' — ' "
+                         "of its own inside the ★ LATEST parenthetical — fell back to the "
+                         "first-em-dash reading. Heading: " + line.strip()[:200])
+    headline = f"#{n} {date} — {after}"
+else:
+    # NON-wrap (s130-D3): the banner is NEVER read. Generate from current-session sources —
+    # the verified SESSION_N witness, today's `date`, and the msgfile's own first line. This
+    # replaces #78-D3's "after <banner>" inheritance, whose 'after ' prefix survives with a
+    # meaning that is now true by construction: after #<THIS session>, not after whatever
+    # session last wrote a banner.
+    if not session_n:
+        sys.exit("T3 REFUSES (s130-D3): non-wrap commit with no SESSION_N — there is no "
+                 "current-session source to generate a subject from, and inheriting the "
+                 "on-disk ★ LATEST banner is the #128 wrong-subject defect. Re-run as "
+                 "SESSION_N=<n> bash knowledge/_git_commit.sh --reconciled <msgfile>.")
+    with open(msgfile, encoding="utf-8") as f:
+        first = f.readline().strip()
+    if not first:
+        sys.exit("T3 REFUSES (s130-D3): the msgfile's first line is empty — a non-wrap "
+                 "subject is generated from the msgfile's own first line, written this "
+                 "session; there is nothing to generate from.")
+    headline = f"after #{session_n} {today} — {first}"
 if len(headline) > 120:
     headline = headline[:117] + "…"
 with open(msgfile, encoding="utf-8") as f:

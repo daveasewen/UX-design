@@ -5395,3 +5395,163 @@ named re-checker / expiry); a hit with none is a complaint, not a proposal. Regi
 `s129-D5` in `knowledge/_rulings.json` (ASCII per s129-D4, round-trip byte-verified).
 **Deliberately NOT enacted:** no sweep of existing inscribed conclusions was started — the hunt
 finds them; triage of each find is a proposal for Dave, not an agent's bulk conversion.
+
+## ★★ #130 — THE POINTER REPAIRS LANDED AND THE #128 WRONG-SUBJECT DEFECT WAS FIXED AT ITS CAUSE (Dave live, FABLE conductor, ONE window + 6 OPUS subs including this wrap)
+
+*Session record. The banner points here; `_LIVE-STATE.md` § OPEN carries the items. Six ruled ids,
+`s130-D1`…`s130-D6`; **three enacted in-window, three ruled and NOT enacted, and the split is stated
+in every register rather than smoothed over.***
+
+### `s130-D1` — CLASS B FILL ROUTE: DRAFTS QUOTE THE RATIFIED RECORD, DAVE RATIFIES BEFORE WRITE
+
+**Dave's ruling:** the 18 class-B `_rulings.json` entries missing `evidence`/`status` are filled from
+**his own ratified ledger/ADR records only** — a draft quotes the record, he ratifies the draft, and
+only then is it written. Filling them from an agent's reading is asserting what he ruled, which is
+why they sat red for nine sessions.
+
+**RATIFIED: all 10 drafts put to him, plus two dispositions.**
+**(a) The `s123-D1` count conflict was RE-MEASURED, not adjudicated.** Dave: *"2 and then 1"*.
+`gen_theme_cascade --check` today reports **198 paths / 206 projections**. **All three figures are
+inscribed and LABELLED** — arc 198, receipt 189, measured-#130 198 — because a measurement taken today
+describes **today's tree** and does not adjudicate what #123 saw
+[[planning-estimate-is-not-a-measurement]] [[measure-dont-convert-units]].
+**(b) The `s123-D3` TLS clause is annotated `[superseded #129]` BY ADDITION**, in the store and in
+`_DECISION-HISTORY/2026-08-07-123-rag-world-signoff-and-tint-opacities.md`. No dated stratum edited.
+
+### `s130-D2` — MECHANICAL POINTER REPAIRS LICENSED, AND THE GATE THAT REPORTED THEM WAS ITSELF TRUNCATING
+
+**Dave's ruling:** repairs that are **mechanical** — a form change with no assertion about what he
+ruled — are licensed; anything that would state a ruling's substance is not.
+
+**Enacted #130:** class C (12) reshaped from prose-in-`evidence` to `#127` durable anchors · legacy
+line-number pointers converted — ⚠ **MEASURED 9, not the recorded 11**; the delta is DECLARED and the
+stale *"+11"* at `_LIVE-STATE.md:75` is **NOT corrected**, because correcting a record is not a
+mechanical repair [[gap-in-record-vs-gap-in-evidence]] · `s129-D1` repointed, its gauge stratum having
+been **MOVED** by this ritual's own 2f roll at #129 — declared as a move, not a rot.
+
+⛔ **AND THE FINDING UNDER IT.** `_capture_gate.py`'s cross-instrument check reported `g_fail[0]`
+**alone**. At #127 that turned **thirty** rotten pointers into the sentence *"one rotten pointer"*: the
+count was never published, so every failure after the first was invisible, and a repair of the first
+would have re-run the gate, seen a different single line, and filed it as a **new** defect. Widened to
+publish the COUNT and then **every** line as its own failure. **Mutation-tested — both injected breaks
+surfaced; the file was restored and sha-verified** [[a-crash-is-not-a-fail]] [[unmatched-grep-is-not-an-absence]].
+
+✅ **RESULT: `_governs.py --selftest` 32 FAILs → rc=0, and `_capture_gate.py --selftest` rc=0 — GREEN
+FOR THE FIRST TIME SINCE #121.**
+
+⚠ **AND #129's GREEN WAS FALSE ON THE COMMITTED BYTES.** #129 published *"`_governs` 30"*; #130's boot
+measured **32**. Attributed, not hand-waved: `_rulings.json` was last written at `29b4c2e` and the code
+has not changed since #127, so the two extra are **`s129-D1`'s own anchor, born red** — the #129 wrap's
+2f roll moved the stratum it pointed at **after** the green was measured. **`s129-D5` demonstrating
+itself inside one session** [[no-gate-parses-the-artefact]] [[check-after-its-own-remedy]].
+
+### `s130-D3` — T3: GENERATE, NEVER INHERIT (the #128 wrong-subject remedy, Dave's pick from three)
+
+**Dave picked the remedy; the diagnosis was #129's and the defect was BY DESIGN, so the fix had to be
+his.** `knowledge/_git_commit.sh`'s T3 rewritten:
+
+- **NON-wrap commits NEVER read the banner.** The subject is generated from current-session sources
+  only — the `SESSION_N` witness, today's `date`, and **the msgfile's own first line**. It **REFUSES**
+  without `SESSION_N`, and **REFUSES** on an empty first line. Inheriting a stale on-disk banner is no
+  longer a reachable behaviour.
+- **`--wrap` ASSERTS the banner's `#N` equals the declared `SESSION_N` and REFUSES on mismatch** — the
+  banner becomes a **verified** current-session source instead of an assumed one.
+
+**Verification: five mutation arms** (non-wrap OK · no-`SESSION_N` refuses · empty-first-line refuses ·
+wrap mismatch refuses · wrap match passes), the subject-fold blank line intact, `bash -n` clean.
+★ **The old assert was true and useless** because it compared the file T3 had just rewritten; the
+remedy moves the check to the INPUT, which is the only place it can bite
+[[a-check-after-its-own-remedy]] [[commit-subject-is-an-ordering-bug]].
+
+### `s130-D4` · `s130-D5` · `s130-D6` — RULED BY DAVE, **NOT ENACTED**, AND SAYING SO IS THE POINT
+
+The enactment lane did not fit the window. The rulings are recorded here and in `knowledge/_rulings.json`
+with the honest status **RULED #130 / NOT ENACTED**; no value moved in any token file
+[[feedback-check-ran-never-reached-plan]].
+
+- **`s130-D4` — BANNER ACTIONS, ALL BANNERS AND RAG FILLS.** Ghost/tint treatment, **transparent at
+  rest**, ink-derived wash. **States REMAPPED: pressed 14%, hover 8%** (Dave picked ~8; the measured
+  worst hover was **5.29** and the binding cell pressed **4.75**). Label rides `--ink`. **Ruled red:
+  `--rag-error-background` `#F6604C` → `#B92F1E`** [[colour-stability-red-yellow-problem]].
+- **`s130-D5` — CHECK / SELECTION LABELS ARE ALWAYS INK COLOUR;** the error signal moves to the box
+  border and the message (**17.40:1**).
+- **`s130-D6` — CHIPS PRESSED, FROM EACH THEME'S OWN RAMP.** mono `--color-mono-6` `#484848` light /
+  `mono-5` `#313131` dark; console neutral-6/5 the same; **legacy `#767676`** (Dave's escape clause —
+  `#808080` fails at 3.95); SC unchanged. **The greys were ruled BY DAVE'S EYE from images**, and a
+  chip-scoped token MINT was ratified — shared form/background/pressed untouched
+  [[four-themes-flexibility-is-the-requirement]] [[feedback-grey-tint-check]].
+
+**Also ruled, also unenacted:** **tabs badges keep their ink-dark treatment (17.45:1) and only legacy
+uses red** — Dave mid-turn with a screenshot: *"these are good as is, only legacy uses red"*. And
+**legacy banners: success green + info blue get REVERSED WHITE text**, with legacy's info blue moved
+toward console/SC's lighter `#4F77B0` (the `s122-D3` map) — white on `#4F77B0` at **4.57** also fixes
+the console/SC information REST failure; legacy success `#00847F` + white sits **at** the 4.5 boundary
+and **must be measured at enactment**. RULED IN PRINCIPLE, exact values owed.
+
+⚠ **DARK MODE — RATIFIED, THEN MEASURED, AND THE MEASUREMENT WAS DECLARED BACK TO HIM.** Dave ratified
+*"(a) ~8%, (b) all three"*; measurement then showed **two of the three already invert via the cascade**
+and that **the banner wash MUST NOT** — RAG fills are mode-invariant by his own `s122-D1/D2/D3`. **No
+machinery was added**, and the discrepancy was stated to him rather than silently resolved
+[[feedback-dont-launder-a-premise-into-a-ruling]].
+
+⛔ **NOT RULED — THE ERROR MARK.** Dave sent an image that **did not arrive**. The conductor's
+provisional reading (*white shape, red glyph*, both legs 6.02) is recorded as **provisional** and
+**awaits his confirm** [[feedback-measuring-tool-must-not-guess]].
+
+### FINDINGS — reported, none repaired beyond the licence
+
+1. ⛔ **The state-contrast audit's Banner 4.09 MEASURED THE WRONG BUTTON** — the chromed ghost
+   (`.abtn`, `canon.css:3959`), not the quaternary Dave says ships. Under the true quaternary the
+   **pressed failure DISAPPEARS (15.27)** and the failure **MIGRATES TO REST** (8 of 48 readings:
+   `--button-quaternary-label-default` resolves to `--text-default`, page ink on a RAG fill).
+   ⛔ **The audit and the snippet corpus were NOT touched — the snippet button-style question is DAVE'S.**
+2. `canon.css` and the audited snippets **DISAGREE on error red** (snippets `#B92F1E`/`#CC4333` inline;
+   token store `#F6604C`) — store and components had already diverged, and `s130-D4`'s ruled red closes
+   the gap. `#F6604C` appears in `semantic-colour.json` only, in no live component hex.
+3. Canon declares **no banner-scoped quaternary** and quaternary has **no pressed token** (hover ==
+   pressed) — the press is literally **inexpressible** until `s130-D4` is enacted.
+4. ⚠ **`_validate_state_contrast.py --selftest` IS ENVIRONMENT-DEPENDENT AND SILENT ABOUT IT** — rc=2
+   at 18 arms without `PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-129`, rc=0 at 25 arms with it.
+   **Worth a named refusal** [[honest-refusal-needs-a-legal-form]] [[sandbox-html-rendering]].
+5. `--mark-error`'s blast radius is **smaller** than its 22-file distribution suggests — components
+   locally shadow it (Banner sets `--mark: var(--fill)`).
+6. **legacy and console do NOT override form/background/pressed** — they silently inherit mono's. The
+   fall-through is declared in the v3 overlay with all four themes explicit
+   [[fall-through-class-declare-what-you-mean]].
+
+7. ⛔⛔ **AND IT HAPPENED AGAIN, INSIDE THIS WRAP.** `s130-D2` repointed `s129-D1`'s rotten anchor at
+   `GOOD-MORNING.md#### 2026-08-08 #129` — **and this ritual's own step-2f roll then moved that very
+   stratum into `notes/_GAUGE-LOG.md`, breaking the pointer for the SECOND CONSECUTIVE WRAP.**
+   ★ **The class, stated once: an anchor aimed at a ROLLING STACK is guaranteed to rot at the next
+   wrap, because the ritual itself is what moves it.** Repointed at `notes/_GAUGE-LOG.md`, which is
+   **append-only** and therefore a durable target; `_governs --selftest` rc=0 restored. **Declared as a
+   MOVE, not a rot, and left as the finding it is** — the general remedy (never anchor at a
+   roll-eligible region) is **NOT** ruled here [[check-after-its-own-remedy]] [[no-gate-parses-the-artefact]].
+
+### ⛔ WHAT WE GOT WRONG — three, the conductor's, left visible
+
+**(a) THE INSTRUMENT EXISTED AND WAS ANSWERED "UNKNOWN".** Asked *"how hot are you?"*, the conductor
+replied *"UNKNOWN — no instrument"* **while `knowledge/_checkin.py` existed and was named in its own
+memory index**. Dave caught it: *"we've had a mechanism for this for ages??"*. ★ **#129's sentence
+*"the conductor could not read its own `message.usage`"* CORROBORATED A STALE PREMISE** — an unrun
+search reads exactly like an absent record, and this is the **recurrence**
+[[unrun-search-indistinguishable-from-absent-record]] [[stale-mount-corroborates-a-stale-premise]].
+
+**(b) TWO ACCIDENTAL FULL DUMPS of `_LIVE-STATE.md` line 14** — `grep` without `-m`/`cut`. The single
+biggest avoidable fill burns of the session, and entirely mechanical.
+
+**(c) THE WRAP OPENED LATE.** Fill was **already 206,282** when first measured — past the stop line
+**150,929** *and* the working wall **200,000**. **No mid-lane check-in ran `_checkin.py`**: the
+lane-checkin rule was honoured in FORM (UNKNOWN was declared) and not in SUBSTANCE (the instrument was
+there to run). **Declared, not excused** [[checkin-at-the-ends-cannot-catch-the-lane]]
+[[stop-line-repriced-93]].
+
+### ⛔ The DO-NOT-RULE list held
+
+Untouched, by name: G1–G17 · recorder constants · v1 pack sync · mono grey ramp (**the chip call was
+Dave's, ruled by eye — not extended**) · SC dark · type-ratchet debt 1,101 · the 19 `LEGACY_IDS` ·
+stop line 150,929 and the 200,000 / 256,000 walls · `_capture_gate` caps · `ds-025` · `ds-032` ·
+the boot-rent plan · **the snippet-corpus button-style question** · **the audit file** · **the 4 REAL
+contrast failure records** (rulings taken, enactment NOT done — the records stand) · the ~90 bare-path
+green-unverifiable evidence entries · the dream-pass proposals. **This wrap ruled nothing, moved no
+value, and edited no gate, threshold or fence beyond what the ritual requires.**

@@ -150,6 +150,9 @@ eventually measure itself.*
 - **DECLARED GAP:** no pixel render was possible in-sandbox (chromium TLS-blocked — environmental,
   the same fence as `_validate_state_contrast.py`). The tuners were **runtime-asserted in node**:
   36 elements, all lanes populated. That is a weaker proof than a render and is named as such.
+  *(annotation added #130, 2026-08-08, BY ADDITION - the line above stands as written: the
+  chromium TLS-block was adjudicated NOT REPRODUCING at #129, first-hand - see
+  `knowledge/_RUNBOOK-render-verify.md`. The gap as declared at #123 is the record of that moment.)*
 
 ## What is still open
 

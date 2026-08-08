@@ -4743,9 +4743,18 @@ def selftest_cross_instrument_units():
         import _governs
         g_fail = _governs.selftest()
         if g_fail:
-            failures.append(f"trigger index: `_governs.py` selftest is RED ({g_fail[0]}) — the "
-                            f"consumer of _rulings.json is broken, so rulings stop surfacing "
-                            f"and the #80 re-derivation becomes possible again")
+            # ⛔ WIDENED #130 (`s130-D2`). This reported `g_fail[0]` ALONE. At #127 that made
+            # *"one rotten pointer"* out of THIRTY: the count was never published, so every fail
+            # after the first was INVISIBLE, and a repair of the first would have re-run the gate,
+            # seen a different single line, and called it a new defect. A reporter that truncates
+            # its own evidence cannot be distinguished from a reporter with nothing left to say
+            # [[a-crash-is-not-a-fail]]. The COUNT leads, then EVERY line as its own failure.
+            failures.append(f"trigger index: `_governs.py` selftest is RED — {len(g_fail)} "
+                            f"failure(s), ALL listed below — the consumer of _rulings.json is "
+                            f"broken, so rulings stop surfacing and the #80 re-derivation "
+                            f"becomes possible again")
+            for _gf in g_fail:
+                failures.append(f"trigger index: `_governs.py` selftest — {_gf}")
         if not any(r["id"] == "ds-021" for r in
                    _governs.surface({"knowledge/_capture_gate.py"})):
             failures.append("trigger index: editing `_capture_gate.py` surfaces no ds-021 "
