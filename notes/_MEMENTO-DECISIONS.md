@@ -5711,3 +5711,51 @@ Dave: "this is nailed to the mast." Shell = tint-only, no border/accent edge. Gl
 themes (readback-confirmed). Shapes = s122-D2 mode-invariant pastels. Glyph legs 5.55/7.99/8.77/7.04.
 White-in-dark rejected by measurement (1.98–3.14). Symbols verified canon. Authority:
 `knowledge/_rulings.json` § `s134-D4`. Controller: `reviews/MONO-ALERT-OPTIONS-2026-08-08-s134-v1.html`.
+
+### s135-D1 — CONTEXTUAL NOTIFICATION: LEGACY+SC BORDERED, MONO+CONSOLE TINT-ONLY (ruled by Dave #135, off the border-rule controller v2)
+Dave: "I only want legacy and supercharge to have borders" … "console should have a radius."
+Legacy+SC keep the 1px accent border; mono+console are tint-only (border slot held transparent 1px,
+geometry identical). Console radius BOUND to the `border-radius/surface` ROLE token (12, provisional,
+2026-07-22) rather than a notification-specific value — a future surface re-dial flows through.
+Scope: contextual variant only; inline stays borderless, Global/Snackbar untouched. Extends the
+s134-D4 tint-only idiom from the mono alert to mono+console notification shells. Authority:
+`knowledge/_rulings.json` § `s135-D1`. Controller: `reviews/NOTIF-BORDER-RULE-2026-08-08-s135-v2.html`.
+RULED NOT ENACTED — enactment = Notifications snippet re-base (legacy-tagged, hardcoded radius 0 +
+unconditional border), queued with the s130 remainder.
+
+### s135-D2 — KG REVIEW RULED AT THE COMPUTED DEFAULTS (ruled by Dave #135, conditional-accept verified first)
+Dave: "as long as the repetitions are not stylistically different i'll go with your recommendations" —
+condition VERIFIED before recording (the 5 exact-match context nodes are pure placement
+registrations, zero styling to lose). NEAR-MISS: merge 5 exact context nodes into their components,
+leave 30 distinct (mentions ≠ is). PROSE: promote 52 whose `$note` names an existing node verbatim,
+46 stay `ref:null`. GOVERNEDBY: attach 25 verified against each ruling's own `governs` list in
+`_rulings.json`, skip 22 (two cited ids are doc names, not rulings — flagged). TOKENS: split all 24
+into `$value`/`$note` (the derivation-governance split proposal, now ruled for these rows).
+Authority: `knowledge/_rulings.json` § `s135-D2`. Evidence: `reviews/KG-REVIEW-ROWS-2026-08-08-s135-v1.html`
++ `reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json`. RULED NOT ENACTED — apply row-for-row,
+`_validate_kg.py` must stay green. ⛔ Lane A found NEARMISS/PROSE/GOVERNED cannot land as written
+(see `s135-D4`); only TOKENS applied (9/24, 15 exceptions in the ledger).
+
+### s135-D3 — LIBRARY SHAPE REQUIREMENT: HIERARCHICAL ATOMS→MOLECULES→ORGANS→TEMPLATES, SHELLS = SLOT MECHANISM (ruled by Dave #135, firm)
+Dave: "Apollo has a component build mode, it must be able to create new molecules, organs,
+templates, shells, all patterns from a logical pattern lexicon, but allow flexibility and nuance
+based on context." Variants embed as contextual mutations (button-in-card is a mutation of the one
+button, never a second node); the pattern lexicon is the generative grammar the build mode composes
+from. Shell readback CLOSED same session: "page templates, sections and components that are
+patterns with injected contents. Figma calls them slots, i call them shells" — a slot mechanism at
+ANY scale, not a single tier between organisms and templates. Purpose: "this logic has to exist to
+make Apollo as automated as possible." Authority: `knowledge/_rulings.json` § `s135-D3`. RULED as
+REQUIREMENT; mechanism NOT designed. Next artefact = the tier-mapping proposal
+(`reviews/TIER-MAP-PROPOSAL-2026-08-08-s135-v1.html`, 424 nodes, 16 low-confidence rows AWAIT
+Dave's eye).
+
+### s135-D4 — GENERATOR RESOLUTIONS INPUT: THE VERDICTS JSON BECOMES A GENERATOR INPUT (ruled by Dave #135, "ruled, this looks good to me")
+`gen_kg_edges.py` learns a preservation path — the ruled verdicts file
+(`reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json`, the `s135-D2` set) becomes a GENERATOR INPUT
+compiled in on every rebuild, so merges/promotions/attaches survive regeneration as machinery, never
+hand-patches. Root cause proven by lane A #135 (three reverted test edits): the generator wipes and
+rebuilds ALL of `edges` from scratch every run, with zero mechanism to preserve a manual resolution —
+0 of 82 edge verdicts could land (the ds-039/no-gate-parses class). `_validate_kg.py` must stay green
+and gain a check that the resolutions file was consumed. Authority: `knowledge/_rulings.json`
+§ `s135-D4`. Evidence: `notes/_briefs/2026-08-08-135-laneA-kg-apply.md`. RULED NOT ENACTED —
+#136 first build lane; the 15 token-split exceptions ride along.

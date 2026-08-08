@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contextual notification border rule — s135 controller v2</title>
+<!--
+  DECISION CONTROLLER — s135, floated ruling under review (Dave, #135):
+  "I only want legacy and supercharge to have borders" (contextual notifications).
+  Values are SPINE-SOURCED 2026-08-08 from knowledge/tokens/semantic-colour.json +
+  themes/apollo-{legacy,console,supercharge}.overrides.json — NOT from the (legacy-tagged)
+  Notifications.reference.html snippet.
+  Proposed default: LEGACY + SUPERCHARGE = 1px accent border · MONO + CONSOLE = tint-only.
+  Toggles flip any theme live. Export writes the ruling JSON verbatim.
+-->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:2rem;font-family:var(--font);background:#F2F2F2;color:#1A1A1A}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{font-size:13px;color:#555;margin:0 0 20px;max-width:70ch}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:16px}
+  .panel{border:1px solid #D5D5D5;background:#fff}
+  .phead{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #E4E4E4;font-size:13px;font-weight:500}
+  .phead label{display:flex;gap:6px;align-items:center;font-weight:400;cursor:pointer;font-size:12px}
+  .modes{display:grid;grid-template-columns:1fr 1fr}
+  .mode{padding:14px}
+  .mode[data-mode="dark"]{background:var(--page)}
+  .mode[data-mode="light"]{background:var(--page)}
+  .mtag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.55;margin-bottom:8px;color:var(--text)}
+  .note{--line:24px;display:flex;gap:8px;align-items:flex-start;padding:12px 14px;margin:0 0 10px;background:var(--tint);color:var(--text);border-radius:var(--radius-surface,0)}
+  .bordered .note{border:1px solid var(--accent)}
+  .borderless .note{border:1px solid transparent} /* geometry held constant so ONLY the border differs */
+  .note .ic{flex:none;height:var(--line);display:inline-flex;align-items:center;color:var(--accent)}
+  .note .ic svg{width:20px;height:20px;display:block;fill:currentColor}
+  .note .main{flex:1 1 auto;min-width:0;font:400 14px/1.5 var(--font);padding-top:4px}
+  .note .main strong{font-weight:500}
+  .bar{position:sticky;bottom:0;margin-top:22px;display:flex;gap:10px;align-items:center;background:#1A1A1A;color:#fff;padding:12px 16px}
+  .bar button{appearance:none;border:0;background:#fff;color:#1A1A1A;font:500 13px var(--font);height:36px;padding:0 18px;cursor:pointer}
+  .bar .state{font:400 12px/1.4 ui-monospace,monospace;opacity:.85}
+  textarea{width:100%;height:130px;margin-top:10px;font:12px ui-monospace,monospace;display:none}
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="ic-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+    <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+    <symbol id="ic-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+  </svg>
+
+  <h1>Contextual notification — border rule, four themes</h1>
+  <p class="sub">Floated: <em>"I only want legacy and supercharge to have borders."</em> Default below applies that rule — flip any toggle to compare. Border slot is kept as transparent 1px in the borderless case so geometry is identical and only the border changes. Values spine-sourced 2026-08-08.</p>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="bar">
+    <button id="export">Export ruling JSON</button>
+    <span class="state" id="state"></span>
+  </div>
+  <textarea id="out" readonly></textarea>
+
+<script>
+const THEMES = {
+  mono: { label:"Mono", border:false,
+    light:{page:"#FFFFFF",text:"#1A1A1A"}, dark:{page:"#1A1A1A",text:"#FFFFFF"},
+    rag:{ err:{a:"#F6604C",tl:"#FDD9D4",td:"#60302A",m:"#1A1A1A"},
+          warn:{a:"#E0A61F",tl:"#F6E6C0",td:"#614C1C",m:"#1A1A1A"},
+          ok:{a:"#66CC8D",tl:"#D4F1DF",td:"#32533F",m:"#1A1A1A"},
+          info:{a:"#78A7E8",tl:"#DFEAF9",td:"#38475C",m:"#1A1A1A"} },
+    note:"s122-D2 pastels, ink marks; mode-invariant" },
+  legacy: { label:"Legacy", border:true,
+    light:{page:"#FFFFFF",text:"#1A1A1A"}, dark:{page:"#1A1A1A",text:"#FFFFFF"},
+    rag:{ err:{a:"#A8000B",tl:"#F9F2F3",td:"#260005",m:"tint"},
+          warn:{a:"#FFBB33",tl:"#FFF8EA",td:"#221701",m:"#333333"},
+          ok:{a:"#00847F",tl:"#E5F2F2",td:"#001615",m:"#FFFFFF"},
+          info:{a:"#305A85",tl:"#EBEFF4",td:"#000D1B",m:"tint"} },
+    darkFlip:true, note:"s122-D1 mode-invariant accents; s134-D2 dark flip (white shape / black mark) is legacy-only" },
+  console: { label:"Console", border:false, radius:12, /* border-radius/surface, Dave 2026-07-22, provisional */
+    light:{page:"#FFFFFF",text:"#1A1A1A"}, dark:{page:"#1A1A1A",text:"#FFFFFF"},
+    rag:{ err:{a:"#B92F1E",tl:"#EECDC9",td:"#60231C",m:"#FFFFFF"},
+          warn:{a:"#D5990B",tl:"#F2DEB1",td:"#654D14",m:"#000000"},
+          ok:{a:"#5DAC7B",tl:"#D2E8DA",td:"#355441",m:"#1A1A1A"},
+          info:{a:"#5A85C1",tl:"#D1DDEE",td:"#364963",m:"#1A1A1A"} },
+    note:"s122-D3 shared C+SC map, console tints" },
+  supercharge: { label:"Supercharge", border:true,
+    light:{page:"#FFFFFF",text:"#1A1A1A"}, dark:{page:"#1A1A1A",text:"#FFFFFF"},
+    rag:{ err:{a:"#B92F1E",tl:"#F1E0DC",td:"#2C120D",m:"#FFFFFF"},
+          warn:{a:"#D5990B",tl:"#F6E5CC",td:"#3C2C13",m:"#000000"},
+          ok:{a:"#5DAC7B",tl:"#DCEDE3",td:"#12291D",m:"#1A1A1A"},
+          info:{a:"#5A85C1",tl:"#D6E3EC",td:"#092131",m:"#1A1A1A"} },
+    note:"s122-D3 shared C+SC map, SC tints" }
+};
+const STATES=[["err","error","ic-error"],["warn","warning","ic-warning"],["ok","success","ic-success"],["info","information","ic-info"]];
+
+function noteHTML(t,mode,key,label,icon){
+  const r=t.rag[key], tint=mode==="light"?r.tl:r.td;
+  let shape=r.a, mark=(r.m==="tint")?tint:r.m;
+  if(t.darkFlip && mode==="dark"){ shape="#FFFFFF"; mark="#000000"; }
+  return `<div class="note" style="--tint:${tint};--accent:${r.a};--text:${mode==="light"?t.light.text:t.dark.text}">
+    <span class="ic" style="color:${shape};--mark:${mark}"><svg aria-hidden="true"><use href="#${icon}"/></svg></span>
+    <span class="main"><strong>${label[0].toUpperCase()+label.slice(1)}.</strong> Message description.</span></div>`;
+}
+
+const grid=document.getElementById("grid");
+for(const [id,t] of Object.entries(THEMES)){
+  const p=document.createElement("div"); p.className="panel"; p.dataset.theme=id;
+  let modes="";
+  for(const mode of ["light","dark"]){
+    const bg=t[mode].page, tx=t[mode].text;
+    modes+=`<div class="mode" data-mode="${mode}" style="--page:${bg};--text:${tx};--radius-surface:${t.radius||0}px">
+      <div class="mtag">${mode}</div>` +
+      STATES.map(([k,l,i])=>noteHTML(t,mode,k,l,i)).join("") + `</div>`;
+  }
+  p.innerHTML=`<div class="phead"><span>${t.label}</span>
+      <label><input type="checkbox" ${t.border?"checked":""} data-t="${id}"> 1px accent border</label></div>
+    <div class="modes ${t.border?"bordered":"borderless"}">${modes}</div>`;
+  grid.appendChild(p);
+}
+
+function refresh(){
+  const s={};
+  document.querySelectorAll("input[data-t]").forEach(cb=>{
+    s[cb.dataset.t]=cb.checked;
+    const m=cb.closest(".panel").querySelector(".modes");
+    m.classList.toggle("bordered",cb.checked); m.classList.toggle("borderless",!cb.checked);
+  });
+  document.getElementById("state").textContent="borders: "+Object.entries(s).map(([k,v])=>`${k}=${v?"ON":"off"}`).join(" · ");
+  return s;
+}
+document.addEventListener("change",refresh); refresh();
+
+document.getElementById("export").addEventListener("click",()=>{
+  const s=refresh();
+  const out=document.getElementById("out"); out.style.display="block";
+  out.value=JSON.stringify({
+    ruling:"contextual-notification-border-per-theme",
+    session:135, date:"2026-08-08", by:"Dave",
+    quote:["I only want legacy and supercharge to have borders","console should have a radius"],
+    borders:s,
+    radius:{mono:0,legacy:0,console:12,supercharge:0,binding:"border-radius/surface role token (console 12 = Dave 2026-07-22, provisional)"},
+    scope:"Contextual notification shell only. Inline is already borderless everywhere; Global (solid) and Snackbar unaffected.",
+    sources:["knowledge/tokens/semantic-colour.json","knowledge/tokens/themes/apollo-legacy.overrides.json","knowledge/tokens/themes/apollo-console.overrides.json","knowledge/tokens/themes/apollo-supercharge.overrides.json"]
+  },null,2);
+  out.select();
+});
+</script>
+</body>
+</html>

@@ -1277,3 +1277,13 @@ HOLE #128 — session #128 wrote NO §C stratum in `GOOD-MORNING.md` and left no
 > **section-sizes #133:** ⚠ NOT EMITTED — `_gm_usage.py --sizes` not run this wrap (fill-bound); the #132 sizes above are the standing measurement, GM has since moved by the #133 banner (~1.5K) and roll deltas. Declared with size, per the declare-last rule.
 > **residual → #134 (authored):** carried on the ★ LATEST banner above — one copy, not two.
 
+#### 2026-08-08 #134
+
+> **pre-flight #134:** ⛔ NOT CAPTURED — UNMEASURED. No composed boot + job + wrap estimate was written at the opener (Dave's word was "delegate everything, 31% Fable left"); the session ran as three recon lanes + a matrix + rulings, priced lane-by-lane rather than as one estimate. Only boot is real: 55,761 (`message.usage` first turn; TENTH datapoint, in band).
+> **post-mortem #134:** wrap-open FILL ~120,000 vs stop line 150,929 — ✅ BELOW. Delegation: 6 SONNET subs across lanes A–H (recon, snippet re-base, selftest fix, matrix build, options controller, wrap). Sub reports landed in fill as priced; no mid-lane blow.
+> **section-usage #134 (self-report — conductor wrap, in-window):** GM HDR:C LATEST:C PRIOR:R DOFIRST:U A:U C1:U C2:U C4:U STRATA:C · LS HDR:C LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U
+> *(⚠ **`A:U` — SIXTEENTH session running.** The window was lane recon + rulings + wrap; no strand state moved.)*
+> **consult-receipts #134:** three queries run — `"s130-D4 s130-D5 s130-D6"` · `"error-mark image confirm"` · `"_validate_state_contrast selftest"` — all three returned pointers only, shallow hits (no full-record fetches). Declared honestly: retrieval ran, but surfaced nothing beyond what the lane briefs already named.
+> **section-sizes #134 (real, `_gm_usage.py --sizes --session 134`):** GM HDR:2975 LATEST:1911 PRIOR:1748 DOFIRST:9716 A:6957 C1:1988 C2:1769 C4:10437 STRATA:7063 · LS HDR:2941 LANES:1415 SPIN:3493 DELTAS:6984 WEBFONT:939 LIVE:7886 LIFECYCLE:1594 DEAD:678 OPEN:30799 TARGETS:896 SPINOFFS:728 · totals GM:44564 LS:58353
+> **residual → #135 (authored):** carried on the ★ LATEST banner above — one copy, not two.
+

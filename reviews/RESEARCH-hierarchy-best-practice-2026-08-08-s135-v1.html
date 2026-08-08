@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hierarchical component libraries — 2024–2026 best practice (research, s135)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{
+    --ink:#1A1A1A;
+    --ink-soft:#4A4A4A;
+    --line:#D9D9D9;
+    --bg:#FFFFFF;
+    --panel:#F7F7F5;
+    --accent:#305A85;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:48px 32px 96px;}
+  h1{font-size:26px;font-weight:700;margin:0 0 4px;}
+  .meta{color:var(--ink-soft);font-size:13px;margin:0 0 32px;}
+  .summary{
+    background:var(--panel);
+    border-left:4px solid var(--accent);
+    padding:20px 24px;
+    margin-bottom:40px;
+  }
+  .summary h2{font-size:15px;text-transform:uppercase;letter-spacing:.04em;margin:0 0 12px;color:var(--accent);}
+  .summary ol{margin:0;padding-left:20px;}
+  .summary li{margin-bottom:8px;font-size:16px;}
+  .summary .decision{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-weight:700;font-size:16px;}
+  section{margin-bottom:44px;}
+  section h2{
+    font-size:19px;
+    margin:0 0 4px;
+    padding-bottom:8px;
+    border-bottom:2px solid var(--ink);
+  }
+  section h2 .num{color:var(--accent);margin-right:8px;}
+  .practice{margin:16px 0 0;font-size:15px;}
+  .practice strong{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);margin-bottom:2px;}
+  .sources{list-style:none;margin:16px 0 0;padding:0;}
+  .sources li{
+    padding:12px 14px;
+    background:var(--panel);
+    border-radius:4px;
+    margin-bottom:10px;
+    font-size:14px;
+  }
+  .sources .name{font-weight:700;display:block;margin-bottom:2px;}
+  .sources a{color:var(--accent);word-break:break-all;}
+  .fit{
+    margin-top:14px;
+    padding:12px 14px;
+    background:#EDF2F7;
+    border-left:3px solid var(--accent);
+    font-size:14px;
+  }
+  .fit strong{color:var(--accent);}
+  footer{color:var(--ink-soft);font-size:12px;margin-top:56px;border-top:1px solid var(--line);padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Hierarchical component libraries a machine can compose from</h1>
+  <p class="meta">Research brief — session #135 — 2026-08-08 — for Apollo (four-theme token spine, meta.json knowledge graph, "shells" slot mechanism, build-mode auto-generation)</p>
+
+  <div class="summary">
+    <h2>Executive summary — read this, skip the rest if short on time</h2>
+    <ol>
+      <li>Rigid atoms/molecules/organisms is legacy vocabulary. Production systems (Atlassian, Carbon, Polaris) have moved to flexible graphs and pattern tiers, not strict 4-level trees. Apollo's knowledge-graph approach is already ahead of this curve, not behind it — no rebuild needed.</li>
+      <li>Figma shipped a real "Slots" feature (Schema 2025, open beta since March 2026) that matches Apollo's "shells" concept closely: a placeholder inside a component, restricted to accepted content types. Worth aligning shell vocabulary to it for future Figma interop.</li>
+      <li>Industry has settled the "button-in-a-card" question: it is the SAME button, re-skinned by token aliasing and CSS container/style queries — never forked into a new component. This directly validates Apollo's four-theme token spine as the correct mechanism, not an extra step.</li>
+      <li>Generative composition is real and moving fast: the W3C token format (DTCG) went stable in October 2025; current AI systems generate from constrained, allow-listed component grammars, not raw code; and Pattern Lab (2013, Brad Frost) is proven prior art for exactly Apollo's "build mode generates from a lexicon" goal.</li>
+    </ol>
+    <div class="decision">Decision-relevant: no architecture change indicated. Three concrete alignments worth doing — (a) make the token spine DTCG-format-compatible, (b) describe "shells" using Figma Slots' accepted-type semantics, (c) treat token-alias/container-query as the only sanctioned way to vary a component by context, and gate against forked one-off variants in meta.json.</div>
+  </div>
+
+  <section>
+    <h2><span class="num">1</span>Atomic-design tier models — who still uses it, what replaced it</h2>
+    <p class="practice"><strong>What the practice is</strong>Brad Frost's 2013 atoms/molecules/organisms/templates/pages model is still the shared vocabulary everyone learned from, but almost no large production system enforces its strict five-level tree today. Systems instead use a shallower, looser hierarchy: components + patterns (composed groups) + sometimes templates, with the deeper structure captured in relationships/graphs rather than a fixed level number. Atlassian has explicitly said its "neat three-tier model" now behaves more like a constellation — a web of interconnected decisions that designers, engineers and AI navigate as a decision tree, not a rigid ladder. IBM Carbon keeps a plain two-tier split: Components, then Patterns (named, reusable combinations of components + templates solving a user goal), plus a separate closed/open "Pattern Asset Library" for cross-component product patterns. Shopify Polaris references Frost's atoms-to-organisms analogy in its own writing but organises its actual library as Foundations / Components / Patterns, not four strict tiers. USWDS and Material 3 both use component + pattern/template layers without adopting atomic-design naming at all — Material 3 instead layers reference tokens → semantic/system tokens → component tokens, which is a token hierarchy, not a component hierarchy.</p>
+    <ul class="sources">
+      <li><span class="name">Atomic Design (Brad Frost, canonical source)</span><a href="https://atomicdesign.bradfrost.com/chapter-2/">atomicdesign.bradfrost.com/chapter-2/</a></li>
+      <li><span class="name">Atlassian Design System — "building the context engine for the AI era"</span><a href="https://www.atlassian.com/blog/ai-at-work/atlassian-design-system-building-the-context-engine-for-the-ai-era">atlassian.com/blog/ai-at-work/atlassian-design-system-building-the-context-engine-for-the-ai-era</a></li>
+      <li><span class="name">IBM Carbon Design System — Patterns overview</span><a href="https://carbondesignsystem.com/patterns/overview/">carbondesignsystem.com/patterns/overview/</a></li>
+      <li><span class="name">Is Atomic Design Still Relevant in 2025? (Design Systems Collective)</span><a href="https://www.designsystemscollective.com/is-atomic-design-still-relevant-in-2025-d9c214788cfe">designsystemscollective.com/is-atomic-design-still-relevant-in-2025-d9c214788cfe</a></li>
+    </ul>
+    <div class="fit"><strong>Fit for Apollo —</strong> the meta.json knowledge graph is closer to Atlassian's "context engine / constellation" model than to a rigid four-tier tree; keep atoms/molecules/organisms as optional human-readable labels on graph nodes, never as the structural spine.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span>Slot mechanisms — modelling "patterns with injected contents"</h2>
+    <p class="practice"><strong>What the practice is</strong>Figma announced Slots at Schema 2025 (November 2025), rolling out as open beta from March 2026: a slot is a placeholder container inside a component that lets you add, remove or swap content in an instance without detaching it, and — critically — a slot can be constrained to only accept specific instances/types, enforcing design-system compliance at the injection point. Figma is explicit that this is a different axis from variants: variants describe component STATE (open/closed, active/inactive); slots describe what CONTENT can be inserted. On the code side, the same idea has two mainstream implementations: the web-platform native `<slot>` (Shadow DOM, named slots) and the React convention of `children` plus the Radix UI `Slot`/`asChild` pattern, where a component supplies behaviour and the consumer supplies the actual rendered element — true composition rather than a fixed prop surface. Figma's older "component properties" (instance-swap, boolean, text, variant properties) remain the finer-grained single-value mechanism and predate Slots; Slots is for whole regions of repeating or free-form content (task lists, tabs, card bodies, modal contents).</p>
+    <ul class="sources">
+      <li><span class="name">Figma Blog — "How to Supercharge your Design System with Slots"</span><a href="https://www.figma.com/blog/supercharge-your-design-system-with-slots/">figma.com/blog/supercharge-your-design-system-with-slots/</a></li>
+      <li><span class="name">Figma Help Center — "What's new from Schema 2025"</span><a href="https://help.figma.com/hc/en-us/articles/35794667554839-What-s-new-from-Schema-2025">help.figma.com — What's new from Schema 2025</a></li>
+      <li><span class="name">Radix UI Slot / asChild pattern explainer</span><a href="https://www.jacobparis.com/content/react-as-child">jacobparis.com/content/react-as-child</a></li>
+      <li><span class="name">Slots and the control paradox (industry commentary on the trade-off)</span><a href="https://blog.murphytrueman.com/slots-and-the-control-paradox/">blog.murphytrueman.com/slots-and-the-control-paradox/</a></li>
+    </ul>
+    <div class="fit"><strong>Fit for Apollo —</strong> Apollo's "shells" concept is functionally the same object as a Figma Slot; adopt its exact semantics (named region + accepted-instance allowlist, distinct from a variant) so shells map 1:1 if/when Apollo syncs with Figma files that use native Slots.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span>Embedded contextual variants — one component, many contexts</h2>
+    <p class="practice"><strong>What the practice is</strong>The 2025 consensus mechanism for "a component behaves differently depending on where it sits" is CSS container queries plus style queries, now supported across all evergreen browsers: a component (e.g. a card) reads its own container's size or a custom-property "mode" set by an ancestor, and adapts layout or token values automatically — no JavaScript, no forked markup. Style queries specifically let a parent set a custom property (e.g. `--surface: card`) that descendant components query to resolve which token alias to use, which is effectively contextual re-theming through the cascade. On the Figma side, the equivalent is Variables with multiple modes (light/dark/high-contrast, and now nested per-frame mode overrides) plus aliasing, so a component references a semantic variable and the surrounding frame's mode decides the resolved value. Material 3 formalises the same idea in its token model: component tokens alias semantic tokens rather than literal values, so a single Button component resolves differently depending on which semantic context it's placed in, without being a different component. The industry's practical ruling on "is a button-in-a-card the same button": yes — re-skin via token alias/container query; forking into "CardButton" is treated as design debt, not a pattern.</p>
+    <ul class="sources">
+      <li><span class="name">Building future-proof design systems: container & style queries in 2025 (laur.design)</span><a href="https://laur.design/blog/container-queries-style-queries-design-systems-2025/">laur.design/blog/container-queries-style-queries-design-systems-2025/</a></li>
+      <li><span class="name">CSS Container Queries from a Component-First Perspective</span><a href="https://thelinuxcode.com/css-container-queries-from-a-component-first-perspective/">thelinuxcode.com/css-container-queries-from-a-component-first-perspective/</a></li>
+      <li><span class="name">Design System Mastery with Figma Variables — 2025/2026 playbook</span><a href="https://www.designsystemscollective.com/design-system-mastery-with-figma-variables-the-2025-2026-best-practice-playbook-da0500ca0e66">designsystemscollective.com — Figma Variables 2025/2026 playbook</a></li>
+      <li><span class="name">Material 3 component-token-aliases-semantic-token model (Mastering M3 in Compose, 2025)</span><a href="https://medium.com/@hiren6997/mastering-material-3-in-jetpack-compose-the-2025-guide-1c1bd5acc480">medium.com/@hiren6997 — Mastering Material 3 in Jetpack Compose</a></li>
+    </ul>
+    <div class="fit"><strong>Fit for Apollo —</strong> this is the strongest external validation found: Apollo's four-theme token spine IS the industry-sanctioned mechanism for contextual variants. Container/style queries are the CSS primitive to reach for if a shell also needs to resize- or surface-adapt, not just re-colour.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span>Generative composition — pattern lexicons a machine can build from</h2>
+    <p class="practice"><strong>What the practice is</strong>The W3C Design Tokens Community Group's Design Tokens Format Module reached its first stable release, 2025.10, on 28 October 2025 — a vendor-neutral JSON format for design tokens, with theming and modern-colour-space support, backed by Adobe, Amazon, Google, Meta, Microsoft, Salesforce and Figma. It is a Candidate Recommendation, not a full W3C Standard, but it is now the de facto interchange format tools are converging on. Separately, current AI component-generation systems (surveyed across the "awesome-generative-ui" corpus and vendor write-ups) have converged on constrained/declarative generation: agents emit output drawn from an allow-listed grammar of approved primitives/components rather than freeform code, precisely because unconstrained generation breaks brand and accessibility consistency. The clearest prior art for a "pattern lexicon" that tooling can generate FROM is Pattern Lab (Brad Frost & Dave Olsen, from 2013) — a static-site generator that assembled pages from a declared library of atoms/molecules/organisms via includes, the direct ancestor of today's Storybook-based component-driven development. Academic work (e.g. SpecifyUI, arXiv 2509.07334) is now formalising "structured specification + generative AI" as a research topic, confirming this is an active, not solved, frontier.</p>
+    <ul class="sources">
+      <li><span class="name">W3C Design Tokens Community Group — "Design Tokens specification reaches first stable version"</span><a href="https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/">w3.org/community/design-tokens/2025/10/28/...</a></li>
+      <li><span class="name">Design Tokens Format Module 2025.10 (the spec itself)</span><a href="https://www.designtokens.org/tr/2025.10/format/">designtokens.org/tr/2025.10/format/</a></li>
+      <li><span class="name">Pattern Lab (Brad Frost) — "Atomic Design and Storybook" (lineage note)</span><a href="https://bradfrost.com/blog/post/atomic-design-and-storybook/">bradfrost.com/blog/post/atomic-design-and-storybook/</a></li>
+      <li><span class="name">SpecifyUI — structured specification + generative AI (arXiv)</span><a href="https://arxiv.org/html/2509.07334v1">arxiv.org/html/2509.07334v1</a></li>
+    </ul>
+    <div class="fit"><strong>Fit for Apollo —</strong> target DTCG 2025.10 as the token spine's wire format for future interop; treat Pattern Lab's "generate pages from a declared lexicon of components" as the closest historical precedent for what Apollo's build mode is trying to do, and constrain any generator to Apollo's own allow-listed component grammar (meta.json), matching the industry's safety consensus.</div>
+  </section>
+
+  <footer>Research only — no repo files modified other than this document. Compiled 2026-08-08 for session #135, via web search. Sources reflect publicly available material at time of writing; DTCG spec status and Figma Slots rollout stage should be re-checked before any hard dependency is taken.</footer>
+
+</div>
+</body>
+</html>

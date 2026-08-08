@@ -1678,6 +1678,61 @@
    ],
    "status": "RULED #134 firm ('nailed to the mast'), ink confirmed #1A1A1A on readback, JSON export in the record. Enactment (border removal in the snippet) delegated same session.",
    "watch": "[WARN] tint-only shell changes the alert's edge against the page - shape/surface is report-only per s134-D1, but a render-proof eye pass on the committed bytes is cheap and owed at next window if not this one."
+  },
+  {
+   "id": "s135-D1",
+   "ruled": "#135",
+   "date": "2026-08-08",
+   "by": "Dave",
+   "says": "CONTEXTUAL NOTIFICATION SHELL, per-theme border + radius, ruled 'love it: ruled' off NOTIF-BORDER-RULE-2026-08-08-s135-v2.html (live controller, four themes x light/dark, spine-sourced values). (1) BORDERS: Dave: 'I only want legacy and supercharge to have borders' \u2014 legacy + supercharge keep the 1px accent border; mono + console are TINT-ONLY (border slot held as transparent 1px so geometry is identical). (2) RADIUS: Dave: 'console should have a radius' \u2014 implemented by BINDING the shell to the border-radius/surface ROLE token, not a notification-specific value; console surface=12 (Dave 2026-07-22, provisional) follows for free, mono/legacy/SC stay 0. Read back and confirmed: a future console surface re-dial flows through. SCOPE: contextual variant only \u2014 inline is already borderless everywhere; Global (solid) and Snackbar untouched. Extends the s134-D4 tint-only idiom from the mono alert to mono+console notification shells.",
+   "governs": [
+    "knowledge/snippets/Notifications.reference.html",
+    "knowledge/tokens/themes/apollo-legacy.overrides.json",
+    "knowledge/tokens/themes/apollo-console.overrides.json",
+    "knowledge/tokens/themes/apollo-supercharge.overrides.json"
+   ],
+   "evidence": "reviews/NOTIF-BORDER-RULE-2026-08-08-s135-v2.html (controller; export JSON embeds borders {mono:off, legacy:ON, console:off, supercharge:ON} + radius {console:12 via border-radius/surface})",
+   "status": "RULED #135, NOT ENACTED. Enactment = Notifications snippet re-base (it is legacy-tagged with hardcoded --border-radius-surface:0 and unconditional 1px border) + per-theme cascade; queue with the s130 remainder."
+  },
+  {
+   "id": "s135-D2",
+   "ruled": "#135",
+   "date": "2026-08-08",
+   "by": "Dave",
+   "says": "KG REVIEW RULED AT THE DEFAULTS, conditional-accept ('as long as the repetitions are not stylistically different ill go with your recommendations') \u2014 condition VERIFIED before recording: the 5 exact-match context nodes are pure placement registrations (usedInContext + $note label), zero styling to lose. Verdicts: NEAR-MISS merge 5 exact (context:card/header/link/navigation/tab \u2192 their components), leave 30 distinct (mentions \u2260 is, graph-mark logic). PROSE EDGES promote 52 whose $note names an existing node verbatim, 46 stay declared ref:null. GOVERNEDBY attach 25 verified against each ruling's own governs list in _rulings.json, skip 22 (incl. cited ids that are not rulings: showroom-one-bar-chrome, snippets-pure-canon \u2014 doc names, flagged). TOKEN-CLAIM split all 24: bare value in $value, decision prose preserved in $note (the derivation-governance split proposal, now ruled for these rows).",
+   "governs": [
+    "knowledge/components/*.meta.json",
+    "knowledge/_memento-index.json"
+   ],
+   "evidence": "reviews/KG-REVIEW-ROWS-2026-08-08-s135-v1.html (row controller) + reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json (computed verdicts, the ruled set)",
+   "status": "RULED #135, NOT ENACTED. Apply via Sonnet sub row-for-row from the verdicts JSON; exceptions ledger returns to Dave; _validate_kg.py must stay green after."
+  },
+  {
+   "id": "s135-D3",
+   "ruled": "#135",
+   "date": "2026-08-08",
+   "by": "Dave",
+   "says": "LIBRARY SHAPE REQUIREMENT (firm \u2014 capability, not preference): the library must be FULLY HIERARCHICAL atomic-design \u2014 atoms \u2192 molecules \u2192 organs(organisms) \u2192 shells \u2192 templates \u2014 with VARIANTS EMBEDDED in each component, keyed by context ('contextual mutations': button-in-card is a mutation of the one button, never a second node). WHY (Dave's words): 'Apollo has a component build mode, it must be able to create new molecules, organs, templates, shells, all patterns from a logical pattern lexicon, but allow flexibility and nuance based on context.' The pattern lexicon is the generative grammar the build mode composes from; the current flat component/pattern/context taxonomy folds in (contexts \u2192 mutation keys, patterns \u2192 mostly organisms/templates). SHELL definition NOT yet confirmed (proposed: page-level chrome wrapping a template) \u2014 open readback. | SHELL DEFINED (Dave, same session, closes the readback): shells = 'page templates, sections and components that are patterns with injected contents. Figma calls them slots, i call them shells.' A shell is the SLOT MECHANISM at any scale, not a single tier between organisms and templates. Purpose (his words): 'this logic has to exist to make Apollo as automated as possible.'",
+   "governs": [
+    "knowledge/components/",
+    "knowledge/_memento-index.json"
+   ],
+   "evidence": "chat #135; follows s135-D2 (the KG cleanup is the substrate this hierarchy is built on)",
+   "status": "RULED #135 as REQUIREMENT; mechanism NOT designed. Next artefact = tier-mapping proposal (every existing node assigned a tier + mutation-key grammar), Dave rules off that. Shell readback CLOSED same session."
+  },
+  {
+   "id": "s135-D4",
+   "ruled": "#135",
+   "date": "2026-08-08",
+   "by": "Dave",
+   "says": "GENERATOR RESOLUTIONS INPUT ('ruled, this looks good to me'): gen_kg_edges.py learns a preservation path \u2014 the ruled verdicts file (reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json, the s135-D2 set) becomes a GENERATOR INPUT compiled in on every rebuild, so merges/promotions/attaches survive regeneration as machinery, never hand-patches. Root cause proven by lane A #135 (three reverted test edits): the generator wipes and rebuilds all edges with zero preservation path \u2014 0 of 82 edge verdicts could land; the ds-039/no-gate-parses class. Fix the CLASS: any future Dave-ruled resolution rides the same input. Validator _validate_kg.py must stay green and gain a check that the resolutions file was consumed (a gate that does not run cannot fail).",
+   "governs": [
+    "knowledge/gen_kg_edges.py",
+    "knowledge/_validate_kg.py",
+    "reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json"
+   ],
+   "evidence": "notes/_briefs/2026-08-08-135-laneA-kg-apply.md (structural proof + exceptions ledger)",
+   "status": "RULED #135, NOT ENACTED. #136 first build lane. The 15 token-split exceptions in the ledger ride along."
   }
  ]
 }

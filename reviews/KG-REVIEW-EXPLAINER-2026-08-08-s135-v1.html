@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KG review — what each decision actually is (s135 explainer)</title>
+<!-- Companion to KG-EDGES-REVIEW-2026-08-08-s133-v1.html. One worked REAL example per
+     section, before → after under the proposed default. Nothing here writes anything. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+         --ink:#1A1A1A; --line:#D5D5D5; --amber:#F6E6C0; --green:#D4F1DF; --red:#FDD9D4; --blue:#DFEAF9; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:2rem;font-family:var(--font);background:#F2F2F2;color:var(--ink);max-width:980px}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{font-size:13px;color:#555;margin:0 0 24px}
+  .card{background:#fff;border:1px solid var(--line);margin:0 0 18px;padding:18px 22px}
+  .card h2{font-size:15px;margin:0 0 2px}
+  .count{font-size:12px;color:#777;margin:0 0 12px}
+  .what{font-size:14px;line-height:1.55;margin:0 0 14px;max-width:72ch}
+  .flow{display:flex;gap:14px;align-items:stretch;flex-wrap:wrap}
+  .box{flex:1 1 260px;border:1px solid var(--line);padding:12px 14px;font:12.5px/1.6 ui-monospace,monospace;background:#FAFAFA;white-space:pre-wrap}
+  .box b{font-family:var(--font);font-size:11px;letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:6px;color:#666}
+  .arrow{align-self:center;font-size:20px;color:#999}
+  .verdict{margin-top:12px;font-size:13px;padding:8px 12px;display:inline-block}
+  .keep{background:var(--blue)} .change{background:var(--green)} .flag{background:var(--amber)}
+  mark{background:var(--amber);padding:0 2px}
+</style>
+</head>
+<body>
+<h1>The four decision types, shown</h1>
+<p class="sub">Each card = one REAL row from the s133 review · before → after under my proposed default · nothing has been written anywhere.</p>
+
+<div class="card">
+  <h2>1 · Near-miss node</h2>
+  <p class="count">35 of these</p>
+  <p class="what">The graph has a <em>pattern</em> node whose name contains a component's name. Question: is it secretly that component, or its own thing? Example — a pattern called "card-grid" mentions <mark>cards</mark>:</p>
+  <div class="flow">
+    <div class="box"><b>Today — two separate nodes</b>pattern:card-grid   (a layout idea)
+component:cards     (the component)
+— no link between them</div>
+    <span class="arrow">→</span>
+    <div class="box"><b>Default: LEAVE DISTINCT</b>pattern:card-grid   stays its own node
+component:cards     untouched
+(a pattern that MENTIONS cards is not cards —
+ your graph-mark ruling, same logic)</div>
+  </div>
+  <div class="verdict keep">Default: change nothing · sole exception proposed: context:card = EXACT name match → merge into cards</div>
+</div>
+
+<div class="card">
+  <h2>2 · ref:null prose edge</h2>
+  <p class="count">98 of these</p>
+  <p class="what">A rule like "never put an Alert next to a Toast with the same message" exists as an edge, but its target is written as free TEXT, not a link to the toast node. The text was kept, the link is null. Example from <code>alert.meta.json</code>:</p>
+  <div class="flow">
+    <div class="box"><b>Today — edge points nowhere</b>mustNotNeighbour:
+  ref:  null
+  note: "<mark>Toast</mark> (same message twice)"</div>
+    <span class="arrow">→</span>
+    <div class="box"><b>Default: PROMOTE when the name is exact</b>mustNotNeighbour:
+  ref:  component:toast   ← now a real link
+  note: "same message twice"</div>
+  </div>
+  <div class="verdict change">Default: promote ONLY rows whose note names an existing node verbatim (the amber-flagged ones) · vague ones ("a second chart…") stay null — declared, not invented</div>
+</div>
+
+<div class="card">
+  <h2>3 · governedBy candidate</h2>
+  <p class="count">47 of these</p>
+  <p class="what">Should a past ruling of yours be attached to a component, so anyone touching that component sees it? Example — does ruling <code>ds-034</code> (the button/primary scope question) belong on <code>button</code>?</p>
+  <div class="flow">
+    <div class="box"><b>Today — no attachment</b>button.meta.json:
+  governedBy: []
+ds-034 says: "…measure the other 35
+colliding names…" (mentions button)</div>
+    <span class="arrow">→</span>
+    <div class="box"><b>Default: ATTACH only on hard evidence</b>attach IF ds-034's own governs list
+names button's file.
+A ruling that merely MENTIONS a
+component does not govern it.</div>
+  </div>
+  <div class="verdict keep">Default: attach only where the ruling's governs list already names the file · no guessing from prose</div>
+</div>
+
+<div class="card">
+  <h2>4 · Token-claim split</h2>
+  <p class="count">5 samples (sets the grammar for all future ones)</p>
+  <p class="what">Some token values have your decision prose fused INTO the value field. Machines then can't read the value cleanly. Example — button secondary text colour:</p>
+  <div class="flow">
+    <div class="box"><b>Today — value and story fused</b>label: "text/on-inverse (NOT text/reverse)
+— secondary inverts to a light fill in
+dark… #FFF light / #333 dark
+(decision: Dave 2026-06-19)"</div>
+    <span class="arrow">→</span>
+    <div class="box"><b>Default: SPLIT value / note</b>$value: "text/on-inverse"
+$note:  "NOT text/reverse — inverts to a
+light fill in dark… (Dave 2026-06-19)"
+— nothing deleted, just separated</div>
+  </div>
+  <div class="verdict change">Default: bare value in $value, full story preserved in $note · this is the value/$note split already sitting in your queue</div>
+</div>
+
+<footer style="font-size:12px;color:#999">s135 explainer · companion to KG-EDGES-REVIEW-2026-08-08-s133-v1.html · rule per card: as-is / amend / pull back for row-level eye work</footer>
+</body>
+</html>
