@@ -5642,3 +5642,27 @@ the audit file · **the 4 REAL contrast failure records** · the ~90 bare-path e
 dream-pass proposals · **the 156 validator fails** · **the component-spec-KG remedy choice**.
 **This wrap ruled nothing, moved no token value, and edited no gate, threshold or fence beyond what the
 ritual requires.**
+
+---
+
+## ★ #132 — 2026-08-08 (Sat)
+
+### s131-D2 RECORDED LATE — THE DESIGN KG MUST BE AS ROBUST AS THE MEMENTO GRAPHS (ruled by Dave AFTER the #131 wrap, commit e4d2796)
+Dave's words: *"this need to be as robust as the memento graphs"* + *"ruled"*. Requirements set by the
+Memento standard: indexed (retrieval-reachable, freshness-gated) · provenance on claims · gate-PARSED
+(edges as resolvable typed references, prose demoted to `$note`) · supersession BY ADDITION enforced as a
+gate, not a habit · ARCHIVE-NEVER-DELETE. ⚠ **DECLARED:** this ruling was inscribed directly in
+`knowledge/_rulings.json` post-wrap with no ledger section and no `evidence` field — `_governs` sat RED on
+the committed bytes from e4d2796 until this section was written at #132. This section is the ledger record;
+the store entry's `says` field is the authority on his wording. **Enactment is OPEN — nothing built yet.**
+
+### CONSOLE/SC INFORMATION BLUE #5A85C1, MARK FLIPS TO INK — s132-D1 (ruled by Dave off the controller)
+Dave ruled from `reviews/INFO-BLUE-CONTROLLER-2026-08-08-s132-v1.html` (his own export, confirmed firm on
+readback including the mark flip): console/SC information fill `#4F77B0` → `#5A85C1`, information mark
+**WHITE → INK `#1A1A1A`** (4.61:1) — information joins success and warning in the ink-mark camp; **error
+becomes the SOLE white mark on console/SC**. One RAG map, MODE-INVARIANT, per s122-D3 — that ruling's
+information VALUE and MARK are superseded, its structure kept. Receipts (conductor-reproduced before
+inscription): ink/fill **4.61** · white/fill **3.78** · fill vs `#FFFFFF` **3.78** · fill vs `#1A1A1A`
+**4.61**. Tints re-composite at the s123-D3 ruled alphas: light `#D1DDEE` · dark `#364963`. ⚠ The 2
+console/SC information-REST state-contrast failures are NOT closed by this ruling — re-measured on
+committed bytes after enactment, reported not assumed.

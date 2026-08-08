@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Console/SC Information Blue — Controller · s132 v1</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --paper:#FFFFFF; --sc-paper:#F7F6F4; --dark:#1A1A1A;
+    --err:#B92F1E; --warn:#D5990B; --succ:#5DAC7B; --info-current:#4F77B0;
+    --pass:#00847F; --fail:#B92F1E;
+    font-size:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#EDEBE8;padding:24px}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{font-size:13px;color:#555;margin-bottom:20px}
+  .panel{background:#fff;border:1px solid #D6D2CC;border-radius:12px;padding:20px;margin-bottom:16px}
+  label{font-size:12px;font-weight:600;display:block;margin-bottom:4px}
+  input[type=range]{width:100%}
+  .controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+  .val{font-variant-numeric:tabular-nums;font-size:12px;color:#555}
+  .hexline{font-size:22px;font-weight:700;letter-spacing:.5px;margin:12px 0 2px;font-family:ui-monospace,monospace}
+  .ratios{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+  .ratio{border:1px solid #D6D2CC;border-radius:8px;padding:10px}
+  .ratio .num{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+  .ratio .lbl{font-size:11px;color:#555}
+  .badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;color:#fff;margin-left:6px;vertical-align:2px}
+  .b-pass{background:var(--pass)} .b-fail{background:var(--fail)} .b-large{background:#666}
+  .surfaces{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .surface{border-radius:12px;padding:18px;border:1px solid #D6D2CC}
+  .surface h3{font-size:11px;font-weight:600;margin:0 0 12px;text-transform:uppercase;letter-spacing:.06em;opacity:.65}
+  .ragrow{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{width:64px;height:64px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700}
+  .chip small{display:none}
+  .banner{margin-top:14px;border-radius:8px;padding:10px 14px;font-size:13px;display:flex;gap:10px;align-items:center}
+  .banner .mk{font-size:16px;font-weight:700}
+  .presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .preset{border:2px solid transparent;border-radius:8px;width:56px;height:40px;cursor:pointer;position:relative}
+  .preset span{position:absolute;bottom:-16px;left:0;right:0;font-size:9px;text-align:center;color:#555;font-family:ui-monospace,monospace}
+  .preset.sel{border-color:var(--ink)}
+  .presetwrap{padding-bottom:18px}
+  button.export{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer}
+  textarea{width:100%;height:110px;font-family:ui-monospace,monospace;font-size:12px;margin-top:10px;border:1px solid #D6D2CC;border-radius:8px;padding:10px}
+  .note{font-size:12px;color:#555;margin-top:8px}
+  .flip{font-size:12px;margin-top:8px;padding:8px 10px;border-radius:6px;background:#F3F1EE}
+  @media (max-width:760px){.controls,.ratios,.surfaces{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>Console / Supercharge — information blue</h1>
+<div class="sub">s131-D1.watch: direction only, no value — this controller exists so you can pick one. Current shared value <b>#4F77B0</b> (white mark 4.57:1), mode-invariant per s122-D3. Success already uses an ink mark (6.34:1), so an ink-mark info is precedented in this family.</div>
+
+<div class="panel">
+  <div class="controls">
+    <div><label>Lightness <span class="val" id="lv"></span></label><input type="range" id="L" min="40" max="78" step="0.5" value="50"></div>
+    <div><label>Saturation <span class="val" id="sv"></span></label><input type="range" id="S" min="20" max="60" step="1" value="38"></div>
+    <div><label>Hue nudge <span class="val" id="hv"></span></label><input type="range" id="H" min="200" max="230" step="1" value="215"></div>
+  </div>
+  <div class="hexline" id="hex">#4F77B0</div>
+  <div class="val">candidate fill — applied live to every specimen below (both themes, both modes: one value, mode-invariant)</div>
+
+  <div class="presetwrap">
+    <div class="presets" id="presets"></div>
+  </div>
+
+  <div class="ratios">
+    <div class="ratio"><div class="num" id="rW">–</div><div class="lbl">WHITE mark on fill <span id="bW"></span></div></div>
+    <div class="ratio"><div class="num" id="rI">–</div><div class="lbl">INK #1A1A1A mark on fill <span id="bI"></span></div></div>
+    <div class="ratio"><div class="num" id="rLt">–</div><div class="lbl">fill vs light surface #FFFFFF <span id="bLt"></span></div></div>
+    <div class="ratio"><div class="num" id="rDk">–</div><div class="lbl">fill vs dark surface #1A1A1A <span id="bDk"></span></div></div>
+  </div>
+  <div class="flip" id="flip"></div>
+</div>
+
+<div class="panel">
+  <div class="surfaces">
+    <div class="surface" style="background:#FFFFFF"><h3>Console · light</h3><div class="ragrow" id="row1"></div><div class="banner" id="ban1"></div></div>
+    <div class="surface" style="background:#1A1A1A"><h3 style="color:#fff">Console · dark</h3><div class="ragrow" id="row2"></div><div class="banner" id="ban2"></div></div>
+    <div class="surface" style="background:#F7F6F4"><h3>Supercharge · light</h3><div class="ragrow" id="row3"></div><div class="banner" id="ban3"></div></div>
+    <div class="surface" style="background:#141414"><h3 style="color:#fff">Supercharge · dark</h3><div class="ragrow" id="row4"></div><div class="banner" id="ban4"></div></div>
+  </div>
+  <div class="note">Family context: error #B92F1E (white ✕) · warning #D5990B (black !) · success #5DAC7B (ink ✓) · <b>info = candidate</b>, shown with whichever mark currently passes best. Baseline #4F77B0 chip shown ghosted at far right of each row.</div>
+</div>
+
+<div class="panel">
+  <button class="export" onclick="doExport()">Export ruling sentence</button>
+  <textarea id="out" readonly placeholder="Pick a value, then export — paste it back in chat in your own words or as-is."></textarea>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+function hslToHex(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));const c=x=>Math.round(255*x).toString(16).padStart(2,'0');return('#'+c(f(0))+c(f(8))+c(f(4))).toUpperCase()}
+function lum(hex){const v=[1,3,5].map(i=>parseInt(hex.substr(i,2),16)/255).map(c=>c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4));return 0.2126*v[0]+0.7152*v[1]+0.0722*v[2]}
+function ratio(a,b){const x=lum(a),y=lum(b);return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)}
+function badge(el,r,need){el.innerHTML=r>=need?'<span class="badge b-pass">PASS '+need+'</span>':(r>=3?'<span class="badge b-large">3:1 only</span>':'<span class="badge b-fail">FAIL</span>')}
+
+const PRESETS=["#4F77B0","#5D84BC","#6B90C5","#7A9DCE","#88A9D6","#96B5DE","#5A8AC9"];
+const pr=$('presets');
+PRESETS.forEach((p,i)=>{const d=document.createElement('div');d.className='preset';d.style.background=p;d.innerHTML='<span>'+p+(i===0?' (now)':'')+'</span>';d.onclick=()=>setHex(p);pr.appendChild(d)});
+
+function hexToHsl(hex){let r=parseInt(hex.substr(1,2),16)/255,g=parseInt(hex.substr(3,2),16)/255,b=parseInt(hex.substr(5,2),16)/255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;if(mx===mn){h=s=0}else{const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4}h*=60}return[h,s*100,l*100]}
+function setHex(hex){const[h,s,l]=hexToHsl(hex);$('H').value=Math.round(h);$('S').value=Math.round(s);$('L').value=Math.round(l*2)/2;render()}
+
+function render(){
+  const L=+$('L').value,S=+$('S').value,H=+$('H').value;
+  $('lv').textContent=L+'%';$('sv').textContent=S+'%';$('hv').textContent=H+'°';
+  const hex=hslToHex(H,S,L);$('hex').textContent=hex;
+  const rW=ratio('#FFFFFF',hex),rI=ratio('#1A1A1A',hex),rLt=ratio(hex,'#FFFFFF'),rDk=ratio(hex,'#1A1A1A');
+  $('rW').textContent=rW.toFixed(2)+':1';$('rI').textContent=rI.toFixed(2)+':1';
+  $('rLt').textContent=rLt.toFixed(2)+':1';$('rDk').textContent=rDk.toFixed(2)+':1';
+  badge($('bW'),rW,4.5);badge($('bI'),rI,4.5);badge($('bLt'),rLt,3);badge($('bDk'),rDk,3);
+  const mark=rI>=rW?'#1A1A1A':'#FFFFFF', mr=Math.max(rI,rW);
+  $('flip').innerHTML='Best mark at this value: <b>'+(mark==='#1A1A1A'?'INK #1A1A1A':'WHITE')+'</b> at '+mr.toFixed(2)+':1. '+
+    (rW>=4.5&&rI>=4.5?'Both marks pass — either is legal.':rW>=4.5?'Only WHITE passes 4.5.':rI>=4.5?'Only INK passes 4.5 — the amber/success pattern.':'⛔ NEITHER mark passes 4.5 at this value.');
+  document.querySelectorAll('.preset').forEach((d,i)=>d.classList.toggle('sel',PRESETS[i]===hex));
+  for(let i=1;i<=4;i++){
+    const row=$('row'+i);row.innerHTML='';
+    [['#B92F1E','✕','#FFFFFF'],['#D5990B','!','#000000'],['#5DAC7B','✓','#1A1A1A'],[hex,'ⓘ',mark]].forEach(([bg,g,mk])=>{
+      const c=document.createElement('div');c.className='chip';c.style.background=bg;c.style.color=mk;c.textContent=g;row.appendChild(c)});
+    const base=document.createElement('div');base.className='chip';base.style.cssText='background:#4F77B0;color:#FFF;opacity:.35';base.textContent='ⓘ';base.title='current #4F77B0';row.appendChild(base);
+    const ban=$('ban'+i);ban.style.background=hex;ban.style.color=mark;
+    ban.innerHTML='<span class="mk">ⓘ</span><span>Information banner specimen — the candidate as a solid fill, '+(mark==='#1A1A1A'?'ink':'white')+' text '+mr.toFixed(2)+':1.</span>';
+  }
+  window._state={hex,rW,rI,rLt,rDk,mark,mr};
+}
+function doExport(){
+  const s=window._state;
+  $('out').value=
+`RULING DRAFT (s132) — console/SC information blue
+Fill: ${s.hex}  (replaces #4F77B0; console + supercharge share ONE RAG map, mode-invariant per s122-D3 — dark = light)
+Mark: ${s.mark==='#1A1A1A'?'INK #1A1A1A':'WHITE #FFFFFF'} at ${s.mr.toFixed(2)}:1 ${s.mr>=4.5?'(passes 4.5)':'(⛔ below 4.5)'}
+White on fill ${s.rW.toFixed(2)}:1 · Ink on fill ${s.rI.toFixed(2)}:1 · vs #FFFFFF ${s.rLt.toFixed(2)}:1 · vs #1A1A1A ${s.rDk.toFixed(2)}:1
+Note: tints (s123-D3) are derived from this fill at ruled alphas — they re-composite at enactment.
+Measured client-side (WCAG relative luminance); conductor re-measures on committed bytes before inscription.`;
+  $('out').select();document.execCommand('copy');
+}
+['L','S','H'].forEach(id=>$(id).addEventListener('input',render));
+render();
+</script>
+</body>
+</html>
