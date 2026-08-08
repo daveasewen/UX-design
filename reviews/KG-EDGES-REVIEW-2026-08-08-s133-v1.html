@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KG Edges Review — 2026-08-08 (s133)</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --bg: #fdfdfb;
+    --paper: #ffffff;
+    --line: #e2ded6;
+    --accent: #305A85;
+    --flag: #FFF3D6;
+    --flag-border: #FFBB33;
+    --blank: #f4f1ea;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    margin: 0;
+    padding: 0 0 80px 0;
+    font-size: 16px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
+  header.page {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+  h1 { font-size: 26px; margin: 0 0 6px 0; }
+  .sub { color: #666; font-size: 14px; margin-bottom: 18px; }
+  .lede {
+    font-size: 18px;
+    font-weight: 500;
+    background: #eef3f8;
+    border-left: 4px solid var(--accent);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin: 14px 0;
+  }
+  .counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .stat {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 16px;
+    min-width: 120px;
+  }
+  .stat .n { font-size: 22px; font-weight: 700; display:block; }
+  .stat .l { font-size: 12px; color: #666; }
+  section {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 26px 32px;
+    margin-bottom: 26px;
+  }
+  h2 { font-size: 21px; margin-top: 0; border-bottom: 2px solid var(--line); padding-bottom: 8px; }
+  h3 { font-size: 16px; margin-top: 22px; color: var(--accent); }
+  h4 { font-size: 14px; margin: 18px 0 4px 0; }
+  .count { font-weight: 400; color: #888; font-size: 13px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 20px 0;
+    font-size: 13.5px;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 7px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #f6f4ee; font-weight: 600; }
+  tr.flagged { background: var(--flag); }
+  td.blank { background: var(--blank); min-width: 140px; }
+  code { background: #f1efe8; padding: 1px 5px; border-radius: 3px; font-size: 12.5px; }
+  .proposal {
+    background: #f6f8fa;
+    border: 1px dashed #b8c4cf;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 14px;
+    font-size: 14.5px;
+  }
+  .awaits {
+    background: #fff8ec;
+    border: 1px solid var(--flag-border);
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin-top: 16px;
+  }
+  footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <h1>KG Edges Review — Dave's-Eye Pass</h1>
+  <div class="sub">2026-08-08 &middot; s133 &middot; reviews/KG-EDGES-REVIEW-2026-08-08-s133-v1.html</div>
+
+  <div class="lede">
+    The mechanical part of the knowledge-graph migration is done and green. This page is everything
+    that's left over — cases a script can't safely decide on its own. Nothing here has been written
+    back into the meta files. It's a list for you to rule on.
+  </div>
+
+  <div class="counts">
+    <div class="stat"><span class="n">35</span><span class="l">near-miss nodes</span></div>
+    <div class="stat"><span class="n">98</span><span class="l">ref:null prose edges</span></div>
+    <div class="stat"><span class="n">47</span><span class="l">governedBy candidates</span></div>
+    <div class="stat"><span class="n">5</span><span class="l">token-claim samples</span></div>
+    <div class="stat"><span class="n">653</span><span class="l">typed edges resolved</span></div>
+    <div class="stat"><span class="n">214 / 139</span><span class="l">pattern / context nodes</span></div>
+  </div>
+
+  <div class="awaits">
+    <strong>Enacted this session:</strong> KG schema v2, 653 typed edges resolved mechanically, 98 prose
+    edges declared as ref:null with $note (not invented), 214 pattern nodes + 139 context nodes registered,
+    the parse-gate (<code>_validate_kg.py</code>) is green, and the index grew 642&nbsp;&rarr;&nbsp;1073 entries.
+    <br><br>
+    <strong>What awaits you:</strong> the four sections below — near-miss node/component collisions,
+    which of the 98 prose edges should become real refs, which rulings should attach to which
+    components, and how to split token values from the prose wrapped around them.
+  </div>
+</header>
+
+<section id="s1">
+  <h2>1 &middot; Near-miss nodes</h2>
+  <p class="lede" style="font-size:15px;">
+    35 pattern/context node ids look like they might actually BE a component, just spelled
+    differently — plural vs singular, hyphen vs no-hyphen, or the component name buried inside a longer
+    pattern description. None of these were merged automatically. The "action" column is blank for you —
+    typical choices would be: merge into the component, leave as a distinct node, or rename the node.
+  </p>
+  <table>
+    <thead><tr><th>node id</th><th>kind</th><th>candidate component (match type)</th><th>sources</th><th>action (yours)</th></tr></thead>
+    <tbody>
+    <tr><td><code>pattern:app-bottom-tab-bar</code></td><td>pattern</td><td>tab-bar (embedded)</td><td>navigations</td><td class='blank'></td></tr>
+<tr><td><code>pattern:button-processing-state</code></td><td>pattern</td><td>button (prefix)</td><td>loading-indicator</td><td class='blank'></td></tr>
+<tr><td><code>pattern:card-grid</code></td><td>pattern</td><td>cards (prefix)</td><td>cards</td><td class='blank'></td></tr>
+<tr><td><code>pattern:card-pin-confirmation</code></td><td>pattern</td><td>cards (prefix)</td><td>secure-entry</td><td class='blank'></td></tr>
+<tr><td><code>pattern:card-title-kicker</code></td><td>pattern</td><td>cards (prefix)</td><td>eyebrow</td><td class='blank'></td></tr>
+<tr><td><code>pattern:clipboard-confirmation</code></td><td>pattern</td><td>confirmation (suffix)</td><td>toast</td><td class='blank'></td></tr>
+<tr><td><code>pattern:hero-feature-video</code></td><td>pattern</td><td>hero (prefix)</td><td>video-player</td><td class='blank'></td></tr>
+<tr><td><code>pattern:notification-dot-on-an-icon-button</code></td><td>pattern</td><td>icon-button (embedded)</td><td>badge</td><td class='blank'></td></tr>
+<tr><td><code>pattern:payment-time-with-date-picker</code></td><td>pattern</td><td>date-picker (embedded)</td><td>time-picker</td><td class='blank'></td></tr>
+<tr><td><code>pattern:review-summary</code></td><td>pattern</td><td>summary (suffix)</td><td>list-items</td><td class='blank'></td></tr>
+<tr><td><code>pattern:spend-summary</code></td><td>pattern</td><td>summary (suffix)</td><td>stat-card</td><td class='blank'></td></tr>
+<tr><td><code>pattern:statement-range-see-date-range-picker</code></td><td>pattern</td><td>date-range-picker (embedded)</td><td>date-picker</td><td class='blank'></td></tr>
+<tr><td><code>pattern:table-row-actions</code></td><td>pattern</td><td>table (prefix)</td><td>icon-button</td><td class='blank'></td></tr>
+<tr><td><code>pattern:table-trend-column</code></td><td>pattern</td><td>table (prefix)</td><td>chart-sparkline</td><td class='blank'></td></tr>
+<tr><td><code>pattern:view-switcher-tab-bar</code></td><td>pattern</td><td>tab-bar (embedded)</td><td>tabs</td><td class='blank'></td></tr>
+<tr><td><code>context:card</code></td><td>context</td><td>cards (exact)</td><td>accordion, avatar, button, countdown-timer, divider, links, loading-indicator, status-indicator, tabs, tags, video-player</td><td class='blank'></td></tr>
+<tr><td><code>context:card-header</code></td><td>context</td><td>cards (prefix), headers (suffix)</td><td>eyebrow, icon-button</td><td class='blank'></td></tr>
+<tr><td><code>context:dialog-modal</code></td><td>context</td><td>modals (suffix)</td><td>button, countdown-timer</td><td class='blank'></td></tr>
+<tr><td><code>context:form</code></td><td>context</td><td>form-layout (prefix)</td><td>accordion, button, countdown-timer, divider, dropdown, input-fields, notifications, search-field, selection-controls, slider</td><td class='blank'></td></tr>
+<tr><td><code>context:forms</code></td><td>context</td><td>form-layout (prefix)</td><td>alert</td><td class='blank'></td></tr>
+<tr><td><code>context:header</code></td><td>context</td><td>headers (exact)</td><td>avatar</td><td class='blank'></td></tr>
+<tr><td><code>context:icon</code></td><td>context</td><td>icon-button (prefix)</td><td>badge</td><td class='blank'></td></tr>
+<tr><td><code>context:link</code></td><td>context</td><td>links (exact)</td><td>badge</td><td class='blank'></td></tr>
+<tr><td><code>context:list</code></td><td>context</td><td>list-items (prefix)</td><td>cards, divider, links, list-items, tags</td><td class='blank'></td></tr>
+<tr><td><code>context:list-item</code></td><td>context</td><td>list-items (embedded)</td><td>avatar, status-indicator</td><td class='blank'></td></tr>
+<tr><td><code>context:modal-footer</code></td><td>context</td><td>modals (prefix)</td><td>action-bar</td><td class='blank'></td></tr>
+<tr><td><code>context:modal-sheet</code></td><td>context</td><td>modals (prefix)</td><td>headers</td><td class='blank'></td></tr>
+<tr><td><code>context:navigation</code></td><td>context</td><td>navigations (exact)</td><td>avatar</td><td class='blank'></td></tr>
+<tr><td><code>context:navigation-item</code></td><td>context</td><td>navigations (prefix)</td><td>badge</td><td class='blank'></td></tr>
+<tr><td><code>context:notification-centres</code></td><td>context</td><td>notifications (prefix)</td><td>empty-state</td><td class='blank'></td></tr>
+<tr><td><code>context:page-header</code></td><td>context</td><td>headers (suffix)</td><td>breadcrumbs, button, eyebrow, icon-button</td><td class='blank'></td></tr>
+<tr><td><code>context:section-header</code></td><td>context</td><td>headers (suffix)</td><td>eyebrow, tabs</td><td class='blank'></td></tr>
+<tr><td><code>context:stat-card-kpi-tiles-the-receipted-seam</code></td><td>context</td><td>stat-card (embedded)</td><td>chart-sparkline</td><td class='blank'></td></tr>
+<tr><td><code>context:tab</code></td><td>context</td><td>tabs (exact), tab-bar (prefix)</td><td>badge</td><td class='blank'></td></tr>
+<tr><td><code>context:tab-panel</code></td><td>context</td><td>tabs (prefix)</td><td>accordion</td><td class='blank'></td></tr>
+
+    </tbody>
+  </table>
+</section>
+
+<section id="s2">
+  <h2>2 &middot; ref:null prose edges (98)</h2>
+  <p class="lede" style="font-size:15px;">
+    These 98 edges exist and are typed correctly, but the script couldn't resolve them to a real node —
+    so the target is <code>ref:null</code> and the original free text sits in <code>$note</code> instead
+    of being lost. Rows highlighted in amber have a component name inside the note text, so they're the
+    likeliest candidates to become real refs.
+  </p>
+  <h3>mustNotNeighbour <span class='count'>(40)</span></h3>
+<table><thead><tr><th>file</th><th>$note</th><th>flag</th></tr></thead><tbody>
+<tr><td><code>Chart-boxplot.meta.json</code></td><td>A second chart re-using data/series/1 for DIFFERENT data in the same journey (dv-014)</td><td>—</td></tr>
+<tr><td><code>Chart-bullet.meta.json</code></td><td>A second chart re-using data/series/1 for DIFFERENT data in the same journey (dv-014)</td><td>—</td></tr>
+<tr class='flagged'><td><code>Chart-butterfly-h.meta.json</code></td><td>A Stat-card making the identical claim in the same view</td><td>stat-card</td></tr>
+<tr class='flagged'><td><code>Chart-butterfly-v.meta.json</code></td><td>A Stat-card making the identical claim in the same view</td><td>stat-card</td></tr>
+<tr><td><code>Chart-candlestick.meta.json</code></td><td>A second chart re-using data/delta/gain·loss for a DIFFERENT semantic (e.g. status ramp) in the same journey (dv-014)</td><td>—</td></tr>
+<tr class='flagged'><td><code>Chart-histogram.meta.json</code></td><td>A Stat-card making the identical claim in the same view</td><td>stat-card</td></tr>
+<tr><td><code>Chart-histogram.meta.json</code></td><td>A grouped/stacked Bar chart in the same view — histogram&#x27;s bins and bar&#x27;s categories read as the same shape and are easy to conflate</td><td>—</td></tr>
+<tr><td><code>Chart-scatter.meta.json</code></td><td>A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)</td><td>—</td></tr>
+<tr><td><code>account-selector.meta.json</code></td><td>A raw &lt;select&gt; for the same choice (rich rows exist for a reason)</td><td>—</td></tr>
+<tr class='flagged'><td><code>alert.meta.json</code></td><td>Toast (same message twice)</td><td>toast</td></tr>
+<tr class='flagged'><td><code>alert.meta.json</code></td><td>Banner carrying the identical message</td><td>banner</td></tr>
+<tr class='flagged'><td><code>banner.meta.json</code></td><td>A second banner (one page-level message at a time)</td><td>banner</td></tr>
+<tr class='flagged'><td><code>banner.meta.json</code></td><td>Alert/Toast carrying the identical message</td><td>toast</td></tr>
+<tr class='flagged'><td><code>chart-bar.meta.json</code></td><td>A Stat-card making the identical claim in the same view</td><td>stat-card</td></tr>
+<tr><td><code>chart-bar.meta.json</code></td><td>A second chart re-using these series colours for DIFFERENT data (dv-014)</td><td>—</td></tr>
+<tr><td><code>chart-combo.meta.json</code></td><td>A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)</td><td>—</td></tr>
+<tr><td><code>chart-combo.meta.json</code></td><td>A same-unit pair drawn as a combo (use multi-series line or grouped bar instead — dv-line-006)</td><td>—</td></tr>
+<tr><td><code>chart-donut.meta.json</code></td><td>A second composition chart of the same data (pick one)</td><td>—</td></tr>
+<tr><td><code>chart-donut.meta.json</code></td><td>Charts re-using these series colours for different data (dv-014)</td><td>—</td></tr>
+<tr><td><code>chart-line.meta.json</code></td><td>A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)</td><td>—</td></tr>
+<tr><td><code>chart-pie.meta.json</code></td><td>A second composition chart of the same data (pick one — pie or donut, not both)</td><td>—</td></tr>
+<tr><td><code>chart-pie.meta.json</code></td><td>Charts re-using these series colours for different data (dv-014)</td><td>—</td></tr>
+<tr><td><code>chart-sparkline.meta.json</code></td><td>An axis-bearing line chart of the same data in the same view (pick one form)</td><td>—</td></tr>
+<tr><td><code>chart-stacked-area.meta.json</code></td><td>A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)</td><td>—</td></tr>
+<tr><td><code>chart-stacked-area.meta.json</code></td><td>A stacked-column view of the identical series (pick one composition idiom)</td><td>—</td></tr>
+<tr class='flagged'><td><code>drawer.meta.json</code></td><td>A second drawer or open modal (one modal surface at a time)</td><td>drawer</td></tr>
+<tr class='flagged'><td><code>empty-state.meta.json</code></td><td>Skeleton loader (loading and empty are different claims — never both)</td><td>skeleton loader</td></tr>
+<tr><td><code>empty-state.meta.json</code></td><td>A second action (an empty region is not a menu)</td><td>—</td></tr>
+<tr class='flagged'><td><code>icon-button.meta.json</code></td><td>Icon button (primary) x2 (a second primary icon action)</td><td>icon button</td></tr>
+<tr class='flagged'><td><code>loading-indicator.meta.json</code></td><td>another Loading indicator (only one on screen at a time)</td><td>loading indicator</td></tr>
+<tr class='flagged'><td><code>modal-lightbox.meta.json</code></td><td>An open Modals dialog or Drawer (one modal surface at a time)</td><td>drawer</td></tr>
+<tr class='flagged'><td><code>popover.meta.json</code></td><td>Tooltip on the same trigger</td><td>tooltip</td></tr>
+<tr class='flagged'><td><code>popover.meta.json</code></td><td>A second open popover (one at a time)</td><td>popover</td></tr>
+<tr class='flagged'><td><code>skeleton-loader.meta.json</code></td><td>Loading-indicator for the same region (one loading signal per region)</td><td>loading-indicator</td></tr>
+<tr><td><code>stat-card.meta.json</code></td><td>A chart making the identical claim in the same view (pick one headline form)</td><td>—</td></tr>
+<tr><td><code>stepper.meta.json</code></td><td>A second progress indicator for the same flow (one source of step truth)</td><td>—</td></tr>
+<tr class='flagged'><td><code>tab-bar.meta.json</code></td><td>Tabs (in-page) — a tab bar is app navigation, not in-page section switching</td><td>tab bar</td></tr>
+<tr class='flagged'><td><code>toast.meta.json</code></td><td>Alert carrying the identical message</td><td>alert</td></tr>
+<tr class='flagged'><td><code>toast.meta.json</code></td><td>A second toast for the same event</td><td>toast</td></tr>
+<tr class='flagged'><td><code>icon-button.meta.json</code></td><td>Icon button (primary) x2 (a second primary icon action)</td><td>icon button</td></tr>
+</tbody></table>
+<h3>triggeredBy <span class='count'>(22)</span></h3>
+<table><thead><tr><th>file</th><th>$note</th><th>flag</th></tr></thead><tbody>
+<tr><td><code>account-selector.meta.json</code></td><td>payment/transfer journeys</td><td>—</td></tr>
+<tr><td><code>alert.meta.json</code></td><td>form submission</td><td>—</td></tr>
+<tr><td><code>alert.meta.json</code></td><td>service state change</td><td>—</td></tr>
+<tr><td><code>alert.meta.json</code></td><td>session events</td><td>—</td></tr>
+<tr><td><code>banner.meta.json</code></td><td>session state</td><td>—</td></tr>
+<tr><td><code>banner.meta.json</code></td><td>service status</td><td>—</td></tr>
+<tr><td><code>banner.meta.json</code></td><td>account conditions</td><td>—</td></tr>
+<tr class='flagged'><td><code>drawer.meta.json</code></td><td>table/list row activation</td><td>table</td></tr>
+<tr class='flagged'><td><code>drawer.meta.json</code></td><td>filter buttons</td><td>button</td></tr>
+<tr><td><code>drawer.meta.json</code></td><td>toolbar actions</td><td>—</td></tr>
+<tr><td><code>empty-state.meta.json</code></td><td>zero-length data</td><td>—</td></tr>
+<tr><td><code>empty-state.meta.json</code></td><td>filter/search miss</td><td>—</td></tr>
+<tr><td><code>empty-state.meta.json</code></td><td>cleared queue</td><td>—</td></tr>
+<tr><td><code>modal-lightbox.meta.json</code></td><td>document/thumbnail activation</td><td>—</td></tr>
+<tr><td><code>modal-lightbox.meta.json</code></td><td>list row &#x27;view&#x27; actions</td><td>—</td></tr>
+<tr class='flagged'><td><code>popover.meta.json</code></td><td>labelled trigger button click</td><td>button</td></tr>
+<tr><td><code>skeleton-loader.meta.json</code></td><td>data fetch in a known layout</td><td>—</td></tr>
+<tr><td><code>toast.meta.json</code></td><td>user action completing</td><td>—</td></tr>
+<tr><td><code>toast.meta.json</code></td><td>background job</td><td>—</td></tr>
+<tr><td><code>toast.meta.json</code></td><td>connectivity change</td><td>—</td></tr>
+<tr><td><code>tooltip.meta.json</code></td><td>Help/info icon</td><td>—</td></tr>
+<tr><td><code>tooltip.meta.json</code></td><td>focusable element</td><td>—</td></tr>
+</tbody></table>
+<h3>hasPart <span class='count'>(19)</span></h3>
+<table><thead><tr><th>file</th><th>$note</th><th>flag</th></tr></thead><tbody>
+<tr class='flagged'><td><code>data-grid.meta.json</code></td><td>sort-header: Full-cell button in columnheader; aria-sort cycles none→ascending→descending; glyphs sort/chevron-up/chevron-down (library). Carries .full — cell-bound, hover grow would overflow (Button&#x27;s own guard).</td><td>button</td></tr>
+<tr class='flagged'><td><code>data-grid.meta.json</code></td><td>selection-checkbox: 22×22 box, tick/mixed bespoke control glyphs, checked = secondary/background/default + text/on-inverse (Selection-controls verbatim anatomy; colour states only — form-control precedent).</td><td>selection-controls</td></tr>
+<tr class='flagged'><td><code>data-grid.meta.json</code></td><td>filter-field: Search-field boxed chrome (FIELD-CHROME-COPY — receipted field-family accretion evidence). Enter commits the term as a chip.</td><td>search-field</td></tr>
+<tr class='flagged'><td><code>data-grid.meta.json</code></td><td>applied-chip: Dismissible Tags recipe, namespaced .fchip (.tag/.chip are type.css-bound blast radii). Dismiss × = 24px button-family member; Tags&#x27; tactile × motion deliberately NOT copied (motion belongs to the partial, B-D7).</td><td>button</td></tr>
+<tr><td><code>data-grid.meta.json</code></td><td>edit-cell: Reference column; Enter/F2/double-click opens; editing chrome = field ACTIVE recipe (border/active 4px bottom stroke + page fill); Esc cancels, Enter/blur commits; announced.</td><td>—</td></tr>
+<tr class='flagged'><td><code>data-grid.meta.json</code></td><td>pagination: Prev/next chevrons + page numbers; current = tertiary/border/default + .t-cm-button (500 via composite, not raw weight); inverting colour press (tertiary/background/pressed + text/reverse).</td><td>pagination</td></tr>
+<tr><td><code>hero.meta.json</code></td><td>primary-message</td><td>—</td></tr>
+<tr><td><code>hero.meta.json</code></td><td>secondary-message</td><td>—</td></tr>
+<tr class='flagged'><td><code>hero.meta.json</code></td><td>assets: [&#x27;hero-image-fixed-height&#x27;, &#x27;hero-image-full-height&#x27;, &#x27;secondary-message-image&#x27;]</td><td>hero</td></tr>
+<tr class='flagged'><td><code>pagination.meta.json</code></td><td>page-size-dropdown: Single-select dropdown trigger (closed/bottom/top × default/hover/completed) — reuses the Dropdown form-trigger pattern.</td><td>dropdown</td></tr>
+<tr class='flagged'><td><code>pagination.meta.json</code></td><td>go-button: Secondary-style &#x27;Go&#x27; button to jump to a typed page.</td><td>button</td></tr>
+<tr class='flagged'><td><code>pagination.meta.json</code></td><td>arrow-button: Prev/next arrow button (secondary-style border).</td><td>button</td></tr>
+<tr class='flagged'><td><code>table.meta.json</code></td><td>header: Column/row header cell — table/header/background (#ededed) + text/default font-5 medium.</td><td>table</td></tr>
+<tr class='flagged'><td><code>table.meta.json</code></td><td>sub-header: Secondary header on table/column/background (#f3f3f3) + font-5 light.</td><td>table</td></tr>
+<tr><td><code>table.meta.json</code></td><td>data-cell: Data cell — background/default (#fff) + text/default font-5 light; right-aligned variant for numbers.</td><td>—</td></tr>
+<tr><td><code>tabs.meta.json</code></td><td>tab-items: Individual tab; unselected/hover/pressed + selected first/middle/last; selected shows a brand-red indicator.</td><td>—</td></tr>
+<tr class='flagged'><td><code>tabs.meta.json</code></td><td>tab-track: Bottom rule under the tabs; elevation variant casts a shadow.</td><td>tabs</td></tr>
+<tr class='flagged'><td><code>tabs.meta.json</code></td><td>overflow-dropdown: Trigger that reveals hidden tabs in a menu.</td><td>dropdown</td></tr>
+<tr class='flagged'><td><code>tabs.meta.json</code></td><td>tab-dropdown-items: Overflow menu items (default/hover/pressed/selected).</td><td>dropdown</td></tr>
+</tbody></table>
+<h3>partial <span class='count'>(5)</span></h3>
+<table><thead><tr><th>file</th><th>$note</th><th>flag</th></tr></thead><tbody>
+<tr class='flagged'><td><code>date-picker.meta.json</code></td><td>4 × .dp-nav (month/year paging) = button-family membership candidates: empty AUTO-PARTIAL markers + --phys-size:44 in the snippet; $members registration proposed via worker receipt (conductor-only). Day cells deliberately NOT members — selection targets, not buttons.</td><td>button</td></tr>
+<tr class='flagged'><td><code>date-range-picker.meta.json</code></td><td>4 × .dr-nav = button-family membership candidates (empty markers + --phys-size:44); $members proposed via receipt. Day cells deliberately NOT members.</td><td>button</td></tr>
+<tr class='flagged'><td><code>file-upload.meta.json</code></td><td>TWO button-family candidates, mixed sizes (wave-1 idiom): .fu-browse (--phys-size:120) + .fu-remove (LOCAL --phys-size:24). One empty marker pair; proposed selector :is(.fu-browse, .fu-remove). Registration = conductor&#x27;s, via receipt.</td><td>button</td></tr>
+<tr class='flagged'><td><code>stepper.meta.json</code></td><td>.st-nav button (Back/Next) = button-family candidates: empty markers + --phys-size:120; Progress-tracker&#x27;s `.nav button` = the registered selector precedent. Done-dot buttons deliberately NOT members. Registration = conductor&#x27;s, via receipt.</td><td>progress-tracker</td></tr>
+<tr class='flagged'><td><code>time-picker.meta.json</code></td><td>NONE — zero button-family candidates (tail-btn follows Input-fields, options are selection targets). No AUTO-PARTIAL markers in the file; conductor should expect no $members entry for Time-picker.</td><td>input-fields</td></tr>
+</tbody></table>
+<h3>family <span class='count'>(12)</span></h3>
+<table><thead><tr><th>file</th><th>$note</th><th>flag</th></tr></thead><tbody>
+<tr><td><code>cards.meta.json</code></td><td>This file covers the whole Card family; each type is a separate Figma component.</td><td>—</td></tr>
+<tr class='flagged'><td><code>headers.meta.json</code></td><td>Covers the Headers family (app only); each type is a separate Figma component.</td><td>headers</td></tr>
+<tr class='flagged'><td><code>input-fields.meta.json</code></td><td>Covers the Input fields section; each is a separate Figma component.</td><td>input fields</td></tr>
+<tr class='flagged'><td><code>links.meta.json</code></td><td>Covers the Links canvas; each type is a separate Figma component. Page title: &#x27;Text links (browser)&#x27;.</td><td>links</td></tr>
+<tr class='flagged'><td><code>list-items.meta.json</code></td><td>Covers the &#x27;List items&#x27; canvas (page title &#x27;Lists&#x27;); each row type is a separate Figma component.</td><td>list items</td></tr>
+<tr class='flagged'><td><code>modals.meta.json</code></td><td>Covers the &#x27;Modals&#x27; canvas across three sections: Modal - dialog, Modal - video, Modal - partial (app only).</td><td>modals</td></tr>
+<tr class='flagged'><td><code>navigations.meta.json</code></td><td>Covers the &#x27;Navigations&#x27; canvas: Masthead ×2 + 3 flyouts, Anchors, Navigation bar bottom (app), Navigation bar top (app).</td><td>navigations</td></tr>
+<tr class='flagged'><td><code>notifications.meta.json</code></td><td>Covers the &#x27;Notifications&#x27; canvas: Contextual, Global, Inline, Snackbar.</td><td>notifications</td></tr>
+<tr class='flagged'><td><code>pagination.meta.json</code></td><td>Covers the &#x27;Pagination (browser)&#x27; canvas: Pagination basic, Pagination dropdown, Pagination dropdown stacked, plus atoms — page-size dropdown (.Dropdown), Go button, Arrow button.</td><td>pagination</td></tr>
+<tr class='flagged'><td><code>segmented-control.meta.json</code></td><td>The single-select sliding-indicator switcher. Instances: View options (list/grid), Tab-bar&#x27;s pill switcher, the chart view switch (Monthly / Year to date). Promoted from View options by Dave (2026-07-24) so the mechanism is one atom, not re-hand-rolled per consumer.</td><td>view options</td></tr>
+<tr class='flagged'><td><code>selection-controls.meta.json</code></td><td>Covers the &#x27;Selection controls&#x27; canvas: Checkbox, Radio buttons, Chips, Switch (+ List/Card &#x27;select&#x27; compositions of existing components).</td><td>selection controls</td></tr>
+<tr><td><code>view-options.meta.json</code></td><td>Part of &#x27;View controls&#x27; (the sort-options sibling is guidance-only → guidelines/view-controls-sort.md).</td><td>—</td></tr>
+</tbody></table>
+
+</section>
+
+<section id="s3">
+  <h2>3 &middot; governedBy candidates</h2>
+  <p class="lede" style="font-size:15px;">
+    Scanning every ruling in <code>_rulings.json</code> for component names in its <code>says</code> text
+    or its <code>governs</code> list turned up 47 possible ruling&rarr;component edges. This is
+    a raw name-match — some of these are real (a ruling that clearly binds a component's colour or
+    behaviour) and some are coincidental (a common word like "table" or "banner" appearing in unrelated
+    prose). Nothing has been written to any meta file; this is a proposal list only.
+  </p>
+  <table>
+    <thead><tr><th>ruling id</th><th>component</th><th>quoted phrase</th></tr></thead>
+    <tbody>
+    <tr><td><code>showroom-one-bar-chrome</code></td><td>slider</td><td>“ls - themes - light/dark toggle - width slider - open page); the back-to-library CTA is removed; dem…”</td></tr>
+<tr><td><code>snippets-pure-canon</code></td><td>slider</td><td>“y NO demo controls (theme toggle, width slider, replay, caption chrome) - the showroom library is th…”</td></tr>
+<tr><td><code>snippets-pure-canon</code></td><td>toast</td><td>“variant/state controls (modal openers, toast spawns, density checkboxes) are component behaviour an…”</td></tr>
+<tr><td><code>ds-026</code></td><td>button</td><td>“Charts stick to SOLID canonical palette; opacity primitives (--alpha-04..96, 4%…”</td></tr>
+<tr><td><code>ds-026</code></td><td>chart-stacked-area</td><td>“Charts stick to SOLID canonical palette; opacity primitives (--alpha-04..96, 4%…”</td></tr>
+<tr><td><code>ds-027</code></td><td>table</td><td>“of #96-D1 (1) is RETIRED. The OHLC data table is the accessibility fallback (colour-blind/greyscale…”</td></tr>
+<tr><td><code>ds-027</code></td><td>Chart-candlestick</td><td>“Candlestick encoding: TWO-STATE semantics (colour = close vs open) with SOLID bo…”</td></tr>
+<tr><td><code>ds-028</code></td><td>table</td><td>“ommitted after Dave saw the value-shift table (7 rounded values incl. .75-&gt;72 x20, .55-&gt;52 x13).…”</td></tr>
+<tr><td><code>ds-029</code></td><td>confirmation</td><td>“idiom (direct keyframes/animation:), so Confirmation&#x27;s ratified snippet is NOT migrated to dv-animat…”</td></tr>
+<tr><td><code>ds-031</code></td><td>chart-donut</td><td>“Donut/pie legend centring: OPTION A, keep as-is. The ring stays 109px left of tr…”</td></tr>
+<tr><td><code>ds-031</code></td><td>chart-pie</td><td>“Donut/pie legend centring: OPTION A, keep as-is. The ring stays 109px left of tr…”</td></tr>
+<tr><td><code>ds-032</code></td><td>modals</td><td>“--alpha-68 is APPROVED for --pri-hover, but the ruling is scoped to the BUTTON A…”</td></tr>
+<tr><td><code>ds-032</code></td><td>form-layout</td><td>“--alpha-68 is APPROVED for --pri-hover, but the ruling is scoped to the BUTTON A…”</td></tr>
+<tr><td><code>ds-032</code></td><td>button</td><td>“-hover, but the ruling is scoped to the BUTTON ATOM, not to eight per-component edits. Dave verbatim…”</td></tr>
+<tr><td><code>ds-032</code></td><td>stepper</td><td>“--alpha-68 is APPROVED for --pri-hover, but the ruling is scoped to the BUTTON A…”</td></tr>
+<tr><td><code>ds-032</code></td><td>drawer</td><td>“--alpha-68 is APPROVED for --pri-hover, but the ruling is scoped to the BUTTON A…”</td></tr>
+<tr><td><code>ds-032</code></td><td>empty-state</td><td>“--alpha-68 is APPROVED for --pri-hover, but the ruling is scoped to the BUTTON A…”</td></tr>
+<tr><td><code>ds-032</code></td><td>action-bar</td><td>“--alpha-68 is APPROVED for --pri-hover, but the ruling is scoped to the BUTTON A…”</td></tr>
+<tr><td><code>ds-034</code></td><td>modals</td><td>“upstream tokens across .cn-button / .cn-modals / .cn-action-bar BY DESIGN under the four-theme archi…”</td></tr>
+<tr><td><code>ds-034</code></td><td>button</td><td>“On the button/primary scope question: measure the other 35 collidin…”</td></tr>
+<tr><td><code>ds-034</code></td><td>action-bar</td><td>“ns across .cn-button / .cn-modals / .cn-action-bar BY DESIGN under the four-theme architecture, not…”</td></tr>
+<tr><td><code>s114-D3</code></td><td>table</td><td>“rigger-points are a lesser concern, the table fallback always exists, a11y rulings there are more nu…”</td></tr>
+<tr><td><code>s114-D3</code></td><td>input-fields</td><td>“Apply the hidden hit-area expander to the 8 sub-24px-floor offenders. Verbatim:…”</td></tr>
+<tr><td><code>s114-D3</code></td><td>form-layout</td><td>“Apply the hidden hit-area expander to the 8 sub-24px-floor offenders. Verbatim:…”</td></tr>
+<tr><td><code>s114-D3</code></td><td>tooltip</td><td>“t 8 a11y failures. Dave&#x27;s nuance: chart tooltip trigger-points are a lesser concern, the table fallb…”</td></tr>
+<tr><td><code>s116-D1</code></td><td>table</td><td>“ith the 24x minimum, all chats cary the table fall back for Ally.&#x27; The table fallback is the stated…”</td></tr>
+<tr><td><code>s116-D1</code></td><td>tooltip</td><td>“arts such as data points that trigget a tooltip can pass with the 24x minimum, all chats cary the ta…”</td></tr>
+<tr><td><code>s116-D2</code></td><td>chart-donut</td><td>“The table control is ONE MOLECULE consumed by all charts. Verbatim: &#x27;why is it d…”</td></tr>
+<tr><td><code>s116-D2</code></td><td>table</td><td>“The table control is ONE MOLECULE consumed by all charts. Verbat…”</td></tr>
+<tr><td><code>s116-D2</code></td><td>chart-combo</td><td>“The table control is ONE MOLECULE consumed by all charts. Verbatim: &#x27;why is it d…”</td></tr>
+<tr><td><code>s116-D2</code></td><td>chart-bar</td><td>“The table control is ONE MOLECULE consumed by all charts. Verbatim: &#x27;why is it d…”</td></tr>
+<tr><td><code>s116-D2</code></td><td>button</td><td>“rbatim: &#x27;why is it different? the table button and pop-over should be a molecule consumed by all of…”</td></tr>
+<tr><td><code>s116-D2</code></td><td>summary</td><td>“harts converge on the NATIVE &lt;details&gt;/&lt;summary&gt;, confirmed as an HTML/CSS solution (&#x27;just to confir…”</td></tr>
+<tr><td><code>s116-D2</code></td><td>chart-sparkline</td><td>“The table control is ONE MOLECULE consumed by all charts. Verbatim: &#x27;why is it d…”</td></tr>
+<tr><td><code>s116-D2</code></td><td>chart-line</td><td>“The table control is ONE MOLECULE consumed by all charts. Verbatim: &#x27;why is it d…”</td></tr>
+<tr><td><code>s122-D4</code></td><td>tabs</td><td>“rag/* paths (and the alias-pulled badge/tabs prefixes as needed): console MAY diverge from mono on R…”</td></tr>
+<tr><td><code>s122-D4</code></td><td>badge</td><td>“ole&#x27;s rag/* paths (and the alias-pulled badge/tabs prefixes as needed): console MAY diverge from mon…”</td></tr>
+<tr><td><code>s123-D4</code></td><td>tabs</td><td>“as-edge side effect (badge/background + tabs/badge dark leg #CC4333 -&gt; #B92F1E; light unchanged) is…”</td></tr>
+<tr><td><code>s123-D4</code></td><td>badge</td><td>“SC badge shift ACCEPTED - &#x27;SC badge is fine&#x27;. The s122-D3 alias…”</td></tr>
+<tr><td><code>s125-D1</code></td><td>banner</td><td>“The chain banner&#x27;s BUILD-STEP COUNT stops being a typed number and bec…”</td></tr>
+<tr><td><code>s129-D4</code></td><td>tags</td><td>“ngs.json is plain ASCII using bracketed tags - [BLOCK] for the no-entry glyph, [STAR] for the star,…”</td></tr>
+<tr><td><code>s130-D3</code></td><td>banner</td><td>“ap commit NEVER reads GOOD-MORNING.md&#x27;s banner - the subject is generated from current-session sourc…”</td></tr>
+<tr><td><code>s130-D4</code></td><td>banner</td><td>“Banner actions, across ALL banners and RAG fills: a ghost/ti…”</td></tr>
+<tr><td><code>s130-D5</code></td><td>selection-controls</td><td>“Check and selection control labels are ALWAYS the ink colour. The error signal m…”</td></tr>
+<tr><td><code>s131-D1</code></td><td>banner</td><td>“Legacy RAG fills take the legacy system&#x27;s OWN colours, given by Dave as exact va…”</td></tr>
+<tr><td><code>s133-D1</code></td><td>confirmation</td><td>“es. RIGOUR is the operative word of the confirmation.…”</td></tr>
+<tr><td><code>s133-D1</code></td><td>banner</td><td>“oken store, 495 edges - the field where banner.meta.json went stale, first-class parse-gate target);…”</td></tr>
+
+    </tbody>
+  </table>
+</section>
+
+<section id="s4">
+  <h2>4 &middot; Token-claim edges</h2>
+  <p class="lede" style="font-size:15px;">
+    Every meta file's <code>tokens</code> field mixes the actual token reference with a paragraph of
+    justification, ruling citations, and caveats in the same string. Five samples below show the pattern.
+    This is a proposal only — no meta file has been touched.
+  </p>
+  <h4><code>Chart-boxplot.meta.json</code></h4>
+<table><thead><tr><th>key</th><th>value (prose-contaminated)</th></tr></thead><tbody>
+<tr><td><code>font-family</code></td><td>type composites via markup class — axis ticks/labels .t-cm-chart-label/-value · table .t-cm-legal</td></tr>
+<tr><td><code>series</code></td><td>data/series/1 — box fill (the chart&#x27;s one measure channel)</td></tr>
+<tr><td><code>marks</code></td><td>whiskers/caps = ink 1px stroke · median = ink 2px stroke (heavier than the box stroke, for at-a-glance read) · outliers = data/series/1 fill, page-colour 1.5px stroke</td></tr>
+<tr><td><code>axis</code></td><td>⛔ ds-020 RECEIPTED GAP — this snippet inherits the PRE-DV-D07 ink-at-alpha idiom (text/default @ .6 axis, @ .10/.16 grid), NOT the minted data/axis + data/grid two-channel roles Chart-bar/Chart-scatter carry post-migrati…</td></tr>
+</tbody></table>
+<h4><code>Chart-candlestick.meta.json</code></h4>
+<table><thead><tr><th>key</th><th>value (prose-contaminated)</th></tr></thead><tbody>
+<tr><td><code>font-family</code></td><td>type composites via markup class — axis ticks/labels .t-cm-chart-label/-value · table .t-cm-legal</td></tr>
+<tr><td><code>delta</code></td><td>data/delta/gain (body up) / data/delta/loss (body down) — ds-027 RULED binding (#100), consumed VERBATIM from canon.css (--data-delta-gain #16864E/#1AA05C, --data-delta-loss #B92F1E/#CC4333 light/dark), not re-derived. O…</td></tr>
+<tr><td><code>wick</code></td><td>ink (text/default) at .6 alpha, 1px — &#x27;wicks = ink at reduced weight&#x27;</td></tr>
+<tr><td><code>axis</code></td><td>⛔ ds-020 RECEIPTED GAP — pre-DV-D07 ink-at-alpha idiom, not the minted two-channel roles. Copied the mark contract + toolbar per the DIVVY brief, deliberately NOT the axis/grid CSS. Unchanged by the ds-027 enactment.</td></tr>
+</tbody></table>
+<h4><code>button.meta.json</code></h4>
+<table><thead><tr><th>key</th><th>value (prose-contaminated)</th></tr></thead><tbody>
+<tr><td><code>type-style</code></td><td>font-5/medium (16px medium)</td></tr>
+<tr><td><code>font-family</code></td><td>typography/font-family/default</td></tr>
+<tr><td><code>primary</code></td><td>{&#x27;label&#x27;: &#x27;text/reverse&#x27;, &#x27;icon&#x27;: &#x27;icon/default-reverse&#x27;, &#x27;background-default&#x27;: &#x27;primary/background/default&#x27;, &#x27;background-hover&#x27;: &#x27;primary/background/hover&#x27;, &#x27;background-pressed&#x27;: &#x27;primary/background/pressed&#x27;, &#x27;backgroun…</td></tr>
+<tr><td><code>secondary</code></td><td>{&#x27;label&#x27;: &#x27;text/on-inverse (NOT text/reverse) — secondary inverts to a light fill in dark, so flat-white text/reverse would be white-on-white; text/on-inverse is #FFF light / #333 dark (decision: Dave 2026-06-19)&#x27;, &#x27;icon…</td></tr>
+</tbody></table>
+<h4><code>form-layout.meta.json</code></h4>
+<table><thead><tr><th>key</th><th>value (prose-contaminated)</th></tr></thead><tbody>
+<tr><td><code>field</code></td><td>form/background|border sets (Input-fields lock-step)</td></tr>
+<tr><td><code>error</code></td><td>rag/error + rag/error-tint (R-D20); message TEXT stays text/default — colour is never the only channel</td></tr>
+<tr><td><code>success</code></td><td>rag/success (valid-state roundel)</td></tr>
+<tr><td><code>buttons</code></td><td>button/primary/* + button/quaternary/* ladder</td></tr>
+</tbody></table>
+<h4><code>chart-donut.meta.json</code></h4>
+<table><thead><tr><th>key</th><th>value (prose-contaminated)</th></tr></thead><tbody>
+<tr><td><code>font-family</code></td><td>type composites via markup class — DV-D08 ladder: letters/keys .t-cm-chart-key (12/700) · labels + legend + controls .t-cm-chart-label (12/500) · direct values .t-cm-chart-value (12/500 tabular) · centre total .t-cm-figu…</td></tr>
+<tr><td><code>series</code></td><td>data/series/1–5 (mode-stable candidate C); measured 3.52–5.26:1 light / 3.31–4.95:1 dark vs the page (dv-016 clean)</td></tr>
+<tr><td><code>separation</code></td><td>stroke = background/default (page) at 2px on every segment (dv-004 — gapless surfaces need surface-coloured separation)</td></tr>
+<tr><td><code>leaders</code></td><td>border/subtle hairlines (decorative)</td></tr>
+</tbody></table>
+
+  <div class="proposal">
+    <strong>Proposed grammar (for your ruling):</strong> split each <code>tokens.&lt;key&gt;</code> entry
+    into a structured pair — a short <code>value</code> field holding just the token/CSS-variable
+    reference (e.g. <code>--data-delta-gain</code>, or a class list like
+    <code>.t-cm-chart-label</code>), and a separate <code>$note</code> field holding everything else:
+    the ruling citation, the reasoning, and any caveats. This mirrors the grammar already used for the
+    <code>edges</code> field (<code>ref</code> + <code>$note</code>), so the token-claim edges would read
+    consistently with the rest of the graph, and a future gate could parse <code>value</code> without
+    having to strip prose out of a free-text sentence.
+  </div>
+</section>
+
+<footer>
+  Generated 2026-08-08 &middot; s133 &middot; recount with the same script that produced this page
+  (see the terse markdown twin for the replay command).
+</footer>
+
+</div>
+</body>
+</html>

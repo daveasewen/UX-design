@@ -5666,3 +5666,17 @@ inscription): ink/fill **4.61** · white/fill **3.78** · fill vs `#FFFFFF` **3.
 **4.61**. Tints re-composite at the s123-D3 ruled alphas: light `#D1DDEE` · dark `#364963`. ⚠ The 2
 console/SC information-REST state-contrast failures are NOT closed by this ruling — re-measured on
 committed bytes after enactment, reported not assumed.
+
+### s133-D1 — THE s131-D2 SCOPE WIDENED: PATTERN+CONTEXT NODES, FOUR EDGE FAMILIES RATIFIED (ruled by Dave #133, on readback)
+Dave, off the #133 pre-enactment investigation (`notes/_briefs/2026-08-08-133-s131-D2-edge-investigation-brief.md`),
+confirmed on readback — his words: *"I think so, i want rigour."* Two decisions, both BY ADDITION to s131-D2:
+**(1)** the prose targets of the scoped fields become REAL NODES — new node types `pattern` (223
+`commonPatterns` edges) and `context` (~246 `livesInside` context targets), not `$note` demotion.
+**(2)** four un-scoped edge families join the enactment: **token claims** (495 edges, metas' `tokens`
+field vs the token store — the field where `banner.meta.json` went stale, the ruling's own origin defect),
+**component edges** (`$consumes`/`$reuses`/`subComponents`/`$partials`/`$family`, ~40),
+**renderedBy → snippet** (75/76), **governedBy → rulings** (per-component provenance). Net scope:
+559 edges/4 fields → **~1,100 edges/10 fields + 2 node types**. Baseline reproduced this session before
+widening (559 = 274+40+223+22 exact). Enactment splits mechanical (delegable) vs Dave's-eye
+(prose→reference); s131-D2's archive-never-delete and by-addition clauses carry unchanged.
+Authority: `knowledge/_rulings.json` § `s133-D1`.

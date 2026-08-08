@@ -217,6 +217,57 @@ def parse_gauge(records, errors):
                            lines[i].lstrip("# ").strip()[:140], "\n".join(lines[i:end])))
 
 
+def parse_components(records, errors):
+    """Component KG join (s131-D2 RULED #131 / s133-D1 RULED #133): the design
+    KG "must be as robust as the memento graphs" — indexed, retrieval-reachable.
+    BY ADDITION to the door's corpus, one record per component meta plus one
+    record per node in each of the two mechanical registries minted by
+    knowledge/gen_kg_edges.py. Open form (file-per-record), same shape as
+    briefs/dreams above: the meta corpus is not a heading vocabulary.
+    """
+    comp_dir = os.path.join(ROOT, "knowledge", "components")
+    proforma_dir = os.path.join(ROOT, "knowledge", "_proforma")
+    paths = sorted(globlib.glob(os.path.join(comp_dir, "*.meta.json")))
+    if os.path.isdir(proforma_dir):
+        paths += sorted(globlib.glob(os.path.join(proforma_dir, "*.meta.json")))
+    if not paths:
+        errors.append("knowledge/components/*.meta.json: glob matched ZERO files — "
+                      "corpus contract broken, refuse")
+        return
+    for p in paths:
+        rel = os.path.relpath(p, ROOT)
+        with open(p, encoding="utf-8") as f:
+            raw = f.read()
+        try:
+            data = json.loads(raw)
+        except Exception as e:
+            errors.append(f"{rel}: unparseable JSON ({e}) — refuse, never index around a hole")
+            continue
+        stem = os.path.basename(p)[: -len(".meta.json")]
+        edge_count = sum(len(v) for v in (data.get("edges") or {}).values())
+        head = f"{data.get('name', stem)} · {data.get('category', '?')} · " \
+               f"{data.get('purpose', '')[:90]} · edges={edge_count}"
+        records.append(rec(f"component:{stem}", "component-meta", rel, 1, head, raw))
+
+    for registry_name, prefix in (("_nodes-pattern.json", "pattern"), ("_nodes-context.json", "context")):
+        rp = os.path.join(comp_dir, registry_name)
+        rel = os.path.relpath(rp, ROOT)
+        if not os.path.exists(rp):
+            errors.append(f"{rel}: declared source MISSING — refuse, never index around a hole")
+            continue
+        with open(rp, encoding="utf-8") as f:
+            entries = json.load(f)
+        if not entries:
+            errors.append(f"{rel}: registry has ZERO nodes — corpus contract broken, refuse")
+            continue
+        for entry in entries:
+            nid = entry["id"]  # already "pattern:<slug>" / "context:<slug>"
+            sources = entry.get("sources", [])
+            head = f"{entry.get('label', nid)} · sources={len(sources)}"
+            records.append(rec(nid, f"{prefix}-node", rel, 1, head,
+                               json.dumps(entry, indent=1, ensure_ascii=False, sort_keys=True)))
+
+
 def parse_lanes(records, errors):
     import _gen_lanes
     lanes, errs = _gen_lanes.load_lanes()
@@ -280,11 +331,13 @@ def build_records():
         parse_sections(records, errors, rb, f"runbook:{stem}", "runbook-section",
                        heading_re=RUNBOOK_HEADING_RE)
     parse_lanes(records, errors)
+    parse_components(records, errors)
     if errors:
         return None, errors
     kinds = {r["kind"] for r in records}
     expected = {"gm-section", "ls-section", "gm-archive-section", "ls-archive-section",
-                "ledger-section", "gauge-block", "brief", "dream", "runbook-section", "lane"}
+                "ledger-section", "gauge-block", "brief", "dream", "runbook-section", "lane",
+                "component-meta", "pattern-node", "context-node"}
     missing = expected - kinds
     if missing:
         return None, [f"source class contributed ZERO records: {sorted(missing)} — refuse "
