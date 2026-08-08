@@ -5680,3 +5680,11 @@ field vs the token store — the field where `banner.meta.json` went stale, the 
 widening (559 = 274+40+223+22 exact). Enactment splits mechanical (delegable) vs Dave's-eye
 (prose→reference); s131-D2's archive-never-delete and by-addition clauses carry unchanged.
 Authority: `knowledge/_rulings.json` § `s133-D1`.
+
+### s133-D2 — GATED PUSH: CLAUDE MAY PUSH ON DAVE'S WORD, MASTER, FF-ONLY, VERIFIED (ruled by Dave #133)
+Dave: *"I dont mind if its reasonable gated"* → *"okay do it"* on the recommended shape. `--push` mode
+added to `knowledge/_git_commit.sh` — the ONLY push path: fires only on his explicit in-session word ·
+master only · fast-forward only (no force flag exists) · clean tree · remote==local verified AFTER.
+Auth: fine-grained PAT (this repo, Contents r/w, 90d expiry) in the remote URL on his disk. SUPERSEDES
+`git-push-method`'s Desktop-only clause BY ADDITION — Desktop remains. Credential arm proven refusing
+until the PAT lands. Authority: `knowledge/_rulings.json` § `s133-D2`.

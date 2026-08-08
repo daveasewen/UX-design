@@ -27,6 +27,25 @@ set -u
 cd "$(dirname "$0")/.." || exit 1
 
 RECONCILED=0
+# ── PUSH MODE (s133-D2, Dave: "I dont mind if its reasonable gated" → "okay do it") ──────────
+# `bash knowledge/_git_commit.sh --push` — the ONLY push path. Fires ONLY on Dave's explicit
+# in-session word (the caller's attestation, same contract as --reconciled). Gates, each a refusal:
+# master only · fast-forward only (no force flag EXISTS here) · clean tree · credential present ·
+# remote head == local head verified AFTER. Supersedes git-push-method BY ADDITION: Desktop remains.
+if [ "$1" = "--push" ]; then
+  BR=$(git rev-parse --abbrev-ref HEAD)
+  [ "$BR" = "master" ] || { echo "✗ push refused: branch is '$BR', not master (s133-D2)"; exit 1; }
+  [ -z "$(git status --short)" ] || { echo "✗ push refused: tree not clean — commit first (s133-D2)"; exit 1; }
+  git config remote.origin.url | grep -q "@github.com" || { echo "✗ push refused: no credential in remote URL. Dave: fine-grained PAT (this repo, Contents r/w, 90d) → paste to Claude → git config remote.origin.url https://<TOKEN>@github.com/daveasewen/UX-design.git"; exit 1; }
+  LOCAL=$(git rev-parse HEAD)
+  git push origin master 2>&1 | grep -v "^remote:" || true
+  REMOTE=$(git ls-remote origin refs/heads/master | cut -f1)
+  [ "$LOCAL" = "$REMOTE" ] || { echo "✗ push VERIFY FAILED: local $LOCAL != remote $REMOTE — investigate, do not retry blind"; exit 1; }
+  echo "✅ pushed and VERIFIED: remote master == local $LOCAL"
+  for L in $(find .git -name '*.lock' 2>/dev/null); do mv "$L" _to_delete/_stale_locks/$(basename $L).$(date +%s%N) 2>/dev/null || rm -f "$L"; done
+  exit 0
+fi
+
 WRAP=0
 ALLDIRTY=0
 MSGFILE=""
