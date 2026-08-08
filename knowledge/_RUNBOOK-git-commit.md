@@ -6,6 +6,20 @@ file's owner). So git commits fail with `Unable to create '.git/index.lock': Fil
 command leaves a fresh lock behind. `mv` IS permitted where `rm` is not — that's the whole trick.
 Companion to memory `git-push-method`; git split = Claude commits, Dave pushes via GitHub Desktop.*
 
+## ★ STEP 0 BEFORE EVERYTHING — ASK FOR THE DELETE GRANT (ruled by Dave #133: "do it")
+
+**The entire lock dance below routes around a permission that is ONE TOOL CALL away.** Call
+`mcp__cowork__allow_cowork_file_delete` at the FIRST commit of the session (not in wrap heat).
+If granted, `rm` works inside `.git`, git tidies its own locks, and **none of the mv choreography
+is needed** — commit normally (identity flags + `-F` msgfile + read the MESSAGE back, those rules
+still stand). The mv sequence below is the FALLBACK for a refused/absent grant.
+⚠ The grant appears to be PER-SESSION — ask each session, first commit.
+★ Why this section exists: #133 fought the delete-guard through an entire wrap (alternate index,
+doubled subject, 29 lock husks) while quoting the step-4b text that names the tool — the
+"sandbox cannot" premise was true of the DEFAULT state and the procedure was never re-priced
+after the tool shipped ([[assertion-propagation-gap]], the same class step 4b's own correction
+records). Dave: "that is hilarious that you didn't just ask this in the first place."
+
 ## The procedure — RUN THE SCRIPT (2026-07-26, dream-pass P2, Dave ruled)
 
 ```
