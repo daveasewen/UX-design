@@ -58,6 +58,15 @@ agent dispatches say "read + follow `.claude/agents/dreamer.md`" — they never 
 - **Lane-order violations** *(same batch)* — work touching a BLOCKED lane's surfaces while an
   open lane gates it (GM §C·1 TWO LANES). Nothing mechanical enforces the block until O1′ —
   this hunt IS the interim guard.
+- **Conclusions that could be queries** *(added 2026-08-08 #129, Dave's ruling `s129-D5`)* —
+  "verified" is a property of a MOMENT, not of the artefact; an inscribed conclusion is debt.
+  Hunt inscribed conclusions (a number, a status, a remedy string, a pointer, an environment
+  premise) that could instead be DERIVED at read/build time. For each hit, propose exactly one
+  of the three triage options — **generate it** (derive from live state, the strong form) ·
+  **give it a named re-checker** (a gate that re-asserts it and fails loud) · **stamp it with
+  an expiry** (a date after which quoting it is a defect). A hit with none of the three is not
+  a proposal, it is a complaint. Root receipt: seven media found #125–#129 (prose · comment ·
+  return value · pointer · the defect's own record · commit subject · the sandbox environment).
 
 ## Output format (per proposal, strict)
 

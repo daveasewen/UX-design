@@ -3126,14 +3126,21 @@ def _parse_boot_samples(text):
     that looks like a boot line but does not parse is returned as REFUSED, never
     skipped — an unmatched line here is not an absence [[unmatched-grep-is-not-an-absence]].
     """
+    # ⛔ FIXED #129, and it is the same class the docstring above is about. The match was
+    # CASE-SENSITIVE, and the post-mortem lines since #125 begin the sentence with the word:
+    # "**Boot 53,681 real**". Those lines did not parse, did not refuse, and were not counted —
+    # they were INVISIBLE, which is the one outcome the refused/good split exists to prevent.
+    # Three consecutive sessions of evidence (#125, #126) sat in the log unread by the gate that
+    # grades the constant they disagree with. An unmatched grep is not an absence
+    # [[unmatched-grep-is-not-an-absence]]. Fix is the flag, not a second regex.
     good, refused = [], []
     for ln in text.splitlines():
-        if "boot" not in ln:
+        if "boot" not in ln.lower():
             continue
-        m = re.search(r"\bboot\b\s*(?:#\d+\s*=\s*)?([1-9][\d,]{4,})", ln)
+        m = re.search(r"\bboot\b\s*(?:#\d+\s*=\s*)?([1-9][\d,]{4,})", ln, re.I)
         if not m:
             # A line mentioning boot with no number is prose, not a refusal.
-            if re.search(r"\bboot\b\s*(?:#\d+\s*=\s*)?\d", ln):
+            if re.search(r"\bboot\b\s*(?:#\d+\s*=\s*)?\d", ln, re.I):
                 refused.append(ln.strip()[:110])
             continue
         try:
@@ -3158,6 +3165,13 @@ def boot_constant_drift_check(repo):
     CONSTANT TO THE MEASUREMENTS SITTING NEXT TO IT. The samples were in the gauge log
     the whole time. That is what this gate is: the comparison, made mechanically, every
     wrap.
+
+    ✅ #129, 2026-08-08 — THE GATE DID ITS JOB AND THE ANSWER FINALLY CAME BACK. The 75,899
+    above is HISTORY, not the current floor: `s129-D1` re-based `BOOT_FIRSTTURN_TK` to 54,859
+    ±1,178 on seven post-break samples. Nothing in this function was tuned to suit it; what
+    WAS fixed is a blind spot found in the same pass — `_parse_boot_samples` matched
+    case-sensitively and could not see "**Boot 53,681 real**", so three sessions of samples
+    were invisible here. Both readings are in notes/_GAUGE-LOG.md #129.
 
     ⚠ It does NOT prescribe a value, widen a band, or edit the constant. It reports the
     measurement and names the drift [[gate-narrows-its-own-rule]]. Re-pricing the

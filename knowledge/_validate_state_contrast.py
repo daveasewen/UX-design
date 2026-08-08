@@ -51,9 +51,33 @@ class StateContrastSelftestError(Exception):
     """The selftest could not be RUN. That is a failure, not a skip."""
 
 
-def _fallback_wheres(records):
-    """Distinct elements whose background took the declared ancestor-walk fallback."""
-    return sorted({r[2]["where"] for r in records if r[2]["kind"] == "fallback"})
+HOLE_REASON_UNRECORDED = ("reason NOT RECORDED by the measurement that produced this record — "
+                          "re-run the gate; do not infer one")
+
+
+def _fallback_holes(records):
+    """Every un-hit-testable box, as (where, reason) — DECLARED HOLES, `s129-D3`.
+
+    ⛔ These were called "ancestor-fallback backgrounds" and filed as provenance. Dave ruled
+    at #129 that they are NAMED HOLES: each one stays in the report, labelled UNMEASURABLE,
+    carrying the reason its paint stack could not be observed. The alternative on the table —
+    REFUSING them — was rejected because it turns 60 measured records into nothing; and the
+    alternative nobody offered — quietly publishing the ancestor-walk number as if it were a
+    hit-stack measurement — is the invented-number class this file exists to kill.
+
+    ⚠ WHAT A HOLE DOES **NOT** MEAN HERE: it does not waive a failure. The ancestor walk still
+    runs, its ratios are still reported, and a failing one is still ❌. The hole is a statement
+    about the BACKGROUND's provenance, not a licence to stop reporting.
+
+    The reason is MEASURED at the browser, not classified afterwards: `samplePoint()` returning
+    null means the box has no on-screen geometry; a live point whose hit stack does not contain
+    the node means it opted out of hit-testing or something over it did.
+    """
+    seen = {}
+    for r in records:
+        if r[2]["kind"] == "fallback":
+            seen.setdefault(r[2]["where"], r[2].get("reason") or HOLE_REASON_UNRECORDED)
+    return sorted(seen.items())
 
 MEASURE = r"""
 (el) => {
@@ -144,8 +168,15 @@ MEASURE = r"""
     const stack=pt?document.elementsFromPoint(pt[0],pt[1]):[];
     const i=stack.indexOf(node);
     // Not hit-testable here. DECLARED, never hidden: a record is emitted so the audit can say
-    // which backgrounds carry the weaker measurement. It is not a failure and not a hole.
-    if(i<0){out.push({kind:'fallback',where:desc(node),text:(node.textContent||'').trim().slice(0,32)});
+    // which backgrounds carry the weaker measurement. ✅ s129-D3, Dave, #129: this record is now
+    // a NAMED HOLE — reported UNMEASURABLE — and it carries the REASON, which is MEASURED here
+    // rather than guessed downstream. Two distinguishable causes, and only two: no on-screen
+    // geometry at all (samplePoint refused), or a live sample point whose hit stack does not
+    // contain this node (pointer-events:none, or something over it eating the hit).
+    if(i<0){out.push({kind:'fallback',where:desc(node),
+            reason:(pt?'not present in the hit stack at its own sample point (pointer-events:none, or an overlay above it takes the hit)'
+                      :'no on-screen box at measurement time (zero-size, or entirely outside the viewport)'),
+            text:(node.textContent||'').trim().slice(0,32)});
             return ancestorBg(node);}
     let R=0,G=0,B=0,rem=1;                          // src-over compositing, top-down from the node
     for(let k=i;k<stack.length&&rem>0.0005;k++){
@@ -249,8 +280,14 @@ def run(filters):
     return results
 
 HEADLINE_RE = re.compile(r"^\*\*(\d+) text failure\(s\) across (\d+) snippet\(s\)\.\*\*$", re.M)
+# ✅ s129-D3 — the holes count is a STATED FIGURE, so it gets the same treatment as the other two:
+# parsed back out of the artefact and asserted against the body. A stated number with nothing
+# re-reading it is exactly how this file came to claim 38 snippets while carrying 37.
+HOLES_RE = re.compile(r"^\*\*(\d+) DECLARED HOLE\(s\) — un-hit-testable box\(es\), reported "
+                      r"UNMEASURABLE by name \(s129-D3\)\.\*\*$", re.M)
+HOLE_PREFIX = "- ⬛ UNMEASURABLE (declared hole)"
 
-def verify_report(text, n_snippets, total_text):
+def verify_report(text, n_snippets, total_text, n_holes=None):
     """Re-READ the rendered artefact and check it says what the counters say.
 
     The committed audit claimed "across 38 snippet(s)" and carried 37 sections for three sessions:
@@ -272,6 +309,22 @@ def verify_report(text, n_snippets, total_text):
         raise StateContrastReportError(
             f"text-failure count disagrees — headline says {said_fail}, counters say {total_text}, "
             f"artefact carries {len(fails)} failure line(s)")
+    # ✅ s129-D3 — HOLES ARE ASSERTED ON EVERY WRITE. Three numbers must agree: the counter, the
+    # stated header figure, and the ⬛ lines actually in the body. A hole that is counted but not
+    # written, or written but not counted, is the failure mode that matters — a hole going quiet
+    # is indistinguishable from a clean run to every downstream reader.
+    if n_holes is not None:
+        holes = [l for l in lines if l.startswith(HOLE_PREFIX)]
+        mh = HOLES_RE.search(text)
+        if not mh:
+            raise StateContrastReportError(
+                "the audit carries no DECLARED HOLE(s) header line — s129-D3 requires the count "
+                "to be stated on every write, including when it is zero")
+        if int(mh.group(1)) != n_holes or len(holes) != n_holes:
+            raise StateContrastReportError(
+                f"declared-hole count disagrees — header says {int(mh.group(1))}, counters say "
+                f"{n_holes}, artefact carries {len(holes)} ⬛ line(s). A silently dropped hole "
+                f"reads as a measured pass (s129-D3)")
 
 def render_report(res):
     """Render the audit markdown from a results dict.
@@ -292,26 +345,32 @@ def render_report(res):
             if k in seen: continue
             seen.add(k); uniq.append((theme,state,fl))
         tf=[u for u in uniq if u[2]["kind"]=="text"]; iw=[u for u in uniq if u[2]["kind"]=="icon"]
-        rf=[u for u in uniq if u[2]["kind"]=="refusal"]; fb=_fallback_wheres(uniq)
+        rf=[u for u in uniq if u[2]["kind"]=="refusal"]; fb=_fallback_holes(uniq)
         total += len(tf); refused += len(rf); fellback += len(fb)
         bits=[]
         if tf: bits.append(f"❌ {len(tf)} TEXT fail(s)")
         # a refusal is UNMEASURED, so this snippet may NOT be reported as clean
         if rf: bits.append(f"⛔ {len(rf)} PARSE REFUSAL(s) — UNMEASURED")
         if iw: bits.append(f"{len(iw)} icon warn(s)")
-        # provenance, not a verdict: these backgrounds carry the weaker ancestor-only measurement
-        if fb: bits.append(f"⚠ {len(fb)} ancestor-fallback background(s)")
+        # ✅ s129-D3: a NAMED HOLE, not a footnote. The snippet may not read as fully measured.
+        if fb: bits.append(f"⬛ {len(fb)} UNMEASURABLE box(es)")
         out.append(f"## {name} — {' · '.join(bits) if bits else '✅ clean'}")
         for theme,state,fl in tf: out.append(f"- ❌ TEXT [{theme}/{state}] {fl['ratio']}:1 (need {fl['thr']}) — \"{fl['text']}\"")
         for theme,state,fl in rf: out.append(f"- ⛔ StateContrastParseError [{theme}/{state}] cannot parse {fl['prop']}: `{fl['value']}` on {fl['where']}")
         for theme,state,fl in iw: out.append(f"- 🟡 icon [{theme}/{state}] {fl['ratio']}:1 (need 3.0){' (decorative)' if fl.get('ariaHidden') else ''}")
-        for w in fb: out.append(f"- ⚠ ancestor-fallback background (not hit-testable) — {w}")
+        for w, why in fb:
+            out.append(HOLE_PREFIX + f" — {w} — {why}. The paint stack under it cannot be "
+                       "observed, so the pre-2026-08-07 ancestor-only walk ran instead: any "
+                       "ratio reported over this box is that weaker measurement, NOT a hit-stack "
+                       "one. Nothing is invented and nothing is waived (s129-D3).")
         out.append("")
     # INSERT the headline — do NOT assign it. `out[3] = …` overwrote whatever already occupied
     # index 3, which was the FIRST snippet's heading (Accordion, eaten; the audit then claimed 38
     # sections and carried 37), and raised IndexError outright when no snippet was in scope,
     # because index 3 only exists once a section has been appended. A summary is a NEW line.
-    out[3:3] = [f"**{total} text failure(s) across {len(res)} snippet(s).**", ""]
+    out[3:3] = [f"**{total} text failure(s) across {len(res)} snippet(s).**", "",
+                f"**{fellback} DECLARED HOLE(s) — un-hit-testable box(es), reported UNMEASURABLE "
+                f"by name (s129-D3).**", ""]
     if refused:
         out += ["---",
                 f"**⛔ {refused} PARSE REFUSAL(s) — `StateContrastParseError`.** A colour value above "
@@ -320,14 +379,21 @@ def render_report(res):
                 ""]
     if fellback:
         out += ["---",
-                f"**⚠ {fellback} background(s) took the ANCESTOR-WALK FALLBACK.** Their box is not "
-                "hit-testable (`pointer-events:none`, or entirely off-screen at measurement time), so "
-                "the paint stack under it cannot be observed and the pre-2026-08-07 ancestor-only walk "
-                "ran instead. Those measurements are as good as they always were — and no better: an "
-                "overlapping sibling would still be missed. Provenance, not a verdict.",
+                f"**⬛ {fellback} DECLARED HOLE(s) — UNMEASURABLE, `s129-D3` (Dave, #129).** Each box "
+                "above is not hit-testable — it has no on-screen geometry, or it opts out of hit "
+                "testing (`pointer-events:none`), or something over it takes the hit — so the paint "
+                "stack beneath it CANNOT BE OBSERVED. Every one is listed BY NAME with its measured "
+                "reason. The pre-2026-08-07 ancestor-only walk still runs over them, so no failure is "
+                "waived and no threshold moved; but an overlapping sibling would still be missed, and "
+                "those readings may NOT be quoted as hit-stack measurements. ⛔ Dave ruled DECLARE, "
+                "not REFUSE: refusing them would have turned ~60 measured records into nothing, and "
+                "publishing the fallback number as if it were the real one is the invented-number "
+                "class this gate exists to kill. The count above is RE-READ off this artefact and "
+                "asserted equal to the number of ⬛ lines on every write — a hole that goes quiet is "
+                "a failed write, not a clean run.",
                 ""]
     text = "\n".join(out)
-    verify_report(text, len(res), total)
+    verify_report(text, len(res), total, n_holes=fellback)
     return text, total, refused, fellback
 
 def parse_args(argv):
@@ -425,8 +491,10 @@ def selftest():
 
     # ---- report shape: the out[3] defect, both of its faces ----------------------------------
     fake = {"Aaa-first":  [("light","hover",{"kind":"text","text":"Eaten?","ratio":1.0,"thr":4.5})],
-            "Bbb-second": [("light","hover",{"kind":"fallback","where":'span.tip "Tip"',"text":"Tip"}),
-                           ("dark","hover", {"kind":"fallback","where":'span.tip "Tip"',"text":"Tip"})],
+            "Bbb-second": [("light","hover",{"kind":"fallback","where":'span.tip "Tip"',"text":"Tip",
+                                             "reason":"no on-screen box at measurement time"}),
+                           ("dark","hover", {"kind":"fallback","where":'span.tip "Tip"',"text":"Tip",
+                                             "reason":"no on-screen box at measurement time"})],
             "Ccc-third":  [("dark","pressed",{"kind":"icon","ratio":2.0,"thr":3.0,"ariaHidden":True})]}
     text, total, refused, fellback = render_report(fake)
     check("arm_first_heading_survives_the_headline", "## Aaa-first" in text,
@@ -434,8 +502,35 @@ def selftest():
     check("arm_all_sections_present", text.count("\n## ") == 3, f"expected 3 sections, got {text.count(chr(10)+'## ')}")
     check("arm_headline_counts_are_right", "**1 text failure(s) across 3 snippet(s).**" in text, text.split("\n")[3])
     check("arm_fallback_is_declared_not_clean",
-          fellback == 1 and "⚠ 1 ancestor-fallback background(s)" in text and "Bbb-second — ✅ clean" not in text,
-          f"a fallback must be declared per snippet and must not read as clean (fellback={fellback})")
+          fellback == 1 and "⬛ 1 UNMEASURABLE box(es)" in text and "Bbb-second — ✅ clean" not in text,
+          f"a hole must be declared per snippet and must not read as clean (fellback={fellback})")
+    # ---- s129-D3: the holes are NAMED, REASONED, HEADED and RE-COUNTED ------------------------
+    check("arm_hole_header_states_the_count",
+          "**1 DECLARED HOLE(s) — un-hit-testable box(es), reported UNMEASURABLE by name (s129-D3).**" in text,
+          "the holes count is not stated in the header — s129-D3 requires it on every write")
+    check("arm_hole_line_names_box_and_reason",
+          text.count(HOLE_PREFIX) == 1 and 'span.tip "Tip"' in text
+          and "no on-screen box at measurement time" in text,
+          "a declared hole must name the box AND carry its measured reason")
+    # THE BITE THAT MATTERS: a hole that goes quiet must be a failed write, not a clean run.
+    dropped = "\n".join(l for l in text.split("\n") if not l.startswith(HOLE_PREFIX))
+    try:
+        verify_report(dropped, 3, total, n_holes=fellback)
+        check("arm_dropped_hole_bites", False, "a ⬛ line was removed from the artefact and verify_report passed")
+    except StateContrastReportError as e:
+        check("arm_dropped_hole_bites", "declared-hole count disagrees" in str(e), f"wrong refusal: {e}")
+    # …and so must a header that under-states the count while the body still carries it.
+    try:
+        verify_report(text, 3, total, n_holes=fellback + 5)
+        check("arm_miscounted_hole_bites", False, "counters said 6 holes, artefact carried 1, and it passed")
+    except StateContrastReportError:
+        check("arm_miscounted_hole_bites", True)
+    # A record with NO reason must be named as unrecorded, never rendered blank or inferred.
+    nore = {"Zzz": [("light","hover",{"kind":"fallback","where":"svg","text":""})]}
+    ntext, _, _, nfb = render_report(nore)
+    check("arm_hole_without_reason_is_named",
+          nfb == 1 and HOLE_REASON_UNRECORDED in ntext,
+          "a hole whose reason was not recorded must SAY so, not render an empty reason")
     check("arm_fallback_is_not_a_failure", total == 1 and "- ❌ TEXT" in text and text.count("- ❌ TEXT") == 1,
           "a fallback must not be counted as a text failure")
     try:
@@ -481,6 +576,12 @@ def selftest():
     check("arm_unhittable_node_declares_its_fallback",
           [r["kind"] for r in fbk] == ["fallback"],
           f"an un-hit-testable box must measure by ancestor walk AND declare it: {fbk}")
+    # s129-D3 at the browser end: the REASON is measured there, not classified afterwards, and a
+    # `pointer-events:none` box has a live sample point — so it must give the hit-stack reason,
+    # never the off-screen one. Getting these two the wrong way round would be an invented reason.
+    check("arm_unhittable_node_records_its_reason",
+          len(fbk) == 1 and "hit stack" in (fbk[0].get("reason") or ""),
+          f"the hole's reason was not measured at the browser: {fbk}")
 
     if fails:
         print(f"selftest FAILED — {len(fails)} bite(s):", file=sys.stderr)

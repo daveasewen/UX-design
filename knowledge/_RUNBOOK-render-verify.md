@@ -11,6 +11,26 @@ Polaroid failure. **Every step below was run and OBSERVED working 2026-07-23** i
 (contrast maths, `node --check`, gates). **HTML is what Dave reviews, never PNGs.** A standing
 "render-verify OWED" note clears only when a render has been *seen*, not when the pipeline exists.
 
+✅ **RE-VERIFIED 2026-08-08 (#129) — THE #125 CONTRADICTION IS ADJUDICATED: THE DOWNLOAD WORKS.**
+Two #125 subs recorded opposite first-hand readings (succeed-then-`EPERM` vs TLS-blocked-on-3-CDNs);
+three sessions carried both without a winner. Run fresh today, first-hand, exit **0**:
+`chromium_headless_shell-1234` (340M) + ffmpeg landed in full. **The TLS-blocked reading did NOT
+reproduce** — `cdn.playwright.dev` connected and streamed bytes with the step-2 env set. The
+succeed-then-noise reading is the right SPECIES (trailing host-requirements/`EPERM` errors arrive
+AFTER a successful download — steps 3 and pothole 1 already say so). **Two NEW potholes, both
+environmental, neither TLS:**
+- **ENOSPC masquerades as "Download failure, code=1".** `$HOME` sits on a shared `/sessions` volume
+  that was 98% full (237M free); the first attempt died mid-write with `ENOSPC: no space left on
+  device` buried 15 lines up the log. **Check `df -h $HOME` before diagnosing the network**, and set
+  `PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-<session>` (root fs, ~2G free) — that is what made
+  today's run land.
+- **`/tmp` and `/sessions` are SHARED across sessions.** `/tmp/pwdl.log` already existed, owned by a
+  foreign session — unwritable, but READABLE, so a `tail` after a failed redirect served another
+  session's stale traceback as if it were this run's evidence (attribute-the-diff, environmental
+  form). **Use a unique log path under `$HOME`, and treat any pre-existing `/tmp` artefact as
+  foreign.**
+*(Addition only; the #125 strata below and in the session record stand as history. 2026-08-08.)*
+
 ⛔ **THIS RUNBOOK WAS DECLARED DEAD BY A SESSION THAT NEVER OPENED IT — RE-VERIFIED WORKING #124.**
 #123 declared a render gap on the grounds that *"chromium is TLS-blocked in-sandbox"*; #124 carried that
 claim forward as fact and Dave caught it (*"and there is a runbook for chromium and playwright"*). The

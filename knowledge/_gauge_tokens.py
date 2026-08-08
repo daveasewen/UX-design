@@ -117,8 +117,37 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # ⚠ RE-MEASURE WHEN THE SESSION SHAPE CHANGES — a new MCP server or plugin moves this figure.
 #   That warning was already here, correct, and unactioned for ~72 sessions. It is not a note;
 #   it is a task. [[instrument-without-a-consumer]] [[premise-ages-faster-than-rule]]
-BOOT_FIRSTTURN_TK = 65_400
-BOOT_FIRSTTURN_ERR = 1_400
+#
+# ✅ RE-BASED #129, 2026-08-08 — `s129-D1`, DAVE'S CALL, TAKEN AT LAST.
+# The block above stood while SEVEN consecutive same-unit, same-moment measurements landed
+# BELOW it. Every one is `message.usage` on the FIRST TURN — the same instrument, the same
+# moment in the session, as the n=5 pre-break series above:
+#     #111 55,733 · #113 54,038 · #117 54,807 · #118 54,404 · #125 53,681 · #126 53,997 ·
+#     #127 54,375     (n=7, min 53,681, max 55,733, spread 2,052)
+# The structural break sits between #109 and #111 (pre-break #103–#109 mean 65,337; step
+# ≈10,478 real). #111-D2 — "don't fit a constant across a structural break" — is now SPENT:
+# the post-break series has been a PLATEAU since #117 (n=3 mean 54,859, spread inside the old
+# ±1,400 noise band) and four further samples have landed inside it without extending a slide.
+# ⛔ THE RULED VALUE IS 54,859 — the n=3 post-break mean Dave was shown at #117 and picked at
+# #129. It is NOT the n=7 mean, which is 54,434. Both figures are published here on purpose:
+# a session that re-derives 54,434 and "corrects" the constant by hand is doing the thing this
+# project keeps having to un-do. The ruled figure is a RULING; the n=7 mean is EVIDENCE.
+# The error bar is widened to 1,178 = the half-range needed for the bar around 54,859 to cover
+# the whole observed post-break series (54,859 − 53,681 = 1,178 > 55,733 − 54,859 = 874). Same
+# method as before (half-range), re-measured, not re-argued.
+# ⛔ WHAT DID **NOT** MOVE, AND MAY NOT: the wrap-open stop line (150,929), BUDGET_WORKING
+# (200,000), BUDGET_AMBER (160,000) and BUDGET_HARD (256,000). A cheaper boot moves the ROOM,
+# never the LINE — the stop line carries no boot term. Measured effect of this re-base, at the
+# chain size on disk at #129: floor 81,335 → 70,794, room for job + wrap 118,665 → 129,206.
+# ⚠ DECLARED RESIDUAL, not a defect and not silently fixed: the SEVEN samples are FIRST-TURN
+# readings, and the published "floor" is first turn + `_CHAIN.md` (turn 2). Prose across the
+# repo has been comparing a first-turn measurement to the two-term floor and calling it "below
+# the 75,899 floor"; that comparison mixes moments. Re-basing the FIRST-TURN term is the
+# defensible act and is what is done here, so the published floor now computes as
+# 54,859 + the live measured chain, not as a flat 54,859. Nothing is asserted about the chain
+# term, which is measured every run anyway. [[measure-dont-convert-units]]
+BOOT_FIRSTTURN_TK = 54_859
+BOOT_FIRSTTURN_ERR = 1_178
 
 
 def _cache() -> dict:
@@ -237,7 +266,10 @@ def measure_boot(repo: str = REPO) -> dict:
         "chain": disk, "chain_method": method,
         "firstturn": BOOT_FIRSTTURN_TK, "firstturn_err": BOOT_FIRSTTURN_ERR,
         "firstturn_method": (
-            "MEASURED — `message.usage` first turn, n=5; err = half-range. Covers system "
+            "MEASURED — `message.usage` first turn, RE-BASED #129 (`s129-D1`) to the "
+            "post-break plateau: ruled 54,859, n=7 observed 53,681–55,733 (n=7 mean 54,434, "
+            "published as evidence, NOT as the constant); err = half-range covering the "
+            "series. The pre-break n=5 constant was 65,400. Covers system "
             "prompt + tool schemas + deferred-tool list + MCP instructions + MEMORY.md + "
             "CLAUDE.md. Its INTERNAL split is what `ds-025` item 1 now means (MEMORY.md "
             "8,470 lit at #109; 56,308 remainder still unsplit)."),

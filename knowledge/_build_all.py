@@ -415,6 +415,52 @@ _RATCHET = "\n❌ partial ratchet failed (exit {code}) — a registry member re-
 _THEME = "\n❌ theme-cascade sync failed (exit {code}) — canon.css AUTO-THEMES is out of sync with tokens/themes/*.json (+ manifests). Run: python3 knowledge/canon/gen_theme_cascade.py"
 _SHOWROOM = "\n❌ showroom sync failed (exit {code}) — showroom/ is stale against the snippets/tokens/cascade. Run: python3 knowledge/gen_showroom.py"
 _DATAVIZ = "\n❌ DataViz chart gate failed (exit {code}) — see knowledge/_DATAVIZ-GATE.md"
+STATE_CONTRAST_AUDIT = os.path.join(HERE, "_STATE-CONTRAST-AUDIT.md")
+_SC_REFUSAL_LINE = "- ⛔ StateContrastParseError"
+_SC_SNIPPET_LINE = "## "
+
+
+def state_contrast_caveat(path=STATE_CONTRAST_AUDIT):
+    """✅ `s129-D2` — THE PARSE CAVEAT IN THE STATE-CONTRAST REMEDY IS GENERATED, NOT TYPED.
+
+    The sentence this replaces — "the validator's parse() cannot read color(srgb ...)
+    backgrounds (every color-mix() hover), and mis-reports those as ~1:1" — was TRUE when
+    written at #125, went FALSE later the same session when `s125-D3` landed, and was still
+    on disk at #127, which measured 0 parse refusals across all 75 snippets and DELIBERATELY
+    DID NOT RE-STAMP IT: the standing remedy for a claim that goes stale twice is GENERATE
+    IT, and a third hand-correction is the move `s125-D1` exists to forbid. This function is
+    that generation, and Dave ruled it at #129.
+
+    It reads the ARTEFACT, in the artefact's own grammar — the same discipline `verify_report`
+    applies inside the validator — and never a summary, a comment or a memory of a run.
+    [[no-gate-parses-the-artefact]] [[gate-dont-patch]]
+
+    ⚠ IT MUST NEVER RAISE. A remedy string is built at import time, on the failure path of a
+    build; a caveat generator that crashes would take down the routing table that carries it.
+    Anything it cannot measure it SAYS it cannot measure — an UNKNOWN is never defaulted to
+    zero, because "0 refusals" and "I could not look" are opposite advice to the reader
+    [[feedback-measuring-tool-must-not-guess]].
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            lines = f.read().split("\n")
+    except OSError as e:
+        return (" ⚠ PARSE-REFUSAL COUNT UNMEASURED — knowledge/_STATE-CONTRAST-AUDIT.md could "
+                f"not be read ({e.__class__.__name__}). Re-run the gate before judging any "
+                "reading; this caveat is GENERATED from the artefact and there was no artefact.")
+    refusals = sum(1 for l in lines if l.startswith(_SC_REFUSAL_LINE))
+    snippets = sum(1 for l in lines if l.startswith(_SC_SNIPPET_LINE))
+    if refusals:
+        return (f" ⚠ {refusals} PARSE REFUSAL(s) in the artefact covering {snippets} snippet(s) "
+                "— `StateContrastParseError`. Those elements are HOLES, not passes and not "
+                "failures, and a ~1:1 reading near one may be an unread colour rather than a "
+                "design defect. Verify the reading first (s125-D3).")
+    return (f" ✅ 0 parse refusals measured across the {snippets} snippet(s) in the artefact, so "
+            "a low reading here is a REAL measurement, not the pre-s125-D3 parse artefact. "
+            "This sentence is GENERATED from knowledge/_STATE-CONTRAST-AUDIT.md at import "
+            "time (s129-D2) — if it is wrong, the artefact is wrong.")
+
+
 _PKGDELTA = "\n❌ memento-package delta-audit failed (exit {code}) — a package copy has drifted from its knowledge/ source, the two in-package copies disagree, an unknown file appeared in a machinery/ folder, or a shim-ported function/constant changed since its declared provenance commit. See memento-package/_PACKAGE-SPEC.md:13-14 (Dave's #64 boundary ruling: copies only, every copy delta-audited). Run: python3 knowledge/_validate_package_delta.py"
 
 ROUTE_ROWS = [
@@ -513,15 +559,19 @@ ROUTE_ROWS = [
     ("screen gate — compose+icons+a11y over fitness fixtures (re-wired #120)", GATE,
      "\n❌ screen gate failed (exit {code}) — a _fitness-test canon fixture fails compose/icon-source/a11y; see knowledge/_validate_screen.py output"),
     ("state-contrast gate — driven hover/pressed, light+dark (un-exempted #125)", GATE,
-     "\n❌ state-contrast gate failed (exit {code}) — a driven hover/pressed state measures below 4.5:1 (large 3.0:1) in light or dark; see knowledge/_STATE-CONTRAST-AUDIT.md. ⚠ #125: verify the reading before treating it as a design defect — the validator's parse() cannot read color(srgb ...) backgrounds (every color-mix() hover), and mis-reports those as ~1:1."),
-    # ⚠ #127, FOUND AND DELIBERATELY NOT REWRITTEN: the remedy line above still carries the
-    # #125 caveat "parse() cannot read color(srgb ...) backgrounds ... mis-reports those as
-    # ~1:1". That was s125-D3, and s125-D3 WAS FIXED AT #125 — #127 measured 0 parse refusals
-    # across all 75 snippets, before and after. So this remedy text is a THIRD instance, in a
-    # THIRD place, of the same claim-gone-false class this file already documents twice above.
-    # ⛔ NOT re-stamped, for the reason given in that block: the standing remedy for a claim
-    # that keeps rotting is to GENERATE it, and taking a third hand-correction here would be
-    # the exact move s125-D1 exists to forbid. Raised to Dave as a decision. [[gate-don-t-patch]]
+     "\n❌ state-contrast gate failed (exit {code}) — a driven hover/pressed state measures below 4.5:1 (large 3.0:1) in light or dark; see knowledge/_STATE-CONTRAST-AUDIT.md."
+     + state_contrast_caveat()),
+    # ✅ #129 — THE DECISION RAISED AT #127 CAME BACK AS `s129-D2`, AND THE ANSWER WAS GENERATE.
+    # What used to sit here was a hand-typed caveat ("parse() cannot read color(srgb ...) ...
+    # mis-reports those as ~1:1"), true at #125, false by the end of that same session once
+    # s125-D3 landed, and STILL ON DISK at #127 — a THIRD instance, in a THIRD place, of the
+    # claim-gone-false class this file documents twice above. #127 refused to hand-correct it a
+    # third time and left it as EVIDENCE with the question raised to Dave. He ruled: the caveat
+    # is now COMPUTED by state_contrast_caveat() from the artefact itself, at import time.
+    # ⚠ THE COMMENT BLOCK ABOVE THIS ROW IS STILL STRATIFIED AND STILL PARTLY FALSE BY DATE,
+    # AND THAT IS DELIBERATE — it is the RECORD of how the class was found, corrected twice and
+    # finally removed from human hands. It is not the remedy any longer; the remedy is a
+    # function, and a function cannot go stale without the artefact going stale with it.
     ("state-contrast gate selftest — paint stack, report arithmetic, named args", ABORT, None),
     ("type-composites ratchet — tier (b), debt 1101 shrink-only (Dave #119)", GATE,
      "\n❌ type-composites ratchet failed (exit {code}) — NEW violation(s) above the declared debt in knowledge/_type_ratchet.json; the ratchet only shrinks (s119-D1). Fix the new violations; do NOT raise the baseline."),
@@ -644,6 +694,32 @@ def selftest():
     else:
         raise AssertionError("selftest (c): completeness stayed green with a route removed — the check cannot fail")
     print(f"  selftest (c): mutation control — dropping the route for {victim!r} turns (a) red ✓")
+    # (d) `s129-D2` — THE STATE-CONTRAST CAVEAT IS GENERATED, AND THIS IS WHAT RE-CHECKS IT.
+    # A permanent bite, on the s125-D1 precedent: the ruling is not "the sentence is currently
+    # right", it is "no human types this sentence again". So the arm drives the generator over
+    # synthetic artefacts and asserts the OUTPUT MOVES WITH THE INPUT — a re-typed constant
+    # string would sail through arm (a) and die here.
+    import tempfile as _tf
+    _d = _tf.mkdtemp(prefix="sc-caveat-bite-")
+    _clean = os.path.join(_d, "clean.md"); _dirty = os.path.join(_d, "dirty.md")
+    with open(_clean, "w", encoding="utf-8") as fh:
+        fh.write("## Alpha — ✅ clean\n\n## Beta — ✅ clean\n")
+    with open(_dirty, "w", encoding="utf-8") as fh:
+        fh.write("## Alpha — x\n" + _SC_REFUSAL_LINE + " [light/hover] cannot parse color: `oklab(1)` on a\n")
+    c_clean, c_dirty = state_contrast_caveat(_clean), state_contrast_caveat(_dirty)
+    c_gone = state_contrast_caveat(os.path.join(_d, "absent.md"))
+    assert "0 parse refusals" in c_clean and "2 snippet(s)" in c_clean, \
+        f"caveat did not read a clean artefact: {c_clean!r}"
+    assert "1 PARSE REFUSAL(s)" in c_dirty, \
+        f"caveat did not move with a refusal in the artefact — it is typed, not generated: {c_dirty!r}"
+    assert c_clean != c_dirty, "the caveat is CONSTANT across opposite artefacts — s129-D2 has regressed"
+    assert "UNMEASURED" in c_gone and "0 parse refusals" not in c_gone, \
+        f"a missing artefact must read UNMEASURED, never as zero: {c_gone!r}"
+    live = ROUTES["state-contrast gate — driven hover/pressed, light+dark (un-exempted #125)"][1]
+    assert live.endswith(state_contrast_caveat()), \
+        "the live remedy no longer ends in the GENERATED caveat — someone re-typed it (s129-D2)"
+    print("  selftest (d): state-contrast caveat is GENERATED — moves with the artefact, "
+          "refuses to read a missing artefact as zero, and the live remedy carries it ✓")
     print(f"selftest PASS — exact-ID failure routing over {n} steps; unknown never defaulted (#77)")
     return 0
 

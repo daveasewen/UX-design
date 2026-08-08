@@ -5156,3 +5156,242 @@ gets worked around rather than obeyed [[honest-refusal-needs-a-legal-form]].
 **Receipt:** `knowledge/_git_commit.sh` — usage block · explicit-path staging · `--cleanup=verbatim` ·
 SUBJECT-IDENTITY ASSERT. **And this session's commit is the live proof:** its msgfile's first line
 deliberately begins with `#128`.
+
+---
+
+## ★★ #129 — FOUR RULINGS, AND THREE OF THEM ARE THE SAME SENTENCE (Dave live, four multiple-choice picks, all his; enactment DELEGATED to an OPUS sub)
+
+⚠ **SHAPE FIRST.** Four decisions were put to Dave as multiple choice with nothing pre-selected, and he
+took all four the same day. Three of them — `s129-D1`, `s129-D2`, `s129-D3` — are the same sentence
+wearing different clothes: **a claim that stopped being true is not authority, and the fix is never a
+fresher hand-typed claim.** The fourth, `s129-D4`, is a small one that has been costing this project
+diff noise for months. All four are **re-openable but FIRM**.
+
+### `s129-D1` — THE BOOT FLOOR IS RE-BASED: 75,899 → 54,859
+
+**Dave's ruling, in plain words:** stop publishing 75,899. The measured post-break boot is ~54,859 and
+that is now the constant.
+
+**WHY.** **Seven** consecutive measurements, all in the SAME UNIT (real tokens) taken at the SAME MOMENT
+(`message.usage`, first turn), landed below the published constant: **#111 55,733 · #113 54,038 ·
+#117 54,807 · #118 54,404 · #125 53,681 · #126 53,997 · #127 54,375** (n=7, spread 2,052). The
+structural break sits between #109 and #111 (pre-break #103–#109 mean 65,337 ⇒ step ≈10,478 real), and
+**#111-D2 — *"don't fit a constant across a structural break"* — is SPENT, not overruled**: the
+post-break series has been a plateau since #117, and four further samples landed inside it without
+extending a slide. ★ **A measurement disagreeing with a published constant is EVIDENCE, not AUTHORITY**
+— but seven of them, with the break behind us, is the evidence finally being allowed to become one.
+
+⚠ **THE RULED FIGURE IS NOT THE n=7 MEAN.** Dave picked **54,859** — the n=3 figure he was shown at
+#117 and priced then. The n=7 mean is **54,434**. **Both** are inscribed in `_gauge_tokens.py`, on
+purpose: the ruled figure is a RULING and the n=7 mean is EVIDENCE, and a future session that
+"corrects" 54,859 to 54,434 by hand is doing the exact thing this project keeps having to un-do.
+
+⛔ **WHAT DID NOT MOVE, AND MAY NOT:** the wrap-open stop line **150,929**, `BUDGET_WORKING` 200,000,
+`BUDGET_AMBER` 160,000, `BUDGET_HARD` 256,000. **A cheaper boot moves the ROOM, never the LINE** — the
+line carries no boot term [[stop-line-repriced-93]].
+
+⛔ **A SECOND DEFECT, FOUND WHILE ENACTING, AND IT IS THE SAME CLASS AS THE RULING.**
+`_capture_gate._parse_boot_samples()` matched **case-sensitively**, and every post-mortem since #125
+opens the sentence with the word — ***"Boot 53,681 real"***. Those lines did not parse, did not REFUSE,
+and were not counted: **three sessions of the very evidence this re-base rests on were invisible to the
+gate that grades the constant they disagree with.** Fixed with one `re.I` flag on both the match and
+the refusal probe; parsed samples **28 → 31** (the third is #127's sample, which had never been written
+into the log at all and was transcribed at #129 with its provenance)
+[[unmatched-grep-is-not-an-absence]] [[gap-in-record-vs-gap-in-evidence]].
+
+⚠ **DECLARED, because the shape is dangerous:** the parser fix and the re-base landed in the same pass,
+and the fix moves the window the gate grades. **Both readings are published** so nobody has to take the
+sub's word for which did the work — old parser + new constant ⇒ **FAILS** (mean 56,078, delta +1,219,
+window still straddling the break); fixed parser ⇒ **PASSES** (mean 54,325, delta −533). The constant
+was **not fitted to the window**: 54,859 is Dave's figure and it clears the bar by 645
+[[check-after-its-own-remedy]].
+
+⚠ **DECLARED RESIDUAL, not silently fixed:** the seven samples are FIRST-TURN readings and the
+published "floor" is first turn **+ `_CHAIN.md`** (which lands at turn 2). Repo prose has been comparing
+a first-turn measurement to the two-term floor and calling it *"below the 75,899 floor"* — that mixes
+moments. Re-basing the **first-turn term** is the defensible act and is what was done, so the floor now
+computes as 54,859 + the live measured chain (**70,794** at today's chain size, was 81,335) rather than
+as a flat 54,859 [[measure-dont-convert-units]].
+
+⛔ **NO #129 SAMPLE WAS TAKEN.** The enacting sub cannot read the conductor's first-turn `message.usage`.
+An eighth datapoint is **OWED by the conductor's wrap**; it is UNKNOWN and nothing was substituted
+[[feedback-measuring-tool-must-not-guess]].
+
+**Receipts:** `knowledge/_gauge_tokens.py` — `BOOT_FIRSTTURN_TK` 65,400 → **54,859**,
+`BOOT_FIRSTTURN_ERR` 1,400 → **1,178** (half-range widened to cover the whole observed post-break
+series), plus a dated stratum carrying all seven datapoints and both means · `knowledge/_capture_gate.py`
+— `_parse_boot_samples()` case-insensitivity + a dated stratum on `boot_constant_drift_check`'s docstring
+· `notes/_GAUGE-LOG.md` — `#### 2026-08-08 #129` block with both gate readings and the transcribed #127
+sample. **Verification:** `boot_constant_drift_check` **0 failures**, note reads *"constant 54,859 ±1,178
+vs recent mean 54,217 (n=6, last 6 sessions of 31 parsed) — delta -642"*. **Mutation bites, in-process,
+restored after each:** constant reverted to 65,400 ±1,400 ⇒ **FAILS**; error bar collapsed to ±100 ⇒
+**FAILS**; restore ⇒ **0 failures**.
+
+### `s129-D2` — THE STATE-CONTRAST REMEDY CAVEAT IS GENERATED, NOT RE-STAMPED
+
+**Dave's ruling, in plain words:** the `ROUTE_ROWS` remedy string in `_build_all.py` stops being typed.
+Compute it from the live measurement at build time.
+
+**WHY.** The sentence in question — *"the validator's `parse()` cannot read `color(srgb ...)`
+backgrounds (every `color-mix()` hover), and mis-reports those as ~1:1"* — was **true when written at
+#125**, went **false later the same session** when `s125-D3` landed, and was **still on disk at #127**,
+which measured **0 parse refusals across all 75 snippets**. #127 refused to hand-correct it a third time
+and **deliberately left it as EVIDENCE**, raising the question rather than taking it. Dave answered with
+the standing rule: **stale twice ⇒ GENERATE, don't re-stamp** [[no-gate-parses-the-artefact]]. A third
+hand-correction is the precise move `s125-D1` exists to forbid.
+
+**HOW.** `state_contrast_caveat()` reads `knowledge/_STATE-CONTRAST-AUDIT.md` **in the artefact's own
+grammar** — counting `- ⛔ StateContrastParseError` lines and `## ` headings — and returns one of three
+sentences: *N refusals present*, *0 refusals across N snippets*, or **UNMEASURED** when the artefact
+cannot be read. ⚠ **The third is the load-bearing one:** *"0 refusals"* and *"I could not look"* are
+**opposite advice** to a reader standing over a red build, so an unreadable artefact is never defaulted
+to zero [[feedback-measuring-tool-must-not-guess]]. It also **may never raise** — it builds a string at
+import time on a failure path, and a caveat generator that crashes would take down the routing table
+that carries it.
+
+★ **The comment block above the row was left stratified and partly false BY DATE, on purpose.** It is
+the RECORD of how the class was found, corrected twice and finally taken out of human hands. It is no
+longer the remedy; the remedy is a function, and a function cannot go stale without the artefact going
+stale with it.
+
+**Receipts:** `knowledge/_build_all.py` — `state_contrast_caveat()` + `STATE_CONTRAST_AUDIT` /
+`_SC_REFUSAL_LINE` / `_SC_SNIPPET_LINE`; the row now reads `"… see knowledge/_STATE-CONTRAST-AUDIT.md."
++ state_contrast_caveat()`; **permanent bite wired as `selftest` arm (d)**, on the `s125-D1` precedent —
+it drives the generator over synthetic artefacts, asserts the output MOVES with the input, asserts a
+missing artefact reads UNMEASURED and never zero, and asserts **the live remedy still ends in the
+generated caveat** (so a re-typed constant string dies there). **Verification:** live remedy tail reads
+*"✅ 0 parse refusals measured across the 75 snippet(s) in the artefact…"*; `_build_all.py --selftest`
+**PASS, 102 steps, arms (a)–(d)**. **Mutation:** the refusal count was replaced by a hand-typed `0` in
+the file ⇒ arm (d) **RED** (*"caveat did not move with a refusal in the artefact — it is typed, not
+generated"*); file restored and **sha256 re-verified identical**
+(`bae916406d74a79d243c7ace9fcc527da7a844a277db2d54da7b069976cfb18b`).
+
+### `s129-D3` — THE 15 UN-HIT-TESTABLE BOXES ARE DECLARED AS NAMED HOLES
+
+**Dave's ruling, in plain words:** don't refuse them and don't quietly publish them. Each of the 15 stays
+in the audit, labelled **UNMEASURABLE**, carrying its reason — and the count is asserted in the header on
+every write.
+
+**WHY.** These boxes have no observable paint stack: they are off-screen, zero-size, or opt out of hit
+testing (`pointer-events:none`), so the browser's own hit stack cannot be read under them. #127 tried
+**refusing** them and it turned **60 measured records into holes** — too much thrown away. The opposite
+move, publishing the weaker ancestor-walk number as though it were a hit-stack measurement, is the
+**invented-number class** this gate exists to kill. Declaring is the only option that loses nothing and
+claims nothing.
+
+⚠ **WHAT A HOLE DOES NOT MEAN HERE, and it was the sharp edge of the enactment:** a hole is a statement
+about the BACKGROUND's provenance, **not a licence to stop reporting**. The ancestor walk still runs, its
+ratios are still published, and a failing one is still ❌. ⛔ **No threshold moved and NOTHING was
+waived** — the 4 REAL failures stand exactly as they were (Banner `.abtn:active` **4.09:1** ×4 ·
+Selection-controls **3.95:1** ×6 and **3.66:1** ×2 · Tabs dark **1.00:1** ×2).
+
+★ **The reason is MEASURED, not classified afterwards.** The browser records which of exactly two causes
+applied — no on-screen geometry at all (`samplePoint()` refused), or a live sample point whose hit stack
+does not contain the node — and a record arriving with **no** reason renders as *"reason NOT RECORDED …
+re-run the gate; do not infer one"* rather than blank.
+
+**Receipts:** `knowledge/_validate_state_contrast.py` — `_fallback_wheres()` → `_fallback_holes()`
+(returns `(where, reason)`), a `reason` field measured in `effBg()`, per-snippet bit `⬛ N UNMEASURABLE
+box(es)`, body lines `- ⬛ UNMEASURABLE (declared hole) — <box> — <reason>…`, a header line
+`**N DECLARED HOLE(s) …**`, and `verify_report(..., n_holes=)` asserting **counter = header = ⬛ lines**
+on every write. **Five new pure arms** incl. `arm_dropped_hole_bites` (delete a ⬛ line from the artefact
+⇒ *"declared-hole count disagrees"*) and `arm_miscounted_hole_bites`, plus one browser arm
+`arm_unhittable_node_records_its_reason`. **Arms 19 → 25.**
+
+✅ **THE AUDIT WAS REGENERATED AND ALL 25 ARMS ARE GREEN** — `_STATE-CONTRAST-AUDIT.md` now carries
+`**14 DECLARED HOLE(s) …**` in its header, 14 `⬛ UNMEASURABLE (declared hole)` lines in its body, and
+the two are asserted equal against the counter on the write that produced it. ⛔ **The 4 REAL failures
+are byte-identical to the committed ones** — 14 `❌ TEXT` lines, the same ratios, the same strings.
+
+⛔⛔ **AND HERE IS THIS SESSION'S OWN INSTANCE OF THE CLASS IT WAS CONVENED TO FIX.** The enacting sub
+first reported *"there is no browser in this sandbox — `playwright install chromium` failed on all three
+CDNs with `UNABLE_TO_GET_ISSUER_CERT_LOCALLY`"*, wrote that into this file and into `_rulings.json` as
+UNPROVEN-and-priced, and **it was wrong.** The install had been run **without opening
+`knowledge/_RUNBOOK-render-verify.md`**, whose step 2 sets `NODE_TLS_REJECT_UNAUTHORIZED=0` alongside
+`NODE_EXTRA_CA_CERTS`. ★ **A confident first-hand negative, produced by not reading the runbook, is
+exactly what the #125 contradiction is made of** — and it would have been filed as a third data point in
+that argument [[feedback-read-the-runbook]] [[a-crash-is-not-a-fail]]. **Corrected in the same window,
+by addition, with the wrong reading left visible.**
+
+**How it actually ran, for the next reader:** browsers from a parallel #129 sub's
+`PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-129` · the missing system library resolved **without
+root** by `apt-get download libxdamage1`, `dpkg-deb -x`, and `LD_LIBRARY_PATH` · ⚠ **a full 75-snippet
+run cannot complete in one tool call here — the sandbox kills at ~178s wall and *nothing survives a call
+boundary*, so a `nohup` background run was silently killed with an empty log and an untouched artefact**
+[[sandbox-call-boundary-kills]]. It was driven in **resumable per-snippet chunks with the sink persisted
+after every snippet**, then rendered through the module's own `render_report`/`verify_report` and written
+by the same path `main()` uses — **75/75 measured, coverage asserted.**
+
+⚠ **ONE MEASURED DELTA, ATTRIBUTED, NOT EXPLAINED AWAY: holes 15 → 14.** Alert's second link
+(`a "Update contact details"`) is hit-testable today and takes no fallback. ★ **A control was run
+before it was called environmental:** the **pre-change validator, from `git show HEAD:`, driven on the
+same snippet in the same browser today**, also reports **one** hole for Alert — so the delta is the
+browser build, not `s129-D3`'s code, whose emit condition is unchanged apart from the added `reason`
+field. Stable across three consecutive runs [[attribute-the-diff]].
+
+### `s129-D4` — ASCII IN THE MACHINE STORE, GLYPHS IN THE PROSE
+
+**Dave's ruling, in plain words:** `knowledge/_rulings.json` string values are plain ASCII with bracketed
+tags. The chain, the docs and chat keep their glyphs.
+
+**WHY.** The store is read by machines and diffed by humans; glyphs there buy nothing and cost encoding
+noise. Prose is read by Dave, where the glyphs are load-bearing.
+
+**MAPPING USED (the full set actually present in the file, 165 characters across 15 distinct glyphs):**
+`⛔ → [BLOCK]` · `★ → [STAR]` · `⬛ → [OPEN]` · `⚠ → [WARN]` · `§ → SS` (the form already in use in the
+newer entries) · `→ → ->` · `— – − → -` · `· → -` · `① ② ③ → (1) (2) (3)` · `× → x` · `± → +/-` ·
+`… → ...` · `≠ → !=`. `[BLOCK]` and `[OPEN]` were unused in the file at ruling time and are declared
+**forward**, so the next entry has a legal form to reach for.
+
+⛔ **SERIALIZER HAZARD, HANDLED FIRST AND EXPLICITLY.** `_rulings.json` once produced a **2,310-line
+diff from a one-field edit** because a writer re-serialised it at `indent=2` with a trailing newline.
+**Before anything was touched**, `json.dumps(parse, indent=1, ensure_ascii=False)` was proved to
+reproduce the committed bytes **exactly** — sha256 `11c97009ef78…`, no trailing newline — and that is
+the only form used to write it [[serializer-defaults-reformat-the-file]] [[attribute-the-diff]].
+
+★ **TWO THINGS THE ENACTMENT FOUND, BOTH BY BEING GATED.** ① The conversion itself broke **nothing** —
+but the first write of the four new entries added **22 fresh `_governs` failures**, and they were
+**PROSE IN `evidence`**: the same class-C defect that is 12 of Dave's standing 30, caught by the gate
+**before it landed** rather than three sessions later. Evidence carries POINTERS; the prose moved to
+`enacted`, and every pointer is now a `#127` durable anchor that resolves today. ② **A constraint
+nobody had stated:** an anchor's literal is text copied out of a TARGET file, so **an ASCII-only store
+cannot anchor on a line containing a glyph** — all four entries anchor on ASCII-only literals.
+⚠ And the positive control earned its keep: the first attempt at a self-pointer,
+`knowledge/_rulings.json#s129-D4`, went red as **AMBIGUOUS** (2 matches) and was narrowed to
+`"id": "s129-D4"`. An ambiguous anchor is a guess wearing a line number.
+
+**Receipt + verification:** `knowledge/_rulings.json` — 0 non-ASCII characters remain in any string
+value; four new entries `s129-D1..D4` added in ASCII. `_governs.py --selftest` failure count
+**30 → 30, UNCHANGED** — those 30 are pre-existing, they are **Dave's** (class B: 18 entries missing
+`evidence`/`status`, where filling them means asserting what he ruled; class C: 12 prose-in-`evidence`),
+and this enactment neither fixed nor worsened one of them.
+
+### ⛔ The DO-NOT-RULE list held
+
+Untouched, by name: the 30 `_capture_gate` pointer entries · the 4 REAL contrast failures · the 19
+`LEGACY_IDS` · type-ratchet debt 1,101 · G1–G17 · recorder constants · v1 pack sync · mono grey ramp ·
+SC dark · stop line 150,929 and the 200,000 / 256,000 walls · `_capture_gate.py`'s caps · the dream-pass
+proposals file.
+
+### s129-D5 — "Conclusions that could be queries" is a STANDING HUNT, and inscribed conclusions are DEBT (Dave, mid-session, 2026-08-08)
+
+**Dave's words:** *"okay cool, so lets get this nailed please: 'verified' is being treated as a
+property of the artefact, when it is a property of a moment. The trajectory you've already ruled
+(stale twice => generate) is the right one — the deeper move is to treat every remaining inscribed
+conclusion as debt with the same three options each: generate it, give it a named re-checker, or
+stamp it with an expiry. Worth a standing hunt in the dream-pass spec: 'find conclusions that could
+be queries.'"* (ratifying the conductor's 5-whys read-back of the morning's five defects, all one
+class: a snapshot read later as if current.)
+
+**WHY:** the root under #125's s125-D1 generalisation. Seven media to date: prose · a comment · a
+return value · a pointer · the defect's own record · a commit subject (#128's "after #127") · the
+sandbox environment itself (#129: shared /tmp served a foreign session's log as evidence; ENOSPC
+wore a download failure's clothes). Where conclusions became generators (chain footer fixed point,
+schematic, anchor pointers, today's D2 caveat) rot stopped; everywhere else it is guaranteed.
+
+**Enacted #129, addition only:** `.claude/agents/dreamer.md` hunt list gains **"Conclusions that
+could be queries"** — every hit must carry exactly one of the three triage options (generate /
+named re-checker / expiry); a hit with none is a complaint, not a proposal. Registered as
+`s129-D5` in `knowledge/_rulings.json` (ASCII per s129-D4, round-trip byte-verified).
+**Deliberately NOT enacted:** no sweep of existing inscribed conclusions was started — the hunt
+finds them; triage of each find is a proposal for Dave, not an agent's bulk conversion.
