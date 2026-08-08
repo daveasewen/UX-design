@@ -32,7 +32,25 @@ Needs:  headless Chromium via Playwright (see memory: sandbox-html-rendering) �
 Writes: _STATE-CONTRAST-AUDIT.md.  Exit non-zero on any TEXT failure.
 """
 import os, re, sys, glob, tempfile
-from playwright.sync_api import sync_playwright
+try:
+    from playwright.sync_api import sync_playwright
+except ModuleNotFoundError as _e:
+    _PLAYWRIGHT_IMPORT_ERROR = repr(_e)  # `as _e` is scoped to the except block (Python 3 deletes
+    # it on exit), so the closure below must capture a plain string now, not the exception object.
+    # ENV-DEPENDENCE (residual ⑥, #133): with the module missing, the OLD code let this raise
+    # bare at import time — an unhandled ModuleNotFoundError, traceback to stderr, rc=1. rc=1 is
+    # the SAME code `main()` returns for a real measured failure (total or refused truthy), so a
+    # box with no playwright installed and a box with a genuine text-contrast failure were
+    # INDISTINGUISHABLE by exit code — the class of silent variance this file exists to refuse
+    # everywhere else (StateContrastParseError, the unknown-hole reason, the unmatched filter).
+    # Fix: defer the failure to a NAMED, attributable exception on first actual use
+    # (`sync_playwright()` calls below), so `python3 _validate_state_contrast.py --selftest` on a
+    # box without the module still prints a StateContrastSelftestError and exits 2 — the same
+    # contract as "chromium would not launch" a few lines below, not a bare traceback at rc=1.
+    def sync_playwright():
+        raise StateContrastSelftestError(
+            f"the 'playwright' module is not installed ({_PLAYWRIGHT_IMPORT_ERROR}) — this gate cannot be proven "
+            "without it; run `pip install playwright && playwright install chromium`")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SNIP = os.path.join(HERE, "snippets")
@@ -201,6 +219,24 @@ MEASURE = r"""
     if(n.tagName.toLowerCase()==='svg'){
       const fc=(cs.fill&&cs.fill!=='none')?cs.fill:cs.color, fg=parse(fc,'fill',n);
       if(fg){const bg=effBg(n),r=ratio(fg,bg); if(r<3.0) out.push({kind:'icon',ariaHidden:!!n.closest('[aria-hidden="true"]'),ratio:Math.round(r*100)/100,thr:3.0});}
+      // s134-D1 (Dave, #134): "we only care about the glyph having enough contrast" / "the glyph
+      // is all we care about ... it is always accompanied by a label". The internal MARK (an inner
+      // path/use painted fill:var(--mark), a colour distinct from the shape's own fill) is the SOLE
+      // GATED roundel leg — held to the small-text 4.5 threshold, as a real TEXT failure (never
+      // waived). The shape-on-surface leg above (kind:'icon', 3.0) stays WARN-only, as it always
+      // has — this file already never failed the gate on it, so s134-D1 needed no change there.
+      if(fg){
+        for(const inner of n.querySelectorAll('*')){
+          const ics=getComputedStyle(inner);
+          const ifc=(ics.fill&&ics.fill!=='none')?ics.fill:null;
+          if(!ifc) continue;
+          const mfg=parse(ifc,'fill',inner);           // unreadable mark colour: refuse() propagates,
+          if(!mfg) continue;                            // caught by the named-refusal path below (unchanged)
+          if(mfg[0]===fg[0]&&mfg[1]===fg[1]&&mfg[2]===fg[2]) continue;  // same colour as the shape: not a distinct mark
+          const mr=ratio(mfg,fg);
+          if(mr<4.5) out.push({kind:'text',text:'[MARK] '+desc(inner),ratio:Math.round(mr*100)/100,thr:4.5});
+        }
+      }
     }
    }catch(e){
     // A refusal is a RESULT, not a skip: it is carried out as a first-class record, counted,

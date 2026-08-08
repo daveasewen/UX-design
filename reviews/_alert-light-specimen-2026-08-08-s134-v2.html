@@ -126,15 +126,11 @@
   .alert.ok{ --accent:var(--ok); --tint:var(--ok-t); }
   .alert.info{ --accent:var(--info); --tint:var(--info-t); }
 
-  /* the callout shell — TINT-ONLY (s134-D4, Dave #134: "nailed to the mast"). RETIRED BY
-     DECLARATION: the prior construction was `border:1px solid var(--accent);` (full 1px accent
-     edge) on this rule, dropped per s134-D4 — shell = tint background only, no border/accent
-     edge; glyph ink stays #1A1A1A per s122-D2/s134-D2 (unchanged, see .ic below). --accent is
-     still bound per-status above for the icon/glyph colour channel — only the shell edge is retired. */
+  /* the callout shell — tinted surface, full 1px accent border, SURFACE radius role */
   .alert{ display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
-    background:var(--tint); border-radius:var(--border-radius-surface);
+    background:var(--tint); border:1px solid var(--accent); border-radius:var(--border-radius-surface);
     color:var(--text); overflow:hidden;
-    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease; }
+    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease, border-width .3s ease; }
   /* icon centres on the FIRST text line (24px = one .t-ed-body line box) and holds position when copy wraps */
   .alert .ic{ flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:#1A1A1A; }
   .alert .ic svg{ width:20px; height:20px; display:block; fill:currentColor; }
@@ -183,10 +179,8 @@
     .alert .x:hover,.alert .x:active{ transform:none !important; filter:none !important; }
   }
   /* ===== AUTO-PARTIAL press-physics END ===== */
-  /* s134-D4: `border-width:0;` retired from this rule — the shell carries no border to collapse
-     now (tint-only). */
   .alert.removing{ max-height:0 !important; opacity:0; margin-top:0; margin-bottom:0;
-    padding-top:0; padding-bottom:0; }
+    padding-top:0; padding-bottom:0; border-width:0; }
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;

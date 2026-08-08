@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RAG Roundel Matrix — 4 themes × light/dark — 2026-08-08 s134</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:32px;background:#e5e5e5;color:#111}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{color:#555;font-size:13px;margin-bottom:24px;max-width:900px}
+  table{border-collapse:collapse;width:100%;background:#fff}
+  th,td{border:1px solid #ccc;vertical-align:top;padding:0}
+  th{background:#222;color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:8px 12px;text-align:left}
+  .themecell{padding:10px 12px;font-weight:700;font-size:13px;background:#fafafa;width:120px}
+  .themecell .note{display:block;font-weight:400;font-size:11px;color:#777;margin-top:4px}
+  .cell{padding:18px 14px}
+  .marks-row{display:flex;gap:22px;flex-wrap:wrap}
+  .mark{display:flex;flex-direction:column;align-items:center;gap:6px;width:96px}
+  svg.roundel{width:36px;height:36px;flex:none}
+  .label{font-size:10px;text-transform:uppercase;letter-spacing:.03em;opacity:.75}
+  .hexes{font-size:9.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.5;text-align:center;opacity:.9}
+  .contrast{font-size:9px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.5;text-align:center;opacity:.8}
+  .fail{color:#c0392b;font-weight:700}
+  .tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.03em;padding:1px 5px;border-radius:3px;margin-top:2px}
+  .tag.declared{background:#00847F;color:#fff}
+  .tag.fallthrough{background:#A8000B;color:#fff}
+  .legend{font-size:12px;margin-bottom:16px}
+  .legend .tag{margin-right:6px}
+</style>
+</head>
+<body>
+<h1>RAG alert roundels — icon + enclosure only — 4 themes × light/dark</h1>
+<p class="sub">Marks reuse the real SVG symbols from <code>knowledge/snippets/Alert.reference.html</code> (al-error / al-warning / al-success / al-info). Fill = enclosure colour, mark = inner glyph colour. Source values pulled from <code>knowledge/tokens/semantic-colour.json</code> (Mono base) and <code>knowledge/tokens/themes/apollo-{legacy,console,supercharge}.overrides.json</code>. Contrast pairs shown under each roundel: mark-on-shape (internal glyph legibility) and shape-on-surface (roundel salience against the theme ground). Per-cell tag states whether the value is DECLARED in that theme's own file or FALL-THROUGH (inherited from Mono because the theme never declared it).</p>
+
+<div class="legend">
+  <span class="tag declared">DECLARED</span> value found in the theme's own override/base file
+  &nbsp;&nbsp;
+  <span class="tag fallthrough">FALL-THROUGH</span> theme has no override — rendering the inherited Mono value
+</div>
+
+<!-- SVG sprite, byte-matched to Alert.reference.html -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="al-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+<symbol id="al-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+<symbol id="al-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+<symbol id="al-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+</svg>
+
+<table id="matrix"></table>
+
+<script>
+// ---- WCAG contrast helper ----
+function hexToRgb(hex){
+  hex = hex.replace('#','');
+  if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+  const n = parseInt(hex,16);
+  return [(n>>16)&255,(n>>8)&255,n&255];
+}
+function srgbToLin(c){
+  c/=255;
+  return c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4);
+}
+function relLum(hex){
+  const [r,g,b] = hexToRgb(hex).map(srgbToLin);
+  return 0.2126*r+0.7152*g+0.0722*b;
+}
+function contrast(hex1,hex2){
+  const L1 = relLum(hex1), L2 = relLum(hex2);
+  const lighter = Math.max(L1,L2), darker = Math.min(L1,L2);
+  return (lighter+0.05)/(darker+0.05);
+}
+function fmt(hex1,hex2){
+  const r = contrast(hex1,hex2);
+  return r.toFixed(2)+':1';
+}
+function isFail(hex1,hex2,min){
+  return contrast(hex1,hex2) < min;
+}
+
+// ---- data: source-cited per theme/mode/status ----
+const THEMES = [
+  {
+    name: 'Mono',
+    surface:{light:'#FFFFFF', dark:'#1A1A1A', declared:true,
+      note:'canonical mono ground, referenced throughout semantic-colour.json'},
+    statuses:{
+      error:  {fill:'#F6604C', mark:'#1A1A1A', declared:true, src:'semantic-colour.json:461-471 (fill) / canon dark-mode css :70 (mark, s122-D2)'},
+      warning:{fill:'#E0A61F', mark:'#1A1A1A', declared:true, src:'semantic-colour.json:483-493 (fill) / :71 (mark, s122-D2)'},
+      success:{fill:'#66CC8D', mark:'#1A1A1A', declared:true, src:'semantic-colour.json:505-515 (fill) / :72 (mark, s122-D2)'},
+      info:   {fill:'#78A7E8', mark:'#1A1A1A', declared:true, src:'semantic-colour.json:527-537 (fill) / :73 (mark, s122-D2)'}
+    }
+  },
+  {
+    name: 'Legacy',
+    surface:{light:'#FFFFFF', dark:'#1A1A1A', declared:false,
+      note:'apollo-legacy.overrides.json declares no page/surface token — inherits Mono ground by fall-through'},
+    statuses:{
+      error:  {fill:'#A8000B', mark:'#FFFFFF', declared:true, src:'apollo-legacy.overrides.json ~106 (rag/error, Dave figma value s131-D1) / ~349 (marks.error)'},
+      warning:{fill:'#FFBB33', mark:'#000000', declared:true, src:'apollo-legacy.overrides.json ~128 (rag/warning, Dave figma value s131-D1) / ~360 (marks.warning)'},
+      success:{fill:'#00847F', mark:'#FFFFFF', declared:true, src:'apollo-legacy.overrides.json ~62 (rag/success, Dave figma value s131-D1) / ~371 (marks.success)'},
+      info:   {fill:'#305A85', mark:'#FFFFFF', declared:true, src:'apollo-legacy.overrides.json ~161 (rag/information, Dave figma value s131-D1) / ~382 (marks.info)'}
+    }
+  },
+  {
+    name: 'Console',
+    surface:{light:'#FFFFFF', dark:'#1A1A1A', declared:false,
+      note:'apollo-console.overrides.json declares shape (radius) only — surface inherits Mono by fall-through (file $description: "Everything absent here falls back to Mono")'},
+    statuses:{
+      error:  {fill:'#B92F1E', mark:'#FFFFFF', declared:true, src:'apollo-console.overrides.json:8-17 (rag/error) / marks.error ~196'},
+      warning:{fill:'#D5990B', mark:'#000000', declared:true, src:'apollo-console.overrides.json:40-49 (rag/warning) / marks.warning ~207'},
+      success:{fill:'#5DAC7B', mark:'#1A1A1A', declared:true, src:'apollo-console.overrides.json:73-82 (rag/success) / marks.success ~218'},
+      info:   {fill:'#5A85C1', mark:'#1A1A1A', declared:true, src:'apollo-console.overrides.json:106-115 (rag/information, re-hued s132-D1 from #4F77B0) / marks.info:229-239'}
+    }
+  },
+  {
+    name: 'Supercharge',
+    surface:{light:'#F7F6F4', dark:'#13110E', declared:true,
+      note:'colour.json:292+ color/warm/15 (light, #F7F6F4) and color/warm/2 (dark, #13110E — ADR-0014 SC ink anchor). No literal "page" token found under this name; ground APPROXIMATED from the declared warm ramp per apollo-supercharge.overrides.json $description ("page ... follow by step index") — flag if a dedicated page/default override exists elsewhere.'},
+    statuses:{
+      error:  {fill:'#B92F1E', mark:'#FFFFFF', declared:true, src:'apollo-supercharge.overrides.json:8-17 (rag/error) / marks.error ~295'},
+      warning:{fill:'#D5990B', mark:'#000000', declared:true, src:'apollo-supercharge.overrides.json:40-49 (rag/warning) / marks.warning ~306'},
+      success:{fill:'#5DAC7B', mark:'#1A1A1A', declared:true, src:'apollo-supercharge.overrides.json:73-82 (rag/success) / marks.success ~317'},
+      info:   {fill:'#5A85C1', mark:'#1A1A1A', declared:true, src:'apollo-supercharge.overrides.json:106-115 (rag/information, re-hued s132-D1) / marks.info ~328-334'}
+    }
+  }
+];
+const STATUS_ORDER = ['error','warning','success','info'];
+const SYMBOL = {error:'al-error',warning:'al-warning',success:'al-success',info:'al-info'};
+
+function roundelCell(surfaceHex, status){
+  const box = document.createElement('div');
+  box.className = 'mark';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox','0 0 18 18');
+  svg.classList.add('roundel');
+  svg.style.color = status.fill;
+  svg.style.setProperty('--mark', status.mark);
+  svg.innerHTML = '<use href="#'+SYMBOL[status._key]+'"></use>';
+
+  const label = document.createElement('div');
+  label.className='label';
+  label.textContent = status._key;
+
+  const hexes = document.createElement('div');
+  hexes.className='hexes';
+  hexes.innerHTML = 'shape '+status.fill+'<br>mark '+status.mark;
+
+  const markShape = contrast(status.mark, status.fill);
+  const shapeSurface = contrast(status.fill, surfaceHex);
+  const c = document.createElement('div');
+  c.className='contrast';
+  c.innerHTML =
+    (markShape<4.5?'<span class="fail">':'') + 'mark/shape '+markShape.toFixed(2)+':1' + (markShape<4.5?'</span>':'') + '<br>' +
+    (shapeSurface<3?'<span class="fail">':'') + 'shape/surface '+shapeSurface.toFixed(2)+':1' + (shapeSurface<3?'</span>':'');
+
+  box.appendChild(svg);
+  box.appendChild(label);
+  box.appendChild(hexes);
+  box.appendChild(c);
+  return box;
+}
+
+function buildTable(){
+  const table = document.getElementById('matrix');
+  const thead = document.createElement('tr');
+  ['Theme','Light','Dark'].forEach((h,i)=>{
+    const th=document.createElement('th'); th.textContent=h; thead.appendChild(th);
+  });
+  table.appendChild(thead);
+
+  THEMES.forEach(theme=>{
+    const tr = document.createElement('tr');
+
+    const themeTd = document.createElement('td');
+    themeTd.className='themecell';
+    themeTd.innerHTML = theme.name +
+      '<span class="note">surface: '+(theme.surface.declared?'<span class="tag declared">DECLARED</span>':'<span class="tag fallthrough">FALL-THROUGH</span>')+'<br>'+theme.surface.note+'</span>';
+    tr.appendChild(themeTd);
+
+    ['light','dark'].forEach(mode=>{
+      const td = document.createElement('td');
+      td.className='cell';
+      td.style.background = theme.surface[mode];
+      td.style.color = mode==='dark' ? '#fff' : '#111';
+
+      const row = document.createElement('div');
+      row.className='marks-row';
+      STATUS_ORDER.forEach(key=>{
+        const st = Object.assign({_key:key}, theme.statuses[key]);
+        const cellDiv = roundelCell(theme.surface[mode], st);
+        const tag = document.createElement('div');
+        tag.innerHTML = st.declared ? '<span class="tag declared">DECLARED</span>' : '<span class="tag fallthrough">FALL-THROUGH</span>';
+        cellDiv.appendChild(tag);
+        const src = document.createElement('div');
+        src.style.fontSize='8px';
+        src.style.opacity='.6';
+        src.style.marginTop='2px';
+        src.style.maxWidth='96px';
+        src.style.textAlign='center';
+        src.textContent = st.src;
+        cellDiv.appendChild(src);
+        row.appendChild(cellDiv);
+      });
+      td.appendChild(row);
+      tr.appendChild(td);
+    });
+    table.appendChild(tr);
+  });
+}
+buildTable();
+</script>
+</body>
+</html>

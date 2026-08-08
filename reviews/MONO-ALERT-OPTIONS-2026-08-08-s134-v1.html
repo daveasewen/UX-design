@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mono Alert — TINT-ONLY options (live controller, s134)</title>
+<!--
+  DECISION CONTROLLER — nothing enacted. Built for Dave's live "no border/accent edge" feedback
+  on reviews/ALERT-ERROR-MARK-REVIEW-2026-08-08-s134-v2.html. TINT-ONLY roundel background,
+  no border, no accent edge on the alert shell.
+  Values: SOLE SOURCE knowledge/tokens/semantic-colour.json rag/*-background (roundel shapes,
+  mode-invariant s122-D2) and rag/*-tint (s123-D3 tuned-opacity composited surfaces).
+  Canon symbol check: knowledge/snippets/Alert.reference.html's #al-* <symbol> paths were
+  byte-compared against knowledge/assets/icons/status-icons/{error,warning-solid,success-solid,
+  information-solid}.svg — error path is IDENTICAL (fill-rule/clip-rule path data matches to the
+  last coordinate); warning/success/information use the equivalent solid-circle canon marks
+  (same 18x18 grid, same inner glyph geometry, redrawn as <symbol> with style="fill:var(--mark)"
+  for the theming hook the flat SVG files don't have). All four are CANON, not hand-rolled —
+  reused verbatim from Alert.reference.html's sprite.
+  DO-NOT-RULE: no canon/token/snippet edits happen here. Export produces a paste-ready JSON block.
+-->
+<style>
+  :root{
+    --err-shape:#F6604C; --warn-shape:#E0A61F; --ok-shape:#66CC8D; --info-shape:#78A7E8;
+    --err-tint-l:#FDD9D4; --warn-tint-l:#F6E6C0; --ok-tint-l:#D4F1DF; --info-tint-l:#DFEAF9;
+    --err-tint-d:#60302A; --warn-tint-d:#614C1C; --ok-tint-d:#32533F; --info-tint-d:#38475C;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2rem; font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;
+    background:#f2f2f2; color:#1A1A1A;}
+  h1{font-size:20px; margin:0 0 4px;}
+  p.sub{opacity:.65; font-size:13px; margin:0 0 24px; max-width:760px; line-height:1.5;}
+  .controls{display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; background:#fff;
+    border:1px solid #ddd; padding:16px 20px; margin-bottom:28px; border-radius:4px;}
+  .ctrl-group{display:flex; flex-direction:column; gap:6px; font-size:13px;}
+  .ctrl-group strong{font-size:12px; text-transform:uppercase; letter-spacing:.04em; opacity:.55;}
+  label{display:flex; align-items:center; gap:6px; cursor:pointer;}
+  .panes{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  .pane{padding:24px; border-radius:6px; transition:background .15s ease;}
+  .pane.light{background:#FFFFFF; border:1px solid #e2e2e2;}
+  .pane.dark{background:#1A1A1A;}
+  .pane h2{font-size:13px; opacity:.6; margin:0 0 16px; font-weight:500;}
+  .pane.dark h2{color:#fff;}
+  .row{display:flex; align-items:center; gap:12px; padding:12px 16px; margin-bottom:10px; border-radius:2px;}
+  .roundel{flex:none; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;}
+  .roundel svg{width:20px; height:20px; display:block;}
+  .lbl{font-size:14px; font-weight:500;}
+  .pane.dark .lbl{color:#fff;}
+  .contrast{margin-left:auto; font-size:11px; font-variant-numeric:tabular-nums; padding:3px 7px;
+    border-radius:3px; background:rgba(0,0,0,.06); white-space:nowrap;}
+  .pane.dark .contrast{background:rgba(255,255,255,.12); color:#fff;}
+  .contrast.fail{background:#F6604C; color:#fff;}
+  .export-wrap{margin-top:28px;}
+  button{font:inherit; font-size:13px; padding:8px 16px; border-radius:4px; border:1px solid #1A1A1A;
+    background:#1A1A1A; color:#fff; cursor:pointer;}
+  button:hover{opacity:.85;}
+  pre{background:#0d0d0d; color:#8fe0a0; padding:14px 16px; border-radius:4px; font-size:12px;
+    max-width:520px; overflow:auto; margin-top:10px; display:none;}
+  pre.show{display:block;}
+</style>
+</head>
+<body>
+  <h1>Mono Alert roundel — TINT-ONLY options</h1>
+  <p class="sub">Dave's live call: drop the border / accent edge. This controller shows tint-only
+    surfaces (no border) with the four canon status roundels, light + dark side by side. Toggle
+    glyph ink to rule the mark colour; contrast is live-computed per roundel (glyph-on-shape leg,
+    the gated leg per s134-D1). Nothing here is enacted — export writes your picks as pasteable JSON.</p>
+
+  <div class="controls">
+    <div class="ctrl-group">
+      <strong>Light-mode glyph ink</strong>
+      <label><input type="radio" name="lightInk" value="1A1A1A" checked> #1A1A1A (current mono mark)</label>
+      <label><input type="radio" name="lightInk" value="000000"> #000000 (pure black)</label>
+    </div>
+    <div class="ctrl-group">
+      <strong>Dark-mode glyph</strong>
+      <label><input type="radio" name="darkInk" value="same" checked> Same ink as light (mode-invariant)</label>
+      <label><input type="radio" name="darkInk" value="FFFFFF"> White glyph (#FFFFFF)</label>
+    </div>
+  </div>
+
+  <div class="panes">
+    <div class="pane light" id="paneLight"><h2>Light</h2><div id="rowsLight"></div></div>
+    <div class="pane dark" id="paneDark"><h2>Dark</h2><div id="rowsDark"></div></div>
+  </div>
+
+  <div class="export-wrap">
+    <button id="exportBtn">Export current selection as JSON</button>
+    <pre id="exportOut"></pre>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="al-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="al-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 9.00078 14.2 9.00078 14.2Z"/></symbol>
+    <symbol id="al-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+    <symbol id="al-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V14.25Z"/></symbol>
+  </svg>
+
+<script>
+const STATUSES = [
+  {key:'error', label:'Error', symbol:'al-error', shape:'#F6604C', tintLight:'#FDD9D4', tintDark:'#60302A'},
+  {key:'warning', label:'Warning', symbol:'al-warning', shape:'#E0A61F', tintLight:'#F6E6C0', tintDark:'#614C1C'},
+  {key:'success', label:'Success', symbol:'al-success', shape:'#66CC8D', tintLight:'#D4F1DF', tintDark:'#32533F'},
+  {key:'information', label:'Information', symbol:'al-info', shape:'#78A7E8', tintLight:'#DFEAF9', tintDark:'#38475C'},
+];
+
+function hex2rgb(h){ h=h.replace('#',''); return [0,2,4].map(i=>parseInt(h.substr(i,2),16)); }
+function lin(c){ c/=255; return c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4); }
+function lum([r,g,b]){ return 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b); }
+function contrast(h1,h2){
+  let l1=lum(hex2rgb(h1)), l2=lum(hex2rgb(h2));
+  if(l1<l2) [l1,l2]=[l2,l1];
+  return (l1+0.05)/(l2+0.05);
+}
+
+function currentInk(){
+  const lightInk = '#' + document.querySelector('input[name=lightInk]:checked').value;
+  const darkMode = document.querySelector('input[name=darkInk]:checked').value;
+  const darkInk = darkMode === 'same' ? lightInk : '#FFFFFF';
+  return {lightInk, darkInk, darkMode};
+}
+
+function render(){
+  const {lightInk, darkInk} = currentInk();
+  const rowsLight = document.getElementById('rowsLight');
+  const rowsDark = document.getElementById('rowsDark');
+  rowsLight.innerHTML = ''; rowsDark.innerHTML = '';
+
+  STATUSES.forEach(s=>{
+    const cLight = contrast(s.shape, lightInk).toFixed(2);
+    const cDark = contrast(s.shape, darkInk).toFixed(2);
+    rowsLight.appendChild(makeRow(s, s.tintLight, lightInk, cLight));
+    rowsDark.appendChild(makeRow(s, s.tintDark, darkInk, cDark, true));
+  });
+}
+
+function makeRow(s, tint, ink, contrastVal, dark){
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.style.background = tint;
+  const fail = parseFloat(contrastVal) < 4.5;
+  row.innerHTML = `
+    <span class="roundel" style="--mark:${ink}; color:${s.shape};">
+      <svg><use href="#${s.symbol}"></use></svg>
+    </span>
+    <span class="lbl" style="color:${dark ? '#fff' : '#1A1A1A'}">${s.label}</span>
+    <span class="contrast ${fail ? 'fail' : ''}">glyph/shape ${contrastVal}:1 ${fail ? '⚠ <4.5' : '✓'}</span>
+  `;
+  return row;
+}
+
+document.querySelectorAll('input[type=radio]').forEach(el=>el.addEventListener('change', render));
+render();
+
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const {lightInk, darkInk, darkMode} = currentInk();
+  const payload = {
+    decision: 'mono-alert-tint-only-s134',
+    date: '2026-08-08',
+    shell: 'tint-only, no border, no accent edge',
+    lightModeGlyphInk: lightInk,
+    darkModeGlyph: darkMode === 'same' ? `same as light (${darkInk})` : `white (${darkInk})`,
+    contrastPerStatus: STATUSES.map(s=>({
+      status: s.key,
+      shape: s.shape,
+      lightContrast: contrast(s.shape, lightInk).toFixed(2)+':1',
+      darkContrast: contrast(s.shape, darkInk).toFixed(2)+':1'
+    }))
+  };
+  const out = document.getElementById('exportOut');
+  out.textContent = JSON.stringify(payload, null, 2);
+  out.classList.add('show');
+});
+</script>
+</body>
+</html>

@@ -13,19 +13,14 @@
   inline link · dismiss ×). This file is its Mono successor for the in-flow callout placement;
   Toast (transient) and Banner (page-level) are sibling snippets.
 
-  RAG ROUNDEL POLICY — SUPERSEDED 2026-08-08 (laneF rebase, s122-D2/s134-D2). The 2026-07-02
-  per-status/per-theme scheme below (LIGHT tint-knockout-or-white mark, DARK white-shape/black-mark
-  literal) is RETIRED: mono is now MODE-INVARIANT shape (rag/*-background, same light/dark) with a
-  FLAT #1A1A1A mark on all four statuses, both themes (s122-D2), reaffirmed s134-D2 (theme flip is
-  Legacy-only, not Mono's). Recomputed mark-on-shape off current spine bytes: error 5.55:1 · warning
-  7.99:1 · success 8.77:1 · information 7.04:1 — all ≥4.5. Prior text retained for history only:
-   - LIGHT (RETIRED): shape = status glyph colour on the tint (err 4.71 · ok 4.11 · info 3.85 ≥3:1; amber 2.44
+  RAG ROUNDEL POLICY applied to the MONO values (Dave 2026-07-02; R-D6 A′):
+   - LIGHT: shape = status glyph colour on the tint (err 4.71 · ok 4.11 · info 3.85 ≥3:1; amber 2.44
      EXEMPT by convention — icon shape + label carry the meaning, R-D3/R-D6 A′, so the warning
      shape-vs-tint pair is deliberately NOT declared below). Internal mark ≥4.5 vs shape:
      err = tint knockout (4.71) · warning = near-black mark (5.76, R-D3 always-black-on-amber) ·
      success + information = WHITE mark (5.0 / 5.03 — their tint knockouts sit at 4.11/3.85, the
      same fix Notifications recorded for Legacy success).
-   - DARK (RETIRED): white shape + black mark (Dave 2026-07-02 eve ruling — structural, 21:1 both legs;
+   - DARK: white shape + black mark (Dave 2026-07-02 eve ruling — structural, 21:1 both legs;
      with the R-D20 dark values a knockout mark would fail on error at 4.42). Literal #FFFFFF/
      #000000 per the ruling, mirroring the Legacy reference's enactment.
   Colour is NEVER the sole channel: distinct glyph shapes (triangle/circle) + title text (icon-013).
@@ -77,10 +72,6 @@
   --mark-success: #1A1A1A; /* RULED s122-D2 (Dave, #122): mono mark on #66CC8D, 8.77:1 */
   --mark-info: #1A1A1A;    /* RULED s122-D2 (Dave, #122): mono mark on #78A7E8, 7.04:1 */
   --mark: var(--mark-info); /* carrier default — status contexts re-assign below */
-  /* s134-D2 re-verified 2026-08-08 (laneF rebase): mark stays #1A1A1A all four statuses,
-     both themes — the flip is Legacy-only (spine: knowledge/tokens/semantic-colour.json
-     rag/*-background $notes, s122-D2). Contrasts recomputed off CURRENT spine bytes above,
-     unchanged from the s122-D2 figures. */
 }
 .is-error   { --mark: var(--mark-error); }
 .is-warning { --mark: var(--mark-warning); }
@@ -90,25 +81,16 @@
 /* ===== AUTO-TOKENS END ===== */
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease;
     --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
-  /* s134 laneF rebase (2026-08-08): both theme blocks re-based to knowledge/tokens/semantic-colour.json
-     rag/* $values (SOLE source). Mono is MODE-INVARIANT (s122-D2, reaffirmed s134-D2 — flip is
-     Legacy-only): --err/--warn/--ok/--info are IDENTICAL light/dark. Tints are s123-D3 tuned-opacity
-     composited values, which DO differ per mode (composited over background/default, not itself
-     invariant). RETIRED: light --err #B92F1E→#F6604C, --ok #2B7E4F→#66CC8D, --info #306EC6→#78A7E8,
-     --err-t #F1E0DC→#FDD9D4, --warn-t #F6E5CC→#F6E6C0, --ok-t #DCEDE3→#D4F1DF, --info-t #D6E3EC→#DFEAF9;
-     dark --err #CC4333→#F6604C, --ok #4A9568→#66CC8D, --info #2674DC→#78A7E8, --err-t #2C120D→#60302A,
-     --warn-t #3C2C13→#614C1C, --ok-t #12291D→#32533F, --info-t #092131→#38475C. --warn/--warn-t(light)
-     were already current (s134-D3 #E0A61F applied). */
   [data-theme="light"]{
-    --err:#F6604C; --warn:#E0A61F; --ok:#66CC8D; --info:#78A7E8;
-    --err-t:#FDD9D4; --warn-t:#F6E6C0; --ok-t:#D4F1DF; --info-t:#DFEAF9;
+    --err:#B92F1E; --warn:#C58900; --ok:#2B7E4F; --info:#306EC6;
+    --err-t:#F1E0DC; --warn-t:#F6E5CC; --ok-t:#DCEDE3; --info-t:#D6E3EC;
     --text:#1A1A1A; --page:#FFFFFF;
     --border-radius-surface:0;
     --press-travel:2; --press-darken:0.94;
   }
   [data-theme="dark"]{
-    --err:#F6604C; --warn:#E0A61F; --ok:#66CC8D; --info:#78A7E8;
-    --err-t:#60302A; --warn-t:#614C1C; --ok-t:#32533F; --info-t:#38475C;
+    --err:#CC4333; --warn:#C58900; --ok:#4A9568; --info:#2674DC;
+    --err-t:#2C120D; --warn-t:#3C2C13; --ok-t:#12291D; --info-t:#092131;
     --text:#FFFFFF; --page:#1A1A1A;
     --border-radius-surface:0;
     --press-travel:2; --press-darken:0.94;
@@ -126,30 +108,19 @@
   .alert.ok{ --accent:var(--ok); --tint:var(--ok-t); }
   .alert.info{ --accent:var(--info); --tint:var(--info-t); }
 
-  /* the callout shell — TINT-ONLY (s134-D4, Dave #134: "nailed to the mast"). RETIRED BY
-     DECLARATION: the prior construction was `border:1px solid var(--accent);` (full 1px accent
-     edge) on this rule, dropped per s134-D4 — shell = tint background only, no border/accent
-     edge; glyph ink stays #1A1A1A per s122-D2/s134-D2 (unchanged, see .ic below). --accent is
-     still bound per-status above for the icon/glyph colour channel — only the shell edge is retired. */
+  /* the callout shell — tinted surface, full 1px accent border, SURFACE radius role */
   .alert{ display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
-    background:var(--tint); border-radius:var(--border-radius-surface);
+    background:var(--tint); border:1px solid var(--accent); border-radius:var(--border-radius-surface);
     color:var(--text); overflow:hidden;
-    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease; }
+    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease, border-width .3s ease; }
   /* icon centres on the FIRST text line (24px = one .t-ed-body line box) and holds position when copy wraps */
-  .alert .ic{ flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:#1A1A1A; }
+  .alert .ic{ flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:var(--tint); }
   .alert .ic svg{ width:20px; height:20px; display:block; fill:currentColor; }
-  /* laneF rebase (2026-08-08, s134 enactment): the per-status --mark overrides that used to sit here
-     (.alert.warn .ic {--mark:#1A1A1A} / .alert.ok .ic {--mark:#FFFFFF} / .alert.info .ic {--mark:#FFFFFF},
-     with default .ic {--mark:var(--tint)} tint-knockout for .err) are RETIRED BY DECLARATION, citing
-     s122-D2 (Dave, #122): mark = #1A1A1A for all four statuses, both themes — folded into the base
-     .ic rule above, no per-status selector needed.
-     s134-D2 (Dave, #134): theme flip is LEGACY-ONLY — mono dark uses the SAME mark rule as light (no
-     theme-scoped selector, confirmed: no [data-theme="dark"] .alert .ic override exists below).
-     Recomputed off the CURRENT spine bytes (knowledge/tokens/semantic-colour.json rag/*-background):
-     mark #1A1A1A on shape — error 5.55:1 · warning 7.99:1 · success 8.77:1 · information 7.04:1, ALL
-     ≥4.5 both themes (mode-invariant shapes). This RESOLVES the prior [WARN] (err 3.68 / ok 3.63 in
-     dark under the old white-mark/knockout scheme) — the flat #1A1A1A mark clears the s134-D1 4.5
-     mark-leg gate everywhere; nothing remains flagged to Dave on this axis. */
+  .alert.warn .ic{ --mark:#1A1A1A; }   /* amber mark = always near-black (R-D3); tint knockout would sit at 2.44 */
+  .alert.ok .ic{ --mark:#FFFFFF; }     /* white mark 5.0 — tint knockout 4.11 < 4.5 (roundel policy mark leg) */
+  .alert.info .ic{ --mark:#FFFFFF; }   /* white mark 5.03 — tint knockout 3.85 < 4.5 */
+  /* DARK roundel policy (Dave 2026-07-02 eve — structural): white shape + black mark, both legs 21:1 */
+  [data-theme="dark"] .alert .ic{ color:#FFFFFF; --mark:#000000; }
 
   .alert .main{ flex:1 1 auto; min-width:0; margin:0; }
   .alert .main a{ color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
@@ -183,10 +154,8 @@
     .alert .x:hover,.alert .x:active{ transform:none !important; filter:none !important; }
   }
   /* ===== AUTO-PARTIAL press-physics END ===== */
-  /* s134-D4: `border-width:0;` retired from this rule — the shell carries no border to collapse
-     now (tint-only). */
   .alert.removing{ max-height:0 !important; opacity:0; margin-top:0; margin-bottom:0;
-    padding-top:0; padding-bottom:0; }
+    padding-top:0; padding-bottom:0; border-width:0; }
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
@@ -239,7 +208,7 @@
     ],
     "icons": { "error": "status-icons/error.svg", "warning": "status-icons/warning.svg", "success": "status-icons/success.svg", "information": "status-icons/information.svg", "close": "global-controls/close.svg" },
     "requiredAria": ["role=\"alert\"", "role=\"status\"", "aria-label"],
-    "$note": "The warning shape-vs-tint pair (2.44) is deliberately undeclared: amber is EXEMPT from the 3:1 shape leg by convention (R-D3 / R-D6 A′ — icon shape + label carry meaning). laneF rebase (2026-08-08, s122-D2/s134-D2): internal mark is FLAT #1A1A1A on all four statuses, both themes (retired: the 2026-07-02 white-shape/black-mark dark roundel literal and the per-status tint-knockout/white-mark light scheme — see header comment). Current mark-on-shape: error 5.55 / warning 7.99 / success 8.77 / information 7.04, all ≥4.5."
+    "$note": "The warning shape-vs-tint pair (2.44) is deliberately undeclared: amber is EXEMPT from the 3:1 shape leg by convention (R-D3 / R-D6 A′ — icon shape + label carry meaning; the always-black internal mark passes 5.76). Dark-mode roundels are white-shape/black-mark literals per the 2026-07-02 dark roundel ruling."
   }
   </script>
   <script>

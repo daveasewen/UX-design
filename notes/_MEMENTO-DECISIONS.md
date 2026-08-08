@@ -5688,3 +5688,26 @@ master only · fast-forward only (no force flag exists) · clean tree · remote=
 Auth: fine-grained PAT (this repo, Contents r/w, 90d expiry) in the remote URL on his disk. SUPERSEDES
 `git-push-method`'s Desktop-only clause BY ADDITION — Desktop remains. Credential arm proven refusing
 until the PAT lands. Authority: `knowledge/_rulings.json` § `s133-D2`.
+
+### s134-D1 — ROUNDEL CONTRAST IS THE GLYPH LEG ONLY (ruled by Dave #134, off the roundel matrix)
+Dave: "we only care about the glyph having enough contrast … it is always accompanied by a label."
+The MARK-ON-SHAPE leg is the sole gated leg; shape-on-surface is REPORTED, never gated. Narrows the
+2026-07-02 two-leg roundel policy BY ADDITION. Authority: `knowledge/_rulings.json` § `s134-D1`.
+Matrix: `reviews/RAG-ROUNDEL-MATRIX-2026-08-08-s134-v1.html`.
+
+### s134-D2 — THEME FLIP IS LEGACY-ONLY (ruled by Dave #134)
+Dave: "good for legacy alone, white marks on dark … for the others we use the same marks for both
+themes." White-shape/black-mark dark treatment re-scopes to Legacy; Mono/Console/Supercharge keep the
+SAME marks in both themes. Closes the ~#130 error-mark image confirm — the lost image's treatment is
+retired unbuilt. Authority: `knowledge/_rulings.json` § `s134-D2`.
+
+### s134-D3 — ALERT SNIPPET AMBER #C58900 → #E0A61F (ruled by Dave #134, spotted by his eye)
+`Alert.reference.html` declared `--warn:#C58900` against its own comment citing s122-D2's ruled mono
+amber `#E0A61F`. Mechanical fix, both themes per s134-D2. Tint pair re-checked, reported, never
+silently re-composited. Authority: `knowledge/_rulings.json` § `s134-D3`.
+
+### s134-D4 — MONO ALERT NAILED: TINT-ONLY SHELL, INK GLYPHS, BOTH THEMES (ruled by Dave #134, firm, JSON export)
+Dave: "this is nailed to the mast." Shell = tint-only, no border/accent edge. Glyph #1A1A1A both
+themes (readback-confirmed). Shapes = s122-D2 mode-invariant pastels. Glyph legs 5.55/7.99/8.77/7.04.
+White-in-dark rejected by measurement (1.98–3.14). Symbols verified canon. Authority:
+`knowledge/_rulings.json` § `s134-D4`. Controller: `reviews/MONO-ALERT-OPTIONS-2026-08-08-s134-v1.html`.

@@ -126,15 +126,11 @@
   .alert.ok{ --accent:var(--ok); --tint:var(--ok-t); }
   .alert.info{ --accent:var(--info); --tint:var(--info-t); }
 
-  /* the callout shell — TINT-ONLY (s134-D4, Dave #134: "nailed to the mast"). RETIRED BY
-     DECLARATION: the prior construction was `border:1px solid var(--accent);` (full 1px accent
-     edge) on this rule, dropped per s134-D4 — shell = tint background only, no border/accent
-     edge; glyph ink stays #1A1A1A per s122-D2/s134-D2 (unchanged, see .ic below). --accent is
-     still bound per-status above for the icon/glyph colour channel — only the shell edge is retired. */
+  /* the callout shell — tinted surface, full 1px accent border, SURFACE radius role */
   .alert{ display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
-    background:var(--tint); border-radius:var(--border-radius-surface);
+    background:var(--tint); border:1px solid var(--accent); border-radius:var(--border-radius-surface);
     color:var(--text); overflow:hidden;
-    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease; }
+    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease, border-width .3s ease; }
   /* icon centres on the FIRST text line (24px = one .t-ed-body line box) and holds position when copy wraps */
   .alert .ic{ flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:#1A1A1A; }
   .alert .ic svg{ width:20px; height:20px; display:block; fill:currentColor; }
@@ -183,10 +179,8 @@
     .alert .x:hover,.alert .x:active{ transform:none !important; filter:none !important; }
   }
   /* ===== AUTO-PARTIAL press-physics END ===== */
-  /* s134-D4: `border-width:0;` retired from this rule — the shell carries no border to collapse
-     now (tint-only). */
   .alert.removing{ max-height:0 !important; opacity:0; margin-top:0; margin-bottom:0;
-    padding-top:0; padding-bottom:0; }
+    padding-top:0; padding-bottom:0; border-width:0; }
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
@@ -194,7 +188,7 @@
   }
 </style>
 </head>
-<body data-theme="light">
+<body data-theme="dark">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="al-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
     <symbol id="al-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>

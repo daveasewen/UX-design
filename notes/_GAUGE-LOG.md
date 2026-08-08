@@ -1267,3 +1267,13 @@ HOLE #128 — session #128 wrote NO §C stratum in `GOOD-MORNING.md` and left no
 > **section-sizes #132 (real):** GM HDR:2981 LATEST:1548 PRIOR:3161 DOFIRST:9716 A:6957 C1:1988 C2:1769 C4:10437 STRATA:7063 · LS HDR:5382 LANES:1415 SPIN:3493 DELTAS:10234 WEBFONT:939 LIVE:7886 LIFECYCLE:1594 DEAD:678 OPEN:30799 TARGETS:896 SPINOFFS:728 · totals GM:45620 LS:64044
 > **residual → #133 (authored):** ⬛ **① `s131-D2` ENACTMENT — the KG index / parse-gate / checklist build to the Memento standard [1]** · ⬛ **② the REMAINDER of `s130-D4`/`D5`/`D6` + tabs badges [3]** · ⬛ **③ the ERROR-MARK IMAGE CONFIRM, still owed [3]** · ⬛ **④ mark-vs-fill 3.0 gate — DAVE'S [3]** · ⬛ **⑤ `_validate_state_contrast --selftest` environment-dependence — a named refusal [3]** · ⬛ **⑥ SC info-tint re-hue off the solids — UNRULED, flagged #132 [0]** · ⬛ **⑦ the carried set from #130 — EIGHTEENTH roll [18]**. ⚠ **2c, 2d and 2f ALL RAN this wrap** (banners 2/2 · deltas 3/3 · #131 stratum rolled), so the `size:` stamp is THIS session's own measurement.
 
+#### 2026-08-08 #133
+
+> **pre-flight #133:** ⛔ NOT CAPTURED — UNMEASURED. No composed boot + job + wrap estimate was written at the opener; check-ins ran at the seams instead (opener, post-inscription, pre-review-lane, wrap-open) and this line does not pretend a seam series is a pre-flight.
+> **post-mortem #133:** Check-ins ran at the seams: opener · post-inscription (88,724 throughput) · pre-review-lane (125,115) · wrap-open **FILL 140,256 vs stop line 150,929 — BELOW, third consecutive wrap**. Delegation: 3 SONNET subs (mechanical migration · parse-gate+index · review doc), every report REPLAYED on real runs in-window; sub reports landed in fill as priced. One confound caught: /tmp unwritable → rc read from redirect not gate; /var/tmp fix.
+> **section-usage #133 (self-report — conductor wrap, in-window):** GM HDR:C LATEST:C PRIOR:U DOFIRST:U A:U C1:U C2:U C4:U STRATA:C · LS HDR:C LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U
+> *(⚠ **`A:U` — FIFTEENTH session running.** The window was the KG lane + wrap; no strand state moved.)*
+> **consult-receipts #133:** targeted reads on NAMED artefacts only (`_rulings.json` § s131-D2 · #131 dossier Finding 3 · `_RUNBOOK-capture-ritual.md`) — no `_memento_search.py` query issued; honest negative: the lane's sources were all named in the chain.
+> **section-sizes #133:** ⚠ NOT EMITTED — `_gm_usage.py --sizes` not run this wrap (fill-bound); the #132 sizes above are the standing measurement, GM has since moved by the #133 banner (~1.5K) and roll deltas. Declared with size, per the declare-last rule.
+> **residual → #134 (authored):** carried on the ★ LATEST banner above — one copy, not two.
+
