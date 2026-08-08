@@ -666,6 +666,23 @@ line is the **sixth medium** on that list. ⚠ **A live regression check ran at 
 session's msgfile first line begins `#129 2026-08-08 — ` and the post-commit subject was verified equal to
 it — **so whatever failed at #128 did not recur at #129; that is one datapoint, not a diagnosis**
 [[a-skipped-wrap-makes-the-chain-certify-the-wrong-session]] [[invariant-cannot-discriminate-reversal]].
+> ★★★ **DIAGNOSED AT THIS SAME WRAP — AND THE DIAGNOSIS COST ONE FALSE CLAIM, STRUCK HERE AT ITS SOURCE.**
+> The two candidate causes above were written before the wrap committed. **The wrap then reproduced the
+> defect on its own first commit (`29b4c2e`), which is how the mechanism was found:**
+> - `knowledge/_git_commit.sh`'s **T3 block (#77-D2) REPLACES the msgfile's first line** with a headline
+>   **derived from `GOOD-MORNING.md`'s ★ LATEST banner** — the msgfile's own line 1 is discarded, by design.
+> - **#78-D3 prefixes `"after "`** to that headline **on any commit not run with `--wrap`**.
+> ⇒ **a non-wrap commit inherits whatever banner happens to be on disk.** #128 wrote no banner at all, so
+> both of its commits inherited **#127's**. **Neither candidate cause above is right as stated:** the
+> msgfile's first line was never consulted, and the assert did not fail to bite — **it compares the
+> REWRITTEN msgfile to the commit subject, so it is TRUE and USELESS for this question.**
+> ⛔ **STRUCK: this session's own banner briefly claimed *"post-commit subject verified equal to msgfile
+> line 1"*.** That was written before the commit ran and **was false the moment it was written** — the
+> exact class `s129-D5` names, committed by the session that ruled it [[assertion-propagation-gap]].
+> ⛔ **STILL NOT FIXED, AND STILL DAVE'S.** The mechanism is DESIGNED behaviour (#77-D2 + #78-D3), not a
+> bug: the remedy — whether T3 should refuse when the banner's session number disagrees with `SESSION_N`,
+> whether the assert should compare the ORIGINAL line 1, or neither — is a ruling, not a repair.
+> ✅ **#129's real wrap commit was re-run as `SESSION_N=129 … --wrap`**, which takes the unprefixed path.
 [born #129 · guards: this block · until: Dave rules the autopsy]
 
 ### ⬛ CARRIED, REDUCED #129 — dream-pass P2 (the residual's ordinal) and P3 (the sweep risk)

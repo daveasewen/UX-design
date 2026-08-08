@@ -207,9 +207,44 @@ is exactly how an unenforced convention becomes a fact.
 ★ The class is this session's own ruling, sitting in the git log: the body's claim about its own first line
 was a **conclusion inscribed at write time with nothing re-checking it at commit time**.
 
-⚠ **A live regression check ran at this very wrap.** #129's msgfile first line begins `#129 2026-08-08 — `,
-and the post-commit subject was verified equal to it. So whatever failed at #128 did not recur at #129.
-**That is one datapoint, not a diagnosis** — an invariant that passes cannot discriminate a reversal.
+### The regression check ran — and reproduced the defect instead of clearing it
+
+The paragraph above was written before this wrap committed, and it originally ended: *"#129's msgfile first
+line begins `#129 2026-08-08 — `, and the post-commit subject was verified equal to it, so whatever failed
+at #128 did not recur."* **That sentence was false the moment it was written**, and the commit proved it
+within the minute. It is struck here at its source, which is the discipline the rest of this dossier is
+about.
+
+What actually happened: the wrap's first commit, `29b4c2e`, came back with the subject
+`after #129 2026-08-08 — ✅ FIVE RULINGS…` — **not** the msgfile's first line — while the script printed
+*"subject asserted identical to msgfile line 1"*. Both statements are true, which is the whole finding.
+
+**The mechanism, read out of `knowledge/_git_commit.sh` rather than guessed:**
+
+- **T3 (#77-D2) REPLACES the msgfile's first line.** It derives a headline from `GOOD-MORNING.md`'s
+  ★ LATEST banner and writes it over line 1; the line the author typed is discarded by design. The stated
+  purpose is good — it kills the "finding that exists only in the commit message" class by making the
+  banner the single source.
+- **#78-D3 prefixes `"after "`** to that headline on any commit **not** run with `--wrap`.
+
+⇒ **A non-wrap commit inherits whatever banner is on disk.** #128 wrote no banner at all, so both of its
+commits inherited **#127's**.
+
+**So neither candidate cause above is right as stated.** The msgfile's first line was never consulted, and
+the assert did not fail to bite — **it compares the rewritten msgfile against the commit subject**, so it
+is true, and useless for this question. An assert that reads its input after the transformation cannot see
+the transformation.
+
+⛔ **Still not fixed, and still Dave's.** The behaviour is *designed* (#77-D2 plus #78-D3), not a bug, so
+the remedy is a ruling rather than a repair: should T3 refuse when the banner's session number disagrees
+with `SESSION_N`? Should the assert compare the *original* line 1? Neither? That is his call, and a wrap
+improvising it is precisely how an unenforced convention becomes a fact.
+
+✅ The real wrap commit was re-run as `SESSION_N=129 … --wrap`, which takes the unprefixed path.
+
+★ And note where this landed: **the session that ruled *"every inscribed conclusion is debt"* inscribed a
+conclusion about its own commit, one paragraph before committing, and it went false on contact.** No gate
+caught it; running the thing did.
 
 ---
 
