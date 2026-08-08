@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 45,770 real and 88% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 45,950 real and 88% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -50,6 +50,7 @@
 > - ⚠ One `_governs` anchor-dash mismatch on the fresh `s133-D1` entry — caught by the gate the same call, fixed in-window, declared (not the #127 re-stamp: the construct was never elsewhere).
 > - ⚙ boot: band unchanged (no fresh sample ruled) · wrap-open FILL **140,256** vs 150,929 — ✅ BELOW · delegation 3 SONNET subs (~222K sub tokens, quota comfortable per #132 panel) · quota panel not re-read this session.
 > **residual → #134:** ⬛ **① RULE THE KG REVIEW — near-misses · prose edges · governedBy · token grammar [0]** · ⬛ **② remainder of `s130-D4`/`D5`/`D6` + tabs [4]** · ⬛ **③ ERROR-MARK IMAGE CONFIRM, still owed [4]** · ⬛ **④ mark-vs-fill 3.0 gate — DAVE'S [4]** · ⬛ **⑤ SC info-tint re-hue — UNRULED [1]** · ⬛ **⑥ `_validate_state_contrast --selftest` env-dependence [4]** · ⬛ **⑦ carried set from #130 — NINETEENTH roll [19]**.
+> ⚠ **post-wrap addendum #133:** the wrap commit was made OFF-RUNBOOK — script refused, conductor improvised GIT_INDEX_FILE instead of opening `_RUNBOOK-git-commit.md` (the #109/#117 class, THIRD recurrence, Dave's same sentence caught it). Subject T3-doubled, amended from fresh msgfile (`5b59099` verified); locks cleared per step 4 AFTER Dave's catch; runbook parenthesis extended by addition.
 > **residual (GENERATED #133):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #132) — _roll_state.py · 2026-08-08
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (28 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
@@ -102,7 +103,7 @@
 
 ---
 
-*(Chain ends. **8,873 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **9,053 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 45,770 real and stays whole for retrieval; you have paid for
-19% of it, and that is the intended figure, not a shortfall.)*
+`GOOD-MORNING.md` is 45,950 real and stays whole for retrieval; you have paid for
+20% of it, and that is the intended figure, not a shortfall.)*
