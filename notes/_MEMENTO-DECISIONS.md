@@ -5555,3 +5555,90 @@ the boot-rent plan · **the snippet-corpus button-style question** · **the audi
 contrast failure records** (rulings taken, enactment NOT done — the records stand) · the ~90 bare-path
 green-unverifiable evidence entries · the dream-pass proposals. **This wrap ruled nothing, moved no
 value, and edited no gate, threshold or fence beyond what the ritual requires.**
+
+---
+
+## ★ #131 — THE LEGACY RAG FILLS ARE DAVE'S OWN FIGMA VALUES, AND THE DESIGN KG THAT NOTHING RE-CHECKS (Dave live, FABLE conductor, ONE window + 1 wrap sub)
+
+*Session record. The banner points here; `_LIVE-STATE.md` § OPEN carries the items; the arc is in
+`_DECISION-HISTORY/2026-08-08-131-the-legacy-rag-fills-and-the-design-kg-nothing-checks.md`. **One ruled id,
+`s131-D1` — RULED *and* ENACTED end-to-end in the same window.** Validation state: **`unaudited`**, seeded per
+`_RUNBOOK-decision-audit.md` — never self-promoted to `vouched`.*
+
+### `s131-D1` — LEGACY RAG FILLS TAKE THE LEGACY SYSTEM'S OWN FIGMA VALUES
+
+⚠ **The authority is the verbatim entry in `knowledge/_rulings.json` § `s131-D1`.** This section is the
+ledger's pointer to it and must not be read as a restatement with equal standing.
+
+**Dave's ruling, in short:** error `#A8000B` · warning `#FFBB33` · success `#00847F` · information `#305A85`,
+supplied by him from the Figma file — **his values, not pixel-sampled and not derived**. Text **and** marks are
+**REVERSED WHITE** on error, success and information. **Warning (amber) is the SOLE exception and keeps dark
+ink** — white on `#FFBB33` measures **1.69**, so the exception is arithmetic rather than taste (**11.57:1**
+with ink).
+
+**Two supersessions, both stated rather than assumed:**
+**(a)** it supersedes **`s123-D1`'s amber `#F0B13A`**. The precedent conflict was put to Dave **explicitly and
+BEFORE the move**, and he confirmed it — a supersession discovered after the write is an accident; one
+confirmed before it is a ruling.
+**(b)** it supersedes **#130's floated `#4F77B0`** information direction. That value was reached by
+measurement (it also happened to fix the console/SC information REST failure); this one comes from the source.
+**A sourced value outranks a derived one**, and the record now says which each was.
+
+**Receipts, conductor-measured (WCAG relative luminance) on the COMMITTED bytes:** white/error **7.87** ·
+ink/warning **11.57** · white/success **4.56** · white/info **7.17**. The success leg is the **tight** one and
+was re-measured on committed bytes deliberately — a boundary value measured on a draft is not a receipt for
+what shipped.
+
+**ENACTED #131, four strata, evidence per claim:**
+- **spine** — `knowledge/tokens/themes/apollo-legacy.overrides.json` (warning-bg, information-bg,
+  `text/on-success`, the theme half of `rag/text/on-information`) + **a MINTED base slot
+  `rag/text/on-information`** in `knowledge/tokens/semantic-colour.json`, base = the dark on-light ink
+  `#1A1A1A`, licence in the note. **All notes amended BY ADDITION**, `s131-D1` provenance carried.
+- **consumption** — `knowledge/snippets/Banner.reference.html`: `.banner.info` ink rebound `--on-light` →
+  `--on-info` → `rag/text/on-information`; manifest + `contrastPairs` updated in the same pass; the `$note`'s
+  *"white only on error"* clause amended because it is now **BASE-scoped**.
+- **regen** — `gen_canon_tokens.py` **541 root vars** · `gen_theme_cascade.py` **201 paths / 206
+  projections**, `--check` **rc=0, in sync** · `gen_canon_components.py` **75 components**.
+- **component spec** — `knowledge/components/banner.meta.json`, three stale prose claims amended by
+  addition; hand-formatted JSON edited surgically and re-validated.
+- **render-proof** — `reviews/LEGACY-RAG-BANNERS-2026-08-08-s131-v1.html`: computed values asserted **EXACT
+  on all 8 legs** (4 severities × light/dark) at **1180** and **480**, real HSBC face
+  (`document.fonts.check` true), **and the conductor viewed the crop**.
+
+**DECLARED, not smoothed over:**
+- `_validate_snippets.py` **156 ❌**, unchanged **by CONTENT attribution only** — the `git stash` control
+  **returned rc=1** (the known zero-byte `.git/index.lock`), so the with/without-diff control **did not run**.
+  Zero fail lines name the minted slot; the 12 Banner fails are the pre-existing #130 drift family. **An
+  honest UNPROVEN, priced.**
+- the old `on-success` note's **3.47:1 does not reproduce** against `#00847F` (measures **4.56**) — **declared
+  in the note rather than silently corrected**, because we do not know what the 3.47 measured.
+- the render needed a **`/var/tmp` rehome: `$HOME`'s volume was 100% FULL** — a new pothole datapoint, sibling
+  of #129's ENOSPC adjudication on a different volume. **Recorded, NOT promoted to a runbook rule on n=1.**
+
+### ⛔ FINDING #131 — THE COMPONENT-SPEC KG IS IN NO INDEX AND NO CHECKLIST (REPORTED, NOT REPAIRED)
+
+`knowledge/components/*.meta.json` — **76** (⚠ **MEASURED at the wrap and it corrected this session's own figure: the brief and every first draft said 78 — 78 is the DIRECTORY's entry count; 76 are metas, plus `meta.schema.json` and `_ACCESSIBILITY-CONFORMANCE.md`; 77 repo-wide, one lives at `knowledge/_proforma/icon-button.meta.json`. Registered as `ASSERT-009` so the count is re-tested, not repeated**) carrying token claims in prose — is **not in the memento
+index** and **no enactment checklist names it**. `banner.meta.json` sat stale against `s131-D1` through the
+whole enactment and was surfaced **by Dave's own question**. Same class as #130's *true when written, gone
+false, nothing re-checks it* — **the fifth medium**.
+⬛ **THE REMEDY IS DAVE'S**, three options, none taken: **(a)** index the metas · **(b)** a **parse-gate** on
+meta token-claims · **(c)** an enactment-checklist line. His attached question — *how is the design KG used,
+indexed and checked?* — is answered honestly as **by hand · nowhere · nothing**, and is homed in
+`_LIVE-STATE.md` § OPEN.
+
+### WHAT #131 DID NOT CLOSE
+
+The **4 REAL state-contrast failure records stand**, including the two console/SC **information-REST** items
+and **legacy-success-washed** — `s131-D1` moved a neighbouring surface and that is not a fix. **`s130-D4` /
+`D5` / `D6` and tabs remain RULED-NOT-ENACTED**; only the *legacy-reversed-text* half of #130's residual ① is
+done. The **console/SC lighter information blue is DIRECTION ONLY, no value**, by the ruling's own `watch`
+field. The **error-mark image confirm is still owed** — Dave sent RAG-fill images, not the error-mark image.
+
+**⛔ DO-NOT-RULE, respected in full at this wrap:** `G1`–`G17` · recorder constants · **v1/v2 pack sync
+(packs are RELEASES — nothing was synced into `designer-skills-*/`)** · mono grey ramp · SC dark ·
+type-ratchet debt 1,101 · the 19 `LEGACY_IDS` · stop line 150,929 and the 200,000 / 256,000 walls ·
+`_capture_gate` caps · `ds-025` · `ds-032` · the boot-rent plan · the snippet-corpus button-style question ·
+the audit file · **the 4 REAL contrast failure records** · the ~90 bare-path evidence entries · the
+dream-pass proposals · **the 156 validator fails** · **the component-spec-KG remedy choice**.
+**This wrap ruled nothing, moved no token value, and edited no gate, threshold or fence beyond what the
+ritual requires.**

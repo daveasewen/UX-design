@@ -318,6 +318,7 @@
   --rag-neutral: #808080;
   --rag-text-on-light: #1A1A1A;
   --rag-text-on-dark: #FFFFFF;
+  --rag-text-on-information: #1A1A1A;
   --scrollbar-foreground: #808080;
   --scrollbar-background: var(--surface-subtle);
   --badge-background: var(--rag-error);
@@ -670,6 +671,7 @@
   --rag-neutral: #FFFFFF;
   --rag-text-on-light: #1A1A1A;
   --rag-text-on-dark: #FFFFFF;
+  --rag-text-on-information: #1A1A1A;
   --scrollbar-foreground: #FFFFFF;
   --scrollbar-background: var(--surface-subtle);
   --badge-background: var(--rag-error);
@@ -3924,6 +3926,7 @@
   --on-dark: var(--rag-text-on-dark);
   --on-light: var(--rag-text-on-light);
   --on-ok: var(--text-on-success);
+  --on-info: var(--rag-text-on-information);
   --text: var(--text-default);
   --page: var(--background-default);
   --press-travel: var(--component-type-button-family-press-travel);
@@ -3941,7 +3944,8 @@
 .cn-banner .banner.err{--fill:var(--err-bg); --ink:var(--on-dark);}
 .cn-banner .banner.warn{--fill:var(--warn-bg); --ink:var(--on-light);}
 .cn-banner .banner.ok{--fill:var(--ok-bg); --ink:var(--on-ok);}
-.cn-banner .banner.info{--fill:var(--info-bg); --ink:var(--on-light);}
+.cn-banner .banner.info{--fill:var(--info-bg); --ink:var(--on-info);}
+/* s131-D1: info ink rides its OWN slot (rag/text/on-information) — base dark, legacy reverses to white on #305A85; on-light stays warning's alone */
 /* the banner — full-width solid fill, SURFACE radius role */
 .cn-banner .banner{display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
     background:var(--fill); color:var(--ink); border-radius:var(--border-radius-surface);}
@@ -8886,7 +8890,7 @@
    edit the override sets and re-run. Theme attr goes on <html> or any
    ancestor of the [data-theme] element; Mono is the base (no block).
    Attrs: legacy=apollo-legacy, mono=apollo-mono, console=apollo-console, supercharge=apollo-supercharge */
-/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (37 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
+/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (39 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
 [data-apollo-theme="legacy"]{
   --badge-background: #DB0011;
   --border-radius-default: 0;
@@ -8913,21 +8917,23 @@
   --rag-error-glyph: #A8000B;
   --rag-error-tint: #F9F2F3;
   --rag-information: #305A85;
-  --rag-information-background: #7DABCD;
+  --rag-information-background: #305A85;
   --rag-information-glyph: #305A85;
   --rag-information-tint: #EBEFF4;
   --rag-success: #00847F;
   --rag-success-background: #00847F;
   --rag-success-glyph: #00847F;
   --rag-success-tint: #E5F2F2;
+  --rag-text-on-information: #FFFFFF;
   --rag-warning: #FFBB33;
-  --rag-warning-background: #F0B13A;
+  --rag-warning-background: #FFBB33;
   --rag-warning-glyph: #FFBB33;
   --rag-warning-tint: #FFF8EA;
   --tabs-active: #DB0011;
   --tabs-badge-background: #DB0011;
   --tabs-inactive: #333333;
   --text-default: #333333;
+  --text-on-success: #FFFFFF;
   --text-secondary: #545454;
 }
 [data-apollo-theme="legacy"][data-theme="dark"],
@@ -8952,20 +8958,22 @@
   --rag-error-glyph: #A8000B;
   --rag-error-tint: #260005;
   --rag-information: #305A85;
-  --rag-information-background: #7DABCD;
+  --rag-information-background: #305A85;
   --rag-information-glyph: #305A85;
   --rag-information-tint: #000D1B;
   --rag-success: #00847F;
   --rag-success-background: #00847F;
   --rag-success-glyph: #00847F;
   --rag-success-tint: #001615;
+  --rag-text-on-information: #FFFFFF;
   --rag-warning: #FFBB33;
-  --rag-warning-background: #F0B13A;
+  --rag-warning-background: #FFBB33;
   --rag-warning-glyph: #FFBB33;
   --rag-warning-tint: #221701;
   --tabs-badge-background: #DB0011;
   --tabs-inactive: #FFFFFF;
   --text-default: #FFFFFF;
+  --text-on-success: #FFFFFF;
   --text-secondary: #9B9B9B;
 }
 [data-apollo-theme="legacy"] .cn-accordion{
@@ -9085,22 +9093,26 @@
 }
 [data-apollo-theme="legacy"] .cn-banner{
   --err-bg: #A8000B;
-  --info-bg: #7DABCD;
+  --info-bg: #305A85;
   --ok-bg: #00847F;
+  --on-info: #FFFFFF;
+  --on-ok: #FFFFFF;
   --press-darken: 1;
   --press-travel: 0;
   --text: #333333;
-  --warn-bg: #F0B13A;
+  --warn-bg: #FFBB33;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-banner,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-banner{
   --err-bg: #A8000B;
-  --info-bg: #7DABCD;
+  --info-bg: #305A85;
   --ok-bg: #00847F;
+  --on-info: #FFFFFF;
+  --on-ok: #FFFFFF;
   --press-darken: 1;
   --press-travel: 0;
   --text: #FFFFFF;
-  --warn-bg: #F0B13A;
+  --warn-bg: #FFBB33;
 }
 [data-apollo-theme="legacy"] .cn-breadcrumbs{
   --text: #333333;
@@ -9119,6 +9131,7 @@
   --pri-pressed: #000000;
   --quat-label: #333333;
   --success: #00847F;
+  --success-fg: #FFFFFF;
   --ter-border-disabled: #D7D8D6;
   --ter-label: #333333;
 }
@@ -9133,6 +9146,7 @@
   --pri-pressed: #FFFFFF;
   --quat-label: #FFFFFF;
   --success: #00847F;
+  --success-fg: #FFFFFF;
   --ter-border-disabled: #404040;
   --ter-label: #FFFFFF;
 }
@@ -10537,7 +10551,7 @@
   --border-radius-control: 4px;
 }
 
-/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (139 override path(s), 4 mark(s), apollo-supercharge.overrides) ---- */
+/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (140 override path(s), 4 mark(s), apollo-supercharge.overrides) ---- */
 [data-apollo-theme="supercharge"]{
   --background-default: #F7F6F4;
   --badge-background: #B92F1E;
@@ -10629,6 +10643,7 @@
   --rag-success-background: #5DAC7B;
   --rag-success-glyph: #5DAC7B;
   --rag-success-tint: #DCEDE3;
+  --rag-text-on-information: #13110E;
   --rag-text-on-light: #13110E;
   --rag-warning: #D5990B;
   --rag-warning-background: #D5990B;
@@ -10753,6 +10768,7 @@
   --rag-success-background: #5DAC7B;
   --rag-success-glyph: #5DAC7B;
   --rag-success-tint: #12291D;
+  --rag-text-on-information: #13110E;
   --rag-text-on-light: #13110E;
   --rag-warning: #D5990B;
   --rag-warning-background: #D5990B;
@@ -10988,6 +11004,7 @@
   --err-bg: #B92F1E;
   --info-bg: #4F77B0;
   --ok-bg: #5DAC7B;
+  --on-info: #13110E;
   --on-light: #13110E;
   --page: #F7F6F4;
   --press-darken: 1;
@@ -11000,6 +11017,7 @@
   --err-bg: #B92F1E;
   --info-bg: #4F77B0;
   --ok-bg: #5DAC7B;
+  --on-info: #13110E;
   --on-light: #13110E;
   --page: #1A1A1A;
   --press-darken: 1;

@@ -78,14 +78,14 @@
     --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
   [data-theme="light"]{
     --err-bg:#B92F1E; --warn-bg:#F0B13A; --ok-bg:#5DAC7B; --info-bg:#7DABCD;
-    --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000;
+    --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000; --on-info:#1A1A1A;
     --text:#1A1A1A; --page:#FFFFFF;
     --border-radius-surface:0;
     --press-travel:2; --press-darken:0.94;
   }
   [data-theme="dark"]{
     --err-bg:#B92F1E; --warn-bg:#F0B13A; --ok-bg:#43AD6F; --info-bg:#5F92B9;
-    --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000;
+    --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000; --on-info:#1A1A1A;
     --text:#FFFFFF; --page:#1A1A1A;
     --border-radius-surface:0;
     --press-travel:2; --press-darken:0.94;
@@ -101,7 +101,7 @@
   .banner.err{ --fill:var(--err-bg); --ink:var(--on-dark); }
   .banner.warn{ --fill:var(--warn-bg); --ink:var(--on-light); }
   .banner.ok{ --fill:var(--ok-bg); --ink:var(--on-ok); }
-  .banner.info{ --fill:var(--info-bg); --ink:var(--on-light); }
+  .banner.info{ --fill:var(--info-bg); --ink:var(--on-info); } /* s131-D1: info ink rides its OWN slot (rag/text/on-information) — base dark, legacy reverses to white on #305A85; on-light stays warning's alone */
 
   /* the banner — full-width solid fill, SURFACE radius role */
   .banner{ display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
@@ -190,20 +190,20 @@
   {
     "component": "Banner",
     "vars": { "--err-bg": "rag/error-background", "--warn-bg": "rag/warning-background", "--ok-bg": "rag/success-background", "--info-bg": "rag/information-background",
-              "--on-dark": "rag/text/on-dark", "--on-light": "rag/text/on-light", "--on-ok": "text/on-success",
+              "--on-dark": "rag/text/on-dark", "--on-light": "rag/text/on-light", "--on-ok": "text/on-success", "--on-info": "rag/text/on-information",
               "--text": "text/default", "--page": "background/default", "--border-radius-surface": "border-radius/surface",
               "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken" },
     "contrastPairs": [
       { "fg": "rag/text/on-dark",  "bg": "rag/error-background",       "context": "text" },
       { "fg": "rag/text/on-light", "bg": "rag/warning-background",     "context": "text" },
       { "fg": "text/on-success",   "bg": "rag/success-background",     "context": "text" },
-      { "fg": "rag/text/on-light", "bg": "rag/information-background", "context": "text" },
+      { "fg": "rag/text/on-information", "bg": "rag/information-background", "context": "text" },
       { "fg": "rag/text/on-dark",  "bg": "rag/error-background",       "context": "icon" },
       { "fg": "rag/text/on-light", "bg": "rag/warning-background",     "context": "icon" }
     ],
     "icons": { "error": "status-icons/error.svg", "warning": "status-icons/warning.svg", "success": "status-icons/success.svg", "information": "status-icons/information.svg", "close": "global-controls/close.svg" },
     "requiredAria": ["role=\"alert\"", "role=\"status\"", "aria-label"],
-    "$note": "White type appears ONLY on the error fill (#B92F1E — red, type26-013 compliant, 6.02:1). Amber/success/information carry ruled dark inks (R-D3 / B-D6 / rag/text/on-light), 5.22–9.16:1 both modes. Glyphs are reverse-knockout (shape = ink, mark = fill) so every icon leg matches its declared text pair. Fill-vs-page is undeclared by design: a page-level surface is not an indicator (1.4.11 does not set a floor for large surface boundaries)."
+    "$note": "White type appears ONLY on the error fill (#B92F1E — red, type26-013 compliant, 6.02:1). Amber/success/information carry ruled dark inks (R-D3 / B-D6 / rag/text/on-light), 5.22–9.16:1 both modes. Glyphs are reverse-knockout (shape = ink, mark = fill) so every icon leg matches its declared text pair. Fill-vs-page is undeclared by design: a page-level surface is not an indicator (1.4.11 does not set a floor for large surface boundaries). || s131-D1 (#131): the ONLY-on-error clause is now BASE-scoped — in LEGACY white type/marks ride error, success AND information (fills #A8000B/#00847F/#305A85: 7.87/4.56/7.17), amber the sole dark-ink exception."
   }
   </script>
   <script>
