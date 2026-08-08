@@ -7,23 +7,37 @@
 # Per feedback-gate-dont-patch: make the condition mechanical, not another prose reminder.
 # The sandbox delete-guard means locks can only be MOVED (mv), never rm'd — see the runbook.
 #
-# USAGE:  bash knowledge/_git_commit.sh --reconciled <msgfile>
+# USAGE:  bash knowledge/_git_commit.sh --reconciled <msgfile> <path> [<path> ...]
 #   <msgfile>      commit message file — UNIQUE name, in a session-owned dir (outputs/), never /tmp
+#   <path>...      THE PATHS TO STAGE, named explicitly. Required.
 #   --reconciled   you have run `git status --short` and can name WHY every dirty path exists
 #                  (runbook step 0.5 — the script cannot do this judgment for you)
+#   --all-dirty    escape hatch: stage every dirty path, each one ECHOED first. Use only when the
+#                  reconciliation genuinely covered all of them; it is never the default.
 # The script REFUSES to stage while any .git/*.lock exists, and never runs rm inside .git.
+#
+# ⚠ `git add -A` RETIRED — ruled Dave 2026-08-02 (dream pass 4, P5 "ACCEPTED, option (a)"), enacted
+# #128. `--reconciled` asserted a judgment the staging call then ignored: `add -A` swept whatever
+# happened to be dirty, including another worker's uncorrected draft (#70). The flag now means what
+# it says — you name the paths, and anything you did not name cannot ride along. The escape hatch
+# exists because refusing a legal intention with no legal form is how a gate gets worked around
+# rather than obeyed; it stages nothing silently.
 
 set -u
 cd "$(dirname "$0")/.." || exit 1
 
 RECONCILED=0
 WRAP=0
+ALLDIRTY=0
 MSGFILE=""
+PATHS=()
 for a in "$@"; do
   case "$a" in
     --reconciled) RECONCILED=1 ;;
     --wrap) WRAP=1 ;;
-    *) MSGFILE="$a" ;;
+    --all-dirty) ALLDIRTY=1 ;;
+    --session=*) ;;
+    *) if [ -z "$MSGFILE" ]; then MSGFILE="$a"; else PATHS+=("$a"); fi ;;
   esac
 done
 
@@ -224,14 +238,42 @@ PYEOF
 clear_locks
 find .git -name '*.lock' | grep -q . && fail "lock survived the mv-aside — do NOT stage; investigate"
 
-git add -A 2>/dev/null
+# EXPLICIT-PATH STAGING — P5 option (a), enacted #128. `git add -A` is gone; the paths come from
+# the reconciliation, not from whatever the tree happens to be carrying.
+if [ "$ALLDIRTY" -eq 1 ]; then
+  echo "— --all-dirty: staging every dirty path, named:"
+  git status --porcelain | sed 's/^/  dirty: /'
+  while IFS= read -r _p; do [ -n "$_p" ] && PATHS+=("$_p"); done < <(git status --porcelain | cut -c4-)
+fi
+if [ "${#PATHS[@]}" -eq 0 ]; then
+  echo '✗ refusing to stage: no paths given. --reconciled means you can name WHY every dirty path'
+  echo '  exists — so name the ones this commit is for (P5, ruled 2026-08-02: git add -A retired).'
+  echo "  Re-run as: bash knowledge/_git_commit.sh --reconciled <msgfile> <path> [<path> ...]"
+  echo "  or, if the reconciliation really covered all of them, add --all-dirty. Dirty paths now:"
+  git status --short
+  exit 1
+fi
+for _p in "${PATHS[@]}"; do
+  git add -- "$_p" 2>/dev/null || fail "could not stage '$_p' — named in the reconciliation but git refused it"
+done
 git diff --cached --name-only | sed 's/^/  staged: /'
+UNSTAGED_DIRTY=$(git status --porcelain | grep -c '^.[MD?]' || true)
+[ "$UNSTAGED_DIRTY" -eq 0 ] ||
+  echo "⚠ $UNSTAGED_DIRTY dirty path(s) NOT staged — deliberate under explicit-path staging; they stay for the next commit"
 git diff --cached --quiet && fail "nothing staged — empty commit refused"
 
 clear_locks
 
 BEFORE=$(git rev-parse HEAD)
-git -c user.name="Claude" -c user.email="claude@anthropic.com" commit -F "$MSGFILE" 2>&1 |
+# --cleanup=verbatim — enacted #128, ruled the same session it was found. git's `strip` cleanup
+# (the default whenever `commit.cleanup=strip` is configured, and the default for editor-supplied
+# messages) DELETES every line beginning with '#'. The T3 headline this script generates BEGINS
+# WITH '#<session>' on a wrap commit — so the subject line was silently removed and git promoted
+# the first body line to %s. MEASURED #128 in a scratch repo, git 2.34.1: with `commit.cleanup=strip`
+# the subject of a `#128 … / <blank> / body` msgfile came back as literally `body`; with
+# `--cleanup=verbatim`, `#128 …`. Nothing warned. `verbatim` also means the msgfile is committed
+# exactly as written — which is the property the assert below relies on.
+git -c user.name="Claude" -c user.email="claude@anthropic.com" commit --cleanup=verbatim -F "$MSGFILE" 2>&1 |
   grep -v 'unable to unlink' || true
 AFTER=$(git rev-parse HEAD)
 [ "$BEFORE" != "$AFTER" ] || fail "HEAD did not advance — commit did not land"
@@ -241,8 +283,23 @@ echo "— committed: $(git log -1 --format='%h %s' | cut -c1-120)"
 # remedy. 0eacf2d shipped ~83,000 chars as %s and broke every git-log consumer at the next boot.
 SUBJ_LEN=$(git log -1 --format=%s | wc -c)
 [ "$SUBJ_LEN" -le 200 ] || fail "commit subject is ${SUBJ_LEN} chars (cap 200) — the 0eacf2d subject-fold class: no blank line after the headline, so git folded the body into %s. The commit LANDED; fix the msgfile and amend BEFORE Dave pushes."
-git log -1 --format=%s | head -1 | grep -qF "$(head -1 "$MSGFILE" | cut -c1-40)" ||
-  echo "⚠ HEAD message does not match msgfile head — CHECK for the stale-msgfile trap"
+# SUBJECT-IDENTITY ASSERT — enacted #128, and it FAILS LOUD. What stood here was a substring
+# `grep -qF` on the first 40 chars that only ever printed a warning, so the two ways this seam
+# actually breaks both passed it: git's cleanup silently deleting a '#'-leading subject, and the
+# stale-msgfile trap. The commit HAS landed by the time this runs — that is the point, this is the
+# seam where a wrong subject becomes DURABLE — so the failure text says so and names the remedy.
+MSG_HEAD=$(head -1 "$MSGFILE")
+GIT_SUBJ=$(git log -1 --format=%s)
+if [ "$GIT_SUBJ" != "$MSG_HEAD" ]; then
+  echo "✗ SUBJECT MISMATCH — the commit LANDED but git's subject is not the msgfile's first line." >&2
+  echo "    msgfile[1]: $(printf '%s' "$MSG_HEAD" | cut -c1-160)" >&2
+  echo "    git    %s : $(printf '%s' "$GIT_SUBJ" | cut -c1-160)" >&2
+  echo "  Two known causes: (a) message cleanup ate a '#'-leading subject — check --cleanup=verbatim" >&2
+  echo "  survived, (b) the stale-msgfile trap. Fix the msgfile and amend BEFORE Dave pushes." >&2
+  clear_locks
+  exit 1
+fi
+echo "— subject asserted identical to msgfile line 1"
 
 # last action: clear the lock git just respawned; no git command after this
 clear_locks

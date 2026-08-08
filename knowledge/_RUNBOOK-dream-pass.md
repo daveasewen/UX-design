@@ -37,6 +37,20 @@ dreamer spec: `.claude/agents/dreamer.md`.*
 7. **Commit, mechanical rule:** only-the-proposals-file dirty → `bash knowledge/_git_commit.sh
    --reconciled <msgfile>` (msgfile unique, in the session's outputs dir). Anything ELSE dirty →
    leave it and flag it; never sweep it into the lane commit.
+7b. **Conductor writes the lane's status to `_LIVE-STATE.md` — BETWEEN the commit and the gate.**
+   *(Seam ①, ruled Dave 2026-08-08 #128.)* Append ONE dated line to `_LIVE-STATE.md` **§🔀 SPIN-OFF
+   LANE — Memento dream-pass**, and refresh the file's **"Last refreshed" zone** (the header zone the
+   wrap gate reads — first 40 lines; see `_capture_gate.py`'s `"Last refreshed"` check) to today.
+   The line says, at minimum: **whether the pass was scheduled or manual · whether it was overdue and
+   from where · how many proposals and their ids · what became of them (ruled / held / rolled) ·
+   the commit ref.**
+   ⚠ **Why this step exists, and why HERE:** the lane's own charter sentence is *"the weekly task
+   dreams; Dave rules; sessions enact"* — but the lane wrote its output to `notes/_dream/` and its
+   rulings to the ledger, and **§🔀 stopped being updated after 2026-07-26**, so live state could not
+   see whether the lane had run, was overdue, or had produced anything. Five passes ran before anyone
+   noticed. It sits between the commit and the gate because the commit is what makes the pass real
+   and the gate is what checks the file is fresh — a status written before the commit describes an
+   intention, and one written after the gate is a status the gate never saw.
 8. **Gate:** `python3 knowledge/_capture_gate.py --wrap --lane` (S-D2/S-D3: GM-header check
    skipped-and-printed; stdout-only).
 9. **Fixed report to Dave:** lane · routing · reads · lock/state · pass shape · proposals

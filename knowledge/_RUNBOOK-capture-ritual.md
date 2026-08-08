@@ -86,7 +86,12 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    ≥ 2026-07-26 — no corpus retrofit).
 2. **Write/refresh `GOOD-MORNING.md`.** The cold-start entry point for the *next* session — write it
    for a reader with zero memory of this one. **Required structure, in order:**
-   - **The two names first** (see step 4b) — rename + next title, at the very top.
+   - **The NEXT SESSION TITLE first** (see step 4b) — the forward title, and only that, at the very top.
+     ⚠️ **AMENDED — ruled Dave #28, 2026-07-28, enacted #30: the RETROSPECTIVE RENAME is delivered in
+     CHAT at wrap and is NEVER written into `GOOD-MORNING.md`** (it applies to the conversation that is
+     ENDING, so a cold reader can do nothing with it). The superseded *"two names first — rename + next
+     title, at the very top"* instruction stood here unamended for 37 sessions and was quoted back at
+     Dave as live authority at #71, sixteen lines above the amendment that killed it. Full text: step 4b.
    - **§A ORIENTATION — STANDING. Carry it forward EVERY time.** The whole project on one page,
      new-starter style, at Dave's request 2026-07-17: *"orientate a new starter — wider context helps."*
      What Apollo is · the three-libraries-one-skeleton model · where things live · the one command ·
@@ -139,6 +144,16 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      corpus runs at **3.53 bytes/token**, not the customary 4 — its ★ ⚠ ⛔ · — load makes it ~13% denser,
      so every chars/4 estimate of these files has read LOW, including the ones in the proposal that set
      the budget.
+     ⚠️ **DECLARE-LAST, AND DECLARE THE SIZE OF WHAT YOU SKIPPED — ruled Dave 2026-08-02 (dream pass 4,
+     P7 "ACCEPTED, smallest version"), enacted #128. NO GATE.** The stamp is written LAST, after 2c/2d/2f
+     have run, because those steps change the very files it measures. **When 2c, 2d or 2f are SKIPPED, the
+     residual may not simply say they were skipped — it must state the SIZE of the skip:** that the `size:`
+     stamp being carried is therefore the PRIOR session's (#N−1's), and roughly how far the artefact has
+     moved since — a re-measure is one call, `chain_file_tk('.')`. *Why: "skipped 2c" reads as
+     housekeeping; "the stamp is #N−1's and the chain has moved by roughly X since" reads as what it is —
+     a number in the read chain that is no longer about this session's file.* ⚠️ **Flagged by Dave at the
+     ruling itself: this is the third or fourth "declare it in the residual" clause. Watch the residual
+     becoming the place things go to be declared and then forgotten.**
 
    **2c. Compact the banner stack — keep ★ LATEST + 1 PRIOR, roll the rest to `_GM-ARCHIVE.md`.**
    → **Execute every move via `python3 knowledge/_gm_move.py --ops <ops.json>` — never hand-edit a roll** (M5, 2026-07-28: line-START anchors · §A digest asserted · caps imported, warn ≠ block · all-or-nothing · stdout receipts).
@@ -163,6 +178,16 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    doesn't, copy it up FIRST, then roll. The 07-24 chart banner rolled 6 of 7 numbered deferrals out
    of live state; only the one with a standing home survived. Dated homes (briefs, receipts,
    `_DECISION-HISTORY/`) do NOT count — a cold session reads none of them.
+   ⚠️ **EVERY CARRIED ITEM IS WRITTEN WITH ITS AGE — ruled Dave 2026-08-08 (#128, dream pass 5 P2).
+   FORMAT ONLY: no threshold, no cap, no gate.** An item carried on a banner or in a residual gets a
+   bracketed age in **sessions since it was ruled or declared**, immediately after its id — e.g.
+   `89-D2 [38]` · `ds-021 [74]` · `P7 [52]`.
+   *Why: a carried item reads identically at one session old and at thirty-eight. The age is the only
+   part of a carry a cold reader cannot reconstruct, and it is the part that decides whether the carry
+   is a hand-off or a fossil. Writing it costs a bracket; NOT writing it is how "89-D2, still owed"
+   survived thirty-eight wraps without anyone reading the number that made it alarming.*
+   ⚠️ **The age is REPORTED, never ACTED ON here** — no age triggers anything, nothing expires, and
+   nothing may be dropped for being old. What to do about an old carry is Dave's, every time.
 
    **2d. Compact the `_LIVE-STATE` delta stack — keep ⏱ LATEST + 2 PRIOR, roll the rest to
    `_LIVE-STATE-ARCHIVE.md`.**

@@ -5055,3 +5055,104 @@ Inscribed **by ADDITION** at `knowledge/_RUNBOOK-context-gauge.md` § The Red tr
 ⛔ **THE DREAM PASS.** Raised mid-session; **a sub's report alone cost more FILL than remained before the
 wrap-open line**, so it was **rolled to #128 as item ①, deliberately, rather than started and abandoned**
 [[stop-line-repriced-93]]. Recorded as **OVERDUE**, which is a different word from *queued*.
+
+## ★ #128 — DREAM PASS 5, AND THE FIRST SESSION IN 52 TO ENACT WHAT THE LANE DREAMED (Dave live, dream-pass lane, pass conducted by Fable with an Opus dreamer, enactment delegated to an Opus sub)
+
+*Four rulings, all Dave's, all in-session 2026-08-08. The pass ran manually because #127 rolled it;
+its first proposal found that the lane's third charter clause — **sessions enact** — had a measured
+record of **0 for 6** across 38 sessions. By the end of this session it had a receipt.*
+
+### `s128-D1` — REGISTER THE 08-02 RULINGS *and then* ENACT ALL SEVEN, NOW
+
+**Dave's words:** the pass put P1 to him as *register the six unenacted 2026-08-02 rulings in
+`_rulings.json` so the instrument can see them*. He took it — **and extended it live**, ruling that the
+seven items were not to be registered and left: **enact all of them this session.**
+
+**WHY.** P1's finding was not "six late items". It was that **`knowledge/_rulings.json` — the store
+`_governs.py` reads — contained no id below `s110` and none for any dream-pass P-item at all**
+(`grep -n "dream" knowledge/_rulings.json` → 0 hits). The six rulings were not *late*; they were **not
+in the system that would notice they were late**, which is why two independent re-checks 37 sessions
+apart found the same lines byte-identical and neither triggered anything. Registration alone would
+have made them visible; Dave's extension is what made visibility redundant. ⚠ **This is the same
+two-tier hypothesis #89 declared and could not test** — ledgers RULE, briefs and receipts PROVE,
+nothing promotes the second into the first — **tested on all six at #127, holds on all six.**
+
+**Receipts:** `knowledge/_rulings.json` entries `d0802-P2a` · `d0802-P2b` · `d0802-P3` · `d0802-P4` ·
+`d0802-P5` · `d0802-P6` · `d0802-P7`, each flipped from *NOT ENACTED* to **ENACTED #128** with its own
+artefact pointer as this session's work landed. Enactments: `GOOD-MORNING.md:125` (pointer form, no
+figure) · `knowledge/_RUNBOOK-capture-ritual.md` (the `:89` next-title amendment, and the declare-LAST
+size clause) · `knowledge/_search_core.py` (the running-count form, at the ONE copy of the receipt
+form) · `_FUTURE-STATE.md` (the three orphaned forks, homed by addition) · `knowledge/_capture_gate.py`
+(the `c_block` branch, still advisory) · `knowledge/_git_commit.sh` (explicit-path staging).
+Source ruling text: the 2026-08-02 dream-pass-4 window's rulings section in this file (Dave accepting all seven recommendations after a full prose read-back).
+
+### `s128-D2` — CARRIED ITEMS ARE WRITTEN WITH THEIR AGE. FORMAT ONLY.
+
+**Dave's ruling:** P2 accepted as a **format**, in the shape the proposal put it — `89-D2 [38]`, the
+bracket being **sessions since the item was ruled or declared**. **No threshold, no cap, no gate, and
+nothing expires.**
+
+**WHY.** The pass measured the residual carry rolling **14×** with no age on any item. A carried line
+reads identically at one session old and at thirty-eight; the age is **the only part of a carry a cold
+reader cannot reconstruct**, and it is the part that decides whether the carry is a hand-off or a
+fossil. ⚠ **Deliberately not gated.** An age that triggers something becomes a deadline, and a deadline
+on Dave's open items is the engine ruling on his backlog — [[derivation-governance]]. The bracket
+REPORTS; what to do about an old carry stays his, every time.
+
+**Receipt:** `knowledge/_RUNBOOK-capture-ritual.md` § 2c EXIT CHECK — *"EVERY CARRIED ITEM IS WRITTEN
+WITH ITS AGE"*.
+
+### `s128-D3` — THE LANE WRITES ITS STATUS TO `_LIVE-STATE.md`, BETWEEN COMMIT AND GATE
+
+**Dave's ruling (seam ①):** the dream-pass conductor appends a dated one-line status to
+`_LIVE-STATE.md` **§🔀** and refreshes the **"Last refreshed"** zone, as a numbered step in the lane's
+own runbook.
+
+**WHY.** The lane wrote proposals to `notes/_dream/` and rulings to this ledger, and **§🔀 had not been
+updated since 2026-07-26** — so live state could not answer *has the lane run, is it overdue, did it
+produce anything*. **Five passes ran inside that blind spot**, and #127's roll was recorded only in a
+banner. The step sits **between the commit and the gate** on purpose: a status written before the
+commit describes an intention, and one written after the gate is a status **the gate never saw**
+[[check-after-its-own-remedy]].
+
+**Receipts:** `knowledge/_RUNBOOK-dream-pass.md` step **7b** (new, between 7 and 8 — no renumbering) ·
+`_LIVE-STATE.md` §🔀 *"Status (2026-08-08, dream pass 5 …)"* · `_LIVE-STATE.md` header zone refreshed
+to 2026-08-08, which is also what cleared the wrap gate's freshness FAIL.
+
+### `s128-D4` — `--cleanup=verbatim` + A SUBJECT ASSERT THAT FAILS LOUD, AND THE DEFECT RECORD
+
+**Dave's ruling (seam ②), taken the moment the defect was demonstrated:** `knowledge/_git_commit.sh`
+commits with **`--cleanup=verbatim`**, and **asserts after committing** that `git log -1 --format=%s`
+equals the msgfile's first line, **failing loud** when it does not.
+
+**⛔ THE DEFECT RECORD — this session's own commit is the evidence.** Pass 5's first commit attempt
+**silently lost its message**: the msgfile's first line began with `#`, git's message cleanup treats
+`#`-leading lines as comments and **deleted the subject**, and git then promoted the first body line
+to `%s`. Nothing warned. The script's own T3 block generates a headline of the form
+**`#<session> <date> — …`** on a wrap commit — **so the script's normal output is exactly the input
+that triggers this.** The check that stood at that seam was a `grep -qF` on the first **40 characters**
+that only ever **printed a warning**, so both of the ways this seam actually breaks — cleanup eating
+the subject, and the stale-msgfile trap — passed it.
+
+⚠ **MEASURED, and the cause is narrower than the symptom.** In a scratch repo on git 2.34.1, `git
+commit -F` with a `#`-leading first line kept the subject **when no `commit.cleanup` is configured**,
+and returned the subject as literally **`body`** the moment `commit.cleanup=strip` was set;
+`--cleanup=verbatim` returned `#128 …` under both. **So the trigger is configuration-dependent and the
+fix is not** — which is precisely why it is worth having: a defect that depends on the host's config is
+one that reproduces on someone else's machine and not on yours.
+
+**WHY the assert and not just the flag.** The flag prevents one cause. The assert is at the seam where
+a wrong subject becomes **DURABLE** — the commit has already landed when it runs, and its message says
+so and names the remedy (*amend BEFORE Dave pushes*). **Mutation-tested:** the block was extracted
+verbatim and run against a deliberately mismatched msgfile — **exit 1, both lines printed** — and
+against the true one — **pass**.
+
+**And `git add -A` is gone with it (`d0802-P5`, ruled 2026-08-02).** `--reconciled` asserted a judgment
+the staging call then ignored: `add -A` swept whatever happened to be dirty, including another worker's
+uncorrected draft at #70. Staging now takes **explicit paths**; a `--all-dirty` escape hatch exists and
+**echoes every path it stages**, because refusing a legal intention with no legal form is how a gate
+gets worked around rather than obeyed [[honest-refusal-needs-a-legal-form]].
+
+**Receipt:** `knowledge/_git_commit.sh` — usage block · explicit-path staging · `--cleanup=verbatim` ·
+SUBJECT-IDENTITY ASSERT. **And this session's commit is the live proof:** its msgfile's first line
+deliberately begins with `#128`.

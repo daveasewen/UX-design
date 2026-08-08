@@ -2240,6 +2240,23 @@ def check_budgets(repo):
         warns.append(f"M10 read chain UNMEASURED — {chain_file_detail} (slice: {chain_detail}). "
                      f"Not defaulted, not assumed clean: a chain budget that reports 0 on a parse "
                      f"failure reads GREEN on a broken file. Fix the structure, then re-run.")
+    # ⚠ THE BLOCK-CANDIDATE BRANCH — ruled Dave 2026-08-02 (dream pass 4, P2 half (a)), enacted #128.
+    # Until now `c_block` was unpacked and printed and NEVER COMPARED: a chain at the warn and a chain
+    # a thousand tape past the block-candidate emitted the identical message, so the second tier was
+    # decoration. This branch makes the tier VISIBLE. It is STILL ADVISORY and deliberately a WARN —
+    # arming it, re-dialling it or retiring it is Dave's word alone, and nothing here may block.
+    # Its tag is UNIQUE ("M10 read chain OVER THE BLOCK-CANDIDATE") so a bite cannot match the warn
+    # tier's prose by substring — the lesson recorded three lines above this one.
+    elif bill_of(chain_file) > bill_of(c_block):
+        warns.append(f"M10 read chain OVER THE BLOCK-CANDIDATE — THE WHOLE `_CHAIN.md` FILE, which "
+                     f"is what a cold session opens: {fmt_units(chain_file)}, PAST the "
+                     f"block-candidate {c_block:,} tape / ~{bill_of(c_block):,} bill (warn "
+                     f"{c_warn:,} tape / ~{bill_of(c_warn):,} bill). ⚠ STILL ADVISORY AND STILL A "
+                     f"WARN — this tier has never been armed; arming, re-dialling or retiring it is "
+                     f"Dave's word alone, and the numbers remain agent-derived. {chain_file_detail}. "
+                     f"This check knows the total, not where the weight sits — measure the terms "
+                     f"before picking one to trim, and note that the wrapper is the ONE term no "
+                     f"editing of GM or _LIVE-STATE can move.")
     elif bill_of(chain_file) > bill_of(c_warn):
         warns.append(f"M10 read chain — THE WHOLE `_CHAIN.md` FILE, which is what a cold session "
                      f"opens: {fmt_units(chain_file)}, warn {c_warn:,} tape / "

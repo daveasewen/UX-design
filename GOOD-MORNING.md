@@ -122,7 +122,7 @@
 > **Sandbox warts** → `_RUNBOOK-git-commit.md` § sandbox warts + `_RUNBOOK-render-verify.md` § potholes.
 > **The build does NOT fit one ≤45s call — MEASURED #62: ~49s for all 75 steps.** Local method = `_build_survey.py --include-mutating --range A:B --resume`, consecutive chunks on one tree; `_build_all.py` single-process is CI's verdict, not the sandbox's.
 
-*Read chain — the CONTRACT (GM-D7-am, CUT #33 on Dave's ruling). **Three things: this header → the ★ LATEST banner (GM-D4) → the ⏱ LATEST DELTA in `_LIVE-STATE.md`.** ⚠ **MEASURED #38: 4,585 tape — OVER M10's 4,500 warn.** This block quoted `3,410 tk` from #33 and had been stale five sessions. Whether `DO THIS FIRST` joins the chain (+3,415 tape) is OPEN and Dave's (§C·4·3).*
+*Read chain — the CONTRACT (GM-D7-am, CUT #33 on Dave's ruling). **Three things: this header → the ★ LATEST banner (GM-D4) → the ⏱ LATEST DELTA in `_LIVE-STATE.md`.** ⚠ **The chain is measured against M10's advisory warn — run `chain_file_tk('.')`; the figure MOVES** (no figure is carried here; a hardcoded one goes stale in value AND in unit). This block quoted `3,410 tk` from #33 and had been stale five sessions. Whether `DO THIS FIRST` joins the chain (+3,415 tape) is OPEN and Dave's (§C·4·3).*
 
 *⚠ **§A AND §C STAY IN THE FILE — they left the CHAIN, not the record.** For eleven sessions *"never drop §A"* was read as *"always read §A"*: two separable decisions nobody had separated. §A is still here, uncapped, never shortened to a label.*
 

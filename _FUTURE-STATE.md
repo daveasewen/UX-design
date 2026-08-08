@@ -958,3 +958,28 @@ with a standing home survived).*
   standing]`
 
 *Source: `GOOD-MORNING.md` ★ PRIOR #88 banner, rolled to `_GM-ARCHIVE.md` at #90's 2c.*
+
+## ⬛ THREE ORPHANED FORKS FROM THE 2026-08-02 DREAM PASS — homed #128 by ADDITION
+
+*Ruled Dave 2026-08-02 (dream pass 4, P6): **"P6 ACCEPTED, addition only — one `_FUTURE-STATE.md`
+entry homing the three orphaned forks (two-fetch staleness control · 'fog' charter row · `MEMORY.md`
+index-drift gate) with the receipt path as source. Nothing ruled, nothing prioritised."** Source /
+provenance: `notes/_MEMENTO-DECISIONS.md#P6 ACCEPTED, addition only` (the 08-02 pass entry) and its
+re-check at `#⚠ P6 — HOLDS EXACTLY`. **Probe that made it a fork, re-run at #127 and unchanged:**
+`two-fetch` · `staleness control` · `fog` · `index-drift` → **0 hits in `_FUTURE-STATE.md`**, 1 hit
+each elsewhere and all four the SAME line — Dave's own ruling to home them. The only surface in the
+corpus that mentioned the three forks was the record of the decision to home them. This entry ends
+that. **Nothing below is ruled, scoped or prioritised — homing is not adoption.***
+
+- **TWO-FETCH STALENESS CONTROL** — a retrieval that fetches a record twice, from two sources with
+  different clocks, so a stale copy cannot corroborate a stale premise. Feeds: Discover (retrieval).
+  `status: idea` `[born #128 · guards: nothing yet · until: Dave scopes it or retires it]`
+- **THE "FOG" CHARTER ROW** — a charter row for the fixed/flex charter naming what is deliberately
+  NOT known, so an absence has a home instead of being re-discovered. Feeds: Craft (charter).
+  `status: idea` `[born #128 · guards: nothing yet · until: Dave scopes it or retires it]`
+- **`MEMORY.md` INDEX-DRIFT GATE** — a check that the memory index still points at what it claims,
+  i.e. the hook and the file agree. Feeds: Discover (memory). `status: idea`
+  `[born #128 · guards: nothing yet · until: Dave scopes it or retires it]`
+
+*⚠ Homed, not adopted: three sessions' worth of probes proved these had no standing home, not that
+they are worth doing. Priority remains Dave's alone.*
