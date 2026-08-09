@@ -655,6 +655,31 @@
     var svgs = document.querySelectorAll('svg.dv-fit');
     for (var i = 0; i < svgs.length; i++) { fitOne(svgs[i]); }
   }
+  /* ---------- ds-012(b) GUTTER-RELATIVE PLOT AREA — RULED by Dave 2026-07-27 (ds-012 in
+     _DS-IMPROVEMENTS.md). The left gutter is COMPUTED from the WIDEST LABEL AS RENDERED,
+     never baked: the clipping was driven by label length and face looseness (the licensed
+     HSBC cut is looser than Helvetica), neither a design property — a build-time constant
+     is (a) wearing (b)'s clothes. Opt-in per svg via data-pl-fit="<selector>"; data-pl is
+     the FLOOR, so no gutter ends up NARROWER than its reviewed geometry.
+     PROVISIONAL-AWAITING-DAVE — the two constants below guard ds-012 point 3 ("do not let
+     the plot area collapse"); the narrow-width trade is Dave's eye, not a formula. */
+  var PL_MAX_FRAC = 0.42;   /* PROVISIONAL-AWAITING-DAVE — gutter ceiling as a share of width */
+  var PL_EDGE_PAD = 2;      /* PROVISIONAL-AWAITING-DAVE — clearance left of the longest label */
+  function gutterPL(svg, floorPL, W) {
+    var sel = svg.getAttribute('data-pl-fit');
+    if (!sel) { return floorPL; }
+    var labs = svg.querySelectorAll(sel), maxW = 0, pad = 0, i, bb, dx;
+    for (i = 0; i < labs.length; i++) {
+      try { bb = labs[i].getBBox(); } catch (e) { continue; }
+      if (bb.width > maxW) { maxW = bb.width; }
+      dx = Math.abs(parseFloat(labs[i].getAttribute('data-dx') || '0'));
+      if (dx > pad) { pad = dx; }
+    }
+    if (!maxW) { return floorPL; }                       /* nothing measurable — leave the bake */
+    var need = Math.ceil(maxW + pad + PL_EDGE_PAD);
+    var cap  = Math.max(floorPL, Math.round(W * PL_MAX_FRAC));
+    return Math.min(Math.max(floorPL, need), cap);
+  }
   function fitOne(svg) {
     try {
       var PL = parseFloat(svg.getAttribute('data-pl') || '46');
@@ -662,6 +687,7 @@
       var H  = parseFloat(svg.getAttribute('data-h')  || '260');
       var W = Math.round(svg.getBoundingClientRect().width);
       if (!W) { return; }
+      PL = gutterPL(svg, PL, W);                          /* ds-012(b) — measured, not baked */
       var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
       svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
       var X = function (f) { return PL + parseFloat(f) * plotW; };
