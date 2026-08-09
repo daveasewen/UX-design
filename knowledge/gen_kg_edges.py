@@ -27,9 +27,34 @@ Populates (mechanical, resolvable-by-string-match only — no invention):
   mustNotNeighbour, triggeredBy -> ref:null + $note (prose, awaiting Dave's-eye
                      pass per s131-D2/s133-D1 split; not invented as refs)
 
+RESOLUTIONS INPUT (s135-D4, RULED #135 — enacted here):
+  reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json is a GENERATOR INPUT,
+  compiled in on EVERY rebuild. It is not a patch applied after the fact: the
+  generator still wipes and rebuilds `edges` from scratch each run, but the
+  ruled verdicts are folded into that rebuild, so Dave-ruled merges /
+  promotions / attaches survive regeneration as machinery. Three shapes:
+    MERGE   (nearmiss) — a context: node the verdicts fold into a component:
+                         node. Applied at node-id level in the livesInside
+                         loop, so the edge lands in containedBy (not
+                         usedInContext) and the merged context node is NOT
+                         registered in _nodes-context.json.
+    PROMOTE (prose)    — a (meta filename, edge-type, $note) triple whose ref
+                         the verdicts resolve to a component. Applied as a
+                         post-pass over the freshly built edge set, so it
+                         works for ANY edge type, including the five the
+                         generator otherwise hard-codes to ref:null.
+    ATTACH  (governed) — governedBy ruling attributions, per component stem.
+  PRECEDENCE: the resolutions file WINS over the generator's own derivation.
+  Every compiled resolution MUST land — an unlanded one is a LOUD, NAMED fail
+  (a stale verdicts file must not silently no-op). A missing / unparseable /
+  malformed resolutions file is a LOUD refusal, never a silent default.
+  `_validate_kg.py` check (f) independently re-derives the same facts from the
+  verdicts file and asserts them present in the live corpus.
+
 NOT populated by this script (Dave's-eye batch per s133-D1 status line):
-  governedBy (ruling attributions), token-claim edges (separate lane), and any
-  semantic dedup beyond case/whitespace-normalised string identity.
+  governedBy BEYOND what the resolutions file rules, token-claim edges
+  (separate lane), and any semantic dedup beyond case/whitespace-normalised
+  string identity.
 """
 import json
 import re
@@ -43,7 +68,21 @@ SNIPPETS = ROOT / "snippets"
 NODES_PATTERN = COMPONENTS / "_nodes-pattern.json"
 NODES_CONTEXT = COMPONENTS / "_nodes-context.json"
 
+# s135-D4 — the ruled verdicts file is a GENERATOR INPUT, not a hand-patch.
+RESOLUTIONS = ROOT.parent / "reviews" / "KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json"
+
+# The five edge types the generator otherwise hard-codes to ref:null. Listed
+# for documentation only — the PROMOTE post-pass is deliberately generic and
+# applies to any edge type the resolutions file names.
+PROSE_EDGE_TYPES = ("mustNotNeighbour", "triggeredBy", "hasPart", "partial", "family")
+
 EXCLUDE = {"EXAMPLE-button.meta.json"}
+
+
+class ResolutionsError(RuntimeError):
+    """Loud + named refusal. NEVER defaulted, never swallowed: a resolutions
+    file that cannot be read is a build that would silently drop Dave-ruled
+    verdicts, which is exactly the s135-D4 root cause."""
 
 
 def norm(s):
@@ -106,7 +145,109 @@ def find_component_ref(text, comp_idx):
     return best
 
 
-def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, context_registry):
+def load_resolutions(comp_idx, path=None):
+    """(s135-D4) Read + COMPILE the ruled verdicts file into the three lookup
+    tables the rebuild consumes. Every failure mode is loud and named."""
+    path = path or RESOLUTIONS
+    if not path.exists():
+        raise ResolutionsError(
+            f"RESOLUTIONS INPUT MISSING — {path}. s135-D4 requires this file be "
+            f"compiled in on every rebuild; refusing to regenerate a corpus that "
+            f"would silently drop every ruled verdict."
+        )
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as e:
+        raise ResolutionsError(f"RESOLUTIONS INPUT UNPARSEABLE — {path}: {e!r}")
+    if not isinstance(raw, dict):
+        raise ResolutionsError(f"RESOLUTIONS INPUT MALFORMED — {path}: top level is not an object")
+    for section in ("nearmiss", "prose", "governed"):
+        if not isinstance(raw.get(section), list):
+            raise ResolutionsError(
+                f"RESOLUTIONS INPUT MALFORMED — {path}: section '{section}' is missing or not a list"
+            )
+
+    def resolve_component(name, where):
+        node = comp_idx.get(norm(name)) or comp_idx.get(norm(name.replace("-", " ")))
+        if not node:
+            raise ResolutionsError(
+                f"RESOLUTIONS INPUT UNRESOLVABLE — {path}: {where} names '{name}', "
+                f"which matches no component meta stem"
+            )
+        return node
+
+    merges, promotes, governed = {}, {}, {}
+    rows = 0
+
+    for r in raw["nearmiss"]:
+        if r.get("verdict") != "MERGE":
+            continue
+        rows += 1
+        node = r.get("node")
+        cand = (r.get("cand") or "").split(",")[0].split("(")[0].strip()
+        if not node or not cand:
+            raise ResolutionsError(f"RESOLUTIONS INPUT MALFORMED — {path}: nearmiss MERGE row missing node/cand: {r!r}")
+        target = resolve_component(cand, f"nearmiss MERGE row for {node}")
+        if node in merges and merges[node] != target:
+            raise ResolutionsError(f"RESOLUTIONS INPUT CONFLICT — {path}: {node} merged to two targets")
+        merges[node] = target
+
+    for r in raw["prose"]:
+        verdict = r.get("verdict") or ""
+        if not verdict.startswith("PROMOTE"):
+            continue
+        rows += 1
+        name = verdict.split("→", 1)[1] if "→" in verdict else ""
+        if not name.strip():
+            raise ResolutionsError(f"RESOLUTIONS INPUT MALFORMED — {path}: prose PROMOTE row has no target: {r!r}")
+        key = (r.get("file"), r.get("grp"), r.get("note"))
+        if not all(key):
+            raise ResolutionsError(f"RESOLUTIONS INPUT MALFORMED — {path}: prose row missing file/grp/note: {r!r}")
+        target = resolve_component(name.strip(), f"prose PROMOTE row {key[0]}/{key[1]}")
+        if key in promotes and promotes[key] != target:
+            raise ResolutionsError(f"RESOLUTIONS INPUT CONFLICT — {path}: prose row {key} promoted to two targets")
+        promotes[key] = target
+
+    for r in raw["governed"]:
+        if r.get("verdict") != "ATTACH":
+            continue
+        rows += 1
+        comp, rid = r.get("comp"), r.get("rid")
+        if not comp or not rid:
+            raise ResolutionsError(f"RESOLUTIONS INPUT MALFORMED — {path}: governed ATTACH row missing comp/rid: {r!r}")
+        resolve_component(comp, "governed ATTACH row")
+        governed.setdefault(comp, [])
+        if rid not in governed[comp]:
+            governed[comp].append(rid)
+
+    return {
+        "path": path,
+        "merges": merges,
+        "promotes": promotes,
+        "governed": {k: sorted(v) for k, v in governed.items()},
+        "rows": rows,
+        "landed": {"merge": {}, "promote": {}, "attach": {}},
+    }
+
+
+def apply_promotions(edges, fname, res):
+    """PROMOTE post-pass. Deliberately generic across edge types: the ruled
+    (file, edge-type, $note) triple WINS over whatever ref the generator's own
+    derivation produced (including its hard-coded ref:null)."""
+    n = 0
+    for etype, arr in edges.items():
+        for e in arr:
+            key = (fname, etype, e.get("$note"))
+            target = res["promotes"].get(key)
+            if target is None:
+                continue
+            e["ref"] = target
+            res["landed"]["promote"][key] = res["landed"]["promote"].get(key, 0) + 1
+            n += 1
+    return n
+
+
+def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, fname):
     edges = {}
 
     # renderedBy
@@ -130,6 +271,15 @@ def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, conte
         else:
             slug = slugify(target)
             node_id = f"context:{slug}"
+            merged = res["merges"].get(node_id)
+            if merged:
+                # s135-D4 MERGE: the verdicts fold this context node into a
+                # component node. It becomes a containedBy edge and the
+                # context node is NOT registered — the registry entry would
+                # be an orphan of a node Dave ruled out of existence.
+                contained.append({"ref": merged, "$note": target})
+                res["landed"]["merge"][node_id] = res["landed"]["merge"].get(node_id, 0) + 1
+                continue
             used_ctx.append({"ref": node_id, "$note": target})
             entry = context_registry.setdefault(node_id, {"id": node_id, "label": target, "sources": []})
             if stem not in entry["sources"]:
@@ -198,6 +348,17 @@ def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, conte
     if family:
         edges["family"] = [{"ref": None, "$note": family if isinstance(family, str) else json.dumps(family, ensure_ascii=False)}]
 
+    # s135-D4 PROMOTE — ruled refs win over the generator's own derivation.
+    apply_promotions(edges, fname, res)
+
+    # s135-D4 ATTACH — governedBy is emitted ONLY from the resolutions file.
+    # Nothing here invents an attribution; anything beyond the ruled set stays
+    # the Dave's-eye batch per s133-D1.
+    rids = res["governed"].get(stem)
+    if rids:
+        edges["governedBy"] = [{"ref": f"ruling:{r}"} for r in rids]
+        res["landed"]["attach"][stem] = sorted(rids)
+
     return edges
 
 
@@ -262,6 +423,7 @@ def main():
     files = collect_files()
     comp_idx = component_stem_index(files)
     snip_idx = snippet_index()
+    res = load_resolutions(comp_idx)
 
     pattern_registry = {}
     context_registry = {}
@@ -276,7 +438,7 @@ def main():
         data_before = json.loads(raw_clean)
         stem = f.name[: -len(".meta.json")]
 
-        edges = build_edges_for_meta(data_before, stem, comp_idx, snip_idx, pattern_registry, context_registry)
+        edges = build_edges_for_meta(data_before, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, f.name)
 
         for etype, arr in edges.items():
             counts[etype] = counts.get(etype, 0) + len(arr)
@@ -301,6 +463,25 @@ def main():
 
         f.write_text(new_raw, encoding="utf-8")
 
+    # s135-D4 — every compiled resolution MUST have landed. A verdicts file
+    # that has gone stale against the corpus must fail LOUD and NAMED, never
+    # silently no-op (that silence is the defect this ruling exists to kill).
+    unlanded = []
+    for node in sorted(res["merges"]):
+        if not res["landed"]["merge"].get(node):
+            unlanded.append(f"MERGE {node} -> {res['merges'][node]} — no livesInside target generated that context node")
+    for key in sorted(res["promotes"], key=lambda k: (k[0], k[1], k[2])):
+        if not res["landed"]["promote"].get(key):
+            unlanded.append(f"PROMOTE {key[0]} / {key[1]} / $note={key[2][:60]!r} — no matching edge in the rebuilt corpus")
+    for stem_ in sorted(res["governed"]):
+        if not res["landed"]["attach"].get(stem_):
+            unlanded.append(f"ATTACH {stem_} — no meta with that stem was processed")
+    if unlanded:
+        print(f"RESOLUTIONS NOT LANDED — {res['path']} is stale against the corpus:", file=sys.stderr)
+        for u in unlanded:
+            print(f"  x {u}", file=sys.stderr)
+        sys.exit(1)
+
     # write registries (sorted for determinism)
     pattern_list = [pattern_registry[k] for k in sorted(pattern_registry)]
     context_list = [context_registry[k] for k in sorted(context_registry)]
@@ -312,7 +493,20 @@ def main():
     print(f"resolved vs ref:null (consumes/reuses/containedBy only): resolved={resolved} unresolved={unresolved}")
     print(f"pattern nodes: {len(pattern_list)}")
     print(f"context nodes: {len(context_list)}")
+    n_merge_edges = sum(res["landed"]["merge"].values())
+    n_promote_edges = sum(res["landed"]["promote"].values())
+    n_attach_edges = sum(len(v) for v in res["landed"]["attach"].values())
+    print(
+        f"resolutions consumed ({res['path'].name}): {res['rows']} ruled rows compiled -> "
+        f"MERGE {len(res['merges'])} rules on {n_merge_edges} edges, "
+        f"PROMOTE {len(res['promotes'])} keys on {n_promote_edges} edges, "
+        f"ATTACH {n_attach_edges} governedBy edges across {len(res['landed']['attach'])} components"
+    )
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except ResolutionsError as e:
+        print(f"gen_kg_edges.py: REFUSED — {e}", file=sys.stderr)
+        sys.exit(2)

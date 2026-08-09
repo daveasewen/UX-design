@@ -29,6 +29,21 @@ Checks, all BY ADDITION — this script only reads the corpus, it never edits it
       re-run against a scratch copy of the corpus and the result diffed
       against the live corpus. Any drift is a FAIL naming the file(s) that
       differ (the "nothing re-checks it" remedy: this is the something).
+      The scratch tree carries the resolutions input too (see (f)) — the
+      generator now REFUSES to build without it.
+  (f) resolutions CONSUMED (s135-D4): the ruled verdicts file
+      reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json is a generator input.
+      This check re-derives the ruled facts from that file INDEPENDENTLY of
+      gen_kg_edges.py (it never imports it) and asserts every one of them is
+      present in the live corpus:
+        MERGE   — no edge anywhere may still carry the merged-away context
+                  node-id, and it must not survive in _nodes-context.json
+        PROMOTE — the named (meta filename, edge-type, $note) edge must carry
+                  the ruled component ref (not null, not something else)
+        ATTACH  — the named component must carry governedBy ruling:<rid>
+      A build in which the verdicts file is ignored therefore FAILS here.
+      Mutation-tested: neuter consumption in gen_kg_edges.py, regenerate,
+      and this check goes red.
 
 Exit: rc=1 on ANY structural fail (loud + named: file, edge, reason).
       rc=0 clean. ref:null+$note entries are counted, never a fail.
@@ -59,6 +74,7 @@ NODES_CONTEXT = COMPONENTS / "_nodes-context.json"
 RULINGS = HERE / "_rulings.json"
 SCHEMA = COMPONENTS / "meta.schema.json"
 GEN_SCRIPT = HERE / "gen_kg_edges.py"
+RESOLUTIONS = ROOT / "reviews" / "KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json"
 
 REF_RE = re.compile(r"^(component|pattern|context|snippet|ruling):.+$")
 NODE_KINDS = ("component", "pattern", "context", "snippet", "ruling")
@@ -250,6 +266,14 @@ def check_freshness():
                 shutil.copytree(src, scratch_knowledge / name)
         scratch_gen = scratch_knowledge / "gen_kg_edges.py"
         shutil.copy2(GEN_SCRIPT, scratch_gen)
+        # s135-D4: the generator addresses its resolutions input at
+        # ROOT.parent / "reviews" / <name> — mirror that into the scratch tree
+        # or the regeneration REFUSES (which is the correct refusal, but here
+        # it would mask the freshness question we are actually asking).
+        if RESOLUTIONS.exists():
+            scratch_reviews = tdp / "reviews"
+            scratch_reviews.mkdir(exist_ok=True)
+            shutil.copy2(RESOLUTIONS, scratch_reviews / RESOLUTIONS.name)
 
         proc = subprocess.run(
             [sys.executable, str(scratch_gen)],
@@ -287,16 +311,131 @@ def check_freshness():
     return fails
 
 
+# ------------------------------------------------------- (f) consumed check
+
+def check_resolutions_consumed(components_dir=None, proforma_dir=None,
+                               nodes_context_path=None, resolutions_path=None):
+    """(f) s135-D4 — assert the ruled verdicts file was CONSUMED by the build.
+
+    Deliberately does NOT import or inspect gen_kg_edges.py: it re-derives the
+    ruled facts straight from the verdicts file and looks for them in the live
+    corpus. That way it gates the PRESENCE of the resolutions, not the shape of
+    whatever code claims to apply them — a build that ignores the file fails
+    here regardless of how it ignored it.
+
+    Returns (fails, counts). Parse problems fail LOUD and NAMED, never default.
+    """
+    components_dir = components_dir or COMPONENTS
+    proforma_dir = proforma_dir or PROFORMA_DIR
+    nodes_context_path = nodes_context_path or NODES_CONTEXT
+    resolutions_path = resolutions_path or RESOLUTIONS
+
+    counts = {"merge": 0, "promote": 0, "attach": 0}
+    if not resolutions_path.exists():
+        return ([f"resolutions: FAIL — {resolutions_path} MISSING — s135-D4 makes it a "
+                 f"generator input; without it no ruled verdict can be shown to have landed"],
+                counts)
+    try:
+        raw = json.loads(resolutions_path.read_text(encoding="utf-8"))
+        if not isinstance(raw, dict):
+            raise ValueError("top level is not an object")
+        for section in ("nearmiss", "prose", "governed"):
+            if not isinstance(raw.get(section), list):
+                raise ValueError(f"section '{section}' missing or not a list")
+    except Exception as e:
+        return ([f"resolutions: FAIL — {resolutions_path} UNREADABLE/MALFORMED ({e!r}) — "
+                 f"refusing to report consumption from a file this gate could not parse"], counts)
+
+    files = collect_component_files(components_dir, proforma_dir)
+    metas = {}
+    for f in files:
+        try:
+            metas[f] = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue  # already failed loudly in validate_corpus()
+
+    fails = []
+
+    # --- MERGE: the merged-away context node must be GONE, everywhere -------
+    merged_nodes = {r["node"] for r in raw["nearmiss"]
+                    if r.get("verdict") == "MERGE" and r.get("node")}
+    ctx_ids = registry_ids(nodes_context_path)
+    for node in sorted(merged_nodes):
+        counts["merge"] += 1
+        if node in ctx_ids:
+            fails.append(f"resolutions: FAIL — MERGE {node} NOT CONSUMED — the node is still "
+                         f"registered in {nodes_context_path.name}")
+        holders = sorted({f.name for f, d in metas.items()
+                          for arr in (d.get("edges") or {}).values() if isinstance(arr, list)
+                          for e in arr if isinstance(e, dict) and e.get("ref") == node})
+        if holders:
+            fails.append(f"resolutions: FAIL — MERGE {node} NOT CONSUMED — still referenced by "
+                         f"{len(holders)} meta(s): {holders[:5]}")
+
+    # --- PROMOTE: the named edge must carry the ruled ref -------------------
+    for r in raw["prose"]:
+        verdict = r.get("verdict") or ""
+        if not verdict.startswith("PROMOTE"):
+            continue
+        counts["promote"] += 1
+        fname, grp, note = r.get("file"), r.get("grp"), r.get("note")
+        if not (fname and grp and note):
+            fails.append(f"resolutions: FAIL — malformed prose PROMOTE row (missing file/grp/note): {r!r}")
+            continue
+        seen = False
+        for f, d in metas.items():
+            if f.name != fname:
+                continue
+            for e in (d.get("edges") or {}).get(grp, []) or []:
+                if isinstance(e, dict) and e.get("$note") == note:
+                    seen = True
+                    if not e.get("ref"):
+                        fails.append(f"resolutions: FAIL — PROMOTE NOT CONSUMED — {f.name} / {grp} / "
+                                     f"$note={note[:60]!r} still has ref:{e.get('ref')!r} "
+                                     f"(verdict '{verdict}')")
+        if not seen:
+            fails.append(f"resolutions: FAIL — PROMOTE UNMATCHED — no edge {fname} / {grp} with "
+                         f"$note={note[:60]!r} exists in the corpus (verdicts file is stale)")
+
+    # --- ATTACH: governedBy must carry the ruled ruling --------------------
+    for r in raw["governed"]:
+        if r.get("verdict") != "ATTACH":
+            continue
+        counts["attach"] += 1
+        comp, rid = r.get("comp"), r.get("rid")
+        if not (comp and rid):
+            fails.append(f"resolutions: FAIL — malformed governed ATTACH row (missing comp/rid): {r!r}")
+            continue
+        want = f"ruling:{rid}"
+        targets = [d for f, d in metas.items() if f.name == f"{comp}.meta.json"]
+        if not targets:
+            fails.append(f"resolutions: FAIL — ATTACH UNMATCHED — no meta '{comp}.meta.json' "
+                         f"in the corpus (verdicts file is stale)")
+            continue
+        if not any(any(isinstance(e, dict) and e.get("ref") == want
+                       for e in (d.get("edges") or {}).get("governedBy", []) or [])
+                   for d in targets):
+            fails.append(f"resolutions: FAIL — ATTACH NOT CONSUMED — {comp}.meta.json carries no "
+                         f"governedBy edge '{want}'")
+
+    return fails, counts
+
+
 # --------------------------------------------------------------------- main
 
 def run_gate():
-    print("== _validate_kg.py — KG edge parse-gate (s131-D2 / s133-D1) ==")
+    print("== _validate_kg.py — KG edge parse-gate (s131-D2 / s133-D1 / s135-D4) ==")
     fails, null_note_count, n_files = validate_corpus()
     fresh_fails = check_freshness()
     fails += fresh_fails
+    res_fails, res_counts = check_resolutions_consumed()
+    fails += res_fails
 
     print(f"metas checked: {n_files}")
     print(f"ref:null + $note (declared, awaiting Dave's-eye migration): {null_note_count}")
+    print(f"resolutions consumed (s135-D4, {RESOLUTIONS.name}): "
+          f"{sum(res_counts.values())} ruled verdicts asserted present "
+          f"(MERGE {res_counts['merge']} / PROMOTE {res_counts['promote']} / ATTACH {res_counts['attach']})")
     if fails:
         print(f"\n{len(fails)} FAIL(s):")
         for f in fails:
@@ -304,7 +443,8 @@ def run_gate():
         print("\n_validate_kg.py: FAIL")
         return 1
     print("\n_validate_kg.py: OK — every ref parses+resolves, every null carries a note, "
-          "every meta has provenance, edges match schema, gen_kg_edges.py is idempotent-clean.")
+          "every meta has provenance, edges match schema, gen_kg_edges.py is idempotent-clean, "
+          "and the s135-D4 resolutions input was consumed.")
     return 0
 
 
