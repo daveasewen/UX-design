@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Three-axis mechanism — live demo (s136)</title>
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:2rem;font-family:var(--font);background:#F2F2F2;color:#1A1A1A}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{font-size:14px;line-height:1.55;color:#444;margin:0 0 22px;max-width:74ch}
+  .wrap{display:grid;grid-template-columns:minmax(300px,420px) minmax(300px,1fr);gap:18px;align-items:start}
+  @media(max-width:760px){.wrap{grid-template-columns:1fr}}
+  .panel{border:1px solid #D5D5D5;background:#fff}
+  .phead{padding:10px 14px;border-bottom:1px solid #E4E4E4;font-size:13px;font-weight:500}
+  .axis{padding:12px 14px;border-bottom:1px solid #EEE}
+  .axis:last-child{border-bottom:0}
+  .atag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;color:#fff;margin-right:8px}
+  .atag.p{background:#305A85}.atag.v{background:#00847F}.atag.s{background:#1A1A1A}
+  .axis .who{font-size:12px;color:#777;margin:8px 0 4px}
+  .axis label{font-size:13px;margin-right:10px}
+  select,button.opt{font:400 13px var(--font);height:32px;border:1px solid #C5C5C5;background:#fff;padding:0 8px;cursor:pointer}
+  button.opt.on{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
+  .stage{padding:20px}
+  .gate{margin:0 14px 14px;padding:10px 12px;background:#EAF2F0;border-left:3px solid #00847F;font-size:12.5px;line-height:1.5;display:none}
+  .gate.bad{background:#F4ECEA;border-left-color:#B92F1E}
+  /* ---- the shell ---- */
+  .shell{background:#fff;border:1px solid #D5D5D5;max-width:520px}
+  .shell.framed{border:2px solid #305A85}
+  .shell .shead{padding:10px 16px;border-bottom:1px solid #E4E4E4;font-size:13px;font-weight:500;display:flex;justify-content:space-between}
+  .shell .shead .hint{font-weight:400;color:#999;font-size:11px}
+  .slot{border:2px dashed #B9CBE0;margin:var(--pad,16px);padding:4px;min-height:70px;position:relative}
+  .slot::before{content:"slot: content — accepts any molecule";position:absolute;top:-9px;left:10px;background:#fff;padding:0 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5B7FA6}
+  /* ---- injectable molecules ---- */
+  .mol{padding:14px;font-size:14px}
+  .mol .mname{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#999;margin-bottom:6px}
+  .stat .num{font-size:30px;font-weight:500;color:var(--acc,#305A85)}
+  .stat .lbl{font-size:12.5px;color:#555}
+  .stat.compact .num{font-size:20px}
+  .stat.compact{display:flex;gap:10px;align-items:baseline}
+  .list ul{margin:0;padding-left:18px;line-height:1.7}
+  .list.dense ul{line-height:1.35;font-size:13px}
+  .list li::marker{color:var(--acc,#305A85)}
+  .meta{background:#1A1A1A;color:#D9E4DD;padding:14px;font:11.5px/1.6 ui-monospace,monospace;white-space:pre;overflow-x:auto;margin-top:18px}
+  .meta b{color:#7FD1CC;font-weight:400}
+</style>
+</head>
+<body>
+
+<h1>The three-axis mechanism, live</h1>
+<p class="sub">One shell (a card frame), two injectable molecules. Every control below belongs to exactly one axis of <b>s136-D1</b> — and to one owner. Watch the meta.json readout at the bottom: nothing you do here ever touches another axis's key, and content controls never appear on the shell.</p>
+
+<div class="wrap">
+<div class="panel">
+  <div class="phead">Controls — grouped by axis and by OWNER</div>
+
+  <div class="axis"><span class="atag s">slot</span><b>Composition</b> — what goes in the hole
+    <div class="who">owner: the SHELL (but only the contract — it never knew the list below)</div>
+    <button class="opt" data-inj="stat">inject: stat block</button>
+    <button class="opt" data-inj="list">inject: bullet list</button>
+    <button class="opt" data-inj="none">empty</button>
+  </div>
+
+  <div class="axis"><span class="atag v">variant</span><b>Switches</b> — each owned by its node
+    <div class="who">owner: the shell</div>
+    <button class="opt" data-sv="plain">plain</button>
+    <button class="opt" data-sv="framed">framed</button>
+    <div class="who">owner: the INJECTED molecule — travels with it, shell never enumerates these</div>
+    <span id="molvars"></span>
+  </div>
+
+  <div class="axis"><span class="atag p">parameter</span><b>Values</b> — spine-bound only
+    <div class="who">owner: the shell — padding binds space/*</div>
+    <select id="pad"><option value="8">space/inset-sm (8)</option><option value="16" selected>space/inset-md (16)</option><option value="24">space/inset-lg (24)</option></select>
+    <div class="who">owner: the injected molecule — accent binds colour/*</div>
+    <select id="acc"><option value="#305A85">colour/data-blue</option><option value="#00847F">colour/data-teal</option></select>
+    <div class="who">the fork test — try a free value (clause D)</div>
+    <button class="opt" id="fork">set accent to #FF6600</button>
+  </div>
+</div>
+
+<div>
+  <div class="panel">
+    <div class="phead">The rendered shell</div>
+    <div class="stage">
+      <div class="shell plain" id="shell">
+        <div class="shead">Card shell <span class="hint">frame owned by shell · hole owned by contract</span></div>
+        <div class="slot" id="slotEl"></div>
+      </div>
+    </div>
+    <div class="gate" id="gate"></div>
+  </div>
+  <div class="meta" id="meta"></div>
+</div>
+</div>
+
+<script>
+const MOLS = {
+  stat: {name:"stat block", variants:["comfortable","compact"],
+    html: v => `<div class="mol stat ${v==='compact'?'compact':''}"><div class="mname">molecule: stat block · variant: ${v}</div><div class="num">£48,200</div><div class="lbl">Total balance across 3 accounts</div></div>`},
+  list: {name:"bullet list", variants:["comfortable","dense"],
+    html: v => `<div class="mol list ${v==='dense'?'dense':''}"><div class="mname">molecule: bullet list · variant: ${v}</div><ul><li>Groceries — £312</li><li>Transport — £84</li><li>Eating out — £147</li></ul></div>`}
+};
+const S = {inj:"stat", sv:"plain", mv:"comfortable", pad:"16", acc:"#305A85"};
+
+function molButtons(){
+  const el=document.getElementById("molvars");
+  if(S.inj==="none"){ el.innerHTML='<span style="font-size:12px;color:#999">nothing injected — no content variants exist here. The switch belongs to the molecule, not the hole.</span>'; return; }
+  el.innerHTML = MOLS[S.inj].variants.map(v=>`<button class="opt ${v===S.mv?'on':''}" data-mv="${v}">${v}</button>`).join(" ");
+  el.querySelectorAll("button").forEach(b=>b.onclick=()=>{S.mv=b.dataset.mv; paint();});
+}
+
+function paint(){
+  const shell=document.getElementById("shell");
+  shell.className="shell "+S.sv;
+  shell.style.setProperty("--pad", S.pad+"px");
+  const slot=document.getElementById("slotEl");
+  slot.innerHTML = S.inj==="none" ? "" : MOLS[S.inj].html(S.mv);
+  slot.style.setProperty("--acc", S.acc);
+  document.querySelectorAll("[data-inj]").forEach(b=>b.classList.toggle("on",b.dataset.inj===S.inj));
+  document.querySelectorAll("[data-sv]").forEach(b=>b.classList.toggle("on",b.dataset.sv===S.sv));
+  molButtons();
+  const accName = S.acc==="#305A85"?"colour/data-blue":"colour/data-teal";
+  const padName = {8:"space/inset-sm",16:"space/inset-md",24:"space/inset-lg"}[S.pad];
+  document.getElementById("meta").innerHTML =
+`<b>// card-shell.meta.json — the shell knows ONLY this</b>
+"props":    [{ "name": "padding", "binds": "<b>${padName}</b>" }]     <b>← axis A, shell's</b>
+"variants": { "frame": "<b>${S.sv}</b>" }                          <b>← axis B, shell's</b>
+"slots":    [{ "name": "content",
+               "accepts": { "tiers": ["molecule"] } }]     <b>← axis C: a contract, no list</b>
+
+<b>// ${S.inj==="none"?"(slot empty — no second file in play)":MOLS[S.inj].name.replace(" ","-")+".meta.json — travels INTO the slot carrying its own axes"}</b>${S.inj==="none"?"":`
+"props":    [{ "name": "accent", "binds": "<b>${accName}</b>" }]   <b>← axis A, molecule's</b>
+"variants": { "density": "<b>${S.mv}</b>" }                    <b>← axis B, molecule's — travelled with it</b>`}`;
+}
+
+document.querySelectorAll("[data-inj]").forEach(b=>b.onclick=()=>{
+  S.inj=b.dataset.inj;
+  if(S.inj!=="none") S.mv=MOLS[S.inj].variants[0];
+  const g=document.getElementById("gate");
+  g.style.display="block"; g.className="gate";
+  g.innerHTML = S.inj==="none" ? "Slot empty — the shell renders unchanged. Its frame never depended on contents."
+    : `<b>Contract check:</b> "${MOLS[S.inj].name}" is tier <i>molecule</i> → accepted by <code>accepts.tiers</code>. The shell was not modified — it never listed children, so this injection cost zero shell changes.`;
+  paint();
+});
+document.querySelectorAll("[data-sv]").forEach(b=>b.onclick=()=>{S.sv=b.dataset.sv; paint();});
+document.getElementById("pad").onchange=e=>{S.pad=e.target.value; paint();};
+document.getElementById("acc").onchange=e=>{S.acc=e.target.value; paint();};
+document.getElementById("fork").onclick=()=>{
+  const g=document.getElementById("gate");
+  g.style.display="block"; g.className="gate bad";
+  g.innerHTML="<b>⛔ FORK (clause D):</b> #FF6600 binds no spine token. Refused — and the gate names the axis: <i>a value change is axis A; add or use a colour/* token.</i> This is why all four themes can re-skin every node: no free values exist to be left behind.";
+};
+paint();
+</script>
+</body>
+</html>

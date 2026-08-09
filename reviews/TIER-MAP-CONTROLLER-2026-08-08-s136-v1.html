@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tier-map — the 16 rows that need your eye (s136)</title>
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:2rem;font-family:var(--font);background:#F2F2F2;color:#1A1A1A}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{font-size:14px;line-height:1.55;color:#444;margin:0 0 8px;max-width:72ch}
+  .keys{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+  .key{background:#fff;border:1px solid #D5D5D5;padding:10px 14px;font-size:13px;line-height:1.5;max-width:30ch}
+  .key b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+  .row{border:1px solid #D5D5D5;background:#fff;margin-bottom:18px}
+  .row.done{border-color:#00847F}
+  .rhead{display:flex;align-items:baseline;gap:12px;padding:12px 16px;border-bottom:1px solid #E4E4E4;flex-wrap:wrap}
+  .rhead .name{font-size:16px;font-weight:500}
+  .rhead .qtag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;background:#EDEDED;color:#333}
+  .rhead .tier{font-size:12px;color:#666;margin-left:auto}
+  .why{font-size:13px;color:#555;padding:10px 16px 0;max-width:80ch}
+  .previews{display:flex;gap:10px;padding:12px 16px;overflow-x:auto}
+  .previews figure{margin:0;flex:1 1 0;min-width:280px}
+  .previews figcaption{font-size:11px;color:#777;margin-bottom:4px}
+  .previews iframe{width:100%;height:300px;border:1px solid #E4E4E4;background:#fff}
+  .noprev{padding:12px 16px;font-size:13px;color:#777;font-style:italic}
+  .q{display:flex;gap:10px;align-items:center;padding:12px 16px 16px;flex-wrap:wrap}
+  .q .ask{font-size:14px;font-weight:500;margin-right:6px}
+  .q button{appearance:none;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;font:500 13px var(--font);height:38px;padding:0 16px;cursor:pointer;position:relative}
+  .q button.prop::after{content:"proposed";font:400 9px var(--font);letter-spacing:.06em;text-transform:uppercase;position:absolute;top:-8px;right:-6px;background:#305A85;color:#fff;padding:2px 5px}
+  .q button.pick{background:#1A1A1A;color:#fff}
+  .q button.park{border-color:#999;color:#666}
+  .q button.park.pick{background:#666;border-color:#666;color:#fff}
+  .bar{position:sticky;bottom:0;margin-top:22px;display:flex;gap:12px;align-items:center;background:#1A1A1A;color:#fff;padding:12px 16px}
+  .bar button{appearance:none;border:0;background:#fff;color:#1A1A1A;font:500 13px var(--font);height:36px;padding:0 18px;cursor:pointer}
+  .bar .state{font:400 12px/1.4 ui-monospace,monospace;opacity:.85}
+  textarea{width:100%;height:150px;margin-top:10px;font:12px ui-monospace,monospace;display:none}
+  .secthead{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#666;margin:26px 0 10px}
+</style>
+</head>
+<body>
+
+<h1>Tier-map — the 16 rows that need your eye</h1>
+<p class="sub">One question per row, in plain words. The blue tag on a button is what the machine proposed — it is a proposal, not a ruling. Your click is the ruling. Picks are saved in this page as you go; hit <b>Export</b> at the end (or part-way — unanswered rows export as open).</p>
+
+<div class="keys">
+  <div class="key"><b>Shell</b>A frame with a hole in it. The component owns the frame; the caller injects what goes inside (your Figma Slots reading, s135-D3).</div>
+  <div class="key"><b>Self-contained</b>Owns everything inside itself. Nothing is injected.</div>
+  <div class="key"><b>Real pattern</b>Composes two or more components into a reusable assembly — earns its own node.</div>
+</div>
+
+<div class="secthead">Shell or self-contained — 10 rows</div>
+<div id="shellrows"></div>
+
+<div class="secthead">Real pattern, or not worth a node — 5 rows</div>
+<div id="patrows"></div>
+
+<div class="secthead">Housekeeping — 1 row</div>
+<div id="miscrows"></div>
+
+<div class="bar">
+  <span class="state" id="state">0 of 16 ruled</span>
+  <button id="export">Export verdicts</button>
+  <button id="copy">Copy JSON</button>
+</div>
+<textarea id="out" readonly></textarea>
+
+<script>
+const ROWS = [
+  // --- shell question ---
+  {id:"cards", q:"shell", tier:"molecule", why:"THE generic content slot — any atom or molecule can be injected.", prop:"shell", prev:["cards"]},
+  {id:"data-grid", q:"shell", tier:"organ", why:"Rows and cells are caller-supplied.", prop:"shell", prev:["data-grid"]},
+  {id:"dropdown", q:"shell", tier:"molecule", why:"Self-contained control — fixed internal composition.", prop:"self-contained", prev:["dropdown"]},
+  {id:"file-upload", q:"shell", tier:"organ", why:"Fixed internal composition — not a generic slot.", prop:"self-contained", prev:["file-upload"]},
+  {id:"form-layout", q:"shell", tier:"organ", why:"Fields and sections are caller-supplied.", prop:"shell", prev:["form-layout"]},
+  {id:"headers", q:"shell", tier:"molecule", why:"Nav, avatar and action regions are injected per screen.", prop:"shell", prev:["headers"]},
+  {id:"navigations", q:"shell", tier:"organ", why:"Nav items and menu content injected per app.", prop:"shell", prev:["navigations"]},
+  {id:"progress-tracker", q:"shell", tier:"molecule", why:"Caller-supplied step labels and content.", prop:"shell", prev:["progress-tracker"]},
+  {id:"stepper", q:"shell", tier:"organ", why:"Caller-supplied step content.", prop:"shell", prev:["stepper"]},
+  {id:"tooltip", q:"shell", tier:"molecule", why:"Short arbitrary content injected at a trigger-anchored point.", prop:"shell", prev:["tooltip"]},
+  // --- pattern question ---
+  {id:"pattern_budget-composition", label:"budget composition", q:"pattern", tier:"organ", why:"Composes chart-donut + chart-pie.", prop:"keep", prev:["chart-donut","chart-pie"]},
+  {id:"pattern_list-grid-view-toggle", label:"list/grid view toggle", q:"pattern", tier:"organ", why:"Composes segmented-control + view-options.", prop:"keep", prev:["segmented-control","view-options"]},
+  {id:"pattern_portfolio-mix", label:"portfolio mix", q:"pattern", tier:"organ", why:"Composes chart-donut + chart-pie.", prop:"keep", prev:["chart-donut","chart-pie"]},
+  {id:"pattern_segmented-presentation-switch", label:"segmented presentation switch", q:"pattern", tier:"organ", why:"Composes segmented-control + view-options.", prop:"keep", prev:["segmented-control","view-options"]},
+  {id:"pattern_spend-by-category", label:"spend by category", q:"pattern", tier:"organ", why:"Composes chart-bar + chart-donut + chart-pie.", prop:"keep", prev:["chart-bar","chart-donut","chart-pie"]},
+  // --- housekeeping ---
+  {id:"EXAMPLE-button", q:"exclude", tier:"n/a", why:"Scaffold file, not a shipped component.", prop:"exclude", prev:[]}
+];
+
+const QDEF = {
+  shell:   {ask:"Shell or self-contained?", opts:[["shell","Shell"],["self-contained","Self-contained"]], home:"shellrows", tag:"shell?"},
+  pattern: {ask:"Keep as a real pattern?",  opts:[["keep","Keep — real pattern"],["fold","Fold — not worth a node"]], home:"patrows", tag:"pattern?"},
+  exclude: {ask:"Drop it from the library?",opts:[["exclude","Drop it"],["keep","Keep it"]], home:"miscrows", tag:"scaffold"}
+};
+
+const verdicts = {};
+try{ Object.assign(verdicts, JSON.parse(localStorage.getItem("s136-tiermap")||"{}")); }catch(e){}
+
+for(const r of ROWS){
+  const qd = QDEF[r.q];
+  const div = document.createElement("div");
+  div.className = "row"; div.id = "row-"+r.id;
+  let prevHtml;
+  if(r.prev.length){
+    prevHtml = '<div class="previews">' + r.prev.map(p=>
+      `<figure><figcaption>showroom/${p}.html</figcaption><iframe loading="lazy" src="../showroom/${p}.html" title="${p}"></iframe></figure>`).join("") + '</div>';
+  } else {
+    prevHtml = '<div class="noprev">No rendered preview — it is a scaffold file.</div>';
+  }
+  const btns = qd.opts.map(([v,l])=>
+    `<button data-v="${v}" class="${v===r.prop?'prop':''}">${l}</button>`).join("") +
+    `<button data-v="park" class="park">Park — come back</button>`;
+  div.innerHTML =
+    `<div class="rhead"><span class="name">${r.label||r.id}</span><span class="qtag">${qd.tag}</span><span class="tier">proposed tier: ${r.tier}</span></div>` +
+    `<div class="why">${r.why}</div>` + prevHtml +
+    `<div class="q"><span class="ask">${qd.ask}</span>${btns}</div>`;
+  document.getElementById(qd.home).appendChild(div);
+  div.querySelectorAll(".q button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      verdicts[r.id] = b.dataset.v;
+      localStorage.setItem("s136-tiermap", JSON.stringify(verdicts));
+      paint();
+    });
+  });
+}
+
+function paint(){
+  let n=0;
+  for(const r of ROWS){
+    const div = document.getElementById("row-"+r.id);
+    const v = verdicts[r.id];
+    div.classList.toggle("done", !!v && v!=="park");
+    div.querySelectorAll(".q button").forEach(b=>b.classList.toggle("pick", b.dataset.v===v));
+    if(v && v!=="park") n++;
+  }
+  document.getElementById("state").textContent = n+" of "+ROWS.length+" ruled";
+  return n;
+}
+
+function payload(){
+  return JSON.stringify({
+    session:"s136", date:"2026-08-08",
+    subject:"tier-map 16 low-confidence rows — Dave's verdicts",
+    source:"reviews/TIER-MAP-PROPOSAL-2026-08-08-s135-v2.html",
+    verdicts: ROWS.map(r=>({id:r.id, question:r.q, proposed:r.prop,
+      verdict: (verdicts[r.id]&&verdicts[r.id]!=="park")?verdicts[r.id]:null,
+      tier:r.tier}))
+  }, null, 1);
+}
+
+document.getElementById("export").addEventListener("click",()=>{
+  const out=document.getElementById("out"); out.style.display="block"; out.value=payload();
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([out.value],{type:"application/json"}));
+  a.download="TIER-MAP-VERDICTS-2026-08-08-s136.json"; a.click();
+});
+document.getElementById("copy").addEventListener("click",()=>{
+  const out=document.getElementById("out"); out.style.display="block"; out.value=payload();
+  out.select(); document.execCommand("copy");
+});
+
+paint();
+</script>
+</body>
+</html>

@@ -31,6 +31,23 @@ environmental, neither TLS:**
   foreign.**
 *(Addition only; the #125 strata below and in the session record stand as history. 2026-08-08.)*
 
+✅ **RE-VERIFIED 2026-08-08 (#136) — ENOSPC POTHOLE n=3, NEW WORKING RECIPE.** `$HOME` was 100% full
+again (a fixed cutoff, not a slow leak — same class as #129's, third occurrence). The #129 fix
+(`PLAYWRIGHT_BROWSERS_PATH` alone) was NOT sufficient this time; the full working env, all four
+render-verified artefacts (1180+480, real HSBC face, drive-tested):
+```bash
+pip install --target /var/tmp/pylibs <pkg>          # pip itself ENOSPCs against $HOME otherwise
+export PYTHONPATH=/var/tmp/pylibs:$PYTHONPATH
+export PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-<session>
+export FONTCONFIG_FILE=/var/tmp/fonts-<session>.conf   # <dir> inside points at repo TTFs — no font copy
+export TMPDIR=/var/tmp
+export LD_LIBRARY_PATH=/var/tmp/chromelibs/root/usr/lib/aarch64-linux-gnu   # pre-existing, foreign-session libs
+```
+**`FONTCONFIG_FILE` pointed at the repo's own TTF paths is the new element** — no font copy needed,
+where prior sessions copied fonts into the sandbox. **`LD_LIBRARY_PATH` libs pre-existed from a foreign
+session** (the `/tmp`-is-shared fact from #129, used constructively this time rather than as a
+contamination risk). *(Addition only; #129's recipe and history stand. 2026-08-08.)*
+
 ⛔ **THIS RUNBOOK WAS DECLARED DEAD BY A SESSION THAT NEVER OPENED IT — RE-VERIFIED WORKING #124.**
 #123 declared a render gap on the grounds that *"chromium is TLS-blocked in-sandbox"*; #124 carried that
 claim forward as fact and Dave caught it (*"and there is a runbook for chromium and playwright"*). The

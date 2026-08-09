@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ruling candidate — the three-axis model (s136)</title>
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:2rem;font-family:var(--font);background:#F2F2F2;color:#1A1A1A}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{font-size:14px;line-height:1.55;color:#444;margin:0 0 20px;max-width:74ch}
+  .model{background:#1A1A1A;color:#fff;padding:18px 22px;font-size:16px;line-height:1.6;max-width:74ch;margin-bottom:26px}
+  .model b{color:#7FD1CC}
+  .clause{border:1px solid #D5D5D5;background:#fff;margin-bottom:18px;max-width:900px}
+  .clause.done{border-color:#00847F}
+  .chead{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #E4E4E4}
+  .chead .lt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:#305A85;color:#fff;padding:3px 8px}
+  .chead .nm{font-size:16px;font-weight:500}
+  .body{padding:14px 16px;font-size:14px;line-height:1.6;max-width:78ch}
+  .body p{margin:0 0 10px}
+  pre{background:#F7F7F7;border:1px solid #E4E4E4;padding:12px;font:12px/1.5 ui-monospace,monospace;overflow-x:auto;margin:10px 0}
+  .subsume{font-size:12px;color:#666;padding:0 16px 4px}
+  .q{display:flex;gap:10px;align-items:center;padding:12px 16px 16px;flex-wrap:wrap}
+  .q button{appearance:none;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;font:500 13px var(--font);height:38px;padding:0 16px;cursor:pointer}
+  .q button.pick{background:#1A1A1A;color:#fff}
+  .q button.park{border-color:#999;color:#666}
+  .q button.park.pick{background:#666;border-color:#666;color:#fff}
+  .q input{flex:1 1 240px;height:38px;border:1px solid #C5C5C5;font:400 13px var(--font);padding:0 10px}
+  .not{background:#fff;border:1px dashed #B5B5B5;padding:14px 16px;font-size:13px;line-height:1.6;max-width:900px;margin-bottom:18px;color:#555}
+  .bar{position:sticky;bottom:0;margin-top:22px;display:flex;gap:12px;align-items:center;background:#1A1A1A;color:#fff;padding:12px 16px;max-width:900px}
+  .bar button{appearance:none;border:0;background:#fff;color:#1A1A1A;font:500 13px var(--font);height:36px;padding:0 18px;cursor:pointer}
+  .bar .state{font:400 12px/1.4 ui-monospace,monospace;opacity:.85}
+  textarea{width:100%;max-width:900px;height:150px;margin-top:10px;font:12px ui-monospace,monospace;display:none}
+</style>
+</head>
+<body>
+
+<h1>Ruling candidate — the three-axis model</h1>
+<p class="sub">CANDIDATE, not a ruling — nothing enters <b>_rulings.json</b> until you say ruled, per clause or whole.
+Drafted s136 from your words this morning ("shells… content variants… inject new variant molecules… all parametrized to a certain extent — this logic needs to be cohesive and flexible") + the #135 research lane.
+It subsumes the three items FLOATED at #135. Grounded in the existing <b>meta.json</b> schema — only <b>slots</b> is a new key; <b>props</b>, <b>variants</b>, <b>tokens</b> already exist.</p>
+
+<div class="model">
+Every node — atom, molecule, organ, shell — flexes on exactly <b>three orthogonal axes</b>:
+<b>parameters</b> for values · <b>variants</b> for switches · <b>slots</b> for content.
+A variant always <b>travels with the node that owns it</b>. A slot constrains by <b>contract, never by list</b>.
+A parameter draws <b>only from the spine</b>. No axis ever does another axis's job.
+</div>
+
+<div class="clause" id="c-A">
+  <div class="chead"><span class="lt">Clause A</span><span class="nm">Parameters — values, spine-bound, DTCG on the wire</span></div>
+  <div class="body">
+    <p><b>If it's a value, it's a parameter.</b> Spacing, labels, counts, colour roles. Lives in the existing <b>props</b> key. The bound ("to a certain extent"): every visual prop declares which spine token it binds — free hex/px values are forbidden. This is what lets four themes re-skin everything by re-binding tokens.</p>
+    <p>Wire format for the token spine itself: <b>W3C DTCG</b> (stable Oct 2025) — the industry format the research lane confirmed. Values stay in tokens/*.json (the spine); DTCG is how they're encoded, not a new home.</p>
+    <pre>"props": [{ "name": "gap", "type": "token",
+  "binds": "space/stack-md",        // ← spine path, MANDATORY for visual props
+  "default": "space/stack-md" }]</pre>
+  </div>
+  <div class="subsume">Subsumes floated #135 item: "DTCG wire format".</div>
+  <div class="q"><button data-v="ruled">Ruled</button><button data-v="amend">Amend</button><button data-v="park" class="park">Park</button><input placeholder="notes / amendment (lands in export verbatim)"></div>
+</div>
+
+<div class="clause" id="c-B">
+  <div class="chead"><span class="lt">Clause B</span><span class="nm">Variants — switches, owned by their node, travelling with it</span></div>
+  <div class="body">
+    <p><b>If it's a switch, it's a variant.</b> Compact vs comfortable, with-icon vs without. Lives in the existing <b>variants</b> key as mutation-keys — <b>a variant is never a new node</b> (s135-D3, already ruled: "variants embedded as contextual mutations"). This clause adds the travel rule:</p>
+    <p><b>A variant belongs to the node that owns it and travels with it through any slot.</b> Your "content variants which are their own molecules" — same molecule, wearing a mutation-key, injected anywhere. A shell never enumerates the variants of its contents.</p>
+  </div>
+  <div class="subsume">Extends s135-D3 (ruled) — adds the travel rule only.</div>
+  <div class="q"><button data-v="ruled">Ruled</button><button data-v="amend">Amend</button><button data-v="park" class="park">Park</button><input placeholder="notes / amendment"></div>
+</div>
+
+<div class="clause" id="c-C">
+  <div class="chead"><span class="lt">Clause C</span><span class="nm">Slots — content, contract-typed, any scale</span></div>
+  <div class="body">
+    <p><b>If it's content, it's a slot.</b> A shell = any node with ≥1 slot; slots work at any scale (your s135-D3 readback, ≈ Figma Slots). The slot declares a <b>contract</b> — what it accepts, by tier or capability — never a list of children. New molecules ruled next year inject without touching the shell.</p>
+    <p>New meta.json key (the only schema addition in this ruling):</p>
+    <pre>"slots": [{ "name": "content",
+  "accepts": { "tiers": ["atom","molecule"] },  // or "capability": "chart"
+  "min": 0, "max": null }]                       // null = unbounded</pre>
+    <p>Shells made of variant-bearing molecules/atoms: the frame's parts flex on their own axes; injected content flexes on its own. Both at once, neither enumerating the other — that is what prevents the combinatorial explosion.</p>
+  </div>
+  <div class="subsume">Subsumes floated #135 item: "Figma-Slots semantics for shells".</div>
+  <div class="q"><button data-v="ruled">Ruled</button><button data-v="amend">Amend</button><button data-v="park" class="park">Park</button><input placeholder="notes / amendment"></div>
+</div>
+
+<div class="clause" id="c-D">
+  <div class="chead"><span class="lt">Clause D</span><span class="nm">The fork ban — the three axes are the ONLY sanctioned variation</span></div>
+  <div class="body">
+    <p><b>Any variation not expressible on the three axes is a fork, and forks are gate failures.</b> A one-off restyled copy in a snippet, a hand-tuned hex, a near-duplicate component — the gate names the axis the variation should have used. Enforcement lands as a validator addition (enact lane, priced separately) — this clause rules the <b>principle</b>, so the gate has authority to be built against.</p>
+  </div>
+  <div class="subsume">Subsumes floated #135 item: "fork-ban gate".</div>
+  <div class="q"><button data-v="ruled">Ruled</button><button data-v="amend">Amend</button><button data-v="park" class="park">Park</button><input placeholder="notes / amendment"></div>
+</div>
+
+<div class="not"><b>What this does NOT decide:</b> the 16 tier-map rows (their own controller, this session) · the mono no-border extension (separate readback owed) · s135-D4 generator enactment (its own lane) · which capabilities exist for slot contracts (vocabulary grows case-by-case, each addition visible in meta.json diffs).</div>
+
+<div class="bar">
+  <span class="state" id="state">0 of 4 clauses answered</span>
+  <button id="export">Export verdicts</button>
+  <button id="copy">Copy JSON</button>
+</div>
+<textarea id="out" readonly></textarea>
+
+<script>
+const CL = ["A","B","C","D"];
+const v = {};
+try{ Object.assign(v, JSON.parse(localStorage.getItem("s136-threeaxis")||"{}")); }catch(e){}
+
+CL.forEach(c=>{
+  const el = document.getElementById("c-"+c);
+  el.querySelectorAll(".q button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      v[c] = {verdict:b.dataset.v, note:el.querySelector(".q input").value||null};
+      localStorage.setItem("s136-threeaxis", JSON.stringify(v));
+      paint();
+    });
+  });
+  el.querySelector(".q input").addEventListener("input",e=>{
+    if(v[c]){ v[c].note=e.target.value||null; localStorage.setItem("s136-threeaxis", JSON.stringify(v)); }
+  });
+});
+
+function paint(){
+  let n=0;
+  CL.forEach(c=>{
+    const el=document.getElementById("c-"+c), r=v[c];
+    el.classList.toggle("done", !!r && r.verdict==="ruled");
+    el.querySelectorAll(".q button").forEach(b=>b.classList.toggle("pick", r && b.dataset.v===r.verdict));
+    if(r && r.verdict!=="park") n++;
+    if(r && r.note) el.querySelector(".q input").value=r.note;
+  });
+  document.getElementById("state").textContent = n+" of 4 clauses answered";
+}
+
+function payload(){
+  return JSON.stringify({session:"s136", date:"2026-08-08",
+    subject:"three-axis model ruling candidate — Dave's verdicts",
+    clauses: CL.map(c=>({clause:c, verdict:v[c]?v[c].verdict:null, note:v[c]?v[c].note:null}))}, null, 1);
+}
+document.getElementById("export").addEventListener("click",()=>{
+  const o=document.getElementById("out"); o.style.display="block"; o.value=payload();
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([o.value],{type:"application/json"}));
+  a.download="THREE-AXIS-VERDICTS-2026-08-08-s136.json"; a.click();
+});
+document.getElementById("copy").addEventListener("click",()=>{
+  const o=document.getElementById("out"); o.style.display="block"; o.value=payload();
+  o.select(); document.execCommand("copy");
+});
+paint();
+</script>
+</body>
+</html>
