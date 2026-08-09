@@ -1691,7 +1691,9 @@
     "knowledge/tokens/themes/apollo-console.overrides.json",
     "knowledge/tokens/themes/apollo-supercharge.overrides.json"
    ],
-   "evidence": "reviews/NOTIF-BORDER-RULE-2026-08-08-s135-v2.html (controller; export JSON embeds borders {mono:off, legacy:ON, console:off, supercharge:ON} + radius {console:12 via border-radius/surface})",
+   "evidence": [
+    "reviews/NOTIF-BORDER-RULE-2026-08-08-s135-v2.html (controller; export JSON embeds borders {mono:off, legacy:ON, console:off, supercharge:ON} + radius {console:12 via border-radius/surface})"
+   ],
    "status": "RULED #135, NOT ENACTED. Enactment = Notifications snippet re-base (it is legacy-tagged with hardcoded --border-radius-surface:0 and unconditional 1px border) + per-theme cascade; queue with the s130 remainder."
   },
   {
@@ -1704,7 +1706,9 @@
     "knowledge/components/*.meta.json",
     "knowledge/_memento-index.json"
    ],
-   "evidence": "reviews/KG-REVIEW-ROWS-2026-08-08-s135-v1.html (row controller) + reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json (computed verdicts, the ruled set)",
+   "evidence": [
+    "reviews/KG-REVIEW-ROWS-2026-08-08-s135-v1.html (row controller) + reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json (computed verdicts, the ruled set)"
+   ],
    "status": "RULED #135, NOT ENACTED. Apply via Sonnet sub row-for-row from the verdicts JSON; exceptions ledger returns to Dave; _validate_kg.py must stay green after."
   },
   {
@@ -1717,7 +1721,9 @@
     "knowledge/components/",
     "knowledge/_memento-index.json"
    ],
-   "evidence": "chat #135; follows s135-D2 (the KG cleanup is the substrate this hierarchy is built on)",
+   "evidence": [
+    "chat #135; follows s135-D2 (the KG cleanup is the substrate this hierarchy is built on)"
+   ],
    "status": "RULED #135 as REQUIREMENT; mechanism NOT designed. Next artefact = tier-mapping proposal (every existing node assigned a tier + mutation-key grammar), Dave rules off that. Shell readback CLOSED same session."
   },
   {
@@ -1731,7 +1737,9 @@
     "knowledge/_validate_kg.py",
     "reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json"
    ],
-   "evidence": "notes/_briefs/2026-08-08-135-laneA-kg-apply.md (structural proof + exceptions ledger)",
+   "evidence": [
+    "notes/_briefs/2026-08-08-135-laneA-kg-apply.md (structural proof + exceptions ledger)"
+   ],
    "status": "RULED #135, NOT ENACTED. #136 first build lane. The 15 token-split exceptions in the ledger ride along."
   },
   {
@@ -1740,9 +1748,28 @@
    "date": "2026-08-08",
    "by": "Dave",
    "says": "THE THREE-AXIS MODEL (all four clauses ruled via controller export, no amendments): every node \u2014 atom, molecule, organ, shell \u2014 flexes on exactly three orthogonal axes. (A) PARAMETERS: values live in props; every visual prop declares a spine token binding ('binds'), free hex/px forbidden; token spine wire format = W3C DTCG (stable Oct 2025). (B) VARIANTS: switches live as mutation-keys on their owning node (extends s135-D3); a variant is never a new node and TRAVELS with its node through any slot \u2014 a shell never enumerates its contents' variants. (C) SLOTS: content injects through contract-typed slots (accepts by tier or capability, never a child list); shell = any node with >=1 slot, any scale; 'slots' is the ONLY new meta.json key. (D) FORK BAN: the three axes are the only sanctioned variation; anything off-axis is a fork and a gate failure \u2014 principle ruled, gate enactment priced separately. Subsumes all three #135 floated items: DTCG wire format (A), Figma-Slots semantics for shells (C), fork-ban gate (D).",
-   "governs": "meta.json schema (props.binds mandatory for visual props, slots key), tokens/*.json wire format, all future component/shell authoring, fork-ban validator (to be built)",
-   "evidence": "reviews/RULING-CANDIDATE-three-axis-2026-08-08-s136-v1.html \u00b7 reviews/THREE-AXIS-VERDICTS-2026-08-08-s136.json (export verbatim) \u00b7 reviews/RESEARCH-hierarchy-best-practice-2026-08-08-s135-v1.html",
+   "governs": [
+    "meta.json schema (props.binds mandatory for visual props, slots key), tokens/*.json wire format, all future component/shell authoring, fork-ban validator (to be built)"
+   ],
+   "evidence": [
+    "reviews/RULING-CANDIDATE-three-axis-2026-08-08-s136-v1.html \u00b7 reviews/THREE-AXIS-VERDICTS-2026-08-08-s136.json (export verbatim) \u00b7 reviews/RESEARCH-hierarchy-best-practice-2026-08-08-s135-v1.html"
+   ],
    "status": "RULED NOT ENACTED \u2014 enact lanes: slots key rollout, props.binds audit, DTCG re-encode, fork-ban gate"
+  },
+  {
+   "id": "s137-D1",
+   "ruled": "#137",
+   "date": "2026-08-09",
+   "by": "Dave",
+   "says": "The ruled push path's clean-tree assertion EXCLUDES exactly one named file: notes/_REHEARSAL-LOG.jsonl. It is the one tracked file the verification instruments themselves write (_capture_gate.py --wrap, _checkin.py), so verifying a commit after making it dirtied the tree and refused the very push s133-D2 exists to allow. Dave picked this remedy over two named alternatives (move the append after the staging seam; stop tracking the log). The path is named IN FULL so the exclusion cannot silently widen - it is not a pattern and it does not generalise to a second file. ENACTED #137 at knowledge/_git_commit.sh:43-44 via PUSH_DIRT and git status --short -- . ':(exclude)notes/_REHEARSAL-LOG.jsonl'; the refusal now also PRINTS the dirty paths, which it did not before.",
+   "governs": [
+    "knowledge/_git_commit.sh",
+    "knowledge/_git_commit.sh:43-44 (--push clean-tree assertion). Narrows s133-D2's clean-tree clause BY ADDITION; every other path keeps its teeth."
+   ],
+   "evidence": [
+    "Origin: dream pass 6 P2, notes/_dream/2026-08-09-proposals.md - 9 declared instances #115-#135, remedy priced once at #125 and homed in no carry list for 11 sessions until _LIVE-STATE.md OPEN gained it at #137. Confirmed first-hand #137: this session's own opening _checkin.py left ' M notes/_REHEARSAL-LOG.jsonl' before any other work was done. DRIVEN, not asserted - the artefact's own bytes (sed -n '43,44p') evaluated three ways: (A) real tree, real dirt -> rc=1, lists _LIVE-STATE.md + _git_commit.sh + 3 untracked font files, does NOT list the log; (B) scratch tree, only the log dirty -> rc=0 (declared substitution: scratch tree, same bytes); (C) mutation, log + one other file dirty -> rc=1, exclusion proven NARROW. bash -n clean. NOT DRIVEN: the full --push path, because driving it means pushing, which needs Dave's word - UNPROVEN BY CHOICE, declared. Method note: the FIRST attempt at this test was a false green - sed grabbed comment lines after the insert shifted the line numbers, and eval of comments exits 0. Caught and redone before anything was reported."
+   ],
+   "status": "RULED #137 AND ENACTED #137 - code changed, gate driven three ways on the artefact's own bytes. Residual, declared: the end-to-end --push run is unproven until Dave's next push."
   }
  ]
 }

@@ -35,7 +35,13 @@ RECONCILED=0
 if [ "$1" = "--push" ]; then
   BR=$(git rev-parse --abbrev-ref HEAD)
   [ "$BR" = "master" ] || { echo "✗ push refused: branch is '$BR', not master (s133-D2)"; exit 1; }
-  [ -z "$(git status --short)" ] || { echo "✗ push refused: tree not clean — commit first (s133-D2)"; exit 1; }
+  # s137-D1 (Dave, #137): ONE named exclusion — `notes/_REHEARSAL-LOG.jsonl` is the one tracked file the
+  # verification instruments themselves write (`_capture_gate.py --wrap`, `_checkin.py`), so verifying a
+  # commit AFTER making it dirtied the tree and refused the very push s133-D2 exists to allow (dream pass 6
+  # P2; 9 sessions of declared instances, priced at #125, homed nowhere until #137). The path is named in
+  # full so the exclusion CANNOT silently widen — do NOT generalise this to a pattern or a second file.
+  PUSH_DIRT=$(git status --short -- . ':(exclude)notes/_REHEARSAL-LOG.jsonl')
+  [ -z "$PUSH_DIRT" ] || { echo "✗ push refused: tree not clean — commit first (s133-D2; rehearsal log excluded per s137-D1). Dirty paths:"; echo "$PUSH_DIRT"; exit 1; }
   git config remote.origin.url | grep -q "@github.com" || { echo "✗ push refused: no credential in remote URL. Dave: fine-grained PAT (this repo, Contents r/w, 90d) → paste to Claude → git config remote.origin.url https://<TOKEN>@github.com/daveasewen/UX-design.git"; exit 1; }
   LOCAL=$(git rev-parse HEAD)
   git push origin master 2>&1 | grep -v "^remote:" || true
