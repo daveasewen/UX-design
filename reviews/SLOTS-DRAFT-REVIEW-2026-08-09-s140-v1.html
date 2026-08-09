@@ -1,0 +1,979 @@
+<!doctype html><html lang="en"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slots draft — s140</title>
+<style>
+:root{--blue:#305A85;--teal:#00847F;--red:#B92F1E;--bg:#fff;--ink:#1c1c1e;--mut:#5b6068;--line:#dcdfe4;--pre:#f5f7f9}
+@media(prefers-color-scheme:dark){:root{--blue:#7FA8CE;--teal:#4FBFB8;--red:#E2705F;--bg:#15171a;--ink:#e9ecef;--mut:#9aa2ac;--line:#2c3036;--pre:#1d2025}}
+*{box-sizing:border-box}
+body{margin:0;padding:2rem 1.25rem 6rem;background:var(--bg);color:var(--ink);
+ font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;max-width:900px;margin-inline:auto}
+h1{font-size:1.7rem;line-height:1.25;margin:0 0 .4rem}
+h2{font-size:1.2rem;margin:2.5rem 0 .6rem;color:var(--blue)}
+h3{font-size:1.05rem;margin:0 0 .3rem}
+.lede{border-left:4px solid var(--blue);padding:.1rem 0 .1rem 1rem;margin:1.4rem 0}
+.lede p{margin:.6rem 0}
+.cat{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:3px;padding:.05rem .35rem;vertical-align:.15em}
+.flag{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--red);border:1px solid var(--red);border-radius:3px;padding:.05rem .35rem;vertical-align:.15em}
+.card{border:1px solid var(--line);border-radius:8px;padding:1rem 1.1rem;margin:1.1rem 0}
+.purp{margin:.35rem 0;color:var(--ink)}
+.fn{margin:.2rem 0 .7rem;font-size:.85rem;color:var(--mut);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+pre{background:var(--pre);border:1px solid var(--line);border-radius:6px;padding:.75rem .9rem;overflow:auto;font-size:.82rem;line-height:1.5}
+.warnbox{border-left:3px solid var(--red);padding:.1rem 0 .1rem .8rem;margin:.6rem 0}
+.warn{margin:.35rem 0;font-size:.9rem;color:var(--red)}
+.verdict{display:flex;flex-wrap:wrap;gap:.9rem;align-items:center;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--line)}
+.verdict label{font-size:.9rem;cursor:pointer}
+.note{flex:1;min-width:180px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink);font:inherit;font-size:.85rem}
+button{background:var(--blue);color:#fff;border:0;border-radius:6px;padding:.6rem 1.1rem;font:inherit;font-weight:600;cursor:pointer}
+textarea{width:100%;min-height:220px;margin-top:.8rem;padding:.7rem;border:1px solid var(--line);border-radius:6px;background:var(--pre);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem}
+.sticky{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:1rem 0}
+</style>
+<h1>Slot contracts — 28 components, 42 drafts</h1>
+<p class="fn">reviews/SLOTS-DRAFT-2026-08-09-s140-v1.json &middot; drafted 2026-08-09 (s140)</p>
+
+<div class="lede">
+<p><strong>What this is.</strong> The s139 audit found 42 props that inject content rather than set a value. The schema you just amended (s140-D1) gives them somewhere legal to live: a <code>slots</code> map. I have drafted one slot entry for each. All 42 validate against the amended schema (28 of 28 components pass); a mutation test confirmed the validator refuses an entry with <code>use</code> stripped, so the green is real.</p>
+<p><strong>Nothing is ruled and nothing was written into the metas.</strong> These drafts live only in <code>reviews/</code>. Every <code>capability</code> string here — "data-series", "table-rows", "action-button" and the rest — is <strong>agent-proposed and unruled</strong>. If you want a different vocabulary, that is a decision, not a correction.</p>
+<p><strong>Four I am not confident about</strong>, flagged in red below: <code>textarea.rows</code> (a sizing number, almost certainly a false positive — I recommend rejecting it), <code>segmented-control.content</code> and <code>cards.content</code> (both read more like variant axes than slots), and <code>empty-state.body</code> (a plain string you may prefer to leave as a text param).</p>
+<p><strong>Your next action.</strong> Scroll, set accept / amend / reject per component, then press <em>Build verdict</em> at the bottom and paste the block into chat.</p>
+</div>
+
+<h2>The drafts</h2>
+<section class="card" data-file="Chart-boxplot.meta.json">
+ <h3>Box plot <span class="cat">organism</span></h3>
+ <p class="purp">Statistical distribution per category</p>
+ <p class="fn">Chart-boxplot.meta.json &middot; 3 slots: categories, outliers, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;categories&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;category-labels&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;One entry per box on the categorical axis.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;outliers&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;outlier-points&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Points falling outside the whiskers, plotted individually.&quot;,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the five-number summary per category the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v0" value="accept" checked> accept</label>
+  <label><input type="radio" name="v0" value="amend"> amend</label>
+  <label><input type="radio" name="v0" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="Chart-bullet.meta.json">
+ <h3>Bullet chart <span class="cat">organism</span></h3>
+ <p class="purp">KPI performance at a glance</p>
+ <p class="fn">Chart-bullet.meta.json &middot; 3 slots: rows, ranges, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;rows&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;kpi-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;One measure/target row per KPI shown in the bullet stack.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;ranges&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;qualitative-ranges&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The banded qualitative ranges each measure bar is read against.&quot;,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the measure, target and range values the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v1" value="accept" checked> accept</label>
+  <label><input type="radio" name="v1" value="amend"> amend</label>
+  <label><input type="radio" name="v1" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="Chart-butterfly-h.meta.json">
+ <h3>Butterfly chart (horizontal) <span class="cat">organism</span></h3>
+ <p class="purp">Two-series comparison per category as mirrored horizontal bars flowing outward from a shared centre gutter</p>
+ <p class="fn">Chart-butterfly-h.meta.json &middot; 2 slots: series, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;series&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;data-series&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The two opposed series mirrored either side of the centre gutter.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the paired category values the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v2" value="accept" checked> accept</label>
+  <label><input type="radio" name="v2" value="amend"> amend</label>
+  <label><input type="radio" name="v2" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="Chart-butterfly-v.meta.json">
+ <h3>Butterfly chart (vertical) <span class="cat">organism</span></h3>
+ <p class="purp">Same contract as Chart-butterfly-h, rotated: two-series comparison per category as mirrored columns above/below one shared horizontal baseline</p>
+ <p class="fn">Chart-butterfly-v.meta.json &middot; 2 slots: series, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;series&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;data-series&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The two opposed series mirrored above and below the shared baseline.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the paired category values the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v3" value="accept" checked> accept</label>
+  <label><input type="radio" name="v3" value="amend"> amend</label>
+  <label><input type="radio" name="v3" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="Chart-candlestick.meta.json">
+ <h3>Candlestick chart <span class="cat">organism</span></h3>
+ <p class="purp">Open-high-low-close (OHLC) per period, one candle per session</p>
+ <p class="fn">Chart-candlestick.meta.json &middot; 2 slots: sessions, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;sessions&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;ohlc-periods&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;One open-high-low-close period per candle.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the OHLC values per period the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v4" value="accept" checked> accept</label>
+  <label><input type="radio" name="v4" value="amend"> amend</label>
+  <label><input type="radio" name="v4" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="Chart-histogram.meta.json">
+ <h3>Histogram <span class="cat">organism</span></h3>
+ <p class="purp">Single-series frequency distribution as contiguous column bins (no inter-bar gap)</p>
+ <p class="fn">Chart-histogram.meta.json &middot; 2 slots: bins, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;bins&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;histogram-bins&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The contiguous frequency bins drawn as columns.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the bin boundaries and counts the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v5" value="accept" checked> accept</label>
+  <label><input type="radio" name="v5" value="amend"> amend</label>
+  <label><input type="radio" name="v5" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="Chart-scatter.meta.json">
+ <h3>Scatter plot <span class="cat">organism</span></h3>
+ <p class="purp">Relationship between two quantitative measures as plotted points, single-series or by segment</p>
+ <p class="fn">Chart-scatter.meta.json &middot; 2 slots: series, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;series&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;data-series&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Point sets, one per segment, sharing both quantitative axes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the x/y point values the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v6" value="accept" checked> accept</label>
+  <label><input type="radio" name="v6" value="amend"> amend</label>
+  <label><input type="radio" name="v6" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="account-selector.meta.json">
+ <h3>Account selector <span class="cat">molecule</span></h3>
+ <p class="purp">The from/to account picker of every payment flow plus its compact inline token</p>
+ <p class="fn">account-selector.meta.json &middot; 1 slot: accounts</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;accounts&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;account-records&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The selectable accounts, each supplying name, masked number and balance.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v7" value="accept" checked> accept</label>
+  <label><input type="radio" name="v7" value="amend"> amend</label>
+  <label><input type="radio" name="v7" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="action-bar.meta.json">
+ <h3>Action bar <span class="cat">molecule</span></h3>
+ <p class="purp">A footer bar that pins a screen or flow&#x27;s primary + secondary actions (e.g</p>
+ <p class="fn">action-bar.meta.json &middot; 1 slot: actions</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;actions&quot;: {
+   &quot;accepts&quot;: {
+    &quot;tier&quot;: [
+     &quot;atom&quot;
+    ],
+    &quot;capability&quot;: [
+     &quot;action-button&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Holds the screen&#x27;s primary and secondary actions; the container lays them out but never authors them.&quot;,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v8" value="accept" checked> accept</label>
+  <label><input type="radio" name="v8" value="amend"> amend</label>
+  <label><input type="radio" name="v8" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="banner.meta.json">
+ <h3>Banner <span class="cat">molecule</span></h3>
+ <p class="purp">The page-level, persistent member of the feedback family: a full-width solid RAG surface that sits above the content it governs and stays until the condition clears or th</p>
+ <p class="fn">banner.meta.json &middot; 1 slot: actions</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;actions&quot;: {
+   &quot;accepts&quot;: {
+    &quot;tier&quot;: [
+     &quot;atom&quot;
+    ],
+    &quot;capability&quot;: [
+     &quot;action-button&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Holds the banner&#x27;s response actions; the container lays them out but never authors them.&quot;,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v9" value="accept" checked> accept</label>
+  <label><input type="radio" name="v9" value="amend"> amend</label>
+  <label><input type="radio" name="v9" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="cards.meta.json">
+ <h3>Cards <span class="cat">molecule</span> <span class="flag">needs a look</span></h3>
+ <p class="purp">A family of container components that group related content (and optionally an action) into a bordered surface</p>
+ <p class="fn">cards.meta.json &middot; 1 slot: content</p>
+ <div class="warnbox"><p class="warn"><strong>content</strong> — audit typed this prop enum — it may be a VARIANT (card type) rather than a slot; Dave&#x27;s call.</p></div>
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;content&quot;: {
+   &quot;accepts&quot;: {
+    &quot;tier&quot;: [
+     &quot;atom&quot;,
+     &quot;molecule&quot;
+    ],
+    &quot;capability&quot;: [
+     &quot;card-body-content&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The grouped content the card surface frames.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;,
+   &quot;$doubt&quot;: &quot;audit typed this prop enum \u2014 it may be a VARIANT (card type) rather than a slot; Dave&#x27;s call.&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v10" value="accept" checked> accept</label>
+  <label><input type="radio" name="v10" value="amend"> amend</label>
+  <label><input type="radio" name="v10" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="chart-bar.meta.json">
+ <h3>Bar chart <span class="cat">organism</span></h3>
+ <p class="purp">Categorical comparison as vertical columns or horizontal bars, single- or multi-series (grouped + stacked), with the full Layer-2 interaction layer restored to match the </p>
+ <p class="fn">chart-bar.meta.json &middot; 2 slots: series, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;series&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;data-series&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;One or more series drawn grouped or stacked across the categorical axis.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the category values per series the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v11" value="accept" checked> accept</label>
+  <label><input type="radio" name="v11" value="amend"> amend</label>
+  <label><input type="radio" name="v11" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="chart-combo.meta.json">
+ <h3>Combo chart <span class="cat">organism</span></h3>
+ <p class="purp">Bars on a PRIMARY axis + a line on a SECONDARY axis</p>
+ <p class="fn">chart-combo.meta.json &middot; 2 slots: series, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;series&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;data-series&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The bar series on the primary axis plus the line series on the secondary axis.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the both measures over the shared x the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v12" value="accept" checked> accept</label>
+  <label><input type="radio" name="v12" value="amend"> amend</label>
+  <label><input type="radio" name="v12" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="chart-donut.meta.json">
+ <h3>Donut chart <span class="cat">organism</span></h3>
+ <p class="purp">Composition / proportion as a ring with a centre total</p>
+ <p class="fn">chart-donut.meta.json &middot; 1 slot: slices</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;slices&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;proportion-slices&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The parts of the whole drawn as ring segments.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v13" value="accept" checked> accept</label>
+  <label><input type="radio" name="v13" value="amend"> amend</label>
+  <label><input type="radio" name="v13" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="chart-line.meta.json">
+ <h3>Line chart <span class="cat">organism</span></h3>
+ <p class="purp">Trend over time as straight-segment polylines, single- or multi-series</p>
+ <p class="fn">chart-line.meta.json &middot; 2 slots: series, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;series&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;data-series&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;One polyline per series over the shared time axis.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the values per point per series the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v14" value="accept" checked> accept</label>
+  <label><input type="radio" name="v14" value="amend"> amend</label>
+  <label><input type="radio" name="v14" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="chart-pie.meta.json">
+ <h3>Pie chart <span class="cat">organism</span></h3>
+ <p class="purp">Composition / proportion as a full ring, no centre figure</p>
+ <p class="fn">chart-pie.meta.json &middot; 1 slot: slices</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;slices&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;proportion-slices&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The parts of the whole drawn as full-ring segments.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v15" value="accept" checked> accept</label>
+  <label><input type="radio" name="v15" value="amend"> amend</label>
+  <label><input type="radio" name="v15" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="chart-sparkline.meta.json">
+ <h3>Sparkline <span class="cat">molecule</span></h3>
+ <p class="purp">The axis-free inline trend line</p>
+ <p class="fn">chart-sparkline.meta.json &middot; 1 slot: data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the trend values behind the axis-free line the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v16" value="accept" checked> accept</label>
+  <label><input type="radio" name="v16" value="amend"> amend</label>
+  <label><input type="radio" name="v16" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="chart-stacked-area.meta.json">
+ <h3>Stacked area chart <span class="cat">organism</span></h3>
+ <p class="purp">Trend over time as cumulative stacked fills, multi-series</p>
+ <p class="fn">chart-stacked-area.meta.json &middot; 2 slots: series, data</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;series&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;data-series&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The bands stacked cumulatively over the shared time axis.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;data&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;chart-dataset&quot;,
+     &quot;table-rows&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Carries the values per point per band the chart renders, and the same rows the a11y data table exposes.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v17" value="accept" checked> accept</label>
+  <label><input type="radio" name="v17" value="amend"> amend</label>
+  <label><input type="radio" name="v17" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="confirmation.meta.json">
+ <h3>Confirmation <span class="cat">organism</span></h3>
+ <p class="purp">The end-of-flow success screen: a success-solid glyph, a heading, a short message and the next actions</p>
+ <p class="fn">confirmation.meta.json &middot; 1 slot: actions</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;actions&quot;: {
+   &quot;accepts&quot;: {
+    &quot;tier&quot;: [
+     &quot;atom&quot;
+    ],
+    &quot;capability&quot;: [
+     &quot;action-button&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Holds the next actions offered after the flow completes; the container lays them out but never authors them.&quot;,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v18" value="accept" checked> accept</label>
+  <label><input type="radio" name="v18" value="amend"> amend</label>
+  <label><input type="radio" name="v18" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="data-grid.meta.json">
+ <h3>Data grid <span class="cat">organism</span></h3>
+ <p class="purp">The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals)</p>
+ <p class="fn">data-grid.meta.json &middot; 2 slots: columns, filters</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;columns&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;column-definitions&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The column contract: header, alignment, sort and edit affordances per column.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  },
+  &quot;filters&quot;: {
+   &quot;accepts&quot;: {
+    &quot;tier&quot;: [
+     &quot;atom&quot;,
+     &quot;molecule&quot;
+    ],
+    &quot;capability&quot;: [
+     &quot;filter-control&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The filter controls mounted above the grid.&quot;,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v19" value="accept" checked> accept</label>
+  <label><input type="radio" name="v19" value="amend"> amend</label>
+  <label><input type="radio" name="v19" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="drawer.meta.json">
+ <h3>Drawer <span class="cat">organism</span></h3>
+ <p class="purp">A page-edge side sheet for focused sub-tasks that keep page context visible: detail inspection, filters, secondary forms</p>
+ <p class="fn">drawer.meta.json &middot; 1 slot: actions</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;actions&quot;: {
+   &quot;accepts&quot;: {
+    &quot;tier&quot;: [
+     &quot;atom&quot;
+    ],
+    &quot;capability&quot;: [
+     &quot;action-button&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;Holds the drawer&#x27;s confirm/dismiss actions; the container lays them out but never authors them.&quot;,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v20" value="accept" checked> accept</label>
+  <label><input type="radio" name="v20" value="amend"> amend</label>
+  <label><input type="radio" name="v20" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="empty-state.meta.json">
+ <h3>Empty state <span class="cat">molecule</span> <span class="flag">needs a look</span></h3>
+ <p class="purp">What a region says when it has nothing to show</p>
+ <p class="fn">empty-state.meta.json &middot; 1 slot: body</p>
+ <div class="warnbox"><p class="warn"><strong>body</strong> — a plain string — Dave may prefer this stay a text param rather than become a typed slot.</p></div>
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;body&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;body-copy&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The short explanatory sentence under the empty-state heading.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;,
+   &quot;$doubt&quot;: &quot;a plain string \u2014 Dave may prefer this stay a text param rather than become a typed slot.&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v21" value="accept" checked> accept</label>
+  <label><input type="radio" name="v21" value="amend"> amend</label>
+  <label><input type="radio" name="v21" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="modal-lightbox.meta.json">
+ <h3>Modal lightbox <span class="cat">organism</span></h3>
+ <p class="purp">The viewer member of the modal family: shows a thing (statement page, cheque image, document preview) rather than asking a question</p>
+ <p class="fn">modal-lightbox.meta.json &middot; 1 slot: items</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;items&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;viewable-items&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The documents or images the viewer pages through.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v22" value="accept" checked> accept</label>
+  <label><input type="radio" name="v22" value="amend"> amend</label>
+  <label><input type="radio" name="v22" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="popover.meta.json">
+ <h3>Popover <span class="cat">molecule</span></h3>
+ <p class="purp">Rich anchored content that opens on CLICK</p>
+ <p class="fn">popover.meta.json &middot; 1 slot: content</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;content&quot;: {
+   &quot;accepts&quot;: {
+    &quot;tier&quot;: [
+     &quot;atom&quot;,
+     &quot;molecule&quot;
+    ],
+    &quot;capability&quot;: [
+     &quot;rich-content&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The structured, focusable content the popover holds.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v23" value="accept" checked> accept</label>
+  <label><input type="radio" name="v23" value="amend"> amend</label>
+  <label><input type="radio" name="v23" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="segmented-control.meta.json">
+ <h3>Segmented control <span class="cat">atom</span> <span class="flag">needs a look</span></h3>
+ <p class="purp">A single-select control: exactly one segment active at a time</p>
+ <p class="fn">segmented-control.meta.json &middot; 1 slot: content</p>
+ <div class="warnbox"><p class="warn"><strong>content</strong> — typed enum in the audit — this reads more like a VARIANT axis than a slot; flagged, not resolved.</p></div>
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;content&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;segment-label&quot;,
+     &quot;segment-icon&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;What each segment shows: label, icon, or both.&quot;,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;,
+   &quot;$doubt&quot;: &quot;typed enum in the audit \u2014 this reads more like a VARIANT axis than a slot; flagged, not resolved.&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v24" value="accept" checked> accept</label>
+  <label><input type="radio" name="v24" value="amend"> amend</label>
+  <label><input type="radio" name="v24" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="stepper.meta.json">
+ <h3>Stepper <span class="cat">organism</span></h3>
+ <p class="purp">The interactive multi-step flow driver (Progress-tracker is display-only): step content panels, validation-gated Next, back-navigation on completed dots, and the same dot</p>
+ <p class="fn">stepper.meta.json &middot; 1 slot: steps</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;steps&quot;: {
+   &quot;accepts&quot;: {
+    &quot;tier&quot;: [
+     &quot;molecule&quot;,
+     &quot;organism&quot;
+    ],
+    &quot;capability&quot;: [
+     &quot;step-panel&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The per-step content panels the stepper drives.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v25" value="accept" checked> accept</label>
+  <label><input type="radio" name="v25" value="amend"> amend</label>
+  <label><input type="radio" name="v25" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="tab-bar.meta.json">
+ <h3>Tab-bar <span class="cat">molecule</span></h3>
+ <p class="purp">App-level BOTTOM navigation: 3–5 equal-width destinations, each an icon + label</p>
+ <p class="fn">tab-bar.meta.json &middot; 1 slot: items</p>
+ 
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;items&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;nav-destination&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;The 3-5 equal-width destinations, each an icon plus label.&quot;,
+   &quot;required&quot;: true,
+   &quot;multiple&quot;: true,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v26" value="accept" checked> accept</label>
+  <label><input type="radio" name="v26" value="amend"> amend</label>
+  <label><input type="radio" name="v26" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section><section class="card" data-file="textarea.meta.json">
+ <h3>Textarea <span class="cat">atom</span> <span class="flag">needs a look</span></h3>
+ <p class="purp">Multi-line text entry</p>
+ <p class="fn">textarea.meta.json &middot; 1 slot: rows</p>
+ <div class="warnbox"><p class="warn"><strong>rows</strong> — LIKELY A FALSE POSITIVE: rows is a numeric sizing param, not injected content. Recommend REJECT this slot.</p></div>
+ <pre>{
+ &quot;slots&quot;: {
+  &quot;rows&quot;: {
+   &quot;accepts&quot;: {
+    &quot;capability&quot;: [
+     &quot;visible-line-count&quot;
+    ]
+   },
+   &quot;use&quot;: &quot;How many lines of text the field shows before it scrolls.&quot;,
+   &quot;multiple&quot;: false,
+   &quot;$status&quot;: &quot;proposed-s140 (agent draft, awaiting Dave)&quot;,
+   &quot;$doubt&quot;: &quot;LIKELY A FALSE POSITIVE: rows is a numeric sizing param, not injected content. Recommend REJECT this slot.&quot;
+  }
+ }
+}</pre>
+ <div class="verdict">
+  <label><input type="radio" name="v27" value="accept" checked> accept</label>
+  <label><input type="radio" name="v27" value="amend"> amend</label>
+  <label><input type="radio" name="v27" value="reject"> reject</label>
+  <input class="note" type="text" placeholder="note (optional)">
+ </div>
+</section>
+
+<div class="sticky">
+<button id="go">Build verdict</button>
+<textarea id="out" readonly placeholder="Verdict JSON appears here."></textarea>
+</div>
+<script>
+document.getElementById('go').addEventListener('click',function(){
+ var v={};
+ document.querySelectorAll('.card').forEach(function(c,i){
+  var pick=c.querySelector('input[name="v'+i+'"]:checked').value;
+  var n=c.querySelector('.note').value.trim();
+  v[c.dataset.file]=n?{verdict:pick,note:n}:{verdict:pick};
+ });
+ document.getElementById('out').value=JSON.stringify({
+  "$ruling_target":"slots drafts s140",
+  "$source":"reviews/SLOTS-DRAFT-2026-08-09-s140-v1.json",
+  "verdicts":v},null,1);
+});
+</script>
+</html>
