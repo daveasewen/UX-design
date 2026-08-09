@@ -3347,9 +3347,99 @@ def title_generation_check(repo):
     return fails, notes
 
 
+# ★ THE INSTRUMENT-STRAY GATE (#138, Dave's — "i just want a solid fix").
+#
+# THE CLASS, and it took two instances in two sessions to name it: AN INSTRUMENT WRITING INTO THE
+# TREE IT MEASURES. First instance `s137-D1` — the verification instruments append to
+# `notes/_REHEARSAL-LOG.jsonl`, so verifying a commit dirtied the tree and refused the very push
+# the ruling exists to allow. Second instance #138 — `FONTCONFIG_FILE`'s `<dir>` pointed at
+# `knowledge/assets/fonts/_desktop/TTF/` (#136's ENOSPC fix), so every render run left `.uuid`,
+# `.uuid.LCK` and `.uuid.TMP-XXXXXX` behind, untracked.
+#
+# ⚠ WHY THIS LIVES AT THE WRAP SEAM AND NOT IN `_build_all.py`. Until now the ONLY thing that
+# caught a stray was the `--push` clean-tree assertion, which fires at the last possible moment,
+# after the work, and now carries an exclusion list that can widen. The obvious home — the build
+# selftest — is SANDBOX-IMPOSSIBLE (~49 s against the ~45 s call kill), which is exactly how
+# `--selftest` sat RED for three consecutive wraps [[instrument-without-a-consumer]]. A gate that
+# does not run in the mode the work happens in cannot fail, and a green that cannot fail is an
+# assertion. This runs every wrap and every rehearsal.
+#
+# ⚠ TWO PASSES, AND THE SECOND ONE IS THE POINT. Pass 1 respects `.gitignore` — MEASURED #138:
+# `knowledge/assets` carries 60 untracked-but-ignored paths (`.DS_Store`, the unlicensed Helvetica
+# Armenian webfonts), so a gate that ignored `.gitignore` wholesale would fire on every single
+# wrap, and noise is how a gate gets switched off. Pass 2 then re-checks the SAME dirs WITHOUT
+# `--exclude-standard`, filtered to instrument signatures only, so adding `.uuid*` to a
+# `.gitignore` CANNOT blind this gate. Dave refused an ignore rule at #137 on the grounds that it
+# hides an instrument still writing where it must not; pass 2 makes that refusal structural
+# instead of remembered. ★ A gate must quote what it forbids — the signatures are named below.
+#
+# SCOPE, STATED HONESTLY: asset directories only — inputs that instruments READ and humans do not
+# hand-author, so an untracked path there is an instrument's. It does NOT police the whole tree;
+# untracked work-in-progress elsewhere is legitimate mid-session.
+INSTRUMENT_READONLY_DIRS = ("knowledge/assets",)
+# Basename prefixes an instrument leaves behind. `.uuid`, `.uuid.LCK`, `.uuid.TMP-XXXXXX` are
+# fontconfig's directory-identity marker, its lock, and its atomic-write temp (#136 observed,
+# #138 reproduced). Add a prefix here when a THIRD instrument is caught; do not widen to a
+# wildcard — the list is the specification.
+INSTRUMENT_SIGNATURES = (".uuid",)
+
+
+def _sig_hit(path):
+    return os.path.basename(path).startswith(INSTRUMENT_SIGNATURES)
+
+
+def instrument_stray_check(repo, dirs=INSTRUMENT_READONLY_DIRS):
+    """Return (fails, warns). Untracked paths under read-only asset dirs are FAILS.
+
+    Pass 1: untracked and NOT ignored — anything at all is a stray.
+    Pass 2: untracked INCLUDING ignored, filtered to INSTRUMENT_SIGNATURES — so a
+    `.gitignore` entry cannot silence a known instrument.
+
+    Never raises: if git cannot be run the gate says so LOUD and NAMED rather than
+    returning a green it did not measure [[feedback-measuring-tool-must-not-guess]].
+    """
+    fails, warns = [], []
+    for d in dirs:
+        found, failed_to_run = [], False
+        for args, keep in ((["--exclude-standard"], lambda p: True), ([], _sig_hit)):
+            cmd = ["git", "ls-files", "--others"] + args + ["--", d]
+            try:
+                r = subprocess.run(cmd, cwd=repo, capture_output=True, text=True, timeout=20)
+            except (OSError, subprocess.SubprocessError) as e:  # noqa: BLE001
+                warns.append(f"⛔ INSTRUMENT-STRAY GATE DID NOT RUN for `{d}` "
+                             f"({type(e).__name__}: {e}) — this is UNKNOWN, not clean. "
+                             f"Run `git ls-files --others -- {d}` by hand before wrapping.")
+                failed_to_run = True
+                break
+            if r.returncode != 0:
+                warns.append(f"⛔ INSTRUMENT-STRAY GATE DID NOT RUN for `{d}` "
+                             f"(git exit {r.returncode}: {r.stderr.strip()[:160]}) — UNKNOWN, "
+                             f"not clean.")
+                failed_to_run = True
+                break
+            found += [x for x in r.stdout.splitlines() if x.strip() and keep(x)]
+        if failed_to_run:
+            continue
+        strays = sorted(set(found))
+        if strays:
+            shown = ", ".join(f"`{s}`" for s in strays[:6])
+            more = f" (+{len(strays) - 6} more)" if len(strays) > 6 else ""
+            fails.append(
+                f"INSTRUMENT STRAY: {len(strays)} untracked path(s) under `{d}` — {shown}{more}. "
+                f"An instrument has written into a directory it only reads (#138 class; `.uuid*` "
+                f"means fontconfig — its `<dir>` is pointed at the repo instead of the /var/tmp "
+                f"symlink farm, see `_RUNBOOK-render-verify.md` § SYMLINK FARM). Move them out "
+                f"with a SAME-MOUNT `mv` to `_to_delete/` — a `mv` to /var/tmp fails, different "
+                f"filesystem. ⛔ Do NOT gitignore them: this gate ignores .gitignore on purpose.")
+    return fails, warns
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
+    _sf, _sw = instrument_stray_check(repo)     # #138 — runs for LANE wraps too, on purpose:
+    fails += _sf                                # a lane session renders like any other.
+    warns += _sw
     targets = [("_LIVE-STATE.md", '"Last refreshed"'), ("GOOD-MORNING.md", "header date")]
     if lane:
         targets = targets[:1]

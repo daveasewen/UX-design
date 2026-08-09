@@ -47,6 +47,84 @@ export LD_LIBRARY_PATH=/var/tmp/chromelibs/root/usr/lib/aarch64-linux-gnu   # pr
 where prior sessions copied fonts into the sandbox. **`LD_LIBRARY_PATH` libs pre-existed from a foreign
 session** (the `/tmp`-is-shared fact from #129, used constructively this time rather than as a
 contamination risk). *(Addition only; #129's recipe and history stand. 2026-08-08.)*
+⛔ **THE `<dir>`→REPO ELEMENT ON THIS LINE AND LINE 42 IS SUPERSEDED — see § SYMLINK FARM (#138) below.**
+It saved the disk and moved fontconfig's *writes* into the tree. Do not copy this block forward.
+
+✅ **RE-VERIFIED AND SUPERSEDED 2026-08-09 (#138) — THE SYMLINK FARM. Fontconfig stops writing into the
+repo it scans.** #136's `<dir>`→repo trick was DRIVEN again today and it reproduces exactly: `fc-cache`
+against a conf whose `<dir>` is `knowledge/assets/fonts/_desktop/TTF/` writes **`.uuid`, `.uuid.LCK`,
+`.uuid.TMP-XXXXXX`** into that directory (`.TMP` suffix is random — #136 got `NpSPVs`, #138 got
+`SpeXCi`), and `git status --untracked-files=all` flags all three, which trips `s133-D2`'s clean-tree
+push gate. **The permanent fix is a `/var/tmp` symlink farm: fontconfig scans the FARM, so its marker
+lands in the farm.** ~5 KB of links, so it **preserves the ENOSPC constraint** that forced #136's
+change rather than reopening it.
+
+```bash
+FARM=/var/tmp/fonts-<session>
+mkdir -p $FARM
+for f in <repo>/knowledge/assets/fonts/_desktop/TTF/*.ttf; do ln -s "$f" "$FARM/$(basename $f)"; done
+export FONTCONFIG_FILE=/var/tmp/fonts-<session>.conf
+```
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <cachedir>/var/tmp/fccache-<session></cachedir>   <!-- cache OUTSIDE the repo, declared FIRST -->
+  <dir>/var/tmp/fonts-<session></dir>               <!-- the FARM, never the repo dir -->
+  <include ignore_missing="yes">/etc/fonts/fonts.conf</include>   <!-- ⚠ REQUIRED, see below -->
+  <match target="pattern">
+    <test name="family"><string>Univers Next for HSBC</string></test>
+    <edit name="family" mode="prepend" binding="strong"><string>HSBC_MtUnivers_Latin</string></edit>
+  </match>
+  <match target="pattern">
+    <test name="family"><string>Univers Next HSBC</string></test>
+    <edit name="family" mode="prepend" binding="strong"><string>HSBC_MtUnivers_Latin</string></edit>
+  </match>
+</fontconfig>
+```
+
+⚠ **THE `<include>` IS NOT OPTIONAL, AND ITS ABSENCE IS INVISIBLE.** `FONTCONFIG_FILE` *replaces* the
+system config; without the include the conf exposes **10 faces, all HSBC** (measured; the box has 394).
+Every font request then falls back to the only faces present, so **a page renders entirely in the HSBC
+cut and looks correct even when its fallback is broken** — and any width-probe returns the same number
+for a real face and a nonexistent one, which is how #138's first probe produced a green that could not
+fail. **The runbook never recorded the conf BODY, only the env var — that gap is what let #136's
+`<dir>` choice travel unexamined. The body is now here.**
+
+★ **ASSERT WITH A CONTROL, NOT A BOOLEAN.** `document.fonts.check(...)` returned `true` in BOTH the
+broken and the working configuration — it does not discriminate. Measure a canvas string in the target
+face **and in two controls** (a real different face, and a face that does not exist); the target must
+differ from both:
+
+| probe | broken conf | working conf | reading |
+|---|---|---|---|
+| `HSBC_MtUnivers_Latin` | 345 | **347** | the real cut |
+| `"Univers Next HSBC"` (type.css `--uf`) | 345 | **347** | alias resolves |
+| `"Univers Next for HSBC"` (snippet `--font`) | 345 | **347** | alias resolves |
+| `DejaVu Sans` — control | 345 | 375 | genuinely different face |
+| nonexistent face — control | 345 | 301 | default fallback |
+
+*(40px `Handgloves 12345`, `showroom/chart-bar.html`, `goto file://`, identical at 1180 **and** 480.)*
+**Both aliases must land on the target number and NOT on the nonexistent-face number** — that is the
+assertion that catches a silent fallback.
+
+**AND ASSERT THE TREE, every render run:** `ls -a <TTF dir> | grep -c '^\.uuid'` → **0**, and
+`git status --short --untracked-files=all -- knowledge/` → **0 lines**. Driven three ways #138:
+**(A)** farm conf from a clean dir → **0** · **(B)** mutation, only `<dir>` swapped back to the repo →
+**3** (so the test CAN fail) · **(C)** after cleanup → **0**.
+
+⚠ **CLEANUP MUST BE A SAME-MOUNT `mv`.** `mv` to `/var/tmp` **fails** — different filesystem, so it
+becomes copy+unlink and the unlink is denied (`Operation not permitted`). #138 hit this and briefly
+left its own strays in the tree. Move within the repo mount (`_to_delete/…`), which is a rename.
+
+⚠ **ENOSPC POTHOLE n=4 (#138):** `/sessions` was **100% full, 18 M free** at session open — the same
+fixed-cutoff shape as #129/#136. `/` had 1.7 G. This is why the fix must not reintroduce a font copy.
+⚙ **Chromium did NOT need downloading:** `/var/tmp/pw-browsers-{129,s131,s136}`, `/var/tmp/pylibs` and
+`/var/tmp/chromelibs` all survived from prior sessions — `/var/tmp` persists and is shared. *(Three
+344 M browser copies now sit there against 1.7 G free; not this lane's to prune, noted.)*
+⬛ **UNPROVEN BY SCOPE, DECLARED:** #138 did not test the farm in a sandbox with **no** pre-staged
+`/var/tmp` — steps 1–4 (download + libs) were not re-run, only re-used. *(Addition only; #129's and
+#136's recipes stand as history. 2026-08-09.)*
 
 ⛔ **THIS RUNBOOK WAS DECLARED DEAD BY A SESSION THAT NEVER OPENED IT — RE-VERIFIED WORKING #124.**
 #123 declared a render gap on the grounds that *"chromium is TLS-blocked in-sandbox"*; #124 carried that
