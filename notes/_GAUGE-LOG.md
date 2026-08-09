@@ -1320,3 +1320,16 @@ HOLE #128 — session #128 wrote NO §C stratum in `GOOD-MORNING.md` and left no
 
 > **residual (GENERATED #137):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #136) — _roll_state.py · 2026-08-09
 
+#### 2026-08-09 #138
+
+> **pre-flight #138:** ⛔ NOT CAPTURED — UNMEASURED. No composed boot + job + wrap estimate was written at the opener; the session ran as one titled lane (the fontconfig permanent fix, inherited as #137's residual ①) rather than a planned multi-part build. Only boot is real: **55,158** (`message.usage` first turn) — inside the 54,859 ±1,178 band, another datapoint, NEVER corrected into the constant.
+> **post-mortem #138:** wrap-open FILL **139,659** vs stop line **150,929** — ✅ BELOW, **11,270 of room**. Three check-ins ran (opener FILL 68,629 · lane seam 104,530 · wrap decision 139,659). Delegation: **this wrap sub only**, no build subs. ★ The measurable win: the fontconfig cause was reproduced first-hand, driven three ways with a discriminating mutation, and proven against a real render — not merely designed and priced as #137 left it. **QUOTA POLLED, all three panel numbers, unprompted: session 7% (resets in 2h35m) · weekly all-models 31% · weekly Fable 39%** (both weeklies reset Thu 11:00 PM).
+
+> **section-usage #138 (self-report — this wrap ran as a delegated OPUS sub; flagged as such):** GM HDR:C LATEST:C PRIOR:C DOFIRST:R A:R C1:U C2:U C4:U STRATA:C · LS HDR:C LANES:R SPIN:R DELTAS:C WEBFONT:R LIVE:U LIFECYCLE:U DEAD:U OPEN:C TARGETS:U SPINOFFS:U
+> *(⚠ **`A:R`** — a real chunk of §A (orientation + rules + where-things-live) was loaded while tracing GM's section boundaries, though not the whole 6,957-tk span; recorded as read, not cited — nothing in this lane turned on its content. **`OPEN:C`** — a genuine C: § OPEN gained a new born-#138 closure entry over the #137 fontconfig item, and reading the #137 entry's own text is what the closure quotes. **`C1:U`/`C2:U`/`C4:U`** — the numbered worklist was not touched; this session's residual travels on the banner, per GM-D6(a).)*
+> **consult-receipts #138:** none — ⛔ an honest negative [[unrun-search-indistinguishable-from-absent-record]]: 0 `_memento_search.py` queries. This wrap ran on the conductor's brief (itself built from first-hand drives) plus direct repo reads: `_RUNBOOK-capture-ritual.md` whole, `_gm_move.py`/`_roll_state.py`/`_gm_usage.py`/`_git_commit.sh`/`_gen_titles.py` read for their contracts, targeted `grep`/`sed` on `GOOD-MORNING.md`/`_LIVE-STATE.md`/`_GM-ARCHIVE.md`/`_LIVE-STATE-ARCHIVE.md`/`notes/_GAUGE-LOG.md`.
+> **section-sizes #138 (real, `_gm_usage.py --sizes --session 138`):** GM HDR:2978 LATEST:3353 PRIOR:3313 DOFIRST:9716 A:6957 C1:1988 C2:1769 C4:10437 STRATA:7494 · LS HDR:3866 LANES:1415 SPIN:4427 DELTAS:7152 WEBFONT:939 LIVE:7886 LIFECYCLE:1594 DEAD:678 OPEN:38107 TARGETS:896 SPINOFFS:728 · totals GM:48005 LS:67688 *(captured mid-wrap, before the 2g index rebuild; § OPEN is up 2,171 on #137 — this wrap's own closure entry.)*
+
+
+> **residual (GENERATED #138):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #137) — _roll_state.py · 2026-08-09
+

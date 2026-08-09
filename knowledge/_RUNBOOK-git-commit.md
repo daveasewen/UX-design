@@ -102,6 +102,12 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
 ## Gotchas
 - **Judge success by HEAD, not warnings.** The `unable to unlink … tmp_obj_*` / `*.lock` lines are git
   failing to tidy its own scratch files; the commit object is written and HEAD advances regardless.
+- ★ **`git checkout -- <path>` CANNOT RESTORE A FILE ON THIS MOUNT (measured #139).** It fails with
+  *"unable to unlink"* — the same permission shape as the `index.lock` wart, because the restore is
+  implemented as unlink-then-write and only the unlink is denied. ⚠ **The file is left UNCHANGED, so a
+  session that reads the warning as cosmetic (per the first Gotcha above, which is about COMMITS) will
+  believe it reverted something it did not.** **The working restore is `git show HEAD:<path> > <path>`**
+  — a plain write, no unlink. Same family as the same-mount-`mv`-only rule in `_RUNBOOK-render-verify.md`.
 - **Never `rm` inside `.git`** from the sandbox — it fails and wastes a turn. Always `mv` aside.
 - **A stale lock is not a live lock.** Before assuming GitHub Desktop is holding it, check: a **0-byte**
   `index.lock` whose mtime is ~the same instant as `.git/index` is the signature of a *completed* git
