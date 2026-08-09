@@ -274,6 +274,12 @@ STEPS = [
     ("4px-grid gate (DEF-005)", "_validate_grid.py"),
     ("type-binding blast-radius gate (canon/type.css)", "_validate_type_blast_radius.py"),
     ("descender-clip gate (ds-005) — truncating labels stay descender-safe", "_validate_descender_clip.py"),
+    # #139: two orphan gates wired — _validate_wiring.py named both ORPHAN (a gate that
+    # does not run cannot fail; the #133 fifth-medium gate had been an orphan since built).
+    ("KG edge parse-gate + s135-D4 resolutions-consumed check", "_validate_kg.py"),
+    ("KG edge gate selftest (6 bites)", "_validate_kg.py", ["--selftest"]),
+    ("Token fork-ban gate — undeclared same-scope forks (s136-D1 lane, #139)", "_validate_token_forks.py"),
+    ("Token fork-ban selftest (2-direction)", "_validate_token_forks.py", ["--selftest"]),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
     # WIRED 2026-07-27 (ds-014): this selftest already existed and ran only by hand, so nothing
     # proved dv-004 could fail — and it could not, on `stacked-column`. Exactly the rot the
