@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s140 — meta.schema.json binds/slots amendment — decision controller v1</title>
+<style>
+  :root{
+    --ink:#1a1f26; --paper:#fdfdfc; --panel:#f2f3f1; --line:#d8dad6;
+    --blue:#305A85; --teal:#00847F; --red:#B92F1E; --amber:#E0A61F;
+    --mono:ui-monospace,'SF Mono',Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --ink:#e8e9e6; --paper:#15181c; --panel:#1e2228; --line:#343a42; --blue:#7aa5d2; --teal:#4fbdb8; }
+  }
+  body{margin:0;padding:2rem clamp(1rem,4vw,3rem);background:var(--paper);color:var(--ink);
+       font:16px/1.55 -apple-system,'Helvetica Neue',sans-serif;max-width:70rem}
+  h1{font-size:1.35rem;margin:0 0 .25rem} h2{font-size:1.05rem;margin:2rem 0 .5rem;border-top:2px solid var(--ink);padding-top:.75rem}
+  .tag{font:600 .7rem/1 var(--mono);letter-spacing:.06em;padding:.2rem .45rem;border-radius:3px;color:#fff;background:var(--blue);vertical-align:middle}
+  .tag.ok{background:var(--teal)} .tag.warn{background:var(--amber);color:#1a1f26} .tag.no{background:var(--red)}
+  .exec{background:var(--panel);border-left:4px solid var(--blue);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1rem 0}
+  .exec p{margin:.3rem 0}
+  .opt{border:1.5px solid var(--line);border-radius:8px;padding:.9rem 1.1rem;margin:.6rem 0;cursor:pointer}
+  .opt:hover{border-color:var(--blue)}
+  .opt.sel{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal);background:color-mix(in srgb,var(--teal) 6%,var(--paper))}
+  .opt h3{margin:.1rem 0 .3rem;font-size:.95rem} .opt small{opacity:.75}
+  pre{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:.8rem 1rem;
+      font:.78rem/1.5 var(--mono);overflow-x:auto;margin:.5rem 0}
+  .row{display:flex;flex-wrap:wrap;gap:1rem}.row>div{flex:1 1 26rem;min-width:0}
+  .receipt{font:.8rem/1.6 var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:.7rem 1rem}
+  .receipt b{color:var(--teal)}
+  textarea{width:100%;min-height:14rem;font:.75rem/1.5 var(--mono);background:var(--panel);color:var(--ink);
+           border:1px solid var(--line);border-radius:6px;padding:.8rem;box-sizing:border-box}
+  button{font:600 .85rem/1 inherit;padding:.6rem 1rem;border-radius:6px;border:1.5px solid var(--blue);
+         background:var(--blue);color:#fff;cursor:pointer}
+  button.ghost{background:transparent;color:var(--blue)}
+  .note{font-size:.85rem;opacity:.8}
+  .rec{font:600 .68rem/1 var(--mono);color:var(--teal)}
+</style>
+</head>
+<body>
+
+<h1>meta.schema.json amendment — <code>binds</code> + <code>slots</code></h1>
+<p class="note">s140 · 2026-08-09 · enacts the schema PRECONDITION of <b>s136-D1</b> (three-axis model, ruled #136). The ruling settled <em>that</em> both keys exist and that <code>slots</code> is the only new top-level key — that is not re-asked here. Open: the two SHAPES and the staging.</p>
+
+<div class="exec">
+  <p><b>Decision:</b> pick a <code>binds</code> shape (D1), confirm or amend the <code>slots</code> contract (D2), confirm staging (D3). Then <b>Export</b> below → paste in chat.</p>
+  <p><b>Receipt (measured, not asserted):</b> all three candidates validate <b>75/76</b> existing metas — the 1 failure (<code>EXAMPLE-button</code>, missing <code>tokenValidation</code>) fails the <em>current</em> schema too: control-run attributed, amendment delta = <b>zero</b>. All 6 refusal drives green per candidate, incl. <b>child-list <code>accepts</code> REFUSED</b>.</p>
+  <p><b>Unblocks:</b> slots-key rollout + DTCG re-encode lanes (#139 residual ②).</p>
+</div>
+
+<h2>D1 — shape of <code>props[].binds</code> <span class="tag">DAVE'S</span></h2>
+<div id="d1">
+  <div class="opt" data-v="A">
+    <h3>A — single string</h3>
+    <small>One spine token name per prop. Simplest; a prop binding two tokens has nowhere to put the second.</small>
+    <pre>"binds": "--chart-cat-1"</pre>
+  </div>
+  <div class="opt sel" data-v="B">
+    <h3>B — string or array <span class="rec">★ RECOMMENDED</span></h3>
+    <small>String for the common case, array where a prop's values range over several spine tokens. Strictly generalises A; invents no new vocabulary.</small>
+    <pre>"binds": "--chart-cat-1"
+"binds": ["--btn-bg", "--btn-ink"]</pre>
+  </div>
+  <div class="opt" data-v="C">
+    <h3>C — intent map</h3>
+    <small>Names each binding's intent. Most expressive, but duplicates the component-level <code>tokens</code> field's job and no consumer needs the intent axis yet.</small>
+    <pre>"binds": { "fill": "--chart-cat-1", "ink": "--chart-ink" }</pre>
+  </div>
+</div>
+
+<h2>D2 — the <code>slots</code> contract <span class="tag">DAVE'S</span></h2>
+<p class="note">Per the ruling: accepts <b>by tier or capability, never a child list</b> — and the schema mechanically refuses a child list (nowhere legal to put one). Proposed entry shape:</p>
+<pre>"slots": {
+  "body": {
+    "accepts": { "tier": ["molecule","organism"] },   ← and/or "capability": ["chart","table"]
+    "required": true,          ← optional, default false
+    "multiple": false,         ← optional, default false
+    "use": "main content area" ← optional docstring
+  }
+}</pre>
+<div id="d2">
+  <div class="opt sel" data-v="as-proposed"><h3>Accept as proposed <span class="rec">★ RECOMMENDED</span></h3><small>accepts (required) + required/multiple/use (optional); junk fields refused; <code>$</code>-annotations allowed.</small></div>
+  <div class="opt" data-v="use-required"><h3>Also make <code>use</code> mandatory</h3><small>Every slot must say why it exists — more authoring burden, better graph legibility.</small></div>
+</div>
+
+<h2>D3 — staging <span class="tag">DAVE'S</span></h2>
+<div id="d3">
+  <div class="opt sel" data-v="permit-now"><h3>Permit now, enforce by gate later <span class="rec">★ RECOMMENDED</span></h3><small>Schema ADMITS both keys (optional). "binds mandatory for visual props" lands as a shrink-only ratchet in the fork-ban gate lane — same pattern as the type-composites debt. Zero metas break today.</small></div>
+  <div class="opt" data-v="require-now"><h3>Require binds now</h3><small>Measured consequence: binds is present 0/76 — every meta with visual props goes red on day one, blocking all other lanes behind a 280-prop authoring job.</small></div>
+</div>
+
+<h2>Live contrast — one real prop under your current picks</h2>
+<div class="row">
+  <div><p class="note">today (Chart-boxplot, prop <code>categories</code> — audited SLOT_SHAPED):</p>
+<pre>{ "name": "categories", "type": "array" }</pre></div>
+  <div><p class="note">after amendment + rollout:</p><pre id="preview"></pre></div>
+</div>
+
+<h2>Receipts</h2>
+<div class="receipt">
+metas validated per candidate ...... <b>75/76</b> (1 fail pre-existing at BASE — control-run attributed, delta zero)<br>
+binds accepted (per shape) ......... <b>green ×3</b><br>
+typo key <code>bindz</code> ................... <b>REFUSED ×3</b><br>
+slots contract-typed ............... <b>accepted ×3</b><br>
+child-list <code>accepts</code> ................ <b>REFUSED ×3</b><br>
+junk slot field / missing accepts .. <b>REFUSED ×3 / ×3</b><br>
+run: <code>/var/tmp/s140/candidates.py</code> · jsonschema 3.2.0 · audit ground: <code>reviews/PROPS-AXES-AUDIT-2026-08-09-s139-v1.json</code> (280 props · SLOT_SHAPED 42 · PARAM_UNBOUND 14)
+</div>
+
+<h2>Export</h2>
+<p><button onclick="doExport()">Generate verdict block</button> <button class="ghost" onclick="copyExport()">Copy</button></p>
+<textarea id="out" placeholder="Pick above, then Generate. Paste the block in chat — it lands verbatim in the record."></textarea>
+
+<script>
+const state = { D1:'B', D2:'as-proposed', D3:'permit-now' };
+for (const g of ['d1','d2','d3']) {
+  document.getElementById(g).addEventListener('click', e => {
+    const o = e.target.closest('.opt'); if(!o) return;
+    document.querySelectorAll('#'+g+' .opt').forEach(x=>x.classList.remove('sel'));
+    o.classList.add('sel'); state[g.toUpperCase()] = o.dataset.v; preview();
+  });
+}
+function preview(){
+  const binds = state.D1==='A' ? '"binds": "--chart-cat-1"'
+    : state.D1==='B' ? '"binds": ["--chart-cat-1","--chart-cat-2"]'
+    : '"binds": { "fill": "--chart-cat-1" }';
+  const use = state.D2==='use-required' ? ',\n    "use": "category series data"' : '';
+  document.getElementById('preview').textContent =
+`{ "name": "categories", "type": "array",\n  ${binds} }\n\n"slots": {\n  "series": {\n    "accepts": { "capability": ["data-series"] }${use}\n  }\n}`;
+}
+function doExport(){
+  document.getElementById('out').value = JSON.stringify({
+    "$id":"SCHEMA-AMENDMENT-VERDICTS-2026-08-09-s140",
+    "$enacts":"s136-D1 schema precondition",
+    "ruled_by":"Dave", "via":"reviews/SCHEMA-AMENDMENT-CONTROLLER-2026-08-09-s140-v1.html",
+    "D1_binds_shape": state.D1 + ({A:' (single string)',B:' (string or array)',C:' (intent map)'}[state.D1]),
+    "D2_slots_contract": state.D2,
+    "D3_staging": state.D3,
+    "measured":"75/76 metas pass every candidate; 1 fail pre-existing at base; 6/6 refusal drives green incl. child-list accepts REFUSED"
+  }, null, 1);
+}
+function copyExport(){ const t=document.getElementById('out'); t.select(); document.execCommand('copy'); }
+preview();
+</script>
+</body>
+</html>

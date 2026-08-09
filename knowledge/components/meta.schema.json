@@ -12,6 +12,37 @@
         { "type": "object", "additionalProperties": { "$ref": "#/definitions/tokenBinding" } }
       ]
     },
+    "bindsShape": {
+      "description": "s140-D1 (enacts s136-D1 axis A precondition): the spine token(s) a prop's visual values bind to. HYBRID shape, Dave's pick: a single token name, an array of token names, or an intent map (intent -> token name(s)). Intent vocabulary is UNRULED — an intent map is legal but its keys are open until a ratchet lane rules them. Presence is OPTIONAL at schema level (s140-D1 staging: permit now, enforce by gate later — the 'binds mandatory for visual props' clause of s136-D1 lands as a shrink-only gate, not here).",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        { "type": "object", "minProperties": 1,
+          "additionalProperties": { "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          ] } }
+      ]
+    },
+    "slotEntry": {
+      "description": "s140-D1 (enacts s136-D1 axis C): one contract-typed slot. accepts is BY TIER OR CAPABILITY ONLY — a child list has nowhere legal to go (additionalProperties:false on accepts is the mechanism). use is MANDATORY (Dave, s140-D1): every slot says why it exists.",
+      "type": "object",
+      "required": ["accepts", "use"],
+      "additionalProperties": false,
+      "patternProperties": { "^\\$": {} },
+      "properties": {
+        "accepts": {
+          "type": "object", "additionalProperties": false, "minProperties": 1,
+          "properties": {
+            "tier": { "type": "array", "items": { "enum": ["atom", "molecule", "organism", "template", "page"] }, "minItems": 1 },
+            "capability": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          }
+        },
+        "required": { "type": "boolean" },
+        "multiple": { "type": "boolean" },
+        "use": { "type": "string", "description": "one-line reason this slot exists" }
+      }
+    },
     "edge": {
       "description": "one typed edge in the KG parse layer (schema v2, s131-D2/s133-D1). ref is a node-id ('component:<stem>' | 'pattern:<slug>' | 'context:<slug>' | 'snippet:<filename>' | 'ruling:<sNNN-DN>') or null when unresolved without inventing a target; $note optionally carries the original prose this edge was migrated from.",
       "type": "object",
@@ -38,7 +69,8 @@
           "name": { "type": "string" },
           "type": { "type": "string" },
           "values": { "type": "array", "items": { "type": "string" } },
-          "default": {}
+          "default": {},
+          "binds": { "$ref": "#/definitions/bindsShape" }
         }
       }
     },
@@ -103,6 +135,12 @@
         "figma_node": { "type": "string" },
         "code_path": { "type": "string" }
       }
+    },
+    "slots": {
+      "description": "s140-D1 (enacts s136-D1 axis C): contract-typed content injection. The ONLY new top-level key the three-axis model adds (s136-D1 clause C). Map of slot name -> slotEntry; OPTIONAL at schema level (staging: permit now, enforce by gate later).",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/slotEntry" },
+      "patternProperties": { "^\\$": {} }
     },
     "subComponents": { "description": "optional breakdown of internal parts", "type": ["object", "array"] },
     "motion": { "description": "optional motion/interaction spec; per-part behaviour referencing motion/* tokens (duration, easing) + reduced-motion rule", "type": "object" },
