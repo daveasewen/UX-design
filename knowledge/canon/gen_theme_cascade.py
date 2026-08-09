@@ -56,6 +56,8 @@ HERE   = os.path.dirname(os.path.abspath(__file__))
 KNOW   = os.path.dirname(HERE)
 TOK    = os.path.join(KNOW, "tokens")
 SNIP   = os.path.join(KNOW, "snippets")
+sys.path.insert(0, KNOW)
+from _dtcg_units import px_number            # s141-D1 (A) unit-strip seam
 CANON  = os.path.join(HERE, "canon.css")
 START  = "/* ===== AUTO-THEMES START ===== */"
 END    = "/* ===== AUTO-THEMES END ===== */"
@@ -182,6 +184,11 @@ def css_value(path, val):
     unitless namespaces — motion scale factors, the component-type parameters
     that cache them, and the DV-D07 data/*/alpha slots (matches gen_canon_tokens
     fmt_value / gen_snippet_tokens)."""
+    # s141-D1 (A) unit-strip seam: migrated tokens arrive as "Npx"; strip back to the
+    # number so the SAME rules below apply and the emitted CSS is unchanged. Without
+    # this a base "0px" no longer equals an override 0 and the cascade emits spurious
+    # overrides for every theme that merely restates the base value.
+    val = px_number(val)
     if isinstance(val, (int, float)):
         if path.startswith("motion/press/") or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken", "alpha"):
             return str(val)

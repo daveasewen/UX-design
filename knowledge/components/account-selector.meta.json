@@ -4,7 +4,7 @@
   "purpose": "The from/to account picker of every payment flow plus its compact inline token. Two forms: a SELECTOR (combobox trigger showing the chosen account — name, masked number, balance — opening a listbox of rich account rows; the Dropdown field mechanics with account-shaped options) and a MASKED ACCOUNT CHIP (the chosen account as an inline token for confirmation rows and form summaries). Masked convention promoted from Account-card: middle-dot triple + last four (···4821), never the full number.",
   "props": [
     { "name": "accounts", "type": "array", "$note": "Rows of {name, masked, balance}; balances render via the Amount-display primitive (tabular figures, copy-025)." },
-    { "name": "selected", "type": "number", "default": 0 },
+    { "name": "selected", "type": "number", "default": 0, "binds": ["form.background.hover", "form.border.active"] },
     { "name": "label", "type": "string", "$note": "Field label above the trigger ('From account'); part of the combobox accessible name." },
     { "name": "form", "type": "enum", "values": ["selector", "chip"], "default": "selector", "$note": "Chip = read-only inline token (role=group + aria-label); selector = the interactive picker." }
   ],

@@ -32,11 +32,6 @@ DEFERRALS — declared, named, non-blocking by default; BLOCKING under --strict.
   must not be guessed by a gate or by an agent. They are printed on every run, so the
   debt cannot go quiet. --strict turns every deferral into a failure: that is the flag
   for the day the deferred decisions are ruled.
-    DEF-LAYOUT-SCALE        layout.json scale.scale-{1,2,3} are $type:"other" carrying
-                            an ARRAY of breakpoint names. DTCG has no array type. Every
-                            legal re-encoding asserts something about what a scale mode
-                            IS (a min-width? a set of aliases? an $extensions map?), and
-                            that is a design decision. Left untouched by s141 on purpose.
     DEF-COLOR-MISTYPE       8 nodes in semantic-colour.json are $type:"color" with an
                             integer $value (blur radii in px, image opacities in %).
                             Plainly the wrong $type, but the RIGHT $type (dimension?
@@ -47,9 +42,23 @@ DEFERRALS — declared, named, non-blocking by default; BLOCKING under --strict.
     DEF-FIGMA-MODES         mode-keyed nodes (a $type, no $value, children scale-1/2/3
                             or scale-1-200) are the Figma variable-mode shape. DTCG has
                             no modes; the resolver treats them as alias-able groups.
-    DEF-NUMBER-DIMENSION    unitless $type:"number" tokens holding px quantities. The
-                            number->dimension migration is PROPOSED to Dave (s141), not
-                            performed. Counted, listed, never auto-changed.
+
+RULED AND ENACTED — s141-D1 (Dave, #141). Two deferrals were retired here, not silenced:
+    DEF-LAYOUT-SCALE      -> s141-D1 (B) DIMENSION-PLUS-EXTENSIONS. layout.json
+                             scale.scale-{1,2,3} now carry the scale's min-width entry
+                             viewport as $type:"dimension", with the breakpoint set
+                             preserved VERBATIM under $extensions["com.apollo.sds"].
+                             DTCG-001/005 gate them normally now; no deferral remains.
+    DEF-NUMBER-DIMENSION  -> s141-D1 (A) MIGRATE-TICKED. All 104 unitless px number
+                             tokens were migrated to $type:"dimension" with a "Npx"
+                             string $value. The detector is KEPT and PROMOTED from a
+                             deferral to a blocking check (DTCG-006) so the ruling
+                             cannot silently regress: a NEW unitless number token
+                             holding a px quantity is now a failure, not a note.
+
+CHECKS (continued)
+  DTCG-006  a $type:"number" token holding an integer px quantity (same conservative
+            detector as before: named non-px exclusions only) is a FAILURE — s141-D1 (A).
 
 FAILURE STYLE
   Loud and NAMED: "FAIL <check-id>  <file> :: <token.path> :: <why>". A crash is not a
@@ -93,16 +102,13 @@ DURATION_RE = re.compile(r"^-?\d+(?:\.\d+)?(ms|s)$")
 MODE_KEYS = {"scale-1", "scale-2", "scale-3", "scale-1-200", "light", "dark"}
 
 # ---- named deferrals: (id, predicate on (file, path, node)) --------------------------
-DEF_LAYOUT_SCALE = "DEF-LAYOUT-SCALE"
 DEF_COLOR_MISTYPE = "DEF-COLOR-MISTYPE"
 DEF_COMPONENT_LINEHEIGHT = "DEF-COMPONENT-LINEHEIGHT"
 DEF_FIGMA_MODES = "DEF-FIGMA-MODES"
-DEF_NUMBER_DIMENSION = "DEF-NUMBER-DIMENSION"
+# DEF-LAYOUT-SCALE and DEF-NUMBER-DIMENSION were RULED AND ENACTED by s141-D1 and are
+# deliberately absent: see the module docstring. Do not re-add them as deferrals.
 
 DEFERRED_PATHS = {
-    ("layout.json", "scale.scale-1"): DEF_LAYOUT_SCALE,
-    ("layout.json", "scale.scale-2"): DEF_LAYOUT_SCALE,
-    ("layout.json", "scale.scale-3"): DEF_LAYOUT_SCALE,
     ("semantic-colour.json", "blur.overlay.light"): DEF_COLOR_MISTYPE,
     ("semantic-colour.json", "blur.overlay.dark"): DEF_COLOR_MISTYPE,
     ("semantic-colour.json", "blur.background-surface.light"): DEF_COLOR_MISTYPE,
@@ -251,12 +257,16 @@ def check(root, strict=False):
                 if not isinstance(value, (int, float)) or isinstance(value, bool):
                     fail("DTCG-005", f, path, "number $value is not numeric: %r" % (value,))
                 elif _looks_like_px(f, path, value):
-                    # mode leaves (…​.scale-1) roll up to their parent token: the migration
-                    # decision is per TOKEN, not per mode, so Dave sees one row not four.
+                    # DTCG-006 (s141-D1 (A), RULED AND ENACTED): a unitless number token
+                    # holding a px quantity is now a FAILURE, not a deferral. Mode leaves
+                    # (….scale-1) roll up to their parent token so one token = one row.
                     head = path.rsplit(".", 1)
                     row_path = head[0] if len(head) == 2 and head[1] in MODE_KEYS else path
                     if not any(r["file"] == f and r["path"] == row_path for r in number_dimension_rows):
                         number_dimension_rows.append({"file": f, "path": row_path, "value": value})
+                        fail("DTCG-006", f, row_path,
+                             'unitless $type:"number" holds a px quantity (%r) — s141-D1 (A) '
+                             'requires $type:"dimension" with a "Npx" $value' % (value,))
             elif eff_type == "dimension":
                 if not (isinstance(value, str) and DIMENSION_RE.match(value)):
                     fail("DTCG-005", f, path, "dimension $value has no legal unit: %r" % (value,))
@@ -292,11 +302,6 @@ def check(root, strict=False):
                           % ",".join(sorted(missing_soft)))
             elif eff_type in ("fontFamily", "fontWeight", "strokeStyle"):
                 pass  # string/number/keyword forms all legal; nothing further to assert
-
-    if number_dimension_rows:
-        defer(DEF_NUMBER_DIMENSION, "-", "-",
-              "%d unitless number tokens hold px quantities — migration PROPOSED to Dave (s141), not performed"
-              % len(number_dimension_rows))
 
     notes.append("corpus: %d files gated, %d excluded (%s)"
                  % (len(files), len(excluded), ", ".join(excluded) or "none"))

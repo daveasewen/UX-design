@@ -40,6 +40,7 @@ Writes knowledge/_SNIPPET-AUDIT.md.
 import json, os, re, sys, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from _contrast_utils import contrast_ratio, is_sufficient_contrast
+from _dtcg_units import px_number             # s141-D1 (A) unit-strip seam
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SNIP = os.path.join(ROOT, "snippets")
@@ -93,6 +94,7 @@ def resolve(token, mode):
                 return None
         m = n.get(mode) if isinstance(n.get(mode), dict) else n
         v = m.get("$value") if isinstance(m, dict) else None
+        v = px_number(v)   # s141-D1 (A) unit-strip seam: "0px" -> 0, then as before
         if isinstance(v, (int, float)):
             return "0" if v == 0 else f"{v}px"
         return str(v) if v is not None else None

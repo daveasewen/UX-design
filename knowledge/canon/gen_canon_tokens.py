@@ -13,6 +13,9 @@ Light values populate :root; dark values populate [data-theme="dark"].
 """
 import json, os, sys, re
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from _dtcg_units import px_number, is_px_string   # s141-D1 (A) unit-strip seam
+
 TOKENS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tokens")
 CANON_CSS  = os.path.join(os.path.dirname(os.path.abspath(__file__)), "canon.css")
 
@@ -43,6 +46,12 @@ def fmt_value(var, val, ttype):
     # DTCG alias reference {a.b.c} -> var(--a-b-c)
     if isinstance(val, str) and val.startswith("{") and val.endswith("}"):
         return f"var(--{val[1:-1].replace('.', '-')})"
+    # s141-D1 (A) unit-strip seam: the 104 migrated tokens now arrive as
+    # $type:"dimension" holding "Npx". Strip back to the number and fall through the
+    # SAME number branch as before, so the emitted CSS is byte-identical to the
+    # pre-migration output (0 stays "0", letter-spacing stays unitless).
+    if ttype == "dimension" and is_px_string(val):
+        val, ttype = px_number(val), "number"
     if ttype == "cubicBezier" and isinstance(val, dict):
         return f"cubic-bezier({val['x1']}, {val['y1']}, {val['x2']}, {val['y2']})"
     if ttype == "cubicBezier" and isinstance(val, list):
@@ -107,11 +116,22 @@ def walk(node, path, out):
 def normalize(k):
     return re.sub(r"[^a-z0-9]+", "-", str(k).lower()).strip("-")
 
+# Groups that are SPINE METADATA, not CSS custom properties. layout.json `scale` was
+# $type:"other" carrying an array before s141-D1 (B) and was therefore skipped as
+# non-renderable; B1 made it a real dimension, which would have started emitting three
+# NEW --scale-scale-* vars nobody ruled. Dave ruled the TOKEN ENCODING, not a new CSS
+# surface, so the skip is made EXPLICIT here rather than happening by accident.
+# OPEN TO DAVE: whether the scale entry-viewports should also be exposed in canon.css.
+SKIP_GROUPS = {("layout.json", "scale")}
+
+
 def collect(fname):
     d = json.load(open(os.path.join(TOKENS_DIR, fname)))
     out = []
     for k, v in d.items():
         if k.startswith("$"):
+            continue
+        if (fname, k) in SKIP_GROUPS:
             continue
         walk(v, [normalize(k)], out)
     return out

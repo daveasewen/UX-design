@@ -35,61 +35,43 @@
   "scale": {
     "$description": "Responsive scale modes (Figma variable modes). AUTHORITATIVE viewport mapping (Dave): scale-1 = 320-959, scale-2 = 960-1599, scale-3 = 1600+. Plus scale-1-200 = 200% accessibility text-zoom variant of scale-1 (see typography.json).",
     "scale-1": {
-      "$value": "320px",
-      "$type": "dimension",
-      "$description": "320-959px.",
-      "$extensions": {
-        "com.apollo.sds": {
-          "breakpoints": [
-            "xs",
-            "s",
-            "ms"
-          ],
-          "range": "320-959px"
-        }
-      }
+      "$value": [
+        "xs",
+        "s",
+        "ms"
+      ],
+      "$type": "other",
+      "$description": "320-959px."
     },
     "scale-2": {
-      "$value": "960px",
-      "$type": "dimension",
-      "$description": "960-1599px.",
-      "$extensions": {
-        "com.apollo.sds": {
-          "breakpoints": [
-            "m",
-            "l"
-          ],
-          "range": "960-1599px"
-        }
-      }
+      "$value": [
+        "m",
+        "l"
+      ],
+      "$type": "other",
+      "$description": "960-1599px."
     },
     "scale-3": {
-      "$value": "1600px",
-      "$type": "dimension",
-      "$description": "1600px+.",
-      "$extensions": {
-        "com.apollo.sds": {
-          "breakpoints": [
-            "xl"
-          ],
-          "range": "1600px+"
-        }
-      }
+      "$value": [
+        "xl"
+      ],
+      "$type": "other",
+      "$description": "1600px+."
     }
   },
   "layout": {
     "web": {
       "margin": {
-        "scale-1": "16px",
-        "scale-2": "20px",
-        "scale-3": "40px",
-        "$type": "dimension"
+        "scale-1": 16,
+        "scale-2": 20,
+        "scale-3": 40,
+        "$type": "number"
       },
       "gutter": {
-        "scale-1": "16px",
-        "scale-2": "20px",
-        "scale-3": "40px",
-        "$type": "dimension"
+        "scale-1": 16,
+        "scale-2": 20,
+        "scale-3": 40,
+        "$type": "number"
       },
       "columns": {
         "$value": 12,
@@ -98,12 +80,12 @@
     },
     "app": {
       "margin": {
-        "$value": "16px",
-        "$type": "dimension"
+        "$value": 16,
+        "$type": "number"
       },
       "gutter": {
-        "$value": "16px",
-        "$type": "dimension"
+        "$value": 16,
+        "$type": "number"
       },
       "columns": {
         "$value": 12,
@@ -114,53 +96,53 @@
   "border-radius": {
     "$description": "Shape tier (ADR-0010 flex slots; Dave 2026-07-21 evening: one radius CANNOT be universal \u2014 radii differ by component role, cards vs buttons; maximum flexibility, the horizon is a THEME GENERATOR where every slot is a dial). 'default' = the theme's base radius; the ROLE tokens alias it, so a theme may set ONE value (default \u2014 everything follows) or dial roles independently (Console: surface differs from control). Components bind ROLE tokens, never 'default' directly and never literals (radius gate). Role taxonomy PROVISIONAL (agent, 2026-07-21): control/surface/indicator \u2014 extend by evidence during Phase 1, not speculation. 50%/999px circle+pill idioms stay literal (deliberately round in every theme).",
     "default": {
-      "$value": "0px",
-      "$type": "dimension"
+      "$value": 0,
+      "$type": "number"
     },
     "control": {
       "$alias": "border-radius/default",
-      "$value": "0px",
-      "$type": "dimension",
+      "$value": 0,
+      "$type": "number",
       "$note": "Interactive elements: buttons, inputs, selects, chips/tags, selection boxes."
     },
     "surface": {
       "$alias": "border-radius/default",
-      "$value": "0px",
-      "$type": "dimension",
+      "$value": 0,
+      "$type": "number",
       "$note": "Containers: cards, dialogs/modals, menus/dropdown panels, tooltips, tables, notifications."
     },
     "indicator": {
       "$alias": "border-radius/default",
-      "$value": "0px",
-      "$type": "dimension",
+      "$value": 0,
+      "$type": "number",
       "$note": "Small status/utility marks: status chips, non-pill badges, progress tracks, kbd hints."
     }
   },
   "border-width": {
     "small": {
-      "$value": "1px",
-      "$type": "dimension"
+      "$value": 1,
+      "$type": "number"
     },
     "medium": {
-      "$value": "2px",
-      "$type": "dimension"
+      "$value": 2,
+      "$type": "number"
     },
     "large": {
-      "$value": "4px",
-      "$type": "dimension"
+      "$value": 4,
+      "$type": "number"
     }
   },
   "focus": {
     "$description": "Keyboard focus-indicator geometry. No canonical Figma primitive \u2014 see semantic-colour.json focus group and guidelines/focus-indicators.md. SIGNED OFF as canon by Dave 2026-06-20 (was tagged review). Ring colour lives in semantic-colour.json (focus/ring).",
     "ring-width": {
-      "$value": "2px",
-      "$type": "dimension",
+      "$value": 2,
+      "$type": "number",
       "$description": "Outline thickness, px. Equals border-width/medium.",
       "$confidence": "asserted"
     },
     "ring-offset": {
-      "$value": "2px",
-      "$type": "dimension",
+      "$value": 2,
+      "$type": "number",
       "$description": "Gap between the element edge and the ring, px \u2014 keeps the ring clear of the component fill.",
       "$confidence": "asserted"
     }

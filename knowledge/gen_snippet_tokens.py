@@ -37,6 +37,8 @@ import json, os, re, sys, glob
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOK  = os.path.join(HERE, "tokens")
 SNIP = os.path.join(HERE, "snippets")
+sys.path.insert(0, HERE)
+from _dtcg_units import px_number             # s141-D1 (A) unit-strip seam
 PROFORMA = os.path.join(HERE, "_proforma")
 CANON = os.path.join(HERE, "canon", "canon.css")
 SPINE_END = "AUTO-GENERATED TOKENS END ===== */"
@@ -58,6 +60,7 @@ def _unitless(path):
 def _fmt(val, path=""):
     """CSS-format a resolved token value: numbers are px except 0 and the unitless
     namespaces (matches gen_canon_tokens fmt_value); strings pass through."""
+    val = px_number(val)   # s141-D1 (A) unit-strip seam: "16px" -> 16, then as before
     if isinstance(val, (int, float)):
         if _unitless(path):
             return str(val)
