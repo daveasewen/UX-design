@@ -41,8 +41,11 @@ UNITLESS = ("weight", "opacity", "z-index", "line-height-ratio",
             "press-travel", "press-darken", "motion-press",
             "alpha")  # number tokens that take no px (incl. ADR-0013/B-D7 press physics + DV-D07 data/*/alpha slots)
 
-def fmt_value(var, val, ttype):
-    """Render a DTCG value as a CSS value string, by $type and path."""
+def fmt_value(var, val, ttype, node=None):
+    """Render a DTCG value as a CSS value string, by $type and path.
+
+    `node` is the token's own dict when the caller has it — needed for $webStack.
+    """
     # DTCG alias reference {a.b.c} -> var(--a-b-c)
     if isinstance(val, str) and val.startswith("{") and val.endswith("}"):
         return f"var(--{val[1:-1].replace('.', '-')})"
@@ -56,7 +59,24 @@ def fmt_value(var, val, ttype):
         return f"cubic-bezier({val['x1']}, {val['y1']}, {val['x2']}, {val['y2']})"
     if ttype == "cubicBezier" and isinstance(val, list):
         return f"cubic-bezier({', '.join(str(x) for x in val)})"
-    if ttype == "string" and "font-family" in var:
+    # FONT-FAMILY EMITS THE WEB STACK, NEVER THE BARE FAMILY NAME.
+    # FIXED #145. This branch previously tested `ttype == "string"` ONLY. The token's real
+    # DTCG $type is "fontFamily", so once the type was tightened the branch stopped firing
+    # SILENTLY: the fall-through at the end of this function returned str(val), and canon.css
+    # emitted `Univers Next for HSBC` — every fallback gone AND both quotes gone. Nothing
+    # caught it because canon.css had not been regenerated since #132, so it sat latent until
+    # #145 exercised the path for an unrelated reason. Same silent-lookup class as ds-010/013/
+    # 016/018: a branch that does not match does not fail, it just quietly stops contributing.
+    # TWO changes, not one:
+    #   (a) accept BOTH "string" and "fontFamily", so tightening the type cannot re-break it;
+    #   (b) read the stack from the token's OWN $webStack, so the fallback list has ONE home.
+    #       FONT_STACK survives only as the fallback-of-the-fallback and is now a duplicate of
+    #       record, not the source. Spacing is normalised to `, ` so the emitted bytes match
+    #       what shipped pre-#132 — the data moves home without a cosmetic diff.
+    if ttype in ("string", "fontFamily") and "font-family" in var:
+        stack = (node or {}).get("$webStack")
+        if isinstance(stack, str) and stack.strip():
+            return ", ".join(part.strip() for part in stack.split(",") if part.strip())
         return FONT_STACK
     if ttype == "number" and isinstance(val, (int, float)):
         if val == 0:
@@ -85,7 +105,7 @@ def walk(node, path, out):
                 if isinstance(tgt, str) and not tgt.startswith("color/"):
                     css = "var(--" + "-".join(normalize(s) for s in tgt.split("/")) + ")"
                 else:
-                    css = fmt_value(var, m.get("$value"), m.get("$type"))
+                    css = fmt_value(var, m.get("$value"), m.get("$type"), m)
                 if css is not None:
                     out.append((var, mode, css))
             return
@@ -104,7 +124,7 @@ def walk(node, path, out):
             if isinstance(alias, str) and not alias.startswith("color/"):
                 css = "var(--" + "-".join(normalize(s) for s in alias.split("/")) + ")"
             else:
-                css = fmt_value(var, node["$value"], node.get("$type"))
+                css = fmt_value(var, node["$value"], node.get("$type"), node)
             if css is not None:
                 out.append((var, mode, css))
             return
@@ -138,6 +158,9 @@ def collect(fname):
 
 class AtomPreserveError(RuntimeError):
     """Named refusal: hand-authored TOKENS atoms would be destroyed (s121-D1 defect, fixed #123)."""
+
+class FontStackError(RuntimeError):
+    """Named refusal: a font-family var would ship without a fallback stack (#145 regression)."""
 
 ATOM_RE = re.compile(
     r"((?:[ \t]*/\*(?:[^*]|\*(?!/))*\*/\n)*?"          # contiguous attached comment lines
@@ -221,6 +244,24 @@ def main():
         for name in re.findall(r"===== TOKENS (\S+) START", span_m.group(0)):
             if f"===== TOKENS {name} START" not in token_css:
                 raise AtomPreserveError(f"atom '{name}' missing from the rebuilt span — refusing to write.")
+
+    # FONT-STACK GUARD — added #145, and the reason it exists is that the fix alone is not
+    # enough. The #132→#145 regression survived because a branch that stops matching does not
+    # fail, it just quietly stops contributing; the output still looked like valid CSS. So the
+    # condition is asserted on the OUTPUT, in the consumer's own grammar, rather than trusted
+    # in the branch that produces it. Any emitted font-family declaration must be a STACK.
+    # This REFUSES TO WRITE rather than warning: the failure it guards is invisible by
+    # construction — canon.css parses fine, renders fine wherever the webfont loads, and drops
+    # the whole system to a default serif only where it does not.
+    for fm in re.finditer(r"(--[\w-]*font-family[\w-]*)\s*:\s*([^;]+);", token_css):
+        fvar, fval = fm.group(1), fm.group(2).strip()
+        if fval.startswith("var(--"):
+            continue                       # alias chain — the target carries the stack
+        if "," not in fval:
+            raise FontStackError(
+                f"{fvar} would ship as {fval!r} — a single family with no fallback. "
+                "Expected a web stack. Check the token's $webStack and fmt_value()'s "
+                "font-family branch: this is exactly how the #132→#145 regression happened.")
 
     if "AUTO-GENERATED TOKENS START" in existing and "AUTO-GENERATED TOKENS END" in existing:
         new = re.sub(r"/\* ===== AUTO-GENERATED TOKENS START =====.*?AUTO-GENERATED TOKENS END ===== \*/",
