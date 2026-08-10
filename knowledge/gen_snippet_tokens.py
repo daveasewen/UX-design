@@ -216,6 +216,7 @@ def project_canon(write):
     if tstart >= 0:
         body, themes_tail = body[:tstart], body[tstart:]
     changed = 0
+    fails = []
     for f in sorted(glob.glob(os.path.join(SNIP, "*.reference.html"))):
         mm = MANIFEST_RE.search(open(f).read())
         if not mm:
@@ -234,6 +235,10 @@ def project_canon(write):
                 try:
                     val = resolve(token, mode)
                 except KeyError:
+                    # s147-D1: writer path fails LOUD in the checker's vocabulary and
+                    # the write is REFUSED below — silently skipping here was the
+                    # one-condition-two-severities split (#146 finding site 3).
+                    fails.append(f"{slug}: {cssvar} {token} ({mode}) UNRESOLVED — write refused")
                     continue
                 pat = re.compile(r'(--' + re.escape(cssvar.lstrip('-')) + r'\s*:\s*)(#[0-9A-Fa-f]{3,8})(\s*;)')
                 def r2(m2):
@@ -245,9 +250,9 @@ def project_canon(write):
                 blk = pat.sub(r2, blk)
             return prefix + head + blk + tail
         body = brx.sub(repl, body)
-    if write and changed:
+    if write and changed and not fails:
         open(CANON, "w").write(spine + body + themes_tail)
-    return changed, []
+    return changed, fails
 
 def main():
     check_only = "--check" in sys.argv

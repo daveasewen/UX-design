@@ -33,6 +33,12 @@ THREE CHECKS, ONE SEAM (address → store):
      dot-path walks to a node in ANY store declared for its first segment —
      "icon.default" is a colour in semantic-colour.json while "icon.small" is a
      size in icon-scale.json; both are real, the stores just differ.
+  D. CANON BLOCK PRESENCE (s147-D2) — every snippet carrying a token-manifest must
+     match at least one `.cn-<slug>{` block in canon/canon.css. gen_snippet_tokens'
+     project_canon substitutes via that regex; rename a component file and the sub
+     finds nothing — projection turns off, nothing goes red. Same held-by-nothing
+     correspondence as A–C, homed here per the one-gate-per-class design Dave
+     ratified (#147 opener). Measured at build time: 75/75, absolute, no allowlist.
 
 WHAT THIS GATE CANNOT SEE, DECLARED: it proves addresses point at SOMETHING, not
 at the RIGHT thing. Correctness of a binding stays with the binds draft + Dave's
@@ -40,7 +46,7 @@ verdicts (reviews/BINDS-AUTHORING-VERDICTS-*). A green here reads "no address
 dangles", never "axis A is correct".
 
 Usage:  python3 knowledge/_validate_binds_resolve.py             # gate mode
-        python3 knowledge/_validate_binds_resolve.py --selftest  # 5 bites
+        python3 knowledge/_validate_binds_resolve.py --selftest  # 6 bites
 Exit non-zero on any failure. Absent corpus fails LOUD — an absent instrument
 must not read as a pass (_validate_binds_ratchet.py's rule, kept).
 """
@@ -180,6 +186,20 @@ def check_binds(metas, exists):
     return fails, count
 
 
+def check_canon_blocks(names_with_manifest, css, slugger):
+    """Check D (s147-D2). names_with_manifest: iterable of snippet filenames that
+    carry a parseable manifest. A slug with zero `.cn-<slug>{` matches in the css
+    means project_canon's substitution silently finds nothing — loud here."""
+    fails = []
+    for name in sorted(names_with_manifest):
+        slug = slugger(name)
+        if not re.search(r'\.cn-' + re.escape(slug) + r'\{', css):
+            fails.append(f"{name}: no .cn-{slug} block in canon.css — "
+                         f"project_canon projection is silently OFF for this snippet "
+                         f"(renamed component file, or block never authored)")
+    return fails
+
+
 # ---------------------------------------------------------------- corpus + main
 def run():
     if not os.path.isdir(SNIP):
@@ -199,13 +219,20 @@ def run():
     if not metas:
         raise GateError("zero meta.json files — an empty corpus is not a pass")
 
+    canon_path = os.path.join(HERE, "canon", "canon.css")
+    if not os.path.exists(canon_path):
+        raise GateError(f"canon.css not found: {canon_path} — check D cannot read as a pass")
+    css = open(canon_path).read()
+
     f1, vars_by_page = check_manifests(pages)
     f2 = check_vars(vars_by_page, gst.resolve)
     f3, n_addr = check_binds(metas, address_exists)
-    fails = f1 + f2 + f3
+    f4 = check_canon_blocks(vars_by_page.keys(), css, gst.slug_of)
+    fails = f1 + f2 + f3 + f4
     nvars = sum(len(v) for v in vars_by_page.values())
     print(f"binds-resolve gate: {len(pages)} snippets ({len(vars_by_page)} with "
           f"manifests, {nvars} vars) · {len(metas)} metas ({n_addr} binds addresses) "
+          f"· {len(vars_by_page) - len(f4)}/{len(vars_by_page)} canon blocks "
           f"· {len(fails)} failure(s)")
     for f in fails:
         print(f"  ⛔ {f}")
@@ -213,7 +240,7 @@ def run():
 
 
 def selftest():
-    """Five bites. Each drives a SYNTHETIC breakage through the pure checks —
+    """Six bites. Each drives a SYNTHETIC breakage through the pure checks —
     the clause under test is the one that must fail (never only the feature)."""
     good_page = '<script type="application/json" id="token-manifest">{"vars": {"x-a": "rag/error"}}</script>'
 
@@ -254,7 +281,16 @@ def selftest():
     assert not address_exists("icon.tiny", load=lambda r: stores[r]), \
         "bite 5b: absent-in-both address read as existing"
 
-    print("binds-resolve selftest: 5 bites PASS")
+    # bite 6 (s147-D2): a manifest snippet whose slug matches no .cn- block MUST
+    # fail; one that matches must not. Regex-metachar slug guards the escaping.
+    css6 = ".cn-alert-banner{--x:#000;}"
+    slugger = lambda n: n.replace(".reference.html", "")
+    assert check_canon_blocks(["alert-banner.reference.html"], css6, slugger) == [], \
+        "bite 6a: present block read as missing"
+    fails = check_canon_blocks(["alert-toast.reference.html"], css6, slugger)
+    assert fails and ".cn-alert-toast" in fails[0], "bite 6b: absent block did not fail"
+
+    print("binds-resolve selftest: 6 bites PASS")
     return 0
 
 
