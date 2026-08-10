@@ -96,7 +96,12 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
    agent-solvable work to the human is a defect in the step** — and this is the THIRD mechanism #41
    hand-rolled around in one window (`_git_commit.sh`, the chain file, this).
 5. **Hand off to Dave** — "committed at `<hash>`, locks clear, safe to push." Dave pushes via
-   **GitHub Desktop only** (never terminal push — it hangs on credentials). If Desktop ever complains
+   **GitHub Desktop only** (never terminal push — it hangs on credentials).
+   ⚠ **CORRECTED #141 (2026-08-10, on Dave's word: "you can push I gave you the rights and the key"):**
+   the agent CAN now `git push origin master` from the sandbox — verified live, remote advanced. The
+   "hangs on credentials" claim was true of the un-keyed default and aged out once Dave installed a key
+   ([[assertion-propagation-gap]], same class as step 4b's correction). **Push still only on Dave's
+   explicit word — that half of the split stands.** If Desktop ever complains
    about a lock, Dave can delete `.git/index.lock` on his side (his machine has normal permissions).
 
 ## Gotchas
