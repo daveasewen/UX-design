@@ -1,0 +1,316 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Binds authoring — class rulings C1–C12 — s142 v3</title>
+<style>
+:root{--ink:#1a1f26;--paper:#fdfdfc;--panel:#f2f3f1;--line:#d8dad6;--blue:#305A85;--teal:#00847F;--amber:#E0A61F;--mono:ui-monospace,'SF Mono',Menlo,monospace}
+@media (prefers-color-scheme: dark){:root{--ink:#e8e9e6;--paper:#15181c;--panel:#1e2228;--line:#343a42;--blue:#7aa5d2;--teal:#4fbdb8}}
+body{margin:0;padding:2rem clamp(1rem,4vw,3rem);background:var(--paper);color:var(--ink);font:16px/1.55 -apple-system,'Helvetica Neue',sans-serif;max-width:70rem}
+h1{font-size:1.35rem;margin:0 0 .25rem}h2{font-size:1.05rem;margin:2rem 0 .5rem;border-top:2px solid var(--ink);padding-top:.75rem}
+.exec{background:var(--panel);border-left:4px solid var(--blue);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1rem 0}.exec p{margin:.3rem 0}
+.tag{font:600 .68rem/1.3 var(--mono);letter-spacing:.04em;padding:.15rem .45rem;border-radius:3px;background:var(--amber);color:#1a1f26}
+.note{font-size:.85rem;opacity:.8}#tally{font:600 .8rem/1 var(--mono);color:var(--teal)}
+code{font:.78rem/1.4 var(--mono);background:var(--panel);padding:.05rem .3rem;border-radius:3px;overflow-wrap:anywhere}
+.clscard,.c12card,.unmcard{border:1px solid var(--line);border-radius:8px;padding:.9rem 1.1rem;margin:.8rem 0}
+.clscard{border-left:4px solid var(--blue)}
+.unmcard{border-left:4px solid var(--teal)}
+.ch{display:flex;flex-wrap:wrap;gap:.5rem;align-items:baseline}
+.cid{font:700 .8rem/1.2 var(--mono);background:var(--blue);color:#fff;padding:.15rem .45rem;border-radius:4px}
+.chip{font:600 .72rem/1.3 var(--mono);border:1.5px solid var(--teal);color:var(--teal);padding:.12rem .45rem;border-radius:4px}
+.basis{font:600 .68rem/1.3 var(--mono);letter-spacing:.04em;opacity:.75}
+.why{font-size:.85rem;margin:.4rem 0;opacity:.9}
+.grounding{font-size:.78rem;background:var(--panel);border-radius:6px;padding:.5rem .7rem;margin:.4rem 0}
+.grounding b{color:var(--teal)}
+.flag{display:block;font:600 .74rem/1.5 var(--mono);color:var(--blue);margin-top:.2rem}
+.modes{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0}
+.modes label{display:flex;gap:.4rem;align-items:center;border:1.5px solid var(--line);border-radius:6px;padding:.45rem .7rem;cursor:pointer;font-size:.85rem;font-weight:600}
+.modes label:hover{border-color:var(--blue)}
+.modes label:has(input:checked){border-color:var(--teal);box-shadow:0 0 0 2px var(--teal);background:color-mix(in srgb,var(--teal) 6%,var(--paper))}
+.mrow{border-top:1px solid var(--line);padding:.35rem 0;font-size:.84rem}
+.mrow .rowverdict{font:600 .74rem/1.4 var(--mono);color:var(--teal);margin-left:.4rem;overflow-wrap:anywhere}
+.mrow .rownote{font-size:.72rem;opacity:.7;margin-left:.4rem}
+.draftrow{opacity:.72}
+.rosterchip{font:600 .6rem/1.2 var(--mono);border:1px solid var(--line);border-radius:3px;padding:.05rem .3rem;opacity:.8}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.3rem;margin:.35rem 0 .1rem}
+.cand-opt{display:flex;gap:.45rem;align-items:center;border:1.5px solid var(--line);border-radius:6px;padding:.4rem .6rem;cursor:pointer;font-size:.8rem}
+.cand-opt:hover{border-color:var(--blue)}
+.cand-opt:has(input:checked){border-color:var(--teal);box-shadow:0 0 0 2px var(--teal);background:color-mix(in srgb,var(--teal) 6%,var(--paper))}
+.cand-opt .pv{margin-left:auto}.cand-opt .pv small{opacity:.6;font-size:.64rem;max-width:9rem;line-height:1.25;display:inline-block}
+.hidden{display:none}
+.pbarr{font:.76rem/1.5 var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:.5rem .7rem;overflow-wrap:anywhere;white-space:pre-wrap;margin:.35rem 0}
+.doubt{display:block;opacity:.75;font-size:.76rem;margin:.15rem 0 .3rem}
+.draftlist{font-size:.76rem;opacity:.75;margin-top:.4rem}
+button{font:600 .85rem/1 inherit;padding:.6rem 1rem;border-radius:6px;border:1.5px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.ghost{background:transparent;color:var(--blue)}
+textarea{width:100%;min-height:14rem;font:.75rem/1.5 var(--mono);background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:.8rem;box-sizing:border-box}
+@media (max-width:520px){body{padding:1rem .8rem}.opts{grid-template-columns:1fr}.cand-opt .pv small{max-width:100%}}
+</style></head><body>
+<h1>Binds authoring — class rulings C1–C12 — v3, judgment-first</h1>
+<p class="note">s142 · 2026-08-10 · spec: <code>notes/_briefs/2026-08-10-142-binds-judgment.md</code> (conductor's judgment, PROPOSED — nothing is ruled until you click) over <code>reviews/BINDS-DRAFT-2026-08-09-s141-v1.json</code> (s141-D1) and v2's 64-row roster. Basis tags: CANON (follows a named ruling) · PROSE (recovers meta prose intent) · JUDGMENT (best-practice argument, the conductor's).</p>
+<div class="exec">
+<p><b>Decision, per class:</b> <b>Ratify</b> applies the class verdict to every member row (each row ticks visibly, the record stays row-granular) · <b>Override per row</b> expands the members into v2-style row radios (candidates + none + defer) · <b>Defer class</b>. Nothing is pre-selected — Ratify is a click, never a default. C12 stays row-level: 7 confirm-set cards with the draft's <code>proposedBinds</code> arrays verbatim. Then <b>Export</b> → paste in chat; it lands verbatim in the record. A partial sitting still exports valid.</p>
+<p class="note"><b>Measured reconcile (not smoothed):</b> the judgment's projection said C1–C11 cover 57 of the 64 controller rows. Measured against v2's roster: <b>61 of 64</b> rows map to a class (C1&nbsp;23 · C2&nbsp;12 · C3&nbsp;2 · C4&nbsp;4 · C5&nbsp;6 · C7&nbsp;3 · C8&nbsp;3 · C9&nbsp;4 · C10&nbsp;4); C6 and C11's members are draft-only rows (outside the 64); <b>3 rows are UNMAPPED</b> (avatar·button·divider <code>surface</code> — the judgment names no class for <code>surface</code>) and sit in their own card, row-level. The 7 C12 sets are draft doubt rows, <b>not</b> among the 64. Of the 16 classification doubts the judgment resolves <b>15</b>; <code>tooltip.tip</code> is not named — left open, flagged in C11. Class-header counts C1 "(16)" and C6 "(12)" measure 23 and 14 against the draft; the meta lists in the judgment are what is enacted here.</p>
+<p>Progress: <span id="tally">0 of 12 classes ruled · 0 of 64 rows covered · C12 sets 0/7</span></p>
+</div>
+
+<h2>Class rulings</h2>
+<div id="cards"></div>
+
+<h2>UNMAPPED — 3 controller rows the judgment does not cover</h2>
+<div class="unmcard" id="unmcard">
+<p class="why"><b>avatar·surface, button·surface, divider·surface.</b> No class in the judgment file names the <code>surface</code> prop. No class verdict is proposed here — these stay row-level with v2's candidates. (Flagged loud, not folded into a class by resemblance.)</p>
+<div id="unmrows"></div>
+</div>
+
+<h2>C12 — the 7 co-mentioned-set rows (row-level, arrays verbatim)</h2>
+<div class="clscard" data-cls="C12"><div class="ch"><span class="cid">C12</span> <b>the 7 co-mentioned-set rows: CONFIRM-SET sittings, arrays shown</b> <span class="chip">per-row confirm-set</span> <span class="basis">NO RECOMMENDATION WITHOUT DATA · row-level</span></div>
+<p class="why">The draft's <code>proposedBinds</code> arrays are displayed verbatim below — the ask is whether each set is the PROP's or the COMPONENT's. This class has no class-level control by design: the 7 cards below are the sitting.</p></div>
+<div id="c12cards"></div>
+
+<h2>Export</h2>
+<p class="note">Per-row records: class verdicts EXPAND to per-row entries (each carries its <code>"class"</code> field); draft-roster members export with <code>"roster":"draft"</code>; plus a per-class summary block with basis tag and your verdict (ratified / overridden / deferred). A partial sitting exports valid.</p>
+<p><button onclick="doExport()">Export verdicts JSON</button> <button class="ghost" onclick="copyExport()">Copy</button></p>
+<textarea id="out" readonly placeholder="Export appears here"></textarea>
+
+<script>
+'use strict';
+// ---------- candidates per controller row (extracted verbatim from v2) ----------
+var CANDS={
+"accordion.variant":["button.primary","button.secondary","button.tertiary","button.quaternary"],
+"avatar.variant":["button.primary","button.secondary","button.tertiary","button.quaternary"],
+"divider.variant":["button.primary","button.secondary","button.tertiary","button.quaternary"],
+"notifications.variant":["button.primary","button.secondary","button.tertiary","button.quaternary"],
+"quick-actions.variant":["button.primary","button.secondary","button.tertiary","button.quaternary"],
+"video-player.variant":["button.primary","button.secondary","button.tertiary","button.quaternary"],
+"accordion.fontSize":["typography.font-size"],"links.fontSize":["typography.font-size"],
+"alert.status":["rag.success","rag.warning","rag.error","rag.neutral"],
+"banner.status":["rag.success","rag.warning","rag.error","rag.neutral"],
+"toast.status":["rag.success","rag.warning","rag.error","rag.neutral"],
+"amount-display.sign":["rag.success","rag.error"],
+"action-bar.sticky":["elevation:elevation.decorative.X","elevation:elevation.decorative.Y","elevation:elevation.decorative.blur","elevation:elevation.decorative.spread"],
+"chart-line.highContrast":["data.series-high-contrast"],
+"chart-stacked-area.highContrast":["data.series-high-contrast"],
+"chart-stacked-area.fillAlpha":["alpha"],
+"chart-sparkline.scale":["icon-scale:icon.xsmall.height","icon-scale:icon.small.height","spacing:gap.fixed.content.xxsmall","spacing:gap.fixed.content.xsmall"],
+"hero.breakpoint":["breakpoint","scale"],"modals.breakpoint":["breakpoint","scale"],"navigations.breakpoint":["breakpoint","scale"],
+"drawer.width":["border-width.small","border-width.medium","border-width.large"],
+"skeleton-loader.width":["border-width.small","border-width.medium","border-width.large"],
+"segmented-control.shape":["border-radius.control","border-radius.surface","border-radius.indicator"],
+"skeleton-loader.shape":["border-radius.control","border-radius.surface","border-radius.indicator"],
+"links.mode":["background.default"],"loading-indicator.mode":["background.default"],"tags.mode":["background.default"],
+"avatar.surface":["background.default","surface.raised","surface.subtle","surface.action"],
+"button.surface":["background.default","surface.raised","surface.subtle","surface.action"],
+"divider.surface":["background.default","surface.raised","surface.subtle","surface.action"]
+};
+var STATE_CANDS=["text.default","text.disabled","form.background","form.border","button"];
+var SIZE_CANDS=["icon.xsmall","icon.small","icon.medium","icon.large","target.min"];
+// resolved-value hints for candidate radios (measured against the spine files at build time)
+var PV={"icon.xsmall":"12px (icon-scale.json)","icon.small":"18px (icon-scale.json)","icon.medium":"24px (icon-scale.json)","icon.large":"36px (icon-scale.json)","target.min":"44px (layout.json)","typography.font-size":"ramp font-00..font-7 52>12px @scale-1 (typography.json)","scale":"320/960/1600px (layout.json)","breakpoint":"xs..xl 320..1600px (layout.json) - REJECTED candidate, ruled home is scale","border-width.small":"1px (layout.json)","border-width.medium":"2px (layout.json)","border-width.large":"4px (layout.json)","border-radius.control":"0px (layout.json)","border-radius.surface":"0px (layout.json)","border-radius.indicator":"0px (layout.json)","alpha":"alpha.04..alpha.96, 24 steps (opacity.json)","data.series-high-contrast":"1..5 light/dark pairs (semantic-colour.json)","elevation:elevation.decorative.X":"0px (elevation.json)","elevation:elevation.decorative.Y":"0px (elevation.json)","elevation:elevation.decorative.blur":"8px (elevation.json)","elevation:elevation.decorative.spread":"0px (elevation.json)","icon-scale:icon.xsmall.height":"12px","icon-scale:icon.small.height":"18px","spacing:gap.fixed.content.xxsmall":"2px","spacing:gap.fixed.content.xsmall":"4px","rag.success":"#66CC8D (semantic-colour.json, unmigrated)","rag.warning":"#E0A61F (semantic-colour.json, unmigrated)","rag.error":"#F6604C (semantic-colour.json, unmigrated)","rag.neutral":"#808080/#FFFFFF (semantic-colour.json, unmigrated)"};
+function pv(c){return PV[c]||"not resolvable in the 5 migrated spine files - raw address shown";}
+
+var ICON_MAP_ADDR="icon (map: small→icon.small 18px · medium→icon.medium 24px · large→icon.large 36px)";
+// ---------- the judgment, class by class (verdicts + members; VERBATIM in substance) ----------
+var CLASSES=[
+{id:"C1",t:"state enums are SELECTORS, never single-token binds",verdict:"no-bind:state-selector",addr:null,basis:"JUDGMENT",conf:"HIGH",
+ why:"A state enum (default/hover/disabled…) selects among per-state token SETS; its consequences are colour-semantic and live in the colour spine (not yet migrated). Binding state → text.default binds the selector to one of its consequences — a category error. Ruling this class removes the substring-trap picks; the colour-spine lane inherits the per-state map job.",
+ grounding:null,
+ members:["accordion","avatar","badge","breadcrumbs","button","cards","data-grid","dropdown","headers","icon-button","input-fields","links","list-items","pagination","quick-actions","reorder","search-field","segmented-control","selection-controls","status-indicator","tags","video-player","view-options"].map(function(m){return {m:m,p:"state",cands:STATE_CANDS};}),
+ draft:[{m:"dropdown",p:"itemState"},{m:"tabs",p:"tabState",note:"routed here by C11"}]},
+{id:"C2",t:"size enums bind to the icon-scale ramp as MAPS + target.min floor for interactives",verdict:"bind:icon-ramp-map",addr:ICON_MAP_ADDR,basis:"PROSE+JUDGMENT",conf:"HIGH",
+ why:"The icon-scale ramp is the ONLY migrated size ramp and the prose co-mentions icon.* across these metas — de facto the component scale ramp (its name says ‘icon’; renaming is a separate vocab question, not a binds question). Interactive components additionally carry target.min as a floor constraint — tap-target accessibility, CANON-adjacent.",
+ grounding:"<b>Grounded, icon-scale.json (migrated):</b> icon.xsmall = 12px · icon.small = 18px · icon.medium = 24px · icon.large = 36px (height = width). <b>Floor, layout.json (migrated):</b> target.min = 44px.",
+ members:[{m:"accordion",p:"size"},{m:"amount-display",p:"size"},{m:"amount-input",p:"size",floor:true},{m:"avatar",p:"size"},{m:"badge",p:"size"},{m:"button",p:"size",floor:true},{m:"countdown-timer",p:"size"},{m:"loading-indicator",p:"size"},{m:"segmented-control",p:"size",floor:true},{m:"stat-card",p:"size"},{m:"tags",p:"size"},{m:"chart-sparkline",p:"scale",note:"MEDIUM — icon-scale over spacing-gap for consistency",cands:CANDS["chart-sparkline.scale"]}].map(function(r){if(!r.cands)r.cands=SIZE_CANDS;if(r.floor)r.a=ICON_MAP_ADDR+" + target.min 44px floor";return r;})},
+{id:"C3",t:"fontSize binds to the typography ramp",verdict:"bind:ramp",addr:"typography.font-size",basis:"PROSE+CANON",conf:"HIGH",
+ why:"Follows s141-D1(A) dimension encoding — already v2-recommended.",
+ grounding:"<b>Grounded, typography.json (migrated):</b> typography.font-size ramp font-00…font-7 = 52 / 40 / 32 / 28 / 24 / 20 / 16 / 14 / 12&nbsp;px @scale-1.",
+ members:[{m:"accordion",p:"fontSize"},{m:"links",p:"fontSize"}].map(function(r){r.cands=CANDS[r.m+"."+r.p];return r;})},
+{id:"C4",t:"status / sign bind to the RAG family as MAPS",verdict:"bind:rag-map",addr:"rag (map: success / warning / error / neutral)",basis:"PROSE",conf:"HIGH",
+ why:"status IS the RAG semantic — the pick-lists came from prose naming exactly the rag set. The bind names the ADDRESS; the colour migration later supplies values — recording it now makes the colour lane mechanical instead of a re-decision. (account-card.status is the co-mentioned-set class → C12.)",
+ grounding:"<b>Grounded, semantic-colour.json (colour spine — outside the 5 migrated files; address recorded now, values follow migration):</b> rag.success #66CC8D · rag.warning #E0A61F · rag.error #F6604C · rag.neutral #808080 (light).",
+ members:[{m:"alert",p:"status"},{m:"banner",p:"status"},{m:"toast",p:"status"},{m:"amount-display",p:"sign",a:"rag.success | rag.error (positive / negative)"}].map(function(r){r.cands=CANDS[r.m+"."+r.p];return r;})},
+{id:"C5",t:"variant rows route to the VARIANTS axis — NO-BIND here",verdict:"no-bind:variants-axis",addr:null,basis:"CANON s136-D1",conf:"HIGH",
+ why:"Under the three-axis model a variant is not a param bind. Decidable NOW without the intent-map vocab ruling — vocab decides what the variants axis CALLS them, not whether they are binds. The gate dissolves rather than resolves.",
+ grounding:null,gated:true,
+ members:["accordion","avatar","divider","notifications","quick-actions","video-player"].map(function(m){return {m:m,p:"variant",gated:true,cands:CANDS[m+".variant"]};})},
+{id:"C6",t:"type rows are also the variants axis — NO-BIND here",verdict:"no-bind:variants-axis",addr:null,basis:"JUDGMENT via s136-D1",conf:"HIGH",
+ why:"type is structural variance (a different assembly, not a scaled param); survey candidates were NONE for all. Note preserved: button.type prose names font-5/medium — under the variants axis that becomes the variant’s typographic parameter, inscribed so the intent isn’t lost.",
+ grounding:"<b>Preserved note grounds, typography.json (migrated):</b> typography.font-size.font-5 = 16px @scale-1 · typography.font-weight.medium = 500. <span class=\"flag\">All members are draft-roster rows — none of the 64 controller rows is a type row (judgment header said 12; measured 14 draft rows).</span>",
+ members:[],
+ draft:["button","cards","headers","icon-button","input-fields","links","list-items","modals","navigations","notifications","pagination","slider","tags","view-options"].map(function(m){return {m:m,p:"type"};})},
+{id:"C7",t:"mode rows are the THEME layer’s job — NO-BIND",verdict:"no-bind:theme-layer",addr:null,basis:"CANON (four-themes) + s136-D1",conf:"HIGH",
+ why:"Four themes are the standing flexibility requirement; a per-component mode prop duplicates the theme layer and would fork against it. (The pick-list background.default is another consequence-not-selector trap.)",
+ grounding:null,
+ members:[{m:"links",p:"mode"},{m:"loading-indicator",p:"mode"},{m:"tags",p:"mode"}].map(function(r){r.cands=CANDS[r.m+"."+r.p];return r;})},
+{id:"C8",t:"breakpoint rows bind to the scale ramp",verdict:"bind:ramp",addr:"scale",basis:"CANON s141-D1(B)",conf:"HIGH",
+ why:"B1: dimension + $extensions carries the breakpoint set verbatim. Candidate breakpoint rejected — the ruled home is scale.",
+ grounding:"<b>Grounded, layout.json (migrated):</b> scale.scale-1 = 320px · scale.scale-2 = 960px · scale.scale-3 = 1600px. (breakpoint.xs…xl also exists in layout.json — it is the REJECTED candidate.)",
+ members:[{m:"hero",p:"breakpoint"},{m:"modals",p:"breakpoint"},{m:"navigations",p:"breakpoint"}].map(function(r){r.cands=CANDS[r.m+"."+r.p];return r;})},
+{id:"C9",t:"booleans split by consequence",verdict:"per-row split (see members)",addr:null,basis:"JUDGMENT",conf:"HIGH (no-binds) · MEDIUM-HIGH (sticky)",
+ why:"sticky’s visual consequence is the shadow — a COMPOSITE bind survives shadow re-tuning; highContrast / fillAlpha have ruled homes (v2 rec stands; ds-026 amended — CANON); open / image / masked / redacted / overflow are behavioural or content presence — no token consequence; shimmer names an UNMINTED token — binding anything else would erase the recorded intent.",
+ grounding:"<b>Grounded, elevation.json (migrated):</b> elevation.decorative composite = X 0px · Y 0px · blur 8px · spread 0px. <b>Grounded, semantic-colour.json (colour spine — outside the 5 migrated):</b> data.series-high-contrast.1–5 light/dark pairs (e.g. 1: #484D6F / #93B6CC). <b>Grounded, opacity.json (DTCG-shaped — outside the 5 migrated):</b> alpha.04…alpha.96, 24 steps. <span class=\"flag\">skeleton-loader.shimmer ‘color-mix 50% bone/page’ — address unresolved — inscribed as intent (mint-required, colour lane).</span>",
+ members:[{m:"action-bar",p:"sticky",v:"bind:composite",a:"elevation.decorative (composite, not one scalar of it)",note:"MEDIUM-HIGH",cands:CANDS["action-bar.sticky"]},
+  {m:"chart-line",p:"highContrast",v:"bind",a:"data.series-high-contrast",cands:CANDS["chart-line.highContrast"]},
+  {m:"chart-stacked-area",p:"highContrast",v:"bind",a:"data.series-high-contrast",cands:CANDS["chart-stacked-area.highContrast"]},
+  {m:"chart-stacked-area",p:"fillAlpha",v:"bind:family",a:"alpha (opacity primitives)",cands:CANDS["chart-stacked-area.fillAlpha"]}],
+ draft:[{m:"accordion",p:"open",v:"no-bind:behavioural"},{m:"dropdown",p:"open",v:"no-bind:behavioural"},{m:"headers",p:"image",v:"no-bind:behavioural"},{m:"secure-entry",p:"masked",v:"no-bind:behavioural"},{m:"amount-display",p:"redacted",v:"no-bind:behavioural"},{m:"tabs",p:"overflow",v:"no-bind:behavioural",note:"classification doubt, resolved here"},{m:"skeleton-loader",p:"shimmer",v:"mint-required",a:"UNMINTED — ‘color-mix 50% bone/page’ inscribed as intent"}]},
+{id:"C10",t:"geometry: two honest REJECTIONS + radius maps",verdict:"per-row split (see members)",addr:null,basis:"JUDGMENT",conf:"HIGH (rejections) · MEDIUM-HIGH (radius maps)",
+ why:"drawer.width / skeleton-loader.width candidates are border-width.* — a SUBSTRING TRAP (a drawer’s width is not a border width); the real home is a layout dimension that doesn’t exist yet — authoring item, colour/layout lane. shape rows map enum values to radius tokens (control-class → border-radius.control head). Positional / structural params have no token consequence.",
+ grounding:"<b>Grounded, layout.json (migrated):</b> border-radius.control = 0px · border-radius.default = 0px · border-radius.surface = 0px · border-radius.indicator = 0px (all currently 0px — shown honestly). <span class=\"flag\">drawer.width / skeleton-loader.width real home (layout dimension) — address unresolved — inscribed as intent.</span> <span class=\"flag\">hero.height — no candidates — address unresolved — inscribed as intent (layout-authoring item).</span>",
+ members:[{m:"drawer",p:"width",v:"none-of-these:candidates-invalid",a:null,cands:CANDS["drawer.width"]},
+  {m:"skeleton-loader",p:"width",v:"none-of-these:candidates-invalid",a:null,cands:CANDS["skeleton-loader.width"]},
+  {m:"segmented-control",p:"shape",v:"bind:border-radius-map",a:"border-radius (map; control-class → border-radius.control)",cands:CANDS["segmented-control.shape"]},
+  {m:"skeleton-loader",p:"shape",v:"bind:border-radius-map",a:"border-radius (map; control-class → border-radius.control)",cands:CANDS["skeleton-loader.shape"]}],
+ draft:[{m:"hero",p:"height",v:"authoring-item:layout"},{m:"drawer",p:"side",v:"no-bind:structural-param"},{m:"popover",p:"placement",v:"no-bind:structural-param"},{m:"table",p:"orientation",v:"no-bind:structural-param"},{m:"chart-bar",p:"orientation",v:"no-bind:structural-param"},{m:"stat-card",p:"direction",v:"no-bind:structural-param"},{m:"table",p:"cellAlign",v:"no-bind:structural-param",note:"classification doubt, resolved here"},{m:"tooltip",p:"tipAlignment",v:"no-bind:structural-param",note:"classification doubt, resolved here"},{m:"tabs",p:"track",v:"no-bind:structural-param",note:"classification doubt, resolved here"}]},
+{id:"C11",t:"UNCLASSIFIED rows: classification verdicts",verdict:"per-row split (see members)",addr:null,basis:"JUDGMENT",conf:"HIGH",
+ why:"Each recorded as a classification verdict — exactly what the 16 doubt rows asked for. NON-VISUAL = binds-irrelevant (composition / behaviour concerns); three VISUAL rows are routed. <span class=\"flag\">Measured: tooltip.tip is the 16th classification doubt and the judgment does not name it — left OPEN here, exported unruled with a note.</span> (tabs.tabState exports under C1; tabs.overflow / table.cellAlign / tooltip.tipAlignment / tabs.track export under C9 / C10.)",
+ grounding:null,
+ members:[],
+ draft:[{m:"alert",p:"dismissible",v:"non-visual:binds-irrelevant"},{m:"banner",p:"dismissible",v:"non-visual:binds-irrelevant"},{m:"popover",p:"dismissible",v:"non-visual:binds-irrelevant"},{m:"toast",p:"duration",v:"non-visual:binds-irrelevant"},{m:"time-picker",p:"step",v:"non-visual:binds-irrelevant"},{m:"textarea",p:"maxlength",v:"non-visual:binds-irrelevant"},{m:"textarea",p:"counter",v:"non-visual:binds-irrelevant"},{m:"tab-bar",p:"current",v:"non-visual:binds-irrelevant"},{m:"table",p:"headerType",v:"routed:variants-axis"},{m:"tags",p:"background",v:"routed:colour-spine-boolean"},{m:"tooltip",p:"tip",v:"OPEN",note:"not resolved by the judgment file — stays unruled",open:true}]}
+];
+var UNMAPPED=[{m:"avatar",p:"surface"},{m:"button",p:"surface"},{m:"divider",p:"surface"}].map(function(r){r.cands=CANDS[r.m+"."+r.p];return r;});
+var C12=[
+{m:"account-card",p:"status",pt:"enum",arr:["rag.success","rag.success-tint","rag.warning","rag.warning-tint"]},
+{m:"account-selector",p:"selected",pt:"number",arr:["form.background.hover","form.border.active"]},
+{m:"icon-button",p:"glyph",pt:"string",arr:["button.primary.icon.default","text.on-disabled","text.on-inverse","icon.default","icon.default-reverse","tertiary.text.disabled"]},
+{m:"input-fields",p:"dateCellState",pt:"enum",arr:["form.background","form.border.active","text.default","text.reverse","text.disabled"]},
+{m:"selection-controls",p:"control",pt:"enum",arr:["form.background.default","form.border.default"]},
+{m:"slider",p:"handleState",pt:"enum",arr:["background.default","border.subtle","tertiary.background.hover","tertiary.background.pressed"]},
+{m:"stat-card",p:"delta",pt:"string",arr:["rag.success","rag.error","text.default"]}];
+var C12_DOUBT="array drafted from co-mentioned paths — Dave to confirm the set is the prop’s, not the component’s";
+
+// ---------- render ----------
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function rowVerdict(c,r){return {verdict:(r.v||c.verdict),address:(r.a!==undefined?r.a:(r.v?null:c.addr))};}
+function memberRowHtml(c,r,roster){
+ var key=c.id+"|"+r.m+"."+r.p;
+ var jv=rowVerdict(c,r);
+ var h='<div class="mrow'+(roster==="draft"?" draftrow":"")+'" data-cls="'+c.id+'" data-meta="'+r.m+'" data-prop="'+r.p+'" data-roster="'+roster+'">';
+ h+='<code>'+r.m+'·'+r.p+'</code> <span class="rosterchip">'+roster+'</span>';
+ if(r.gated)h+=' <span class="tag">gated by intent-map vocab</span> <small class="rownote">gate dissolves if C5 ratified</small>';
+ if(r.note)h+=' <small class="rownote">'+esc(r.note)+'</small>';
+ h+=' <span class="rowverdict"></span>';
+ h+='<div class="rowopts opts hidden">';
+ if(!r.open){h+='<label class="cand-opt"><input type="radio" name="'+key+'" value="class"><b>class verdict</b><span class="pv"><small>'+esc(jv.verdict+(jv.address?" → "+jv.address:""))+'</small></span></label>';}
+ (r.cands||[]).forEach(function(cd){h+='<label class="cand-opt"><input type="radio" name="'+key+'" value="'+esc(cd)+'"><code>'+esc(cd)+'</code><span class="pv"><small>'+esc(pv(cd))+'</small></span></label>';});
+ h+='<label class="cand-opt"><input type="radio" name="'+key+'" value="none-of-these"><b>none of these</b></label>';
+ h+='<label class="cand-opt"><input type="radio" name="'+key+'" value="defer"><b>defer</b></label>';
+ h+='</div></div>';
+ return h;
+}
+function renderCards(){
+ var host=document.getElementById("cards"),h="";
+ CLASSES.forEach(function(c){
+  h+='<div class="clscard" data-cls="'+c.id+'"><div class="ch"><span class="cid">'+c.id+'</span> <b>'+esc(c.t)+'</b> <span class="chip">'+esc(c.verdict)+'</span> <span class="basis">'+esc(c.basis)+' · '+esc(c.conf)+'</span></div>';
+  h+='<p class="why">'+c.why+'</p>';
+  if(c.addr)h+='<p class="why"><b>Class bind:</b> <code>'+esc(c.addr)+'</code></p>';
+  if(c.grounding)h+='<div class="grounding">'+c.grounding+'</div>';
+  h+='<div class="modes"><label><input type="radio" name="cls-'+c.id+'" value="ratify">Ratify class verdict</label><label><input type="radio" name="cls-'+c.id+'" value="override">Override per row</label><label><input type="radio" name="cls-'+c.id+'" value="defer">Defer class</label></div>';
+  h+='<div class="members">';
+  c.members.forEach(function(r){h+=memberRowHtml(c,r,"controller");});
+  (c.draft||[]).forEach(function(r){h+=memberRowHtml(c,r,"draft");});
+  h+='</div>';
+  if((c.draft||[]).length)h+='<p class="draftlist">'+(c.members.length?'':'All ')+(c.draft||[]).length+' draft-roster member(s) above are outside the 64-row controller roster — a class ruling still exports them per-row as <code>"roster":"draft"</code>.</p>';
+  h+='</div>';
+ });
+ host.innerHTML=h;
+ var uh="";UNMAPPED.forEach(function(r){uh+=memberRowHtml({id:"UNMAPPED",verdict:"(no class verdict proposed)",addr:null},r,"controller");});
+ document.getElementById("unmrows").innerHTML=uh;
+ // unmapped rows are pick-only: show their radios always, drop the class-verdict option
+ Array.prototype.forEach.call(document.querySelectorAll('#unmrows .rowopts'),function(o){o.classList.remove("hidden");});
+ Array.prototype.forEach.call(document.querySelectorAll('#unmrows input[value="class"]'),function(i){i.closest("label").remove();});
+ var ch="";C12.forEach(function(r){
+  ch+='<div class="c12card" data-meta="'+r.m+'" data-prop="'+r.p+'"><div class="ch"><b>'+r.m+'·'+r.p+'</b> <span class="basis">'+r.pt+' · VISUAL · array (s140-D1 hybrid)</span> <span class="rowverdict"></span></div>';
+  ch+='<pre class="pbarr">'+esc(JSON.stringify(r.arr,null,1))+'</pre>';
+  ch+='<small class="doubt">'+esc(C12_DOUBT)+'</small>';
+  ch+='<div class="opts"><label class="cand-opt"><input type="radio" name="c12|'+r.m+'.'+r.p+'" value="confirm-set"><b>Confirm set</b><span class="pv"><small>the array IS the prop’s</small></span></label><label class="cand-opt"><input type="radio" name="c12|'+r.m+'.'+r.p+'" value="not-the-props"><b>Not the prop’s</b><span class="pv"><small>component’s set, not this prop’s</small></span></label><label class="cand-opt"><input type="radio" name="c12|'+r.m+'.'+r.p+'" value="defer"><b>Defer</b></label></div></div>';
+ });
+ document.getElementById("c12cards").innerHTML=ch;
+}
+// ---------- state + effective verdicts ----------
+function clsMode(id){var i=document.querySelector('input[name="cls-'+id+'"]:checked');return i?i.value:null;}
+function rowPick(cid,m,p){var i=document.querySelector('input[name="'+cid+"|"+m+"."+p+'"]:checked');return i?i.value:null;}
+function effective(c,r){
+ var mode=clsMode(c.id),jv=rowVerdict(c,r);
+ if(r.open)return {verdict:"unruled",address:null,via:"open — not resolved by the judgment file"};
+ if(mode==="ratify")return {verdict:jv.verdict,address:jv.address,via:"class-ratify"};
+ if(mode==="defer")return {verdict:"defer",address:null,via:"class-defer"};
+ if(mode==="override"){var pk=rowPick(c.id,r.m,r.p);
+  if(!pk)return {verdict:"unruled",address:null,via:"row-override"};
+  if(pk==="class")return {verdict:jv.verdict,address:jv.address,via:"row-accept-class"};
+  if(pk==="none-of-these"||pk==="defer")return {verdict:pk,address:null,via:"row-override"};
+  return {verdict:"bind",address:pk,via:"row-override"};}
+ return {verdict:"unruled",address:null,via:"unruled"};
+}
+function refresh(){
+ var covered=0,classesRuled=0;
+ CLASSES.forEach(function(c){
+  var mode=clsMode(c.id);
+  var card=document.querySelector('.clscard[data-cls="'+c.id+'"]');
+  var all=c.members.concat(c.draft||[]);
+  var allPicked=true;
+  all.forEach(function(r){
+   var row=card.querySelector('.mrow[data-meta="'+r.m+'"][data-prop="'+r.p+'"]');
+   var e=effective(c,r);
+   var vs=row.querySelector(".rowverdict");
+   vs.textContent=(e.verdict==="unruled")?"":"✓ "+e.verdict+(e.address?" → "+e.address:"");
+   row.querySelector(".rowopts").classList.toggle("hidden",mode!=="override");
+   if(e.verdict==="unruled"&&!r.open)allPicked=false;
+   if(row.dataset.roster==="controller"&&e.verdict!=="unruled")covered++;
+  });
+  if(mode==="ratify"||mode==="defer"||(mode==="override"&&allPicked))classesRuled++;
+ });
+ UNMAPPED.forEach(function(r){
+  var row=document.querySelector('#unmrows .mrow[data-meta="'+r.m+'"][data-prop="'+r.p+'"]');
+  var pk=rowPick("UNMAPPED",r.m,r.p);
+  row.querySelector(".rowverdict").textContent=pk?("✓ "+(pk==="none-of-these"||pk==="defer"?pk:"bind → "+pk)):"";
+  if(pk)covered++;
+ });
+ var c12done=0;C12.forEach(function(r){var i=document.querySelector('input[name="c12|'+r.m+"."+r.p+'"]:checked');
+  var card=document.querySelector('.c12card[data-meta="'+r.m+'"][data-prop="'+r.p+'"]');
+  card.querySelector(".rowverdict").textContent=i?"✓ "+i.value:"";
+  if(i)c12done++;});
+ if(c12done===7)classesRuled++;
+ document.getElementById("tally").textContent=classesRuled+" of 12 classes ruled · "+covered+" of 64 rows covered · C12 sets "+c12done+"/7";
+}
+document.body.addEventListener("change",refresh);
+// ---------- export ----------
+function doExport(){
+ var rows=[],classes=[];
+ CLASSES.forEach(function(c){
+  var mode=clsMode(c.id);
+  classes.push({class:c.id,title:c.t,basis:c.basis,confidence:c.conf,class_verdict:c.verdict,
+   daves_verdict:mode==="ratify"?"ratified":mode==="override"?"overridden":mode==="defer"?"deferred":"unruled"});
+  c.members.concat(c.draft||[]).forEach(function(r){
+   var e=effective(c,r);
+   rows.push({class:c.id,meta:r.m,prop:r.p,roster:c.members.indexOf(r)>=0?"controller":"draft",
+    verdict:e.verdict,address:e.address,via:e.via,gated:!!r.gated,note:r.note||null});
+  });
+ });
+ UNMAPPED.forEach(function(r){
+  var pk=rowPick("UNMAPPED",r.m,r.p);
+  rows.push({class:"UNMAPPED",meta:r.m,prop:r.p,roster:"controller",
+   verdict:pk?((pk==="none-of-these"||pk==="defer")?pk:"bind"):"unruled",
+   address:(pk&&pk!=="none-of-these"&&pk!=="defer")?pk:null,via:pk?"row-pick":"unruled",gated:false,
+   note:"judgment file names no class for the surface prop — row-level"});
+ });
+ var c12done=0;
+ C12.forEach(function(r){
+  var i=document.querySelector('input[name="c12|'+r.m+"."+r.p+'"]:checked');if(i)c12done++;
+  rows.push({class:"C12",meta:r.m,prop:r.p,roster:"draft",verdict:i?i.value:"unruled",
+   address:null,via:i?"row-pick":"unruled",gated:false,proposed_binds:r.arr});
+ });
+ classes.push({class:"C12",title:"the 7 co-mentioned-set rows: CONFIRM-SET sittings, arrays shown",basis:"no recommendation without data",confidence:"row-level",class_verdict:"per-row confirm-set",daves_verdict:c12done+"/7 sets answered"});
+ var out={
+  "$id":"BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3",
+  "$enacts":"s136-D1 axis A authoring; follows s141-D1 ACCEPT-PROPOSED; judgment notes/_briefs/2026-08-10-142-binds-judgment.md (PROPOSED — ruled only by this sitting)",
+  "ruled_by":"Dave","via":"reviews/BINDS-AUTHORING-REVIEW-2026-08-10-s142-v3.html",
+  "$reconcile":"judgment projected 57/64 controller rows under C1–C11; measured 61/64 class-mapped + 3 UNMAPPED surface rows; C6/C11 members and the 7 C12 sets are draft-roster rows outside the 64; classification doubts: 16 measured, 15 resolved, tooltip.tip left open",
+  "controller_rows":64,
+  "rows_presented":rows.length,
+  "rows_ruled":rows.filter(function(r){return r.verdict!=="unruled";}).length,
+  "gated_note":"gated:true rows (the 6 C5 variant rows) are vocab-gated (intent-map); the gate dissolves if C5 is ratified (no-bind:variants-axis)",
+  "classes":classes,
+  "rows":rows};
+ document.getElementById("out").value=JSON.stringify(out,null,1);
+}
+function copyExport(){var t=document.getElementById("out");t.select();document.execCommand("copy");}
+renderCards();refresh();
+</script></body></html>
