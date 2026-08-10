@@ -1880,6 +1880,40 @@
    ],
    "open": "the amount-display.sign colour VALUES (rag.success/rag.error rungs) are not adjusted by this ruling - the a11y adjustment is OPEN, residual to #144",
    "status": "RULED #143 AND ENACTED #143 (A): four $status flags downgraded TENSION to CROSS-REFERENCE. RULED #143, PART-ENACTED (B): the sign bind already stands from s142-D1's own enactment (#143); the a11y colour-value adjustment is NOT enacted by this ruling and carries to #144."
+ },
+ {
+    "id": "s144-D1",
+    "ruled": "#144",
+    "date": "2026-08-10",
+    "by": "Dave",
+    "says": "PLUS/MINUS COLOURED TEXT - the only coloured text Apollo uses. Scope narrowed by Dave, verbatim: \"we don't need to worry about info or warning text, they are not used and the only coloured text is for plus and minus, red and green. these are the only coloured text we use.\" Rationale for why text differs from fills, Dave's, verbatim: \"statuses are fine they have labels and the roundels carry a glyph that create teh meaning tah background doesnt matter\" - i.e. R-D6 restated: in the fills meaning is carried by label + roundel glyph so contrast is a salience lever; on the numeral the meaning is carried by the +/U+2212 sign, so colour is ALSO salience, but text carries a second obligation fills do not - it must be READABLE (WCAG 1.4.3). That, and only that, is why a value must clear 4.5:1. FOUR VALUES, tuned by eye off PLUSMINUS-TUNER v2 with hue LOCKED to the s122-D2 fills (red 7.0588 deg HSB / 30.2375 deg OKLCH; green 142.9412 deg / 154.5908 deg), saturation and brightness only, no hue affordance offered: minus/red LIGHT #DA1A00 (4.503 on #F1F1F1) - minus/red DARK #F6604C (4.763 on #272727), UNCHANGED from the s122-D2 fill - plus/green LIGHT #137F3C (4.503 on #F1F1F1) - plus/green DARK #66CC8D (7.531 on #272727), UNCHANGED from the s122-D2 fill. GROUND SET for the AA obligation EXCLUDES the two rag tints, per s134-D4: on a rag-tinted ground the ruled treatment is the #1A1A1A glyph ink, not the coloured rung. Against every remaining ground - pure, zebra #FAFAFA, hover #F5F5F5, selected #F1F1F1 (and their dark counterparts) - all four clear AA 4.5.",
+    "governs": [
+       "the coloured-text rung for amount-display.sign and any future signed numeral"
+    ],
+    "doesNotReopen": [
+       "s122-D2 - the four RAG fills and the #1A1A1A mark",
+       "s143-D1(B) - the amount-display.sign bind, which STANDS",
+       "information and warning coloured text - OUT OF SCOPE by Dave's word, not used"
+    ],
+    "findings": {
+       "mode-invariance-impossible": "A mode-invariant AA-text value is ARITHMETICALLY IMPOSSIBLE: vs #FFFFFF needs relative luminance L <= 0.1833, vs #1A1A1A needs L >= 0.2215. The window is empty. Therefore the coloured-text rung MUST be per-mode - this is WHY it is a separate rung and not an edit to the mode-invariant s122-D2 fills.",
+       "143-false-absence": "#143's wrap claimed 'the family resolves only to -background/-glyph rungs - there is no bare rag.success'. FALSE against the artefact: all four bare roles exist and resolve via $alias to their -glyph rung (rag.success.$alias -> rag/success-glyph, #66CC8D). That half of residual (1) dissolves.",
+       "dark-needs-no-new-value": "The ruled fills already pass as text on #1A1A1A: error 5.55, success 8.77. Dark mode required no new value; both dark cells are the s122-D2 fills unchanged.",
+       "v1-gamut-clip-moved-the-hue": "Tuner v1 returned green-light gamutClipped:true and the clamp moved the hue +6.84 deg (142.94 -> 149.78). The tool reported the clip; nothing chased what the clip IMPLIED, and hue lock was the whole premise. v2 added a hard guard clamping chroma at the gamut boundary ALONG the locked hue - driven at 2.6x the gamut ceiling, hue held to +0.087 deg.",
+       "hue-can-be-locked-in-one-space-only": "green-light carries an OKLCH hue drift of -4.53 deg (#137F3C sits at OKLCH hue 150.06 vs locked 154.5908) while its HSB drift is -0.16 deg. v2's alarm keys to the DRIVING model (HSB) so it stayed silent. This is a PROPERTY, not a defect: HSB is not perceptually uniform, so moving saturation/brightness in HSB always shifts OKLCH hue. Hue can be locked in one space or the other, NOT BOTH. Same shape as the mode-invariance impossibility. Dave accepted it as tuned."
+    },
+    "open": [
+       "RUNG NAME UNRULED - rag.<hue>-text vs rag.<hue>-ink. Precedent: rag.text.on-information was minted at s131-D1 as a severity-specific ink slot, so minting an ink rung has form. Dave's.",
+       "NO DARK 'SELECTED ROW' TOKEN EXISTS in knowledge/tokens/ - light has the full set; dark has surface/subtle #1F1F1F and surface/raised-hover #232323 but no selected state. #272727 (color/neutral/raise-3, colour.json) was used as a labelled APPROXIMATION and is unclaimed by any semantic token. Dave's to rule.",
+       "UNVERIFIED, carried to #145: #1A1A1A ink measured 1.62 / 2.03 against the DARK rag tints (#60302A / #32533F). Looks alarming, BUT s134-D4 puts the ink on the pastel SHAPE, not on the tint - this may be measuring a combination the pattern never produces. Check the subject before treating it as a finding."
+    ],
+    "evidence": [
+       "reviews/PLUSMINUS-TUNER-2026-08-10-s144-v2.html - Dave's export, drivingModelAtExport hsb, selectedGroundRoleId 'selected'",
+       "reviews/PLUSMINUS-TUNER-2026-08-10-s144-v1.html - the first tuning pass, where the gamut clip was caught",
+       "reviews/RAG-TEXT-RUNG-2026-08-10-s144-v1.html - the scoping controller that preceded the tuner",
+       "chat #144 (live) - Dave's three narrowing statements and his two exports"
+    ],
+    "status": "RULED #144. NOT ENACTED - the rung is not minted in semantic-colour.json and its NAME is unruled. Enactment carries to #145 as a named lane."
  }
 ]
 }

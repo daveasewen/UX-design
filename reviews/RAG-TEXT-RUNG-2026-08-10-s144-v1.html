@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG text rung — the coloured numeral needs its own value (s144)</title>
+<!--
+  RAG TEXT RUNG — session #144, 2026-08-10.
+  Triggered by amount-display.sign's C4 bind (s142-D1): "none"->rag.success, "negative"->rag.error —
+  the first consumer to take a rag rung as COLOURED TEXT rather than the tint-shell+#1A1A1A-mark
+  pattern s134-D4 nailed. Dave, this session (verbatim, not yet in _CHAIN.md at time of writing):
+  "the rag on status and wtc are fine its only the colourd text that is at issue."
+
+  SCOPE, STATED ONCE: this page does NOT reopen s122-D2 (the four fills are SETTLED: success #66CC8D,
+  error #F6604C, warning #E0A61F, information #78A7E8, mark #1A1A1A on all four, mode-invariant) and
+  does NOT touch the amount-display.sign bind (s143-D1(B) ruled it stands). It proposes FOUR
+  LIGHT-MODE-ONLY text values for a new rung, because a mode-invariant AA text colour is arithmetically
+  impossible (see "the finding" below) and dark mode needs nothing new (the ruled fills already pass
+  as text on #1A1A1A).
+
+  Nothing on this page is chosen for Dave. Every candidate below is unpicked until he clicks it.
+-->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+:root{
+  --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease:140ms ease;
+
+  /* RAG ruled fills — s122-D2 (Dave, #122, ruled by eye off mark-map-controller v5). SETTLED.
+     knowledge/tokens/semantic-colour.json: rag/success-background, rag/error-background,
+     rag/warning-background, rag/information-background — mode-invariant (dark = light). */
+  --rag-success:#66CC8D;
+  --rag-error:#F6604C;
+  --rag-warning:#E0A61F;
+  --rag-information:#78A7E8;
+  --mark:#1A1A1A;
+
+  /* restorations — retired values, still recorded in the token file's $note fields, proposed here
+     ONLY as a new light-mode TEXT rung. Does not touch the fill. */
+  --restore-success:#2B7E4F;      /* R-D18: success-glyph $note, "graphic-strength success green" */
+  --restore-error:#B92F1E;        /* R-D14: error-background $note, mode-stable breach red */
+  --restore-information:#306EC6;  /* R-D4, retired by R-D20's bare-role rebase: information $note */
+
+  /* tint+ink chip pattern — the EXISTING safe treatment, s123-D3 tuned-opacity fills + text/default
+     ink (R-D20; mirrors _alert-*-specimen-2026-08-08-s134-v3.html). Shown for comparison only. */
+  --ok-t-light:#D4F1DF;   --ok-t-dark:#32533F;
+  --err-t-light:#FDD9D4;  --err-t-dark:#60302A;
+  --warn-t-light:#F6E6C0; --warn-t-dark:#614C1C;
+  --info-t-light:#DFEAF9; --info-t-dark:#38475C;
+
+  --page:#FFFFFF; --ink:#1A1A1A; --border:#E1E1E1; --muted:#5B5B5B;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--page); color:var(--ink); font-family:var(--font); -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px; margin:0 auto; padding:2.25rem 2rem 7rem;}
+h1{font-family:var(--uf); font-size:28px; line-height:1.15; font-weight:400; margin:0 0 6px;}
+h2{font-family:var(--uf); font-size:20px; font-weight:500; margin:0 0 4px;}
+h3{font-family:var(--uf); font-size:14px; font-weight:500; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:0 0 10px;}
+p{font-family:var(--uf); font-size:14px; line-height:1.55; color:#333; margin:0 0 10px; max-width:74ch;}
+code{font:12px/1.4 ui-monospace,"SF Mono",Menlo,Consolas,monospace; background:#F2F2F2; padding:1px 5px; border-radius:2px;}
+.meta{font:12px/1.5 var(--uf); color:var(--muted); margin:0 0 20px;}
+.scope-banner{border:1px solid var(--ink); border-left-width:4px; padding:12px 16px; margin:0 0 28px; background:#FAFAFA;}
+.scope-banner p{margin:0 0 6px; font-size:13px;}
+.scope-banner p:last-child{margin-bottom:0;}
+.scope-banner b{font-weight:500;}
+section{margin:0 0 44px; padding-top:28px; border-top:1px solid var(--border);}
+section:first-of-type{border-top:0; padding-top:0;}
+.pillbar{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px;}
+.pill{font:12px/1 var(--uf); padding:5px 10px; border:1px solid var(--border); color:var(--muted);}
+
+/* ---- finding ---- */
+.grounds{display:flex; gap:18px; align-items:center; margin:0 0 18px; flex-wrap:wrap;}
+.gnd{display:flex; align-items:center; gap:8px; font:12px/1 ui-monospace,monospace; color:var(--muted);}
+.gnd i{display:inline-block; width:22px; height:22px; border:1px solid var(--border);}
+#gnd-white{background:#FFFFFF;}
+#gnd-ink{background:#1A1A1A;}
+.finding-line{display:flex; gap:14px; margin:0 0 18px; align-items:flex-start;}
+.finding-line .num{font:500 13px/1 ui-monospace,monospace; color:#fff; background:var(--ink); width:22px; height:22px; display:flex; align-items:center; justify-content:center; flex:none; border-radius:50%;}
+.finding-line .body{flex:1;}
+.finding-line .body b{font-weight:500;}
+.swrow{display:flex; gap:20px; flex-wrap:wrap; margin:10px 0 4px;}
+.sw{display:flex; align-items:center; gap:8px; font:12px/1 ui-monospace,monospace;}
+.sw i{width:16px; height:16px; border:1px solid rgba(0,0,0,.15); flex:none;}
+.readout{font-weight:600;}
+.readout.pass{color:#1E7A46;}
+.readout.fail{color:#B0281A;}
+.boundbar{position:relative; height:34px; background:repeating-linear-gradient(45deg,#F6F6F6,#F6F6F6 6px,#EDEDED 6px,#EDEDED 12px); border:1px solid var(--border); margin:14px 0 6px; overflow:hidden;}
+.boundbar .seg{position:absolute; top:0; bottom:0; display:flex; align-items:center; font:11px/1 ui-monospace,monospace; color:#fff; padding-left:6px; white-space:nowrap;}
+.boundbar .seg.white-ok{left:0; background:#8C8C8C;}
+.boundbar .seg.ink-ok{background:#1A1A1A;}
+.boundbar-labels{display:flex; justify-content:space-between; font:11px/1.4 ui-monospace,monospace; color:var(--muted);}
+.gapnote{font:12px/1.5 var(--uf); color:#B0281A; margin:6px 0 0;}
+
+/* ---- amber grid (DC1) ---- */
+.ruled-ref{display:flex; align-items:center; gap:16px; padding:14px 16px; border:1px dashed var(--border); margin:0 0 18px; background:#FAFAFA;}
+.ruled-ref .amt{color:var(--rag-warning);}
+.ruled-ref .txt{font:13px/1.5 var(--uf); color:var(--muted);}
+.grid-amber{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px;}
+.amber-card{border:1px solid var(--border); padding:14px; display:flex; flex-direction:column; gap:8px; background:#fff;}
+.amber-card.is-picked{border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink);}
+.amber-card.is-control{border-style:dashed; background:#FAFAFA;}
+.amber-card .amt{font-size:16px;}
+.amber-card .hex{font:12px/1 ui-monospace,monospace; color:var(--muted);}
+.amber-card .stat{font:11px/1.6 ui-monospace,monospace; color:#333;}
+.amber-card .flag{font:11px/1.5 var(--uf); color:#8A5300; background:#F6E6C0; padding:3px 6px; display:none;}
+.amber-card.is-drift .flag{display:inline-block; width:fit-content;}
+.amber-card button{margin-top:4px; appearance:none; border:1px solid var(--ink); background:#fff; color:var(--ink); font:500 12px var(--uf); height:32px; padding:0 12px; cursor:pointer;}
+.amber-card.is-picked button{background:var(--ink); color:#fff;}
+.amber-card.is-control .noclick{font:11px/1.5 var(--uf); color:var(--muted); font-style:italic;}
+
+/* ---- restorations (DC2) ---- */
+.restore-row{display:flex; gap:0; border:1px solid var(--border); margin:0 0 16px;}
+.restore-half{flex:1; padding:16px; display:flex; flex-direction:column; gap:8px;}
+.restore-half.current{border-right:1px solid var(--border); background:#FAFAFA;}
+.restore-half .amt{font-size:20px;}
+.restore-half .hex{font:12px/1 ui-monospace,monospace; color:var(--muted);}
+.restore-half .stat{font:11px/1.6 ui-monospace,monospace;}
+.restore-actions{display:flex; align-items:center; gap:10px; padding:12px 16px; border-top:1px solid var(--border);}
+.restore-actions button{appearance:none; border:1px solid var(--ink); background:#fff; color:var(--ink); font:500 12px var(--uf); height:32px; padding:0 14px; cursor:pointer;}
+.restore-actions button.pick{background:var(--ink); color:#fff;}
+.restore-actions .src{font:11px/1.5 var(--uf); color:var(--muted); margin-left:auto; max-width:46ch;}
+
+/* ---- rung name (DC3) ---- */
+.rung-opts{display:flex; gap:14px; flex-wrap:wrap;}
+.rung-opt{flex:1 1 260px; border:1px solid var(--border); padding:16px; cursor:pointer; background:#fff;}
+.rung-opt.pick{border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink);}
+.rung-opt code{font-size:14px; display:block; margin-bottom:6px;}
+.rung-opt p{font-size:12px; margin:0;}
+.precedent{margin-top:14px; padding:12px 14px; background:#FAFAFA; border-left:3px solid var(--border); font:12px/1.6 var(--uf); color:#333;}
+
+/* ---- specimens ---- */
+.specimen-panels{display:flex; gap:16px; flex-wrap:wrap;}
+.panel{flex:1 1 480px; border:1px solid var(--border); padding:20px;}
+.panel.dark{background:#1A1A1A; border-color:#808080; color:#FFFFFF;}
+.panel h3{color:inherit; opacity:.7;}
+.money-block{margin:0 0 18px;}
+.money-block .lbl{font:11px/1.5 var(--uf); text-transform:uppercase; letter-spacing:.04em; opacity:.65; margin:0 0 8px;}
+.money-row{display:flex; gap:32px; flex-wrap:wrap; align-items:baseline; margin:0 0 6px;}
+.amount{display:inline-flex; align-items:baseline; white-space:nowrap; font-variant-numeric:tabular-nums; letter-spacing:-.005em;}
+.amount--display{letter-spacing:-.01em;}
+.placeholder-num{color:#999; font-style:italic; font-size:13px;}
+.panel.dark .placeholder-num{color:#777;}
+.ratio-line{display:flex; gap:22px; flex-wrap:wrap; font:11px/1.6 ui-monospace,monospace; opacity:.75; margin:2px 0 0;}
+
+.rag-chip{display:inline-flex; align-items:center; gap:7px; padding:6px 11px; border:1px solid; margin-right:10px;}
+.rag-chip .dot{width:9px; height:9px; border-radius:50%; flex:none;}
+.rag-chip.c-success{background:var(--ok-t-light); border-color:var(--rag-success);}
+.rag-chip.c-error{background:var(--err-t-light); border-color:var(--rag-error);}
+.panel.dark .rag-chip.c-success{background:var(--ok-t-dark);}
+.panel.dark .rag-chip.c-error{background:var(--err-t-dark);}
+.rag-chip .dot.d-success{background:var(--rag-success);}
+.rag-chip .dot.d-error{background:var(--rag-error);}
+.rag-chip span.val{color:var(--ink); font-variant-numeric:tabular-nums;}
+.panel.dark .rag-chip span.val{color:#FFFFFF;}
+
+/* ---- export bar ---- */
+.bar{position:sticky; bottom:0; display:flex; align-items:center; gap:14px; background:var(--ink); color:#fff; padding:14px 20px; margin:0 -2rem; flex-wrap:wrap;}
+.bar .state{font:12px/1.4 ui-monospace,monospace; opacity:.85;}
+.bar button{appearance:none; border:0; background:#fff; color:var(--ink); font:500 13px var(--font); height:36px; padding:0 18px; cursor:pointer;}
+.bar button.ghost{background:transparent; border:1px solid #fff; color:#fff;}
+textarea#out{width:100%; height:220px; margin-top:14px; font:11px/1.5 ui-monospace,monospace; display:none; border:1px solid var(--border); padding:10px;}
+
+@media (max-width:700px){
+  .wrap{padding:1.5rem 1rem 7rem;}
+  .bar{margin:0 -1rem; flex-direction:column; align-items:stretch;}
+  .restore-row{flex-direction:column;}
+  .restore-half.current{border-right:0; border-bottom:1px solid var(--border);}
+  h1{font-size:22px;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>RAG text rung — the coloured numeral needs its own value</h1>
+    <div class="meta">Session #144 · 2026-08-10 · triggered by <code>amount-display.sign</code> C4 (<code>s142-D1</code>), tension flagged <code>s143-D1(B)</code> · source token file: <code>knowledge/tokens/semantic-colour.json</code></div>
+    <div class="scope-banner">
+      <p><b>What this page is NOT:</b> it does not reopen <code>s122-D2</code> — the four RAG fills (success <code>#66CC8D</code> · error <code>#F6604C</code> · warning <code>#E0A61F</code> · information <code>#78A7E8</code>) and the <code>#1A1A1A</code> mark are settled. It does not touch the <code>amount-display.sign</code> bind — <code>s143-D1(B)</code> ruled it stands.</p>
+      <p><b>What this page is:</b> Dave, this session — <i>"the rag on status and wtc are fine its only the colourd text that is at issue."</i> One new rung, for coloured text only, is proposed below. Nothing is picked. Every option is a button; your click is the ruling.</p>
+    </div>
+  </header>
+
+  <!-- ============================================================ THE FINDING ============================================================ -->
+  <section id="finding">
+    <h3>The finding</h3>
+    <div class="grounds">
+      <span class="gnd"><i id="gnd-white"></i>#FFFFFF — page ground, light</span>
+      <span class="gnd"><i id="gnd-ink"></i>#1A1A1A — page ground, dark ("digital black")</span>
+    </div>
+
+    <div class="finding-line">
+      <span class="num">1</span>
+      <div class="body">
+        <b>The fills are settled.</b> As solid fills with the #1A1A1A mark, all four pass comfortably (that is <code>s122-D2</code>/<code>s134-D4</code>'s tint-shell + ink-glyph pattern, unchanged here). As <u>text on a page</u>, the exact same values fail badly:
+        <div class="swrow">
+          <span class="sw" data-measure data-ground="white" style="color:var(--rag-success)">■ success <code>#66CC8D</code> <span class="readout" data-readout>—</span></span>
+          <span class="sw" data-measure data-ground="white" style="color:var(--rag-error)">■ error <code>#F6604C</code> <span class="readout" data-readout>—</span></span>
+          <span class="sw" data-measure data-ground="white" style="color:var(--rag-warning)">■ warning <code>#E0A61F</code> <span class="readout" data-readout>—</span></span>
+          <span class="sw" data-measure data-ground="white" style="color:var(--rag-information)">■ information <code>#78A7E8</code> <span class="readout" data-readout>—</span></span>
+        </div>
+        <p style="margin:6px 0 0; font-size:12px;">all four vs white, live-computed above — none clear 4.5:1.</p>
+      </div>
+    </div>
+
+    <div class="finding-line">
+      <span class="num">2</span>
+      <div class="body">
+        <b>A mode-invariant AA-text value is arithmetically impossible.</b> Text on white needs relative luminance L ≤ <span id="upper-bound">—</span>; text on #1A1A1A needs L ≥ <span id="lower-bound">—</span> (both computed live from the two grounds above, WCAG 1.4.3 formula). The window between them is empty — <b>this is the one place mode-invariance cannot hold</b>, which is why a coloured-text rung has to be a separate, per-mode thing rather than an edit to the ruled fills.
+        <div class="boundbar" id="boundbar">
+          <div class="seg white-ok" id="seg-white">passes vs white →</div>
+          <div class="seg ink-ok" id="seg-ink">← passes vs #1A1A1A</div>
+        </div>
+        <div class="boundbar-labels"><span>L = 0</span><span>L = 1</span></div>
+        <p class="gapnote">the gap between the two bars is where a single value would need to sit to satisfy both grounds at once — there is nothing there.</p>
+      </div>
+    </div>
+
+    <div class="finding-line">
+      <span class="num">3</span>
+      <div class="body">
+        <b>Dark mode needs no new value.</b> The ruled fills already pass as text on #1A1A1A:
+        <div class="swrow" style="background:#1A1A1A; padding:10px 14px; margin-top:8px;">
+          <span class="sw" data-measure data-ground="ink" style="color:var(--rag-success)">■ success <span class="readout" data-readout>—</span></span>
+          <span class="sw" data-measure data-ground="ink" style="color:var(--rag-error)">■ error <span class="readout" data-readout>—</span></span>
+          <span class="sw" data-measure data-ground="ink" style="color:var(--rag-warning)">■ warning <span class="readout" data-readout>—</span></span>
+          <span class="sw" data-measure data-ground="ink" style="color:var(--rag-information)">■ information <span class="readout" data-readout>—</span></span>
+        </div>
+        <p style="margin:6px 0 0; font-size:12px;">so the mint below is <b>four light-mode values only.</b></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ DC1 — AMBER ============================================================ -->
+  <section id="dc1">
+    <h3>Decision control 1 — the amber (the only real choice)</h3>
+    <h2>Warning text — six candidates</h2>
+    <p>Success, error and information all have a previously-ruled value to restore (control 2). Warning does not: its retired glyph value <code>#C58900</code> was carved out by <code>R-D3</code> as <i>"not a text colour"</i> and fails outright. Amber is also one of Dave's two unstable hues (astigmatic — blue and green read stable for him, red and yellow do not), and this repo has a standing record of ambers drifting towards brown under adjustment — <code>_RAG-DECISIONS.md</code>: <i>"Dave lifted the warning-dark seed … to keep it reading amber, not brown"</i>, and a later ladder was rejected for running <i>"back toward the brown Dave rejected."</i> So hue distance from the ruled fill is shown on every candidate below, not just contrast.</p>
+
+    <div class="ruled-ref">
+      <span class="amt t-cm-figure-5" data-measure data-ground="white" data-hueref id="ruled-warning-num">£1,204.00</span>
+      <span class="txt">ruled fill <code>#E0A61F</code> shown AS TEXT for reference only — <b>not a candidate, not being changed.</b> hue <span id="ruled-hue">—</span> · vs white <span class="readout" data-readout data-for="ruled-warning-num">—</span></span>
+    </div>
+
+    <div class="grid-amber" id="amber-grid"></div>
+  </section>
+
+  <!-- ============================================================ DC2 — RESTORATIONS ============================================================ -->
+  <section id="dc2">
+    <h3>Decision control 2 — confirm the three restorations</h3>
+    <h2>Success, error, information — previously-ruled values, proposed as text</h2>
+    <p>All three are values Dave has already ruled at some point, then retired when the fill moved. They live on in the token file's own <code>$note</code> fields. Restoring them here does not touch the fill — it only proposes them for the new text-only rung.</p>
+    <div id="restore-rows"></div>
+  </section>
+
+  <!-- ============================================================ DC3 — RUNG NAME ============================================================ -->
+  <section id="dc3">
+    <h3>Decision control 3 — the rung's name</h3>
+    <h2>What do we call it?</h2>
+    <p>Two spellings. Pick one, or come back to it — export works either way.</p>
+    <div class="rung-opts" id="rung-opts">
+      <div class="rung-opt" data-v="text"><code>rag.&lt;hue&gt;-text</code><p>Names the JOB (this value's use is text). Matches the pattern's own description throughout this page.</p></div>
+      <div class="rung-opt" data-v="ink"><code>rag.&lt;hue&gt;-ink</code><p>Names the ROLE, matching the existing <code>ink</code> vocabulary elsewhere in the store.</p></div>
+    </div>
+    <div class="precedent"><b>Precedent this has form:</b> <code>text.on-information</code> was minted at <code>s131-D1</code> as a severity-specific ink slot — verbatim from the token file: <i>"MINTED as the severity-specific info ink slot so themes with a DARK info fill (legacy #305A85) can reverse text/marks to white without touching on-light (which warning must keep dark)."</i> Minting a dedicated ink/text rung for a specific need, without touching the base value, is already an established move in this store — this would be the second.</div>
+  </section>
+
+  <!-- ============================================================ SPECIMENS ============================================================ -->
+  <section id="specimens">
+    <h3>Specimens — alive, both surfaces</h3>
+    <h2>amount-display, real rows: positive, negative, zero</h2>
+    <p>The realistic case. <code>amount-display.sign</code>: <code>none → rag.success</code> (covers both the positive row and the zero row — that pairing is the existing, unchanged bind, not something introduced here), <code>negative → rag.error</code>. Tabular lining figures, U+2212 minus, real sizes (<code>.t-cm-figure-4</code> display / <code>.t-cm-figure-5</code> default).</p>
+
+    <div class="specimen-panels">
+      <div class="panel light">
+        <h3>Light — this is what's being decided</h3>
+
+        <div class="money-block">
+          <div class="lbl">as enacted now (fails AA)</div>
+          <div class="money-row">
+            <span class="amount amount--display t-cm-figure-4" id="light-cur-pos" data-measure data-ground="white" style="color:var(--rag-success)"><span class="amount__cur">£</span><span class="amount__val">3,248.55</span></span>
+            <span class="amount amount--display t-cm-figure-4" id="light-cur-neg" data-measure data-ground="white" style="color:var(--rag-error)"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">842.10</span></span>
+            <span class="amount amount--display t-cm-figure-4" id="light-cur-zero" data-measure data-ground="white" style="color:var(--rag-success)"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span>
+          </div>
+          <div class="ratio-line">
+            <span>positive <span class="readout" data-readout data-for="light-cur-pos">—</span></span>
+            <span>negative <span class="readout" data-readout data-for="light-cur-neg">—</span></span>
+            <span>zero <span class="readout" data-readout data-for="light-cur-zero">—</span></span>
+          </div>
+        </div>
+
+        <div class="money-block">
+          <div class="lbl">your pick (from controls 1 &amp; 2 above)</div>
+          <div class="money-row" id="light-pick-row">
+            <span class="placeholder-num">— pick success restoration in control 2 —</span>
+            <span class="placeholder-num">— pick error restoration in control 2 —</span>
+            <span class="placeholder-num">— (zero follows the success pick) —</span>
+          </div>
+          <div class="ratio-line" id="light-pick-ratios"></div>
+        </div>
+
+        <div class="money-block">
+          <div class="lbl">dense row · .t-cm-figure-5, 16px — as enacted now</div>
+          <div class="money-row">
+            <span class="amount t-cm-figure-5" data-measure data-ground="white" style="color:var(--rag-success)"><span class="amount__cur">£</span><span class="amount__val">12,000.00</span></span>
+            <span class="amount t-cm-figure-5" data-measure data-ground="white" style="color:var(--rag-error)"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">48.50</span></span>
+          </div>
+        </div>
+
+        <div class="money-block">
+          <div class="lbl">the alternative that needs no new rung — tint + ink chip (mirrors Alert, <code>s134-D4</code>)</div>
+          <div class="money-row">
+            <span class="rag-chip c-success"><i class="dot d-success"></i><span class="val amount t-cm-figure-6"><span class="amount__cur">£</span><span class="amount__val">3,248.55</span></span></span>
+            <span class="rag-chip c-error"><i class="dot d-error"></i><span class="val amount t-cm-figure-6"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">842.10</span></span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel dark">
+        <h3>Dark — already fine, no new value needed</h3>
+        <div class="money-block">
+          <div class="lbl">ruled fills, used directly as text on #1A1A1A</div>
+          <div class="money-row">
+            <span class="amount amount--display t-cm-figure-4" id="dark-cur-pos" data-measure data-ground="ink" style="color:var(--rag-success)"><span class="amount__cur">£</span><span class="amount__val">3,248.55</span></span>
+            <span class="amount amount--display t-cm-figure-4" id="dark-cur-neg" data-measure data-ground="ink" style="color:var(--rag-error)"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">842.10</span></span>
+            <span class="amount amount--display t-cm-figure-4" id="dark-cur-zero" data-measure data-ground="ink" style="color:var(--rag-success)"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span>
+          </div>
+          <div class="ratio-line">
+            <span>positive <span class="readout" data-readout data-for="dark-cur-pos">—</span></span>
+            <span>negative <span class="readout" data-readout data-for="dark-cur-neg">—</span></span>
+            <span>zero <span class="readout" data-readout data-for="dark-cur-zero">—</span></span>
+          </div>
+        </div>
+        <div class="money-block">
+          <div class="lbl">dense row · .t-cm-figure-5, 16px</div>
+          <div class="money-row">
+            <span class="amount t-cm-figure-5" data-measure data-ground="ink" style="color:var(--rag-success)"><span class="amount__cur">£</span><span class="amount__val">12,000.00</span></span>
+            <span class="amount t-cm-figure-5" data-measure data-ground="ink" style="color:var(--rag-error)"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">48.50</span></span>
+          </div>
+        </div>
+        <div class="money-block">
+          <div class="lbl">tint + ink chip, dark</div>
+          <div class="money-row">
+            <span class="rag-chip c-success"><i class="dot d-success"></i><span class="val amount t-cm-figure-6"><span class="amount__cur">£</span><span class="amount__val">3,248.55</span></span></span>
+            <span class="rag-chip c-error"><i class="dot d-error"></i><span class="val amount t-cm-figure-6"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">842.10</span></span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:30px;">Information — illustrative (not a live bind)</h2>
+    <p><code>information</code> is not part of <code>amount-display.sign</code> today. Shown at the same tabular composite purely to preview the restoration's legibility, in case a future consumer needs it.</p>
+    <div class="money-row">
+      <span class="amount t-cm-figure-5" data-measure data-ground="white" style="color:var(--rag-information)">as enacted <span class="amount__cur">GBP</span><span class="amount__val">12,000.00</span></span>
+      <span class="amount t-cm-figure-5" id="info-pick-num" style="color:#999">— pick information restoration in control 2 —</span>
+    </div>
+    <div class="ratio-line" id="info-ratios"></div>
+  </section>
+
+  <textarea id="out" readonly></textarea>
+</div>
+
+<div class="bar">
+  <span class="state" id="state">0 of 5 decisions made</span>
+  <button id="export">Export picks</button>
+  <button class="ghost" id="copy">Copy JSON</button>
+</div>
+
+<script>
+/* ---------- colour utils — everything below reads RENDERED colour, nothing is a typed-in ratio ---------- */
+function parseRgb(str){
+  const m = str.match(/rgba?\(([^)]+)\)/);
+  if(!m) return [0,0,0];
+  return m[1].split(',').slice(0,3).map(s=>parseFloat(s));
+}
+function relLum([r,g,b]){
+  const f = v => { v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); };
+  return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b);
+}
+function contrastRgb(a,b){
+  const la=relLum(a), lb=relLum(b);
+  const hi=Math.max(la,lb), lo=Math.min(la,lb);
+  return (hi+0.05)/(lo+0.05);
+}
+function hueRgb([r,g,b]){
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h=0;
+  if(max!==min){
+    const d=max-min;
+    if(max===r) h = ((g-b)/d + (g<b?6:0));
+    else if(max===g) h = (b-r)/d + 2;
+    else h = (r-g)/d + 4;
+    h*=60;
+  }
+  return h;
+}
+function fmtRatio(r){ return r.toFixed(2)+':1'+(r>=4.5?' PASS':' FAIL'); }
+
+let WHITE_RGB, INK_RGB, UPPER_BOUND, LOWER_BOUND, RULED_WARNING_HUE;
+
+function computeGrounds(){
+  WHITE_RGB = parseRgb(getComputedStyle(document.getElementById('gnd-white')).backgroundColor);
+  INK_RGB   = parseRgb(getComputedStyle(document.getElementById('gnd-ink')).backgroundColor);
+  const Lw = relLum(WHITE_RGB), Li = relLum(INK_RGB);
+  UPPER_BOUND = (Lw+0.05)/4.5 - 0.05;
+  LOWER_BOUND = 4.5*(Li+0.05) - 0.05;
+  document.getElementById('upper-bound').textContent = UPPER_BOUND.toFixed(4);
+  document.getElementById('lower-bound').textContent = LOWER_BOUND.toFixed(4);
+  document.getElementById('seg-white').style.width = (UPPER_BOUND*100).toFixed(2)+'%';
+  document.getElementById('seg-ink').style.left = (LOWER_BOUND*100).toFixed(2)+'%';
+  document.getElementById('seg-ink').style.right = '0';
+}
+
+function measureAll(){
+  document.querySelectorAll('[data-measure]').forEach(el=>{
+    const ground = el.dataset.ground==='ink' ? INK_RGB : WHITE_RGB;
+    const fg = parseRgb(getComputedStyle(el).color);
+    const ratio = contrastRgb(fg, ground);
+    const out = (el.id && document.querySelector('[data-for="'+el.id+'"]')) || el.querySelector('[data-readout]');
+    if(out){ out.textContent = fmtRatio(ratio); out.classList.add(ratio>=4.5?'pass':'fail'); }
+    el.dataset.ratio = ratio.toFixed(2);
+    if(el.hasAttribute('data-hueref')){
+      RULED_WARNING_HUE = hueRgb(fg);
+      document.getElementById('ruled-hue').textContent = RULED_WARNING_HUE.toFixed(1)+'°';
+    }
+  });
+}
+
+/* ---------- DC1: amber candidates ---------- */
+const AMBER_CANDIDATES = [
+  {id:'a1', hex:'#8A6510'},
+  {id:'a2', hex:'#7A5A0F'},
+  {id:'a3', hex:'#946A00'},
+  {id:'a4', hex:'#8B5E00'},
+  {id:'a5', hex:'#A15C00'},
+  {id:'a6', hex:'#7C4A02'},
+  {id:'control', hex:'#C58900', control:true}
+];
+
+function renderAmberGrid(){
+  const grid = document.getElementById('amber-grid');
+  AMBER_CANDIDATES.forEach(c=>{
+    const card = document.createElement('div');
+    card.className = 'amber-card' + (c.control ? ' is-control' : '');
+    card.id = 'card-'+c.id;
+    card.innerHTML = `
+      <span class="amt t-cm-figure-5" data-measure data-ground="white" style="color:${c.hex}">£1,204.00</span>
+      <span class="hex">${c.hex}${c.control ? ' — retired warning-glyph value (R-D3)' : ''}</span>
+      <span class="stat">vs white <span class="readout" data-readout>—</span></span>
+      <span class="stat">hue <span class="hueval">—</span> · &Delta; from ruled <span class="huedelta">—</span>&deg;</span>
+      <span class="flag">brown-drift risk — hue sits further from the ruled 42&deg; than the other candidates</span>
+      ${c.control ? '<span class="noclick">CONTROL — fails AA, not one of the six candidates. Shown so the six above have something to fail against.</span>' : '<button data-pick="'+c.id+'">Pick '+c.id+'</button>'}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function measureAmberGrid(){
+  AMBER_CANDIDATES.forEach(c=>{
+    const card = document.getElementById('card-'+c.id);
+    const numEl = card.querySelector('.amt');
+    const fg = parseRgb(getComputedStyle(numEl).color);
+    const ratio = contrastRgb(fg, WHITE_RGB);
+    const hue = hueRgb(fg);
+    card.querySelector('[data-readout]').textContent = fmtRatio(ratio);
+    card.querySelector('[data-readout]').classList.add(ratio>=4.5?'pass':'fail');
+    card.querySelector('.hueval').textContent = hue.toFixed(1)+'°';
+    const delta = Math.abs(hue - RULED_WARNING_HUE);
+    card.querySelector('.huedelta').textContent = delta.toFixed(1);
+    if(delta > 5 && !c.control) card.classList.add('is-drift');
+  });
+}
+
+/* ---------- DC2: restorations ---------- */
+const RESTORE_DEFS = [
+  {key:'success', label:'Success', current:'var(--rag-success)', currentHex:'#66CC8D', restore:'var(--restore-success)', restoreHex:'#2B7E4F',
+   src:'R-D18 — success-glyph $note, "graphic-strength success green — on-page indicator."'},
+  {key:'error', label:'Error', current:'var(--rag-error)', currentHex:'#F6604C', restore:'var(--restore-error)', restoreHex:'#B92F1E',
+   src:'R-D14 — error-background $note, "mode-stable #B92F1E, WHITE text."'},
+  {key:'information', label:'Information', current:'var(--rag-information)', currentHex:'#78A7E8', restore:'var(--restore-information)', restoreHex:'#306EC6',
+   src:'R-D4 (origin) / R-D20 (retired it when the bare role rebased to the glyph) — information $note.'}
+];
+
+function renderRestoreRows(){
+  const host = document.getElementById('restore-rows');
+  RESTORE_DEFS.forEach(r=>{
+    const row = document.createElement('div');
+    row.innerHTML = `
+      <div class="restore-row">
+        <div class="restore-half current">
+          <div class="lbl" style="font:11px var(--uf); text-transform:uppercase; color:var(--muted);">as enacted now</div>
+          <span class="amt amount t-cm-figure-4" id="restore-${r.key}-current" data-measure data-ground="white" style="color:${r.current}"><span class="amount__cur">£</span><span class="amount__val">1,000.00</span></span>
+          <span class="hex">${r.currentHex}</span>
+          <span class="stat">vs white <span class="readout" data-readout data-for="restore-${r.key}-current">—</span></span>
+        </div>
+        <div class="restore-half">
+          <div class="lbl" style="font:11px var(--uf); text-transform:uppercase; color:var(--muted);">restored</div>
+          <span class="amt amount t-cm-figure-4" id="restore-${r.key}-restored" data-measure data-ground="white" style="color:${r.restore}"><span class="amount__cur">£</span><span class="amount__val">1,000.00</span></span>
+          <span class="hex">${r.restoreHex}</span>
+          <span class="stat">vs white <span class="readout" data-readout data-for="restore-${r.key}-restored">—</span></span>
+        </div>
+      </div>
+      <div class="restore-actions" id="actions-${r.key}">
+        <button data-restore-pick="restore" data-key="${r.key}">Restore ${r.restoreHex}</button>
+        <button data-restore-pick="keep" data-key="${r.key}">Keep current (fails)</button>
+        <span class="src">${r.src}</span>
+      </div>
+    `;
+    host.appendChild(row);
+  });
+}
+
+/* ---------- state + wiring ---------- */
+const state = { amber:null, restore:{success:null, error:null, information:null}, rungName:null };
+
+function countDecisions(){
+  let n = 0;
+  if(state.amber) n++;
+  if(state.restore.success) n++;
+  if(state.restore.error) n++;
+  if(state.restore.information) n++;
+  if(state.rungName) n++;
+  return n;
+}
+function paintBar(){ document.getElementById('state').textContent = countDecisions()+' of 5 decisions made'; }
+
+function wireAmberPicks(){
+  AMBER_CANDIDATES.filter(c=>!c.control).forEach(c=>{
+    const btn = document.querySelector(`[data-pick="${c.id}"]`);
+    btn.addEventListener('click', ()=>{
+      state.amber = c;
+      document.querySelectorAll('.amber-card').forEach(el=>el.classList.remove('is-picked'));
+      document.getElementById('card-'+c.id).classList.add('is-picked');
+      paintBar();
+    });
+  });
+}
+
+function wireRestorePicks(){
+  document.querySelectorAll('[data-restore-pick]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key = btn.dataset.key, v = btn.dataset.restorePick;
+      state.restore[key] = v;
+      const wrap = document.getElementById('actions-'+key);
+      wrap.querySelectorAll('button').forEach(b=>b.classList.toggle('pick', b===btn));
+      paintBar();
+      updateSpecimenPreview();
+    });
+  });
+}
+
+function wireRungOpts(){
+  document.querySelectorAll('.rung-opt').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      state.rungName = opt.dataset.v;
+      document.querySelectorAll('.rung-opt').forEach(o=>o.classList.toggle('pick', o===opt));
+      paintBar();
+    });
+  });
+}
+
+function updateSpecimenPreview(){
+  const row = document.getElementById('light-pick-row');
+  const ratios = document.getElementById('light-pick-ratios');
+  const cells = [];
+  const ratioCells = [];
+
+  function amtSpan(hex, inner){
+    return `<span class="amount amount--display t-cm-figure-4" data-live-color="${hex}" style="color:${hex}">${inner}</span>`;
+  }
+
+  if(state.restore.success === 'restore'){
+    cells.push(amtSpan('#2B7E4F','<span class="amount__cur">£</span><span class="amount__val">3,248.55</span>'));
+  } else {
+    cells.push('<span class="placeholder-num">— pick success restoration in control 2 —</span>');
+  }
+  if(state.restore.error === 'restore'){
+    cells.push(amtSpan('#B92F1E','<span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">842.10</span>'));
+  } else {
+    cells.push('<span class="placeholder-num">— pick error restoration in control 2 —</span>');
+  }
+  if(state.restore.success === 'restore'){
+    cells.push(amtSpan('#2B7E4F','<span class="amount__cur">£</span><span class="amount__val">0.00</span>'));
+  } else {
+    cells.push('<span class="placeholder-num">— (zero follows the success pick) —</span>');
+  }
+  row.innerHTML = cells.join('');
+
+  const readouts = [];
+  row.querySelectorAll('[data-live-color]').forEach((el,i)=>{
+    const fg = parseRgb(getComputedStyle(el).color);
+    const ratio = contrastRgb(fg, WHITE_RGB);
+    readouts.push(fmtRatio(ratio));
+  });
+  ratios.textContent = readouts.length ? readouts.join('   ') : '';
+
+  // information illustrative preview
+  const infoNum = document.getElementById('info-pick-num');
+  const infoRatios = document.getElementById('info-ratios');
+  if(state.restore.information === 'restore'){
+    infoNum.style.color = '#306EC6';
+    infoNum.textContent = 'restored GBP12,000.00';
+    const fg = parseRgb(getComputedStyle(infoNum).color);
+    infoRatios.textContent = 'vs white ' + fmtRatio(contrastRgb(fg, WHITE_RGB));
+  } else {
+    infoNum.style.color = '#999';
+    infoNum.textContent = '— pick information restoration in control 2 —';
+    infoRatios.textContent = '';
+  }
+}
+
+/* ---------- export ---------- */
+function payload(){
+  const amberMeasured = state.amber ? {
+    id: state.amber.id, hex: state.amber.hex,
+    contrastVsWhite: document.getElementById('card-'+state.amber.id).dataset.ratio
+  } : null;
+  return JSON.stringify({
+    session: 's144', date: '2026-08-10',
+    subject: 'RAG text rung — Dave\'s picks',
+    source: 'reviews/RAG-TEXT-RUNG-2026-08-10-s144-v1.html',
+    doesNotReopen: ['s122-D2 (fills, mark)', 'amount-display.sign bind (s143-D1(B))'],
+    picks: {
+      warningText: amberMeasured,
+      restoreSuccess: state.restore.success,
+      restoreError: state.restore.error,
+      restoreInformation: state.restore.information,
+      rungName: state.rungName ? ('rag.<hue>-' + state.rungName) : null
+    },
+    reference: {
+      currentFailingValues: {success:'#66CC8D', error:'#F6604C', warning:'#E0A61F', information:'#78A7E8'},
+      restorationValues: {success:'#2B7E4F', error:'#B92F1E', information:'#306EC6'},
+      amberCandidates: AMBER_CANDIDATES.filter(c=>!c.control).map(c=>{
+        const card = document.getElementById('card-'+c.id);
+        return {id:c.id, hex:c.hex, contrastVsWhite:card.dataset.ratio, hue:card.querySelector('.hueval').textContent};
+      }),
+      amberControl: {hex:'#C58900', note:'fails AA, retired warning-glyph value, R-D3'}
+    }
+  }, null, 1);
+}
+
+document.getElementById('export').addEventListener('click', ()=>{
+  const out = document.getElementById('out');
+  out.style.display = 'block';
+  out.value = payload();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out.value], {type:'application/json'}));
+  a.download = 'RAG-TEXT-RUNG-VERDICTS-2026-08-10-s144.json';
+  a.click();
+});
+document.getElementById('copy').addEventListener('click', ()=>{
+  const out = document.getElementById('out');
+  out.style.display = 'block';
+  out.value = payload();
+  out.select();
+  document.execCommand('copy');
+});
+
+/* ---------- boot ---------- */
+computeGrounds();
+measureAll();
+renderAmberGrid();
+renderRestoreRows();
+measureAll();          // second pass: also measures the just-rendered restore-row + amber-grid [data-measure] nodes
+measureAmberGrid();
+wireAmberPicks();
+wireRestorePicks();
+wireRungOpts();
+updateSpecimenPreview();
+paintBar();
+</script>
+</body>
+</html>

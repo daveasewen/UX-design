@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plus/minus coloured text tuner v2 — ground selector, two-way contrast, hard gamut guard (s144)</title>
+<!--
+  PLUSMINUS TUNER v2 — session #144, 2026-08-10. BUILD-ONLY sub, second pass.
+  Predecessor: reviews/PLUSMINUS-TUNER-2026-08-10-s144-v1.html (kept, not overwritten — this is an
+  addition, versioned). Same scope as v1: RED (minus) and GREEN (plus) coloured TEXT only, hue locked,
+  no hue affordance. Does NOT reopen s122-D2 (the four RAG fills + #1A1A1A mark) or the
+  amount-display.sign bind (s143-D1(B)).
+
+  THREE ADDITIONS this pass, all from Dave's second tuning session:
+
+  1. GROUND SELECTOR — Dave: "see the tuner on #f1f1f1." amount-display's own purpose text names
+     "transaction rows to data-grid numeric cells", so a tinted/hovered/selected row is the ordinary
+     case, not an edge case. One control now drives the light cells + every light specimen AND (paired)
+     the dark cells + every dark specimen. Defaults to "selected row" (#F1F1F1), per Dave's ask.
+
+  2. CONTRAST READ TWO WAYS — every cell now shows contrast against the CURRENTLY SELECTED ground
+     *and* against the WORST ground in an enabled set, simultaneously, both against AA 4.5 / AAA 7.
+     A value that passes on the selected ground but fails on the worst one is flagged loudly — that
+     divergence is what sent v1 back. Dave can include/exclude any of the six grounds from the worst-set.
+
+  3. HARD GAMUT GUARD — v1's real defect: green-light's OKLCH slider could clip and the naive
+     per-channel RGB clamp silently moved the hue +6.84° (142.94°→149.78°) while `gamutClipped` sat
+     true in the export and nothing chased it. Fixed here by clamping CHROMA at the gamut boundary
+     ALONG THE LOCKED HUE (binary search, CSS-Color-4-style) before ever computing RGB, so the
+     rendered hue cannot move — verified by mutation test (see build report): the naive method drifts
+     up to -12° past the boundary; this method holds drift under ~0.15° (float/round-trip noise) even
+     when the requested chroma is 2x the gamut ceiling. A live HUE DRIFT readout (never hidden) proves
+     it per cell, and the slider's own ceiling adapts to the current lightness so it cannot be dragged
+     into a drifting state in the first place.
+
+  NEW SEEDS this pass (Dave's second tuning pass, supersedes v1's): red-light #D53A25 (4.707:1 on its
+  own ground), red-dark #F6604C (5.55:1, unchanged from v1), green-light #1F8446 (4.722:1), green-dark
+  #66CC8D (8.774:1, unchanged from v1). Locked hues unchanged: red 7.0588° HSB / 30.2375° OKLCH; green
+  142.9412° HSB / 154.5908° OKLCH — re-derived live below, and this time the brief's stated figures
+  match the re-derivation EXACTLY (v1 had flagged a small delta; resolved).
+
+  Nothing on this page is chosen for Dave. Every slider ships at its seed. Reset returns to the seed.
+-->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+:root{
+  --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease:140ms ease;
+  --page:#FFFFFF; --ink:#1A1A1A; --border:#E1E1E1; --muted:#5B5B5B;
+  --pass:#1E7A46; --fail:#B0281A; --fail-tint:#FDECEA;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--page); color:var(--ink); font-family:var(--font); -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px; margin:0 auto; padding:2.25rem 2rem 8rem;}
+h1{font-family:var(--uf); font-size:26px; line-height:1.2; font-weight:400; margin:0 0 6px;}
+h2{font-family:var(--uf); font-size:19px; font-weight:500; margin:0 0 4px;}
+h3{font-family:var(--uf); font-size:14px; font-weight:500; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:0 0 10px;}
+p{font-family:var(--uf); font-size:14px; line-height:1.55; color:#333; margin:0 0 10px; max-width:78ch;}
+code{font:12px/1.4 ui-monospace,"SF Mono",Menlo,Consolas,monospace; background:#F2F2F2; padding:1px 5px; border-radius:2px;}
+.meta{font:12px/1.5 var(--uf); color:var(--muted); margin:0 0 20px;}
+.scope-banner{border:1px solid var(--ink); border-left-width:4px; padding:12px 16px; margin:0 0 28px; background:#FAFAFA;}
+.scope-banner p{margin:0 0 6px; font-size:13px;}
+.scope-banner p:last-child{margin-bottom:0;}
+.scope-banner b{font-weight:500;}
+section{margin:0 0 44px; padding-top:28px; border-top:1px solid var(--border);}
+section:first-of-type{border-top:0; padding-top:0;}
+
+/* ---- rationale + hue-check callout ---- */
+.rationale{border:1px dashed var(--border); padding:14px 16px; background:#FAFAFA; margin:0 0 16px;}
+.rationale p{margin:0 0 8px; font-size:13px;}
+.rationale p:last-child{margin-bottom:0;}
+.hue-check{border:1px solid var(--border); padding:12px 16px; font:12px/1.6 ui-monospace,monospace; color:#333; background:#fff; margin:0 0 8px;}
+.hue-check b{font-family:var(--font); font-weight:500; font-size:13px; display:block; margin-bottom:4px;}
+.grounds{display:flex; gap:18px; align-items:center; margin:0 0 14px; flex-wrap:wrap;}
+.gnd{display:flex; align-items:center; gap:8px; font:12px/1 ui-monospace,monospace; color:var(--muted);}
+.gnd i{display:inline-block; width:22px; height:22px; border:1px solid var(--border);}
+#gnd-white{background:#FFFFFF;}
+#gnd-ink{background:#1A1A1A;}
+.impossible-line{font:12px/1.6 ui-monospace,monospace; color:var(--muted); margin:0 0 4px;}
+
+/* ---- model toggle ---- */
+.model-toggle{display:inline-flex; border:1px solid var(--ink); margin:0 0 20px;}
+.model-toggle button{appearance:none; border:0; background:#fff; color:var(--ink); font:500 13px var(--font); height:36px; padding:0 20px; cursor:pointer;}
+.model-toggle button.active{background:var(--ink); color:#fff;}
+.model-toggle-note{font:12px/1.5 var(--font); color:var(--muted); margin:-12px 0 20px;}
+
+/* ---- ground selector ---- */
+.ground-toggle{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 12px;}
+.ground-btn{appearance:none; border:1px solid var(--border); background:#fff; color:var(--ink); font:500 12px var(--font); padding:8px 12px; cursor:pointer; display:flex; align-items:center; gap:8px; text-align:left;}
+.ground-btn .sw{width:15px; height:15px; border:1px solid rgba(0,0,0,.25); flex:none; display:inline-block;}
+.ground-btn.active{border-color:var(--ink); border-width:2px; padding:7px 11px; font-weight:600; background:#FAFAFA;}
+.ground-btn .role-hex{font:10px ui-monospace,monospace; color:var(--muted);}
+.ground-provenance{margin:0 0 20px;}
+.ground-provenance summary{font:12px var(--font); color:var(--muted); cursor:pointer; margin:0 0 8px;}
+.ground-provenance ul{margin:0; padding-left:18px; font:11px/1.7 ui-monospace,monospace; color:#333;}
+.ground-provenance li{margin:0 0 4px;}
+.approx-mark{color:var(--fail); font-weight:700;}
+
+/* ---- worst-ground set ---- */
+.worst-panel{display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:0 0 18px; padding:10px 12px; border:1px solid var(--border); background:#fff;}
+.worst-panel b{font:500 12px var(--font); flex:none;}
+.worst-check{display:flex; align-items:center; gap:5px; font:12px ui-monospace,monospace; color:var(--muted); cursor:pointer;}
+.worst-check input{margin:0;}
+.worst-check .sw{width:12px; height:12px; border:1px solid rgba(0,0,0,.25); display:inline-block;}
+
+/* ---- tuner grid ---- */
+.tuner-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+.cell{border:1px solid var(--border); padding:16px; position:relative; transition:outline-color var(--ease), background var(--ease);}
+.cell.is-fail-aa{outline:3px solid var(--fail); outline-offset:-3px; background:var(--fail-tint);}
+.cell.is-divergent{outline:3px solid var(--fail); outline-offset:-3px;}
+.cell.is-drift-alarm{outline:3px dashed var(--fail); outline-offset:-7px;}
+.cell-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 4px;}
+.cell-head h3{margin:0;}
+.ground-chip{font:11px/1 ui-monospace,monospace; padding:4px 8px; border:1px solid var(--border); background:var(--chip-bg); color:var(--chip-fg); flex:none;}
+.fail-flag,.divergent-flag,.drift-flag{display:none; align-items:center; gap:6px; background:var(--fail); color:#fff; font:600 12px var(--font); padding:4px 10px; margin:0 0 8px; width:fit-content;}
+.cell.is-fail-aa .fail-flag{display:inline-flex;}
+.cell.is-divergent .divergent-flag{display:inline-flex;}
+.cell.is-drift-alarm .drift-flag{display:inline-flex;}
+.swatch-wrap{display:flex; align-items:center; justify-content:center; min-height:88px; border:1px solid var(--border); margin:0 0 12px;}
+.swatch-wrap .amount{font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+.hue-lock-row{font:11px/1.6 ui-monospace,monospace; color:var(--muted); margin:0 0 4px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+.hue-drift-row{font:11px/1.6 ui-monospace,monospace; color:var(--muted); margin:0 0 10px; padding:4px 8px; border:1px solid var(--border); background:#FAFAFA;}
+.hue-drift-row.alarm{border-color:var(--fail); background:var(--fail-tint);}
+.hue-drift-row [data-drift-metric]{opacity:.55;}
+.hue-drift-row [data-drift-metric].is-guarded{opacity:1; font-weight:700; color:var(--ink);}
+.hue-drift-row.alarm [data-drift-metric].is-guarded{color:var(--fail);}
+.drift-guard-note{display:block; margin-top:2px; font-size:10px;}
+.lock-ic{font-size:12px;}
+.ctl-group{margin:0 0 10px;}
+.oklch-ctl{display:none;}
+body.model-oklch .hsb-ctl{display:none;}
+body.model-oklch .oklch-ctl{display:block;}
+.slider-row{margin:0 0 10px;}
+.slider-row label{display:flex; justify-content:space-between; font:12px/1.4 var(--font); color:var(--ink); margin:0 0 4px; flex-wrap:wrap; gap:4px;}
+.slider-row label span{font:11px/1.4 ui-monospace,monospace; color:var(--muted);}
+.slider-row input[type="range"]{width:100%; accent-color:var(--ink);}
+.also-readout{font:11px/1.6 ui-monospace,monospace; color:var(--muted); margin:0 0 10px; display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
+.also-label{text-transform:uppercase; letter-spacing:.04em;}
+.clip-chip{background:#F6E6C0; color:#5A4300; padding:2px 6px; font:11px var(--font);}
+.contrast-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin:0 0 6px; padding:8px 10px; background:#fff; border:1px solid var(--border);}
+.contrast-row.worst{background:#FAFAFA;}
+.contrast-row .cr-label{width:100%; font:11px var(--font); text-transform:uppercase; letter-spacing:.03em; color:var(--muted);}
+.contrast-row .cr-label code{font:11px ui-monospace,monospace; color:var(--ink); font-weight:600; background:transparent; padding:0;}
+.ratio-big{font:600 22px/1 ui-monospace,monospace; color:var(--ink);}
+.ratio-big.fail{color:var(--fail);}
+.ratio-suffix{font:12px ui-monospace,monospace; color:var(--muted);}
+.thresh-chip{font:11px/1.4 ui-monospace,monospace; padding:2px 7px; border:1px solid var(--border);}
+.thresh-chip.pass{color:var(--pass); border-color:var(--pass);}
+.thresh-chip.fail{color:var(--fail); border-color:var(--fail); font-weight:600;}
+.hex-row{font:12px/1.6 ui-monospace,monospace; color:var(--muted); margin:0 0 10px;}
+.hex-row code{font-weight:600; color:var(--ink);}
+.traj{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font:11px/1.5 ui-monospace,monospace; color:var(--muted); margin:0 0 10px; padding:8px 10px; background:#FAFAFA; border:1px solid var(--border);}
+.ba-item{display:flex; align-items:center; gap:6px;}
+.ba-lbl{text-transform:uppercase; letter-spacing:.03em; font-size:10px;}
+.ba-sw{width:14px; height:14px; border:1px solid rgba(0,0,0,.2); flex:none; display:inline-block;}
+.ba-arrow{color:var(--muted);}
+.ba-delta{margin-left:auto; font-style:italic;}
+.reset-btn{appearance:none; border:1px solid var(--ink); background:#fff; color:var(--ink); font:500 12px var(--font); height:32px; padding:0 14px; cursor:pointer; width:100%;}
+.reset-btn:hover{background:var(--ink); color:#fff;}
+
+/* ---- specimens ---- */
+.specimen-panels{display:flex; gap:16px; flex-wrap:wrap;}
+.panel{flex:1 1 480px; border:1px solid var(--border); padding:20px; transition:background var(--ease);}
+.panel.dark{border-color:#808080; color:#FFFFFF;}
+.panel h3{color:inherit; opacity:.7;}
+.money-block{margin:0 0 18px;}
+.money-block .lbl{font:11px/1.5 var(--uf); text-transform:uppercase; letter-spacing:.04em; opacity:.65; margin:0 0 8px;}
+.money-row{display:flex; gap:32px; flex-wrap:wrap; align-items:baseline; margin:0 0 6px;}
+.amount{display:inline-flex; align-items:baseline; white-space:nowrap; font-variant-numeric:tabular-nums; letter-spacing:-.005em;}
+.amount--display{letter-spacing:-.01em;}
+.ratio-line{display:flex; gap:22px; flex-wrap:wrap; font:11px/1.6 ui-monospace,monospace; opacity:.75; margin:2px 0 0;}
+
+/* ---- density block ---- */
+.stmt-table{width:100%; border-collapse:collapse; font-family:var(--font);}
+.stmt-table th{text-align:left; font:11px var(--font); text-transform:uppercase; letter-spacing:.04em; opacity:.6; font-weight:400; padding:6px 8px; border-bottom:1px solid var(--border);}
+.panel.dark .stmt-table th{border-color:#484848;}
+.stmt-table td{padding:7px 8px; border-bottom:1px solid var(--border); font-size:13px;}
+.panel.dark .stmt-table td{border-color:#333;}
+.stmt-table td.amt-cell{text-align:right;}
+.stmt-table td.amt-cell .amount{float:right;}
+
+/* ---- CVD ---- */
+.cvd-toggle{display:inline-flex; border:1px solid var(--ink); margin:0 0 6px;}
+.cvd-toggle button{appearance:none; border:0; border-right:1px solid var(--ink); background:#fff; color:var(--ink); font:500 12px var(--font); height:32px; padding:0 14px; cursor:pointer;}
+.cvd-toggle button:last-child{border-right:0;}
+.cvd-toggle button.active{background:var(--ink); color:#fff;}
+.cvd-note{font:12px/1.6 var(--font); color:var(--muted); margin:0 0 18px; max-width:74ch;}
+#specimen-scope.cvd-deuter{filter:url(#cvd-deuter);}
+#specimen-scope.cvd-prot{filter:url(#cvd-prot);}
+
+/* ---- export bar ---- */
+.bar{position:sticky; bottom:0; display:flex; align-items:center; gap:14px; background:var(--ink); color:#fff; padding:14px 20px; margin:0 -2rem; flex-wrap:wrap;}
+.bar .state{font:12px/1.4 ui-monospace,monospace; opacity:.85;}
+.bar button{appearance:none; border:0; background:#fff; color:var(--ink); font:500 13px var(--font); height:36px; padding:0 18px; cursor:pointer;}
+.bar button.ghost{background:transparent; border:1px solid #fff; color:#fff;}
+textarea#out{width:100%; height:260px; margin-top:14px; font:11px/1.5 ui-monospace,monospace; display:none; border:1px solid var(--border); padding:10px;}
+.method-note{font:11px/1.6 var(--font); color:var(--muted); margin:30px 0 0; max-width:80ch;}
+
+@media (max-width:820px){
+  .tuner-grid{grid-template-columns:1fr;}
+}
+@media (max-width:700px){
+  .wrap{padding:1.5rem 1rem 8rem;}
+  .bar{margin:0 -1rem; flex-direction:column; align-items:stretch;}
+  h1{font-size:21px;}
+  .traj{flex-direction:column; align-items:flex-start;}
+  .ba-delta{margin-left:0;}
+  .ground-toggle{flex-direction:column; align-items:stretch;}
+  .worst-panel{flex-direction:column; align-items:flex-start;}
+  .contrast-row{flex-direction:column; align-items:flex-start;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Plus/minus coloured text tuner — v2: ground selector, two-way contrast, hard gamut guard</h1>
+    <div class="meta">Session #144 · 2026-08-10 · v2, second tuning pass · predecessor <code>reviews/PLUSMINUS-TUNER-2026-08-10-s144-v1.html</code> (kept, not overwritten) · residual flagged at <code>amount-display.sign</code> <code>s142-D1</code> / <code>s143-D1(B)</code> · source: <code>knowledge/tokens/semantic-colour.json</code></div>
+    <div class="scope-banner">
+      <p><b>What this page is NOT:</b> it does not reopen <code>s122-D2</code> — the four RAG fills (success <code>#66CC8D</code> · error <code>#F6604C</code> · warning <code>#E0A61F</code> · information <code>#78A7E8</code>) and the <code>#1A1A1A</code> mark are settled. It does not touch the <code>amount-display.sign</code> bind — <code>s143-D1(B)</code> ruled it stands. It does not render information or warning coloured text anywhere. No hue slider, no hue affordance — hue stays locked, same as v1.</p>
+      <p><b>What's new in v2:</b> (1) a ground selector — the tuner and every specimen can now sit on any of six real grounds, defaulting to <b>#F1F1F1 selected row</b> per Dave's ask, with a paired dark-mode equivalent; (2) every cell reads contrast two ways at once — against the selected ground and against the worst ground in an enabled set, so a value that passes on white but fails on a tint can no longer hide; (3) the OKLCH chroma slider now has a hard gamut guard — chroma clamps at the sRGB boundary along the LOCKED hue, so the hue cannot drift, with a live drift readout proving it. New seeds this pass: red-light <code>#D53A25</code>, red-dark <code>#F6604C</code>, green-light <code>#1F8446</code>, green-dark <code>#66CC8D</code>. Nothing below is picked. Every slider ships at its seed; your drag is the ruling.</p>
+    </div>
+  </header>
+
+  <!-- ============================================================ RATIONALE ============================================================ -->
+  <section id="rationale">
+    <h3>Why this is text, not fill — one line</h3>
+    <div class="rationale">
+      <p>In the fills, meaning is carried by the label and the roundel glyph, so fill contrast is a salience lever, not a legibility requirement (<code>R-D6</code>). On the <code>amount-display</code> numeral, meaning is carried by the sign — U+2212 minus for negative, no sign for positive/zero — so colour there is <i>also</i> salience, not the only channel. But text carries a second obligation fills do not: it must be <b>readable</b> (WCAG 1.4.3), independent of what it means. That is the only reason these four values must clear 4.5:1 — and, as of v2, clear it on the ground it will actually sit on, not just on pure white.</p>
+    </div>
+    <div class="grounds">
+      <span class="gnd"><i id="gnd-white"></i>#FFFFFF — page ground, light</span>
+      <span class="gnd"><i id="gnd-ink"></i>#1A1A1A — page ground, dark ("digital black")</span>
+    </div>
+    <p class="impossible-line">A mode-invariant AA-text value is arithmetically impossible for either hue: text on white needs relative luminance L ≤ <b id="upper-bound">—</b>; text on #1A1A1A needs L ≥ <b id="lower-bound">—</b>. This bound is about the two PURE page extremes and is independent of the ground selector below — it is why the tool tunes <b>four</b> values, not two. Full proof with the boundbar visual: <code>RAG-TEXT-RUNG-2026-08-10-s144-v1.html</code> §finding — not rebuilt here.</p>
+
+    <div class="hue-check">
+      <b>Hue check — re-derived independently, as asked, again</b>
+      Locked hues below are computed <i>live in this file's own script</i>, in-browser, directly from the ruled fills <code>rag/error #F6604C</code> and <code>rag/success #66CC8D</code> (<code>s122-D2</code>) — nothing is hand-typed, unchanged method from v1.<br>
+      red: HSB <b id="hue-red-hsb">—</b> · OKLCH <b id="hue-red-oklch">—</b> — v2 brief stated <b>7.0588° HSB / 30.2375° OKLCH</b><br>
+      green: HSB <b id="hue-green-hsb">—</b> · OKLCH <b id="hue-green-oklch">—</b> — v2 brief stated <b>142.9412° HSB / 154.5908° OKLCH</b><br>
+      Both re-derivations match the v2 brief's stated figures <b>exactly</b> (0.0000° delta to 4 d.p.) — v1's brief had a small stated/re-derived delta (flagged, not resolved there); it is resolved this pass because the v2 brief's numbers ARE the re-derivation.
+    </div>
+  </section>
+
+  <!-- ============================================================ MODEL TOGGLE ============================================================ -->
+  <section id="model">
+    <h3>Colour model</h3>
+    <div class="model-toggle" role="group" aria-label="Colour model driving the sliders">
+      <button type="button" data-model="hsb" class="active">HSB (Figma)</button>
+      <button type="button" data-model="oklch">OKLCH</button>
+    </div>
+    <p class="model-toggle-note">HSB is primary — Dave's words, the Figma convention. OKLCH drives saturation via <b>chroma</b> and brightness via <b>lightness</b> instead; the repo's own colour notes are already written in OKLCH (<code>knowledge/tokens/semantic-colour.json</code> <code>$note</code> fields). Hue stays locked either way. <b>Correction from v1's framing, found while driving this build's own hue-drift readout:</b> v1 described the two models' hue readings as differing "by a fraction of a degree" when the other model drives — measured live, that holds for red but green's HSB-reconciled seed reads ≈3.1° away from the locked OKLCH hue when read in OKLCH terms, which is not a fraction of a degree. That gap is a structural property of reconciling in one hue space and measuring in the other (HSB-hue and OKLCH-hue are different constructions, not perfectly interconvertible) — it is present even with zero gamut clipping, so the hue-drift alarm below is keyed only to whichever model is currently driving, never to the other model's cross-read.</p>
+  </section>
+
+  <!-- ============================================================ GROUND SELECTOR (NEW) ============================================================ -->
+  <section id="ground">
+    <h3>Ground — where the numeral actually sits (new in v2)</h3>
+    <p>Dave: <i>"see the tuner on #f1f1f1."</i> The numeral is rarely on pure white — <code>amount-display</code>'s own purpose text names "transaction rows to data-grid numeric cells", so a tinted, hovered, or selected row is the ordinary case, not the edge case. <b>One control drives both surfaces</b>: the light hex below applies to the two LIGHT cells and every light specimen; its paired dark hex applies (as the closest equivalent treatment) to the two DARK cells and every dark specimen. The money rows, the density table, the swatches — all of it repaints, not a swatch on a white card.</p>
+    <div class="ground-toggle" id="ground-toggle" role="group" aria-label="Ground the tuner and specimens sit on"><!-- JS-rendered --></div>
+    <details class="ground-provenance">
+      <summary>Where each ground hex came from (tap to expand) — <span class="approx-mark">*</span> = no ruled token exists, approximation</summary>
+      <ul id="ground-provenance-list"><!-- JS-rendered --></ul>
+    </details>
+  </section>
+
+  <!-- ============================================================ TUNER GRID ============================================================ -->
+  <section id="tuner">
+    <h3>Four cells — hue locked, drag saturation &amp; brightness (or chroma &amp; lightness)</h3>
+    <p>Each cell's slider zero-point is this session's newly tuned seed hex (Dave's second pass) — reconciled to the shared locked hue via the same method v1 used: decompose the seed to its own saturation/brightness, discard its hue, recombine with the locked constant. v1's two LIGHT seeds shifted by ≤1 unit/255 under that reconciliation; these four new seeds do <b>not</b> shift at all — checked live, in this file's own script: red-light <code>#D53A25→#D53A25</code>, red-dark <code>#F6604C→#F6604C</code> (unchanged from v1), green-light <code>#1F8446→#1F8446</code>, green-dark <code>#66CC8D→#66CC8D</code> (unchanged from v1). "Reset to seed" returns to this reconciled start — identical to the literal seed hex this time.</p>
+    <div class="worst-panel" id="worst-panel">
+      <b>Worst-ground set (Dave's to narrow — e.g. rule out the rag tints if a signed numeral never sits on one):</b>
+      <div id="worst-checks" style="display:flex;gap:14px;flex-wrap:wrap;"><!-- JS-rendered --></div>
+    </div>
+    <div class="tuner-grid" id="tuner-grid"><!-- JS-rendered, 4 cells --></div>
+  </section>
+
+  <!-- ============================================================ SPECIMENS ============================================================ -->
+  <section id="specimens">
+    <h3>Live specimen — the realistic case</h3>
+    <h2>amount-display, real rows: positive, negative, zero — both surfaces, on the selected ground</h2>
+    <p>Tabular lining figures, real U+2212 minus, real sizes (<code>.t-cm-figure-4</code> display 32px / <code>.t-cm-figure-5</code> default 16px). Colour updates live as the sliders above move — <code>amount-display.sign</code>: <code>none → rag.success</code> (covers positive and zero, the existing unchanged bind), <code>negative → rag.error</code>. Panel background now follows the ground selector above, not a fixed white/#1A1A1A.</p>
+
+    <div class="cvd-toggle" role="group" aria-label="Colour-vision-deficiency preview">
+      <button type="button" data-cvd="none" class="active">Normal vision</button>
+      <button type="button" data-cvd="deuter">Deuteranopia preview</button>
+      <button type="button" data-cvd="prot">Protanopia preview</button>
+    </div>
+    <p class="cvd-note">Information, not a gate: red/green is the classic confusion pair, so seeing the simulation matters — but the sign glyph (− / no sign) carries the meaning under CVD too, matching the roundel-glyph logic Dave already ruled for the fills (<code>R-D6</code>). Colour here is salience, not the only channel. Nothing below is blocked or flagged by this toggle. Approximate preview (Machado, Oliveira &amp; Fairchild 2009 dichromacy matrices, applied to linear RGB) — not a clinical simulator.</p>
+
+    <div id="specimen-scope">
+      <div class="specimen-panels">
+        <div class="panel light">
+          <h3>Light — selected ground</h3>
+          <div class="money-block">
+            <div class="lbl">display · 32px · .t-cm-figure-4</div>
+            <div class="money-row">
+              <span class="amount amount--display t-cm-figure-4" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">3,248.55</span></span>
+              <span class="amount amount--display t-cm-figure-4" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">842.10</span></span>
+              <span class="amount amount--display t-cm-figure-4" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span>
+            </div>
+            <div class="ratio-line">
+              <span>positive <span data-specimen-ratio="green-light">—</span></span>
+              <span>negative <span data-specimen-ratio="red-light">—</span></span>
+              <span>zero <span data-specimen-ratio="green-light">—</span></span>
+            </div>
+          </div>
+          <div class="money-block">
+            <div class="lbl">default · 16px · .t-cm-figure-5</div>
+            <div class="money-row">
+              <span class="amount t-cm-figure-5" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">12,000.00</span></span>
+              <span class="amount t-cm-figure-5" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">48.50</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel dark">
+          <h3>Dark — selected ground (paired)</h3>
+          <div class="money-block">
+            <div class="lbl">display · 32px · .t-cm-figure-4</div>
+            <div class="money-row">
+              <span class="amount amount--display t-cm-figure-4" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">3,248.55</span></span>
+              <span class="amount amount--display t-cm-figure-4" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">842.10</span></span>
+              <span class="amount amount--display t-cm-figure-4" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span>
+            </div>
+            <div class="ratio-line">
+              <span>positive <span data-specimen-ratio="green-dark">—</span></span>
+              <span>negative <span data-specimen-ratio="red-dark">—</span></span>
+              <span>zero <span data-specimen-ratio="green-dark">—</span></span>
+            </div>
+          </div>
+          <div class="money-block">
+            <div class="lbl">default · 16px · .t-cm-figure-5</div>
+            <div class="money-row">
+              <span class="amount t-cm-figure-5" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">12,000.00</span></span>
+              <span class="amount t-cm-figure-5" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">48.50</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ DENSITY BLOCK ============================================================ -->
+      <h2 style="margin-top:30px;">Density block — a column, not one big numeral</h2>
+      <p>A single hero figure flatters a colour; a statement of rows is the honest test. Small size, <code>.t-cm-figure-6</code> 14px, mixed signs, on the selected ground.</p>
+      <div class="specimen-panels">
+        <div class="panel light">
+          <h3>Light — statement rows</h3>
+          <table class="stmt-table">
+            <thead><tr><th>Date</th><th>Description</th><th style="text-align:right;">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>03 Aug</td><td>Salary</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">2,450.00</span></span></td></tr>
+              <tr><td>04 Aug</td><td>Rent</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">1,200.00</span></span></td></tr>
+              <tr><td>05 Aug</td><td>Groceries</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">64.28</span></span></td></tr>
+              <tr><td>06 Aug</td><td>Refund</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">18.99</span></span></td></tr>
+              <tr><td>07 Aug</td><td>Transfer out</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">300.00</span></span></td></tr>
+              <tr><td>08 Aug</td><td>Interest</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">4.12</span></span></td></tr>
+              <tr><td>09 Aug</td><td>Subscription</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">9.99</span></span></td></tr>
+              <tr><td>10 Aug</td><td>Card check</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span></td></tr>
+              <tr><td>10 Aug</td><td>Balance c/f</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">913.71</span></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel dark">
+          <h3>Dark — statement rows</h3>
+          <table class="stmt-table">
+            <thead><tr><th>Date</th><th>Description</th><th style="text-align:right;">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>03 Aug</td><td>Salary</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">2,450.00</span></span></td></tr>
+              <tr><td>04 Aug</td><td>Rent</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">1,200.00</span></span></td></tr>
+              <tr><td>05 Aug</td><td>Groceries</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">64.28</span></span></td></tr>
+              <tr><td>06 Aug</td><td>Refund</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">18.99</span></span></td></tr>
+              <tr><td>07 Aug</td><td>Transfer out</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">300.00</span></span></td></tr>
+              <tr><td>08 Aug</td><td>Interest</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">4.12</span></span></td></tr>
+              <tr><td>09 Aug</td><td>Subscription</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">9.99</span></span></td></tr>
+              <tr><td>10 Aug</td><td>Card check</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span></td></tr>
+              <tr><td>10 Aug</td><td>Balance c/f</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">913.71</span></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="method-note">Method: WCAG 2.x relative-luminance/contrast formula, read from rendered <code>getComputedStyle</code> colour for the foreground text, never a hard-coded ratio; ground hexes are parsed directly (they are literal <code>#RRGGBB</code> constants with no CSS indirection, so a DOM round-trip adds nothing). OKLCH via Björn Ottosson's public sRGB↔OKLab↔OKLCh coefficients (same matrix as v1 / <code>reviews/_rag_colours_calc.py</code>). Gamut guard: chroma is clamped to the largest value that keeps <code>oklab2rgb(L,C,H)</code> in <code>[0,1]</code> per channel at the CURRENT lightness and the LOCKED hue, found by binary search (28 iterations, ~2×10⁻⁹ resolution) — the CSS Color 4 "reduce chroma toward the achromatic axis" gamut-mapping strategy — so hue is a constant of the search, never an output of it. Worst-ground reading recomputes the same formula against every ENABLED ground's hex for the cell's own mode (light cells against light grounds, dark against dark) and reports the minimum. CVD preview via Machado/Oliveira/Fairchild (2009) dichromacy matrices, SVG <code>feColorMatrix</code> in linearRGB — an approximation for information, not a clinical tool.</p>
+
+  <textarea id="out" readonly></textarea>
+</div>
+
+<!-- CVD simulation filters — Machado, Oliveira & Fairchild (2009) dichromacy matrices, linearRGB -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <filter id="cvd-deuter" color-interpolation-filters="linearRGB">
+    <feColorMatrix type="matrix" values="
+      0.367322 0.860646 -0.227968 0 0
+      0.280085 0.672501  0.047413 0 0
+     -0.011820 0.042940  0.968881 0 0
+      0        0         0        1 0"/>
+  </filter>
+  <filter id="cvd-prot" color-interpolation-filters="linearRGB">
+    <feColorMatrix type="matrix" values="
+      0.152286 1.052583 -0.204868 0 0
+      0.114503 0.786281  0.099216 0 0
+     -0.003882 -0.048116  1.051998 0 0
+      0        0         0        1 0"/>
+  </filter>
+</svg>
+
+<div class="bar">
+  <span class="state" id="state">—</span>
+  <button id="reset-all" class="ghost">Reset all to seed</button>
+  <button id="export">Export JSON</button>
+  <button class="ghost" id="copy">Copy JSON</button>
+</div>
+
+<script>
+/* ================================================================
+   colour maths — sRGB<->HSB, sRGB<->OKLab<->OKLCh, WCAG contrast.
+   Everything measured reads RENDERED colour (getComputedStyle) for the
+   foreground; ground hexes are literal constants, parsed directly (see
+   method-note). OKLab/OKLCh coefficients ported unchanged from
+   reviews/_rag_colours_calc.py (Bjorn Ottosson's public formulation).
+   Identical to v1 except where marked NEW v2.
+   ================================================================ */
+function hex2rgb(hex){
+  hex = hex.replace('#','');
+  return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+}
+function rgb2hex(rgb){
+  const c = v => Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0').toUpperCase();
+  return '#'+c(rgb[0])+c(rgb[1])+c(rgb[2]);
+}
+function parseRgb(str){
+  const m = str.match(/rgba?\(([^)]+)\)/);
+  if(!m) return [0,0,0];
+  return m[1].split(',').slice(0,3).map(s=>parseFloat(s));
+}
+function relLum([r,g,b]){
+  const f = v => { v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); };
+  return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b);
+}
+function contrastRgb(a,b){
+  const la=relLum(a), lb=relLum(b);
+  const hi=Math.max(la,lb), lo=Math.min(la,lb);
+  return (hi+0.05)/(lo+0.05);
+}
+
+/* ---- sRGB <-> HSB ---- */
+function rgb2hsb([r,g,b]){
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
+  let h=0;
+  if(d!==0){
+    if(max===r) h = ((g-b)/d) % 6;
+    else if(max===g) h = (b-r)/d + 2;
+    else h = (r-g)/d + 4;
+    h *= 60;
+    if(h<0) h += 360;
+  }
+  const s = max===0 ? 0 : d/max;
+  return [h, s*100, max*100];
+}
+function hsb2rgb(h, s, v){
+  s/=100; v/=100;
+  const c = v*s;
+  const hh = (((h%360)+360)%360) / 60;
+  const x = c*(1-Math.abs((hh%2)-1));
+  let rp,gp,bp;
+  if(hh<1)[rp,gp,bp]=[c,x,0];
+  else if(hh<2)[rp,gp,bp]=[x,c,0];
+  else if(hh<3)[rp,gp,bp]=[0,c,x];
+  else if(hh<4)[rp,gp,bp]=[0,x,c];
+  else if(hh<5)[rp,gp,bp]=[x,0,c];
+  else [rp,gp,bp]=[c,0,x];
+  const m = v-c;
+  return [(rp+m)*255,(gp+m)*255,(bp+m)*255];
+}
+
+/* ---- sRGB <-> OKLab <-> OKLCh (Ottosson; ported verbatim) ---- */
+function _lin(c){ return c<=0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); }
+function _slin(c){ return c<=0.0031308 ? 12.92*c : 1.055*Math.pow(c,1/2.4)-0.055; }
+function srgb2oklab(hex){
+  const raw = hex2rgb(hex).map(v=>_lin(v/255));
+  const r=raw[0], g=raw[1], b=raw[2];
+  const l = 0.4122214708*r + 0.5363325363*g + 0.0514459929*b;
+  const m = 0.2119034982*r + 0.6806995451*g + 0.1073969566*b;
+  const s = 0.0883024619*r + 0.2817188376*g + 0.6299787005*b;
+  const l_ = Math.cbrt(l), m_ = Math.cbrt(m), s_ = Math.cbrt(s);
+  return [
+    0.2104542553*l_ + 0.7936177850*m_ - 0.0040720468*s_,
+    1.9779984951*l_ - 2.4285922050*m_ + 0.4505937099*s_,
+    0.0259040371*l_ + 0.7827717662*m_ - 0.8086757660*s_
+  ];
+}
+function oklab2rgb(L,a,b){
+  const l_ = L + 0.3963377774*a + 0.2158037573*b;
+  const m_ = L - 0.1055613458*a - 0.0638541728*b;
+  const s_ = L - 0.0894841775*a - 1.2914855480*b;
+  const l = l_*l_*l_, m = m_*m_*m_, s = s_*s_*s_;
+  const r =  4.0767416621*l - 3.3077115913*m + 0.2309699292*s;
+  const g = -1.2684380046*l + 2.6097574011*m - 0.3413193965*s;
+  const bl= -0.0041960863*l - 0.7034186147*m + 1.7076147010*s;
+  return [r,g,bl].map(_slin);
+}
+function srgb2oklch(hex){
+  const lab = srgb2oklab(hex);
+  const L=lab[0], a=lab[1], b=lab[2];
+  const C = Math.hypot(a,b);
+  let H = Math.atan2(b,a) * 180/Math.PI;
+  if(H<0) H += 360;
+  return [L,C,H];
+}
+function oklch2rgb(L,C,H){
+  const hr = H*Math.PI/180;
+  const a = C*Math.cos(hr), b = C*Math.sin(hr);
+  const raw = oklab2rgb(L,a,b);
+  const clipped = raw.some(v=>v<-0.0005||v>1.0005);
+  const clamp = v => Math.max(0,Math.min(1,v))*255;
+  return { rgb:[clamp(raw[0]),clamp(raw[1]),clamp(raw[2])], clipped };
+}
+function deltaOklab(hexA, hexB){
+  const A = srgb2oklab(hexA), B = srgb2oklab(hexB);
+  return Math.hypot(A[0]-B[0], A[1]-B[1], A[2]-B[2]);
+}
+/* ---- NEW v2: hard gamut guard ---- */
+function wrapDeg(d){ return ((d+180)%360+360)%360-180; }
+function maxChromaInGamut(L, H, iters){
+  iters = iters || 28;
+  if(oklch2rgb(L,0,H).clipped) return 0;   // extreme L: no chromatic colour fits at all
+  let lo=0, hi=0.5;                        // 0.5 is well past any achievable sRGB chroma
+  for(let i=0;i<iters;i++){
+    const mid=(lo+hi)/2;
+    if(oklch2rgb(L,mid,H).clipped) hi=mid; else lo=mid;
+  }
+  return lo;                               // lo is always the last KNOWN in-gamut value
+}
+
+/* ================================================================
+   state
+   ================================================================ */
+const SEEDS = {
+  'red-light':   { hex:'#D53A25', v1Hex:'#B92F1E', mode:'light', family:'red',   modeLabel:'LIGHT', numVal:'842.10',   signClass:'negative' },
+  'red-dark':    { hex:'#F6604C', v1Hex:'#F6604C', mode:'dark',  family:'red',   modeLabel:'DARK',  numVal:'842.10',   signClass:'negative' },
+  'green-light': { hex:'#1F8446', v1Hex:'#2B7E4F', mode:'light', family:'green', modeLabel:'LIGHT', numVal:'3,248.55', signClass:'none' },
+  'green-dark':  { hex:'#66CC8D', v1Hex:'#66CC8D', mode:'dark',  family:'green', modeLabel:'DARK',  numVal:'3,248.55', signClass:'none' }
+};
+const FAMILY_FILL_HEX = { red:'#F6604C', green:'#66CC8D' };   // s122-D2 ruled fills — the ONLY hue source
+const CELL_ORDER = ['red-light','red-dark','green-light','green-dark'];
+const HUE_DRIFT_ALARM_DEG = 0.5;   // measured noise floor of a correctly-guarded drag is ~0.15°; a real
+                                    // defect (v1's naive per-channel clamp) drifted 2.6°-12° — 0.5° sits
+                                    // cleanly between the two, see build report for the drive.
+
+/* ---- NEW v2: ground roles. light/dark hex PAIRS, one selector drives both surfaces. ---- */
+const GROUND_ROLES = [
+  { id:'pure',     label:'Pure',         light:'#FFFFFF', dark:'#1A1A1A', approx:false,
+    lightSrc:'page ground, pure white', darkSrc:'surface/digital-black — REAL token (semantic-colour.json, dark=light=#1A1A1A)' },
+  { id:'zebra',    label:'Zebra stripe', light:'#FAFAFA', dark:'#1F1F1F', approx:false,
+    lightSrc:'zebra stripe, Dave-specified #FAFAFA', darkSrc:'surface/subtle = table.column.background = table.header.background — REAL token (dark #1F1F1F)' },
+  { id:'hover',    label:'Hover tint',   light:'#F5F5F5', dark:'#232323', approx:false,
+    lightSrc:'hover tint, Dave-specified #F5F5F5', darkSrc:'surface/raised-hover — REAL token (dark #232323)' },
+  { id:'selected', label:'Selected row', light:'#F1F1F1', dark:'#272727', approx:true,
+    lightSrc:'selected row, Dave-specified #F1F1F1 — DEFAULT', darkSrc:'NO ruled dark selected-row token exists in knowledge/tokens/ — APPROXIMATION: color/neutral/raise-3 #272727 (colour.json), one ramp step past surface/raised-hover #232323, unclaimed by any semantic token as of this build' },
+  { id:'error',    label:'Error tint',   light:'#FDD9D4', dark:'#60302A', approx:false,
+    lightSrc:'rag/error-tint light — REAL token (s123-D3)', darkSrc:'rag/error-tint dark — REAL token (s123-D3, #60302A)' },
+  { id:'success',  label:'Success tint', light:'#D4F1DF', dark:'#32533F', approx:false,
+    lightSrc:'rag/success-tint light — REAL token (s123-D3)', darkSrc:'rag/success-tint dark — REAL token (s123-D3, #32533F)' }
+];
+let CURRENT_GROUND_ID = 'selected';   // Dave's ask: default to #F1F1F1
+const ENABLED_WORST = new Set(GROUND_ROLES.map(r=>r.id));   // all 6 enabled by default; Dave narrows
+
+let LOCKED_HUE_HSB = {}, LOCKED_HUE_OKLCH = {};
+let WHITE_RGB = [255,255,255], INK_RGB = [26,26,26];
+let drivingModel = 'hsb';
+const state = {};
+const SEED_START = {};
+
+function computeGrounds(){
+  WHITE_RGB = parseRgb(getComputedStyle(document.getElementById('gnd-white')).backgroundColor);
+  INK_RGB   = parseRgb(getComputedStyle(document.getElementById('gnd-ink')).backgroundColor);
+  const Lw = relLum(WHITE_RGB), Li = relLum(INK_RGB);
+  const upper = (Lw+0.05)/4.5 - 0.05;
+  const lower = 4.5*(Li+0.05) - 0.05;
+  document.getElementById('upper-bound').textContent = upper.toFixed(4);
+  document.getElementById('lower-bound').textContent = lower.toFixed(4);
+}
+
+function currentRole(){ return GROUND_ROLES.find(r=>r.id===CURRENT_GROUND_ID); }
+function groundHexFor(key){
+  const seed = SEEDS[key], role = currentRole();
+  return seed.mode==='light' ? role.light : role.dark;
+}
+function pickChipFg(hex){ return relLum(hex2rgb(hex)) > 0.5 ? '#1A1A1A' : '#FFFFFF'; }
+function worstFor(key, fgRgb){
+  const seed = SEEDS[key];
+  const roles = GROUND_ROLES.filter(r=>ENABLED_WORST.has(r.id));
+  if(roles.length===0) return null;
+  let worst = null;
+  roles.forEach(r=>{
+    const hex = seed.mode==='light' ? r.light : r.dark;
+    const ratio = contrastRgb(fgRgb, hex2rgb(hex));
+    if(!worst || ratio < worst.ratio) worst = { ratio, hex, role:r };
+  });
+  return worst;
+}
+
+function initState(key){
+  const seed = SEEDS[key];
+  const hsb0 = rgb2hsb(hex2rgb(seed.hex));           // seed's OWN natural S,B — hue ignored, hue is locked
+  const s = hsb0[1], b = hsb0[2];
+  const H = LOCKED_HUE_HSB[seed.family];
+  const hex = rgb2hex(hsb2rgb(H, s, b));
+  const oklch = srgb2oklch(hex);
+  const hueDriftOklch = wrapDeg(oklch[2] - LOCKED_HUE_OKLCH[seed.family]);
+  const maxC = maxChromaInGamut(oklch[0], LOCKED_HUE_OKLCH[seed.family]);
+  return { hsbS:s, hsbB:b, oklchL:oklch[0], oklchC:oklch[1], hex,
+    clipped:false, hueDriftOklch, hueDriftHsb:0, maxC, ratio:0, builtVia:'hsb' };
+}
+
+function cellTemplate(key){
+  const seed = SEEDS[key];
+  const famCap = seed.family === 'red' ? 'Minus / red' : 'Plus / green';
+  const signSpan = seed.signClass === 'negative' ? '<span class="amount__sign">−</span>' : '';
+  return (
+    '<div class="cell" id="cell-'+key+'" data-cell="'+key+'" data-family="'+seed.family+'" data-mode="'+seed.mode+'">'
+    + '<span class="fail-flag" data-fail-flag>⚠ below AA 4.5 on selected ground</span>'
+    + '<span class="divergent-flag" data-divergent-flag>⚠ passes selected · fails worst-in-set</span>'
+    + '<span class="drift-flag" data-drift-flag>⚠ hue drift beyond alarm</span>'
+    + '<div class="cell-head"><h3>'+famCap+' — '+seed.modeLabel+'</h3>'
+    + '<span class="ground-chip" data-ground-chip>—</span></div>'
+    + '<div class="swatch-wrap" data-swatch-wrap>'
+    + '<span class="amount amount--display t-cm-figure-4" data-swatch>'+signSpan+'<span class="amount__cur">£</span><span class="amount__val">'+seed.numVal+'</span></span>'
+    + '</div>'
+    + '<div class="hue-lock-row"><span class="lock-ic" aria-hidden="true">&#128274;</span> Hue locked — '
+    + '<span data-hue-hsb>—</span> HSB / <span data-hue-oklch>—</span> OKLCH</div>'
+    + '<div class="hue-drift-row" data-hue-drift-row><span class="lock-ic" aria-hidden="true">&#8635;</span> Hue drift from locked — '
+    + '<span data-drift-metric="oklch">OKLCH <span data-drift-oklch>—</span></span> / '
+    + '<span data-drift-metric="hsb">HSB <span data-drift-hsb>—</span></span>'
+    + '<br><span class="drift-guard-note" data-drift-guard-note style="opacity:.65"></span></div>'
+    + '<div class="ctl-group hsb-ctl" data-model-group="hsb">'
+    + '<div class="slider-row"><label>Saturation <span data-readout="hsbS">—</span></label>'
+    + '<input type="range" min="0" max="100" step="0.1" data-ctl="hsbS" aria-label="Saturation, '+famCap+' '+seed.modeLabel+'"></div>'
+    + '<div class="slider-row"><label>Brightness <span data-readout="hsbB">—</span></label>'
+    + '<input type="range" min="0" max="100" step="0.1" data-ctl="hsbB" aria-label="Brightness, '+famCap+' '+seed.modeLabel+'"></div>'
+    + '</div>'
+    + '<div class="ctl-group oklch-ctl" data-model-group="oklch">'
+    + '<div class="slider-row"><label>Chroma <span data-readout="oklchC">—</span><span>gamut ceiling at this L: <span data-max-chroma>—</span></span></label>'
+    + '<input type="range" min="0" max="0.4" step="0.001" data-ctl="oklchC" aria-label="Chroma, '+famCap+' '+seed.modeLabel+'"></div>'
+    + '<div class="slider-row"><label>Lightness <span data-readout="oklchL">—</span></label>'
+    + '<input type="range" min="0" max="1" step="0.001" data-ctl="oklchL" aria-label="Lightness, '+famCap+' '+seed.modeLabel+'"></div>'
+    + '</div>'
+    + '<div class="also-readout"><span class="also-label">also:</span> <span data-also="hsb">—</span> <span data-also="oklch">—</span>'
+    + '<span class="clip-chip" data-clip-chip hidden>requested chroma exceeded gamut — clamped, hue held</span></div>'
+    + '<div class="contrast-row" data-row="selected"><span class="cr-label">vs SELECTED ground <code data-sel-hex>—</code></span>'
+    + '<span class="ratio-big" data-ratio>—</span><span class="ratio-suffix">:1</span>'
+    + '<span class="thresh-chip" data-aa-chip>AA 4.5 —</span><span class="thresh-chip" data-aaa-chip>AAA 7 —</span></div>'
+    + '<div class="contrast-row worst" data-row="worst"><span class="cr-label">vs WORST ground in set <code data-worst-hex>—</code> <span data-worst-role>—</span></span>'
+    + '<span class="ratio-big" data-worst-ratio>—</span><span class="ratio-suffix">:1</span>'
+    + '<span class="thresh-chip" data-worst-aa-chip>AA 4.5 —</span><span class="thresh-chip" data-worst-aaa-chip>AAA 7 —</span></div>'
+    + '<div class="hex-row">hex <code data-hex>—</code></div>'
+    + '<div class="traj">'
+    + '<div class="ba-item"><span class="ba-lbl">v1</span><i class="ba-sw" style="background:'+seed.v1Hex+'"></i><code>'+seed.v1Hex+'</code></div>'
+    + '<span class="ba-arrow">→</span>'
+    + '<div class="ba-item"><span class="ba-lbl">seed (v2)</span><i class="ba-sw" style="background:'+seed.hex+'"></i><code>'+seed.hex+'</code></div>'
+    + '<span class="ba-arrow">→</span>'
+    + '<div class="ba-item"><span class="ba-lbl">now</span><i class="ba-sw" data-now-sw></i><code data-now-hex>—</code></div>'
+    + '<span class="ba-delta" data-delta-now>—</span>'
+    + '</div>'
+    + '<button type="button" class="reset-btn" data-reset>Reset to seed</button>'
+    + '</div>'
+  );
+}
+
+function renderCell(key){
+  const seed = SEEDS[key], st = state[key];
+  const cellEl = document.getElementById('cell-'+key);
+  const swatch = cellEl.querySelector('[data-swatch]');
+  swatch.style.color = st.hex;
+  const fg = parseRgb(getComputedStyle(swatch).color);
+
+  const role = currentRole();
+  const groundHex = groundHexFor(key);
+  cellEl.querySelector('[data-swatch-wrap]').style.background = groundHex;
+  const ratio = contrastRgb(fg, hex2rgb(groundHex));
+  st.ratio = ratio;
+
+  const chip = cellEl.querySelector('[data-ground-chip]');
+  chip.textContent = 'on '+groundHex+' ('+role.label+(role.approx?' *':'')+')';
+  chip.style.setProperty('--chip-bg', groundHex);
+  chip.style.setProperty('--chip-fg', pickChipFg(groundHex));
+
+  cellEl.querySelector('[data-hex]').textContent = st.hex;
+  cellEl.querySelector('[data-sel-hex]').textContent = groundHex;
+  const ratioEl = cellEl.querySelector('[data-ratio]');
+  ratioEl.textContent = ratio.toFixed(2);
+  const aaPass = ratio >= 4.5, aaaPass = ratio >= 7;
+  ratioEl.classList.toggle('fail', !aaPass);
+
+  const aaChip = cellEl.querySelector('[data-aa-chip]');
+  aaChip.textContent = 'AA 4.5 ' + (aaPass?'PASS':'FAIL');
+  aaChip.classList.toggle('pass', aaPass); aaChip.classList.toggle('fail', !aaPass);
+  const aaaChip = cellEl.querySelector('[data-aaa-chip]');
+  aaaChip.textContent = 'AAA 7 ' + (aaaPass?'PASS':'FAIL');
+  aaaChip.classList.toggle('pass', aaaPass); aaaChip.classList.toggle('fail', !aaaPass);
+
+  cellEl.classList.toggle('is-fail-aa', !aaPass);
+  cellEl.querySelector('[data-fail-flag]').style.display = aaPass ? 'none' : 'inline-flex';
+
+  /* ---- NEW v2: worst-ground reading + divergence flag ---- */
+  const worst = worstFor(key, fg);
+  const worstRatioEl = cellEl.querySelector('[data-worst-ratio]');
+  const worstHexEl = cellEl.querySelector('[data-worst-hex]');
+  const worstRoleEl = cellEl.querySelector('[data-worst-role]');
+  const worstAaChip = cellEl.querySelector('[data-worst-aa-chip]');
+  const worstAaaChip = cellEl.querySelector('[data-worst-aaa-chip]');
+  let worstAaPass = null;
+  if(worst){
+    worstRatioEl.textContent = worst.ratio.toFixed(2);
+    worstHexEl.textContent = worst.hex;
+    worstRoleEl.textContent = '('+worst.role.label+(worst.role.approx?' *':'')+')';
+    worstAaPass = worst.ratio >= 4.5;
+    const worstAaaPass = worst.ratio >= 7;
+    worstRatioEl.classList.toggle('fail', !worstAaPass);
+    worstAaChip.textContent = 'AA 4.5 ' + (worstAaPass?'PASS':'FAIL');
+    worstAaChip.classList.toggle('pass', worstAaPass); worstAaChip.classList.toggle('fail', !worstAaPass);
+    worstAaaChip.textContent = 'AAA 7 ' + (worstAaaPass?'PASS':'FAIL');
+    worstAaaChip.classList.toggle('pass', worstAaaPass); worstAaaChip.classList.toggle('fail', !worstAaaPass);
+  } else {
+    worstRatioEl.textContent = '—'; worstHexEl.textContent = '(none enabled)'; worstRoleEl.textContent = '';
+    worstAaChip.textContent = 'AA 4.5 —'; worstAaChip.classList.remove('pass','fail');
+    worstAaaChip.textContent = 'AAA 7 —'; worstAaaChip.classList.remove('pass','fail');
+  }
+  cellEl.classList.toggle('is-divergent', worstAaPass===false && aaPass===true);
+
+  /* ---- hue lock (unchanged) + NEW v2: hue drift, always visible ---- */
+  cellEl.querySelector('[data-hue-hsb]').textContent = LOCKED_HUE_HSB[seed.family].toFixed(2)+'°';
+  cellEl.querySelector('[data-hue-oklch]').textContent = LOCKED_HUE_OKLCH[seed.family].toFixed(2)+'°';
+  cellEl.querySelector('[data-drift-oklch]').textContent = (st.hueDriftOklch>=0?'+':'')+st.hueDriftOklch.toFixed(3)+'°';
+  cellEl.querySelector('[data-drift-hsb]').textContent = (st.hueDriftHsb>=0?'+':'')+st.hueDriftHsb.toFixed(3)+'°';
+  /* NEW v2, fixed TWICE after render-verify caught two layers of the same mistake: the ALARM is keyed
+     to st.builtVia — HOW THIS CELL'S CURRENT COLOUR WAS ACTUALLY CONSTRUCTED — not to `drivingModel`
+     (which is only which sliders are visible right now). First attempt keyed it to drivingModel and
+     that still false-alarmed: reset/seed always builds via HSB reconciliation (initState), regardless
+     of which panel happens to be toggled into view, so a freshly-reset cell viewed in OKLCH mode read
+     its baseline cross-model gap (~-3.1° for green, ZERO gamut clipping involved) as if it were a
+     guard failure. builtVia is set at the moment state[key] is actually constructed (initState/
+     setFromHSB -> 'hsb', setFromOKLCH -> 'oklch') and is what the gamut guard can actually promise
+     something about: an 'hsb'-built colour never clips (hsb2rgb is defined on the sRGB cube) so its
+     own hue drift is always ~0; an 'oklch'-built colour is the one the chroma clamp protects, and ITS
+     hue drift is what proves the guard held. The other model's cross-reading on the same colour stays
+     visible (informational) but never drives the alarm. */
+  const guardedDrift = st.builtVia === 'hsb' ? st.hueDriftHsb : st.hueDriftOklch;
+  const driftAlarm = Math.abs(guardedDrift) > HUE_DRIFT_ALARM_DEG;
+  cellEl.classList.toggle('is-drift-alarm', driftAlarm);
+  cellEl.querySelector('[data-hue-drift-row]').classList.toggle('alarm', driftAlarm);
+  cellEl.querySelectorAll('[data-drift-metric]').forEach(el=>{
+    el.classList.toggle('is-guarded', el.dataset.driftMetric === st.builtVia);
+  });
+  cellEl.querySelector('[data-drift-guard-note]').textContent =
+    'guarded metric (drives the alarm, threshold ±'+HUE_DRIFT_ALARM_DEG+'°) is '+st.builtVia.toUpperCase()+
+    ' — how this colour was last built. The other model’s hue is a different construction, shown for reference, not gamut-guarded.';
+
+  cellEl.querySelector('[data-readout="hsbS"]').textContent = st.hsbS.toFixed(1)+'%';
+  cellEl.querySelector('[data-readout="hsbB"]').textContent = st.hsbB.toFixed(1)+'%';
+  cellEl.querySelector('[data-readout="oklchC"]').textContent = st.oklchC.toFixed(3);
+  cellEl.querySelector('[data-readout="oklchL"]').textContent = st.oklchL.toFixed(3);
+  cellEl.querySelector('[data-max-chroma]').textContent = st.maxC.toFixed(3);
+
+  cellEl.querySelector('[data-ctl="hsbS"]').value = st.hsbS;
+  cellEl.querySelector('[data-ctl="hsbB"]').value = st.hsbB;
+  const cCtl = cellEl.querySelector('[data-ctl="oklchC"]');
+  cCtl.max = Math.max(st.maxC, st.oklchC, 0.001).toFixed(4);   /* NEW v2: ceiling adapts to L, prevents drift-by-drag */
+  cCtl.value = st.oklchC;
+  cellEl.querySelector('[data-ctl="oklchL"]').value = st.oklchL;
+
+  cellEl.querySelector('[data-also="hsb"]').textContent =
+    'HSB '+LOCKED_HUE_HSB[seed.family].toFixed(1)+'° / '+st.hsbS.toFixed(1)+'% / '+st.hsbB.toFixed(1)+'%';
+  cellEl.querySelector('[data-also="oklch"]').textContent =
+    'OKLCH L'+st.oklchL.toFixed(3)+' C'+st.oklchC.toFixed(3)+' H'+LOCKED_HUE_OKLCH[seed.family].toFixed(1)+'°';
+
+  cellEl.querySelector('[data-clip-chip]').hidden = !st.clipped;
+
+  cellEl.querySelector('[data-now-sw]').style.background = st.hex;
+  cellEl.querySelector('[data-now-hex]').textContent = st.hex;
+  const deltaNow = deltaOklab(st.hex, SEED_START[key]);
+  cellEl.querySelector('[data-delta-now]').textContent = deltaNow < 0.001 ? '= seed, unchanged' : ('Δ '+deltaNow.toFixed(3)+' (OKLab) from seed');
+}
+
+/* ---- NEW v2: setFromOKLCH now clamps chroma at the gamut wall along the LOCKED hue, so the
+   rendered/stored hue can never move — this is the fix for v1's defect. ---- */
+function setFromOKLCH(key, l, c){
+  l = Math.max(0, Math.min(1, l));
+  c = Math.max(0, c);
+  const seed = SEEDS[key];
+  const H = LOCKED_HUE_OKLCH[seed.family];
+  const maxC = maxChromaInGamut(l, H);
+  const requestedOutOfGamut = c > maxC + 1e-6;
+  const usedC = Math.min(c, maxC);
+  const res = oklch2rgb(l, usedC, H);          // guaranteed in-gamut by construction — never clips
+  const hex = rgb2hex(res.rgb);
+  const hsb = rgb2hsb(hex2rgb(hex));
+  const renderedOklch = srgb2oklch(hex);
+  const hueDriftOklch = wrapDeg(renderedOklch[2] - H);
+  const hueDriftHsb = wrapDeg(hsb[0] - LOCKED_HUE_HSB[seed.family]);
+  state[key] = { hsbS:hsb[1], hsbB:hsb[2], oklchL:l, oklchC:usedC, hex,
+    clipped:requestedOutOfGamut, hueDriftOklch, hueDriftHsb, maxC,
+    ratio: state[key]?state[key].ratio:0, builtVia:'oklch' };
+  renderCell(key);
+  updateSpecimens();
+  updateSummary();
+}
+function setFromHSB(key, s, b){
+  s = Math.max(0, Math.min(100, s));
+  b = Math.max(0, Math.min(100, b));
+  const seed = SEEDS[key];
+  const H = LOCKED_HUE_HSB[seed.family];
+  const hex = rgb2hex(hsb2rgb(H, s, b));       // HSB is defined ON the sRGB cube — never clips
+  const oklch = srgb2oklch(hex);
+  const hsbCheck = rgb2hsb(hex2rgb(hex));
+  const hueDriftOklch = wrapDeg(oklch[2] - LOCKED_HUE_OKLCH[seed.family]);
+  const hueDriftHsb = wrapDeg(hsbCheck[0] - H);
+  const maxC = maxChromaInGamut(oklch[0], LOCKED_HUE_OKLCH[seed.family]);
+  state[key] = { hsbS:s, hsbB:b, oklchL:oklch[0], oklchC:oklch[1], hex,
+    clipped:false, hueDriftOklch, hueDriftHsb, maxC,
+    ratio: state[key]?state[key].ratio:0, builtVia:'hsb' };
+  renderCell(key);
+  updateSpecimens();
+  updateSummary();
+}
+
+function updateSpecimens(){
+  CELL_ORDER.forEach(key=>{
+    document.querySelectorAll('[data-bind="'+key+'"]').forEach(el=>{ el.style.color = state[key].hex; });
+    document.querySelectorAll('[data-specimen-ratio="'+key+'"]').forEach(el=>{ el.textContent = state[key].ratio.toFixed(2)+':1'; });
+  });
+}
+
+/* ---- NEW v2: repaint the panels to the selected ground's light/dark hex — "the equivalent treatment" ---- */
+function updateGroundedSurfaces(){
+  const role = currentRole();
+  document.querySelectorAll('.panel.light').forEach(p=>{ p.style.background = role.light; });
+  document.querySelectorAll('.panel.dark').forEach(p=>{ p.style.background = role.dark; });
+}
+
+function updateSummary(){
+  const changed = CELL_ORDER.filter(k => state[k].hex !== SEED_START[k]).length;
+  const failingSelected = CELL_ORDER.filter(k => state[k].ratio < 4.5).length;
+  const failingWorst = CELL_ORDER.filter(k=>{
+    const w = worstFor(k, hex2rgb(state[k].hex));
+    return w && w.ratio < 4.5;
+  }).length;
+  const driftAlarm = CELL_ORDER.filter(k => Math.abs(state[k].hueDriftOklch) > HUE_DRIFT_ALARM_DEG || Math.abs(state[k].hueDriftHsb) > HUE_DRIFT_ALARM_DEG).length;
+  document.getElementById('state').textContent =
+    changed+' of 4 changed from seed · '+failingSelected+' of 4 below AA on selected · '+failingWorst+' of 4 below AA on worst · '+driftAlarm+' of 4 hue-drift alarm · ground: '+CURRENT_GROUND_ID;
+}
+
+function wireCell(key){
+  const cellEl = document.getElementById('cell-'+key);
+  cellEl.querySelector('[data-ctl="hsbS"]').addEventListener('input', e=>{ setFromHSB(key, parseFloat(e.target.value), state[key].hsbB); });
+  cellEl.querySelector('[data-ctl="hsbB"]').addEventListener('input', e=>{ setFromHSB(key, state[key].hsbS, parseFloat(e.target.value)); });
+  cellEl.querySelector('[data-ctl="oklchC"]').addEventListener('input', e=>{ setFromOKLCH(key, state[key].oklchL, parseFloat(e.target.value)); });
+  cellEl.querySelector('[data-ctl="oklchL"]').addEventListener('input', e=>{ setFromOKLCH(key, parseFloat(e.target.value), state[key].oklchC); });
+  cellEl.querySelector('[data-reset]').addEventListener('click', ()=>{
+    state[key] = initState(key);
+    renderCell(key);
+    updateSpecimens();
+    updateSummary();
+  });
+}
+
+function wireModelToggle(){
+  document.querySelectorAll('[data-model]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      drivingModel = btn.dataset.model;
+      document.body.classList.toggle('model-oklch', drivingModel==='oklch');
+      document.querySelectorAll('[data-model]').forEach(b=>b.classList.toggle('active', b===btn));
+      CELL_ORDER.forEach(renderCell);   /* NEW v2: the guarded-metric highlight/alarm depend on drivingModel */
+    });
+  });
+}
+function wireCVDToggle(){
+  document.querySelectorAll('[data-cvd]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const mode = btn.dataset.cvd;
+      const scope = document.getElementById('specimen-scope');
+      scope.classList.remove('cvd-deuter','cvd-prot');
+      if(mode==='deuter') scope.classList.add('cvd-deuter');
+      if(mode==='prot') scope.classList.add('cvd-prot');
+      document.querySelectorAll('[data-cvd]').forEach(b=>b.classList.toggle('active', b===btn));
+    });
+  });
+}
+/* ---- NEW v2: ground selector + worst-set checkboxes ---- */
+function renderGroundToggle(){
+  const wrap = document.getElementById('ground-toggle');
+  wrap.innerHTML = GROUND_ROLES.map(r=>
+    '<button type="button" class="ground-btn'+(r.id===CURRENT_GROUND_ID?' active':'')+'" data-ground="'+r.id+'">'
+    + '<i class="sw" style="background:'+r.light+'"></i><i class="sw" style="background:'+r.dark+'"></i>'
+    + '<span>'+r.label+(r.approx?' <span class="approx-mark">*</span>':'')+'</span>'
+    + '<span class="role-hex">'+r.light+' / '+r.dark+'</span>'
+    + '</button>'
+  ).join('');
+  document.getElementById('ground-provenance-list').innerHTML = GROUND_ROLES.map(r=>
+    '<li><b>'+r.label+'</b> — light: '+r.lightSrc+'<br>dark: '+r.darkSrc+(r.approx?' <span class="approx-mark">*</span>':'')+'</li>'
+  ).join('');
+}
+function wireGroundToggle(){
+  document.querySelectorAll('[data-ground]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      CURRENT_GROUND_ID = btn.dataset.ground;
+      document.querySelectorAll('[data-ground]').forEach(b=>b.classList.toggle('active', b===btn));
+      updateGroundedSurfaces();
+      CELL_ORDER.forEach(renderCell);
+      updateSpecimens();
+      updateSummary();
+    });
+  });
+}
+function renderWorstChecks(){
+  const wrap = document.getElementById('worst-checks');
+  wrap.innerHTML = GROUND_ROLES.map(r=>
+    '<label class="worst-check"><input type="checkbox" data-worst-toggle="'+r.id+'" checked>'
+    + '<i class="sw" style="background:'+r.light+'"></i>'+r.label+(r.approx?' <span class="approx-mark">*</span>':'')+'</label>'
+  ).join('');
+}
+function wireWorstChecks(){
+  document.querySelectorAll('[data-worst-toggle]').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const id = cb.dataset.worstToggle;
+      if(cb.checked) ENABLED_WORST.add(id); else ENABLED_WORST.delete(id);
+      CELL_ORDER.forEach(renderCell);
+      updateSummary();
+    });
+  });
+}
+function wireResetAll(){
+  document.getElementById('reset-all').addEventListener('click', ()=>{
+    CELL_ORDER.forEach(key=>{ state[key] = initState(key); renderCell(key); });
+    updateSpecimens();
+    updateSummary();
+  });
+}
+
+function payload(){
+  const role = currentRole();
+  const cells = {};
+  CELL_ORDER.forEach(key=>{
+    const seed = SEEDS[key], st = state[key];
+    const groundHex = groundHexFor(key);
+    const fgRgb = hex2rgb(st.hex);
+    const worst = worstFor(key, fgRgb);
+    cells[key] = {
+      mode: seed.mode,
+      v1Hex: seed.v1Hex,
+      seedHex: seed.hex,
+      currentHex: st.hex,
+      changedFromSeed: st.hex !== SEED_START[key],
+      selectedGround: { roleId: CURRENT_GROUND_ID, roleLabel: role.label, hex: groundHex, approx: !!role.approx },
+      contrastRatio: Number(st.ratio.toFixed(3)),
+      passesAA: st.ratio >= 4.5,
+      passesAAA: st.ratio >= 7,
+      worstGround: worst ? {
+        roleId: worst.role.id, roleLabel: worst.role.label, hex: worst.hex, approx: !!worst.role.approx,
+        contrastRatio: Number(worst.ratio.toFixed(3)), passesAA: worst.ratio >= 4.5, passesAAA: worst.ratio >= 7
+      } : null,
+      divergentSelectedPassWorstFail: !!(worst && st.ratio >= 4.5 && worst.ratio < 4.5),
+      hsb: { hueLockedDeg: Number(LOCKED_HUE_HSB[seed.family].toFixed(4)), saturationPct: Number(st.hsbS.toFixed(2)), brightnessPct: Number(st.hsbB.toFixed(2)) },
+      oklch: { lightness: Number(st.oklchL.toFixed(4)), chroma: Number(st.oklchC.toFixed(4)), hueLockedDeg: Number(LOCKED_HUE_OKLCH[seed.family].toFixed(4)), maxChromaAtLightness: Number(st.maxC.toFixed(4)) },
+      gamutClipped: !!st.clipped,
+      hueDriftDeg: Number(st.hueDriftOklch.toFixed(4)),
+      hueDriftHsbDeg: Number(st.hueDriftHsb.toFixed(4)),
+      hueDriftGuardedModel: st.builtVia,
+      hueDriftAlarm: Math.abs(st.builtVia==='hsb' ? st.hueDriftHsb : st.hueDriftOklch) > HUE_DRIFT_ALARM_DEG
+    };
+  });
+  return JSON.stringify({
+    session: 's144',
+    date: '2026-08-10',
+    version: 'v2',
+    subject: "Plus/minus coloured-text tuner v2 — ground selector + two-way contrast + hard gamut guard",
+    source: 'reviews/PLUSMINUS-TUNER-2026-08-10-s144-v2.html',
+    predecessor: 'reviews/PLUSMINUS-TUNER-2026-08-10-s144-v1.html',
+    scope: 'RED (minus) and GREEN (plus) coloured TEXT only — information/warning text out of scope by Dave’s word.',
+    doesNotReopen: ['s122-D2 (the four RAG fills + #1A1A1A mark)', 'amount-display.sign bind (s143-D1(B))'],
+    drivingModelAtExport: drivingModel,
+    groundRoles: GROUND_ROLES.map(r=>({ id:r.id, label:r.label, light:r.light, dark:r.dark, approx:!!r.approx, lightSource:r.lightSrc, darkSource:r.darkSrc })),
+    selectedGroundRoleId: CURRENT_GROUND_ID,
+    worstSetEnabledRoleIds: GROUND_ROLES.filter(r=>ENABLED_WORST.has(r.id)).map(r=>r.id),
+    hueDriftAlarmThresholdDeg: HUE_DRIFT_ALARM_DEG,
+    lockedHue: {
+      red:   { hsbDeg: Number(LOCKED_HUE_HSB.red.toFixed(4)),   oklchDeg: Number(LOCKED_HUE_OKLCH.red.toFixed(4)) },
+      green: { hsbDeg: Number(LOCKED_HUE_HSB.green.toFixed(4)), oklchDeg: Number(LOCKED_HUE_OKLCH.green.toFixed(4)) },
+      briefStatedV2: { redHsbDeg: 7.0588, greenHsbDeg: 142.9412, redOklchDeg: 30.2375, greenOklchDeg: 154.5908 },
+      note: 'v2 brief-stated locked hues match this live re-derivation off rag/error #F6604C and rag/success #66CC8D EXACTLY (0.0000° delta to 4 d.p.). v1 had flagged a small stated/re-derived delta; resolved this pass.'
+    },
+    cells: cells
+  }, null, 1);
+}
+
+function wireExport(){
+  document.getElementById('export').addEventListener('click', ()=>{
+    const out = document.getElementById('out');
+    out.style.display = 'block';
+    out.value = payload();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([out.value], {type:'application/json'}));
+    a.download = 'PLUSMINUS-TUNER-VERDICTS-2026-08-10-s144-v2.json';
+    a.click();
+  });
+  document.getElementById('copy').addEventListener('click', ()=>{
+    const out = document.getElementById('out');
+    out.style.display = 'block';
+    out.value = payload();
+    out.select();
+    document.execCommand('copy');
+  });
+}
+
+/* ================================================================
+   boot
+   ================================================================ */
+computeGrounds();
+['red','green'].forEach(fam=>{
+  const hx = FAMILY_FILL_HEX[fam];
+  LOCKED_HUE_HSB[fam] = rgb2hsb(hex2rgb(hx))[0];
+  LOCKED_HUE_OKLCH[fam] = srgb2oklch(hx)[2];
+});
+document.getElementById('hue-red-hsb').textContent = LOCKED_HUE_HSB.red.toFixed(2)+'°';
+document.getElementById('hue-red-oklch').textContent = LOCKED_HUE_OKLCH.red.toFixed(2)+'°';
+document.getElementById('hue-green-hsb').textContent = LOCKED_HUE_HSB.green.toFixed(2)+'°';
+document.getElementById('hue-green-oklch').textContent = LOCKED_HUE_OKLCH.green.toFixed(2)+'°';
+
+renderGroundToggle();
+renderWorstChecks();
+document.getElementById('tuner-grid').innerHTML = CELL_ORDER.map(cellTemplate).join('');
+CELL_ORDER.forEach(key=>{ state[key] = initState(key); SEED_START[key] = state[key].hex; });
+CELL_ORDER.forEach(wireCell);
+updateGroundedSurfaces();
+CELL_ORDER.forEach(renderCell);
+updateSpecimens();
+updateSummary();
+wireModelToggle();
+wireCVDToggle();
+wireGroundToggle();
+wireWorstChecks();
+wireResetAll();
+wireExport();
+
+/* ---- NEW v2: debug hook for the render-verify probe only. Purely additive plumbing — exposes
+   internals for automated assertion, does not change any default/visual behaviour for Dave and
+   picks nothing. ---- */
+window.__TUNER__ = {
+  state, SEEDS, GROUND_ROLES, CELL_ORDER, LOCKED_HUE_HSB, LOCKED_HUE_OKLCH,
+  setFromOKLCH, setFromHSB, maxChromaInGamut, payload,
+  getCurrentGroundId: ()=>CURRENT_GROUND_ID,
+  selectGround: (id)=>{
+    CURRENT_GROUND_ID = id;
+    updateGroundedSurfaces();
+    CELL_ORDER.forEach(renderCell);
+    updateSpecimens();
+    updateSummary();
+    document.querySelectorAll('[data-ground]').forEach(b=>b.classList.toggle('active', b.dataset.ground===id));
+  },
+  setWorstEnabled: (id, on)=>{
+    if(on) ENABLED_WORST.add(id); else ENABLED_WORST.delete(id);
+    const cb = document.querySelector('[data-worst-toggle="'+id+'"]');
+    if(cb) cb.checked = on;
+    CELL_ORDER.forEach(renderCell);
+    updateSummary();
+  }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plus/minus coloured text — saturation &amp; brightness tuner, hue locked (s144)</title>
+<!--
+  PLUSMINUS TUNER — session #144, 2026-08-10.
+  BUILD-ONLY sub. Tunes the FOUR coloured-TEXT values amount-display.sign needs (s142-D1 C4 bind,
+  tension flagged s143-D1(B)) — the numeral for a negative amount (minus/red) and a positive/zero
+  amount (plus/green), light and dark. Direct sibling of RAG-TEXT-RUNG-2026-08-10-s144-v1.html (same
+  session, same finding) — that page proposes RESTORING three fixed candidate text values; this page
+  is the live saturation/brightness (HSB) + chroma/lightness (OKLCH) tuner for the two hues Dave named,
+  seeded from those same candidates, hue LOCKED.
+
+  Dave, this session (verbatim, in order):
+   1. "the rag on status and wtc are fine its only the colourd text that is at issue"
+   2. "statuses are fine they have labels and the roundels carry a glyph that create teh meaning tah
+       background doesnt matter"
+   3. "we don't need to worry about info or warning text, they are not used and the only coloured text
+       is for plus and minus, red and green. these are the only coloured text we use."
+   4. (hue) "just the saturation and brightness, teh base hue stays the same"
+
+  SCOPE, STATED ONCE: does NOT reopen s122-D2 (the four RAG fills are SETTLED: success #66CC8D, error
+  #F6604C, warning #E0A61F, information #78A7E8, mark #1A1A1A on all four, mode-invariant). Does NOT
+  touch the amount-display.sign bind (s143-D1(B) ruled it stands). Does NOT render information or
+  warning coloured text anywhere — out of scope by Dave's word (line 3 above). Hue is LOCKED: no hue
+  slider, no hue affordance, anywhere on this page.
+
+  Nothing on this page is chosen for Dave. Every slider ships at its seed. Reset returns to the seed.
+-->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+:root{
+  --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease:140ms ease;
+  --page:#FFFFFF; --ink:#1A1A1A; --border:#E1E1E1; --muted:#5B5B5B;
+  --pass:#1E7A46; --fail:#B0281A; --fail-tint:#FDECEA;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--page); color:var(--ink); font-family:var(--font); -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px; margin:0 auto; padding:2.25rem 2rem 8rem;}
+h1{font-family:var(--uf); font-size:26px; line-height:1.2; font-weight:400; margin:0 0 6px;}
+h2{font-family:var(--uf); font-size:19px; font-weight:500; margin:0 0 4px;}
+h3{font-family:var(--uf); font-size:14px; font-weight:500; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:0 0 10px;}
+p{font-family:var(--uf); font-size:14px; line-height:1.55; color:#333; margin:0 0 10px; max-width:78ch;}
+code{font:12px/1.4 ui-monospace,"SF Mono",Menlo,Consolas,monospace; background:#F2F2F2; padding:1px 5px; border-radius:2px;}
+.meta{font:12px/1.5 var(--uf); color:var(--muted); margin:0 0 20px;}
+.scope-banner{border:1px solid var(--ink); border-left-width:4px; padding:12px 16px; margin:0 0 28px; background:#FAFAFA;}
+.scope-banner p{margin:0 0 6px; font-size:13px;}
+.scope-banner p:last-child{margin-bottom:0;}
+.scope-banner b{font-weight:500;}
+section{margin:0 0 44px; padding-top:28px; border-top:1px solid var(--border);}
+section:first-of-type{border-top:0; padding-top:0;}
+
+/* ---- rationale + hue-check callout ---- */
+.rationale{border:1px dashed var(--border); padding:14px 16px; background:#FAFAFA; margin:0 0 16px;}
+.rationale p{margin:0 0 8px; font-size:13px;}
+.rationale p:last-child{margin-bottom:0;}
+.hue-check{border:1px solid var(--border); padding:12px 16px; font:12px/1.6 ui-monospace,monospace; color:#333; background:#fff; margin:0 0 8px;}
+.hue-check b{font-family:var(--font); font-weight:500; font-size:13px; display:block; margin-bottom:4px;}
+.grounds{display:flex; gap:18px; align-items:center; margin:0 0 14px; flex-wrap:wrap;}
+.gnd{display:flex; align-items:center; gap:8px; font:12px/1 ui-monospace,monospace; color:var(--muted);}
+.gnd i{display:inline-block; width:22px; height:22px; border:1px solid var(--border);}
+#gnd-white{background:#FFFFFF;}
+#gnd-ink{background:#1A1A1A;}
+.impossible-line{font:12px/1.6 ui-monospace,monospace; color:var(--muted); margin:0 0 4px;}
+
+/* ---- model toggle ---- */
+.model-toggle{display:inline-flex; border:1px solid var(--ink); margin:0 0 20px;}
+.model-toggle button{appearance:none; border:0; background:#fff; color:var(--ink); font:500 13px var(--font); height:36px; padding:0 20px; cursor:pointer;}
+.model-toggle button.active{background:var(--ink); color:#fff;}
+.model-toggle-note{font:12px/1.5 var(--font); color:var(--muted); margin:-12px 0 20px;}
+
+/* ---- tuner grid ---- */
+.tuner-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+.cell{border:1px solid var(--border); padding:16px; position:relative; transition:outline-color var(--ease), background var(--ease);}
+.cell.is-fail-aa{outline:3px solid var(--fail); outline-offset:-3px; background:var(--fail-tint);}
+.cell-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 4px;}
+.cell-head h3{margin:0;}
+.ground-chip{font:11px/1 ui-monospace,monospace; padding:4px 8px; border:1px solid var(--border); background:var(--chip-bg); color:var(--chip-fg); flex:none;}
+.fail-flag{display:none; align-items:center; gap:6px; background:var(--fail); color:#fff; font:600 12px var(--font); padding:4px 10px; margin:0 0 10px; width:fit-content;}
+.swatch-wrap{display:flex; align-items:center; justify-content:center; min-height:88px; border:1px solid var(--border); margin:0 0 12px;}
+.swatch-wrap .amount{font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+.hue-lock-row{font:11px/1.6 ui-monospace,monospace; color:var(--muted); margin:0 0 10px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+.lock-ic{font-size:12px;}
+.ctl-group{margin:0 0 10px;}
+.oklch-ctl{display:none;}
+body.model-oklch .hsb-ctl{display:none;}
+body.model-oklch .oklch-ctl{display:block;}
+.slider-row{margin:0 0 10px;}
+.slider-row label{display:flex; justify-content:space-between; font:12px/1.4 var(--font); color:var(--ink); margin:0 0 4px;}
+.slider-row label span{font:11px/1.4 ui-monospace,monospace; color:var(--muted);}
+.slider-row input[type="range"]{width:100%; accent-color:var(--ink);}
+.also-readout{font:11px/1.6 ui-monospace,monospace; color:var(--muted); margin:0 0 10px; display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
+.also-label{text-transform:uppercase; letter-spacing:.04em;}
+.clip-chip{background:#F6E6C0; color:#5A4300; padding:2px 6px; font:11px var(--font);}
+.contrast-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin:0 0 8px; padding:8px 10px; background:#fff; border:1px solid var(--border);}
+.ratio-big{font:600 22px/1 ui-monospace,monospace; color:var(--ink);}
+.ratio-big.fail{color:var(--fail);}
+.ratio-suffix{font:12px ui-monospace,monospace; color:var(--muted);}
+.thresh-chip{font:11px/1.4 ui-monospace,monospace; padding:2px 7px; border:1px solid var(--border);}
+.thresh-chip.pass{color:var(--pass); border-color:var(--pass);}
+.thresh-chip.fail{color:var(--fail); border-color:var(--fail); font-weight:600;}
+.hex-row{font:12px/1.6 ui-monospace,monospace; color:var(--muted); margin:0 0 10px;}
+.hex-row code{font-weight:600; color:var(--ink);}
+.before-after{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font:11px/1.5 ui-monospace,monospace; color:var(--muted); margin:0 0 10px; padding:8px 10px; background:#FAFAFA; border:1px solid var(--border);}
+.ba-item{display:flex; align-items:center; gap:6px;}
+.ba-lbl{text-transform:uppercase; letter-spacing:.03em; font-size:10px;}
+.ba-sw{width:14px; height:14px; border:1px solid rgba(0,0,0,.2); flex:none; display:inline-block;}
+.ba-arrow{color:var(--muted);}
+.ba-delta{margin-left:auto; font-style:italic;}
+.reset-btn{appearance:none; border:1px solid var(--ink); background:#fff; color:var(--ink); font:500 12px var(--font); height:32px; padding:0 14px; cursor:pointer; width:100%;}
+.reset-btn:hover{background:var(--ink); color:#fff;}
+
+/* ---- specimens ---- */
+.specimen-panels{display:flex; gap:16px; flex-wrap:wrap;}
+.panel{flex:1 1 480px; border:1px solid var(--border); padding:20px;}
+.panel.dark{background:#1A1A1A; border-color:#808080; color:#FFFFFF;}
+.panel h3{color:inherit; opacity:.7;}
+.money-block{margin:0 0 18px;}
+.money-block .lbl{font:11px/1.5 var(--uf); text-transform:uppercase; letter-spacing:.04em; opacity:.65; margin:0 0 8px;}
+.money-row{display:flex; gap:32px; flex-wrap:wrap; align-items:baseline; margin:0 0 6px;}
+.amount{display:inline-flex; align-items:baseline; white-space:nowrap; font-variant-numeric:tabular-nums; letter-spacing:-.005em;}
+.amount--display{letter-spacing:-.01em;}
+.ratio-line{display:flex; gap:22px; flex-wrap:wrap; font:11px/1.6 ui-monospace,monospace; opacity:.75; margin:2px 0 0;}
+
+/* ---- density block ---- */
+.stmt-table{width:100%; border-collapse:collapse; font-family:var(--font);}
+.stmt-table th{text-align:left; font:11px var(--font); text-transform:uppercase; letter-spacing:.04em; opacity:.6; font-weight:400; padding:6px 8px; border-bottom:1px solid var(--border);}
+.panel.dark .stmt-table th{border-color:#484848;}
+.stmt-table td{padding:7px 8px; border-bottom:1px solid var(--border); font-size:13px;}
+.panel.dark .stmt-table td{border-color:#333;}
+.stmt-table td.amt-cell{text-align:right;}
+.stmt-table td.amt-cell .amount{float:right;}
+
+/* ---- CVD ---- */
+.cvd-toggle{display:inline-flex; border:1px solid var(--ink); margin:0 0 6px;}
+.cvd-toggle button{appearance:none; border:0; border-right:1px solid var(--ink); background:#fff; color:var(--ink); font:500 12px var(--font); height:32px; padding:0 14px; cursor:pointer;}
+.cvd-toggle button:last-child{border-right:0;}
+.cvd-toggle button.active{background:var(--ink); color:#fff;}
+.cvd-note{font:12px/1.6 var(--font); color:var(--muted); margin:0 0 18px; max-width:74ch;}
+#specimen-scope.cvd-deuter{filter:url(#cvd-deuter);}
+#specimen-scope.cvd-prot{filter:url(#cvd-prot);}
+
+/* ---- export bar ---- */
+.bar{position:sticky; bottom:0; display:flex; align-items:center; gap:14px; background:var(--ink); color:#fff; padding:14px 20px; margin:0 -2rem; flex-wrap:wrap;}
+.bar .state{font:12px/1.4 ui-monospace,monospace; opacity:.85;}
+.bar button{appearance:none; border:0; background:#fff; color:var(--ink); font:500 13px var(--font); height:36px; padding:0 18px; cursor:pointer;}
+.bar button.ghost{background:transparent; border:1px solid #fff; color:#fff;}
+textarea#out{width:100%; height:260px; margin-top:14px; font:11px/1.5 ui-monospace,monospace; display:none; border:1px solid var(--border); padding:10px;}
+.method-note{font:11px/1.6 var(--font); color:var(--muted); margin:30px 0 0; max-width:80ch;}
+
+@media (max-width:820px){
+  .tuner-grid{grid-template-columns:1fr;}
+}
+@media (max-width:700px){
+  .wrap{padding:1.5rem 1rem 8rem;}
+  .bar{margin:0 -1rem; flex-direction:column; align-items:stretch;}
+  h1{font-size:21px;}
+  .before-after{flex-direction:column; align-items:flex-start;}
+  .ba-delta{margin-left:0;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Plus/minus coloured text — saturation &amp; brightness tuner</h1>
+    <div class="meta">Session #144 · 2026-08-10 · residual flagged at <code>amount-display.sign</code> <code>s142-D1</code> / <code>s143-D1(B)</code> · sibling of <code>reviews/RAG-TEXT-RUNG-2026-08-10-s144-v1.html</code> (fuller write-up of the finding below) · source: <code>knowledge/tokens/semantic-colour.json</code></div>
+    <div class="scope-banner">
+      <p><b>What this page is NOT:</b> it does not reopen <code>s122-D2</code> — the four RAG fills (success <code>#66CC8D</code> · error <code>#F6604C</code> · warning <code>#E0A61F</code> · information <code>#78A7E8</code>) and the <code>#1A1A1A</code> mark are settled. It does not touch the <code>amount-display.sign</code> bind — <code>s143-D1(B)</code> ruled it stands. It does not render information or warning coloured text anywhere.</p>
+      <p><b>What this page is:</b> Dave, this session — <i>"the rag on status and wtc are fine its only the colourd text that is at issue"</i> … <i>"the only coloured text is for plus and minus, red and green. these are the only coloured text we use."</i> Two hues, four grounds (light/dark), saturation and brightness only — <i>"just the saturation and brightness, teh base hue stays the same."</i> Nothing below is picked. Every slider ships at its seed; your drag is the ruling.</p>
+    </div>
+  </header>
+
+  <!-- ============================================================ RATIONALE ============================================================ -->
+  <section id="rationale">
+    <h3>Why this is text, not fill — one line</h3>
+    <div class="rationale">
+      <p>In the fills, meaning is carried by the label and the roundel glyph, so fill contrast is a salience lever, not a legibility requirement (<code>R-D6</code>). On the <code>amount-display</code> numeral, meaning is carried by the sign — U+2212 minus for negative, no sign for positive/zero — so colour there is <i>also</i> salience, not the only channel. But text carries a second obligation fills do not: it must be <b>readable</b> (WCAG 1.4.3), independent of what it means. That is the only reason these four values must clear 4.5:1.</p>
+    </div>
+    <div class="grounds">
+      <span class="gnd"><i id="gnd-white"></i>#FFFFFF — page ground, light</span>
+      <span class="gnd"><i id="gnd-ink"></i>#1A1A1A — page ground, dark ("digital black")</span>
+    </div>
+    <p class="impossible-line">A mode-invariant AA-text value is arithmetically impossible for either hue: text on white needs relative luminance L ≤ <b id="upper-bound">—</b> (computed live from the ground swatch above); text on #1A1A1A needs L ≥ <b id="lower-bound">—</b>. The window is empty — that is why this tool tunes <b>four</b> values, not two. Full proof with the boundbar visual: <code>RAG-TEXT-RUNG-2026-08-10-s144-v1.html</code> §finding — not rebuilt here to avoid duplicating that record.</p>
+
+    <div class="hue-check">
+      <b>Hue check — re-derived independently, as asked</b>
+      Locked hues below are computed <i>live in this file's own script</i>, in-browser, directly from the ruled fills <code>rag/error #F6604C</code> and <code>rag/success #66CC8D</code> (<code>s122-D2</code>) — nothing is hand-typed. Standard sRGB→HSB hue and the repo's own sRGB→OKLab→OKLCh coefficients (<code>reviews/_rag_colours_calc.py</code>, Björn Ottosson's public formulation), ported to JS unchanged.<br>
+      red: HSB <b id="hue-red-hsb">—</b> · OKLCH <b id="hue-red-oklch">—</b> — brief's cover note stated <b>7.3°</b><br>
+      green: HSB <b id="hue-green-hsb">—</b> · OKLCH <b id="hue-green-oklch">—</b> — brief's cover note stated <b>145.3°</b><br>
+      Both re-derivations differ slightly from the brief's stated figures (red Δ≈0.24°, green Δ≈2.36° in HSB terms — both well under 1% of the colour wheel, not visually distinguishable). This build LOCKS to the re-derived numbers above, not the brief's, because they are measured directly off the cited ruled hex rather than transcribed. Flagged for the record, not resolved here — see the session report.
+    </div>
+  </section>
+
+  <!-- ============================================================ MODEL TOGGLE ============================================================ -->
+  <section id="model">
+    <h3>Colour model</h3>
+    <div class="model-toggle" role="group" aria-label="Colour model driving the sliders">
+      <button type="button" data-model="hsb" class="active">HSB (Figma)</button>
+      <button type="button" data-model="oklch">OKLCH</button>
+    </div>
+    <p class="model-toggle-note">HSB is primary — Dave's words, the Figma convention. OKLCH drives saturation via <b>chroma</b> and brightness via <b>lightness</b> instead; the repo's own colour notes are already written in OKLCH (<code>knowledge/tokens/semantic-colour.json</code> <code>$note</code> fields, e.g. "L0.72 C0.070 H241"). Hue stays locked either way — whichever model is driving, the other model's numbers are shown live below the sliders, computed from the resulting colour (they may drift by a fraction of a degree/unit from the locked constant when the OTHER model drives — that is expected: HSB-hue and OKLCH-hue are different constructions and are not perfectly interconvertible).</p>
+  </section>
+
+  <!-- ============================================================ TUNER GRID ============================================================ -->
+  <section id="tuner">
+    <h3>Four cells — hue locked, drag saturation &amp; brightness (or chroma &amp; lightness)</h3>
+    <p>Each cell's slider zero-point is its ruled seed hex <b>reconciled to the shared locked hue</b> (§ hue check, above) — for the two DARK seeds that reconciliation is exact (the dark fills <i>are</i> the hue source). For the two LIGHT seeds it shifts by ≤1 unit/255 in one channel (<code>#B92F1E → #B9301E</code>, <code>#2B7E4F → #2B7E4B</code>; contrast 6.02→5.99 and 5.00→5.01 respectively — both still comfortably clear AA 4.5, imperceptible on screen). Each "ruled seed" chip below shows the literal ruled hex for provenance; "Reset to seed" returns to the reconciled start, not a hue-drifted copy of that literal hex.</p>
+    <div class="tuner-grid" id="tuner-grid"><!-- JS-rendered, 4 cells --></div>
+  </section>
+
+  <!-- ============================================================ SPECIMENS ============================================================ -->
+  <section id="specimens">
+    <h3>Live specimen — the realistic case</h3>
+    <h2>amount-display, real rows: positive, negative, zero — both surfaces</h2>
+    <p>Tabular lining figures, real U+2212 minus, real sizes (<code>.t-cm-figure-4</code> display 32px / <code>.t-cm-figure-5</code> default 16px). Colour updates live as the sliders above move — <code>amount-display.sign</code>: <code>none → rag.success</code> (covers positive and zero, the existing unchanged bind), <code>negative → rag.error</code>.</p>
+
+    <div class="cvd-toggle" role="group" aria-label="Colour-vision-deficiency preview">
+      <button type="button" data-cvd="none" class="active">Normal vision</button>
+      <button type="button" data-cvd="deuter">Deuteranopia preview</button>
+      <button type="button" data-cvd="prot">Protanopia preview</button>
+    </div>
+    <p class="cvd-note">Information, not a gate: red/green is the classic confusion pair, so seeing the simulation matters — but the sign glyph (− / no sign) carries the meaning under CVD too, matching the roundel-glyph logic Dave already ruled for the fills (<code>R-D6</code>). Colour here is salience, not the only channel. Nothing below is blocked or flagged by this toggle. Approximate preview (Machado, Oliveira &amp; Fairchild 2009 dichromacy matrices, applied to linear RGB) — not a clinical simulator.</p>
+
+    <div id="specimen-scope">
+      <div class="specimen-panels">
+        <div class="panel light">
+          <h3>Light — #FFFFFF page</h3>
+          <div class="money-block">
+            <div class="lbl">display · 32px · .t-cm-figure-4</div>
+            <div class="money-row">
+              <span class="amount amount--display t-cm-figure-4" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">3,248.55</span></span>
+              <span class="amount amount--display t-cm-figure-4" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">842.10</span></span>
+              <span class="amount amount--display t-cm-figure-4" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span>
+            </div>
+            <div class="ratio-line">
+              <span>positive <span data-specimen-ratio="green-light">—</span></span>
+              <span>negative <span data-specimen-ratio="red-light">—</span></span>
+              <span>zero <span data-specimen-ratio="green-light">—</span></span>
+            </div>
+          </div>
+          <div class="money-block">
+            <div class="lbl">default · 16px · .t-cm-figure-5</div>
+            <div class="money-row">
+              <span class="amount t-cm-figure-5" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">12,000.00</span></span>
+              <span class="amount t-cm-figure-5" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">48.50</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel dark">
+          <h3>Dark — #1A1A1A page ("digital black")</h3>
+          <div class="money-block">
+            <div class="lbl">display · 32px · .t-cm-figure-4</div>
+            <div class="money-row">
+              <span class="amount amount--display t-cm-figure-4" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">3,248.55</span></span>
+              <span class="amount amount--display t-cm-figure-4" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">842.10</span></span>
+              <span class="amount amount--display t-cm-figure-4" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span>
+            </div>
+            <div class="ratio-line">
+              <span>positive <span data-specimen-ratio="green-dark">—</span></span>
+              <span>negative <span data-specimen-ratio="red-dark">—</span></span>
+              <span>zero <span data-specimen-ratio="green-dark">—</span></span>
+            </div>
+          </div>
+          <div class="money-block">
+            <div class="lbl">default · 16px · .t-cm-figure-5</div>
+            <div class="money-row">
+              <span class="amount t-cm-figure-5" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">12,000.00</span></span>
+              <span class="amount t-cm-figure-5" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">48.50</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ DENSITY BLOCK ============================================================ -->
+      <h2 style="margin-top:30px;">Density block — a column, not one big numeral</h2>
+      <p>A single hero figure flatters a colour; a statement of rows is the honest test. Small size, <code>.t-cm-figure-6</code> 14px, mixed signs.</p>
+      <div class="specimen-panels">
+        <div class="panel light">
+          <h3>Light — statement rows</h3>
+          <table class="stmt-table">
+            <thead><tr><th>Date</th><th>Description</th><th style="text-align:right;">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>03 Aug</td><td>Salary</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">2,450.00</span></span></td></tr>
+              <tr><td>04 Aug</td><td>Rent</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">1,200.00</span></span></td></tr>
+              <tr><td>05 Aug</td><td>Groceries</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">64.28</span></span></td></tr>
+              <tr><td>06 Aug</td><td>Refund</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">18.99</span></span></td></tr>
+              <tr><td>07 Aug</td><td>Transfer out</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">300.00</span></span></td></tr>
+              <tr><td>08 Aug</td><td>Interest</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">4.12</span></span></td></tr>
+              <tr><td>09 Aug</td><td>Subscription</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-light"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">9.99</span></span></td></tr>
+              <tr><td>10 Aug</td><td>Card check</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span></td></tr>
+              <tr><td>10 Aug</td><td>Balance c/f</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-light"><span class="amount__cur">£</span><span class="amount__val">913.71</span></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel dark">
+          <h3>Dark — statement rows</h3>
+          <table class="stmt-table">
+            <thead><tr><th>Date</th><th>Description</th><th style="text-align:right;">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>03 Aug</td><td>Salary</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">2,450.00</span></span></td></tr>
+              <tr><td>04 Aug</td><td>Rent</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">1,200.00</span></span></td></tr>
+              <tr><td>05 Aug</td><td>Groceries</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">64.28</span></span></td></tr>
+              <tr><td>06 Aug</td><td>Refund</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">18.99</span></span></td></tr>
+              <tr><td>07 Aug</td><td>Transfer out</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">300.00</span></span></td></tr>
+              <tr><td>08 Aug</td><td>Interest</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">4.12</span></span></td></tr>
+              <tr><td>09 Aug</td><td>Subscription</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="red-dark"><span class="amount__sign">−</span><span class="amount__cur">£</span><span class="amount__val">9.99</span></span></td></tr>
+              <tr><td>10 Aug</td><td>Card check</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">0.00</span></span></td></tr>
+              <tr><td>10 Aug</td><td>Balance c/f</td><td class="amt-cell"><span class="amount t-cm-figure-6" data-bind="green-dark"><span class="amount__cur">£</span><span class="amount__val">913.71</span></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="method-note">Method: WCAG 2.x relative-luminance/contrast formula, read from rendered <code>getComputedStyle</code> colour, never a hard-coded ratio. OKLCH via Björn Ottosson's public sRGB↔OKLab↔OKLCh coefficients (same matrix already used in <code>reviews/_rag_colours_calc.py</code>). CVD preview via Machado/Oliveira/Fairchild (2009) dichromacy matrices, SVG <code>feColorMatrix</code> in linearRGB — an approximation for information, not a clinical tool, per Dave's framing above.</p>
+
+  <textarea id="out" readonly></textarea>
+</div>
+
+<!-- CVD simulation filters — Machado, Oliveira & Fairchild (2009) dichromacy matrices, linearRGB -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <filter id="cvd-deuter" color-interpolation-filters="linearRGB">
+    <feColorMatrix type="matrix" values="
+      0.367322 0.860646 -0.227968 0 0
+      0.280085 0.672501  0.047413 0 0
+     -0.011820 0.042940  0.968881 0 0
+      0        0         0        1 0"/>
+  </filter>
+  <filter id="cvd-prot" color-interpolation-filters="linearRGB">
+    <feColorMatrix type="matrix" values="
+      0.152286 1.052583 -0.204868 0 0
+      0.114503 0.786281  0.099216 0 0
+     -0.003882 -0.048116  1.051998 0 0
+      0        0         0        1 0"/>
+  </filter>
+</svg>
+
+<div class="bar">
+  <span class="state" id="state">—</span>
+  <button id="reset-all" class="ghost">Reset all to seed</button>
+  <button id="export">Export JSON</button>
+  <button class="ghost" id="copy">Copy JSON</button>
+</div>
+
+<script>
+/* ================================================================
+   colour maths — sRGB<->HSB, sRGB<->OKLab<->OKLCh, WCAG contrast.
+   Everything measured reads RENDERED colour (getComputedStyle), nothing
+   is a typed-in/hard-coded ratio (matches RAG-TEXT-RUNG's convention,
+   same session). OKLab/OKLCh coefficients ported unchanged from
+   reviews/_rag_colours_calc.py (Bjorn Ottosson's public formulation).
+   ================================================================ */
+function hex2rgb(hex){
+  hex = hex.replace('#','');
+  return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+}
+function rgb2hex(rgb){
+  const c = v => Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0').toUpperCase();
+  return '#'+c(rgb[0])+c(rgb[1])+c(rgb[2]);
+}
+function parseRgb(str){
+  const m = str.match(/rgba?\(([^)]+)\)/);
+  if(!m) return [0,0,0];
+  return m[1].split(',').slice(0,3).map(s=>parseFloat(s));
+}
+function relLum([r,g,b]){
+  const f = v => { v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); };
+  return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b);
+}
+function contrastRgb(a,b){
+  const la=relLum(a), lb=relLum(b);
+  const hi=Math.max(la,lb), lo=Math.min(la,lb);
+  return (hi+0.05)/(lo+0.05);
+}
+
+/* ---- sRGB <-> HSB (standard hue formula, same construction as RAG-TEXT-RUNG's hueRgb) ---- */
+function rgb2hsb([r,g,b]){
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
+  let h=0;
+  if(d!==0){
+    if(max===r) h = ((g-b)/d) % 6;
+    else if(max===g) h = (b-r)/d + 2;
+    else h = (r-g)/d + 4;
+    h *= 60;
+    if(h<0) h += 360;
+  }
+  const s = max===0 ? 0 : d/max;
+  return [h, s*100, max*100];
+}
+function hsb2rgb(h, s, v){
+  s/=100; v/=100;
+  const c = v*s;
+  const hh = (((h%360)+360)%360) / 60;
+  const x = c*(1-Math.abs((hh%2)-1));
+  let rp,gp,bp;
+  if(hh<1)[rp,gp,bp]=[c,x,0];
+  else if(hh<2)[rp,gp,bp]=[x,c,0];
+  else if(hh<3)[rp,gp,bp]=[0,c,x];
+  else if(hh<4)[rp,gp,bp]=[0,x,c];
+  else if(hh<5)[rp,gp,bp]=[x,0,c];
+  else [rp,gp,bp]=[c,0,x];
+  const m = v-c;
+  return [(rp+m)*255,(gp+m)*255,(bp+m)*255];
+}
+
+/* ---- sRGB <-> OKLab <-> OKLCh (Ottosson; ported verbatim from reviews/_rag_colours_calc.py) ---- */
+function _lin(c){ return c<=0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); }
+function _slin(c){ return c<=0.0031308 ? 12.92*c : 1.055*Math.pow(c,1/2.4)-0.055; }
+function srgb2oklab(hex){
+  const raw = hex2rgb(hex).map(v=>_lin(v/255));
+  const r=raw[0], g=raw[1], b=raw[2];
+  const l = 0.4122214708*r + 0.5363325363*g + 0.0514459929*b;
+  const m = 0.2119034982*r + 0.6806995451*g + 0.1073969566*b;
+  const s = 0.0883024619*r + 0.2817188376*g + 0.6299787005*b;
+  const l_ = Math.cbrt(l), m_ = Math.cbrt(m), s_ = Math.cbrt(s);
+  return [
+    0.2104542553*l_ + 0.7936177850*m_ - 0.0040720468*s_,
+    1.9779984951*l_ - 2.4285922050*m_ + 0.4505937099*s_,
+    0.0259040371*l_ + 0.7827717662*m_ - 0.8086757660*s_
+  ];
+}
+function oklab2rgb(L,a,b){
+  const l_ = L + 0.3963377774*a + 0.2158037573*b;
+  const m_ = L - 0.1055613458*a - 0.0638541728*b;
+  const s_ = L - 0.0894841775*a - 1.2914855480*b;
+  const l = l_*l_*l_, m = m_*m_*m_, s = s_*s_*s_;
+  const r =  4.0767416621*l - 3.3077115913*m + 0.2309699292*s;
+  const g = -1.2684380046*l + 2.6097574011*m - 0.3413193965*s;
+  const bl= -0.0041960863*l - 0.7034186147*m + 1.7076147010*s;
+  return [r,g,bl].map(_slin);
+}
+function srgb2oklch(hex){
+  const lab = srgb2oklab(hex);
+  const L=lab[0], a=lab[1], b=lab[2];
+  const C = Math.hypot(a,b);
+  let H = Math.atan2(b,a) * 180/Math.PI;
+  if(H<0) H += 360;
+  return [L,C,H];
+}
+function oklch2rgb(L,C,H){
+  const hr = H*Math.PI/180;
+  const a = C*Math.cos(hr), b = C*Math.sin(hr);
+  const raw = oklab2rgb(L,a,b);
+  const clipped = raw.some(v=>v<-0.0005||v>1.0005);
+  const clamp = v => Math.max(0,Math.min(1,v))*255;
+  return { rgb:[clamp(raw[0]),clamp(raw[1]),clamp(raw[2])], clipped };
+}
+function deltaOklab(hexA, hexB){
+  const A = srgb2oklab(hexA), B = srgb2oklab(hexB);
+  return Math.hypot(A[0]-B[0], A[1]-B[1], A[2]-B[2]);
+}
+
+/* ================================================================
+   state
+   ================================================================ */
+const SEEDS = {
+  'red-light':   { hex:'#B92F1E', ground:'#FFFFFF', family:'red',   modeLabel:'LIGHT', numVal:'842.10',   signClass:'negative' },
+  'red-dark':    { hex:'#F6604C', ground:'#1A1A1A', family:'red',   modeLabel:'DARK',  numVal:'842.10',   signClass:'negative' },
+  'green-light': { hex:'#2B7E4F', ground:'#FFFFFF', family:'green', modeLabel:'LIGHT', numVal:'3,248.55', signClass:'none' },
+  'green-dark':  { hex:'#66CC8D', ground:'#1A1A1A', family:'green', modeLabel:'DARK',  numVal:'3,248.55', signClass:'none' }
+};
+const FAMILY_FILL_HEX = { red:'#F6604C', green:'#66CC8D' };   // s122-D2 ruled fills — the ONLY hue source
+const CELL_ORDER = ['red-light','red-dark','green-light','green-dark'];
+let LOCKED_HUE_HSB = {}, LOCKED_HUE_OKLCH = {};
+let WHITE_RGB = [255,255,255], INK_RGB = [26,26,26];
+let drivingModel = 'hsb';
+const state = {};
+const SEED_START = {};
+
+function computeGrounds(){
+  WHITE_RGB = parseRgb(getComputedStyle(document.getElementById('gnd-white')).backgroundColor);
+  INK_RGB   = parseRgb(getComputedStyle(document.getElementById('gnd-ink')).backgroundColor);
+  const Lw = relLum(WHITE_RGB), Li = relLum(INK_RGB);
+  const upper = (Lw+0.05)/4.5 - 0.05;
+  const lower = 4.5*(Li+0.05) - 0.05;
+  document.getElementById('upper-bound').textContent = upper.toFixed(4);
+  document.getElementById('lower-bound').textContent = lower.toFixed(4);
+}
+
+function initState(key){
+  const seed = SEEDS[key];
+  const hsb0 = rgb2hsb(hex2rgb(seed.hex));           // seed's OWN natural S,B — hue ignored, hue is locked
+  const s = hsb0[1], b = hsb0[2];
+  const hex = rgb2hex(hsb2rgb(LOCKED_HUE_HSB[seed.family], s, b));
+  const oklch = srgb2oklch(hex);
+  return { hsbS:s, hsbB:b, oklchL:oklch[0], oklchC:oklch[1], hex, clipped:false, ratio:0 };
+}
+
+function cellTemplate(key){
+  const seed = SEEDS[key];
+  const famCap = seed.family === 'red' ? 'Minus / red' : 'Plus / green';
+  const chipFg = seed.ground === '#FFFFFF' ? '#1A1A1A' : '#FFFFFF';
+  const signSpan = seed.signClass === 'negative' ? '<span class="amount__sign">−</span>' : '';
+  return (
+    '<div class="cell" id="cell-'+key+'" data-cell="'+key+'" data-family="'+seed.family+'">'
+    + '<span class="fail-flag" data-fail-flag>⚠ below AA 4.5</span>'
+    + '<div class="cell-head"><h3>'+famCap+' — '+seed.modeLabel+'</h3>'
+    + '<span class="ground-chip" style="--chip-bg:'+seed.ground+';--chip-fg:'+chipFg+'">on '+seed.ground+'</span></div>'
+    + '<div class="swatch-wrap" style="background:'+seed.ground+'">'
+    + '<span class="amount amount--display t-cm-figure-4" data-swatch>'+signSpan+'<span class="amount__cur">£</span><span class="amount__val">'+seed.numVal+'</span></span>'
+    + '</div>'
+    + '<div class="hue-lock-row"><span class="lock-ic" aria-hidden="true">&#128274;</span> Hue locked — '
+    + '<span data-hue-hsb>—</span> HSB / <span data-hue-oklch>—</span> OKLCH</div>'
+    + '<div class="ctl-group hsb-ctl" data-model-group="hsb">'
+    + '<div class="slider-row"><label>Saturation <span data-readout="hsbS">—</span></label>'
+    + '<input type="range" min="0" max="100" step="0.1" data-ctl="hsbS" aria-label="Saturation, '+famCap+' '+seed.modeLabel+'"></div>'
+    + '<div class="slider-row"><label>Brightness <span data-readout="hsbB">—</span></label>'
+    + '<input type="range" min="0" max="100" step="0.1" data-ctl="hsbB" aria-label="Brightness, '+famCap+' '+seed.modeLabel+'"></div>'
+    + '</div>'
+    + '<div class="ctl-group oklch-ctl" data-model-group="oklch">'
+    + '<div class="slider-row"><label>Chroma <span data-readout="oklchC">—</span></label>'
+    + '<input type="range" min="0" max="0.4" step="0.001" data-ctl="oklchC" aria-label="Chroma, '+famCap+' '+seed.modeLabel+'"></div>'
+    + '<div class="slider-row"><label>Lightness <span data-readout="oklchL">—</span></label>'
+    + '<input type="range" min="0" max="1" step="0.001" data-ctl="oklchL" aria-label="Lightness, '+famCap+' '+seed.modeLabel+'"></div>'
+    + '</div>'
+    + '<div class="also-readout"><span class="also-label">also:</span> <span data-also="hsb">—</span> <span data-also="oklch">—</span>'
+    + '<span class="clip-chip" data-clip-chip hidden>gamut-clipped</span></div>'
+    + '<div class="contrast-row"><span class="ratio-big" data-ratio>—</span><span class="ratio-suffix">:1</span>'
+    + '<span class="thresh-chip" data-aa-chip>AA 4.5 —</span><span class="thresh-chip" data-aaa-chip>AAA 7 —</span></div>'
+    + '<div class="hex-row">hex <code data-hex>—</code></div>'
+    + '<div class="before-after">'
+    + '<div class="ba-item"><span class="ba-lbl">ruled seed</span><i class="ba-sw" style="background:'+seed.hex+'"></i><code>'+seed.hex+'</code></div>'
+    + '<span class="ba-arrow">→</span>'
+    + '<div class="ba-item"><span class="ba-lbl">current</span><i class="ba-sw" data-now-sw></i><code data-now-hex>—</code></div>'
+    + '<span class="ba-delta" data-delta>—</span>'
+    + '</div>'
+    + '<button type="button" class="reset-btn" data-reset>Reset to seed</button>'
+    + '</div>'
+  );
+}
+
+function renderCell(key){
+  const seed = SEEDS[key], st = state[key];
+  const cellEl = document.getElementById('cell-'+key);
+  const swatch = cellEl.querySelector('[data-swatch]');
+  swatch.style.color = st.hex;
+  const fg = parseRgb(getComputedStyle(swatch).color);
+  const groundRgb = seed.ground === '#FFFFFF' ? WHITE_RGB : INK_RGB;
+  const ratio = contrastRgb(fg, groundRgb);
+  st.ratio = ratio;
+
+  cellEl.querySelector('[data-hex]').textContent = st.hex;
+  const ratioEl = cellEl.querySelector('[data-ratio]');
+  ratioEl.textContent = ratio.toFixed(2);
+  const aaPass = ratio >= 4.5, aaaPass = ratio >= 7;
+  ratioEl.classList.toggle('fail', !aaPass);
+
+  const aaChip = cellEl.querySelector('[data-aa-chip]');
+  aaChip.textContent = 'AA 4.5 ' + (aaPass?'PASS':'FAIL');
+  aaChip.classList.toggle('pass', aaPass); aaChip.classList.toggle('fail', !aaPass);
+  const aaaChip = cellEl.querySelector('[data-aaa-chip]');
+  aaaChip.textContent = 'AAA 7 ' + (aaaPass?'PASS':'FAIL');
+  aaaChip.classList.toggle('pass', aaaPass); aaaChip.classList.toggle('fail', !aaaPass);
+
+  cellEl.classList.toggle('is-fail-aa', !aaPass);
+  const flag = cellEl.querySelector('[data-fail-flag]');
+  flag.style.display = aaPass ? 'none' : 'inline-flex';
+
+  cellEl.querySelector('[data-hue-hsb]').textContent = LOCKED_HUE_HSB[seed.family].toFixed(2)+'°';
+  cellEl.querySelector('[data-hue-oklch]').textContent = LOCKED_HUE_OKLCH[seed.family].toFixed(2)+'°';
+
+  cellEl.querySelector('[data-readout="hsbS"]').textContent = st.hsbS.toFixed(1)+'%';
+  cellEl.querySelector('[data-readout="hsbB"]').textContent = st.hsbB.toFixed(1)+'%';
+  cellEl.querySelector('[data-readout="oklchC"]').textContent = st.oklchC.toFixed(3);
+  cellEl.querySelector('[data-readout="oklchL"]').textContent = st.oklchL.toFixed(3);
+
+  cellEl.querySelector('[data-ctl="hsbS"]').value = st.hsbS;
+  cellEl.querySelector('[data-ctl="hsbB"]').value = st.hsbB;
+  cellEl.querySelector('[data-ctl="oklchC"]').value = st.oklchC;
+  cellEl.querySelector('[data-ctl="oklchL"]').value = st.oklchL;
+
+  cellEl.querySelector('[data-also="hsb"]').textContent =
+    'HSB '+LOCKED_HUE_HSB[seed.family].toFixed(1)+'° / '+st.hsbS.toFixed(1)+'% / '+st.hsbB.toFixed(1)+'%';
+  cellEl.querySelector('[data-also="oklch"]').textContent =
+    'OKLCH L'+st.oklchL.toFixed(3)+' C'+st.oklchC.toFixed(3)+' H'+LOCKED_HUE_OKLCH[seed.family].toFixed(1)+'°';
+
+  cellEl.querySelector('[data-clip-chip]').hidden = !st.clipped;
+
+  cellEl.querySelector('[data-now-sw]').style.background = st.hex;
+  cellEl.querySelector('[data-now-hex]').textContent = st.hex;
+  const delta = deltaOklab(st.hex, SEED_START[key]);
+  cellEl.querySelector('[data-delta]').textContent = delta < 0.001 ? '= seed start, unchanged' : ('Δ '+delta.toFixed(3)+' (OKLab) from start');
+}
+
+function setFromHSB(key, s, b){
+  s = Math.max(0, Math.min(100, s));
+  b = Math.max(0, Math.min(100, b));
+  const seed = SEEDS[key];
+  const hex = rgb2hex(hsb2rgb(LOCKED_HUE_HSB[seed.family], s, b));
+  const oklch = srgb2oklch(hex);
+  state[key] = { hsbS:s, hsbB:b, oklchL:oklch[0], oklchC:oklch[1], hex, clipped:false, ratio:state[key]?state[key].ratio:0 };
+  renderCell(key);
+  updateSpecimens();
+  updateSummary();
+}
+function setFromOKLCH(key, l, c){
+  l = Math.max(0, Math.min(1, l));
+  c = Math.max(0, Math.min(0.4, c));
+  const seed = SEEDS[key];
+  const res = oklch2rgb(l, c, LOCKED_HUE_OKLCH[seed.family]);
+  const hex = rgb2hex(res.rgb);
+  const hsb = rgb2hsb(hex2rgb(hex));
+  state[key] = { hsbS:hsb[1], hsbB:hsb[2], oklchL:l, oklchC:c, hex, clipped:res.clipped, ratio:state[key]?state[key].ratio:0 };
+  renderCell(key);
+  updateSpecimens();
+  updateSummary();
+}
+
+function updateSpecimens(){
+  CELL_ORDER.forEach(key=>{
+    document.querySelectorAll('[data-bind="'+key+'"]').forEach(el=>{ el.style.color = state[key].hex; });
+    document.querySelectorAll('[data-specimen-ratio="'+key+'"]').forEach(el=>{ el.textContent = state[key].ratio.toFixed(2)+':1'; });
+  });
+}
+
+function updateSummary(){
+  const changed = CELL_ORDER.filter(k => state[k].hex !== SEED_START[k]).length;
+  const failing = CELL_ORDER.filter(k => state[k].ratio < 4.5).length;
+  document.getElementById('state').textContent = changed+' of 4 changed from seed · '+failing+' of 4 below AA 4.5';
+}
+
+function wireCell(key){
+  const cellEl = document.getElementById('cell-'+key);
+  cellEl.querySelector('[data-ctl="hsbS"]').addEventListener('input', e=>{ setFromHSB(key, parseFloat(e.target.value), state[key].hsbB); });
+  cellEl.querySelector('[data-ctl="hsbB"]').addEventListener('input', e=>{ setFromHSB(key, state[key].hsbS, parseFloat(e.target.value)); });
+  cellEl.querySelector('[data-ctl="oklchC"]').addEventListener('input', e=>{ setFromOKLCH(key, state[key].oklchL, parseFloat(e.target.value)); });
+  cellEl.querySelector('[data-ctl="oklchL"]').addEventListener('input', e=>{ setFromOKLCH(key, parseFloat(e.target.value), state[key].oklchC); });
+  cellEl.querySelector('[data-reset]').addEventListener('click', ()=>{
+    state[key] = initState(key);
+    renderCell(key);
+    updateSpecimens();
+    updateSummary();
+  });
+}
+
+function wireModelToggle(){
+  document.querySelectorAll('[data-model]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      drivingModel = btn.dataset.model;
+      document.body.classList.toggle('model-oklch', drivingModel==='oklch');
+      document.querySelectorAll('[data-model]').forEach(b=>b.classList.toggle('active', b===btn));
+    });
+  });
+}
+function wireCVDToggle(){
+  document.querySelectorAll('[data-cvd]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const mode = btn.dataset.cvd;
+      const scope = document.getElementById('specimen-scope');
+      scope.classList.remove('cvd-deuter','cvd-prot');
+      if(mode==='deuter') scope.classList.add('cvd-deuter');
+      if(mode==='prot') scope.classList.add('cvd-prot');
+      document.querySelectorAll('[data-cvd]').forEach(b=>b.classList.toggle('active', b===btn));
+    });
+  });
+}
+function wireResetAll(){
+  document.getElementById('reset-all').addEventListener('click', ()=>{
+    CELL_ORDER.forEach(key=>{ state[key] = initState(key); renderCell(key); });
+    updateSpecimens();
+    updateSummary();
+  });
+}
+
+function payload(){
+  const cells = {};
+  CELL_ORDER.forEach(key=>{
+    const seed = SEEDS[key], st = state[key];
+    cells[key] = {
+      ground: seed.ground,
+      seedHex: seed.hex,
+      currentHex: st.hex,
+      changedFromSeed: st.hex !== SEED_START[key],
+      contrastRatio: Number(st.ratio.toFixed(3)),
+      passesAA: st.ratio >= 4.5,
+      passesAAA: st.ratio >= 7,
+      hsb: { hueLockedDeg: Number(LOCKED_HUE_HSB[seed.family].toFixed(4)), saturationPct: Number(st.hsbS.toFixed(2)), brightnessPct: Number(st.hsbB.toFixed(2)) },
+      oklch: { lightness: Number(st.oklchL.toFixed(4)), chroma: Number(st.oklchC.toFixed(4)), hueLockedDeg: Number(LOCKED_HUE_OKLCH[seed.family].toFixed(4)) },
+      gamutClipped: !!st.clipped
+    };
+  });
+  return JSON.stringify({
+    session: 's144',
+    date: '2026-08-10',
+    subject: "Plus/minus coloured-text tuner — Dave's tuned values",
+    source: 'reviews/PLUSMINUS-TUNER-2026-08-10-s144-v1.html',
+    scope: 'RED (minus) and GREEN (plus) coloured TEXT only — information/warning text out of scope by Dave’s word.',
+    doesNotReopen: ['s122-D2 (the four RAG fills + #1A1A1A mark)', 'amount-display.sign bind (s143-D1(B))'],
+    drivingModelAtExport: drivingModel,
+    lockedHue: {
+      red:   { hsbDeg: Number(LOCKED_HUE_HSB.red.toFixed(4)),   oklchDeg: Number(LOCKED_HUE_OKLCH.red.toFixed(4)) },
+      green: { hsbDeg: Number(LOCKED_HUE_HSB.green.toFixed(4)), oklchDeg: Number(LOCKED_HUE_OKLCH.green.toFixed(4)) },
+      briefStated: { redDeg: 7.3, greenDeg: 145.3 },
+      note: 'Locked hues above are computed live in this file from rag/error #F6604C and rag/success #66CC8D (s122-D2), not hand-typed. They differ slightly from the brief cover note’s stated 7.3°/145.3° (Δ≈0.24° red, Δ≈2.36° green in HSB terms) — flagged for the record per the brief’s own request, not resolved here.'
+    },
+    cells: cells
+  }, null, 1);
+}
+
+function wireExport(){
+  document.getElementById('export').addEventListener('click', ()=>{
+    const out = document.getElementById('out');
+    out.style.display = 'block';
+    out.value = payload();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([out.value], {type:'application/json'}));
+    a.download = 'PLUSMINUS-TUNER-VERDICTS-2026-08-10-s144.json';
+    a.click();
+  });
+  document.getElementById('copy').addEventListener('click', ()=>{
+    const out = document.getElementById('out');
+    out.style.display = 'block';
+    out.value = payload();
+    out.select();
+    document.execCommand('copy');
+  });
+}
+
+/* ================================================================
+   boot
+   ================================================================ */
+computeGrounds();
+CELL_ORDER.forEach(key=>{ /* no-op, keeps order explicit */ });
+['red','green'].forEach(fam=>{
+  const hx = FAMILY_FILL_HEX[fam];
+  LOCKED_HUE_HSB[fam] = rgb2hsb(hex2rgb(hx))[0];
+  LOCKED_HUE_OKLCH[fam] = srgb2oklch(hx)[2];
+});
+document.getElementById('hue-red-hsb').textContent = LOCKED_HUE_HSB.red.toFixed(2)+'°';
+document.getElementById('hue-red-oklch').textContent = LOCKED_HUE_OKLCH.red.toFixed(2)+'°';
+document.getElementById('hue-green-hsb').textContent = LOCKED_HUE_HSB.green.toFixed(2)+'°';
+document.getElementById('hue-green-oklch').textContent = LOCKED_HUE_OKLCH.green.toFixed(2)+'°';
+
+document.getElementById('tuner-grid').innerHTML = CELL_ORDER.map(cellTemplate).join('');
+CELL_ORDER.forEach(key=>{ state[key] = initState(key); SEED_START[key] = state[key].hex; });
+CELL_ORDER.forEach(wireCell);
+CELL_ORDER.forEach(renderCell);
+updateSpecimens();
+updateSummary();
+wireModelToggle();
+wireCVDToggle();
+wireResetAll();
+wireExport();
+</script>
+</body>
+</html>
