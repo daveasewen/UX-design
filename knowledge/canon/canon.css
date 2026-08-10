@@ -301,10 +301,12 @@
   --progress-incomplete: #F0F0F0;
   --rag-error-background: #F6604C;
   --rag-error-glyph: #F6604C;
+  --rag-error-ink: #DA1A00;
   --rag-warning-background: #E0A61F;
   --rag-warning-glyph: #E0A61F;
   --rag-success-background: #66CC8D;
   --rag-success-glyph: #66CC8D;
+  --rag-success-ink: #137F3C;
   --rag-information-background: #78A7E8;
   --rag-information-glyph: #78A7E8;
   --rag-error: var(--rag-error-glyph);
@@ -461,7 +463,7 @@
   --surface-transparent: #FFFFFF00;
 
   /* ---- Typography  (typography.json) ---- */
-  --typography-font-family-default: "Univers Next for HSBC", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --typography-font-family-default: Univers Next for HSBC;
   --typography-font-weight-ultra-light: 250;
   --typography-font-weight-thin: 300;
   --typography-font-weight: 350;
@@ -654,10 +656,12 @@
   --progress-incomplete: #484848;
   --rag-error-background: #F6604C;
   --rag-error-glyph: #F6604C;
+  --rag-error-ink: #F6604C;
   --rag-warning-background: #E0A61F;
   --rag-warning-glyph: #E0A61F;
   --rag-success-background: #66CC8D;
   --rag-success-glyph: #66CC8D;
+  --rag-success-ink: #66CC8D;
   --rag-information-background: #78A7E8;
   --rag-information-glyph: #78A7E8;
   --rag-error: var(--rag-error-glyph);
@@ -3674,6 +3678,15 @@
 .cn-alert .is-ok, .cn-alert .is-success{--mark: var(--mark-success);}
 .cn-alert .is-info{--mark: var(--mark-info);}
 /* ===== AUTO-TOKENS END ===== */
+/* s134 laneF rebase (2026-08-08): both theme blocks re-based to knowledge/tokens/semantic-colour.json
+     rag/* $values (SOLE source). Mono is MODE-INVARIANT (s122-D2, reaffirmed s134-D2 — flip is
+     Legacy-only): --err/--warn/--ok/--info are IDENTICAL light/dark. Tints are s123-D3 tuned-opacity
+     composited values, which DO differ per mode (composited over background/default, not itself
+     invariant). RETIRED: light --err #B92F1E→#F6604C, --ok #2B7E4F→#66CC8D, --info #306EC6→#78A7E8,
+     --err-t #F1E0DC→#FDD9D4, --warn-t #F6E5CC→#F6E6C0, --ok-t #DCEDE3→#D4F1DF, --info-t #D6E3EC→#DFEAF9;
+     dark --err #CC4333→#F6604C, --ok #4A9568→#66CC8D, --info #2674DC→#78A7E8, --err-t #2C120D→#60302A,
+     --warn-t #3C2C13→#614C1C, --ok-t #12291D→#32533F, --info-t #092131→#38475C. --warn/--warn-t(light)
+     were already current (s134-D3 #E0A61F applied). */
 .cn-alert h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-alert .awrap{width:var(--demo-width, 560px); max-width:100%;}
 /* per-status tokens — accent (glyph/border) + tint (surface); retrieval only, R-D20 */
@@ -3681,21 +3694,30 @@
 .cn-alert .alert.warn{--accent:var(--warn); --tint:var(--warn-t);}
 .cn-alert .alert.ok{--accent:var(--ok); --tint:var(--ok-t);}
 .cn-alert .alert.info{--accent:var(--info); --tint:var(--info-t);}
-/* the callout shell — tinted surface, full 1px accent border, SURFACE radius role */
+/* the callout shell — TINT-ONLY (s134-D4, Dave #134: "nailed to the mast"). RETIRED BY
+     DECLARATION: the prior construction was `border:1px solid var(--accent);` (full 1px accent
+     edge) on this rule, dropped per s134-D4 — shell = tint background only, no border/accent
+     edge; glyph ink stays #1A1A1A per s122-D2/s134-D2 (unchanged, see .ic below). --accent is
+     still bound per-status above for the icon/glyph colour channel — only the shell edge is retired. */
 .cn-alert .alert{display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
-    background:var(--tint); border:1px solid var(--accent); border-radius:var(--border-radius-surface);
+    background:var(--tint); border-radius:var(--border-radius-surface);
     color:var(--text); overflow:hidden;
-    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease, border-width .3s ease;}
+    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease;}
 /* icon centres on the FIRST text line (24px = one .t-ed-body line box) and holds position when copy wraps */
-.cn-alert .alert .ic{flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:var(--tint);}
+.cn-alert .alert .ic{flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:#1A1A1A;}
 .cn-alert .alert .ic svg{width:20px; height:20px; display:block; fill:currentColor;}
-.cn-alert .alert.warn .ic{--mark:#1A1A1A;}
-/* amber mark = always near-black (R-D3); tint knockout would sit at 2.44 */
-.cn-alert .alert.ok .ic{--mark:#FFFFFF;}
-/* white mark 5.0 — tint knockout 4.11 < 4.5 (roundel policy mark leg) */
-.cn-alert .alert.info .ic{--mark:#FFFFFF;}
-/* white mark 5.03 — tint knockout 3.85 < 4.5 */
-/* DARK roundel policy (Dave 2026-07-02 eve — structural): white shape + black mark, both legs 21:1 */
+/* laneF rebase (2026-08-08, s134 enactment): the per-status --mark overrides that used to sit here
+     (.alert.warn .ic {--mark:#1A1A1A} / .alert.ok .ic {--mark:#FFFFFF} / .alert.info .ic {--mark:#FFFFFF},
+     with default .ic {--mark:var(--tint)} tint-knockout for .err) are RETIRED BY DECLARATION, citing
+     s122-D2 (Dave, #122): mark = #1A1A1A for all four statuses, both themes — folded into the base
+     .ic rule above, no per-status selector needed.
+     s134-D2 (Dave, #134): theme flip is LEGACY-ONLY — mono dark uses the SAME mark rule as light (no
+     theme-scoped selector, confirmed: no [data-theme="dark"] .alert .ic override exists below).
+     Recomputed off the CURRENT spine bytes (knowledge/tokens/semantic-colour.json rag/*-background):
+     mark #1A1A1A on shape — error 5.55:1 · warning 7.99:1 · success 8.77:1 · information 7.04:1, ALL
+     ≥4.5 both themes (mode-invariant shapes). This RESOLVES the prior [WARN] (err 3.68 / ok 3.63 in
+     dark under the old white-mark/knockout scheme) — the flat #1A1A1A mark clears the s134-D1 4.5
+     mark-leg gate everywhere; nothing remains flagged to Dave on this axis. */
 .cn-alert .alert .main{flex:1 1 auto; min-width:0; margin:0;}
 .cn-alert .alert .main a{color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
     text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease);}
@@ -3729,8 +3751,10 @@
 .cn-alert .alert .x:hover, .cn-alert .alert .x:active{transform:none !important; filter:none !important;}
 }
 /* ===== AUTO-PARTIAL press-physics END ===== */
+/* s134-D4: `border-width:0;` retired from this rule — the shell carries no border to collapse
+     now (tint-only). */
 .cn-alert .alert.removing{max-height:0 !important; opacity:0; margin-top:0; margin-bottom:0;
-    padding-top:0; padding-bottom:0; border-width:0;}
+    padding-top:0; padding-bottom:0;}
 @media (prefers-reduced-motion: reduce){
 
 }
