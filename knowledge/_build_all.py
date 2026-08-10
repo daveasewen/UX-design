@@ -280,6 +280,20 @@ STEPS = [
     ("KG edge gate selftest (6 bites)", "_validate_kg.py", ["--selftest"]),
     ("Token fork-ban gate — undeclared same-scope forks (s136-D1 lane, #139)", "_validate_token_forks.py"),
     ("Token fork-ban selftest (2-direction)", "_validate_token_forks.py", ["--selftest"]),
+    # #146: THREE gates wired in one pass, all the same class (instrument-without-a-consumer,
+    # layered): (a) the four #139 STEPS entries above landed with NO ROUTE_ROWS rows, so
+    # check_routes() ABORTED every build since #139 — the runner itself was the dead
+    # instrument, which is why (b) _validate_binds_ratchet.py and _validate_dtcg.py
+    # (both #141) sat as wiring-gate ORPHANS for 5 sessions with nobody told: the wiring
+    # gate runs INSIDE the runner that refused to start. (c) is the new #146 gate itself.
+    ("binds shrink-only ratchet (s136-D1 axis A; built #141, wired #146)",
+     "_validate_binds_ratchet.py"),
+    ("DTCG spine conformance gate (s141-D1 axis A; built #141, wired #146)",
+     "_validate_dtcg.py"),
+    ("binds-resolve gate — manifest presence + address→store resolution (#146)",
+     "_validate_binds_resolve.py"),
+    ("binds-resolve selftest — 5 bites incl. any-store clause (#146)",
+     "_validate_binds_resolve.py", ["--selftest"]),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
     # WIRED 2026-07-27 (ds-014): this selftest already existed and ran only by hand, so nothing
     # proved dv-004 could fail — and it could not, on `stacked-column`. Exactly the rot the
@@ -626,6 +640,25 @@ ROUTE_ROWS = [
     ("instrument fit — can the gate SEE the property? (advisory, ds-015)", ADVISORY, None),
     ("integrity lint (gate)", GATE,
      "\n❌ integrity gate failed (exit {code}) — see knowledge/_INTEGRITY-REPORT.md"),
+    # #146: rows for the four #139 steps that landed in STEPS with no route — the gap that
+    # aborted every build since #139 (check_routes raised UNKNOWN STEP ID before step 1).
+    ("KG edge parse-gate + s135-D4 resolutions-consumed check", GATE,
+     "\n❌ KG edge gate failed (exit {code}) — an edge fails parse in the consumer's grammar, or a s135-D4 resolution is unconsumed. Run: python3 knowledge/_validate_kg.py"),
+    ("KG edge gate selftest (6 bites)", GATE,
+     "\n❌ KG edge gate selftest failed (exit {code}) — python3 knowledge/_validate_kg.py --selftest"),
+    ("Token fork-ban gate — undeclared same-scope forks (s136-D1 lane, #139)", GATE,
+     "\n❌ token fork-ban gate failed (exit {code}) — an undeclared same-scope fork of a spine token. Declare it or unify. Run: python3 knowledge/_validate_token_forks.py"),
+    ("Token fork-ban selftest (2-direction)", GATE,
+     "\n❌ token fork-ban selftest failed (exit {code}) — python3 knowledge/_validate_token_forks.py --selftest"),
+    # #146: the three gates wired this pass (see the STEPS comment for the layered-orphan story).
+    ("binds shrink-only ratchet (s136-D1 axis A; built #141, wired #146)", GATE,
+     "\n❌ binds ratchet failed (exit {code}) — meta-level binds coverage fell below the recorded floor (shrink-only debt). Never lower the floor; restore the binds or raise coverage. Run: python3 knowledge/_validate_binds_ratchet.py"),
+    ("DTCG spine conformance gate (s141-D1 axis A; built #141, wired #146)", GATE,
+     "\n❌ DTCG conformance failed (exit {code}) — a spine token breaks DTCG shape ($value/$type). Run: python3 knowledge/_validate_dtcg.py"),
+    ("binds-resolve gate — manifest presence + address→store resolution (#146)", GATE,
+     "\n❌ binds-resolve gate failed (exit {code}) — a reference.html lost its token-manifest, a manifest var no longer resolves, or a meta binds address points at nothing (renamed rung / untaught store). Run: python3 knowledge/_validate_binds_resolve.py"),
+    ("binds-resolve selftest — 5 bites incl. any-store clause (#146)", GATE,
+     "\n❌ binds-resolve selftest failed (exit {code}) — python3 knowledge/_validate_binds_resolve.py --selftest"),
 ]
 
 
