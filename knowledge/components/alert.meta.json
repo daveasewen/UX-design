@@ -3,11 +3,11 @@
   "category": "molecule",
   "purpose": "An in-flow status callout that interrupts nothing: it sits inside the page or form it refers to and stays until resolved or dismissed. The Mono successor to the Legacy Notifications 'contextual' placement — tinted RAG surface, full 1px accent border, status glyph, title + description + optional inline link + optional dismiss. Use Toast for transient confirmations and Banner for page-level persistent messages; use inline field validation (Input-fields) for single-control errors.",
   "props": [
-    { "name": "status", "type": "enum", "values": ["error", "warning", "success", "information"], "default": "information", "$note": "Binds the R-D20 rag/{status} + rag/{status}-tint pair. Error renders role=\"alert\" (assertive); the rest role=\"status\" (polite)." },
+    { "name": "status", "type": "enum", "values": ["error", "warning", "success", "information"], "default": "information", "$note": "Binds the R-D20 rag/{status} + rag/{status}-tint pair. Error renders role=\"alert\" (assertive); the rest role=\"status\" (polite).", "binds": {"error": "rag.error", "warning": "rag.warning", "success": "rag.success", "information": "rag.information"}, "$status": "s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now (rag.<value> pattern, matching the account-card/stat-card precedent already in this repo) -- the colour spine is NOT yet DTCG-migrated, the token VALUE lands at that migration. This prop's own $note additionally names a rag/{status}+'-tint' pair; that richer detail stays in $note, not duplicated into binds. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "title", "type": "string", "$note": "Optional bold lead-in (.t-ed-body .em, weight 500). Sentence case." },
     { "name": "message", "type": "string" },
     { "name": "link", "type": "string", "$note": "Optional inline action link — descriptive text, never 'click here' (aca-004)." },
-    { "name": "dismissible", "type": "boolean", "default": false, "$note": "Adds the 24px × in a 44px hit target. Static alerts persist with the task." }
+    { "name": "dismissible", "type": "boolean", "default": false, "$note": "Adds the 24px × in a 44px hit target. Static alerts persist with the task.", "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
   ],
   "variants": [
     { "name": "error", "use": "Something failed and needs the user's attention now; assertive announcement." },

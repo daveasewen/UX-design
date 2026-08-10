@@ -5,7 +5,7 @@
   "purpose": "Segmented one-time-code / PIN entry: per-digit cells with auto-advance, backspace step-back, whole-code paste, verify-on-fill and a resend countdown. Border carries state; the RAG signal lives in the message (mono discipline). Itinerary row 19 (P1); built Phase-2 wave 1 from the Tranche-9 OTP atom (surveyed first, per the brief).",
   "props": [
     { "name": "length", "type": "enum", "values": ["4", "6"], "default": "6", "$note": "6-digit OTP (separator dot after 3) or 4-digit PIN." },
-    { "name": "masked", "type": "boolean", "default": false, "$note": "PIN cells are type=password; OTP cells are visible text." },
+    { "name": "masked", "type": "boolean", "default": false, "$note": "PIN cells are type=password; OTP cells are visible text.", "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "resend", "type": "boolean", "default": true, "$note": "Ghost button unlocked by a countdown; button-family membership candidate (ADR-0013)." }
   ],
   "$states": ["empty", "hover (cell)", "focus (cell — black border + page fill)", "filled", "done (verified — muted border + success message)", "error (border near-black; dark = red; roundel + ink message)", "disabled"],

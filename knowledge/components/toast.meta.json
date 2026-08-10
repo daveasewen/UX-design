@@ -3,10 +3,10 @@
   "category": "molecule",
   "purpose": "A transient, elevated status message that confirms an event and leaves without being answered: appears bottom-of-viewport, auto-dismisses after ~6s (paused on hover/focus), never blocks the task. The snackbar of the feedback family — Alert is its persistent in-flow sibling, Banner its page-level one. Deliberately has NO error variant: errors demand persistent attention and route to Alert.",
   "props": [
-    { "name": "status", "type": "enum", "values": ["success", "information", "warning", "plain"], "default": "plain", "$note": "No error (snackbar precedent). Plain = statusless message ('Copied to clipboard.'), no glyph." },
+    { "name": "status", "type": "enum", "values": ["success", "information", "warning", "plain"], "default": "plain", "$note": "No error (snackbar precedent). Plain = statusless message ('Copied to clipboard.'), no glyph.", "binds": {"success": "rag.success", "information": "rag.information", "warning": "rag.warning"}, "$status": "s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now -- value lands at the colour-spine migration. 'plain' OMITTED from the map: this prop's own $note says plain is statusless ('no glyph'), so it carries no rag consequence -- not invented. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "message", "type": "string" },
     { "name": "action", "type": "string", "$note": "Optional single text action (e.g. Undo). The same action MUST exist somewhere persistent — a toast is missable by design." },
-    { "name": "duration", "type": "number", "default": 6000, "$note": "Auto-dismiss ms; timer pauses on hover/focus-within (2.2.1 pattern). Dismiss × always present." }
+    { "name": "duration", "type": "number", "default": 6000, "$note": "Auto-dismiss ms; timer pauses on hover/focus-within (2.2.1 pattern). Dismiss × always present.", "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
   ],
   "variants": [
     { "name": "success", "use": "Transient confirmation of a completed event (payment sent, message archived)." },

@@ -3,12 +3,12 @@
   "category": "molecule",
   "purpose": "The page-level, persistent member of the feedback family: a full-width solid RAG surface that sits above the content it governs and stays until the condition clears or the user dismisses it. Use for conditions that apply to the whole page or session (service outage, device verification, expiring card) — not for in-flow validation (Alert) or transient confirmations (Toast).",
   "props": [
-    { "name": "status", "type": "enum", "values": ["error", "warning", "success", "information"], "default": "information", "$note": "Binds the R-D20 rag/{status}-background fill + its most specific ruled ink (see tokens). Error renders role=\"alert\"." },
+    { "name": "status", "type": "enum", "values": ["error", "warning", "success", "information"], "default": "information", "$note": "Binds the R-D20 rag/{status}-background fill + its most specific ruled ink (see tokens). Error renders role=\"alert\".", "binds": {"error": "rag.error", "warning": "rag.warning", "success": "rag.success", "information": "rag.information"}, "$status": "s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now -- the colour spine is NOT yet DTCG-migrated, the token VALUE lands at that migration. This prop's own $note names a background-fill + ink mechanism; that richer detail stays in $note, not duplicated into binds. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "title", "type": "string", "$note": "Bold lead-in (.t-ed-body .em). Sentence case." },
     { "name": "message", "type": "string" },
     { "name": "link", "type": "string", "$note": "Optional inline link, descriptive text (aca-004)." },
     { "name": "actions", "type": "array", "$note": "Up to two ghost actions — mutually exclusive with dismiss (Legacy family shape rule kept)." },
-    { "name": "dismissible", "type": "boolean", "default": false }
+    { "name": "dismissible", "type": "boolean", "default": false, "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
   ],
   "variants": [
     { "name": "error", "use": "Page/session-level failure needing action; the ONE white-type surface IN BASE/MONO (type26-013 — white is red-only; fill #B92F1E, 6.02:1); assertive. s131-D1 (#131): in LEGACY white type also rides success and information — the red-only clause is base-scoped." },
