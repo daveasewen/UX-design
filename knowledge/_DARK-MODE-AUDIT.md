@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 68/75 components clean · 7 leak a primitive. Store: 189 semantic colour tokens (light+dark), 54 flat (dark==light), 225 primitives.
+**Coverage:** 68/75 components clean · 7 leak a primitive. Store: 192 semantic colour tokens (light+dark), 63 flat (dark==light), 225 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -20,76 +20,76 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Component | Status | Primitive leaks | Flat semantics (confirm) |
 |---|---|---|---|
 | Accordion | ✅ clean | — | — |
-| Account card | ✅ clean | — | `form/border/default`, `rag/warning` |
+| Account card | ✅ clean | — | `form/border/default`, `rag/success`, `rag/warning` |
 | Account selector | ✅ clean | — | `form/border/default` |
 | Action bar | ✅ clean | — | `primary/background/default`, `primary/background/hover`, `text/reverse` |
 | Alert | ✅ clean | — | — |
 | Amount display | ✅ clean | — | — |
-| Amount input | ✅ clean | — | — |
+| Amount input | ✅ clean | — | `rag/error`, `rag/success` |
 | Avatar | ✅ clean | — | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `text/reverse` |
 | Badge | 🔴 LEAK | `color/primary` | `primary/background/default`, `text/reverse` |
-| Banner | ✅ clean | — | `rag/text/on-dark`, `rag/text/on-light`, `text/on-success` |
-| Bar chart | ✅ clean | — | `data/series/1`, `data/series/3`, `rag/warning` |
+| Banner | ✅ clean | — | `rag/text/on-dark`, `rag/text/on-information`, `rag/text/on-light`, `text/on-success` |
+| Bar chart | ✅ clean | — | `data/series/1`, `data/series/3`, `rag/error`, `rag/information`, `rag/success`… |
 | Box plot | ✅ clean | — | `data/series/1` |
 | Breadcrumbs | ✅ clean | — | — |
 | Bullet chart | ✅ clean | — | `data/series/1` |
 | Butterfly chart (horizontal) | ✅ clean | — | `data/series/1`, `data/series/3` |
 | Butterfly chart (vertical) | ✅ clean | — | `data/series/1`, `data/series/3` |
-| Button | ✅ clean | — | `icon/default-reverse`, `primary/background/default`, `primary/background/hover`, `text/reverse` |
+| Button | ✅ clean | — | `icon/default-reverse`, `primary/background/default`, `primary/background/hover`, `rag/success`, `text/reverse` |
 | Candlestick chart | ✅ clean | — | — |
 | Cards | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `text/reverse` |
 | Combo chart | ✅ clean | — | `data/series/1`, `data/series/2` |
-| Confirmation | ✅ clean | — | `primary/background/default`, `primary/background/hover`, `text/reverse` |
+| Confirmation | ✅ clean | — | `primary/background/default`, `primary/background/hover`, `rag/success`, `text/reverse` |
 | Countdown timer | ✅ clean | — | — |
 | Data grid | ✅ clean | — | `form/border/default`, `text/reverse` |
-| Date picker | ✅ clean | — | — |
-| Date-range picker | ✅ clean | — | — |
+| Date picker | ✅ clean | — | `rag/error` |
+| Date-range picker | ✅ clean | — | `rag/error` |
 | Divider | ✅ clean | — | — |
 | Donut chart | ✅ clean | — | `data/series/1` |
 | Drawer | ✅ clean | — | `overlay/version1` |
-| Dropdown | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
+| Dropdown | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `rag/error`, `text/reverse` |
 | Empty state | ✅ clean | — | — |
 | Eyebrow | ✅ clean | — | — |
-| File upload | ✅ clean | — | `form/border/default` |
-| Form layout | ✅ clean | — | — |
+| File upload | ✅ clean | — | `form/border/default`, `rag/error`, `rag/success` |
+| Form layout | ✅ clean | — | `rag/error`, `rag/success` |
 | Headers | ✅ clean | — | — |
 | Hero | 🔴 LEAK | `color/grey/transparent/white-75`, `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
 | Histogram | ✅ clean | — | `data/series/1` |
 | Icon button | ✅ clean | — | `icon/default-reverse` |
-| Input fields | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
+| Input fields | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `rag/error`, `text/reverse` |
 | Line chart | ✅ clean | — | `data/series/1` |
 | Links | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
-| List items | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `text/reverse` |
+| List items | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `rag/success`, `text/reverse` |
 | Loading indicator | ✅ clean | — | `icon/default-reverse`, `text/reverse` |
 | Modal lightbox | ✅ clean | — | `overlay/version1` |
 | Modals | ✅ clean | — | `icon/default-reverse`, `overlay/version1`, `primary/background/default`, `text/reverse` |
 | Navigations | 🔴 LEAK | `color/black`, `color/primary`, `color/white` | `overlay/version1`, `primary/border/default` |
-| Notifications | ✅ clean | — | `icon/default-reverse`, `rag/text/on-dark`, `rag/text/on-light`, `rag/warning` |
+| Notifications | ✅ clean | — | `icon/default-reverse`, `rag/error`, `rag/information`, `rag/success`, `rag/text/on-dark`… |
 | Pagination | ✅ clean | — | `form/background/default` |
 | Pie chart | ✅ clean | — | `data/series/1` |
 | Popover | ✅ clean | — | — |
 | Progress tracker | ✅ clean | — | — |
 | Quick actions | ✅ clean | — | — |
-| Reorder | ✅ clean | — | — |
+| Reorder | ✅ clean | — | `rag/success` |
 | Scatter plot | ✅ clean | — | `data/series/1` |
 | Search field | ✅ clean | — | `form/background/default`, `form/border/default`, `text/reverse` |
-| Secure entry | ✅ clean | — | — |
+| Secure entry | ✅ clean | — | `rag/error`, `rag/success` |
 | Segmented control | ✅ clean | — | `form/border/default` |
-| Selection controls | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
+| Selection controls | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `rag/error`, `text/reverse` |
 | Skeleton loader | ✅ clean | — | — |
 | Slider | ✅ clean | — | `form/border/default` |
 | Sparkline | ✅ clean | — | `data/series/1` |
 | Stacked area chart | ✅ clean | — | `data/series/1`, `data/text/on-series` |
-| Stat card | ✅ clean | — | — |
-| Status indicator | ✅ clean | — | `rag/warning` |
-| Stepper | ✅ clean | — | — |
+| Stat card | ✅ clean | — | `rag/error`, `rag/success` |
+| Status indicator | ✅ clean | — | `rag/error`, `rag/success`, `rag/warning` |
+| Stepper | ✅ clean | — | `rag/error` |
 | Summary | ✅ clean | — | — |
 | Tab-bar | ✅ clean | — | — |
 | Table | ✅ clean | — | — |
 | Tabs | 🔴 LEAK | `color/primary` | `text/reverse` |
 | Tags | ✅ clean | — | `form/border/default`, `text/reverse` |
-| Textarea | ✅ clean | — | — |
-| Time picker | ✅ clean | — | — |
+| Textarea | ✅ clean | — | `rag/error` |
+| Time picker | ✅ clean | — | `rag/error` |
 | Toast | ✅ clean | — | — |
 | Tooltip | ✅ clean | — | — |
 | Video player | ✅ clean | — | `icon/default-reverse`, `overlay/version2`, `primary/background/default` |

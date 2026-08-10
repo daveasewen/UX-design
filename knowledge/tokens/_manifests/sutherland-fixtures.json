@@ -41,7 +41,8 @@
               "standard",
               "inline"
             ],
-            "default": "standard"
+            "default": "standard",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C5 -- no-bind:variants-axis. Routes to the VARIANTS axis (s136-D1). This ruling DISSOLVES the intent-map vocab gate on this row -- the vocabulary itself remains unruled/Dave's, but no longer blocks this verdict. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "open",
@@ -50,7 +51,8 @@
               "false",
               "true"
             ],
-            "default": "false"
+            "default": "false",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -60,7 +62,8 @@
               "hover",
               "pressed"
             ],
-            "default": "default"
+            "default": "default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "fontSize",
@@ -70,7 +73,9 @@
               "5",
               "6"
             ],
-            "default": "4"
+            "default": "4",
+            "binds": "typography.font-size",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C3 -- bind:ramp. fontSize binds to the typography ramp (family/ramp address, not a leaf token) per s141-D1(A). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "size",
@@ -79,7 +84,12 @@
               "5",
               "6"
             ],
-            "default": "5"
+            "default": "5",
+            "binds": {
+              "5": "icon",
+              "6": "icon"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp (the only migrated size ramp; adopted as the de facto general size ramp per the C2 judgment, name notwithstanding). TENSION: values ('5','6') have no name-correspondence to icon-scale rungs and no prose ties them to icon sizing -- bound to the bare family only; per-value rung grounding NOT resolved here (would require inventing a correspondence). FINDING for the build-time grounding pass. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -143,12 +153,20 @@
               "info"
             ],
             "default": "none",
-            "$note": "Optional RAG status chip in the meta row; meaning carried by the label text, not the dot."
+            "binds": [
+              "rag.success",
+              "rag.success-tint",
+              "rag.warning",
+              "rag.warning-tint"
+            ],
+            "$note": "Optional RAG status chip in the meta row; meaning carried by the label text, not the dot.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "tag",
             "type": "boolean",
             "default": false,
+            "binds": "form.border.default",
             "$note": "Optional account-type tag (Tags atom)."
           }
         ]
@@ -210,7 +228,12 @@
           {
             "name": "selected",
             "type": "number",
-            "default": 0
+            "default": 0,
+            "binds": [
+              "form.background.hover",
+              "form.border.active"
+            ],
+            "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "label",
@@ -296,7 +319,9 @@
             "name": "sticky",
             "type": "boolean",
             "default": false,
-            "$note": "Pin the bar to the bottom of a scrolling flow (position:sticky)."
+            "$note": "Pin the bar to the bottom of a scrolling flow (position:sticky).",
+            "binds": "elevation.decorative",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- bind:composite. Stuck state's visual consequence is the shadow; bound as the COMPOSITE (elevation.decorative as a whole) -- not decomposed into one scalar of it, so the bind survives shadow re-tuning. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "actions",
@@ -380,7 +405,14 @@
               "information"
             ],
             "default": "information",
-            "$note": "Binds the R-D20 rag/{status} + rag/{status}-tint pair. Error renders role=\"alert\" (assertive); the rest role=\"status\" (polite)."
+            "$note": "Binds the R-D20 rag/{status} + rag/{status}-tint pair. Error renders role=\"alert\" (assertive); the rest role=\"status\" (polite).",
+            "binds": {
+              "error": "rag.error",
+              "warning": "rag.warning",
+              "success": "rag.success",
+              "information": "rag.information"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now (rag.<value> pattern, matching the account-card/stat-card precedent already in this repo) -- the colour spine is NOT yet DTCG-migrated, the token VALUE lands at that migration. This prop's own $note additionally names a rag/{status}+'-tint' pair; that richer detail stays in $note, not duplicated into binds. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
           },
           {
             "name": "title",
@@ -400,7 +432,8 @@
             "name": "dismissible",
             "type": "boolean",
             "default": false,
-            "$note": "Adds the 24px × in a 44px hit target. Static alerts persist with the task."
+            "$note": "Adds the 24px × in a 44px hit target. Static alerts persist with the task.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -444,7 +477,13 @@
               "small"
             ],
             "default": "default",
-            "$note": "display = 32px, bound to the .t-cm-figure-4 composite (the display/amount token); default = 16px inline body; small = 14px dense rows/tables."
+            "$note": "display = 32px, bound to the .t-cm-figure-4 composite (the display/amount token); default = 16px inline body; small = 14px dense rows/tables.",
+            "binds": {
+              "display": "icon",
+              "default": "icon",
+              "small": "icon.small"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. CROSS-REFERENCE (s143-D1(A), Dave, 2026-08-10): this prop's own $note also binds to TYPOGRAPHY composites (.t-cm-figure-4/N) -- size is TWO ADDITIVE AXES (icon scale + type scale), not a conflict. Enacted as ruled (C2 names amount-display by meta); 'small' matches an icon-scale rung by name, 'display'/'default' fall back to the bare family. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "sign",
@@ -454,13 +493,19 @@
               "negative"
             ],
             "default": "none",
-            "$note": "Negative renders a leading U+2212 MINUS in monochrome text — never a colour cue. Positive normally carries no sign."
+            "$note": "Negative renders a leading U+2212 MINUS in monochrome text — never a colour cue. Positive normally carries no sign.",
+            "binds": {
+              "none": "rag.success",
+              "negative": "rag.error"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. sign binds to rag.success|rag.error (positive/negative) per the ruled address; 'none' re-keyed from the address's 'positive' to match this prop's actual enum spelling. ADDRESS-INTENT, value pending colour-spine migration. TENSION, RULED s143-D1(B) (Dave, 2026-08-10, live specimen: as-enacted / half-bind / monochrome): this prop's own $note says the negative sign renders in MONOCHROME text, 'never a colour cue' -- in direct tension with a colour-family bind. Dave's verdict, verbatim: \"rule A but these colours will have to adjusted for Ally\" (a11y) -- TREATMENT A KEPT AS ENACTED, both legs bound; the tension is REAL, not a transcription artefact, and stays OPEN as an a11y colour-VALUE adjustment (residual #144), not a mechanism dispute. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
           },
           {
             "name": "redacted",
             "type": "boolean",
             "default": false,
-            "$note": "Privacy mask: the value is replaced by dots (aria-hidden) and the element carries role=img + an aria-label giving context (e.g. 'Balance hidden')."
+            "$note": "Privacy mask: the value is replaced by dots (aria-hidden) and the element carries role=img + an aria-label giving context (e.g. 'Balance hidden').",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -533,7 +578,13 @@
               "display"
             ],
             "default": "standard",
-            "$note": "standard = .t-cm-figure-5 (16); display = .t-cm-figure-4 (32) — the payment-journey hero entry."
+            "$note": "standard = .t-cm-figure-5 (16); display = .t-cm-figure-4 (32) — the payment-journey hero entry.",
+            "binds": {
+              "standard": "icon",
+              "display": "icon",
+              "target-min": "target.min"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp + interactive target.min floor per the row's address. CROSS-REFERENCE (s143-D1(A), Dave, 2026-08-10): this prop's own $note also binds to TYPOGRAPHY composites (.t-cm-figure-4/5) -- size is TWO ADDITIVE AXES (icon scale + type scale), not a conflict. No value has a safe icon-scale rung correspondence; bound to the bare family. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "currency",
@@ -583,7 +634,8 @@
               "image",
               "icon"
             ],
-            "default": "initials"
+            "default": "initials",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C5 -- no-bind:variants-axis. Routes to the VARIANTS axis (s136-D1). This ruling DISSOLVES the intent-map vocab gate on this row -- the vocabulary itself remains unruled/Dave's, but no longer blocks this verdict. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "size",
@@ -594,7 +646,13 @@
               "large"
             ],
             "default": "medium",
-            "$note": "small 36px, medium 44px, large 56px"
+            "$note": "small 36px, medium 44px, large 56px",
+            "binds": {
+              "small": "icon.small",
+              "medium": "icon.medium",
+              "large": "icon.large"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. Exact name match to the icon-scale rungs -- cleanly grounded. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -603,7 +661,8 @@
               "default",
               "disabled"
             ],
-            "default": "default"
+            "default": "default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "surface",
@@ -612,7 +671,9 @@
               "on-light",
               "on-dark"
             ],
-            "default": "on-light"
+            "default": "on-light",
+            "binds": "background.default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lands at migration. NOTE: an alternative 4-way surface-tier map judgment (C13, background.default/surface.raised/surface.subtle/surface.action) was NOT ratified -- superseded by this simpler row-pick per s142-D1; do not re-propose it. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
           }
         ]
       }
@@ -661,7 +722,8 @@
               "default",
               "disabled"
             ],
-            "default": "default"
+            "default": "default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "size",
@@ -672,7 +734,13 @@
               "large"
             ],
             "default": "medium",
-            "$note": "Only on the '.Badge on icon' variant — small 10px, medium 13px, large 20px. The standalone Badge is 12px (simple) / 20px (number)."
+            "$note": "Only on the '.Badge on icon' variant — small 10px, medium 13px, large 20px. The standalone Badge is 12px (simple) / 20px (number).",
+            "binds": {
+              "small": "icon.small",
+              "medium": "icon.medium",
+              "large": "icon.large"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. Exact name match to the icon-scale rungs -- cleanly grounded. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -691,6 +759,7 @@
           "--on-dark": "rag/text/on-dark",
           "--on-light": "rag/text/on-light",
           "--on-ok": "text/on-success",
+          "--on-info": "rag/text/on-information",
           "--text": "text/default",
           "--page": "background/default",
           "--border-radius-surface": "border-radius/surface",
@@ -719,7 +788,7 @@
             "context": "text"
           },
           {
-            "fg": "rag/text/on-light",
+            "fg": "rag/text/on-information",
             "bg": "rag/information-background",
             "context": "text"
           },
@@ -745,7 +814,14 @@
               "information"
             ],
             "default": "information",
-            "$note": "Binds the R-D20 rag/{status}-background fill + its most specific ruled ink (see tokens). Error renders role=\"alert\"."
+            "$note": "Binds the R-D20 rag/{status}-background fill + its most specific ruled ink (see tokens). Error renders role=\"alert\".",
+            "binds": {
+              "error": "rag.error",
+              "warning": "rag.warning",
+              "success": "rag.success",
+              "information": "rag.information"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now -- the colour spine is NOT yet DTCG-migrated, the token VALUE lands at that migration. This prop's own $note names a background-fill + ink mechanism; that richer detail stays in $note, not duplicated into binds. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
           },
           {
             "name": "title",
@@ -769,7 +845,8 @@
           {
             "name": "dismissible",
             "type": "boolean",
-            "default": false
+            "default": false,
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -898,7 +975,8 @@
               "stacked-column"
             ],
             "default": "column",
-            "$note": "column = vertical single-series; bar = horizontal single-series (positives only, dv-bar-007); grouped-column + stacked-column = multi-series (D-Q3 promote)."
+            "$note": "column = vertical single-series; bar = horizontal single-series (positives only, dv-bar-007); grouped-column + stacked-column = multi-series (D-Q3 promote).",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "series",
@@ -1032,7 +1110,8 @@
               "no-link"
             ],
             "default": "default",
-            "$note": "Per .Breadcrumb level. 'no-link' = the current/last item (non-clickable). Hover and Pressed share a single combined state."
+            "$note": "Per .Breadcrumb level. 'no-link' = the current/last item (non-clickable). Hover and Pressed share a single combined state.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -1362,7 +1441,8 @@
               "tertiary",
               "quaternary"
             ],
-            "default": "primary"
+            "default": "primary",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Prose 'font-5/medium' inscribed as the variant's typographic parameter -- preserved, not erased. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -1376,7 +1456,8 @@
               "success"
             ],
             "default": "default",
-            "$note": "processing + success seen on primary (rag/success); confirm which states apply to each type."
+            "$note": "processing + success seen on primary (rag/success); confirm which states apply to each type.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "size",
@@ -1386,7 +1467,13 @@
               "large"
             ],
             "default": "default",
-            "$note": "default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height."
+            "$note": "default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height.",
+            "binds": {
+              "default": "icon",
+              "large": "icon.large",
+              "target-min": "target.min"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp + interactive target.min floor per the row's address. 'large' matches an icon-scale rung; 'default' has no name correspondence, bound to the bare family. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "surface",
@@ -1395,7 +1482,9 @@
               "on-light",
               "on-dark"
             ],
-            "default": "on-light"
+            "default": "on-light",
+            "binds": "background.default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lands at migration. NOTE: an alternative 4-way surface-tier map judgment (C13, background.default/surface.raised/surface.subtle/surface.action) was NOT ratified -- superseded by this simpler row-pick per s142-D1; do not re-propose it. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
           }
         ]
       }
@@ -1542,7 +1631,8 @@
               "image-with-border",
               "image-without-border"
             ],
-            "default": "basic"
+            "default": "basic",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -1553,7 +1643,8 @@
               "pressed"
             ],
             "default": "default",
-            "$note": "Interactive types only (basic, actions). Non-interactive/image-static types are default-only."
+            "$note": "Interactive types only (basic, actions). Non-interactive/image-static types are default-only.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "content",
@@ -1811,7 +1902,13 @@
               "large"
             ],
             "default": "medium",
-            "$note": "inline: 210/222/234 wide × 32/44/56 tall; stacked: 88 wide × 82/94/110 tall; undecorated 166×26."
+            "$note": "inline: 210/222/234 wide × 32/44/56 tall; stacked: 88 wide × 82/94/110 tall; undecorated 166×26.",
+            "binds": {
+              "small": "icon.small",
+              "medium": "icon.medium",
+              "large": "icon.large"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. Exact name match to the icon-scale rungs -- cleanly grounded. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -1953,7 +2050,8 @@
               "empty"
             ],
             "default": "live",
-            "$note": "loading = aria-busy + Skeleton bones (by reference); empty = message + clear-filters recovery action."
+            "$note": "loading = aria-busy + Skeleton bones (by reference); empty = message + clear-filters recovery action.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -2170,7 +2268,8 @@
               "break"
             ],
             "default": "subsection",
-            "$note": "subsection/subsection-inset/section = 1px; break = 4px. subsection-inset is indented by padding/responsive/medium."
+            "$note": "subsection/subsection-inset/section = 1px; break = 4px. subsection-inset is indented by padding/responsive/medium.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C5 -- no-bind:variants-axis. Routes to the VARIANTS axis (s136-D1). This ruling DISSOLVES the intent-map vocab gate on this row -- the vocabulary itself remains unruled/Dave's, but no longer blocks this verdict. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "surface",
@@ -2179,7 +2278,9 @@
               "on-light",
               "on-dark"
             ],
-            "default": "on-light"
+            "default": "on-light",
+            "binds": "background.default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lands at migration. NOTE: an alternative 4-way surface-tier map judgment (C13, background.default/surface.raised/surface.subtle/surface.action) was NOT ratified -- superseded by this simpler row-pick per s142-D1; do not re-propose it. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
           }
         ]
       }
@@ -2392,13 +2493,15 @@
               "right"
             ],
             "default": "right",
-            "$note": "Right is the canon dock (detail/inspector pattern). A left variant would mirror trivially but is not canon until a consumer demands it."
+            "$note": "Right is the canon dock (detail/inspector pattern). A left variant would mirror trivially but is not canon until a consumer demands it.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "width",
             "type": "number",
             "default": 400,
-            "$note": "400px, full-width ≤480px viewport."
+            "$note": "400px, full-width ≤480px viewport.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- none-of-these:candidates-invalid. candidate addresses were border-width.* (a SUBSTRING TRAP; this is not a border width). The real home is a layout dimension that doesn't exist yet -- an authoring item. NOT picked or invented here. EXCEPTION row. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "actions",
@@ -2488,7 +2591,8 @@
               "false",
               "true"
             ],
-            "default": "false"
+            "default": "false",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -2502,7 +2606,8 @@
               "disabled",
               "error"
             ],
-            "default": "default"
+            "default": "default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "itemSelection",
@@ -2523,7 +2628,8 @@
               "pressed"
             ],
             "default": "default",
-            "$note": "list-item level"
+            "$note": "list-item level",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -2587,6 +2693,7 @@
           {
             "name": "glyph",
             "type": "string",
+            "binds": "text.default",
             "$note": "Optional REAL library glyph id (icon-source rule) at 48px, 0.4 ink, aria-hidden."
           },
           {
@@ -2909,7 +3016,8 @@
               "section-titles",
               "display"
             ],
-            "default": "content"
+            "default": "content",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "action",
@@ -2950,7 +3058,8 @@
               "processing"
             ],
             "default": "default",
-            "$note": "Headers Display."
+            "$note": "Headers Display.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "image",
@@ -2960,7 +3069,8 @@
               "true"
             ],
             "default": "false",
-            "$note": "Headers Display — with/without an image."
+            "$note": "Headers Display — with/without an image.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -3011,7 +3121,9 @@
               "s-xs"
             ],
             "default": "m-l",
-            "$note": "Responsive hero artboards: XL (scale-3), M & L (scale-2), MS (scale-1), S & XS (scale-1)."
+            "$note": "Responsive hero artboards: XL (scale-3), M & L (scale-2), MS (scale-1), S & XS (scale-1).",
+            "binds": "scale",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C8 -- bind:ramp. breakpoint binds to the scale ramp per s141-D1(B) -- dimension + $extensions carries the breakpoint set verbatim; 'breakpoint' as a candidate address is rejected, scale is the ruled home. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "height",
@@ -3020,7 +3132,8 @@
               "fixed",
               "full"
             ],
-            "default": "fixed"
+            "default": "fixed",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- authoring-item:layout. no candidates; a layout-authoring item for a future lane. NOT authored here. EXCEPTION row. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "asset",
@@ -3183,7 +3296,8 @@
               "quaternary"
             ],
             "default": "quaternary",
-            "$note": "Emphasis mirrors Button. Quaternary (ghost) is the most common icon-button in toolbars/inputs; primary icon-only is rare (reserve for a single decisive action e.g. a FAB-like add)."
+            "$note": "Emphasis mirrors Button. Quaternary (ghost) is the most common icon-button in toolbars/inputs; primary icon-only is rare (reserve for a single decisive action e.g. a FAB-like add).",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -3195,12 +3309,22 @@
               "focus",
               "disabled"
             ],
-            "default": "default"
+            "default": "default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "glyph",
             "type": "string",
-            "$note": "Icon id from the assets/icons sprite; drives the accessible name unless aria-label overrides."
+            "binds": [
+              "button.primary.icon.default",
+              "text.on-disabled",
+              "text.on-inverse",
+              "icon.default",
+              "icon.default-reverse",
+              "tertiary.text.disabled"
+            ],
+            "$note": "Icon id from the assets/icons sprite; drives the accessible name unless aria-label overrides.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "label",
@@ -3280,7 +3404,8 @@
               "date-picker",
               "input-label"
             ],
-            "default": "single-line"
+            "default": "single-line",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -3294,7 +3419,8 @@
               "error"
             ],
             "default": "default",
-            "$note": "Date-picker input adds a 'date picker' (open) state. Input label: default/disabled only."
+            "$note": "Date-picker input adds a 'date picker' (open) state. Input label: default/disabled only.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "dateCellState",
@@ -3308,7 +3434,15 @@
               "unavailable"
             ],
             "default": "unselected",
-            "$note": ".Date calendar day cell."
+            "binds": [
+              "form.background",
+              "form.border.active",
+              "text.default",
+              "text.reverse",
+              "text.disabled"
+            ],
+            "$note": ".Date calendar day cell.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -3416,6 +3550,7 @@
               "white"
             ],
             "default": "background",
+            "binds": "background.default",
             "$note": "Promoted default = BACKGROUND mode (series-colour fill + page stroke at line width 2.5 — theme-adaptive, no absolute white on dark). The kit's White/Background comparison toggle is UNRESOLVED — receipted for Dave; flipping is a CSS pair swap."
           },
           {
@@ -3445,7 +3580,9 @@
             "name": "highContrast",
             "type": "boolean",
             "default": false,
-            "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only, kit pattern)."
+            "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only, kit pattern).",
+            "binds": "data.series-high-contrast",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- bind. data-contrast=\"high\" remaps series onto this token (kit pattern, v2-recommended, ratified). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -3497,7 +3634,8 @@
               "icon",
               "inline"
             ],
-            "default": "arrow"
+            "default": "arrow",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "fontSize",
@@ -3512,7 +3650,9 @@
               "font-7"
             ],
             "default": "font-5",
-            "$note": "Arrow link spans font-1…7; Back link font-5/6/7; Icon link S5/S6/S7; Inline link font-5 only."
+            "$note": "Arrow link spans font-1…7; Back link font-5/6/7; Icon link S5/S6/S7; Inline link font-5 only.",
+            "binds": "typography.font-size",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C3 -- bind:ramp. fontSize binds to the typography ramp (family/ramp address, not a leaf token) per s141-D1(A). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -3523,7 +3663,8 @@
               "disabled"
             ],
             "default": "default",
-            "$note": "hover and pressed share one combined state (as Breadcrumbs). Disabled only modelled on Icon link."
+            "$note": "hover and pressed share one combined state (as Breadcrumbs). Disabled only modelled on Icon link.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "mode",
@@ -3532,7 +3673,8 @@
               "on-light",
               "on-dark"
             ],
-            "default": "on-light"
+            "default": "on-light",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C7 -- no-bind:theme-layer. Duplicates the theme layer (four-themes standing requirement) and would fork against it; the theme layer owns this, not a per-component prop. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "multiline",
@@ -3652,7 +3794,8 @@
               "transaction",
               "bullets"
             ],
-            "default": "item"
+            "default": "item",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -3665,7 +3808,8 @@
               "processing"
             ],
             "default": "default",
-            "$note": "hover labelled 'hover (web)'. Bullets list has no interactive state."
+            "$note": "hover labelled 'hover (web)'. Bullets list has no interactive state.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "visual",
@@ -3676,6 +3820,17 @@
               "image"
             ],
             "default": "icon",
+            "binds": {
+              "icon": [
+                "icon.default",
+                "icon.default-reverse",
+                "icon.disabled"
+              ],
+              "image": [
+                "image.opacity.default",
+                "image.opacity.disabled"
+              ]
+            },
             "$note": "Badge, Item, Transaction offer a leading visual."
           },
           {
@@ -3749,7 +3904,14 @@
               "extra-small"
             ],
             "default": "medium",
-            "$note": "Web offers all four; iOS & Android offer large/medium/extra-small (no small)."
+            "$note": "Web offers all four; iOS & Android offer large/medium/extra-small (no small).",
+            "binds": {
+              "large": "icon.large",
+              "medium": "icon.medium",
+              "small": "icon.small",
+              "extra-small": "icon.xsmall"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. Exact/standard-abbreviation match to all four icon-scale rungs (extra-small -> xsmall) -- cleanly grounded. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "mode",
@@ -3758,7 +3920,8 @@
               "on-light",
               "on-dark"
             ],
-            "default": "on-light"
+            "default": "on-light",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C7 -- no-bind:theme-layer. Duplicates the theme layer (four-themes standing requirement) and would fork against it; the theme layer owns this, not a per-component prop. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "label",
@@ -3887,7 +4050,8 @@
               "video",
               "partial"
             ],
-            "default": "dialog"
+            "default": "dialog",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "buttons",
@@ -3912,7 +4076,9 @@
               "xs"
             ],
             "default": "l",
-            "$note": "Video modal is fully responsive (XL scale-3 → XS scale-1); S/XS use a dedicated layout."
+            "$note": "Video modal is fully responsive (XL scale-3 → XS scale-1); S/XS use a dedicated layout.",
+            "binds": "scale",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C8 -- bind:ramp. breakpoint binds to the scale ramp per s141-D1(B) -- dimension + $extensions carries the breakpoint set verbatim; 'breakpoint' as a candidate address is rejected, scale is the ruled home. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "module",
@@ -3970,7 +4136,8 @@
               "nav-bar-bottom",
               "nav-bar-top"
             ],
-            "default": "masthead"
+            "default": "masthead",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "auth",
@@ -4006,7 +4173,9 @@
               "xs"
             ],
             "default": "l",
-            "$note": "Masthead/Anchors fully responsive; app nav bars are mobile."
+            "$note": "Masthead/Anchors fully responsive; app nav bars are mobile.",
+            "binds": "scale",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C8 -- bind:ramp. breakpoint binds to the scale ramp per s141-D1(B) -- dimension + $extensions carries the breakpoint set verbatim; 'breakpoint' as a candidate address is rejected, scale is the ruled home. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -4067,7 +4236,8 @@
               "inline",
               "snackbar"
             ],
-            "default": "contextual"
+            "default": "contextual",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "variant",
@@ -4079,7 +4249,8 @@
               "information"
             ],
             "default": "information",
-            "$note": "RAG status. Snackbar = warning/success/information only (no error)."
+            "$note": "RAG status. Snackbar = warning/success/information only (no error).",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C5 -- no-bind:variants-axis. Routes to the VARIANTS axis (s136-D1). This ruling DISSOLVES the intent-map vocab gate on this row -- the vocabulary itself remains unruled/Dave's, but no longer blocks this verdict. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "multiLink",
@@ -4147,7 +4318,8 @@
               "dropdown",
               "dropdown-stacked"
             ],
-            "default": "basic"
+            "default": "basic",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -4159,7 +4331,8 @@
               "disabled"
             ],
             "default": "default",
-            "$note": "Page buttons / dropdown trigger states; current page marked active."
+            "$note": "Page buttons / dropdown trigger states; current page marked active.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -4353,13 +4526,15 @@
               "auto"
             ],
             "default": "auto",
-            "$note": "Space-aware (the Tooltip mechanics, shared): flips above/below, clamps to viewport, tail tracks the trigger."
+            "$note": "Space-aware (the Tooltip mechanics, shared): flips above/below, clamps to viewport, tail tracks the trigger.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "dismissible",
             "type": "boolean",
             "default": true,
-            "$note": "Close ×, Esc, outside click, trigger toggle, or focus leaving — all close it."
+            "$note": "Close ×, Esc, outside click, trigger toggle, or focus leaving — all close it.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -4476,7 +4651,8 @@
               "icon",
               "avatar"
             ],
-            "default": "icon"
+            "default": "icon",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C5 -- no-bind:variants-axis. Routes to the VARIANTS axis (s136-D1). This ruling DISSOLVES the intent-map vocab gate on this row -- the vocabulary itself remains unruled/Dave's, but no longer blocks this verdict. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -4487,7 +4663,8 @@
               "disabled"
             ],
             "default": "default",
-            "$note": "App component — no hover state."
+            "$note": "App component — no hover state.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "reorder",
@@ -4556,7 +4733,8 @@
               "hover"
             ],
             "default": "default",
-            "$note": "Drag handle; hover web only. Cursor shows grab → grabbed during drag."
+            "$note": "Drag handle; hover web only. Cursor shows grab → grabbed during drag.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -4697,7 +4875,8 @@
               "hover",
               "active"
             ],
-            "default": "default"
+            "default": "default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "predictive",
@@ -4812,7 +4991,8 @@
             "name": "masked",
             "type": "boolean",
             "default": false,
-            "$note": "PIN cells are type=password; OTP cells are visible text."
+            "$note": "PIN cells are type=password; OTP cells are visible text.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "resend",
@@ -4869,7 +5049,11 @@
               "square"
             ],
             "default": "square",
-            "$note": "Square (Mono). Every variant carries the 2px INSET track padding + a floating indicator (the pill's padding, applied to all — Dave 2026-07-24). The rounded PILL SHAPE is NOT a seg variant — reserved for a mobile Tab-bar alternative (deferred; see Tab-bar + _FUTURE-STATE mobile-variants)."
+            "$note": "Square (Mono). Every variant carries the 2px INSET track padding + a floating indicator (the pill's padding, applied to all — Dave 2026-07-24). The rounded PILL SHAPE is NOT a seg variant — reserved for a mobile Tab-bar alternative (deferred; see Tab-bar + _FUTURE-STATE mobile-variants).",
+            "binds": {
+              "square": "border-radius.control"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- bind:border-radius-map. shape binds to the border-radius map (control-class -> border-radius.control); this prop's sole value ('square') is the control-class case. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "content",
@@ -4890,7 +5074,14 @@
               "lg"
             ],
             "default": "md",
-            "$note": "Mini ramp (T-D15, RULED 2026-07-24): sm=12/500 · md=14/500 · lg=16/400 — bound in type.css (.t-cm-ctl-12/-14/-16 via .seg.sm/.md/.lg button). Visible heights 28/32/36; the invisible ::before target keeps every size at 44."
+            "$note": "Mini ramp (T-D15, RULED 2026-07-24): sm=12/500 · md=14/500 · lg=16/400 — bound in type.css (.t-cm-ctl-12/-14/-16 via .seg.sm/.md/.lg button). Visible heights 28/32/36; the invisible ::before target keeps every size at 44.",
+            "binds": {
+              "sm": "icon.small",
+              "md": "icon.medium",
+              "lg": "icon.large",
+              "target-min": "target.min"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp (sm/md/lg standard abbreviation) + interactive target.min floor (already matches this prop's own 44px note). CROSS-REFERENCE (s143-D1(A), Dave, 2026-08-10): this prop's own $note also binds sm/md/lg to a TYPOGRAPHY mini-ramp (.t-cm-ctl-12/14/16) under T-D15 (2026-07-24, RULED) -- size is TWO ADDITIVE AXES (icon scale + type scale), not a conflict; T-D15 STANDS, not superseded, alongside this bind. Enacted as ruled (C2 names segmented-control by meta). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -4901,7 +5092,8 @@
               "selected"
             ],
             "default": "default",
-            "$note": "Per-segment; the chosen option is 'selected' (aria-pressed=true), shown by the sliding fill + inverted label."
+            "$note": "Per-segment; the chosen option is 'selected' (aria-pressed=true), shown by the sliding fill + inverted label.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -4969,7 +5161,12 @@
               "chip",
               "switch"
             ],
-            "default": "checkbox"
+            "default": "checkbox",
+            "binds": [
+              "form.background.default",
+              "form.border.default"
+            ],
+            "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -4982,7 +5179,8 @@
               "disabled",
               "error"
             ],
-            "default": "default"
+            "default": "default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "checkboxKind",
@@ -5049,18 +5247,27 @@
               "control"
             ],
             "default": "line",
-            "$note": "The bone kit: 16px caption line · 24px body line · 44px avatar circle (50% idiom) · 160px media block · 44×120 control block. Compose to mirror the target component."
+            "$note": "The bone kit: 16px caption line · 24px body line · 44px avatar circle (50% idiom) · 160px media block · 44×120 control block. Compose to mirror the target component.",
+            "binds": {
+              "control": "border-radius.control",
+              "line": "border-radius",
+              "body": "border-radius",
+              "media": "border-radius"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- bind:border-radius-map. shape binds to the border-radius map; only 'control' matches the row's explicit control-class -> border-radius.control address. 'line'/'body'/'media' fall back to the bare family (their specific role token is not named by this row). 'circle' OMITTED -- the border-radius family's own $description rules literal 50%/999px circle idioms OUT of the token set by design ('deliberately round in every theme'). FINDING -- 4 of 5 legs not fully resolved by this row; flag for Dave. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "width",
             "type": "string",
-            "$note": "Per-bone width, mirrors expected content length (staggered widths read more honestly than uniform bars)."
+            "$note": "Per-bone width, mirrors expected content length (staggered widths read more honestly than uniform bars).",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- none-of-these:candidates-invalid. candidate addresses were border-width.* (a SUBSTRING TRAP; this is not a border width). The real home is a layout dimension that doesn't exist yet -- an authoring item. NOT picked or invented here. EXCEPTION row. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "shimmer",
             "type": "boolean",
             "default": true,
-            "$note": "Background-position sweep 1.4s; removed entirely under prefers-reduced-motion (static bones still read as loading)."
+            "$note": "Background-position sweep 1.4s; removed entirely under prefers-reduced-motion (static bones still read as loading).",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- mint-required. UNMINTED token intent inscribed ('color-mix 50% bone/page'). Minting is Dave's, NOT done by this enactment. EXCEPTION row -- see DO-NOT-RULE list. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -5101,7 +5308,8 @@
               "double"
             ],
             "default": "single",
-            "$note": "Single = one handle/value; double = two handles for a range."
+            "$note": "Single = one handle/value; double = two handles for a range.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "value",
@@ -5122,7 +5330,14 @@
               "hover",
               "pressed"
             ],
-            "default": "default"
+            "default": "default",
+            "binds": [
+              "background.default",
+              "border.subtle",
+              "tertiary.background.hover",
+              "tertiary.background.pressed"
+            ],
+            "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -5170,7 +5385,12 @@
               "inline"
             ],
             "default": "standalone",
-            "$note": "standalone = 340×64 render of the 580×90 frame, stroke 2.5, endpoint dot r3.5, role=img + table; inline = 200×48 at 44px, stroke 2, dot r3, aria-hidden (decorative — the composed value carries meaning)."
+            "$note": "standalone = 340×64 render of the 580×90 frame, stroke 2.5, endpoint dot r3.5, role=img + table; inline = 200×48 at 44px, stroke 2, dot r3, aria-hidden (decorative — the composed value carries meaning).",
+            "binds": {
+              "standalone": "icon",
+              "inline": "icon"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size-like enum binds to the icon-scale ramp (MEDIUM confidence in the judgment). TENSION: this is a rendering-CONTEXT switch (full chart vs inline compact), not a t-shirt size; its own $note describes chart-frame pixel dimensions, not icon sizing -- the weakest-fit member of C2. Bound to the bare family only. FINDING -- flag for Dave. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "data",
@@ -5293,7 +5513,9 @@
           {
             "name": "fillAlpha",
             "type": "string",
-            "$note": "--stack-fill-alpha, default 1 (flat/solid). NOT a minted token — a receipted CSS dial so band opacity can be tuned later without a token-minting pass (token minting stays a serial/conductor act)."
+            "$note": "--stack-fill-alpha, default 1 (flat/solid). NOT a minted token — a receipted CSS dial so band opacity can be tuned later without a token-minting pass (token minting stays a serial/conductor act).",
+            "binds": "alpha",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- bind:family. Binds to the alpha family (opacity primitives, ds-026 amended -- CANON), not one fixed step. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "empty",
@@ -5322,7 +5544,9 @@
             "name": "highContrast",
             "type": "boolean",
             "default": false,
-            "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only)."
+            "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only).",
+            "binds": "data.series-high-contrast",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- bind. data-contrast=\"high\" remaps series onto this token (kit pattern, v2-recommended, ratified). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -5383,12 +5607,23 @@
               "compact"
             ],
             "default": "display",
-            "$note": "display = .t-cm-figure-4 (32px) · compact = .t-cm-figure-3 (24px, T-D14) for dense boards."
+            "$note": "display = .t-cm-figure-4 (32px) · compact = .t-cm-figure-3 (24px, T-D14) for dense boards.",
+            "binds": {
+              "display": "icon",
+              "compact": "icon"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. CROSS-REFERENCE (s143-D1(A), Dave, 2026-08-10): this prop's own $note also binds to TYPOGRAPHY composites (.t-cm-figure-3/4) -- size is TWO ADDITIVE AXES (icon scale + type scale), not a conflict. No safe rung correspondence; bound to the bare family. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "delta",
             "type": "string",
-            "$note": "Signed change + direction word ('+12.4% up'); .t-cm-figure-6 in INK. Direction = arrow + sign + wording, never colour alone."
+            "binds": [
+              "rag.success",
+              "rag.error",
+              "text.default"
+            ],
+            "$note": "Signed change + direction word ('+12.4% up'); .t-cm-figure-6 in INK. Direction = arrow + sign + wording, never colour alone.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "direction",
@@ -5399,7 +5634,8 @@
               "flat"
             ],
             "default": "flat",
-            "$note": "R-D5: directional deltas are red/green ONLY. The arrow glyph wears rag/success or rag/error (3:1 floor, R-D6 A′ — labelled); flat = no arrow, 'No change'."
+            "$note": "R-D5: directional deltas are red/green ONLY. The arrow glyph wears rag/success or rag/error (3:1 floor, R-D6 A′ — labelled); flat = no arrow, 'No change'.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "period",
@@ -5495,7 +5731,13 @@
               "declined",
               "pending"
             ],
-            "default": "pending"
+            "default": "pending",
+            "binds": {
+              "approved": "rag.success",
+              "cancelled": "rag.neutral",
+              "declined": "rag.error",
+              "pending": "rag.warning"
+            }
           },
           {
             "name": "state",
@@ -5504,7 +5746,8 @@
               "default",
               "disabled"
             ],
-            "default": "default"
+            "default": "default",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -5719,7 +5962,8 @@
           {
             "name": "current",
             "type": "string",
-            "$note": "The active destination — gets the filled glyph + text/default + aria-current='page'."
+            "$note": "The active destination — gets the filled glyph + text/default + aria-current='page'.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -5777,7 +6021,8 @@
               "first-column",
               "first-row-and-column"
             ],
-            "default": "first-row"
+            "default": "first-row",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- routed:variants-axis. Routes to the VARIANTS axis, not a param bind. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "orientation",
@@ -5786,7 +6031,8 @@
               "horizontal",
               "vertical"
             ],
-            "default": "horizontal"
+            "default": "horizontal",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "cellAlign",
@@ -5796,7 +6042,8 @@
               "right"
             ],
             "default": "left",
-            "$note": "Right-aligned for numeric columns."
+            "$note": "Right-aligned for numeric columns.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -5858,7 +6105,8 @@
               "selected-middle",
               "selected-last"
             ],
-            "default": "unselected"
+            "default": "unselected",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). (classification routed here by C11.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "track",
@@ -5868,7 +6116,8 @@
               "elevated"
             ],
             "default": "flat",
-            "$note": ".Tab track elevation=false/true (adds elevation/functional shadow)."
+            "$note": ".Tab track elevation=false/true (adds elevation/functional shadow).",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "overflow",
@@ -5878,7 +6127,8 @@
               "true"
             ],
             "default": "false",
-            "$note": "Overflow dropdown (with menu items) when tabs don't fit."
+            "$note": "Overflow dropdown (with menu items) when tabs don't fit.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "label",
@@ -5934,7 +6184,8 @@
               "tag-link"
             ],
             "default": "tag",
-            "$note": "Tag = static label; Tag link = interactive (navigates/filters), has hover/pressed."
+            "$note": "Tag = static label; Tag link = interactive (navigates/filters), has hover/pressed.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "size",
@@ -5943,7 +6194,12 @@
               "small",
               "extra-small"
             ],
-            "default": "small"
+            "default": "small",
+            "binds": {
+              "small": "icon.small",
+              "extra-small": "icon.xsmall"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. Exact/standard-abbreviation match -- cleanly grounded. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "background",
@@ -5953,7 +6209,8 @@
               "false"
             ],
             "default": "true",
-            "$note": "Background=true draws a filled chip; false is text-only."
+            "$note": "Background=true draws a filled chip; false is text-only.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- routed:colour-spine-boolean. Routes to the colour-spine lane (boolean toggles a colour-spine consequence); not enacted here -- a separate lane. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "mode",
@@ -5962,7 +6219,8 @@
               "on-light",
               "on-dark"
             ],
-            "default": "on-light"
+            "default": "on-light",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C7 -- no-bind:theme-layer. Duplicates the theme layer (four-themes standing requirement) and would fork against it; the theme layer owns this, not a per-component prop. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -5972,7 +6230,8 @@
               "hover-pressed"
             ],
             "default": "default",
-            "$note": "Tag link only (hover & pressed combined)."
+            "$note": "Tag link only (hover & pressed combined).",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -6029,7 +6288,8 @@
             "name": "maxlength",
             "type": "number",
             "default": 300,
-            "$note": "Drives the counter; remaining count announced politely at 90% and at the limit."
+            "$note": "Drives the counter; remaining count announced politely at 90% and at the limit.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "rows",
@@ -6040,7 +6300,8 @@
           {
             "name": "counter",
             "type": "boolean",
-            "default": true
+            "default": true,
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "optionalMarker",
@@ -6128,7 +6389,8 @@
             "name": "step",
             "type": "number",
             "default": 30,
-            "$note": "Slot interval in minutes (30 = the reference; 15 doubles the list)."
+            "$note": "Slot interval in minutes (30 = the reference; 15 doubles the list).",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "help",
@@ -6195,7 +6457,13 @@
               "plain"
             ],
             "default": "plain",
-            "$note": "No error (snackbar precedent). Plain = statusless message ('Copied to clipboard.'), no glyph."
+            "$note": "No error (snackbar precedent). Plain = statusless message ('Copied to clipboard.'), no glyph.",
+            "binds": {
+              "success": "rag.success",
+              "information": "rag.information",
+              "warning": "rag.warning"
+            },
+            "$status": "s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now -- value lands at the colour-spine migration. 'plain' OMITTED from the map: this prop's own $note says plain is statusless ('no glyph'), so it carries no rag consequence -- not invented. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
           },
           {
             "name": "message",
@@ -6210,7 +6478,8 @@
             "name": "duration",
             "type": "number",
             "default": 6000,
-            "$note": "Auto-dismiss ms; timer pauses on hover/focus-within (2.2.1 pattern). Dismiss × always present."
+            "$note": "Auto-dismiss ms; timer pauses on hover/focus-within (2.2.1 pattern). Dismiss × always present.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -6260,7 +6529,8 @@
               "right"
             ],
             "default": "centre",
-            "$note": "Horizontal position of the pointer along that edge."
+            "$note": "Horizontal position of the pointer along that edge.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -6303,7 +6573,8 @@
               "hero"
             ],
             "default": "standard",
-            "$note": "Standard inline player vs full-width hero player."
+            "$note": "Standard inline player vs full-width hero player.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C5 -- no-bind:variants-axis. Routes to the VARIANTS axis (s136-D1). This ruling DISSOLVES the intent-map vocab gate on this row -- the vocabulary itself remains unruled/Dave's, but no longer blocks this verdict. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -6315,7 +6586,8 @@
               "buffering"
             ],
             "default": "idle",
-            "$note": "Playback states (multiple state rows shown on the page)."
+            "$note": "Playback states (multiple state rows shown on the page).",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }
@@ -6366,7 +6638,8 @@
               "icon"
             ],
             "default": "icon",
-            "$note": "Label segments (text) or icon-only segments."
+            "$note": "Label segments (text) or icon-only segments.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           },
           {
             "name": "state",
@@ -6378,7 +6651,8 @@
               "selected"
             ],
             "default": "default",
-            "$note": "Per-segment; the chosen format is 'selected'."
+            "$note": "Per-segment; the chosen format is 'selected'.",
+            "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
           }
         ]
       }

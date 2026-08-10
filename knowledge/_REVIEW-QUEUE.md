@@ -2,9 +2,9 @@
 
 > Every assertion in the component metas that is **not** directly observed canon. Formalises the in-prose confidence convention (Graphify-borrow #1). 🔴 **review** = verify before trusting; 🟡 **inferred** = reasoned, lower urgency. `asserted` items (the default) are not listed. Generated — regenerate after editing metas: `python3 knowledge/_build_review_queue.py`. Vocabulary in `_CONFIDENCE.md`; machine detail in `_REVIEW-QUEUE.json`.
 
-**Totals:** 126 items across 33 components — 120 🔴 review, 6 🟡 inferred. By category: anti-pattern 52, token-rebind 29, accessibility 26, other 19.
+**Totals:** 172 items across 56 components — 159 🔴 review, 13 🟡 inferred. By category: other 65, anti-pattern 52, token-rebind 29, accessibility 26.
 
-Most-flagged components: Account card (9), Confirmation (9), Action bar (7), Badge (6), Eyebrow (6), Tab-bar (6), Countdown timer (5), Dropdown (5).
+Most-flagged components: Confirmation (10), Account card (9), Action bar (8), Tab-bar (7), Badge (6), Eyebrow (6), Avatar (5), Button (5).
 
 ## Token-rebind — verify before the Sutherland migration (29)
 
@@ -235,7 +235,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `antiPatterns` — REVIEW (inferred): labels in UPPERCASE — house type rule is sentence case.
 - 🔴 `antiPatterns` — REVIEW (inferred): applying the pills variant's rounding/elevation to the standard bar — those are fenced to the exploratory pills variant; the standard bar stays flat/angular.
 
-## Other (19)
+## Other (65)
 
 **Account card**
 - 🔴 `tokens.$balance-type-finding` — REVIEW: the balance uses a display/amount type (30px / line-height 1.1 / tabular-nums / -0.01em) with NO dedicated typography token. The gap report flagged 'display/amount type + money-format' as missing — confirm the size/role and add a…
@@ -244,36 +244,134 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `tokenValidation.$note` — REVIEW: this is a CANDIDATE from the gap report, not yet reconciled against a Figma component. If HSBC already has an account/balance card, bind to its node + tokens; if net-new, it needs design review + a Figma source.
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by knowledge/_PAYMENTS-JOURNEY-GAPS.md. Needs a design owner + Figma source before promotion from candidate to gated.
 
+**Account selector**
+- 🔴 `slots.accounts.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
 **Action bar**
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-actionbar hand-util) and Button.meta commonPatterns. Needs a design owner + Figma source before promotion from candidate to gated.
+- 🔴 `slots.actions.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Alert**
+- 🟡 `props.$status` — s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now (rag.<value> pattern, matching the account-card/stat-card precedent already in this repo) -- the colour spine is NOT yet DTCG-mi…
 
 **Amount display**
+- 🟡 `props.$status` — s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. sign binds to rag.success|rag.error (positive/negative) per the ruled address; 'none' re-keyed from the address's 'positive' to match this prop's actual enum spelling. ADDRESS-INTENT, …
 - 🔴 `tokens.$directional-out-of-scope` — REVIEW: directional gain/loss colour (data/delta/gain + data/delta/loss) is deliberately NOT bound here — colour is handled in the RAG/delta workstream and layers on as an opt-in modifier later. Contrast note kept for when it lands: dark…
 - 🔴 `provenance.$note` — REVIEW: surfaced as a P1 foundation in reviews/ITINERARY-2026-07-14-apollo-component-library and by the account-card $balance-type-finding. Needs a design owner + Figma source before promotion from candidate to gated.
 
+**Avatar**
+- 🟡 `props.$status` — s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lan…
+
+**Banner**
+- 🟡 `props.$status` — s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now -- the colour spine is NOT yet DTCG-migrated, the token VALUE lands at that migration. This prop's own $note names a background-…
+- 🔴 `slots.actions.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Bar chart**
+- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Box plot**
+- 🔴 `slots.categories.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.outliers.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Bullet chart**
+- 🔴 `slots.rows.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.ranges.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Butterfly chart (horizontal)**
+- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Butterfly chart (vertical)**
+- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
 **Button**
 - 🟡 `props.$note` — default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height.
+- 🟡 `props.$status` — s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lan…
+
+**Candlestick chart**
+- 🔴 `slots.sessions.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Cards**
+- 🔴 `slots.content.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Combo chart**
+- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Confirmation**
 - 🔴 `tokens.$icon-note` — success-solid glyph: the tick is a cutout, so it shows the page colour behind (white tick on light, dark tick on dark). REVIEW: confirm the dark-mode tick reads acceptably or add a backing.
 - 🔴 `responsive.$desktop-todo` — REVIEW: a DESKTOP variant is still needed (wider / dialog-style layout, not full-bleed centred). Logged in _COMPONENT-GAPS.md (Dave, 2026-06-30).
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report. Needs a design owner + Figma source before promotion from candidate to gated.
+- 🔴 `slots.actions.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Data grid**
+- 🔴 `slots.columns.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.filters.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Divider**
+- 🟡 `props.$status` — s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lan…
+
+**Donut chart**
+- 🔴 `slots.slices.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Drawer**
+- 🔴 `slots.actions.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Eyebrow**
 - 🔴 `tokens.$type-finding` — REVIEW: uses 13px / line-height 1 / 500, sentence case, with NO dedicated 'eyebrow' type token — confirm the size/role or bind to a label type token if one exists.
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-eyebrow hand-util). Needs a design owner + Figma source before promotion from candidate to gated.
 
+**Histogram**
+- 🔴 `slots.bins.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
 **Input fields**
 - 🟡 `dimensions.$description` — Geometry. BOXED captured from node 65570:211753 (2026-06-22): box padding 9px top / 11px bottom / 16px inline, 16px gap (prefix·value·icon), 1px form/border, ~46px standard height, Large ~+10px. UNDERLINE geometry below was INFERRED 2026…
+
+**Line chart**
+- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Modal lightbox**
+- 🔴 `slots.items.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Modals**
 - 🔴 `build.a11y` — role=dialog + aria-modal + aria-labelledby + aria-describedby; focus moves in + Tab trapped within + Esc closes + focus returns to trigger; background inert; trigger disabled while open. Closes the meta's focus-trap REVIEW item.
 
+**Pie chart**
+- 🔴 `slots.slices.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Popover**
+- 🔴 `slots.content.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Scatter plot**
+- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
 **Slider**
 - 🔴 `tokens.tick-marker (DEPRECATED)` — non-interactive (depricate)/border/on-light/neutral-6 (#767676) → REVIEW (rebind form/border/default | scrollbar/foreground — both #767676)
+
+**Sparkline**
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Stacked area chart**
+- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Stepper**
+- 🔴 `slots.steps.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Summary**
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-summary hand-util). Needs a design owner + Figma source before promotion from candidate to gated.
 
 **Tab-bar**
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-tabbar hand-util). Needs a design owner + Figma source before promotion from candidate to gated.
+- 🔴 `slots.items.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Toast**
+- 🟡 `props.$status` — s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now -- value lands at the colour-spine migration. 'plain' OMITTED from the map: this prop's own $note says plain is statusless ('no …

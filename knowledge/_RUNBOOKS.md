@@ -9,7 +9,7 @@ only in the artefact it governs dies the first time that artefact is rewritten �
 **This index is generated from the filesystem**, because a hand-maintained list of runbooks is exactly
 the thing that rots when someone adds the tenth one and forgets the list.
 
-**17 runbooks**, last generated 2026-08-07.
+**17 runbooks**, last generated 2026-08-10.
 
 ### `_RUNBOOK-capture-ritual.md`
 **Runbook — end-of-session capture ritual**
@@ -84,7 +84,7 @@ Procedure for fixing tokens that are flat, wrong, or invisible in dark mode. Com
 ### `_RUNBOOK-render-verify.md`
 **Runbook — render-verify (Chromium + Playwright in the sandbox)**
 
-The repeatable procedure for rendering repo HTML to PNG **inside the Linux sandbox**, with the real HSBC face, so the agent can SEE its own work before handing it over. Stood up 2026-07-23 at Dave's ask ("there should be a runbook for…
+(Addition only; the #125 strata below and in the session record stand as history. 2026-08-08.)
 
 ### `_RUNBOOK-review-doc.md`
 **Runbook — decision review docs (the two-register rule)**

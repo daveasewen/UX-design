@@ -17,7 +17,7 @@
 | Amount input | ato | 4 | border-radius/control, rag/error, rag/success, text/default | 1.3.1, 1.3.5, 1.4.1, 1.4.3, 2.1.1, 2.4.7, 3.3.1, 3.3.2 | — |  |
 | Avatar | ato | 12 | border/subtle, icon/default, icon/default-reverse, icon/disabled… | 1.1.1, 1.4.10, 1.4.4, 2.4.7, 2.5.8 | imagery, hexagon-masks, typography-usage | 6 |
 | Badge | ato | 6 | color/primary, icon/disabled, background/default, text/reverse… | 1.4.1, 1.4.11, 4.1.2 | typography-usage |  |
-| Banner | mol | 4 | border-radius/surface | 1.4.1, 1.4.10, 1.4.3, 2.5.8, 4.1.3 | — |  |
+| Banner | mol | 5 | border-radius/surface | 1.4.1, 1.4.10, 1.4.3, 2.5.8, 4.1.3 | — |  |
 | Bar chart | org | 12 | background/default, series/1, elevation/border, elevation/functional… | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
 | Box plot | org | 3 | background/default, series/1, text/default | 1.3.1, 1.4.11, 1.4.13 | — |  |
 | Breadcrumbs | mol | 2 | text/default, font-family/default | 1.4.1, 2.4.7, 2.4.8, 4.1.2 | platform-web, tone-of-voice |  |

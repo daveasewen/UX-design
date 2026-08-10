@@ -44,6 +44,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -97,6 +98,23 @@ def _norm(s: str) -> str:
 
 # ── ⚓ THE DURABLE POINTER FORM, built #127 ───────────────────────────────────────────────────
 ANCHOR_SEP = "#"
+
+
+CHAT_POINTER_RE = re.compile(r"chat #\d+\b")
+# #148: a path-shaped token — MUST contain a `/` AND end in a dotted extension, so `s142-D1`,
+# a bare date, or a token ADDRESS like `border-radius/surface` can never be claimed as a path.
+# Repo-root files keep the legacy whole-string fast-path in the caller.
+PATHISH_RE = re.compile(r"[A-Za-z0-9_.\-]+(?:/[A-Za-z0-9_.\-]+)*/[A-Za-z0-9_\-]+\.[A-Za-z0-9]+")
+
+
+def is_chat_pointer(pointer: str) -> bool:
+    """`chat #<n> ...` — live-transcript provenance, a LEGAL pointer form (#148, s148-D1).
+
+    Deliberately narrow: the literal word `chat`, one space, `#`, digits. Checked BEFORE the
+    anchor predicate so `chat #143 …` is never claimed as a `<path>#<anchor>` on a file named
+    `chat`. It verifies NOTHING on disk and says so — the transcript is not in the repo; an
+    honest unverifiable pointer beats a false rot report."""
+    return bool(CHAT_POINTER_RE.match(pointer))
 
 
 def is_anchor_pointer(pointer: str) -> bool:
@@ -304,6 +322,14 @@ def selftest() -> list[str]:
                                     f"a commit in this repo — a pointer index whose pointers "
                                     f"rot is worse than none")
                 continue
+            # #148 (s148-D1): `chat #<n> ...` is a LEGAL pointer form — live-transcript
+            # provenance, DECLARED unverifiable from the filesystem (the transcript is not in
+            # the repo). Same class as the `commit ` form above
+            # ([[honest-refusal-needs-a-legal-form]]): without it the anchor predicate claimed
+            # the word `chat` as a path and four rulings' honest provenance was reported as
+            # rot — found by the #148 full `_build_all.py` drive, a dead-runner casualty.
+            if is_chat_pointer(e):
+                continue
             # ⚓ #127: the ANCHOR form is checked by CONTENT, not by an integer. See
             # `resolve_anchor` for the defect it kills; the legacy `<path>` and `<path>:<int>`
             # forms fall through to the existence check below, unchanged.
@@ -313,9 +339,25 @@ def selftest() -> list[str]:
                     failures.append(f"_governs: ruling {r['id']} {err}")
                 continue
             p = os.path.join(REPO, e.split(":")[0])
-            if not os.path.exists(p):
-                failures.append(f"_governs: ruling {r['id']} points at `{e}` which does not "
-                                f"exist — a pointer index whose pointers rot is worse than none")
+            if os.path.exists(p):
+                continue  # legacy `<path>` / `<path>:<int>` fast-path — anything green before #148 stays green
+            # #148 (s148-D1): the #135–#145 corpus wrote evidence as `<path> (note)`,
+            # `<path> - note`, `a · b · c`, or `prose: <path>` — 16 honest annotated pointers
+            # reported as rot by the split(":") read. Extract every path-shaped token (must
+            # contain a `/`); EACH must exist. A string with NO token is prose wearing an
+            # evidence slot — still red: prose provenance has the `chat #<n>` / `commit ` legal
+            # forms ([[honest-refusal-needs-a-legal-form]]).
+            tokens = [t.rstrip(".") for t in PATHISH_RE.findall(e)]
+            if not tokens:
+                failures.append(f"_governs: ruling {r['id']} evidence `{e}` carries NO pointer "
+                                f"— prose provenance needs the `chat #<n>`/`commit ` legal "
+                                f"form, never a bare sentence")
+                continue
+            for t in tokens:
+                if not os.path.exists(os.path.join(REPO, t)):
+                    failures.append(f"_governs: ruling {r['id']} points at `{t}` (in `{e[:70]}…`) "
+                                    f"which does not exist — a pointer index whose pointers rot "
+                                    f"is worse than none")
 
     # 6. ⚓ THE ANCHOR FORM (#127) — ONE BITE PER CLAUSE. A bundle proved by a single bite is a
     #    bundle that is not proved. Fixtures are REAL repo files on purpose: a tempfile cannot
@@ -324,7 +366,7 @@ def selftest() -> list[str]:
     # 6a. POSITIVE CONTROL FIRST, again. Everything below is failure-only, and a failure-only
     #     suite reads green after a revert that deletes the feature entirely.
     anchored = [(r["id"], e) for r in rulings for e in r.get("evidence", [])
-                if is_anchor_pointer(e)]
+                if is_anchor_pointer(e) and not is_chat_pointer(e)]  # #148: chat form is legal, never an anchor
     if not anchored:
         failures.append("_governs: NO evidence pointer is in anchor form — either the form was "
                         "reverted out of the index or it never landed. The anchor bites below "
@@ -369,6 +411,31 @@ def selftest() -> list[str]:
         if is_anchor_pointer(not_anchor):
             failures.append(f"_governs: `{not_anchor}` was claimed as an anchor pointer — the "
                             f"predicate is too loose and the legacy path check is bypassed")
+    # 6g. CHAT POINTER FORM (#148, s148-D1) — one bite per clause, both directions. The
+    #     positive control exists in the REAL corpus too (four rulings carry `chat #<n>`
+    #     evidence), but a synthetic pair keeps the clause biting if those entries are edited.
+    if not is_chat_pointer("chat #999 (live) - synthetic positive"):
+        failures.append("_governs: `chat #999 …` was NOT recognised as a chat pointer — the "
+                        "#148 legal form has been reverted and honest live-chat provenance "
+                        "will be reported as rot again")
+    for not_chat in ("chxt #135 mutation control", "chat 135 no hash", "chatter #1 prefix-trap"):
+        if is_chat_pointer(not_chat):
+            failures.append(f"_governs: `{not_chat}` was claimed as a chat pointer — the "
+                            f"predicate is too loose; a typo’d path could pass unverified")
+    # 6h. PATH EXTRACTION (#148) — the annotated-pointer read, one bite per clause.
+    if PATHISH_RE.findall("prose with no pointer in it at all"):
+        failures.append("_governs: extraction found a path in pure prose — too loose, a "
+                        "sentence could pass as evidence")
+    if PATHISH_RE.findall("s142-D1's own record (no slash, not a path)"):
+        failures.append("_governs: extraction claimed a slashless token as a path — the `/` "
+                        "requirement has been lost")
+    if PATHISH_RE.findall("radius {console:12 via border-radius/surface} token address"):
+        failures.append("_governs: extraction claimed a token ADDRESS as a path — the "
+                        "dotted-extension requirement has been lost (s135-D1's false rot, #148)")
+    if [t.rstrip(".") for t in PATHISH_RE.findall("see reviews/zzz_no_such_xyzzy.html - note")] \
+            != ["reviews/zzz_no_such_xyzzy.html"]:
+        failures.append("_governs: extraction failed to lift the exact annotated path — the "
+                        "#148 dialect read is broken and rot reports are unreliable")
     return failures
 
 

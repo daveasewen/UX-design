@@ -24,6 +24,7 @@ honesty (their own selftests own that — this harness proves the CONSUMER both 
 the sandbox delete-guard itself (fixtures live on a normal fs, so the mv-aside dance is
 proven mechanically, not against a guard that blocks unlink); step 0.5 reconcile judgment.
 """
+import datetime
 import os
 import re
 import subprocess
@@ -40,8 +41,21 @@ BANNER_LONG_SUMMARY = ("> ## ★ LATEST — 2026-08-02 (Sun **#77**, SONNET sub 
                        + "✅ " + "L" * 130 + ")\n")
 GM_NO_BANNER = "# GOOD-MORNING\n\nNo latest banner here at all.\n"
 
-EXPECT_NONWRAP = "after #77 2026-08-02 — ✅ **SUMMARY GLYPHS**"
+# s130-D3 (#130, Dave: GENERATE, NEVER INHERIT) — a NON-wrap subject is no longer derived from
+# the on-disk ★ LATEST banner at all. It is generated from current-session sources only:
+# the verified SESSION_N witness, today's `date`, and the msgfile's OWN first line:
+#     after #<SESSION_N> <today> — <msgfile line 1>
+# --wrap still derives from the banner (the wrap writes it first) and additionally ASSERTS the
+# banner's #N == SESSION_N. Harness expectations follow the SCRIPT, never the reverse.
+TODAY = datetime.date.today().isoformat()
+MSG_FIRST_LINE = "PLACEHOLDER-HEADLINE-to-be-replaced-by-T3"
+EXPECT_NONWRAP = "after #77 %s — %s" % (TODAY, MSG_FIRST_LINE)
 EXPECT_WRAP = "#77 2026-08-02 — ✅ **SUMMARY GLYPHS**"
+
+# #128 (P5, Dave 2026-08-02: `git add -A` RETIRED) — the script now REFUSES to stage unless the
+# caller NAMES the paths (or passes --all-dirty). Every arm that must land a commit therefore
+# names the fixture's dirty file explicitly.
+STAGE_PATHS = ["work.txt"]
 
 # ⚠ blank separator line: git's %s subject folds ALL lines up to the first blank line into
 # one subject. This comment used to say "git behaviour, not a script defect — real msgfiles
@@ -50,7 +64,7 @@ EXPECT_WRAP = "#77 2026-08-02 — ✅ **SUMMARY GLYPHS**"
 # subject and broke every git-log consumer at the next boot. #124: T3 now INSERTS the blank
 # line (remedy) and a post-commit 200-char subject cap fails loud (consumer) — arms
 # subject_fold_* below pin both.
-MSG_BODY = "PLACEHOLDER-HEADLINE-to-be-replaced-by-T3\n\nbody: fixture arm detail line\n"
+MSG_BODY = MSG_FIRST_LINE + "\n\nbody: fixture arm detail line\n"
 
 RESULTS = []
 
@@ -169,7 +183,7 @@ def arm_happy_path(script_text):
     with tempfile.TemporaryDirectory() as root:
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
         if rc != 0:
             return False, "expected exit 0, got %d; out tail: %s" % (rc, out[-400:])
         if head_hash(root) == before:
@@ -189,11 +203,11 @@ def arm_happy_path(script_text):
 def arm_nonwrap_prefix(script_text):
     with tempfile.TemporaryDirectory() as root:
         env = build_fixture(root, script_text, BANNER_PRIMARY)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
         if rc != 0:
             return False, "exit %d; out tail: %s" % (rc, out[-400:])
         subj = head_subject(root)
-        if not subj.startswith("after #77 2026-08-02 — "):
+        if not subj.startswith("after #77 %s — " % TODAY):
             return False, "non-wrap subject lacks 'after #N date — ' prefix: %r" % subj
         if subj != EXPECT_NONWRAP:
             return False, "subject %r != expected %r" % (subj, EXPECT_NONWRAP)
@@ -203,7 +217,7 @@ def arm_nonwrap_prefix(script_text):
 def arm_wrap_no_prefix(script_text):
     with tempfile.TemporaryDirectory() as root:
         env = build_fixture(root, script_text, BANNER_PRIMARY)
-        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"] + STAGE_PATHS)
         if rc != 0:
             return False, "exit %d; out tail: %s" % (rc, out[-400:])
         subj = head_subject(root)
@@ -215,9 +229,14 @@ def arm_wrap_no_prefix(script_text):
 
 
 def arm_cap_after_prefix(script_text):
+    # INTENT PRESERVED (source moved, not the rule): the 120-char cap is applied AFTER the
+    # "after #N <date> — " prefix is composed, so the prefix survives truncation. s130-D3 made
+    # the long text come from the MSGFILE's first line rather than a long banner summary
+    # (BANNER_LONG_SUMMARY is now only reachable on --wrap), so the arm feeds a long first line.
     with tempfile.TemporaryDirectory() as root:
-        env = build_fixture(root, script_text, BANNER_LONG_SUMMARY)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        write(os.path.join(root, "msg.txt"), "L" * 200 + "\n\nbody: cap arm\n")
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
         if rc != 0:
             return False, "exit %d; out tail: %s" % (rc, out[-400:])
         subj = head_subject(root)
@@ -235,7 +254,7 @@ def arm_warn_split_plain(script_text):
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         env["STUB_CAPTURE_GATE_EXIT"] = "1"
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
         if rc != 0:
             return False, "plain commit BLOCKED by red gate (exit %d) — WARN mode broken" % rc
         if head_hash(root) == before:
@@ -250,7 +269,7 @@ def arm_warn_split_wrap_blocks(script_text):
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         env["STUB_CAPTURE_GATE_EXIT"] = "1"
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"] + STAGE_PATHS)
         if rc == 0:
             return False, "red gate on --wrap did NOT block"
         if "wrap gate RED on a --wrap commit" not in out:
@@ -269,7 +288,7 @@ def arm_spine_consumer_warn_plain(script_text):
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         env["STUB_LIVE_STATE_EXIT"] = "1"
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
         if rc != 0:
             return False, "plain commit BLOCKED by red spine-writer (exit %d) — WARN mode broken" % rc
         if head_hash(root) == before:
@@ -285,7 +304,7 @@ def arm_spine_consumer_wrap_blocks(script_text):
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         env["STUB_LIVE_STATE_EXIT"] = "1"
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"] + STAGE_PATHS)
         if rc == 0:
             return False, "red spine-writer on --wrap did NOT block"
         if "spine-writer selftest RED on a --wrap commit" not in out:
@@ -302,7 +321,7 @@ def arm_gen_chain_refusal(script_text):
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         env["STUB_GEN_CHAIN_EXIT"] = "1"
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
         if rc == 0:
             return False, "script did not refuse on _gen_chain.py --check exit 1"
         if "--check REFUSED" not in out:
@@ -340,13 +359,31 @@ def arm_empty_msgfile(script_text):
 
 
 def arm_no_args(script_text):
+    """CURRENT refusal semantics, two clauses (the arm follows the script, never the reverse):
+
+    (a) ZERO args: s133-D2 added a `--push` dispatch on "$1" ABOVE the usage check, and the
+        script runs under `set -u` — so a bare invocation refuses at that line with an unbound-
+        variable error, never reaching "no msgfile given". A crash IS a refusal here (nothing is
+        staged, HEAD is held) but it is NOT the same clause, so it is asserted separately and by
+        name rather than papered over.
+    (b) FLAGS BUT NO MSGFILE: the reachable path to the usage refusal proper.
+    """
     with tempfile.TemporaryDirectory() as root:
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         rc, out = run_commit(root, env, [])
         if rc == 0:
             return False, "no-args invocation did not refuse"
-        if "no msgfile given" not in out:
-            return False, "usage refusal missing; out: %s" % out[-300:]
+        if "unbound variable" not in out and "no msgfile given" not in out:
+            return False, "no-args refusal is neither the set -u guard nor the usage text: %s" % out[-300:]
+        if not staged_empty(root):
+            return False, "staged despite no-args refusal"
+        rc2, out2 = run_commit(root, env, ["--reconciled"])
+        if rc2 == 0:
+            return False, "--reconciled with no msgfile did not refuse"
+        if "no msgfile given" not in out2:
+            return False, "usage refusal missing; out: %s" % out2[-300:]
+        if not staged_empty(root):
+            return False, "staged despite usage refusal"
         return True, ""
 
 
@@ -368,7 +405,7 @@ def arm_stale_lock_moved(script_text):
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         write(os.path.join(root, ".git", "index.lock"), "")
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
         if rc != 0:
             return False, "pre-existing index.lock blocked the run (exit %d); out tail: %s" % (
                 rc, out[-400:])
@@ -385,28 +422,34 @@ def arm_stale_lock_moved(script_text):
 
 
 def arm_banner_fallback(script_text):
+    # INTENT PRESERVED, PATH MOVED: a heading with no " — " of its own inside the parenthetical
+    # falls back to the first-em-dash reading and prints a NOTE rather than blocking. s130-D3
+    # made banner derivation reachable ONLY on --wrap (a non-wrap subject never reads the
+    # banner), so this arm now drives the wrap path.
     with tempfile.TemporaryDirectory() as root:
         env = build_fixture(root, script_text, BANNER_NO_INNER_SEP)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"] + STAGE_PATHS)
         if rc != 0:
             return False, "fallback heading blocked the commit (exit %d); out tail: %s" % (
                 rc, out[-400:])
         if "T3 NOTE" not in out:
             return False, "fallback note not printed; out tail: %s" % out[-400:]
         subj = head_subject(root)
-        if not subj.startswith("after #77 2026-08-02 — 2026-08-02 ("):
+        if not subj.startswith("#77 2026-08-02 — 2026-08-02 ("):
             return False, "fallback subject shape unexpected: %r" % subj
         return True, ""
 
 
 def arm_missing_banner_fails_loud(script_text):
     with tempfile.TemporaryDirectory() as root:
+        # INTENT PRESERVED, PATH MOVED (s130-D3): a wholly missing ★ LATEST heading is only a
+        # T3 input on --wrap; a non-wrap commit never reads GOOD-MORNING.md at all.
         env = build_fixture(root, script_text, GM_NO_BANNER)
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"] + STAGE_PATHS)
         if rc == 0:
             return False, "wholly missing banner did NOT fail loud"
-        if "T3 headline generation failed" not in out:
+        if "T3 headline generation REFUSED" not in out:
             return False, "loud T3 failure message missing; out tail: %s" % out[-400:]
         if not staged_empty(root):
             return False, "staged despite T3 failure"
@@ -424,7 +467,7 @@ def arm_wrap_undeclared_session_blocks(script_text):
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         del env["SESSION_N"]
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"] + STAGE_PATHS)
         if rc == 0:
             return False, "--wrap with no SESSION_N did NOT block"
         if "the FINAL commit must declare its session" not in out:
@@ -441,7 +484,7 @@ def arm_wrap_session_witness_refusal_blocks(script_text):
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         env["STUB_SESSION_EXIT"] = "1"
         before = head_hash(root)
-        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"])
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"] + STAGE_PATHS)
         if rc == 0:
             return False, "refused session witness did NOT block"
         if "_session.py REFUSED" not in out:
@@ -460,11 +503,12 @@ def arm_subject_fold(script_text):
         env = build_fixture(root, script_text, BANNER_PRIMARY)
         write(os.path.join(root, "msg.txt"),
               "PLACEHOLDER-HEADLINE\n" + '{"date":"x","fails":0,"kind":"rehearse"}\n' * 6)
-        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"])
+        expect = "after #77 %s — PLACEHOLDER-HEADLINE" % TODAY   # s130-D3 generated form
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
         if rc != 0:
             return False, "exit %d; out tail: %s" % (rc, out[-400:])
         subj = head_subject(root)
-        if subj != EXPECT_NONWRAP:
+        if subj != expect:
             return False, "folded/wrong subject (len=%d): %r" % (len(subj), subj[:120])
         rc, body = sh(["git", "log", "-1", "--format=%b"], cwd=root)
         if '"kind":"rehearse"' not in body:
@@ -490,11 +534,14 @@ def mutation_blank_insert_removed(script_text):
 
 
 def mutation_prefix_removed(script_text):
-    target = 'prefix = "" if wrap == "1" else "after "'
+    """#78-D3's `prefix = "" if wrap == "1" else "after "` line was RETIRED by s130-D3, which
+    replaced banner inheritance with a GENERATED non-wrap subject. The control re-points at the
+    current construction line so the mutation still provably bites."""
+    target = 'headline = f"after #{session_n} {today} — {first}"'
     if target not in script_text:
         raise RuntimeError("mutation target not found — _git_commit.sh drifted from the "
-                           "#78-D3 form this harness pins: %r" % target)
-    mutated = script_text.replace(target, 'prefix = ""')
+                           "s130-D3 generated-subject form this harness pins: %r" % target)
+    mutated = script_text.replace(target, 'headline = first')
     ok, detail = arm_nonwrap_prefix(mutated)
     if ok:
         return False, "arm_nonwrap_prefix stayed GREEN against a prefix-stripped script — harness cannot fail"

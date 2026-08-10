@@ -21,7 +21,7 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 - ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
 - ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
 
-## ✓ snippets/Chart-bar.reference.html — PASS
+## ✗ snippets/Chart-bar.reference.html — FAIL
 - ⚠ column — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
 - ⚠ column — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
 - ⚠ column — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
@@ -42,6 +42,9 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 - ⚠ bar — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
 - ⚠ bar — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
 - ⚠ bar — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
+- ✗ **column** — dv-016 [series]: var(--status-watch)=#E0A61F vs surface #FFFFFF = 2.18:1 (<3:1) in light mode.
+- ✗ **column** — dv-016 [series]: var(--status-healthy)=#66CC8D vs surface #FFFFFF = 1.98:1 (<3:1) in light mode.
+- ✗ **column** — dv-016 [series]: var(--status-info)=#78A7E8 vs surface #FFFFFF = 2.47:1 (<3:1) in light mode.
 - ⚠ column — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
 - ⚠ column — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
 - ⚠ column — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.

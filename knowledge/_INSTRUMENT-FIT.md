@@ -61,15 +61,19 @@
 | `knowledge/_validate_advisory.py` | I0-STATIC |
 | `knowledge/_validate_assertions.py` | I0-STATIC |
 | `knowledge/_validate_behaviour.py` | I0-STATIC |
+| `knowledge/_validate_binds_ratchet.py` | I0-STATIC |
+| `knowledge/_validate_binds_resolve.py` | I0-STATIC |
 | `knowledge/_validate_compose.py` | I0-STATIC |
 | `knowledge/_validate_coverage.py` | I0-STATIC |
 | `knowledge/_validate_css_governed.py` | I0-STATIC |
 | `knowledge/_validate_dark_surfaces.py` | I0-STATIC |
 | `knowledge/_validate_dataviz.py` | I0-STATIC |
 | `knowledge/_validate_descender_clip.py` | I0-STATIC |
+| `knowledge/_validate_dtcg.py` | I0-STATIC |
 | `knowledge/_validate_edge_extremity.py` | I0-STATIC |
 | `knowledge/_validate_grid.py` | I0-STATIC |
 | `knowledge/_validate_icons.py` | I0-STATIC |
+| `knowledge/_validate_kg.py` | I0-STATIC |
 | `knowledge/_validate_legacy_leak.py` | I0-STATIC |
 | `knowledge/_validate_no_hardcode.py` | I0-STATIC |
 | `knowledge/_validate_package_delta.py` | I0-STATIC |
@@ -83,6 +87,7 @@
 | `knowledge/_validate_state_contrast.py` | I2-RENDER |
 | `knowledge/_validate_state_snap.py` | I0-STATIC |
 | `knowledge/_validate_theme_provenance.py` | I0-STATIC |
+| `knowledge/_validate_token_forks.py` | I0-STATIC |
 | `knowledge/_validate_token_tiers.py` | I0-STATIC |
 | `knowledge/_validate_type_blast_radius.py` | I0-STATIC |
 | `knowledge/_validate_type_composites.py` | I0-STATIC |

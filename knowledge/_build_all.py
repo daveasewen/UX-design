@@ -759,8 +759,88 @@ def selftest():
         "the live remedy no longer ends in the GENERATED caveat — someone re-typed it (s129-D2)"
     print("  selftest (d): state-contrast caveat is GENERATED — moves with the artefact, "
           "refuses to read a missing artefact as zero, and the live remedy carries it ✓")
+    # (e) #148 chunking: a chunked pass must be contiguous, same-code, same-HEAD — and every
+    # violation refuses LOUD AND NAMED. Drives _validate_chunk directly (pure), with a
+    # mutation control per clause so no clause can silently stop biting.
+    ok = _validate_chunk({"next": 5, "steps_total": len(STEPS), "rc": 7, "head": "H"}, 5, len(STEPS), "H")
+    assert ok == 7, f"accumulated gate rc must carry across chunks, got {ok!r}"
+    assert _validate_chunk(None, 1, len(STEPS), "H") == 0
+    for bad_state, bad_start, bad_head, must_name in [
+        (None, 3, "H", "START at step 1"),
+        ({"next": 5, "steps_total": len(STEPS), "rc": 0, "head": "H"}, 6, "H", "contiguous"),
+        ({"next": 5, "steps_total": len(STEPS), "rc": 0, "head": "H"}, 5, "H2", "tree moved"),
+        ({"next": 5, "steps_total": 1, "rc": 0, "head": "H"}, 5, "H", "code moved"),
+    ]:
+        try:
+            _validate_chunk(bad_state, bad_start, len(STEPS), bad_head)
+        except SystemExit as e:
+            assert must_name in str(e), f"refusal must name its cause ({must_name!r}): {e}"
+        else:
+            raise AssertionError(f"selftest (e): illegal chunk ({must_name}) was accepted — the check cannot fail")
+    try:
+        _parse_range("banana", len(STEPS))
+    except SystemExit:
+        pass
+    else:
+        raise AssertionError("selftest (e): garbage --range accepted")
+    print("  selftest (e): chunk coverage contract — carries rc, refuses gap/HEAD-move/code-move, loud and named ✓")
     print(f"selftest PASS — exact-ID failure routing over {n} steps; unknown never defaulted (#77)")
     return 0
+
+
+# ---- #148: chunked execution (--range / --resume) -----------------------------------------
+# A single-process full pass (~49s) dies at the sandbox ~45s call wall, and ANY partial run
+# strands the tree in the documented mid-build intermediate (docstring lines 5-21). The remedy
+# is a COMPLETE pass COMPOSED of contiguous chunks: state carries coverage + HEAD + accumulated
+# gate rc across calls, and the verdict is REFUSED unless coverage is exactly 1..len(STEPS).
+# A chunked partial can therefore never print green — the asymmetry is the mechanism.
+STATE_PATH = os.environ.get("BUILD_ALL_STATE", "/var/tmp/_build_all_state.json")  # root fs 85% full — /var/tmp by runbook
+
+
+def _git_head():
+    r = subprocess.run(["git", "-C", HERE, "rev-parse", "HEAD"], capture_output=True, text=True)
+    return r.stdout.strip() if r.returncode == 0 else "NO-GIT"
+
+
+def _validate_chunk(state, start, total, head):
+    """Refuses, loud and named, unless this chunk legally extends the pass.
+    Returns the accumulated rc to carry forward. Pure — selftest-drivable."""
+    if state is None:
+        if start != 1:
+            raise SystemExit(f"❌ CHUNK REFUSED: no state at {STATE_PATH} — a pass must START at step 1, not {start}")
+        return 0
+    if state.get("steps_total") != total:
+        raise SystemExit(f"❌ CHUNK REFUSED: state was written for {state.get('steps_total')} steps, STEPS now has {total} — the code moved mid-pass; delete the state and restart from 1")
+    if state.get("head") != head:
+        raise SystemExit(f"❌ CHUNK REFUSED: state HEAD {state.get('head')!r} != repo HEAD {head!r} — the tree moved mid-pass; delete the state and restart from 1")
+    if state.get("next") != start:
+        raise SystemExit(f"❌ CHUNK REFUSED: coverage is contiguous-only — state expects step {state.get('next')}, you asked for {start}")
+    return int(state.get("rc", 0))
+
+
+def _load_state():
+    if not os.path.exists(STATE_PATH):
+        return None
+    import json
+    with open(STATE_PATH, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def _save_state(next_step, total, rc, head):
+    import json
+    with open(STATE_PATH, "w", encoding="utf-8") as fh:
+        json.dump({"next": next_step, "steps_total": total, "rc": rc, "head": head}, fh)
+
+
+def _parse_range(spec, total):
+    try:
+        a, b = spec.split("-", 1)
+        a, b = int(a), int(b)
+    except ValueError:
+        raise SystemExit(f"❌ --range REFUSED: {spec!r} is not A-B")
+    if not (1 <= a <= b <= total):
+        raise SystemExit(f"❌ --range REFUSED: {spec!r} outside 1-{total}")
+    return a, b
 
 
 def main(argv=None):
@@ -768,8 +848,28 @@ def main(argv=None):
     if "--selftest" in argv:
         return selftest()          # short-circuits: the build loop below never runs
     check_routes()                 # fail loud BEFORE step 1 if STEPS and ROUTE_ROWS disagree
-    rc = 0
-    for i, step in enumerate(STEPS, 1):
+    total, head = len(STEPS), _git_head()
+    start, end = 1, total
+    chunked = False
+    if "--range" in argv:
+        chunked = True
+        start, end = _parse_range(argv[argv.index("--range") + 1], total)
+    elif "--resume" in argv:
+        chunked = True
+        st = _load_state()
+        if st is None:
+            raise SystemExit(f"❌ --resume REFUSED: no state at {STATE_PATH} — start with --range 1-N")
+        start = st["next"]
+        try:
+            n = int(argv[argv.index("--resume") + 1])
+        except (IndexError, ValueError):
+            n = 15
+        end = min(start + n - 1, total)
+    if chunked:
+        rc = _validate_chunk(_load_state(), start, total, head)
+    else:
+        rc = 0
+    for i, step in enumerate(STEPS[start - 1:end], start):
         label, rel = step[0], step[1]
         extra_args = list(step[2]) if len(step) > 2 else []
         path = os.path.join(HERE, rel)
@@ -787,7 +887,21 @@ def main(argv=None):
                 print(f"\n⚠ advisory step '{label}' reported findings (exit {r.returncode}) — non-gating")
             else:  # ABORT
                 print(f"\n❌ step '{label}' failed (exit {r.returncode}) — aborting")
+                if chunked:
+                    _save_state(i, total, rc, head)  # retry resumes AT the failed step
+                    print(f"⚠ chunk state saved — resume retries step {i}")
                 return r.returncode
+    if chunked and end < total:
+        _save_state(end + 1, total, rc, head)
+        print(f"\n⚠ PARTIAL PASS — steps {start}-{end} of {total} ran; the tree is in the documented "
+              f"mid-build intermediate. NO VERDICT until coverage reaches {total}. Next: --resume")
+        return 0  # a clean partial exits 0; gate failures are CARRIED in state, not dropped
+    if chunked:
+        try:
+            os.remove(STATE_PATH)
+        except OSError:
+            pass
+        print(f"\n(composed pass: coverage 1-{total} contiguous at HEAD {head[:9]}, gate rc carried across chunks)")
     if rc == 0:
         print("\n✅ all generators ran and the integrity + contrast gates passed.")
     else:

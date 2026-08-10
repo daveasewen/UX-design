@@ -2,7 +2,7 @@
 
 > Brand red, RAG status, interactive-state, and border tokens tested at **3:1** (WCAG 1.4.11) against the worst-case (lightest) dark surface resolved from the store — page default `#1A1A1A` + raised island `#1D1D1D`. `on-light` tokens excluded (light-only). Border tokens included since 2026-07-14 (1.4.11 explicitly covers UI-component boundaries). `*/disabled` tokens excluded — WCAG 1.4.11 itself exempts inactive components.
 
-**Result:** 39 pass · 0 allowed exception(s) · **0 gating failure(s)** · 5 skipped (light-only).
+**Result:** 42 pass · 0 allowed exception(s) · **0 gating failure(s)** · 5 skipped (light-only).
 
 ## Skipped — light-mode-only tokens
 
@@ -39,16 +39,19 @@
 | `primary/border/default` | `#DB0011` | `#1D1D1D` | 3.23:1 | ✅ OK |
 | `primary/border/hover` | `#D61412` | `#1D1D1D` | 3.19:1 | ✅ OK |
 | `primary/border/pressed` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
-| `rag/error` | `#CC4333` | `#1D1D1D` | 3.55:1 | ✅ OK |
-| `rag/error-glyph` | `#CC4333` | `#1D1D1D` | 3.55:1 | ✅ OK |
-| `rag/information` | `#2674DC` | `#1D1D1D` | 3.7:1 | ✅ OK |
-| `rag/information-glyph` | `#2674DC` | `#1D1D1D` | 3.7:1 | ✅ OK |
+| `rag/error` | `#F6604C` | `#1D1D1D` | 5.38:1 | ✅ OK |
+| `rag/error-glyph` | `#F6604C` | `#1D1D1D` | 5.38:1 | ✅ OK |
+| `rag/error-ink` | `#F6604C` | `#1D1D1D` | 5.38:1 | ✅ OK |
+| `rag/information` | `#78A7E8` | `#1D1D1D` | 6.82:1 | ✅ OK |
+| `rag/information-glyph` | `#78A7E8` | `#1D1D1D` | 6.82:1 | ✅ OK |
 | `rag/neutral` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
-| `rag/success` | `#4A9568` | `#1D1D1D` | 4.65:1 | ✅ OK |
-| `rag/success-glyph` | `#4A9568` | `#1D1D1D` | 4.65:1 | ✅ OK |
-| `rag/text/on-dark` | `#FFFFFF` | `#B92F1E` | 6.02:1 | ✅ OK |
-| `rag/warning` | `#C58900` | `#1D1D1D` | 5.58:1 | ✅ OK |
-| `rag/warning-glyph` | `#C58900` | `#1D1D1D` | 5.58:1 | ✅ OK |
+| `rag/success` | `#66CC8D` | `#1D1D1D` | 8.5:1 | ✅ OK |
+| `rag/success-glyph` | `#66CC8D` | `#1D1D1D` | 8.5:1 | ✅ OK |
+| `rag/success-ink` | `#66CC8D` | `#1D1D1D` | 8.5:1 | ✅ OK |
+| `rag/text/on-dark` | `#FFFFFF` | `#F6604C` | 3.14:1 | ✅ OK |
+| `rag/text/on-information` | `#1A1A1A` | `#F6604C` | 5.55:1 | ✅ OK |
+| `rag/warning` | `#E0A61F` | `#1D1D1D` | 7.74:1 | ✅ OK |
+| `rag/warning-glyph` | `#E0A61F` | `#1D1D1D` | 7.74:1 | ✅ OK |
 | `secondary/border/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `secondary/border/hover` | `#F0F0F0` | `#1D1D1D` | 14.79:1 | ✅ OK |
 | `secondary/border/pressed` | `#E1E1E1` | `#1D1D1D` | 12.89:1 | ✅ OK |
