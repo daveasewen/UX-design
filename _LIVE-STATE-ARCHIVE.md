@@ -1,5 +1,26 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-11 #153 (2d) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-11 (Tue **#150**, FABLE conductor, Dave live — enact `s149-D1`, residual ① of #149 — ✅ **CANON + TOKENS ENACTED (PARTIAL)** · ✅ **CONTRAST GATE 20→18 ❌** · ✅ **`_governs.py` FALL-THROUGH FIXED AT CLASS** · ⚠ **HOVER-WASH + MARKS/BORDER NOT ENACTED** · ⛔ **QUOTA UNPOLLED**)
+
+**Landed (evidence per claim):**
+
+- ✅ **`s149-D1` PARTIAL ENACT.** `canon.css` banner ink → `#1A1A1A` mono (legacy/console/SC compensated byte-identical); `.cn-tabs` badge seat minted + `.ovcount` re-pointed (`Tabs.reference.html` mirrors it); `semantic-colour.json` `badge.background`/`tab.badge.background` → `#F6604C` mode-invariant, correcting a silent alias-vs-`$value` drift dated to `s122-D2`.
+- ✅ **State-contrast gate re-driven fresh, 75/75 snippets, 7 chunks:** 18 ❌ / 32 🟡 / 14 ⬛ (was 20 ❌ at #149). 18 = Banner 8 (hover-wash architecture gap) + Selection-controls 10 (blocked on open questions c/d).
+- ✅ **`_governs.py` second-path defect fixed at class** — shared `evidence_form()` ladder, selftest clause 6i drives `render()` on the real corpus; chat-form UNRESOLVED 15→0.
+- ✅ **Reds 30·36·45·51·82 fresh-measured**, first real counts. 36+51 remediated by regen (rc 0 both, verified post-heal after a caught check-before-remedy slip). `Badge.reference.html` hand-fixed `#B92F1E`→`#F6604C`. Snippet gate 31→29 fails. 30, 45-residual(13), 82 remain, blocked on open rulings.
+- ⚠ **New open items:** 16 pre-existing rag-on-neutral fails (unrelated) · generators write by default, no dry-run · mono hover-wash scoping gap (no `data-apollo-theme` selector in snippets) · token-drift class (alias vs literal `$value`).
+- ⛔ **`s149-D1` status: ENACTED WITH NAMED RESIDUALS** — hover-wash and marks/border (c/d) did not enact, declared not overstated.
+- ⚙ **GAUGE — relayed, not independently measured by this wrap sub.**
+- ⛔ **QUOTA UNPOLLED** — #147's poll (session 10% · weekly 46% · Fable 58%) stands as a floor only.
+- ⛔ **THIS WRAP RULED NOTHING.** Dave's 6-item decision queue (P1/P2/P3, glyph/bare-role, marks-reach c, box-border d, hover-wash scoping, 16 rag-on-neutral class) untouched — all his.
+
+
+
+**Rolled `Last refreshed` chain tail (2d, same boundary as the delta):**
+
+*Last refreshed: 2026-08-11 (Tue from `date` — **#150 wrap**: FABLE conductor, Dave live, ONE ARC — enact `s149-D1`, residual ① of #149. ✅ **canon + tokens enacted, PARTIAL:** `canon.css` banner ink → `#1A1A1A` mono (legacy/console/SC compensated byte-identical); `.cn-tabs` badge seat minted + `.ovcount` re-pointed (mirrored in `Tabs.reference.html`); `semantic-colour.json` badge tokens `#B92F1E`/`#CC4333` → `#F6604C` mode-invariant, correcting a silent alias-vs-`$value` drift dated to `s122-D2`. ✅ **state-contrast gate re-driven fresh, 75/75 snippets, 7 chunks: 18 ❌ / 32 🟡 / 14 ⬛** (was 20 ❌ at #149) — the 18 = Banner 8 (hover-wash architecture gap, no snippet selector exists) + Selection-controls 10 (blocked on open questions c/d). ✅ **`_governs.py` second-path defect fixed at class** — shared `evidence_form()` ladder, selftest clause 6i, chat-form UNRESOLVED 15→0. ✅ **reds 30·36·45·51·82 fresh-measured** (first real counts); 36+51 remediated by regen (verified post-heal after a caught check-before-remedy slip); `Badge.reference.html` hand-fixed `#B92F1E`→`#F6604C`; snippet gate 31→29 fails; 30, 45-residual(13), 82 remain, blocked on open rulings. ⚠ **new open items:** 16 pre-existing rag-on-neutral fails (unrelated) · generators write by default no dry-run · mono hover-wash scoping gap · the token-drift class itself. ⛔ **`s149-D1` status: ENACTED WITH NAMED RESIDUALS** — hover-wash and marks/border (c/d) did not enact. ⚙ gauge relayed, not independently re-measured by this wrap sub. ⛔ **QUOTA UNPOLLED** — #147's poll (session 10% · weekly 46% · Fable 58%) stands as a floor only. ⛔ **THIS WRAP RULED NOTHING** — Dave's 6-item decision queue (P1/P2/P3 dark red-text policy, glyph/bare-role, marks-reach c, box-border d, hover-wash scoping, 16 rag-on-neutral class) untouched, all his. See `GOOD-MORNING.md` ★ LATEST #150 and `notes/_GAUGE-LOG.md` #150 stratum for the full record; no new `_DECISION-HISTORY/` dossier this wrap — the arc is the enactment of an already-ruled decision, not a new reasoning arc.)*
+
 ## Rolled 2026-08-11 #152 (2d) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-11 (Tue **#149**, FABLE conductor + 5 OPUS subs incl. this wrap sub, Dave live, ONE ARC — triage the 8 gate reds, residual ① of #148 — ✅ **REDS 105/106 GREEN: THE "IDENTICAL FAIL" WAS A SHARED BANNER, NOT AN ECHOING SELFTEST** · ✅ **RED 63 RE-MEASURED FRESH — 20 ❌, WORSE THAN THE STALE RECORD** · ✅ **`s149-D1` RULED + RECORDED: MONO ERROR JOINS THE INK CAMP** · ⛔ **RULED, NOT ENACTED** · ⚠ **CONDUCTOR DEFECT OWNED — A SETTLED RULING RE-DERIVED** · ⚠ **NEW DEFECT: `_governs.py` LISTER FALL-THROUGH** · ⚙ **WRAP UNDER THE LINE** · ⛔ **QUOTA UNPOLLED**)
 

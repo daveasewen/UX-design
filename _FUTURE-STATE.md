@@ -983,3 +983,53 @@ that. **Nothing below is ruled, scoped or prioritised — homing is not adoption
 
 *⚠ Homed, not adopted: three sessions' worth of probes proved these had no standing home, not that
 they are worth doing. Priority remains Dave's alone.*
+
+## ⬛ COPIED UP AT #153's 2d EXIT CHECK — two #150 items that had NO standing home
+
+provenance: session #153 · 2026-08-11
+status: floated
+
+*Homed by ADDITION so the **#150 delta could roll** at 2d. Probed FIRST, and the probe is the reason
+this section exists: `no dry-run` · `write by default` · `token-drift` · `alias-vs-value` each
+returned hits in **exactly one place** — `_LIVE-STATE.md:88`/`:92`, i.e. the #150 delta that was
+about to roll out of live state, plus the `Last refreshed` chain tail that rolls at the SAME
+boundary. Both would have left live state in this wrap, silently. That is the 07-24 loss the EXIT
+CHECK exists to stop (6 of 7 deferrals lost; only the one with a standing home survived).*
+
+*⚠ Their three siblings on the same #150 line DID have homes and are NOT copied here: the **16
+rag-on-neutral pairs** were consumed by `s151-D2` (moved to the rendering gate, `_LIVE-STATE.md`
+#151 delta, which stays live); the **mono hover-wash scoping gap** is residual ③ (Banner-8
+hover-wash architecture gap); the **box border** question is residual ④. [[gap-in-record-vs-gap-in-evidence]]*
+
+- **GENERATORS WRITE BY DEFAULT — THERE IS NO `--dry-run`** (declared #150, unfixed). A regeneration
+  that heals a gate red also rewrites its target with no way to see the diff first; #150's own
+  check-before-remedy slip was caught by hand, not by a flag. Feeds: Craft (generators).
+  `status: idea` `[born #153 · guards: nothing yet · until: Dave scopes it or retires it]`
+- **THE TOKEN-DRIFT CLASS ITSELF** (declared #150, unfixed). #150 found `semantic-colour.json`
+  badge tokens where the **alias and the `$value` disagreed**, a silent drift dated back to
+  `s122-D2`. One instance was repaired; **nothing re-checks the class**, so a second alias/value
+  split would read exactly as green as the first did. Feeds: Craft (tokens).
+  `status: idea` `[born #153 · guards: nothing yet · until: Dave scopes it or retires it]`
+
+*⚠ Homed, not adopted, and NOT ruled: this wrap ruled nothing. Priority is Dave's alone.*
+
+## ⬛ FLOATED #153 — `s153-D1` GREEN / SUCCESS-INK SCOPE: REFLECTED BACK, **NOT CONFIRMED**
+
+provenance: session #153 · 2026-08-11
+status: floated
+
+⛔ **THIS IS NOT A RULING AND MUST NOT BE READ AS ONE.** Dave picked *"mirror the two-red law"* from
+an option set and the conductor **reflected it back**; he has **not confirmed**. It is recorded here,
+in the floated register, and **deliberately NOT in `knowledge/_rulings.json`** — an entry there is a
+ruling by definition, and promotion is Dave's alone [[feedback-dont-launder-a-premise-into-a-ruling]].
+
+- **THE SHAPE he indicated:** a **background-keyed fork** for green/success ink, mirroring the
+  structure of `s151-D1`'s two-red law (one value on white, another everywhere else).
+- ⛔ **THE TWO VALUES ARE NOT RULED AND MUST NOT BE INVENTED.** `s151-D1` fixed
+  `#DA1A00`-on-white / `#F6604C`-else for RED; **no green pair has been named by anyone.** Deriving
+  one from the red law would be exactly the laundering this entry exists to prevent.
+- **What it needs:** Dave's confirmation of the shape, then the two values from him.
+  `[born #153 · guards: this entry + the #153 residual ④ · until: Dave confirms or withdraws]`
+
+*Prior state of this question: PUT TO DAVE #151 (unanswered) · CARRIED #152 (unanswered) · REFLECTED
+#153 (unconfirmed). Three sessions open — the age is REPORTED, never acted on.*

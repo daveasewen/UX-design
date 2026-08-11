@@ -318,7 +318,38 @@ MEASURE = r"""
       // GATED roundel leg — held to the small-text 4.5 threshold, as a real TEXT failure (never
       // waived). The shape-on-surface leg above (kind:'icon', 3.0) stays WARN-only, as it always
       // has — this file already never failed the gate on it, so s134-D1 needed no change there.
-      if(fg){
+      // ⛔ s152-D1 (Dave, #152) — THE SHAPE FILL MUST ACTUALLY BE PAINTED BEFORE IT CAN BE A
+      // BACKDROP. An `<svg>` element paints NO shape of its own: its `fill` is an INHERITED value
+      // that descendant shapes may or may not wear. With no explicit fill it computes to the
+      // UA-default BLACK — a colour nothing on screen is wearing — and #152 measured that phantom
+      // as a 1.662 mark "failure" on the chip star. Light "passed" at 21:1 against the SAME
+      // phantom, which is why it never read as an instrument fault [[attribute-the-diff]].
+      // The mark leg therefore runs ONLY when some descendant SHAPE actually paints that fill.
+      // Otherwise the comparison is SKIPPED — and the skip is DECLARED, never silent: a gate that
+      // quietly stops reporting is indistinguishable from a gate that was fixed
+      // [[enactment-register-adr-0016]].
+      // CLASS, not instance: any <svg> with no explicit fill whose inner path paints currentColor.
+      // ⚠ The presence test compares COMPUTED STRINGS, never parse(): probing every descendant
+      // through parse() would mint refusals this change was not ruled to create, and the delta
+      // would stop being attributable. Both sides come from getComputedStyle, so both are
+      // normalised the same way and the comparison is exact.
+      const shapeFillStr=(cs.fill&&cs.fill!=='none')?cs.fill:null;
+      let bodyPaints=false;
+      if(shapeFillStr){
+        for(const sh of n.querySelectorAll('path,circle,rect,ellipse,line,polyline,polygon,use,text,tspan')){
+          if(sh.closest('defs,clipPath,mask,symbol,marker,pattern')) continue;   // not rendered in place
+          const shs=getComputedStyle(sh);
+          if(shs.visibility==='hidden'||shs.display==='none'||parseFloat(shs.opacity)===0) continue;
+          if(shs.fill===shapeFillStr){bodyPaints=true;break;}
+        }
+      }
+      if(fg&&!bodyPaints){
+        out.push({kind:'markskip',where:desc(n),fill:shapeFillStr,
+          reason:(shapeFillStr
+            ?'no descendant shape paints the fill this svg declares, so it is not a surface any mark sits on'
+            :'the svg has no painted fill at all (fill is absent or none), so there is no shape for a mark to sit on')});
+      }
+      if(fg&&bodyPaints){
         for(const inner of n.querySelectorAll('*')){
           const ics=getComputedStyle(inner);
           const ifc=(ics.fill&&ics.fill!=='none')?ics.fill:null;
@@ -474,6 +505,11 @@ HOLE_PREFIX = "- ⬛ UNMEASURABLE (declared hole)"
 # quiet is a clause that cannot be trusted to have run [[instrument-without-a-consumer]].
 CARRIER_FAIL_PREFIX = "- ❌ CARRIER"
 CARRIER_ERR_PREFIX = "- ⛔ StateContrastCarrierError"
+# s152-D1 (Dave, #152) — a mark comparison that was SKIPPED is written into the artefact under its
+# own prefix. Deliberately NOT one of the counted prefixes above: a skip is neither a failure nor a
+# hole, and folding it into either would move a count Dave ratified. It is an advisory receipt, and
+# its whole job is that a reader can see the leg did not run [[enactment-register-adr-0016]].
+MARKSKIP_PREFIX = "- 🟡 MARK SKIP (declared, s152-D1)"
 SEAT_PREFIX = "- 🟡 SEAT (declared, advisory)"
 CARRIERS_RE = re.compile(r"^\*\*(\d+) CARRIER failure\(s\) — declarations that carry meaning by "
                          r"colour alone, plus declarations this gate could not READ \(s151-D1\)\.\*\*$",
@@ -599,6 +635,7 @@ def render_report(res):
             seen.add(k); uniq.append((theme,state,fl))
         tf=[u for u in uniq if u[2]["kind"]=="text"]; iw=[u for u in uniq if u[2]["kind"]=="icon"]
         rf=[u for u in uniq if u[2]["kind"]=="refusal"]; fb=_fallback_holes(uniq)
+        ms=[u for u in uniq if u[2]["kind"]=="markskip"]      # s152-D1 — declared, never silent
         # s151-D1 — classify the seat declarations HERE, in Python, from the browser's facts.
         cfail=[]; cseat=[]
         for theme,state,fl in uniq:
@@ -614,6 +651,7 @@ def render_report(res):
         # a refusal is UNMEASURED, so this snippet may NOT be reported as clean
         if rf: bits.append(f"⛔ {len(rf)} PARSE REFUSAL(s) — UNMEASURED")
         if iw: bits.append(f"{len(iw)} icon warn(s)")
+        if ms: bits.append(f"🟡 {len(ms)} MARK SKIP(s)")
         # ✅ s129-D3: a NAMED HOLE, not a footnote. The snippet may not read as fully measured.
         if fb: bits.append(f"⬛ {len(fb)} UNMEASURABLE box(es)")
         out.append(f"## {name} — {' · '.join(bits) if bits else '✅ clean'}")
@@ -626,6 +664,12 @@ def render_report(res):
         out.extend(cfail)
         for theme,state,fl in rf: out.append(f"- ⛔ StateContrastParseError [{theme}/{state}] cannot parse {fl['prop']}: `{fl['value']}` on {fl['where']}")
         for theme,state,fl in iw: out.append(f"- 🟡 icon [{theme}/{state}] {fl['ratio']}:1 (need 3.0){' (decorative)' if fl.get('ariaHidden') else ''}")
+        # s152-D1 — a SKIPPED mark comparison is WRITTEN DOWN. It is not a measured pass; the
+        # reader is told which shape was skipped and why, so the skip can be argued with.
+        for theme,state,fl in ms:
+            out.append(MARKSKIP_PREFIX + f" [{theme}/{state}] {fl['where']} — {fl['reason']} "
+                       f"(declared fill: `{fl['fill'] or 'none'}`). The mark leg did NOT run on "
+                       "this shape, and this line is the receipt.")
         for w, why in fb:
             out.append(HOLE_PREFIX + f" — {w} — {why}. The paint stack under it cannot be "
                        "observed, so the pre-2026-08-07 ancestor-only walk ran instead: any "
@@ -781,12 +825,45 @@ FIXTURES = {
                     'style="display:inline-flex;align-items:center;gap:6px;background:#FFC107;color:#FFD54F">'
                     '<svg viewBox="0 0 16 16" width="16" height="16" style="fill:#111111">'
                     '<path d="M2 8h12"/></svg>Pending</span></div>',
+    # ---- s152-D1 fixtures: the MARK leg must not measure a phantom -----------------------------
+    # THE CLASS #152 MEASURED, in miniature: an <svg> with NO fill attribute whose inner path
+    # paints with currentColor. The svg's computed fill is the UA-default BLACK — a colour nothing
+    # on screen wears — and the old leg compared #333 against it and reported 1.662 as a failure.
+    "mark_phantom_fill_is_skipped":
+        _FIX_HEAD + '<div class="seg"><span id="target" style="display:inline-flex;'
+                    'background:#ffffff;color:#333333">'
+                    '<svg viewBox="0 0 16 16" width="16" height="16">'
+                    '<path fill="currentColor" d="M8 1l2 5h5l-4 3 2 5-5-3-5 3 2-5-4-3h5z"/>'
+                    '</svg></span></div>',
+    # THE DISCRIMINATING ARM'S fixture — a REAL black roundel. Its shape fill computes to exactly
+    # the same rgb(0,0,0) as the phantom above, but a descendant ACTUALLY WEARS IT. The mark leg
+    # must still run and still fail here. Without this fixture, "skip the phantom" and "skip
+    # everything black" are indistinguishable, and so are "fix it" and "delete it".
+    "mark_real_black_roundel_still_fails":
+        _FIX_HEAD + '<div class="seg"><span id="target" style="display:inline-flex;background:#ffffff">'
+                    '<svg viewBox="0 0 16 16" width="16" height="16" fill="#000000">'
+                    '<circle cx="8" cy="8" r="8"/>'
+                    '<path fill="#333333" d="M4 7h8v2H4z"/></svg></span></div>',
+    # A shape inside <defs> is NOT rendered in place, so it cannot make a fill painted. Without the
+    # non-rendered-container clause this fixture would look identical to a real roundel.
+    "mark_body_only_in_defs_is_skipped":
+        _FIX_HEAD + '<div class="seg"><span id="target" style="display:inline-flex;background:#ffffff">'
+                    '<svg viewBox="0 0 16 16" width="16" height="16" fill="#000000">'
+                    '<defs><circle cx="8" cy="8" r="8"/></defs>'
+                    '<path fill="#333333" d="M4 7h8v2H4z"/></svg></span></div>',
 }
 
-def _measure_fixtures():
-    """Load each fixture and return {name: MEASURE records for #target}."""
+def _measure_fixtures(script=MEASURE, only=None):
+    """Load each fixture and return {name: MEASURE records for #target}.
+
+    `script` exists SOLELY so the s152-D1 mutation control can drive a MEASURE whose guard has been
+    cut out and demand the defect COME BACK; `only` keeps that second browser launch down to the
+    single fixture that needs it. Both default to the real run, so every existing call is unchanged
+    and the delta stays attributable [[attribute-the-diff]].
+    """
     tmp = tempfile.mkdtemp(prefix="state-contrast-selftest-")
     got = {}
+    items = [(k, v) for k, v in FIXTURES.items() if only is None or k in only]
     with sync_playwright() as p:
         try:
             b = p.chromium.launch(args=["--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--force-color-profile=srgb"])
@@ -794,12 +871,12 @@ def _measure_fixtures():
             raise StateContrastSelftestError(      # without one — FAILURE, never a silent skip
                 f"chromium would not launch ({e!r}); this gate cannot be proven without a browser")
         try:
-            for name, html in FIXTURES.items():
+            for name, html in items:
                 path = os.path.join(tmp, name + ".html")
                 open(path, "w", encoding="utf-8").write(html)
                 pg = b.new_page(viewport={"width":400,"height":200})
                 pg.goto("file://" + path)
-                got[name] = pg.evaluate(MEASURE, pg.query_selector("#target"))
+                got[name] = pg.evaluate(script, pg.query_selector("#target"))
                 pg.close()
         finally:
             b.close()
@@ -1033,6 +1110,49 @@ def selftest():
           _seat_records(ud) == [] and len(ud_txt) == 1
           and ud_txt[0]["ratio"] == lf_txt[0]["ratio"] and ud_txt[0]["seat"] is None,
           f"an UNDECLARED seat must behave exactly as before — nothing passes by silence: {ud}")
+
+    # ---- s152-D1 (Dave, #152) — THE MARK LEG MUST NOT MEASURE A PHANTOM ------------------------
+    # Driven end to end in the browser, because a mutation test proves the CLAUSE and not the
+    # FEATURE [[mutation-tests-the-clause-not-the-feature]].
+    def _marks(recs): return [r for r in recs if r["kind"] == "text"
+                              and str(r.get("text", "")).startswith("[MARK] ")]
+    def _skips(recs): return [r for r in recs if r["kind"] == "markskip"]
+    ph = got["mark_phantom_fill_is_skipped"]
+    check("arm_browser_phantom_shape_fill_is_skipped_and_declared",
+          len(_skips(ph)) == 1 and _marks(ph) == []
+          and "no painted fill at all" in _skips(ph)[0]["reason"],
+          "an <svg> with no explicit fill paints nothing, so its UA-default black is not a surface "
+          "any mark sits on: the leg must SKIP and SAY SO, never report 1.66 against a phantom "
+          f"(#152 measured exactly this on the chip star): {ph}")
+    # THE DISCRIMINATING ARM. Same computed rgb(0,0,0) as the phantom, but genuinely worn by a
+    # descendant. If this ever goes quiet, the "fix" has become a deletion.
+    rb = got["mark_real_black_roundel_still_fails"]
+    check("arm_browser_real_black_roundel_still_fails",
+          _skips(rb) == [] and len(_marks(rb)) == 1 and _marks(rb)[0]["ratio"] < 4.5,
+          "a REAL black roundel wearing its own fill must STILL fail on a #333 mark — the clause "
+          f"keys on PAINTED, never on the colour black: {rb}")
+    df = got["mark_body_only_in_defs_is_skipped"]
+    check("arm_browser_body_inside_defs_does_not_count_as_painted",
+          len(_skips(df)) == 1 and _marks(df) == [],
+          f"a shape inside <defs> is not rendered in place, so it cannot make a fill painted: {df}")
+
+    # MUTATION CONTROL — cut the guard out of MEASURE itself and the phantom must COME BACK. An arm
+    # that only asserts silence cannot tell a fix from a deletion, and a fixture that never
+    # exercised the defect proves nothing at all. This re-runs the SAME fixture through a mutated
+    # MEASURE and demands the 1.66 reappear.
+    _mut = MEASURE.replace("if(fg&&bodyPaints){", "if(fg){", 1)
+    check("arm_mutation_target_is_present_in_MEASURE", _mut != MEASURE,
+          "the s152-D1 guard `if(fg&&bodyPaints){` was NOT found in MEASURE, so the mutation "
+          "control below would silently prove nothing. An unmatched mutation target is a FAILURE, "
+          "never a skip [[unmatched-grep-is-not-an-absence]]")
+    if _mut != MEASURE:
+        mres = _measure_fixtures(script=_mut, only=["mark_phantom_fill_is_skipped"])
+        mm = _marks(mres["mark_phantom_fill_is_skipped"])
+        check("arm_removing_the_skip_brings_the_phantom_back",
+              len(mm) == 1 and abs(mm[0]["ratio"] - 1.66) < 0.02,
+              "with the s152-D1 guard removed, the phantom 1.66 MUST reappear — if it does not, "
+              "this fixture never exercised the defect and every arm above it is an assertion, "
+              f"not a measurement: {mres}")
 
     # (v) THE SWEEP — the clause that was MISSING until the vocabulary was driven on a real
     # snippet. A declaration on a PASSIVE element (Status-indicator's `.stat` is a plain div) is
