@@ -128,6 +128,37 @@ def is_anchor_pointer(pointer: str) -> bool:
     return bool(sep) and bool(anchor.strip()) and bool(path.strip()) and " " not in path.strip()
 
 
+def is_commit_pointer(pointer: str) -> bool:
+    """`commit <sha> ...` — verified against git, not the filesystem (#119)."""
+    return pointer.startswith("commit ")
+
+
+def evidence_form(pointer: str) -> str:
+    """★ THE ONE PLACE an evidence string is classified. Both readers MUST call this.
+
+    ⛔ THE DEFECT THIS EXISTS TO KILL, reproduced #150. `s148-D1` gave live-chat provenance a
+    legal form and it was enacted in the SELFTEST ONLY: `render()` — the default lister, the
+    path a human actually reads — kept asking `is_anchor_pointer()` first and reported all
+    sixteen `chat #<n>` pointers as "whose FILE `chat` does not exist". The selftest was GREEN
+    the whole time, so nothing could ever have caught it: two code paths, one ruling, one of
+    them never learned it ([[conflated-fix-guarantees-recurrence]]). Re-stating the ladder in a
+    second place would guarantee a third divergence, so the ladder lives HERE and only here.
+
+    Order is load-bearing and is the #148 order: `commit ` and `chat #<n>` are claimed BEFORE
+    the anchor predicate, or the word `chat` is read as a file named `chat`.
+
+    Returns one of: `commit` · `chat` · `anchor` · `path` (the legacy `<path>` / `<path>:<int>`
+    / annotated-dialect forms, resolved against the filesystem by the caller).
+    """
+    if is_commit_pointer(pointer):
+        return "commit"
+    if is_chat_pointer(pointer):
+        return "chat"
+    if is_anchor_pointer(pointer):
+        return "anchor"
+    return "path"
+
+
 def resolve_anchor(pointer: str) -> tuple[int | None, str]:
     """Resolve `<path>#<literal>` to the line it sits on TODAY. Returns `(lineno, error)`.
 
@@ -231,7 +262,10 @@ def render(hits: list[dict], because: str) -> str:
             # ★ THE INTEGER IS DERIVED HERE, at read time, and stored nowhere (#127). A reader
             #   gets a line number that is true NOW, or an explicit refusal — never a stale one
             #   presented in the same confident voice as a checked one.
-            if is_anchor_pointer(e):
+            # ★ #150: classified by the SHARED `evidence_form()`, never by a second copy of the
+            #   ladder. `chat #<n>` / `commit <sha>` render VERBATIM — they are legal and
+            #   unverifiable-by-design, not rot.
+            if evidence_form(e) == "anchor":
                 path, _, anchor = e.partition(ANCHOR_SEP)
                 ln, err = resolve_anchor(e)
                 e = (f"{path.strip()}:{ln} — {anchor.strip()}" if ln
@@ -313,7 +347,8 @@ def selftest() -> list[str]:
             # #119: `commit <sha>` is a LEGAL pointer form — verified against git, not the
             # filesystem. Before this, an honest commit pointer had no legal form here and
             # real hashes were reported as rot ([[honest-refusal-needs-a-legal-form]] class).
-            if e.startswith("commit "):
+            form = evidence_form(e)  # #150: the SHARED classifier — see `evidence_form()`
+            if form == "commit":
                 sha = e.split()[1]
                 ok = subprocess.run(["git", "cat-file", "-e", f"{sha}^{{commit}}"],
                                     cwd=REPO, capture_output=True).returncode == 0
@@ -328,12 +363,12 @@ def selftest() -> list[str]:
             # ([[honest-refusal-needs-a-legal-form]]): without it the anchor predicate claimed
             # the word `chat` as a path and four rulings' honest provenance was reported as
             # rot — found by the #148 full `_build_all.py` drive, a dead-runner casualty.
-            if is_chat_pointer(e):
+            if form == "chat":
                 continue
             # ⚓ #127: the ANCHOR form is checked by CONTENT, not by an integer. See
             # `resolve_anchor` for the defect it kills; the legacy `<path>` and `<path>:<int>`
             # forms fall through to the existence check below, unchanged.
-            if is_anchor_pointer(e):
+            if form == "anchor":
                 _ln, err = resolve_anchor(e)
                 if err:
                     failures.append(f"_governs: ruling {r['id']} {err}")
@@ -366,7 +401,7 @@ def selftest() -> list[str]:
     # 6a. POSITIVE CONTROL FIRST, again. Everything below is failure-only, and a failure-only
     #     suite reads green after a revert that deletes the feature entirely.
     anchored = [(r["id"], e) for r in rulings for e in r.get("evidence", [])
-                if is_anchor_pointer(e) and not is_chat_pointer(e)]  # #148: chat form is legal, never an anchor
+                if evidence_form(e) == "anchor"]  # #148 chat/#119 commit are legal, never anchors
     if not anchored:
         failures.append("_governs: NO evidence pointer is in anchor form — either the form was "
                         "reverted out of the index or it never landed. The anchor bites below "
@@ -436,6 +471,26 @@ def selftest() -> list[str]:
             != ["reviews/zzz_no_such_xyzzy.html"]:
         failures.append("_governs: extraction failed to lift the exact annotated path — the "
                         "#148 dialect read is broken and rot reports are unreliable")
+
+    # 6i. ⛔ THE SECOND READER (#150). Everything above tests the SELFTEST's ladder. `render()`
+    #     is the path a human reads, and for two sessions it carried its own copy of that ladder
+    #     with the #148 clause missing — sixteen legal `chat #<n>` pointers printed as rot while
+    #     this suite read green. So the bite DRIVES THE FEATURE: render the real corpus and
+    #     assert no legal form is reported UNRESOLVED. A predicate test cannot see this; only
+    #     running the other reader can ([[mutation-tests-the-clause-not-the-feature]]).
+    for rid, e in [(r["id"], e) for r in rulings for e in r.get("evidence", [])
+                   if evidence_form(e) in ("chat", "commit")]:
+        out = render([{"id": rid, "ruled": "x", "date": "x", "by": "x", "says": "x",
+                       "evidence": [e]}], "selftest 6i")
+        if "UNRESOLVED" in out:
+            failures.append(f"_governs: render() reported the LEGAL {evidence_form(e)} pointer "
+                            f"`{e[:60]}…` ({rid}) as UNRESOLVED — the lister is not using "
+                            f"`evidence_form()` and s148-D1 is enacted in one reader only")
+    if "UNRESOLVED" not in render([{"id": "zzz", "ruled": "x", "date": "x", "by": "x",
+                                    "says": "x", "evidence":
+                                    [f"knowledge/_no_such_{'xyzzy'}.py#anchor"]}], "selftest 6i"):
+        failures.append("_governs: render() did NOT report a genuinely rotten anchor as "
+                        "UNRESOLVED — 6i's positive bite above cannot fail, so it is asserting")
     return failures
 
 

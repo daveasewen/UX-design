@@ -51,6 +51,10 @@
     --fs:16px; --lh:24px; --weight:500;
     --tab-h:48px; --tab-pad-x:20px; --tab-gap:4px; --indicator-h:3px; --track-h:1px;
     --move:220ms cubic-bezier(.4,0,.2,1); --fade:140ms ease;
+    /* s149-D1 (Dave, #149): mono tab badge, MODE-INVARIANT — fill rides mono RAG error (s122-D2,
+       #F6604C), numeral is the ink pair (#1A1A1A), NOT --tabs-active/--text-reverse (the badge's
+       own seat, previously unread). */
+    --badge-bg:#F6604C; --badge-ink:#1A1A1A;
   }
   [data-theme="light"]{
     --tabs-active:#1A1A1A; --tabs-background:#FFFFFF; --tabs-standard-border:#E1E1E1;
@@ -98,8 +102,8 @@
   .overflow__trigger:hover{background:var(--tertiary-hover); opacity:1;}
   .overflow__trigger:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
   .ovcount{display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px;
-    padding:0 4px; background:var(--tabs-active); color:var(--text-reverse); font-size:12px; font-weight:500;
-    border-radius:999px;}                                      /* round badge */
+    padding:0 4px; background:var(--badge-bg); color:var(--badge-ink); font-size:12px; font-weight:500;
+    border-radius:999px;}                                      /* round badge — s149-D1 re-point off --tabs-active/--text-reverse onto its own badge seat */
   .overflow__menu{position:absolute; right:0; top:calc(100% + 6px); min-width:220px;
     background:var(--tabs-overflow-background); border:1px solid var(--tabs-overflow-border); border-radius:var(--border-radius-surface);
     box-shadow:0 8px 28px rgba(0,0,0,.28); padding:4px; margin:0; list-style:none; z-index:20;
