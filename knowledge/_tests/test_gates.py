@@ -22,7 +22,9 @@ Exits non-zero on any test failure.
 NOT covered here (documented, deliberate):
   * _validate_state_contrast.py / _validate_screen.py --render — require a
     browser engine; run them via the render path where chromium is available.
-    Their un-testedness in CI is a known gap, not a green light.
+    Since #155 the CI `render` job (.github/workflows/gates.yml) runs
+    `_validate_state_contrast.py --selftest` BLOCKING and the full sweep
+    ADVISORY — they are no longer untested in CI.
 """
 import json
 import os
