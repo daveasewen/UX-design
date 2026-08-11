@@ -1118,9 +1118,15 @@ def selftest():
                               and str(r.get("text", "")).startswith("[MARK] ")]
     def _skips(recs): return [r for r in recs if r["kind"] == "markskip"]
     ph = got["mark_phantom_fill_is_skipped"]
+    # ⚠ NAME THE BRANCH. This arm first asserted the "no painted fill at all" reason and BIT on the
+    # first real run (#153) — an <svg> with no fill attribute computes to rgb(0,0,0), which is NOT
+    # `none`, so `shapeFillStr` is truthy and the DECLARED-BUT-UNWORN branch is the one that fires.
+    # The bite was the arm's expectation, not the mechanism; the assertion below now names the
+    # phantom colour explicitly so it cannot pass against the other branch by accident.
     check("arm_browser_phantom_shape_fill_is_skipped_and_declared",
           len(_skips(ph)) == 1 and _marks(ph) == []
-          and "no painted fill at all" in _skips(ph)[0]["reason"],
+          and _skips(ph)[0]["fill"] == "rgb(0, 0, 0)"
+          and "no descendant shape paints" in _skips(ph)[0]["reason"],
           "an <svg> with no explicit fill paints nothing, so its UA-default black is not a surface "
           "any mark sits on: the leg must SKIP and SAY SO, never report 1.66 against a phantom "
           f"(#152 measured exactly this on the chip star): {ph}")

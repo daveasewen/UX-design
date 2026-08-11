@@ -175,3 +175,129 @@ confirmed runner.
 
 **The honest summary of this session:** it produced a fix it could not test, and said so in every
 place a reader will look.
+
+---
+
+## AMENDMENT #153-A — post-wrap, after commit `c5b406f`
+
+*Addition only. Everything above stands unaltered as the record of what #153 believed and why*
+[[header-wins-over-audit]]. *This addendum corrects it; it does not replace it. Written by a separate
+OPUS amendment sub, which re-verified first-hand every claim it inscribes.*
+
+**The honest summary was wrong in its most important word.** #153 did not produce a fix it *could
+not* test. It produced a fix it *did not* test, because it stopped at the first obstacle it hit and
+called that obstacle the environment.
+
+### 1 · The environmental fence was false
+
+The wrap inscribed *"chromium would not launch … `libXdamage.so.1: cannot open shared object file`
+… no root"* as an environmental fact. It is not one, and the repo already said so:
+
+- `knowledge/_RUNBOOK-render-verify.md:181` stages exactly those libs with **`apt-get download`**.
+- `:186` says, in as many words: *"(`apt-get download` needs no root and no `apt-get update`.)"*
+- The lib farm **was already on disk the whole time** —
+  `/var/tmp/chromelibs/root/usr/lib/aarch64-linux-gnu/libXdamage.so.1`, in a directory dated
+  **Aug 8 15:21**, three days before #153.
+- `:36` names the exact error committed: *"(`PLAYWRIGHT_BROWSERS_PATH` alone) was NOT sufficient this
+  time; the full working env, all four."*
+
+The conductor set `PLAYWRIGHT_BROWSERS_PATH`, hit the lib error, tried `apt-get install` (root,
+refused), and declared a fence — **without opening the runbook that answers it.** Dave said
+*"I think theres a runbook for chromium and playwright"* and the fence dissolved in one call.
+
+*(Precision, verified here: the brief relayed the farm as `/var/tmp/chromelibs`. At that level there
+are only `.deb` files; the extracted `.so`s sit one `root/usr/lib/aarch64-linux-gnu` deeper — which
+is the exact `LD_LIBRARY_PATH` the runbook prints at `:44`. A correction to the path, not to the
+finding.)*
+
+### 2 · This is the third instance of one class, and Dave caught it twice with the same sentence
+
+- **#123** declared a render gap on *"chromium is TLS-blocked in-sandbox"*.
+- **#124** carried that forward **as fact**, and Dave stopped it with *"and there is a runbook for
+  chromium and playwright"* — his words are inscribed at that runbook's **`:131`**, and the original
+  ask at **`:5`**.
+- **#153** did it again, and Dave caught it again, with almost the same sentence.
+
+Each refusal was sincere, loud and named. Each named the **first** obstacle rather than the
+**binding** one. **This recurrence is the finding of #153-A — more than the fix is**
+[[feedback-read-the-runbook]] [[refusal-names-the-first-obstacle]].
+
+### 3 · What the runbook's env actually produced
+
+With `PYTHONPATH=/var/tmp/pysite` · `PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers` ·
+`LD_LIBRARY_PATH=/var/tmp/chromelibs/root/usr/lib/aarch64-linux-gnu` · `TMPDIR=/var/tmp` ·
+`PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1`:
+
+- `python3 _validate_state_contrast.py --selftest` → **rc=0, `"selftest OK — 57 arms"`, zero bites**
+  (`grep -c '^  ok '` = 57). **Re-driven first-hand by this sub, not relayed.**
+- All five `s152-D1` arms green, **including `arm_removing_the_skip_brings_the_phantom_back`** — the
+  mutation control that cuts `if(fg&&bodyPaints){` out of MEASURE and demands the 1.662 return
+  [[mutation-tests-the-clause-not-the-feature]].
+- `V.run(['Selection-controls'])` driven live: **MARK text failures 0** (was 2) · other text
+  failures **0**. The two star reds are **measured clear**, not merely declared known-false.
+
+⇒ **`s152-D1` is ENACTED *and* VERIFIED.**
+
+### 4 · An arm bit on its first real run, and the bite was the arm's
+
+`arm_browser_phantom_shape_fill_is_skipped_and_declared` asserted the reason string *"no painted fill
+at all"*. The branch that actually fires is the **declared-but-unworn** one, because an `<svg>` with
+no `fill` attribute computes to **`rgb(0, 0, 0)`** — which is **not `none`** — so `shapeFillStr` is
+truthy. The remedy asserts the phantom colour explicitly plus *"no descendant shape paints"*, so the
+arm can no longer pass against the other branch by accident.
+
+**The mechanism was right and the expectation was wrong.** An arm that bites and names its own
+assertion is the arm working [[a-crash-is-not-a-fail]].
+
+### 5 · A unit correction, caught in this pass
+
+The figure relayed as *"28 declared MARK SKIPs"* is the **raw** record count. Re-measured:
+`Selection-controls` yields **42 raw records → 28 raw `markskip`s → 4 UNIQUE lines** after
+`render_report`'s own de-duplication key. **The report prints 4.** Both numbers are true of different
+things, and naming which is which is the whole discipline [[measure-dont-convert-units]].
+
+**An observation that rules nothing:** 28 raw (4 unique) skips on *one* snippet says the MARK leg was
+only ever measuring anything real on **genuine roundels** — its former red count **overstated its
+reach**. `s152-D1`'s open item (*whether any other of the 75 snippets hits the class*) stays open and
+unmeasured.
+
+### 6 · The blocker that replaces the false one — and it is measured
+
+`knowledge/_STATE-CONTRAST-AUDIT.md` was **not** corrupted and **not** rewritten: verified at
+**2026-08-11 15:38:59 / 2,364 bytes / 21 lines**, byte-identical before and after every drive
+(`run()` measures, `main()` writes, `:1206`). It is therefore **known-stale** — it still prints the
+two reds that no longer reproduce.
+
+Regenerating it is blocked, but narrowly and for a different reason than #153 gave:
+
+- A full sweep **exceeds the ~178 s tool-call cap** (the conductor's run was killed at 177,998 ms).
+- ⚠ **The brief said "38 snippets" and that is wrong.** Measured:
+  `knowledge/snippets/*.reference.html` = **75** — the same figure `s152-D1`'s own open item already
+  uses.
+- Timed here on a 3-snippet drive: **49.5 s ⇒ 16.5 s/snippet ⇒ ~1,237 s (~20.6 min) for 75** —
+  roughly **7× the cap**, not marginally over.
+
+⇒ The audit needs **chunking in the shape of `_build_all.py --range/--resume`**
+[[sandbox-call-boundary-kills]]. **The browser is fine; the call boundary is the limit** — and unlike
+the fence it replaces, this one is measured.
+
+### 7 · Correcting #153's own residual ①
+
+It said the arms have *"no runner in the sandbox OR in CI"*. **They do run in the sandbox.** What
+remains true is that **CI still excludes them**: `.github/workflows/gates.yml:20`–`:22`, re-read
+first-hand — *"The render-dependent checks … are NOT run here — they need a browser engine."*
+
+⬛ **A proposal for #154, and explicitly not a decision:** a CI render job is now cheap, because
+`gates.yml` runs on `ubuntu-latest`, which **has root**, where `playwright install --with-deps
+chromium` works with none of the lib-farm choreography. **Dave's call, not this sub's.**
+
+### 8 · What this amendment did not do
+
+**It ruled nothing.** `s153-D1` (green/success-ink) stays **FLOATED, awaiting Dave's confirmation** —
+the shape only; **the two values are not ruled and were not invented**, and it stays in
+`_FUTURE-STATE.md` and deliberately out of `knowledge/_rulings.json`. The icon-leg phantom residual
+stays **declared and unfixed**. All **22** of Dave's open G-items and every ratified stratum are
+untouched: **add, never trim.** **Not pushed.**
+
+**The honest summary of the amendment:** the session's own verdict on itself was the last thing that
+needed checking, and it did not survive the check.
