@@ -280,7 +280,7 @@
   --divider-border-subsectioninset: #F0F0F0;
   --form-background-default: #FFFFFF00;
   --form-background-hover: var(--surface-raised-hover);
-  --form-background-pressed: #808080;
+  --form-background-pressed: #CECECE;
   --form-border-default: #808080;
   --form-border-disabled: #E1E1E1;
   --form-border-active: #000000;
@@ -2574,6 +2574,7 @@
   --label: var(--text-default);
   --label-disabled: var(--text-disabled);
   --error: var(--rag-error);
+  --error-atom: var(--rag-error-ink);
   --page: var(--background-default);
   --chip-hover: var(--form-background-hover);
   --chip-pressed: var(--form-background-pressed);
@@ -2629,8 +2630,9 @@
 .cn-selection-controls input:disabled + label .box, .cn-selection-controls input:disabled + label .radio, .cn-selection-controls input:disabled + label .switch{border-color:var(--ctrl-border-disabled);}
 .cn-selection-controls input:disabled + label .switch .thumb{background:var(--ctrl-border-disabled);}
 /* ---- error state ---- */
-.cn-selection-controls .field.is-error label{color:var(--error);}
-.cn-selection-controls .field.is-error .box{border-color:var(--error);}
+/* s151-D1 clause 3: the ATOM takes the error red, the label keeps default ink.
+   --error-atom is background-keyed (rag/error-ink: #DA1A00 on white, #F6604C elsewhere). */
+.cn-selection-controls .field.is-error .box{border-color:var(--error-atom);}
 .cn-selection-controls .err-msg{display:flex; align-items:center; gap:8px; color:var(--error); font:400 14px/1.3 var(--font); margin:-6px 0 16px 36px;}
 /* ---- chips (square, brand angular) ---- */
 .cn-selection-controls .chips{display:flex; flex-wrap:wrap; gap:8px;}
@@ -2641,7 +2643,8 @@
 .cn-selection-controls .chip svg{width:16px; height:16px; flex:none;}
 .cn-selection-controls .chip .star{fill:none; stroke:currentColor; stroke-width:1.6;}
 .cn-selection-controls .chip:hover{background:var(--chip-hover);}
-.cn-selection-controls .chip:active{background:var(--chip-pressed); color:var(--reverse); border-color:var(--chip-pressed);}
+/* s151-D2 pick 1: pressed is tint-symmetric, NO label reversal — labels never leave default ink */
+.cn-selection-controls .chip:active{background:var(--chip-pressed); border-color:var(--chip-pressed);}
 .cn-selection-controls .chip:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-selection-controls .chip[aria-pressed="true"], .cn-selection-controls .chip[aria-checked="true"]{background:var(--checked); color:var(--glyph); border-color:var(--checked);}
 .cn-selection-controls .chip[aria-pressed="true"] .star, .cn-selection-controls .chip[aria-checked="true"] .star{fill:currentColor;}
@@ -9737,11 +9740,13 @@
 }
 [data-apollo-theme="legacy"] .cn-selection-controls{
   --error: #A8000B;
+  --error-atom: var(--error);  /* s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value */
   --label: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-selection-controls,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-selection-controls{
   --error: #A8000B;
+  --error-atom: var(--error);  /* s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value */
   --label: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-skeleton-loader{
@@ -10458,11 +10463,13 @@
 [data-apollo-theme="console"] .cn-selection-controls{
   --border-radius-control: 4px;
   --error: #B92F1E;
+  --error-atom: var(--error);  /* s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value */
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-selection-controls,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-selection-controls{
   --border-radius-control: 4px;
   --error: #B92F1E;
+  --error-atom: var(--error);  /* s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value */
 }
 [data-apollo-theme="console"] .cn-skeleton-loader{
   --border-radius-indicator: 4px;
@@ -12203,6 +12210,7 @@
   --ctrl-border-active: #000000;
   --ctrl-border-disabled: #CDC8C6;
   --error: #B92F1E;
+  --error-atom: var(--error);  /* s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value */
   --label: #13110E;
   --label-disabled: #CDC8C6;
   --page: #F7F6F4;
@@ -12216,6 +12224,7 @@
   --ctrl-border-active: #F7F6F4;
   --ctrl-border-disabled: #413934;
   --error: #B92F1E;
+  --error-atom: var(--error);  /* s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value */
   --label: #F7F6F4;
   --label-disabled: #524842;
   --page: #1A1A1A;

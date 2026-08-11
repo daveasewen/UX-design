@@ -108,12 +108,12 @@
     <div class="stat-card" role="group" aria-label="Net cash flow, March">
       <p class="lbl16 t-cm-caption">Net cash flow</p>
       <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
-      <span class="delta up"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
     </div>
     <div class="stat-card" role="group" aria-label="Card spend, March">
       <p class="lbl16 t-cm-caption">Card spend</p>
       <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
-      <span class="delta down"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
     </div>
     <div class="stat-card" role="group" aria-label="Pending payments">
       <p class="lbl16 t-cm-caption">Pending payments</p>
@@ -127,12 +127,12 @@
     <div class="stat-card" role="group" aria-label="Active payees">
       <p class="lbl16 t-cm-caption">Active payees</p>
       <span class="amt t-cm-figure-3"><span>34</span></span>
-      <span class="delta up"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
     </div>
     <div class="stat-card" role="group" aria-label="Failed payments">
       <p class="lbl16 t-cm-caption">Failed payments</p>
       <span class="amt t-cm-figure-3"><span>3</span></span>
-      <span class="delta down"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
     </div>
     <div class="stat-card" role="group" aria-label="Approvals waiting">
       <p class="lbl16 t-cm-caption">Approvals waiting</p>
@@ -141,6 +141,10 @@
     </div>
   </div>
 
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
   <script type="application/json" id="token-manifest">
   {
     "component": "Stat card",
@@ -149,7 +153,6 @@
               "--border-radius-surface": "border-radius/surface" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
-      { "fg": "rag/success", "bg": "tertiary/background/default", "context": "ui" },
       { "fg": "rag/error",   "bg": "tertiary/background/default", "context": "ui" }
     ],
     "icons": { "arrow-up": "arrows-and-chevrons/arrow-up.svg", "arrow-down": "arrows-and-chevrons/arrow-down.svg" },

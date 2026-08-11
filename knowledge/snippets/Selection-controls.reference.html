@@ -70,8 +70,9 @@
     --checked:#000000;            /* secondary/background/default */
     --glyph:#FFFFFF;              /* text/on-inverse */
     --label:#1A1A1A; --label-disabled:#E1E1E1; --error:#F6604C; --focus:#305A85; --page:#FFFFFF;
+    --error-atom:#DA1A00;         /* rag/error-ink — background-keyed, white surface (s151-D1) */
     --chip-hover:#F0F0F0;         /* form/background/hover */
-    --chip-pressed:#808080;       /* form/background/pressed */
+    --chip-pressed:#CECECE;       /* form/background/pressed (s151-D2: black 18.43% over white) */
     --reverse:#FFFFFF;            /* text/reverse */
     /* shape — semantic radius tier (ADR-0010 flex slots). Checkbox + chips bind the CONTROL role;
        radio (50%) + switch (999px) are round by design and stay literal. */
@@ -82,7 +83,8 @@
     --checked:#FFFFFF;            /* secondary/background/default (inverts) */
     --glyph:#333333;              /* text/on-inverse (inverts) */
     --label:#FFFFFF; --label-disabled:#808080; --error:#F6604C; --focus:#4587A7; --page:#1A1A1A;
-    --chip-hover:#232323; --chip-pressed:#484848; --reverse:#FFFFFF;
+    --error-atom:#F6604C;         /* rag/error-ink — non-white surface (s151-D1) */
+    --chip-hover:#232323; --chip-pressed:#484848; --reverse:#FFFFFF;  /* pressed = white 18.43% over #1A1A1A (s151-D2) */
     --border-radius-control:0;
   }
   *{box-sizing:border-box;}
@@ -135,7 +137,8 @@
   input:disabled + label .switch .thumb{background:var(--ctrl-border-disabled);}
 
   /* ---- error state ---- */
-  .field.is-error label{color:var(--error);} .field.is-error .box{border-color:var(--error);}
+  /* s151-D1 clause 3: ATOM only takes the error red; labels keep default ink */
+  .field.is-error .box{border-color:var(--error-atom);}
   .err-msg{display:flex; align-items:center; gap:8px; color:var(--error); font:400 14px/1.3 var(--font); margin:-6px 0 16px 36px;}
 
   /* ---- chips (square, brand angular) ---- */
@@ -147,7 +150,8 @@
   .chip svg{width:16px; height:16px; flex:none;}
   .chip .star{fill:none; stroke:currentColor; stroke-width:1.6;}
   .chip:hover{background:var(--chip-hover);}
-  .chip:active{background:var(--chip-pressed); color:var(--reverse); border-color:var(--chip-pressed);}
+  /* s151-D2 pick 1: no label reversal on pressed */
+  .chip:active{background:var(--chip-pressed); border-color:var(--chip-pressed);}
   .chip:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .chip[aria-pressed="true"],.chip[aria-checked="true"]{background:var(--checked); color:var(--glyph); border-color:var(--checked);}
   .chip[aria-pressed="true"] .star,.chip[aria-checked="true"] .star{fill:currentColor;}

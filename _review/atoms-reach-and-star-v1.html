@@ -1,0 +1,83 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Error-atom reach + star glyph — isolation</title>
+<style>
+  body{margin:0;font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;background:#EDEDED;color:#1A1A1A;padding:2rem}
+  h1{font-size:16px}h2{font-size:12px;margin:0 0 10px}.rowlab{font-size:11px;opacity:.6;margin:12px 0 4px}
+  .panes{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+  .pane{padding:24px;flex:1;min-width:360px}
+  .pane.light{background:#FFF;color:#1A1A1A;--page:#FFF;--ink:#1A1A1A;--red:#DA1A00;--brd:#808080}
+  .pane.dark{background:#1A1A1A;color:#FFF;--page:#1A1A1A;--ink:#FFFFFF;--red:#F6604C;--brd:#808080}
+  .f{display:flex;align-items:center;gap:12px;margin:10px 0;font:500 15px/1.3 inherit}
+  .box{width:22px;height:22px;border:2px solid var(--a);display:flex;align-items:center;justify-content:center;flex:none}
+  .box svg{width:14px;height:14px}.box path,.box rect{stroke:var(--a);stroke-width:2.4;fill:none}
+  .dotw{width:22px;height:22px;border:2px solid var(--a);border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--a)}
+  .sw{width:40px;height:22px;border-radius:999px;border:2px solid var(--a);position:relative;flex:none}
+  .sw i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--a)}
+  .msg{font-size:12px;color:var(--red);margin:2px 0 14px 34px}
+  .ctrl{background:#fff;border:1px solid #ccc;padding:14px;margin:14px 0;max-width:900px}
+  .ctrl label{display:block;margin:6px 0;font-size:13px;cursor:pointer}
+  .ctrl .nt{display:block;font-size:11px;opacity:.65;margin:1px 0 0 22px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}.ratio{font-family:ui-monospace,monospace;font-size:11px;margin-top:8px;white-space:pre-line}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:4px 12px;font:500 14px/1.3 inherit;border:1px solid var(--cb,#808080);background:var(--cbg,transparent);color:var(--cink,inherit)}
+  .chip svg{width:16px;height:16px}.chip .star{fill:var(--sf,none);stroke:currentColor;stroke-width:1.6}
+</style>
+<h1>1 · Does the error red reach the radio dot, switch, and indeterminate dash?</h1>
+<div class="ctrl"><b>Decision control — atom treatment in error state</b> (labels always default ink)
+  <label><input type="radio" name="reach" value="RED" checked> <b>RED atoms</b> — checkbox border+mark, radio ring+dot, switch ring+thumb, dash all take the background-keyed red (#DA1A00 white / #F6604C dark)<span class="nt">"marks" reaches everything — one rule, no exceptions.</span></label>
+  <label><input type="radio" name="reach" value="MIX"> <b>Checkbox only</b> — radio/switch/dash stay default ink; only the checkbox atoms + the message wear red<span class="nt">Narrow reading: red marks = check/cross vocabulary only.</span></label>
+</div>
+<div class="panes">
+  <div class="pane light"><h2>light — error state</h2><div class="atoms"></div></div>
+  <div class="pane dark"><h2>dark — error state</h2><div class="atoms"></div></div>
+</div>
+
+<h1>2 · Star glyph — the two remaining ❌ (dark hover/pressed 1.66:1)</h1>
+<p style="max-width:70ch;font-size:13px">The chip star is <code>stroke:currentColor; fill:none</code>. Unselected on dark, the stroke is white — fine at rest. The 1.66 arises when the chip is <b>selected</b> (<code>aria-pressed</code>: bg goes <code>--checked #FFF</code>, ink <code>--glyph #333</code>) and then hovered/pressed: the hover/pressed background rules repaint the surface dark while the selected ink stays <code>#333</code> — dark-on-dark.</p>
+<div class="ctrl"><b>Decision control — selected+hover/pressed treatment (dark)</b>
+  <label><input type="radio" name="star" value="A" checked> <b>A</b> — current: selected ink #333 kept over hover #232323 / pressed #484848 <span class="ratio" id="ra"></span><span class="nt">The measured fail as shipped.</span></label>
+  <label><input type="radio" name="star" value="B"> <b>B</b> — selected chip IGNORES hover/pressed washes (selected bg #FFF wins all states)<span class="nt">State precedence fix, no new colour: selection is the stronger signal; motion (scale) still signals hover.</span></label>
+  <label><input type="radio" name="star" value="C"> <b>C</b> — selected+hover/pressed flips ink to default (#FFF) with the wash<span class="nt">Keeps the washes; the star and label follow the ink rule.</span></label>
+</div>
+<div class="panes">
+  <div class="pane dark"><h2>dark — selected chip across states</h2>
+    <div class="rowlab">rest · hover · pressed (selected)</div><div class="chips" id="starrow"></div>
+    <div class="ratio" id="starratio"></div>
+  </div>
+</div>
+<script>
+function lum(h){const c=[1,3,5].map(i=>parseInt(h.substr(i,2),16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+function R(f,b){const[a,c]=[lum(f),lum(b)].sort((x,y)=>y-x);return((a+.05)/(c+.05)).toFixed(2)}
+const svgTick='<svg viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 3"/></svg>';
+const svgDash='<svg viewBox="0 0 14 14"><path d="M2.5 7h9"/></svg>';
+function atoms(){
+ const v=document.querySelector('input[name=reach]:checked').value;
+ document.querySelectorAll('.pane .atoms').forEach(el=>{
+  const dark=el.closest('.pane').classList.contains('dark');
+  const red=dark?'#F6604C':'#DA1A00', ink=dark?'#FFFFFF':'#1A1A1A';
+  const a=(kind)=> (v==='RED'||kind==='box')?red:ink;
+  el.innerHTML=`
+   <div class="f"><span class="box" style="--a:${a('box')}">${svgTick}</span>Accept terms &amp; conditions</div>
+   <div class="msg">This field is required</div>
+   <div class="f"><span class="box" style="--a:${a('box')}">${svgDash}</span>Partially selected group</div>
+   <div class="f"><span class="dotw" style="--a:${a('r')}"><span class="dot" style="background:${a('r')}"></span></span>Savings account</div>
+   <div class="f"><span class="sw" style="--a:${a('s')}"><i style="background:${a('s')}"></i></span>Paperless statements</div>`;
+ });
+}
+function star(){
+ const v=document.querySelector('input[name=star]:checked').value;
+ const rest={bg:'#FFFFFF',ink:'#333333'};
+ let hov,prs;
+ if(v==='A'){hov={bg:'#232323',ink:'#333333'};prs={bg:'#484848',ink:'#333333'};}
+ if(v==='B'){hov=rest;prs=rest;}
+ if(v==='C'){hov={bg:'#232323',ink:'#FFFFFF'};prs={bg:'#484848',ink:'#FFFFFF'};}
+ const mk=(s,l)=>`<span class="chip" style="--cbg:${s.bg};--cink:${s.ink};--sf:${s.ink};--cb:${s.bg}"><svg viewBox="0 0 16 16"><path class="star" d="M8 1.5l2 4.1 4.5.6-3.2 3.2.7 4.5L8 11.8 4 13.9l.7-4.5L1.5 6.2 6 5.6z"/></svg>${l}</span>`;
+ document.getElementById('starrow').innerHTML=mk(rest,'Starred')+mk(hov,'Starred (hover)')+mk(prs,'Starred (pressed)');
+ document.getElementById('starratio').textContent=
+  `hover: ${hov.ink} on ${hov.bg} = ${R(hov.ink,hov.bg)}:1  ${R(hov.ink,hov.bg)>=4.5?'PASS':'FAIL'}\npressed: ${prs.ink} on ${prs.bg} = ${R(prs.ink,prs.bg)}:1  ${R(prs.ink,prs.bg)>=4.5?'PASS':'FAIL'}`;
+}
+document.querySelectorAll('input[name=reach]').forEach(i=>i.onchange=atoms);
+document.querySelectorAll('input[name=star]').forEach(i=>i.onchange=star);
+atoms();star();
+</script>

@@ -20,8 +20,8 @@
 ## Amount-display.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Amount-input.reference.html — ❌ 1 FAIL
-- ❌ Amount-input.reference.html: CONTRAST rag/success on background/default (light) = 1.98:1 < 3.0:1
+## Amount-input.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Avatar.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -45,10 +45,8 @@
 ## Cards.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Chart-bar.reference.html — ❌ 3 FAIL
-- ❌ Chart-bar.reference.html: CONTRAST rag/warning on background/default (light) = 2.18:1 < 3.0:1
-- ❌ Chart-bar.reference.html: CONTRAST rag/success on background/default (light) = 1.98:1 < 3.0:1
-- ❌ Chart-bar.reference.html: CONTRAST rag/information on background/default (light) = 2.47:1 < 3.0:1
+## Chart-bar.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Chart-boxplot.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -89,9 +87,9 @@
 ## Chart-stacked-area.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Confirmation.reference.html — ❌ 1 FAIL
-- ❌ Confirmation.reference.html: CONTRAST rag/success on background/default (light) = 1.98:1 < 3.0:1
+## Confirmation.reference.html — ✅ PASS
 - 🟡 Confirmation.reference.html: ALLOWED drift --success (dark) = #FFFFFF (token rag/success = #66CC8D) — RAG ROUNDEL POLICY (Dave 2026-07-02 eve): dark roundels are WHITE with a BLACK mark — icon shape + label carry meaning. The glyph's tick is a page-cutout, so white shape + black page = 21:1 (rag/success #00847F with a black cutout was 2.77, failing the >=4.5 mark leg). Light keeps rag/success.
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Countdown-timer.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -120,12 +118,11 @@
 ## Eyebrow.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## File-upload.reference.html — ❌ 1 FAIL
-- ❌ File-upload.reference.html: CONTRAST rag/success on background/default (light) = 1.98:1 < 3.0:1
+## File-upload.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Form-layout.reference.html — ❌ 2 FAIL
+## Form-layout.reference.html — ❌ 1 FAIL
 - ❌ Form-layout.reference.html: CONTRAST rag/error on rag/error-tint (light) = 2.4:1 < 3.0:1
-- ❌ Form-layout.reference.html: CONTRAST rag/success on background/default (light) = 1.98:1 < 3.0:1
 
 ## Headers.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -136,8 +133,8 @@
 ## Icon-button.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Input-fields.reference.html — ❌ 1 FAIL
-- ❌ Input-fields.reference.html: CONTRAST rag/success on background/default (light) = 1.98:1 < 3.0:1
+## Input-fields.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Links.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -186,14 +183,14 @@
 ## Quick-actions.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Reorder.reference.html — ❌ 1 FAIL
-- ❌ Reorder.reference.html: CONTRAST rag/success on background/default (light) = 1.98:1 < 3.0:1
+## Reorder.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Search-field.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Secure-entry.reference.html — ❌ 1 FAIL
-- ❌ Secure-entry.reference.html: CONTRAST rag/success on background/default (light) = 1.98:1 < 3.0:1
+## Secure-entry.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Segmented-control.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -207,12 +204,11 @@
 ## Slider.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Stat-card.reference.html — ❌ 1 FAIL
-- ❌ Stat-card.reference.html: CONTRAST rag/success on tertiary/background/default (light) = 1.98:1 < 3.0:1
+## Stat-card.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Status-indicator.reference.html — ❌ 2 FAIL
-- ❌ Status-indicator.reference.html: CONTRAST rag/success on background/default (light) = 1.98:1 < 3.0:1
-- ❌ Status-indicator.reference.html: CONTRAST rag/information on background/default (light) = 2.47:1 < 3.0:1
+## Status-indicator.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Stepper.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -238,10 +234,8 @@
 ## Time-picker.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Toast.reference.html — ❌ 3 FAIL
-- ❌ Toast.reference.html: CONTRAST rag/warning on tertiary/background/default (light) = 2.18:1 < 3.0:1
-- ❌ Toast.reference.html: CONTRAST rag/success on tertiary/background/default (light) = 1.98:1 < 3.0:1
-- ❌ Toast.reference.html: CONTRAST rag/information on tertiary/background/default (light) = 2.47:1 < 3.0:1
+## Toast.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Tooltip.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.

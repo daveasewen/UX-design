@@ -78,10 +78,10 @@
   <!-- ===== A. Inline dot + label (label carries meaning — 1.4.1) ===== -->
   <div class="wrap">
     <h2 class="spec-h">Inline — dot + label</h2>
-    <div class="stat ok"><span class="dot" aria-hidden="true"></span><span>Approved</span></div>
-    <div class="stat warn"><span class="dot" aria-hidden="true"></span><span>Pending review</span></div>
+    <div class="stat ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span>Approved</span></div>
+    <div class="stat warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span>Pending review</span></div>
     <div class="stat err"><span class="dot" aria-hidden="true"></span><span>Declined</span></div>
-    <div class="stat inf"><span class="dot" aria-hidden="true"></span><span>In progress</span></div>
+    <div class="stat inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span>In progress</span></div>
     <div class="stat neu"><span class="dot" aria-hidden="true"></span><span>Cancelled</span></div>
     <div class="stat ok is-disabled"><span class="dot" aria-hidden="true"></span><span>Approved (disabled)</span></div>
   </div>
@@ -107,6 +107,10 @@
     </div>
   </div>
 
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
   <script type="application/json" id="token-manifest">
   {
     "component": "Status indicator",
@@ -118,9 +122,7 @@
     },
     "contrastPairs": [
       { "fg":"text/default", "bg":"background/default", "context":"text" },
-      { "fg":"rag/success", "bg":"background/default", "context":"ui" },
       { "fg":"rag/error", "bg":"background/default", "context":"ui" },
-      { "fg":"rag/information", "bg":"background/default", "context":"ui" },
       { "fg":"rag/neutral", "bg":"background/default", "context":"ui" },
       { "fg":"text/default", "bg":"rag/success-tint", "context":"text" },
       { "fg":"text/default", "bg":"rag/warning-tint", "context":"text" },

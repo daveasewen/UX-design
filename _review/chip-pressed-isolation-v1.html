@@ -1,0 +1,73 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Chip pressed-wash — isolation (s151 queue item)</title>
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; }
+  body{margin:0;font-family:var(--font);background:#EDEDED;color:#1A1A1A;padding:2rem;}
+  h1{font-size:16px} h2{font-size:12px;margin:0 0 8px}
+  .panes{display:flex;gap:16px;flex-wrap:wrap}
+  .pane{padding:24px;flex:1;min-width:380px}
+  .pane.light{background:#FFFFFF;color:#1A1A1A}
+  .pane.dark{background:#1A1A1A;color:#FFFFFF}
+  .rowlab{font-size:11px;opacity:.6;margin:14px 0 6px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:4px 12px;border-radius:0;
+    font:500 14px/1.3 var(--font);border:1px solid var(--cb);background:var(--cbg);color:var(--cink);}
+  .ratio{font-size:11px;margin-top:6px;font-family:ui-monospace,monospace}
+  .ctrl{background:#fff;border:1px solid #ccc;padding:16px;margin-top:20px;max-width:900px}
+  .ctrl label{display:block;margin:8px 0;font-size:13px;cursor:pointer}
+  .ctrl .nt{display:block;font-size:11px;opacity:.65;margin:2px 0 0 22px}
+  .badge{font-family:ui-monospace,monospace;font-size:11px;padding:1px 6px;margin-left:6px}
+  .pass{background:#DFF2E1}.fail{background:#FBDAD4}
+</style>
+<h1>Chip — pressed state in isolation <small>(the 6 ❌ at 3.95:1, light mode)</small></h1>
+<p style="max-width:70ch;font-size:13px">Current canon: pressed = <code>#808080</code> fill + <b>white</b> label (light) / <code>#484848</code> + white (dark). The fail is the light leg: white on <code>#808080</code> = 3.95. Note the tension with s151-D1 clause 3 (<i>labels use the default ink</i>) — the pressed reversal swaps the label to white. Candidates below repaint the PRESSED row live.</p>
+<div class="panes">
+  <div class="pane light"><h2>light</h2>
+    <div class="rowlab">base</div><div class="chips" data-mode="light" data-state="base"></div>
+    <div class="rowlab">hover (#F0F0F0)</div><div class="chips" data-mode="light" data-state="hover"></div>
+    <div class="rowlab">pressed ← candidate</div><div class="chips" data-mode="light" data-state="pressed"></div>
+    <div class="ratio" id="r-light"></div>
+  </div>
+  <div class="pane dark"><h2>dark</h2>
+    <div class="rowlab">base</div><div class="chips" data-mode="dark" data-state="base"></div>
+    <div class="rowlab">hover (#232323)</div><div class="chips" data-mode="dark" data-state="hover"></div>
+    <div class="rowlab">pressed ← candidate</div><div class="chips" data-mode="dark" data-state="pressed"></div>
+    <div class="ratio" id="r-dark"></div>
+  </div>
+</div>
+<div class="ctrl"><b>Decision control — pressed treatment</b>
+  <label><input type="radio" name="cand" value="A" checked> <b>A</b> — current: light #808080 + white · dark #484848 + white <span class="badge" id="bA"></span><span class="nt">The measured fail as shipped. Keeping it means ruling the transient pressed state advisory.</span></label>
+  <label><input type="radio" name="cand" value="B"> <b>B</b> — darker wash: light #6B6B6B + white · dark #484848 + white <span class="badge" id="bB"></span><span class="nt">Smallest move that clears 4.5 on the light leg; keeps the reversal.</span></label>
+  <label><input type="radio" name="cand" value="C"> <b>C</b> — no reversal: light #D0D0D0 + default ink #1A1A1A · dark #484848 + white <span class="badge" id="bC"></span><span class="nt">Consistent with s151-D1 clause 3 — the label never leaves the default ink; the wash darkens the surface instead.</span></label>
+  <label><input type="radio" name="cand" value="D"> <b>D</b> — rule pressed ADVISORY (transient, &lt;300ms under a fingertip) — no colour change <span class="badge">policy</span><span class="nt">A ruling, not a colour: pressed is momentary and occluded by the pointer; the gate would demote pressed-state text to 🟡 by declared class.</span></label>
+</div>
+<script>
+const LABELS=["Savings","Credit card","90 days","6 months","12 months","Dismiss ✕"];
+const CAND={
+ A:{light:{bg:"#808080",ink:"#FFFFFF"},dark:{bg:"#484848",ink:"#FFFFFF"}},
+ B:{light:{bg:"#6B6B6B",ink:"#FFFFFF"},dark:{bg:"#484848",ink:"#FFFFFF"}},
+ C:{light:{bg:"#D0D0D0",ink:"#1A1A1A"},dark:{bg:"#484848",ink:"#FFFFFF"}},
+ D:{light:{bg:"#808080",ink:"#FFFFFF"},dark:{bg:"#484848",ink:"#FFFFFF"}}};
+const BASE={light:{bg:"transparent",ink:"#1A1A1A",b:"#808080"},dark:{bg:"transparent",ink:"#FFFFFF",b:"#808080"}};
+const HOVER={light:{bg:"#F0F0F0",ink:"#1A1A1A"},dark:{bg:"#232323",ink:"#FFFFFF"}};
+function lum(h){const c=[1,3,5].map(i=>parseInt(h.substr(i,2),16)/255).map(v=>v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4));return .2126*c[0]+.7152*c[1]+.0722*c[2];}
+function ratio(f,b){const[a,c]=[lum(f),lum(b)].sort((x,y)=>y-x);return (a+.05)/(c+.05);}
+function paint(){
+ const v=document.querySelector('input[name=cand]:checked').value, cd=CAND[v];
+ for(const mode of["light","dark"]){
+  for(const state of["base","hover","pressed"]){
+   const el=document.querySelector(`.chips[data-mode=${mode}][data-state=${state}]`);
+   const s= state==="base"?BASE[mode] : state==="hover"?HOVER[mode] : cd[mode];
+   el.innerHTML=LABELS.map(l=>`<span class="chip" style="--cbg:${s.bg};--cink:${s.ink};--cb:${s.b||s.bg}">${l}</span>`).join("");
+  }
+  const p=cd[mode],r=ratio(p.ink,p.bg);
+  document.getElementById("r-"+mode).textContent=`pressed label ${p.ink} on ${p.bg} = ${r.toFixed(2)}:1 ${r>=4.5?"PASS":"FAIL (need 4.5)"}`;
+ }
+ for(const[k,c]of Object.entries({A:CAND.A,B:CAND.B,C:CAND.C})){
+  const r=ratio(c.light.ink,c.light.bg),el=document.getElementById("b"+k);
+  if(el){el.textContent=r.toFixed(2)+":1 light";el.className="badge "+(r>=4.5?"pass":"fail");}
+ }
+}
+document.querySelectorAll('input[name=cand]').forEach(i=>i.onchange=paint);paint();
+</script>

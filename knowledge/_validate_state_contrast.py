@@ -21,6 +21,17 @@ stack, not the ancestor chain: an absolutely-positioned SIBLING paints the selec
 `.seg` in canon.css and an ancestor walk cannot see it (2026-08-07). Where the box is not
 hit-testable, the OLD ancestor walk runs as a DECLARED fallback and the audit says so per snippet.
 
+s151-D1 (Dave, #151) — THE MEANING-CARRIER VOCABULARY. The law is "colour alone must not carry
+meaning", NOT "every surface must clear 4.5". A composition that seats meaning on a status colour
+may DECLARE its carriers: `data-carries="symbol label"` (space-separated; legal words: symbol,
+label, colour). Then: (a) a declaration naming no carrier but colour — or a declared seat holding
+neither a symbol nor a label — is a HARD FAIL reading "state carries meaning by colour alone";
+(b) the declared symbol/label keep their normal thresholds and still ❌ if they miss; (c) the
+declared seat's OWN fill reading is advisory 🟡, never ❌. ⛔ (c) applies only where a valid
+declaration exists — an UNDECLARED seat behaves exactly as before, because nothing passes by
+silence. Declarations are swept page-wide (the commonest real seat, Status-indicator's `.stat`,
+is a passive div outside SEL) and every unreadable or unfounded one is NAMED, never defaulted.
+
 Usage:  python3 _validate_state_contrast.py [name-filter ...]   (default: all snippets)
         python3 _validate_state_contrast.py --selftest          (bites, no snippets)
         An unknown option is a NAMED failure, never a silent name-filter, and a name-filter
@@ -72,6 +83,78 @@ class StateContrastSelftestError(Exception):
 HOLE_REASON_UNRECORDED = ("reason NOT RECORDED by the measurement that produced this record — "
                           "re-run the gate; do not infer one")
 
+# --- s151-D1 (Dave, #151): THE MEANING-CARRIER VOCABULARY -------------------------------------
+# Dave's law, verbatim from the ruling: the a11y rule is "colour alone must not carry meaning",
+# NOT "every surface must clear 4.5". Clause (4): "Symbols seated on a STATUS COLOUR take the
+# DEFAULT ink; the status fill's own background contrast is SECONDARY - the symbol and label
+# carry the meaning."
+#
+# The vocabulary is a DECLARATION, never an inference. A composition that seats meaning on a
+# status colour may declare its carriers:
+#
+#     <span class="status" data-carries="symbol label"> … </span>
+#
+# THREE CLAUSES, and they are deliberately asymmetric:
+#   (a) REDUNDANCY — a declaration must name at least one NON-COLOUR carrier. `data-carries="colour"`,
+#       or a declared seat carrying neither a symbol nor a label, is a HARD FAIL. This clause can
+#       only ever ADD failures; it never waives one.
+#   (b) CARRIER LEGIBILITY — the symbol and label keep their normal thresholds (text 4.5, icon 3.0)
+#       against THEIR backgrounds. A declaration buys the SEAT nothing for its carriers: an
+#       illegible label is still ❌. This is the clause that stops the vocabulary becoming a waiver.
+#   (c) SEAT DEMOTION — the seat FILL's own reading against what is painted beneath it is ADVISORY
+#       🟡, never ❌ — but ONLY where a valid declaration exists. An UNDECLARED seat behaves exactly
+#       as it did before this change: nothing passes by silence.
+#
+# ⛔ NOTHING IS GUESSED. An unknown carrier word, an empty declaration, or a declaration whose
+# claim disagrees with the DOM (says `symbol`, contains no svg) is a NAMED failure — never
+# defaulted to "probably fine", never silently dropped [[measuring-tool-must-not-guess]].
+LEGAL_CARRIERS = ("symbol", "label", "colour")
+
+# The verbatim reason the gate must emit for clause (a). Quoted here ONCE so the message, the
+# selftest and this comment cannot drift apart [[gate-must-quote-what-it-forbids]].
+CARRIER_COLOUR_ALONE = "state carries meaning by colour alone"
+
+# What the gate FORBIDS, quoted in every message it emits under this vocabulary. A gate that
+# names a violation without quoting the rule it is enforcing makes the author guess.
+CARRIER_RULE_QUOTED = (
+    'the rule being enforced, quoted: "colour alone must not carry meaning" (s151-D1, Dave, #151) '
+    '— a `data-carries` declaration must name at least one of ' + ", ".join(
+        repr(c) for c in LEGAL_CARRIERS if c != "colour") +
+    ", and the composition must actually contain it. This gate reports the measurement; it does "
+    "not prescribe which carrier you add.")
+
+
+class StateContrastCarrierError(Exception):
+    """A `data-carries` declaration this gate cannot READ. NAMED — never defaulted."""
+
+
+def classify_carriers(raw):
+    """PURE. Parse a `data-carries` attribute value into (carriers, non_colour).
+
+    Raises StateContrastCarrierError on anything unreadable — an empty declaration or an
+    unknown word. It NEVER returns a guess: a declaration the gate cannot read is not a
+    declaration, and the alternative (defaulting to "no carriers" or to "all carriers") is
+    exactly the silent-default class this file exists to refuse.
+    """
+    if raw is None:
+        raise StateContrastCarrierError("no `data-carries` attribute — nothing to classify")
+    toks = [t for t in str(raw).split() if t]
+    if not toks:
+        raise StateContrastCarrierError(
+            f"empty `data-carries` declaration ({raw!r}) — an empty declaration is not a "
+            f"statement that there are no carriers, it is an unreadable one. " + CARRIER_RULE_QUOTED)
+    bad = [t for t in toks if t not in LEGAL_CARRIERS]
+    if bad:
+        raise StateContrastCarrierError(
+            f"unknown carrier word(s) {', '.join(repr(b) for b in bad)} in `data-carries`="
+            f"{raw!r} — legal carriers are {', '.join(repr(c) for c in LEGAL_CARRIERS)}. "
+            + CARRIER_RULE_QUOTED)
+    seen = []
+    for t in toks:
+        if t not in seen:
+            seen.append(t)
+    return seen, [t for t in seen if t != "colour"]
+
 
 def _fallback_holes(records):
     """Every un-hit-testable box, as (where, reason) — DECLARED HOLES, `s129-D3`.
@@ -100,7 +183,8 @@ def _fallback_holes(records):
 MEASURE = r"""
 (el) => {
   const lum=p=>{const f=c=>{c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4)};return 0.2126*f(p[0])+0.7152*f(p[1])+0.0722*f(p[2])};
-  const ratio=(a,b)=>{const L1=lum(a),L2=lum(b),hi=Math.max(L1,L2),lo=Math.min(L1,L2);return (hi+0.05)/(lo+0.05)};
+  const ratioOf=(a,b)=>{const L1=lum(a),L2=lum(b),hi=Math.max(L1,L2),lo=Math.min(L1,L2);return (hi+0.05)/(lo+0.05)};
+  const ratio=ratioOf;
   // ---- colour parsing (s125-D3, Dave 2026-08-07) --------------------------------------------
   // Chromium serialises every color-mix() result as `color(srgb r g b[ / a])`, components 0-1.
   // The old rgba()-only regex could not match it, so parse() returned null and effBg() SILENTLY
@@ -181,7 +265,10 @@ MEASURE = r"""
   // runs and the audit SAYS SO per snippet. It is deliberately unimproved — being byte-for-byte
   // the previous algorithm is what makes the before/after delta of this change attributable.
   function ancestorBg(node){while(node){const cs=getComputedStyle(node);const p=parse(cs.backgroundColor,'background-color',node);if(p){const a=p.length===4?p[3]:1;if(a>=1)return [p[0],p[1],p[2]];const u=node.parentElement?ancestorBg(node.parentElement):[255,255,255];return [Math.round(p[0]*a+u[0]*(1-a)),Math.round(p[1]*a+u[1]*(1-a)),Math.round(p[2]*a+u[2]*(1-a))]}node=node.parentElement}return [255,255,255]}
-  function effBg(node){
+  // `skipSelf` (s151-D1): composite the paint stack BENEATH the node, excluding the node's own
+  // background. That is the ONLY way to read a status SEAT's fill against what it sits on — the
+  // normal call includes the seat itself and would measure the fill against itself.
+  function effBg(node, skipSelf){
     const pt=samplePoint(node);
     const stack=pt?document.elementsFromPoint(pt[0],pt[1]):[];
     const i=stack.indexOf(node);
@@ -195,9 +282,12 @@ MEASURE = r"""
             reason:(pt?'not present in the hit stack at its own sample point (pointer-events:none, or an overlay above it takes the hit)'
                       :'no on-screen box at measurement time (zero-size, or entirely outside the viewport)'),
             text:(node.textContent||'').trim().slice(0,32)});
-            return ancestorBg(node);}
+            // ⚠ the DECLARED fallback stays byte-for-byte the pre-2026-08-07 walk for the normal
+            // call (`skipSelf` falsy) — that identity is what makes its delta attributable. Only
+            // the new seat-fill call starts the walk at the parent.
+            return ancestorBg(skipSelf?(node.parentElement||node):node);}
     let R=0,G=0,B=0,rem=1;                          // src-over compositing, top-down from the node
-    for(let k=i;k<stack.length&&rem>0.0005;k++){
+    for(let k=i+(skipSelf?1:0);k<stack.length&&rem>0.0005;k++){
       const p=parse(getComputedStyle(stack[k]).backgroundColor,'background-color',stack[k]);
       if(!p) continue;                              // absent paint: keep descending, as before
       const a=(p.length===4?p[3]:1)*groupAlpha(stack[k]); if(!(a>0)) continue;
@@ -214,7 +304,10 @@ MEASURE = r"""
     if([...n.childNodes].some(c=>c.nodeType===3&&c.textContent.trim().length)){
       const fg=parse(cs.color,'color',n);
       if(fg){const bg=effBg(n),fs=parseFloat(cs.fontSize)||16,bold=(parseInt(cs.fontWeight)||400)>=700,large=fs>=24||(fs>=18.66&&bold),thr=large?3.0:4.5,r=ratio(fg,bg);
-        if(r<thr) out.push({kind:'text',text:n.textContent.trim().slice(0,32),ratio:Math.round(r*100)/100,thr});}
+        // s151-D1 clause (b): a record INSIDE a declared seat is a CARRIER's legibility. Its
+        // threshold does not move — the tag exists so the report can say which clause applies.
+        const st=n.closest?n.closest('[data-carries]'):null;
+        if(r<thr) out.push({kind:'text',text:n.textContent.trim().slice(0,32),ratio:Math.round(r*100)/100,thr,seat:st?desc(st):null});}
     }
     if(n.tagName.toLowerCase()==='svg'){
       const fc=(cs.fill&&cs.fill!=='none')?cs.fill:cs.color, fg=parse(fc,'fill',n);
@@ -245,11 +338,65 @@ MEASURE = r"""
     throw e;
    }
   }
+  // ---- s151-D1: STATUS-SEAT DECLARATIONS -----------------------------------------------------
+  // The browser reports FACTS ONLY — the raw attribute, whether a symbol/label is actually
+  // present, and the measured fill-vs-beneath ratio. The PREDICATE lives in Python
+  // (`classify_carriers`), in one place, so the rule cannot drift between two implementations
+  // the way a mirrored word-list would. Nothing here decides pass or fail.
+  const seats=[el, ...el.querySelectorAll('*')].filter(n=>n.nodeType===1&&n.hasAttribute&&n.hasAttribute('data-carries'));
+  for(const s of seats){
+   try{
+    const scs=getComputedStyle(s);
+    if(scs.visibility==='hidden'||scs.display==='none') continue;
+    const own=parse(scs.backgroundColor,'background-color',s);
+    const alpha=own?(own.length===4?own[3]:1):0;
+    let ratio=null, why=null;
+    if(!own||!(alpha>0)){
+      why='the declared seat paints no background of its own (background-color is absent or fully transparent), so it has no fill reading to demote';
+    }else{
+      const under=effBg(s,true);
+      const solid=[Math.round(own[0]*alpha+under[0]*(1-alpha)),
+                   Math.round(own[1]*alpha+under[1]*(1-alpha)),
+                   Math.round(own[2]*alpha+under[2]*(1-alpha))];
+      ratio=Math.round(ratioOf(solid,under)*100)/100;
+    }
+    out.push({kind:'seatdecl', where:desc(s), raw:s.getAttribute('data-carries'),
+              hasSymbol:!!s.querySelector('svg,[data-symbol]'),
+              hasLabel:(s.textContent||'').trim().length>0,
+              ratio:ratio, reason:why});
+   }catch(e){
+    if(e&&e.name==='StateContrastParseError'){out.push({kind:'refusal',prop:e.prop,value:e.value,where:e.where,text:''});continue}
+    throw e;
+   }
+  }
   return out;
 }
 """
 
 def audit_page(pg, theme, sink):
+    # ---- s151-D1: SWEEP THE WHOLE PAGE FOR SEAT DECLARATIONS, ONCE PER THEME ------------------
+    # ⚠ FOUND BY DRIVING IT, not by reading it. The seat pass inside MEASURE only ever sees the
+    # subtree of an element in SEL — and the commonest real status seat in this canon
+    # (Status-indicator's `.stat` = dot + label) is a PASSIVE div that SEL does not select. A
+    # declaration on it would have been silently invisible, which is the exact failure mode this
+    # vocabulary exists to prevent: a clause that cannot see its subject cannot fail
+    # [[instrument-without-a-consumer]]. The sweep runs on document.body in the RESTING state and
+    # emits seat records ONLY — it does not widen this gate's text/icon scope, which stays
+    # hover/pressed by design. Seats inside driven elements are still measured under those states
+    # too, by MEASURE; the report de-duplicates on (theme, state, kind, where, ratio).
+    try:
+        for fl in pg.evaluate(MEASURE, pg.query_selector("body")):
+            # SEATS ONLY. The sweep deliberately drops the text/icon/refusal records it also
+            # produces: those would be RESTING-state findings, and this gate's scope is the DRIVEN
+            # states. Widening the baseline silently, in the same change that adds a vocabulary,
+            # would make the vocabulary's before/after delta unattributable [[attribute-the-diff]].
+            if fl["kind"] == "seatdecl":
+                sink.append((theme, "base", fl))
+    except Exception as e:
+        # A sweep that cannot run is NAMED, never a silent skip.
+        raise StateContrastCarrierError(
+            f"the s151-D1 seat sweep could not run on this page ({e!r}) — refusing to report a "
+            f"page as carrying no declarations when the sweep did not happen")
     for el in pg.query_selector_all(SEL):
         try:
             if not el.is_visible(): continue   # skip hidden (e.g. a closed modal) — avoids slow hover timeouts
@@ -322,8 +469,65 @@ HEADLINE_RE = re.compile(r"^\*\*(\d+) text failure\(s\) across (\d+) snippet\(s\
 HOLES_RE = re.compile(r"^\*\*(\d+) DECLARED HOLE\(s\) — un-hit-testable box\(es\), reported "
                       r"UNMEASURABLE by name \(s129-D3\)\.\*\*$", re.M)
 HOLE_PREFIX = "- ⬛ UNMEASURABLE (declared hole)"
+# s151-D1 — the carrier clauses get the same treatment as the holes: a STATED figure, re-parsed
+# out of the artefact and asserted against the body on every write. A clause whose count can go
+# quiet is a clause that cannot be trusted to have run [[instrument-without-a-consumer]].
+CARRIER_FAIL_PREFIX = "- ❌ CARRIER"
+CARRIER_ERR_PREFIX = "- ⛔ StateContrastCarrierError"
+SEAT_PREFIX = "- 🟡 SEAT (declared, advisory)"
+CARRIERS_RE = re.compile(r"^\*\*(\d+) CARRIER failure\(s\) — declarations that carry meaning by "
+                         r"colour alone, plus declarations this gate could not READ \(s151-D1\)\.\*\*$",
+                         re.M)
 
-def verify_report(text, n_snippets, total_text, n_holes=None):
+
+def carrier_lines(theme, state, fl):
+    """Turn ONE browser-reported `seatdecl` fact-record into its report line(s) + a verdict.
+
+    Returns (kind, [lines]) where kind is 'fail' (clause (a) or an unreadable declaration —
+    both count against the gate) or 'seat' (a valid declaration; its fill reading is ADVISORY).
+
+    The PREDICATE is here and only here. The browser reported facts; nothing was decided there.
+    """
+    where = fl.get("where") or "(element identity NOT RECORDED — re-run the gate)"
+    try:
+        carriers, non_colour = classify_carriers(fl.get("raw"))
+    except StateContrastCarrierError as e:
+        return "fail", [f"{CARRIER_ERR_PREFIX} [{theme}/{state}] on {where} — {e}"]
+    # Clause (a), face 1: the declaration itself names no non-colour carrier.
+    if not non_colour:
+        return "fail", [
+            f'{CARRIER_FAIL_PREFIX} [{theme}/{state}] {CARRIER_COLOUR_ALONE} — {where} declares '
+            f'`data-carries="{fl.get("raw")}"`, which names no carrier other than colour. '
+            f'{CARRIER_RULE_QUOTED}']
+    # Clause (a), face 2: the declaration claims a carrier the composition does not contain, or
+    # the seat contains NEITHER a symbol NOR a label. A declaration is a claim about the DOM, and
+    # an unchecked claim is how a vocabulary becomes a rubber stamp.
+    missing = [c for c in non_colour
+               if (c == "symbol" and not fl.get("hasSymbol")) or (c == "label" and not fl.get("hasLabel"))]
+    if missing:
+        return "fail", [
+            f'{CARRIER_FAIL_PREFIX} [{theme}/{state}] {CARRIER_COLOUR_ALONE} — {where} declares '
+            f'`data-carries="{fl.get("raw")}"` but the composition contains no '
+            f'{" and no ".join(missing)} '
+            f'(measured at the browser: symbol present={bool(fl.get("hasSymbol"))}, '
+            f'label present={bool(fl.get("hasLabel"))}). {CARRIER_RULE_QUOTED}']
+    if not (fl.get("hasSymbol") or fl.get("hasLabel")):
+        return "fail", [
+            f'{CARRIER_FAIL_PREFIX} [{theme}/{state}] {CARRIER_COLOUR_ALONE} — {where} is a '
+            f'status-seat composition carrying neither a symbol nor a label. {CARRIER_RULE_QUOTED}']
+    # Clause (c): valid declaration -> the SEAT's own fill reading is advisory, never ❌.
+    if fl.get("ratio") is None:
+        return "seat", [f'{SEAT_PREFIX} [{theme}/{state}] {where} — carriers `{fl.get("raw")}` — '
+                        f'no fill reading: {fl.get("reason") or HOLE_REASON_UNRECORDED}']
+    return "seat", [
+        f'{SEAT_PREFIX} [{theme}/{state}] {where} — carriers `{fl.get("raw")}` — the seat fill '
+        f'measures {fl["ratio"]}:1 against what is painted beneath it. ADVISORY, never a failure: '
+        f'under s151-D1 the status fill\'s own background contrast is SECONDARY because the symbol '
+        f'and label carry the meaning. The measurement is reported, not a prescription — this gate '
+        f'does not say what the value should be.']
+
+
+def verify_report(text, n_snippets, total_text, n_holes=None, n_carriers=None):
     """Re-READ the rendered artefact and check it says what the counters say.
 
     The committed audit claimed "across 38 snippet(s)" and carried 37 sections for three sessions:
@@ -361,19 +565,32 @@ def verify_report(text, n_snippets, total_text, n_holes=None):
                 f"declared-hole count disagrees — header says {int(mh.group(1))}, counters say "
                 f"{n_holes}, artefact carries {len(holes)} ⬛ line(s). A silently dropped hole "
                 f"reads as a measured pass (s129-D3)")
+    # s151-D1 — same contract for the carrier clauses.
+    if n_carriers is not None:
+        cl = [l for l in lines if l.startswith(CARRIER_FAIL_PREFIX) or l.startswith(CARRIER_ERR_PREFIX)]
+        mc = CARRIERS_RE.search(text)
+        if not mc:
+            raise StateContrastReportError(
+                "the audit carries no CARRIER failure(s) header line — s151-D1 requires the count "
+                "to be stated on every write, including when it is zero")
+        if int(mc.group(1)) != n_carriers or len(cl) != n_carriers:
+            raise StateContrastReportError(
+                f"carrier-failure count disagrees — header says {int(mc.group(1))}, counters say "
+                f"{n_carriers}, artefact carries {len(cl)} carrier line(s). A carrier clause that "
+                f"goes quiet reads as a measured pass (s151-D1)")
 
 def render_report(res):
     """Render the audit markdown from a results dict.
 
     PURE — no browser, no IO — so --selftest can bite the report's own arithmetic without
-    rendering anything. Returns (text, total_text, refused, ancestor_fallbacks).
+    rendering anything. Returns (text, total_text, refused, ancestor_fallbacks, carrier_fails).
     """
     out = ["# State-contrast audit — rendered hover / pressed states (light + dark)",
            "*Drives each interactive element's real hover/pressed states and measures computed foreground "
            "vs effective background. TEXT < 4.5 (large < 3.0) FAILS; svg ICONS < 3.0 WARN (many decorative). "
            "Disabled controls skipped (WCAG-exempt). Closes the declared-pairs blind spot (Dave, 2026-06-22).*",
            ""]
-    total = 0; refused = 0; fellback = 0
+    total = 0; refused = 0; fellback = 0; carrier_fails = 0
     for name in sorted(res):
         seen=set(); uniq=[]
         for theme,state,fl in res[name]:
@@ -382,16 +599,31 @@ def render_report(res):
             seen.add(k); uniq.append((theme,state,fl))
         tf=[u for u in uniq if u[2]["kind"]=="text"]; iw=[u for u in uniq if u[2]["kind"]=="icon"]
         rf=[u for u in uniq if u[2]["kind"]=="refusal"]; fb=_fallback_holes(uniq)
-        total += len(tf); refused += len(rf); fellback += len(fb)
+        # s151-D1 — classify the seat declarations HERE, in Python, from the browser's facts.
+        cfail=[]; cseat=[]
+        for theme,state,fl in uniq:
+            if fl["kind"]!="seatdecl": continue
+            verdict, lines = carrier_lines(theme, state, fl)
+            (cfail if verdict=="fail" else cseat).extend(lines)
+        total += len(tf); refused += len(rf); fellback += len(fb); carrier_fails += len(cfail)
         bits=[]
         if tf: bits.append(f"❌ {len(tf)} TEXT fail(s)")
+        # A carrier failure is a HARD fail — the vocabulary can only ever ADD failures (s151-D1).
+        if cfail: bits.append(f"❌ {len(cfail)} CARRIER fail(s)")
+        if cseat: bits.append(f"🟡 {len(cseat)} declared seat(s)")
         # a refusal is UNMEASURED, so this snippet may NOT be reported as clean
         if rf: bits.append(f"⛔ {len(rf)} PARSE REFUSAL(s) — UNMEASURED")
         if iw: bits.append(f"{len(iw)} icon warn(s)")
         # ✅ s129-D3: a NAMED HOLE, not a footnote. The snippet may not read as fully measured.
         if fb: bits.append(f"⬛ {len(fb)} UNMEASURABLE box(es)")
         out.append(f"## {name} — {' · '.join(bits) if bits else '✅ clean'}")
-        for theme,state,fl in tf: out.append(f"- ❌ TEXT [{theme}/{state}] {fl['ratio']}:1 (need {fl['thr']}) — \"{fl['text']}\"")
+        for theme,state,fl in tf:
+            # clause (b): a carrier keeps its threshold. Say WHICH clause is speaking, so a reader
+            # cannot mistake a carrier-legibility failure for a demotable seat-fill reading.
+            tag = (f" [CARRIER LEGIBILITY, s151-D1 clause (b) — inside declared seat {fl['seat']}; "
+                   f"the threshold does NOT move for a carrier]" if fl.get("seat") else "")
+            out.append(f"- ❌ TEXT [{theme}/{state}] {fl['ratio']}:1 (need {fl['thr']}) — \"{fl['text']}\"{tag}")
+        out.extend(cfail)
         for theme,state,fl in rf: out.append(f"- ⛔ StateContrastParseError [{theme}/{state}] cannot parse {fl['prop']}: `{fl['value']}` on {fl['where']}")
         for theme,state,fl in iw: out.append(f"- 🟡 icon [{theme}/{state}] {fl['ratio']}:1 (need 3.0){' (decorative)' if fl.get('ariaHidden') else ''}")
         for w, why in fb:
@@ -399,6 +631,7 @@ def render_report(res):
                        "observed, so the pre-2026-08-07 ancestor-only walk ran instead: any "
                        "ratio reported over this box is that weaker measurement, NOT a hit-stack "
                        "one. Nothing is invented and nothing is waived (s129-D3).")
+        out.extend(cseat)
         out.append("")
     # INSERT the headline — do NOT assign it. `out[3] = …` overwrote whatever already occupied
     # index 3, which was the FIRST snippet's heading (Accordion, eaten; the audit then claimed 38
@@ -406,7 +639,9 @@ def render_report(res):
     # because index 3 only exists once a section has been appended. A summary is a NEW line.
     out[3:3] = [f"**{total} text failure(s) across {len(res)} snippet(s).**", "",
                 f"**{fellback} DECLARED HOLE(s) — un-hit-testable box(es), reported UNMEASURABLE "
-                f"by name (s129-D3).**", ""]
+                f"by name (s129-D3).**", "",
+                f"**{carrier_fails} CARRIER failure(s) — declarations that carry meaning by "
+                f"colour alone, plus declarations this gate could not READ (s151-D1).**", ""]
     if refused:
         out += ["---",
                 f"**⛔ {refused} PARSE REFUSAL(s) — `StateContrastParseError`.** A colour value above "
@@ -428,9 +663,26 @@ def render_report(res):
                 "asserted equal to the number of ⬛ lines on every write — a hole that goes quiet is "
                 "a failed write, not a clean run.",
                 ""]
+    out += ["---",
+            "**s151-D1 — THE MEANING-CARRIER VOCABULARY (Dave, #151).** The rule this gate "
+            f'enforces, quoted: "colour alone must not carry meaning" — NOT "every surface must '
+            'clear 4.5". A composition may declare `data-carries="symbol label"` on the element '
+            f'that seats meaning on a status colour; legal carriers are '
+            f'{", ".join("`"+c+"`" for c in LEGAL_CARRIERS)}. Three clauses: (a) REDUNDANCY — a '
+            f'declaration naming no carrier other than colour, or a declared seat containing '
+            f'neither a symbol nor a label, is a HARD FAIL reading "{CARRIER_COLOUR_ALONE}"; '
+            "(b) CARRIER LEGIBILITY — the symbol and label keep their normal thresholds (text 4.5, "
+            "icon 3.0) against THEIR backgrounds and still ❌ if they miss; (c) SEAT DEMOTION — the "
+            "declared seat's own fill reading is ADVISORY 🟡, never ❌. ⛔ Clause (c) applies ONLY "
+            "where a valid declaration exists: an UNDECLARED seat behaves exactly as it did before "
+            "this change, because nothing may pass by silence. An unreadable declaration — empty, "
+            "or naming a word outside the legal set, or claiming a symbol/label the DOM does not "
+            "contain — is a NAMED failure, never a default. The count above is RE-READ off this "
+            "artefact and asserted equal to the carrier lines in the body on every write.",
+            ""]
     text = "\n".join(out)
-    verify_report(text, len(res), total, n_holes=fellback)
-    return text, total, refused, fellback
+    verify_report(text, len(res), total, n_holes=fellback, n_carriers=carrier_fails)
+    return text, total, refused, fellback, carrier_fails
 
 def parse_args(argv):
     """Bare words are snippet-name filters; anything starting with '-' must be a KNOWN flag.
@@ -494,6 +746,41 @@ FIXTURES = {
     "unhittable_node_declares_its_fallback":
         _FIX_HEAD + '<div class="seg" style="background:#000000">'
                     '<button id="target" type="button" style="pointer-events:none">Sel</button></div>',
+    # ---- s151-D1 meaning-carrier fixtures ------------------------------------------------------
+    # A VALID declaration: a status seat painted a low-contrast amber on white, carrying BOTH a
+    # symbol and a label. The seat fill measures ~1.5:1 against the page — under s151-D1 that
+    # reading is ADVISORY, because the symbol and the label carry the meaning.
+    "carrier_valid_declaration_demotes_the_fill":
+        _FIX_HEAD + '<div class="seg"><span id="target" class="seat" data-carries="symbol label" '
+                    'style="display:inline-flex;align-items:center;gap:6px;background:#FFC107;color:#111111">'
+                    '<svg viewBox="0 0 16 16" width="16" height="16" style="fill:#111111">'
+                    '<path d="M2 8h12"/></svg>Pending</span></div>',
+    # COLOUR ALONE: the same seat, declaring only colour, with no symbol and no label. HARD FAIL.
+    "carrier_colour_only_hard_fails":
+        _FIX_HEAD + '<div class="seg"><span id="target" class="seat" data-carries="colour" '
+                    'style="display:inline-block;width:60px;height:20px;background:#FFC107"></span></div>',
+    # The load-bearing NEGATIVE arm for clause (b): a VALID declaration whose LABEL is illegible.
+    # Without this arm, "demote the fill" and "stop reporting anything" are indistinguishable.
+    "carrier_declared_but_label_still_fails":
+        _FIX_HEAD + '<div class="seg"><span id="target" class="seat" data-carries="symbol label" '
+                    'style="display:inline-flex;align-items:center;gap:6px;background:#FFC107;color:#FFD54F">'
+                    '<svg viewBox="0 0 16 16" width="16" height="16" style="fill:#111111">'
+                    '<path d="M2 8h12"/></svg>Pending</span></div>',
+    # A declaration this gate CANNOT READ must be a NAMED failure, never a default.
+    "carrier_unknown_word_is_named":
+        _FIX_HEAD + '<div class="seg"><span id="target" class="seat" data-carries="symbol vibes" '
+                    'style="display:inline-block;background:#FFC107;color:#111111">Pending</span></div>',
+    # A declaration that CLAIMS a symbol the DOM does not contain is a claim, not a fact.
+    "carrier_claimed_symbol_absent_is_named":
+        _FIX_HEAD + '<div class="seg"><span id="target" class="seat" data-carries="symbol" '
+                    'style="display:inline-block;background:#FFC107;color:#111111">Pending</span></div>',
+    # THE SILENCE ARM: the identical seat with NO declaration must behave exactly as before —
+    # no seat record at all, and whatever text/icon failures it had, unchanged.
+    "carrier_undeclared_seat_is_unchanged":
+        _FIX_HEAD + '<div class="seg"><span id="target" class="seat" '
+                    'style="display:inline-flex;align-items:center;gap:6px;background:#FFC107;color:#FFD54F">'
+                    '<svg viewBox="0 0 16 16" width="16" height="16" style="fill:#111111">'
+                    '<path d="M2 8h12"/></svg>Pending</span></div>',
 }
 
 def _measure_fixtures():
@@ -532,7 +819,7 @@ def selftest():
                            ("dark","hover", {"kind":"fallback","where":'span.tip "Tip"',"text":"Tip",
                                              "reason":"no on-screen box at measurement time"})],
             "Ccc-third":  [("dark","pressed",{"kind":"icon","ratio":2.0,"thr":3.0,"ariaHidden":True})]}
-    text, total, refused, fellback = render_report(fake)
+    text, total, refused, fellback, cfails = render_report(fake)
     check("arm_first_heading_survives_the_headline", "## Aaa-first" in text,
           "the first snippet's heading was eaten — headline ASSIGNED, not inserted")
     check("arm_all_sections_present", text.count("\n## ") == 3, f"expected 3 sections, got {text.count(chr(10)+'## ')}")
@@ -563,14 +850,14 @@ def selftest():
         check("arm_miscounted_hole_bites", True)
     # A record with NO reason must be named as unrecorded, never rendered blank or inferred.
     nore = {"Zzz": [("light","hover",{"kind":"fallback","where":"svg","text":""})]}
-    ntext, _, _, nfb = render_report(nore)
+    ntext, _, _, nfb, _ = render_report(nore)
     check("arm_hole_without_reason_is_named",
           nfb == 1 and HOLE_REASON_UNRECORDED in ntext,
           "a hole whose reason was not recorded must SAY so, not render an empty reason")
     check("arm_fallback_is_not_a_failure", total == 1 and "- ❌ TEXT" in text and text.count("- ❌ TEXT") == 1,
           "a fallback must not be counted as a text failure")
     try:
-        zero_text, zt, _, _ = render_report({})
+        zero_text, zt, _, _, _ = render_report({})
         check("arm_zero_snippets_does_not_crash", "**0 text failure(s) across 0 snippet(s).**" in zero_text, zero_text)
     except Exception as e:
         check("arm_zero_snippets_does_not_crash", False, f"{type(e).__name__}: {e}")
@@ -619,6 +906,156 @@ def selftest():
           len(fbk) == 1 and "hit stack" in (fbk[0].get("reason") or ""),
           f"the hole's reason was not measured at the browser: {fbk}")
 
+    # ---- s151-D1: THE MEANING-CARRIER VOCABULARY ----------------------------------------------
+    # (i) the PURE predicate, in isolation
+    check("arm_carriers_parse_valid", classify_carriers("symbol label") == (["symbol","label"],["symbol","label"]))
+    check("arm_carriers_colour_only_has_no_non_colour", classify_carriers("colour") == (["colour"], []))
+    for bad, label in (("", "empty"), ("   ", "whitespace"), ("symbol vibes", "unknown_word"), (None, "absent")):
+        try:
+            classify_carriers(bad); check(f"arm_carriers_{label}_is_named", False, f"{bad!r} accepted silently")
+        except StateContrastCarrierError as e:
+            check(f"arm_carriers_{label}_is_named", str(e) != "", "raised with no message")
+    # the message must QUOTE what it forbids, not merely name the offender
+    try:
+        classify_carriers("vibes")
+    except StateContrastCarrierError as e:
+        check("arm_carrier_error_quotes_the_rule", "colour alone must not carry meaning" in str(e), str(e))
+
+    # (ii) the LINE-LEVEL verdicts, driven on constructed fact-records
+    def seat_fact(**kw):
+        f = {"kind":"seatdecl","where":'span.seat "Pending"',"raw":"symbol label",
+             "hasSymbol":True,"hasLabel":True,"ratio":1.52,"reason":None}
+        f.update(kw); return f
+    v_ok, l_ok = carrier_lines("light","hover", seat_fact())
+    check("arm_valid_declaration_is_advisory", v_ok == "seat" and l_ok[0].startswith(SEAT_PREFIX)
+          and "1.52:1" in l_ok[0], f"{v_ok} / {l_ok}")
+    check("arm_advisory_reports_the_measurement_not_a_region",
+          "1.52:1" in l_ok[0] and "should be" in l_ok[0] and "does not say what the value should be" in l_ok[0],
+          "the advisory must REPORT the measurement and explicitly not prescribe a region")
+    v_c, l_c = carrier_lines("light","hover", seat_fact(raw="colour", hasSymbol=False, hasLabel=False))
+    check("arm_colour_only_is_a_hard_fail", v_c == "fail" and l_c[0].startswith(CARRIER_FAIL_PREFIX)
+          and CARRIER_COLOUR_ALONE in l_c[0] and 'span.seat "Pending"' in l_c[0],
+          f"the hard fail must carry the verbatim reason AND the element identity: {l_c}")
+    # ⚠ THE ARM THAT MUTATION TESTING ADDED. The arm above cannot discriminate clause (a) face 1
+    # from face 3: its fixture carries neither a symbol nor a label, so disabling the "names no
+    # non-colour carrier" test leaves the "contains neither" test to catch it and the selftest
+    # stays green. A mutant SURVIVED that exact edit. This fixture HAS both carriers and declares
+    # only `colour` — the only shape that isolates face 1 [[a-new-tier-silently-bypasses-its-tests]].
+    v_c1, l_c1 = carrier_lines("light","hover", seat_fact(raw="colour", hasSymbol=True, hasLabel=True))
+    check("arm_colour_only_declaration_fails_even_when_carriers_exist",
+          v_c1 == "fail" and CARRIER_COLOUR_ALONE in l_c1[0] and "names no carrier other than colour" in l_c1[0],
+          f"declaring only `colour` must fail on the DECLARATION, whatever the DOM contains: {l_c1}")
+    v_m, l_m = carrier_lines("light","hover", seat_fact(raw="symbol label", hasSymbol=False))
+    check("arm_claimed_carrier_absent_is_a_hard_fail",
+          v_m == "fail" and CARRIER_COLOUR_ALONE in l_m[0] and "symbol" in l_m[0], f"{v_m} / {l_m}")
+    v_e, l_e = carrier_lines("light","hover", seat_fact(raw="wat"))
+    check("arm_unreadable_declaration_is_named_and_fails",
+          v_e == "fail" and l_e[0].startswith(CARRIER_ERR_PREFIX), f"{v_e} / {l_e}")
+    v_n, l_n = carrier_lines("light","hover", seat_fact(ratio=None, reason=None))
+    check("arm_seat_without_a_reason_is_named",
+          v_n == "seat" and HOLE_REASON_UNRECORDED in l_n[0],
+          "a seat with no fill reading and no recorded reason must SAY so, never render blank")
+
+    # (iii) the REPORT: counted, headed, re-parsed — and a carrier fail must reach the exit code
+    cfake = {"Aaa": [("light","hover", seat_fact(raw="colour", hasSymbol=False, hasLabel=False)),
+                     ("light","hover", seat_fact())]}
+    ctext, ctot, _, _, ccar = render_report(cfake)
+    check("arm_carrier_fail_counted_and_headed", ccar == 1 and
+          "**1 CARRIER failure(s) — declarations that carry meaning by colour alone, plus "
+          "declarations this gate could not READ (s151-D1).**" in ctext, f"ccar={ccar}")
+    check("arm_carrier_fail_is_not_a_text_fail", ctot == 0 and ctext.count("- ❌ TEXT ") == 0,
+          "a carrier failure must be its own kind, never folded into the text count")
+    check("arm_report_quotes_what_it_forbids",
+          '"colour alone must not carry meaning"' in ctext and "data-carries" in ctext
+          and "an UNDECLARED seat behaves exactly as it did before" in ctext,
+          "the report must quote the rule AND state that silence waives nothing")
+    # ⚠ THE SECOND ARM MUTATION TESTING ADDED. Clause (b) was proven only at the MEASURE layer —
+    # the browser records kept the carrier's failure — but the REPORT layer could still have
+    # dropped it, and a mutant that filtered seat-tagged text records out of `tf` survived every
+    # arm above. The clause has to be checked where the verdict is actually rendered.
+    bfake = {"Aaa": [("light","hover",{"kind":"text","text":"Pending","ratio":1.16,"thr":4.5,
+                                       "seat":'span.seat "Pending"'}),
+                     ("light","hover", seat_fact())]}
+    btext, btot, _, _, bcar = render_report(bfake)
+    check("arm_declared_seat_does_not_waive_its_carrier_in_the_report",
+          btot == 1 and btext.count("- ❌ TEXT ") == 1 and "CARRIER LEGIBILITY" in btext
+          and bcar == 0,
+          "clause (b): a text failure inside a DECLARED seat must still be rendered and counted "
+          f"as a ❌ TEXT failure — a declaration demotes the SEAT's fill, never its carriers "
+          f"(total={btot}, lines={btext.count('- ❌ TEXT ')})")
+    # MUTATION CONTROL — drop the carrier line from the body and the write must FAIL.
+    cdropped = "\n".join(l for l in ctext.split("\n") if not l.startswith(CARRIER_FAIL_PREFIX))
+    try:
+        verify_report(cdropped, 1, ctot, n_holes=0, n_carriers=ccar)
+        check("arm_dropped_carrier_line_bites", False, "a carrier line was removed and verify_report passed")
+    except StateContrastReportError as e:
+        check("arm_dropped_carrier_line_bites", "carrier-failure count disagrees" in str(e), f"wrong refusal: {e}")
+    try:
+        verify_report(ctext, 1, ctot, n_holes=0, n_carriers=ccar + 4)
+        check("arm_miscounted_carrier_bites", False, "counters said 5, artefact carried 1, and it passed")
+    except StateContrastReportError:
+        check("arm_miscounted_carrier_bites", True)
+
+    # (iv) the FEATURE, driven in a real browser on real files — a mutation test proves the
+    # CLAUSE, not the FEATURE, so every clause above is also driven end-to-end here.
+    def _seat_records(recs): return [r for r in recs if r["kind"] == "seatdecl"]
+    ok = got["carrier_valid_declaration_demotes_the_fill"]
+    ok_seat = _seat_records(ok)
+    okv = carrier_lines("light","-",ok_seat[0])[0] if ok_seat else None
+    check("arm_browser_valid_declaration_demotes",
+          len(ok_seat) == 1 and okv == "seat" and ok_seat[0]["ratio"] is not None
+          and ok_seat[0]["ratio"] < 3.0 and not [r for r in ok if r["kind"] == "text"],
+          f"a valid declaration over a low-contrast fill must yield ONE advisory seat and no text fail: {ok}")
+    co = got["carrier_colour_only_hard_fails"]
+    co_seat = _seat_records(co)
+    check("arm_browser_colour_only_hard_fails",
+          len(co_seat) == 1 and carrier_lines("light","-",co_seat[0])[0] == "fail",
+          f"a colour-only declaration must HARD FAIL at the browser end too: {co}")
+    lf = got["carrier_declared_but_label_still_fails"]
+    lf_txt = [r for r in lf if r["kind"] == "text"]
+    check("arm_browser_declared_carrier_that_fails_stays_a_failure",
+          len(lf_txt) == 1 and lf_txt[0]["seat"] is not None
+          and carrier_lines("light","-",_seat_records(lf)[0])[0] == "seat",
+          f"clause (b): a declaration must NOT waive its own carrier's failure: {lf}")
+    uw = _seat_records(got["carrier_unknown_word_is_named"])
+    check("arm_browser_unknown_word_is_named",
+          len(uw) == 1 and carrier_lines("light","-",uw[0])[1][0].startswith(CARRIER_ERR_PREFIX),
+          f"an unreadable declaration must be NAMED at the browser end: {uw}")
+    ca = _seat_records(got["carrier_claimed_symbol_absent_is_named"])
+    check("arm_browser_claimed_symbol_absent_is_named",
+          len(ca) == 1 and ca[0]["hasSymbol"] is False
+          and carrier_lines("light","-",ca[0])[0] == "fail",
+          f"a claimed-but-absent symbol must be measured at the browser and fail: {ca}")
+    # THE SILENCE CONTROL: same DOM, no attribute. Identical text failure, and NO seat record.
+    ud = got["carrier_undeclared_seat_is_unchanged"]
+    ud_txt = [r for r in ud if r["kind"] == "text"]
+    check("arm_browser_undeclared_seat_is_unchanged",
+          _seat_records(ud) == [] and len(ud_txt) == 1
+          and ud_txt[0]["ratio"] == lf_txt[0]["ratio"] and ud_txt[0]["seat"] is None,
+          f"an UNDECLARED seat must behave exactly as before — nothing passes by silence: {ud}")
+
+    # (v) THE SWEEP — the clause that was MISSING until the vocabulary was driven on a real
+    # snippet. A declaration on a PASSIVE element (Status-indicator's `.stat` is a plain div) is
+    # outside SEL, so the in-MEASURE seat pass can never reach it. This arm drives `run()` end to
+    # end over a real file whose ONLY declaration is passive; without the page-wide sweep it
+    # reports nothing at all — silently.
+    swept = tempfile.mkdtemp(prefix="state-contrast-sweep-")
+    open(os.path.join(swept, "Zsweep.reference.html"), "w", encoding="utf-8").write(
+        _FIX_HEAD + '<div class="passive" data-carries="colour" style="background:#FFC107;'
+                    'width:60px;height:20px"></div>'
+                    '<div class="seg"><button type="button">Only interactive thing</button></div>')
+    _real_snip = globals()["SNIP"]
+    try:
+        globals()["SNIP"] = swept
+        sres = run([])
+    finally:
+        globals()["SNIP"] = _real_snip
+    sdecl = [r for _t, _s, r in sres.get("Zsweep", []) if r["kind"] == "seatdecl"]
+    check("arm_passive_declaration_is_swept",
+          len(sdecl) >= 1 and all(carrier_lines("light", "base", r)[0] == "fail" for r in sdecl),
+          "a declaration on a PASSIVE element (outside SEL) must still be seen and judged — "
+          f"without the page-wide sweep it is invisible: {sres.get('Zsweep')}")
+
     if fails:
         print(f"selftest FAILED — {len(fails)} bite(s):", file=sys.stderr)
         for f in fails: print(f"  ✗ {f}", file=sys.stderr)
@@ -627,7 +1064,11 @@ def selftest():
           "does not crash); artefact re-parsed against its own counters; unknown/unmatched arguments "
           "named; sibling paint seen; opacity:0 paints nothing; ancestor paint still seen; "
           "white-on-white STILL FAILS; un-hit-testable box falls back and declares it; "
-          "s125-D3's refusal intact.")
+          "s125-D3's refusal intact; s151-D1 meaning-carriers driven END TO END in the browser — "
+          "a valid declaration demotes its fill to advisory, a colour-only declaration HARD FAILS "
+          "with the verbatim reason, a declared carrier that misses its own threshold is STILL ❌, "
+          "an unreadable or unfounded declaration is NAMED, and an UNDECLARED seat is byte-for-byte "
+          "unchanged.")
     return 0
 
 def main(argv):
@@ -635,7 +1076,7 @@ def main(argv):
     if want_selftest:
         return selftest()
     res = run(filters)
-    text, total, refused, fellback = render_report(res)
+    text, total, refused, fellback, carrier_fails = render_report(res)
     open(os.path.join(HERE,"_STATE-CONTRAST-AUDIT.md"),"w",encoding="utf-8").write(text)
     print(text)
     if refused:
@@ -646,11 +1087,15 @@ def main(argv):
         # so it is countable, never inferred from silence.
         print(f"note: {fellback} background(s) took the ancestor-walk fallback (not hit-testable) "
               "— see _STATE-CONTRAST-AUDIT.md", file=sys.stderr)
-    return 1 if (total or refused) else 0
+    if carrier_fails:
+        print(f"s151-D1 CARRIER: {carrier_fails} declaration(s) failed the meaning-carrier clauses "
+              f'("{CARRIER_COLOUR_ALONE}", or unreadable) — see _STATE-CONTRAST-AUDIT.md', file=sys.stderr)
+    return 1 if (total or refused or carrier_fails) else 0
 
 if __name__ == "__main__":
     try:
         sys.exit(main(sys.argv[1:]))
-    except (StateContrastArgError, StateContrastReportError, StateContrastSelftestError) as e:
+    except (StateContrastArgError, StateContrastReportError, StateContrastSelftestError,
+            StateContrastCarrierError) as e:
         print(f"{type(e).__name__}: {e}", file=sys.stderr)
         sys.exit(2)

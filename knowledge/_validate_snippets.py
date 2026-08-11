@@ -33,6 +33,18 @@ For every knowledge/snippets/*.reference.html:
      (_validate_advisory.py check G) — fix at the Cards revisit, promote after.
      Bite-tested in _tests/test_gates.py.
 
+s151-D2 (Dave, #151) — THE 16 rag-on-neutral MIGRATION. Sixteen declared contrastPairs of the
+form `rag/<state>` on a NEUTRAL background (background/default, tertiary/background/default) have
+been REMOVED from the snippet manifests this gate reads, and moved to the RENDERING gate
+(_validate_state_contrast.py) under the s151-D1 meaning-carrier vocabulary, where a
+`data-carries="symbol label"` declaration is checkable against REAL DOM instead of an abstract
+token pair. The 16, by component: Amount-input 1, Chart-bar 3, Confirmation 1, File-upload 1,
+Form-layout 1, Input-fields 1, Reorder 1, Secure-entry 1, Stat-card 1, Status-indicator 2,
+Toast 3. THIS GATE NO LONGER MEASURES THEM — the absence is DECLARED here, not silent, and each
+affected snippet carries an HTML breadcrumb above its #token-manifest naming s151-D2. Pairs NOT
+migrated and still measured here: the rag-on-TINT pairs (Alert, List-items, Form-layout) and the
+Banner on-error-background pairs — a different class, untouched by s151-D2.
+
 This is the link that makes a snippet "gated": it cannot silently drift from the
 meta + token stores. Exits non-zero on any failure so _build_all.py fails the build.
 Writes knowledge/_SNIPPET-AUDIT.md.

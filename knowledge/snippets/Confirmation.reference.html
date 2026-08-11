@@ -69,7 +69,7 @@
 </head>
 <body data-theme="light">
   
-  <div class="confirm" role="group" aria-labelledby="cf-title">
+  <div class="confirm" role="group" data-carries="symbol label" aria-labelledby="cf-title">
     <svg class="success" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM7.22 13.55L3.59 9.92L4.86 8.65L7.22 11.01L13.15 5.08L14.42 6.35L7.22 13.55Z"/></svg>
     <h2 class="confirm__title" id="cf-title">Payment sent</h2>
     <p class="confirm__msg">£250.00 sent to Jane Smith. We’ve emailed your receipt.</p>
@@ -79,6 +79,10 @@
     </div>
   </div>
 
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
   <script type="application/json" id="token-manifest">
   {
     "component": "Confirmation",
@@ -97,7 +101,6 @@
     },
     "driftAllow": { "--success": ["dark"], "$reason": "RAG ROUNDEL POLICY (Dave 2026-07-02 eve): dark roundels are WHITE with a BLACK mark — icon shape + label carry meaning. The glyph's tick is a page-cutout, so white shape + black page = 21:1 (rag/success #00847F with a black cutout was 2.77, failing the >=4.5 mark leg). Light keeps rag/success." },
     "contrastPairs": [
-      { "fg": "rag/success", "bg": "background/default", "context": "ui" },
       { "fg": "text/default", "bg": "background/default", "context": "text" },
       { "fg": "text/secondary", "bg": "background/default", "context": "text" },
       { "fg": "button/primary/label/default", "bg": "button/primary/background/default", "context": "text" },

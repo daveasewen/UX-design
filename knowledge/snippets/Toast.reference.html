@@ -170,21 +170,25 @@
 
   <h2>Anatomy — statuses (static specimens)</h2>
   <div class="spec">
-    <div class="toast ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
-    <div class="toast info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
-    <div class="toast warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
     <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
   </div>
 
   <h2>With action — the action must also live somewhere persistent (never toast-only)</h2>
   <div class="spec">
-    <div class="toast ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
-    <div class="toast info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
   </div>
 
   <h2>Live region — spawn from the controls above; hover pauses the 6s timer</h2>
   <div class="toast-region" id="toastRegion"></div>
 
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
   <script type="application/json" id="token-manifest">
   {
     "component": "Toast",
@@ -193,10 +197,7 @@
               "--text": "text/default", "--page": "background/default", "--border-radius-surface": "border-radius/surface",
               "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken" },
     "contrastPairs": [
-      { "fg": "text/default",    "bg": "tertiary/background/default", "context": "text" },
-      { "fg": "rag/warning",     "bg": "tertiary/background/default", "context": "ui" },
-      { "fg": "rag/success",     "bg": "tertiary/background/default", "context": "ui" },
-      { "fg": "rag/information", "bg": "tertiary/background/default", "context": "ui" }
+      { "fg": "text/default",    "bg": "tertiary/background/default", "context": "text" }
     ],
     "icons": { "warning": "status-icons/warning.svg", "success": "status-icons/success.svg", "information": "status-icons/information.svg", "close": "global-controls/close.svg" },
     "requiredAria": ["role=\"status\"", "aria-label"],
