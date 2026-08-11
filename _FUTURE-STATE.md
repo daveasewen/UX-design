@@ -1031,5 +1031,11 @@ ruling by definition, and promotion is Dave's alone [[feedback-dont-launder-a-pr
 - **What it needs:** Dave's confirmation of the shape, then the two values from him.
   `[born #153 · guards: this entry + the #153 residual ④ · until: Dave confirms or withdraws]`
 
+> ✅ **PROMOTED #155 (2026-08-11, Dave live, ADDITION ONLY — the entry above stands as provenance).**
+> Dave confirmed the shape in his own words: *"green is the same as red, this is decided already, dark
+> and light in exactly the same contexts."* Recorded as `knowledge/_rulings.json` § `s155-D1` —
+> **SHAPE RULED, VALUES STILL OWED BY DAVE** (no green pair has ever been named; deriving one from
+> the red pair stays forbidden). This floated entry is CLOSED-BY-PROMOTION, not withdrawn.
+
 *Prior state of this question: PUT TO DAVE #151 (unanswered) · CARRIED #152 (unanswered) · REFLECTED
 #153 (unconfirmed). Three sessions open — the age is REPORTED, never acted on.*

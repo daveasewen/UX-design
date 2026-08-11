@@ -18,8 +18,10 @@ name: gates
 # found the same way at #64: CI's first run past step [6] (fonts fixed) reached
 # [75/75] and died on the integrity lint's import — locally present, CI absent.
 # The render-dependent checks (_validate_state_contrast.py, _validate_screen.py
-# --render) are NOT run here — they need a browser engine; run them locally via
-# the render path. Known gap, documented in knowledge/_tests/test_gates.py.
+# --render) run in the separate `render` job below (added #155, Dave's call on
+# the #153-A ⑨ proposal): ubuntu-latest has root, so `playwright install
+# --with-deps chromium` needs none of the sandbox lib-farm choreography. The
+# old "known gap" note in knowledge/_tests/test_gates.py pre-dates this job.
 
 on:
   push:
@@ -50,3 +52,31 @@ jobs:
 
       - name: Advisory bite-tests — advisory checks must bite (and never block)
         run: python3 knowledge/_tests/test_advisory.py
+
+  # Render job — added #155 (Dave ruled: "keep the ubuntu solution", on #153-A ⑨).
+  # BLOCKING: the state-contrast selftest (57 arms incl. the s152-D1 mutation
+  # control) — this is the proof that had no runner outside the sandbox.
+  # ADVISORY (continue-on-error): the full 75-snippet sweep — its exit is 1
+  # today on the KNOWN-OPEN Banner hover-wash 8 (#151); blocking on a declared
+  # open item would make every unrelated push red. When Banner lands, flip it.
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install playwright + chromium (root available — no lib farm needed)
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: State-contrast selftest — every arm, mutation controls included (BLOCKING)
+        run: python3 knowledge/_validate_state_contrast.py --selftest
+
+      - name: Full state-contrast sweep — ADVISORY until the Banner 8 clear (#151 open)
+        continue-on-error: true
+        run: python3 knowledge/_validate_state_contrast.py
