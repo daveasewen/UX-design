@@ -1,7 +1,7 @@
 # State-contrast audit — rendered hover / pressed states (light + dark)
 *Drives each interactive element's real hover/pressed states and measures computed foreground vs effective background. TEXT < 4.5 (large < 3.0) FAILS; svg ICONS < 3.0 WARN (many decorative). Disabled controls skipped (WCAG-exempt). Closes the declared-pairs blind spot (Dave, 2026-06-22).*
 
-**14 text failure(s) across 75 snippet(s).**
+**20 text failure(s) across 75 snippet(s).**
 
 **14 DECLARED HOLE(s) — un-hit-testable box(es), reported UNMEASURABLE by name (s129-D3).**
 
@@ -24,11 +24,15 @@
 
 ## Badge — ✅ clean
 
-## Banner — ❌ 4 TEXT fail(s) · ⬛ 1 UNMEASURABLE box(es)
-- ❌ TEXT [light/pressed] 4.09:1 (need 4.5) — "Confirm it was me"
-- ❌ TEXT [light/pressed] 4.09:1 (need 4.5) — "Secure my account"
-- ❌ TEXT [dark/pressed] 4.09:1 (need 4.5) — "Confirm it was me"
-- ❌ TEXT [dark/pressed] 4.09:1 (need 4.5) — "Secure my account"
+## Banner — ❌ 8 TEXT fail(s) · ⬛ 1 UNMEASURABLE box(es)
+- ❌ TEXT [light/hover] 2.72:1 (need 4.5) — "Confirm it was me"
+- ❌ TEXT [light/pressed] 2.47:1 (need 4.5) — "Confirm it was me"
+- ❌ TEXT [light/hover] 2.72:1 (need 4.5) — "Secure my account"
+- ❌ TEXT [light/pressed] 2.47:1 (need 4.5) — "Secure my account"
+- ❌ TEXT [dark/hover] 2.72:1 (need 4.5) — "Confirm it was me"
+- ❌ TEXT [dark/pressed] 2.47:1 (need 4.5) — "Confirm it was me"
+- ❌ TEXT [dark/hover] 2.72:1 (need 4.5) — "Secure my account"
+- ❌ TEXT [dark/pressed] 2.47:1 (need 4.5) — "Secure my account"
 - ⬛ UNMEASURABLE (declared hole) — a "See affected services" — not present in the hit stack at its own sample point (pointer-events:none, or an overlay above it takes the hit). The paint stack under it cannot be observed, so the pre-2026-08-07 ancestor-only walk ran instead: any ratio reported over this box is that weaker measurement, NOT a hit-stack one. Nothing is invented and nothing is waived (s129-D3).
 
 ## Breadcrumbs — ✅ clean
@@ -149,15 +153,17 @@
 
 ## Segmented-control — ✅ clean
 
-## Selection-controls — ❌ 8 TEXT fail(s) · 6 icon warn(s)
+## Selection-controls — ❌ 10 TEXT fail(s) · 6 icon warn(s)
+- ❌ TEXT [light/hover] 3.14:1 (need 4.5) — "Accept terms & conditions"
+- ❌ TEXT [light/pressed] 3.14:1 (need 4.5) — "Accept terms & conditions"
 - ❌ TEXT [light/pressed] 3.95:1 (need 4.5) — "Savings"
 - ❌ TEXT [light/pressed] 3.95:1 (need 4.5) — "Credit card"
 - ❌ TEXT [light/pressed] 3.95:1 (need 4.5) — "90 days"
 - ❌ TEXT [light/pressed] 3.95:1 (need 4.5) — "6 months"
 - ❌ TEXT [light/pressed] 3.95:1 (need 4.5) — "12 months"
 - ❌ TEXT [light/pressed] 3.95:1 (need 4.5) — "✕"
-- ❌ TEXT [dark/hover] 3.66:1 (need 4.5) — "Accept terms & conditions"
-- ❌ TEXT [dark/pressed] 3.66:1 (need 4.5) — "Accept terms & conditions"
+- ❌ TEXT [dark/hover] 1.66:1 (need 4.5) — "[MARK] path.star"
+- ❌ TEXT [dark/pressed] 1.66:1 (need 4.5) — "[MARK] path.star"
 - 🟡 icon [light/hover] 1:1 (need 3.0)
 - 🟡 icon [light/pressed] 1:1 (need 3.0) (decorative)
 - 🟡 icon [dark/hover] 1.21:1 (need 3.0)

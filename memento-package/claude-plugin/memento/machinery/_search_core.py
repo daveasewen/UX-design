@@ -159,7 +159,19 @@ def load_records_or_refuse(index_path, what):
 #   > **consult-receipts #25:** "two lanes routing" → ledger:two-lanes · lane:lane-1-memento ; "amber fills" → R-D3
 # or the honest negative:
 #   > **consult-receipts #25:** none — pure enactment window, no design decisions taken
-RECEIPT_LINE_RE = re.compile(r"^>\s*\*\*consult-receipts\s+#(\d+):\*\*\s*(.+?)\s*$")
+#
+# RUNNING COUNT — ruled Dave 2026-08-02 (dream pass 4, P4 "ACCEPTED with a reframe"), inscribed #128.
+# The stratum line CARRIES its own running count, "Nth of M", written after the session number:
+#   > **consult-receipts #25 (18th of 40):** "two lanes routing" → ledger:two-lanes
+#   > **consult-receipts #25 (18th of 40):** none — pure enactment window, no design decisions taken
+# N = sessions whose receipts line is non-`none`; M = sessions carrying a receipts line at all.
+# FORM ONLY — history is NOT re-stamped, and the count is NOT gated (the rate is a question about
+# the TOOL, not about discipline: ~50% `none` across 40 sessions, flat, several of them legitimate).
+# The optional `(Nth of M)` group is the 2026-08-02 running count (inscribed #128). It is
+# ACCEPTED, never REQUIRED — lines written before the form, and lines written without it,
+# parse exactly as they did. No new failure mode is introduced by this group.
+RECEIPT_LINE_RE = re.compile(
+    r"^>\s*\*\*consult-receipts\s+#(\d+)(?:\s*\((?:\d+)(?:st|nd|rd|th)\s+of\s+(?:\d+)\))?:\*\*\s*(.+?)\s*$")
 _RECEIPT_NONE_RE = re.compile(r"^none\s*[—–-]\s*\S.+$")
 _RECEIPT_SEG_RE = re.compile(r'^"([^"]+)"\s*→\s*(\S.*)$')
 

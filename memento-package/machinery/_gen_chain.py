@@ -106,6 +106,127 @@ def unit_word(cg):
     tier = cg.measurement_tier()
     return _UNIT_WORDS.get(tier, f"UNRECOGNISED-TIER({tier})")
 
+# ---------------------------------------------------------------------------------------------
+# ★ s125-D1 (DAVE, RULED #125, ENACTED #126) — THE BUILD-STEP COUNT IS GENERATED, NOT TYPED.
+#
+# The chain banner carried `"ALL 75 STEPS ASKED AND GREEN (#62)"` as PROSE. It was true when
+# written (`18c7789`, len(STEPS) == 75) and went false silently as steps were added; #125 measured
+# disk at 98 and Dave ruled the figure becomes GENERATED **explicitly over a third re-stamp**.
+# ★ The class: *a claim that was true when written, went false, and nothing re-checks it*
+# [[no-gate-parses-the-artefact]]. A fourth re-stamp would have re-armed it.
+#
+# ⛔ TWO NUMBERS, NOT ONE — and conflating them is how the re-stamp would have LIED. The live
+# count (98) and the count the green verdict actually covered (75, at `VERDICT_SHA`) are different
+# facts. Substituting only the live number would have published *"ALL 98 STEPS ASKED AND GREEN
+# (#62)"* — a sentence no one ever measured, manufactured by the very fix meant to stop
+# manufactured claims. So BOTH ends are read from an AST, and the SHORTFALL is computed.
+#
+# ★ WHY THE SUBSTITUTION HAPPENS IN `_capture_gate.chain_parts` AND NOT HERE, despite the ruling
+# naming this file: `chain_parts` is THE ONE SLICER — `read_chain_tk` measures exactly what it
+# returns and this module writes exactly what it returns, so text injected downstream of it would
+# be written-but-not-measured. That is the second-consumer drift #41 extracted the slicer to make
+# impossible, and it is the same reason `dofirst_index` is composed there rather than here (see
+# its comment at `_capture_gate.chain_parts`). The READER lives here, as ruled; the SLICER calls
+# it. [[instruction-right-cause-wrong]]
+#
+# ⚠ REFUSES, NEVER GUESSES. No git, no `_build_all.py`, no `STEPS` assignment, a non-literal list
+# — every one of them yields a NAMED refusal that is published in the chain as an UNMEASURED gap.
+# A declared gap passes; a silent one fails. [[measuring-tool-must-not-guess]]
+BUILD_VERDICT_MARK = "{{BUILD_VERDICT}}"
+
+# The commit whose message is "Ask all 75 steps (75 pass · 0 FAIL) …" — the sole provenance of
+# the "#62 green" claim. ⚠ This SHA is typed, and that is deliberate: it names a fixed historical
+# event, so it cannot go stale the way a COUNT does. Everything derived FROM it is measured.
+VERDICT_SHA = "18c7789"
+
+
+class BuildStepCountError(Exception):
+    """Raised by `_steps_in` when a step count cannot be READ. Never returns a number."""
+
+
+def _steps_in(source, where):
+    """`len(STEPS)` and the number of DISTINCT labels, from `_build_all.py` source, via AST.
+
+    ⚠ Distinct labels are returned alongside the length because #125's probe closed the 75-vs-97
+    question by showing they were 1:1 at BOTH ends — same object, stale by N. A generator that
+    published only `len()` could not tell a genuine growth from a duplicated row.
+    """
+    import ast
+    try:
+        tree = ast.parse(source)
+    except SyntaxError as e:
+        raise BuildStepCountError(f"{where} does not parse ({e})")
+    for node in tree.body:
+        if not isinstance(node, ast.Assign):
+            continue
+        if not any(getattr(t, "id", None) == "STEPS" for t in node.targets):
+            continue
+        if not isinstance(node.value, (ast.List, ast.Tuple)):
+            raise BuildStepCountError(
+                f"{where}: STEPS is not a literal list/tuple ({type(node.value).__name__}) — "
+                f"its length is not statically knowable, so it is NOT counted")
+        labels = [e.elts[0].value for e in node.value.elts
+                  if isinstance(e, (ast.Tuple, ast.List)) and e.elts
+                  and isinstance(e.elts[0], ast.Constant)]
+        return len(node.value.elts), len(set(labels))
+    raise BuildStepCountError(f"{where}: no top-level `STEPS = [...]` assignment found")
+
+
+def build_steps_now(repo=ROOT):
+    """(n, distinct, None) for the WORKING TREE, or (None, None, reason)."""
+    path = os.path.join(repo, "knowledge", "_build_all.py")
+    if not os.path.exists(path):
+        return None, None, f"`{path}` is absent"
+    try:
+        with open(path, encoding="utf-8") as f:
+            return (*_steps_in(f.read(), "_build_all.py (working tree)"), None)
+    except BuildStepCountError as e:
+        return None, None, str(e)
+
+
+def build_steps_at(sha, repo=ROOT):
+    """(n, distinct, None) for `_build_all.py` AS OF `sha`, or (None, None, reason)."""
+    import subprocess
+    try:
+        out = subprocess.run(["git", "show", f"{sha}:knowledge/_build_all.py"],
+                             cwd=repo, capture_output=True, text=True, timeout=20)
+    except (OSError, subprocess.SubprocessError) as e:
+        return None, None, f"git unavailable ({e})"
+    if out.returncode != 0:
+        return None, None, (f"`git show {sha}:knowledge/_build_all.py` failed rc="
+                            f"{out.returncode} ({out.stderr.strip()[:120]})")
+    try:
+        return (*_steps_in(out.stdout, f"_build_all.py @ {sha}"), None)
+    except BuildStepCountError as e:
+        return None, None, str(e)
+
+
+def build_verdict_line(repo=ROOT):
+    """The GENERATED build-verdict sentence for the chain banner. NEVER a typed count.
+
+    ⚠ Width-stable with respect to the fixed point: nothing here depends on the file-size figure
+    `build()` is solving for, so this cannot induce the 2-cycle that `build()` refuses on.
+    """
+    now, now_lab, why_now = build_steps_now(repo)
+    if now is None:
+        return (f"⛔ **BUILD VERDICT: UNMEASURED — the build-step count could not be read "
+                f"({why_now}).** Not defaulted to a number; `s125-D1` makes this figure "
+                f"GENERATED, and a generator that guesses is the defect it replaced.")
+    dup = "" if now == now_lab else f" ⚠ **{now - now_lab} DUPLICATE label(s)**"
+    then, _then_lab, why_then = build_steps_at(VERDICT_SHA, repo)
+    if then is None:
+        return (f"⛔ **BUILD VERDICT: {now} steps on disk{dup} — GENERATED from "
+                f"`_build_all.py`'s AST (`s125-D1`). The #62 green verdict's COVERAGE is "
+                f"UNMEASURED ({why_then}) — a declared gap, not a pass.**")
+    gap = now - then
+    if gap <= 0:
+        return (f"⛔ **BUILD VERDICT: {now} steps on disk{dup}; #62's green verdict covered "
+                f"{then} (`{VERDICT_SHA}`) — GENERATED at both ends (`s125-D1`).**")
+    return (f"⛔ **BUILD VERDICT: {then} of {now} steps green (#62, `{VERDICT_SHA}`) — "
+            f"{gap} steps have NEVER been in a green verdict.**{dup} Both counts GENERATED "
+            f"from `_build_all.py`'s AST at each end; the shortfall is computed (`s125-D1`).")
+
+
 # ⚠ #47 — THE COST ASYMMETRY, AND IT DECIDES WHERE PROSE GOES IN THIS MODULE.
 # Comments in this `.py` are read by whoever maintains the generator: a handful of times, by
 # choice. Text inside `BANNER` / `FOOTER` is read by EVERY cold session, forever, and is charged
@@ -449,6 +570,39 @@ def selftest():
         bite("tells the reader NOT to open GOOD-MORNING.md to check",
              "Do NOT now open" in text)
         bite("names retrieval as the door for everything else", "_memento_search.py" in text)
+        # ---- s125-D1 (#126): THE BUILD-STEP FIGURE IS GENERATED, AND THIS RE-CHECKS IT.
+        # ★ These bites exist because the number they guard went false in silence for ~50
+        # sessions while every gate in the repo stayed green: the `size:` stamp audit matched a
+        # REGEX, and no gate parsed the prose beside it [[no-gate-parses-the-artefact]].
+        # ⚠ The second bite is the load-bearing one — it does not check that *a* number is
+        # present (the old defect satisfied that for 50 sessions), it re-derives `len(STEPS)`
+        # from disk AT TEST TIME and asserts the chain publishes THAT. It is the answer to
+        # "what re-checks this?", which is the question the whole class turns on.
+        bite("the {{BUILD_VERDICT}} marker NEVER leaks into the chain unrendered",
+             "{{BUILD_VERDICT}}" not in text)
+        _n, _lab, _why = build_steps_now(ROOT)
+        if _n is None:
+            bite(f"build-step count is readable from _build_all.py's AST ({_why})", False)
+        else:
+            bite(f"BUILD-STEP FIGURE IS RE-DERIVED AND MATCHES DISK ({_n} steps, measured now)",
+                 f" {_n} steps" in text or f"of {_n} steps" in text)
+            bite("no DUPLICATE step labels are being counted as growth", _n == _lab,
+                 ) if _n != _lab else bite("step labels are 1:1 with rows (no duplicates)", True)
+        # ⛔ REFUSAL BITE — the figure must go UNMEASURED, by name, rather than default to a
+        # number. A measuring tool that guesses is the defect this replaced.
+        try:
+            _steps_in("NOT_STEPS = [1, 2, 3]\n", "<bite>")
+            bite("an absent STEPS assignment REFUSES BY NAME (never returns a count)", False)
+        except BuildStepCountError as _e:
+            bite("an absent STEPS assignment REFUSES BY NAME (never returns a count)",
+                 "no top-level" in str(_e))
+        try:
+            _steps_in("STEPS = list(x for x in [])\n", "<bite>")
+            bite("a NON-LITERAL STEPS refuses rather than counting something else", False)
+        except BuildStepCountError as _e:
+            bite("a NON-LITERAL STEPS refuses rather than counting something else",
+                 "not a literal" in str(_e))
+
         # ---- #73 (f): the title rides ABOVE the banners, and a stale title refuses.
         bite("TITLE BLOCK IS FIRST — above the verbatim GM slice (position was the defect)",
              "TITLE THIS CHAT" in text and text.index("TITLE THIS CHAT") < text.index(gm_part[:40]))

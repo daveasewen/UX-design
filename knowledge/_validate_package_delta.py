@@ -85,7 +85,10 @@ KNOWN_FILES = set(VERBATIM_SET) | {SHIM_NAME, "_consult-lexicon.json", "_MACHINE
 IGNORE_DIRS = {"__pycache__"}
 
 # ---- Provenance chain (a): knowledge/_capture_gate.py @ c853b0a -------------------------
-PORT_COMMIT_A = "c853b0a"   # ★ #114 RE-PORT: measure_tokens / measurement_degraded /
+PORT_COMMIT_A = "9dcf62d"   # ★ #149 RE-PORT: chain_parts had drifted since c853b0a
+# (the s125-D1 {{BUILD_VERDICT}} splice). Re-reviewed and re-ported into the shim, the shim's
+# docstring now declares this commit, and this constant follows it.
+# ★ #114 RE-PORT: measure_tokens / measurement_degraded /
 # DOFIRST_INDEX_TK_MAX had drifted since 91d7528 (the #82-D1 three-tier cascade, and the
 # constant's 700). All three were re-reviewed and re-ported into the shim, the shim's docstring
 # now declares this commit, and this constant follows it — the gate's own remedy path ("the shim

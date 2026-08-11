@@ -9,11 +9,11 @@ Apollo-laced lines (provenance/status gates, section-size budgets, band arithmet
 module that reproduces the behaviour of those four functions and nothing else, so the package
 does not have to drag Apollo's gate machinery along for the ride.
 
-PROVENANCE. Ported from `knowledge/_capture_gate.py` @ HEAD `c853b0a` (2026-08-06, that file's own
+PROVENANCE. Ported from `knowledge/_capture_gate.py` @ HEAD `9dcf62d` (2026-08-10, that file's own
 last touch), these names — ⚠ names, not line ranges: the source file has grown well past 4,000
 lines since the first port, so its line numbers no longer address the right text and the
 delta-audit gate addresses everything BY NAME (AST source-segment hashing):
-  - `chain_parts`            (unchanged since the first port @ `91d7528`)
+  - `chain_parts`            (re-ported #149 @ `9dcf62d`; was `91d7528`)
   - `read_chain_tk`          (unchanged since `91d7528`)
   - `measure_tokens`         ★ RE-PORTED #114 — the #82-D1 three-tier cascade (real → cl100k →
                              ESTIMATE) plus `_TIERS_SEEN` bookkeeping; see its own docstring for
@@ -369,6 +369,26 @@ def chain_parts(repo, gm_lines):
         "> ⚠ **PRESENCE INDEX UNAVAILABLE — the open worklist is NOT represented in this chain.** "
         f"{idx_how} ⇒ retrieve `gm:DOFIRST` by hand; do NOT read this chain as evidence that "
         "there is no open work."))
+
+    # ★ s125-D1 (Dave, RULED #125, ENACTED #126) — THE BUILD-STEP FIGURE IS SUBSTITUTED **HERE**,
+    # inside the ONE SLICER, for the identical reason the presence index is composed here and not
+    # in the generator: `read_chain_tk` measures exactly what this function returns and
+    # `_gen_chain.py` writes exactly what it returns. Text injected in the generator would be
+    # WRITTEN BUT NOT MEASURED — the second-consumer drift #41 extracted this function to make
+    # impossible. The AST READER lives in `_gen_chain.py`, as the ruling names; only the splice is
+    # here. [[instruction-right-cause-wrong]]
+    # ⛔ A FAILED SUBSTITUTION DECLARES ITSELF AND DOES NOT REFUSE THE CHAIN — same posture as the
+    # index directly above, and for the same reason: the chain depends on ★ LATEST and ⏱ DELTAS,
+    # and nothing else may break it. A DECLARED gap passes; a SILENT one fails.
+    if "{{BUILD_VERDICT}}" in gm_part:
+        try:
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            import _gen_chain
+            _verdict = _gen_chain.build_verdict_line(repo)
+        except Exception as e:                                # pragma: no cover - import guard
+            _verdict = ("⛔ **BUILD VERDICT: NOT RENDERED** — the generated step figure could not "
+                        f"be produced ({e}). This is a REFUSAL, not a green build.")
+        gm_part = gm_part.replace("{{BUILD_VERDICT}}", _verdict)
 
     ls_path = os.path.join(repo, "_LIVE-STATE.md")
     if not os.path.exists(ls_path):
