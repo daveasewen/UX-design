@@ -1036,6 +1036,10 @@ ruling by definition, and promotion is Dave's alone [[feedback-dont-launder-a-pr
 > and light in exactly the same contexts."* Recorded as `knowledge/_rulings.json` § `s155-D1` —
 > **SHAPE RULED, VALUES STILL OWED BY DAVE** (no green pair has ever been named; deriving one from
 > the red pair stays forbidden). This floated entry is CLOSED-BY-PROMOTION, not withdrawn.
+> ✅ **VALUES RESOLVED same window (#155 amendment, Dave):** the pair was already ruled at `s144-D1` —
+> **`#137F3C`-on-white / `#66CC8D`-else** (Dave named #66CC8D from memory; the record confirms it
+> exact). Scope narrowed by Dave in the same breath: **MONO theme ONLY.** See `s155-D1`'s amended
+> status in `knowledge/_rulings.json`.
 
 *Prior state of this question: PUT TO DAVE #151 (unanswered) · CARRIED #152 (unanswered) · REFLECTED
 #153 (unconfirmed). Three sessions open — the age is REPORTED, never acted on.*
