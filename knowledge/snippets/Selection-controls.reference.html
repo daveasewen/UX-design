@@ -139,6 +139,16 @@
   /* ---- error state ---- */
   /* s151-D1 clause 3: ATOM only takes the error red; labels keep default ink */
   .field.is-error .box{border-color:var(--error-atom);}
+  /* s151-D3 leg 1 (#152): atom reach — red reaches radio ring+dot, switch ring+thumb, and the marks
+     (tick / indeterminate dash). Checked/indeterminate fills drop to transparent in error so the red
+     mark sits on the page (ruled-from specimen: _review/atoms-reach-and-star-v1.html, RED option). */
+  .field.is-error .box path,.field.is-error .box rect{stroke:var(--error-atom);}
+  .field.is-error input:checked + label .box,.field.is-error input:indeterminate + label .box{background:transparent; border-color:var(--error-atom);}
+  .field.is-error .radio{border-color:var(--error-atom);}
+  .field.is-error .radio .dot{background:var(--error-atom);}
+  .field.is-error .switch{border-color:var(--error-atom);}
+  .field.is-error .switch .thumb{background:var(--error-atom);}
+  .field.is-error input:checked + label .switch{background:transparent; border-color:var(--error-atom);}
   .err-msg{display:flex; align-items:center; gap:8px; color:var(--error); font:400 14px/1.3 var(--font); margin:-6px 0 16px 36px;}
 
   /* ---- chips (square, brand angular) ---- */
@@ -155,6 +165,10 @@
   .chip:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .chip[aria-pressed="true"],.chip[aria-checked="true"]{background:var(--checked); color:var(--glyph); border-color:var(--checked);}
   .chip[aria-pressed="true"] .star,.chip[aria-checked="true"] .star{fill:currentColor;}
+  /* s151-D3 leg 2, star option C (#152): a SELECTED chip takes the hover/pressed washes and the ink
+     flips to default — star and label follow the ink rule (dark: #FFF/#232323 = 15.72:1, #FFF/#484848 = 9.15:1). */
+  .chip[aria-pressed="true"]:hover,.chip[aria-checked="true"]:hover{background:var(--chip-hover); color:var(--label); border-color:var(--chip-hover);}
+  .chip[aria-pressed="true"]:active,.chip[aria-checked="true"]:active{background:var(--chip-pressed); color:var(--label); border-color:var(--chip-pressed);}
   .chip:disabled{border-color:var(--ctrl-border-disabled); color:var(--label-disabled); cursor:not-allowed; background:transparent;}
   .chip .x{display:inline-flex; position:relative; width:18px; height:18px; align-items:center; justify-content:center;
     border:0; background:transparent; color:inherit; padding:0; font:inherit; line-height:1; cursor:pointer; border-radius:var(--border-radius-control);}
@@ -202,6 +216,9 @@
     <div class="field is-disabled"><input type="checkbox" id="c3" disabled><label for="c3"><span class="box"><svg data-bespoke="checkbox tick, animated stroke-draw control glyph" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Push notifications (disabled)</label></div>
     <div class="field is-error"><input type="checkbox" id="c5" aria-invalid="true" aria-describedby="c5e"><label for="c5"><span class="box"><svg data-bespoke="checkbox tick, animated stroke-draw control glyph" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Accept terms &amp; conditions</label></div>
     <p class="err-msg" id="c5e">⚠ You must accept the terms to continue</p>
+    <!-- s151-D3 leg 1 (#152): error reaches the indeterminate dash -->
+    <div class="field is-error"><input type="checkbox" id="c6" aria-invalid="true" aria-describedby="c6e"><label for="c6"><span class="box"><svg data-bespoke="indeterminate dash, animated control glyph" viewBox="0 0 18 18"><path class="mixed" d="M4 9 L14 9"/></svg></span> Account permissions (partial, error)</label></div>
+    <p class="err-msg" id="c6e">⚠ Some permissions could not be applied</p>
 
     <h2>Radio</h2>
     <fieldset>
@@ -209,12 +226,18 @@
       <div class="field"><input type="radio" name="r" id="r1"><label for="r1"><span class="radio"><span class="dot"></span></span> Standard delivery</label></div>
       <div class="field"><input type="radio" name="r" id="r2" checked><label for="r2"><span class="radio"><span class="dot"></span></span> Express delivery (selected)</label></div>
       <div class="field is-disabled"><input type="radio" name="r" id="r3" disabled><label for="r3"><span class="radio"><span class="dot"></span></span> Same-day (disabled)</label></div>
+      <!-- s151-D3 leg 1 (#152): error reaches the radio ring+dot -->
+      <div class="field is-error"><input type="radio" name="rE" id="r4" checked aria-invalid="true" aria-describedby="r4e"><label for="r4"><span class="radio"><span class="dot"></span></span> Collection point (error)</label></div>
+      <p class="err-msg" id="r4e">⚠ This option is unavailable for your address</p>
     </fieldset>
 
     <h2>Switch</h2>
     <div class="field"><input type="checkbox" role="switch" id="s1"><label for="s1"><span class="switch"><span class="thumb"></span></span> Marketing emails</label></div>
     <div class="field"><input type="checkbox" role="switch" id="s2" checked><label for="s2"><span class="switch"><span class="thumb"></span></span> Two-factor auth (on)</label></div>
     <div class="field is-disabled"><input type="checkbox" role="switch" id="s3" disabled><label for="s3"><span class="switch"><span class="thumb"></span></span> Beta features (disabled)</label></div>
+    <!-- s151-D3 leg 1 (#152): error reaches the switch ring+thumb -->
+    <div class="field is-error"><input type="checkbox" role="switch" id="s4" aria-invalid="true" aria-describedby="s4e"><label for="s4"><span class="switch"><span class="thumb"></span></span> Paperless statements (error)</label></div>
+    <p class="err-msg" id="s4e">⚠ This setting could not be saved</p>
 
     <h2>Chips — toggle (multi-select)</h2>
     <div class="chips" role="group" aria-label="Filter by account type">
@@ -275,6 +298,7 @@
 
     // indeterminate checkbox (must be set in JS; CSS :indeterminate then styles it, aria-checked=mixed for AT)
     const ind = document.getElementById('c4'); ind.indeterminate = true; ind.setAttribute('aria-checked', 'mixed');
+    const indE = document.getElementById('c6'); indE.indeterminate = true; indE.setAttribute('aria-checked', 'mixed');  // s151-D3 error specimen
     ind.addEventListener('change', () => { ind.indeterminate = false; ind.removeAttribute('aria-checked'); });
 
     // toggle chips (multi) — native button; reflect aria-pressed

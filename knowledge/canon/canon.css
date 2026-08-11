@@ -2633,6 +2633,16 @@
 /* s151-D1 clause 3: the ATOM takes the error red, the label keeps default ink.
    --error-atom is background-keyed (rag/error-ink: #DA1A00 on white, #F6604C elsewhere). */
 .cn-selection-controls .field.is-error .box{border-color:var(--error-atom);}
+/* s151-D3 leg 1 (#152): atom reach — the red reaches radio ring+dot, switch ring+thumb, and the marks
+   (tick / indeterminate dash) too. Checked/indeterminate fills drop to transparent in error so the red
+   mark sits on the page, per the ruled-from specimen (_review/atoms-reach-and-star-v1.html, RED option). */
+.cn-selection-controls .field.is-error .box path, .cn-selection-controls .field.is-error .box rect{stroke:var(--error-atom);}
+.cn-selection-controls .field.is-error input:checked + label .box, .cn-selection-controls .field.is-error input:indeterminate + label .box{background:transparent; border-color:var(--error-atom);}
+.cn-selection-controls .field.is-error .radio{border-color:var(--error-atom);}
+.cn-selection-controls .field.is-error .radio .dot{background:var(--error-atom);}
+.cn-selection-controls .field.is-error .switch{border-color:var(--error-atom);}
+.cn-selection-controls .field.is-error .switch .thumb{background:var(--error-atom);}
+.cn-selection-controls .field.is-error input:checked + label .switch{background:transparent; border-color:var(--error-atom);}
 .cn-selection-controls .err-msg{display:flex; align-items:center; gap:8px; color:var(--error); font:400 14px/1.3 var(--font); margin:-6px 0 16px 36px;}
 /* ---- chips (square, brand angular) ---- */
 .cn-selection-controls .chips{display:flex; flex-wrap:wrap; gap:8px;}
@@ -2648,6 +2658,11 @@
 .cn-selection-controls .chip:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-selection-controls .chip[aria-pressed="true"], .cn-selection-controls .chip[aria-checked="true"]{background:var(--checked); color:var(--glyph); border-color:var(--checked);}
 .cn-selection-controls .chip[aria-pressed="true"] .star, .cn-selection-controls .chip[aria-checked="true"] .star{fill:currentColor;}
+/* s151-D3 leg 2, star option C (#152): a SELECTED chip takes the hover/pressed washes and the ink flips
+   to default — star and label follow the ink rule (ruled from _review/atoms-reach-and-star-v1.html;
+   dark: #FFF on #232323 = 15.72:1, #FFF on #484848 = 9.15:1). Border follows the wash, as the specimen. */
+.cn-selection-controls .chip[aria-pressed="true"]:hover, .cn-selection-controls .chip[aria-checked="true"]:hover{background:var(--chip-hover); color:var(--label); border-color:var(--chip-hover);}
+.cn-selection-controls .chip[aria-pressed="true"]:active, .cn-selection-controls .chip[aria-checked="true"]:active{background:var(--chip-pressed); color:var(--label); border-color:var(--chip-pressed);}
 .cn-selection-controls .chip:disabled{border-color:var(--ctrl-border-disabled); color:var(--label-disabled); cursor:not-allowed; background:transparent;}
 .cn-selection-controls .chip .x{display:inline-flex; position:relative; width:18px; height:18px; align-items:center; justify-content:center;
     border:0; background:transparent; color:inherit; padding:0; font:inherit; line-height:1; cursor:pointer; border-radius:var(--border-radius-control);}
