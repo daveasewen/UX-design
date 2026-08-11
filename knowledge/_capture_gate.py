@@ -2218,9 +2218,29 @@ def check_budgets(repo):
         notes.append(f"BANNER region: {fmt_units(banner_tk)} (file top → DO-FIRST: header + "
                      f"★ LATEST + ★ PRIOR) · warn {b_warn:,} tape / ~{bw_bill:,} bill · block "
                      f"{b_block:,} tape / ~{bb_bill:,} bill · cap {b_prov}")
+        # ★ M8 TIER KEYS ON WHETHER THE REMEDY IS LEGAL — Dave 2026-08-11 (#154, "fix it
+        # properly"), closing DO-FIRST 11 (born #58). The block's only remedy is a 2c roll, and
+        # 2c KEEPS ★ LATEST + one ★ PRIOR: with ≤1 PRIOR in the region there is nothing that may
+        # legally move, so the fail demanded either shaving ratified record (#49/#51/#153 all did)
+        # or an index-refused roll (proven-by-reversal, #58). A gate may not demand an action the
+        # contracts forbid — the M10 comment above already states the law ("a budget check reports
+        # its measurement; it does not prescribe the region"); this applies it to M8's own tier.
+        # With ≥2 PRIORs a roll IS available and the block stands exactly as before. At the
+        # minimum, the overage is banner FATNESS, pressure lands on the NEXT banner at authoring
+        # time, and the derived cap falls on its own as archived banners lean out (D4 (a) — the
+        # leanness condition discharges mechanically). Report; never a trim order; Dave rules.
+        n_prior = sum(1 for ln in lines[:b_end] if _BANNER_PRIOR_START_RE.match(ln))
         if bill_of(banner_tk) >= bb_bill:
-            fails.append(f"GOOD-MORNING.md banner region: {fmt_units(banner_tk)}, block "
-                         f"~{bb_bill:,} bill — roll a banner to _GM-ARCHIVE.md (ritual step 2c)")
+            if n_prior >= 2:
+                fails.append(f"GOOD-MORNING.md banner region: {fmt_units(banner_tk)}, block "
+                             f"~{bb_bill:,} bill — roll a banner to _GM-ARCHIVE.md (ritual step 2c)")
+            else:
+                warns.append(f"GOOD-MORNING.md banner region: {fmt_units(banner_tk)}, block "
+                             f"~{bb_bill:,} bill — AT 2c MINIMUM ({n_prior} PRIOR): no banner may "
+                             f"legally roll, so no fail is issued for an action the contract "
+                             f"forbids (DO-FIRST 11 class, closed #154). The weight is banner "
+                             f"fatness against the archive's p{BANNER_HEADROOM_PCTL} — write the "
+                             f"NEXT banner leaner; never shave inscribed record to quiet this.")
         elif bill_of(banner_tk) > bw_bill:
             warns.append(f"GOOD-MORNING.md banner region: {fmt_units(banner_tk)}, cap "
                          f"~{bw_bill:,} bill — ritual step 2c")
@@ -5127,9 +5147,28 @@ def selftest_growth():
         _f, w, _n = _warns_for(td, fat_banner=17)
         if not any("banner region" in x for x in w):
             failures.append("M8: a 17-fat-line banner did not WARN — the sub-budget does not bite")
-        f, _w, _n = _warns_for(td, fat_banner=30)
-        if not any("banner region" in x for x in f):
-            failures.append("M8: a 30-fat-line banner did not BLOCK")
+        # ★ M8 TIER-BY-LEGALITY (#154, closing DO-FIRST 11) — both arms asserted, both ways.
+        # (a) AT MINIMUM: the fixture has ★ LATEST and NO ★ PRIOR, so no roll is legal; an
+        # over-block region must land in WARNS, say why, and must NOT fail — the old fail here
+        # demanded a forbidden action (proven-by-reversal #58; #49/#51/#153 shaved record for it).
+        f, w, _n = _warns_for(td, fat_banner=30)
+        if any("banner region" in x for x in f):
+            failures.append("M8: an over-block region AT the 2c minimum FAILED — the gate is "
+                            "demanding a roll the 2c contract forbids (DO-FIRST 11, closed #154)")
+        if not any("AT 2c MINIMUM" in x for x in w):
+            failures.append("M8: an over-block region at the 2c minimum did not WARN with the "
+                            "AT-2c-MINIMUM tag — the downgrade must declare its reason, or it is "
+                            "indistinguishable from the budget simply not biting")
+        # (b) ROLLABLE: two ★ PRIORs present ⇒ a 2c roll IS legal and the block stands as ruled.
+        # This is the mutation control on (a): if the tier key were dead code, this arm would
+        # warn too and the pair would catch it.
+        _two_priors = ("> ## ★ PRIOR — fixture prior A\n> - prior body line\n"
+                       "> ## ★ PRIOR — fixture prior B\n> - prior body line")
+        f, _w, _n = _warns_for(td, fat_banner=30, banner_extra=_two_priors)
+        if not any("roll a banner" in x for x in f):
+            failures.append("M8: an over-block region WITH a rollable ★ PRIOR did not BLOCK — "
+                            "the legality key has widened the downgrade past its licence "
+                            "(gate-narrows-its-own-rule, inverted)")
         _f, w, n = _warns_for(td)
         if any("banner region" in x for x in w):
             failures.append("M8: an ordinary banner warned — the budget fires on everything")

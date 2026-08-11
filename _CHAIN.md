@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 58,139 real and 80% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 58,468 real and 80% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -138,5 +138,5 @@ Dossier addendum: `_DECISION-HISTORY/2026-08-11-153-the-phantom-fill-and-the-ref
 
 *(Chain ends. **18,556 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 58,139 real and stays whole for retrieval; you have paid for
+`GOOD-MORNING.md` is 58,468 real and stays whole for retrieval; you have paid for
 32% of it, and that is the intended figure, not a shortfall.)*
