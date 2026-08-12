@@ -2755,6 +2755,156 @@ def roll_claim_check(repo):
     return fails, warns, notes
 
 
+# ------------------------------------------------ THE STALE-TOP-ITEM FENCE (s161-D4, #161)
+# ★ WRAP MODE ONLY, and BLOCKING at birth by Dave's word ("okay do it" on a read-back that named
+# block-not-warn). THE DEFECT IT ENDS, verbatim: #160's wrap wrote *"`s142-D1` is the next
+# window's top item"* while `knowledge/_rulings.json` already carried
+# `s142-D1.status = "RULED #142, ENACTED #143: …"`. Two sessions carried that false "owed", and
+# NOTHING compared the claim to the store the wrap already parses. A warn under wrap heat is a
+# warn nobody reads [[instrument-without-a-consumer]] [[premise-ages-faster-than-rule]].
+STALE_TOP_BLOCKING = True
+
+_RULING_ID_RE = re.compile(r"\bs\d+-D\d+\b")
+
+# ★ SCOPE BY HOME, NOT BY PROSE — the #77 lesson this module already learned the hard way
+# (`roll_claim_check`: *"USE vs MENTION is unreachable by syntax, only SCOPE saves it"*). An
+# owed-work claim's ONE legal home is the wrap's hand-off line, `residual → #N:`, at line start
+# (blockquote/bold chrome allowed). A narrative sentence that QUOTES a past residual mid-line —
+# e.g. #161's own banner, *"#160's `residual → #161` opened with …"* — does NOT match this
+# anchor and is never scanned.
+_RESIDUAL_HOME_RE = re.compile(r"^\s*>?\s*\**\s*residual\s*(?:→|->)\s*#\d+", re.I)
+
+# The owed-work vocabulary, QUOTED not paraphrased ([[gate-must-quote-what-it-forbids]]).
+_OWED_CONTEXT_RES = (
+    re.compile(r"top item", re.I),
+    re.compile(r"\bowed\b", re.I),
+    re.compile(r"next window", re.I),
+    re.compile(r"next session's top", re.I),
+    re.compile(r"\bnew top\b", re.I),        # the residual-line shorthand `[0 — NEW TOP]`
+)
+
+# ⚠ THE CONTEXT WINDOW IS NARROW AND ITS WIDTH IS THE RULE. A residual line is one very long
+# line carrying ~20 unrelated items; "same line" is far too wide a claim-context. The owed
+# phrase must fall within ±STALE_TOP_WINDOW characters of the cited id — the adjacent clause,
+# not the paragraph.
+STALE_TOP_WINDOW = 160
+
+
+def _asserts_enacted(text):
+    """True iff `text` contains an UNNEGATED `enacted`. ONE predicate, TWO consumers, on
+    purpose: it reads the store's `status` field AND the claim's own context window, so the
+    gate can never call a status "enacted" by one rule and a citation "enacted" by another.
+
+    `\\benacted\\b` cannot match inside `unenacted` (no word boundary), and an immediately
+    preceding `not` / `not-` / `never` (as in `RULED-NOT-ENACTED`) is skipped."""
+    for m in re.finditer(r"\benacted\b", text, re.I):
+        pre = text[max(0, m.start() - 12):m.start()].lower()
+        if re.search(r"(?:not|never)\s*-?\s*$", pre):
+            continue
+        return True
+    return False
+
+
+def _rulings_status_map(repo):
+    """{ruling id: status string} from `knowledge/_rulings.json`, or (None, reason). Fails LOUD
+    and NAMED rather than degrading into an empty map — an unreadable store must read as
+    UNMEASURED, never as "no ruling contradicts this claim" ([[a-crash-is-not-a-fail]])."""
+    path = os.path.join(repo, "knowledge", "_rulings.json")
+    if not os.path.exists(path):
+        return None, "knowledge/_rulings.json does not exist"
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        rows = data["rulings"] if isinstance(data, dict) else data
+        return {r["id"]: str(r.get("status", "")) for r in rows if r.get("id")}, None
+    except Exception as e:                                      # noqa: BLE001
+        return None, f"{type(e).__name__}: {e}"
+
+
+def stale_top_item_check(repo):
+    """s161-D4 (Dave, RULED #161) — a wrap may not certify an OWED-WORK claim that cites a
+    ruling id whose `_rulings.json` status already says ENACTED. Returns (fails, notes).
+    BLOCKING (`STALE_TOP_BLOCKING`); a flip must land with its own ruling and edit that pin.
+
+    ⚠ SCOPE, DOCUMENTED BECAUSE THE NARROWNESS IS THE DESIGN:
+
+      SURFACES — the two wrap-authored texts this gate already reads: `GOOD-MORNING.md` and
+      `_CHAIN.md`, and within each ONLY the ★ LATEST banner region (`_latest_banner_region`,
+      the same slicer `roll_claim_check` uses). No other file, no other region.
+
+      LINES — only lines whose START is the hand-off home `residual → #N:` (`_RESIDUAL_HOME_RE`).
+      Prose is NOT scanned. This is the #77 finding applied unchanged: the authored-prose arm of
+      the roll-claim check false-fired on RATIFIED text at its first live run, and was deleted
+      rather than widened.
+
+      CONTEXT — an owed phrase counts only inside ±`STALE_TOP_WINDOW` (160) characters of the
+      cited id, i.e. the
+      adjacent clause. Vocabulary: "top item" · "owed" · "next window" · "next session's top" ·
+      "new top".
+
+      USE vs MENTION — a window that ALSO carries an unnegated `enacted` is a HISTORY/EVIDENCE
+      citation ("enacted per s142-D1", "CONSUMED: … the wave was enacted at #143"), not an owed
+      claim, and is EXEMPT — declared in a note, never silently. `RULED-NOT-ENACTED` and
+      `unenacted` are not enactment citations and do not exempt.
+
+      REPORTED, NOT PRESCRIBED — a fail quotes the claiming line and the store's status
+      VERBATIM and says nothing about which of the two is wrong; that is the session's call.
+    """
+    fails, notes = [], []
+    statuses, err = _rulings_status_map(repo)
+    if statuses is None:
+        notes.append(f"stale-top-item fence: `knowledge/_rulings.json` UNREADABLE ({err}) — "
+                     f"the fence is UNMEASURED this wrap. That is NOT the same as 'no owed "
+                     f"claim is contradicted'.")
+        return fails, notes
+
+    scanned = 0
+    for fname in ("GOOD-MORNING.md", OUT_CHAIN):
+        path = os.path.join(repo, fname)
+        if not os.path.exists(path):
+            notes.append(f"stale-top-item fence: {fname} missing — UNMEASURED, not assumed clean.")
+            continue
+        with open(path, encoding="utf-8") as f:
+            region = _latest_banner_region(f.read())
+        if region is None:
+            notes.append(f"stale-top-item fence: {fname} has no ★ LATEST banner — UNMEASURED "
+                         f"(a different check already fails the wrap for that state).")
+            continue
+        for ln in region.splitlines():
+            if not _RESIDUAL_HOME_RE.match(ln):
+                continue
+            scanned += 1
+            for m in _RULING_ID_RE.finditer(ln):
+                rid = m.group(0)
+                win = ln[max(0, m.start() - STALE_TOP_WINDOW):m.end() + STALE_TOP_WINDOW]
+                trips = [r.pattern for r in _OWED_CONTEXT_RES if r.search(win)]
+                if not trips:
+                    continue
+                if _asserts_enacted(win):
+                    notes.append(f"stale-top-item fence: {fname} residual line cites {rid} in an "
+                                 f"owed-shaped context ({', '.join(trips)}) but the SAME clause "
+                                 f"cites its enactment — read as HISTORY/EVIDENCE, EXEMPT by "
+                                 f"scope. Clause: …{win.strip()}…")
+                    continue
+                status = statuses.get(rid)
+                if status is None:
+                    notes.append(f"stale-top-item fence: {fname} residual line claims owed work "
+                                 f"for {rid}, which is NOT IN `_rulings.json` — UNMEASURED for "
+                                 f"that id, not cleared. Clause: …{win.strip()}…")
+                    continue
+                if _asserts_enacted(status):
+                    fails.append(
+                        f"stale-top-item fence ({fname}, s161-D4): the wrap certifies OWED work "
+                        f"for {rid} — matched {', '.join(trips)} — but the store says it is "
+                        f"ENACTED. CLAIM (verbatim): \"{ln.strip()[:400]}\" — STORE (verbatim, "
+                        f"`knowledge/_rulings.json` § {rid} .status): \"{status[:400]}\". One of "
+                        f"the two is stale; this gate does not say which.")
+    notes.append(f"stale-top-item fence (s161-D4): {scanned} `residual → #N` line(s) scanned "
+                 f"across GOOD-MORNING.md + {OUT_CHAIN} ★ LATEST banners, id pattern "
+                 f"`s\\d+-D\\d+`, context ±{STALE_TOP_WINDOW} chars — {len(fails)} fail(s).")
+    return fails, notes
+
+
 def _norm(text):
     """Strip blockquote/list chrome and collapse whitespace. Comparing NORMALISED regions rather
     than lines is what makes the receipts proxy rewrap-immune: re-flowing a paragraph moves every
@@ -3484,6 +3634,10 @@ def wrap_checks(repo, today, lane=False):
                      "ever gain a write path into either file, this exemption must go with it.")
         notes.append("LANE WRAP: the roll-claim check (T2, #77) is SKIPPED too — same reason, "
                      "the residual it grades lives in GOOD-MORNING.md.")
+        notes.append("LANE WRAP: the stale-top-item fence (s161-D4, #161) is SKIPPED — its "
+                     "scope is the `residual → #N` home in the GOOD-MORNING/_CHAIN ★ LATEST "
+                     "banners, which lane sessions do not write. ⚠ If lanes ever gain a "
+                     "hand-off line of their own, this exemption must go with it.")
     else:
         gm = os.path.join(repo, "GOOD-MORNING.md")
         if os.path.exists(gm):
@@ -3537,6 +3691,12 @@ def wrap_checks(repo, today, lane=False):
         (fails if ROLL_CLAIM_BLOCKING else warns).extend(f_)   # cross-check, wired at the R3
         warns += w_                              # commit seam via the existing #74-D1 consumer
         notes += n_                              # (this call, inside wrap_checks() itself).
+        f_, n_ = stale_top_item_check(repo)      # ★ s161-D4 #161 — an owed-work claim citing a
+        (fails if STALE_TOP_BLOCKING else warns).extend(f_)   # ruling the store already calls
+        notes += n_                              # ENACTED. BLOCKING at birth by Dave's word: the
+                                                 # failure it catches carried a false "owed" for
+                                                 # TWO sessions, refuted the whole time by the
+                                                 # store this same wrap already parses.
         f_, n_ = title_generation_check(repo)    # #120 residual ⓪ — RENAME+NEXT-TITLE must be
         fails += f_                              # MECHANISED (`_gen_titles.py`), not hand-typed
         notes += n_                              # prose; BLOCKING, receipt is the only witness.
@@ -5572,6 +5732,104 @@ def selftest_receipts():
     return failures
 
 
+def selftest_stale_top():
+    """s161-D4 (#161) — the stale-top-item fence bites, and the bite is THE CHECK'S.
+
+    RED FIXTURE = THE REAL #160 TEXT, not a convenient one: the sentence
+    `_DECISION-HISTORY/2026-08-12-160-*.md:90` actually carried — *"`s142-D1` is the next
+    window's top item"* — placed in its legal home (`residual → #161:`) against a store whose
+    `s142-D1.status` says `RULED #142, ENACTED #143`. That is the defect verbatim.
+
+    MUTATION CONTROL: neuter the check's discriminator (`_OWED_CONTEXT_RES = ()`) and the RED
+    fixture must PASS. Without it a green here proves only that SOMETHING failed, not that this
+    check failed [[mutation-tests-the-clause-not-the-feature]]."""
+    print("\n-- stale-top-item fence (s161-D4, #161) --")
+    failures = []
+
+    def bite(name, cond):
+        print(f"[{'OK' if cond else 'FAIL'}] stale-top: {name}")
+        if not cond:
+            failures.append(f"stale-top: {name}")
+
+    bite("STALE_TOP_BLOCKING pin is True (BLOCKING at birth, s161-D4 — a flip must land WITH "
+         "its ruled demotion and edit this pin in the same edit; the M10 pattern)",
+         STALE_TOP_BLOCKING is True)
+
+    store = {"rulings": [
+        {"id": "s142-D1", "status": "RULED #142, ENACTED #143: 113 of 114 ruled rows landed."},
+        {"id": "s116-D4", "status": "RULED #116. NOT ENACTED — characterisation owed first."},
+    ]}
+
+    def fixture(td, residual):
+        os.makedirs(os.path.join(td, "knowledge"), exist_ok=True)
+        with open(os.path.join(td, "knowledge", "_rulings.json"), "w", encoding="utf-8") as f:
+            json.dump(store, f)
+        banner = ("# GM\n\n> ## ★ LATEST — 2026-08-12 (Wed **#161**)\n"
+                  f"{residual}\n\n> ## ★ PRIOR — 2026-08-11 (#160)\n"
+                  "> - a prior banner that must never be scanned\n")
+        for name in ("GOOD-MORNING.md", OUT_CHAIN):
+            with open(os.path.join(td, name), "w", encoding="utf-8") as f:
+                f.write(banner)
+
+    # ---- 1. THE RED FIXTURE — the real #160 sentence in the residual home.
+    RED = ("> **residual → #162:** ⬛ **① The wave.** `s142-D1` is the next window's top item, "
+           "and the argument for that ordering is this session.")
+    with tempfile.TemporaryDirectory() as td:
+        fixture(td, RED)
+        f_, n_ = stale_top_item_check(td)
+        bite("the REAL #160 claim FAILS (the defect itself)",
+             any("s142-D1" in x and "ENACTED" in x for x in f_))
+        bite("the fail quotes the CLAIMING LINE verbatim",
+             any("is the next window's top item" in x for x in f_))
+        bite("the fail quotes the STORE's status verbatim",
+             any("RULED #142, ENACTED #143" in x for x in f_))
+        bite("it fires once per surface — GM and the chain both scanned", len(f_) == 2)
+        bite("the note reports the measurement (lines scanned + window), never a remedy",
+             any("residual → #N` line(s) scanned" in x and "±160" in x for x in n_))
+
+        # ---- 2. MUTATION CONTROL — neuter the discriminator, the RED fixture must pass.
+        global _OWED_CONTEXT_RES
+        real = _OWED_CONTEXT_RES
+        try:
+            _OWED_CONTEXT_RES = ()
+            f_, _ = stale_top_item_check(td)
+            bite("MUTATION: with the owed vocabulary emptied the RED fixture PASSES — the bite "
+                 "above is THIS check's, not some other check's", not f_)
+        finally:
+            _OWED_CONTEXT_RES = real
+
+    # ---- 3. GREEN CONTROL — an owed claim citing a genuinely OPEN ruling must pass.
+    with tempfile.TemporaryDirectory() as td:
+        fixture(td, "> **residual → #162:** ⬛ **① `s116-D4` — THE 72 CONTROLS [0 — NEW TOP]**, "
+                    "characterisation still owed before the promote.")
+        f_, _ = stale_top_item_check(td)
+        bite("GREEN: an owed claim on a ruling the store calls NOT ENACTED passes", not f_)
+
+    # ---- 4. USE vs MENTION — a history/evidence citation must not trip it.
+    with tempfile.TemporaryDirectory() as td:
+        fixture(td, "> **residual → #162:** ✅ *CONSUMED: **#160 residual ① — the `s142-D1` "
+                    "wave was owed** (KILLED AS A PREMISE: it was enacted at #143).*")
+        f_, n_ = stale_top_item_check(td)
+        bite("USE vs MENTION: an owed-shaped clause that cites its own enactment is EXEMPT",
+             not f_ and any("EXEMPT by scope" in x for x in n_))
+
+    # ---- 5. SCOPE — the same sentence in PROSE (not the residual home) is not scanned.
+    with tempfile.TemporaryDirectory() as td:
+        fixture(td, "> - #160's `residual → #161` said `s142-D1` is the next window's top item.")
+        f_, _ = stale_top_item_check(td)
+        bite("SCOPE: the identical sentence in a narrative line is NOT scanned (#77's lesson)",
+             not f_)
+
+    # ---- 6. An unreadable store reads UNMEASURED, never clean.
+    with tempfile.TemporaryDirectory() as td:
+        fixture(td, RED)
+        os.remove(os.path.join(td, "knowledge", "_rulings.json"))
+        f_, n_ = stale_top_item_check(td)
+        bite("an absent store is UNMEASURED and SAYS SO — never silently green",
+             not f_ and any("UNMEASURED" in x for x in n_))
+    return failures
+
+
 def selftest_index_freshness():
     """#32 — four bites, and the FIRST one is the load-bearing pair.
 
@@ -5970,6 +6228,7 @@ def _selftest_body():
                 + selftest_gauge_continuity() + selftest_unkeyed()
                 + selftest_growth() + selftest_usage()
                 + selftest_lanes() + selftest_receipts() + selftest_index_freshness()
+                + selftest_stale_top()                    # ★ s161-D4, RULED #161
                 + selftest_handoff_history()
                 + selftest_rehearsal())    # #92 — wired HERE, at write time: a suite a new
                                            # tier silently bypasses is #82's defect verbatim
