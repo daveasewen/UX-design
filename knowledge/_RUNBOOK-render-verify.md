@@ -141,6 +141,11 @@ fixed-cutoff shape as #129/#136. `/` had 1.7 G. This is why the fix must not rei
 *(Addition only; n=3/n=4/n=5 strata stand as history. n=5's mid-window reclaim (#160: dirs present at
 open, gone 30 min later) and this pothole are the same class seen from both ends — the sandbox reclaims
 what it can, and what it cannot reclaim it orphans. 2026-08-12, #161.)*
+⚠ **n=7, same session, inside the WRAP ITSELF:** `_git_commit.sh`'s `_build_live_state --selftest`
+consumer went 5 arms RED — all Errno 28 in fixture `copytree`s against the default tempdir. Remedy:
+**`TMPDIR=/var/tmp` on the commit invocation** — all arms green after, incl. the spine-safety sha256.
+The n=6 recipe covers pip targets only; this extends it to ANY script that stages fixtures in `$TMPDIR`.
+*(Addition only. 2026-08-12, #161 wrap sub finding, inscribed by the conductor.)*
 
 ⛔ **THIS RUNBOOK WAS DECLARED DEAD BY A SESSION THAT NEVER OPENED IT — RE-VERIFIED WORKING #124.**
 #123 declared a render gap on the grounds that *"chromium is TLS-blocked in-sandbox"*; #124 carried that
