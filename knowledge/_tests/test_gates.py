@@ -115,6 +115,30 @@ def case_control(tmp):
     record("control: pristine copy passes all 6 static gates", not bad, "; ".join(bad))
 
 
+def case_write_gate(tmp):
+    """#158 residual ⑤ (no-args leg): a bare invocation of a writing script must be
+    REFUSED loud + named; the same script WITH its flag must proceed (mutation control).
+
+    Runs the REAL script (no copytree — knowledge/ carries font binaries and the
+    copy costs disk): the bare run is refused BEFORE it can touch anything, and the
+    control is redirected with --out into the temp dir, so neither run mutates the repo."""
+    script = os.path.join(KNOW, "_audit_props_axes.py")
+
+    r = subprocess.run([sys.executable, script], capture_output=True, text=True, timeout=120)
+    out = r.stdout + r.stderr
+    ok = (r.returncode != 0) and ("REFUSED (write-gate)" in out) and ("NO ARGUMENTS" in out)
+    record("write-gate bites a bare no-args invocation", ok,
+           f"exit={r.returncode}, out={out.strip()[:160]!r}")
+
+    outp = os.path.join(tmp, "writegate-audit.json")
+    r2 = subprocess.run([sys.executable, script, "--write", "--out", outp],
+                        capture_output=True, text=True, timeout=120)
+    out2 = r2.stdout + r2.stderr
+    ok2 = (r2.returncode == 0) and ("REFUSED (write-gate)" not in out2)
+    record("write-gate control: --write proceeds", ok2,
+           f"exit={r2.returncode}, out={out2.strip()[:160]!r}")
+
+
 def bite(tmp, name, tag, gate, mutate, marker):
     """Copy → mutate → run gate → assert it bites with the expected complaint."""
     k = fresh_copy(tmp, tag)
@@ -379,6 +403,7 @@ def main():
     tmp = tempfile.mkdtemp(prefix="gate-tests-")
     try:
         case_control(tmp)
+        case_write_gate(tmp)
         for name, tag, gate, mutate, marker in CASES:
             bite(tmp, name, tag, gate, mutate, marker)
     finally:

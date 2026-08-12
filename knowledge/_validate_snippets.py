@@ -45,6 +45,27 @@ affected snippet carries an HTML breadcrumb above its #token-manifest naming s15
 migrated and still measured here: the rag-on-TINT pairs (Alert, List-items, Form-layout) and the
 Banner on-error-background pairs — a different class, untouched by s151-D2.
 
+s160-D2 (Dave, #160) — THE 7 rag-on-TINT MIGRATION. The class s151-D2 named as "NOT migrated and
+still measured here" — the rag-on-TINT pairs — has now migrated too, by Dave's ruling at #160 on
+the same grounds (s134-D1 + s151-D1 clause 4: "the symbol and label carry the meaning… NOT every
+surface must clear 4.5"). SEVEN declared contrastPairs of the form `rag/<state>` on `rag/<state>-tint`
+have been REMOVED from the snippet manifests this gate reads and moved to the RENDERING gate
+(_validate_state_contrast.py) under the meaning-carrier vocabulary. The 7, by component: Alert 3
+(rag/error, rag/success, rag/information each on their own tint), Form-layout 1 (rag/error on
+rag/error-tint), List-items 3 (rag/success, rag/error, rag/information each on their own tint).
+Only the LIGHT legs were failing, but the PAIRS migrate whole — a pair measured in one mode only
+would be a new, undeclared rule. THE text/default-on-tint PAIRS ARE NOT MIGRATED and are still
+measured here: the neutral label on a tint is exactly the carrier the ruling relies on. THIS GATE
+NO LONGER MEASURES THE 7 — the absence is DECLARED here, not silent, and each affected snippet
+carries an HTML breadcrumb above its #token-manifest naming s160-D2. The migrated seats declare
+`data-carries` in markup (Alert `.alert` and Form-layout `.fl-msg`: "symbol label"; List-items
+`.status`: "label" — its dot is a decorative div, not an svg, and a claimed-but-absent symbol is a
+NAMED failure in the rendering gate). WARN-NOT-BLOCK (Dave's amendment, verbatim: "if there are any
+reports generated, there should still be a soft warning but not a block, I don't care how we label
+it") is satisfied by the mechanism as built, not by new machinery: s151-D1 clause (c) already demotes
+a DECLARED seat's own fill reading to advisory 🟡 in _STATE-CONTRAST-AUDIT.md and excludes it from
+the exit code. Nothing was added here; the figures leave this gate's report with the pairs.
+
 This is the link that makes a snippet "gated": it cannot silently drift from the
 meta + token stores. Exits non-zero on any failure so _build_all.py fails the build.
 Writes knowledge/_SNIPPET-AUDIT.md.

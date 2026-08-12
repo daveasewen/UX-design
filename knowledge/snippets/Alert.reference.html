@@ -203,20 +203,27 @@
   <div class="awrap" id="awrap">
 
     <h2>Dismissible — title · description · link</h2>
-    <div class="alert err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#al-error"/></svg></span><p class="main t-ed-body"><strong class="em">Payment failed.</strong> The payment could not be processed. <a href="#">Review payment details</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
-    <div class="alert warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Statement overdue.</strong> Your March statement is ready to review. <a href="#">Open March statement</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
-    <div class="alert ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-success"/></svg></span><p class="main t-ed-body"><strong class="em">Payment sent.</strong> The transfer has been completed. <a href="#">View receipt</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
-    <div class="alert info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-info"/></svg></span><p class="main t-ed-body"><strong class="em">Planned maintenance.</strong> Some services pause briefly on Sunday morning. <a href="#">See affected services</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert err" role="alert" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-error"/></svg></span><p class="main t-ed-body"><strong class="em">Payment failed.</strong> The payment could not be processed. <a href="#">Review payment details</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Statement overdue.</strong> Your March statement is ready to review. <a href="#">Open March statement</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-success"/></svg></span><p class="main t-ed-body"><strong class="em">Payment sent.</strong> The transfer has been completed. <a href="#">View receipt</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-info"/></svg></span><p class="main t-ed-body"><strong class="em">Planned maintenance.</strong> Some services pause briefly on Sunday morning. <a href="#">See affected services</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
 
     <h2>Static — no dismiss (message persists with the task)</h2>
-    <div class="alert err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#al-error"/></svg></span><p class="main t-ed-body"><strong class="em">Session expiring.</strong> Save your work before continuing.</p></div>
-    <div class="alert info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-info"/></svg></span><p class="main t-ed-body">A single-line informational callout with no title.</p></div>
+    <div class="alert err" role="alert" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-error"/></svg></span><p class="main t-ed-body"><strong class="em">Session expiring.</strong> Save your work before continuing.</p></div>
+    <div class="alert info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-info"/></svg></span><p class="main t-ed-body">A single-line informational callout with no title.</p></div>
 
     <h2>Wrapping — icon and dismiss hold the first line</h2>
-    <div class="alert warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Verify your details.</strong> We could not confirm the mobile number saved to this profile. Confirm the number is still active, or update it, so security codes reach the right device. <a href="#">Update contact details</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Verify your details.</strong> We could not confirm the mobile number saved to this profile. Confirm the number is still active, or update it, so security codes reach the right device. <a href="#">Update contact details</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
 
   </div>
 
+  <!-- s160-D2 MIGRATION: this component's rag-on-TINT contrastPair(s) — rag/error on
+       rag/error-tint, rag/success on rag/success-tint, rag/information on rag/information-tint —
+       were REMOVED from the contrastPairs list below and moved to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. Same motion as s151-D2, which deliberately left the
+       TINT class behind; Dave ruled at #160 that the same intent applies. The absence is DECLARED,
+       not silent. -->
   <script type="application/json" id="token-manifest">
   {
     "component": "Alert",
@@ -228,10 +235,7 @@
       { "fg": "text/default", "bg": "rag/error-tint",        "context": "text" },
       { "fg": "text/default", "bg": "rag/warning-tint",      "context": "text" },
       { "fg": "text/default", "bg": "rag/success-tint",      "context": "text" },
-      { "fg": "text/default", "bg": "rag/information-tint",  "context": "text" },
-      { "fg": "rag/error",       "bg": "rag/error-tint",       "context": "ui" },
-      { "fg": "rag/success",     "bg": "rag/success-tint",     "context": "ui" },
-      { "fg": "rag/information", "bg": "rag/information-tint", "context": "ui" }
+      { "fg": "text/default", "bg": "rag/information-tint",  "context": "text" }
     ],
     "icons": { "error": "status-icons/error.svg", "warning": "status-icons/warning.svg", "success": "status-icons/success.svg", "information": "status-icons/information.svg", "close": "global-controls/close.svg" },
     "requiredAria": ["role=\"alert\"", "role=\"status\"", "aria-label"],

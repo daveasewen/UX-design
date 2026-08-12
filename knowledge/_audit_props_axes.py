@@ -51,9 +51,16 @@ designer-skills-v1/ and designer-skills-v2/ are RELEASE PACKS (frozen
 snapshots) and are deliberately NOT audited here; second-system-govuk/ is a
 different design system.
 
-Usage:  python3 knowledge/_audit_props_axes.py [--out PATH]
+Usage:  python3 knowledge/_audit_props_axes.py --write [--out PATH]
+A BARE no-args run is REFUSED (write-gate, #158 no-args leg): this script
+overwrites a dated review artefact, so the write must be stated — pass --write
+(or an explicit --out PATH).
 Exit 0 on success. Fails LOUD and NAMED on any unreadable meta.
 """
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help/write gates (#158 write-by-default class)
+_hg_sys.path.insert(0, _hg_os.path.dirname(_hg_os.path.abspath(__file__)))
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
+from _helpgate import write_gate as _write_gate; _write_gate(__file__, writes="reviews/PROPS-AXES-AUDIT-*.json")
 import argparse
 import glob
 import json
@@ -116,6 +123,8 @@ def classify(prop, variant_names):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=DEFAULT_OUT)
+    ap.add_argument("--write", action="store_true",
+                    help="state the intention to write the audit file (satisfies the write-gate)")
     args = ap.parse_args()
 
     files = sorted(glob.glob(os.path.join(REPO, GLOB)))

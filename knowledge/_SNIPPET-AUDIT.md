@@ -12,10 +12,8 @@
 ## Action-bar.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Alert.reference.html — ❌ 3 FAIL
-- ❌ Alert.reference.html: CONTRAST rag/error on rag/error-tint (light) = 2.4:1 < 3.0:1
-- ❌ Alert.reference.html: CONTRAST rag/success on rag/success-tint (light) = 1.65:1 < 3.0:1
-- ❌ Alert.reference.html: CONTRAST rag/information on rag/information-tint (light) = 2.03:1 < 3.0:1
+## Alert.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Amount-display.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -26,9 +24,8 @@
 ## Avatar.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Badge.reference.html — ❌ 2 FAIL
-- ❌ Badge.reference.html: CONTRAST text/reverse on badge/background (light) = 3.14:1 < 4.5:1
-- ❌ Badge.reference.html: CONTRAST text/reverse on badge/background (dark) = 3.14:1 < 4.5:1
+## Badge.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Banner.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -118,8 +115,8 @@
 ## File-upload.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## Form-layout.reference.html — ❌ 1 FAIL
-- ❌ Form-layout.reference.html: CONTRAST rag/error on rag/error-tint (light) = 2.4:1 < 3.0:1
+## Form-layout.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Headers.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
@@ -136,10 +133,8 @@
 ## Links.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
-## List-items.reference.html — ❌ 3 FAIL
-- ❌ List-items.reference.html: CONTRAST rag/success on rag/success-tint (light) = 1.65:1 < 3.0:1
-- ❌ List-items.reference.html: CONTRAST rag/error on rag/error-tint (light) = 2.4:1 < 3.0:1
-- ❌ List-items.reference.html: CONTRAST rag/information on rag/information-tint (light) = 2.03:1 < 3.0:1
+## List-items.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Loading-indicator.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.

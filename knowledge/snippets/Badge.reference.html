@@ -17,8 +17,13 @@
   retired). In LEGACY the component slot is overridden to the brand-PRIMARY red flat
   #DB0011 both modes (Dave: "it should be the legacy primary red on both light and dark") —
   deliberately NOT Legacy's error pair; the slot exists so badge and error can differ per
-  theme. Numeral stays WHITE (breach-is-white, type26-013): 6.02:1 light, 4.75:1 dark in
-  Mono — black was checked and fails both (3.49/4.42). History: was
+  theme. Numeral: s160-D2 (Dave, #160) re-seats it to rag/text/on-light #1A1A1A both modes
+  in MONO — 5.55:1 on #F6604C, s149-D1 extended from the tab badge to Badge proper. RETIRED
+  here (kept for history, and still LIVE in legacy/console/supercharge via their --number
+  guards): "Numeral stays WHITE (breach-is-white, type26-013): 6.02:1 light, 4.75:1 dark in
+  Mono — black was checked and fails both (3.49/4.42)" — those white figures were computed
+  against the PRE-s122-D2 per-mode fill; on the current mode-invariant #F6604C white measures
+  3.14:1 in both modes, which is what the snippet gate failed at #160. History: was
   primary/background/default #DB0011 (pre-R-D19 drift), then bare rag/error (same evening).
 -->
 <link rel="stylesheet" href="../canon/type.css">
@@ -28,8 +33,8 @@
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
-  [data-theme="light"]{ --surface:#F6604C; --number:#FFFFFF; --host:#1A1A1A; --page:#FFFFFF; --disabled:#D7D8D6; }
-  [data-theme="dark"]{ --surface:#F6604C; --number:#FFFFFF; --host:#FFFFFF; --page:#1A1A1A; --disabled:#767676; }
+  [data-theme="light"]{ --surface:#F6604C; --number:#1A1A1A; --host:#1A1A1A; --page:#FFFFFF; --disabled:#D7D8D6; }
+  [data-theme="dark"]{ --surface:#F6604C; --number:#1A1A1A; --host:#FFFFFF; --page:#1A1A1A; --disabled:#767676; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--host);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
@@ -72,15 +77,16 @@
     "component": "Badge",
     "vars": {
       "--surface": "badge/background",
-      "--number": "text/reverse",
+      "--number": "rag/text/on-light",
       "--host": "text/default",
       "--page": "background/default"
     },
     "contrastPairs": [
-      { "fg": "text/reverse", "bg": "badge/background", "context": "text" },
+      { "fg": "rag/text/on-light", "bg": "badge/background", "context": "text" },
       { "fg": "badge/background", "bg": "background/default", "context": "ui" }
     ],
-    "requiredAria": ["aria-label"]
+    "requiredAria": ["aria-label"],
+    "$note": "s160-D2 (Dave, #160), clause 4: 'Badge numeral -> #1A1A1A dark ink, both modes, s149-D1 extended from tab badges to Badge proper - TEXT seat, stays gated at 4.5, passes 5.55.' The numeral was text/reverse #FFFFFF, which measured 3.14:1 on the MODE-INVARIANT #F6604C fill in BOTH modes — a declared TEXT pair failing 4.5 in both. Re-seated onto rag/text/on-light (#1A1A1A both modes, the same ruled ink role s149-D1 gave the mono error Banner and the tab badge numeral); nothing minted, the ink rides its most specific existing role. MONO ONLY, exactly as s149-D1: legacy/console/supercharge keep the WHITE numeral (type26-013) via a --number guard in their overrides files, because their badge/background overrides are untouched."
   }
   </script>
   </body>

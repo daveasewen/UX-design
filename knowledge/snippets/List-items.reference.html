@@ -129,21 +129,21 @@
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status warn"><span class="dot" aria-hidden="true"></span>Pending</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span>Pending</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Pret a Manger">PM</span>
         <span class="body">
-          <span class="line"><span class="title">Pret a Manger</span><span class="status err"><span class="dot" aria-hidden="true"></span>Declined</span></span>
+          <span class="line"><span class="title">Pret a Manger</span><span class="status err" data-carries="label"><span class="dot" aria-hidden="true"></span>Declined</span></span>
           <span class="line"><span class="desc">21 Jun · Eating out</span><span class="amount">−48.50 HKD</span></span>
         </span>
       </button></li>
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Salary">£</span>
         <span class="body">
-          <span class="line"><span class="title">Monthly salary</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Received</span></span>
+          <span class="line"><span class="title">Monthly salary</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Received</span></span>
           <span class="line"><span class="desc">20 Jun · Income</span><span class="amount">+32,000.00 HKD</span></span>
         </span>
       </button></li>
@@ -164,28 +164,28 @@
       <li><div class="stateLabel">default</div><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Approved</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
       <li><div class="stateLabel">hover (web)</div><button class="row is-hover" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Approved</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
       <li><div class="stateLabel">pressed — avatar + status reversed out</div><button class="row is-pressed" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Approved</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
       <li><div class="stateLabel">disabled (native :disabled)</div><button class="row" type="button" disabled>
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Approved</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
@@ -199,6 +199,15 @@
     </ul>
   </div>
 
+  <!-- s160-D2 MIGRATION: this component's rag-on-TINT contrastPair(s) — rag/success on
+       rag/success-tint, rag/error on rag/error-tint, rag/information on rag/information-tint —
+       were REMOVED from the contrastPairs list below and moved to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier is checkable against real DOM,
+       per s151-D1 clause 4. The .status chips carry a LABEL (the dot is decorative/aria-hidden and
+       is not an svg symbol), so they declare data-carries="label" — the same shape as the
+       Status-indicator atom they reuse. Same motion as s151-D2, which deliberately left the TINT
+       class behind; Dave ruled at #160 that the same intent applies. The absence is DECLARED, not
+       silent. The text/default-on-tint pairs are NOT migrated and are still measured here. -->
   <script type="application/json" id="token-manifest">
   {
     "component": "List items",
@@ -211,10 +220,7 @@
       { "fg":"text/default", "bg":"rag/success-tint", "context":"text" },
       { "fg":"text/default", "bg":"rag/warning-tint", "context":"text" },
       { "fg":"text/default", "bg":"rag/error-tint", "context":"text" },
-      { "fg":"text/default", "bg":"rag/information-tint", "context":"text" },
-      { "fg":"rag/success", "bg":"rag/success-tint", "context":"ui" },
-      { "fg":"rag/error", "bg":"rag/error-tint", "context":"ui" },
-      { "fg":"rag/information", "bg":"rag/information-tint", "context":"ui" }
+      { "fg":"text/default", "bg":"rag/information-tint", "context":"text" }
     ],
     "knownFindings": [
       "LAYOUT 2026-06-29: row is avatar + two-line body (title|status / desc|amount) so left labels and right tag/status+amount align; one density gap scales both sides.",
