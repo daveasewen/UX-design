@@ -137,11 +137,12 @@
   input:disabled + label .switch .thumb{background:var(--ctrl-border-disabled);}
 
   /* ---- error state ---- */
-  /* s151-D1 clause 3: ATOM only takes the error red; labels keep default ink */
+  /* s151-D1 clause 3: the ATOM takes the error red, the label keeps default ink.
+     --error-atom is background-keyed (rag/error-ink: #DA1A00 on white, #F6604C elsewhere). */
   .field.is-error .box{border-color:var(--error-atom);}
-  /* s151-D3 leg 1 (#152): atom reach — red reaches radio ring+dot, switch ring+thumb, and the marks
-     (tick / indeterminate dash). Checked/indeterminate fills drop to transparent in error so the red
-     mark sits on the page (ruled-from specimen: _review/atoms-reach-and-star-v1.html, RED option). */
+  /* s151-D3 leg 1 (#152): atom reach — the red reaches radio ring+dot, switch ring+thumb, and the marks
+     (tick / indeterminate dash) too. Checked/indeterminate fills drop to transparent in error so the red
+     mark sits on the page, per the ruled-from specimen (_review/atoms-reach-and-star-v1.html, RED option). */
   .field.is-error .box path,.field.is-error .box rect{stroke:var(--error-atom);}
   .field.is-error input:checked + label .box,.field.is-error input:indeterminate + label .box{background:transparent; border-color:var(--error-atom);}
   .field.is-error .radio{border-color:var(--error-atom);}
@@ -160,13 +161,14 @@
   .chip svg{width:16px; height:16px; flex:none;}
   .chip .star{fill:none; stroke:currentColor; stroke-width:1.6;}
   .chip:hover{background:var(--chip-hover);}
-  /* s151-D2 pick 1: no label reversal on pressed */
+  /* s151-D2 pick 1: pressed is tint-symmetric, NO label reversal — labels never leave default ink */
   .chip:active{background:var(--chip-pressed); border-color:var(--chip-pressed);}
   .chip:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .chip[aria-pressed="true"],.chip[aria-checked="true"]{background:var(--checked); color:var(--glyph); border-color:var(--checked);}
   .chip[aria-pressed="true"] .star,.chip[aria-checked="true"] .star{fill:currentColor;}
-  /* s151-D3 leg 2, star option C (#152): a SELECTED chip takes the hover/pressed washes and the ink
-     flips to default — star and label follow the ink rule (dark: #FFF/#232323 = 15.72:1, #FFF/#484848 = 9.15:1). */
+  /* s151-D3 leg 2, star option C (#152): a SELECTED chip takes the hover/pressed washes and the ink flips
+     to default — star and label follow the ink rule (ruled from _review/atoms-reach-and-star-v1.html;
+     dark: #FFF on #232323 = 15.72:1, #FFF on #484848 = 9.15:1). Border follows the wash, as the specimen. */
   .chip[aria-pressed="true"]:hover,.chip[aria-checked="true"]:hover{background:var(--chip-hover); color:var(--label); border-color:var(--chip-hover);}
   .chip[aria-pressed="true"]:active,.chip[aria-checked="true"]:active{background:var(--chip-pressed); color:var(--label); border-color:var(--chip-pressed);}
   .chip:disabled{border-color:var(--ctrl-border-disabled); color:var(--label-disabled); cursor:not-allowed; background:transparent;}
@@ -270,7 +272,7 @@
       "--focus": "focus/ring",
       "--ctrl-border": "form/border/default", "--ctrl-border-active": "form/border/active", "--ctrl-border-disabled": "form/border/disabled",
       "--checked": "secondary/background/default", "--glyph": "text/on-inverse",
-      "--label": "text/default", "--label-disabled": "text/disabled", "--error": "rag/error", "--page": "background/default",
+      "--label": "text/default", "--label-disabled": "text/disabled", "--error": "rag/error", "--error-atom": "rag/error-ink", "--page": "background/default",
       "--chip-hover": "form/background/hover", "--chip-pressed": "form/background/pressed", "--reverse": "text/reverse",
       "--border-radius-control": "border-radius/control"
     },
