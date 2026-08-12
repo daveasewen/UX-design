@@ -126,6 +126,22 @@ fixed-cutoff shape as #129/#136. `/` had 1.7 G. This is why the fix must not rei
 `/var/tmp` — steps 1–4 (download + libs) were not re-run, only re-used. *(Addition only; #129's and
 #136's recipes stand as history. 2026-08-09.)*
 
+⚠ **ENOSPC POTHOLE n=6 (#161) — TWO NEW FACTS, and they change the remedy.**
+1. **Stale `/var/tmp` dirs become UNDELETABLE across sessions.** The farms that survive (`pw-browsers-*`,
+   `pylibs*`, `pipcache`) come back owned by `nobody:nogroup` under the next session's uid mapping —
+   `rm -rf` fails with `Permission denied` on every file, and `sudo` is blocked (`no new privileges`).
+   You can READ them (env-var reuse still works: point `PYTHONPATH`/`PLAYWRIGHT_BROWSERS_PATH` at them)
+   but you can never reclaim their space. **Do not budget a cleanup step; it cannot succeed.**
+2. **`df -h` "free" lies to a non-root user.** #161 saw `/` at 98% with 223 M reported free, yet every
+   write ENOSPCed — the residue is root-reserved blocks. **Treat any reading ≥ ~95% as ZERO free.**
+   The inode column was healthy (11%); it is blocks, not inodes.
+⚙ **Working recipe (n=6, drove tiktoken + the check-in):** always a FRESH session-suffixed target —
+`pip install --no-cache-dir --target /var/tmp/pylibs-s<n> <pkg>` + `PYTHONPATH=/var/tmp/pylibs-s<n>`,
+`TMPDIR=/var/tmp`. Reuse foreign farms read-only via env vars; never try to write into or delete them.
+*(Addition only; n=3/n=4/n=5 strata stand as history. n=5's mid-window reclaim (#160: dirs present at
+open, gone 30 min later) and this pothole are the same class seen from both ends — the sandbox reclaims
+what it can, and what it cannot reclaim it orphans. 2026-08-12, #161.)*
+
 ⛔ **THIS RUNBOOK WAS DECLARED DEAD BY A SESSION THAT NEVER OPENED IT — RE-VERIFIED WORKING #124.**
 #123 declared a render gap on the grounds that *"chromium is TLS-blocked in-sandbox"*; #124 carried that
 claim forward as fact and Dave caught it (*"and there is a runbook for chromium and playwright"*). The
