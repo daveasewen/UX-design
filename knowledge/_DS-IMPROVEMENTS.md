@@ -1382,6 +1382,8 @@ argument for promotion, and it now has a live instance behind it rather than onl
 
 ## ds-021 — The GM growth contracts are denominated in a unit the window does not charge in (2026-07-28, session #30, measured)
 
+*(SUPERSEDED in part — the status block below is a dated historical record: the unit live when written. "Caps bind on `bill`" was superseded by #54/#56 (the unit is REAL Claude tokens, #82-D1); the text is NOT re-denominated, per #82-D1's own rule. Declaration added s163-D1 — this was the #84 audit's named true positive in this file.)*
+
 **★ Status: ENACTED #34 (2026-07-28). Units NAMED by Dave: `tape` (what tiktoken cl100k counts) /
 `bill` (what the window charges) — "the tape is not the bill". Caps bind on `bill`, restated at their
 current real value and NOT tightened. Three homes edited together: `_RUNBOOK-context-gauge.md`

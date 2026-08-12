@@ -636,7 +636,11 @@ RETIRED_PROSE_SCOPE_NOTE = (
     "covers `tape`/`bill` only; the retired percentage band is OUT OF SCOPE, blocked on "
     "Dave's ds-023 re-denomination")
 
-RETIRED_PROSE_WORDS_RE = re.compile(r"\b(tape|bill)\b", re.I)
+RETIRED_PROSE_WORDS_RE = re.compile(r"(?<!duct )(?<!duct-)\b(tape|bill)\b", re.I)
+# ⚠ `duct tape`/`duct-tape` EXCLUDED (s163-D1). The homonym was measured at #84 as 2 of the 11
+# then-live hits and named there as "a REGEX defect ... cheaply fixable, not a refutation of the
+# design"; the lookbehinds fix the WORD-SENSE, they do not exempt any unit prose — `tape` alone
+# still matches everywhere else.
 
 # ⚠ ATX HEADINGS ONLY (`#` … `######`). Surveyed all 93 `knowledge/*.md` files before writing
 # this: no Setext (`===`/`---`-underlined) headings anywhere in the corpus — this is the house
@@ -3863,6 +3867,19 @@ def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False, rehearse
     # WIDENING of the shape Dave already ruled at #81-D1, not a new shape. See the #84 dossier.
     # An unwired gate cannot fail and is not an achievement; it is declared, not claimed.
     # [[instrument-without-a-consumer]]
+    #
+    # ✅ WIRED, BLOCKING — s163-D1 (Dave, #163): "flip to block". The two conditions that kept
+    # it parked at #84 are both discharged and were re-measured before this line was written:
+    # (1) the `duct tape` homonym is fixed IN THE REGEX (lookbehinds at RETIRED_PROSE_WORDS_RE,
+    # word-sense only — no unit prose exempted); (2) the remaining live hits were cleared BY
+    # DECLARATION, never by rephrasing — `_BANKRUPTCY-ARCHIVE.md` (historical marker) and
+    # `_DS-IMPROVEMENTS.md` ds-021 (SUPERSEDED marker on the #84-named true positive). Audit
+    # measured 0 fails live at wiring time. s161-D2's provisional WARN is superseded by this
+    # ruling; G18 closes. The #84 caveat STANDS as scope, not as a bar: this arm catches STALE
+    # INDEXES, not FALSE CLAIMS — the cross-instrument claim check remains Dave's open successor.
+    f, w = retired_unit_prose_audit(repo)
+    fails += f
+    warns += w
 
     # ---- THE TRIGGER INDEX, built #81 (Dave's open item (e)) — AND THIS IS ITS CONSUMER.
     # ⛔ The reason it is called HERE and not offered as a command: `_measure_tokenizer.py` was a

@@ -11,6 +11,8 @@ file (home-by-addition — cuts, if any, are separate, probed motions).
 
 ## Batch 2026-08-02 #87 — the #86 INERT block, verbatim from `reviews/TRIAGE-BANKRUPTCY-2026-08-02-v1.html` § Inert
 
+*(historical — quoted verbatim from the #86 triage; any unit words are the unit live when written, NOT re-denominated. Declaration added s163-D1.)*
+
 > ds-016 index blind-spot *(borderline — a blind index is live behaviour, but no provisional
 > value)* · ds-017 floated-supersedes path · the six decision-graph edge types (open since #71) ·
 > the cross-instrument claim check *(already your opener item a)* · the pre-flight presence gate
