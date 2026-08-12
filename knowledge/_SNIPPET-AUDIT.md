@@ -30,11 +30,8 @@
 - ❌ Badge.reference.html: CONTRAST text/reverse on badge/background (light) = 3.14:1 < 4.5:1
 - ❌ Badge.reference.html: CONTRAST text/reverse on badge/background (dark) = 3.14:1 < 4.5:1
 
-## Banner.reference.html — ❌ 4 FAIL
-- ❌ Banner.reference.html: CONTRAST rag/text/on-dark on rag/error-background (light) = 3.14:1 < 4.5:1
-- ❌ Banner.reference.html: CONTRAST rag/text/on-dark on rag/error-background (dark) = 3.14:1 < 4.5:1
-- ❌ Banner.reference.html: CONTRAST rag/text/on-dark on rag/error-background (light) = 3.14:1 < 4.5:1 (icon-015, promoted 2026-07-02)
-- ❌ Banner.reference.html: CONTRAST rag/text/on-dark on rag/error-background (dark) = 3.14:1 < 4.5:1 (icon-015, promoted 2026-07-02)
+## Banner.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Breadcrumbs.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.

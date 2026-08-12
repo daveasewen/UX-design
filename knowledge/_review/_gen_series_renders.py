@@ -11,6 +11,12 @@ against the proposals file's receipts — any mismatch prints a warning.
 Usage: python3 knowledge/_review/_gen_series_renders.py   (from repo root)
 Output: reviews/DATAVIZ-SERIES-RENDERS-2026-07-16.html  (clean; run _make_review.py after)
 """
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
+_hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
+while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
+    _hg_d = _hg_os.path.dirname(_hg_d)
+_hg_sys.path.insert(0, _hg_d)
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import json, math, os, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

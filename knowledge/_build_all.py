@@ -27,6 +27,12 @@ the contrast audits (steps 6-7, any non-allowlisted token below its dark-mode
 threshold). Both run to completion first so every report is fresh. This is the
 single command to trust the knowledge base after editing metas or tokens.
 """
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
+_hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
+while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
+    _hg_d = _hg_os.path.dirname(_hg_d)
+_hg_sys.path.insert(0, _hg_d)
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import subprocess, sys, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -48,6 +54,16 @@ STEPS = [
     ("guideline rules index (gate)", "guidelines/gen_rules_index.py"),
     ("runbook index (generated)", "gen_runbook_index.py"),
     ("standing-instructions reachability gate", "_validate_standing_instructions.py"),
+    # #158 — the GENERATORS-WRITE-BY-DEFAULT class (born #150, homed in _FUTURE-STATE.md
+    # at #153, (n+1)th instance at #157 when `gen_showroom.py --help` REWROTE showroom/).
+    # A runtime write-probe measured 52 scripts that attempted a repo write on a bare
+    # --help, 14 of them at MODULE level. The remedy is one guard line per entry point
+    # (knowledge/_helpgate.py); THIS gate is what keeps it there, and it runs EARLY so a
+    # regression is reported before any generator in this list has written anything.
+    ("help-gate — no entry point may write before it reads argv (#158 class gate)",
+     "_validate_help_gate.py"),
+    ("help-gate selftest — 5 mutation bites (#158 class gate)",
+     "_validate_help_gate.py", ["--selftest"]),
     # Sibling to the above, and deliberately adjacent: that gate asks "is every standing
     # doc REACHABLE"; this one asks "is what we say still TRUE". A doc can be perfectly
     # reachable and perfectly wrong — which is how "the sandbox has no Univers" survived
@@ -183,6 +199,12 @@ STEPS = [
     ("theme cascade selftest (ADR-0014)", "canon/gen_theme_cascade.py", ["--selftest"]),
     ("state-snap gate — opacity states snap to the active theme's ramp (ADR-0014)", "_validate_state_snap.py"),
     ("state-snap selftest (ADR-0014)", "_validate_state_snap.py", ["--selftest"]),
+    # WIRED #158, the same pass it was built (s157-D2). Sits next to the state-snap gate on
+    # purpose: both hold an ADR-0014 "declare what you consume" join — neutralRamp there,
+    # ragPalette here. The defect it closes had NO instrument at all: 12 hex-identical RAG
+    # keys duplicated across two ratified override files with nothing declaring the sharing.
+    ("palette-tier gate — every theme names a palette per family, no divergent hand-carry (s157-D2)", "_validate_palette_tier.py"),
+    ("palette-tier selftest — 10 mutation bites (s157-D2)", "_validate_palette_tier.py", ["--selftest"]),
     ("radius gate — no hardcoded border-radius; shape is a theme flex slot (ADR-0010)", "_validate_radius.py"),
     ("showroom sync — generated component library (RULED 2026-07-21)", "gen_showroom.py", ["--check"]),
     ("showroom URL-rebase selftest — the srcdoc base-URL trap (2026-07-27)", "gen_showroom.py", ["--selftest"]),
@@ -659,6 +681,12 @@ ROUTE_ROWS = [
      "\n❌ binds-resolve gate failed (exit {code}) — a reference.html lost its token-manifest, a manifest var no longer resolves, or a meta binds address points at nothing (renamed rung / untaught store). Run: python3 knowledge/_validate_binds_resolve.py"),
     ("binds-resolve selftest — 5 bites incl. any-store clause (#146)", GATE,
      "\n❌ binds-resolve selftest failed (exit {code}) — python3 knowledge/_validate_binds_resolve.py --selftest"),
+    # #158: the named-palette tier (s157-D2). Routed GATE, not ADVISORY — the ruling makes
+    # the sharing STRUCTURAL, so an undeclared or divergent palette is a defect, not a note.
+    ("palette-tier gate — every theme names a palette per family, no divergent hand-carry (s157-D2)", GATE,
+     "\n❌ palette-tier gate failed (exit {code}) — a theme declares no ragPalette/neutralRamp, a declaration dangles, a palette key is silently absent, a tint became palette-owned, or a theme's override set diverges from its palette. Run: python3 knowledge/_validate_palette_tier.py"),
+    ("palette-tier selftest — 10 mutation bites (s157-D2)", GATE,
+     "\n❌ palette-tier selftest failed (exit {code}) — python3 knowledge/_validate_palette_tier.py --selftest"),
 ]
 
 

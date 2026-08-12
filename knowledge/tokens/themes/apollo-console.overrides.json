@@ -1,141 +1,9 @@
 {
- "$description": "Apollo Console override set (ADR-0011). Console INHERITS Mono's palette (Dave 2026-07-21: Console + Supercharge inherit Mono; dataviz + status/RAG identical across Mono/Console/Supercharge — only Legacy differs). The one live divergence NOW is shape: Console = rounded corners. Everything absent here falls back to Mono. Anticipated flex slots (UI greys, future input error-condition colour) are declared in _themes.json declaredSlots per ADR-0010 — a value can be added here any time without re-architecture.",
+ "$description": "Apollo Console override set (ADR-0011). Console INHERITS Mono's palette (Dave 2026-07-21: Console + Supercharge inherit Mono; dataviz + status/RAG identical across Mono/Console/Supercharge — only Legacy differs). The one live divergence NOW is shape: Console = rounded corners. Everything absent here falls back to Mono. Anticipated flex slots (UI greys, future input error-condition colour) are declared in _themes.json declaredSlots per ADR-0010 — a value can be added here any time without re-architecture. || s158-D4 (Dave, 2026-08-12) OPTION B — SINGLE SOURCE: the twelve palette-owned rag hue keys (error/warning/success/information x bare/-glyph/-background) were TRIMMED from this file; the palette file named by this theme's ragPalette in _themes.json is now their ONE source, projected by canon/gen_theme_cascade.py BEFORE the override set. Every $note that lived on those entries was relocated VERBATIM into the palette file's matching key FIRST (add-then-trim), so no ruling provenance was lost. -tint keys STAY here per s123-D3 (tints derive from per-theme grounds and are NOT palette-owned); rag/text/* stays here too. Enforced by _validate_palette_tier.py --strict-absence.",
  "$theme": "apollo-console",
  "$attr": "console",
  "$schemaVersion": "1.0.0",
  "overrides": {
-  "rag/error": {
-   "light": {
-    "$value": "#B92F1E",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#B92F1E",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). error fill #B92F1E, mark #FFFFFF (6.02:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*)."
-  },
-  "rag/error-glyph": {
-   "light": {
-    "$value": "#B92F1E",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#B92F1E",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). error fill #B92F1E, mark #FFFFFF (6.02:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*)."
-  },
-  "rag/error-background": {
-   "light": {
-    "$value": "#B92F1E",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#B92F1E",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). error fill #B92F1E, mark #FFFFFF (6.02:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*)."
-  },
-  "rag/warning": {
-   "light": {
-    "$value": "#D5990B",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#D5990B",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). warning fill #D5990B, mark #000000 (8.39:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*)."
-  },
-  "rag/warning-glyph": {
-   "light": {
-    "$value": "#D5990B",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#D5990B",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). warning fill #D5990B, mark #000000 (8.39:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*)."
-  },
-  "rag/warning-background": {
-   "light": {
-    "$value": "#D5990B",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#D5990B",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). warning fill #D5990B, mark #000000 (8.39:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*)."
-  },
-  "rag/success": {
-   "light": {
-    "$value": "#5DAC7B",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#5DAC7B",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). success fill #5DAC7B, mark #1A1A1A (6.34:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*)."
-  },
-  "rag/success-glyph": {
-   "light": {
-    "$value": "#5DAC7B",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#5DAC7B",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). success fill #5DAC7B, mark #1A1A1A (6.34:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*)."
-  },
-  "rag/success-background": {
-   "light": {
-    "$value": "#5DAC7B",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#5DAC7B",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). success fill #5DAC7B, mark #1A1A1A (6.34:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*)."
-  },
-  "rag/information": {
-   "light": {
-    "$value": "#5A85C1",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#5A85C1",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). information fill #4F77B0, mark #FFFFFF (4.57:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*). | s132-D1 (Dave, #132, ruled off info-blue-controller v1): information fill #4F77B0 -> #5A85C1, mark FLIPS WHITE -> INK #1A1A1A (4.61:1) - error is now the SOLE white mark on console/SC. Mode-invariant unchanged. Tint re-composited from the new fill at the s123-D3 ruled alphas: light #D1DDEE (28% over #FFFFFF), dark #364963 (44% over #1A1A1A)."
-  },
-  "rag/information-glyph": {
-   "light": {
-    "$value": "#5A85C1",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#5A85C1",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). information fill #4F77B0, mark #FFFFFF (4.57:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*). | s132-D1 (Dave, #132, ruled off info-blue-controller v1): information fill #4F77B0 -> #5A85C1, mark FLIPS WHITE -> INK #1A1A1A (4.61:1) - error is now the SOLE white mark on console/SC. Mode-invariant unchanged. Tint re-composited from the new fill at the s123-D3 ruled alphas: light #D1DDEE (28% over #FFFFFF), dark #364963 (44% over #1A1A1A)."
-  },
-  "rag/information-background": {
-   "light": {
-    "$value": "#5A85C1",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#5A85C1",
-    "$type": "color"
-   },
-   "$note": "s122-D3 (Dave, #122, ruled by eye off mark-map-controller v5): CONSOLE + SUPERCHARGE share ONE RAG map, MODE-INVARIANT (dark = light). information fill #4F77B0, mark #FFFFFF (4.57:1). Console divergence from Mono is permitted by s122-D4 (ADR-0014 sibling fence lifted for rag/*). | s132-D1 (Dave, #132, ruled off info-blue-controller v1): information fill #4F77B0 -> #5A85C1, mark FLIPS WHITE -> INK #1A1A1A (4.61:1) - error is now the SOLE white mark on console/SC. Mode-invariant unchanged. Tint re-composited from the new fill at the s123-D3 ruled alphas: light #D1DDEE (28% over #FFFFFF), dark #364963 (44% over #1A1A1A)."
-  },
   "border-radius/default": {
    "$value": 4,
    "$type": "number",
@@ -236,6 +104,61 @@
     "$type": "color"
    },
    "$note": "s122-D3: glyph knockout on the information fill #4F77B0 = 4.57:1."
+  }
+ },
+ "$guardsNote": "s158-D1 (Dave, #158): GUARDS. Not token overrides — declarations that THIS theme keeps a paint a later MONO-ONLY ruling moved away from it. They were hand-edited into canon.css's AUTO-THEMES block (which says do NOT hand-edit), and that is what held gen_theme_cascade --check red. Sourced here so the generator emits them and canon.css is clean generated output again. Provenance: .cn-banner .banner.err ink + .cn-tabs --badge-bg/--badge-ink = s149-D1 clauses (1) and (3), scoped 'this is right for mono only' — legacy s131-D1 / console+supercharge s132-D1 stay as built; --error-atom: var(--error) = s151-D1, an explicit NO-OP guard so the two-red law's atom fork cannot reach a theme that owns its own red. placement 'sorted' joins the sorted declaration namespace, 'append' is emitted after it in authored order (both reproduce the ratified bytes).",
+ "guards": {
+  "banner": {
+   "rules": [
+    {
+     "$note": [
+      "s149-D1 is MONO ONLY — console s132-D1 untouched: state the white ink explicitly, since mono's",
+      ".banner.err default (which console previously inherited) has moved to #1A1A1A."
+     ],
+     "selector": ".cn-banner .banner.err",
+     "body": "--ink:var(--on-dark);"
+    },
+    {
+     "$note": [
+      "s149-D1's WASH MEDIUM is MONO ONLY too — console s132-D1 untouched: mono's error-banner action washes",
+      "moved to WHITE-fixed 8%/14%; this theme keeps the ink-derived 14%/22% wash exactly as built.",
+      "Restated here because mono's .banner.err default (which this theme inherited) has changed."
+     ],
+     "selector": ".cn-banner .banner.err .actions .abtn:hover",
+     "body": "background:color-mix(in srgb, var(--ink) 14%, transparent);"
+    },
+    {
+     "$note": [
+      "s149-D1 wash medium, pressed leg — see the hover note above."
+     ],
+     "selector": ".cn-banner .banner.err .actions .abtn:active",
+     "body": "background:color-mix(in srgb, var(--ink) 22%, transparent);"
+    }
+   ]
+  },
+  "selection-controls": {
+   "placement": "sorted",
+   "declarations": {
+    "--error-atom": {
+     "value": "var(--error)",
+     "$comment": "s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value"
+    }
+   }
+  },
+  "tabs": {
+   "placement": "append",
+   "$noteLight": [
+    "s149-D1 is MONO ONLY — console s132-D1 untouched: preserve the pre-existing .ovcount paint",
+    "(--tabs-active / --text-reverse) rather than inherit mono's new badge seat."
+   ],
+   "declarations": {
+    "--badge-bg": {
+     "value": "var(--tabs-active)"
+    },
+    "--badge-ink": {
+     "value": "var(--text-reverse)"
+    }
+   }
   }
  }
 }

@@ -98,7 +98,12 @@
   .bwrap{ width:var(--demo-width, 720px); max-width:100%; container-type:inline-size; }
 
   /* per-variant fill + ink — each ink is its most specific ruled role (see header) */
-  .banner.err{ --fill:var(--err-bg); --ink:var(--on-dark); }
+  /* s149-D1 (Dave, #149): MONO ONLY — error joins the ink camp, fill STAYS #F6604C, ink #1A1A1A
+     (5.55:1). AMENDS s130-D4's #B92F1E fill move, which is DROPPED for mono — #B92F1E fails black
+     text at 2.89, killed by measurement. Legacy/console/supercharge preserve the prior white ink
+     below (their .cn-banner blocks did not override --ink, so it must be stated explicitly now
+     that mono's default has changed). */
+  .banner.err{ --fill:var(--err-bg); --ink:var(--on-light); }
   .banner.warn{ --fill:var(--warn-bg); --ink:var(--on-light); }
   .banner.ok{ --fill:var(--ok-bg); --ink:var(--on-ok); }
   .banner.info{ --fill:var(--info-bg); --ink:var(--on-info); } /* s131-D1: info ink rides its OWN slot (rag/text/on-information) — base dark, legacy reverses to white on #305A85; on-light stays warning's alone */
@@ -123,6 +128,15 @@
     border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring); }
   .banner .actions .abtn:hover{ background:color-mix(in srgb, var(--ink) 14%, transparent); }
   .banner .actions .abtn:active{ background:color-mix(in srgb, var(--ink) 22%, transparent); }
+  /* s149-D1 (Dave, #149) WASH MEDIUM — MONO ONLY: on the error banner the action washes are WHITE
+     transparencies at 8% hover / 14% pressed, not ink-derived, now that the ink is dark. Verbatim:
+     "hover/pressed are WHITE transparencies 8pct/14pct" — the s130-D4 percentages survive, the wash
+     MEDIUM changes ink-derived → white-fixed. Measured on the #F6604C fill: 5.55 base / 6.04 hover
+     (#F76D5A) / 6.41 pressed (#F77665) — contrast RISES with state. Legacy/console/supercharge keep
+     the ink-derived 14/22 wash as built (s131-D1 / s132-D1), restated as guards in their override
+     sets — s149-D1 is scoped mono only. */
+  .banner.err .actions .abtn:hover{ background:color-mix(in srgb, var(--on-dark) 8%, transparent); }
+  .banner.err .actions .abtn:active{ background:color-mix(in srgb, var(--on-dark) 14%, transparent); }
   .banner .actions .abtn:focus-visible{ outline:2px solid var(--ink); outline-offset:-2px; }
   .banner:has(.actions){ padding-bottom:0; }   /* actions sit flush to the bottom edge (Legacy global mechanic) */
 
@@ -194,16 +208,16 @@
               "--text": "text/default", "--page": "background/default", "--border-radius-surface": "border-radius/surface",
               "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken" },
     "contrastPairs": [
-      { "fg": "rag/text/on-dark",  "bg": "rag/error-background",       "context": "text" },
+      { "fg": "rag/text/on-light", "bg": "rag/error-background",       "context": "text" },
       { "fg": "rag/text/on-light", "bg": "rag/warning-background",     "context": "text" },
       { "fg": "text/on-success",   "bg": "rag/success-background",     "context": "text" },
       { "fg": "rag/text/on-information", "bg": "rag/information-background", "context": "text" },
-      { "fg": "rag/text/on-dark",  "bg": "rag/error-background",       "context": "icon" },
+      { "fg": "rag/text/on-light", "bg": "rag/error-background",       "context": "icon" },
       { "fg": "rag/text/on-light", "bg": "rag/warning-background",     "context": "icon" }
     ],
     "icons": { "error": "status-icons/error.svg", "warning": "status-icons/warning.svg", "success": "status-icons/success.svg", "information": "status-icons/information.svg", "close": "global-controls/close.svg" },
     "requiredAria": ["role=\"alert\"", "role=\"status\"", "aria-label"],
-    "$note": "White type appears ONLY on the error fill (#B92F1E — red, type26-013 compliant, 6.02:1). Amber/success/information carry ruled dark inks (R-D3 / B-D6 / rag/text/on-light), 5.22–9.16:1 both modes. Glyphs are reverse-knockout (shape = ink, mark = fill) so every icon leg matches its declared text pair. Fill-vs-page is undeclared by design: a page-level surface is not an indicator (1.4.11 does not set a floor for large surface boundaries). || s131-D1 (#131): the ONLY-on-error clause is now BASE-scoped — in LEGACY white type/marks ride error, success AND information (fills #A8000B/#00847F/#305A85: 7.87/4.56/7.17), amber the sole dark-ink exception."
+    "$note": "White type appears ONLY on the error fill (#B92F1E — red, type26-013 compliant, 6.02:1). Amber/success/information carry ruled dark inks (R-D3 / B-D6 / rag/text/on-light), 5.22–9.16:1 both modes. Glyphs are reverse-knockout (shape = ink, mark = fill) so every icon leg matches its declared text pair. Fill-vs-page is undeclared by design: a page-level surface is not an indicator (1.4.11 does not set a floor for large surface boundaries). || s149-D1 (#149), MONO ONLY: the error leg LEAVES the white-type camp — fill stays #F6604C, ink is rag/text/on-light #1A1A1A (5.55:1), so both declared error pairs (text + icon) now name on-light. The 'ONE white-type surface' clause above is superseded FOR MONO; legacy s131-D1 and console/supercharge s132-D1 keep white, restated as guards in their override sets. || s131-D1 (#131): the ONLY-on-error clause is now BASE-scoped — in LEGACY white type/marks ride error, success AND information (fills #A8000B/#00847F/#305A85: 7.87/4.56/7.17), amber the sole dark-ink exception."
   }
   </script>
   <script>

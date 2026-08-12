@@ -43,6 +43,12 @@ real dark-mode value fix or its component's `applies_to` claim is reconsidered.
 See `_INDICATOR-CONTRAST-AUDIT.md` for the live list and
 `knowledge/compliance/README.md` for the tracking note.
 """
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
+_hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
+while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
+    _hg_d = _hg_os.path.dirname(_hg_d)
+_hg_sys.path.insert(0, _hg_d)
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import json, os, sys
 from collections import OrderedDict
 sys.path.insert(0, os.path.dirname(__file__))

@@ -50,6 +50,12 @@ Usage:
   python3 knowledge/canon/gen_theme_cascade.py --check     # verify in-sync (build gate)
   python3 knowledge/canon/gen_theme_cascade.py --selftest  # invariant bite-test
 """
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
+_hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
+while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
+    _hg_d = _hg_os.path.dirname(_hg_d)
+_hg_sys.path.insert(0, _hg_d)
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import json, os, re, sys, glob
 
 HERE   = os.path.dirname(os.path.abspath(__file__))
@@ -195,6 +201,37 @@ def css_value(path, val):
         return "0" if val == 0 else f"{val}px"
     return str(val)
 
+def palette_values(rel, _cache={}):
+    """s157-D2 — the NAMED-PALETTE TIER (shared-by-reference projection).
+
+    `rel` is a registry `ragPalette` path relative to knowledge/tokens/
+    (e.g. "palettes/rag/console-supercharge.json"). Returns
+    {token_path: {'light': cssval, 'dark': cssval}} for every key the palette
+    DECLARES. Two themes naming the SAME file get the SAME dict — that is the
+    sharing, expressed once, instead of two hand-kept hex copies (console +
+    supercharge carried 12 hex-identical duplicate keys with nothing declaring it).
+
+    Keys the palette does not declare (its $partialKeys) are NOT emitted: absence
+    is a fall-through the palette file records explicitly, never a value invented
+    here. -tint keys are not in the palette vocabulary at all — they derive from
+    per-theme grounds (s123-D3) and stay in each override set.
+    """
+    if rel not in _cache:
+        pal = json.load(open(os.path.join(TOK, rel)))
+        out = {}
+        for key, node in (pal.get("keys") or {}).items():
+            path = f"rag/{key}"
+            pair = {}
+            for m in MODES:
+                if m in node and isinstance(node[m], dict) and "$value" in node[m]:
+                    pair[m] = css_value(path, node[m]["$value"])
+                else:
+                    pair[m] = css_value(path, base_value(path, m))   # fall back, never leak
+            out[path] = pair
+        _cache[rel] = out
+    return dict(_cache[rel])
+
+
 def load_themes():
     """Registry -> ordered list of {key, attr, label, status, overrides} where
     overrides = {path: {'light': cssval, 'dark': cssval} | {'modeless': cssval}}.
@@ -205,7 +242,17 @@ def load_themes():
     for key, t in sorted(reg["themes"].items(), key=lambda kv: kv[1].get("order", 99)):
         entry = {"key": key, "attr": t.get("attr") or key.replace("apollo-", ""),
                  "label": t.get("label", key), "status": t.get("status"), "overrides": {},
-                 "marks": {}}
+                 "marks": {}, "guards": {}}
+        # s157-D2: the named-palette tier projects BEFORE the override set, so a shared
+        # palette reaches a theme even where no override file line carries the hex. The
+        # override set still loads on top (below) — today every palette-owned key is
+        # ALSO declared in the ratified override files, so this projection is a proven
+        # no-op on the emitted CSS (gen_theme_cascade --check byte-identical, #158) and
+        # the ADD-never-trim posture on those files is untouched. Divergence between the
+        # two sources is not resolved here — it is FORBIDDEN, by _validate_palette_tier.py.
+        pal = t.get("ragPalette")
+        if pal and t.get("status") != "base":
+            entry["overrides"].update(palette_values(pal))
         oset = t.get("overrideSet")
         if oset and t.get("status") != "base":
             data = json.load(open(os.path.join(TOK, oset)))
@@ -246,6 +293,13 @@ def load_themes():
                     raise KeyError(f"{key}: marks/{status} must declare BOTH modes "
                                    f"(no base --mark-* token exists to fall back to)")
                 entry["marks"][status] = pair
+            # GUARDS (s158-D1, Dave #158: "the generator learns to emit these"). A guard is
+            # NOT a token override — it is a declaration that this theme KEEPS a paint a
+            # later mono-only ruling moved (s149-D1 banner ink + tab badge seat, s151-D1's
+            # no-op --error-atom fork guard). They were hand-edited into canon.css's
+            # "do NOT hand-edit" block, which is why --check went red; they live HERE now,
+            # in the same file that is already the ONE source for this theme (like marks).
+            entry["guards"] = data.get("guards") or {}
         out.append(entry)
     amap = alias_map()
     for entry in out:
@@ -280,8 +334,39 @@ def component_overrides(varmap, theme):
     return hits
 
 # ---------------------------------------------------------------- CSS emission
-def _decls(pairs, mode, indent="  "):
-    return "\n".join(f"{indent}{v}: {vals[mode]};" for v, vals in sorted(pairs.items()))
+def _decls(pairs, mode, indent="  ", comments=None):
+    comments = comments or {}
+    out = []
+    for v, vals in sorted(pairs.items()):
+        line = f"{indent}{v}: {vals[mode]};"
+        if v in comments:
+            line += f"  /* {comments[v]} */"
+        out.append(line)
+    return "\n".join(out)
+
+# ---------------------------------------------------------------- guards (s158-D1)
+def _comment_lines(note, indent):
+    """A CSS comment from a list of authored lines. Continuations align under the
+    opener's text column (indent + 3), which is how the hand-edits were written."""
+    out, cont = [], indent + "   "
+    for i, ln in enumerate(note):
+        pre = indent + "/* " if i == 0 else cont
+        out.append(pre + ln + (" */" if i == len(note) - 1 else ""))
+    return out
+
+def _guard_tail(gd, comments, note, indent="  "):
+    """Appended (unsorted) guard declarations, optionally preceded by a note.
+    Authored order is preserved — these are STATEMENTS about what a theme keeps,
+    not values in the override set's sorted namespace."""
+    lines = []
+    if note:
+        lines += _comment_lines(note, indent)
+    for v, n in gd.items():
+        line = f"{indent}{v}: {n['value']};"
+        if v in comments:
+            line += f"  /* {comments[v]} */"
+        lines.append(line)
+    return lines
 
 def theme_block(theme, manifests):
     """Full canon.css cascade for one theme ('' for the base theme)."""
@@ -316,17 +401,36 @@ def theme_block(theme, manifests):
         lines.append(_decls(root_dark, "dark"))
         lines.append("}")
     # COMPONENT tier (projected-literal re-binding)
+    guards = theme.get("guards") or {}
     for slug, varmap in manifests:
         hits = component_overrides(varmap, theme)
+        g = guards.get(slug) or {}
         if not hits:
+            if g:
+                raise KeyError(f'{theme["key"]}: guard for .cn-{slug} but the theme '
+                               f"projects no component vars there — guard would be dropped")
             continue
+        gd = g.get("declarations") or {}
+        comments = {v: n["$comment"] for v, n in gd.items() if n.get("$comment")}
+        tail_light, tail_dark = [], []
+        if g.get("placement") == "sorted":
+            for v, n in gd.items():                      # joins the sorted namespace
+                hits[v] = {"light": n["value"], "dark": n["value"]}
+        elif gd:
+            tail_light = _guard_tail(gd, comments, g.get("$noteLight"))
+            tail_dark = _guard_tail(gd, comments, None)
         sel = f".cn-{slug}"
         lines.append(f'[data-apollo-theme="{a}"] {sel}{{')
-        lines.append(_decls(hits, "light"))
+        lines.append(_decls(hits, "light", comments=comments))
+        lines += tail_light
         lines.append("}")
+        for r in (g.get("rules") or []):
+            lines += _comment_lines(r["$note"], "")
+            lines.append(f'[data-apollo-theme="{a}"] {r["selector"]}{{{r["body"]}}}')
         lines.append(f'[data-apollo-theme="{a}"][data-theme="dark"] {sel},')
         lines.append(f'[data-apollo-theme="{a}"] [data-theme="dark"] {sel}{{')
-        lines.append(_decls(hits, "dark"))
+        lines.append(_decls(hits, "dark", comments=comments))
+        lines += tail_dark
         lines.append("}")
     return "\n".join(lines) + "\n"
 
@@ -350,24 +454,56 @@ def build_block():
     return "\n".join(body), n_paths, n_comp
 
 # ------------------------------------------------- standalone-snippet export
-def snippet_theme_css(manifest_vars):
+def snippet_theme_css(manifest_vars, slug=None):
     """The same override projection for ONE standalone snippet document (used by
     gen_showroom.py). Bare [data-theme] blocks live on <body>; the harness sets
-    data-apollo-theme on <html>. Emits nothing for themes with no hits."""
+    data-apollo-theme on <html>. Emits nothing for themes with no hits.
+
+    GUARDS PARITY (#158, closing the gap the s158-D1 sub declared open): the same
+    `guards` vocabulary theme_block() folds into canon.css is emitted here from the
+    SAME data source (tokens/themes/*.overrides.json § guards[slug]). Without it a
+    showroom pane / Open-↗ standalone doc rendered PRE-GUARD — i.e. a theme that
+    explicitly declares it keeps its own paint (Legacy/Console/Supercharge banner
+    ink, tabs badge seat, selection-controls --error-atom) would inherit mono's
+    instead, in exactly the surface Dave reviews by eye.
+
+    The one deliberate difference is the SELECTOR: canon.css scopes a component to
+    `.cn-<slug>` because every component shares one stylesheet; a standalone snippet
+    document IS the component, so the `.cn-<slug> ` prefix is stripped from guard
+    rule selectors. Declarations ride the same [data-theme] blocks as the projection.
+    `slug=None` keeps the pre-#158 behaviour for callers that have no slug."""
     themes = load_themes()
     css = []
     for t in themes:
         hits = component_overrides(manifest_vars, t)
         if not hits:
             continue
+        g = ((t.get("guards") or {}).get(slug) or {}) if slug else {}
+        gd = g.get("declarations") or {}
+        comments = {v: n["$comment"] for v, n in gd.items() if n.get("$comment")}
+        tail_light, tail_dark = [], []
+        if gd and g.get("placement") == "sorted":
+            for v, n in gd.items():                      # joins the sorted namespace
+                hits[v] = {"light": n["value"], "dark": n["value"]}
+        elif gd:
+            tail_light = _guard_tail(gd, comments, g.get("$noteLight"))
+            tail_dark = _guard_tail(gd, comments, None)
         a = t["attr"]
         css.append(f'[data-apollo-theme="{a}"] [data-theme="light"],')
         css.append(f'[data-apollo-theme="{a}"][data-theme="light"]{{')
-        css.append(_decls(hits, "light"))
+        css.append(_decls(hits, "light", comments=comments))
+        css += tail_light
         css.append("}")
+        for r in (g.get("rules") or []):
+            css += _comment_lines(r["$note"], "")
+            sel = r["selector"]
+            if slug and sel.startswith(f".cn-{slug} "):
+                sel = sel[len(f".cn-{slug} "):]          # the snippet doc IS the component
+            css.append(f'[data-apollo-theme="{a}"] {sel}{{{r["body"]}}}')
         css.append(f'[data-apollo-theme="{a}"] [data-theme="dark"],')
         css.append(f'[data-apollo-theme="{a}"][data-theme="dark"]{{')
-        css.append(_decls(hits, "dark"))
+        css.append(_decls(hits, "dark", comments=comments))
+        css += tail_dark
         css.append("}")
     return "\n".join(css)
 
@@ -417,6 +553,55 @@ def selftest():
     for path in themes["apollo-console"]["overrides"]:
         if any(path.startswith(p) for p in fence):
             fails.append(f"console override '{path}' breaches the sibling fence {fence}")
+    # 4c. s158-D1 guards: every declared guard must REACH the emitted block. A guard that
+    #     silently vanishes is exactly the failure that put these lines into canon.css by
+    #     hand — so assert presence in the built CSS, not merely in the loaded dict.
+    for t in themes.values():
+        for slug, g in (t.get("guards") or {}).items():
+            for v, n in (g.get("declarations") or {}).items():
+                if f"{v}: {n['value']};" not in block:
+                    fails.append(f'{t["key"]}: guard {v} for .cn-{slug} not emitted')
+            for r in (g.get("rules") or []):
+                if f'[data-apollo-theme="{t["attr"]}"] {r["selector"]}{{{r["body"]}}}' not in block:
+                    fails.append(f'{t["key"]}: guard rule {r["selector"]} not emitted')
+    #     The RULED SET, named here so deleting a guard cannot delete its own check
+    #     (a check derived only from the data can never fail): s149-D1 is MONO ONLY, so
+    #     legacy/console/supercharge each keep the banner ink + both badge seats, and
+    #     s151-D1's atom fork is fenced off all three by the no-op guard.
+    for key in ("apollo-legacy", "apollo-console", "apollo-supercharge"):
+        gs = themes[key].get("guards") or {}
+        a = themes[key]["attr"]
+        if not (gs.get("banner") or {}).get("rules"):
+            fails.append(f"{key}: s149-D1 mono-only banner-ink guard missing (.cn-banner .banner.err)")
+        for v in ("--badge-bg", "--badge-ink"):
+            if v not in ((gs.get("tabs") or {}).get("declarations") or {}):
+                fails.append(f"{key}: s149-D1 mono-only tab-badge guard {v} missing")
+        if "--error-atom" not in ((gs.get("selection-controls") or {}).get("declarations") or {}):
+            fails.append(f"{key}: s151-D1 --error-atom no-op guard missing")
+        if f'[data-apollo-theme="{a}"] .cn-tabs{{' not in block:
+            fails.append(f"{key}: no .cn-tabs block to carry the badge guards")
+    # 4d. #158 GUARDS PARITY — the standalone-snippet export must carry the SAME guards.
+    #     Before #158 it did not: theme_block() folded them into canon.css while
+    #     snippet_theme_css() still emitted the PRE-GUARD projection, so every showroom
+    #     pane and Open-↗ document rendered the mono default the guard exists to refuse.
+    #     Driven on the REAL manifests, not a fixture [[green-tests-cannot-see-scope]].
+    mans = dict(snippet_manifests())
+    for t in themes.values():
+        for slug, g in (t.get("guards") or {}).items():
+            if slug not in mans:
+                continue
+            snip = snippet_theme_css(mans[slug], slug)
+            for v, n in (g.get("declarations") or {}).items():
+                if f"{v}: {n['value']};" not in snip:
+                    fails.append(f'{t["key"]}: guard {v} for {slug} missing from snippet_theme_css')
+            for r in (g.get("rules") or []):
+                sel = r["selector"]
+                sel = sel[len(f".cn-{slug} "):] if sel.startswith(f".cn-{slug} ") else sel
+                if f'[data-apollo-theme="{t["attr"]}"] {sel}{{{r["body"]}}}' not in snip:
+                    fails.append(f'{t["key"]}: guard rule {sel} missing from snippet_theme_css')
+            if snippet_theme_css(mans[slug]) == snip:
+                fails.append(f'{t["key"]}: snippet guards for {slug} are a NO-OP '
+                             f"(slug-less call emits the same CSS — the guard is not reaching the doc)")
     # 5. idempotency
     if build_block()[0] != block:
         fails.append("generator is not deterministic")

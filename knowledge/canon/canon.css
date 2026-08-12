@@ -3989,10 +3989,10 @@
 .cn-banner .bwrap{width:var(--demo-width, 720px); max-width:100%; container-type:inline-size;}
 /* per-variant fill + ink — each ink is its most specific ruled role (see header) */
 /* s149-D1 (Dave, #149): MONO ONLY — error joins the ink camp, fill STAYS #F6604C, ink #1A1A1A
-   (5.55:1). AMENDS s130-D4's #B92F1E fill move, which is DROPPED for mono — #B92F1E fails black
-   text at 2.89, killed by measurement. Legacy/console/supercharge preserve the prior white ink
-   below (their .cn-banner blocks did not override --ink, so it must be stated explicitly now
-   that mono's default has changed). */
+     (5.55:1). AMENDS s130-D4's #B92F1E fill move, which is DROPPED for mono — #B92F1E fails black
+     text at 2.89, killed by measurement. Legacy/console/supercharge preserve the prior white ink
+     below (their .cn-banner blocks did not override --ink, so it must be stated explicitly now
+     that mono's default has changed). */
 .cn-banner .banner.err{--fill:var(--err-bg); --ink:var(--on-light);}
 .cn-banner .banner.warn{--fill:var(--warn-bg); --ink:var(--on-light);}
 .cn-banner .banner.ok{--fill:var(--ok-bg); --ink:var(--on-ok);}
@@ -4017,6 +4017,15 @@
     border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring);}
 .cn-banner .banner .actions .abtn:hover{background:color-mix(in srgb, var(--ink) 14%, transparent);}
 .cn-banner .banner .actions .abtn:active{background:color-mix(in srgb, var(--ink) 22%, transparent);}
+/* s149-D1 (Dave, #149) WASH MEDIUM — MONO ONLY: on the error banner the action washes are WHITE
+     transparencies at 8% hover / 14% pressed, not ink-derived, now that the ink is dark. Verbatim:
+     "hover/pressed are WHITE transparencies 8pct/14pct" — the s130-D4 percentages survive, the wash
+     MEDIUM changes ink-derived → white-fixed. Measured on the #F6604C fill: 5.55 base / 6.04 hover
+     (#F76D5A) / 6.41 pressed (#F77665) — contrast RISES with state. Legacy/console/supercharge keep
+     the ink-derived 14/22 wash as built (s131-D1 / s132-D1), restated as guards in their override
+     sets — s149-D1 is scoped mono only. */
+.cn-banner .banner.err .actions .abtn:hover{background:color-mix(in srgb, var(--on-dark) 8%, transparent);}
+.cn-banner .banner.err .actions .abtn:active{background:color-mix(in srgb, var(--on-dark) 14%, transparent);}
 .cn-banner .banner .actions .abtn:focus-visible{outline:2px solid var(--ink); outline-offset:-2px;}
 .cn-banner .banner:has(.actions){padding-bottom:0;}
 /* actions sit flush to the bottom edge (Legacy global mechanic) */
@@ -9157,6 +9166,12 @@
 /* s149-D1 is MONO ONLY — legacy s131-D1 untouched: state the white ink explicitly, since mono's
    .banner.err default (which legacy previously inherited) has moved to #1A1A1A. */
 [data-apollo-theme="legacy"] .cn-banner .banner.err{--ink:var(--on-dark);}
+/* s149-D1's WASH MEDIUM is MONO ONLY too — legacy s131-D1 untouched: mono's error-banner action washes
+   moved to WHITE-fixed 8%/14%; this theme keeps the ink-derived 14%/22% wash exactly as built.
+   Restated here because mono's .banner.err default (which this theme inherited) has changed. */
+[data-apollo-theme="legacy"] .cn-banner .banner.err .actions .abtn:hover{background:color-mix(in srgb, var(--ink) 14%, transparent);}
+/* s149-D1 wash medium, pressed leg — see the hover note above. */
+[data-apollo-theme="legacy"] .cn-banner .banner.err .actions .abtn:active{background:color-mix(in srgb, var(--ink) 22%, transparent);}
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-banner,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-banner{
   --err-bg: #A8000B;
@@ -10099,6 +10114,12 @@
 /* s149-D1 is MONO ONLY — console s132-D1 untouched: state the white ink explicitly, since mono's
    .banner.err default (which console previously inherited) has moved to #1A1A1A. */
 [data-apollo-theme="console"] .cn-banner .banner.err{--ink:var(--on-dark);}
+/* s149-D1's WASH MEDIUM is MONO ONLY too — console s132-D1 untouched: mono's error-banner action washes
+   moved to WHITE-fixed 8%/14%; this theme keeps the ink-derived 14%/22% wash exactly as built.
+   Restated here because mono's .banner.err default (which this theme inherited) has changed. */
+[data-apollo-theme="console"] .cn-banner .banner.err .actions .abtn:hover{background:color-mix(in srgb, var(--ink) 14%, transparent);}
+/* s149-D1 wash medium, pressed leg — see the hover note above. */
+[data-apollo-theme="console"] .cn-banner .banner.err .actions .abtn:active{background:color-mix(in srgb, var(--ink) 22%, transparent);}
 [data-apollo-theme="console"][data-theme="dark"] .cn-banner,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-banner{
   --border-radius-surface: 12px;
@@ -10684,7 +10705,7 @@
   --divider-border-subsectioninset: #DFDEDC;
   --elevation-border: #FFFFFF00;
   --form-background-hover: #DFDEDC;
-  --form-background-pressed: #524842;
+  --form-background-pressed: #AA9B92;
   --form-border-active: #000000;
   --form-border-default: #524842;
   --form-border-disabled: #CDC8C6;
@@ -11089,6 +11110,12 @@
 /* s149-D1 is MONO ONLY — supercharge s132-D1 untouched: state the white ink explicitly, since
    mono's .banner.err default (which supercharge previously inherited) has moved to #1A1A1A. */
 [data-apollo-theme="supercharge"] .cn-banner .banner.err{--ink:var(--on-dark);}
+/* s149-D1's WASH MEDIUM is MONO ONLY too — supercharge s132-D1 untouched: mono's error-banner action washes
+   moved to WHITE-fixed 8%/14%; this theme keeps the ink-derived 14%/22% wash exactly as built.
+   Restated here because mono's .banner.err default (which this theme inherited) has changed. */
+[data-apollo-theme="supercharge"] .cn-banner .banner.err .actions .abtn:hover{background:color-mix(in srgb, var(--ink) 14%, transparent);}
+/* s149-D1 wash medium, pressed leg — see the hover note above. */
+[data-apollo-theme="supercharge"] .cn-banner .banner.err .actions .abtn:active{background:color-mix(in srgb, var(--ink) 22%, transparent);}
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-banner,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-banner{
   --err-bg: #B92F1E;
@@ -12220,7 +12247,7 @@
 }
 [data-apollo-theme="supercharge"] .cn-selection-controls{
   --chip-hover: #DFDEDC;
-  --chip-pressed: #524842;
+  --chip-pressed: #AA9B92;
   --ctrl-border: #524842;
   --ctrl-border-active: #000000;
   --ctrl-border-disabled: #CDC8C6;

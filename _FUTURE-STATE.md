@@ -1005,6 +1005,15 @@ hover-wash architecture gap); the **box border** question is residual ④. [[gap
   that heals a gate red also rewrites its target with no way to see the diff first; #150's own
   check-before-remedy slip was caught by hand, not by a flag. Feeds: Craft (generators).
   `status: idea` `[born #153 · guards: nothing yet · until: Dave scopes it or retires it]`
+  ⚠ **AMENDED BY ADDITION #158 — THE `--help` LEG IS CLOSED; THE CARRY SHRINKS, IT DOES NOT DIE.**
+  `knowledge/_helpgate.py` (the shared `help_gate()` shim) + `knowledge/_validate_help_gate.py` (an
+  **AST** check, wired early in `_build_all.py`) make a `--help` invocation answer and exit **before
+  any write can happen**: **52 offenders measured, 107 scripts guarded, gate green at 130 scanned**.
+  That is the leg #157's `gen_showroom.py --help` accident belonged to [[gate-dont-patch]].
+  ⛔ **STILL OPEN, and it is the whole remaining item: the NO-ARGS leg.** A bare
+  `python3 knowledge/gen_*.py` with no flags still writes by default, unswept — **15 argparse
+  scripts are unverified** — and there is still **no `--dry-run` anywhere**. Do not read the closed
+  leg as the closed class [[green-tests-cannot-see-scope]].
 - **THE TOKEN-DRIFT CLASS ITSELF** (declared #150, unfixed). #150 found `semantic-colour.json`
   badge tokens where the **alias and the `$value` disagreed**, a silent drift dated back to
   `s122-D2`. One instance was repaired; **nothing re-checks the class**, so a second alias/value

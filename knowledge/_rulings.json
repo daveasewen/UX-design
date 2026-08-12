@@ -2166,6 +2166,66 @@
   "whether the gate verifies ratified override files in place (ADD-never-trim preserved) or the overrides become generated - migration mechanics to be priced at #158",
   "s157-D1 note: Dave approved the mono green seat in-window ('for mono it's perfect'); the none-unbound delta stands unvetoed"
  ]
+},
+{
+ "id": "s158-D1",
+ "ruled": "#158",
+ "date": "2026-08-12",
+ "by": "Dave",
+ "says": "CANON.CSS HAND-EDITS FOLD INTO THE GENERATOR - the AUTO-THEMES block says 'do NOT hand-edit' and had been hand-edited, which is why gen_theme_cascade --check was red. Dave's ruling: not 'restore the file' and not 'bless the exception' - THE GENERATOR LEARNS TO EMIT THEM, so canon.css becomes clean generated output again and the fences survive the next regeneration. Three classes of hand-edit, all with real provenance, none invented: (a) the s149-D1 mono-only banner-ink rule [data-apollo-theme=X] .cn-banner .banner.err{--ink:var(--on-dark);} for legacy/console/supercharge (s149-D1 is scoped 'this is right for mono only'; legacy s131-D1 and console/supercharge s132-D1 stay as built); (b) the s151-D1 --error-atom: var(--error) NO-OP guard, fencing the two-red law's atom fork off themes that own their own red; (c) the s149-D1(3) tab-badge seat guards --badge-bg/--badge-ink, preserving each theme's pre-existing .ovcount paint. These are not token overrides - they are declarations that a theme KEEPS a paint a later mono-only ruling moved - so they get their own vocabulary, GUARDS, homed in the per-theme override set beside marks (the same file that is already the ONE source for that theme).",
+ "status": "ENACTED #158, same session, and VERIFIED BY BYTE-DIFF. (1) tokens/themes/apollo-{legacy,console,supercharge}.overrides.json each gain '$guardsNote' + 'guards' (banner rule / selection-controls sorted decl / tabs appended decls, with the ratified comment prose carried as data, extracted verbatim from canon.css rather than retyped); priors parse-equal, ensure_ascii=False indent=1 round-trip proven byte-identical BEFORE writing. (2) canon/gen_theme_cascade.py: _decls gains inline comments, new _comment_lines/_guard_tail, load_themes reads 'guards', theme_block emits them (placement 'sorted' joins the sorted namespace, 'append' follows it in authored order; rules emit between the light and dark component blocks); a guard on a slug the theme does not project raises rather than silently dropping. (3) selftest gains check 4c, which names the RULED SET (all three themes carry the banner rule, both badge guards and the error-atom guard) so deleting a guard cannot delete its own check - mutation-tested: dropping --badge-ink from legacy = RED, dropping console's banner rule = RED, restore = green. PROOF: generated block diffed against on-disk canon.css - all 20 hand-edited lines now BYTE-IDENTICAL; --check rc=0 (201 override paths, 206 component projections).",
+ "open": [
+  "DECLARED DIFF, the only one, and it is NOT a hand-edit: supercharge --form-background-pressed / --chip-pressed read #524842 on disk, #AA9B92 generated. PROVENANCE FOUND, not guessed - #524842 is warm/8, the value the light leg of form/background/pressed had when it aliased color/neutral/8 (commit 43cb3dd, ADR-0014 build, 2026-07-22, generated output). s151-D2 re-aliased that light leg to color/neutral/11 ('normalise them to the ramp'), supercharge remaps neutral/11 -> warm/11 = #AA9B92, and canon.css was never regenerated for supercharge. So the on-disk pair is STALE GENERATED OUTPUT, not a hand-edit, and the ruled value is the generated one. The two lines are now #AA9B92; _validate_state_snap.py, _validate_theme_provenance.py and _validate_palette_tier.py all stay green. Dave may still want to eye the SC light pressed chip.",
+  "gen_showroom's snippet_theme_css export does NOT emit guards - standalone snippet documents keep the pre-guard behaviour. Untouched deliberately (out of the ruling's subject, canon.css); UNPROVEN whether any showroom specimen visibly differs. Priced TODO.",
+  "Option A vs B (whether the override files themselves become generated) is NOT enacted here - D1 unblocks it, nothing more."
+ ]
+},
+{
+ "id": "s158-D2",
+ "ruled": "#158",
+ "date": "2026-08-12",
+ "by": "Dave",
+ "says": "rag/success-ink IS CANONICAL FOR THE amount-display sign=positive SEAT. The -ink rungs are the coloured-TEXT seat: s151-D1's two-red law forks red text and atoms at rag/error-ink, s155-D1 ruled green mirrors it 'in exactly the same contexts', and #155-A resolved the values (#137F3C on white / #66CC8D else, MONO ONLY). rag.success is the FILL family - a different seat. So the s157-D1 binding of positive -> rag.success was an address-intent placeholder pointing one rung short of the ruled one.",
+ "status": "ENACTED #158, same session: knowledge/components/amount-display.meta.json props[sign].binds positive re-keyed 'rag.success' -> 'rag.success-ink' by TEXTUAL splice (this file does not round-trip through a serializer); prior $status kept verbatim by addition. VERIFIED: file parses; _validate_binds_resolve.py 0 failures over 102 binds addresses (the gate's DEFAULT_STORES already routes rag.* to semantic-colour.json and rag/success-ink is a real leaf there - NO gate vocabulary fix was needed, checked by driving address_exists directly); mutation to 'rag.success-inkZ' = 1 failure, RED, restored green; _validate_binds_ratchet PASS 33/33.",
+ "open": [
+  "'negative' is NOT re-keyed and this is DECLARED, not overlooked: it still binds rag.error. The symmetric move to rag.error-ink is strongly implied by s151-D1 (which names rag/error-ink as the red TEXT/atom fork), but s157-D1 states 'negative: rag.error unchanged' as an enacted verdict of Dave's, so re-keying it would be ruling on his behalf. OPEN ITEM FOR DAVE - the negative seat's canonical rung.",
+  "The gate proves the address EXISTS, never that it is the RIGHT rung (its own declared blind spot). No specimen was rendered this session, so the VISUAL consequence of the re-key is UNPROVEN. Priced TODO.",
+  "-ink rungs are MONO ONLY (s149-D1/s155-D1 scope); non-mono forks remain unruled and untouched."
+ ]
+},
+{
+ "id": "s158-D3",
+ "ruled": "#158",
+ "date": "2026-08-12",
+ "by": "Dave",
+ "says": "THE SYMMETRIC CLOSE - rag/error-ink IS CANONICAL FOR THE amount-display sign=negative SEAT. s158-D2 re-keyed the POSITIVE seat to rag.success-ink and DECLARED the negative leg open, on the ground that s157-D1 had recorded 'negative: rag.error unchanged'. Dave closes it the same session: negative binds rag.error-ink. The reasoning is the one already ruled - the -ink rungs are the coloured-TEXT seat (s145-D1 spells the text/atom fork there; s151-D1's two-red law is background-keyed #DA1A00-on-white / #F6604C-else), while rag.error is the FILL family (banner/roundel background), a different seat. s157-D1's line is SUPERSEDED, not contradicted: it recorded the state at #157, before the symmetry was ruled. Scope UNCHANGED: -ink rungs are MONO ONLY (s149-D1 / s155-D1); non-mono forks stay unruled and untouched.",
+ "governs": [
+  "knowledge/components/amount-display.meta.json - props[sign].binds.negative"
+ ],
+ "status": "ENACTED #158, same session: props[sign].binds negative re-keyed 'rag.error' -> 'rag.error-ink' by TEXTUAL splice (this file does not round-trip through a serializer); prior $status kept verbatim by addition. VERIFIED: file parses and re-read shows {'positive': 'rag.success-ink', 'negative': 'rag.error-ink'}; _validate_binds_resolve.py 0 failures over 102 binds addresses; MUTATION to 'rag.error-inkZZ' = 1 failure ('resolves to NOTHING in any declared store'), restored, green again and byte-identical to the pre-mutation file; _validate_binds_ratchet PASS, 33 of 75 metas carrying binds, floor 33.",
+ "open": [
+  "The gate proves the address EXISTS, never that it is the RIGHT rung (its own declared blind spot). No specimen was rendered this session, so the VISUAL consequence of the re-key is UNPROVEN - same priced TODO s158-D2 carries.",
+  "Both seats now sit on MONO-ONLY rungs. What a NON-MONO theme renders for coloured monetary text is still unruled - the palette files declare the -ink absence explicitly (s157-D2 $partialKeys), so it falls through to mono's values VISIBLY. Dave's to rule."
+ ]
+},
+{
+ "id": "s158-D4",
+ "ruled": "#158",
+ "date": "2026-08-12",
+ "by": "Dave",
+ "says": "OPTION B - THE OVERRIDE FILES GO SINGLE-SOURCE. s157-D2 built the named-palette tier but left every palette-owned rag key ALSO hand-carried in the three ratified override sets, so the palette projection was a proven no-op and the duplication (the exact s157-D2 defect) survived one level down. Dave's pick: the palette files are the SINGLE SOURCE; the 36 palette-owned entries (3 themes x error/warning/success/information x bare/-glyph/-background) leave the override sets. LAW ON THE MOVE: every $note carrying ruling provenance (s122-D1/D3, s123-D1, s131-D1, s132-D1 ...) is relocated into the corresponding palette key BY ADDITION FIRST and verified verbatim-present, and only THEN are the override entries trimmed. -tint keys STAY per-theme - they derive from per-theme grounds, NOT palette-owned (s123-D3). rag/text/* stays too.",
+ "governs": [
+  "knowledge/tokens/themes/apollo-legacy.overrides.json - 12 entries trimmed, 5 rag/ keys remain (4 tints + rag/text/on-information)",
+  "knowledge/tokens/themes/apollo-console.overrides.json - 12 entries trimmed, 4 tint keys remain",
+  "knowledge/tokens/themes/apollo-supercharge.overrides.json - 12 entries trimmed, 4 tint keys remain",
+  "knowledge/tokens/palettes/rag/legacy.json + console-supercharge.json - the relocated $notes",
+  "knowledge/_validate_palette_tier.py - --strict-absence is now the GREEN posture; selftest bite 7 re-based"
+ ],
+ "status": "ENACTED #158, same session. ADD: 36 override $notes checked against the palette keys - legacy's 12 were already verbatim-present from the s157-D2 extraction, console/supercharge contributed 12 appended (the shared palette carries both themes' provenance, prefixed 'RELOCATED s158-D4 ... verbatim:'); re-read check reports verbatim-present 36/36 BEFORE any trim. TRIM: line-based textual splice (these files do not round-trip a serializer), each file proved PARSE-EQUAL to itself-minus-the-36 (every other key, and every non-overrides top-level field, compared equal) before writing; the s158-D4 record was appended to each $description. PROOF THE PROJECTION ALREADY CARRIED THEM: canon.css md5 feb3963d040d3dc975fbf9f5c63379cc BEFORE the trim and BYTE-IDENTICAL after re-running gen_theme_cascade.py ('no change (in sync)', diff empty) - gen_theme_cascade already projects ragPalette BEFORE the override set (s157-D2 wiring), so NO generator change was needed. GATES: _validate_palette_tier --strict-absence 36 failures -> 0, plain run OK, gen_theme_cascade --check OK 201 override paths / 206 component projections, _validate_state_snap OK, guards intact (s158-D1 banner/tabs/selection-controls guards re-emitted unchanged).",
+ "open": [
+  "Palette NAMES are still Dave's - console-supercharge.json says so on its own face (FILE NAME IS A PLACEHOLDER).",
+  "The 36 hexes were never re-rendered this session: the byte-identical canon.css proves the EMISSION is unchanged, not that any theme was looked at. No visual re-check was performed."
+ ]
 }
 ]
 }

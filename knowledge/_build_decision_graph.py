@@ -27,6 +27,12 @@ GATE SEMANTICS (ADR-0012 §6 — anti-laundering per ADR-0007 §5: consistency, 
 Writes knowledge/_DECISION-GRAPH.md + knowledge/_decision-graph.json.
 Run:  python3 knowledge/_build_decision_graph.py [--strict] [--selftest]
 """
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
+_hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
+while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
+    _hg_d = _hg_os.path.dirname(_hg_d)
+_hg_sys.path.insert(0, _hg_d)
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
