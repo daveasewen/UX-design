@@ -507,6 +507,11 @@ _PKGDELTA = "\n❌ memento-package delta-audit failed (exit {code}) — a packag
 
 ROUTE_ROWS = [
     # (exact step label, kind, remedy template) — remedy text unchanged from the old cascade.
+    # ✅ #164: the two #158 help-gate STEPS landed with NO ROUTE_ROWS rows — the exact
+    # (a)-class omission the note at the four #139 entries records. ABORT like every
+    # other gate+selftest pair: a write-before-argv regression must stop the build.
+    ("help-gate — no entry point may write before it reads argv (#158 class gate)", ABORT, None),
+    ("help-gate selftest — 5 mutation bites (#158 class gate)", ABORT, None),
     ("compliance knowledge graph", ABORT, None),
     ("token blast-radius + graph report", ABORT, None),  # was misrouted to the TYPE-BINDING blast-radius remedy
     ("token blast-radius + graph report — determinism/staleness check (#79 P6)", ABORT, None),

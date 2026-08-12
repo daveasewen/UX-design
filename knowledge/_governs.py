@@ -104,7 +104,12 @@ CHAT_POINTER_RE = re.compile(r"chat #\d+\b")
 # #148: a path-shaped token — MUST contain a `/` AND end in a dotted extension, so `s142-D1`,
 # a bare date, or a token ADDRESS like `border-radius/surface` can never be claimed as a path.
 # Repo-root files keep the legacy whole-string fast-path in the caller.
-PATHISH_RE = re.compile(r"[A-Za-z0-9_.\-]+(?:/[A-Za-z0-9_.\-]+)*/[A-Za-z0-9_\-]+\.[A-Za-z0-9]+")
+# ⚠ The FINAL segment permits dots in its stem (#164): `Tooltip.reference.html` — a real,
+# existing file — was extracted as `knowledge/snippets/Tooltip.reference` by a stem class that
+# excluded `.`, and reported as ROT. Double-extension filenames are the norm in `snippets/`, so
+# the extractor, not the pointer, was wrong. Greedy+backtracking still stops at the last dot-run:
+# `x.html. Next` yields `x.html`, and a segment with no dot at all still fails to match.
+PATHISH_RE = re.compile(r"[A-Za-z0-9_.\-]+(?:/[A-Za-z0-9_.\-]+)*/[A-Za-z0-9_.\-]*[A-Za-z0-9_\-]\.[A-Za-z0-9]+")
 
 
 def is_chat_pointer(pointer: str) -> bool:

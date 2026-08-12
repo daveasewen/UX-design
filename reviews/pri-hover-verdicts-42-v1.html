@@ -1,0 +1,4638 @@
+<!doctype html>
+<html lang="en" data-mode="light" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token-fork verdicts — 42 open, for Dave to rule</title>
+<style>
+:root{
+  --pg:#f4f4f4; --card:#ffffff; --txt:#1a1a1a; --dim:#5c5c5c; --edge:#d7d8d6;
+  --sel-edge:#1a1a1a; --sel-bg:#eceff1; --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --fam:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+}
+html[data-mode="dark"]{ --pg:#141414; --card:#1d1d1d; --txt:#f2f2f2; --dim:#a8a8a8; --edge:#3a3a3a; --sel-edge:#f2f2f2; --sel-bg:#2b2f31; }
+html[data-apollo-theme="legacy"]{ --radius:0px; }
+html[data-apollo-theme="console"]{ --radius:4px; }
+html[data-apollo-theme="supercharge"]{ --radius:10px; --pg:#f7f6f4; }
+html[data-apollo-theme="supercharge"][data-mode="dark"]{ --pg:#13110e; --card:#211d1a; }
+html[data-apollo-theme="mono"]{ --radius:2px; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--pg);color:var(--txt);font-family:var(--fam);font-size:15px;line-height:1.5}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:2px solid var(--edge);padding:14px 20px}
+h1{font-size:20px;margin:0 0 4px}
+.prov{color:var(--dim);font-size:13px;margin:0 0 10px}
+.bar{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--edge);border-radius:var(--radius);overflow:hidden}
+.seg button{font:inherit;font-size:13px;padding:5px 10px;background:transparent;color:var(--txt);border:0;border-right:1px solid var(--edge);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--txt);color:var(--pg);font-weight:700}
+.seg button:hover{text-decoration:underline}
+.lab{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.tally{font-weight:700;font-size:14px;border:1px solid var(--edge);padding:5px 10px;border-radius:var(--radius)}
+.act{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:2px solid var(--txt);background:transparent;color:var(--txt);border-radius:var(--radius);cursor:pointer}
+.act:hover{background:var(--txt);color:var(--pg)}
+main{padding:20px;max-width:1180px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:var(--radius);padding:16px;margin:0 0 18px}
+.card[data-decided="yes"]{border-left:6px solid var(--txt)}
+.card h2{font-size:17px;margin:0 0 2px;font-family:var(--mono)}
+.meta{font-size:12.5px;color:var(--dim);margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.chip{font-size:11.5px;border:1px solid var(--edge);border-radius:99px;padding:2px 9px;color:var(--dim)}
+.prose{margin:0 0 12px;max-width:74ch}
+details{margin:0 0 12px;font-size:13px}
+summary{cursor:pointer;font-weight:700}
+table.det{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:11.5px;margin-top:8px}
+table.det th,table.det td{border:1px solid var(--edge);padding:4px 6px;text-align:left;vertical-align:top}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.opt{border:2px solid var(--edge);border-radius:var(--radius);padding:10px;display:block;cursor:pointer;background:transparent}
+.opt:hover{border-color:var(--dim)}
+.opt.sel{border-color:var(--sel-edge);background:var(--sel-bg);box-shadow:inset 0 0 0 1px var(--sel-edge)}
+.opt .hd{display:flex;gap:8px;align-items:baseline;font-weight:700;font-size:13.5px}
+.opt .hd .tag{font-family:var(--mono);font-size:11px;border:1px solid var(--sel-edge);padding:1px 6px;border-radius:var(--radius)}
+.opt .selstate{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.opt.sel .selstate{color:var(--txt)}
+.val{font-family:var(--mono);font-size:12.5px;margin:6px 0 8px;word-break:break-all}
+.tiles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.tile{border:1px solid var(--edge);border-radius:var(--radius);padding:8px;flex:1 1 130px;min-width:130px}
+.tile.lt{background:#ffffff;color:#1a1a1a}
+.tile.dk{background:#1a1a1a;color:#ffffff}
+.tile .tl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-bottom:6px}
+.spec{font:inherit;font-size:12.5px;font-weight:700;border:2px solid currentColor;border-radius:var(--radius);padding:6px 10px;cursor:default;background:transparent;color:inherit;width:100%;transition:background-color 140ms cubic-bezier(.4,0,.2,1),color 140ms}
+.spec:hover{background:var(--v);color:var(--vink)}
+.swatch{height:26px;border:1px solid rgba(128,128,128,.5);border-radius:var(--radius);margin-bottom:6px;background:var(--v)}
+.cr{font-size:11.5px;font-family:var(--mono);color:var(--dim);margin:0}
+.cr b{font-family:var(--fam)}
+.motion{height:10px;border:1px solid var(--edge);border-radius:99px;overflow:hidden;background:transparent}
+.motion i{display:block;height:100%;width:22%;background:currentColor}
+.motion.run i{animation:sl var(--dur,600ms) var(--eas,linear) infinite alternate}
+@keyframes sl{from{transform:translateX(0)}to{transform:translateX(340%)}}
+.lenbar{height:10px;background:currentColor;opacity:.65}
+textarea{width:100%;font-family:var(--mono);font-size:12px;padding:8px;border:1px solid var(--edge);border-radius:var(--radius);background:var(--card);color:var(--txt)}
+.note{margin-top:10px}
+.note label{font-size:12px;color:var(--dim);display:block;margin-bottom:4px}
+dialog{border:2px solid var(--txt);border-radius:var(--radius);background:var(--card);color:var(--txt);max-width:900px;width:92%;padding:16px}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+.hidden{display:none !important}
+.warn{border:1px solid var(--edge);border-left:6px solid var(--txt);padding:10px 12px;margin:0 0 18px;font-size:13px;background:var(--card)}
+footer{padding:24px 20px;color:var(--dim);font-size:12.5px;max-width:1180px;margin:0 auto}
+@media (prefers-reduced-motion:reduce){.motion.run i{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Token-fork verdicts — 42 open decisions</h1>
+  <p class="prov">Measured <b>2026-08-09 (#139)</b> by <code>knowledge/_validate_token_forks.py</code> over <code>knowledge/canon/*.css</code>. Sources: <code>reviews/TOKEN-FORK-MEASUREMENT-2026-08-09-s139-v1.json</code> + <code>knowledge/_TOKEN-FORK-LEDGER.json</code>. Nothing here is pre-selected or recommended — every verdict is yours.</p>
+  <div class="bar">
+    <span class="lab">Mode</span>
+    <span class="seg" id="segMode"><button data-v="light" aria-pressed="true">Light</button><button data-v="dark" aria-pressed="false">Dark</button></span>
+    <span class="lab">Theme chrome</span>
+    <span class="seg" id="segTheme"><button data-v="mono" aria-pressed="true">Mono</button><button data-v="legacy" aria-pressed="false">Legacy</button><button data-v="console" aria-pressed="false">Console</button><button data-v="supercharge" aria-pressed="false">Supercharge</button></span>
+    <span class="lab">Show</span>
+    <span class="seg" id="segFilter"><button data-v="all" aria-pressed="true">All 42</button><button data-v="undecided" aria-pressed="false">Undecided</button><button data-v="mono" aria-pressed="false">Mono forks</button><button data-v="supercharge" aria-pressed="false">Supercharge forks</button></span>
+    <span class="tally" id="tally">0 of 42 ruled</span>
+    <button class="act" id="btnExport">Export picks</button>
+    <button class="act" id="btnClear">Clear all picks</button>
+  </div>
+</header>
+<main>
+  <div class="warn"><b>How to use this page.</b> Each card is one token name whose value forks across the canon stylesheet — the same token resolves to different values in different places. Pick the value the token should settle on, or say the divergence is deliberate and should be declared, or defer. Every option is labelled in words; colour is never the only signal. Picks are saved in this browser so a half-finished pass survives a reload — <b>Clear all picks</b> resets. When you are done, press <b>Export picks</b> and paste the block back into chat.</div>
+  <div id="rows"></div>
+</main>
+<footer>
+  <p>Built as a review instrument only. No token, snippet or canon file was changed to make this page. Contrast ratios are computed in-page from the measured hex values against pure white <code>#FFFFFF</code> and Apollo ink <code>#1A1A1A</code> (WCAG relative luminance). Version v1.</p>
+</footer>
+
+<dialog id="dlg">
+  <h2 style="margin-top:0">Export — paste this back into chat</h2>
+  <p style="font-size:13px">Plain text first, machine block beneath. Both describe the same picks.</p>
+  <textarea id="out" rows="22" readonly></textarea>
+  <div style="margin-top:10px;display:flex;gap:10px">
+    <button class="act" id="btnCopy">Copy to clipboard</button>
+    <button class="act" id="btnClose">Close</button>
+  </div>
+</dialog>
+
+<script id="data" type="application/json">[
+ {
+  "n": 1,
+  "prop": "--accent",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:847",
+     "selector": ":root",
+     "declared": "var(--primary-background-default)",
+     "resolved": "#db0011"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1513",
+     "selector": ".cn-notifications .info",
+     "declared": "var(--info)",
+     "resolved": "#305a85"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:847",
+     "selector": ":root",
+     "declared": "var(--primary-background-default)",
+     "resolved": "#db0011"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3335",
+     "selector": ".cn-video-player",
+     "declared": "var(--button-primary-background-default)",
+     "resolved": "#1a1a1a"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:847",
+     "selector": ":root",
+     "declared": "var(--primary-background-default)",
+     "resolved": "#db0011"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3683",
+     "selector": ".cn-alert .alert.info",
+     "declared": "var(--info)",
+     "resolved": "#78a7e8"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#db0011",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:847",
+      ":root",
+      "var(--primary-background-default)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 5.22,
+    "vs_ink": 3.33
+   },
+   {
+    "value": "#305a85",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1513",
+      ".cn-notifications .info",
+      "var(--info)",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 7.17,
+    "vs_ink": 2.43
+   },
+   {
+    "value": "#1a1a1a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3335",
+      ".cn-video-player",
+      "var(--button-primary-background-default)",
+      "mono",
+      "any",
+      ".cn-video-player"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 17.4,
+    "vs_ink": 1.0
+   },
+   {
+    "value": "#78a7e8",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3683",
+      ".cn-alert .alert.info",
+      "var(--info)",
+      "mono",
+      "any",
+      ".cn-alert"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 2.47,
+    "vs_ink": 7.04
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-alert",
+   ".cn-notifications",
+   ".cn-video-player",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 3,
+  "ledger_evidence": "knowledge/canon/canon.css:847 (#db0011) vs knowledge/canon/canon.css:1513 (#305a85)"
+ },
+ {
+  "n": 2,
+  "prop": "--axis-alpha",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:4046",
+     "selector": ".cn-chart-bar",
+     "declared": "var(--data-axis-alpha)",
+     "resolved": "1"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:4285",
+     "selector": ".cn-chart-boxplot",
+     "declared": ".6",
+     "resolved": ".6"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4046",
+      ".cn-chart-bar",
+      "var(--data-axis-alpha)",
+      "mono",
+      "any",
+      ".cn-chart-bar"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": ".6",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4285",
+      ".cn-chart-boxplot",
+      ".6",
+      "mono",
+      "any",
+      ".cn-chart-boxplot"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-chart-bar",
+   ".cn-chart-boxplot"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:4046 (1) vs knowledge/canon/canon.css:4285 (.6)"
+ },
+ {
+  "n": 3,
+  "prop": "--border",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:841",
+     "selector": ":root",
+     "declared": "var(--border-subtle)",
+     "resolved": "#e1e1e1"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:2106",
+     "selector": ".cn-tags",
+     "declared": "var(--form-border-default)",
+     "resolved": "#808080"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10842",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-account-card",
+     "declared": "#CDC8C6",
+     "resolved": "#cdc8c6"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:10867",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-account-selector",
+     "declared": "#524842",
+     "resolved": "#524842"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#e1e1e1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:841",
+      ":root",
+      "var(--border-subtle)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.31,
+    "vs_ink": 13.31
+   },
+   {
+    "value": "#808080",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:2106",
+      ".cn-tags",
+      "var(--form-border-default)",
+      "mono",
+      "any",
+      ".cn-tags"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 3.95,
+    "vs_ink": 4.41
+   },
+   {
+    "value": "#cdc8c6",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:10842",
+      "[data-apollo-theme=\"supercharge\"] .cn-account-card",
+      "#CDC8C6",
+      "supercharge",
+      "any",
+      ".cn-account-card"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.66,
+    "vs_ink": 10.5
+   },
+   {
+    "value": "#524842",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:10867",
+      "[data-apollo-theme=\"supercharge\"] .cn-account-selector",
+      "#524842",
+      "supercharge",
+      "any",
+      ".cn-account-selector"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 8.88,
+    "vs_ink": 1.96
+   }
+  ],
+  "themes": [
+   "mono",
+   "supercharge"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-account-card",
+   ".cn-account-selector",
+   ".cn-tags",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 2,
+  "ledger_evidence": "knowledge/canon/canon.css:841 (#e1e1e1) vs knowledge/canon/canon.css:2106 (#808080)"
+ },
+ {
+  "n": 4,
+  "prop": "--border-disabled",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1741",
+     "selector": ".cn-input-fields",
+     "declared": "var(--form-border-disabled)",
+     "resolved": "#e1e1e1"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3057",
+     "selector": ".cn-dropdown",
+     "declared": "#D7D8D6",
+     "resolved": "#d7d8d6"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#e1e1e1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1741",
+      ".cn-input-fields",
+      "var(--form-border-disabled)",
+      "mono",
+      "any",
+      ".cn-input-fields"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.31,
+    "vs_ink": 13.31
+   },
+   {
+    "value": "#d7d8d6",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3057",
+      ".cn-dropdown",
+      "#D7D8D6",
+      "mono",
+      "any",
+      ".cn-dropdown"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.43,
+    "vs_ink": 12.17
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-dropdown",
+   ".cn-input-fields"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:1741 (#e1e1e1) vs knowledge/canon/canon.css:3057 (#d7d8d6)"
+ },
+ {
+  "n": 5,
+  "prop": "--data-grid",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:4048",
+     "selector": ".cn-chart-bar",
+     "declared": "var(--data-grid-color)",
+     "resolved": "#e1e1e1"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:4286",
+     "selector": ".cn-chart-boxplot",
+     "declared": "#626262",
+     "resolved": "#626262"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#e1e1e1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4048",
+      ".cn-chart-bar",
+      "var(--data-grid-color)",
+      "mono",
+      "any",
+      ".cn-chart-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.31,
+    "vs_ink": 13.31
+   },
+   {
+    "value": "#626262",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4286",
+      ".cn-chart-boxplot",
+      "#626262",
+      "mono",
+      "any",
+      ".cn-chart-boxplot"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 6.1,
+    "vs_ink": 2.85
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-chart-bar",
+   ".cn-chart-boxplot"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:4048 (#e1e1e1) vs knowledge/canon/canon.css:4286 (#626262)"
+ },
+ {
+  "n": 6,
+  "prop": "--data-series-1",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:389",
+     "selector": ":root",
+     "declared": "#766682",
+     "resolved": "#766682"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:4061",
+     "selector": ".cn-chart-bar [data-contrast=\"high\"]",
+     "declared": "var(--data-series-1-hc)",
+     "resolved": "#484d6f"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#766682",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:389",
+      ":root",
+      "#766682",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 5.26,
+    "vs_ink": 3.31
+   },
+   {
+    "value": "#484d6f",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4061",
+      ".cn-chart-bar [data-contrast=\"high\"]",
+      "var(--data-series-1-hc)",
+      "mono",
+      "any",
+      ".cn-chart-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 8.18,
+    "vs_ink": 2.13
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-chart-bar",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:389 (#766682) vs knowledge/canon/canon.css:4061 (#484d6f)"
+ },
+ {
+  "n": 7,
+  "prop": "--data-series-2",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:390",
+     "selector": ":root",
+     "declared": "#A45C3A",
+     "resolved": "#a45c3a"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:4062",
+     "selector": ".cn-chart-bar [data-contrast=\"high\"]",
+     "declared": "var(--data-series-2-hc)",
+     "resolved": "#97482c"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#a45c3a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:390",
+      ":root",
+      "#A45C3A",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 5.04,
+    "vs_ink": 3.46
+   },
+   {
+    "value": "#97482c",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4062",
+      ".cn-chart-bar [data-contrast=\"high\"]",
+      "var(--data-series-2-hc)",
+      "mono",
+      "any",
+      ".cn-chart-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 6.4,
+    "vs_ink": 2.72
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-chart-bar",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:390 (#a45c3a) vs knowledge/canon/canon.css:4062 (#97482c)"
+ },
+ {
+  "n": 8,
+  "prop": "--data-series-3",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:391",
+     "selector": ":root",
+     "declared": "#577C78",
+     "resolved": "#577c78"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:4063",
+     "selector": ".cn-chart-bar [data-contrast=\"high\"]",
+     "declared": "var(--data-series-3-hc)",
+     "resolved": "#385f4f"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#577c78",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:391",
+      ":root",
+      "#577C78",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 4.61,
+    "vs_ink": 3.78
+   },
+   {
+    "value": "#385f4f",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4063",
+      ".cn-chart-bar [data-contrast=\"high\"]",
+      "var(--data-series-3-hc)",
+      "mono",
+      "any",
+      ".cn-chart-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 7.2,
+    "vs_ink": 2.42
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-chart-bar",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:391 (#577c78) vs knowledge/canon/canon.css:4063 (#385f4f)"
+ },
+ {
+  "n": 9,
+  "prop": "--data-series-4",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:392",
+     "selector": ":root",
+     "declared": "#7F7B45",
+     "resolved": "#7f7b45"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:5235",
+     "selector": ".cn-chart-donut [data-contrast=\"high\"]",
+     "declared": "var(--data-series-4-hc)",
+     "resolved": "#6e465d"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#7f7b45",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:392",
+      ":root",
+      "#7F7B45",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 4.36,
+    "vs_ink": 4.0
+   },
+   {
+    "value": "#6e465d",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:5235",
+      ".cn-chart-donut [data-contrast=\"high\"]",
+      "var(--data-series-4-hc)",
+      "mono",
+      "any",
+      ".cn-chart-donut"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 7.79,
+    "vs_ink": 2.24
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-chart-donut",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:392 (#7f7b45) vs knowledge/canon/canon.css:5235 (#6e465d)"
+ },
+ {
+  "n": 10,
+  "prop": "--data-series-5",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:393",
+     "selector": ":root",
+     "declared": "#A37E94",
+     "resolved": "#a37e94"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:5236",
+     "selector": ".cn-chart-donut [data-contrast=\"high\"]",
+     "declared": "var(--data-series-5-hc)",
+     "resolved": "#7c6f34"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#a37e94",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:393",
+      ":root",
+      "#A37E94",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 3.52,
+    "vs_ink": 4.95
+   },
+   {
+    "value": "#7c6f34",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:5236",
+      ".cn-chart-donut [data-contrast=\"high\"]",
+      "var(--data-series-5-hc)",
+      "mono",
+      "any",
+      ".cn-chart-donut"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 5.02,
+    "vs_ink": 3.46
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-chart-donut",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:393 (#a37e94) vs knowledge/canon/canon.css:5236 (#7c6f34)"
+ },
+ {
+  "n": 11,
+  "prop": "--disabled",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:2004",
+     "selector": ".cn-badge",
+     "declared": "#D7D8D6",
+     "resolved": "#d7d8d6"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:2184",
+     "selector": ".cn-status-indicator",
+     "declared": "var(--text-disabled)",
+     "resolved": "#e1e1e1"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#d7d8d6",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:2004",
+      ".cn-badge",
+      "#D7D8D6",
+      "mono",
+      "any",
+      ".cn-badge"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.43,
+    "vs_ink": 12.17
+   },
+   {
+    "value": "#e1e1e1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:2184",
+      ".cn-status-indicator",
+      "var(--text-disabled)",
+      "mono",
+      "any",
+      ".cn-status-indicator"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.31,
+    "vs_ink": 13.31
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-badge",
+   ".cn-status-indicator"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:2004 (#d7d8d6) vs knowledge/canon/canon.css:2184 (#e1e1e1)"
+ },
+ {
+  "n": 12,
+  "prop": "--divider",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:843",
+     "selector": ":root",
+     "declared": "var(--divider-border-section)",
+     "resolved": "#e1e1e1"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:8470",
+     "selector": ".cn-summary",
+     "declared": "var(--divider-border-subsection)",
+     "resolved": "#f0f0f0"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:11563",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-dropdown",
+     "declared": "#CDC8C6",
+     "resolved": "#cdc8c6"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:12295",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-summary",
+     "declared": "#DFDEDC",
+     "resolved": "#dfdedc"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#e1e1e1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:843",
+      ":root",
+      "var(--divider-border-section)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.31,
+    "vs_ink": 13.31
+   },
+   {
+    "value": "#f0f0f0",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:8470",
+      ".cn-summary",
+      "var(--divider-border-subsection)",
+      "mono",
+      "any",
+      ".cn-summary"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.14,
+    "vs_ink": 15.27
+   },
+   {
+    "value": "#cdc8c6",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:11563",
+      "[data-apollo-theme=\"supercharge\"] .cn-dropdown",
+      "#CDC8C6",
+      "supercharge",
+      "any",
+      ".cn-dropdown"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.66,
+    "vs_ink": 10.5
+   },
+   {
+    "value": "#dfdedc",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:12295",
+      "[data-apollo-theme=\"supercharge\"] .cn-summary",
+      "#DFDEDC",
+      "supercharge",
+      "any",
+      ".cn-summary"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.34,
+    "vs_ink": 12.95
+   }
+  ],
+  "themes": [
+   "mono",
+   "supercharge"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-dropdown",
+   ".cn-summary",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 2,
+  "ledger_evidence": "knowledge/canon/canon.css:843 (#e1e1e1) vs knowledge/canon/canon.css:8470 (#f0f0f0)"
+ },
+ {
+  "n": 13,
+  "prop": "--ease",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:871",
+     "selector": ":root",
+     "declared": "140ms var(--motion-easing-standard)",
+     "resolved": "140ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1005",
+     "selector": ".cn-button",
+     "declared": "160ms cubic-bezier(.4,0,.2,1)",
+     "resolved": "160ms cubic-bezier(.4,0,.2,1)"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:871",
+     "selector": ":root",
+     "declared": "140ms var(--motion-easing-standard)",
+     "resolved": "140ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1132",
+     "selector": ".cn-list-items",
+     "declared": "140ms ease",
+     "resolved": "140ms ease"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:871",
+     "selector": ":root",
+     "declared": "140ms var(--motion-easing-standard)",
+     "resolved": "140ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1736",
+     "selector": ".cn-input-fields",
+     "declared": "200ms cubic-bezier(.4,0,.2,1)",
+     "resolved": "200ms cubic-bezier(.4,0,.2,1)"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:871",
+     "selector": ":root",
+     "declared": "140ms var(--motion-easing-standard)",
+     "resolved": "140ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1907",
+     "selector": ".cn-progress-tracker",
+     "declared": "300ms cubic-bezier(.4,0,.2,1)",
+     "resolved": "300ms cubic-bezier(.4,0,.2,1)"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:871",
+     "selector": ":root",
+     "declared": "140ms var(--motion-easing-standard)",
+     "resolved": "140ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:2104",
+     "selector": ".cn-tags",
+     "declared": "220ms cubic-bezier(.4,0,.2,1)",
+     "resolved": "220ms cubic-bezier(.4,0,.2,1)"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:871",
+     "selector": ":root",
+     "declared": "140ms var(--motion-easing-standard)",
+     "resolved": "140ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:2554",
+     "selector": ".cn-selection-controls",
+     "declared": "180ms cubic-bezier(.4,0,.2,1)",
+     "resolved": "180ms cubic-bezier(.4,0,.2,1)"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:871",
+     "selector": ":root",
+     "declared": "140ms var(--motion-easing-standard)",
+     "resolved": "140ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:2928",
+     "selector": ".cn-tooltip",
+     "declared": "150ms ease",
+     "resolved": "150ms ease"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "140ms cubic-bezier(0.4, 0, 0.2, 1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:871",
+      ":root",
+      "140ms var(--motion-easing-standard)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "160ms cubic-bezier(.4,0,.2,1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1005",
+      ".cn-button",
+      "160ms cubic-bezier(.4,0,.2,1)",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "140ms ease",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1132",
+      ".cn-list-items",
+      "140ms ease",
+      "mono",
+      "any",
+      ".cn-list-items"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "200ms cubic-bezier(.4,0,.2,1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1736",
+      ".cn-input-fields",
+      "200ms cubic-bezier(.4,0,.2,1)",
+      "mono",
+      "any",
+      ".cn-input-fields"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "300ms cubic-bezier(.4,0,.2,1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1907",
+      ".cn-progress-tracker",
+      "300ms cubic-bezier(.4,0,.2,1)",
+      "mono",
+      "any",
+      ".cn-progress-tracker"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "220ms cubic-bezier(.4,0,.2,1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:2104",
+      ".cn-tags",
+      "220ms cubic-bezier(.4,0,.2,1)",
+      "mono",
+      "any",
+      ".cn-tags"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "180ms cubic-bezier(.4,0,.2,1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:2554",
+      ".cn-selection-controls",
+      "180ms cubic-bezier(.4,0,.2,1)",
+      "mono",
+      "any",
+      ".cn-selection-controls"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "150ms ease",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:2928",
+      ".cn-tooltip",
+      "150ms ease",
+      "mono",
+      "any",
+      ".cn-tooltip"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-button",
+   ".cn-input-fields",
+   ".cn-list-items",
+   ".cn-progress-tracker",
+   ".cn-selection-controls",
+   ".cn-tags",
+   ".cn-tooltip",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 7,
+  "ledger_evidence": "knowledge/canon/canon.css:871 (140ms cubic-bezier(0.4, 0, 0.2, 1)) vs knowledge/canon/canon.css:1005 (160ms cubic-bezier(.4,0,.2,1))"
+ },
+ {
+  "n": 14,
+  "prop": "--err",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:863",
+     "selector": ":root",
+     "declared": "var(--rag-error)",
+     "resolved": "#f6604c"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1477",
+     "selector": ".cn-notifications",
+     "declared": "#A8000B",
+     "resolved": "#a8000b"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:863",
+     "selector": "[data-theme=\"dark\"]",
+     "declared": "var(--rag-error)",
+     "resolved": "#f6604c"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1490",
+     "selector": "[data-theme=\"dark\"] .cn-notifications",
+     "declared": "#A8000B",
+     "resolved": "#a8000b"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#f6604c",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:863",
+      ":root",
+      "var(--rag-error)",
+      "mono",
+      "any",
+      "ROOT"
+     ],
+     [
+      "knowledge/canon/canon.css:863",
+      "[data-theme=\"dark\"]",
+      "var(--rag-error)",
+      "mono",
+      "dark",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 3.14,
+    "vs_ink": 5.55
+   },
+   {
+    "value": "#a8000b",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1477",
+      ".cn-notifications",
+      "#A8000B",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ],
+     [
+      "knowledge/canon/canon.css:1490",
+      "[data-theme=\"dark\"] .cn-notifications",
+      "#A8000B",
+      "mono",
+      "dark",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 7.87,
+    "vs_ink": 2.21
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any",
+   "dark"
+  ],
+  "consumers": [
+   ".cn-notifications",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 2,
+  "ledger_evidence": "knowledge/canon/canon.css:863 (#f6604c) vs knowledge/canon/canon.css:1477 (#a8000b)"
+ },
+ {
+  "n": 15,
+  "prop": "--err-t",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1481",
+     "selector": ".cn-notifications",
+     "declared": "#F9F2F3",
+     "resolved": "#f9f2f3"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3662",
+     "selector": ".cn-alert",
+     "declared": "var(--rag-error-tint)",
+     "resolved": "#fdd9d4"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#f9f2f3",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1481",
+      ".cn-notifications",
+      "#F9F2F3",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.1,
+    "vs_ink": 15.77
+   },
+   {
+    "value": "#fdd9d4",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3662",
+      ".cn-alert",
+      "var(--rag-error-tint)",
+      "mono",
+      "any",
+      ".cn-alert"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.31,
+    "vs_ink": 13.3
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-alert",
+   ".cn-notifications"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:1481 (#f9f2f3) vs knowledge/canon/canon.css:3662 (#fdd9d4)"
+ },
+ {
+  "n": 16,
+  "prop": "--fade",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:875",
+     "selector": ":root",
+     "declared": "140ms var(--motion-easing-standard)",
+     "resolved": "140ms cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1624",
+     "selector": ".cn-modals",
+     "declared": "140ms ease",
+     "resolved": "140ms ease"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "140ms cubic-bezier(0.4, 0, 0.2, 1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:875",
+      ":root",
+      "140ms var(--motion-easing-standard)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "140ms ease",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1624",
+      ".cn-modals",
+      "140ms ease",
+      "mono",
+      "any",
+      ".cn-modals"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-modals",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:875 (140ms cubic-bezier(0.4, 0, 0.2, 1)) vs knowledge/canon/canon.css:1624 (140ms ease)"
+ },
+ {
+  "n": 17,
+  "prop": "--fill",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:3255",
+     "selector": ".cn-countdown-timer",
+     "declared": "var(--timer-foreground)",
+     "resolved": "#000000"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3947",
+     "selector": ".cn-banner .banner.info",
+     "declared": "var(--info-bg)",
+     "resolved": "#78a7e8"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#000000",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3255",
+      ".cn-countdown-timer",
+      "var(--timer-foreground)",
+      "mono",
+      "any",
+      ".cn-countdown-timer"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 21.0,
+    "vs_ink": 1.21
+   },
+   {
+    "value": "#78a7e8",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3947",
+      ".cn-banner .banner.info",
+      "var(--info-bg)",
+      "mono",
+      "any",
+      ".cn-banner"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 2.47,
+    "vs_ink": 7.04
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-banner",
+   ".cn-countdown-timer"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:3255 (#000000) vs knowledge/canon/canon.css:3947 (#78a7e8)"
+ },
+ {
+  "n": 18,
+  "prop": "--font",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:870",
+     "selector": ":root",
+     "declared": "var(--typography-font-family-default)",
+     "resolved": "\"univers next for hsbc\", \"helvetica neue\", arial, helvetica, sans-serif"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1000",
+     "selector": ".cn-button",
+     "declared": "\"Univers Next for HSBC\",\"Helvetica Neue\",Arial,Helvetica,sans-serif",
+     "resolved": "\"univers next for hsbc\",\"helvetica neue\",arial,helvetica,sans-serif"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "\"univers next for hsbc\", \"helvetica neue\", arial, helvetica, sans-serif",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:870",
+      ":root",
+      "var(--typography-font-family-default)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "\"univers next for hsbc\",\"helvetica neue\",arial,helvetica,sans-serif",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1000",
+      ".cn-button",
+      "\"Univers Next for HSBC\",\"Helvetica Neue\",Arial,Helvetica,sans-serif",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-button",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:870 (\"univers next for hsbc\", \"helvetica neue\", arial, helvetica, sans-serif) vs knowledge/canon/canon.css:1000 (\"univers next for hsbc\",\"helvetica neue\",arial,helvetica,sans-serif)"
+ },
+ {
+  "n": 19,
+  "prop": "--glyph",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:2564",
+     "selector": ".cn-selection-controls",
+     "declared": "var(--text-on-inverse)",
+     "resolved": "#ffffff"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:7679",
+     "selector": ".cn-icon-button",
+     "declared": "20px",
+     "resolved": "20px"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#ffffff",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:2564",
+      ".cn-selection-controls",
+      "var(--text-on-inverse)",
+      "mono",
+      "any",
+      ".cn-selection-controls"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.0,
+    "vs_ink": 17.4
+   },
+   {
+    "value": "20px",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:7679",
+      ".cn-icon-button",
+      "20px",
+      "mono",
+      "any",
+      ".cn-icon-button"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-icon-button",
+   ".cn-selection-controls"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:2564 (#ffffff) vs knowledge/canon/canon.css:7679 (20px)"
+ },
+ {
+  "n": 20,
+  "prop": "--grid-alpha",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:4049",
+     "selector": ".cn-chart-bar",
+     "declared": "var(--data-grid-alpha)",
+     "resolved": "1"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:4287",
+     "selector": ".cn-chart-boxplot",
+     "declared": ".1",
+     "resolved": ".1"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:4049",
+     "selector": ".cn-chart-bar",
+     "declared": "var(--data-grid-alpha)",
+     "resolved": "1"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:6199",
+     "selector": ".cn-chart-sparkline",
+     "declared": ".10",
+     "resolved": ".10"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4049",
+      ".cn-chart-bar",
+      "var(--data-grid-alpha)",
+      "mono",
+      "any",
+      ".cn-chart-bar"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": ".1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4287",
+      ".cn-chart-boxplot",
+      ".1",
+      "mono",
+      "any",
+      ".cn-chart-boxplot"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": ".10",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:6199",
+      ".cn-chart-sparkline",
+      ".10",
+      "mono",
+      "any",
+      ".cn-chart-sparkline"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-chart-bar",
+   ".cn-chart-boxplot",
+   ".cn-chart-sparkline"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 2,
+  "ledger_evidence": "knowledge/canon/canon.css:4049 (1) vs knowledge/canon/canon.css:4287 (.1)"
+ },
+ {
+  "n": 21,
+  "prop": "--info",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:864",
+     "selector": ":root",
+     "declared": "var(--rag-information)",
+     "resolved": "#78a7e8"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1480",
+     "selector": ".cn-notifications",
+     "declared": "#305A85",
+     "resolved": "#305a85"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:864",
+     "selector": "[data-theme=\"dark\"]",
+     "declared": "var(--rag-information)",
+     "resolved": "#78a7e8"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1492",
+     "selector": "[data-theme=\"dark\"] .cn-notifications",
+     "declared": "#305A85",
+     "resolved": "#305a85"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#78a7e8",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:864",
+      ":root",
+      "var(--rag-information)",
+      "mono",
+      "any",
+      "ROOT"
+     ],
+     [
+      "knowledge/canon/canon.css:864",
+      "[data-theme=\"dark\"]",
+      "var(--rag-information)",
+      "mono",
+      "dark",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 2.47,
+    "vs_ink": 7.04
+   },
+   {
+    "value": "#305a85",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1480",
+      ".cn-notifications",
+      "#305A85",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ],
+     [
+      "knowledge/canon/canon.css:1492",
+      "[data-theme=\"dark\"] .cn-notifications",
+      "#305A85",
+      "mono",
+      "dark",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 7.17,
+    "vs_ink": 2.43
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any",
+   "dark"
+  ],
+  "consumers": [
+   ".cn-notifications",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 2,
+  "ledger_evidence": "knowledge/canon/canon.css:864 (#78a7e8) vs knowledge/canon/canon.css:1480 (#305a85)"
+ },
+ {
+  "n": 22,
+  "prop": "--info-t",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1484",
+     "selector": ".cn-notifications",
+     "declared": "#EBEFF4",
+     "resolved": "#ebeff4"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3665",
+     "selector": ".cn-alert",
+     "declared": "var(--rag-information-tint)",
+     "resolved": "#dfeaf9"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#ebeff4",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1484",
+      ".cn-notifications",
+      "#EBEFF4",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.15,
+    "vs_ink": 15.07
+   },
+   {
+    "value": "#dfeaf9",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3665",
+      ".cn-alert",
+      "var(--rag-information-tint)",
+      "mono",
+      "any",
+      ".cn-alert"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.22,
+    "vs_ink": 14.32
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-alert",
+   ".cn-notifications"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:1484 (#ebeff4) vs knowledge/canon/canon.css:3665 (#dfeaf9)"
+ },
+ {
+  "n": 23,
+  "prop": "--ink",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:852",
+     "selector": ":root",
+     "declared": "var(--secondary-background-default)",
+     "resolved": "#000000"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3947",
+     "selector": ".cn-banner .banner.info",
+     "declared": "var(--on-info)",
+     "resolved": "#1a1a1a"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#000000",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:852",
+      ":root",
+      "var(--secondary-background-default)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 21.0,
+    "vs_ink": 1.21
+   },
+   {
+    "value": "#1a1a1a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3947",
+      ".cn-banner .banner.info",
+      "var(--on-info)",
+      "mono",
+      "any",
+      ".cn-banner"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 17.4,
+    "vs_ink": 1.0
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-banner",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:852 (#000000) vs knowledge/canon/canon.css:3947 (#1a1a1a)"
+ },
+ {
+  "n": 24,
+  "prop": "--line",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1515",
+     "selector": ".cn-notifications .note",
+     "declared": "24px",
+     "resolved": "24px"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:4041",
+     "selector": ".cn-chart-bar",
+     "declared": "var(--border-subtle)",
+     "resolved": "#e1e1e1"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "24px",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1515",
+      ".cn-notifications .note",
+      "24px",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "#e1e1e1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:4041",
+      ".cn-chart-bar",
+      "var(--border-subtle)",
+      "mono",
+      "any",
+      ".cn-chart-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.31,
+    "vs_ink": 13.31
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-chart-bar",
+   ".cn-notifications"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:1515 (24px) vs knowledge/canon/canon.css:4041 (#e1e1e1)"
+ },
+ {
+  "n": 25,
+  "prop": "--mark",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:610",
+     "selector": ":root",
+     "declared": "var(--mark-info)",
+     "resolved": "#1a1a1a"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1575",
+     "selector": ".cn-notifications .inline.warn",
+     "declared": "#333333",
+     "resolved": "#333333"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:610",
+     "selector": ":root",
+     "declared": "var(--mark-info)",
+     "resolved": "#1a1a1a"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1852",
+     "selector": ".cn-input-fields .uic",
+     "declared": "var(--page)",
+     "resolved": "#ffffff"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:610",
+     "selector": ":root",
+     "declared": "var(--mark-info)",
+     "resolved": "#1a1a1a"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3952",
+     "selector": ".cn-banner .banner .ic",
+     "declared": "var(--fill)",
+     "resolved": "#78a7e8"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:610",
+     "selector": ":root",
+     "declared": "var(--mark-info)",
+     "resolved": "#1a1a1a"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:7590",
+     "selector": ".cn-form-layout .fl-summary .ic",
+     "declared": "var(--error-tint)",
+     "resolved": "#fdd9d4"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#1a1a1a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:610",
+      ":root",
+      "var(--mark-info)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 17.4,
+    "vs_ink": 1.0
+   },
+   {
+    "value": "#333333",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1575",
+      ".cn-notifications .inline.warn",
+      "#333333",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 12.63,
+    "vs_ink": 1.38
+   },
+   {
+    "value": "#ffffff",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1852",
+      ".cn-input-fields .uic",
+      "var(--page)",
+      "mono",
+      "any",
+      ".cn-input-fields"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.0,
+    "vs_ink": 17.4
+   },
+   {
+    "value": "#78a7e8",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3952",
+      ".cn-banner .banner .ic",
+      "var(--fill)",
+      "mono",
+      "any",
+      ".cn-banner"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 2.47,
+    "vs_ink": 7.04
+   },
+   {
+    "value": "#fdd9d4",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:7590",
+      ".cn-form-layout .fl-summary .ic",
+      "var(--error-tint)",
+      "mono",
+      "any",
+      ".cn-form-layout"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.31,
+    "vs_ink": 13.3
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-banner",
+   ".cn-form-layout",
+   ".cn-input-fields",
+   ".cn-notifications",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 4,
+  "ledger_evidence": "knowledge/canon/canon.css:610 (#1a1a1a) vs knowledge/canon/canon.css:1575 (#333333)"
+ },
+ {
+  "n": 26,
+  "prop": "--muted",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:834",
+     "selector": ":root",
+     "declared": "var(--text-secondary)",
+     "resolved": "#1a1a1a"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3120",
+     "selector": ".cn-hero",
+     "declared": "#767676",
+     "resolved": "#767676"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:834",
+     "selector": "[data-theme=\"dark\"]",
+     "declared": "var(--text-secondary)",
+     "resolved": "#ffffff"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3123",
+     "selector": "[data-theme=\"dark\"] .cn-hero",
+     "declared": "#9a9a9a",
+     "resolved": "#9a9a9a"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#1a1a1a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:834",
+      ":root",
+      "var(--text-secondary)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 17.4,
+    "vs_ink": 1.0
+   },
+   {
+    "value": "#767676",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3120",
+      ".cn-hero",
+      "#767676",
+      "mono",
+      "any",
+      ".cn-hero"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 4.54,
+    "vs_ink": 3.83
+   },
+   {
+    "value": "#ffffff",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:834",
+      "[data-theme=\"dark\"]",
+      "var(--text-secondary)",
+      "mono",
+      "dark",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.0,
+    "vs_ink": 17.4
+   },
+   {
+    "value": "#9a9a9a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3123",
+      "[data-theme=\"dark\"] .cn-hero",
+      "#9a9a9a",
+      "mono",
+      "dark",
+      ".cn-hero"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 2.81,
+    "vs_ink": 6.19
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any",
+   "dark"
+  ],
+  "consumers": [
+   ".cn-hero",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 2,
+  "ledger_evidence": "knowledge/canon/canon.css:834 (#1a1a1a) vs knowledge/canon/canon.css:3120 (#767676)"
+ },
+ {
+  "n": 27,
+  "prop": "--phys-size",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1008",
+     "selector": ".cn-button",
+     "declared": "120",
+     "resolved": "120"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3707",
+     "selector": ".cn-alert .alert .x",
+     "declared": "24",
+     "resolved": "24"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1008",
+     "selector": ".cn-button",
+     "declared": "120",
+     "resolved": "120"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:6716",
+     "selector": ".cn-data-grid .pbtn",
+     "declared": "44",
+     "resolved": "44"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1008",
+     "selector": ".cn-button",
+     "declared": "120",
+     "resolved": "120"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:7171",
+     "selector": ".cn-drawer .sheet .close",
+     "declared": "36",
+     "resolved": "36"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "120",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1008",
+      ".cn-button",
+      "120",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "24",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3707",
+      ".cn-alert .alert .x",
+      "24",
+      "mono",
+      "any",
+      ".cn-alert"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "44",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:6716",
+      ".cn-data-grid .pbtn",
+      "44",
+      "mono",
+      "any",
+      ".cn-data-grid"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "36",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:7171",
+      ".cn-drawer .sheet .close",
+      "36",
+      "mono",
+      "any",
+      ".cn-drawer"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-alert",
+   ".cn-button",
+   ".cn-data-grid",
+   ".cn-drawer"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 3,
+  "ledger_evidence": "knowledge/canon/canon.css:1008 (120) vs knowledge/canon/canon.css:3707 (24)"
+ },
+ {
+  "n": 28,
+  "prop": "--press",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:874",
+     "selector": ":root",
+     "declared": "90ms  var(--motion-easing-out)",
+     "resolved": "90ms cubic-bezier(0, 0, 0.58, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1007",
+     "selector": ".cn-button",
+     "declared": "90ms cubic-bezier(0,0,.58,1)",
+     "resolved": "90ms cubic-bezier(0,0,.58,1)"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "90ms cubic-bezier(0, 0, 0.58, 1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:874",
+      ":root",
+      "90ms  var(--motion-easing-out)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "90ms cubic-bezier(0,0,.58,1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1007",
+      ".cn-button",
+      "90ms cubic-bezier(0,0,.58,1)",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-button",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:874 (90ms cubic-bezier(0, 0, 0.58, 1)) vs knowledge/canon/canon.css:1007 (90ms cubic-bezier(0,0,.58,1))"
+ },
+ {
+  "n": 29,
+  "prop": "--pressed",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1138",
+     "selector": ".cn-list-items",
+     "declared": "var(--tertiary-background-pressed)",
+     "resolved": "#626262"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:2986",
+     "selector": ".cn-quick-actions",
+     "declared": "#767676",
+     "resolved": "#767676"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#626262",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1138",
+      ".cn-list-items",
+      "var(--tertiary-background-pressed)",
+      "mono",
+      "any",
+      ".cn-list-items"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 6.1,
+    "vs_ink": 2.85
+   },
+   {
+    "value": "#767676",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:2986",
+      ".cn-quick-actions",
+      "#767676",
+      "mono",
+      "any",
+      ".cn-quick-actions"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 4.54,
+    "vs_ink": 3.83
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-list-items",
+   ".cn-quick-actions"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:1138 (#626262) vs knowledge/canon/canon.css:2986 (#767676)"
+ },
+ {
+  "n": 30,
+  "prop": "--pri",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:848",
+     "selector": ":root",
+     "declared": "var(--primary-background-default)",
+     "resolved": "#db0011"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1632",
+     "selector": ".cn-modals",
+     "declared": "var(--button-primary-background-default)",
+     "resolved": "#1a1a1a"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#db0011",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:848",
+      ":root",
+      "var(--primary-background-default)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 5.22,
+    "vs_ink": 3.33
+   },
+   {
+    "value": "#1a1a1a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1632",
+      ".cn-modals",
+      "var(--button-primary-background-default)",
+      "mono",
+      "any",
+      ".cn-modals"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 17.4,
+    "vs_ink": 1.0
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-modals",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:848 (#db0011) vs knowledge/canon/canon.css:1632 (#1a1a1a)"
+ },
+ {
+  "n": 31,
+  "prop": "--pri-hover",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:849",
+     "selector": ":root",
+     "declared": "var(--primary-background-hover)",
+     "resolved": "#ba1110"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1010",
+     "selector": ".cn-button",
+     "declared": "var(--button-primary-background-hover)",
+     "resolved": "#626262"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#ba1110",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:849",
+      ":root",
+      "var(--primary-background-hover)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 6.61,
+    "vs_ink": 2.63
+   },
+   {
+    "value": "#626262",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1010",
+      ".cn-button",
+      "var(--button-primary-background-hover)",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 6.1,
+    "vs_ink": 2.85
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-button",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:849 (#ba1110) vs knowledge/canon/canon.css:1010 (#626262)"
+ },
+ {
+  "n": 32,
+  "prop": "--sec-hover",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1017",
+     "selector": ".cn-button",
+     "declared": "var(--button-secondary-background-hover)",
+     "resolved": "#484848"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1636",
+     "selector": ".cn-modals",
+     "declared": "var(--tertiary-background-hover)",
+     "resolved": "#f0f0f0"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1017",
+     "selector": ".cn-button",
+     "declared": "var(--button-secondary-background-hover)",
+     "resolved": "#484848"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3571",
+     "selector": ".cn-action-bar",
+     "declared": "var(--secondary-background-hover)",
+     "resolved": "#1a1a1a"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10890",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-action-bar",
+     "declared": "#13110E",
+     "resolved": "#13110e"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:11051",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-button",
+     "declared": "#413934",
+     "resolved": "#413934"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10890",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-action-bar",
+     "declared": "#13110E",
+     "resolved": "#13110e"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:11541",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-drawer",
+     "declared": "#DFDEDC",
+     "resolved": "#dfdedc"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10902",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-action-bar",
+     "declared": "#DFDEDC",
+     "resolved": "#dfdedc"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:11077",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-button",
+     "declared": "#635750",
+     "resolved": "#635750"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10902",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-action-bar",
+     "declared": "#DFDEDC",
+     "resolved": "#dfdedc"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:11556",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-drawer",
+     "declared": "#2E2A25",
+     "resolved": "#2e2a25"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#484848",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1017",
+      ".cn-button",
+      "var(--button-secondary-background-hover)",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 9.15,
+    "vs_ink": 1.9
+   },
+   {
+    "value": "#f0f0f0",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1636",
+      ".cn-modals",
+      "var(--tertiary-background-hover)",
+      "mono",
+      "any",
+      ".cn-modals"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.14,
+    "vs_ink": 15.27
+   },
+   {
+    "value": "#1a1a1a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3571",
+      ".cn-action-bar",
+      "var(--secondary-background-hover)",
+      "mono",
+      "any",
+      ".cn-action-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 17.4,
+    "vs_ink": 1.0
+   },
+   {
+    "value": "#13110e",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:10890",
+      "[data-apollo-theme=\"supercharge\"] .cn-action-bar",
+      "#13110E",
+      "supercharge",
+      "any",
+      ".cn-action-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 18.85,
+    "vs_ink": 1.08
+   },
+   {
+    "value": "#413934",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:11051",
+      "[data-apollo-theme=\"supercharge\"] .cn-button",
+      "#413934",
+      "supercharge",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 11.29,
+    "vs_ink": 1.54
+   },
+   {
+    "value": "#dfdedc",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:11541",
+      "[data-apollo-theme=\"supercharge\"] .cn-drawer",
+      "#DFDEDC",
+      "supercharge",
+      "any",
+      ".cn-drawer"
+     ],
+     [
+      "knowledge/canon/canon.css:10902",
+      "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-action-bar",
+      "#DFDEDC",
+      "supercharge",
+      "dark",
+      ".cn-action-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.34,
+    "vs_ink": 12.95
+   },
+   {
+    "value": "#635750",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:11077",
+      "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-button",
+      "#635750",
+      "supercharge",
+      "dark",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 6.98,
+    "vs_ink": 2.49
+   },
+   {
+    "value": "#2e2a25",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:11556",
+      "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-drawer",
+      "#2E2A25",
+      "supercharge",
+      "dark",
+      ".cn-drawer"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 14.25,
+    "vs_ink": 1.22
+   }
+  ],
+  "themes": [
+   "mono",
+   "supercharge"
+  ],
+  "modes": [
+   "any",
+   "dark"
+  ],
+  "consumers": [
+   ".cn-action-bar",
+   ".cn-button",
+   ".cn-drawer",
+   ".cn-modals"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 6,
+  "ledger_evidence": "knowledge/canon/canon.css:1017 (#484848) vs knowledge/canon/canon.css:1636 (#f0f0f0)"
+ },
+ {
+  "n": 33,
+  "prop": "--shadow",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:868",
+     "selector": ":root",
+     "declared": "var(--color-grey-transparent-black-20)",
+     "resolved": "#00000033"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1487",
+     "selector": ".cn-notifications",
+     "declared": "rgba(0,0,0,.18)",
+     "resolved": "rgba(0,0,0,.18)"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:868",
+     "selector": "[data-theme=\"dark\"]",
+     "declared": "var(--color-grey-transparent-black-20)",
+     "resolved": "#00000033"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1496",
+     "selector": "[data-theme=\"dark\"] .cn-notifications",
+     "declared": "rgba(0,0,0,.55)",
+     "resolved": "rgba(0,0,0,.55)"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#00000033",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:868",
+      ":root",
+      "var(--color-grey-transparent-black-20)",
+      "mono",
+      "any",
+      "ROOT"
+     ],
+     [
+      "knowledge/canon/canon.css:868",
+      "[data-theme=\"dark\"]",
+      "var(--color-grey-transparent-black-20)",
+      "mono",
+      "dark",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 21.0,
+    "vs_ink": 1.21
+   },
+   {
+    "value": "rgba(0,0,0,.18)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1487",
+      ".cn-notifications",
+      "rgba(0,0,0,.18)",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "rgba(0,0,0,.55)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1496",
+      "[data-theme=\"dark\"] .cn-notifications",
+      "rgba(0,0,0,.55)",
+      "mono",
+      "dark",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any",
+   "dark"
+  ],
+  "consumers": [
+   ".cn-notifications",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 2,
+  "ledger_evidence": "knowledge/canon/canon.css:868 (#00000033) vs knowledge/canon/canon.css:1487 (rgba(0,0,0,.18))"
+ },
+ {
+  "n": 34,
+  "prop": "--slot",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/type.css:53",
+     "selector": ".t-cm-figure-1",
+     "declared": "64px",
+     "resolved": "64px"
+    },
+    "b": {
+     "file_line": "knowledge/canon/type.css:54",
+     "selector": ".t-cm-figure-2",
+     "declared": "48px",
+     "resolved": "48px"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/type.css:53",
+     "selector": ".t-cm-figure-1",
+     "declared": "64px",
+     "resolved": "64px"
+    },
+    "b": {
+     "file_line": "knowledge/canon/type.css:61",
+     "selector": ".t-cm-figure-3",
+     "declared": "28px",
+     "resolved": "28px"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/type.css:53",
+     "selector": ".t-cm-figure-1",
+     "declared": "64px",
+     "resolved": "64px"
+    },
+    "b": {
+     "file_line": "knowledge/canon/type.css:69",
+     "selector": ".t-cm-figure-4",
+     "declared": "40px",
+     "resolved": "40px"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/type.css:53",
+     "selector": ".t-cm-figure-1",
+     "declared": "64px",
+     "resolved": "64px"
+    },
+    "b": {
+     "file_line": "knowledge/canon/type.css:74",
+     "selector": ".t-cm-figure-5",
+     "declared": "20px",
+     "resolved": "20px"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/type.css:53",
+     "selector": ".t-cm-figure-1",
+     "declared": "64px",
+     "resolved": "64px"
+    },
+    "b": {
+     "file_line": "knowledge/canon/type.css:85",
+     "selector": ".t-cm-chart-label",
+     "declared": "16px",
+     "resolved": "16px"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/type.css:53",
+     "selector": ".t-cm-figure-1",
+     "declared": "64px",
+     "resolved": "64px"
+    },
+    "b": {
+     "file_line": "knowledge/canon/type.css:98",
+     "selector": ".t-cm-section-label",
+     "declared": "24px",
+     "resolved": "24px"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "64px",
+    "sites": [
+     [
+      "knowledge/canon/type.css:53",
+      ".t-cm-figure-1",
+      "64px",
+      "mono",
+      "any",
+      ".t-cm-figure-1"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "48px",
+    "sites": [
+     [
+      "knowledge/canon/type.css:54",
+      ".t-cm-figure-2",
+      "48px",
+      "mono",
+      "any",
+      ".t-cm-figure-2"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "28px",
+    "sites": [
+     [
+      "knowledge/canon/type.css:61",
+      ".t-cm-figure-3",
+      "28px",
+      "mono",
+      "any",
+      ".t-cm-figure-3"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "40px",
+    "sites": [
+     [
+      "knowledge/canon/type.css:69",
+      ".t-cm-figure-4",
+      "40px",
+      "mono",
+      "any",
+      ".t-cm-figure-4"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "20px",
+    "sites": [
+     [
+      "knowledge/canon/type.css:74",
+      ".t-cm-figure-5",
+      "20px",
+      "mono",
+      "any",
+      ".t-cm-figure-5"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "16px",
+    "sites": [
+     [
+      "knowledge/canon/type.css:85",
+      ".t-cm-chart-label",
+      "16px",
+      "mono",
+      "any",
+      ".t-cm-chart-label"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "24px",
+    "sites": [
+     [
+      "knowledge/canon/type.css:98",
+      ".t-cm-section-label",
+      "24px",
+      "mono",
+      "any",
+      ".t-cm-section-label"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".t-cm-chart-label",
+   ".t-cm-figure-1",
+   ".t-cm-figure-2",
+   ".t-cm-figure-3",
+   ".t-cm-figure-4",
+   ".t-cm-figure-5",
+   ".t-cm-section-label"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 6,
+  "ledger_evidence": "knowledge/canon/type.css:53 (64px) vs knowledge/canon/type.css:54 (48px)"
+ },
+ {
+  "n": 35,
+  "prop": "--spring",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:873",
+     "selector": ":root",
+     "declared": "300ms var(--motion-easing-spring)",
+     "resolved": "300ms cubic-bezier(0.5, 1.6, 0.4, 1)"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1006",
+     "selector": ".cn-button",
+     "declared": "300ms cubic-bezier(.5,1.6,.4,1)",
+     "resolved": "300ms cubic-bezier(.5,1.6,.4,1)"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "300ms cubic-bezier(0.5, 1.6, 0.4, 1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:873",
+      ":root",
+      "300ms var(--motion-easing-spring)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": false
+   },
+   {
+    "value": "300ms cubic-bezier(.5,1.6,.4,1)",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1006",
+      ".cn-button",
+      "300ms cubic-bezier(.5,1.6,.4,1)",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": false
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-button",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:873 (300ms cubic-bezier(0.5, 1.6, 0.4, 1)) vs knowledge/canon/canon.css:1006 (300ms cubic-bezier(.5,1.6,.4,1))"
+ },
+ {
+  "n": 36,
+  "prop": "--success",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1030",
+     "selector": ".cn-button",
+     "declared": "var(--rag-success-background)",
+     "resolved": "#66cc8d"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:6461",
+     "selector": ".cn-confirmation",
+     "declared": "#2B7E4F",
+     "resolved": "#2b7e4f"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#66cc8d",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1030",
+      ".cn-button",
+      "var(--rag-success-background)",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.98,
+    "vs_ink": 8.77
+   },
+   {
+    "value": "#2b7e4f",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:6461",
+      ".cn-confirmation",
+      "#2B7E4F",
+      "mono",
+      "any",
+      ".cn-confirmation"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 5.0,
+    "vs_ink": 3.48
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-button",
+   ".cn-confirmation"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:1030 (#66cc8d) vs knowledge/canon/canon.css:6461 (#2b7e4f)"
+ },
+ {
+  "n": 37,
+  "prop": "--surface",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:830",
+     "selector": ":root",
+     "declared": "var(--tertiary-background-default)",
+     "resolved": "#ffffff"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1033",
+     "selector": ".cn-button",
+     "declared": "var(--button-tertiary-background-hover)",
+     "resolved": "#f0f0f0"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:830",
+     "selector": ":root",
+     "declared": "var(--tertiary-background-default)",
+     "resolved": "#ffffff"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:2000",
+     "selector": ".cn-badge",
+     "declared": "var(--badge-background)",
+     "resolved": "#f6604c"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10847",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-account-card",
+     "declared": "#F7F6F4",
+     "resolved": "#f7f6f4"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:10980",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-avatar",
+     "declared": "#DFDEDC",
+     "resolved": "#dfdedc"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10847",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-account-card",
+     "declared": "#F7F6F4",
+     "resolved": "#f7f6f4"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:10994",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-badge",
+     "declared": "#B92F1E",
+     "resolved": "#b92f1e"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10860",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-account-card",
+     "declared": "#2A2621",
+     "resolved": "#2a2621"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:10987",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-avatar",
+     "declared": "#2E2A25",
+     "resolved": "#2e2a25"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10860",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-account-card",
+     "declared": "#2A2621",
+     "resolved": "#2a2621"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:11001",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-badge",
+     "declared": "#B92F1E",
+     "resolved": "#b92f1e"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10860",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-account-card",
+     "declared": "#2A2621",
+     "resolved": "#2a2621"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:11719",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-headers",
+     "declared": "#1A1A1A",
+     "resolved": "#1a1a1a"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#ffffff",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:830",
+      ":root",
+      "var(--tertiary-background-default)",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.0,
+    "vs_ink": 17.4
+   },
+   {
+    "value": "#f0f0f0",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1033",
+      ".cn-button",
+      "var(--button-tertiary-background-hover)",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.14,
+    "vs_ink": 15.27
+   },
+   {
+    "value": "#f6604c",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:2000",
+      ".cn-badge",
+      "var(--badge-background)",
+      "mono",
+      "any",
+      ".cn-badge"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 3.14,
+    "vs_ink": 5.55
+   },
+   {
+    "value": "#f7f6f4",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:10847",
+      "[data-apollo-theme=\"supercharge\"] .cn-account-card",
+      "#F7F6F4",
+      "supercharge",
+      "any",
+      ".cn-account-card"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.08,
+    "vs_ink": 16.11
+   },
+   {
+    "value": "#dfdedc",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:10980",
+      "[data-apollo-theme=\"supercharge\"] .cn-avatar",
+      "#DFDEDC",
+      "supercharge",
+      "any",
+      ".cn-avatar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.34,
+    "vs_ink": 12.95
+   },
+   {
+    "value": "#b92f1e",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:10994",
+      "[data-apollo-theme=\"supercharge\"] .cn-badge",
+      "#B92F1E",
+      "supercharge",
+      "any",
+      ".cn-badge"
+     ],
+     [
+      "knowledge/canon/canon.css:11001",
+      "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-badge",
+      "#B92F1E",
+      "supercharge",
+      "dark",
+      ".cn-badge"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 6.02,
+    "vs_ink": 2.89
+   },
+   {
+    "value": "#2a2621",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:10860",
+      "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-account-card",
+      "#2A2621",
+      "supercharge",
+      "dark",
+      ".cn-account-card"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 15.03,
+    "vs_ink": 1.16
+   },
+   {
+    "value": "#2e2a25",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:10987",
+      "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-avatar",
+      "#2E2A25",
+      "supercharge",
+      "dark",
+      ".cn-avatar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 14.25,
+    "vs_ink": 1.22
+   },
+   {
+    "value": "#1a1a1a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:11719",
+      "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-headers",
+      "#1A1A1A",
+      "supercharge",
+      "dark",
+      ".cn-headers"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 17.4,
+    "vs_ink": 1.0
+   }
+  ],
+  "themes": [
+   "mono",
+   "supercharge"
+  ],
+  "modes": [
+   "any",
+   "dark"
+  ],
+  "consumers": [
+   ".cn-account-card",
+   ".cn-avatar",
+   ".cn-badge",
+   ".cn-button",
+   ".cn-headers",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 7,
+  "ledger_evidence": "knowledge/canon/canon.css:830 (#ffffff) vs knowledge/canon/canon.css:1033 (#f0f0f0)"
+ },
+ {
+  "n": 38,
+  "prop": "--ter-border",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:859",
+     "selector": ":root",
+     "declared": "var(--tertiary-border-default)",
+     "resolved": "#000000"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1023",
+     "selector": ".cn-button",
+     "declared": "var(--button-tertiary-border-default)",
+     "resolved": "#1a1a1a"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10892",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-action-bar",
+     "declared": "#000000",
+     "resolved": "#000000"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:11056",
+     "selector": "[data-apollo-theme=\"supercharge\"] .cn-button",
+     "declared": "#13110E",
+     "resolved": "#13110e"
+    }
+   },
+   {
+    "theme": "supercharge",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:10904",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-action-bar",
+     "declared": "#524842",
+     "resolved": "#524842"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:11082",
+     "selector": "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-button",
+     "declared": "#FFFFFF",
+     "resolved": "#ffffff"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#000000",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:859",
+      ":root",
+      "var(--tertiary-border-default)",
+      "mono",
+      "any",
+      "ROOT"
+     ],
+     [
+      "knowledge/canon/canon.css:10892",
+      "[data-apollo-theme=\"supercharge\"] .cn-action-bar",
+      "#000000",
+      "supercharge",
+      "any",
+      ".cn-action-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 21.0,
+    "vs_ink": 1.21
+   },
+   {
+    "value": "#1a1a1a",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1023",
+      ".cn-button",
+      "var(--button-tertiary-border-default)",
+      "mono",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 17.4,
+    "vs_ink": 1.0
+   },
+   {
+    "value": "#13110e",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:11056",
+      "[data-apollo-theme=\"supercharge\"] .cn-button",
+      "#13110E",
+      "supercharge",
+      "any",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 18.85,
+    "vs_ink": 1.08
+   },
+   {
+    "value": "#524842",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:10904",
+      "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-action-bar",
+      "#524842",
+      "supercharge",
+      "dark",
+      ".cn-action-bar"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 8.88,
+    "vs_ink": 1.96
+   },
+   {
+    "value": "#ffffff",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:11082",
+      "[data-apollo-theme=\"supercharge\"] [data-theme=\"dark\"] .cn-button",
+      "#FFFFFF",
+      "supercharge",
+      "dark",
+      ".cn-button"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.0,
+    "vs_ink": 17.4
+   }
+  ],
+  "themes": [
+   "mono",
+   "supercharge"
+  ],
+  "modes": [
+   "any",
+   "dark"
+  ],
+  "consumers": [
+   ".cn-action-bar",
+   ".cn-button",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 3,
+  "ledger_evidence": "knowledge/canon/canon.css:859 (#000000) vs knowledge/canon/canon.css:1023 (#1a1a1a)"
+ },
+ {
+  "n": 39,
+  "prop": "--text-disabled",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:379",
+     "selector": ":root",
+     "declared": "#E1E1E1",
+     "resolved": "#e1e1e1"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3060",
+     "selector": ".cn-dropdown",
+     "declared": "#D7D8D6",
+     "resolved": "#d7d8d6"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:732",
+     "selector": "[data-theme=\"dark\"]",
+     "declared": "#808080",
+     "resolved": "#808080"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3067",
+     "selector": "[data-theme=\"dark\"] .cn-dropdown",
+     "declared": "#767676",
+     "resolved": "#767676"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#e1e1e1",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:379",
+      ":root",
+      "#E1E1E1",
+      "mono",
+      "any",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.31,
+    "vs_ink": 13.31
+   },
+   {
+    "value": "#d7d8d6",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3060",
+      ".cn-dropdown",
+      "#D7D8D6",
+      "mono",
+      "any",
+      ".cn-dropdown"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.43,
+    "vs_ink": 12.17
+   },
+   {
+    "value": "#808080",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:732",
+      "[data-theme=\"dark\"]",
+      "#808080",
+      "mono",
+      "dark",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 3.95,
+    "vs_ink": 4.41
+   },
+   {
+    "value": "#767676",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3067",
+      "[data-theme=\"dark\"] .cn-dropdown",
+      "#767676",
+      "mono",
+      "dark",
+      ".cn-dropdown"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 4.54,
+    "vs_ink": 3.83
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any",
+   "dark"
+  ],
+  "consumers": [
+   ".cn-dropdown",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 2,
+  "ledger_evidence": "knowledge/canon/canon.css:379 (#e1e1e1) vs knowledge/canon/canon.css:3060 (#d7d8d6)"
+ },
+ {
+  "n": 40,
+  "prop": "--tint",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1513",
+     "selector": ".cn-notifications .info",
+     "declared": "var(--info-t)",
+     "resolved": "#ebeff4"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3683",
+     "selector": ".cn-alert .alert.info",
+     "declared": "var(--info-t)",
+     "resolved": "#dfeaf9"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#ebeff4",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1513",
+      ".cn-notifications .info",
+      "var(--info-t)",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.15,
+    "vs_ink": 15.07
+   },
+   {
+    "value": "#dfeaf9",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3683",
+      ".cn-alert .alert.info",
+      "var(--info-t)",
+      "mono",
+      "any",
+      ".cn-alert"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.22,
+    "vs_ink": 14.32
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-alert",
+   ".cn-notifications"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:1513 (#ebeff4) vs knowledge/canon/canon.css:3683 (#dfeaf9)"
+ },
+ {
+  "n": 41,
+  "prop": "--warn",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:862",
+     "selector": ":root",
+     "declared": "var(--rag-warning)",
+     "resolved": "#e0a61f"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1478",
+     "selector": ".cn-notifications",
+     "declared": "#FFBB33",
+     "resolved": "#ffbb33"
+    }
+   },
+   {
+    "theme": "mono",
+    "mode": "dark",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:862",
+     "selector": "[data-theme=\"dark\"]",
+     "declared": "var(--rag-warning)",
+     "resolved": "#e0a61f"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:1491",
+     "selector": "[data-theme=\"dark\"] .cn-notifications",
+     "declared": "#FFBB33",
+     "resolved": "#ffbb33"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#e0a61f",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:862",
+      ":root",
+      "var(--rag-warning)",
+      "mono",
+      "any",
+      "ROOT"
+     ],
+     [
+      "knowledge/canon/canon.css:862",
+      "[data-theme=\"dark\"]",
+      "var(--rag-warning)",
+      "mono",
+      "dark",
+      "ROOT"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 2.18,
+    "vs_ink": 7.99
+   },
+   {
+    "value": "#ffbb33",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1478",
+      ".cn-notifications",
+      "#FFBB33",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ],
+     [
+      "knowledge/canon/canon.css:1491",
+      "[data-theme=\"dark\"] .cn-notifications",
+      "#FFBB33",
+      "mono",
+      "dark",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.69,
+    "vs_ink": 10.28
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any",
+   "dark"
+  ],
+  "consumers": [
+   ".cn-notifications",
+   "ROOT"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 2,
+  "ledger_evidence": "knowledge/canon/canon.css:862 (#e0a61f) vs knowledge/canon/canon.css:1478 (#ffbb33)"
+ },
+ {
+  "n": 42,
+  "prop": "--warn-t",
+  "pairs": [
+   {
+    "theme": "mono",
+    "mode": "any",
+    "a": {
+     "file_line": "knowledge/canon/canon.css:1482",
+     "selector": ".cn-notifications",
+     "declared": "#FFF8EA",
+     "resolved": "#fff8ea"
+    },
+    "b": {
+     "file_line": "knowledge/canon/canon.css:3663",
+     "selector": ".cn-alert",
+     "declared": "var(--rag-warning-tint)",
+     "resolved": "#f6e6c0"
+    }
+   }
+  ],
+  "candidates": [
+   {
+    "value": "#fff8ea",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:1482",
+      ".cn-notifications",
+      "#FFF8EA",
+      "mono",
+      "any",
+      ".cn-notifications"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.06,
+    "vs_ink": 16.47
+   },
+   {
+    "value": "#f6e6c0",
+    "sites": [
+     [
+      "knowledge/canon/canon.css:3663",
+      ".cn-alert",
+      "var(--rag-warning-tint)",
+      "mono",
+      "any",
+      ".cn-alert"
+     ]
+    ],
+    "is_colour": true,
+    "vs_white": 1.24,
+    "vs_ink": 14.09
+   }
+  ],
+  "themes": [
+   "mono"
+  ],
+  "modes": [
+   "any"
+  ],
+  "consumers": [
+   ".cn-alert",
+   ".cn-notifications"
+  ],
+  "ledger_status": "UNRULED-BASELINE-s139",
+  "ledger_instances": 1,
+  "ledger_evidence": "knowledge/canon/canon.css:1482 (#fff8ea) vs knowledge/canon/canon.css:3663 (#f6e6c0)"
+ }
+]</script>
+<script>
+(function(){
+"use strict";
+var ROWS = JSON.parse(document.getElementById('data').textContent);
+var KEY = 'pri-hover-verdicts-42-v1';
+var state = {};
+try { var raw = localStorage.getItem(KEY); if (raw) state = JSON.parse(raw) || {}; } catch(e){ state = {}; }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+var LETTERS = 'ABCDEFGHIJ';
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function inkFor(hex){ /* readable ink over a colour, by luminance */
+  var h = hex.replace('#','').slice(0,6);
+  if (h.length < 6) return '#1A1A1A';
+  var p = [0,2,4].map(function(i){ var c = parseInt(h.substr(i,2),16)/255; return c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4); });
+  var L = 0.2126*p[0]+0.7152*p[1]+0.0722*p[2];
+  return L > 0.45 ? '#1A1A1A' : '#FFFFFF';
+}
+function isDur(v){ return /^\s*\d+(\.\d+)?m?s/.test(v); }
+function isLen(v){ return /^-?\d+(\.\d+)?px$/.test(v); }
+
+function optionsFor(r){
+  var opts = r.candidates.map(function(c,i){
+    return { id:'value:'+c.value, kind:'value', letter:LETTERS[i], cand:c };
+  });
+  opts.push({ id:'sanction', kind:'sanction', letter:'S' });
+  opts.push({ id:'defer', kind:'defer', letter:'—' });
+  return opts;
+}
+
+function specimen(c, prop){
+  var v = c.value;
+  if (c.is_colour){
+    var ink = inkFor(v);
+    var body = '<div class="swatch"></div>' +
+      '<button class="spec" type="button" tabindex="-1">Hover me &rarr; ' + esc(v) + '</button>';
+    var tiles = ['lt','dk'].map(function(k){
+      return '<div class="tile ' + k + '" style="--v:' + esc(v) + ';--vink:' + ink + '">' +
+        '<div class="tl">' + (k==='lt' ? 'on white' : 'on ink #1A1A1A') + '</div>' + body + '</div>';
+    }).join('');
+    var cr = '<p class="cr"><b>Contrast:</b> ' + c.vs_white.toFixed(2) + ':1 vs white — ' +
+      (c.vs_white >= 4.5 ? 'passes AA text' : c.vs_white >= 3 ? 'passes AA large/UI only' : 'fails AA') +
+      ' &middot; ' + c.vs_ink.toFixed(2) + ':1 vs ink #1A1A1A — ' +
+      (c.vs_ink >= 4.5 ? 'passes AA text' : c.vs_ink >= 3 ? 'passes AA large/UI only' : 'fails AA') + '</p>';
+    return '<div class="tiles">' + tiles + '</div>' + cr;
+  }
+  if (isDur(v) || /cubic-bezier|ease/.test(v)){
+    var dur = (v.match(/\d+(\.\d+)?m?s/) || ['600ms'])[0];
+    var eas = (v.match(/cubic-bezier\([^)]*\)/) || [/ease/.test(v) ? 'ease' : 'linear'])[0];
+    return '<div class="tiles"><div class="tile lt" style="--dur:' + esc(dur) + ';--eas:' + esc(eas) + '">' +
+      '<div class="tl">motion, running</div><div class="motion run"><i></i></div></div>' +
+      '<div class="tile dk" style="--dur:' + esc(dur) + ';--eas:' + esc(eas) + '">' +
+      '<div class="tl">motion, running</div><div class="motion run"><i></i></div></div></div>' +
+      '<p class="cr">Duration ' + esc(dur) + ', easing ' + esc(eas) + '. Not a colour — no contrast applies.</p>';
+  }
+  if (isLen(v)){
+    return '<div class="tiles"><div class="tile lt"><div class="tl">length, to scale</div>' +
+      '<div class="lenbar" style="width:' + esc(v) + '"></div></div></div>' +
+      '<p class="cr">Length ' + esc(v) + '. Not a colour — no contrast applies.</p>';
+  }
+  return '<div class="tiles"><div class="tile lt"><div class="tl">specimen</div>' +
+    '<div style="font-family:' + esc(v.indexOf(',') > -1 ? v : 'inherit') + ';font-size:15px">Apollo — the quick brown fox 0123</div></div></div>' +
+    '<p class="cr">Non-colour value. Not a colour — no contrast applies.</p>';
+}
+
+function siteList(c){
+  return '<ul style="margin:6px 0 0 16px;padding:0;font-family:var(--mono);font-size:11px">' +
+    c.sites.map(function(s){ return '<li>' + esc(s[1]) + ' &mdash; ' + esc(s[0]) + ' &mdash; declared <code>' + esc(s[2]) + '</code> &mdash; theme ' + esc(s[3]) + ', mode ' + esc(s[4]) + '</li>'; }).join('') +
+    '</ul>';
+}
+
+function cardHTML(r){
+  var opts = optionsFor(r);
+  var pick = state[r.prop] ? state[r.prop].choice : null;
+  var body = opts.map(function(o){
+    var selected = (pick === o.id);
+    var head, inner;
+    if (o.kind === 'value'){
+      head = 'Option ' + o.letter + ' &mdash; settle on this value';
+      inner = '<p class="val">' + esc(o.cand.value) + '</p>' + specimen(o.cand, r.prop) +
+        '<details><summary>Where this value is declared (' + o.cand.sites.length + ')</summary>' + siteList(o.cand) + '</details>';
+    } else if (o.kind === 'sanction'){
+      head = 'Option S &mdash; keep the divergence, declare it';
+      inner = '<p class="val">no value change</p><p class="cr">The split is deliberate: the token is allowed to differ in these scopes and the ledger records it as a sanctioned divergence rather than a defect.</p>';
+    } else {
+      head = 'Defer &mdash; not ruling this today';
+      inner = '<p class="val">no decision</p><p class="cr">Stays UNRULED-BASELINE; counted as deferred in the export.</p>';
+    }
+    return '<label class="opt' + (selected ? ' sel' : '') + '" data-prop="' + esc(r.prop) + '" data-choice="' + esc(o.id) + '">' +
+      '<span class="hd"><span class="tag">' + o.letter + '</span><span>' + head + '</span></span>' +
+      '<input type="radio" class="hidden" name="v_' + r.n + '" value="' + esc(o.id) + '"' + (selected ? ' checked' : '') + '>' +
+      '<span class="selstate">' + (selected ? '● SELECTED' : '○ not selected') + '</span>' +
+      inner + '</label>';
+  }).join('');
+
+  var det = '<table class="det"><tr><th>theme</th><th>mode</th><th>site A</th><th>value A</th><th>site B</th><th>value B</th></tr>' +
+    r.pairs.map(function(p){
+      return '<tr><td>' + esc(p.theme) + '</td><td>' + esc(p.mode) + '</td><td>' + esc(p.a.selector) + '<br>' + esc(p.a.file_line) + '<br>' + esc(p.a.declared) + '</td><td>' + esc(p.a.resolved) + '</td><td>' + esc(p.b.selector) + '<br>' + esc(p.b.file_line) + '<br>' + esc(p.b.declared) + '</td><td>' + esc(p.b.resolved) + '</td></tr>';
+    }).join('') + '</table>';
+
+  return '<section class="card" id="c' + r.n + '" data-prop="' + esc(r.prop) + '" data-themes="' + esc(r.themes.join(' ')) + '" data-decided="' + (pick ? 'yes' : 'no') + '">' +
+    '<h2>' + r.n + '. ' + esc(r.prop) + '</h2>' +
+    '<p class="meta">' + r.pairs.length + ' conflicting pair' + (r.pairs.length === 1 ? '' : 's') + ' &middot; ' + r.candidates.length + ' distinct value' + (r.candidates.length === 1 ? '' : 's') + ' &middot; ledger status ' + esc(r.ledger_status) + '</p>' +
+    '<div class="chips">' + r.themes.map(function(t){ return '<span class="chip">theme: ' + esc(t) + '</span>'; }).join('') +
+      r.modes.map(function(m){ return '<span class="chip">mode: ' + esc(m) + '</span>'; }).join('') +
+      r.consumers.slice(0,8).map(function(c){ return '<span class="chip">used by ' + esc(c) + '</span>'; }).join('') + '</div>' +
+    '<p class="prose">The token <b>' + esc(r.prop) + '</b> does not mean one thing across the stylesheet. It is set to ' + r.candidates.length + ' different values in ' + r.consumers.length + ' component scope' + (r.consumers.length === 1 ? '' : 's') + ', so two places that ask for the same token get different answers. Choose the one value it should mean, or say the difference is intended and should be written down.</p>' +
+    '<details><summary>Technical detail &mdash; measured pairs, file and line</summary>' + det + '</details>' +
+    '<div class="opts">' + body + '</div>' +
+    '<div class="note"><label for="n' + r.n + '">Note for this verdict (optional, travels in the export)</label>' +
+    '<textarea id="n' + r.n + '" rows="2" data-noteprop="' + esc(r.prop) + '">' + esc(state[r.prop] && state[r.prop].note ? state[r.prop].note : '') + '</textarea></div>' +
+    '</section>';
+}
+
+var host = document.getElementById('rows');
+host.innerHTML = ROWS.map(cardHTML).join('');
+
+function tally(){
+  var ruled = 0, deferred = 0;
+  ROWS.forEach(function(r){
+    var s = state[r.prop];
+    if (!s || !s.choice) return;
+    if (s.choice === 'defer') deferred++; else ruled++;
+  });
+  document.getElementById('tally').textContent = ruled + ' of 42 ruled' + (deferred ? ' · ' + deferred + ' deferred' : '') + ' · ' + (42 - ruled - deferred) + ' untouched';
+}
+tally();
+
+host.addEventListener('click', function(e){
+  var lab = e.target.closest('.opt');
+  if (!lab) return;
+  var prop = lab.getAttribute('data-prop'), choice = lab.getAttribute('data-choice');
+  var cur = state[prop] || {};
+  cur.choice = choice;
+  state[prop] = cur;
+  save();
+  var card = lab.closest('.card');
+  card.setAttribute('data-decided','yes');
+  card.querySelectorAll('.opt').forEach(function(o){
+    var on = o.getAttribute('data-choice') === choice;
+    o.classList.toggle('sel', on);
+    o.querySelector('.selstate').textContent = on ? '● SELECTED' : '○ not selected';
+    var inp = o.querySelector('input'); if (inp) inp.checked = on;
+  });
+  tally();
+  applyFilter();
+});
+host.addEventListener('input', function(e){
+  var t = e.target;
+  if (!t.hasAttribute || !t.hasAttribute('data-noteprop')) return;
+  var prop = t.getAttribute('data-noteprop');
+  var cur = state[prop] || {}; cur.note = t.value; state[prop] = cur; save();
+});
+
+function seg(id, fn){
+  var el = document.getElementById(id);
+  el.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    el.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+    fn(b.getAttribute('data-v'));
+  });
+}
+seg('segMode', function(v){ document.documentElement.setAttribute('data-mode', v); });
+seg('segTheme', function(v){ document.documentElement.setAttribute('data-apollo-theme', v); });
+var filter = 'all';
+seg('segFilter', function(v){ filter = v; applyFilter(); });
+function applyFilter(){
+  ROWS.forEach(function(r){
+    var el = document.getElementById('c' + r.n);
+    var show = true;
+    if (filter === 'undecided') show = !(state[r.prop] && state[r.prop].choice);
+    else if (filter === 'mono' || filter === 'supercharge') show = r.themes.indexOf(filter) > -1;
+    el.classList.toggle('hidden', !show);
+  });
+}
+
+function buildExport(){
+  var picks = ROWS.map(function(r){
+    var s = state[r.prop] || {};
+    var choice = s.choice || null;
+    var o = { token: r.prop, decision: 'UNTOUCHED', value: null, note: s.note || '' };
+    if (choice === 'defer') o.decision = 'DEFER';
+    else if (choice === 'sanction') o.decision = 'SANCTION_DIVERGENCE';
+    else if (choice && choice.indexOf('value:') === 0){ o.decision = 'SETTLE_ON_VALUE'; o.value = choice.slice(6); }
+    return o;
+  });
+  var ruled = picks.filter(function(p){ return p.decision === 'SETTLE_ON_VALUE' || p.decision === 'SANCTION_DIVERGENCE'; });
+  var lines = [];
+  lines.push('TOKEN-FORK VERDICTS — Dave’s picks');
+  lines.push('source: reviews/TOKEN-FORK-MEASUREMENT-2026-08-09-s139-v1.json (measured #139) + knowledge/_TOKEN-FORK-LEDGER.json');
+  lines.push('instrument: reviews/pri-hover-verdicts-42-v1.html');
+  lines.push('exported: ' + new Date().toISOString());
+  lines.push('ruled ' + ruled.length + ' of 42; deferred ' + picks.filter(function(p){ return p.decision === 'DEFER'; }).length + '; untouched ' + picks.filter(function(p){ return p.decision === 'UNTOUCHED'; }).length);
+  lines.push('');
+  picks.forEach(function(p){
+    var t = p.token + ' -> ' + p.decision + (p.value ? ' ' + p.value : '');
+    if (p.note) t += '   // ' + p.note.replace(/\s+/g,' ');
+    lines.push(t);
+  });
+  lines.push('');
+  lines.push('```json');
+  lines.push(JSON.stringify({ $id:'TOKEN-FORK-VERDICTS-EXPORT-v1', instrument:'reviews/pri-hover-verdicts-42-v1.html', source:'reviews/TOKEN-FORK-MEASUREMENT-2026-08-09-s139-v1.json', exported:new Date().toISOString(), counts:{ total:42, settled:picks.filter(function(p){return p.decision==='SETTLE_ON_VALUE';}).length, sanctioned:picks.filter(function(p){return p.decision==='SANCTION_DIVERGENCE';}).length, deferred:picks.filter(function(p){return p.decision==='DEFER';}).length, untouched:picks.filter(function(p){return p.decision==='UNTOUCHED';}).length }, picks:picks }, null, 1));
+  lines.push('```');
+  return lines.join('\n');
+}
+window.__buildExport = buildExport;
+window.__rowCount = ROWS.length;
+
+var dlg = document.getElementById('dlg');
+document.getElementById('btnExport').addEventListener('click', function(){
+  document.getElementById('out').value = buildExport();
+  if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open','');
+});
+document.getElementById('btnClose').addEventListener('click', function(){ dlg.close ? dlg.close() : dlg.removeAttribute('open'); });
+document.getElementById('btnCopy').addEventListener('click', function(){
+  var t = document.getElementById('out'); t.select();
+  if (navigator.clipboard) navigator.clipboard.writeText(t.value).catch(function(){});
+  else document.execCommand('copy');
+});
+document.getElementById('btnClear').addEventListener('click', function(){
+  if (!window.confirm('Clear every pick and note on this page?')) return;
+  state = {}; save();
+  host.innerHTML = ROWS.map(cardHTML).join('');
+  tally(); applyFilter();
+});
+})();
+</script>
+</body>
+</html>
