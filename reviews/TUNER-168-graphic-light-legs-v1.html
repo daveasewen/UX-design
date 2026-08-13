@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TUNER #168 — the four graphic light legs on white</title>
+<!--
+  TUNER, #168-A, v1. THIS PAGE RULES NOTHING. Every value it emits is an OFFER.
+  The four SEATED values (Dave's, in the tree after #168 + #168-A) are:
+    error #DA1A00 · warning #C58900 · success #137F3C · information #3F6FB5
+  A revision taken off this page would be a NEW RULING, not an amendment of s168-D4.
+  MODEL: OKLCH. Chosen because Dave's word was "chroma" and OKLCH is the space where
+  chroma is a named axis that is (near-)perceptually independent of lightness and hue.
+  HSV was rejected: its "S" and "V" both move perceived lightness, so a hue "locked"
+  in HSV drifts in appearance and the ratio readout would move for no visible reason.
+  HUE IS LOCKED per colour at the seated value's OKLCH hue. Only L and C move.
+  Ratios are WCAG relative-luminance contrast against #FFFFFF, computed live in the page.
+  The cb3 chart svg is lifted VERBATIM from the #168 picker, which lifted it verbatim
+  from knowledge/snippets/Chart-bar.reference.html.
+-->
+<style>
+:root{
+  --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+  --pg:#F4F6F8; --card:#FFFFFF; --tx:#1A1A1A; --tx2:#4A4A4A; --rule:#D7D8D6;
+  --ok:#137F3C; --ok-bg:#E8F4EC; --att:#1F5F8B; --att-bg:#E6EEF5;
+  --neutral:#5A6570; --neutral-bg:#EDEFF1; --red:#DA1A00; --red-bg:#FDECE9;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);background:var(--pg);color:var(--tx);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 20px 90px}
+h1{font-size:26px;line-height:1.25;margin:0 0 4px}
+h2{font-size:20px;margin:26px 0 8px}
+h4{font-size:15px;margin:0 0 8px}
+p{margin:8px 0;max-width:80ch}
+code{font-family:var(--mono);font-size:.88em;background:var(--neutral-bg);padding:1px 5px;border-radius:3px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;margin:16px 0}
+.bar{position:sticky;top:0;z-index:40;background:var(--card);border-bottom:1px solid var(--rule);
+  padding:10px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button{font-family:inherit;font-size:14px;padding:7px 12px;border-radius:6px;border:1px solid var(--rule);
+  background:var(--card);color:var(--tx);cursor:pointer}
+button.primary{background:var(--att);color:#fff;border-color:var(--att);font-weight:600}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;margin-right:6px}
+.t-att{background:var(--att-bg);color:var(--att)} .t-ok{background:var(--ok-bg);color:var(--ok)}
+.t-neu{background:var(--neutral-bg);color:var(--neutral)}
+.t-red{background:var(--red-bg);color:var(--red)}
+.mut{color:var(--tx2);font-size:12px}
+.chartcard{border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--card)}
+.chartcard .cl{font-size:13px;font-weight:700;padding:9px 12px 2px}
+.chartcard .cs{font-size:11.5px;color:var(--tx2);padding:0 12px 9px}
+.cwrap{padding:14px 12px;background:var(--page);color:var(--ink)}
+.cwrap svg{width:100%;height:auto;display:block}
+.cwrap .dv-grid{stroke-width:1}
+.cwrap text{font-family:var(--font);font-size:12px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:900px){.pair{grid-template-columns:1fr}}
+.leg{border:1px solid var(--rule);border-radius:9px;padding:14px 15px;background:var(--card)}
+.leg.breach{border-color:var(--red);box-shadow:inset 4px 0 0 var(--red)}
+.legtop{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.chip{width:46px;height:30px;border-radius:5px;border:1px solid #00000022;flex:0 0 auto}
+.nm{font-weight:700;font-size:15px}
+.hexro{font-family:var(--mono);font-size:15px;font-weight:700;margin-left:auto}
+.row{display:grid;grid-template-columns:78px 1fr 62px;gap:10px;align-items:center;margin:7px 0}
+.row label{font-size:12px;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em}
+.row output{font-family:var(--mono);font-size:12.5px;text-align:right}
+input[type=range]{width:100%}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:12.5px}
+.ratio{font-family:var(--mono);font-weight:700}
+.btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btns button{font-size:12.5px;padding:5px 9px}
+textarea{width:100%;min-height:190px;font-family:var(--mono);font-size:12.5px;padding:10px;
+  border:1px solid var(--rule);border-radius:8px;background:var(--card);color:var(--tx)}
+.swatchband{display:flex;height:34px;border-radius:6px;overflow:hidden;border:1px solid #00000022;margin-top:8px}
+.swatchband div{flex:1}
+.note{background:#FFF8E6;border:1px solid #E5D08A;border-radius:8px;padding:12px 14px;margin:12px 0}
+ul{margin:6px 0 6px 18px;padding:0} li{margin:3px 0}
+</style>
+</head><body>
+<div class="bar">
+  <strong style="font-size:14px">TUNER #168-A — four graphic light legs on white</strong>
+  <span class="tag t-neu">offers only</span>
+  <span class="tag t-att">light mode only</span>
+  <button id="normAll">Normalise all four to stored chroma</button>
+  <button id="resetAll">Reset all to seated</button>
+  <button class="primary" id="jump">Jump to export</button>
+</div>
+<div class="wrap">
+<h1>Tune the four light legs</h1>
+
+<div class="card">
+<h4>What this is, in four lines</h4>
+<ul>
+<li><strong>Hue is LOCKED</strong> on all four — same hues you already ruled. Only <strong>lightness (L)</strong> and <strong>chroma (C)</strong> move.</li>
+<li><strong>The space is OKLCH</strong>, not HSV — because you said "chroma", and OKLCH is the space where chroma is a real axis that does not drag lightness with it.</li>
+<li><strong>Nothing here is seated.</strong> The tree still holds <code>#DA1A00 / #C58900 / #137F3C / #3F6FB5</code>. Anything you take off this page is a <strong>new ruling</strong>.</li>
+<li><strong>The floor is dv-016 &ge; 3:1 on white.</strong> Break it and the leg goes red — it is <em>shown</em>, never blocked.</li>
+</ul>
+<p class="mut">&#9888; Amber is your problem hue (astigmatism: blue/green stable, red/yellow unstable) — it is flagged on its panel and it is the one worth the longest look.</p>
+</div>
+
+<div class="note" id="interp">
+<h4 style="margin:0 0 4px">MY INTERPRETATION of "normalise to the chroma values that we store" &mdash; correct me if it is wrong</h4>
+<p style="margin:4px 0"><strong>Normalise = snap a leg's OKLCH chroma to the chroma of the SETTLED stored pair, leaving its hue and lightness alone.</strong>
+The reference pair is the <code>s144-D1</code>-tuned <code>#DA1A00</code> (C&nbsp;=&nbsp;0.2220) and <code>#137F3C</code> (C&nbsp;=&nbsp;0.1372) &mdash; the two legs that were tuned by your eye and are not in question.
+Those two <em>differ</em>, so a single target has to be chosen: the default is their <strong>MEAN, C&nbsp;=&nbsp;0.1796</strong>.</p>
+<p style="margin:4px 0" class="mut">Readings I did NOT take, in case one of them is what you meant &mdash; switch and the page re-cuts live:</p>
+<div class="btns" id="refbtns">
+  <button data-ref="mean" class="primary">MEAN of the pair &mdash; C 0.1796 (default)</button>
+  <button data-ref="red">Match the RED &mdash; C 0.2220</button>
+  <button data-ref="green">Match the GREEN &mdash; C 0.1372</button>
+  <button data-ref="near">Match the NEARER of the two, per leg</button>
+</div>
+</div>
+
+<h2>Live chart &mdash; repaints as you drag</h2>
+<div class="chartcard"><div class="cl">cb3 — Payment exceptions by status</div><div class="cs">repaints live from the four sliders below; white ground, light mode only</div><div class="cwrap" id="live-light" style="--page:#FFFFFF;--ink:#1A1A1A;--data-axis:#626262;--data-grid:#E1E1E1;--baseline:#1A1A1A;--status-breach:#DA1A00;--status-watch:#C58900;--status-healthy:#137F3C;--status-info:#3F6FB5;"><svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" viewBox="0 0 580 260" role="group" aria-label="Payment exceptions by status. Overdue 14, Needs attention 9, On track 32, Information 6.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">10</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">30</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Overdue</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Needs attention</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">On track</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.8750">Information</text>
+<div class="swatchband" id="band"></div>
+
+<h2>The four legs</h2>
+<div class="pair" id="legs"></div>
+
+<h2 id="exp">Export</h2>
+<div class="card">
+<p class="mut">Markdown. Copy it back into chat and say which ones you want &mdash; that is what turns an offer into a ruling.</p>
+<div class="btns"><button class="primary" id="copy">Copy</button><button id="regen">Refresh</button></div>
+<textarea id="out" readonly></textarea>
+</div>
+<p class="mut">Dark mode is not on this page: you ruled the four dark legs happy at #168 and this tuner does not reopen them.</p>
+</div>
+<script>
+var SEATED = [
+  {key:"error",       nm:"error / breach",        hex:"#DA1A00", cssvar:"--status-breach",  role:"rag/error-graphic",       flag:"settled by s151-D1 &mdash; the two-red law"},
+  {key:"warning",     nm:"warning / watch",       hex:"#C58900", cssvar:"--status-watch",   role:"rag/warning-graphic",     flag:"&#9888; PROBLEM HUE (astigmatism) &mdash; ruled #168-A"},
+  {key:"success",     nm:"success / healthy",     hex:"#137F3C", cssvar:"--status-healthy", role:"rag/success-graphic",     flag:"settled by s155-D1 via s144-D1"},
+  {key:"information", nm:"information / info",    hex:"#3F6FB5", cssvar:"--status-info",    role:"rag/information-graphic", flag:"ruled #168-A (was placeholder #306EC6)"}
+];
+var FLOOR = 3.0;
+var C_RED = 0.2220, C_GREEN = 0.1372, C_MEAN = (C_RED + C_GREEN) / 2;
+var refMode = "mean";
+
+function lin(c){ return c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); }
+function unlin(c){ return c <= 0.0031308 ? c*12.92 : 1.055*Math.pow(c, 1/2.4) - 0.055; }
+function hex2rgb(h){ h = h.replace("#",""); return [parseInt(h.slice(0,2),16)/255, parseInt(h.slice(2,4),16)/255, parseInt(h.slice(4,6),16)/255]; }
+function rgb2hex(r,g,b){ function p(x){ var v = Math.round(Math.min(1,Math.max(0,x))*255).toString(16).toUpperCase(); return v.length<2 ? "0"+v : v; } return "#"+p(r)+p(g)+p(b); }
+function srgb2oklch(hex){
+  var v = hex2rgb(hex), r = lin(v[0]), g = lin(v[1]), b = lin(v[2]);
+  var l = Math.cbrt(0.4122214708*r + 0.5363325363*g + 0.0514459929*b);
+  var m = Math.cbrt(0.2119034982*r + 0.6806995451*g + 0.1073969566*b);
+  var s = Math.cbrt(0.0883024619*r + 0.2817188376*g + 0.6299787005*b);
+  var L = 0.2104542553*l + 0.7936177850*m - 0.0040720468*s;
+  var A = 1.9779984951*l - 2.4285922050*m + 0.4505937099*s;
+  var B = 0.0259040371*l + 0.7827717662*m - 0.8086757660*s;
+  return {L:L, C:Math.sqrt(A*A + B*B), H:(Math.atan2(B,A)*180/Math.PI + 360) % 360};
+}
+function oklch2srgb(L, C, H){
+  var hr = H*Math.PI/180, A = C*Math.cos(hr), B = C*Math.sin(hr);
+  var l = Math.pow(L + 0.3963377774*A + 0.2158037573*B, 3);
+  var m = Math.pow(L - 0.1055613458*A - 0.0638541728*B, 3);
+  var s = Math.pow(L - 0.0894841775*A - 1.2914855480*B, 3);
+  var r = +4.0767416621*l - 3.3077115913*m + 0.2309699292*s;
+  var g = -1.2684380046*l + 2.6097574011*m - 0.3413193965*s;
+  var b = -0.0041960863*l - 0.7034186147*m + 1.7076147010*s;
+  var R = unlin(r), G = unlin(g), Bl = unlin(b);
+  var clipped = [R,G,Bl].some(function(x){ return x < -0.0005 || x > 1.0005; });
+  return {hex: rgb2hex(R,G,Bl), clipped: clipped};
+}
+function relLum(hex){ var v = hex2rgb(hex); return 0.2126*lin(v[0]) + 0.7152*lin(v[1]) + 0.0722*lin(v[2]); }
+function ratioOnWhite(hex){ return (1.0 + 0.05) / (relLum(hex) + 0.05); }
+function targetC(seatC){
+  if (refMode === "red") return C_RED;
+  if (refMode === "green") return C_GREEN;
+  if (refMode === "near") return Math.abs(seatC - C_RED) <= Math.abs(seatC - C_GREEN) ? C_RED : C_GREEN;
+  return C_MEAN;
+}
+
+var state = SEATED.map(function(s){ var o = srgb2oklch(s.hex); return {key:s.key, L:o.L, C:o.C, H:o.H, seatL:o.L, seatC:o.C}; });
+
+function current(i){ return oklch2srgb(state[i].L, state[i].C, state[i].H); }
+
+function buildLegs(){
+  var host = document.getElementById("legs"); host.innerHTML = "";
+  SEATED.forEach(function(s, i){
+    var d = document.createElement("div");
+    d.className = "leg"; d.id = "leg-" + s.key;
+    d.innerHTML =
+      '<div class="legtop"><span class="chip" id="chip-'+s.key+'"></span>'+
+      '<span class="nm">'+s.nm+'</span><span class="hexro" id="hex-'+s.key+'"></span></div>'+
+      '<div class="mut"><code>'+s.role+'</code> &middot; seated <code>'+s.hex+'</code> &middot; '+s.flag+'</div>'+
+      '<div class="row"><label>L lightness</label><input type="range" id="L-'+s.key+'" min="0" max="1" step="0.001"><output id="Lo-'+s.key+'"></output></div>'+
+      '<div class="row"><label>C chroma</label><input type="range" id="C-'+s.key+'" min="0" max="0.37" step="0.0005"><output id="Co-'+s.key+'"></output></div>'+
+      '<div class="row"><label>H hue LOCKED</label><div class="mut" id="Hlock-'+s.key+'" style="font-family:var(--mono)"></div><output></output></div>'+
+      '<div class="meta"><span>on #FFFFFF</span><span class="ratio" id="r-'+s.key+'"></span><span id="v-'+s.key+'"></span><span id="gam-'+s.key+'"></span></div>'+
+      '<div class="btns"><button data-norm="'+i+'">Normalise chroma</button><button data-reset="'+i+'">Reset to seated</button></div>';
+    host.appendChild(d);
+  });
+  host.addEventListener("click", function(e){
+    var n = e.target.getAttribute && e.target.getAttribute("data-norm");
+    var r = e.target.getAttribute && e.target.getAttribute("data-reset");
+    if (n !== null && n !== undefined) { state[+n].C = targetC(state[+n].seatC); render(); }
+    if (r !== null && r !== undefined) { state[+r].C = state[+r].seatC; state[+r].L = state[+r].seatL; render(); }
+  });
+  SEATED.forEach(function(s, i){
+    document.getElementById("L-"+s.key).addEventListener("input", function(e){ state[i].L = parseFloat(e.target.value); render(); });
+    document.getElementById("C-"+s.key).addEventListener("input", function(e){ state[i].C = parseFloat(e.target.value); render(); });
+  });
+}
+
+function render(){
+  var band = document.getElementById("band"); band.innerHTML = "";
+  var chart = document.getElementById("live-light");
+  SEATED.forEach(function(s, i){
+    var c = current(i), rt = ratioOnWhite(c.hex), pass = rt >= FLOOR;
+    document.getElementById("chip-"+s.key).style.background = c.hex;
+    document.getElementById("hex-"+s.key).textContent = c.hex;
+    document.getElementById("L-"+s.key).value = state[i].L;
+    document.getElementById("C-"+s.key).value = state[i].C;
+    document.getElementById("Lo-"+s.key).textContent = state[i].L.toFixed(3);
+    document.getElementById("Co-"+s.key).textContent = state[i].C.toFixed(4);
+    document.getElementById("Hlock-"+s.key).textContent = "LOCKED at " + state[i].H.toFixed(2) + "°";
+    var rEl = document.getElementById("r-"+s.key);
+    rEl.textContent = rt.toFixed(3) + ":1";
+    rEl.style.color = pass ? "var(--ok)" : "var(--red)";
+    var vEl = document.getElementById("v-"+s.key);
+    vEl.className = "tag " + (pass ? "t-ok" : "t-red");
+    vEl.textContent = pass ? "clears dv-016 3:1" : "RED LINE — BELOW dv-016 3:1";
+    document.getElementById("gam-"+s.key).innerHTML = c.clipped ? '<span class="tag t-att">out of sRGB gamut &mdash; hex is CLAMPED</span>' : "";
+    document.getElementById("leg-"+s.key).className = "leg" + (pass ? "" : " breach");
+    var sw = document.createElement("div"); sw.style.background = c.hex; band.appendChild(sw);
+    if (chart) chart.style.setProperty(s.cssvar, c.hex);
+  });
+  writeExport();
+}
+
+function writeExport(){
+  var refTxt = {mean:"MEAN of the settled pair, C 0.1796", red:"match the RED, C 0.2220",
+                green:"match the GREEN, C 0.1372", near:"match the NEARER settled leg, per leg"}[refMode];
+  var L = [];
+  L.push("### TUNER #168-A — four graphic LIGHT legs on white (OFFERS, not rulings)");
+  L.push("");
+  L.push("Space: OKLCH. Hue LOCKED per leg at the seated value's hue. Chroma reference: " + refTxt + ".");
+  L.push("");
+  L.push("| leg | seated | tuned | L | C | H (locked) | on #FFFFFF | dv-016 >=3:1 |");
+  L.push("|---|---|---|---|---|---|---|---|");
+  SEATED.forEach(function(s, i){
+    var c = current(i), rt = ratioOnWhite(c.hex);
+    L.push("| " + s.role + " | `" + s.hex + "` | `" + c.hex + (c.clipped ? " (clamped)" : "") + "` | " +
+      state[i].L.toFixed(3) + " | " + state[i].C.toFixed(4) + " | " + state[i].H.toFixed(2) + "° | " +
+      rt.toFixed(3) + ":1 | " + (rt >= FLOOR ? "PASS" : "**BREACH**") + " |");
+  });
+  L.push("");
+  L.push("A revision taken off this page is a NEW RULING, not an amendment of s168-D4.");
+  document.getElementById("out").value = L.join("\n");
+}
+
+document.getElementById("normAll").addEventListener("click", function(){ state.forEach(function(st){ st.C = targetC(st.seatC); }); render(); });
+document.getElementById("resetAll").addEventListener("click", function(){ state.forEach(function(st){ st.C = st.seatC; st.L = st.seatL; }); render(); });
+document.getElementById("jump").addEventListener("click", function(){ document.getElementById("exp").scrollIntoView({behavior:"smooth"}); });
+document.getElementById("regen").addEventListener("click", writeExport);
+document.getElementById("copy").addEventListener("click", function(){ var t = document.getElementById("out"); t.select(); document.execCommand("copy"); });
+document.getElementById("refbtns").addEventListener("click", function(e){
+  var r = e.target.getAttribute && e.target.getAttribute("data-ref"); if (!r) return;
+  refMode = r;
+  Array.prototype.forEach.call(this.querySelectorAll("button"), function(b){ b.className = (b.getAttribute("data-ref") === r) ? "primary" : ""; });
+  render();
+});
+
+buildLegs();
+render();
+</script>
+</body></html>
