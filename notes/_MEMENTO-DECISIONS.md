@@ -5759,3 +5759,33 @@ rebuilds ALL of `edges` from scratch every run, with zero mechanism to preserve 
 and gain a check that the resolutions file was consumed. Authority: `knowledge/_rulings.json`
 § `s135-D4`. Evidence: `notes/_briefs/2026-08-08-135-laneA-kg-apply.md`. RULED NOT ENACTED —
 #136 first build lane; the 15 token-split exceptions ride along.
+
+
+## ★ #169 CHAIN-DIET-2 — THE #168 POST-WRAP CORRECTION BLOCKS ARE HOMED HERE, THEN CUT FROM THE HEADER (2026-08-13, conductor, on Dave's "I think we need to sort this out")
+
+**Why:** #168 took THREE post-wrap actions (`#168-A`, `s168-D5`, the `HOME_ROT_BLOCKING` confirm) after a
+delegated wrap had already committed. Per [[read-chain-is-where-staleness-is-free]] each was corrected
+IN PLACE on every line it touched, quoting superseded text verbatim — the title line reached 879 tape
+against the RULED 120 cap (#60-D8, rehearsal STRUCTURAL fail at the #169 opener), and the identical
+`s168-D5` correction block stood FOUR times on the #168 banner. **Class named: post-wrap rulings on a
+delegated wrap multiply in-place corrections across every home.** Everything below is quoted verbatim
+BEFORE any cut, per [[home-by-addition-then-cut]]. The durable record of the rulings themselves is
+`knowledge/_rulings.json` §§ `s168-D4`/`s168-D5` (143 entries, verbatim quotes and hexes) — this section
+homes the HEADER PROSE, not the rulings.
+
+### (a) The title line as it stood (GOOD-MORNING.md line 15, 879 tape), verbatim:
+
+> **TITLE THE NEXT CHAT →** `Apollo - #169: s165-d4 links + red 30 which theme [2 — dave's]` ⚠ **CORRECTED A THIRD TIME, POST-PUSH: the `s168-D5` correction below DECLARED the tuner offer discharged but left it in the backtick string — a cold session takes the FIRST title string it finds, so the string itself is now corrected** *(superseded string, verbatim: "`Apollo - #169: red 30 which theme + s165-d4 links + tuner offer [3 — dave's]`")*. **Dave also flagged that #168's in-chat rename was never relayed — a DELEGATED wrap cannot speak in chat, so the rename relay is the CONDUCTOR'S item; class noted for every future delegated wrap.** ⚠ **CORRECTED IN PLACE BY AMENDMENT `#168-A` (post-wrap). NOTHING IS LOST — the superseded line is quoted here verbatim:** *"TITLE THE NEXT CHAT → `Apollo - #169: amber/blue pick + red 30 + s165-d4 links [3 — dave's]`"*. **The `amber/blue pick` is DISCHARGED** — Dave took it live, post-wrap (`#C58900` / `#3F6FB5`, `#168-A`), so a title naming it would spend #169's first item on a closed thing. ★ Corrected ON the line, not beneath it [[read-chain-is-where-staleness-is-free]]. ⚠ **CORRECTED AGAIN IN PLACE BY `s168-D5` (post-wrap, second post-wrap action, after commit `3ccadeb`).** Dave ruled live off `reviews/TUNER-168-graphic-light-legs-v1.html`, verbatim: ***"ink this will do"*** — and that page carried its own clause, *"A revision taken off this page is a NEW RULING, not an amendment of `s168-D4`"*, so this is **`s168-D5`**, a NEW ruling, **superseding by ADDITION** (nothing above is rewritten or trimmed). **So the `tuner offer [3 — dave's]` item in the title above is ALSO DISCHARGED** — it was taken live in the same window, and a title naming it would spend #169's first item on a closed thing. ★ Corrected ON the line, not beneath it, because a cold session reads the GENERATED `_CHAIN.md` and an addition below a stale claim does not stop the stale claim being believed [[read-chain-is-where-staleness-is-free]].
+
+### (b) The #153-A correction block that stood beneath it (line 16) since #153, verbatim:
+
+> ⚠ **CORRECTED IN PLACE BY AMENDMENT #153-A (post-wrap). NOTHING IS LOST — the superseded line is quoted here verbatim:** *"TITLE THE NEXT CHAT → `Apollo - #154: verify s152-D1 — the fix has a runner, the proof does not [0]`"*. **That title is FALSE:** `s152-D1` was verified after the wrap — `--selftest` rc=0, 57 arms, the mutation control green, and the two Selection-controls star reds MEASURED CLEAR (0 MARK failures, was 2). ★ **The correction is made ON the instruction line, not beneath it, because a cold session reads the GENERATED `_CHAIN.md` header and takes the FIRST title it finds** — an addition that sits below a stale instruction does not stop the stale instruction being obeyed [[read-chain-is-where-staleness-is-free]].
+
+### (c) The `s168-D5` correction block repeated on banner lines 20/26/27/34, ONE canonical copy, verbatim:
+
+⚠ **CORRECTED AGAIN IN PLACE BY `s168-D5` (post-wrap).** Dave ruled live off `reviews/TUNER-168-graphic-light-legs-v1.html`, verbatim: ***"ink this will do"*** — and that page carried its own clause, *"A revision taken off this page is a NEW RULING, not an amendment of `s168-D4`"*, so this is **`s168-D5`**, a NEW ruling, **superseding by ADDITION** (nothing above is rewritten or trimmed). ⇒ `rag/*-graphic` **LIGHT** legs are now: error **`#DA1A00` → `#F3543E`** · warning **`#C58900` UNCHANGED IN VALUE, status RE-RATIFIED** (he held the amber a second time, against the tuner spread) · success **`#137F3C` → `#57A369`** · information **`#3F6FB5` → `#6893D3`**. **THREE VALUES CHANGE, ONE IS STATUS-ONLY.** Measured **first-hand at seating, not taken from his export**, on `#FFFFFF`: **3.415** · **3.021** · **3.067** · **3.133** — all clear `dv-016` ≥3:1, and ⚠ **NONE is text-grade**; the three changed legs move **DOWN** in contrast (5.086→3.415, 5.086→3.067, 5.057→3.133), a deliberate eye-ruled trade of text headroom for chromatic strength on a GRAPHIC rung. ⚠ **`#DA1A00` and `#137F3C` are retired AS GRAPHIC LEGS ONLY — they REMAIN the ruled INK/TEXT values on `rag/error-ink` / `rag/success-ink`, untouched.** ⛔ **ALL FOUR DARK LEGS UNTOUCHED**; the rung NAME `-graphic` is **STILL an unratified default.**
+
+**What replaces them in the header:** the title line becomes a bare LABEL + a one-line pointer here; line 16
+is cut (homed at (b)); the banner keeps ONE full statement of the `s168-D5` outcome on the ★ LATEST heading
+and pointers on ⑤/⑥/residual-①. **Nothing is deleted from the record — it moved here.** The rename-relay
+class note from (a) is ALSO standing in auto-memory [[delegated-wrap-rename-relay]].
