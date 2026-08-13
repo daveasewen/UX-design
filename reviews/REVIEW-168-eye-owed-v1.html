@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>#168 review — two items owed to Dave's eye</title>
+<!--
+  REVIEW PAGE, #168. This page RULES NOTHING. It collects Dave's rulings.
+  Item A specimen markup + CSS carried verbatim from reviews/REVIEW-tooltip-tip-s162.html.
+  Item B data derived at build time from knowledge/gen_dashboard.py's OWN scorer, run against
+  git show eec444b:knowledge/_state.json (before) and knowledge/_state.json at HEAD (after).
+  Nothing in knowledge/ was written by the build of this page.
+-->
+<style>
+:root{
+  --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+  --page:#F4F6F8; --card:#FFFFFF; --ink:#1A1A1A; --ink-2:#4A4A4A; --rule:#D7D8D6;
+  /* annotation hues — BLUE/GREEN only (astigmatism: red/yellow are problem hues).
+     Green values are the RULED pair s155-D1: #137F3C on white / #66CC8D else. */
+  --ok:#137F3C; --ok-bg:#E8F4EC;
+  --att:#1F5F8B; --att-bg:#E6EEF5;      /* "needs your eye" = BLUE, never red */
+  --neutral:#5A6570; --neutral-bg:#EDEFF1;
+}
+[data-mode="dark"]{
+  --page:#121417; --card:#1C2024; --ink:#F2F2F2; --ink-2:#B8BEC4; --rule:#3A4046;
+  --ok:#66CC8D; --ok-bg:#16301F; --att:#7FB6DD; --att-bg:#15242F;
+  --neutral:#9AA4AE; --neutral-bg:#22272C;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);background:var(--page);color:var(--ink);
+  -webkit-font-smoothing:antialiased;line-height:1.55;}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px 80px;}
+h1{font-size:26px;line-height:1.25;margin:0 0 4px;}
+h2{font-size:20px;margin:0 0 10px;}
+h3{font-size:16px;margin:18px 0 6px;}
+p{margin:8px 0;max-width:78ch;}
+code{font-family:var(--mono);font-size:.9em;background:var(--neutral-bg);padding:1px 5px;border-radius:3px;}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin:18px 0;}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;margin-right:6px;}
+.t-ok{background:var(--ok-bg);color:var(--ok);}
+.t-att{background:var(--att-bg);color:var(--att);}
+.t-neu{background:var(--neutral-bg);color:var(--neutral);}
+.lede{font-size:17px;}
+.bar{position:sticky;top:0;z-index:40;background:var(--card);border-bottom:1px solid var(--rule);
+  padding:10px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+button,select{font-family:inherit;font-size:14px;padding:7px 12px;border-radius:6px;
+  border:1px solid var(--rule);background:var(--card);color:var(--ink);cursor:pointer;}
+button.primary{background:var(--att);color:#fff;border-color:var(--att);font-weight:600;}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin-top:10px;}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--rule);vertical-align:top;}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2);
+  position:sticky;top:52px;background:var(--card);}
+td.num{font-family:var(--mono);text-align:right;white-space:nowrap;}
+tr.cap{background:var(--att-bg);}
+.delta-up{color:var(--ok);font-weight:700;}
+.delta-dn{color:var(--att);font-weight:700;}
+.scroll{overflow-x:auto;}
+.opt{display:block;border:1px solid var(--rule);border-radius:8px;padding:11px 14px;margin:8px 0;cursor:pointer;}
+.opt:has(input:checked){border-color:var(--att);border-width:2px;background:var(--att-bg);padding:10px 13px;}
+.opt input{margin-right:9px;}
+.opt b{font-weight:700;}
+.opt span.why{display:block;color:var(--ink-2);font-size:13.5px;margin-top:3px;margin-left:24px;}
+.rec{font-size:12px;font-weight:700;color:var(--att);margin-left:6px;}
+textarea{width:100%;min-height:70px;font-family:inherit;font-size:14px;padding:9px;
+  border:1px solid var(--rule);border-radius:6px;background:var(--card);color:var(--ink);}
+pre#out{white-space:pre-wrap;background:var(--neutral-bg);padding:14px;border-radius:8px;
+  font-family:var(--mono);font-size:12.5px;max-height:420px;overflow:auto;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule);border-radius:8px;overflow:hidden;}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{padding:16px 12px 60px}h1{font-size:22px}}
+.pane{padding:18px 20px;background:var(--page);}
+.pane h2{font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2);}
+.pane[data-theme="light"]{background:#FFFFFF;color:#1A1A1A;}
+.pane[data-theme="dark"]{background:#1A1A1A;color:#FFFFFF;}
+/* The two specimen panes are FIXED-THEME islands: they show light and dark side by side
+   whatever mode the page itself is in. So their <code> chips must NOT inherit the page's
+   --neutral-bg, which flips with the page and produced dark-on-dark in both directions.
+   Caught by render-verify, not by any mechanical check. */
+.pane[data-theme="light"] code{background:#EDEFF1;color:#1A1A1A;}
+.pane[data-theme="dark"]  code{background:#33383E;color:#F2F2F2;}
+.pane[data-theme="light"] .caption{color:#4A4A4A;}
+.pane[data-theme="dark"]  .caption{color:#C9CED3;}
+.pane .caption{font-size:13px;opacity:.8;max-width:none;}
+.pane .lbl{font-size:15px;display:inline-flex;align-items:center;gap:6px;}
+.case{margin:6px 0 18px;}
+header.hd{padding:0 0 8px;}
+.tip-wrap{position:relative; display:inline-flex;}
+  .trigger{position:relative; width:22px; height:22px; padding:0; border:0; background:transparent; color:var(--trigger); cursor:help; display:inline-flex; align-items:center; justify-content:center;}
+  .trigger svg{width:22px; height:22px; display:block;}
+  /* tips forced visible, statically placed relative to the wrap for side-by-side comparison */
+  .tip{--tail-x:50%; position:absolute; left:50%; z-index:5; width:max-content; max-width:240px; background:var(--surface); color:var(--text);
+    border:1px solid var(--tip-border); padding:8px 12px; font:400 14px/1.4 var(--font); box-shadow:0 0 16px var(--shadow);}
+  .tip.pos-above{ bottom:calc(100% + 12px); transform:translateX(-50%); }
+  .tip.pos-below{ top:calc(100% + 12px); transform:translateX(-50%); }
+  .tip::after{content:""; position:absolute; left:var(--tail-x,50%); width:10px; height:10px; background:var(--surface); border:1px solid var(--tip-border);}
+  .tip.pos-above::after{ top:100%;    transform:translate(-50%,-50%) rotate(45deg); border-top:0; border-left:0; }
+  .tip.pos-below::after{ bottom:100%; transform:translate(-50%,-50%) rotate(45deg); border-bottom:0; border-right:0; }
+  .spacer-top{height:76px;}   /* room for the above-tip */
+  .spacer-bot{height:76px;}   /* room for the below-tip */
+
+</style></head>
+<body data-mode="light">
+
+<div class="bar">
+  <strong style="font-size:14px">#168 review</strong>
+  <button onclick="tm()">Toggle light / dark</button>
+  <button onclick="document.getElementById('export').scrollIntoView({behavior:'smooth'})">Jump to export</button>
+  <span id="cnt" style="font-size:13px;color:var(--ink-2)"></span>
+</div>
+
+<div class="wrap">
+
+<h1>Two items were staged for your eye. One of them is already yours.</h1>
+<p class="lede">Read this box and you have the whole page.</p>
+
+<div class="card">
+  <p><span class="tag t-ok">A · closed</span> <b>tooltip.tip needs nothing from you.</b>
+  You ruled it at <b>#162</b> (<code>s162-D1</code>, 2026-08-12) — <code>no-bind:structural-param</code>,
+  closing the <code>s142-D1</code> wave at 114/114. The brief that sent this page still listed it as open.
+  The specimen is below so you can confirm the sight matches the ruling; there is nothing to decide unless
+  you want to reopen it.</p>
+
+  <p><span class="tag t-att">B · your eye</span> <b>The dashboard ranking moved — but by more than was reported, and for a reason worth ruling on.</b>
+  #167 removed the 400-character body truncation. <b>7 items</b> had been sitting on that cap; all 7 grew.
+  That changed <b>25 of 33 ranked rows</b>, not 7. The 7 are the <i>cause</i>; 25 is the <i>effect</i>.</p>
+
+  <p><span class="tag t-att">the finding</span> <b>The effort score reads body length as a proxy — so the truncation had been hiding a penalty on well-documented items.</b>
+  The formula is <code>effort = 1 &minus; len(body) / 1200</code>. While every long body was clipped to 400,
+  the penalty was capped at a floor of 0.667 for all of them. With true lengths, <code>W-14</code>
+  (964 chars) now scores 0.197 on effort and fell from rank 31 to <b>33, last</b>. Nothing about the job got
+  bigger. Only the writing-up got longer. <b>That is decision 2 below, and it is the real one.</b></p>
+</div>
+
+<h2>Decision 1 — tooltip.tip <span class="tag t-ok">already ruled</span></h2>
+<div class="card">
+  <p>Your words at #162, verbatim from <code>knowledge/_rulings.json</code> § <code>s162-D1</code>:
+  <em>&ldquo;so yes, the tooltip should flip if there is no space to display it in the same way as it moves
+  from the edge to accommodate the message&rdquo;</em> then <em>&ldquo;this a behavior that will be constant
+  across all themes, i don't think this needs tokenizing&rdquo;</em>.</p>
+  <p>Enacted: <code>$status</code> written onto <code>knowledge/components/tooltip.meta.json</code>.
+  Commit <code>2cb1851</code>. The live specimen (both edges, light and dark) is unchanged from the page you
+  ruled off:</p>
+
+<div class="grid">
+  <section class="pane" data-theme="light">
+    <h2>Light</h2>
+    <div class="case">
+      <div class="spacer-top"></div>
+      <span class="lbl">Available balance
+        <span class="tip-wrap">
+          <button class="trigger" aria-describedby="l1" aria-label="What is available balance?"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></svg></button>
+          <span class="tip pos-above" role="tooltip" id="l1">The funds you can spend right now.</span>
+        </span>
+      </span>
+      <p class="caption"><code>tip: top</code> — tooltip sits <strong>above</strong> the trigger, tail points down. (The default.)</p>
+    </div>
+    <div class="case">
+      <span class="lbl">Available balance
+        <span class="tip-wrap">
+          <button class="trigger" aria-describedby="l2" aria-label="What is available balance?"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></svg></button>
+          <span class="tip pos-below" role="tooltip" id="l2">The funds you can spend right now.</span>
+        </span>
+      </span>
+      <div class="spacer-bot"></div>
+      <p class="caption"><code>tip: bottom</code> — tooltip sits <strong>below</strong>, tail points up. (What the runtime flips to near the top of the screen.)</p>
+    </div>
+  </section>
+  <section class="pane" data-theme="dark">
+    <h2>Dark</h2>
+    <div class="case">
+      <div class="spacer-top"></div>
+      <span class="lbl">Available balance
+        <span class="tip-wrap">
+          <button class="trigger" aria-describedby="d1" aria-label="What is available balance?"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></svg></button>
+          <span class="tip pos-above" role="tooltip" id="d1">The funds you can spend right now.</span>
+        </span>
+      </span>
+      <p class="caption"><code>tip: top</code> — dark carries the ruled 1px #808080 border.</p>
+    </div>
+    <div class="case">
+      <span class="lbl">Available balance
+        <span class="tip-wrap">
+          <button class="trigger" aria-describedby="d2" aria-label="What is available balance?"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></svg></button>
+          <span class="tip pos-below" role="tooltip" id="d2">The funds you can spend right now.</span>
+        </span>
+      </span>
+      <div class="spacer-bot"></div>
+      <p class="caption"><code>tip: bottom</code>.</p>
+    </div>
+  </section>
+</div>
+
+  <h3>Your call</h3>
+  <div data-dc="DC1">
+    <label class="opt"><input type="radio" name="DC1" value="confirm"><b>Confirm — it is closed, drop it from the owed list.</b><span class="why">The sight matches the ruling. Nothing carries forward. <span class="rec">RECOMMENDED</span></span></label>
+    <label class="opt"><input type="radio" name="DC1" value="reopen"><b>Reopen — I want to look again.</b><span class="why">Something in the specimen does not match what I ruled.</span></label>
+    <label class="opt"><input type="radio" name="DC1" value="note"><b>Leave it — no action, no note.</b><span class="why">Closed, but I am not signing anything today.</span></label>
+  </div>
+  <p style="font-size:13px;color:var(--ink-2)"><b>Consequence of reopening:</b> <code>s162-D1</code> is recorded as
+  RULED and ENACTED, and the wave is certified 114/114 in the wrap chain. Reopening means amending a ruling
+  and a closed wave, not just re-reading a row.</p>
+</div>
+
+<h2>Decision 2 — is body length a fair effort proxy? <span class="tag t-att">the real one</span></h2>
+<div class="card">
+  <p>The scorer (<code>knowledge/gen_dashboard.py</code>) weights effort at <b>0.15</b> and, where an item
+  has no <code>effort</code> S/M/L field, falls back to <code>1 &minus; len(body)/1200</code>. It says so in its
+  own comment: the fallback is a <b>PROXY</b>, and every item scored that way is flagged LOW-CONFIDENCE.
+  Truncation had been flattening that proxy. Now it bites at full strength.</p>
+  <div data-dc="DC2">
+    <label class="opt"><input type="radio" name="DC2" value="asis"><b>Keep it as-is.</b><span class="why">A long body genuinely does signal a bigger job. The proxy is doing its work now that it can see.</span></label>
+    <label class="opt"><input type="radio" name="DC2" value="floor"><b>Cap the penalty — put a floor back, deliberately this time.</b><span class="why">Keep the signal but stop it dominating. The old 400-cap floor (0.667) was accidental; a declared floor is a choice. <span class="rec">RECOMMENDED</span></span></label>
+    <label class="opt"><input type="radio" name="DC2" value="drop"><b>Drop effort from the score until real values exist.</b><span class="why">Redistribute the 0.15 weight. An item with no effort field simply is not scored on effort.</span></label>
+    <label class="opt"><input type="radio" name="DC2" value="mine"><b>I will write the effort values myself.</b><span class="why">The <code>effort</code> field is gated to you (schema #165). Fill it and the proxy never runs.</span></label>
+  </div>
+  <p style="font-size:13px;color:var(--ink-2)"><b>Consequence:</b> every option except the last changes
+  <code>gen_dashboard.py</code>'s scoring, which is regenerated on every build — so the ranking below changes
+  again the moment it lands. None of them touch <code>_state.json</code>.</p>
+</div>
+
+<h2>Decision 3 — the moved ranking</h2>
+<div class="card">
+  <p><b>25 of 33</b> ranked rows changed position. The <span class="tag t-att">blue</span> rows are the
+  <b>7 that sat on the 400-char cap</b> — the cause. The rest moved because those 7 moved past or under them.
+  Tick any row that looks wrong to you; the ticks come out in the export.</p>
+  <div class="scroll"><table id="tbl">
+    <thead><tr><th>Flag</th><th>Id</th><th>Item</th><th class="num">Rank<br>before</th><th class="num">Rank<br>after</th><th class="num">Move</th><th class="num">Score<br>b &rarr; a</th><th class="num">Body<br>b &rarr; a</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <h3>Your call on the ranking as a whole</h3>
+  <div data-dc="DC3">
+    <label class="opt"><input type="radio" name="DC3" value="accept"><b>Accept — this is the proposal, ship it.</b><span class="why">The new order reads right. It stays a PROPOSAL; you overrule per-item whenever you like.</span></label>
+    <label class="opt"><input type="radio" name="DC3" value="accept-flags"><b>Accept, except the rows I flagged.</b><span class="why">Those get a <code>priority_override</code> from you — the gated field, your values only. <span class="rec">RECOMMENDED</span></span></label>
+    <label class="opt"><input type="radio" name="DC3" value="reject"><b>Reject — re-rank after decision 2 lands.</b><span class="why">Do not look at this order until the effort question is settled.</span></label>
+  </div>
+</div>
+
+<div class="card" id="export">
+  <h2>Export</h2>
+  <p>Anything else you want on the record:</p>
+  <textarea id="note" placeholder="Free text — carried verbatim into the export."></textarea>
+  <p><button class="primary" onclick="mk()">Build export</button>
+     <button onclick="cp()">Copy to clipboard</button>
+     <span id="msg" style="font-size:13px;color:var(--ok);font-weight:600"></span></p>
+  <pre id="out">Make your selections, then press Build export. Paste the result into chat in one message.</pre>
+  <p style="font-size:13px;color:var(--ink-2)"><b>Provenance.</b> Before = <code>git show eec444b:knowledge/_state.json</code>
+  (#166 wrap, pre-#167). After = <code>knowledge/_state.json</code> at HEAD <code>0ce19ae</code> (#167).
+  Both ranked by <code>knowledge/gen_dashboard.py</code>'s own <code>priorities()</code>, session 168,
+  unmodified. This page wrote nothing into <code>knowledge/</code>.</p>
+</div>
+
+</div>
+
+<script>
+const D = {"rows": [{"id": "W-05", "title": "Instrument-fit remainder", "state": "open", "rb": 1, "ra": 1, "sb": 35, "sa": 35, "eb": 0.925, "ea": 0.925, "lb": 90, "la": 90, "cap": false, "moved": false}, {"id": "W-06", "title": "ds-016, UNRULED", "state": "open", "rb": 2, "ra": 2, "sb": 35, "sa": 35, "eb": 0.923, "ea": 0.923, "lb": 92, "la": 92, "cap": false, "moved": false}, {"id": "G1", "title": "Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,\u2026", "state": "open", "rb": 5, "ra": 3, "sb": 34, "sa": 34, "eb": 0.905, "ea": 0.905, "lb": 114, "la": 114, "cap": false, "moved": true}, {"id": "G15", "title": "DV-D13 donut centre figure + st.visible[id]=true release wiring\u2026", "state": "open", "rb": 6, "ra": 4, "sb": 34, "sa": 34, "eb": 0.911, "ea": 0.911, "lb": 107, "la": 107, "cap": false, "moved": true}, {"id": "G16", "title": "The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not\u2026", "state": "open", "rb": 7, "ra": 5, "sb": 34, "sa": 34, "eb": 0.937, "ea": 0.937, "lb": 76, "la": 76, "cap": false, "moved": true}, {"id": "G2", "title": "TAPE_TO_BILL = 1.57 at n=2 (_capture_gate.py:371; RATIO_FIRM_N = 4 per\u2026", "state": "open", "rb": 8, "ra": 6, "sb": 34, "sa": 34, "eb": 0.932, "ea": 0.932, "lb": 82, "la": 82, "cap": false, "moved": true}, {"id": "G4", "title": "GM \u00a7C measured 191 > 150 warn cap (_capture_gate.py:2864,\u2026", "state": "open", "rb": 9, "ra": 7, "sb": 34, "sa": 34, "eb": 0.938, "ea": 0.938, "lb": 75, "la": 75, "cap": false, "moved": true}, {"id": "G6", "title": "DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING = False", "state": "open", "rb": 10, "ra": 8, "sb": 34, "sa": 34, "eb": 0.943, "ea": 0.943, "lb": 68, "la": 68, "cap": false, "moved": true}, {"id": "W-10", "title": "\u2705 PER-GATE TEST PLAN", "state": "open", "rb": 4, "ra": 9, "sb": 35, "sa": 34, "eb": 0.667, "ea": 0.599, "lb": 400, "la": 481, "cap": true, "moved": true}, {"id": "G10", "title": "The \"70%/95%\" stray band (GM:36", "state": "open", "rb": 11, "ra": 10, "sb": 33, "sa": 33, "eb": 0.898, "ea": 0.898, "lb": 122, "la": 122, "cap": false, "moved": true}, {"id": "G11", "title": "DS-018 recessive value", "state": "open", "rb": 12, "ra": 11, "sb": 33, "sa": 33, "eb": 0.848, "ea": 0.848, "lb": 182, "la": 182, "cap": false, "moved": true}, {"id": "G12", "title": "Charter \u00a74b tone-of-voice temperature map, PROVISIONAL 2026-07-02\u2026", "state": "open", "rb": 13, "ra": 12, "sb": 33, "sa": 33, "eb": 0.884, "ea": 0.884, "lb": 139, "la": 139, "cap": false, "moved": true}, {"id": "G13b", "title": "menu-search combined glyph, PROVISIONAL 2026-07-16 (_ICON-GAPS.md; the\u2026", "state": "open", "rb": 14, "ra": 13, "sb": 33, "sa": 33, "eb": 0.895, "ea": 0.895, "lb": 126, "la": 126, "cap": false, "moved": true}, {"id": "G14", "title": "Icon-button dark bindings", "state": "open", "rb": 15, "ra": 14, "sb": 33, "sa": 33, "eb": 0.897, "ea": 0.897, "lb": 123, "la": 123, "cap": false, "moved": true}, {"id": "G17", "title": "RAG status manifestation\u2026", "state": "open", "rb": 16, "ra": 15, "sb": 33, "sa": 33, "eb": 0.89, "ea": 0.89, "lb": 132, "la": 132, "cap": false, "moved": true}, {"id": "G5", "title": "Four advisory size caps as a set (_capture_gate.py:4843\u20134858", "state": "blocked", "rb": 17, "ra": 16, "sb": 33, "sa": 33, "eb": 0.839, "ea": 0.839, "lb": 193, "la": 193, "cap": false, "moved": true}, {"id": "G9", "title": "ds-023 re-measurement programme", "state": "open", "rb": 18, "ra": 17, "sb": 33, "sa": 33, "eb": 0.86, "ea": 0.86, "lb": 168, "la": 168, "cap": false, "moved": true}, {"id": "W-0b", "title": "\u2605\u2605 ENCODE BEFORE THE WAVE", "state": "open", "rb": 3, "ra": 18, "sb": 35, "sa": 33, "eb": 0.667, "ea": 0.583, "lb": 400, "la": 500, "cap": true, "moved": true}, {"id": "W-01", "title": "ds-018 C2 follow-through", "state": "open", "rb": 19, "ra": 19, "sb": 32, "sa": 32, "eb": 0.927, "ea": 0.927, "lb": 88, "la": 88, "cap": false, "moved": false}, {"id": "W-02", "title": "dv-legend/dv-behaviour CEILING", "state": "open", "rb": 20, "ra": 20, "sb": 32, "sa": 32, "eb": 0.923, "ea": 0.923, "lb": 92, "la": 92, "cap": false, "moved": false}, {"id": "W-09", "title": "DELEGATION TOPOLOGY, UNSCOPED", "state": "open", "rb": 22, "ra": 21, "sb": 30, "sa": 30, "eb": 0.807, "ea": 0.807, "lb": 231, "la": 231, "cap": false, "moved": true}, {"id": "W-11", "title": "THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK", "state": "open", "rb": 23, "ra": 22, "sb": 28, "sa": 28, "eb": 0.668, "ea": 0.668, "lb": 398, "la": 398, "cap": false, "moved": true}, {"id": "W-03", "title": "ds-012(b) gutter-relative plot area", "state": "open", "rb": 24, "ra": 23, "sb": 26, "sa": 26, "eb": 0.926, "ea": 0.926, "lb": 89, "la": 89, "cap": false, "moved": true}, {"id": "W-04", "title": "DV-D16 floating growth", "state": "open", "rb": 25, "ra": 24, "sb": 26, "sa": 26, "eb": 0.926, "ea": 0.926, "lb": 89, "la": 89, "cap": false, "moved": true}, {"id": "W-07", "title": "ds-017, UNRULED", "state": "open", "rb": 26, "ra": 25, "sb": 26, "sa": 26, "eb": 0.922, "ea": 0.922, "lb": 93, "la": 93, "cap": false, "moved": true}, {"id": "W-08", "title": "STILL OWED, unchanged, none superseded", "state": "open", "rb": 21, "ra": 26, "sb": 31, "sa": 24, "eb": 0.667, "ea": 0.203, "lb": 400, "la": 956, "cap": true, "moved": true}, {"id": "W-12", "title": "THE #57 1b DOSSIER", "state": "open", "rb": 27, "ra": 27, "sb": 24, "sa": 24, "eb": 0.801, "ea": 0.801, "lb": 239, "la": 239, "cap": false, "moved": false}, {"id": "W-13", "title": "/tmp RUNBOOK EXPOSURE, UNFIXED", "state": "open", "rb": 28, "ra": 28, "sb": 22, "sa": 22, "eb": 0.693, "ea": 0.693, "lb": 369, "la": 369, "cap": false, "moved": false}, {"id": "W-0c", "title": "NEXT BUILD CANDIDATES", "state": "open", "rb": 29, "ra": 29, "sb": 21, "sa": 19, "eb": 0.667, "ea": 0.481, "lb": 400, "la": 623, "cap": true, "moved": false}, {"id": "W-15", "title": "LEDGER \u00a7 \u2605 #59", "state": "open", "rb": 33, "ra": 30, "sb": 19, "sa": 19, "eb": 0.722, "ea": 0.722, "lb": 334, "la": 334, "cap": false, "moved": true}, {"id": "W-0d", "title": "\u2705 THE #67 ENACT WAVE", "state": "open", "rb": 30, "ra": 31, "sb": 21, "sa": 18, "eb": 0.667, "ea": 0.421, "lb": 400, "la": 695, "cap": true, "moved": true}, {"id": "W-16", "title": "UNHOMED PAIR, copied up at the #78 2c EXIT CHECK", "state": "open", "rb": 32, "ra": 32, "sb": 21, "sa": 18, "eb": 0.667, "ea": 0.435, "lb": 400, "la": 678, "cap": true, "moved": false}, {"id": "W-14", "title": "\u2b1b DAVE'S FOUNDING PRINCIPLE", "state": "open", "rb": 31, "ra": 33, "sb": 21, "sa": 14, "eb": 0.667, "ea": 0.197, "lb": 400, "la": 964, "cap": true, "moved": true}], "n_moved": 25, "n_cap": 7, "n_ranked": 33};
+function tm(){const b=document.body;b.dataset.mode = b.dataset.mode==='dark'?'light':'dark';}
+const tb=document.querySelector('#tbl tbody');
+D.rows.forEach(r=>{
+  const d=r.rb-r.ra;
+  const dtxt = d===0 ? '&mdash;' : (d>0?'<span class="delta-up">&uarr; '+d+'</span>':'<span class="delta-dn">&darr; '+(-d)+'</span>');
+  const tr=document.createElement('tr');
+  if(r.cap) tr.className='cap';
+  tr.innerHTML='<td><input type="checkbox" class="flag" data-id="'+r.id+'" aria-label="Flag '+r.id+'"></td>'
+    +'<td><code>'+r.id+'</code></td><td>'+r.title.replace(/</g,'&lt;')+(r.cap?' <span class="tag t-att" style="font-size:10px">on cap</span>':'')+'</td>'
+    +'<td class="num">'+r.rb+'</td><td class="num">'+r.ra+'</td><td class="num">'+dtxt+'</td>'
+    +'<td class="num">'+r.sb+' &rarr; '+r.sa+'</td><td class="num">'+r.lb+' &rarr; '+r.la+'</td>';
+  tb.appendChild(tr);
+});
+function upd(){
+  const n=document.querySelectorAll('.flag:checked').length;
+  const dc=['DC1','DC2','DC3'].filter(k=>document.querySelector('input[name="'+k+'"]:checked')).length;
+  document.getElementById('cnt').textContent = dc+'/3 decisions · '+n+' rows flagged';
+}
+document.addEventListener('change',upd); upd();
+function mk(){
+  const g=k=>{const e=document.querySelector('input[name="'+k+'"]:checked');return e?e.value:'(not answered)';};
+  const lbl=k=>{const e=document.querySelector('input[name="'+k+'"]:checked');
+    return e? e.closest('.opt').querySelector('b').textContent : '(not answered)';};
+  const flags=[...document.querySelectorAll('.flag:checked')].map(c=>c.dataset.id);
+  const L=[];
+  L.push('#168 REVIEW EXPORT — Dave\'s selections. This page collected them; it ruled nothing.');
+  L.push('generated: '+new Date().toISOString());
+  L.push('');
+  L.push('DC1 · tooltip.tip (already ruled s162-D1, #162)');
+  L.push('  -> '+g('DC1')+' — '+lbl('DC1'));
+  L.push('');
+  L.push('DC2 · effort proxy = 1 - len(body)/1200 (gen_dashboard.py, weight 0.15)');
+  L.push('  -> '+g('DC2')+' — '+lbl('DC2'));
+  L.push('');
+  L.push('DC3 · the moved ranking (25 of 33 rows moved; 7 on the old 400-char cap)');
+  L.push('  -> '+g('DC3')+' — '+lbl('DC3'));
+  L.push('  flagged rows ('+flags.length+'): '+(flags.length?flags.join(', '):'none'));
+  flags.forEach(id=>{const r=D.rows.find(x=>x.id===id);
+    L.push('     '+id+'  rank '+r.rb+' -> '+r.ra+'   score '+r.sb+' -> '+r.sa+'   body '+r.lb+' -> '+r.la+(r.cap?'   [ON CAP]':''));});
+  L.push('');
+  const nt=document.getElementById('note').value.trim();
+  L.push('NOTE: '+(nt||'(none)'));
+  L.push('');
+  L.push('provenance: before = git show eec444b:knowledge/_state.json | after = HEAD 0ce19ae | ranked by gen_dashboard.priorities(), session 168');
+  document.getElementById('out').textContent=L.join('\n');
+}
+function cp(){const t=document.getElementById('out').textContent;
+  navigator.clipboard.writeText(t).then(()=>{const m=document.getElementById('msg');
+    m.textContent='Copied.';setTimeout(()=>m.textContent='',2500);});}
+</script>
+</body></html>

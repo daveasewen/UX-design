@@ -312,6 +312,40 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      **A missing stratum is logged as a HOLE (P1(b), same ruling):** a session that writes no stratum
      gets a dated gap line in `_GAUGE-LOG.md`, the way #19's absence was flagged — the dataset's gaps
      stay visible to the next reader; #14's unflagged absence is what made them silent.
+     ### ★ THE OPTIONAL `subs` LINE IN A GAUGE-LOG BLOCK (Dave #168, option 2 — "small gate")
+
+     A block MAY carry ONE extra line recording what the session spent on **delegated subs**:
+
+     ```
+     subs <N> tokens (n=<count>)          e.g.   subs 128,400 tokens (n=3)
+     ```
+
+     - **`<N>` = total delegated sub tokens for the session**; `<count>` = how many subs. Both are
+       **positive integers**; comma-grouping is allowed in `<N>`. Bold/quote markdown around the line
+       is fine (`> **subs 128,400 tokens (n=3)**`).
+     - ⚠️ **UNIT: REAL Claude tokens, and they are QUOTA — not window FILL.** A sub is nearly free in
+       this window's budget and 5–10× in the weekly quota [[budget-vs-quota-vocabulary]], so this
+       figure is **never added to the block's fill numbers and never graded against the stop line**.
+       It answers a different question: what did delegating actually cost.
+     - ⛔ **ABSENT IS LEGAL, AND ABSENCE IS NEVER DEFAULTED.** A wrap with no sub figures — no subs,
+       or subs whose cost was not measured — **writes nothing**. There is no zero-line and no "n/a"
+       line; an UNKNOWN is never turned into a number [[feedback-measuring-tool-must-not-guess]].
+       ⚠️ Do NOT delete a line you have figures for, and do NOT invent figures to satisfy the gate:
+       a missing line is honest, a wrong number is not.
+     - ⛔ **The word `job` MUST NOT appear anywhere on this line.** This is containment, not style:
+       `gen_dashboard.py`'s `_JOB_RE` (`\bjob <number>\b`) sweeps this whole file and every match
+       becomes a datapoint in the corpus the **S/M/L effort-rung band edges** are derived from. A
+       subs line spelled with `job` would move a band edge **silently** — no error, no crash, no
+       reader [[instrument-without-a-consumer]].
+
+     **And the guard on it (`_capture_gate.py::gauge_log_subs_line`, BLOCKING at birth):** when the
+     line is ABSENT the check is a silent pass that says so; when it is PRESENT it must match the form
+     exactly, or the wrap fails with a NAMED refusal that quotes the expected form back. `job` on the
+     line is its own named refusal. ⚠️ The tier is a DECLARED choice (`SUBS_LINE_BLOCKING`), not a
+     ruling — Dave ruled the line and the gate; blocking is chosen because the damage it prevents is
+     invisible. There is **no writer** for these blocks: the conductor hand-writes them, and every
+     production path only READS this file.
+
    - **commit-states → `_GM-ARCHIVE.md`**, under the same `<date> <session#>` batch key as 2c.
 
    ### ★★ ds-022 (ENACTED #34) — THIS ROLL IS NO LONGER DONE BY HAND

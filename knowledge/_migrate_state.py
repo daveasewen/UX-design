@@ -105,11 +105,24 @@ def governing_items():
     return out
 
 
+def _gm_home(text, num, ln):
+    """A rot-proof `home` for a DOFIRST item (#168). Anchor if unique, line form if not — and
+    the fallback SAYS SO, because a silently-degraded address is the original defect."""
+    anchor = f"> **{num}."
+    n = text.count(anchor)
+    if n == 1:
+        return f"GOOD-MORNING.md#{anchor}"
+    print(f"   ⚠ W-{num}: anchor {anchor!r} occurs {n}× — NOT an address; falling back to "
+          f"the rot-prone line form GOOD-MORNING.md:{ln}")
+    return f"GOOD-MORNING.md:{ln}"
+
+
 def worklist_items():
     import _capture_gate as cg
     out, inferred, closure_candidates = [], [], []
     with open(GM, encoding="utf-8") as f:
-        lines = f.read().splitlines()
+        text = f.read()
+    lines = text.splitlines()
     for ln, line in enumerate(lines, 1):
         m = cg.DOFIRST_ITEM_RE.match(line)
         if not m:
@@ -141,7 +154,13 @@ def worklist_items():
             "condition": _state.UNCONDITIONED,
             "closes_when": None,
             "links": [],
-            "home": f"GOOD-MORNING.md:{ln}",
+            # ⛔ #168 — NOT `GOOD-MORNING.md:{ln}`. This file ROLLS: every session prepends a
+            # banner, so a line number recorded here is wrong by the next session. All 19 homes
+            # this loop wrote at #88 were off by exactly 16 lines when measured at #168, each
+            # resolving to a DIFFERENT item's prose. A CONTENT ANCHOR moves with the text it
+            # names. Uniqueness is PROVEN here, not assumed — a non-unique anchor is not an
+            # address, so it falls back to the line form LOUDLY rather than silently.
+            "home": _gm_home(text, num, ln),
             "provenance": "inherited DOFIRST prose, migrated #88 — no close condition existed",
         })
     return out, inferred, closure_candidates

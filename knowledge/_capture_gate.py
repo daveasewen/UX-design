@@ -2475,6 +2475,107 @@ def gauge_log_continuity(repo):
 
 
 # ─────────────────────────────────────────────────────────────────────────────────────────────
+# ★ THE OPTIONAL `subs` LINE — a SMALL GATE on an OPTIONAL line (Dave #168, option 2).
+#
+# The gauge-log block is hand-written by the conductor at wrap: there is NO writer, every
+# production path only READS this file. Dave ruled ONE optional line into the block convention:
+#
+#     subs <N> tokens (n=<count>)
+#
+# — the total delegated SUB tokens for the session and the number of subs. Unit: REAL CLAUDE
+# TOKENS, and it is a QUOTA figure, not window FILL [[budget-vs-quota-vocabulary]] — subs cost
+# almost nothing in this window and 5–10× in the weekly quota, so the two must never be added
+# together or graded against the stop line.
+#
+# ⛔ ABSENT IS LEGAL AND IS NEVER DEFAULTED. A wrap that measured no sub figures writes NO line;
+# an UNKNOWN is never turned into a zero [[feedback-measuring-tool-must-not-guess]]. This check
+# therefore says NOTHING when the line is absent — it only grades a line that IS there.
+#
+# ⚠ WHY THE WORD `job` IS FORBIDDEN ON THIS LINE, and why that is the POINT of the gate rather
+# than a style rule: `gen_dashboard.py:332` sweeps this whole file with
+# `_JOB_RE = re.compile(r"\bjob ([0-9][0-9,]{3,})\b")` and every match becomes a datapoint in the
+# corpus the S/M/L effort-rung EDGES are derived from. A subs line spelled `subs job 40,000 …`
+# would silently enter that corpus and move the band edges — a contamination with no error, no
+# crash and no reader [[instrument-without-a-consumer]]. The containment is cheap here and
+# uncatchable downstream, so it lives here.
+SUBS_LINE_BLOCKING = True   # ⚠ TIER DECLARED, NOT RULED: blocking at birth because the damage it
+                            # prevents is SILENT (a moved band edge nobody can see). Dave ruled
+                            # the LINE and the GATE, not the tier; downgrading is this constant.
+
+# Candidate detection is deliberately NARROW: a line whose lead token — after markdown quote and
+# bold noise — is the word `subs`. Prose elsewhere in the log that merely mentions subs is out of
+# scope, and saying so is cheaper than a parser that guesses [[gate-glob-scope-rule]].
+SUBS_CANDIDATE_RE = re.compile(r"^\s*>?\s*\**\s*subs\b", re.I)
+# The FORM, exact. Comma-grouping allowed in N; both numbers must be positive integers.
+SUBS_FORM_RE = re.compile(
+    r"^\s*>?\s*\**\s*subs\**\s+(\d{1,3}(?:,\d{3})+|\d+)\s+tokens\s+\(n=(\d+)\)\**\s*$", re.I)
+SUBS_JOB_WORD_RE = re.compile(r"\bjob\b", re.I)
+_SUBS_EXPECTED = "subs <N> tokens (n=<count>)   e.g.  subs 128,400 tokens (n=3)"
+
+
+def gauge_log_subs_line(repo):
+    """Grade the OPTIONAL `subs <N> tokens (n=<count>)` line in notes/_GAUGE-LOG.md.
+
+    Returns (fails, notes). ABSENT ⇒ silent pass (nothing is added to either list beyond the
+    positive note that the check ran) — absence is LEGAL. PRESENT ⇒ the form is exact, or a
+    LOUD NAMED refusal quoting the expected form.
+
+    ⚠ Fails LOUD and NAMED if the file cannot be read — a crash is not a fail
+    [[a-crash-is-not-a-fail]] and neither is an unreadable file passing quietly."""
+    fails, notes = [], []
+    log = os.path.join(repo, "notes", "_GAUGE-LOG.md")
+    if not os.path.exists(log):
+        notes.append("subs-line: no notes/_GAUGE-LOG.md — UNMEASURED, not assumed clean.")
+        return fails, notes
+    try:
+        with open(log, encoding="utf-8") as f:
+            lines = f.read().splitlines()
+    except OSError as e:
+        fails.append(f"subs-line: notes/_GAUGE-LOG.md is UNREADABLE ({e}) — the optional "
+                     f"`subs` line cannot be graded, and an unreadable file is not a clean one.")
+        return fails, notes
+
+    cands = [(i + 1, ln) for i, ln in enumerate(lines) if SUBS_CANDIDATE_RE.match(ln)]
+    if not cands:
+        notes.append("subs-line: no `subs …` line in notes/_GAUGE-LOG.md — LEGAL and NOT "
+                     "defaulted. The line is optional; a wrap with no sub figures writes none.")
+        return fails, notes
+
+    for lineno, ln in cands:
+        if SUBS_JOB_WORD_RE.search(ln):
+            fails.append(
+                f"subs-line CONTAMINATION at notes/_GAUGE-LOG.md:{lineno}: the word `job` "
+                f"appears on a `subs` line — {ln.strip()!r}. ⛔ FORBIDDEN: gen_dashboard.py's "
+                f"`_JOB_RE` (\\bjob <number>\\b) sweeps this file and every match becomes a "
+                f"datapoint in the corpus the S/M/L effort-rung EDGES are derived from, so this "
+                f"line would silently MOVE a band edge with no error and no reader. "
+                f"Expected form, exactly: `{_SUBS_EXPECTED}`.")
+            continue
+        m = SUBS_FORM_RE.match(ln)
+        if not m:
+            fails.append(
+                f"subs-line MALFORMED at notes/_GAUGE-LOG.md:{lineno}: {ln.strip()!r} is not the "
+                f"ruled form. Expected, exactly: `{_SUBS_EXPECTED}` — N a positive integer "
+                f"(comma-grouping allowed), `tokens` spelled out, and the sub COUNT as `(n=<int>)`. "
+                f"Unit: REAL Claude tokens of QUOTA, never window fill. ⛔ Do NOT 'fix' this by "
+                f"deleting the line if you HAVE the figures, and do NOT invent figures to satisfy "
+                f"it if you do not — ABSENT is legal, a wrong number is not.")
+            continue
+        n_tok = int(m.group(1).replace(",", ""))
+        n_subs = int(m.group(2))
+        if n_tok <= 0 or n_subs <= 0:
+            fails.append(
+                f"subs-line at notes/_GAUGE-LOG.md:{lineno}: {ln.strip()!r} carries a "
+                f"non-positive figure (tokens={n_tok}, n={n_subs}). A wrap that delegated nothing "
+                f"OMITS the line; a zero is a claim, not an absence "
+                f"[[feedback-measuring-tool-must-not-guess]]. Expected: `{_SUBS_EXPECTED}`.")
+            continue
+        notes.append(f"subs-line: notes/_GAUGE-LOG.md:{lineno} parses — {n_tok:,} sub tokens "
+                     f"(QUOTA, real) across n={n_subs}. Form OK, `job` absent.")
+    return fails, notes
+
+
+# ─────────────────────────────────────────────────────────────────────────────────────────────
 # ds-022 (d) — PRESENT BUT UNKEYED, the FOURTH STATE. Gated shut by Dave's ruling at #54.
 #
 # THE STATE, in the words of the record that raised it (`notes/_GAUGE-LOG.md` § META #41
@@ -3683,6 +3784,10 @@ def wrap_checks(repo, today, lane=False):
         fails += f_                              # BLOCKING: three wraps in a row skipped the
         warns += w_                              # step, and #29's overrun cause is gone for good.
         notes += n_
+        f_, n_ = gauge_log_subs_line(repo)       # ★ #168 — the OPTIONAL `subs N tokens (n=N)`
+        (fails if SUBS_LINE_BLOCKING else warns).extend(f_)   # line. ABSENT is legal and silent;
+        notes += n_                              # PRESENT must parse, and must not carry `job`
+                                                 # (gen_dashboard's _JOB_RE would eat it).
         f_, n_ = stop_line_consistency(repo)     # ds-023 #54 — the stop line is `60 − wrap`, and
         fails += f_                              # the runbook contradicted itself for 11 sessions.
         notes += n_
@@ -4722,6 +4827,86 @@ def selftest_gauge_continuity():
             failures.append("ds-022: an unreadable session number did not announce itself as "
                             "UNARMED — an unmeasurable check must say so, never pass quietly "
                             "(the M10 refusal pattern)")
+    return failures
+
+
+def selftest_subs_line():
+    """★ #168 bites for the OPTIONAL `subs` line. The POSITIVE cases lead — including the
+    ABSENT case, which is the one a revert would silently break: a check that fails an absent
+    optional line is worse than no check, because it would force wraps to INVENT figures."""
+    failures = []
+
+    def _log(td, body):
+        os.makedirs(os.path.join(td, "notes"), exist_ok=True)
+        with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+            f.write(body)
+        return td
+
+    _HEAD = "# log\n\n#### 2026-08-13 #168\n> **post-mortem #168:** body.\n"
+
+    # ---- 1. ABSENT ⇒ PASS, and it must SAY it passed (a silent pass is indistinguishable
+    # from a dead check).
+    with tempfile.TemporaryDirectory() as td:
+        f_, n_ = gauge_log_subs_line(_log(td, _HEAD))
+        if f_:
+            failures.append(f"subs-line: an ABSENT optional line FAILED ({f_}) — absence is "
+                            f"legal by ruling and must never be defaulted into a figure")
+        if not any("LEGAL and NOT" in x for x in n_):
+            failures.append("subs-line: the absent case said nothing — a check that is silent "
+                            "when it succeeds cannot be told from one that never ran")
+
+    # ---- 2. VALID lines ⇒ PASS. Both grouped and ungrouped N, bare and quoted/bolded.
+    for good in ("subs 128,400 tokens (n=3)\n",
+                 "subs 940 tokens (n=1)\n",
+                 "> **subs 128,400 tokens (n=3)**\n"):
+        with tempfile.TemporaryDirectory() as td:
+            f_, n_ = gauge_log_subs_line(_log(td, _HEAD + good))
+            if f_:
+                failures.append(f"subs-line: the VALID line {good.strip()!r} failed ({f_}) — a "
+                                f"gate that rejects the ruled form teaches wraps to omit it")
+            if not any("parses" in x for x in n_):
+                failures.append(f"subs-line: {good.strip()!r} parsed but published no note")
+
+    # ---- 3. MALFORMED ⇒ NAMED FAIL, one class per bite [[mutation-tests-the-clause-not-the-feature]]
+    bad = [
+        ("bad number (not an integer)", "subs 12.4K tokens (n=3)\n", "MALFORMED"),
+        ("no number at all", "subs tokens (n=3)\n", "MALFORMED"),
+        ("missing n= count", "subs 128,400 tokens\n", "MALFORMED"),
+        ("n= present but empty", "subs 128,400 tokens (n=)\n", "MALFORMED"),
+        ("count not a number", "subs 128,400 tokens (n=three)\n", "MALFORMED"),
+        ("unit word dropped", "subs 128,400 (n=3)\n", "MALFORMED"),
+        ("zero tokens — a claim, not an absence", "subs 0 tokens (n=3)\n", "non-positive"),
+        ("zero subs — a claim, not an absence", "subs 128,400 tokens (n=0)\n", "non-positive"),
+        ("⛔ the word `job` — _JOB_RE contamination",
+         "subs job 128,400 tokens (n=3)\n", "CONTAMINATION"),
+        ("⛔ `job` in a trailing gloss is still swept",
+         "subs 128,400 tokens (n=3) — excludes job window\n", "CONTAMINATION"),
+    ]
+    for name, line, want in bad:
+        with tempfile.TemporaryDirectory() as td:
+            f_, _n = gauge_log_subs_line(_log(td, _HEAD + line))
+            if not f_:
+                failures.append(f"subs-line [{name}]: expected FAIL, stayed green — "
+                                f"{line.strip()!r} would be written and believed")
+            elif not any(want in x for x in f_):
+                failures.append(f"subs-line [{name}]: failed, but not with the {want} refusal — "
+                                f"got {f_}")
+            elif not any(_SUBS_EXPECTED in x for x in f_):
+                failures.append(f"subs-line [{name}]: the refusal does not QUOTE the expected "
+                                f"form, so it names a defect without naming the repair")
+
+    # ---- 4. THE CONTAMINATION IS PROVED AGAINST THE REAL DOWNSTREAM REGEX, not a paraphrase of
+    # it. If gen_dashboard's `_JOB_RE` is ever widened/narrowed, this bite is what notices that
+    # this gate's scope no longer matches the thing it exists to protect.
+    _job_re = re.compile(r"\bjob ([0-9][0-9,]{3,})\b")
+    if not _job_re.search("subs job 128,400 tokens (n=3)"):
+        failures.append("subs-line: the `job` bite above no longer models gen_dashboard's "
+                        "_JOB_RE — re-read gen_dashboard.py:332 before trusting this gate's "
+                        "containment claim [[attribute-the-diff]]")
+    if _job_re.search("subs 128,400 tokens (n=3)"):
+        failures.append("subs-line: a WELL-FORMED subs line matches gen_dashboard's _JOB_RE — "
+                        "the ruled form itself contaminates the effort corpus, which is a "
+                        "defect in the FORM, not in this gate. Escalate; do not patch here.")
     return failures
 
 
@@ -6262,6 +6447,7 @@ def _selftest_body():
                 + selftest_retired_unit_prose()           # ds-021 (C), the `.md` arm
                 + selftest_bare_token()
                 + selftest_gauge_continuity() + selftest_unkeyed()
+                + selftest_subs_line()                    # ★ #168 — the optional `subs` line
                 + selftest_growth() + selftest_usage()
                 + selftest_lanes() + selftest_receipts() + selftest_index_freshness()
                 + selftest_stale_top()                    # ★ s161-D4, RULED #161

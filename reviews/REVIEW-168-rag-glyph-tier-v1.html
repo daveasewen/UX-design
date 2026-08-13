@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>REVIEW #168 — the RAG graphic-strength tier (option 82-B)</title>
+<!--
+  REVIEW PAGE, #168, v1. THIS PAGE RULES NOTHING — it collects Dave's ruling.
+  The chart markup is the cb3 <svg> lifted VERBATIM from knowledge/snippets/Chart-bar.reference.html.
+  Every hex on this page is either the s122-D2 re-based value in the store today, or a RETIRED value
+  quoted from a token $note / the RAG ledger. NOTHING is invented, interpolated or derived.
+  Ratios are computed at build time (WCAG relative luminance) against #FFFFFF / #1A1A1A.
+-->
+<style>
+:root{
+  --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+  --pg:#F4F6F8; --card:#FFFFFF; --tx:#1A1A1A; --tx2:#4A4A4A; --rule:#D7D8D6;
+  --ok:#137F3C; --ok-bg:#E8F4EC; --att:#1F5F8B; --att-bg:#E6EEF5;
+  --neutral:#5A6570; --neutral-bg:#EDEFF1;
+}
+[data-ui="dark"]{ --pg:#121417; --card:#1C2024; --tx:#F2F2F2; --tx2:#B8BEC4; --rule:#3A4046;
+  --ok:#66CC8D; --ok-bg:#16301F; --att:#7FB6DD; --att-bg:#15242F; --neutral:#9AA4AE; --neutral-bg:#22272C; }
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);background:var(--pg);color:var(--tx);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 20px 90px}
+h1{font-size:26px;line-height:1.25;margin:0 0 4px}
+h2{font-size:20px;margin:26px 0 8px}
+h3{font-size:16px;margin:18px 0 6px}
+h4{font-size:15px;margin:0 0 8px}
+p{margin:8px 0;max-width:80ch}
+code{font-family:var(--mono);font-size:.88em;background:var(--neutral-bg);padding:1px 5px;border-radius:3px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;margin:16px 0}
+.bar{position:sticky;top:0;z-index:40;background:var(--card);border-bottom:1px solid var(--rule);
+  padding:10px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button{font-family:inherit;font-size:14px;padding:7px 12px;border-radius:6px;border:1px solid var(--rule);
+  background:var(--card);color:var(--tx);cursor:pointer}
+button.primary{background:var(--att);color:#fff;border-color:var(--att);font-weight:600}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;margin-right:6px}
+.t-att{background:var(--att-bg);color:var(--att)} .t-ok{background:var(--ok-bg);color:var(--ok)}
+.t-neu{background:var(--neutral-bg);color:var(--neutral)}
+table{border-collapse:collapse;width:100%;font-size:13px;margin-top:10px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--tx2)}
+.mut{color:var(--tx2);font-size:12px}
+.prov{max-width:36ch;font-size:11.5px;color:var(--tx2)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid #00000022;
+  vertical-align:-2px;margin-right:6px}
+.pass{color:var(--ok)} .fail{color:var(--att);text-decoration:underline}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:900px){.pair{grid-template-columns:1fr}}
+.chartcard{border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.chartcard .cl{font-size:13px;font-weight:700;padding:9px 12px 2px;background:var(--card)}
+.chartcard .cs{font-size:11.5px;color:var(--tx2);padding:0 12px 9px;background:var(--card)}
+.cwrap{padding:14px 12px;background:var(--page);color:var(--ink)}
+.cwrap svg{width:100%;height:auto;display:block}
+.cwrap .dv-grid{stroke-width:1}
+.cwrap text{font-family:var(--font);font-size:12px}
+.ctl{border:1px solid var(--rule);border-radius:8px;padding:12px 14px;margin:10px 0;background:var(--card)}
+.opt{display:block;border:1px solid var(--rule);border-radius:8px;padding:9px 12px;margin:6px 0;cursor:pointer;font-size:13.5px}
+.opt:has(input:checked){border-color:var(--att);border-width:2px;padding:8px 11px;background:var(--att-bg)}
+textarea{width:100%;min-height:120px;font-family:var(--mono);font-size:12px;padding:10px;border:1px solid var(--rule);
+  border-radius:6px;background:var(--pg);color:var(--tx)}
+</style></head>
+<body>
+<div class="bar">
+  <b>REVIEW #168 — RAG graphic-strength tier</b>
+  <button onclick="document.documentElement.dataset.ui=document.documentElement.dataset.ui==='dark'?'light':'dark'">Toggle page chrome</button>
+  <button class="primary" onclick="exportRulings()">Export my rulings</button>
+  <span class="tag t-att">nothing here is ruled</span>
+</div>
+<div class="wrap">
+<h1>Two strengths per hue, again — the &ldquo;two ambers&rdquo; shape restored for all four</h1>
+<p class="mut">Built #168 · option <b>82-B</b> of <code>_PROPOSAL-148-reds-2026-08-13-v1.md</code> · enacted <b>pending your eye</b> · no ruling minted, <code>_rulings.json</code> untouched.</p>
+
+<div class="card">
+<h2 style="margin-top:0">Why you are being asked</h2>
+<p>At <b>#122</b> you re-based the MONO RAG map <b>by eye</b> (s122-D2) off the mark-map controller. That ruling was about <b>marks</b>. The chart series in <code>Chart-bar</code> cb3 inherited the new, lighter values <b>silently</b> — and three of them now breach <code>dv-016</code> (&ge;3:1 rendered contrast for series fills, blocking) on white: watch <b>2.18</b>, healthy <b>1.98</b>, info <b>2.47</b>.</p>
+<p>Option 82-B restores a second strength per hue — exactly the shape <b>R-D3</b> already ruled for amber (<code>amber/background</code> vs <code>amber/graphic</code>), generalised to all four. Marks keep your #122 values; <b>charts</b> get the retired graphic-strength values back.</p>
+<p><span class="tag t-neu">the ask</span> These are values <b>you retired by eye</b>. A ratio cannot un-retire them. Panel A vs panel B below, light and dark — <b>your eye rules.</b></p>
+</div>
+
+<h2>1 · cb3 side by side — light mode (surface #FFFFFF)</h2>
+<div class="pair">
+<div class="chartcard light"><div class="cl">A — TODAY (mark values, s122-D2)</div><div class="cs">rag/*-glyph — what cb3 renders at HEAD; 3 hues breach dv-016 in light</div>
+<div class="cwrap" style="--page:#FFFFFF;--ink:#1A1A1A;--data-axis:#626262;--data-grid:#E1E1E1;--baseline:#1A1A1A;--status-breach:#F6604C;--status-watch:#E0A61F;--status-healthy:#66CC8D;--status-info:#78A7E8;"><svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Payment exceptions by status. Overdue 14, Needs attention 9, On track 32, Information 6.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">10</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">30</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Overdue</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Needs attention</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">On track</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.8750">Information</text>
+      </svg></div></div>
+<div class="chartcard light"><div class="cl">B — PROPOSED (graphic values, restored)</div><div class="cs">rag/*-graphic — the retired graphic-strength values, quoted from provenance</div>
+<div class="cwrap" style="--page:#FFFFFF;--ink:#1A1A1A;--data-axis:#626262;--data-grid:#E1E1E1;--baseline:#1A1A1A;--status-breach:#B92F1E;--status-watch:#C58900;--status-healthy:#2B7E4F;--status-info:#306EC6;"><svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Payment exceptions by status. Overdue 14, Needs attention 9, On track 32, Information 6.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">10</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">30</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Overdue</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Needs attention</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">On track</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.8750">Information</text>
+      </svg></div></div>
+</div>
+<h2>2 · cb3 side by side — dark mode (surface #1A1A1A)</h2>
+<div class="pair">
+<div class="chartcard dark"><div class="cl">A — TODAY (mark values, s122-D2)</div><div class="cs">rag/*-glyph — what cb3 renders at HEAD; 3 hues breach dv-016 in light</div>
+<div class="cwrap" style="--page:#1A1A1A;--ink:#FFFFFF;--data-axis:#9D9D9D;--data-grid:#484848;--baseline:#FFFFFF;--status-breach:#F6604C;--status-watch:#E0A61F;--status-healthy:#66CC8D;--status-info:#78A7E8;"><svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Payment exceptions by status. Overdue 14, Needs attention 9, On track 32, Information 6.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">10</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">30</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Overdue</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Needs attention</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">On track</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.8750">Information</text>
+      </svg></div></div>
+<div class="chartcard dark"><div class="cl">B — PROPOSED (graphic values, restored)</div><div class="cs">rag/*-graphic — the retired graphic-strength values, quoted from provenance</div>
+<div class="cwrap" style="--page:#1A1A1A;--ink:#FFFFFF;--data-axis:#9D9D9D;--data-grid:#484848;--baseline:#FFFFFF;--status-breach:#CC4333;--status-watch:#C58900;--status-healthy:#4A9568;--status-info:#2674DC;"><svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Payment exceptions by status. Overdue 14, Needs attention 9, On track 32, Information 6.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">10</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">30</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Overdue</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Needs attention</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">On track</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.8750">Information</text>
+      </svg></div></div>
+</div>
+
+<h2>3 · The four hues, mark value vs graphic value, measured</h2>
+<div class="card" style="overflow-x:auto">
+<table>
+<thead><tr><th>hue / consumer</th><th>MARK light (today)</th><th>MARK dark (today)</th><th>GRAPHIC light (proposed)</th><th>GRAPHIC dark (proposed)</th><th>provenance — quoted, not derived</th></tr></thead>
+<tbody>
+<tr>
+<td><b>error</b><br><span class="mut">Overdue / breach<br><code>--status-breach</code></span></td>
+<td><span class="sw" style="background:#F6604C"></span><code>#F6604C</code><br><span class="mut">on white <b class="pass">3.14:1</b></span></td>
+<td><span class="sw" style="background:#F6604C"></span><code>#F6604C</code><br><span class="mut">on #1A1A1A <b class="pass">5.55:1</b></span></td>
+<td><span class="sw" style="background:#B92F1E"></span><code>#B92F1E</code><br><span class="mut">on white <b class="pass">6.02:1</b></span></td>
+<td><span class="sw" style="background:#CC4333"></span><code>#CC4333</code><br><span class="mut">on #1A1A1A <b class="pass">3.66:1</b></span></td>
+<td class="prov">retired to the rag/error-glyph $note by s122-D2: &quot;Prior values retired to this note: light #B92F1E / dark #CC4333.&quot;</td></tr>
+<tr>
+<td><b>warning</b><br><span class="mut">Needs attention / watch<br><code>--status-watch</code></span></td>
+<td><span class="sw" style="background:#E0A61F"></span><code>#E0A61F</code><br><span class="mut">on white <b class="fail">2.18:1</b></span></td>
+<td><span class="sw" style="background:#E0A61F"></span><code>#E0A61F</code><br><span class="mut">on #1A1A1A <b class="pass">7.99:1</b></span></td>
+<td><span class="sw" style="background:#C58900"></span><code>#C58900</code><br><span class="mut">on white <b class="pass">3.02:1</b></span></td>
+<td><span class="sw" style="background:#C58900"></span><code>#C58900</code><br><span class="mut">on #1A1A1A <b class="pass">5.76:1</b></span></td>
+<td class="prov">R-D3 ruled `amber/graphic` = #C58900 (&quot;chart series, standalone marks — 3.02 on white · 6.25 on #111&quot;); retired to the rag/warning-glyph $note by s122-D2: &quot;light #C58900 / dark #C58900.&quot;</td></tr>
+<tr>
+<td><b>success</b><br><span class="mut">On track / healthy<br><code>--status-healthy</code></span></td>
+<td><span class="sw" style="background:#66CC8D"></span><code>#66CC8D</code><br><span class="mut">on white <b class="fail">1.98:1</b></span></td>
+<td><span class="sw" style="background:#66CC8D"></span><code>#66CC8D</code><br><span class="mut">on #1A1A1A <b class="pass">8.77:1</b></span></td>
+<td><span class="sw" style="background:#2B7E4F"></span><code>#2B7E4F</code><br><span class="mut">on white <b class="pass">5.00:1</b></span></td>
+<td><span class="sw" style="background:#4A9568"></span><code>#4A9568</code><br><span class="mut">on #1A1A1A <b class="pass">4.80:1</b></span></td>
+<td class="prov">R-D18 ruled the graphic-strength green: &quot;Light #2B7E4F (5.0:1 on white), dark #4A9568 (4.8:1 on #1A1A1A)&quot;; retired to the rag/success-glyph $note by s122-D2: &quot;light #2B7E4F / dark #4A9568.&quot;</td></tr>
+<tr>
+<td><b>information</b><br><span class="mut">Information / info<br><code>--status-info</code></span></td>
+<td><span class="sw" style="background:#78A7E8"></span><code>#78A7E8</code><br><span class="mut">on white <b class="fail">2.47:1</b></span></td>
+<td><span class="sw" style="background:#78A7E8"></span><code>#78A7E8</code><br><span class="mut">on #1A1A1A <b class="pass">7.04:1</b></span></td>
+<td><span class="sw" style="background:#306EC6"></span><code>#306EC6</code><br><span class="mut">on white <b class="pass">5.03:1</b></span></td>
+<td><span class="sw" style="background:#2674DC"></span><code>#2674DC</code><br><span class="mut">on #1A1A1A <b class="pass">3.82:1</b></span></td>
+<td class="prov">retired to the rag/information-glyph $note by s122-D2: &quot;Prior values retired to this note: light #306EC6 / dark #2674DC.&quot;</td></tr>
+</tbody></table>
+<p class="mut">Threshold shown is <code>dv-016</code>&rsquo;s <b>3:1</b> (WCAG 1.4.11 graphic grade), against the chart surface for that mode. Underlined = below 3:1.</p>
+</div>
+
+<h2>4 · What this changes, stated plainly</h2>
+<div class="card">
+<ul>
+<li><b>Two values per hue, from now on.</b> <code>rag/*-glyph</code> (marks, badges, dots — your #122 values, unchanged) and <b>new</b> <code>rag/*-graphic</code> (chart series and any standalone mark where colour is the only carrier).</li>
+<li><b>Who consumes which:</b> cb3&rsquo;s <code>--status-*</code> and canon&rsquo;s <code>.cn-chart-bar</code> spine now read <code>--rag-*-graphic</code>. Everything else still reads the glyph/bare roles and is <b>visually unchanged</b>.</li>
+<li><b>R-D3&rsquo;s known consequence returns, for four hues instead of one:</b> &ldquo;side by side in one view they read as two ambers, not one.&rdquo; A status chip and a chart series on the same dashboard will not match exactly. That was accepted for amber; you are now accepting it for red, green and blue too.</li>
+<li><b>Dark mode gets quieter.</b> At the mark values the dark legs sit at 5.55–8.77 against #1A1A1A; the graphic legs sit at 3.66–5.76. Still above 3:1, but <b>less loud</b>. The per-hue control below lets you take the light leg only.</li>
+<li><b>Scope held:</b> mono base store only. Legacy and console/supercharge declare this rung <b>ABSENT</b> in their palettes (a declared hole, not a ruling) — they set <code>--status-*</code> themselves and are untouched. s151-D1 / s155-D1 / s149-D1 MONO-ONLY scopes were <b>not</b> widened.</li>
+</ul>
+</div>
+
+<h2>5 · Your ruling, per hue</h2>
+<p class="mut">Default shown is what is enacted in the tree right now. Change any of them; export at the top of the page.</p>
+<div class="ctl"><h4>error <span class="mut">(Overdue / breach)</span></h4>
+<label class="opt"><input type="radio" name="d-error" value="B seat the graphic value (#B92F1E / #CC4333)" checked> <b>B — seat the graphic value</b> — light #B92F1E / dark #CC4333 <span class="mut">(the retired, provenance-quoted pair)</span></label>
+<label class="opt"><input type="radio" name="d-error" value="B-light-only: graphic light leg only, dark stays mark"> <b>B, light leg only</b> — graphic on white, dark mode keeps the mark value <span class="mut">(dark already clears 3:1 at the mark value)</span></label>
+<label class="opt"><input type="radio" name="d-error" value="keep the mark value; needs another route"> <b>Keep the mark value</b> — reject the restore for this hue <span class="mut">(dv-016 then needs 82-A or 82-C)</span></label>
+<label class="opt"><input type="radio" name="d-error" value="a NEW value, Dave to name"> <b>Neither — a new value</b>, which I will name <span class="mut">(nothing is derived on my behalf)</span></label>
+</div>
+<div class="ctl"><h4>warning <span class="mut">(Needs attention / watch)</span></h4>
+<label class="opt"><input type="radio" name="d-warning" value="B seat the graphic value (#C58900 / #C58900)" checked> <b>B — seat the graphic value</b> — light #C58900 / dark #C58900 <span class="mut">(the retired, provenance-quoted pair)</span></label>
+<label class="opt"><input type="radio" name="d-warning" value="B-light-only: graphic light leg only, dark stays mark"> <b>B, light leg only</b> — graphic on white, dark mode keeps the mark value <span class="mut">(dark already clears 3:1 at the mark value)</span></label>
+<label class="opt"><input type="radio" name="d-warning" value="keep the mark value; needs another route"> <b>Keep the mark value</b> — reject the restore for this hue <span class="mut">(dv-016 then needs 82-A or 82-C)</span></label>
+<label class="opt"><input type="radio" name="d-warning" value="a NEW value, Dave to name"> <b>Neither — a new value</b>, which I will name <span class="mut">(nothing is derived on my behalf)</span></label>
+</div>
+<div class="ctl"><h4>success <span class="mut">(On track / healthy)</span></h4>
+<label class="opt"><input type="radio" name="d-success" value="B seat the graphic value (#2B7E4F / #4A9568)" checked> <b>B — seat the graphic value</b> — light #2B7E4F / dark #4A9568 <span class="mut">(the retired, provenance-quoted pair)</span></label>
+<label class="opt"><input type="radio" name="d-success" value="B-light-only: graphic light leg only, dark stays mark"> <b>B, light leg only</b> — graphic on white, dark mode keeps the mark value <span class="mut">(dark already clears 3:1 at the mark value)</span></label>
+<label class="opt"><input type="radio" name="d-success" value="keep the mark value; needs another route"> <b>Keep the mark value</b> — reject the restore for this hue <span class="mut">(dv-016 then needs 82-A or 82-C)</span></label>
+<label class="opt"><input type="radio" name="d-success" value="a NEW value, Dave to name"> <b>Neither — a new value</b>, which I will name <span class="mut">(nothing is derived on my behalf)</span></label>
+</div>
+<div class="ctl"><h4>information <span class="mut">(Information / info)</span></h4>
+<label class="opt"><input type="radio" name="d-information" value="B seat the graphic value (#306EC6 / #2674DC)" checked> <b>B — seat the graphic value</b> — light #306EC6 / dark #2674DC <span class="mut">(the retired, provenance-quoted pair)</span></label>
+<label class="opt"><input type="radio" name="d-information" value="B-light-only: graphic light leg only, dark stays mark"> <b>B, light leg only</b> — graphic on white, dark mode keeps the mark value <span class="mut">(dark already clears 3:1 at the mark value)</span></label>
+<label class="opt"><input type="radio" name="d-information" value="keep the mark value; needs another route"> <b>Keep the mark value</b> — reject the restore for this hue <span class="mut">(dv-016 then needs 82-A or 82-C)</span></label>
+<label class="opt"><input type="radio" name="d-information" value="a NEW value, Dave to name"> <b>Neither — a new value</b>, which I will name <span class="mut">(nothing is derived on my behalf)</span></label>
+</div>
+<div class="ctl"><h4>Anything else</h4><textarea id="freeform" placeholder="Notes, corrections, a value you want to name yourself..."></textarea></div>
+<div class="card"><b>Not asked here, flagged:</b> legacy / console / supercharge have <b>no</b> retired graphic-strength values anywhere in provenance. Nothing was synthesised for them. If charts in those themes should also clear dv-016, that is a separate ruling and a separate set of values — yours to name.</div>
+</div>
+<script>
+function exportRulings(){
+  var out=["# REVIEW-168 rag graphic-strength tier — Dave's rulings",""];
+  document.querySelectorAll('.ctl').forEach(function(c){
+    var h=c.querySelector('h4'); if(!h) return;
+    var r=c.querySelector('input:checked');
+    if(r) out.push("- "+h.textContent.trim()+": "+r.value);
+  });
+  var f=document.getElementById('freeform').value.trim();
+  if(f) out.push("", "Notes: "+f);
+  var b=new Blob([out.join("\n")],{type:'text/markdown'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(b);
+  a.download='REVIEW-168-rag-graphic-rulings.md'; a.click();
+}
+</script>
+</body></html>

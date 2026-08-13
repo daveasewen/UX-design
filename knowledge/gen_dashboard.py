@@ -24,8 +24,11 @@ Sources (every panel names its own):
   live gate runs               — the gates-health strip is MEASURED at generation
 
 PRIORITY (#165, Dave: *I generate the priorities, he overrules*):
-  The order on this page is a SCORE COMPUTED HERE from six weighted criteria whose
-  weights are printed on the page. It is labelled PROPOSAL on every surface it touches,
+  The order on this page is a SCORE COMPUTED HERE from the weighted criteria in
+  `CRITERIA`, whose weights are printed on the page. (The COUNT is deliberately not
+  written down in prose anywhere — it was "six" until Dave's #168 DC2 dropped effort,
+  and a typed count goes stale the moment a criterion moves [[premise-ages-faster-than-rule]].
+  Every sentence that needs the number now computes `len(CRITERIA)`.) It is labelled PROPOSAL on every surface it touches,
   it is never written back to a store, and it is regenerated every build — so it cannot
   rot into a decision. Dave overrules with an OPTIONAL `priority_override` integer on a
   `_state.json` item (1 = first), validated when present by `_state.py` and displayed as
@@ -71,6 +74,13 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+
+# The gate module is imported, not re-described. The `effort` field NAME and its legal rung
+# VALUES have exactly one definition (`_state.py`), and a scorer that spelled them itself
+# would keep scoring a vocabulary the gate had moved on from [[ban-scoped-to-a-name]].
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
+import _state  # noqa: E402 - after the path insert, by necessity
 OUTD = os.path.join(ROOT, "dashboard")
 OUT = os.path.join(OUTD, "index.html")
 
@@ -216,18 +226,38 @@ _DEADLINE_RE = re.compile(r"\b(friday|2026-08-1[34]|deadline|before the wrap)\b"
 _DECISION_RE = re.compile(r"\b(dave|rule[sd]?|ruling|decide|decision|ratif|approve|"
                           r"his word|overrule)", re.I)
 
-# (key, column name, weight, what it measures, where the input comes from)
-CRITERIA = [
+# ⛔ THE EFFORT CRITERION IS GONE — Dave's #168 review export, DC2 (s168-D1 PENDING, minted
+# at the #168 wrap, not here). What it removed is the LENGTH PROXY: `1 − len(body)/1200`,
+# weight 0.15. Dave's objection is the one the proxy's own page text already admitted — it
+# measures the PROSE, not the work — and until real `effort` values exist there is nothing
+# else for that criterion to read. A criterion whose only input is a proxy Dave has rejected
+# does not get to keep 15% of the vote [[measuring-tool-must-not-guess]].
+#
+# HOW THE REMAINING WEIGHT IS HANDLED: PROPORTIONAL RENORMALIZATION, declared here.
+#   · Leaving the five raw weights as-is is not an available option — they sum to 0.85, and
+#     the build gate at the bottom of this file REFUSES a score presented as /100 whose
+#     weights are not a weighted mean. So "leave as-is" would have to be enacted as
+#     "silently print a score out of 85 and call it 100", which is the defect, not the fix.
+#   · Re-typing five new absolute weights would be me re-weighting Dave's criteria under
+#     cover of a deletion. He accepted the ranking SHAPE at DC3 in the same export.
+#   ⇒ Least-surprising: keep his RATIOS exactly (30:20:15:10:10) and divide by their sum.
+#     Every surviving pair of criteria stands in precisely the relationship he accepted; the
+#     only thing that changed is that effort's 0.15 is no longer in the denominator.
+#
+# ⚠ The gated OPTIONAL `effort` FIELD MECHANISM IS INTACT and deliberately untouched:
+# `_state.py` still validates it, `EFFORT_SCORE` still exists, and the page still COUNTS how
+# many items carry one. What no longer exists is a code path that READS it into the score. If
+# a real `effort` value ever lands, whether and how it re-enters the ranking is a DESIGN
+# QUESTION FOR DAVE, not a hole for an agent to fill — the field is left unread on purpose.
+
+# (key, column name, RAW RATIO, what it measures, where the input comes from)
+_CRITERIA_RAW = [
     ("unlock",   "Unlock",          0.30,
      "how much other work this item is blocking",
      "the item's <code>links</code> array, plus inbound links from other items"),
     ("rot",      "Rot risk",        0.20,
      "cost of delay — how long it has been open, and whether it can even be closed",
      "<code>opened</code> (session number) and <code>condition</code>"),
-    ("effort",   "Effort (inverse)", 0.15,
-     "a small job scores higher than a big one, all else equal",
-     "the item's OPTIONAL <code>effort</code> (S/M/L) where present — otherwise "
-     "<strong>PROXY ONLY</strong>: the length of the item's <code>body</code>."),
     ("deadline", "Deadline",        0.15,
      "proximity to the %s set" % DEADLINE_SET,
      "the item's OPTIONAL <code>deadline</code> (ISO date) where present — otherwise "
@@ -240,13 +270,120 @@ CRITERIA = [
      "does finishing this take a decision OFF Dave's plate",
      "<code>owner</code> plus a prose scan for a pending decision"),
 ]
+
+# The renormalization itself. COMPUTED, never typed — a hand-typed 0.3529 would be a number
+# nobody could attribute back to Dave's 0.30 [[measure-dont-convert-units]].
+_RATIO_SUM = sum(c[2] for c in _CRITERIA_RAW)
+CRITERIA = [(k, n, w / _RATIO_SUM, d, s) for k, n, w, d, s in _CRITERIA_RAW]
 WEIGHTS_SUM = round(sum(c[2] for c in CRITERIA), 4)   # must be 1.0; asserted at build
+
+# ---- EFFORT RE-ENTERS AS A CONDITIONAL CRITERION (#168, Option C — s168-D2 PENDING) ---------
+# Dave adopted Option C of `notes/_PROPOSAL-effort-gauge-2026-08-13-v1.md`. The ruling is
+# minted at the #168 WRAP, by the conductor, NOT here — until then this is machinery standing
+# ready, and the store is empty of values, so nothing it does is visible in the ranking yet.
+#
+# ⛔ WHAT DID **NOT** COME BACK: the length proxy. `1 − len(body)/1200` is gone and stays gone.
+# The criterion below reads ONE input — the gated `effort` rung — and when there is no rung
+# there is no criterion. A blend of a real input and a rejected proxy is unattributable.
+#
+# THE COMPANION CLAUSE, which is half the ruling: **absent `effort` ⇒ the criterion DROPS OUT
+# and the remaining weights RENORMALIZE.** It is scored as nothing, not as zero: an item with
+# no rung is not an item of infinite effort [[measuring-tool-must-not-guess]]. This is the same
+# renormalization DC2 already installed above — raw ratios kept verbatim, divided by the sum of
+# the ones actually in play — reused, not re-invented, and now evaluated PER ITEM instead of
+# once for the module.
+#
+# ⇒ Two consequences worth stating plainly, because both are easy to read the wrong way:
+#   · With effort ABSENT (37/37 items today) the active set is exactly `_CRITERIA_RAW`, the
+#     sum is exactly 0.85, and the weights are BIT-IDENTICAL to DC2's. Today's page cannot
+#     move. That is the control this change was proven against, not a hope.
+#   · With effort PRESENT the active sum is 1.00, so the other five snap back to Dave's own
+#     ratified absolutes (0.30 / 0.20 / 0.15 / 0.10 / 0.10) and effort takes 0.15. No new
+#     number is typed in either direction — 30:20:15:10:10:15 are his.
+#   ⚠ Therefore a PARTIALLY authored store scores two populations under two weightings. That
+#     is honest (each item is scored on what it has) but it is NOT a clean comparison, and the
+#     page says so where it counts them.
+_EFFORT_RAW = ("effort", "Effort (inverse)", 0.15,
+               "how big the job is, ESTIMATED in real Claude tokens of job window",
+               "the item's OPTIONAL gated <code>effort</code> rung (S/M/L), Dave-authored. "
+               "<strong>No proxy</strong>: absent means the criterion does not fire at all and "
+               "the remaining weights renormalize.")
+
+
+def active_criteria(has_effort):
+    """The criteria in play FOR ONE ITEM, weights renormalized over the raw ratios present.
+
+    Not a lookup of two hand-written tables — one list, divided by its own sum, so the two
+    cases cannot drift apart [[measure-dont-convert-units]]."""
+    raw = list(_CRITERIA_RAW) + ([_EFFORT_RAW] if has_effort else [])
+    tot = sum(c[2] for c in raw)
+    return [(k, n, w / tot, d, s) for k, n, w, d, s in raw]
+
+
+# rung → sub-score, inverse (small job scores HIGHER, because it unblocks sooner per token).
+# ⚠ THE MAPPING IS DECLARED HERE AND NOWHERE ELSE. s168-D2 PENDING, Dave's #168: the rungs are
+# ORDINAL — S/M/L are three named bands of job tokens, not a ratio scale — so the 1.0/0.5/0.0
+# spacing is a CHOICE (equal steps), inherited unchanged from #166 rather than re-invented by
+# this lane. If Dave wants L to score above 0.0, that is a one-line edit here and a ruling.
+EFFORT_SCORE = {"S": 1.0, "M": 0.5, "L": 0.0}   # inverse: small scores higher
+
+# ---- THE RUNG EDGES, DERIVED — never typed [[planning-estimate-is-not-a-measurement]] -------
+GAUGE_LOG = os.path.join(ROOT, "notes", "_GAUGE-LOG.md")
+_JOB_RE = re.compile(r"\bjob ([0-9][0-9,]{3,})\b")
+
+
+def effort_anchors(path=GAUGE_LOG):
+    """Derive the S/M/L band edges from the token-priced session blocks in `_GAUGE-LOG.md`.
+
+    Unit: **real Claude tokens of JOB window** — boot and wrap excluded, which is what the
+    log's own `boot N + job N + wrap N` pre-flight decomposition means by `job`.
+
+    THE RULE, stated so the edges are attributable and not "numbers I liked":
+      · corpus = every `job <number>` in the log (both est and measured blocks — the log does
+        not separate them in a machine-readable way, and saying so is cheaper than a parser
+        that guesses [[no-gate-parses-the-artefact]]);
+      · S/M edge = the corpus's LOWER QUARTILE, M/L edge = its UPPER QUARTILE;
+      · both rounded HARD, to the nearest 5,000, because 21 self-selected blocks out of 147
+        cannot support a sharper edge than that.
+    The quartiles are used rather than the mean because two 118,000 blocks (#68/#69) are
+    opener ESTIMATES from before boot was measurable and would drag any mean upward.
+
+    ⛔ Fails LOUD and NAMED — a crash is not a fail [[a-crash-is-not-a-fail]]. Read-only: this
+    function must never write to the gauge log, whose block grammar is gated by
+    `_build_memento_index.py` (ds-024)."""
+    try:
+        with open(path, encoding="utf-8") as fh:
+            text = fh.read()
+    except OSError as e:
+        raise SystemExit("gen_dashboard REFUSING: cannot read the gauge log at %s (%s). The "
+                         "effort rung edges are DERIVED from it; typing them here instead "
+                         "would be inventing the measurement the rungs exist to carry."
+                         % (os.path.relpath(path, ROOT), e))
+    vals = sorted(int(m.group(1).replace(",", "")) for m in _JOB_RE.finditer(text))
+    if len(vals) < 8:
+        raise SystemExit("gen_dashboard REFUSING: only %d token-priced `job` blocks found in "
+                         "%s — a quartile over fewer than 8 points is a number with a "
+                         "decimal point, not a band edge." % (len(vals), os.path.relpath(path, ROOT)))
+
+    def _q(p):                       # linear-interpolated quantile, then rounded HARD
+        k = (len(vals) - 1) * p
+        f = int(k)
+        lo, hi = vals[f], vals[min(f + 1, len(vals) - 1)]
+        return lo + (hi - lo) * (k - f)
+
+    rnd = lambda x: int(round(x / 5000.0) * 5000       # noqa: E731 - the hard rounding, once
+                        )
+    return {"n": len(vals), "min": vals[0], "max": vals[-1],
+            "median": vals[len(vals) // 2],
+            "s_edge": rnd(_q(0.25)), "l_edge": rnd(_q(0.75)),
+            "source": os.path.relpath(path, ROOT)}
 
 
 # ---- the REAL inputs (#166), where present. Gated in `_state.py`; ABSENT on every item
-# until Dave writes one, so today every one of these paths is dark and the PROXY branch
-# below is what actually runs. That is the honest state, and the page says so.
-EFFORT_SCORE = {"S": 1.0, "M": 0.5, "L": 0.0}   # inverse: small scores higher
+# until Dave writes one, so today every one of these paths is dark. `EFFORT_SCORE` and the
+# rung machinery moved UP, next to `active_criteria()` — one place, above their first use.
+# ⚠ `deadline` still falls back to a PROSE PROXY when absent; `effort` no longer falls back
+# to anything, and that difference between the two fields is deliberate (#168 Option C).
 
 
 def _deadline_score(value, horizon=None):
@@ -307,28 +444,28 @@ def score_item(i, session, inbound, links_corpus_empty):
             age_part = 0.0
     sub["rot"] = min(1.0, age_part + (0.4 if i.get("condition") == "UNCONDITIONED" else 0.0))
 
-    # --- effort -------------------------------------------------------------
-    # ⚠ THE REAL INPUT REPLACES THE PROXY, it does not blend with it. A blend would let the
-    # prose keep a vote in a criterion Dave has already answered, and would make the score
-    # unattributable — you could not say which number moved it.
-    eff = i.get("effort")
-    if eff in EFFORT_SCORE:
-        sub["effort"] = EFFORT_SCORE[eff]
-    else:
-        if eff is not None:
-            missing.append(("effort", "the item carries effort=%r, which is not S/M/L — the "
-                            "gate should have refused it; falling back to the body-length "
-                            "PROXY and saying so" % (eff,)))
-        body = str(i.get("body") or "")
-        if not body.strip():
-            missing.append(("effort", "the item has no `effort` field and no body text, so "
-                            "even the length PROXY has nothing to measure"))
-            sub["effort"] = 0.0
-        else:
-            missing.append(("effort", "the item has no `effort` field — the score reads the "
-                            "byte-length of its body as a PROXY, which measures the prose, "
-                            "not the work"))
-            sub["effort"] = max(0.0, min(1.0, 1.0 - (len(body) / 1200.0)))
+    # --- effort: PRESENT ⇒ scored from the rung. ABSENT ⇒ DROPS OUT, never zeroed --------
+    # #168 Option C (s168-D2 pending, Dave's). The length proxy DC2 removed does not return:
+    # the only input is the gated rung. When there is no rung there is no `sub["effort"]` and
+    # no row in this item's criteria — `active_criteria(False)` renormalizes without it, which
+    # is the same list DC2 already used, so an item with no rung scores exactly as it does
+    # today. An absent estimate is NOT an estimate of zero [[measuring-tool-must-not-guess]].
+    #
+    # ⛔ Note what is NOT here: no `missing.append(("effort", …))`. A dropped criterion is not
+    # a missing INPUT — the score never claimed to include it, so flagging it would report a
+    # hole in a total that has no such hole, and would light LOW CONFIDENCE on all 37 items
+    # for a term none of them is being scored on.
+    _eff = i.get(_state.EFFORT)
+    has_effort = _eff in EFFORT_SCORE
+    if has_effort:
+        sub["effort"] = EFFORT_SCORE[_eff]
+    elif _eff is not None:
+        # Present but not a legal rung. `_state.check()` should have REFUSED this store, so
+        # reaching here means the gate did not run — say so by NAME rather than falling into
+        # the absent path, which would silently launder a malformed value into "no estimate".
+        missing.append(("effort", "the item carries effort=%r, which is not one of %r — the "
+                        "gate should have refused it; the criterion is DROPPED for this item "
+                        "and the remaining weights renormalize" % (_eff, _state.EFFORT_VALUES)))
 
     # --- deadline -----------------------------------------------------------
     dl = i.get("deadline")
@@ -355,7 +492,20 @@ def score_item(i, session, inbound, links_corpus_empty):
     else:
         sub["load"] = 0.0
 
-    total = sum(w * sub[k] for k, _n, w, _d, _s in CRITERIA)
+    # The weighted mean over THIS ITEM's active criteria. `CRITERIA` (the module-level,
+    # effort-absent list) is what the page PRINTS; this is what the item is SCORED on, and
+    # the two are the same list whenever the item has no rung — which is every item today.
+    crit = active_criteria(has_effort)
+    # ⛔ A criterion in the active set with no sub-score is a KeyError one line down, and a
+    # traceback is not a refusal [[a-crash-is-not-a-fail]]. Name the criterion and the item,
+    # because "KeyError: 'effort'" tells the next reader neither.
+    _absent = [k for k, _n, _w, _d, _s in crit if k not in sub]
+    if _absent:
+        raise SystemExit("gen_dashboard REFUSING: item %r has criteria %r in its active set "
+                         "with no sub-score computed. The active-criteria list and the scoring "
+                         "branches above have forked — a weighted mean over a term that was "
+                         "never measured is not a score." % (i.get("id"), _absent))
+    total = sum(w * sub[k] for k, _n, w, _d, _s in crit)
     return int(round(total * 100)), sub, missing
 
 
@@ -740,17 +890,19 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
           "That is %d more than the ratchet permits. Measured here; not fixed here."
           % (tdebt["count"], tdebt["baseline"], tdebt["delta"]))
     a("<p>The order everything is shown in is a <strong>PROPOSAL</strong> — a score I compute "
-      "from the store at build time, out of six weighted criteria printed in full below. "
+      "from the store at build time, out of %d weighted criteria printed in full below. "
       "It is not a ruling and it does not persist: you overrule it by writing a "
       "<code>priority_override</code> rank on the item, and an overruled item says "
       "<strong>DAVE OVERRULED</strong> wherever it appears. %s"
-      % ("<strong>No item carries an override yet</strong> — the field is absent everywhere, "
+      % (len(CRITERIA),
+         "<strong>No item carries an override yet</strong> — the field is absent everywhere, "
          "because a priority I write into the store and then read back is not your judgement, "
          "it is mine wearing your name.</p>" if not prio["n_overrides"] else
          "%d item(s) currently carry your override.</p>" % prio["n_overrides"]))
+    # ⚠ the %s above is now the SECOND slot — %d len(CRITERIA) is the first.
     a("<p><span class=\"v v-fail\">Flagged problem</span> — <strong>%d of %d items carry any "
       "<code>links</code></strong> (%.0f%%). The dependency graph the score's heaviest "
-      "criterion (Unlock, weight %.2f) needs <em>does not exist in the data</em>, so every "
+      "criterion (Unlock, weight %.3f) needs <em>does not exist in the data</em>, so every "
       "score on this page is flagged LOW CONFIDENCE and the unlock column reads zero for "
       "everything. This is MEASURED and QUEUED, not repaired: backfilling links would mean "
       "inventing the dependency graph and then scoring against my own invention. It is "
@@ -825,19 +977,87 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     a("<h2>My proposed order, and the weights it came from</h2>")
     a("<p class=\"meta\">You ruled that I generate the priorities and you overrule them. This is "
       "the generated half. It is <strong>computed at build time from the store</strong>, never "
-      "written back into it, so it cannot rot and it cannot quietly become a decision. Six "
+      "written back into it, so it cannot rot and it cannot quietly become a decision. %d "
       "criteria, each scored 0&ndash;1, combined with the declared weights below into a score "
       "out of 100. <strong>The weights themselves are a proposal too</strong> &mdash; change any "
-      "number in the table and the order changes; nothing about them is ratified.</p>")
+      "number in the table and the order changes; nothing about them is ratified.</p>"
+      % len(CRITERIA))
+    a("<p class=\"meta\"><strong>There used to be a sixth criterion, and you removed it.</strong> "
+      "&ldquo;Effort (inverse)&rdquo; carried 0.15 of the weight and, with no real "
+      "<code>effort</code> values in the store, its only input was the BYTE LENGTH of an "
+      "item&rsquo;s body text &mdash; a proxy for how much had been written about a job, not "
+      "for how big the job is. Dropped on your #168 review (DC2). The remaining weights are "
+      "your original ratios &mdash; 30&#8239;:&#8239;20&#8239;:&#8239;15&#8239;:&#8239;10&#8239;:"
+      "&#8239;10 &mdash; divided by their own sum, so every criterion stands in exactly the "
+      "relationship to every other that it did before; only the removed 0.15 left the "
+      "denominator. <strong>It has since come back as a CONDITIONAL criterion</strong> "
+      "&mdash; the block under the table &mdash; but the byte-length proxy has not, and will "
+      "not: the criterion now has one input, and no input means no criterion.</p>")
     a('<table class="wtable"><thead><tr><th>Criterion</th><th>Weight</th>'
       "<th>What it measures</th><th>Where the input comes from</th></tr></thead><tbody>")
+    # 3dp, not 2 — the renormalized weights are thirds-of-0.85 and at 2dp they would print
+    # a column that visibly does not add to the TOTAL underneath it.
     for key, name, w, desc, src in CRITERIA:
-        a("<tr><td><strong>%s</strong></td><td class=\"w\">%.2f</td><td>%s</td>"
+        a("<tr><td><strong>%s</strong></td><td class=\"w\">%.3f</td><td>%s</td>"
           "<td class=\"src\">%s</td></tr>" % (E(name), w, E(desc), src))
-    a("<tr><td><strong>TOTAL</strong></td><td class=\"w\">%.2f</td><td colspan=\"2\" "
+    a("<tr><td><strong>TOTAL</strong></td><td class=\"w\">%.3f</td><td colspan=\"2\" "
       "class=\"src\">Score = 100 &times; &Sigma;(weight &times; criterion). Deadline set: "
       "<strong>%s</strong>.</td></tr>" % (WEIGHTS_SUM, E(DEADLINE_SET)))
     a("</tbody></table>")
+
+    # ---- THE EFFORT RUNGS — the standard, printed so it travels with the number ----------
+    # Option C of notes/_PROPOSAL-effort-gauge-2026-08-13-v1.md. s168-D2 is PENDING: minted
+    # at the #168 wrap by you, not by the lane that built this. The edges below are DERIVED
+    # from the gauge log at every build and printed with the n they came from, so drift is
+    # visible rather than silent [[planning-estimate-is-not-a-measurement]].
+    _an = effort_anchors()
+    _eff_w = dict((k, w) for k, _n2, w, _d2, _s2 in active_criteria(True))
+    a("<div>")   # plain wrapper — no invented class name; the page's CSS is gated canon
+    a("<p class=\"meta\"><strong>Effort is back &mdash; as a rung measured in TOKENS, and only "
+      "where you have written one.</strong> The unit is <strong>real Claude tokens of job "
+      "window</strong> (boot and wrap excluded) &mdash; the unit this project already rules and "
+      "logs, not t-shirt sizes and not bytes of prose. <strong>Delegated sub spend is excluded "
+      "too:</strong> a sub&rsquo;s tokens are weekly quota, not this window&rsquo;s fill, and "
+      "they are not in the logged blocks these edges come from &mdash; so an <strong>L</strong> "
+      "that needs a sub is a claim about this window, never a total bill. The three rungs mean "
+      "this:</p>")
+    a('<table class="wtable"><thead><tr><th>Rung</th><th>What it means</th>'
+      "<th>Job tokens, estimated</th><th>Scores</th></tr></thead><tbody>")
+    _bands = {"S": "&le;&#8239;%s" % f"{_an['s_edge']:,}",
+              "M": "%s &ndash; %s" % (f"{_an['s_edge']:,}", f"{_an['l_edge']:,}"),
+              "L": "&gt;&#8239;%s" % f"{_an['l_edge']:,}"}
+    for _r in _state.EFFORT_VALUES:
+        a("<tr><td><strong>%s</strong></td><td>%s</td><td class=\"w\">%s</td>"
+          "<td class=\"w\">%.2f</td></tr>"
+          % (E(_r), E(_state.EFFORT_RUNG_MEANING[_r]), _bands[_r], EFFORT_SCORE[_r]))
+    a("</tbody></table>")
+    a("<p class=\"sourceline\">EDGES DERIVED, NOT TYPED &mdash; lower and upper quartile of the "
+      "<strong>%d</strong> token-priced session blocks in <code>%s</code> (range %s&ndash;%s "
+      "job tokens, median %s), rounded hard to the nearest 5,000 because %d self-selected "
+      "blocks cannot support a sharper edge. They move as the log grows; that is why they are "
+      "printed rather than stored.</p>"
+      % (_an["n"], E(_an["source"]), f"{_an['min']:,}", f"{_an['max']:,}",
+         f"{_an['median']:,}", _an["n"]))
+    a("<p class=\"meta\"><strong>A rung is your ESTIMATE against a measured standard &mdash; it "
+      "is not a measurement of the job, and the page will never print it as one.</strong> "
+      "Writing <code>\"effort\": \"M\"</code> on an item is a forecast; the edges it is judged "
+      "against are the measured history. Two more things worth knowing before you author any: "
+      "<strong>(1) absent is legal and costs nothing</strong> &mdash; an item with no rung has "
+      "no effort criterion at all, and its remaining weights renormalize, so it is scored on "
+      "what it has rather than penalised for what it lacks; "
+      "<strong>(2) a rung changes the whole row&rsquo;s weighting</strong> &mdash; with a rung "
+      "present, effort takes %.2f and your other five snap back to their absolutes "
+      "(%s). So a partly-authored store ranks two populations under two weightings; that is "
+      "honest per item, but it is not a clean comparison across items. "
+      "<strong>Today: %d of %d items carry a rung, so nothing below has moved.</strong> "
+      "&#9940; No agent may author a value &mdash; every rung on this page will be yours. "
+      "<em>s168-D2 PENDING</em>: the machinery is built and proven, the ruling is minted at "
+      "the wrap.</p>"
+      % (_eff_w["effort"],
+         E(" / ".join("%s %.2f" % (n, _eff_w[k]) for k, n, _w, _d3, _s3 in _CRITERIA_RAW)),
+         sum(1 for i in state["items"] if i.get("effort") in EFFORT_SCORE),
+         len(state["items"])))
+    a("</div>")
     # ⚠ MEASURED, NOT TYPED. This paragraph used to assert "there is no effort field, no
     # deadline field" — true when written, and it would have gone quietly false the moment
     # the fields landed [[premise-ages-faster-than-rule]]. It now counts them.
@@ -846,12 +1066,15 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     _n_dl = sum(1 for i in _all if _deadline_score(i.get("deadline"), DEADLINE_SET) is not None)
     a("<p class=\"meta\"><strong>Some inputs are proxies, and the table says which.</strong> "
       "<code>opened</code>, <code>condition</code> and <code>owner</code> are real fields. "
-      "<code>effort</code> and <code>deadline</code> are OPTIONAL real fields that <em>replace</em> "
-      "their proxy when present &mdash; today they are present on <strong>%d</strong> and "
-      "<strong>%d</strong> of %d items respectively, so the proxy is what runs everywhere else. "
+      "<code>deadline</code> is an OPTIONAL real field that <em>replaces</em> its proxy when "
+      "present &mdash; today it is present on <strong>%d</strong> of %d items, so the proxy is "
+      "what runs everywhere else. <code>effort</code> is also an optional gated field, present "
+      "on <strong>%d</strong> items, and it is <strong>read where present and nowhere else</strong>: "
+      "unlike <code>deadline</code> it has NO proxy to fall back on, so an item without one is "
+      "scored on the other criteria, renormalized, rather than guessed at. "
       "<code>links</code> is empty on %d of %d items. Where an input was missing, the score "
       "carries a LOW-CONFIDENCE flag naming it. A clean-looking number from thin data is the one "
-      "thing this page must never print.</p>" % (_n_eff, _n_dl, cov["total"],
+      "thing this page must never print.</p>" % (_n_dl, cov["total"], _n_eff,
                                                  cov["total"] - cov["with_links"],
                                                  cov["total"]))
     _sc = sorted(r["score"] for r in prio["by_id"].values())
@@ -913,8 +1136,8 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     a("<p>Among the %d live items it is <strong>%d</strong>. <code>links</code> is a required "
       "field, so it is present on every item &mdash; and empty on almost all of them. The "
       "consequence is concrete and it is on this page: the heaviest criterion in the score "
-      "above (Unlock, weight %.2f) has nothing to read, contributes zero to every item, and "
-      "the remaining %.2f of weight is doing all the work of ranking your backlog.</p>"
+      "above (Unlock, weight %.3f) has nothing to read, contributes zero to every item, and "
+      "the remaining %.3f of weight is doing all the work of ranking your backlog.</p>"
       % (cov["live_total"], cov["live_with_links"], CRITERIA[0][2], 1 - CRITERIA[0][2]))
     a("<p><strong>Queued as your work for the %s set, not repaired here.</strong> I could "
       "populate <code>links</code> by guessing which item blocks which from the prose &mdash; "
@@ -1070,7 +1293,152 @@ def build(with_gates=True):
                   kanban_columns(state["items"], prio), prio, cov)
 
 
+def effort_selftest():
+    """Both-direction arms for the #168 effort rung machinery (s168-D2 pending, Dave's).
+
+    ⛔ These exist because the arms that proved this change at build time would otherwise have
+    been run ONCE, by the lane that wrote it — and a test that only ever ran in the session
+    that authored the code cannot catch the session that edits it
+    [[instrument-without-a-consumer]]. Every arm re-enacts a defect: a green that cannot fail
+    is an assertion, not a test.
+
+    ⛔ NO STORE IS TOUCHED and NO VALUE IS AUTHORED: the rungs below are planted on a
+    throwaway in-memory copy of one item, never written back.
+    """
+    import copy
+    fails, n = [], 0
+
+    def arm(name, cond, detail=""):
+        nonlocal n
+        n += 1
+        if not cond:
+            fails.append("[%s] %s" % (name, detail))
+
+    items = read_state()["items"]
+    session = read_session()["session"]
+    tgt = next(i["id"] for i in items if i.get("state") not in ("done", "dropped"))
+
+    def score(rung):
+        it = copy.deepcopy(items)
+        for i in it:
+            if i["id"] == tgt:
+                i.pop(_state.EFFORT, None)
+                if rung is not None:
+                    i[_state.EFFORT] = rung
+        return priorities(it, session)["by_id"][tgt]
+
+    # 1. ABSENT ⇒ the criterion is not there at all. Not zero, not flagged missing.
+    r0 = score(None)
+    arm("absent ⇒ no effort sub-score", "effort" not in r0["sub"], repr(r0["sub"]))
+    arm("absent ⇒ NOT reported as a missing input",
+        not any(m[0] == "effort" for m in r0["missing"]),
+        "a dropped criterion is not a hole in the total")
+
+    # 2. Each rung scores AS MAPPED, and the mapping is monotone S > M > L.
+    got = {}
+    for rung in _state.EFFORT_VALUES:
+        r = score(rung)
+        got[rung] = r["score"]
+        arm("rung %s scored from the field" % rung,
+            r["sub"].get("effort") == EFFORT_SCORE[rung],
+            "sub=%r wanted %r" % (r["sub"].get("effort"), EFFORT_SCORE[rung]))
+        exp = int(round(100 * sum(w * r["sub"][k] for k, _n, w, _d, _s in active_criteria(True))))
+        arm("rung %s total is the weighted mean over the ACTIVE criteria" % rung,
+            exp == r["score"], "recomputed %d vs %d" % (exp, r["score"]))
+    arm("the rungs are ordered S > M > L", got["S"] > got["M"] > got["L"], repr(got))
+    arm("a rung MOVES the score off the absent baseline",
+        got["S"] != r0["score"] and got["L"] != r0["score"],
+        "planting a rung that changes nothing would mean the field is not being read")
+
+    # 3. A malformed rung is DROPPED and NAMED — never laundered into "no estimate", and
+    #    never scored 0.0, which would silently rank it as the most expensive job there is.
+    rx = score("XL")
+    arm("illegal rung is not scored", "effort" not in rx["sub"], repr(rx["sub"]))
+    arm("illegal rung is NAMED as a missing input",
+        any(m[0] == "effort" for m in rx["missing"]), repr(rx["missing"]))
+    arm("illegal rung falls to the renorm path, NOT to 0.0",
+        rx["score"] == r0["score"], "%d vs absent %d" % (rx["score"], r0["score"]))
+
+    # 4. Both weightings are weighted MEANS, and the absent case is bit-identical to the
+    #    module-level CRITERIA the page prints. This is the control the whole change rests on.
+    for has, label in ((False, "absent"), (True, "present")):
+        s = sum(w for _k, _n, w, _d, _s in active_criteria(has))
+        arm("weights sum to 1.0 (%s)" % label, abs(s - 1.0) < 1e-9, repr(s))
+    arm("absent-case weights ARE the printed CRITERIA",
+        [round(w, 9) for _k, _n, w, _d, _s in active_criteria(False)]
+        == [round(c[2], 9) for c in CRITERIA],
+        "the page would print weights no item is scored on")
+    arm("present-case restores Dave's absolutes",
+        [round(w, 4) for _k, _n, w, _d, _s in active_criteria(True)]
+        == [0.30, 0.20, 0.15, 0.10, 0.10, 0.15],
+        "with all six raw ratios in play the weights ARE the ratios, unrenormalized")
+
+    # 5. THE VOCABULARY IS ONE SET. The scorer's mapping and the gate's enum must not fork.
+    arm("EFFORT_SCORE keys == the gate's enum",
+        tuple(EFFORT_SCORE) == _state.EFFORT_VALUES,
+        "%r vs %r" % (tuple(EFFORT_SCORE), _state.EFFORT_VALUES))
+
+    # 6. The anchors reader: parses the real log, and REFUSES loudly rather than crashing or
+    #    guessing when it cannot [[a-crash-is-not-a-fail]].
+    an = effort_anchors()
+    arm("anchors read the real gauge log", an["n"] >= 8 and 0 < an["s_edge"] < an["l_edge"],
+        repr(an))
+    arm("edges are rounded hard (nearest 5,000)",
+        an["s_edge"] % 5000 == 0 and an["l_edge"] % 5000 == 0, repr(an))
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        thin = os.path.join(td, "thin.md")
+        with open(thin, "w", encoding="utf-8") as fh:
+            fh.write("#### 2026-01-01 #1\n> job 40,000\n> job 50,000\n")
+        try:
+            effort_anchors(thin)
+            arm("thin corpus REFUSED", False, "a quartile over 2 points was accepted")
+        except SystemExit as e:
+            arm("thin corpus REFUSED, and the refusal names the count",
+                "only 2" in str(e), str(e))
+        try:
+            effort_anchors(os.path.join(td, "nope.md"))
+            arm("unreadable log REFUSED", False, "a missing gauge log was accepted")
+        except SystemExit as e:
+            arm("unreadable log REFUSED, and the refusal names the file",
+                "cannot read the gauge log" in str(e), str(e))
+
+    # 7. ⛔ THE AUTHORSHIP RULE, ASSERTED AGAINST THE LIVE STORE. Not a comment — a test.
+    authored = [i["id"] for i in items if _state.EFFORT in i]
+    arm("no effort value is authored in the store (Dave's alone)",
+        not authored, "found rungs on %r — if these are Dave's, this arm is the one to "
+                      "change, deliberately, with his word attached" % (authored,))
+    return fails, n
+
+
 def main(argv):
+    if "--selftest" in argv:
+        fails, n = effort_selftest()
+        for f in fails:
+            print("  FAIL " + f)
+        print("gen_dashboard effort selftest: %d arms, %s"
+              % (n, "all GREEN" if not fails else "%d RED" % len(fails)))
+        return 1 if fails else 0
+    # `--anchors`: print the DERIVED effort rung edges and the corpus they came from, and
+    # exit. Report-only, and deliberately not a second source of truth — it prints exactly
+    # what the page prints, from the same call, so the two cannot disagree. (The reader is
+    # already CONSUMED by every build via render(); this flag is for reading it by hand, not
+    # the thing that makes it real [[instrument-without-a-consumer]].)
+    if "--anchors" in argv:
+        an = effort_anchors()
+        print("effort rung edges — DERIVED from %s (#168 Option C, s168-D2 pending)" % an["source"])
+        print("  unit: %s" % _state.EFFORT_UNIT)
+        print("  corpus: n=%d priced `job` blocks · min %s · median %s · max %s"
+              % (an["n"], f"{an['min']:,}", f"{an['median']:,}", f"{an['max']:,}"))
+        for r in _state.EFFORT_VALUES:
+            band = ({"S": "<= %s" % f"{an['s_edge']:,}",
+                     "M": "%s - %s" % (f"{an['s_edge']:,}", f"{an['l_edge']:,}"),
+                     "L": ">  %s" % f"{an['l_edge']:,}"})[r]
+            print("  %s  %-22s  %-22s scores %.2f"
+                  % (r, band, _state.EFFORT_RUNG_MEANING[r], EFFORT_SCORE[r]))
+        print("  ⚠ ESTIMATED, not measured: the edges are measured history; a rung on an "
+              "item is Dave's forecast against them. 0 values are authored by any agent.")
+        return 0
     check = "--check" in argv
     with_gates = "--no-gates" not in argv
     html = build(with_gates)

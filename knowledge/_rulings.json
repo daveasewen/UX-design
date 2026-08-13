@@ -1860,6 +1860,7 @@
      "chat #141 (live) - read-back confirmed"
    ],
    "open": "tooltip.tip unruled; enactment (binds into metas + DTCG deferral updates) NOT in this ruling - #143",
+   "superseded_note_s168_D1": "SUPERSEDED IN PART by s162-D1 and CONFIRMED CLOSED at s168-D1 (#168): the `open: tooltip.tip unruled` clause above is no longer owed - no tooltip.tip store row ever existed. The original text is UNTOUCHED; this note is an ADDITION.",
    "status": "RULED #142, ENACTED #143: 113 of 114 ruled rows landed across 54 component metas (30 bind rows in 24 metas + 83 no-bind/routing annotation rows); knowledge/_binds-ratchet.json coverage 11 -> 33 of 75, floor rebased 11 -> 33. tooltip.tip remains the one UNRULED row, untouched (verified byte-identical to HEAD)."
  }
  ,
@@ -2555,6 +2556,85 @@
     "knowledge/_validate_palette_tier.py"
    ],
    "status": "RULED #167, ratifies the as-built s157-D2/s158-D4 shape - zero file change owed; the ruling is the record that the built sharing model is Dave's settled intent, not a placeholder."
+  },
+  {
+   "id": "s168-D1",
+   "ruled": "#168",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "THE DASHBOARD REVIEW, RULED FROM DAVE'S OWN EXPORT (verbatim artifact in chat). (DC1) tooltip.tip is CONFIRMED CLOSED per s162-D1 - no store row for it ever existed, so nothing is owed and the s142-D1 'open: tooltip.tip unruled' clause is SUPERSEDED (see that entry's added superseded-by note; its text is untouched). (DC2) THE EFFORT LENGTH-PROXY IS REMOVED from gen_dashboard.py's priority scoring - body length was standing in for effort and was never a measure of it; Dave's remaining criterion ratios are renormalised PROPORTIONALLY, computed at generation, never typed. (DC3) The MOVED ranking (the declared consequence of #167's truncation repair) is ACCEPTED as proposal shape - a proposal is not a decision, and Dave's eye ratified the shape rather than any row.",
+   "governs": [
+    "knowledge/gen_dashboard.py",
+    "dashboard/index.html",
+    "notes/_DELTA-168-effort-removal-v1.md",
+    "knowledge/_rulings.json (s142-D1 superseded-by note)"
+   ],
+   "evidence": [
+    "chat #168 2026-08-13 (live) - Dave's review export, verbatim artifact in chat; FIRM",
+    "notes/_DELTA-168-effort-removal-v1.md",
+    "knowledge/gen_dashboard.py"
+   ],
+   "status": "RULED #168 AND ENACTED IN-WINDOW. gen_dashboard.py re-run, dashboard regenerated; the s142-D1 note added by ADDITION."
+  },
+  {
+   "id": "s168-D2",
+   "ruled": "#168",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "THE EFFORT GAUGE IS TOKEN-BANDED - Option C of notes/_PROPOSAL-effort-gauge-2026-08-13-v1.md, Dave: 'this sounds good'. Rungs S/M/L. UNIT = REAL Claude tokens of the JOB WINDOW; boot and wrap are EXCLUDED, and DELEGATED SUB SPEND IS EXCLUDED (a sub is quota, not window fill). The BAND EDGES ARE DERIVED AT BUILD from gauge-log quartiles - currently 45K/85K at n=21 - and those two numbers are DERIVED, NOT RULED: the ruled thing is the DERIVATION METHOD, so an edge that moves with the corpus is the design working, not drift. COMPANION CLAUSE: an ABSENT effort value drops the criterion and renormalises the remaining weights - absence is never defaulted to a number. The 37 item values remain DAVE'S and none was authored.",
+   "governs": [
+    "knowledge/_state.py",
+    "knowledge/gen_dashboard.py",
+    "notes/_PROPOSAL-effort-gauge-2026-08-13-v1.md"
+   ],
+   "evidence": [
+    "chat #168 2026-08-13 (live) - Dave: 'this sounds good'; FIRM",
+    "knowledge/_state.py --selftest 46 green",
+    "knowledge/gen_dashboard.py --selftest 23 green"
+   ],
+   "status": "RULED #168 AND ENACTED IN-WINDOW. Edges DERIVED (45K/85K, n=21) and declared as derived; no item effort value authored."
+  },
+  {
+   "id": "s168-D3",
+   "ruled": "#168",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "SUB-SPEND ACCOUNTING, OPTION 2 - Dave: 'I like both... lets do option 2'. (a) A gauge-log block MAY carry ONE optional line `subs <N> tokens (n=<count>)`. ABSENT IS LEGAL AND NEVER DEFAULTED. The word `job` is FORBIDDEN on that line - containment, not style: gen_dashboard.py's _JOB_RE sweeps the whole file and a `job`-spelled subs line would move an S/M/L band edge silently. Guarded by _capture_gate.py::gauge_log_subs_line, 12 arms, SUBS_LINE_BLOCKING=True - the TIER is a DECLARED CHOICE, not part of the ruling, and a downgrade is Dave's. Runbook section added at _RUNBOOK-capture-ritual.md step 2f. (b) EFFORT-SWITCH AGENT DEFINITIONS: .claude/agents/opus-deep.md (effort: max) and .claude/agents/opus-fast.md (effort: low). NOTE: they were NOT registered mid-session - first live use is #169.",
+   "governs": [
+    "knowledge/_capture_gate.py (gauge_log_subs_line)",
+    "knowledge/_RUNBOOK-capture-ritual.md (step 2f subs-line section)",
+    "notes/_GAUGE-LOG.md",
+    ".claude/agents/opus-deep.md",
+    ".claude/agents/opus-fast.md"
+   ],
+   "evidence": [
+    "chat #168 2026-08-13 (live) - Dave: 'I like both... lets do option 2'; FIRM",
+    "knowledge/_capture_gate.py::gauge_log_subs_line - 12 arms, proven against _JOB_RE",
+    "knowledge/_RUNBOOK-capture-ritual.md"
+   ],
+   "status": "RULED #168 AND ENACTED IN-WINDOW for (a) - gate live and BLOCKING, runbook section written, first real subs line written by the #168 wrap. (b) BUILT NOT REGISTERED - agent defs exist on disk; first live use #169."
+  },
+  {
+   "id": "s168-D4",
+   "ruled": "#168",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "THE GRAPHIC-STRENGTH RUNG'S LIGHT LEGS REUSE THE RULED TEXT VALUES. Dave verbatim: 'we already have red and green values for text in light mode, can we use those... choose a new amber and blue. I'm happy with the current colours in dark mode'. So: rag/*-graphic LIGHT legs take error = #DA1A00 (s151-D1) and success = #137F3C (s155-D1 via s144-D1). ALL FOUR DARK legs STAY AS BUILT: #CC4333 / #C58900 / #4A9568 / #2674DC. The AMBER and BLUE light legs are OPEN - a picker was built (reviews/REVIEW-168-graphic-amber-blue-picker-v1.html) and Dave's pick is carried to #169. DECLARED HONESTLY: the light amber #C58900 and light blue #306EC6 currently standing in knowledge/canon/canon.css are ENACTED-PENDING-EYE PLACEHOLDERS written by the build lane, NOT Dave's picks and NOT ruled values - they exist so the tier renders, and they are the very thing the picker asks him to replace. CONTEXT: this sits on 82-B, Dave's graphic-strength-tier pick from _PROPOSAL-148-reds-2026-08-13-v1.md, which this ruling SUBSUMES AND RATIFIES AS-BUILT pending his eye on specimen v2. The rung NAME '-graphic' is a DECLARED DEFAULT, UNRATIFIED.",
+   "governs": [
+    "knowledge/tokens/palettes/rag/mono.json",
+    "knowledge/tokens/palettes/rag/legacy.json",
+    "knowledge/tokens/palettes/rag/console-supercharge.json",
+    "knowledge/tokens/semantic-colour.json",
+    "reviews/REVIEW-168-graphic-amber-blue-picker-v1.html",
+    "reviews/REVIEW-168-rag-glyph-tier-v2.html"
+   ],
+   "evidence": [
+    "chat #168 2026-08-13 (live) - Dave verbatim, quoted in the says field; FIRM",
+    "chat #168 2026-08-13 (live) - 82-B graphic-strength-tier pick, in _PROPOSAL-148-reds-2026-08-13-v1.md",
+    "_PROPOSAL-148-reds-2026-08-13-v1.md",
+    "reviews/REVIEW-168-graphic-amber-blue-picker-v1.html"
+   ],
+   "status": "RULED #168, PART-ENACTED: the two light legs with ruled values are enacted; AMBER + BLUE light legs OPEN, awaiting Dave's pick off the picker at #169 - the values on disk for those two are declared PLACEHOLDERS, not ruled. Rung name unratified. A dark-leg $note contrast figure is in dispute (3.66:1 vs 3.42:1 on #CC4333) and is carried as a residual, unresolved."
   }
 ]
 }

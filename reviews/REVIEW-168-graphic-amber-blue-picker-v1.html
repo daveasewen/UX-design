@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>REVIEW #168 — amber + blue graphic legs: candidate picker</title>
+<!--
+  REVIEW PAGE, #168, PICKER v1. THIS PAGE RULES NOTHING — it collects Dave's pick.
+  The chart markup is the cb3 <svg> lifted VERBATIM from reviews/REVIEW-168-rag-glyph-tier-v1.html,
+  which lifted it VERBATIM from knowledge/snippets/Chart-bar.reference.html.
+  Ratios are computed at BUILD time (WCAG relative luminance) against #FFFFFF.
+  The red and green legs shown are Dave's #168 rulings, seated in the tree.
+  The amber and blue candidates are OFFERS. Nothing is seated. Dave rules.
+-->
+<style>
+:root{
+  --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+  --pg:#F4F6F8; --card:#FFFFFF; --tx:#1A1A1A; --tx2:#4A4A4A; --rule:#D7D8D6;
+  --ok:#137F3C; --ok-bg:#E8F4EC; --att:#1F5F8B; --att-bg:#E6EEF5;
+  --neutral:#5A6570; --neutral-bg:#EDEFF1;
+}
+[data-ui="dark"]{ --pg:#121417; --card:#1C2024; --tx:#F2F2F2; --tx2:#B8BEC4; --rule:#3A4046;
+  --ok:#66CC8D; --ok-bg:#16301F; --att:#7FB6DD; --att-bg:#15242F; --neutral:#9AA4AE; --neutral-bg:#22272C; }
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);background:var(--pg);color:var(--tx);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 20px 90px}
+h1{font-size:26px;line-height:1.25;margin:0 0 4px}
+h2{font-size:20px;margin:26px 0 8px}
+h3{font-size:16px;margin:18px 0 6px}
+h4{font-size:15px;margin:0 0 8px}
+p{margin:8px 0;max-width:80ch}
+code{font-family:var(--mono);font-size:.88em;background:var(--neutral-bg);padding:1px 5px;border-radius:3px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;margin:16px 0}
+.bar{position:sticky;top:0;z-index:40;background:var(--card);border-bottom:1px solid var(--rule);
+  padding:10px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button{font-family:inherit;font-size:14px;padding:7px 12px;border-radius:6px;border:1px solid var(--rule);
+  background:var(--card);color:var(--tx);cursor:pointer}
+button.primary{background:var(--att);color:#fff;border-color:var(--att);font-weight:600}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;margin-right:6px}
+.t-att{background:var(--att-bg);color:var(--att)} .t-ok{background:var(--ok-bg);color:var(--ok)}
+.t-neu{background:var(--neutral-bg);color:var(--neutral)}
+table{border-collapse:collapse;width:100%;font-size:13px;margin-top:10px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--tx2)}
+.mut{color:var(--tx2);font-size:12px}
+.prov{max-width:36ch;font-size:11.5px;color:var(--tx2)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid #00000022;
+  vertical-align:-2px;margin-right:6px}
+.pass{color:var(--ok)} .fail{color:var(--att);text-decoration:underline}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:900px){.pair{grid-template-columns:1fr}}
+.chartcard{border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.chartcard .cl{font-size:13px;font-weight:700;padding:9px 12px 2px;background:var(--card)}
+.chartcard .cs{font-size:11.5px;color:var(--tx2);padding:0 12px 9px;background:var(--card)}
+.cwrap{padding:14px 12px;background:var(--page);color:var(--ink)}
+.cwrap svg{width:100%;height:auto;display:block}
+.cwrap .dv-grid{stroke-width:1}
+.cwrap text{font-family:var(--font);font-size:12px}
+.ctl{border:1px solid var(--rule);border-radius:8px;padding:12px 14px;margin:10px 0;background:var(--card)}
+.opt{display:block;border:1px solid var(--rule);border-radius:8px;padding:9px 12px;margin:6px 0;cursor:pointer;font-size:13.5px}
+.opt:has(input:checked){border-color:var(--att);border-width:2px;padding:8px 11px;background:var(--att-bg)}
+textarea{width:100%;min-height:120px;font-family:var(--mono);font-size:12px;padding:10px;border:1px solid var(--rule);
+  border-radius:6px;background:var(--pg);color:var(--tx)}
+</style>
+
+<style>
+.cand{display:inline-flex;flex-direction:column;align-items:flex-start;gap:3px;padding:8px 10px;margin:4px 6px 4px 0;
+  border:1px solid var(--rule);border-radius:8px;background:var(--card);cursor:pointer;min-width:132px;text-align:left}
+.cand[aria-pressed="true"]{border-color:var(--att);border-width:2px;padding:7px 9px;background:var(--att-bg)}
+.csw{display:block;width:100%;height:26px;border-radius:4px;border:1px solid #00000022}
+.chex{font-family:var(--mono);font-size:12.5px;font-weight:700}
+.crat{font-size:11px;color:var(--tx2)}
+tr.inc td{background:var(--neutral-bg)}
+.settled{border-left:4px solid #137F3C;padding-left:12px}
+.warnhue{border-left:4px solid #C58900;padding-left:12px}
+.big{font-size:15px}
+.strip{margin:8px 0 4px}
+</style>
+
+</head><body>
+<div class="bar"><b>REVIEW #168 — amber + blue picker</b><button onclick="document.documentElement.dataset.ui=document.documentElement.dataset.ui==='dark'?'light':'dark'">Toggle page chrome</button><button class="primary" onclick="exportPicks()">Export my picks</button><span class="tag t-att">nothing here is seated</span></div>
+<div class="wrap">
+<h1>Pick the amber and the blue</h1>
+<div class="card"><h2 style="margin-top:0">In one screen</h2>
+<p class="big settled"><b>Settled by you, already in the tree.</b> Chart red light leg = <code>#DA1A00</code> (5.09:1 on white). Chart green light leg = <code>#137F3C</code> (5.09:1 on white). All four <b>dark</b> legs unchanged.</p>
+<p class="big warnhue"><b>Open, yours.</b> The amber and blue <b>light</b> legs. <code>#C58900</code> and <code>#306EC6</code> sit there as <b>interim</b> — marked so in the token notes — until you pick.</p>
+<p class="big"><b>What to do:</b> click a swatch in § 2 or § 3. The chart above it repaints live. When both look right, hit <b>Export my picks</b>.</p>
+<p class="mut">⚠ <b>Amber is a problem hue for you</b> (astigmatism — blue and green sit still, red and yellow do not). The amber list is deliberately the <b>widest</b>: two hue-shifts, a desaturation, and three brightness steps. Blue is a stable hue, so its list is tighter. Every candidate on both lists clears <code>dv-016</code>’s 3:1 on white — the ratio is a floor, not the argument. <b>Your eye rules.</b></p></div>
+<h2>1 · The live chart</h2>
+<p class="mut">Left = your picks applied. Right = the interim values, frozen, for comparison. Red and green are the settled legs in both.</p>
+<div class="pair">
+<div class="chartcard"><div class="cl">YOUR PICKS — live</div><div class="cs">amber + blue follow the swatches below; red/green settled</div><div class="cwrap" id="live-light" style="--page:#FFFFFF;--ink:#1A1A1A;--data-axis:#626262;--data-grid:#E1E1E1;--baseline:#1A1A1A;--status-breach:#DA1A00;--status-watch:#C58900;--status-healthy:#137F3C;--status-info:#306EC6;"><svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Payment exceptions by status. Overdue 14, Needs attention 9, On track 32, Information 6.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">10</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">30</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Overdue</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Needs attention</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">On track</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.8750">Information</text>
+      </svg></div></div>
+<div class="chartcard"><div class="cl">INTERIM — frozen</div><div class="cs">amber #C58900 / blue #306EC6 as they stand in the tree today</div><div class="cwrap" style="--page:#FFFFFF;--ink:#1A1A1A;--data-axis:#626262;--data-grid:#E1E1E1;--baseline:#1A1A1A;--status-breach:#DA1A00;--status-watch:#C58900;--status-healthy:#137F3C;--status-info:#306EC6;"><svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Payment exceptions by status. Overdue 14, Needs attention 9, On track 32, Information 6.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">10</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">30</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Overdue</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Needs attention</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">On track</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.8750">Information</text>
+      </svg></div></div>
+</div>
+<h3>Dark mode — for context only, <b>not</b> in scope</h3>
+<p class="mut">You held all four dark legs. Shown so you can see what the light pick sits alongside; it does not change.</p>
+<div class="chartcard" style="max-width:600px"><div class="cl">dark legs, as built — UNCHANGED</div><div class="cs">#CC4333 / #C58900 / #4A9568 / #2674DC</div><div class="cwrap" style="--page:#1A1A1A;--ink:#FFFFFF;--data-axis:#9D9D9D;--data-grid:#484848;--baseline:#FFFFFF;--status-breach:#CC4333;--status-watch:#C58900;--status-healthy:#4A9568;--status-info:#2674DC;"><svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Payment exceptions by status. Overdue 14, Needs attention 9, On track 32, Information 6.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">10</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">30</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Overdue</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Needs attention</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">On track</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.8750">Information</text>
+      </svg></div></div>
+<h2>2 · Amber — the <span style="color:#B37D00">problem hue</span></h2>
+<p class="mut warnhue">Widest spread on purpose. Six candidates: the incumbent, three brightness steps down the same hue, one shifted <b>toward orange</b> (closer to the settled red) and one <b>desaturated</b>. Everything lighter than <code>#C58900</code> fails 3:1 on white — that is the ceiling, and it is arithmetic, not taste.</p>
+<div class="strip"><button class="cand" data-hue="watch" data-hex="#C58900" onclick="pick('watch','#C58900',this)" data-default="1"><span class="csw" style="background:#C58900"></span><span class="chex">#C58900</span><span class="crat">3.02:1 on white</span></button>
+<button class="cand" data-hue="watch" data-hex="#B8860B" onclick="pick('watch','#B8860B',this)"><span class="csw" style="background:#B8860B"></span><span class="chex">#B8860B</span><span class="crat">3.25:1 on white</span></button>
+<button class="cand" data-hue="watch" data-hex="#B37D00" onclick="pick('watch','#B37D00',this)"><span class="csw" style="background:#B37D00"></span><span class="chex">#B37D00</span><span class="crat">3.59:1 on white</span></button>
+<button class="cand" data-hue="watch" data-hex="#A87200" onclick="pick('watch','#A87200',this)"><span class="csw" style="background:#A87200"></span><span class="chex">#A87200</span><span class="crat">4.14:1 on white</span></button>
+<button class="cand" data-hue="watch" data-hex="#A85E00" onclick="pick('watch','#A85E00',this)"><span class="csw" style="background:#A85E00"></span><span class="chex">#A85E00</span><span class="crat">4.92:1 on white</span></button>
+<button class="cand" data-hue="watch" data-hex="#8F6A16" onclick="pick('watch','#8F6A16',this)"><span class="csw" style="background:#8F6A16"></span><span class="chex">#8F6A16</span><span class="crat">4.95:1 on white</span></button></div>
+<div class="card" style="overflow-x:auto"><table><thead><tr><th>amber candidate</th><th>measured, live</th><th>hue / sat / val</th><th>why it is on the list — an OFFER, not a recommendation</th></tr></thead><tbody><tr class="inc"><td><span class="sw" style="background:#C58900"></span><code>#C58900</code><br><span class="tag t-neu" style="margin-top:4px">incumbent</span></td><td><b class="pass">3.021:1</b><br><span class="mut">vs white</span></td><td class="mut">H 41.7°<br>S 100 · V 77</td><td class="prov">INCUMBENT — R-D3’s ruled amber/graphic, in the tree today. Brightest amber that still clears 3:1 on white; anything lighter fails dv-016.</td></tr>
+<tr><td><span class="sw" style="background:#B8860B"></span><code>#B8860B</code></td><td><b class="pass">3.254:1</b><br><span class="mut">vs white</span></td><td class="mut">H 42.7°<br>S 94 · V 72</td><td class="prov">One notch down, slightly yellower and a touch desaturated. Softer edge against white, still unmistakably amber.</td></tr>
+<tr><td><span class="sw" style="background:#B37D00"></span><code>#B37D00</code></td><td><b class="pass">3.590:1</b><br><span class="mut">vs white</span></td><td class="mut">H 41.9°<br>S 100 · V 70</td><td class="prov">Same hue as the incumbent, darker. Buys real headroom over 3:1 — the safest amber if the incumbent reads thin to you.</td></tr>
+<tr><td><span class="sw" style="background:#A87200"></span><code>#A87200</code></td><td><b class="pass">4.140:1</b><br><span class="mut">vs white</span></td><td class="mut">H 40.7°<br>S 100 · V 66</td><td class="prov">Darker again. Reads as a solid ochre bar rather than a glow; furthest from vibrating against white.</td></tr>
+<tr><td><span class="sw" style="background:#A85E00"></span><code>#A85E00</code></td><td><b class="pass">4.923:1</b><br><span class="mut">vs white</span></td><td class="mut">H 33.6°<br>S 100 · V 66</td><td class="prov">HUE-SHIFTED toward orange (33.6° vs 41.7°). Warmer, closer to the settled red — offered so you can judge whether amber’s job is “near-red warning” or “distinct third hue”.</td></tr>
+<tr><td><span class="sw" style="background:#8F6A16"></span><code>#8F6A16</code></td><td><b class="pass">4.952:1</b><br><span class="mut">vs white</span></td><td class="mut">H 41.7°<br>S 85 · V 56</td><td class="prov">DESATURATED olive-amber (sat 85 vs 100). The quietest option — offered because a problem hue sometimes reads more stably when it is less saturated.</td></tr></tbody></table></div>
+<h2>3 · Blue — a <span style="color:#306EC6">stable hue</span></h2>
+<p class="mut">Six candidates: the incumbent, lighter, darker, desaturated, and two hue-shifts — one toward violet, one toward cyan. All clear 3:1 on white comfortably; blue has far more room than amber does.</p>
+<div class="strip"><button class="cand" data-hue="info" data-hex="#306EC6" onclick="pick('info','#306EC6',this)" data-default="1"><span class="csw" style="background:#306EC6"></span><span class="chex">#306EC6</span><span class="crat">5.03:1 on white</span></button>
+<button class="cand" data-hue="info" data-hex="#2A7BD4" onclick="pick('info','#2A7BD4',this)"><span class="csw" style="background:#2A7BD4"></span><span class="chex">#2A7BD4</span><span class="crat">4.30:1 on white</span></button>
+<button class="cand" data-hue="info" data-hex="#4A72D8" onclick="pick('info','#4A72D8',this)"><span class="csw" style="background:#4A72D8"></span><span class="chex">#4A72D8</span><span class="crat">4.48:1 on white</span></button>
+<button class="cand" data-hue="info" data-hex="#3F6FB5" onclick="pick('info','#3F6FB5',this)"><span class="csw" style="background:#3F6FB5"></span><span class="chex">#3F6FB5</span><span class="crat">5.06:1 on white</span></button>
+<button class="cand" data-hue="info" data-hex="#0F6E9E" onclick="pick('info','#0F6E9E',this)"><span class="csw" style="background:#0F6E9E"></span><span class="chex">#0F6E9E</span><span class="crat">5.61:1 on white</span></button>
+<button class="cand" data-hue="info" data-hex="#1F5FBF" onclick="pick('info','#1F5FBF',this)"><span class="csw" style="background:#1F5FBF"></span><span class="chex">#1F5FBF</span><span class="crat">6.09:1 on white</span></button></div>
+<div class="card" style="overflow-x:auto"><table><thead><tr><th>blue candidate</th><th>measured, live</th><th>hue / sat / val</th><th>why it is on the list — an OFFER, not a recommendation</th></tr></thead><tbody><tr class="inc"><td><span class="sw" style="background:#306EC6"></span><code>#306EC6</code><br><span class="tag t-neu" style="margin-top:4px">incumbent</span></td><td><b class="pass">5.034:1</b><br><span class="mut">vs white</span></td><td class="mut">H 215.2°<br>S 76 · V 78</td><td class="prov">INCUMBENT — the value retired to rag/information-glyph by s122-D2, in the tree today.</td></tr>
+<tr><td><span class="sw" style="background:#2A7BD4"></span><code>#2A7BD4</code></td><td><b class="pass">4.301:1</b><br><span class="mut">vs white</span></td><td class="mut">H 211.4°<br>S 80 · V 83</td><td class="prov">Lighter and slightly cyan of the incumbent. More air against white; still well clear of 3:1.</td></tr>
+<tr><td><span class="sw" style="background:#4A72D8"></span><code>#4A72D8</code></td><td><b class="pass">4.478:1</b><br><span class="mut">vs white</span></td><td class="mut">H 223.1°<br>S 66 · V 85</td><td class="prov">HUE-SHIFTED toward violet (223°). Pushes blue further from the green leg — more separation, cooler cast.</td></tr>
+<tr><td><span class="sw" style="background:#3F6FB5"></span><code>#3F6FB5</code></td><td><b class="pass">5.057:1</b><br><span class="mut">vs white</span></td><td class="mut">H 215.6°<br>S 65 · V 71</td><td class="prov">Same hue, DESATURATED (sat 65 vs 76). Steadier, less electric next to #DA1A00.</td></tr>
+<tr><td><span class="sw" style="background:#0F6E9E"></span><code>#0F6E9E</code></td><td><b class="pass">5.608:1</b><br><span class="mut">vs white</span></td><td class="mut">H 200.1°<br>S 91 · V 62</td><td class="prov">HUE-SHIFTED toward cyan/teal (200°). Maximum distance from the violet end; watch it against the green.</td></tr>
+<tr><td><span class="sw" style="background:#1F5FBF"></span><code>#1F5FBF</code></td><td><b class="pass">6.091:1</b><br><span class="mut">vs white</span></td><td class="mut">H 216.0°<br>S 84 · V 75</td><td class="prov">Darker, more saturated. Heaviest blue on offer — matches the weight of the settled red/green.</td></tr></tbody></table></div>
+<h2>4 · What your pick will do</h2><div class="card"><ul>
+<li><b>Four files move, not one.</b> <code>tokens/semantic-colour.json</code>, <code>tokens/palettes/rag/mono.json</code>, the <code>--rag-*-graphic</code> atom in <code>canon/canon.css</code>, and the projected value in <code>snippets/Chart-bar.reference.html</code> (re-generated, never hand-typed).</li>
+<li><b>Scope stays mono.</b> Legacy and console/supercharge declare this rung ABSENT (s167-D1) and are untouched.</li>
+<li><b>Marks do not move.</b> <code>rag/*-glyph</code> keeps your #122 values. This is the chart-series strength only.</li>
+<li><b>The “two ambers” consequence stands.</b> A status chip and a chart series on the same dashboard will not match exactly — R-D3 accepted that for amber; it now holds for all four hues.</li>
+<li><b>A darker amber narrows the gap to red.</b> The further down the amber list you go, the closer amber sits to <code>#DA1A00</code> in weight. The orange-shifted candidate makes that deliberate; the desaturated one makes it the opposite. Both are on the list so the choice is yours, not implied.</li>
+<li><b>Nothing is minted here.</b> No ruling is written, <code>_rulings.json</code> is untouched, and the interim values stay put until you say otherwise.</li>
+</ul></div>
+<h2>5 · Your pick, per hue</h2>
+<p class="mut">The radios mirror the swatches — change either. Then export.</p>
+<div class="ctl"><h4>amber <span class="mut">(Needs attention / watch — <code>rag/warning-graphic</code> LIGHT leg)</span></h4><label class="opt"><input type="radio" name="d-watch" value="#C58900" checked onchange="pick('watch','#C58900',null)"> <span class="sw" style="background:#C58900"></span><b><code>#C58900</code></b> <span class="mut">3.02:1 on white — INCUMBENT — R-D3’s ruled amber/graphic, in the tree today</span></label>
+<label class="opt"><input type="radio" name="d-watch" value="#B8860B" onchange="pick('watch','#B8860B',null)"> <span class="sw" style="background:#B8860B"></span><b><code>#B8860B</code></b> <span class="mut">3.25:1 on white — One notch down, slightly yellower and a touch desaturated</span></label>
+<label class="opt"><input type="radio" name="d-watch" value="#B37D00" onchange="pick('watch','#B37D00',null)"> <span class="sw" style="background:#B37D00"></span><b><code>#B37D00</code></b> <span class="mut">3.59:1 on white — Same hue as the incumbent, darker</span></label>
+<label class="opt"><input type="radio" name="d-watch" value="#A87200" onchange="pick('watch','#A87200',null)"> <span class="sw" style="background:#A87200"></span><b><code>#A87200</code></b> <span class="mut">4.14:1 on white — Darker again</span></label>
+<label class="opt"><input type="radio" name="d-watch" value="#A85E00" onchange="pick('watch','#A85E00',null)"> <span class="sw" style="background:#A85E00"></span><b><code>#A85E00</code></b> <span class="mut">4.92:1 on white — HUE-SHIFTED toward orange (33</span></label>
+<label class="opt"><input type="radio" name="d-watch" value="#8F6A16" onchange="pick('watch','#8F6A16',null)"> <span class="sw" style="background:#8F6A16"></span><b><code>#8F6A16</code></b> <span class="mut">4.95:1 on white — DESATURATED olive-amber (sat 85 vs 100)</span></label>
+<label class="opt"><input type="radio" name="d-watch" value="NONE OF THESE — Dave will name a value"> <b>None of these</b> — I will name the value myself <span class="mut">(nothing is derived on your behalf)</span></label>
+<label class="opt"><input type="radio" name="d-watch" value="HOLD the incumbent, no change"> <b>Hold</b> — leave the interim value where it is for now</label></div>
+<div class="ctl"><h4>blue <span class="mut">(Information / info — <code>rag/information-graphic</code> LIGHT leg)</span></h4><label class="opt"><input type="radio" name="d-info" value="#306EC6" checked onchange="pick('info','#306EC6',null)"> <span class="sw" style="background:#306EC6"></span><b><code>#306EC6</code></b> <span class="mut">5.03:1 on white — INCUMBENT — the value retired to rag/information-glyph by s122-D2, in the tree today</span></label>
+<label class="opt"><input type="radio" name="d-info" value="#2A7BD4" onchange="pick('info','#2A7BD4',null)"> <span class="sw" style="background:#2A7BD4"></span><b><code>#2A7BD4</code></b> <span class="mut">4.30:1 on white — Lighter and slightly cyan of the incumbent</span></label>
+<label class="opt"><input type="radio" name="d-info" value="#4A72D8" onchange="pick('info','#4A72D8',null)"> <span class="sw" style="background:#4A72D8"></span><b><code>#4A72D8</code></b> <span class="mut">4.48:1 on white — HUE-SHIFTED toward violet (223°)</span></label>
+<label class="opt"><input type="radio" name="d-info" value="#3F6FB5" onchange="pick('info','#3F6FB5',null)"> <span class="sw" style="background:#3F6FB5"></span><b><code>#3F6FB5</code></b> <span class="mut">5.06:1 on white — Same hue, DESATURATED (sat 65 vs 76)</span></label>
+<label class="opt"><input type="radio" name="d-info" value="#0F6E9E" onchange="pick('info','#0F6E9E',null)"> <span class="sw" style="background:#0F6E9E"></span><b><code>#0F6E9E</code></b> <span class="mut">5.61:1 on white — HUE-SHIFTED toward cyan/teal (200°)</span></label>
+<label class="opt"><input type="radio" name="d-info" value="#1F5FBF" onchange="pick('info','#1F5FBF',null)"> <span class="sw" style="background:#1F5FBF"></span><b><code>#1F5FBF</code></b> <span class="mut">6.09:1 on white — Darker, more saturated</span></label>
+<label class="opt"><input type="radio" name="d-info" value="NONE OF THESE — Dave will name a value"> <b>None of these</b> — I will name the value myself <span class="mut">(nothing is derived on your behalf)</span></label>
+<label class="opt"><input type="radio" name="d-info" value="HOLD the incumbent, no change"> <b>Hold</b> — leave the interim value where it is for now</label></div>
+<div class="ctl"><h4>Anything else</h4><textarea id="freeform" placeholder="A value you want to name yourself, a hue you want pushed further, anything the list missed..."></textarea></div>
+<div class="card"><b>Also open, not asked here:</b> the settled red and green light legs are now <b>value-identical to the <code>-ink</code> rung</b> in light mode (<code>#DA1A00</code>, <code>#137F3C</code>). The rung still forks in dark, so it is not collapsed — but if you want the chart red/green to differ from the text red/green on white, that is a separate ruling. Flagged, not assumed.</div>
+</div>
+<script>
+var PICKS={watch:"#C58900", info:"#306EC6"};
+function pick(hue,hex,btn){
+  PICKS[hue]=hex;
+  var el=document.getElementById('live-light');
+  el.style.setProperty('--status-'+hue, hex);
+  document.querySelectorAll('.cand[data-hue="'+hue+'"]').forEach(function(b){
+    b.setAttribute('aria-pressed', b.dataset.hex===hex ? 'true':'false');
+  });
+  var r=document.querySelector('input[name="d-'+hue+'"][value="'+hex+'"]');
+  if(r) r.checked=true;
+}
+document.addEventListener('DOMContentLoaded',function(){
+  pick('watch',PICKS.watch,null); pick('info',PICKS.info,null);
+});
+function exportPicks(){
+  var out=["# REVIEW-168 — amber + blue graphic LIGHT legs: Dave's picks",""];
+  out.push("Settled already (in tree): error light #DA1A00 · success light #137F3C · all four dark legs unchanged.");
+  out.push("");
+  document.querySelectorAll('.ctl').forEach(function(c){
+    var h=c.querySelector('h4'); if(!h) return;
+    var r=c.querySelector('input:checked');
+    if(r) out.push("- "+h.textContent.trim().split('(')[0].trim()+" LIGHT leg: "+r.value);
+  });
+  var f=document.getElementById('freeform').value.trim();
+  if(f) out.push("", "Notes: "+f);
+  var b=new Blob([out.join("\n")],{type:'text/markdown'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(b);
+  a.download='REVIEW-168-amber-blue-picks.md'; a.click();
+}
+</script></body></html>

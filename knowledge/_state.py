@@ -138,6 +138,51 @@ DEADLINE_RE = re.compile(r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$")
 EFFORT = "effort"
 EFFORT_VALUES = ("S", "M", "L")
 
+# ---- `effort` IS A TOKEN-BANDED RUNG, NOT A T-SHIRT (#168, Option C) ------------------------
+# s168-D2 PENDING — minted by Dave at the #168 wrap, not here. Until then this block is a
+# PROPOSAL's vocabulary written down, and the gate below enforces only what it already did.
+#
+# ⚠ THE SPELLING IS UNCHANGED — S / M / L — and that is deliberate: Option C §5.2 asks for
+# ZERO schema change, so every value already legal stays legal and the both-direction selftest
+# carries over intact. What changes is the STANDARD the letter is picked against.
+#
+# THE UNIT, NAMED: **real Claude tokens of JOB WINDOW** — `client.messages.count_tokens()`
+# tokens (the unit ruled in `_gauge_tokens.py`), counting the JOB ONLY: boot and wrap are
+# EXCLUDED, exactly as the `boot + job + wrap` pre-flight blocks in `notes/_GAUGE-LOG.md`
+# decompose them. It is NOT wall-clock, NOT lines of code, NOT bytes of prose — bytes of prose
+# is the proxy this field exists to kill [[measure-dont-convert-units]].
+#
+# ⛔ AND DELEGATED SUB SPEND IS EXCLUDED TOO (#168). A sub's tokens are WEEKLY QUOTA, not this
+# window's FILL [[budget-vs-quota-vocabulary]] — and they never entered the corpus: the
+# `job` numbers in `notes/_GAUGE-LOG.md` are conductor-window figures, so edges derived from
+# them cannot price sub spend. An L that means "needs a sub" is therefore a claim about THIS
+# window, not a total bill; the two budgets must not be added [[delegation-cost-inversion-110]].
+#
+#   S — fits BESIDE other work in one window
+#   M — IS the window's job
+#   L — does NOT fit one window; needs a lane, a sub, or a session of its own
+#
+# ⛔ THE BAND EDGES ARE NOT TYPED HERE, ON PURPOSE. They are DERIVED AT BUILD from the
+# token-priced session blocks in `notes/_GAUGE-LOG.md` by `gen_dashboard.effort_anchors()`,
+# which prints them on the page together with the `n` it derived them from. A number typed in
+# two files drifts in one of them; an edge with no `n` beside it is a round number somebody
+# liked, not a measurement [[planning-estimate-is-not-a-measurement]].
+#
+# ⚠ AND IT IS STILL AN ESTIMATE. The edges are measured; a rung Dave picks for an item is his
+# FORECAST against them. The page must say *estimated*, never *costs*.
+#
+# ⛔ NO AGENT MAY AUTHOR A VALUE — unchanged and re-stated because a stated standard makes
+# authoring feel more defensible, and it is not. The gate cannot tell Dave's "M" from mine.
+EFFORT_UNIT = ("real Claude tokens of job window (boot and wrap EXCLUDED, and delegated sub "
+               "spend EXCLUDED — a sub's tokens are weekly QUOTA, not this window's fill, and "
+               "are not in the blocks these edges derive from), derived from the token-priced "
+               "session blocks in notes/_GAUGE-LOG.md")
+EFFORT_RUNG_MEANING = {
+    "S": "fits beside other work in one window",
+    "M": "is the window's job",
+    "L": "does not fit one window — needs a lane or a sub",
+}
+
 
 class StateError(Exception):
     """Raised loud and NAMED. A crash is not a fail [[a-crash-is-not-a-fail]] — callers that
@@ -175,6 +220,92 @@ def _sort_key(it):
         return (9, 0, "", it["id"])
     fam = {"W": 0, "G": 1}.get(m.group(1), 9)
     return (fam, int(m.group(2)), m.group(3), it["id"])
+
+
+# ---- home pointers: the ROT CLASS (#168) -------------------------------------------------------
+# Every `home` written at birth (#88) was `<path>:<line>`. GOOD-MORNING.md is a ROLLING surface:
+# each session prepends a banner, so every line number below the banner moves. Measured #168: all
+# 19 W-* homes were off by exactly 16 lines — every one of them resolved to a DIFFERENT item's
+# prose, and nothing complained, because nothing ever RESOLVED a home [[instrument-without-a-
+# consumer]]. The standing store was citing a rolling surface.
+#
+# The repair is an ADDRESS CHANGE, not a re-count: `<path>#<literal anchor>` — a substring that
+# must occur EXACTLY ONCE in the file. An anchor moves WITH the text it names; a line number does
+# not. Re-counting the lines would have fixed the 19 instances and left the class intact.
+#
+# ⚠ `<path>:<line>` is still ACCEPTED — `_GOVERNING-RECORDS.md` is a standing table whose rows do
+# not roll, and its 18 homes all resolved correctly at #168. The form is reported, never rewritten
+# on Dave's behalf.
+HOME_ANCHOR = "#"
+
+# ⬛ DAVE'S DIAL, DELIBERATELY OFF. `False` ⇒ an unresolvable home is a NOTE. `True` ⇒ it is a
+# BLOCKING failure, and `_state.py` is an ABORT step in `_build_all.py` (#166), so flipping this
+# stops the build at the bad pointer. Both directions are mutation-tested in selftest(), so the
+# promotion is PROVEN available, not assumed. Flipping it is a one-word, one-line reversal.
+HOME_ROT_BLOCKING = True  # flipped by Dave, #168 — a rotten home pointer is a build stop
+
+
+def resolve_home(home, root=None):
+    """Resolve one `home` against the filesystem. Returns `(status, detail)`.
+
+    status ∈ {"empty", "missing-file", "anchor-ok", "anchor-absent", "anchor-ambiguous",
+              "line-ok", "line-past-eof"}
+    A FAIL is named and quotes what it forbids [[gate-must-quote-what-it-forbids]]. A file this
+    module cannot see is `missing-file` — NOT silently passed, and NOT guessed at.
+    """
+    if root is None:
+        root = os.path.dirname(HERE)
+    home = (home or "").strip()
+    if not home:
+        return ("empty", "no home recorded")
+    if HOME_ANCHOR in home:
+        rel, anchor = home.split(HOME_ANCHOR, 1)
+        kind = "anchor"
+    elif ":" in home and home.rsplit(":", 1)[1].isdigit():
+        rel, anchor = home.rsplit(":", 1)
+        kind = "line"
+    else:
+        rel, anchor, kind = home, None, "file"
+    fp = os.path.join(root, rel)
+    if not os.path.isfile(fp):
+        return ("missing-file", f"{rel!r} does not exist under {root}")
+    with open(fp, encoding="utf-8") as f:
+        text = f.read()
+    if kind == "file":
+        return ("anchor-ok", f"{rel} exists (no anchor to resolve)")
+    if kind == "anchor":
+        n = text.count(anchor)
+        if n == 1:
+            ln = text[:text.index(anchor)].count("\n") + 1
+            return ("anchor-ok", f"{rel}: anchor {anchor!r} unique, currently line {ln}")
+        if n == 0:
+            return ("anchor-absent", f"{rel}: anchor {anchor!r} NOT FOUND")
+        return ("anchor-ambiguous", f"{rel}: anchor {anchor!r} occurs {n}× — not an address")
+    ln = int(anchor)
+    lines = text.splitlines()
+    if ln > len(lines):
+        return ("line-past-eof", f"{rel}: line {ln} is past EOF ({len(lines)} lines)")
+    return ("line-ok", f"{rel}:{ln} reads {lines[ln - 1][:60]!r} — UNVERIFIED: a line number "
+                       f"cannot say whether that is the RIGHT line")
+
+
+def check_homes(items, root=None):
+    """`(fails, note)` over every item's `home`. The note is a MEASUREMENT of the two forms —
+    it moves with the data, so it cannot be read as decoration."""
+    fails, by_status = [], {}
+    for it in items:
+        st, detail = resolve_home(it.get("home"), root)
+        by_status[st] = by_status.get(st, 0) + 1
+        if st in ("empty", "missing-file", "anchor-absent", "anchor-ambiguous", "line-past-eof"):
+            fails.append(f"{it.get('id', '<no id>')} home UNRESOLVABLE — {detail}")
+    if not items:
+        return fails, ""
+    n_anchor = by_status.get("anchor-ok", 0)
+    n_line = by_status.get("line-ok", 0)
+    note = (f"home pointers: {n_anchor} resolve by ANCHOR (rot-proof), {n_line} are still "
+            f"`path:line` (UNVERIFIABLE by content — the #168 rot class), {len(fails)} "
+            f"UNRESOLVABLE. Blocking = {HOME_ROT_BLOCKING} (Dave's dial).")
+    return fails, note
 
 
 # ---- the gate ----------------------------------------------------------------------------------
@@ -272,7 +403,12 @@ def check(doc=None, path=STORE):
             if v not in EFFORT_VALUES:
                 fails.append(f"{iid}: {EFFORT} is {v!r} — effort must be one of "
                              f"{EFFORT_VALUES}. A free-text size is not a size; it is prose, "
-                             f"and prose is the proxy this field exists to replace")
+                             f"and prose is the proxy this field exists to replace. "
+                             f"The rungs are TOKEN-BANDED (#168 Option C, s168-D2 pending): "
+                             f"the unit is {EFFORT_UNIT}; "
+                             + " · ".join(f"{k} = {m}" for k, m in EFFORT_RUNG_MEANING.items())
+                             + ". Band edges are NOT typed here — gen_dashboard.effort_anchors() "
+                               "derives them at build and prints them with their n")
 
         if it["state"] in ("done", "dropped") and not str(it.get("closed_by", "")).strip():
             fails.append(f"{iid}: state={it['state']!r} with no `closed_by` — a close is a "
@@ -307,6 +443,12 @@ def check(doc=None, path=STORE):
     if stale_legacy:
         notes.append(f"legacy ids retired since birth: {', '.join(stale_legacy)} "
                      f"(frozen set may shrink; it may never grow)")
+
+    h_fails, h_note = check_homes(items)
+    if h_note:
+        notes.append(h_note)
+    if h_fails:
+        (fails if HOME_ROT_BLOCKING else notes).extend(h_fails)
 
     return (not fails), fails, notes
 
@@ -508,6 +650,37 @@ def selftest():
     d = healthy(); d["items"][0][EFFORT] = 3
     bite("effort as int REFUSED", d, False, "must be one of")
 
+    # 14j-2. #168 Option C: the REFUSAL must carry the rung STANDARD, not just the enum.
+    # A refusal that says "must be one of ('S','M','L')" tells the reader the spelling and
+    # nothing about what he is picking against — and an unstandardised rung is exactly the
+    # arbitrariness this change exists to remove [[gate-must-quote-what-it-forbids]].
+    d = healthy(); d["items"][0][EFFORT] = "XL"
+    bite("effort refusal names the UNIT", d, False, "real Claude tokens of job window")
+    d = healthy(); d["items"][0][EFFORT] = "XL"
+    bite("effort refusal names the L rung's meaning", d, False,
+         "does not fit one window")
+
+    # 14j-3. the rung vocabulary and the gate's enum are ONE set, not two that agree today.
+    # Two lists that must match are a fork waiting for a session that edits one of them.
+    if tuple(EFFORT_RUNG_MEANING) != EFFORT_VALUES:
+        fails.append(f"[effort rungs] EFFORT_RUNG_MEANING keys "
+                     f"{tuple(EFFORT_RUNG_MEANING)!r} != EFFORT_VALUES {EFFORT_VALUES!r} — "
+                     f"the documented vocabulary and the enforced enum have forked, so the "
+                     f"gate now refuses a rung the page tells Dave to author, or accepts one "
+                     f"it never defined")
+    n_bites[0] += 1
+
+    # 14j-4. ⛔ THE UNIT IS NOT A PLACEHOLDER. A unit string that stops naming tokens turns
+    # the field back into a t-shirt size and no other test would notice.
+    # ⚠ THE `sub` CLAUSE IS PART OF THE UNIT, NOT COMMENTARY (#168): a unit that stops saying
+    # delegated spend is out reads as a TOTAL bill, and quota would get added to fill.
+    if ("token" not in EFFORT_UNIT or "job window" not in EFFORT_UNIT
+            or "sub" not in EFFORT_UNIT):
+        fails.append(f"[effort unit] EFFORT_UNIT no longer names real tokens of job window with "
+                     f"delegated sub spend excluded: {EFFORT_UNIT!r} — an unnamed or widened "
+                     f"unit is the defect [[measure-dont-convert-units]]")
+    n_bites[0] += 1
+
     # 14k. the coverage NOTE must move with the data — a constant note is not a measurement
     d = healthy()
     _, _, n_none = check(d)
@@ -525,9 +698,63 @@ def selftest():
     if counts(d)["live"] != before - 1:
         fails.append("[counts move] counts() did not follow the data — it is not a measurement")
 
+    # 15. THE HOME-POINTER ROT CLASS (#168) — driven on a REAL temp tree, both directions, and
+    # both sides of Dave's dial. A resolver tested only against strings would pass while every
+    # pointer in the store aimed at the wrong line, which is exactly what happened #88→#167.
+    import tempfile
+    _hn = 0
+    with tempfile.TemporaryDirectory(dir=os.environ.get("TMPDIR", "/var/tmp")) as td:
+        os.makedirs(os.path.join(td, "knowledge"), exist_ok=True)
+        with open(os.path.join(td, "ROLL.md"), "w", encoding="utf-8") as f:
+            f.write("banner\nbanner\n> **1. THE ITEM\nbody\n> **2. TWIN\n> **2. TWIN\n")
+
+        def harm(name, home, want_status):
+            nonlocal _hn
+            _hn += 1
+            st, detail = resolve_home(home, root=td)
+            if st != want_status:
+                fails.append(f"[home {name}] wanted {want_status!r}, got {st!r} ({detail})")
+            return detail
+
+        d1 = harm("anchor resolves", "ROLL.md#> **1. THE ITEM", "anchor-ok")
+        if "line 3" not in d1:
+            fails.append(f"[home anchor line] resolver did not report the LIVE line: {d1}")
+        harm("anchor absent FAILS", "ROLL.md#> **9. GONE", "anchor-absent")
+        harm("anchor ambiguous FAILS", "ROLL.md#> **2. TWIN", "anchor-ambiguous")
+        harm("missing file FAILS", "NOPE.md#x", "missing-file")
+        harm("empty home FAILS", "", "empty")
+        harm("line form accepted", "ROLL.md:3", "line-ok")
+        harm("line past EOF FAILS", "ROLL.md:99", "line-past-eof")
+
+        # THE ROT ITSELF: the anchor still resolves after the surface ROLLS; the line number
+        # silently points at different prose. This arm is the whole argument for the change.
+        with open(os.path.join(td, "ROLL.md"), "w", encoding="utf-8") as f:
+            f.write("NEW BANNER\n" * 4 + "> **1. THE ITEM\nbody\n> **2. TWIN\n")
+        _hn += 1
+        st_a, det_a = resolve_home("ROLL.md#> **1. THE ITEM", root=td)
+        st_l, det_l = resolve_home("ROLL.md:3", root=td)
+        if st_a != "anchor-ok" or "line 5" not in det_a:
+            fails.append(f"[home ROLL survival] anchor did not follow the roll: {st_a} {det_a}")
+        if "NEW BANNER" not in det_l:
+            fails.append(f"[home ROLL rot] the line form should now quote the WRONG prose, "
+                         f"proving the class: {det_l}")
+
+        # Dave's dial, BOTH positions — a promotion nobody has driven is not available.
+        bad = {"items": [dict(healthy()["items"][0], home="NOPE.md#x")]}
+        global HOME_ROT_BLOCKING
+        was = HOME_ROT_BLOCKING
+        try:
+            HOME_ROT_BLOCKING = False
+            bite("home rot NOTE-only while dial is off", bad, True)
+            HOME_ROT_BLOCKING = True
+            bite("home rot BLOCKS when Dave flips the dial", bad, False, "home UNRESOLVABLE")
+        finally:
+            HOME_ROT_BLOCKING = was
+
     # +4 non-`bite()` arms: the malformed-store raise, the duplicate-rank NOTE, the
-    # coverage NOTE, and the counts-move arm.
-    return fails, n_bites[0] + 4
+    # coverage NOTE, and the counts-move arm. `_hn` counts the home-resolver arms, which are
+    # COUNTED by the harness, never typed [[measure-dont-convert-units]].
+    return fails, n_bites[0] + 4 + _hn
 
 
 if __name__ == "__main__":
