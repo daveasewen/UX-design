@@ -27,5 +27,9 @@ Panels sketched (#164, not ruled in detail — Dave rules layout by eye):
 - Verify by render (`knowledge/_RUNBOOK-render-verify.md`); present live HTML for Dave's eye
 - Candidate use: the agenda screen for the 2026-08-14 (Friday) housekeeping session — every nipped thread visibly moves a number
 
+## v2 lane (Dave, #165, 2026-08-13 — "we'll keep working on it in the future")
+1. **Interactive dashboard** — dig deeper + manipulate: drill into a card/count to its source lines; filter/sort/regroup live. (Generated page stays the law; interactivity is client-side over the same generated data.)
+2. **Schema question, Dave's to rule:** `_state.json` has no `status`/`lane`/`phase`/`priority`. Claude's recommendation #165: add **`priority` only** (not derivable, Dave's judgment); do NOT add `status` (derivable from `state`×`condition` — a stored copy of a derivable fact is the rot class). `lane` admissible only if a grouping the real fields can't express shows up. Any added field lands with a presence gate on new items.
+
 ## Conductor note for the build session
 Re-verify premises at boot (this brief ages): the 15 provenance fails, the state counts, HEAD. Check whether `gen_showroom.py` idioms (theme slots, one-bar harness) are worth reusing vs a simpler standalone generator, e.g. `knowledge/gen_dashboard.py` + `dashboard/index.html`.

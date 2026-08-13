@@ -41,7 +41,7 @@
 | `ADR-0011` | **CLAIMED** | ADR-0011 — Four-theme token architecture: themes as override sets, not forks | knowledge/_validate_theme_provenance.py, knowledge/gen_showroom.py | `docs/decisions/ADR-0011-four-theme-token-architecture.md` |
 | `ADR-0012` | **UNPROVEN** | ADR-0012 — Decision-graph edge convention: typed edges on the record corpus | — | `docs/decisions/ADR-0012-decision-graph-edge-convention.md` |
 | `ADR-0013` | **PROVEN** | ADR-0013 — Component-type tier: shared VALUES and shared RULES (composition by retrieval) | knowledge/_validate_partials.py, knowledge/gen_component_partials.py | `docs/decisions/ADR-0013-component-type-tier-composition.md` |
-| `ADR-0014` | **CLAIMED** | ADR-0014 — Per-theme neutral primitives: the neutral DNA tier + the opacity-snaps-to-ramp state test | knowledge/_validate_state_snap.py | `docs/decisions/ADR-0014-per-theme-neutral-primitives-state-snap.md` |
+| `ADR-0014` | **CLAIMED** | ADR-0014 — Per-theme neutral primitives: the neutral DNA tier + the opacity-snaps-to-ramp state test | knowledge/_validate_palette_tier.py, knowledge/_validate_state_snap.py | `docs/decisions/ADR-0014-per-theme-neutral-primitives-state-snap.md` |
 | `ADR-0015` | **PROVEN** | ADR-0015 — Behaviour partials: the dataviz interaction layer as generated JS | knowledge/gen_component_partials.py | `docs/decisions/ADR-0015-behaviour-partials-dataviz.md` |
 | `ADR-0016` | **PROVEN** | ADR-0016 — Enactment proof: rulings must be provably LIVE, not merely inscribed | knowledge/_validate_dataviz.py | `docs/decisions/ADR-0016-enactment-proof-register.md` |
 | `B-D1` | **UNPROVEN** | B-D1 — Apollo Mono primary carries NO red (2026-07-20). Source: Dave. FIRM. | — | `_proforma/_BUTTON-DECISIONS.md` |

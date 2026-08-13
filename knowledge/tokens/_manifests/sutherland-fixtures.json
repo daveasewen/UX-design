@@ -377,21 +377,6 @@
             "fg": "text/default",
             "bg": "rag/information-tint",
             "context": "text"
-          },
-          {
-            "fg": "rag/error",
-            "bg": "rag/error-tint",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/success",
-            "bg": "rag/success-tint",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/information",
-            "bg": "rag/information-tint",
-            "context": "ui"
           }
         ],
         "props": [
@@ -448,7 +433,8 @@
           "--text": "text/default",
           "--muted": "text/secondary",
           "--border": "border/subtle",
-          "--page": "background/default"
+          "--page": "background/default",
+          "--success-ink": "rag/success-ink"
         },
         "requiredAria": [
           "role=\"img\"",
@@ -463,6 +449,11 @@
           },
           {
             "fg": "text/secondary",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "rag/success-ink",
             "bg": "background/default",
             "context": "text"
           }
@@ -490,15 +481,16 @@
             "type": "enum",
             "values": [
               "none",
-              "negative"
+              "negative",
+              "positive"
             ],
             "default": "none",
-            "$note": "Negative renders a leading U+2212 MINUS in monochrome text — never a colour cue. Positive normally carries no sign.",
+            "$note": "Negative renders a leading U+2212 MINUS in monochrome text — never a colour cue. Positive normally carries no sign; the explicit 'positive' value opts a symbol-carrying monetary value into the ruled green-text seat (s155-D1).",
             "binds": {
-              "none": "rag.success",
-              "negative": "rag.error"
+              "positive": "rag.success-ink",
+              "negative": "rag.error-ink"
             },
-            "$status": "s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. sign binds to rag.success|rag.error (positive/negative) per the ruled address; 'none' re-keyed from the address's 'positive' to match this prop's actual enum spelling. ADDRESS-INTENT, value pending colour-spine migration. TENSION, RULED s143-D1(B) (Dave, 2026-08-10, live specimen: as-enacted / half-bind / monochrome): this prop's own $note says the negative sign renders in MONOCHROME text, 'never a colour cue' -- in direct tension with a colour-family bind. Dave's verdict, verbatim: \"rule A but these colours will have to adjusted for Ally\" (a11y) -- TREATMENT A KEPT AS ENACTED, both legs bound; the tension is REAL, not a transcription artefact, and stays OPEN as an a11y colour-VALUE adjustment (residual #144), not a mechanism dispute. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
+            "$status": "s158-D3 (Dave, 2026-08-12) ADDRESS RE-KEY, THE SYMMETRIC CLOSE -- the NEGATIVE seat now binds rag.error-ink, not rag.error. This closes the open item s158-D2 declared and handed to Dave: rag/error-ink is the CANONICAL rung for coloured monetary TEXT (s145-D1 spells the text/atom fork at the -ink rungs; s151-D1's two-red law is background-keyed #DA1A00-on-white / #F6604C-else), exactly as the positive seat now binds rag.success-ink under s155-D1. rag.error is the FILL family (banner/roundel background) -- a different seat. Scope unchanged: -ink rungs are MONO ONLY (s149-D1/s155-D1); non-mono forks remain unruled and untouched. The s157-D1 line 'negative: rag.error unchanged' is SUPERSEDED by this ruling, not contradicted -- it recorded the state at #157, before Dave ruled the symmetry. Prior status kept verbatim below by addition. | s158-D2 (Dave, 2026-08-12) ADDRESS RE-KEY -- the POSITIVE seat now binds rag.success-ink, not rag.success. rag/success-ink is the CANONICAL rung for coloured monetary TEXT: s155-D1 ruled green mirrors the s151-D1 two-red law ('dark and light in exactly the same contexts'), and that law's text/atom fork is spelt at the -ink rungs (s145-D1 rag/error-ink), values resolved at s155-D1/#155-A to #137F3C-on-white / #66CC8D-else, MONO ONLY. rag.success is the FILL family (roundel/banner background), a different seat -- binding the text seat to it was an address-intent placeholder from #142/#157, now corrected. NOT CHANGED, DECLARED OPEN: 'negative' still binds rag.error. The symmetric re-key to rag.error-ink is strongly implied by s151-D1 but s157-D1 states 'negative: rag.error unchanged' as an enacted verdict of Dave's, so it is NOT re-keyed here -- open item for Dave (#158). Prior status kept verbatim below by addition. | s157-D1 (Dave, 2026-08-12) enum ADDITION -- 'positive' added so the s155-D1 ruled green-text seat (coloured text only on positive monetary values carrying a symbol) has a binding site; the #142 re-key of the rag address onto 'none' is REVERSED: 'positive' now carries rag.success as the ruled address originally spelt it, and 'none' returns to UNBOUND (monochrome default -- an unsigned amount is not a success state). Prior status kept verbatim below by addition. | s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. sign binds to rag.success|rag.error (positive/negative) per the ruled address; 'none' re-keyed from the address's 'positive' to match this prop's actual enum spelling. ADDRESS-INTENT, value pending colour-spine migration. TENSION, RULED s143-D1(B) (Dave, 2026-08-10, live specimen: as-enacted / half-bind / monochrome): this prop's own $note says the negative sign renders in MONOCHROME text, 'never a colour cue' -- in direct tension with a colour-family bind. Dave's verdict, verbatim: \"rule A but these colours will have to adjusted for Ally\" (a11y) -- TREATMENT A KEPT AS ENACTED, both legs bound; the tension is REAL, not a transcription artefact, and stays OPEN as an a11y colour-VALUE adjustment (residual #144), not a mechanism dispute. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
           },
           {
             "name": "redacted",
@@ -555,11 +547,6 @@
           },
           {
             "fg": "rag/error",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/success",
             "bg": "background/default",
             "context": "ui"
           },
@@ -686,7 +673,7 @@
       "contract": {
         "tokenBindings": {
           "--surface": "badge/background",
-          "--number": "text/reverse",
+          "--number": "rag/text/on-light",
           "--host": "text/default",
           "--page": "background/default"
         },
@@ -695,7 +682,7 @@
         ],
         "contrastPairs": [
           {
-            "fg": "text/reverse",
+            "fg": "rag/text/on-light",
             "bg": "badge/background",
             "context": "text"
           },
@@ -773,7 +760,7 @@
         ],
         "contrastPairs": [
           {
-            "fg": "rag/text/on-dark",
+            "fg": "rag/text/on-light",
             "bg": "rag/error-background",
             "context": "text"
           },
@@ -793,7 +780,7 @@
             "context": "text"
           },
           {
-            "fg": "rag/text/on-dark",
+            "fg": "rag/text/on-light",
             "bg": "rag/error-background",
             "context": "icon"
           },
@@ -945,21 +932,6 @@
           },
           {
             "fg": "rag/error",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/warning",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/success",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/information",
             "bg": "background/default",
             "context": "ui"
           }
@@ -1803,11 +1775,6 @@
           "aria-hidden=\"true\""
         ],
         "contrastPairs": [
-          {
-            "fg": "rag/success",
-            "bg": "background/default",
-            "context": "ui"
-          },
           {
             "fg": "text/default",
             "bg": "background/default",
@@ -2794,11 +2761,6 @@
             "context": "ui"
           },
           {
-            "fg": "rag/success",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
             "fg": "icon/default",
             "bg": "background/default",
             "context": "ui"
@@ -2903,16 +2865,6 @@
           },
           {
             "fg": "rag/error",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/error",
-            "bg": "rag/error-tint",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/success",
             "bg": "background/default",
             "context": "ui"
           },
@@ -3383,11 +3335,6 @@
             "context": "ui"
           },
           {
-            "fg": "rag/success",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
             "fg": "icon/default",
             "bg": "background/default",
             "context": "ui"
@@ -3764,21 +3711,6 @@
             "fg": "text/default",
             "bg": "rag/information-tint",
             "context": "text"
-          },
-          {
-            "fg": "rag/success",
-            "bg": "rag/success-tint",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/error",
-            "bg": "rag/error-tint",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/information",
-            "bg": "rag/information-tint",
-            "context": "ui"
           }
         ],
         "props": [
@@ -4708,11 +4640,6 @@
             "fg": "icon/default",
             "bg": "tertiary/background/default",
             "context": "ui"
-          },
-          {
-            "fg": "rag/success",
-            "bg": "background/default",
-            "context": "ui"
           }
         ],
         "props": [
@@ -4956,11 +4883,6 @@
             "context": "ui"
           },
           {
-            "fg": "rag/success",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
             "fg": "icon/default",
             "bg": "background/default",
             "context": "ui"
@@ -5114,6 +5036,7 @@
           "--label": "text/default",
           "--label-disabled": "text/disabled",
           "--error": "rag/error",
+          "--error-atom": "rag/error-ink",
           "--page": "background/default",
           "--chip-hover": "form/background/hover",
           "--chip-pressed": "form/background/pressed",
@@ -5578,11 +5501,6 @@
             "context": "text"
           },
           {
-            "fg": "rag/success",
-            "bg": "tertiary/background/default",
-            "context": "ui"
-          },
-          {
             "fg": "rag/error",
             "bg": "tertiary/background/default",
             "context": "ui"
@@ -5681,17 +5599,7 @@
             "context": "text"
           },
           {
-            "fg": "rag/success",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
             "fg": "rag/error",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/information",
             "bg": "background/default",
             "context": "ui"
           },
@@ -6429,21 +6337,6 @@
             "fg": "text/default",
             "bg": "tertiary/background/default",
             "context": "text"
-          },
-          {
-            "fg": "rag/warning",
-            "bg": "tertiary/background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/success",
-            "bg": "tertiary/background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/information",
-            "bg": "tertiary/background/default",
-            "context": "ui"
           }
         ],
         "props": [
@@ -6518,7 +6411,8 @@
               "bottom"
             ],
             "default": "top",
-            "$note": "Which edge the pointer sits on (tooltip above vs below the trigger)."
+            "$note": "Which edge the pointer sits on (tooltip above vs below the trigger).",
+            "$status": "s162-D1 (Dave, 2026-08-12) class C11 -- no-bind:structural-param. Runtime preference: the snippet is space-aware and flips above/below to fit (same mechanism as the edge-shift for alignment); Dave: 'this a behavior that will be constant across all themes, i don't think this needs tokenizing'. Closes the s142-D1 wave at 114/114. The #142 verdicts file row stays 'unruled' as that session's historical record."
           },
           {
             "name": "tipAlignment",

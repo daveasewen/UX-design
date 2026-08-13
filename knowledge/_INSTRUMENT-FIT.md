@@ -72,11 +72,13 @@
 | `knowledge/_validate_dtcg.py` | I0-STATIC |
 | `knowledge/_validate_edge_extremity.py` | I0-STATIC |
 | `knowledge/_validate_grid.py` | I0-STATIC |
+| `knowledge/_validate_help_gate.py` | I0-STATIC |
 | `knowledge/_validate_icons.py` | I0-STATIC |
 | `knowledge/_validate_kg.py` | I0-STATIC |
 | `knowledge/_validate_legacy_leak.py` | I0-STATIC |
 | `knowledge/_validate_no_hardcode.py` | I0-STATIC |
 | `knowledge/_validate_package_delta.py` | I0-STATIC |
+| `knowledge/_validate_palette_tier.py` | I0-STATIC |
 | `knowledge/_validate_partials.py` | I0-STATIC |
 | `knowledge/_validate_proforma.py` | I0-STATIC |
 | `knowledge/_validate_property_resolves.py` | I0-STATIC |

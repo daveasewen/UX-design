@@ -2361,6 +2361,110 @@
     "capture gate --wrap #163: 0 fail post-wiring"
    ],
    "status": "RULED #163. ENACTED and VERIFIED same window: regex fixed, 3 declarations added, audit wired blocking, bite proven by mutation."
+  },
+  {
+   "id": "s165-D1",
+   "ruled": "#165",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "STANDING: consequences are ALWAYS replayed. Dave's words: 'we should always highlight potential consequences of our actions... replay them to me... in all the appropriate records and the state machine, and sub briefings'. Scope named by him, three surfaces: (a) the records (banner / delta / dossier / ledger entries), (b) the state machine (_state.json items), (c) sub briefings. This is a STANDING instruction, not a one-off - every proposal put to Dave, every sub brief written, and every record authored carries an explicit pitfalls/consequences section. It is DOCUMENTED, NOT GATED: no gate parses a brief, and claiming it is gated would be a false inscription [[gate-glob-scope-rule]].",
+   "governs": [
+    "_RUNBOOK-capture-ritual.md (record authoring)",
+    "knowledge/_state.json (item authoring)",
+    "sub-brief authoring (no gate - discipline)"
+   ],
+   "evidence": [
+    "chat #165 2026-08-13 (live) - Dave's own words, quoted above",
+    "chat #165 2026-08-13 (live) - the star LATEST banner in GOOD-MORNING.md",
+    "_DECISION-HISTORY/2026-08-13-165-the-dashboard-and-the-consequences-ruling.md"
+   ],
+   "status": "RULED #165, STANDING. Inscribed in the record this wrap; the runbook/brief-authoring habit is discipline, UNGATED and declared as such."
+  },
+  {
+   "id": "s165-D2",
+   "ruled": "#165",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "CLAUDE GENERATES PRIORITIES, DAVE OVERRULES. His words: 'I'm comfortable for you to generate priorities, I can always overrule them'. Enacted in gen_dashboard.py as a SCORE computed at generation from six weighted criteria whose weights are printed on the page, labelled PROPOSAL on every surface, never written back to a store, regenerated every build so it cannot rot into a decision. The override channel is an OPTIONAL priority_override integer on a _state.json item (1 = first), validated when present by _state.py and displayed as 'DAVE OVERRULED -> n'. NO override value is authored by any program or agent, ever.",
+   "governs": [
+    "knowledge/gen_dashboard.py (the scoring block + the printed weights)",
+    "knowledge/_state.py (priority_override presence gate)",
+    "knowledge/_state.json (values are Dave's alone)"
+   ],
+   "evidence": [
+    "chat #165 2026-08-13 (live) - Dave's own words",
+    "dashboard/index.html (scored priority panel, weights declared, LOW-CONFIDENCE flags)",
+    "knowledge/_build_all.py STEPS+ROUTE_ROWS 'dashboard sync' (wired #165)"
+   ],
+   "status": "RULED #165. ENACTED: scoring generated + labelled proposal; override field gated, ZERO values authored."
+  },
+  {
+   "id": "s165-D3",
+   "ruled": "#165",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "FAIL LOUD - the worklist store gate and its selftest are both ABORT, not GATE. Reverses the same-session wiring split (selftest ABORT / store gate GATE) that had argued the gate's reds are Dave's data. The premise was wrong, not the principle: the gate does NOT red on the 19 declared legacy items (declared debt passes by design), so the only thing that can turn it red is a NEW malformed item - a schema violation an agent wrote, not a decision Dave owes. A GATE-routed red prints its remedy 80 steps from the end and is read as weather; an ABORT stops the build at the item.",
+   "governs": [
+    "knowledge/_build_all.py (ROUTE_ROWS: both worklist arms = ABORT)"
+   ],
+   "evidence": [
+    "chat #165 2026-08-13 (live) - Dave's replay ruling",
+    "knowledge/_build_all.py ROUTE_ROWS worklist rows + the inline comment carrying the retired remedy string verbatim",
+    "chat #165 2026-08-13 (live) - knowledge/_build_all.py --selftest rc=0 over 117 steps, exact-ID routing"
+   ],
+   "status": "RULED #165. ENACTED AND VERIFIED same window - both arms ABORT; selftest green over 117 steps."
+  },
+  {
+   "id": "s165-D4",
+   "ruled": "#165",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "SPARSE LINKS ARE A PROBLEM TO FIX, not a tolerable gap. The dashboard MEASURED links coverage at 0 of 37 items and reported it as a flagged problem rather than repairing it; Dave ruled the emptiness itself is the defect. A backfill PROPOSAL was written (_PROPOSAL-links-backfill-2026-08-13-v1.md, 6 of 37 candidates evidenced). RATIFICATION IS PER-LINE AND PENDING: no link has been written to the store, and none may be until Dave ratifies line by line.",
+   "governs": [
+    "_PROPOSAL-links-backfill-2026-08-13-v1.md",
+    "knowledge/_state.json (links field - EMPTY, nothing written)"
+   ],
+   "evidence": [
+    "chat #165 2026-08-13 (live)",
+    "dashboard/index.html (links-coverage 0/37, flagged)",
+    "chat #165 2026-08-13 (live) - _PROPOSAL-links-backfill-2026-08-13-v1.md, 6 of 37 candidates"
+   ],
+   "status": "RULED #165 as a problem to fix. NOT ENACTED - proposal only; per-line ratification is Dave's and is OPEN."
+  },
+  {
+   "id": "s165-D5",
+   "ruled": "#165",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "SCHEMA ADDITIONS APPROVED: priority_override, deadline and effort become OPTIONAL, GATED fields on a _state.json item. Validated when present by _state.py - priority_override an integer rank 1..999, deadline an ISO date, effort one of S/M/L - and silent when absent, so the 37 existing items stay legal. APPROVAL IS OF THE SCHEMA, NOT OF ANY VALUE: no priority, deadline or effort value was authored by this session, and authoring them is Dave's.",
+   "governs": [
+    "knowledge/_state.py (schema presence gates + selftest)",
+    "knowledge/_state.json (values are Dave's alone)",
+    "knowledge/_build_all.py (both worklist arms, wired #165)"
+   ],
+   "evidence": [
+    "chat #165 2026-08-13 (live)",
+    "knowledge/_state.py --selftest: 12 -> 32 bites",
+    "knowledge/_state.py wired into _build_all.py STEPS+ROUTE_ROWS (was an instrument without a consumer since #88)"
+   ],
+   "status": "RULED #165. ENACTED as SCHEMA + GATE + selftest, wired into the build. ZERO values authored - that half is OPEN and Dave's."
+  },
+  {
+   "id": "s165-D6",
+   "ruled": "#165",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "DASHBOARD DIRECTION: the interactive dashboard - 'dig deeper and manipulate' - is a v2 LANE, future work, not this build. The #165 dashboard is a generated REPORT: it reads the stores, prints numbers with their sources, and repairs nothing. Interactivity, drill-down and manipulation are deferred as a named lane rather than being smuggled into v1.",
+   "governs": [
+    "_BRIEF-progress-dashboard-2026-08-13-v1.md",
+    "knowledge/gen_dashboard.py (v1 scope: report only)",
+    "_FUTURE-STATE.md (the v2 lane)"
+   ],
+   "evidence": [
+    "chat #165 2026-08-13 (live) - Dave's direction",
+    "dashboard/index.html (v1: exec summary, gates strip, stat cards, two plates, provenance panel, forward lane, kanban, scored priority)"
+   ],
+   "status": "RULED #165 as DIRECTION. v1 shipped and wired; v2 is a declared future lane, UNSCHEDULED and UNSPECIFIED."
   }
 ]
 }

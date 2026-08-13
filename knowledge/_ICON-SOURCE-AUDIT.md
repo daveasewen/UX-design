@@ -2,7 +2,7 @@
 
 *GATE (build-failing as of 2026-06-24). Each inline `<svg>` path is matched to the library. **library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke="reason">`, a deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither (possibly invented → use the library SVG, or mark it `data-bespoke`). Shape-only icons (`<circle>`/`<rect>`/`<ellipse>`/`<polygon>` with no `<path>`, e.g. a 3-dot kebab) are now flagged too.*
 
-**0 UNKNOWN path(s)** across 75 snippet(s) (49 verified-bespoke). Library glyphs indexed: 746.
+**0 UNKNOWN path(s)** across 75 snippet(s) (50 verified-bespoke). Library glyphs indexed: 746.
 
 | # | Snippet | paths | library | bespoke | UNKNOWN | declares | status |
 |---|---------|------:|--------:|--------:|--------:|:--------:|--------|
@@ -64,7 +64,7 @@
 | 56 | Search-field | 2 | 2 | 0 | 0 | — | ✅ verified |
 | 57 | Secure-entry | 5 | 5 | 0 | 0 | yes | ✅ verified |
 | 58 | Segmented-control | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 59 | Selection-controls | 7 | 0 | 7 | 0 | — | ✅ verified · 7 bespoke |
+| 59 | Selection-controls | 8 | 0 | 8 | 0 | — | ✅ verified · 8 bespoke |
 | 60 | Skeleton-loader | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 61 | Slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 62 | Stat-card | 2 | 2 | 0 | 0 | yes | ✅ verified |

@@ -137,6 +137,25 @@ STEPS = [
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),
+    # #165: THE WORKLIST STORE GATE HAD NO ROUTE ROW AND NO STEPS ENTRY — `_state.py::check()`
+    # and its 12-bite selftest have existed since #88 and ran ONLY by hand. Same class as the
+    # #158 help-gate omission #164 caught: an instrument without a consumer cannot fail
+    # [[instrument-without-a-consumer]]. Wired now, with the new optional `priority_override`
+    # presence gate (#165) riding the same pair. Measured green standalone before wiring
+    # (rc=0 both arms). The #165 wiring declared a ROUTING SPLIT — selftest ABORT, store gate
+    # GATE — on the argument that the gate's reds are DAVE'S DATA and a build he must fix
+    # before it completes is a gate making his ruling for him.
+    # ⛔ REVERSED BY DAVE (#166 replay): FAIL LOUD. Both arms are now ABORT. The argument above
+    # was wrong in its premise, not its principle: the gate does NOT red on the 19 declared
+    # legacy items (that debt is DECLARED and passes by design), so the only thing that can
+    # turn it red is a NEW malformed item — a schema violation an agent wrote, not a decision
+    # Dave owes. A GATE-routed red prints its remedy 80 steps from the end and is read as
+    # weather; an ABORT stops the build at the item [[a-crash-is-not-a-fail]].
+    ("worklist store gate — open items state what would close them; optional "
+     "priority_override is Dave's (#88 store, wired #165)", "_state.py"),
+    ("worklist store selftest — schema presence gates incl. priority_override / deadline / "
+     "effort (#165, extended #166)",
+     "_state.py", ["--selftest"]),
     # decision-graph runs FIRST so its parsed `_decision-graph.json` is fresh when the
     # _LIVE-STATE builder below consumes it to (re)generate the decision-node lifecycle
     # block (ADR-0007 part 2 — generation, not just the staleness gate).
@@ -208,6 +227,14 @@ STEPS = [
     ("radius gate — no hardcoded border-radius; shape is a theme flex slot (ADR-0010)", "_validate_radius.py"),
     ("showroom sync — generated component library (RULED 2026-07-21)", "gen_showroom.py", ["--check"]),
     ("showroom URL-rebase selftest — the srcdoc base-URL trap (2026-07-27)", "gen_showroom.py", ["--selftest"]),
+    # WIRED #165, the same pass it was built (brief `_BRIEF-progress-dashboard-2026-08-13-v1.md`,
+    # ruled by Dave #164). Sits beside the showroom pair on purpose — SAME LAW: generated from
+    # the stores, never hand-edited, so `--check` red means "the page disagrees with the stores
+    # or with a live gate", never "a day has passed" (the generator carries no clock).
+    # Routed GATE, mirroring `gen_showroom.py --check`: a stale REPORT is not a broken system,
+    # and the remedy is one command. ⚠ The route row below is what makes this step legal —
+    # a STEPS entry with no ROUTE_ROWS row aborts every full build above step 1 (#119/#164).
+    ("dashboard sync — generated progress dashboard (RULED #164, built #165)", "gen_dashboard.py", ["--check"]),
     ("Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mono surface", "_validate_legacy_leak.py"),
     ("theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex in a Mono surface (advisory)", "_validate_theme_provenance.py"),
     ("token-tier gate (_STANDARDS.md §1)", "_validate_token_tiers.py"),
@@ -456,6 +483,7 @@ _CANON = "\n❌ canon components step failed (exit {code}) — .cn-* blocks dive
 _RATCHET = "\n❌ partial ratchet failed (exit {code}) — a registry member re-implements a registered partial's rule locally. Consume the partial (AUTO-PARTIAL markers), never re-type the sub-atom. See knowledge/_PARTIALS-GATE.md (ADR-0013)"
 _THEME = "\n❌ theme-cascade sync failed (exit {code}) — canon.css AUTO-THEMES is out of sync with tokens/themes/*.json (+ manifests). Run: python3 knowledge/canon/gen_theme_cascade.py"
 _SHOWROOM = "\n❌ showroom sync failed (exit {code}) — showroom/ is stale against the snippets/tokens/cascade. Run: python3 knowledge/gen_showroom.py"
+_DASHBOARD = "\n❌ dashboard sync failed (exit {code}) — dashboard/index.html is stale against the stores (_state.json / _rulings.json / the ratchets / _CHAIN.md) or against a live gate result. The dashboard REPORTS, it never repairs: if a number is wrong the STORE is wrong. Run: python3 knowledge/gen_dashboard.py"
 _DATAVIZ = "\n❌ DataViz chart gate failed (exit {code}) — see knowledge/_DATAVIZ-GATE.md"
 STATE_CONTRAST_AUDIT = os.path.join(HERE, "_STATE-CONTRAST-AUDIT.md")
 _SC_REFUSAL_LINE = "- ⛔ StateContrastParseError"
@@ -550,6 +578,19 @@ ROUTE_ROWS = [
     ("cross-reference index", ABORT, None),
     ("sutherland acceptance fixtures", ABORT, None),
     ("states-completeness probe (advisory)", ADVISORY, None),
+    # ⛔ #166, DAVE'S RULING: GATE → ABORT. Both worklist arms now stop the build.
+    # ⚠ The remedy string this row used to carry is NOT lost by the flip — ABORT rows carry
+    # None by contract, and `_state.py` already prints every failure with the item id and the
+    # offending value quoted [[gate-must-quote-what-it-forbids]]. What it said, for the record:
+    #   "_state.json has an item with no checkable close condition outside the frozen legacy
+    #    set, a malformed id/owner/state, or a `priority_override` that is not an integer rank
+    #    in 1..999. Run: python3 knowledge/_state.py"  (+ now: a `deadline` that is not an ISO
+    #    date, or an `effort` outside S/M/L).
+    ("worklist store gate — open items state what would close them; optional "
+     "priority_override is Dave's (#88 store, wired #165)", ABORT, None),
+    ("worklist store selftest — schema presence gates incl. priority_override / deadline / "
+     "effort (#165, extended #166)",
+     ABORT, None),
     ("decision-graph — typed edges + conflict gate (advisory, ADR-0012)", ADVISORY, None),
     ("decision-graph selftest — conflict gate bites on unresolved/open/orphan (ADR-0012, #77 periphery)", ABORT, None),
     ("spine-writer selftest — splice invariants + no-half-writes (#78-D2)", ABORT, None),
@@ -586,6 +627,7 @@ ROUTE_ROWS = [
      "\n❌ radius gate failed (exit {code}) — a hardcoded border-radius literal on a strict surface. Shape is theme-flexed (ADR-0010): bind var(--border-radius-default); 50%/999px circle+pill idioms are exempt. See knowledge/_RADIUS-GATE.md"),
     ("showroom sync — generated component library (RULED 2026-07-21)", GATE, _SHOWROOM),
     ("showroom URL-rebase selftest — the srcdoc base-URL trap (2026-07-27)", GATE, _SHOWROOM),
+    ("dashboard sync — generated progress dashboard (RULED #164, built #165)", GATE, _DASHBOARD),
     ("Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mono surface", GATE,
      "\n❌ Legacy-colour leakage gate failed (exit {code}) — a Mono surface resolves to a Legacy-only colour (e.g. the success teal #00847F). Rebind onto the R-D14 token (rag/*-background / -glyph); do NOT add the hex to exceptions. See knowledge/_LEGACY-LEAK-GATE.md"),
     ("theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex in a Mono surface (advisory)", ADVISORY, None),  # was misrouted to the BLOCKING dark-surface branch

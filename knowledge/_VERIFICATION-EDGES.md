@@ -8,7 +8,7 @@
 
 | SC | Result | Granularity | Coverage |
 |---|---|---|---|
-| 1.4.11 | ✅ pass | component | 30/30 applies_to components have a bound audited token or a gated snippet contrastPair |
+| 1.4.11 | ✅ pass | component | 29/30 applies_to components have a bound audited token or a gated snippet contrastPair |
 | 1.4.3 | ❌ fail | component | 30/30 applies_to components have a bound audited token |
 | 2.3.3 | ✅ pass | component | — |
 | 2.5.8 | ✅ pass | component | — |
@@ -17,16 +17,15 @@
 
 ### 1.4.11
 
-30/30 applies_to components have a bound audited token or a gated snippet contrastPair. 29 pass, 1 fail, 0 not_covered.
+29/30 applies_to components have a bound audited token or a gated snippet contrastPair. 29 pass, 0 fail, 1 not_covered.
 
-**Failing:** Alert
+**Not covered** (applies_to claims this SC but the blast-radius scan found no bound audited token — either the component genuinely doesn't touch this colour category, or the scan's meta-text matching missed a prose-only reference): Alert
 
 **Resolved via secondary evidence** (no bound border token, but the component's own reference snippet declares a "ui"/"icon"-context contrastPair that the blocking snippet gate (`_validate_snippets.py`, check 3) already checks every build):
 
 | Component | Snippet | Verdict | Pairs checked |
 |---|---|---|---|
-| Alert | `Alert.reference.html` | ❌ fail | rag/error on rag/error-tint (light) = 2.4:1 (fail); rag/error on rag/error-tint (dark) = 3.43:1 (pass); rag/success on rag/success-tint (light) = 1.65:1 (fail); rag/success on rag/success-tint (dark) = 4.33:1 (pass); rag/information on rag/information-tint (light) = 2.03:1 (fail); rag/information on rag/information-tint (dark) = 3.82:1 (pass) |
-| Badge | `Badge.reference.html` | ✅ pass | badge/background on background/default (light) = 6.02:1 (pass); badge/background on background/default (dark) = 3.66:1 (pass) |
+| Badge | `Badge.reference.html` | ✅ pass | badge/background on background/default (light) = 3.14:1 (pass); badge/background on background/default (dark) = 5.55:1 (pass) |
 | Box plot | `Chart-boxplot.reference.html` | ✅ pass | data/series/1 on background/default (light) = 5.26:1 (pass); data/series/1 on background/default (dark) = 3.31:1 (pass) |
 | Bullet chart | `Chart-bullet.reference.html` | ✅ pass | data/series/1 on background/default (light) = 5.26:1 (pass); data/series/1 on background/default (dark) = 3.31:1 (pass) |
 | Candlestick chart | `Chart-candlestick.reference.html` | ✅ pass | data/delta/gain on background/default (light) = 4.61:1 (pass); data/delta/gain on background/default (dark) = 5.16:1 (pass); data/delta/loss on background/default (light) = 6.02:1 (pass); data/delta/loss on background/default (dark) = 3.66:1 (pass) |

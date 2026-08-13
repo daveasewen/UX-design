@@ -105,6 +105,39 @@ LEGACY_IDS = (
 
 ID_RE = re.compile(r"^(?:W-[0-9]{1,2}[a-z]?|G[0-9]{1,2}[a-z]?)$")
 
+# ---- `priority_override` — OPTIONAL, DAVE'S ALONE (narrow schema addition, #165) -------------
+# The dashboard computes a PROPOSED priority score from the store. Dave overrules it by writing
+# an integer rank on the item: 1 = do this first. The field is OPTIONAL and starts ABSENT on
+# every item — no agent may author a value, because authoring one would be an agent ruling its
+# own priority and then reading its own ruling back as if it were Dave's [[gate-dont-patch]].
+#
+# ⚠ THIS GATE IS A PRESENCE GATE, NOT A REQUIREMENT: it says nothing about whether the field
+# SHOULD be there. It says: **if it is there, it is an integer in range, and it is Dave's.**
+# An out-of-range or string rank is worse than an absent one, because it sorts silently.
+PRIORITY_OVERRIDE = "priority_override"
+PRIORITY_OVERRIDE_MIN = 1
+PRIORITY_OVERRIDE_MAX = 999
+
+# ---- `deadline` / `effort` — DE-GAMING THE PROXIES (same presence-gate pattern) -------------
+# The dashboard's `deadline` and `effort` criteria are PROXIES: a prose regex over the item's
+# own words, and the byte-length of its body. Both are gameable in the literal sense — an item
+# scores higher by SAYING "friday" or by having a SHORTER body. A proxy that moves with the
+# prose is a measure of the prose, not of the work [[measure-dont-convert-units]].
+#
+# The fix is a real input, gated on the way in and OPTIONAL exactly like priority_override:
+#   deadline: an ISO date "YYYY-MM-DD"        effort: one of S / M / L
+# ⛔ NO AGENT MAY AUTHOR A VALUE. Both start ABSENT on every item. Authoring a deadline is
+# inventing Dave's schedule; authoring an effort is grading one's own homework and then reading
+# the grade back as an input to one's own priority proposal.
+#
+# ⚠ PRESENCE GATE, NOT A REQUIREMENT: absent is legal and keeps the proxy (still labelled
+# PROXY ONLY in the dashboard). Present REPLACES the proxy — so a malformed value is worse than
+# an absent one, because it would silently displace the only measurement there is.
+DEADLINE = "deadline"
+DEADLINE_RE = re.compile(r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$")
+EFFORT = "effort"
+EFFORT_VALUES = ("S", "M", "L")
+
 
 class StateError(Exception):
     """Raised loud and NAMED. A crash is not a fail [[a-crash-is-not-a-fail]] — callers that
@@ -207,6 +240,40 @@ def check(doc=None, path=STORE):
         else:
             fails.append(f"{iid}: condition {cond!r} must be {CONDITIONED!r} or {UNCONDITIONED!r}")
 
+        # ---- OPTIONAL priority_override — validated ONLY when PRESENT (#165) ----
+        if PRIORITY_OVERRIDE in it:
+            v = it[PRIORITY_OVERRIDE]
+            if isinstance(v, bool) or not isinstance(v, int):
+                fails.append(f"{iid}: {PRIORITY_OVERRIDE} is {v!r} — an override must be an "
+                             f"integer rank (1 = first). A rank that is not a number sorts "
+                             f"silently and wrongly, which is worse than no override at all")
+            elif not (PRIORITY_OVERRIDE_MIN <= v <= PRIORITY_OVERRIDE_MAX):
+                fails.append(f"{iid}: {PRIORITY_OVERRIDE} {v!r} is outside "
+                             f"{PRIORITY_OVERRIDE_MIN}..{PRIORITY_OVERRIDE_MAX} — a rank of "
+                             f"{v!r} is not a rank, it is a typo that outranks everything")
+
+        # ---- OPTIONAL deadline / effort — validated ONLY when PRESENT (#166 de-gaming) ----
+        if DEADLINE in it:
+            v = it[DEADLINE]
+            if not isinstance(v, str) or not DEADLINE_RE.match(v):
+                fails.append(f"{iid}: {DEADLINE} is {v!r} — a deadline must be an ISO date "
+                             f"'YYYY-MM-DD'. A date the scorer cannot parse does not fail "
+                             f"loudly, it quietly falls back to the prose proxy it replaced")
+            else:
+                y, m, d = (int(x) for x in v.split("-"))
+                try:
+                    import datetime as _dt
+                    _dt.date(y, m, d)
+                except ValueError:
+                    fails.append(f"{iid}: {DEADLINE} {v!r} is well-shaped but not a real "
+                                 f"calendar date — shape is not validity")
+        if EFFORT in it:
+            v = it[EFFORT]
+            if v not in EFFORT_VALUES:
+                fails.append(f"{iid}: {EFFORT} is {v!r} — effort must be one of "
+                             f"{EFFORT_VALUES}. A free-text size is not a size; it is prose, "
+                             f"and prose is the proxy this field exists to replace")
+
         if it["state"] in ("done", "dropped") and not str(it.get("closed_by", "")).strip():
             fails.append(f"{iid}: state={it['state']!r} with no `closed_by` — a close is a "
                          f"claim and carries its receipt")
@@ -218,6 +285,25 @@ def check(doc=None, path=STORE):
         notes.append(f"DECLARED DEBT: {len(unconditioned)} item(s) carry no close condition "
                      f"({', '.join(unconditioned)}). Frozen set size {len(LEGACY_IDS)} — this "
                      f"number may only fall. Each needs Dave's word, not an agent's guess.")
+    ranks = [i[PRIORITY_OVERRIDE] for i in items
+             if isinstance(i.get(PRIORITY_OVERRIDE), int) and not isinstance(i.get(PRIORITY_OVERRIDE), bool)]
+    if ranks:
+        dupes = sorted({r for r in ranks if ranks.count(r) > 1})
+        notes.append(f"{len(ranks)} item(s) carry a Dave {PRIORITY_OVERRIDE}; these outrank the "
+                     f"dashboard's proposed score wherever they appear."
+                     + (f" ⚠ rank(s) {dupes} are used more than once — ties break by id, which is "
+                        f"arbitrary, not a judgement." if dupes else ""))
+    n_dl = sum(1 for i in items if DEADLINE in i)
+    n_ef = sum(1 for i in items if EFFORT in i)
+    live_n = sum(1 for i in items if i.get("state") in LIVE_STATES)
+    if n_dl or n_ef:
+        notes.append(f"real-input coverage: {n_dl} item(s) carry a {DEADLINE}, {n_ef} carry an "
+                     f"{EFFORT}; on those items the dashboard's PROXY is REPLACED. The rest of "
+                     f"the {live_n} live item(s) are still scored by prose scan / body length.")
+    else:
+        notes.append(f"real-input coverage: 0 of {live_n} live item(s) carry a {DEADLINE} or "
+                     f"{EFFORT} — the dashboard's deadline and effort columns are ENTIRELY "
+                     f"PROXY. The fields exist and are gated; only Dave may fill them.")
     if stale_legacy:
         notes.append(f"legacy ids retired since birth: {', '.join(stale_legacy)} "
                      f"(frozen set may shrink; it may never grow)")
@@ -276,8 +362,11 @@ def selftest():
     not a test [[gate-must-quote-what-it-forbids]] — so every bite below asserts BOTH that the
     healthy form passes AND that the mutated form fails, with the reason named."""
     fails = []
+    n_bites = [0]   # COUNTED, never typed — a hand-typed bite count is the same defect
+                    # class as a hand-typed item count [[measure-dont-convert-units]].
 
     def bite(name, doc, want_ok, want_substr=None):
+        n_bites[0] += 1
         try:
             ok, fs, _ = check(doc)
         except StateError as e:
@@ -341,21 +430,111 @@ def selftest():
     except StateError:
         pass
 
-    # 12. counts are computed, not stored — mutate an item, the count must move
+    # ---- priority_override, the OPTIONAL field (#165). A presence gate must prove BOTH
+    # directions: absent is legal (or the gate has quietly made it required), and every
+    # malformed present value bites with its own named reason.
+    # 12a. control — the field ABSENT must still pass, or the "optional" claim is false
+    d = healthy(); d["items"][0].pop(PRIORITY_OVERRIDE, None)
+    bite("override absent is LEGAL", d, True)
+
+    # 12b. a real Dave rank passes
+    d = healthy(); d["items"][0][PRIORITY_OVERRIDE] = 1
+    bite("override 1 passes", d, True)
+
+    # 12c. a string rank — the silent-sort defect
+    d = healthy(); d["items"][0][PRIORITY_OVERRIDE] = "1"
+    bite("override as string REFUSED", d, False, "must be an integer rank")
+
+    # 12d. a bool is an int in Python — the trap this bite exists for
+    d = healthy(); d["items"][0][PRIORITY_OVERRIDE] = True
+    bite("override as bool REFUSED", d, False, "must be an integer rank")
+
+    # 12e/f. out of range, both ends
+    d = healthy(); d["items"][0][PRIORITY_OVERRIDE] = 0
+    bite("override 0 REFUSED", d, False, "is not a rank")
+    d = healthy(); d["items"][0][PRIORITY_OVERRIDE] = PRIORITY_OVERRIDE_MAX + 1
+    bite("override above max REFUSED", d, False, "is not a rank")
+
+    # 12g. duplicate ranks are a NOTE, never a failure — Dave may deliberately tie
+    d = healthy()
+    d["items"][0][PRIORITY_OVERRIDE] = 2
+    twin = dict(d["items"][0]); twin["id"] = "G2"; d["items"].append(twin)
+    ok2, _, notes2 = check(d)
+    if not ok2 or not any("more than once" in n for n in notes2):
+        fails.append("[duplicate override ranks] expected a PASS carrying a tie NOTE, "
+                     f"got ok={ok2} notes={notes2}")
+
+    # ---- deadline / effort, the DE-GAMING fields (#166). Same two-direction discipline:
+    # absent must stay legal, every malformed present value must bite with a named reason,
+    # and each bite is mutation-proved by the paired healthy form directly above it.
+    # 14a. absent is legal — or "optional" is a lie and the store is now unloadable
+    d = healthy(); d["items"][0].pop(DEADLINE, None); d["items"][0].pop(EFFORT, None)
+    bite("deadline/effort absent is LEGAL", d, True)
+
+    # 14b. a real ISO date passes
+    d = healthy(); d["items"][0][DEADLINE] = "2026-08-14"
+    bite("deadline ISO passes", d, True)
+
+    # 14c. prose in the deadline slot — the exact thing the field replaces
+    d = healthy(); d["items"][0][DEADLINE] = "friday"
+    bite("deadline as prose REFUSED", d, False, "must be an ISO date")
+
+    # 14d. wrong shape (UK order) must not be waved through
+    d = healthy(); d["items"][0][DEADLINE] = "14-08-2026"
+    bite("deadline wrong shape REFUSED", d, False, "must be an ISO date")
+
+    # 14e. a non-string date
+    d = healthy(); d["items"][0][DEADLINE] = 20260814
+    bite("deadline as int REFUSED", d, False, "must be an ISO date")
+
+    # 14f. SHAPE IS NOT VALIDITY — a well-formed impossible date
+    d = healthy(); d["items"][0][DEADLINE] = "2026-02-30"
+    bite("deadline impossible date REFUSED", d, False, "not a real calendar date")
+
+    # 14g. effort enum passes, all three rungs
+    for _v in EFFORT_VALUES:
+        d = healthy(); d["items"][0][EFFORT] = _v
+        bite(f"effort {_v} passes", d, True)
+
+    # 14h. free text in the effort slot
+    d = healthy(); d["items"][0][EFFORT] = "small"
+    bite("effort free-text REFUSED", d, False, "must be one of")
+
+    # 14i. case matters — 's' is not 'S', and a silently-accepted lowercase would fork the enum
+    d = healthy(); d["items"][0][EFFORT] = "s"
+    bite("effort lowercase REFUSED", d, False, "must be one of")
+
+    # 14j. a number is not a size
+    d = healthy(); d["items"][0][EFFORT] = 3
+    bite("effort as int REFUSED", d, False, "must be one of")
+
+    # 14k. the coverage NOTE must move with the data — a constant note is not a measurement
+    d = healthy()
+    _, _, n_none = check(d)
+    d["items"][0][DEADLINE] = "2026-08-14"; d["items"][0][EFFORT] = "M"
+    _, _, n_some = check(d)
+    if not any("ENTIRELY" in n for n in n_none) or not any("1 item(s) carry a deadline" in n
+                                                           for n in n_some):
+        fails.append(f"[coverage note] the real-input note did not follow the data: "
+                     f"{n_none} vs {n_some}")
+
+    # 13. counts are computed, not stored — mutate an item, the count must move
     d = healthy()
     before = counts(d)["live"]
     d["items"][0]["state"] = "done"
     if counts(d)["live"] != before - 1:
         fails.append("[counts move] counts() did not follow the data — it is not a measurement")
 
-    return fails
+    # +4 non-`bite()` arms: the malformed-store raise, the duplicate-rank NOTE, the
+    # coverage NOTE, and the counts-move arm.
+    return fails, n_bites[0] + 4
 
 
 if __name__ == "__main__":
     import sys
     if "--selftest" in sys.argv:
-        fs = selftest()
-        print("\n".join(fs) if fs else f"_state selftest: {12} bites, all GREEN")
+        fs, n = selftest()
+        print("\n".join(fs) if fs else f"_state selftest: {n} bites, all GREEN")
         sys.exit(1 if fs else 0)
     ok, fails, notes = check()
     d = load()
