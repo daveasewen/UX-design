@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 59,531 real and 84% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 59,692 real and 84% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -58,7 +58,7 @@
 > - ⚠ **⑫ A SESSION-NUMBER DISCREPANCY IS DECLARED RATHER THAN SILENTLY CORRECTED.** The worklist route/step comments written this session in `knowledge/_build_all.py` label `s165-D3`'s reversal as ***"#166, DAVE'S RULING"*** and the selftest label reads *"extended #166"*, while `_CHAIN.md` says **YOU ARE #165** and every other artefact of today agrees. ⛔ **NOT EDITED BY THIS WRAP:** those strings are the **exact-match keys** joining `STEPS` to `ROUTE_ROWS`, so a cosmetic fix is a routing change under wrap heat, and "correct one datapoint into another" is precisely the move the record forbids. **The ruling ids minted are `s165-*`.**
 > - ⛔ **⑬ THIS WRAP RULED NOTHING, AND THE DO-NOT-RULE LIST IS DISCHARGED ITEM BY ITEM.** All six rulings are **DAVE'S**, taken in-window before this sub opened. **NOT DONE, each by instruction:** no `governs`/`evidence`/`status` **authored for the 15 provenance fails** (they stay **his**, target **Friday 2026-08-14**) · **no priority / deadline / effort VALUE** · **no link written to the store** · **no ratchet +1 hunt** · the **42-verdict controller** and the **`_REVIEW-SIGNOFF.md` queue rows for it** untouched · **layout and weights stay PROPOSALS** · **no ratified doc trimmed — ADD, never trim** · **§A unopened**. ⚠ **STEP 3 (MEMORY) SKIPPED, WITH ITS SIZE DECLARED:** this sub touched **no** memory file; the skip's size is **five durable facts with no hook** — the ~178s call wall, the poisoned `BUILD_ALL_STATE` default, the `LD_LIBRARY_PATH` false-red, the 400-char `_state.json` truncation, and `s165-D1` itself. **All five ARE inscribed in the repo** (banner · delta · dossier · `_rulings.json`), so nothing is lost — the accelerator is simply one session stale. ⛔ **THE WRAP COMMIT IS LOCAL — NOT PUSHED.** The runbook makes push **Dave's explicit word** and it was **not given**.
 >
-> **residual → #166:** ⬛ **① THE 15 PROVENANCE FAILS ON `s157-D1`…`s163-D1` [2 — DAVE'S]** — carried, unrepaired, target **Friday 2026-08-14**. ⬛ **② `s165-D4` PER-LINE LINK RATIFICATION [0 — DAVE'S]** — proposal written, store empty. ⬛ **③ PRIORITY / DEADLINE / EFFORT VALUES [0 — DAVE'S]** — schema gated, values unauthored. ⚠ **④ THE TYPE RATCHET +1 (1102 vs 1101) [0]** — breached, hunt deferred by Dave. ⬛ **⑤ THE `_REVIEW-SIGNOFF.md` QUEUE [1]** — incl. the **42-verdict controller** and the **v3 designer-community deck**. ⛔ **⑥ THE #160 WRAPS `6726a2a` + `ee091ef` ARE STILL UNPUSHED [5]**, and so is this one. ⬛ **⑦ THE DASHBOARD v2 LANE (`s165-D6`) [0]** — declared, unscheduled. ⚠ **⑧ THE `#166` LABEL DISCREPANCY IN `_build_all.py`'s WORKLIST COMMENTS [0]** — declared at ⑫, not edited.
+> **residual → #166:** ⬛ **① THE 15 PROVENANCE FAILS ON `s157-D1`…`s163-D1` [2 — DAVE'S]** — carried, unrepaired, target **Friday 2026-08-14**. ⬛ **② `s165-D4` PER-LINE LINK RATIFICATION [0 — DAVE'S]** — proposal written, store empty. ⬛ **③ PRIORITY / DEADLINE / EFFORT VALUES [0 — DAVE'S]** — schema gated, values unauthored. ⚠ **④ THE TYPE RATCHET +1 (1102 vs 1101) [0]** — breached, hunt deferred by Dave. ⬛ **⑤ THE `_REVIEW-SIGNOFF.md` QUEUE [1]** — incl. the **42-verdict controller** and the **v3 designer-community deck**. ✅ **⑥ THE CARRIED "#160 WRAPS `6726a2a` + `ee091ef` NOT PUSHED" CLAIM WAS STALE AND IS KILLED HERE [5]** — MEASURED after this wrap's commit: `git status -sb` reads **ahead 1**, and `git merge-base --is-ancestor` puts **both shas IN `origin/master`**. ★ The claim came off a memory hook, not the remote [[premise-ages-faster-than-rule]]; it is the SAME shape #162 caught. ⛔ **Only THIS wrap's commit `3bd84f3` is unpushed.** ⬛ **⑦ THE DASHBOARD v2 LANE (`s165-D6`) [0]** — declared, unscheduled. ⚠ **⑧ THE `#166` LABEL DISCREPANCY IN `_build_all.py`'s WORKLIST COMMENTS [0]** — declared at ⑫, not edited.
 > **residual (GENERATED #165):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #164) — _roll_state.py · 2026-08-13
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (28 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
@@ -124,7 +124,7 @@ Dossier: `_DECISION-HISTORY/2026-08-13-165-the-dashboard-and-the-consequences-ru
 
 ---
 
-*(Chain ends. **16,304 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **16,465 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 59,531 real and stays whole for retrieval; you have paid for
-27% of it, and that is the intended figure, not a shortfall.)*
+`GOOD-MORNING.md` is 59,692 real and stays whole for retrieval; you have paid for
+28% of it, and that is the intended figure, not a shortfall.)*
