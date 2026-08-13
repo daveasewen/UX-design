@@ -124,7 +124,15 @@ def worklist_items():
         out.append({
             "id": wid,
             "title": _title_of(body),
-            "body": _plain(body)[:400],
+            # ⛔ NOT truncated. A `[:400]` cap sat here from #88 to #166 and clipped 7 of the 19
+            # inherited items mid-sentence — including four whose prose ran to 600–960 chars. The
+            # store is the thing that CARRIES the body (`_state.py`: "the store holds the body, so
+            # the index does not have to carry it"), and every derivation that reads `body` — the
+            # dashboard's effort proxy and its prose scan, `gen_dashboard.py:276,331` — was
+            # therefore under-reading by construction, silently and in the same direction for the
+            # longest items. Truncation belongs to a RENDERER, which can declare it; a STORE that
+            # truncates cannot be told apart from a source that was short [[a-crash-is-not-a-fail]].
+            "body": _plain(body),
             "state": "open",
             "opened": 0,                      # UNKNOWN — the prose carries no birth session for
                                               # most items. NOT defaulted to a plausible number.

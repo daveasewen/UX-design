@@ -5304,23 +5304,42 @@ def selftest_growth():
     # line was guarded. Monkeypatch get_encoding to fail the way a cold-cache network fetch fails
     # (tiktoken.load.read_file_cached -> requests.get -> raise_for_status), WITHOUT touching the
     # import path, so this bite is isolated to the second guard and cannot be satisfied by M6's.
-    real_tiktoken = importlib.import_module("tiktoken")
-    real_get_encoding = real_tiktoken.get_encoding
-
-    def _boom(*_a, **_k):
-        raise RuntimeError("simulated: cl100k_base.tiktoken fetch failed (no network / cold cache)")
-    real_tiktoken.get_encoding = _boom
+    # ⛔ THIS ARM NEEDS THE REAL MODULE — it monkeypatches it. On a machine without tiktoken the
+    # import used to raise ModuleNotFoundError straight out of selftest_growth() and the WHOLE
+    # suite died with a traceback: a crash, which is not a fail. [[a-crash-is-not-a-fail]] — a
+    # parse/measure helper must fail LOUD and NAMED and DECLARE what the gap leaves unproven.
+    # ⚠ It must NOT silently pass either: a declared gap passes, a silent one fails. So the
+    # absence is reported as a NAMED REFUSAL in `failures`, in gauge.MeasurementRefused's idiom.
     try:
-        n, method = measure_tokens("hello world")
-        if "ESTIMATE" not in method:
-            failures.append(f"#59: a failing get_encoding() was not caught — method read "
-                            f"{method!r} instead of falling back to the ESTIMATE")
-        if n <= 0:
-            failures.append("#59: fallback from a failed get_encoding() returned a non-positive count")
-    finally:
-        real_tiktoken.get_encoding = real_get_encoding
-    if measure_tokens("hello")[1] != "tiktoken cl100k_base":
-        failures.append("#59: get_encoding restored but measure_tokens did not return to OBSERVED")
+        real_tiktoken = importlib.import_module("tiktoken")
+    except ImportError as e:
+        failures.append(
+            f"#59 REFUSING TO GUESS: tiktoken is not importable in this interpreter "
+            f"({sys.executable}) — {e}. This arm MONKEYPATCHES the real module, so it cannot "
+            f"run at all without it, and it will not be skipped in silence. UNPROVEN while "
+            f"absent: (a) that a failing get_encoding()/encode() degrades to a labelled "
+            f"ESTIMATE rather than crashing uncaught, and (b) that measure_tokens() returns to "
+            f"the OBSERVED 'tiktoken cl100k_base' reading once the encoder is restored. "
+            f"INSTALL RECIPE: `pip install tiktoken regex --no-deps --break-system-packages "
+            f"--target /tmp/pylibs` then re-run with `PYTHONPATH=/tmp/pylibs`; or let "
+            f"`_heal_tiktoken()` do its one `pip install tiktoken` attempt on a networked box.")
+    else:
+        real_get_encoding = real_tiktoken.get_encoding
+
+        def _boom(*_a, **_k):
+            raise RuntimeError("simulated: cl100k_base.tiktoken fetch failed (no network / cold cache)")
+        real_tiktoken.get_encoding = _boom
+        try:
+            n, method = measure_tokens("hello world")
+            if "ESTIMATE" not in method:
+                failures.append(f"#59: a failing get_encoding() was not caught — method read "
+                                f"{method!r} instead of falling back to the ESTIMATE")
+            if n <= 0:
+                failures.append("#59: fallback from a failed get_encoding() returned a non-positive count")
+        finally:
+            real_tiktoken.get_encoding = real_get_encoding
+        if measure_tokens("hello")[1] != "tiktoken cl100k_base":
+            failures.append("#59: get_encoding restored but measure_tokens did not return to OBSERVED")
 
     with tempfile.TemporaryDirectory() as td:
         # ---- M8: banner budget — fires at warn, fires at block, silent for a normal banner.
