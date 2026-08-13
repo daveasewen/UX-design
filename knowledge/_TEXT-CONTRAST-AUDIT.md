@@ -4,6 +4,21 @@
 
 **Result:** 18 pass · 4 allowed exception(s) · **1 gating failure(s)** · 5 skipped (light-only).
 
+**Per-theme (s169):** 6 pair(s) regraded on palette-owned grounds · **3 gating failure(s)** · 0 R-D24 exempted.
+
+## Per-theme palette-resolved pairs (s157-D2 palette tier)
+
+> The base pass above reads the semantic store, i.e. the activeBase theme (**apollo-mono**). Grounds owned by the palette tier are re-resolved here per theme via `tokens/themes/_themes.json` → `ragPalette`. Only pairs whose ground MOVES are listed. `❌` rows gate the build exactly as base failures do; `EXEMPTED` = a Legacy pair matched in R-D24's table.
+
+| Theme | Palette | Token | Value | Ground (base → theme) | Contrast | Need | Status |
+|---|---|---|---|---|---|---|---|
+| **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `rag/text/on-dark` | `#FFFFFF` | `rag/error-background` `#F6604C` → `#A8000B` | **7.87:1** | 4.5:1 | ✅ OK |
+| **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `rag/text/on-information` | `#1A1A1A` | `rag/error-background` `#F6604C` → `#A8000B` | **2.21:1** | 4.5:1 | ❌ POOR |
+| **Apollo Console** (`apollo-console`) | `palettes/rag/console-supercharge.json` | `rag/text/on-dark` | `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
+| **Apollo Console** (`apollo-console`) | `palettes/rag/console-supercharge.json` | `rag/text/on-information` | `#1A1A1A` | `rag/error-background` `#F6604C` → `#B92F1E` | **2.89:1** | 4.5:1 | ❌ POOR |
+| **Apollo Supercharge** (`apollo-supercharge`) | `palettes/rag/console-supercharge.json` | `rag/text/on-dark` | `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
+| **Apollo Supercharge** (`apollo-supercharge`) | `palettes/rag/console-supercharge.json` | `rag/text/on-information` | `#1A1A1A` | `rag/error-background` `#F6604C` → `#B92F1E` | **2.89:1** | 4.5:1 | ❌ POOR |
+
 ## ❌ Gating failures — these FAIL the build
 
 | Token | Dark value | Surface | Contrast | Need | Context |
