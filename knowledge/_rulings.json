@@ -2465,6 +2465,24 @@
     "dashboard/index.html (v1: exec summary, gates strip, stat cards, two plates, provenance panel, forward lane, kanban, scored priority)"
    ],
    "status": "RULED #165 as DIRECTION. v1 shipped and wired; v2 is a declared future lane, UNSCHEDULED and UNSPECIFIED."
+  },
+  {
+   "id": "s166-D1",
+   "ruled": "#166",
+   "date": "2026-08-13",
+   "by": "Dave",
+   "says": "TYPE-001 IS SCOPED TO HTML FILES ONLY. The ratchet +1 (1102 vs 1101) was a TYPE-001 on canon/canon.css minted when #122 dropped two inert <link> strings - a .css file has no legal way to pull type.css, so its only-ever 'pass' was by an inert string in a comment. A gate satisfied by MENTION is not a gate. Options put to Dave: (1) scope TYPE-001 to HTML, (2) restore the inert string, (3) raise the baseline. Dave picked (1): 'go for it'. CSS files remain fully gated by TYPE-002/TYPE-003; the 1101 baseline is untouched.",
+   "governs": [
+    "knowledge/_validate_type_composites.py (TYPE-001 html-only clause + both-direction selftest cases)",
+    "knowledge/_type_ratchet.json (baseline 1101 stands unraised)"
+   ],
+   "evidence": [
+    "chat #166 2026-08-13 (live) - options presented, Dave: 'go for it'",
+    "attribution: per-file inventory diff #119-content vs now - every file identical except canon/canon.css 279->280; drop commit 49ef4cb (#122) via git log -S",
+    "the ratchet was blind #122->#164 because _build_all.py died before step 1 (the #164 finding)",
+    "post-fix: --selftest OK (TYPE-001 fires on nolink.html, not on nolink.css; raw.css still fails TYPE-002), --ratchet PASS 1101 (0 new), inventory 1101, TYPE-001 x31 still live on HTML"
+   ],
+   "status": "RULED #166 AND ENACTED IN-WINDOW. Selftest asserts both directions of the scope clause."
   }
 ]
 }

@@ -157,6 +157,18 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
 
    **2c. Compact the banner stack — keep ★ LATEST + 1 PRIOR, roll the rest to `_GM-ARCHIVE.md`.**
    → **Execute every move via `python3 knowledge/_gm_move.py --ops <ops.json>` — never hand-edit a roll** (M5, 2026-07-28: line-START anchors · §A digest asserted · caps imported, warn ≠ block · all-or-nothing · stdout receipts).
+   ⛔ **THE OPS FILE IS A MSGFILE — GIVE IT A UNIQUE NAME AND ASSERT IT EXISTS BEFORE THE MOVER READS IT.**
+   *(Inscribed at the #166 wrap's EXIT CHECK, from the defect #165 caused and repaired: a heredoc to a
+   shared fixed path `/var/tmp/ops1.json` failed with `PermissionError` while the command chain
+   continued, and the mover consumed a **STALE ops file from #139** and printed **green receipts for
+   someone else's ops**.)* ★ **This is the stale-msgfile trap of `_RUNBOOK-git-commit.md` in a different
+   tool — same shape, same cause: a shared `/tmp`-class path, a fixed name, and a write failure that does
+   not stop the chain.** Write the ops from a **session-owned, uniquely-named** path, assert
+   `os.path.exists` + a size floor **in the writing process**, and read the receipts back against the
+   ops you meant to run. ⚠ **The only working restore on this mount is `git show <sha>:<path> > <path>`.**
+   ⚠ **And the sibling, banked #166: `git stash@{N}` INDICES RESHUFFLE after every `git stash drop`** —
+   a drop-by-index dance loses the wrong entry. For reading a file as it was at another commit, use
+   **`git show <sha>:<path>`**, never a stash sequence.
    *(Added 2026-07-25, Dave: "make good morning more efficient… keep improving Memento." First run the
    same day cut `GOOD-MORNING.md` by 35%.)*
    The stacked PRIOR banners are Polaroids: they accrete every session and, unpruned, become the single

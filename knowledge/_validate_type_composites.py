@@ -122,7 +122,13 @@ def check(css, raw, name):
     body_css = re.sub(r"/\*.*?\*/", "", body_css, flags=re.S)
     viol, chrome = [], 0
 
-    if not links_type_css(raw, css):
+    # TYPE-001 is scoped to HTML files ONLY (s166: Dave, 2026-08-13). A .css file has
+    # no legal way to pull type.css — <link> is inert there, so the only way a
+    # stylesheet ever "passed" was by an inert string in a comment (canon.css did
+    # exactly that until #122 dropped it; the ratchet was blind until #164 revived
+    # the build). A gate satisfied by MENTION is not a gate. CSS files remain fully
+    # gated by TYPE-002/TYPE-003.
+    if name.lower().endswith((".html", ".htm")) and not links_type_css(raw, css):
         viol.append(("TYPE-001", "(file)", "-", "does not pull canon/type.css", name))
 
     for bm in BLOCK.finditer(body_css):
@@ -208,8 +214,16 @@ def selftest():
     assert codes == ["TYPE-002", "TYPE-003"], f"expected raw+off-ramp, got {codes} / {v}"
 
     nolink = ".cn-x{color:red;}"
-    v, _ = check(nolink, nolink, "nolink")
+    v, _ = check(nolink, nolink, "nolink.html")
     assert v and v[0][0] == "TYPE-001", f"missing type.css must fail TYPE-001, got {v}"
+
+    # s166 scope: a .css file CANNOT pull type.css (no legal form), so TYPE-001
+    # must NOT fire on it — but TYPE-002/003 still must. Both directions asserted.
+    v, _ = check(nolink, nolink, "nolink.css")
+    assert not any(c == "TYPE-001" for c, *_ in v), f"TYPE-001 must not fire on .css, got {v}"
+    cssraw = ".cn-badge{font:700 13px/1 var(--font);}"
+    v, _ = check(cssraw, cssraw, "raw.css")
+    assert any(c == "TYPE-002" for c, *_ in v), f".css must still fail TYPE-002, got {v}"
 
     ch = "/* %s */.t{font-size:16px;}/* %s */\n.demo-controls button{font-size:13px;}" % (
         SENTINEL_OPEN, SENTINEL_CLOSE)
