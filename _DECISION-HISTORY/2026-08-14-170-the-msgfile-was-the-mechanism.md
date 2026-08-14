@@ -130,3 +130,12 @@ unwritten rather than banded by feel. Sub spend: **`subs 174079 tokens (n=2)`** 
 spend excluded and unmeasured. Dave's quota panel was answered **loosely** (*"it refreshed last
 night, we have loads of budget"*); the three numbers were not given and are **recorded as absent,
 never defaulted**.
+
+## Post-wrap addendum (same session, #170 — ADD, nothing above trimmed)
+
+Two findings from the wrap sub's report were NOT carried in the banner residual and are homed here so #171's opener can digest them (the post-wrap-corrections class: digest at the NEXT opener, not by re-editing the inscribed banner):
+
+1. **`_gen_titles.py` PARSER DEFECT, UNREPAIRED [NEW — 1].** Its headline parser splits on the first ` — ` after the `**#N**` marker; the current banner idiom puts that em-dash inside a bold clause, so the generator emits a degenerate rename (`Apollo - #170: — ✅`). **#169 SHIPPED exactly that rename and nobody caught it.** #170's wrap sub worked around it by authoring the heading to fit the parser — the defect itself is untouched. A fix must not edit the `#166` join-key labels.
+2. **`_git_commit.sh`'s "subject asserted identical to msgfile line 1" REMAINS STRUCTURALLY UNABLE TO FAIL [carried, narrower].** T3 overwrites the msgfile's line 1 with the generated subject seconds before the assert reads it back — the check compares a value to itself. The #170 reused-msgfile gate closes the REUSE leg only; the write-back that causes the class is unchanged. The honest fix asserts the committed subject against the GENERATED headline held in memory, not against the file T3 rewrote.
+
+Third wrap-sub flag, for completeness: the boot-drift declaration IS durably homed (`notes/_GAUGE-LOG.md`, #170 entry — mean 56,060 vs constant 54,859 ±1,178, refresh PUT TO DAVE, unruled).
