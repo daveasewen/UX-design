@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progress bar — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Progress bar (gated). DETERMINATE ONLY — linear + circular.
+     A known-proportion completion display: the fill is progress/complete, the track is
+     progress/incomplete. PASSIVE (interactive:false) — AT via role=progressbar +
+     aria-valuenow/valuemin/valuemax + aria-valuetext + an accessible name.
+
+     SCOPE FENCE (s173-D1, Dave): DETERMINATE ONLY. There is deliberately no indeterminate
+     variant here — that state overlaps Loading-indicator and which component owns it is
+     UNRULED. Do not add one without a ruling.
+
+     ⚠ CONTRAST FINDING, measured before build (runbook step 3), carried in the meta as
+     $finding: the fill-on-track pair (progress/complete on progress/incomplete) clears 3:1
+     in Mono and Console but FAILS in Legacy dark (1.75:1) and Supercharge dark (2.38:1).
+     It is therefore NOT declared as a gated contrastPair. Meaning is carried another way —
+     every bar shows a NUMERIC VALUE in text (17.4:1) and every bar carries aria-valuetext,
+     so completion never depends on the fill/track boundary alone (1.4.1 / 1.4.11).
+     ⚠ The snippet gate resolves against tokens/semantic-colour.json — the MONO base only —
+     so it cannot see the Legacy/Supercharge legs. The four-theme figures live in the meta. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: this snippet declares NO raw font-family on body — every text element carries a
+     .t-cm-* composite from canon/type.css, which is the mandatory route. It is therefore the
+     first snippet with ZERO raw type declarations (TYPE-002 contribution: 0). The usual
+     `body{font-family:var(--font)}` boilerplate is exactly the declaration the shrink-only
+     ratchet counts, and it is redundant once every element is composed. */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{ --complete:#1A1A1A; --incomplete:#F0F0F0; --text:#1A1A1A; --muted:#1A1A1A; --page:#FFFFFF; --border-radius-indicator:0; }
+  [data-theme="dark"]{ --complete:#FFFFFF; --incomplete:#484848; --text:#FFFFFF; --muted:#FFFFFF; --page:#1A1A1A; --border-radius-indicator:0; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  /* ---- shared: leading-trim is ON, so every vertical stack carries an EXPLICIT tokenised gap ---- */
+  .pb{display:flex; flex-direction:column; gap:8px; max-width:420px;}          /* gap/fixed/content 8 */
+  .pb-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
+  .pb-label{/* type: t-cm-label (bound in canon/type.css — T-D9/T-D12) */ color:var(--text);}
+  .pb-value{/* type: t-cm-figure-6 — tabular-nums so the digits don't jitter as the bar moves */ color:var(--muted);}
+  .pb-note{/* type: t-cm-caption */ color:var(--muted);}
+
+  /* ---- LINEAR ---- */
+  .pb-track{position:relative; width:100%; height:4px; background:var(--incomplete);
+            border-radius:var(--border-radius-indicator); overflow:hidden;}
+  .pb-track .pb-fill{position:absolute; left:0; top:0; height:100%; width:0;
+            background:var(--complete); transition:width var(--ease);}
+  .pb-lg .pb-track{height:8px;}          /* emphasis size — same token pair, thicker rule */
+
+  /* ---- CIRCULAR ---- */
+  .pb-ring{display:inline-grid; place-items:center; width:96px; height:96px;}
+  .pb-ring > svg{grid-area:1/1; width:96px; height:96px; transform:rotate(-90deg);}
+  .pb-ring .pb-ring-cap{grid-area:1/1; text-align:center;}
+  .pb-ring circle{fill:none; stroke-width:8;}
+  .pb-ring .pb-ring-track{stroke:var(--incomplete);}
+  .pb-ring .pb-ring-fill{stroke:var(--complete); stroke-dasharray:264.5; stroke-dashoffset:264.5;
+                         transition:stroke-dashoffset var(--ease);}
+
+  /* stacked specimens — explicit gap, never line-height (leading-trim is ON) */
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .row{display:flex; align-items:center; gap:24px; flex-wrap:wrap;}
+
+  /* 2.3.3 / 2.2.2 — the fill still MOVES to its final position (the value must be reachable),
+     it just arrives without an animated sweep. */
+  @media(prefers-reduced-motion:reduce){
+    .pb-track .pb-fill, .pb-ring .pb-ring-fill{transition:none;}
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <div class="specimens">
+
+    <!-- 1 · linear, default 4px -->
+    <div class="pb">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label" id="pb1-label">Transferring funds</span>
+        <span class="pb-value t-cm-figure-6">62%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-labelledby="pb1-label"
+           aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent complete">
+        <div class="pb-fill" style="width:62%"></div>
+      </div>
+    </div>
+
+    <!-- 2 · linear, emphasis 8px, with a supporting caption -->
+    <div class="pb pb-lg">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label" id="pb2-label">Statement download</span>
+        <span class="pb-value t-cm-figure-6">28%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-labelledby="pb2-label"
+           aria-valuenow="28" aria-valuemin="0" aria-valuemax="100" aria-valuetext="28 percent complete">
+        <div class="pb-fill" style="width:28%"></div>
+      </div>
+      <span class="pb-note t-cm-caption">3.2 MB of 11.4 MB</span>
+    </div>
+
+    <!-- 3 · linear on a non-percentage scale — aria-valuetext carries the domain units -->
+    <div class="pb">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label" id="pb3-label">Savings goal</span>
+        <span class="pb-value t-cm-figure-6">1,450 of 2,000</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-labelledby="pb3-label"
+           aria-valuenow="1450" aria-valuemin="0" aria-valuemax="2000" aria-valuetext="1,450 pounds of 2,000 pounds saved">
+        <div class="pb-fill" style="width:72.5%"></div>
+      </div>
+    </div>
+
+    <!-- 4 · circular -->
+    <div class="row">
+      <div class="pb-ring">
+        <svg data-bespoke="progress ring — a stateful, value-driven mark (stroke-dashoffset tracks aria-valuenow), not an icon; there is no library glyph for it and one would be wrong" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+          <circle class="pb-ring-track" cx="48" cy="48" r="42"></circle>
+          <circle class="pb-ring-fill" cx="48" cy="48" r="42" style="stroke-dashoffset:100.5"></circle>
+        </svg>
+        <span class="pb-ring-cap">
+          <span class="pb-value t-cm-figure-6" role="progressbar" aria-label="Profile completeness"
+                aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent complete">62%</span>
+        </span>
+      </div>
+      <span class="pb-note t-cm-caption">Profile completeness</span>
+    </div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Progress bar",
+    "vars": {
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" }
+    ],
+    "knownFindings": [
+      "DETERMINATE ONLY (s173-D1, Dave). No indeterminate variant: that state overlaps Loading-indicator and its ownership is UNRULED. Deliberate absence, not an omission.",
+      "CONTRAST FINDING, measured before build across all four themes x light/dark: fill-on-track (progress/complete on progress/incomplete) = Mono 15.27/9.15 PASS, Console 15.27/9.15 PASS, Legacy 4.58 light PASS / 1.75 dark FAIL, Supercharge 4.48 light PASS / 2.38 dark FAIL (3:1 non-text threshold). NOT declared as a gated contrastPair — it would be a single-theme green. Meaning carried another way: every bar shows a numeric value in text and carries aria-valuetext, so completion never rests on the fill/track boundary alone (1.4.1).",
+      "P-ADDRESS observed first-hand: progress/incomplete carries NO explicit override in any theme file, yet it resolves to #DFDEDC/#413934 in Supercharge because its $alias points at color/neutral/13 and 6, and Supercharge rebinds the whole color/neutral ramp onto color/warm. A token NAME is not an ADDRESS (#108).",
+      "The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it CANNOT see the Legacy/Supercharge legs of any declared pair. The four-theme figures above were computed against canon/canon.css, outside the gate.",
+      "Declared pairs were each verified to hold in ALL FOUR themes, light and dark, not just in the mono base the gate reads.",
+      "The circular specimen puts role=progressbar on the VISIBLE numeric caption, not on the decorative svg (aria-hidden), so the accessible name and the on-screen value are the same object."
+    ],
+    "requiredAria": ["role=\"progressbar\"", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-valuetext", "aria-labelledby"]
+  }
+  </script>
+  </body>
+</html>

@@ -1,5 +1,23 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-14 #174 (2d) — via the mover
+
+*(Last-refreshed chain segment, rolled with the delta below:)*
+
+*Last refreshed: 2026-08-14 (Fri from `date` — **#171 wrap**: FABLE conductor + ONE OPUS build sub, conductor wrap, Dave live, **ONE RULING, DAVE'S — AND THE NEW GATE FIRED ON ITS OWN COMMIT**. Dave ruled all three opener debts in one breath (*"lets just fix everything"*): ✅ the `_gen_titles.py` parser no longer ships degenerate renames — driven over ALL 200 historical banners, 9 DEGEN → 0, incl. the shipped `#169` rename; ✅ the `_git_commit.sh` subject-assert now compares `git log %s` against the GENERATED headline held in memory (old assert PROVEN structurally unable to fail — it compared a value to itself); NAMED refusal driven; ⚠ wrap leg verified BY CONSTRUCTION only — read the subject back; ✅ **`s171-D1`** boot band RE-BASED 54,859 ±1,178 → **56,158 ±849** (n=7 drifted series incl. #171's measured 56,746; stop line/budgets UNTOUCHED; `_rulings.json` 148 → 149). ★ FINDING: the #170 msgfile gate was PROVEN IN ANGER on this session's own commit — a refused first run had already written the T3 prefix into the msgfile and the gate refused the reinvocation with a NAMED refusal; a fresh msgfile committed clean (`6d5db13`, PUSHED on Dave's word). ⚠ Got wrong + caught: the first `s171-D1` insert landed inside `s158-D4`'s `open:` array (valid JSON, wrong home) — read-back caught it, reverted, re-inserted at the true tail with a prior-entries-equal assert. ⚙ GAUGE, first-hand: boot 56,746 real · FILL at wrap-open 102,873 vs stop 150,929 (wrap opened ~48K EARLY) · effort rung `M` (job window ≈ 46K) · `subs 102195 tokens (n=1)` · quota panel NOT ASKED — ABSENT, never defaulted. Dossier: `_DECISION-HISTORY/2026-08-14-171-the-gate-fired-on-its-own-commit.md`.)*
+
+## ⏱ PRIOR DELTA — 2026-08-14 (Fri **#171**, FABLE conductor + ONE OPUS build sub, conductor wrap, Dave live, **ONE RULING, DAVE'S — AND THE NEW GATE FIRED ON ITS OWN COMMIT** — ✅ **TITLE PARSER: 9 DEGEN → 0 OVER 200 BANNERS** · ✅ **SUBJECT-ASSERT NOW MEASURES THE GENERATED HEADLINE** · ✅ **`s171-D1` BOOT BAND 56,158 ±849** · ★ **THE #170 GATE PROVEN IN ANGER**)
+
+**Landed (evidence per claim; all receipts re-driven first-hand by the conductor):**
+
+- ✅ **The three opener debts fixed on one ruling** (*"lets just fix everything"*, itemised read-back, no objection): parser · assert · band. Commit `6d5db13`, **PUSHED on Dave's word**.
+- ✅ **`_gen_titles.py`**: divider now skips ` — ` inside bold spans; stray-emphasis strip; selftest + mutation-checked bite 6. Pre/post driven over all 200 historical `★ LATEST` banners: **9 degenerate → 0**. ⛔ `#166` join keys untouched. ⚠ 23/120 renames exceed the 120-tape cap — pre-existing loud refusal, declared.
+- ✅ **`_git_commit.sh`**: old subject-assert proven UNABLE TO FAIL on the real script (doubled subject shipped, rc=0); new assert compares `git log -1 --format=%s` to the T3-generated headline held in memory; NAMED refusal driven; #170 reused-msgfile gate intact. ⚠ Wrap leg BY CONSTRUCTION only — this wrap's commit is its first live wrap drive.
+- ✅ **`s171-D1`** (`_rulings.json` 149, tail): `BOOT_FIRSTTURN_TK` 54,859 → **56,158**, err → **849** (n=7 incl. #171's 56,746; s129-D1 half-range method). Stop line/budgets untouched. `_capture_gate.py` stale prose pointer updated. ⚠ First insert landed inside `s158-D4`'s `open:` array — caught on read-back, reverted, re-inserted with a prior-entries-equal assert.
+- ★ **The #170 msgfile gate FIRED ON THIS SESSION'S OWN COMMIT** — a refused first run (no `SESSION_N`) had already written the prefix into the msgfile; the gate refused the reuse, NAMED. The "unproven in anger" carry is CONSUMED.
+- ⚙ boot **56,746** real · FILL at wrap-open **102,873** vs stop **150,929** (~48K early) · rung **`M`** (≈46K job window) · **`subs 102195 tokens (n=1)`** · quota panel ABSENT — not asked, never defaulted.
+
+
 ## Rolled 2026-08-14 #173 (2d) — via the mover
 
 *(Last-refreshed chain segment, rolled with the delta below:)*

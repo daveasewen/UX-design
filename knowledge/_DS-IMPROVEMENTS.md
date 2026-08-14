@@ -1925,3 +1925,45 @@ the numeric gates could not [[mutation-tests-the-clause-not-the-feature]].
 
 **Evidence:** `knowledge/canon/gen_canon_components.py` (comment-strip + refusal clause, lines ~143–151) ·
 `knowledge/canon/canon.css` (regenerated, parses clean) · `_DECISION-HISTORY/2026-08-07-mark-map-pass-and-the-half-dead-canon.md`.
+
+---
+
+## ds-0NN (QUEUED PROPOSAL, #174) — progress fill-on-track misses 3:1 in Legacy dark and Supercharge dark
+
+**Status:** OBSERVED + MEASURED at #174, **NOT FIXED**. This is a token-level condition and promotion is
+Dave's — nothing was changed. Raised while building `Progress-bar` (the first component through the
+scaffold route, `s173-D1`).
+
+**What was measured.** `progress/complete` on `progress/incomplete` — the pair that tells a reader how far
+along a bar is — across all four themes, light and dark, against the generated `canon/canon.css`:
+
+| theme | light | dark |
+|---|---|---|
+| Mono | 15.27:1 ✅ | 9.15:1 ✅ |
+| Console | 15.27:1 ✅ | 9.15:1 ✅ |
+| Legacy | 4.58:1 ✅ | **1.75:1 ❌** |
+| Supercharge | 4.48:1 ✅ | **2.38:1 ❌** |
+
+Threshold is 3:1 (non-text, WCAG 1.4.11). Both failures are the **red fill on the dark grey track**:
+Legacy `#DB0011` on `#484848`, Supercharge `#CC4333` on `#413934`.
+
+**Scope — this is PRE-EXISTING, not new.** The same pair sits under the existing `Progress-tracker` bar
+and under the improvised bars in `File-upload` and `Stepper`. `Progress-bar` did not introduce it; it is
+the first component to have measured it across four themes.
+
+**How it is carried meanwhile (not a fix, a mitigation).** `Progress-bar` never declares this pair as a
+gated `contrastPair`, and every specimen renders a **numeric value in text** (17.4:1) plus
+`aria-valuetext`, so completion never rests on the fill/track boundary alone (1.4.1).
+
+**★ Why no gate caught it.** `_validate_snippets.py` `resolve()` reads `tokens/semantic-colour.json` — the
+**Mono base only**. It cannot see the Legacy or Supercharge leg of any declared pair. Declaring this pair
+would therefore have produced a **green that cannot fail in the two themes where it is false**. The
+four-theme figures above had to be computed outside the gate, by hand.
+
+**Options for Dave (none taken):** (a) lighten the Legacy/Supercharge dark track; (b) darken/lighten the
+dark fills; (c) accept it and rely on the numeric carrier under `s151-D1`'s meaning-carrier vocabulary,
+which is what the component does today. **Dave rules.**
+
+**Evidence:** `knowledge/components/progress-bar.meta.json` (`tokenValidation.$finding`) ·
+`reviews/REVIEW-174-progress-bar-four-themes-v1.html` (all eight panes, live) ·
+`knowledge/snippets/Progress-bar.reference.html` (`knownFindings`).

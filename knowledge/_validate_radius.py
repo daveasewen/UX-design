@@ -104,6 +104,9 @@ MIGRATED_SNIPPETS = {
     "Chart-candlestick.reference.html",
     "Chart-pie.reference.html",
     "Chart-stacked-area.reference.html",
+    # First component through the scaffold route (s173-D1, Dave, #174) — born on
+    # border-radius/indicator, strict from birth:
+    "Progress-bar.reference.html",
 }
 
 ADVISORY_GLOBS = [

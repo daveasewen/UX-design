@@ -4120,17 +4120,6 @@
   --data-control-label-disabled: var(--data-control-label-disabled-color);
   --data-grid: var(--data-grid-color);
   --grid-alpha: var(--data-grid-alpha);
-  /* #168 (option 82-B, ENACTED-PENDING-EYE): chart series are a GRAPHIC consumer — colour is the
-     only carrier, so {#dv-016} demands >=3:1. These re-point off the mark-strength -glyph rung
-     (s122-D2, ruled by eye for MARKS) onto the restored graphic-strength tier. NOT RULED — Dave's
-     eye is owed on reviews/REVIEW-168-rag-glyph-tier-v1.html. Legacy/console/SC set --status-*
-     explicitly in their own theme blocks and are untouched.
-     #168-A AMENDMENT BY ADDITION (post-wrap; text above stands as the record and is NOT rewritten):
-     all four LIGHT legs are now RULED VALUES and no placeholder remains. Dave verbatim, live:
-     "#C58900 is fine for yellow, #3F6FB5 is fine for blue" -> --rag-warning-graphic light #C58900
-     (value unchanged, STATUS placeholder -> ruled) and --rag-information-graphic light #306EC6 ->
-     #3F6FB5 (a VALUE change; #306EC6 retired to the token $note, not deleted). Measured on #FFFFFF:
-     3.021:1 / 5.057:1, both clear dv-016. The rung NAME "-graphic" is STILL an unratified default. */
   --status-breach: var(--rag-error-graphic);
   --status-watch: var(--rag-warning-graphic);
   --status-healthy: var(--rag-success-graphic);
@@ -8034,6 +8023,63 @@
 }
 
 /* ============================================================
+   Progress-bar  (from snippets/Progress-bar.reference.html)
+   Aria: role="progressbar", aria-valuenow, aria-valuemin, aria-valuemax, aria-valuetext, aria-labelledby
+   Finding: DETERMINATE ONLY (s173-D1, Dave). No indeterminate variant: that state overlaps Loading-indicator and its ownership is UNRULED. Deliberate absence, not an omission.
+   Finding: CONTRAST FINDING, measured before build across all four themes x light/dark: fill-on-track (progress/complete on progress/incomplete) = Mono 15.27/9.15 PASS, Console 15.27/9.15 PASS, Legacy 4.58 light PASS / 1.75 dark FAIL, Supercharge 4.48 light PASS / 2.38 dark FAIL (3:1 non-text threshold). NOT declared as a gated contrastPair — it would be a single-theme green. Meaning carried another way: every bar shows a numeric value in text and carries aria-valuetext, so completion never rests on the fill/track boundary alone (1.4.1).
+   Finding: P-ADDRESS observed first-hand: progress/incomplete carries NO explicit override in any theme file, yet it resolves to #DFDEDC/#413934 in Supercharge because its $alias points at color/neutral/13 and 6, and Supercharge rebinds the whole color/neutral ramp onto color/warm. A token NAME is not an ADDRESS (#108).
+   Finding: The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it CANNOT see the Legacy/Supercharge legs of any declared pair. The four-theme figures above were computed against canon/canon.css, outside the gate.
+   Finding: Declared pairs were each verified to hold in ALL FOUR themes, light and dark, not just in the mono base the gate reads.
+   Finding: The circular specimen puts role=progressbar on the VISIBLE numeric caption, not on the decorative svg (aria-hidden), so the accessible name and the on-screen value are the same object.
+   Scope: .cn-progress-bar   ============================================================ */
+.cn-progress-bar{
+  --ease: 140ms ease;
+  --complete: var(--progress-complete);
+  --incomplete: var(--progress-incomplete);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --page: var(--background-default);
+}
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+.cn-progress-bar :is(button, .cn-progress-bar a, .cn-progress-bar label, .cn-progress-bar span, .cn-progress-bar small, .cn-progress-bar strong, .cn-progress-bar em, .cn-progress-bar b, .cn-progress-bar i, .cn-progress-bar th, .cn-progress-bar td, .cn-progress-bar dt, .cn-progress-bar dd, .cn-progress-bar li, .cn-progress-bar figcaption, .cn-progress-bar legend, .cn-progress-bar caption, .cn-progress-bar summary, .cn-progress-bar output, .cn-progress-bar time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* NOTE: this snippet declares NO raw font-family on body — every text element carries a
+     .t-cm-* composite from canon/type.css, which is the mandatory route. It is therefore the
+     first snippet with ZERO raw type declarations (TYPE-002 contribution: 0). The usual
+     `body{font-family:var(--font)}` boilerplate is exactly the declaration the shrink-only
+     ratchet counts, and it is redundant once every element is composed. */
+/* ---- shared: leading-trim is ON, so every vertical stack carries an EXPLICIT tokenised gap ---- */
+.cn-progress-bar .pb{display:flex; flex-direction:column; gap:8px; max-width:420px;}
+/* gap/fixed/content 8 */
+.cn-progress-bar .pb-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
+.cn-progress-bar .pb-label{/* type: t-cm-label (bound in canon/type.css — T-D9/T-D12) */ color:var(--text);}
+.cn-progress-bar .pb-value{/* type: t-cm-figure-6 — tabular-nums so the digits don't jitter as the bar moves */ color:var(--muted);}
+.cn-progress-bar .pb-note{/* type: t-cm-caption */ color:var(--muted);}
+/* ---- LINEAR ---- */
+.cn-progress-bar .pb-track{position:relative; width:100%; height:4px; background:var(--incomplete);
+            border-radius:var(--border-radius-indicator); overflow:hidden;}
+.cn-progress-bar .pb-track .pb-fill{position:absolute; left:0; top:0; height:100%; width:0;
+            background:var(--complete); transition:width var(--ease);}
+.cn-progress-bar .pb-lg .pb-track{height:8px;}
+/* emphasis size — same token pair, thicker rule */
+/* ---- CIRCULAR ---- */
+.cn-progress-bar .pb-ring{display:inline-grid; place-items:center; width:96px; height:96px;}
+.cn-progress-bar .pb-ring > svg{grid-area:1/1; width:96px; height:96px; transform:rotate(-90deg);}
+.cn-progress-bar .pb-ring .pb-ring-cap{grid-area:1/1; text-align:center;}
+.cn-progress-bar .pb-ring circle{fill:none; stroke-width:8;}
+.cn-progress-bar .pb-ring .pb-ring-track{stroke:var(--incomplete);}
+.cn-progress-bar .pb-ring .pb-ring-fill{stroke:var(--complete); stroke-dasharray:264.5; stroke-dashoffset:264.5;
+                         transition:stroke-dashoffset var(--ease);}
+/* stacked specimens — explicit gap, never line-height (leading-trim is ON) */
+.cn-progress-bar .specimens{display:flex; flex-direction:column; gap:32px;}
+.cn-progress-bar .row{display:flex; align-items:center; gap:24px; flex-wrap:wrap;}
+/* 2.3.3 / 2.2.2 — the fill still MOVES to its final position (the value must be reachable),
+     it just arrives without an animated sweep. */
+@media(prefers-reduced-motion:reduce){
+    .pb-track .pb-fill, .pb-ring .pb-ring-fill{transition:none;}
+  }
+
+/* ============================================================
    Secure-entry  (from snippets/Secure-entry.reference.html)
    Aria: role="group", aria-label, aria-describedby, autocomplete="one-time-code"
    Scope: .cn-secure-entry   ============================================================ */
@@ -8974,7 +9020,7 @@
    edit the override sets and re-run. Theme attr goes on <html> or any
    ancestor of the [data-theme] element; Mono is the base (no block).
    Attrs: legacy=apollo-legacy, mono=apollo-mono, console=apollo-console, supercharge=apollo-supercharge */
-/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (39 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
+/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (40 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
 [data-apollo-theme="legacy"]{
   --badge-background: #DB0011;
   --border-radius-default: 0;
@@ -8983,6 +9029,7 @@
   --button-primary-background-disabled: #E1E1E1;
   --button-primary-background-hover: #BA1110;
   --button-primary-background-pressed: #000000;
+  --button-primary-icon-default: #FFFFFF;
   --button-primary-label-default: #FFFFFF;
   --button-quaternary-label-default: #333333;
   --button-tertiary-border-disabled: #D7D8D6;
@@ -9028,6 +9075,7 @@
   --button-primary-background-disabled: #484848;
   --button-primary-background-hover: #BA1110;
   --button-primary-background-pressed: #FFFFFF;
+  --button-primary-icon-default: #FFFFFF;
   --button-primary-label-default: #FFFFFF;
   --button-quaternary-label-default: #FFFFFF;
   --button-tertiary-border-disabled: #404040;
@@ -9222,6 +9270,7 @@
   --pri-default: #DB0011;
   --pri-disabled: #E1E1E1;
   --pri-hover: #BA1110;
+  --pri-icon: #FFFFFF;
   --pri-label: #FFFFFF;
   --pri-pressed: #000000;
   --quat-label: #333333;
@@ -9237,6 +9286,7 @@
   --pri-default: #DB0011;
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
+  --pri-icon: #FFFFFF;
   --pri-label: #FFFFFF;
   --pri-pressed: #FFFFFF;
   --quat-label: #FFFFFF;
@@ -9259,19 +9309,11 @@
 [data-apollo-theme="legacy"] .cn-chart-bar{
   --ink: #333333;
   --line: #D7D8D6;
-  --status-breach: #A8000B;
-  --status-healthy: #00847F;
-  --status-info: #305A85;
-  --status-watch: #FFBB33;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-bar,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-bar{
   --ink: #FFFFFF;
   --line: #404040;
-  --status-breach: #A8000B;
-  --status-healthy: #00847F;
-  --status-info: #305A85;
-  --status-watch: #FFBB33;
 }
 [data-apollo-theme="legacy"] .cn-chart-boxplot{
   --ink: #333333;
@@ -9579,6 +9621,7 @@
   --press-travel: 0;
   --pri-default: #DB0011;
   --pri-disabled: #E1E1E1;
+  --pri-glyph: #FFFFFF;
   --pri-hover: #BA1110;
   --pri-pressed: #000000;
   --quat-glyph: #333333;
@@ -9592,6 +9635,7 @@
   --press-travel: 0;
   --pri-default: #DB0011;
   --pri-disabled: #484848;
+  --pri-glyph: #FFFFFF;
   --pri-hover: #BA1110;
   --pri-pressed: #FFFFFF;
   --quat-glyph: #FFFFFF;
@@ -9727,6 +9771,17 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-popover{
   --press-darken: 1;
   --press-travel: 0;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-progress-bar{
+  --complete: #DB0011;
+  --muted: #545454;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-progress-bar,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-progress-bar{
+  --complete: #DB0011;
+  --muted: #9B9B9B;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-progress-tracker{
@@ -9999,7 +10054,7 @@
   --text: #FFFFFF;
 }
 
-/* ---- Apollo Console  [data-apollo-theme="console"]  (22 override path(s), 4 mark(s), apollo-console.overrides) ---- */
+/* ---- Apollo Console  [data-apollo-theme="console"]  (23 override path(s), 4 mark(s), apollo-console.overrides) ---- */
 [data-apollo-theme="console"]{
   --badge-background: #B92F1E;
   --border-radius-control: 4px;
@@ -10022,6 +10077,7 @@
   --rag-success-background: #5DAC7B;
   --rag-success-glyph: #5DAC7B;
   --rag-success-tint: #D2E8DA;
+  --rag-text-on-information: #FFFFFF;
   --rag-warning: #D5990B;
   --rag-warning-background: #D5990B;
   --rag-warning-glyph: #D5990B;
@@ -10047,6 +10103,7 @@
   --rag-success-background: #5DAC7B;
   --rag-success-glyph: #5DAC7B;
   --rag-success-tint: #355441;
+  --rag-text-on-information: #FFFFFF;
   --rag-warning: #D5990B;
   --rag-warning-background: #D5990B;
   --rag-warning-glyph: #D5990B;
@@ -10136,6 +10193,7 @@
   --err-bg: #B92F1E;
   --info-bg: #5A85C1;
   --ok-bg: #5DAC7B;
+  --on-info: #FFFFFF;
   --warn-bg: #D5990B;
 }
 /* s149-D1 is MONO ONLY — console s132-D1 untouched: state the white ink explicitly, since mono's
@@ -10153,6 +10211,7 @@
   --err-bg: #B92F1E;
   --info-bg: #5A85C1;
   --ok-bg: #5DAC7B;
+  --on-info: #FFFFFF;
   --warn-bg: #D5990B;
 }
 [data-apollo-theme="console"] .cn-button{
@@ -10174,19 +10233,11 @@
 [data-apollo-theme="console"] .cn-chart-bar{
   --border-radius-control: 4px;
   --border-radius-surface: 12px;
-  --status-breach: #B92F1E;
-  --status-healthy: #5DAC7B;
-  --status-info: #5A85C1;
-  --status-watch: #D5990B;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-bar,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-bar{
   --border-radius-control: 4px;
   --border-radius-surface: 12px;
-  --status-breach: #B92F1E;
-  --status-healthy: #5DAC7B;
-  --status-info: #5A85C1;
-  --status-watch: #D5990B;
 }
 [data-apollo-theme="console"] .cn-chart-boxplot{
   --border-radius-control: 4px;
@@ -10496,6 +10547,13 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-popover{
   --border-radius-surface: 12px;
 }
+[data-apollo-theme="console"] .cn-progress-bar{
+  --border-radius-indicator: 4px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-progress-bar,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-progress-bar{
+  --border-radius-indicator: 4px;
+}
 [data-apollo-theme="console"] .cn-progress-tracker{
   --border-radius-control: 4px;
   --border-radius-indicator: 4px;
@@ -10765,7 +10823,7 @@
   --rag-success-background: #5DAC7B;
   --rag-success-glyph: #5DAC7B;
   --rag-success-tint: #DCEDE3;
-  --rag-text-on-information: #13110E;
+  --rag-text-on-information: #FFFFFF;
   --rag-text-on-light: #13110E;
   --rag-warning: #D5990B;
   --rag-warning-background: #D5990B;
@@ -10890,7 +10948,7 @@
   --rag-success-background: #5DAC7B;
   --rag-success-glyph: #5DAC7B;
   --rag-success-tint: #12291D;
-  --rag-text-on-information: #13110E;
+  --rag-text-on-information: #FFFFFF;
   --rag-text-on-light: #13110E;
   --rag-warning: #D5990B;
   --rag-warning-background: #D5990B;
@@ -11126,7 +11184,7 @@
   --err-bg: #B92F1E;
   --info-bg: #5A85C1;
   --ok-bg: #5DAC7B;
-  --on-info: #13110E;
+  --on-info: #FFFFFF;
   --on-light: #13110E;
   --page: #F7F6F4;
   --press-darken: 1;
@@ -11148,7 +11206,7 @@
   --err-bg: #B92F1E;
   --info-bg: #5A85C1;
   --ok-bg: #5DAC7B;
-  --on-info: #13110E;
+  --on-info: #FFFFFF;
   --on-light: #13110E;
   --page: #1A1A1A;
   --press-darken: 1;
@@ -11250,10 +11308,6 @@
   --line: #CDC8C6;
   --page: #F7F6F4;
   --pop-border: #FFFFFF00;
-  --status-breach: #B92F1E;
-  --status-healthy: #5DAC7B;
-  --status-info: #5A85C1;
-  --status-watch: #D5990B;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-bar,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-bar{
@@ -11265,10 +11319,6 @@
   --line: #524842;
   --page: #1A1A1A;
   --pop-border: #524842;
-  --status-breach: #B92F1E;
-  --status-healthy: #5DAC7B;
-  --status-info: #5A85C1;
-  --status-watch: #D5990B;
 }
 [data-apollo-theme="supercharge"] .cn-chart-boxplot{
   --baseline: #13110E;
@@ -12136,6 +12186,21 @@
   --press-darken: 1;
   --press-travel: 0;
   --surface: #1A1A1A;
+  --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-progress-bar{
+  --complete: #B92F1E;
+  --incomplete: #DFDEDC;
+  --muted: #13110E;
+  --page: #F7F6F4;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-progress-bar,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-progress-bar{
+  --complete: #CC4333;
+  --incomplete: #413934;
+  --muted: #F7F6F4;
+  --page: #1A1A1A;
   --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-progress-tracker{
