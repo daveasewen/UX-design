@@ -152,8 +152,19 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # defensible act and is what is done here, so the published floor now computes as
 # 54,859 + the live measured chain, not as a flat 54,859. Nothing is asserted about the chain
 # term, which is measured every run anyway. [[measure-dont-convert-units]]
-BOOT_FIRSTTURN_TK = 54_859
-BOOT_FIRSTTURN_ERR = 1_178
+# ✅ RE-BASED AGAIN #171, 2026-08-14 — `s171-D1`, DAVE'S CALL ("lets just fix everything",
+# itemised as (3) in the read-back). The s129-D1 block above stands as HISTORY, untrimmed.
+# Drift declared #170 (notes/_GAUGE-LOG.md): every one of the last seven first-turn
+# `message.usage` samples sat ABOVE the 54,859 constant with a consistent sign:
+#     55,337 · 55,309 · 56,170 · 56,326 · 56,527 · 56,693 · #171 56,746
+#     (n=7, min 55,309, max 56,746, mean 56,158)
+# ⛔ THE RULED VALUE IS 56,158 — the n=7 mean shown to Dave at #171. Error bar 849 =
+# half-range needed for the bar to cover the whole series (56,158 − 55,309 = 849 >
+# 56,746 − 56,158 = 588). Same method as s129-D1 (half-range), re-measured, not re-argued.
+# ⛔ WHAT DID NOT MOVE, AND MAY NOT: the wrap-open stop line (150,929), BUDGET_WORKING,
+# BUDGET_AMBER, BUDGET_HARD. A costlier boot moves the ROOM, never the LINE.
+BOOT_FIRSTTURN_TK = 56_158
+BOOT_FIRSTTURN_ERR = 849
 
 
 def _cache() -> dict:

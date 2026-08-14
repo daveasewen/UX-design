@@ -91,11 +91,32 @@ def extract_headline(banner_line):
             f"banner line has no **#N** session marker — cannot anchor the headline search. "
             f"Line: {banner_line!r}")
     after_marker = banner_line[marker.end():]
-    if " — " not in after_marker:
+    # ⚠ DEFECT FIXED #171: this used to split on the FIRST ' — ' in `after_marker`. The
+    # current banner idiom puts an em-dash INSIDE a bold clause
+    # (`**ONE RULING, DAVE'S — AND THE FINDING IS …**`), so the split landed mid-clause and
+    # the following BOLD_RE match paired the clause's CLOSING `**` with the NEXT clause's
+    # OPENING `**` — emitting decoration as a title (`Apollo - #170: — ✅`). #169 SHIPPED
+    # exactly that. The divider that matters is the first ' — ' at the TOP LEVEL, i.e. one
+    # that is not inside a bold span. Bold spans are computed from the start of
+    # `after_marker` so the pairing is correct.
+    bold_spans = [m.span() for m in BOLD_RE.finditer(after_marker)]
+
+    def _inside_bold(idx):
+        return any(s <= idx < e for s, e in bold_spans)
+
+    divider = -1
+    probe = after_marker.find(" — ")
+    while probe != -1:
+        if not _inside_bold(probe):
+            divider = probe
+            break
+        probe = after_marker.find(" — ", probe + 1)
+    if divider == -1:
         raise TitleDeriveError(
-            f"banner line has no ' — ' divider after the **#N** marker — cannot isolate "
-            f"a headline. Remainder: {after_marker!r}")
-    tail = after_marker.split(" — ", 1)[1]
+            f"banner line has no top-level ' — ' divider after the **#N** marker (every "
+            f"em-dash found sits inside a bold clause) — cannot isolate a headline. "
+            f"Remainder: {after_marker!r}")
+    tail = after_marker[divider + len(" — "):]
     m = BOLD_RE.search(tail)
     if not m:
         raise TitleDeriveError(
@@ -104,6 +125,9 @@ def extract_headline(banner_line):
     headline = m.group(1).strip()
     # strip nested markdown the bold clause may carry (backtick code spans, inner bold)
     headline = re.sub(r"`([^`]*)`", r"\1", headline)
+    # inner emphasis (`**… *AND WIRED* …**`) leaves stray asterisks mid-clause once the outer
+    # pair is consumed — drop every asterisk, never leave markdown syntax in a title (#171).
+    headline = headline.replace("*", "")
     headline = headline.strip(" *")
     if not headline:
         raise TitleDeriveError(f"headline extracted empty from tail: {tail!r}")
@@ -268,12 +292,35 @@ def selftest():
     except TitleDeriveError as e:
         fails.append(f"bite 5 (control re-check): unmutated fixture now refuses too: {e}")
 
+    # bite 6 (REGRESSION, #171): the CURRENT banner idiom puts a ' — ' INSIDE a bold clause.
+    # The old parser split there and emitted decoration as a title (`Apollo - #170: — ✅`);
+    # #169 shipped exactly that. Real #170 shape, trimmed. MUTATION-CHECKED: reverting the
+    # divider search to `after_marker.split(" — ", 1)` makes this bite emit '— ✅'.
+    modern = (
+        "> ## ★ LATEST — 2026-08-14 (Fri **#170**, FABLE conductor, Dave live, "
+        "**FOUR RULINGS, ALL DAVE'S — AND THE FINDING IS THE WRITE-BACK** — "
+        "**THE MSGFILE WAS THE MECHANISM** — AND THE PHANTOM "
+        "WAS THE INSTRUMENT · ✅ **`s165-D4` IS CLOSED 37/37**)\n"
+        ">\n"
+        "> **residual → #171:** ⬛ **⓪ THE PARSER DEFECT: fix it**\n")
+    try:
+        rename, _next_title, _meta = derive(modern, session_no=170)
+        got = rename.split(": ", 1)[1].rstrip("`")
+        if got != "the msgfile was the mechanism":
+            fails.append(
+                f"bite 6 (modern idiom): headline came out {got!r}, expected "
+                f"'the msgfile was the mechanism' — the ' — ' inside the bold clause is "
+                f"being treated as the divider again")
+    except TitleDeriveError as e:
+        fails.append(f"bite 6 (modern idiom): REFUSED — should have derived: {e}")
+
     if fails:
         print(f"selftest: {len(fails)} failure(s)")
         for f in fails:
             print(f"  ⛔ {f}")
         return 1
-    print("selftest: control derives correctly + 4 named refusals bite + control re-check green ✓")
+    print("selftest: control derives correctly + 4 named refusals bite + control re-check "
+          "+ modern-idiom regression (bite 6) green ✓")
     return 0
 
 

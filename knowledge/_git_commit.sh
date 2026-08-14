@@ -216,7 +216,14 @@ fi
 #   - --wrap: banner derivation stands (the wrap writes its banner first), but T3 now ASSERTS
 #     the banner's #N equals the declared SESSION_N and REFUSES on mismatch — the banner is a
 #     VERIFIED current-session source, not an assumed one.
-python3 - "$MSGFILE" "$WRAP" "${SESSION_N:-}" "$(date +%F)" <<'PYEOF' || fail "T3 headline generation REFUSED (reason printed above) — s130-D3: a subject is generated from a current-session source or not at all; a stale on-disk banner is never inherited. Non-wrap commits require SESSION_N=<n>. Nothing has been staged."
+# ⛔ #171 — T3's generated headline is CAPTURED INTO A SHELL VARIABLE here and the post-commit
+# subject assert compares the COMMITTED subject against THAT variable. It used to compare the
+# committed subject against the msgfile's first line — the very line T3 rewrites four lines
+# below — so it compared a value to itself and could not fail. DRIVEN #171: with a simulated
+# prefix-stacking write-back, a doubled subject landed and the assert still printed
+# "— subject asserted identical to msgfile line 1" and exited 0. The msgfile is now a
+# DIAGNOSTIC in that failure text, never the authority.
+T3_OUT=$(python3 - "$MSGFILE" "$WRAP" "${SESSION_N:-}" "$(date +%F)" 2>&1 <<'PYEOF'
 import re, sys
 msgfile = sys.argv[1]
 wrap = sys.argv[2]  # "1" on --wrap commits, "0" otherwise (#78-D3)
@@ -310,7 +317,15 @@ with open(msgfile, "w", encoding="utf-8") as f:
 if fallback_note:
     print(fallback_note)
 print(f"— T3 headline: {headline[:100]}{'…' if len(headline) > 100 else ''}")
+# #171 — the machine line the shell captures. This, not the rewritten msgfile, is what the
+# post-commit subject assert compares git's %s against.
+print("T3-SUBJECT\t" + headline)
 PYEOF
+) || { printf '%s\n' "$T3_OUT" >&2; fail "T3 headline generation REFUSED (reason printed above) — s130-D3: a subject is generated from a current-session source or not at all; a stale on-disk banner is never inherited. Non-wrap commits require SESSION_N=<n>. Nothing has been staged."; }
+# replay T3's human output (notes + headline), then lift the machine line into memory
+printf '%s\n' "$T3_OUT" | grep -v '^T3-SUBJECT' || true
+GEN_SUBJ=$(printf '%s\n' "$T3_OUT" | sed -n 's/^T3-SUBJECT\t//p')
+[ -n "$GEN_SUBJ" ] || fail "T3 exited 0 but emitted no T3-SUBJECT line — the generated headline was not captured, so the post-commit subject assert would have nothing to compare against (#171). Nothing has been staged."
 
 # clear · stage · clear · commit · clear
 clear_locks
@@ -366,18 +381,25 @@ SUBJ_LEN=$(git log -1 --format=%s | wc -c)
 # actually breaks both passed it: git's cleanup silently deleting a '#'-leading subject, and the
 # stale-msgfile trap. The commit HAS landed by the time this runs — that is the point, this is the
 # seam where a wrong subject becomes DURABLE — so the failure text says so and names the remedy.
+# ⛔ #171 — THE SUBJECT NOW ASSERTS AGAINST THE GENERATED HEADLINE HELD IN MEMORY ($GEN_SUBJ),
+# NEVER against the msgfile T3 rewrote. The old comparison read back the same line T3 had
+# written seconds earlier: a value compared to itself, structurally unable to fail. Driven #171
+# with a simulated prefix-stacking write-back — the doubled subject landed and this seam
+# printed green. $GEN_SUBJ is captured BEFORE staging and is not touched by anything after.
 MSG_HEAD=$(head -1 "$MSGFILE")
 GIT_SUBJ=$(git log -1 --format=%s)
-if [ "$GIT_SUBJ" != "$MSG_HEAD" ]; then
-  echo "✗ SUBJECT MISMATCH — the commit LANDED but git's subject is not the msgfile's first line." >&2
-  echo "    msgfile[1]: $(printf '%s' "$MSG_HEAD" | cut -c1-160)" >&2
-  echo "    git    %s : $(printf '%s' "$GIT_SUBJ" | cut -c1-160)" >&2
-  echo "  Two known causes: (a) message cleanup ate a '#'-leading subject — check --cleanup=verbatim" >&2
-  echo "  survived, (b) the stale-msgfile trap. Fix the msgfile and amend BEFORE Dave pushes." >&2
+if [ "$GIT_SUBJ" != "$GEN_SUBJ" ]; then
+  echo "✗ SUBJECT MISMATCH — the commit LANDED but git's subject is not the headline T3 generated." >&2
+  echo "    T3 generated: $(printf '%s' "$GEN_SUBJ" | cut -c1-160)" >&2
+  echo "    git    %s  : $(printf '%s' "$GIT_SUBJ" | cut -c1-160)" >&2
+  echo "    msgfile[1]  : $(printf '%s' "$MSG_HEAD" | cut -c1-160)   (diagnostic only — T3 rewrote this file)" >&2
+  echo "  Known causes: (a) message cleanup ate a '#'-leading subject — check --cleanup=verbatim" >&2
+  echo "  survived, (b) the stale-msgfile trap, (c) something rewrote the msgfile between T3 and" >&2
+  echo "  the commit. Fix the msgfile and amend BEFORE Dave pushes." >&2
   clear_locks
   exit 1
 fi
-echo "— subject asserted identical to msgfile line 1"
+echo "— subject asserted identical to the headline T3 generated (in memory, not re-read from the msgfile — #171)"
 
 # last action: clear the lock git just respawned; no git command after this
 clear_locks

@@ -3449,7 +3449,10 @@ def boot_constant_drift_check(repo):
 
     ✅ #129, 2026-08-08 — THE GATE DID ITS JOB AND THE ANSWER FINALLY CAME BACK. The 75,899
     above is HISTORY, not the current floor: `s129-D1` re-based `BOOT_FIRSTTURN_TK` to 54,859
-    ±1,178 on seven post-break samples. Nothing in this function was tuned to suit it; what
+    ±1,178 on seven post-break samples. (✅ #171: `s171-D1` re-based again to 56,158 ±849
+    on the drifted post-#164 series — this gate fired the drift at #170 and Dave took the
+    refresh at #171. This function reads the live constants; nothing here was tuned.)
+    Nothing in this function was tuned to suit it; what
     WAS fixed is a blind spot found in the same pass — `_parse_boot_samples` matched
     case-sensitively and could not see "**Boot 53,681 real**", so three sessions of samples
     were invisible here. Both readings are in notes/_GAUGE-LOG.md #129.
