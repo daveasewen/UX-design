@@ -21,6 +21,16 @@ theme. The base pass is unchanged and is the activeBase (apollo-mono) reading.
 Theme rows are reported by NAME and GATE on the same terms as the base pass.
 No token file is read for a value the palette tier owns; nothing is written back.
 
+PER-THEME TOKEN OVERRIDES (s170, ruling C' — the second leg). Resolving grounds
+alone still graded MONO's INK under every theme: a theme that re-binds a token in
+its own override set (themes/_themes.json -> overrideSet) was invisible to this
+reader, so e.g. Legacy's ruled white rag/text/on-information (s131-D1) was graded
+as the base ink. Overrides are now applied GENERICALLY — any override path that
+names an audited text/icon token supplies that theme's ink, and any override path
+that names a surface the base map knows re-values that ground (the palette tier
+still wins on the keys it owns, per s158-D4). A declared overrideSet that cannot
+be read is a NAMED refusal (OverrideRefusal), never a silent fall-back to base.
+
 Usage:
   python3 knowledge/_build_surface_contrast_audit.py            # audit + write + gate
   python3 knowledge/_build_surface_contrast_audit.py --selftest  # reader selftest, no writes
@@ -37,7 +47,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 from _contrast_utils import (
     contrast_ratio, is_sufficient_contrast,
     load_dark_surfaces, resolve_dark_surface, standard_dark_surfaces,
-    legacy_exemption, _leaf_dark_hex,
+    legacy_exemption, _leaf_dark_hex, _group_prefix, _excluded_surfaces,
+    luminance, hex_to_rgb,
     CONTRAST_ALLOWLIST,
 )
 
@@ -79,6 +90,43 @@ class PaletteRefusal(Exception):
     """A theme's declared palette could not be read. Named, never swallowed."""
 
 
+class OverrideRefusal(Exception):
+    """A theme's declared overrideSet could not be read. Named, never swallowed.
+
+    Distinct from PaletteRefusal on purpose: the two tiers fail for different
+    reasons and a caller must be able to say WHICH one refused.
+    """
+
+
+def load_theme_overrides(tok_dir, key, rel):
+    """Read one theme's override set -> {token path: token node}.
+
+    `rel` is the registry's overrideSet path, relative to knowledge/tokens/.
+    A None/absent declaration means the theme HAS no override set (apollo-mono,
+    the activeBase) and yields {}. A DECLARED set that is missing, unreadable or
+    malformed raises OverrideRefusal — it is never treated as 'no overrides',
+    because that is indistinguishable from the base reading and would repeat the
+    very defect the per-theme legs exist to fix.
+    """
+    if not rel:
+        return {}
+    path = os.path.join(tok_dir, rel)
+    if not os.path.exists(path):
+        raise OverrideRefusal(
+            "theme %s declares overrideSet %r in tokens/themes/_themes.json "
+            "but no file exists at %s" % (key, rel, path))
+    try:
+        doc = json.load(open(path))
+    except ValueError as e:
+        raise OverrideRefusal("theme %s: overrideSet %s is not valid JSON (%s)" % (key, rel, e))
+    ov = doc.get("overrides")
+    if not isinstance(ov, dict):
+        raise OverrideRefusal(
+            "theme %s: overrideSet %s has no 'overrides' object (got %s)"
+            % (key, rel, type(ov).__name__))
+    return {k: v for k, v in ov.items() if isinstance(v, dict)}
+
+
 def load_theme_palettes(tok_dir):
     """theme key -> {label, attr, palette, surfaces{token-name: dark hex}}.
 
@@ -111,22 +159,85 @@ def load_theme_palettes(tok_dir):
             hx = _leaf_dark_hex(node)
             if hx:
                 vals["rag/" + k] = hx
+        ovrel = t.get("overrideSet")
         out[key] = {"label": t.get("label", key), "attr": t.get("attr", key),
-                    "palette": rel, "surfaces": vals}
+                    "palette": rel, "surfaces": vals,
+                    "override_set": ovrel,
+                    "overrides": load_theme_overrides(tok_dir, key, ovrel)}
     if not out:
         raise PaletteRefusal("no theme in %s declares a ragPalette" % reg_path)
     return out
 
 
-def theme_surface_map(base_surfaces, pal_surfaces):
-    """Base surface map with palette-owned entries REPLACED by the theme's value.
-    Only names the base map already knows are substituted — the palette does not
-    mint surfaces, it re-values the ones the semantic tier declares."""
+def theme_surface_map(base_surfaces, pal_surfaces, overrides=None):
+    """Base surface map with the theme's own values substituted in.
+
+    Two tiers, applied in declaration order: the theme's override set FIRST, then
+    the palette tier, which WINS on the keys it owns (s158-D4 single source — a
+    palette-owned ground must not be shadowed by a stale override entry). Only
+    names the base map already knows are substituted: neither tier mints a
+    surface, both re-value the ones the semantic tier declares.
+    """
     s = dict(base_surfaces)
+    for name, node in (overrides or {}).items():
+        if name in base_surfaces:
+            hx = _leaf_dark_hex(node)
+            if hx:
+                s[name] = hx
     for name, hx in pal_surfaces.items():
         if name in base_surfaces:
             s[name] = hx
     return s
+
+
+# --- s170 (Dave, #170): STATE-MATCHED GROUNDS -------------------------------
+# _contrast_utils.resolve_dark_surface grades a grouped ink against the LIGHTEST
+# ground in its group, across every state. For a state-suffixed ink that is an
+# INSTRUMENT ARTEFACT, not a real pairing: it imagined Legacy's white
+# button/primary/label/default sitting on button/primary/background/PRESSED
+# (#FFFFFF) and reported 1.0:1 — a component state that cannot co-occur. Dave
+# ruled a label state may only be compared against its OWN matching background
+# state. Where the group offers no same-state ground (the common case: ungrouped
+# text/*, or a label whose state has no background twin) behaviour is UNCHANGED
+# and falls through to the shared worst-case resolver, so no false negative is
+# introduced anywhere the artefact did not exist.
+STATE_SUFFIXES = ("default", "hover", "pressed", "active", "focus", "focused",
+                  "selected", "visited", "disabled")
+
+
+def _state_suffix(token_name):
+    """'button/primary/label/default' -> 'default'; 'text/secondary' -> None."""
+    last = token_name.rsplit("/", 1)[-1]
+    return last if last in STATE_SUFFIXES else None
+
+
+def resolve_ground(token_name, surfaces, default_dark, raised_dark):
+    """Return (surface_hex, label) with s170 state matching applied.
+
+    Delegates to resolve_dark_surface for every skip decision (light-only,
+    on-inverse, the named per-token carve-outs) and for the fall-back, so this
+    wrapper can only ever NARROW the candidate set — never widen it, never
+    change which tokens are audited.
+    """
+    base = resolve_dark_surface(token_name, surfaces, default_dark, raised_dark)
+    if base[0] is None:
+        return base
+    state = _state_suffix(token_name)
+    if not state:
+        return base
+    grp = _group_prefix(token_name)
+    if not grp:
+        return base
+    excluded = _excluded_surfaces(token_name)
+    matched = [hx for nm, hx in surfaces.items()
+               if nm.startswith(grp + "/") and nm not in excluded
+               and _state_suffix(nm) == state]
+    if not matched:
+        return base
+    # A group may still expose more than one same-state ground; worst-case
+    # (lightest) WITHIN the matched state stays the conservative choice.
+    worst = max(matched, key=lambda h: luminance(*hex_to_rgb(h)))
+    return (worst, grp)
 
 
 def grade(name, node, surfaces, default_dark, raised_dark):
@@ -134,7 +245,7 @@ def grade(name, node, surfaces, default_dark, raised_dark):
     dark_val = mode_val(node, "dark")
     if not (isinstance(dark_val, str) and dark_val.startswith("#")):
         return None
-    surface, label = resolve_dark_surface(name, surfaces, default_dark, raised_dark)
+    surface, label = resolve_ground(name, surfaces, default_dark, raised_dark)
     if surface is None:
         return None
     context = "text" if "text" in name else "ui"
@@ -148,10 +259,12 @@ def grade(name, node, surfaces, default_dark, raised_dark):
 
 
 def audit_themes(sem_leaves, base_surfaces, tok_dir, default_dark, raised_dark):
-    """Regrade every token whose surface MOVES under a theme's palette.
+    """Regrade every token whose GROUND or INK moves under a theme.
 
-    Rows are emitted only where the theme's resolved surface differs from the
-    base pass, so the activeBase reading is never double-counted. Legacy pairs
+    Rows are emitted only where the theme's resolved surface OR the theme's
+    resolved ink differs from the base pass, so the activeBase reading is never
+    double-counted (apollo-mono declares no override set and consumes the base
+    palette, so it emits no rows at all). Legacy pairs
     are routed through _contrast_utils.legacy_exemption() per R-D24's own
     instruction; a hit is recorded as EXEMPTED (documented), never as a pass.
     A miss is a real failure and gates like any other.
@@ -159,20 +272,46 @@ def audit_themes(sem_leaves, base_surfaces, tok_dir, default_dark, raised_dark):
     palettes = load_theme_palettes(tok_dir)
     rows = []
     for tkey, meta in palettes.items():
-        smap = theme_surface_map(base_surfaces, meta["surfaces"])
+        ovr = meta["overrides"]
+        smap = theme_surface_map(base_surfaces, meta["surfaces"], ovr)
         for name, node in sorted(sem_leaves.items()):
             if not is_text_or_icon_token(name):
                 continue
             if "light" not in node or "dark" not in node:
                 continue
+            th_node = ovr.get(name, node)
             base_rec = grade(name, node, base_surfaces, default_dark, raised_dark)
-            th_rec = grade(name, node, smap, default_dark, raised_dark)
+            th_rec = grade(name, th_node, smap, default_dark, raised_dark)
             if base_rec is None or th_rec is None:
                 continue
-            if th_rec["surface"] == base_rec["surface"]:
-                continue  # palette does not move this pair; base pass covers it
-            owner = next((n for n, hx in meta["surfaces"].items()
-                          if hx == th_rec["surface"] and n in base_surfaces), None)
+            if (th_rec["surface"] == base_rec["surface"]
+                    and th_rec["dark_value"] == base_rec["dark_value"]):
+                continue  # theme moves neither ground nor ink; base pass covers it
+            # Name the ground: prefer a surface the theme MOVED, else the base
+            # name carrying that hex (an ink-only row still sits on a real ground).
+            # s170: name the STATE-MATCHED ground first where one exists. The
+            # hex-match search below is order-dependent and could otherwise
+            # label the ground with an unrelated token that happens to carry
+            # the same hex (observed: legacy's button/primary/background/default
+            # #DB0011 reported as `badge/background`). The ratio was always
+            # right; only the NAME was wrong, and a wrong name sends the reader
+            # to the wrong token.
+            state = _state_suffix(name)
+            grp0 = _group_prefix(name)
+            owner = None
+            if state and grp0:
+                owner = next((n for n, hx in sorted(smap.items())
+                              if hx == th_rec["surface"] and n.startswith(grp0 + "/")
+                              and _state_suffix(n) == state), None)
+            if owner is None:
+                owner = next((n for n, hx in smap.items()
+                              if hx == th_rec["surface"] and n in base_surfaces
+                              and base_surfaces[n] != hx), None)
+            if owner is None:
+                grp = _group_prefix(name)
+                owner = next((n for n, hx in smap.items()
+                              if hx == th_rec["surface"] and n in base_surfaces
+                              and grp and n.startswith(grp + "/")), None)
             exempt = legacy_exemption(name, owner or "") if meta["attr"] == "legacy" else None
             if th_rec["passes"]:
                 status = "OK"
@@ -184,6 +323,13 @@ def audit_themes(sem_leaves, base_surfaces, tok_dir, default_dark, raised_dark):
                 status = "POOR_CONTRAST"
             th_rec.update({"theme": tkey, "theme_label": meta["label"],
                            "palette": meta["palette"], "surface_token": owner,
+                           "override_set": meta["override_set"],
+                           "ink_source": "theme-override" if name in ovr else "base",
+                           "base_dark_value": base_rec["dark_value"],
+                           "moved": ("ink+ground" if (th_rec["dark_value"] != base_rec["dark_value"]
+                                                      and th_rec["surface"] != base_rec["surface"])
+                                     else ("ink" if th_rec["dark_value"] != base_rec["dark_value"]
+                                           else "ground")),
                            "base_surface": base_rec["surface"],
                            "base_contrast_ratio": base_rec["contrast_ratio"],
                            "status": status, "exemption_reason": exempt,
@@ -228,11 +374,17 @@ def _selftest():
     check("A1d apollo-mono emits NO theme row (== activeBase, no double count)",
           "apollo-mono" not in got, "mono rows=%d" % sum(1 for r in rows if r["theme"] == "apollo-mono"))
     ratios = {(r["theme"], r["token"]): r["contrast_ratio"] for r in rows}
+    # s170: the #169 figures below were measured BEFORE the override leg. Legacy's
+    # on-information was 2.21:1 only because this reader graded MONO's ink under
+    # Legacy; with s131-D1's white applied it is 7.87:1. Console/Supercharge now
+    # carry the same ruled white (#170), so their 2.89:1 reading — REAL, and a real
+    # failure — is resolved to 6.02:1 on the SAME ground #B92F1E.
     check("A1e measured ratios match first-hand probe",
           ratios.get(("apollo-legacy", "rag/text/on-dark")) == 7.87
-          and ratios.get(("apollo-legacy", "rag/text/on-information")) == 2.21
+          and ratios.get(("apollo-legacy", "rag/text/on-information")) == 7.87
           and ratios.get(("apollo-console", "rag/text/on-dark")) == 6.02
-          and ratios.get(("apollo-console", "rag/text/on-information")) == 2.89,
+          and ratios.get(("apollo-console", "rag/text/on-information")) == 6.02
+          and ratios.get(("apollo-supercharge", "rag/text/on-information")) == 6.02,
           str({k[0] + "/" + k[1].split("/")[-1]: v for k, v in sorted(ratios.items())}))
 
     tmp = tempfile.mkdtemp(prefix="contrast-selftest-")
@@ -276,6 +428,139 @@ def _selftest():
             check("A3 missing palette -> NAMED refusal (not a crash)", False,
                   "crashed as %s: %s" % (type(e).__name__, e))
             traceback.print_exc()
+
+        # --- Arm 4 (s170): OVERRIDE tier — happy path + mutation control.
+        base_map = {(r["theme"], r["token"]): r for r in rows}
+        li = base_map.get(("apollo-legacy", "rag/text/on-information"))
+        check("A4a legacy ink comes from its OVERRIDE SET, not the base store",
+              li is not None and li["ink_source"] == "theme-override"
+              and li["dark_value"] == "#FFFFFF",
+              "%s %s" % (li and li["ink_source"], li and li["dark_value"]))
+        ci = base_map.get(("apollo-console", "rag/text/on-information"))
+        # s170 (ruling 2): console + supercharge now carry the SAME ruled white,
+        # so this token no longer exercises the base-ink leg. It asserts the
+        # override leg for a SECOND theme instead...
+        check("A4b console's on-information ink ALSO comes from its override set (s170 white)",
+              ci is not None and ci["ink_source"] == "theme-override"
+              and ci["dark_value"] == "#FFFFFF" and ci["base_dark_value"] == "#1A1A1A",
+              "%s %s (base %s)" % (ci and ci["ink_source"], ci and ci["dark_value"],
+                                   ci and ci["base_dark_value"]))
+        # ...and the base-ink leg is kept alive on a token console does NOT override.
+        cd = base_map.get(("apollo-console", "rag/text/on-dark"))
+        check("A4b2 a token console does NOT override still retains the BASE ink",
+              cd is not None and cd["ink_source"] == "base"
+              and cd["dark_value"] == cd["base_dark_value"] and cd["moved"] == "ground",
+              "%s %s moved=%s" % (cd and cd["ink_source"], cd and cd["dark_value"], cd and cd["moved"]))
+
+        o = os.path.join(tmp, "ovr")
+        shutil.copytree(TOK, o)
+        op = os.path.join(o, "themes", "apollo-legacy.overrides.json")
+        doc = json.load(open(op))
+        doc["overrides"]["rag/text/on-information"]["dark"]["$value"] = "#1A1A1A"
+        json.dump(doc, open(op, "w"), indent=1, ensure_ascii=False)
+        _, orows = audit_themes(sem_l, surf, o, dd, rd)
+        og = {(r["theme"], r["token"]): r for r in orows}
+        omoved = og.get(("apollo-legacy", "rag/text/on-information"))
+        oheld = og.get(("apollo-console", "rag/text/on-information"))
+        check("A4c override mutation BITES: legacy ink follows the mutated file",
+              omoved is not None and omoved["dark_value"] == "#1A1A1A",
+              "ink=%s" % (omoved and omoved["dark_value"]))
+        check("A4d override mutation FLIPS the verdict (%s -> POOR)" % (li and li["status"]),
+              omoved is not None and li is not None
+              and omoved["status"] == "POOR_CONTRAST" and omoved["status"] != li["status"],
+              "%s %s:1 (was %s %s:1)" % (omoved and omoved["status"], omoved and omoved["contrast_ratio"],
+                                         li and li["status"], li and li["contrast_ratio"]))
+        check("A4e override mutation is SCOPED: console row unmoved",
+              oheld is not None and ci is not None
+              and oheld["dark_value"] == ci["dark_value"]
+              and oheld["contrast_ratio"] == ci["contrast_ratio"],
+              "console ink=%s %s:1" % (oheld and oheld["dark_value"], oheld and oheld["contrast_ratio"]))
+        check("A4f real override set untouched by the mutation arm",
+              json.load(open(os.path.join(TOK, "themes", "apollo-legacy.overrides.json")))
+              ["overrides"]["rag/text/on-information"]["dark"]["$value"] == "#FFFFFF")
+
+        # --- Arm 6 (s170, Dave #170): STATE-MATCHED GROUNDS.
+        # The defect: a label state graded against the LIGHTEST ground across all
+        # states, so Legacy's white button/primary/label/default was imagined on
+        # button/primary/background/PRESSED (#FFFFFF) = 1.0:1 — a pairing that
+        # cannot occur. Arm 6a asserts the phantom is gone; 6b that a genuinely
+        # bad SAME-STATE pair still fails (the fix must not just silence rows);
+        # 6c/6d/6e that the pairing is really being read (mutations bite, and the
+        # OLD worst-case ground no longer moves the verdict) and stays scoped.
+        bl = base_map.get(("apollo-legacy", "button/primary/label/default"))
+        check("A6a phantom GONE: legacy primary label pairs default↔default, not ↔pressed",
+              bl is not None and bl["surface"] == "#DB0011"
+              and bl["surface_token"] == "button/primary/background/default"
+              and bl["status"] == "OK" and bl["contrast_ratio"] == 5.22,
+              "%s on %s (%s) %s:1" % (bl and bl["dark_value"], bl and bl["surface"],
+                                      bl and bl["surface_token"], bl and bl["contrast_ratio"]))
+        check("A6a2 no row anywhere still reports the 1.0:1 self-on-self phantom",
+              all(r["contrast_ratio"] != 1.0 for r in rows),
+              "1.0 rows=%s" % [r["token"] for r in rows if r["contrast_ratio"] == 1.0])
+        bi = base_map.get(("apollo-legacy", "button/primary/icon/default"))
+        check("A6b a genuinely BAD same-state pair still FAILS (mono ink #333333 on legacy red)",
+              bi is not None and bi["surface"] == "#DB0011"
+              and bi["status"] == "POOR_CONTRAST" and bi["contrast_ratio"] == 2.42,
+              "%s on %s = %s:1 %s" % (bi and bi["dark_value"], bi and bi["surface"],
+                                      bi and bi["contrast_ratio"], bi and bi["status"]))
+
+        s1 = os.path.join(tmp, "state1")
+        shutil.copytree(TOK, s1)
+        sp = os.path.join(s1, "themes", "apollo-legacy.overrides.json")
+        doc1 = json.load(open(sp))
+        doc1["overrides"]["button/primary/background/default"]["dark"]["$value"] = "#FFFFFF"
+        json.dump(doc1, open(sp, "w"), indent=1, ensure_ascii=False)
+        _, s1rows = audit_themes(sem_l, surf, s1, dd, rd)
+        s1g = {(r["theme"], r["token"]): r for r in s1rows}
+        m1 = s1g.get(("apollo-legacy", "button/primary/label/default"))
+        check("A6c mutation BITES on the MATCHED state: default ground moves the verdict",
+              m1 is not None and m1["surface"] == "#FFFFFF"
+              and m1["contrast_ratio"] == 1.0 and m1["status"] == "POOR_CONTRAST",
+              "%s:1 on %s" % (m1 and m1["contrast_ratio"], m1 and m1["surface"]))
+
+        s2 = os.path.join(tmp, "state2")
+        shutil.copytree(TOK, s2)
+        sp2 = os.path.join(s2, "themes", "apollo-legacy.overrides.json")
+        doc2 = json.load(open(sp2))
+        # The OLD worst-case model read THIS key for the default label. Under the
+        # ruling it must be inert for that row — this arm re-enacts the reversal.
+        doc2["overrides"]["button/primary/background/pressed"]["dark"]["$value"] = "#00FF00"
+        json.dump(doc2, open(sp2, "w"), indent=1, ensure_ascii=False)
+        _, s2rows = audit_themes(sem_l, surf, s2, dd, rd)
+        s2g = {(r["theme"], r["token"]): r for r in s2rows}
+        m2 = s2g.get(("apollo-legacy", "button/primary/label/default"))
+        check("A6d the UNMATCHED state is INERT for that row (old model would have moved it)",
+              m2 is not None and bl is not None
+              and m2["surface"] == bl["surface"] and m2["contrast_ratio"] == bl["contrast_ratio"],
+              "%s:1 on %s" % (m2 and m2["contrast_ratio"], m2 and m2["surface"]))
+        check("A6e state arms are SCOPED: console rag rows unmoved by either mutation",
+              ci is not None
+              and s1g.get(("apollo-console", "rag/text/on-information"), {}).get("contrast_ratio") == ci["contrast_ratio"]
+              and s2g.get(("apollo-console", "rag/text/on-information"), {}).get("contrast_ratio") == ci["contrast_ratio"],
+              "s1=%s s2=%s base=%s" % (s1g.get(("apollo-console", "rag/text/on-information"), {}).get("contrast_ratio"),
+                                       s2g.get(("apollo-console", "rag/text/on-information"), {}).get("contrast_ratio"),
+                                       ci and ci["contrast_ratio"]))
+        real_ovr = json.load(open(os.path.join(TOK, "themes", "apollo-legacy.overrides.json")))["overrides"]
+        check("A6f real override set untouched by the state mutation arms",
+              real_ovr["button/primary/background/default"]["dark"]["$value"] == "#DB0011"
+              and real_ovr["button/primary/background/pressed"]["dark"]["$value"] == "#FFFFFF",
+              "default=%s pressed=%s" % (real_ovr["button/primary/background/default"]["dark"]["$value"],
+                                         real_ovr["button/primary/background/pressed"]["dark"]["$value"]))
+
+        # --- Arm 5 (s170): NAMED refusal — declared overrideSet missing.
+        r2 = os.path.join(tmp, "ref2")
+        shutil.copytree(TOK, r2)
+        os.remove(os.path.join(r2, "themes", "apollo-legacy.overrides.json"))
+        try:
+            audit_themes(sem_l, surf, r2, dd, rd)
+            check("A5 missing overrideSet -> NAMED refusal", False, "no refusal raised")
+        except OverrideRefusal as e:
+            check("A5 missing overrideSet -> NAMED OverrideRefusal (not a crash, not a base fall-back)",
+                  "apollo-legacy" in str(e) and "themes/apollo-legacy.overrides.json" in str(e), str(e))
+        except Exception as e:
+            check("A5 missing overrideSet -> NAMED OverrideRefusal", False,
+                  "crashed as %s: %s" % (type(e).__name__, e))
+            traceback.print_exc()
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -302,7 +587,7 @@ for name, node in sorted(sem.items()):
     if not (isinstance(dark_val, str) and dark_val.startswith("#")):
         continue
 
-    surface, label = resolve_dark_surface(name, surfaces, DEFAULT_DARK, RAISED_DARK)
+    surface, label = resolve_ground(name, surfaces, DEFAULT_DARK, RAISED_DARK)
     if surface is None:
         skipped.append({"token": name, "dark_value": dark_val, "reason": label})
         continue
@@ -335,11 +620,14 @@ try:
 except PaletteRefusal as e:
     sys.stderr.write("REFUSED (palette tier): %s\n" % e)
     sys.exit(2)
+except OverrideRefusal as e:
+    sys.stderr.write("REFUSED (theme override set): %s\n" % e)
+    sys.exit(2)
 theme_poor = [r for r in theme_rows if r["status"] == "POOR_CONTRAST"]
 theme_exempt = [r for r in theme_rows if r["status"] == "EXEMPTED"]
 
 audit_json = {
-    "$description": "Text/icon dark-mode contrast audit. Each token is tested against the worst-case (lightest) dark surface it can sit on, resolved from the store (page default + raised island, or its own group's surfaces). on-light tokens are excluded (light-only). Allowlisted disabled-state tokens are reported but do not gate. POOR_CONTRAST (non-allowlisted, below threshold) FAILS the build.",
+    "$description": "Text/icon dark-mode contrast audit. Each token is tested against the worst-case (lightest) dark surface it can sit on, resolved from the store (page default + raised island, or its own group's surfaces). s170 (Dave, #170): a STATE-SUFFIXED ink is paired only with its OWN state's ground (default<->default, pressed<->pressed); worst-case across states is used only where no state-matched ground exists. on-light tokens are excluded (light-only). Allowlisted disabled-state tokens are reported but do not gate. POOR_CONTRAST (non-allowlisted, below threshold) FAILS the build.",
     "generated": "2026-06-19",
     "default_dark_surface": DEFAULT_DARK,
     "raised_dark_surface": RAISED_DARK,
@@ -352,8 +640,9 @@ audit_json = {
         "per_theme_exempted": len(theme_exempt),
     },
     "per_theme": {
-        "$description": "s169 (ruling C'): pairs whose GROUND is palette-owned (s157-D2 tier, single-sourced by s158-D4) regraded per theme via tokens/themes/_themes.json -> ragPalette. Rows appear only where the theme's resolved surface DIFFERS from the base pass, so the activeBase (apollo-mono) reading is not double-counted. POOR_CONTRAST rows GATE on the same terms as the base pass; EXEMPTED = an R-D24 Legacy pair matched in _contrast_utils.LEGACY_THEME_EXEMPTIONS (documented, never counted as a pass).",
+        "$description": "s169+s170 (ruling C'): pairs whose GROUND is palette-owned (s157-D2 tier, single-sourced by s158-D4) or whose INK the theme re-binds in its own overrideSet, regraded per theme via tokens/themes/_themes.json -> ragPalette + overrideSet. Rows appear only where the theme's resolved surface or ink DIFFERS from the base pass, so the activeBase (apollo-mono) reading is not double-counted; 'moved' names which of ink/ground/ink+ground shifted and 'ink_source' says whether the ink came from the theme's override set. POOR_CONTRAST rows GATE on the same terms as the base pass; EXEMPTED = an R-D24 Legacy pair matched in _contrast_utils.LEGACY_THEME_EXEMPTIONS (documented, never counted as a pass).",
         "palettes": {k: v["palette"] for k, v in theme_palettes.items()},
+        "override_sets": {k: v["override_set"] for k, v in theme_palettes.items()},
         "rows": theme_rows,
         "poor_contrast": theme_poor,
     },
@@ -367,21 +656,28 @@ json.dump(audit_json, open(os.path.join(ROOT, "_TEXT-CONTRAST-AUDIT.json"), "w")
 L = [
     "# Text/icon token dark-mode contrast audit",
     "",
-    f"> Each text/icon token is tested against the **worst-case (lightest) dark surface it can sit on**, resolved from the store — page default `{DEFAULT_DARK}` + raised island `{RAISED_DARK}`, or the token's own group surfaces. `on-light` tokens are excluded (light-only). Disabled-state tokens are allowlisted (reported, not gated). Text needs 4.5:1, icons/UI need 3:1.",
+    f"> Each text/icon token is tested against the **worst-case (lightest) dark surface it can sit on**, resolved from the store — page default `{DEFAULT_DARK}` + raised island `{RAISED_DARK}`, or the token's own group surfaces. Since **s170** a state-suffixed ink (e.g. `.../label/default`) is paired only with its OWN state's ground — worst-case across states is a fall-back, not the rule. `on-light` tokens are excluded (light-only). Disabled-state tokens are allowlisted (reported, not gated). Text needs 4.5:1, icons/UI need 3:1.",
     "",
     f"**Result:** {ok_count} pass · {len(allowed)} allowed exception(s) · **{len(poor)} gating failure(s)** · {len(skipped)} skipped (light-only).",
     "",
-    f"**Per-theme (s169):** {len(theme_rows)} pair(s) regraded on palette-owned grounds · **{len(theme_poor)} gating failure(s)** · {len(theme_exempt)} R-D24 exempted.",
+    f"**Per-theme (s169 grounds + s170 overrides):** {len(theme_rows)} pair(s) regraded where a theme moves the ground or the ink · **{len(theme_poor)} gating failure(s)** · {len(theme_exempt)} R-D24 exempted.",
     "",
 ]
 if theme_rows:
     L += ["## Per-theme palette-resolved pairs (s157-D2 palette tier)", "",
-          "> The base pass above reads the semantic store, i.e. the activeBase theme (**apollo-mono**). Grounds owned by the palette tier are re-resolved here per theme via `tokens/themes/_themes.json` → `ragPalette`. Only pairs whose ground MOVES are listed. `❌` rows gate the build exactly as base failures do; `EXEMPTED` = a Legacy pair matched in R-D24's table.", "",
-          "| Theme | Palette | Token | Value | Ground (base → theme) | Contrast | Need | Status |",
-          "|---|---|---|---|---|---|---|---|"]
+          "> The base pass above reads the semantic store, i.e. the activeBase theme (**apollo-mono**). Grounds owned by the palette tier are re-resolved here per theme via `tokens/themes/_themes.json` → `ragPalette`, and INKS are re-resolved per theme via that theme's `overrideSet` (s170). Only pairs whose ground or ink MOVES are listed; the `Moved` column says which. `❌` rows gate the build exactly as base failures do; `EXEMPTED` = a Legacy pair matched in R-D24's table.", "",
+          "| Theme | Palette | Token | Moved | Ink (base → theme) | Ground (base → theme) | Contrast | Need | Status |",
+          "|---|---|---|---|---|---|---|---|---|"]
     for r in theme_rows:
         badge = {"OK": "✅ OK", "ALLOWED": "🟡 ALLOWED", "EXEMPTED": "🟡 EXEMPTED", "POOR_CONTRAST": "❌ POOR"}[r["status"]]
-        L.append(f"| **{r['theme_label']}** (`{r['theme']}`) | `{r['palette']}` | `{r['token']}` | `{r['dark_value']}` | `{r['surface_token']}` `{r['base_surface']}` → `{r['surface']}` | **{r['contrast_ratio']}:1** | {r['threshold']}:1 | {badge} |")
+        ink = (f"`{r['base_dark_value']}` → `{r['dark_value']}`" if r["ink_source"] == "theme-override"
+               else f"`{r['dark_value']}`")
+        # surface_token is None when the ground is the page/raised fallback rather
+        # than a named group surface — say so, never print a bare "None".
+        gname = f"`{r['surface_token']}` " if r["surface_token"] else "page/raised "
+        gnd = (f"{gname}`{r['base_surface']}` → `{r['surface']}`"
+               if r["surface"] != r["base_surface"] else f"{gname}`{r['surface']}`")
+        L.append(f"| **{r['theme_label']}** (`{r['theme']}`) | `{r['palette']}` | `{r['token']}` | {r['moved']} | {ink} | {gnd} | **{r['contrast_ratio']}:1** | {r['threshold']}:1 | {badge} |")
     L.append("")
 if poor:
     L += ["## ❌ Gating failures — these FAIL the build", "",
