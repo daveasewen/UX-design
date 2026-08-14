@@ -545,8 +545,16 @@ def selftest():
         fails.append("supercharge ANCHOR remap neutral/4 -> warm/2 #13110E (Dave 2026-07-22) missing")
     if sc.get("text/default", {}).get("light") != "#13110E":
         fails.append("supercharge effective ink must expand to #13110E through the DNA tier")
-    if sc.get("progress/complete", {}).get("light") != "#B92F1E":
-        fails.append("supercharge progress/complete light != #B92F1E (R-D22)")
+    # s175-D1 MOVED this override from progress/complete to step/complete (values unchanged).
+    # The assertion follows its subject: progress/complete is now INK ONLY in all four themes,
+    # so an override on it would itself be the defect — both halves are asserted.
+    if sc.get("step/complete", {}).get("light") != "#B92F1E":
+        fails.append("supercharge step/complete light != #B92F1E (R-D22 pair, moved by s175-D1)")
+    # NB these are EFFECTIVE overrides (alias-expanded), so "no declared override" does NOT show up
+    # as absence — progress/complete now expands through the warm DNA tier. Assert the VALUE:
+    # s175-D1 = the continuous-quantity bar is the theme's own ink, i.e. it tracks text/default.
+    if sc.get("progress/complete", {}).get("light") != sc.get("text/default", {}).get("light"):
+        fails.append("supercharge progress/complete must resolve to the theme ink (s175-D1)")
     # 4b. the sibling fence (ADR-0014, LOCKED): Console may not diverge on DNA/status/dataviz paths
     reg = json.load(open(os.path.join(TOK, "themes", "_themes.json")))
     fence = (reg["themes"]["apollo-console"].get("fencedPaths") or {}).get("prefixes", [])
