@@ -58,6 +58,51 @@ commit, render, file path — see `_RUNBOOK-capture-ritual.md` step 2).
 **N=1:** a lone session is Solo — its own conductor, writes its handoff as normal. The role machinery
 only engages at two or more.
 
+## ★★ BOUNDED VERIFICATION — the appetite clause for every sub brief (`s172-D3`, ruled Dave #172)
+
+*Added 2026-08-14 BY ADDITION. Body lives HERE; `knowledge/_rulings.json` § `s172-D3` is the pointer.*
+
+⛔ **READ THE FENCE FIRST, BECAUSE IT IS DAVE'S CONDITION AND NOT A CAVEAT.** His concern, verbatim:
+***"careful of externalities, I don't want to fix something only to break other constituent parts."***
+⇒ **This section governs THE APPETITE FOR BUILDING NEW INSTRUMENTS IN FUTURE SUB BRIEFS, AND NOTHING
+ELSE. IT RETIRES NOTHING.** Every existing gate, law, runbook clause and ruling in this repo stands
+exactly as ruled. ⛔ **No existing check may be removed, relaxed, skipped, narrowed or "simplified" by
+citing this section** — a brief that cites it to justify not running something is misusing it. The
+target is the *next* instrument, never the ones already standing.
+
+**Why it exists, measured at #172:** the B2 sub wrote **474 instrument lines around a 6-line emitter**
+and the `_state.py` selftest went **41 → 57 arms** — against the week's REAL catches, which were the
+self-comparing assert (#171), the degenerate title parse (#169) and the fixture that passed on its own
+mutant (#171). ★ **The catches came from proving ONE seam could fail, not from breadth.** Source for
+(a): Anthropic's prompting best-practices guidance, §§ *Overthinking and excessive thoroughness* ·
+*Overeagerness* · *Avoid focusing on passing tests and hardcoding* (fetched 2026-08-14; the pointer is
+in `s172-D3`'s `evidence`).
+
+**The five clauses. (a) goes into the brief near-verbatim; (b)–(e) are how the brief is written and
+how its report is read.**
+
+- **(a) SCOPE BLOCK, near-verbatim in the brief.** *"Use the minimum complexity that solves the
+  current task. No abstractions for hypothetical future needs. No defensive code for scenarios that
+  cannot occur here. Make the changes requested and those clearly necessary to them — nothing else."*
+- **(b) VERIFICATION IS TARGETED.** Prove **the seam THIS deliverable creates**. ⛔ Not *"verify
+  everything you touch"* — that instruction has no edge, so it spends the whole window and still
+  cannot say what it proved. Name the seam in the brief; the report answers about that seam.
+- **(c) DEPTH CAP — ONE LEVEL.** A new check is driven to a **named refusal once**, with a passing
+  control [[mutation-tests-the-clause-not-the-feature]]. ⛔ **No checkers checking checkers beyond
+  that.** The proof that a check can fail is itself not re-proved by a second instrument.
+- **(d) MACHINERY PRICE LINE.** Every sub report declares **instrument-lines vs feature-lines** —
+  e.g. `machinery: 474 instrument / 6 feature`. It is a *reported measurement*, not a threshold:
+  nothing fails for a bad ratio. It exists so the ratio is **visible at the moment it is chosen**
+  rather than discovered three sessions later [[translate-prose-into-machinery]].
+- **(e) OBSERVED-FAILURE RULE.** A new test must cite **the failure class it guards** or **the ruling
+  it enforces**. A check with neither is speculative: it **QUEUES as a proposal for Dave** and is
+  **never built in the same breath as the thing it would watch** [[instrument-without-a-consumer]].
+
+⚠ **NO GATE, and deliberately.** This is discipline, the same class as `s165-D1` — a gate on brief
+*prose* would be the exact over-instrumentation the section rules against, and would be the section
+breaking its own clause (e). It is enforced by being read at brief-authoring time, which is what this
+runbook is for.
+
 ## Worker checklist
 
 1. Do the work; create only NEW files (dossiers, reviews, code — unique names).

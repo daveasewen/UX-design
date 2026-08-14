@@ -86,6 +86,37 @@ OUT = os.path.join(OUTD, "index.html")
 
 E = lambda s: htmlmod.escape(str(s), quote=True)          # noqa: E731
 
+# ---------------------------------------------------------------------------
+# PROJECT — s172-D1, Dave, #172. Every `_state.json` item carries a stored `project`
+# ('apollo' | 'memento'), gated on the way in by `_state.py`. This page RENDERS it and
+# offers a filter; it does not assign, infer or repair one.
+#
+# ⚠ THE LABEL IS A WORD, NEVER A HUE. Standing accessibility law on this page: no meaning
+# is carried by colour alone, and red/yellow are Dave's unstable hues besides. The project
+# tag is the literal word APOLLO or MEMENTO in the ink colour, boxed by a hairline exactly
+# like the owner tag beside it — the box is structure, not signal.
+#
+# ⛔ THE ENUM IS IMPORTED, NOT RESPELLED. `_state.PROJECT_VALUES` is the one definition;
+# a label map typed here that grew a third key would render a project the gate refuses,
+# and one that lost a key would silently render nothing [[ban-scoped-to-a-name]]. The map
+# below is CHECKED against the gate's enum at build time and the build REFUSES on a fork.
+PROJECT_LABEL = {"apollo": "APOLLO", "memento": "MEMENTO"}
+
+# ⬛ THE TWO AMBIGUOUS DEFAULTS — DAVE'S CALL, FLAGGED IN WORDS ON THE PAGE.
+# The 37 assignments written into the store at #172 are DEFAULTS proposed for Dave's eye.
+# Two of them were declared ambiguous at proposal time and are marked `check` next to their
+# label so his eye lands on them first.
+#
+# ⚠ WHY THIS LIVES HERE AND NOT IN THE STORE. An `ambiguous: true` field in `_state.json`
+# would read back as a fact ABOUT THE ITEM. It is not: it is a statement about the
+# CONFIDENCE OF MY OWN GUESS, and inscribing my uncertainty as store state is how a guess
+# becomes a datum [[feedback-measuring-tool-must-not-guess]]. It is a rendering annotation,
+# it is regenerated every build, and it is DELETED — not edited — the moment Dave rules
+# the two items, because at that point the flag is answered, not merely stale.
+#
+# ⛔ AND IT CANNOT POINT AT A GHOST: `build()` REFUSES if an id here is not in the store.
+PROJECT_CHECK = ("W-14", "G12")
+
 
 def _read(path):
     with open(path, encoding="utf-8") as fh:
@@ -564,6 +595,44 @@ def sort_by_priority(group, prio):
     return sorted(group, key=key)
 
 
+def project_counts(items):
+    """The split, COUNTED from the store — never typed. `unknown` is reported separately
+    rather than folded into either project: an item the gate somehow let through with no
+    project must show up as a hole, not be quietly absorbed into a total."""
+    c = {p: sum(1 for i in items if i.get("project") == p) for p in _state.PROJECT_VALUES}
+    c["unknown"] = sum(1 for i in items if i.get("project") not in _state.PROJECT_VALUES)
+    c["total"] = len(items)
+    return c
+
+
+def proj_attr(i):
+    """The filter key as a data attribute. An item with no legal project gets `none`, which
+    every filter shows — a row that cannot be classified must never be silently filtered
+    away, because then the one item that needs looking at is the one you cannot see."""
+    p = i.get("project")
+    return ' data-project="%s"' % E(p if p in PROJECT_LABEL else "none")
+
+
+def proj_tag(i):
+    """The project label, as a WORD. Never a hue, never a dot, never a colour-coded border."""
+    p = i.get("project")
+    lab = PROJECT_LABEL.get(p)
+    if lab is None:
+        return ('<span class="proj proj-none">NO PROJECT</span>'
+                '<span class="chk">the store has no legal project on this item</span>')
+    out = '<span class="proj proj-%s">%s</span>' % (E(p), E(lab))
+    if i.get("id") in PROJECT_CHECK:
+        out += '<span class="chk">check</span>'
+    return out
+
+
+def counted(selector, n, cls="n"):
+    """A number the filter must be able to RE-COUNT. It is generated correct for the
+    unfiltered page; when a filter is on, the script re-counts the very elements this
+    selector names, so a filtered heading can never keep quoting the unfiltered total."""
+    return '<span class="%s" data-cnt="%s">%d</span>' % (cls, E(selector), n)
+
+
 def short_title(t, n=64):
     """Trim for a card. The FULL title is on the two plates below — this is a glance
     surface, so a trim here loses nothing that the page does not also show in full."""
@@ -740,6 +809,43 @@ ul.items li .cw{font-size:14px;color:var(--dash-mute);line-height:1.55;}
 .kb .col-done .card{border-left:3px solid var(--dash-green);}
 .kb .empty{font-size:14px;color:var(--dash-mute);}
 
+/* project (s172-D1) — the label is a WORD. The hairline box is structure, matching the
+   owner tag beside it; no status, priority or project meaning is carried by hue anywhere
+   on this page. `check` is likewise a word, in ink, not a colour. */
+.proj{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid currentColor;padding:.1rem .35rem;display:inline-block;
+  color:var(--dash-ink);}
+.proj-memento{color:var(--dash-mute);}
+.proj-none{color:var(--dash-ink);}
+.chk{font-size:11px;letter-spacing:.06em;color:var(--dash-mute);margin-left:.4rem;
+  font-style:italic;}
+.kb .card .proj{margin-right:.3rem;}
+ul.items li .proj{margin-right:.4rem;}
+table.pri td.projc .proj{white-space:nowrap;}
+
+/* the filter bar. Buttons are WORDS with their generated counts; the state line says in a
+   sentence what is being shown, so a filtered page never looks like the whole page. */
+.pfilter{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:0 0 var(--s3);
+  padding:var(--s2) 0;border-top:1px solid var(--dash-rule);
+  border-bottom:1px solid var(--dash-rule);}
+.pfilter .pfl{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dash-mute);margin-right:.3rem;}
+.pfilter button{font-family:inherit;font-size:13px;font-weight:500;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dash-ink);background:#FFFFFF;cursor:pointer;
+  border:1px solid var(--dash-rule);padding:.4rem .8rem;}
+.pfilter button:hover{border-color:var(--dash-ink);}
+.pfilter button:focus-visible{outline:2px solid var(--dash-accent);outline-offset:2px;}
+.pfilter button[aria-pressed="true"]{background:var(--dash-ink);color:#FFFFFF;
+  border-color:var(--dash-ink);}
+.pfilter button b{font-weight:300;margin-left:.35rem;}
+.pfilter .pfstate{font-size:13px;color:var(--dash-mute);margin-left:auto;}
+/* THE FILTER ITSELF — one attribute on <body>, pure CSS from there. Items with
+   data-project="none" are shown under EVERY filter, on purpose. */
+body[data-project-filter="apollo"] [data-project="memento"],
+body[data-project-filter="memento"] [data-project="apollo"]{display:none;}
+@media (max-width:820px){ .pfilter .pfstate{margin-left:0;flex-basis:100%;} }
+@media print{ .pfilter{display:none;} body[data-project-filter] [data-project]{display:revert;} }
+
 /* priority — a PROPOSAL. The word PROPOSAL is on every surface that shows a score. */
 .kb .card .pri{display:block;font-size:12px;letter-spacing:.06em;color:var(--dash-mute);
   margin:.35rem 0 .3rem;line-height:1.4;}
@@ -813,6 +919,54 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 """
 
 
+# The project filter, s172-D1. The ONLY script on this page, and deliberately small.
+#
+# ⚠ IT IS A VIEW, NOT A STATE. It flips one attribute on <body>; the hiding itself is CSS.
+# Nothing is written to a store, nothing is remembered across a reload, and no number is
+# computed by hand — every count it prints is a COUNT OF THE DOM under the same predicate
+# the CSS hides by, so a heading cannot keep quoting an unfiltered total while showing a
+# filtered list [[measure-dont-convert-units]].
+#
+# ⚠ AND IT DEGRADES: with scripting off, `data-project-filter` is never set, the CSS rules
+# are inert, and every item is shown with its project printed as a word beside it.
+PROJECT_JS = """<script>
+(function(){
+  var body=document.body,
+      btns=Array.prototype.slice.call(document.querySelectorAll('.pfilter button')),
+      st=document.getElementById('pfstate'),
+      cnt=Array.prototype.slice.call(document.querySelectorAll('[data-cnt]')),
+      NAME={all:'all',apollo:'APOLLO',memento:'MEMENTO'};
+  if(!btns.length){return;}
+  function shown(el,f){
+    if(f==='all'){return true;}
+    var p=el.getAttribute('data-project');
+    return p===f||p==='none';           /* an unclassifiable item is never hidden */
+  }
+  function apply(f){
+    body.setAttribute('data-project-filter',f);
+    btns.forEach(function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-pf')===f));});
+    var total=0;
+    cnt.forEach(function(el){
+      var n=0;
+      Array.prototype.forEach.call(document.querySelectorAll(el.getAttribute('data-cnt')),
+        function(x){ if(shown(x,f)){n++;} });
+      el.textContent=n;
+      if(el.className.indexOf('kbtotal')>-1){total=n;}
+    });
+    if(st){
+      st.textContent = (f==='all')
+        ? ('Showing all '+total+' items.')
+        : ('Showing '+NAME[f]+' only \\u2014 '+total+' items. The rest are hidden, not gone.');
+    }
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){apply(b.getAttribute('data-pf'));});
+  });
+  apply('all');
+})();
+</script>"""
+
+
 def verdict(rc, name):
     if name == "type-composites":
         return ("DEBT", "v-debt")
@@ -845,6 +999,8 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     dave = sort_by_priority([i for i in state["open"] if i.get("owner") == "dave"], prio)
     mine = sort_by_priority([i for i in state["open"] if i.get("owner") == "claude"], prio)
     unconditioned = [i for i in state["open"] if i.get("condition") == "UNCONDITIONED"]
+    pc = project_counts(state["items"])
+    check_ids = [i for i in state["items"] if i["id"] in PROJECT_CHECK]
     n_fail = sum(1 for g in gates if g["rc"] != 0 and g["name"] != "type-composites")
     n_pass = sum(1 for g in gates if g["rc"] == 0)
 
@@ -914,6 +1070,56 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     a('<p class="sourceline">SOURCES · knowledge/_state.json · knowledge/_rulings.json · '
       'live gate runs · _CHAIN.md · _LIVE-STATE.md (last refreshed %s) · _FUTURE-STATE.md</p>'
       % E(session["refreshed"]))
+    a("</div></section>")
+
+    # ---- project: the label + the filter (s172-D1) -------------------------
+    a('<section><div class="wrap">')
+    a('<p class="label">Project &mdash; which body of work each item belongs to</p>')
+    a("<h2>%d Apollo, %d Memento</h2>" % (pc["apollo"], pc["memento"]))
+    a("<p class=\"meta\"><strong>These are my proposed defaults, not your ruling.</strong> "
+      "You ruled that every item carries a stored <code>project</code> and that new items "
+      "cannot be added without one; the <em>values</em> below are the assignment I proposed, "
+      "written into <code>_state.json</code> for your eye. Change any of them by editing the "
+      "item&rsquo;s <code>project</code> in the store and regenerating &mdash; this page "
+      "reports the store, it does not decide.</p>")
+    if check_ids:
+        a("<p class=\"meta\"><strong>%d of them I could not call, and they say so.</strong> "
+          "Anywhere those items appear, the word <em>check</em> sits next to the project "
+          "label: %s. They are not marked by colour, and they are not marked as wrong &mdash; "
+          "they are marked as MINE TO GUESS AND YOURS TO SETTLE.</p>"
+          % (len(check_ids),
+             "; ".join("<strong>%s</strong> (I put it in %s) &mdash; %s"
+                       % (E(i["id"]), E(PROJECT_LABEL.get(i.get("project"), "NO PROJECT")),
+                          E(short_title(i["title"], 70)[0]))
+                       for i in check_ids)))
+    if pc["unknown"]:
+        a("<p><span class=\"v v-fail\">Flagged problem</span> &mdash; <strong>%d item(s) carry "
+          "no legal project</strong>. The store gate should make this impossible, so if you are "
+          "reading this sentence the gate did not run. Those items show <strong>NO PROJECT</strong> "
+          "as a word and are shown under every filter, never hidden.</p>" % pc["unknown"])
+    a('<div class="pfilter" role="group" aria-label="Filter every panel by project">')
+    a('<span class="pfl">Show</span>')
+    a('<button type="button" data-pf="all" aria-pressed="true">All <b>%d</b></button>' % pc["total"])
+    for p in _state.PROJECT_VALUES:
+        a('<button type="button" data-pf="%s" aria-pressed="false">%s <b>%d</b></button>'
+          % (E(p), E(PROJECT_LABEL[p].title()), pc[p]))
+    a('<span class="pfstate" id="pfstate">Showing all %d items.</span>' % pc["total"])
+    a("</div>")
+    a("<noscript><p class=\"meta\">Scripting is off, so the buttons above do nothing and every "
+      "item on this page is shown. Nothing is lost: every card, plate entry and priority row "
+      "prints its project as a word regardless of the filter.</p></noscript>")
+    a("<p class=\"meta\">The filter is a VIEW, not a state. It touches the board, the two "
+      "plates and the priority table; it does not touch the stores, and it is not remembered "
+      "&mdash; reload and you are back to all %d. Counts in the headings below <strong>re-count "
+      "themselves</strong> when you filter, so a filtered heading never quotes an unfiltered "
+      "total. Priority <strong>ranks do not renumber</strong>: rank 3 means third out of the "
+      "whole backlog, and it keeps saying 3 in a filtered view, because a rank that changes "
+      "with the view is not a rank.</p>" % pc["total"])
+    a('<p class="sourceline">SOURCE &middot; knowledge/_state.json, field <code>project</code>, '
+      'counted at generation. Legal values are the closed enum in <code>knowledge/_state.py</code> '
+      '(<code>%s</code>), REQUIRED on every item and refused loudly when absent or misspelt. '
+      'No project value is authored by this page.</p>'
+      % E(" | ".join(_state.PROJECT_VALUES)))
     a("</div></section>")
 
     # ---- gates health strip ----------------------------------------------
@@ -1095,7 +1301,8 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     if legend:
         a("<p class=\"meta\"><strong>What the missing-input words in the last column mean.</strong> "
           + " ".join("<strong>%s</strong> — %s." % (E(s), E(w)) for s, w in legend) + "</p>")
-    a('<table class="pri"><thead><tr><th class="num">#</th><th>Item</th><th class="ownc">Owner</th>'
+    a('<table class="pri"><thead><tr><th class="num">#</th><th>Item</th>'
+      '<th class="projc">Project</th><th class="ownc">Owner</th>'
       '<th class="num">Score</th>')
     for _k, name, w, _d, _s in CRITERIA:
         a('<th class="num subcol">%s<br>%.2f</th>' % (E(name), w))
@@ -1104,9 +1311,10 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
         it = next(i for i in live_items if i["id"] == iid)
         r = prio["by_id"][iid]
         t, _ = short_title(it["title"], 72)
-        a('<tr class="%s">' % ("has-ovr" if r["override"] is not None else ""))
+        a('<tr class="%s"%s>' % ("has-ovr" if r["override"] is not None else "", proj_attr(it)))
         a('<td class="num rk">%d</td>' % r["rank"])
         a('<td class="ti"><span class="id">%s</span> %s</td>' % (E(iid), E(t)))
+        a('<td class="projc">%s</td>' % proj_tag(it))
         a('<td class="ownc">%s</td>' % ("DAVE" if it.get("owner") == "dave" else "CLAUDE"))
         if r["override"] is not None:
             a('<td class="num sc">DAVE OVERRULED &rarr; %d</td>' % r["override"])
@@ -1151,13 +1359,16 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     # ---- kanban (quick visual reference) ---------------------------------
     a('<section><div class="wrap">')
     a('<p class="label">Board — quick visual reference</p>')
-    a("<h2>All %d items, four columns</h2>" % len(state["items"]))
+    a("<h2>%s items, four columns</h2>"
+      % counted(".kb li.card", len(state["items"]), cls="kbtotal"))
     a('<p class="meta"><strong>The columns are DERIVED, not stored.</strong> '
       '<code>_state.json</code> has no <code>status</code>, <code>lane</code>, '
       '<code>phase</code> or <code>priority</code> field — the only lifecycle axes that '
       'exist in the data are <code>state</code> (open / blocked / done) and '
       '<code>condition</code> (UNCONDITIONED / stated, i.e. whether a '
-      '<code>closes_when</code> is set). Each column head prints the exact rule that put '
+      '<code>closes_when</code> is set). <code>project</code> IS stored (you ruled it at '
+      '#172) — it is a grouping label, not a lifecycle, so it makes a filter and not a '
+      'column. Each column head prints the exact rule that put '
       'items in it, so you can check the derivation rather than trust it. Owner is the '
       'store&rsquo;s <code>owner</code>, written as a WORD; where the store marks it '
       'inferred the card says <em>inferred</em>. <strong>Cards are ordered by the proposed '
@@ -1166,9 +1377,10 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     a('<div class="kb">')
     for c in kanban:
         a('<div class="col col-%s">' % E(c["key"]))
-        a('<div class="colhead"><span class="n">%d</span><span class="nm">%s</span>'
+        a('<div class="colhead">%s<span class="nm">%s</span>'
           '<span class="rule">%s<br>%s</span></div>'
-          % (len(c["items"]), E(c["name"]), E(c["rule"]), E(c["note"])))
+          % (counted(".kb .col-%s li.card" % c["key"], len(c["items"])),
+             E(c["name"]), E(c["rule"]), E(c["note"])))
         if not c["items"]:
             a('<p class="empty">None.</p>')
         else:
@@ -1178,11 +1390,11 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
                 own = "DAVE" if i.get("owner") == "dave" else "CLAUDE"
                 ocls = "own-dave" if i.get("owner") == "dave" else "own-claude"
                 inf = '<span class="inf">inferred</span>' if i.get("owner_inferred") else ""
-                a('<li class="card"><span class="cid">%s</span>'
+                a('<li class="card"%s><span class="cid">%s</span>'
                   '<span class="ct" title="%s">%s</span>%s'
-                  '<span class="own %s">%s</span>%s</li>'
-                  % (E(i["id"]), E(i["title"]), E(t), pri_badge(i["id"], prio),
-                     ocls, own, inf))
+                  '<span class="own %s">%s</span>%s<br>%s</li>'
+                  % (proj_attr(i), E(i["id"]), E(i["title"]), E(t),
+                     pri_badge(i["id"], prio), ocls, own, inf, proj_tag(i)))
             a("</ul>")
         a("</div>")
     a("</div>")
@@ -1202,18 +1414,19 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
       'proposed-priority order</strong>, highest score first, with any item you have overruled '
       'lifted to the top of its plate; the badge on each item says which of the two it is.</p>')
     a('<div class="plates">')
-    for title, group, who in (("Dave&rsquo;s plate", dave, "DAVE'S"),
-                              ("My plate", mine, "MINE")):
-        a('<div class="plate">')
-        a("<h3><span class=\"n\">%d</span>%s <span class=\"v v-note\">%s</span></h3>"
-          % (len(group), title, who))
+    for title, group, who, pkey in (("Dave&rsquo;s plate", dave, "DAVE'S", "dave"),
+                                    ("My plate", mine, "MINE", "mine")):
+        a('<div class="plate plate-%s">' % E(pkey))
+        a("<h3>%s%s <span class=\"v v-note\">%s</span></h3>"
+          % (counted(".plate-%s ul.items > li" % pkey, len(group)), title, who))
         a('<ul class="items">')
         for i in group:
             cond = i.get("closes_when") or "NO CLOSE CONDITION — frozen legacy item"
             inf = " · owner inferred" if i.get("owner_inferred") else ""
-            a("<li>%s<span class=\"id\">%s%s</span><span class=\"ti\">%s</span>"
+            a("<li%s>%s%s<span class=\"id\">%s%s</span><span class=\"ti\">%s</span>"
               "<span class=\"cw\">Closes when: %s</span></li>"
-              % (pri_badge(i["id"], prio), E(i["id"]), E(inf), E(i["title"]), E(cond)))
+              % (proj_attr(i), pri_badge(i["id"], prio), proj_tag(i),
+                 E(i["id"]), E(inf), E(i["title"]), E(cond)))
         a("</ul></div>")
     a("</div>")
     a('<p class="sourceline">SOURCE · knowledge/_state.json (items where state = open).</p>')
@@ -1269,6 +1482,7 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
       "carry no meaning.</p>")
     a("<p class=\"meta\">This page reports. It does not repair, rule, or promote anything.</p>")
     a("</div></section>")
+    a(PROJECT_JS)
     a("</body></html>")
     return "\n".join(o) + "\n"
 
@@ -1282,6 +1496,23 @@ def build(with_gates=True):
     ratchets = read_ratchets()
     tdebt = type_debt(gmap.get("type-composites"), ratchets["type"]["baseline"])
     session = read_session()
+    # ---- s172-D1 REFUSALS, at BUILD, in the path `--check` runs every build. A constant
+    # typed in this file that nothing checks is exactly the class the store gate exists to
+    # end, so the two project constants are proved against the live data here rather than
+    # in a selftest nothing runs [[instrument-without-a-consumer]].
+    if tuple(PROJECT_LABEL) != _state.PROJECT_VALUES:
+        raise SystemExit("gen_dashboard REFUSING: PROJECT_LABEL keys %r have forked from the "
+                         "gate's enum %r. This page would render a project the store refuses, "
+                         "or silently render nothing for one the store accepts."
+                         % (tuple(PROJECT_LABEL), _state.PROJECT_VALUES))
+    _ids = {i["id"] for i in state["items"]}
+    _ghosts = [i for i in PROJECT_CHECK if i not in _ids]
+    if _ghosts:
+        raise SystemExit("gen_dashboard REFUSING: PROJECT_CHECK names %r, which is not in "
+                         "_state.json. An ambiguity flag pointing at an item that no longer "
+                         "exists is a note about nothing, and it would sit on this page "
+                         "unfalsifiable. If the item was closed or renamed, drop it from "
+                         "PROJECT_CHECK deliberately." % (_ghosts,))
     if abs(WEIGHTS_SUM - 1.0) > 1e-9:                    # a score out of 100 that isn't
         raise SystemExit("gen_dashboard REFUSING: CRITERIA weights sum to %r, not 1.0 — a "
                          "score presented as /100 must be a weighted mean, not an arbitrary "

@@ -92,7 +92,12 @@ OWNERS = ("dave", "claude")
 CONDITIONED = "stated"
 UNCONDITIONED = "UNCONDITIONED"
 
-REQUIRED = ("id", "title", "state", "opened", "owner", "condition", "closes_when", "links", "home")
+# ⚠ `project` is IN this tuple, not beside it (s172-D1). One list of required fields, or the
+# gate and the docs fork the moment somebody edits one of them [[ban-scoped-to-a-name]]. The
+# missing-field refusal below appends the enum and the reason when `project` is what is absent,
+# so the refusal still quotes what it forbids [[gate-must-quote-what-it-forbids]].
+REQUIRED = ("id", "title", "state", "opened", "owner", "condition", "closes_when", "links",
+            "home", "project")
 
 # ⛔ THE FROZEN LEGACY SET — the inherited DOFIRST items, pinned at birth (#88).
 # These 19 may carry `closes_when: null`. NOTHING ELSE MAY, EVER. Do not add to this tuple:
@@ -182,6 +187,27 @@ EFFORT_RUNG_MEANING = {
     "M": "is the window's job",
     "L": "does not fit one window — needs a lane or a sub",
 }
+
+
+# ---- `project` — WHICH BODY OF WORK THIS ITEM BELONGS TO (s172-D1, Dave, #172) ---------------
+# ⛔ NOT a presence-OPTIONAL field like priority_override / deadline / effort. Those three are
+# Dave's to author and start ABSENT. This one is REQUIRED on every item, because the question it
+# answers — *which project is this?* — has an answer for every item that exists, and an item with
+# no answer is not "unassigned", it is an item nobody looked at.
+#
+# THE TWO NAMES ARE A CLOSED ENUM, deliberately. A free-text project name forks on the first
+# typo ("Memento" / "memento" / "memento-lane") and every filter downstream then silently drops
+# rows it cannot match — the same silent-sort defect the priority_override gate exists to stop.
+# Widening the enum is a RULING, Dave's; it is not a value an agent picks while adding an item.
+#
+# ⚠ WHAT THIS FIELD DOES *NOT* CARRY. It is a grouping label, not a lifecycle, not an owner, and
+# not a priority. The 37 values written at #172 are DEFAULTS proposed for Dave's eye against the
+# assignment list in the s172-D1 batch; two of them (W-14, G12) were declared AMBIGUOUS at
+# proposal time and the dashboard flags them in WORDS. This module does not know which two, and
+# must not: an ambiguity flag stored here would read back as a fact about the item rather than
+# as an open question about my own guess [[feedback-measuring-tool-must-not-guess]].
+PROJECT = "project"
+PROJECT_VALUES = ("apollo", "memento")
 
 
 class StateError(Exception):
@@ -330,7 +356,17 @@ def check(doc=None, path=STORE):
 
         missing = [k for k in REQUIRED if k not in it]
         if missing:
-            fails.append(f"{iid}: missing required field(s) {', '.join(missing)}")
+            # A bare "missing required field(s) project" tells the reader the NAME and nothing
+            # about what a legal value is, so the next hand-edit invents one. The refusal
+            # carries the enum [[gate-must-quote-what-it-forbids]].
+            why = ""
+            if PROJECT in missing:
+                why = (f" — {PROJECT!r} is REQUIRED on every item (s172-D1) and must be exactly "
+                       f"one of {PROJECT_VALUES}. Every item belongs to a body of work; an item "
+                       f"with no project is not 'unassigned', it is an item nobody classified, "
+                       f"and it would vanish from every filtered view on the dashboard without "
+                       f"ever being counted as missing")
+            fails.append(f"{iid}: missing required field(s) {', '.join(missing)}{why}")
             continue
 
         if not ID_RE.match(iid):
@@ -347,6 +383,18 @@ def check(doc=None, path=STORE):
             fails.append(f"{iid}: opened {it['opened']!r} is not a session number")
         if not str(it.get("title", "")).strip():
             fails.append(f"{iid}: title is empty")
+
+        # ---- `project` — REQUIRED, CLOSED ENUM (s172-D1). Present-but-wrong is the case this
+        # arm exists for: absent is caught above, and a value outside the enum is WORSE than an
+        # absent one because it reads as a classification while matching no filter.
+        pv = it[PROJECT]
+        if pv not in PROJECT_VALUES:
+            fails.append(
+                f"{iid}: {PROJECT} is {pv!r} — must be exactly one of {PROJECT_VALUES}. This is "
+                f"a CLOSED enum, not a free-text label: a near-miss spelling classifies the item "
+                f"in the store and then matches no filter on any surface that reads it, so the "
+                f"item disappears from every project view while the store still claims it has a "
+                f"project. Widening this enum is Dave's ruling, not a value picked at add time")
 
         # ---- THE CLOSE CONDITION. This is the whole point of the file. ----
         cond, cw = it["condition"], it["closes_when"]
@@ -440,6 +488,14 @@ def check(doc=None, path=STORE):
         notes.append(f"real-input coverage: 0 of {live_n} live item(s) carry a {DEADLINE} or "
                      f"{EFFORT} — the dashboard's deadline and effort columns are ENTIRELY "
                      f"PROXY. The fields exist and are gated; only Dave may fill them.")
+    # ---- the project split, MEASURED (s172-D1). The note moves with the data — a constant
+    # note is decoration, not a measurement [[measure-dont-convert-units]].
+    by_project = {p: sum(1 for i in items if i.get(PROJECT) == p) for p in PROJECT_VALUES}
+    if items:
+        notes.append(f"project split: "
+                     + " · ".join(f"{p} {n}" for p, n in by_project.items())
+                     + f" (of {len(items)} items). The values written at #172 are DEFAULTS "
+                       f"proposed for Dave's eye, not his ruling on each item.")
     if stale_legacy:
         notes.append(f"legacy ids retired since birth: {', '.join(stale_legacy)} "
                      f"(frozen set may shrink; it may never grow)")
@@ -524,7 +580,7 @@ def selftest():
         return {"meta": {"schema": SCHEMA}, "items": [dict(
             id="G1", title="a governing item", state="open", opened=86, owner="dave",
             condition=CONDITIONED, closes_when="Dave ratifies 700 or names his own number",
-            links=[], home="knowledge/_GOVERNING-RECORDS.md")]}
+            links=[], home="knowledge/_GOVERNING-RECORDS.md", project=PROJECT_VALUES[0])]}
 
     # 1. control
     bite("control/healthy passes", healthy(), True)
@@ -690,6 +746,68 @@ def selftest():
                                                            for n in n_some):
         fails.append(f"[coverage note] the real-input note did not follow the data: "
                      f"{n_none} vs {n_some}")
+
+    # ---- `project`, the REQUIRED closed enum (s172-D1). Unlike priority_override/deadline/
+    # effort this is NOT a presence-optional field, so the two directions to prove are
+    # inverted: ABSENT must FAIL (or "required" is a lie), and every legal name must PASS.
+    # 16a. every name in the enum passes — a gate that only ever saw one value has not been
+    #      shown to accept the other, and the other is half the corpus
+    for _p in PROJECT_VALUES:
+        d = healthy(); d["items"][0][PROJECT] = _p
+        bite(f"project {_p!r} passes", d, True)
+
+    # 16b. THE CENTRAL BITE — an item with no project must be REFUSED, and the refusal must
+    #      name the field, not just count a missing key
+    d = healthy(); del d["items"][0][PROJECT]
+    bite("project ABSENT is REFUSED", d, False, "missing required field(s) project")
+
+    # 16c. ...and the refusal must carry the ENUM, or the next hand-edit invents a value
+    d = healthy(); del d["items"][0][PROJECT]
+    bite("project refusal names the legal values", d, False, str(PROJECT_VALUES))
+
+    # 16d. a value outside the enum — the silent-filter defect. WORSE than absent: it reads as
+    #      a classification and matches nothing.
+    d = healthy(); d["items"][0][PROJECT] = "apollo-ux"
+    bite("project outside the enum REFUSED", d, False, "CLOSED enum")
+
+    # 16e. case matters — 'Apollo' is not 'apollo'; a silently-accepted capital forks the enum
+    d = healthy(); d["items"][0][PROJECT] = "Apollo"
+    bite("project wrong case REFUSED", d, False, "CLOSED enum")
+
+    # 16f. a non-string is not a project name
+    d = healthy(); d["items"][0][PROJECT] = None
+    bite("project None REFUSED", d, False, "CLOSED enum")
+
+    # 16g. empty string — the "I filled it in" case that fills nothing in
+    d = healthy(); d["items"][0][PROJECT] = ""
+    bite("project empty string REFUSED", d, False, "CLOSED enum")
+
+    # 16h. the split NOTE must move with the data, or it is decoration wearing a measurement's
+    #      clothes — the exact defect `counts()` exists to end
+    d = healthy()
+    twin = dict(d["items"][0]); twin["id"] = "G3"; twin[PROJECT] = PROJECT_VALUES[1]
+    d["items"].append(twin)
+    _, _, n_split = check(d)
+    if not any(f"{PROJECT_VALUES[0]} 1" in n and f"{PROJECT_VALUES[1]} 1" in n for n in n_split):
+        fails.append(f"[project split note] the note did not follow the data: {n_split}")
+    n_bites[0] += 1
+
+    # 16i. `project` is IN `REQUIRED`, not beside it. Two lists that must agree are a fork
+    #      waiting for the session that edits one of them [[ban-scoped-to-a-name]].
+    if PROJECT not in REQUIRED:
+        fails.append(f"[project required] {PROJECT!r} is not in REQUIRED {REQUIRED!r} — the "
+                     f"enum arm would still fire, but the missing-field arm would not, so an "
+                     f"item with no project at all could reach a KeyError instead of a refusal")
+    n_bites[0] += 1
+
+    # 16j. ⛔ THE ENUM IS NOT A PLACEHOLDER. If the two names drift, every filter that reads
+    #      them silently empties, and no other arm here would notice.
+    if PROJECT_VALUES != ("apollo", "memento"):
+        fails.append(f"[project enum] PROJECT_VALUES is {PROJECT_VALUES!r} — s172-D1 ruled the "
+                     f"two names 'apollo' and 'memento'. Widening or renaming this enum is "
+                     f"Dave's ruling; if he has ruled it, this arm is the one to change, "
+                     f"deliberately, with his word attached")
+    n_bites[0] += 1
 
     # 13. counts are computed, not stored — mutate an item, the count must move
     d = healthy()

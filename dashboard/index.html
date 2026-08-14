@@ -94,6 +94,43 @@ ul.items li .cw{font-size:14px;color:var(--dash-mute);line-height:1.55;}
 .kb .col-done .card{border-left:3px solid var(--dash-green);}
 .kb .empty{font-size:14px;color:var(--dash-mute);}
 
+/* project (s172-D1) — the label is a WORD. The hairline box is structure, matching the
+   owner tag beside it; no status, priority or project meaning is carried by hue anywhere
+   on this page. `check` is likewise a word, in ink, not a colour. */
+.proj{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid currentColor;padding:.1rem .35rem;display:inline-block;
+  color:var(--dash-ink);}
+.proj-memento{color:var(--dash-mute);}
+.proj-none{color:var(--dash-ink);}
+.chk{font-size:11px;letter-spacing:.06em;color:var(--dash-mute);margin-left:.4rem;
+  font-style:italic;}
+.kb .card .proj{margin-right:.3rem;}
+ul.items li .proj{margin-right:.4rem;}
+table.pri td.projc .proj{white-space:nowrap;}
+
+/* the filter bar. Buttons are WORDS with their generated counts; the state line says in a
+   sentence what is being shown, so a filtered page never looks like the whole page. */
+.pfilter{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:0 0 var(--s3);
+  padding:var(--s2) 0;border-top:1px solid var(--dash-rule);
+  border-bottom:1px solid var(--dash-rule);}
+.pfilter .pfl{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dash-mute);margin-right:.3rem;}
+.pfilter button{font-family:inherit;font-size:13px;font-weight:500;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dash-ink);background:#FFFFFF;cursor:pointer;
+  border:1px solid var(--dash-rule);padding:.4rem .8rem;}
+.pfilter button:hover{border-color:var(--dash-ink);}
+.pfilter button:focus-visible{outline:2px solid var(--dash-accent);outline-offset:2px;}
+.pfilter button[aria-pressed="true"]{background:var(--dash-ink);color:#FFFFFF;
+  border-color:var(--dash-ink);}
+.pfilter button b{font-weight:300;margin-left:.35rem;}
+.pfilter .pfstate{font-size:13px;color:var(--dash-mute);margin-left:auto;}
+/* THE FILTER ITSELF — one attribute on <body>, pure CSS from there. Items with
+   data-project="none" are shown under EVERY filter, on purpose. */
+body[data-project-filter="apollo"] [data-project="memento"],
+body[data-project-filter="memento"] [data-project="apollo"]{display:none;}
+@media (max-width:820px){ .pfilter .pfstate{margin-left:0;flex-basis:100%;} }
+@media print{ .pfilter{display:none;} body[data-project-filter] [data-project]{display:revert;} }
+
 /* priority — a PROPOSAL. The word PROPOSAL is on every surface that shows a score. */
 .kb .card .pri{display:block;font-size:12px;letter-spacing:.06em;color:var(--dash-mute);
   margin:.35rem 0 .3rem;line-height:1.4;}
@@ -168,17 +205,33 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 </head>
 <body data-theme="light">
 <section><div class="wrap">
-<p class="label">Apollo · mission control · session #168</p>
+<p class="label">Apollo · mission control · session #172</p>
 <h1>Where the work stands</h1>
 <div class="lede">
 <p><strong>32 things are open.</strong> 18 of them are yours to rule, 14 are mine to build. 19 of the open items still have no checkable close condition — they are the frozen legacy set, and that set may only shrink.
-<p>7 of 8 gates were run just now and passed; none failed. The type-composite gate is not counted as a pass or a fail — it reports declared debt, which is a third thing.
-<p>The provenance gate is the one that is red, and it is red on purpose: 0 checks fail across 0 rulings that are missing a <code>governs</code>, <code>evidence</code> or <code>status</code> value. <strong>Those values are yours and nobody else&rsquo;s</strong> — authoring them would be inventing provenance, so this page lists them and stops.
+<p>4 of 8 gates were run just now and passed; 3 failed. The type-composite gate is not counted as a pass or a fail — it reports declared debt, which is a third thing.
+<p>The provenance gate is the one that is red, and it is red on purpose: 5 checks fail across 3 rulings that are missing a <code>governs</code>, <code>evidence</code> or <code>status</code> value. <strong>Those values are yours and nobody else&rsquo;s</strong> — authoring them would be inventing provenance, so this page lists them and stops.
 <p>The order everything is shown in is a <strong>PROPOSAL</strong> — a score I compute from the store at build time, out of 5 weighted criteria printed in full below. It is not a ruling and it does not persist: you overrule it by writing a <code>priority_override</code> rank on the item, and an overruled item says <strong>DAVE OVERRULED</strong> wherever it appears. <strong>No item carries an override yet</strong> — the field is absent everywhere, because a priority I write into the store and then read back is not your judgement, it is mine wearing your name.</p>
-<p><span class="v v-fail">Flagged problem</span> — <strong>0 of 37 items carry any <code>links</code></strong> (0%). The dependency graph the score's heaviest criterion (Unlock, weight 0.353) needs <em>does not exist in the data</em>, so every score on this page is flagged LOW CONFIDENCE and the unlock column reads zero for everything. This is MEASURED and QUEUED, not repaired: backfilling links would mean inventing the dependency graph and then scoring against my own invention. It is yours, and it is Friday 2026-08-14 work.</p>
+<p><span class="v v-fail">Flagged problem</span> — <strong>6 of 37 items carry any <code>links</code></strong> (16%). The dependency graph the score's heaviest criterion (Unlock, weight 0.353) needs <em>does not exist in the data</em>, so every score on this page is flagged LOW CONFIDENCE and the unlock column reads zero for everything. This is MEASURED and QUEUED, not repaired: backfilling links would mean inventing the dependency graph and then scoring against my own invention. It is yours, and it is Friday 2026-08-14 work.</p>
 <p>Everything on this page was read out of the stores or measured by running the thing. Nothing is asserted from memory.</p>
 </div>
-<p class="sourceline">SOURCES · knowledge/_state.json · knowledge/_rulings.json · live gate runs · _CHAIN.md · _LIVE-STATE.md (last refreshed 2026-08-13) · _FUTURE-STATE.md</p>
+<p class="sourceline">SOURCES · knowledge/_state.json · knowledge/_rulings.json · live gate runs · _CHAIN.md · _LIVE-STATE.md (last refreshed 2026-08-14) · _FUTURE-STATE.md</p>
+</div></section>
+<section><div class="wrap">
+<p class="label">Project &mdash; which body of work each item belongs to</p>
+<h2>18 Apollo, 19 Memento</h2>
+<p class="meta"><strong>These are my proposed defaults, not your ruling.</strong> You ruled that every item carries a stored <code>project</code> and that new items cannot be added without one; the <em>values</em> below are the assignment I proposed, written into <code>_state.json</code> for your eye. Change any of them by editing the item&rsquo;s <code>project</code> in the store and regenerating &mdash; this page reports the store, it does not decide.</p>
+<p class="meta"><strong>2 of them I could not call, and they say so.</strong> Anywhere those items appear, the word <em>check</em> sits next to the project label: <strong>W-14</strong> (I put it in MEMENTO) &mdash; ⬛ DAVE&#x27;S FOUNDING PRINCIPLE; <strong>G12</strong> (I put it in APOLLO) &mdash; Charter §4b tone-of-voice temperature map, PROVISIONAL 2026-07-02…. They are not marked by colour, and they are not marked as wrong &mdash; they are marked as MINE TO GUESS AND YOURS TO SETTLE.</p>
+<div class="pfilter" role="group" aria-label="Filter every panel by project">
+<span class="pfl">Show</span>
+<button type="button" data-pf="all" aria-pressed="true">All <b>37</b></button>
+<button type="button" data-pf="apollo" aria-pressed="false">Apollo <b>18</b></button>
+<button type="button" data-pf="memento" aria-pressed="false">Memento <b>19</b></button>
+<span class="pfstate" id="pfstate">Showing all 37 items.</span>
+</div>
+<noscript><p class="meta">Scripting is off, so the buttons above do nothing and every item on this page is shown. Nothing is lost: every card, plate entry and priority row prints its project as a word regardless of the filter.</p></noscript>
+<p class="meta">The filter is a VIEW, not a state. It touches the board, the two plates and the priority table; it does not touch the stores, and it is not remembered &mdash; reload and you are back to all 37. Counts in the headings below <strong>re-count themselves</strong> when you filter, so a filtered heading never quotes an unfiltered total. Priority <strong>ranks do not renumber</strong>: rank 3 means third out of the whole backlog, and it keeps saying 3 in a filtered view, because a rank that changes with the view is not a rank.</p>
+<p class="sourceline">SOURCE &middot; knowledge/_state.json, field <code>project</code>, counted at generation. Legal values are the closed enum in <code>knowledge/_state.py</code> (<code>apollo | memento</code>), REQUIRED on every item and refused loudly when absent or misspelt. No project value is authored by this page.</p>
 </div></section>
 <section><div class="wrap">
 <p class="label">Gates health — measured at generation, never asserted</p>
@@ -188,9 +241,9 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <tr><td class="gate">binds-resolve</td><td><span class="v v-pass">PASS</span></td><td>0</td><td class="head">every binds address resolves to a real token leaf</td><td class="head">binds-resolve gate: 75 snippets (75 with manifests, 958 vars) · 75 metas (102 binds addresses) · 75/75 canon blocks · 0 failure(s)</td></tr>
 <tr><td class="gate">binds-ratchet</td><td><span class="v v-pass">PASS</span></td><td>0</td><td class="head">metas carrying binds may only grow</td><td class="head">PASS</td></tr>
 <tr><td class="gate">palette-tier</td><td><span class="v v-pass">PASS</span></td><td>0</td><td class="head">every theme names a palette per family (s157-D2)</td><td class="head">OK — every theme declares a palette per family; every declaration resolves; no theme hand-carries a divergent palette-owned value; no undeclared duplication.</td></tr>
-<tr><td class="gate">theme-cascade</td><td><span class="v v-pass">PASS</span></td><td>0</td><td class="head">the projected cascade matches canon.css</td><td class="head">gen_theme_cascade --check OK — 201 override path(s), 206 component projection(s) in sync.</td></tr>
-<tr><td class="gate">showroom</td><td><span class="v v-pass">PASS</span></td><td>0</td><td class="head">the 75 component pages are in sync</td><td class="head">gen_showroom --check OK — 75 page(s) + index in sync.</td></tr>
-<tr><td class="gate">provenance</td><td><span class="v v-pass">PASS</span></td><td>0</td><td class="head">every ruling points a reader at canon</td><td class="head">  _governs.py selftest: all bites green</td></tr>
+<tr><td class="gate">theme-cascade</td><td><span class="v v-fail">FAIL</span></td><td>1</td><td class="head">the projected cascade matches canon.css</td><td class="head">gen_theme_cascade --check: canon.css AUTO-THEMES block is OUT OF SYNC with tokens/themes/*.json (+ manifests). Run: python3 knowledge/canon/gen_theme_cascade.py</td></tr>
+<tr><td class="gate">showroom</td><td><span class="v v-fail">FAIL</span></td><td>1</td><td class="head">the 75 component pages are in sync</td><td class="head">Run: python3 knowledge/gen_showroom.py</td></tr>
+<tr><td class="gate">provenance</td><td><span class="v v-fail">FAIL</span></td><td>1</td><td class="head">every ruling points a reader at canon</td><td class="head">  FAIL _governs: anchor positive control — ruling s171-D1&#x27;s `notes/_GAUGE-LOG.md#boot-drift DECLARED #170 - series 55,337 / 55,309 / 56,170 / 56,326 / 56,527 / 56,693` did not reso</td></tr>
 <tr><td class="gate">type-composites</td><td><span class="v v-debt">DEBT</span></td><td>1</td><td class="head">raw type declarations outside the composites</td><td class="head">TYPE GATE FAIL — 1101 violation(s) across 90/90 file(s).  TYPE-001 ×31 · TYPE-002 ×1054 · TYPE-003 ×16</td></tr>
 </tbody></table>
 <p class="sourceline">Each row is a real subprocess run from this generator (read-only invocations only). <code>--ratchet</code> is deliberately NOT run: it writes a store, and a reporting surface must not repair what it reports.</p>
@@ -201,12 +254,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <div class="cn-stat-card"><div class="board" style="max-width:none">
 <div class="stat-card" role="group" aria-label="Rulings recorded">
 <p class="lbl16 t-cm-caption">Rulings recorded</p>
-<span class="amt t-cm-figure-3"><span>138</span></span>
-<span class="delta"><span class="t-cm-figure-6">tail s167-D1</span></span>
+<span class="amt t-cm-figure-3"><span>150</span></span>
+<span class="delta"><span class="t-cm-figure-6">tail s172-D1</span></span>
 </div>
 <div class="stat-card" role="group" aria-label="Rulings with a provenance gap">
 <p class="lbl16 t-cm-caption">Rulings with a provenance gap</p>
-<span class="amt t-cm-figure-3"><span>0</span></span>
+<span class="amt t-cm-figure-3"><span>3</span></span>
 <span class="delta"><span class="t-cm-figure-6">Dave&#x27;s to supply</span></span>
 </div>
 <div class="stat-card" role="group" aria-label="Open items">
@@ -221,8 +274,8 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 </div>
 <div class="stat-card" role="group" aria-label="Items carrying links">
 <p class="lbl16 t-cm-caption">Items carrying links</p>
-<span class="amt t-cm-figure-3"><span>0/37</span></span>
-<span class="delta"><span class="t-cm-figure-6">0% — the dependency graph, MEASURED</span></span>
+<span class="amt t-cm-figure-3"><span>6/37</span></span>
+<span class="delta"><span class="t-cm-figure-6">16% — the dependency graph, MEASURED</span></span>
 </div>
 <div class="stat-card" role="group" aria-label="Items with your override">
 <p class="lbl16 t-cm-caption">Items with your override</p>
@@ -270,235 +323,150 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <p class="sourceline">EDGES DERIVED, NOT TYPED &mdash; lower and upper quartile of the <strong>21</strong> token-priced session blocks in <code>notes/_GAUGE-LOG.md</code> (range 15,000&ndash;118,000 job tokens, median 57,936), rounded hard to the nearest 5,000 because 21 self-selected blocks cannot support a sharper edge. They move as the log grows; that is why they are printed rather than stored.</p>
 <p class="meta"><strong>A rung is your ESTIMATE against a measured standard &mdash; it is not a measurement of the job, and the page will never print it as one.</strong> Writing <code>"effort": "M"</code> on an item is a forecast; the edges it is judged against are the measured history. Two more things worth knowing before you author any: <strong>(1) absent is legal and costs nothing</strong> &mdash; an item with no rung has no effort criterion at all, and its remaining weights renormalize, so it is scored on what it has rather than penalised for what it lacks; <strong>(2) a rung changes the whole row&rsquo;s weighting</strong> &mdash; with a rung present, effort takes 0.15 and your other five snap back to their absolutes (Unlock 0.30 / Rot risk 0.20 / Deadline 0.15 / Risk reduction 0.10 / Decision relief 0.10). So a partly-authored store ranks two populations under two weightings; that is honest per item, but it is not a clean comparison across items. <strong>Today: 0 of 37 items carry a rung, so nothing below has moved.</strong> &#9940; No agent may author a value &mdash; every rung on this page will be yours. <em>s168-D2 PENDING</em>: the machinery is built and proven, the ruling is minted at the wrap.</p>
 </div>
-<p class="meta"><strong>Some inputs are proxies, and the table says which.</strong> <code>opened</code>, <code>condition</code> and <code>owner</code> are real fields. <code>deadline</code> is an OPTIONAL real field that <em>replaces</em> its proxy when present &mdash; today it is present on <strong>0</strong> of 37 items, so the proxy is what runs everywhere else. <code>effort</code> is also an optional gated field, present on <strong>0</strong> items, and it is <strong>read where present and nowhere else</strong>: unlike <code>deadline</code> it has NO proxy to fall back on, so an item without one is scored on the other criteria, renormalized, rather than guessed at. <code>links</code> is empty on 37 of 37 items. Where an input was missing, the score carries a LOW-CONFIDENCE flag naming it. A clean-looking number from thin data is the one thing this page must never print.</p>
-<p class="meta"><strong>How much this ranking actually separates the work: not much, and here is the number.</strong> The 33 scored items span <strong>9 to 29</strong> out of 100 across <strong>7 distinct values</strong>, so the gap between rank 1 and rank 33 is 20 points. That is what a ranking looks like when its heaviest criterion has no data: the order below is a tie-break, not a verdict. It gets sharper the moment <code>links</code> exists.</p>
-<p class="meta"><strong>What the missing-input words in the last column mean.</strong> <strong>unlock</strong> — no item in the store carries any links, so the dependency graph cannot be read. <strong>age</strong> — opened is 0 — the item&#x27;s birth session is unknown, so cost-of-delay cannot be measured. <strong>deadline</strong> — the item has no `deadline` field — the score reads a prose scan of the item&#x27;s own words as a PROXY, so an item scores higher by SAYING &#x27;friday&#x27;.</p>
-<table class="pri"><thead><tr><th class="num">#</th><th>Item</th><th class="ownc">Owner</th><th class="num">Score</th>
+<p class="meta"><strong>Some inputs are proxies, and the table says which.</strong> <code>opened</code>, <code>condition</code> and <code>owner</code> are real fields. <code>deadline</code> is an OPTIONAL real field that <em>replaces</em> its proxy when present &mdash; today it is present on <strong>0</strong> of 37 items, so the proxy is what runs everywhere else. <code>effort</code> is also an optional gated field, present on <strong>0</strong> items, and it is <strong>read where present and nowhere else</strong>: unlike <code>deadline</code> it has NO proxy to fall back on, so an item without one is scored on the other criteria, renormalized, rather than guessed at. <code>links</code> is empty on 31 of 37 items. Where an input was missing, the score carries a LOW-CONFIDENCE flag naming it. A clean-looking number from thin data is the one thing this page must never print.</p>
+<p class="meta"><strong>How much this ranking actually separates the work: not much, and here is the number.</strong> The 33 scored items span <strong>9 to 35</strong> out of 100 across <strong>10 distinct values</strong>, so the gap between rank 1 and rank 33 is 26 points. That is what a ranking looks like when its heaviest criterion has no data: the order below is a tie-break, not a verdict. It gets sharper the moment <code>links</code> exists.</p>
+<p class="meta"><strong>What the missing-input words in the last column mean.</strong> <strong>age</strong> — opened is 0 — the item&#x27;s birth session is unknown, so cost-of-delay cannot be measured. <strong>deadline</strong> — the item has no `deadline` field — the score reads a prose scan of the item&#x27;s own words as a PROXY, so an item scores higher by SAYING &#x27;friday&#x27;.</p>
+<table class="pri"><thead><tr><th class="num">#</th><th>Item</th><th class="projc">Project</th><th class="ownc">Owner</th><th class="num">Score</th>
 <th class="num subcol">Unlock<br>0.35</th>
 <th class="num subcol">Rot risk<br>0.24</th>
 <th class="num subcol">Deadline<br>0.18</th>
 <th class="num subcol">Risk reduction<br>0.12</th>
 <th class="num subcol">Decision relief<br>0.12</th>
 <th>Confidence</th></tr></thead><tbody>
-<tr class="">
+<tr class="" data-project="apollo">
 <td class="num rk">1</td>
-<td class="ti"><span class="id">W-0b</span> ★★ ENCODE BEFORE THE WAVE</td>
-<td class="ownc">CLAUDE</td>
-<td class="num sc">29 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.40</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.67</td>
-<td class="num subcol">1.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">2</td>
-<td class="ti"><span class="id">W-10</span> ✅ PER-GATE TEST PLAN</td>
-<td class="ownc">CLAUDE</td>
-<td class="num sc">29 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.40</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.67</td>
-<td class="num subcol">1.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">3</td>
-<td class="ti"><span class="id">W-05</span> Instrument-fit remainder</td>
-<td class="ownc">CLAUDE</td>
-<td class="num sc">25 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.40</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.33</td>
-<td class="num subcol">1.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">4</td>
-<td class="ti"><span class="id">W-06</span> ds-016, UNRULED</td>
-<td class="ownc">CLAUDE</td>
-<td class="num sc">25 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.40</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.33</td>
-<td class="num subcol">1.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">5</td>
-<td class="ti"><span class="id">W-08</span> STILL OWED, unchanged, none superseded</td>
-<td class="ownc">CLAUDE</td>
-<td class="num sc">25 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.40</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.33</td>
-<td class="num subcol">1.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">6</td>
-<td class="ti"><span class="id">G1</span> Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">7</td>
-<td class="ti"><span class="id">G10</span> The &quot;70%/95%&quot; stray band (GM:36</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">8</td>
-<td class="ti"><span class="id">G11</span> DS-018 recessive value</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">9</td>
-<td class="ti"><span class="id">G12</span> Charter §4b tone-of-voice temperature map, PROVISIONAL 2026-07-02…</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">10</td>
-<td class="ti"><span class="id">G13b</span> menu-search combined glyph, PROVISIONAL 2026-07-16 (_ICON-GAPS.md; the…</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">11</td>
-<td class="ti"><span class="id">G14</span> Icon-button dark bindings</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">12</td>
-<td class="ti"><span class="id">G15</span> DV-D13 donut centre figure + st.visible[id]=true release wiring…</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">13</td>
-<td class="ti"><span class="id">G16</span> The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent&#x27;s, not…</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">14</td>
-<td class="ti"><span class="id">G17</span> RAG status manifestation…</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">15</td>
-<td class="ti"><span class="id">G2</span> TAPE_TO_BILL = 1.57 at n=2 (_capture_gate.py:371; RATIO_FIRM_N = 4 per…</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">16</td>
-<td class="ti"><span class="id">G4</span> GM §C measured 191 &gt; 150 warn cap (_capture_gate.py:2864,…</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">17</td>
-<td class="ti"><span class="id">G5</span> Four advisory size caps as a set (_capture_gate.py:4843–4858</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">18</td>
-<td class="ti"><span class="id">G6</span> DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING = False</td>
-<td class="ownc">DAVE</td>
-<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">1.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">19</td>
 <td class="ti"><span class="id">G9</span> ds-023 re-measurement programme</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">35 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.33</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">2</td>
+<td class="ti"><span class="id">G14</span> Icon-button dark bindings</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">29 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.17</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">3</td>
+<td class="ti"><span class="id">G15</span> DV-D13 donut centre figure + st.visible[id]=true release wiring…</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">29 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.17</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="memento">
+<td class="num rk">4</td>
+<td class="ti"><span class="id">G5</span> Four advisory size caps as a set (_capture_gate.py:4843–4858</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">29 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.17</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">5</td>
+<td class="ti"><span class="id">W-0b</span> ★★ ENCODE BEFORE THE WAVE</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">CLAUDE</td>
+<td class="num sc">29 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.40</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.67</td>
+<td class="num subcol">1.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
+</tr>
+<tr class="" data-project="memento">
+<td class="num rk">6</td>
+<td class="ti"><span class="id">W-10</span> ✅ PER-GATE TEST PLAN</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
+<td class="ownc">CLAUDE</td>
+<td class="num sc">29 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.40</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.67</td>
+<td class="num subcol">1.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">7</td>
+<td class="ti"><span class="id">W-01</span> ds-018 C2 follow-through</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">CLAUDE</td>
+<td class="num sc">27 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.17</td>
+<td class="num subcol">0.40</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">1.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">8</td>
+<td class="ti"><span class="id">W-05</span> Instrument-fit remainder</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">CLAUDE</td>
+<td class="num sc">25 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.40</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.33</td>
+<td class="num subcol">1.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">9</td>
+<td class="ti"><span class="id">W-06</span> ds-016, UNRULED</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">CLAUDE</td>
+<td class="num sc">25 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.40</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.33</td>
+<td class="num subcol">1.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
+</tr>
+<tr class="" data-project="memento">
+<td class="num rk">10</td>
+<td class="ti"><span class="id">W-08</span> STILL OWED, unchanged, none superseded</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
+<td class="ownc">CLAUDE</td>
+<td class="num sc">25 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.40</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.33</td>
+<td class="num subcol">1.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
+</tr>
+<tr class="" data-project="memento">
+<td class="num rk">11</td>
+<td class="ti"><span class="id">G1</span> Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
 <td class="ownc">DAVE</td>
 <td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -506,23 +474,129 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
 </tr>
-<tr class="">
-<td class="num rk">20</td>
-<td class="ti"><span class="id">W-01</span> ds-018 C2 follow-through</td>
-<td class="ownc">CLAUDE</td>
-<td class="num sc">21 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.40</td>
-<td class="num subcol">0.00</td>
+<tr class="" data-project="memento">
+<td class="num rk">12</td>
+<td class="ti"><span class="id">G10</span> The &quot;70%/95%&quot; stray band (GM:36</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">1.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="apollo">
+<td class="num rk">13</td>
+<td class="ti"><span class="id">G11</span> DS-018 recessive value</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">14</td>
+<td class="ti"><span class="id">G12</span> Charter §4b tone-of-voice temperature map, PROVISIONAL 2026-07-02…</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span><span class="chk">check</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">15</td>
+<td class="ti"><span class="id">G13b</span> menu-search combined glyph, PROVISIONAL 2026-07-16 (_ICON-GAPS.md; the…</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">16</td>
+<td class="ti"><span class="id">G16</span> The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent&#x27;s, not…</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">17</td>
+<td class="ti"><span class="id">G17</span> RAG status manifestation…</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="memento">
+<td class="num rk">18</td>
+<td class="ti"><span class="id">G2</span> TAPE_TO_BILL = 1.57 at n=2 (_capture_gate.py:371; RATIO_FIRM_N = 4 per…</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="memento">
+<td class="num rk">19</td>
+<td class="ti"><span class="id">G4</span> GM §C measured 191 &gt; 150 warn cap (_capture_gate.py:2864,…</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="memento">
+<td class="num rk">20</td>
+<td class="ti"><span class="id">G6</span> DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING = False</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
+<td class="ownc">DAVE</td>
+<td class="num sc">24 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">1.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: deadline</td>
+</tr>
+<tr class="" data-project="apollo">
 <td class="num rk">21</td>
 <td class="ti"><span class="id">W-02</span> dv-legend/dv-behaviour CEILING</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
 <td class="ownc">CLAUDE</td>
 <td class="num sc">21 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -530,11 +604,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">1.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="memento">
 <td class="num rk">22</td>
 <td class="ti"><span class="id">W-09</span> DELEGATION TOPOLOGY, UNSCOPED</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
 <td class="ownc">CLAUDE</td>
 <td class="num sc">21 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -542,11 +617,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">1.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="memento">
 <td class="num rk">23</td>
 <td class="ti"><span class="id">W-11</span> THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
 <td class="ownc">CLAUDE</td>
 <td class="num sc">21 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -554,23 +630,25 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">1.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="apollo">
 <td class="num rk">24</td>
-<td class="ti"><span class="id">W-03</span> ds-012(b) gutter-relative plot area</td>
-<td class="ownc">CLAUDE</td>
-<td class="num sc">14 <span class="v v-note">PROPOSAL</span></td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.40</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.00</td>
-<td class="num subcol">0.40</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
-</tr>
-<tr class="">
-<td class="num rk">25</td>
 <td class="ti"><span class="id">W-04</span> DV-D16 floating growth</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
+<td class="ownc">CLAUDE</td>
+<td class="num sc">20 <span class="v v-note">PROPOSAL</span></td>
+<td class="num subcol">0.17</td>
+<td class="num subcol">0.40</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.00</td>
+<td class="num subcol">0.40</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
+</tr>
+<tr class="" data-project="apollo">
+<td class="num rk">25</td>
+<td class="ti"><span class="id">W-03</span> ds-012(b) gutter-relative plot area</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
 <td class="ownc">CLAUDE</td>
 <td class="num sc">14 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -578,11 +656,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.40</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="apollo">
 <td class="num rk">26</td>
 <td class="ti"><span class="id">W-07</span> ds-017, UNRULED</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
 <td class="ownc">CLAUDE</td>
 <td class="num sc">14 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -590,11 +669,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.40</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="memento">
 <td class="num rk">27</td>
 <td class="ti"><span class="id">W-12</span> THE #57 1b DOSSIER</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
 <td class="ownc">CLAUDE</td>
 <td class="num sc">14 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -602,11 +682,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.40</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="memento">
 <td class="num rk">28</td>
 <td class="ti"><span class="id">W-13</span> /tmp RUNBOOK EXPOSURE, UNFIXED</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
 <td class="ownc">CLAUDE</td>
 <td class="num sc">14 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -614,11 +695,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.40</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="apollo">
 <td class="num rk">29</td>
 <td class="ti"><span class="id">W-0c</span> NEXT BUILD CANDIDATES</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
 <td class="ownc">DAVE</td>
 <td class="num sc">13 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -626,11 +708,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.33</td>
 <td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="apollo">
 <td class="num rk">30</td>
 <td class="ti"><span class="id">W-0d</span> ✅ THE #67 ENACT WAVE</td>
+<td class="projc"><span class="proj proj-apollo">APOLLO</span></td>
 <td class="ownc">DAVE</td>
 <td class="num sc">13 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -638,11 +721,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.33</td>
 <td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="memento">
 <td class="num rk">31</td>
 <td class="ti"><span class="id">W-14</span> ⬛ DAVE&#x27;S FOUNDING PRINCIPLE</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span><span class="chk">check</span></td>
 <td class="ownc">DAVE</td>
 <td class="num sc">13 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -650,11 +734,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.33</td>
 <td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="memento">
 <td class="num rk">32</td>
 <td class="ti"><span class="id">W-16</span> UNHOMED PAIR, copied up at the #78 2c EXIT CHECK</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
 <td class="ownc">DAVE</td>
 <td class="num sc">13 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -662,11 +747,12 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.33</td>
 <td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
-<tr class="">
+<tr class="" data-project="memento">
 <td class="num rk">33</td>
 <td class="ti"><span class="id">W-15</span> LEDGER § ★ #59</td>
+<td class="projc"><span class="proj proj-memento">MEMENTO</span></td>
 <td class="ownc">DAVE</td>
 <td class="num sc">9 <span class="v v-note">PROPOSAL</span></td>
 <td class="num subcol">0.00</td>
@@ -674,78 +760,78 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
 <td class="num subcol">0.00</td>
-<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: unlock · age · deadline</td>
+<td class="flag"><strong>LOW CONFIDENCE</strong><br>missing: age · deadline</td>
 </tr>
 </tbody></table>
 <p class="sourceline">SOURCE · knowledge/_state.json, every item where state is not done or dropped, scored by <code>gen_dashboard.py::score_item()</code> at generation. The override channel is the OPTIONAL <code>priority_override</code> integer (1 = first, range 1–999), validated when present by <code>knowledge/_state.py</code> and wired into _build_all.py as a routed step. ⛔ No override value has been authored by me, here or in the store.</p>
 </div></section>
 <section class="band"><div class="wrap">
 <p class="label">Flagged problem &mdash; the dependency graph does not exist</p>
-<h2>0 of 37 items carry links &mdash; 0%</h2>
-<p>Among the 33 live items it is <strong>0</strong>. <code>links</code> is a required field, so it is present on every item &mdash; and empty on almost all of them. The consequence is concrete and it is on this page: the heaviest criterion in the score above (Unlock, weight 0.353) has nothing to read, contributes zero to every item, and the remaining 0.647 of weight is doing all the work of ranking your backlog.</p>
+<h2>6 of 37 items carry links &mdash; 16%</h2>
+<p>Among the 33 live items it is <strong>5</strong>. <code>links</code> is a required field, so it is present on every item &mdash; and empty on almost all of them. The consequence is concrete and it is on this page: the heaviest criterion in the score above (Unlock, weight 0.353) has nothing to read, contributes zero to every item, and the remaining 0.647 of weight is doing all the work of ranking your backlog.</p>
 <p><strong>Queued as your work for the Friday 2026-08-14 set, not repaired here.</strong> I could populate <code>links</code> by guessing which item blocks which from the prose &mdash; and then the score would rank your backlog against a dependency graph I invented and you never saw. That is a closed loop with no reader in it. The number is reported; the backfill waits for you.</p>
 <p class="sourceline">SOURCE · knowledge/_state.json, counted at generation. This panel moves on its own the moment links are written — it is a measurement, not a note.</p>
 </div></section>
 <section><div class="wrap">
 <p class="label">Board — quick visual reference</p>
-<h2>All 37 items, four columns</h2>
-<p class="meta"><strong>The columns are DERIVED, not stored.</strong> <code>_state.json</code> has no <code>status</code>, <code>lane</code>, <code>phase</code> or <code>priority</code> field — the only lifecycle axes that exist in the data are <code>state</code> (open / blocked / done) and <code>condition</code> (UNCONDITIONED / stated, i.e. whether a <code>closes_when</code> is set). Each column head prints the exact rule that put items in it, so you can check the derivation rather than trust it. Owner is the store&rsquo;s <code>owner</code>, written as a WORD; where the store marks it inferred the card says <em>inferred</em>. <strong>Cards are ordered by the proposed priority score</strong> (an overruled card sits at the top of its column); the Done column stays in id order, because a finished thing has no priority.</p>
+<h2><span class="kbtotal" data-cnt=".kb li.card">37</span> items, four columns</h2>
+<p class="meta"><strong>The columns are DERIVED, not stored.</strong> <code>_state.json</code> has no <code>status</code>, <code>lane</code>, <code>phase</code> or <code>priority</code> field — the only lifecycle axes that exist in the data are <code>state</code> (open / blocked / done) and <code>condition</code> (UNCONDITIONED / stated, i.e. whether a <code>closes_when</code> is set). <code>project</code> IS stored (you ruled it at #172) — it is a grouping label, not a lifecycle, so it makes a filter and not a column. Each column head prints the exact rule that put items in it, so you can check the derivation rather than trust it. Owner is the store&rsquo;s <code>owner</code>, written as a WORD; where the store marks it inferred the card says <em>inferred</em>. <strong>Cards are ordered by the proposed priority score</strong> (an overruled card sits at the top of its column); the Done column stays in id order, because a finished thing has no priority.</p>
 <div class="kb">
 <div class="col col-unconditioned">
-<div class="colhead"><span class="n">19</span><span class="nm">No close condition</span><span class="rule">state = open AND condition = UNCONDITIONED<br>the frozen legacy set — may only shrink</span></div>
+<div class="colhead"><span class="n" data-cnt=".kb .col-unconditioned li.card">19</span><span class="nm">No close condition</span><span class="rule">state = open AND condition = UNCONDITIONED<br>the frozen legacy set — may only shrink</span></div>
 <ul class="cards">
-<li class="card"><span class="cid">W-0b</span><span class="ct" title="★★ ENCODE BEFORE THE WAVE">★★ ENCODE BEFORE THE WAVE</span><span class="pri">PROPOSAL &middot; rank <b>1</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-10</span><span class="ct" title="✅ PER-GATE TEST PLAN">✅ PER-GATE TEST PLAN</span><span class="pri">PROPOSAL &middot; rank <b>2</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-05</span><span class="ct" title="Instrument-fit remainder">Instrument-fit remainder</span><span class="pri">PROPOSAL &middot; rank <b>3</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-06</span><span class="ct" title="ds-016, UNRULED">ds-016, UNRULED</span><span class="pri">PROPOSAL &middot; rank <b>4</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-08</span><span class="ct" title="STILL OWED, unchanged, none superseded">STILL OWED, unchanged, none superseded</span><span class="pri">PROPOSAL &middot; rank <b>5</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-01</span><span class="ct" title="ds-018 C2 follow-through">ds-018 C2 follow-through</span><span class="pri">PROPOSAL &middot; rank <b>20</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-02</span><span class="ct" title="dv-legend/dv-behaviour CEILING">dv-legend/dv-behaviour CEILING</span><span class="pri">PROPOSAL &middot; rank <b>21</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-09</span><span class="ct" title="DELEGATION TOPOLOGY, UNSCOPED">DELEGATION TOPOLOGY, UNSCOPED</span><span class="pri">PROPOSAL &middot; rank <b>22</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-11</span><span class="ct" title="THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK">THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK</span><span class="pri">PROPOSAL &middot; rank <b>23</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-03</span><span class="ct" title="ds-012(b) gutter-relative plot area">ds-012(b) gutter-relative plot area</span><span class="pri">PROPOSAL &middot; rank <b>24</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-04</span><span class="ct" title="DV-D16 floating growth">DV-D16 floating growth</span><span class="pri">PROPOSAL &middot; rank <b>25</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-07</span><span class="ct" title="ds-017, UNRULED">ds-017, UNRULED</span><span class="pri">PROPOSAL &middot; rank <b>26</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-12</span><span class="ct" title="THE #57 1b DOSSIER">THE #57 1b DOSSIER</span><span class="pri">PROPOSAL &middot; rank <b>27</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-13</span><span class="ct" title="/tmp RUNBOOK EXPOSURE, UNFIXED">/tmp RUNBOOK EXPOSURE, UNFIXED</span><span class="pri">PROPOSAL &middot; rank <b>28</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-0c</span><span class="ct" title="NEXT BUILD CANDIDATES">NEXT BUILD CANDIDATES</span><span class="pri">PROPOSAL &middot; rank <b>29</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-0d</span><span class="ct" title="✅ THE #67 ENACT WAVE">✅ THE #67 ENACT WAVE</span><span class="pri">PROPOSAL &middot; rank <b>30</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-14</span><span class="ct" title="⬛ DAVE&#x27;S FOUNDING PRINCIPLE">⬛ DAVE&#x27;S FOUNDING PRINCIPLE</span><span class="pri">PROPOSAL &middot; rank <b>31</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-16</span><span class="ct" title="UNHOMED PAIR, copied up at the #78 2c EXIT CHECK">UNHOMED PAIR, copied up at the #78 2c EXIT CHECK</span><span class="pri">PROPOSAL &middot; rank <b>32</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span></li>
-<li class="card"><span class="cid">W-15</span><span class="ct" title="LEDGER § ★ #59">LEDGER § ★ #59</span><span class="pri">PROPOSAL &middot; rank <b>33</b> &middot; score <b>9</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-0b</span><span class="ct" title="★★ ENCODE BEFORE THE WAVE">★★ ENCODE BEFORE THE WAVE</span><span class="pri">PROPOSAL &middot; rank <b>5</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="memento"><span class="cid">W-10</span><span class="ct" title="✅ PER-GATE TEST PLAN">✅ PER-GATE TEST PLAN</span><span class="pri">PROPOSAL &middot; rank <b>6</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-01</span><span class="ct" title="ds-018 C2 follow-through">ds-018 C2 follow-through</span><span class="pri">PROPOSAL &middot; rank <b>7</b> &middot; score <b>27</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-05</span><span class="ct" title="Instrument-fit remainder">Instrument-fit remainder</span><span class="pri">PROPOSAL &middot; rank <b>8</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-06</span><span class="ct" title="ds-016, UNRULED">ds-016, UNRULED</span><span class="pri">PROPOSAL &middot; rank <b>9</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="memento"><span class="cid">W-08</span><span class="ct" title="STILL OWED, unchanged, none superseded">STILL OWED, unchanged, none superseded</span><span class="pri">PROPOSAL &middot; rank <b>10</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-02</span><span class="ct" title="dv-legend/dv-behaviour CEILING">dv-legend/dv-behaviour CEILING</span><span class="pri">PROPOSAL &middot; rank <b>21</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="memento"><span class="cid">W-09</span><span class="ct" title="DELEGATION TOPOLOGY, UNSCOPED">DELEGATION TOPOLOGY, UNSCOPED</span><span class="pri">PROPOSAL &middot; rank <b>22</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="memento"><span class="cid">W-11</span><span class="ct" title="THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK">THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK</span><span class="pri">PROPOSAL &middot; rank <b>23</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-04</span><span class="ct" title="DV-D16 floating growth">DV-D16 floating growth</span><span class="pri">PROPOSAL &middot; rank <b>24</b> &middot; score <b>20</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-03</span><span class="ct" title="ds-012(b) gutter-relative plot area">ds-012(b) gutter-relative plot area</span><span class="pri">PROPOSAL &middot; rank <b>25</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-07</span><span class="ct" title="ds-017, UNRULED">ds-017, UNRULED</span><span class="pri">PROPOSAL &middot; rank <b>26</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="memento"><span class="cid">W-12</span><span class="ct" title="THE #57 1b DOSSIER">THE #57 1b DOSSIER</span><span class="pri">PROPOSAL &middot; rank <b>27</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="memento"><span class="cid">W-13</span><span class="ct" title="/tmp RUNBOOK EXPOSURE, UNFIXED">/tmp RUNBOOK EXPOSURE, UNFIXED</span><span class="pri">PROPOSAL &middot; rank <b>28</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-claude">CLAUDE</span><span class="inf">inferred</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-0c</span><span class="ct" title="NEXT BUILD CANDIDATES">NEXT BUILD CANDIDATES</span><span class="pri">PROPOSAL &middot; rank <b>29</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">W-0d</span><span class="ct" title="✅ THE #67 ENACT WAVE">✅ THE #67 ENACT WAVE</span><span class="pri">PROPOSAL &middot; rank <b>30</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="memento"><span class="cid">W-14</span><span class="ct" title="⬛ DAVE&#x27;S FOUNDING PRINCIPLE">⬛ DAVE&#x27;S FOUNDING PRINCIPLE</span><span class="pri">PROPOSAL &middot; rank <b>31</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span><br><span class="proj proj-memento">MEMENTO</span><span class="chk">check</span></li>
+<li class="card" data-project="memento"><span class="cid">W-16</span><span class="ct" title="UNHOMED PAIR, copied up at the #78 2c EXIT CHECK">UNHOMED PAIR, copied up at the #78 2c EXIT CHECK</span><span class="pri">PROPOSAL &middot; rank <b>32</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="memento"><span class="cid">W-15</span><span class="ct" title="LEDGER § ★ #59">LEDGER § ★ #59</span><span class="pri">PROPOSAL &middot; rank <b>33</b> &middot; score <b>9</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span><span class="inf">inferred</span><br><span class="proj proj-memento">MEMENTO</span></li>
 </ul>
 </div>
 <div class="col col-conditioned">
-<div class="colhead"><span class="n">13</span><span class="nm">Open, condition stated</span><span class="rule">state = open AND condition = stated<br>has a checkable closes_when</span></div>
+<div class="colhead"><span class="n" data-cnt=".kb .col-conditioned li.card">13</span><span class="nm">Open, condition stated</span><span class="rule">state = open AND condition = stated<br>has a checkable closes_when</span></div>
 <ul class="cards">
-<li class="card"><span class="cid">G1</span><span class="ct" title="Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…">Worklist-index cap DOFIRST_INDEX_TK_MAX = 700…</span><span class="pri">PROPOSAL &middot; rank <b>6</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G10</span><span class="ct" title="The &quot;70%/95%&quot; stray band (GM:36">The &quot;70%/95%&quot; stray band (GM:36</span><span class="pri">PROPOSAL &middot; rank <b>7</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G11</span><span class="ct" title="DS-018 recessive value">DS-018 recessive value</span><span class="pri">PROPOSAL &middot; rank <b>8</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G12</span><span class="ct" title="Charter §4b tone-of-voice temperature map, PROVISIONAL 2026-07-02…">Charter §4b tone-of-voice temperature map, PROVISIONAL…</span><span class="pri">PROPOSAL &middot; rank <b>9</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G13b</span><span class="ct" title="menu-search combined glyph, PROVISIONAL 2026-07-16 (_ICON-GAPS.md; the…">menu-search combined glyph, PROVISIONAL 2026-07-16…</span><span class="pri">PROPOSAL &middot; rank <b>10</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G14</span><span class="ct" title="Icon-button dark bindings">Icon-button dark bindings</span><span class="pri">PROPOSAL &middot; rank <b>11</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G15</span><span class="ct" title="DV-D13 donut centre figure + st.visible[id]=true release wiring…">DV-D13 donut centre figure + st.visible[id]=true release wiring…</span><span class="pri">PROPOSAL &middot; rank <b>12</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G16</span><span class="ct" title="The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent&#x27;s, not…">The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call…</span><span class="pri">PROPOSAL &middot; rank <b>13</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G17</span><span class="ct" title="RAG status manifestation…">RAG status manifestation…</span><span class="pri">PROPOSAL &middot; rank <b>14</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G2</span><span class="ct" title="TAPE_TO_BILL = 1.57 at n=2 (_capture_gate.py:371; RATIO_FIRM_N = 4 per…">TAPE_TO_BILL = 1.57 at n=2 (_capture_gate.py:371; RATIO_FIRM_N…</span><span class="pri">PROPOSAL &middot; rank <b>15</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G4</span><span class="ct" title="GM §C measured 191 &gt; 150 warn cap (_capture_gate.py:2864,…">GM §C measured 191 &gt; 150 warn cap (_capture_gate.py:2864,…</span><span class="pri">PROPOSAL &middot; rank <b>16</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G6</span><span class="ct" title="DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING = False">DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING =…</span><span class="pri">PROPOSAL &middot; rank <b>18</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G9</span><span class="ct" title="ds-023 re-measurement programme">ds-023 re-measurement programme</span><span class="pri">PROPOSAL &middot; rank <b>19</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
+<li class="card" data-project="apollo"><span class="cid">G9</span><span class="ct" title="ds-023 re-measurement programme">ds-023 re-measurement programme</span><span class="pri">PROPOSAL &middot; rank <b>1</b> &middot; score <b>35</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">G14</span><span class="ct" title="Icon-button dark bindings">Icon-button dark bindings</span><span class="pri">PROPOSAL &middot; rank <b>2</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">G15</span><span class="ct" title="DV-D13 donut centre figure + st.visible[id]=true release wiring…">DV-D13 donut centre figure + st.visible[id]=true release wiring…</span><span class="pri">PROPOSAL &middot; rank <b>3</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="memento"><span class="cid">G1</span><span class="ct" title="Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…">Worklist-index cap DOFIRST_INDEX_TK_MAX = 700…</span><span class="pri">PROPOSAL &middot; rank <b>11</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="memento"><span class="cid">G10</span><span class="ct" title="The &quot;70%/95%&quot; stray band (GM:36">The &quot;70%/95%&quot; stray band (GM:36</span><span class="pri">PROPOSAL &middot; rank <b>12</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="apollo"><span class="cid">G11</span><span class="ct" title="DS-018 recessive value">DS-018 recessive value</span><span class="pri">PROPOSAL &middot; rank <b>13</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">G12</span><span class="ct" title="Charter §4b tone-of-voice temperature map, PROVISIONAL 2026-07-02…">Charter §4b tone-of-voice temperature map, PROVISIONAL…</span><span class="pri">PROPOSAL &middot; rank <b>14</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-apollo">APOLLO</span><span class="chk">check</span></li>
+<li class="card" data-project="apollo"><span class="cid">G13b</span><span class="ct" title="menu-search combined glyph, PROVISIONAL 2026-07-16 (_ICON-GAPS.md; the…">menu-search combined glyph, PROVISIONAL 2026-07-16…</span><span class="pri">PROPOSAL &middot; rank <b>15</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">G16</span><span class="ct" title="The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent&#x27;s, not…">The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call…</span><span class="pri">PROPOSAL &middot; rank <b>16</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="apollo"><span class="cid">G17</span><span class="ct" title="RAG status manifestation…">RAG status manifestation…</span><span class="pri">PROPOSAL &middot; rank <b>17</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-apollo">APOLLO</span></li>
+<li class="card" data-project="memento"><span class="cid">G2</span><span class="ct" title="TAPE_TO_BILL = 1.57 at n=2 (_capture_gate.py:371; RATIO_FIRM_N = 4 per…">TAPE_TO_BILL = 1.57 at n=2 (_capture_gate.py:371; RATIO_FIRM_N…</span><span class="pri">PROPOSAL &middot; rank <b>18</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="memento"><span class="cid">G4</span><span class="ct" title="GM §C measured 191 &gt; 150 warn cap (_capture_gate.py:2864,…">GM §C measured 191 &gt; 150 warn cap (_capture_gate.py:2864,…</span><span class="pri">PROPOSAL &middot; rank <b>19</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="memento"><span class="cid">G6</span><span class="ct" title="DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING = False">DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING =…</span><span class="pri">PROPOSAL &middot; rank <b>20</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
 </ul>
 </div>
 <div class="col col-blocked">
-<div class="colhead"><span class="n">1</span><span class="nm">Blocked</span><span class="rule">state = blocked<br>the store&#x27;s own word</span></div>
+<div class="colhead"><span class="n" data-cnt=".kb .col-blocked li.card">1</span><span class="nm">Blocked</span><span class="rule">state = blocked<br>the store&#x27;s own word</span></div>
 <ul class="cards">
-<li class="card"><span class="cid">G5</span><span class="ct" title="Four advisory size caps as a set (_capture_gate.py:4843–4858">Four advisory size caps as a set (_capture_gate.py:4843–4858</span><span class="pri">PROPOSAL &middot; rank <b>17</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="own own-dave">DAVE</span></li>
+<li class="card" data-project="memento"><span class="cid">G5</span><span class="ct" title="Four advisory size caps as a set (_capture_gate.py:4843–4858">Four advisory size caps as a set (_capture_gate.py:4843–4858</span><span class="pri">PROPOSAL &middot; rank <b>4</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
 </ul>
 </div>
 <div class="col col-done">
-<div class="colhead"><span class="n">4</span><span class="nm">Done</span><span class="rule">state = done<br>carries closed_by</span></div>
+<div class="colhead"><span class="n" data-cnt=".kb .col-done li.card">4</span><span class="nm">Done</span><span class="rule">state = done<br>carries closed_by</span></div>
 <ul class="cards">
-<li class="card"><span class="cid">G18</span><span class="ct" title="G3 revisit: retired_unit_prose_audit WARN ratified provisionally #161 - Dave wants no loose ends">G3 revisit: retired_unit_prose_audit WARN ratified…</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G3</span><span class="ct" title="retired_unit_prose_audit tier = WARN (_capture_gate.py:2078, 2098,…">retired_unit_prose_audit tier = WARN (_capture_gate.py:2078,…</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G7</span><span class="ct" title="Which end of an archive is &quot;newest&quot; (strata oldest-first · archives…">Which end of an archive is &quot;newest&quot; (strata oldest-first ·…</span><span class="own own-dave">DAVE</span></li>
-<li class="card"><span class="cid">G8</span><span class="ct" title="Dormant % band BAND_FLOOR/HARD_STOP/MARKED_MAX = 45/60/63…">Dormant % band BAND_FLOOR/HARD_STOP/MARKED_MAX = 45/60/63…</span><span class="own own-dave">DAVE</span></li>
+<li class="card" data-project="memento"><span class="cid">G18</span><span class="ct" title="G3 revisit: retired_unit_prose_audit WARN ratified provisionally #161 - Dave wants no loose ends">G3 revisit: retired_unit_prose_audit WARN ratified…</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="memento"><span class="cid">G3</span><span class="ct" title="retired_unit_prose_audit tier = WARN (_capture_gate.py:2078, 2098,…">retired_unit_prose_audit tier = WARN (_capture_gate.py:2078,…</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="memento"><span class="cid">G7</span><span class="ct" title="Which end of an archive is &quot;newest&quot; (strata oldest-first · archives…">Which end of an archive is &quot;newest&quot; (strata oldest-first ·…</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
+<li class="card" data-project="memento"><span class="cid">G8</span><span class="ct" title="Dormant % band BAND_FLOOR/HARD_STOP/MARKED_MAX = 45/60/63…">Dormant % band BAND_FLOOR/HARD_STOP/MARKED_MAX = 45/60/63…</span><span class="own own-dave">DAVE</span><br><span class="proj proj-memento">MEMENTO</span></li>
 </ul>
 </div>
 </div>
@@ -756,48 +842,61 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <h2>What is on your plate, and what is on mine</h2>
 <p class="meta">Owner comes from <code>_state.json</code>. Where the store marks the owner as inferred, the item says so — an inference is not a ruling. <strong>Both plates are in proposed-priority order</strong>, highest score first, with any item you have overruled lifted to the top of its plate; the badge on each item says which of the two it is.</p>
 <div class="plates">
-<div class="plate">
-<h3><span class="n">18</span>Dave&rsquo;s plate <span class="v v-note">DAVE'S</span></h3>
+<div class="plate plate-dave">
+<h3><span class="n" data-cnt=".plate-dave ul.items &gt; li">18</span>Dave&rsquo;s plate <span class="v v-note">DAVE'S</span></h3>
 <ul class="items">
-<li><span class="pri">PROPOSAL &middot; rank <b>6</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G1</span><span class="ti">Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…</span><span class="cw">Closes when: Dave ratifies 700 or names his own number</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>7</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G10</span><span class="ti">The &quot;70%/95%&quot; stray band (GM:36</span><span class="cw">Closes when: Dave rules provenance or strikes it</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>8</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G11</span><span class="ti">DS-018 recessive value</span><span class="cw">Closes when: Dave picks the recessive value</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>9</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G12</span><span class="ti">Charter §4b tone-of-voice temperature map, PROVISIONAL 2026-07-02…</span><span class="cw">Closes when: tov-016 review lands, or Dave ratifies the mapping as-is</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>10</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G13b</span><span class="ti">menu-search combined glyph, PROVISIONAL 2026-07-16 (_ICON-GAPS.md; the…</span><span class="cw">Closes when: Dave approves the glyph</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>11</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G14</span><span class="ti">Icon-button dark bindings</span><span class="cw">Closes when: Dave rules the SC-dark bindings</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>12</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G15</span><span class="ti">DV-D13 donut centre figure + st.visible[id]=true release wiring…</span><span class="cw">Closes when: Dave&#x27;s sign-off eye</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>13</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G16</span><span class="ti">The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent&#x27;s, not…</span><span class="cw">Closes when: Dave ratifies or reverses</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>14</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G17</span><span class="ti">RAG status manifestation…</span><span class="cw">Closes when: Dave&#x27;s canon pick — A / A+B / A+B+C</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>15</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G2</span><span class="ti">TAPE_TO_BILL = 1.57 at n=2 (_capture_gate.py:371; RATIO_FIRM_N = 4 per…</span><span class="cw">Closes when: 4 measured pairs logged, then Dave rules firm-or-retire</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>16</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G4</span><span class="ti">GM §C measured 191 &gt; 150 warn cap (_capture_gate.py:2864,…</span><span class="cw">Closes when: Dave picks OFFLOAD / TRIM / KEEP</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>18</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G6</span><span class="ti">DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING = False</span><span class="cw">Closes when: Dave rules the streak number + per-candidate OFFLOAD/TRIM/KEEP calls</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>19</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="id">G9</span><span class="ti">ds-023 re-measurement programme</span><span class="cw">Closes when: Dave rules the programme</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>29</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-0c · owner inferred</span><span class="ti">NEXT BUILD CANDIDATES</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>30</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-0d · owner inferred</span><span class="ti">✅ THE #67 ENACT WAVE</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>31</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-14 · owner inferred</span><span class="ti">⬛ DAVE&#x27;S FOUNDING PRINCIPLE</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>32</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-16 · owner inferred</span><span class="ti">UNHOMED PAIR, copied up at the #78 2c EXIT CHECK</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>33</b> &middot; score <b>9</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-15 · owner inferred</span><span class="ti">LEDGER § ★ #59</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>1</b> &middot; score <b>35</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">G9</span><span class="ti">ds-023 re-measurement programme</span><span class="cw">Closes when: Dave rules the programme</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>2</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">G14</span><span class="ti">Icon-button dark bindings</span><span class="cw">Closes when: Dave rules the SC-dark bindings</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>3</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">G15</span><span class="ti">DV-D13 donut centre figure + st.visible[id]=true release wiring…</span><span class="cw">Closes when: Dave&#x27;s sign-off eye</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>11</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">G1</span><span class="ti">Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…</span><span class="cw">Closes when: Dave ratifies 700 or names his own number</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>12</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">G10</span><span class="ti">The &quot;70%/95%&quot; stray band (GM:36</span><span class="cw">Closes when: Dave rules provenance or strikes it</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>13</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">G11</span><span class="ti">DS-018 recessive value</span><span class="cw">Closes when: Dave picks the recessive value</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>14</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="chk">check</span><span class="id">G12</span><span class="ti">Charter §4b tone-of-voice temperature map, PROVISIONAL 2026-07-02…</span><span class="cw">Closes when: tov-016 review lands, or Dave ratifies the mapping as-is</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>15</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">G13b</span><span class="ti">menu-search combined glyph, PROVISIONAL 2026-07-16 (_ICON-GAPS.md; the…</span><span class="cw">Closes when: Dave approves the glyph</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>16</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">G16</span><span class="ti">The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent&#x27;s, not…</span><span class="cw">Closes when: Dave ratifies or reverses</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>17</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">G17</span><span class="ti">RAG status manifestation…</span><span class="cw">Closes when: Dave&#x27;s canon pick — A / A+B / A+B+C</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>18</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">G2</span><span class="ti">TAPE_TO_BILL = 1.57 at n=2 (_capture_gate.py:371; RATIO_FIRM_N = 4 per…</span><span class="cw">Closes when: 4 measured pairs logged, then Dave rules firm-or-retire</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>19</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">G4</span><span class="ti">GM §C measured 191 &gt; 150 warn cap (_capture_gate.py:2864,…</span><span class="cw">Closes when: Dave picks OFFLOAD / TRIM / KEEP</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>20</b> &middot; score <b>24</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 1 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">G6</span><span class="ti">DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING = False</span><span class="cw">Closes when: Dave rules the streak number + per-candidate OFFLOAD/TRIM/KEEP calls</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>29</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-0c · owner inferred</span><span class="ti">NEXT BUILD CANDIDATES</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>30</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-0d · owner inferred</span><span class="ti">✅ THE #67 ENACT WAVE</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>31</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="chk">check</span><span class="id">W-14 · owner inferred</span><span class="ti">⬛ DAVE&#x27;S FOUNDING PRINCIPLE</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>32</b> &middot; score <b>13</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">W-16 · owner inferred</span><span class="ti">UNHOMED PAIR, copied up at the #78 2c EXIT CHECK</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>33</b> &middot; score <b>9</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">W-15 · owner inferred</span><span class="ti">LEDGER § ★ #59</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
 </ul></div>
-<div class="plate">
-<h3><span class="n">14</span>My plate <span class="v v-note">MINE</span></h3>
+<div class="plate plate-mine">
+<h3><span class="n" data-cnt=".plate-mine ul.items &gt; li">14</span>My plate <span class="v v-note">MINE</span></h3>
 <ul class="items">
-<li><span class="pri">PROPOSAL &middot; rank <b>1</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-0b · owner inferred</span><span class="ti">★★ ENCODE BEFORE THE WAVE</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>2</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-10 · owner inferred</span><span class="ti">✅ PER-GATE TEST PLAN</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>3</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-05 · owner inferred</span><span class="ti">Instrument-fit remainder</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>4</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-06 · owner inferred</span><span class="ti">ds-016, UNRULED</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>5</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-08 · owner inferred</span><span class="ti">STILL OWED, unchanged, none superseded</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>20</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-01 · owner inferred</span><span class="ti">ds-018 C2 follow-through</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>21</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-02 · owner inferred</span><span class="ti">dv-legend/dv-behaviour CEILING</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>22</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-09 · owner inferred</span><span class="ti">DELEGATION TOPOLOGY, UNSCOPED</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>23</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-11 · owner inferred</span><span class="ti">THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>24</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-03 · owner inferred</span><span class="ti">ds-012(b) gutter-relative plot area</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>25</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-04 · owner inferred</span><span class="ti">DV-D16 floating growth</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>26</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-07 · owner inferred</span><span class="ti">ds-017, UNRULED</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>27</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-12 · owner inferred</span><span class="ti">THE #57 1b DOSSIER</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
-<li><span class="pri">PROPOSAL &middot; rank <b>28</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 3 input(s) missing</span><span class="id">W-13 · owner inferred</span><span class="ti">/tmp RUNBOOK EXPOSURE, UNFIXED</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>5</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-0b · owner inferred</span><span class="ti">★★ ENCODE BEFORE THE WAVE</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>6</b> &middot; score <b>29</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">W-10 · owner inferred</span><span class="ti">✅ PER-GATE TEST PLAN</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>7</b> &middot; score <b>27</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-01 · owner inferred</span><span class="ti">ds-018 C2 follow-through</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>8</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-05 · owner inferred</span><span class="ti">Instrument-fit remainder</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>9</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-06 · owner inferred</span><span class="ti">ds-016, UNRULED</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>10</b> &middot; score <b>25</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">W-08 · owner inferred</span><span class="ti">STILL OWED, unchanged, none superseded</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>21</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-02 · owner inferred</span><span class="ti">dv-legend/dv-behaviour CEILING</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>22</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">W-09 · owner inferred</span><span class="ti">DELEGATION TOPOLOGY, UNSCOPED</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>23</b> &middot; score <b>21</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">W-11 · owner inferred</span><span class="ti">THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>24</b> &middot; score <b>20</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-04 · owner inferred</span><span class="ti">DV-D16 floating growth</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>25</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-03 · owner inferred</span><span class="ti">ds-012(b) gutter-relative plot area</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="apollo"><span class="pri">PROPOSAL &middot; rank <b>26</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-apollo">APOLLO</span><span class="id">W-07 · owner inferred</span><span class="ti">ds-017, UNRULED</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>27</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">W-12 · owner inferred</span><span class="ti">THE #57 1b DOSSIER</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
+<li data-project="memento"><span class="pri">PROPOSAL &middot; rank <b>28</b> &middot; score <b>14</b>/100 &middot; <span class="lowconf">LOW CONFIDENCE</span>, 2 input(s) missing</span><span class="proj proj-memento">MEMENTO</span><span class="id">W-13 · owner inferred</span><span class="ti">/tmp RUNBOOK EXPOSURE, UNFIXED</span><span class="cw">Closes when: NO CLOSE CONDITION — frozen legacy item</span></li>
 </ul></div>
 </div>
 <p class="sourceline">SOURCE · knowledge/_state.json (items where state = open).</p>
+</div></section>
+<section class="band"><div class="wrap">
+<p class="label">Yours alone — the provenance gap</p>
+<h2>5 checks, 3 rulings, nobody else&rsquo;s to answer</h2>
+<p>These are the live words of <code>knowledge/_governs.py --selftest</code>, run by this generator. Each one wants a <code>governs</code>, <code>evidence</code> or <code>status</code> value on a ruling in <code>_rulings.json</code>. <strong>No value has been drafted, guessed, or suggested here</strong> — a provenance field authored by an agent is a false inscription, which is the failure this gate exists to catch. Rulings affected: s129-D1, s171-D1, s172-D1.</p>
+<ol class="fails">
+<li>FAIL _governs: ruling s129-D1 points at `knowledge/_gauge_tokens.py#BOOT_FIRSTTURN_TK = 54_859` — the file is there but the ANCHOR TEXT IS GONE. The construct was renamed, moved out or deleted: say WHICH. Do not repoint at whatever currently looks right — that is the #127 re-stamp</li>
+<li>FAIL _governs: ruling s171-D1 points at `notes/_GAUGE-LOG.md#boot-drift DECLARED #170 - series 55,337 / 55,309 / 56,170 / 56,326 / 56,527 / 56,693` — the file is there but the ANCHOR TEXT IS GONE. The construct was renamed, moved out or deleted: say WHICH. Do not repoint at whatever currently looks right — that is the #127 re-stamp</li>
+<li>FAIL _governs: ruling s172-D1 evidence `_PLAN-172-back-on-track-2026-08-14-v1.md - the plan the batch was read from` carries NO pointer — prose provenance needs the `chat #&lt;n&gt;`/`commit ` legal form, never a bare sentence</li>
+<li>FAIL _governs: anchor positive control — ruling s129-D1&#x27;s `knowledge/_gauge_tokens.py#BOOT_FIRSTTURN_TK = 54_859` did not resolve (points at `knowledge/_gauge_tokens.py#BOOT_FIRSTTURN_TK = 54_859` — the file is there but the ANCHOR TEXT IS GONE. The construct was renamed, moved out or deleted: say WHICH. Do not repoint at whatever currently looks right — that is the #127 re-stamp)</li>
+<li>FAIL _governs: anchor positive control — ruling s171-D1&#x27;s `notes/_GAUGE-LOG.md#boot-drift DECLARED #170 - series 55,337 / 55,309 / 56,170 / 56,326 / 56,527 / 56,693` did not resolve (points at `notes/_GAUGE-LOG.md#boot-drift DECLARED #170 - series 55,337 / 55,309 / 56,170 / 56,326 / 56,527 / 56,693` — the file is there but the ANCHOR TEXT IS GONE. The construct was renamed, moved out or deleted: say WHICH. Do not repoint at whatever currently looks right — that is the #127 re-stamp)</li>
+</ol>
+<p class="sourceline">SOURCE · live run, <code>python3 knowledge/_governs.py --selftest</code>. The gate could not run at all for five sessions (#158–#163) because _build_all.py aborted above it — see _LIVE-STATE.md #164.</p>
 </div></section>
 <section><div class="wrap">
 <p class="label">The forward lane</p>
@@ -841,8 +940,44 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 </div></section>
 <section><div class="wrap">
 <p class="label">How to read this page</p>
-<p class="meta">Generated by <code>knowledge/gen_dashboard.py</code> from the stores; it is never hand-edited. <code>--check</code> regenerates and compares, so a stale dashboard fails the build rather than lying quietly. It carries no timestamp on purpose: its clock is the session number in <code>_CHAIN.md</code> (#168) and the measurements themselves.</p>
+<p class="meta">Generated by <code>knowledge/gen_dashboard.py</code> from the stores; it is never hand-edited. <code>--check</code> regenerates and compares, so a stale dashboard fails the build rather than lying quietly. It carries no timestamp on purpose: its clock is the session number in <code>_CHAIN.md</code> (#172) and the measurements themselves.</p>
 <p class="meta">Components are Mono, from <code>knowledge/canon/canon.css</code> — nothing new was invented. Layout follows the swiss-design-system skill. Every verdict is a WORD first; the two-red law (red #DA1A00) and its green mirror (#137F3C) are applied on white, light mode only, as redundant confirmation. The blue rules and dashes are decorative and carry no meaning.</p>
 <p class="meta">This page reports. It does not repair, rule, or promote anything.</p>
 </div></section>
+<script>
+(function(){
+  var body=document.body,
+      btns=Array.prototype.slice.call(document.querySelectorAll('.pfilter button')),
+      st=document.getElementById('pfstate'),
+      cnt=Array.prototype.slice.call(document.querySelectorAll('[data-cnt]')),
+      NAME={all:'all',apollo:'APOLLO',memento:'MEMENTO'};
+  if(!btns.length){return;}
+  function shown(el,f){
+    if(f==='all'){return true;}
+    var p=el.getAttribute('data-project');
+    return p===f||p==='none';           /* an unclassifiable item is never hidden */
+  }
+  function apply(f){
+    body.setAttribute('data-project-filter',f);
+    btns.forEach(function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-pf')===f));});
+    var total=0;
+    cnt.forEach(function(el){
+      var n=0;
+      Array.prototype.forEach.call(document.querySelectorAll(el.getAttribute('data-cnt')),
+        function(x){ if(shown(x,f)){n++;} });
+      el.textContent=n;
+      if(el.className.indexOf('kbtotal')>-1){total=n;}
+    });
+    if(st){
+      st.textContent = (f==='all')
+        ? ('Showing all '+total+' items.')
+        : ('Showing '+NAME[f]+' only \u2014 '+total+' items. The rest are hidden, not gone.');
+    }
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){apply(b.getAttribute('data-pf'));});
+  });
+  apply('all');
+})();
+</script>
 </body></html>

@@ -699,6 +699,34 @@ SHAPE ONLY)`. This correction was itself made with no concurrent writer in this 
 > a reading that disagrees with the tally by >2× is a prompt to check units (throughput vs fill),
 > not reassurance.**
 
+**★ THE PLAN BLOCK AT A LANE SEAM — `--block` (B2, brief `_BRIEF-borrowed-instruments-2026-08-12-v2.md` §2).**
+`python3 knowledge/_checkin.py --block` prints six lines — `SOURCE` (provenance, mandatory, line 0)
+· `DONE` · `DOING` · `NEXT` · `STOP` · `BUDGET` — and **it is a RENDERING of state, never a store:
+there is no `current.md` and no fifth register, so if the block is wrong the STATE is wrong — fix the
+state and regenerate.** `DONE` comes from `_LIVE-STATE.md`'s `## ⏱ LATEST DELTA` heading, `DOING`/`NEXT`
+from the `active` lanes and their step states in `knowledge/_lanes.json` (**all active lanes are LISTED,
+never picked between** — picking would be a ruling), `STOP` from the stop-line figure `_CHAIN.md` itself
+states (**never a constant typed into the script**), and `BUDGET` from the same FILL + headline machinery
+the plain check-in prints, in REAL tokens with the method travelling beside the number. Any probe that
+does not resolve renders the literal `UNKNOWN — …` with the probe named; nothing is defaulted. The
+`SOURCE` line carries each state source's mtime plus a 12-char `integrity` digest — sha256 over the
+block's own text ⊕ the sha256 of each source's bytes — so `--verify-block FILE` (or `-` for stdin) can
+grade a candidate against LIVE state and **reject a block that was pasted forward rather than
+regenerated**: it reports *every* failing leg (`SHAPE` · `PROVENANCE` · `MTIME` · `INTEGRITY` ·
+`NON-REGENERATED`, which names the offending field and shows what state renders instead · `AGE`,
+default 900s, **PICKED not derived**, override with `--max-age`), exits 3, and never offers to repair
+the text. Two deliberate exclusions, both because a check that always fires is worth as much as one
+that cannot: the **transcript is named on the `SOURCE` line but NOT hashed** (it is rewritten every
+turn), and **`BUDGET` is hashed as written but never re-derived** (FILL moves every call — the volatile
+"room to the stop line" lives there for exactly that reason, which is why `STOP` is state-only).
+⛔ Do not paste a block into a sub-brief without re-emitting it; **GENERATE-NEVER-INHERIT** is the whole
+design, and `python3 knowledge/_checkin.py --selftest-block` is the proof it holds: six arms driving the
+real checker — an untouched CONTROL that must be ACCEPTED, plus a corrupted `SOURCE` mtime, a hand-edited
+line, a hand-edit *with the digest recomputed*, a block carried past its age limit, and a state file
+changed **with its mtime restored** (the nastiest case: a provenance line that is true while the content
+is not) — each of which must be rejected **on its own named leg**. Verified by mutating the checker to
+accept everything: the CONTROL still passed and all five mutation arms went red, `rc=1`.
+
 ## The trigger — TWO TIERS (ruled by Dave, 2026-07-21)
 
 Compaction is not one event. Firing the full ritual + fresh session at every Amber would churn
@@ -808,7 +836,9 @@ commit *before* trusting the "green" claim — which is the whole point.
 
 `_RUNBOOK-capture-ritual.md` (where Red sends us) · `knowledge/_gauge_tokens.py` (the budget/band
 engine, real tokens, #56) · `knowledge/_checkin.py` (Half-2 throughput check-in — **`real` headline
-since #83 (c)**, cl100k kept only as a SHAPE-ONLY sideband, #52/#53) ·
+since #83 (c)**, cl100k kept only as a SHAPE-ONLY sideband, #52/#53; **and the B2 plan block:
+`--block` renders it, `--verify-block` grades one against live state, `--selftest-block` drives the
+mutation arms — § Half 2**) ·
 `knowledge/_context_gauge.py` (measures an arbitrary text file; refuses without tiktoken
 unless `--estimate`, #74) · memory `feedback-context-gauge` · `session-title-convention` ·
 `memento-framing`.
