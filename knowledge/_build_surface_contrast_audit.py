@@ -497,10 +497,29 @@ def _selftest():
         check("A6a2 no row anywhere still reports the 1.0:1 self-on-self phantom",
               all(r["contrast_ratio"] != 1.0 for r in rows),
               "1.0 rows=%s" % [r["token"] for r in rows if r["contrast_ratio"] == 1.0])
+        # A6b's subject moved LEGITIMATELY at s170-D4 (Dave ruled the icon white, so the
+        # live 2.42 POOR row this arm asserted no longer exists). The CLAUSE it proves —
+        # a genuinely bad same-state pair still fails — is now proven on a temp copy with
+        # the s170-D4 override REMOVED, which simultaneously proves that override is the
+        # thing that closes the gap. The live row is asserted OK by A6b2.
+        s0 = os.path.join(tmp, "state0")
+        shutil.copytree(TOK, s0)
+        sp0 = os.path.join(s0, "themes", "apollo-legacy.overrides.json")
+        doc0 = json.load(open(sp0))
+        del doc0["overrides"]["button/primary/icon/default"]
+        json.dump(doc0, open(sp0, "w"), indent=1, ensure_ascii=False)
+        _, s0rows = audit_themes(sem_l, surf, s0, dd, rd)
+        s0g = {(r["theme"], r["token"]): r for r in s0rows}
+        b0 = s0g.get(("apollo-legacy", "button/primary/icon/default"))
+        check("A6b a genuinely BAD same-state pair still FAILS (s170-D4 override removed on a copy)",
+              b0 is not None and b0["surface"] == "#DB0011"
+              and b0["status"] == "POOR_CONTRAST" and b0["contrast_ratio"] == 2.42,
+              "%s on %s = %s:1 %s" % (b0 and b0["dark_value"], b0 and b0["surface"],
+                                      b0 and b0["contrast_ratio"], b0 and b0["status"]))
         bi = base_map.get(("apollo-legacy", "button/primary/icon/default"))
-        check("A6b a genuinely BAD same-state pair still FAILS (mono ink #333333 on legacy red)",
-              bi is not None and bi["surface"] == "#DB0011"
-              and bi["status"] == "POOR_CONTRAST" and bi["contrast_ratio"] == 2.42,
+        check("A6b2 the LIVE icon row is white and OK under s170-D4",
+              bi is not None and bi["surface"] == "#DB0011" and bi["dark_value"] == "#FFFFFF"
+              and bi["status"] == "OK" and bi["contrast_ratio"] == 5.22,
               "%s on %s = %s:1 %s" % (bi and bi["dark_value"], bi and bi["surface"],
                                       bi and bi["contrast_ratio"], bi and bi["status"]))
 

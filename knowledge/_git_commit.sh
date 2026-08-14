@@ -280,6 +280,19 @@ else:
         sys.exit("T3 REFUSES (s130-D3): the msgfile's first line is empty — a non-wrap "
                  "subject is generated from the msgfile's own first line, written this "
                  "session; there is nothing to generate from.")
+    # #170 — REUSED-MSGFILE GATE (the x12 prefix-stacking class, mechanism identified #170):
+    # T3 WRITES the generated headline back into the msgfile below, so feeding the same file
+    # through a second invocation stacks a second prefix ("after #N date — after #N date — …").
+    # Every doubled/tripled subject since #157 was THIS, not the generator misfiring. Gate the
+    # PRESENCE at the seam where it turns durable: a msgfile whose first line already carries
+    # the prefix has been through T3 once and is stale by definition — fresh printf per
+    # invocation (memory git-push-method, tripled #157, amended; recurred #164, #169, #170).
+    if re.match(r"after #\d+ \d{4}-\d{2}-\d{2} — ", first):
+        sys.exit("T3 REFUSES (#170 reused-msgfile gate): the msgfile's first line already "
+                 "carries an 'after #N <date> — ' prefix, so this file has been through T3 "
+                 "before — invoking again would stack the prefix (the doubled-subject class, "
+                 "x12 instances). Write a FRESH msgfile (fresh printf per invocation) and re-run. "
+                 "Nothing has been staged.")
     headline = f"after #{session_n} {today} — {first}"
 if len(headline) > 120:
     headline = headline[:117] + "…"

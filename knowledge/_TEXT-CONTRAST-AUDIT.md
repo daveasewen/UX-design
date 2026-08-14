@@ -4,7 +4,7 @@
 
 **Result:** 17 pass · 5 allowed exception(s) · **1 gating failure(s)** · 5 skipped (light-only).
 
-**Per-theme (s169 grounds + s170 overrides):** 9 pair(s) regraded where a theme moves the ground or the ink · **1 gating failure(s)** · 0 R-D24 exempted.
+**Per-theme (s169 grounds + s170 overrides):** 9 pair(s) regraded where a theme moves the ground or the ink · **0 gating failure(s)** · 0 R-D24 exempted.
 
 ## Per-theme palette-resolved pairs (s157-D2 palette tier)
 
@@ -12,7 +12,7 @@
 
 | Theme | Palette | Token | Moved | Ink (base → theme) | Ground (base → theme) | Contrast | Need | Status |
 |---|---|---|---|---|---|---|---|---|
-| **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `button/primary/icon/default` | ground | `#333333` | `button/primary/background/default` `#FAFAFA` → `#DB0011` | **2.42:1** | 3.0:1 | ❌ POOR |
+| **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `button/primary/icon/default` | ink+ground | `#333333` → `#FFFFFF` | `button/primary/background/default` `#FAFAFA` → `#DB0011` | **5.22:1** | 3.0:1 | ✅ OK |
 | **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `button/primary/label/default` | ink+ground | `#333333` → `#FFFFFF` | `button/primary/background/default` `#FAFAFA` → `#DB0011` | **5.22:1** | 3.0:1 | ✅ OK |
 | **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `rag/text/on-dark` | ground | `#FFFFFF` | `rag/error-background` `#F6604C` → `#A8000B` | **7.87:1** | 4.5:1 | ✅ OK |
 | **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `rag/text/on-information` | ink+ground | `#1A1A1A` → `#FFFFFF` | `rag/error-background` `#F6604C` → `#A8000B` | **7.87:1** | 4.5:1 | ✅ OK |
