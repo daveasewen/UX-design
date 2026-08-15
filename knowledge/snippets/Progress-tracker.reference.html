@@ -26,7 +26,7 @@
   #176 (WORKING, awaiting Dave's eye): step/complete now INHERITS THE SUCCESS-ROUNDEL SYSTEM
   WHOLESALE — it aliases rag/success, the same chain the RAG roundels bind, so Mono reads #66CC8D
   and Console/Supercharge read #5DAC7B, all mode-invariant. Legacy alone overrides, to the PRIMARY
-  red #DB0011 in light and #FFFFFF in dark. Retired: --complete was the ink pair #1A1A1A / #FFFFFF.
+  red #DB0011 in light and #FFFFFF in dark. Retired: --step-fill (named --complete until s178-D1) was the ink pair #1A1A1A / #FFFFFF.
 
   #176 REFINEMENTS, RULED OFF THE RENDERED REVIEW PAGE (v1), which outranks the chat legs:
   • THE MARK IS DARK INK, NOT THE PAGE. Dave: "Apollo mono, in the same way as the roundels, uses
@@ -93,7 +93,7 @@
     --phys-size:120;                             /* LOCAL geometry — Back/Next are text buttons ≈120 wide; divides the B-D7 pixel-true travel (ADR-0013) */
   }
   [data-theme="light"]{
-    --complete:#66CC8D; --incomplete:#F0F0F0; --text:#1A1A1A; --muted:#1A1A1A; --page:#FFFFFF;
+    --step-fill:#66CC8D; --incomplete:#F0F0F0; --text:#1A1A1A; --muted:#1A1A1A; --page:#FFFFFF;
     --on-complete:#1A1A1A;          /* step/on-complete — the mark is the ROUNDEL'S DARK INK (s122-D2 mark camp, #176) */
     --btn-border:#000000; --btn-hover:#F0F0F0; --btn-dis-text:#E1E1E1; --btn-dis-border:#E1E1E1; --focus:#305A85;
     /* shape — semantic radius tier (ADR-0010 flex slots). Track = INDICATOR (progress rail,
@@ -103,7 +103,7 @@
     --press-travel:2; --press-darken:0.94;
   }
   [data-theme="dark"]{
-    --complete:#66CC8D; --incomplete:#484848; --text:#FFFFFF; --muted:#FFFFFF; --page:#1A1A1A;
+    --step-fill:#66CC8D; --incomplete:#484848; --text:#FFFFFF; --muted:#FFFFFF; --page:#1A1A1A;
     --on-complete:#1A1A1A;          /* step/on-complete — mode-INVARIANT, exactly as the roundel mark is (s122-D2) */
     --btn-border:#808080; --btn-hover:#232323; --btn-dis-text:#808080; --btn-dis-border:#1A1A1A; --focus:#4587A7;
     --border-radius-control:0; --border-radius-indicator:0;
@@ -125,11 +125,11 @@
      the 273d18c~1 original's 3px/13px was pre-grid-gate — corrected on resurrection) */
   ol.steps li::before{content:""; position:absolute; top:12px; left:-50%; width:100%; height:4px; background:var(--incomplete);}
   ol.steps li:first-child::before{display:none;}
-  ol.steps li.done::before, ol.steps li.current::before{background:var(--complete);}
+  ol.steps li.done::before, ol.steps li.current::before{background:var(--step-fill);}
   .dot{width:28px; height:28px; border-radius:50%; background:var(--incomplete); color:var(--text); display:inline-flex; align-items:center; justify-content:center; font-weight:500; z-index:1;}
   .dot svg{width:14px; height:14px; fill:currentColor;}
-  li.done .dot{background:var(--complete); color:var(--on-complete);}
-  li.current .dot{background:var(--page); color:var(--text); box-shadow:inset 0 0 0 3px var(--complete);}
+  li.done .dot{background:var(--step-fill); color:var(--on-complete);}
+  li.current .dot{background:var(--page); color:var(--text); box-shadow:inset 0 0 0 3px var(--step-fill);}
   .step-label{opacity:var(--alpha-84);} li.current .step-label{font-weight:500; opacity:1;}
 
   /* ── COLLAPSED form — the 1784-86051 head + continuous track (narrow containers) ── */
@@ -141,7 +141,7 @@
 
   /* continuous track — fill grows to current/total (no segment gaps) */
   .track{position:relative; width:100%; height:4px; background:var(--incomplete); border-radius:var(--border-radius-indicator); overflow:hidden;}
-  .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--complete); transition:width var(--ease);}
+  .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--step-fill); transition:width var(--ease);}
 
   @container (max-width: 520px){
     ol.steps{display:none;} .collapse{display:block;}   /* dots→line collapse (Tranche-1 pattern) */
@@ -240,7 +240,7 @@
   {
     "component": "Progress tracker",
     "vars": {
-      "--complete": "step/complete", "--incomplete": "progress/incomplete",
+      "--step-fill": "step/complete", "--incomplete": "progress/incomplete",
       "--text": "text/default", "--muted": "text/secondary", "--page": "background/default",
       "--on-complete": "step/on-complete",
       "--btn-border": "tertiary/border/default", "--btn-hover": "tertiary/background/hover",

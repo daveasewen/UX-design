@@ -88,7 +88,7 @@
     --text:#1A1A1A;                 /* text/default */
     --text-disabled:#E1E1E1;        /* text/disabled */
     --muted:#1A1A1A;                /* text/secondary (R-D16: collapsed to the single ink) */
-    --complete:#66CC8D;             /* step/complete — #176 (WORKING): aliases rag/success, the success-ROUNDEL chain. Legacy alone overrides (#DB0011 light / #FFFFFF dark — the PRIMARY red, ruled off the v1 review page; #A8000B was the withdrawn chat leg). Retired: the ink #1A1A1A */
+    --step-fill:#66CC8D;             /* step/complete — #176 (WORKING): aliases rag/success, the success-ROUNDEL chain. Legacy alone overrides (#DB0011 light / #FFFFFF dark — the PRIMARY red, ruled off the v1 review page; #A8000B was the withdrawn chat leg). Retired: the ink #1A1A1A */
     --incomplete:#F0F0F0;           /* progress/incomplete */
     --on-complete:#1A1A1A;          /* step/on-complete — the mark is the ROUNDEL'S DARK INK (s122-D2 mark camp, #176; was knock-to-page #FFFFFF) */
     --field-bg-default:#FFFFFF00;   /* form/background/default */
@@ -110,7 +110,7 @@
     --text:#FFFFFF;
     --text-disabled:#808080;
     --muted:#FFFFFF;                /* text/secondary (R-D16: collapsed to the single ink) */
-    --complete:#66CC8D;             /* step/complete — mode-invariant, same as light (rag/success is mode-invariant in Mono) */
+    --step-fill:#66CC8D;             /* step/complete — mode-invariant, same as light (rag/success is mode-invariant in Mono) */
     --incomplete:#484848;
     --on-complete:#1A1A1A;          /* step/on-complete — mode-INVARIANT, exactly as the roundel mark is (s122-D2) */
     --field-bg-default:#FFFFFF00;
@@ -143,7 +143,7 @@
   .st ol.steps li{flex:1; display:flex; flex-direction:column; align-items:center; position:relative; text-align:center;}
   .st ol.steps li::before{content:""; position:absolute; top:12px; left:-50%; width:100%; height:4px; background:var(--incomplete);}
   .st ol.steps li:first-child::before{display:none;}
-  .st ol.steps li.done::before, .st ol.steps li.current::before{background:var(--complete);}
+  .st ol.steps li.done::before, .st ol.steps li.current::before{background:var(--step-fill);}
   .st .step{display:flex; flex-direction:column; align-items:center; gap:8px; border:0; background:transparent;
     padding:0; margin:0; color:var(--text); width:100%; border-radius:var(--border-radius-control);}
   .st button.step{cursor:pointer;}                                    /* done steps only */
@@ -152,8 +152,8 @@
   .st .dot{width:28px; height:28px; border-radius:50%; background:var(--incomplete); color:var(--text);
     display:inline-flex; align-items:center; justify-content:center; font-weight:500; z-index:1;}   /* 500: PT state emphasis, consumed */
   .st .dot svg{width:14px; height:14px; fill:currentColor;}
-  .st li.done .dot{background:var(--complete); color:var(--on-complete);}
-  .st li.current .dot{background:var(--page); color:var(--text); box-shadow:inset 0 0 0 3px var(--complete);}
+  .st li.done .dot{background:var(--step-fill); color:var(--on-complete);}
+  .st li.current .dot{background:var(--page); color:var(--text); box-shadow:inset 0 0 0 3px var(--step-fill);}
   .st .step-label{opacity:var(--alpha-84); color:var(--text);}
   .st li.current .step-label{font-weight:500; opacity:1;}   /* PT state emphasis, consumed */
 
@@ -163,7 +163,7 @@
   .st .count{color:var(--text); white-space:nowrap; font-weight:500;}   /* PT state emphasis, consumed */
   .st .title{color:var(--muted);}
   .st .track{position:relative; width:100%; height:4px; background:var(--incomplete); border-radius:var(--border-radius-indicator); overflow:hidden;}
-  .st .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--complete); transition:width var(--ease);}
+  .st .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--step-fill); transition:width var(--ease);}
   @container (max-width: 520px){
     .st ol.steps{display:none;} .st .collapse{display:block;}   /* dots→line collapse */
   }
@@ -326,7 +326,7 @@
       "--text": "text/default",
       "--text-disabled": "text/disabled",
       "--muted": "text/secondary",
-      "--complete": "step/complete",
+      "--step-fill": "step/complete",
       "--incomplete": "progress/incomplete",
       "--on-complete": "step/on-complete",
       "--field-bg-default": "form/background/default",
