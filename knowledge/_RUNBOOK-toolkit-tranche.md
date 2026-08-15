@@ -129,7 +129,7 @@ and masthead icon vocabulary as inputs) is a fresh session.
 
 ## Channels batch (separate cheap session — do NOT fold into a tranche)
 
-create.hsbc channels pages + web/app `design-toolkits.html` (the enumeration
+create.hsbc channels pages + web/app design-toolkits.html (PLANNED — not yet built; the enumeration
 skeleton) + the named create.hsbc standards the guides defer to
 (banner/snackbar/pills/tags/buttons). Method: the Chrome fetch-all recipe
 (gotchas in the 07-02 ingestion notes). The buttons standard probe there

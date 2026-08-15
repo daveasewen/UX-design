@@ -760,6 +760,10 @@ def main() -> int:
                     help="Skip the wrap-gate rehearsal (#92). Default is to run it: a fail "
                          "found at a check-in costs a cheap edit; the same fail found at wrap "
                          "costs a probe→fix→re-gate round at peak fill (#91-F5).")
+    ap.add_argument("--no-grades", action="store_true",
+                    help="Skip the B3 grade alerts (s179-D1). ⛔ Skipping is a MEASUREMENT hole: "
+                         "the surface's real-token cost is being priced for Dave's B3 review, "
+                         "and a boot that skipped it logs no row.")
     ap.add_argument("--no-block", action="store_true",
                     help="Skip the B2 seam block. ⛔ An escape hatch for a broken mount, not a "
                          "convenience: skipping it means the seam has NO graded block and the "
@@ -938,6 +942,64 @@ def main() -> int:
                 print(f"    {i}. {r}")
             print("    ⇒ Fix the STATE, then re-run the check-in. Never repair the block "
                   "(P1/P2, GENERATE-NEVER-INHERIT). Exit code 3.")
+        print()
+    # ── B3 GRADE ALERTS — the ONE bounded mitigation of s179-D1, WIRED HERE. ──────────────
+    # ⛔ WHY HERE. The ruling puts the alerts on the BOOT CHAIN-READ. This function IS that
+    # read's seam: `_checkin.py` is already law at the opener ([[checkin-is-mandatory]]) and
+    # already reads _CHAIN.md for the block above, so the alert rides a read that happens
+    # anyway and adds NO boot-floor bytes — the sidecar is never in MEMORY.md, which is the
+    # whole point of Option B. It is deliberately NOT a flag: an opt-in alert is one nobody
+    # sees, and this surface only earns its keep if it is UNPROMPTED.
+    # ⚠ NOT RULED PERMANENT. s179-D1 requires the surface's REAL token cost measured first;
+    # that is why every printing logs a row to _GRADE-DECISIONS.jsonl with the measured
+    # figure. The row is the evidence the B3 review is owed, and it cannot exist unless this
+    # runs. A grade row is NEVER written from here — whether a grade CHANGED a retrieval
+    # decision is a human statement (`_gardener.py --grade-decision`), never an inference.
+    if not args.no_grades:
+        try:
+            import _gardener as _gd
+            _gdoc = _gd.load_grades(os.path.join(REPO, "notes/_dream/_MEMORY-GRADES.json"))
+            if not _gdoc:
+                print("  GRADES      ⛔ NO SIDECAR — notes/_dream/_MEMORY-GRADES.json absent. "
+                      "Grades are UNKNOWN, not clean. Run `python3 knowledge/_gardener.py "
+                      "--refresh`.")
+            else:
+                _alerts = _gd.render_grade_alerts(_gdoc)
+                _head = (f"  GRADES      B3 sidecar, refreshed {_gdoc.get('refreshed_at')} — "
+                         f"starred/blocked entries ONLY (s179-D1; schema PROVISIONAL):")
+                # ⚠ WHAT IS MEASURED: the header + the alert lines — the whole thing a reader
+                # actually consumes. NOT measured: the `⚠ SURFACE COST …` line below, because
+                # it quotes the figure it would be part of (self-reference), and because it is
+                # the INSTRUMENT, not the surface. Its own cost is stated in the runbook and
+                # it goes away the moment Dave rules the surface permanent.
+                _surface = "\n".join([_head] + _alerts)
+                try:
+                    _cost, _method = (gauge.count(_surface) if _surface else (0, "empty"))
+                except gauge.MeasurementRefused as _e:
+                    _cost, _method = (None, f"REFUSED: {_e.__class__.__name__}")
+                print(_head)
+                if _alerts:
+                    for _ln in _alerts:
+                        print(f"    {_ln}")
+                else:
+                    print("    ✅ no starred/blocked entry is STALE — an honest silence: "
+                          f"{_gdoc.get('counts', {})} across {_gdoc.get('hooks_seen')} hooks.")
+                print(f"    ⚠ SURFACE COST {(f'{_cost:,} real' if _cost is not None else 'UNMEASURED')}"
+                      f" ({_method}) for {len(_alerts)} line(s) — MEASURED, not ruled. The fork "
+                      f"returns to Dave with this number after one full dream-pass cycle.")
+                try:
+                    _gd.log_grade_event(REPO, {
+                        "kind": "alert", "lines": len(_alerts), "chars": len(_surface),
+                        "tokens": _cost, "method": _method,
+                        "counts": _gdoc.get("counts", {}),
+                        "refreshed_at": _gdoc.get("refreshed_at"),
+                        "listed": [a for a in _alerts if a.startswith("⛔")]})
+                except Exception as _e:   # noqa: BLE001 — loud + named, never silent
+                    print(f"    ⛔ ALERT ROW NOT LOGGED ({type(_e).__name__}: {_e}) — this boot "
+                          f"contributes NOTHING to the B3 numbers. Declared, not hidden.")
+        except Exception as _e:  # noqa: BLE001 — a fence bit or a broken sidecar, LOUD + NAMED
+            print(f"    ⛔ GRADE ALERTS DID NOT RUN ({type(_e).__name__}: "
+                  f"{' '.join(str(_e).split())[:220]}) — grades are UNKNOWN, not green.")
         print()
     if args.window:
         if fill.get("available"):

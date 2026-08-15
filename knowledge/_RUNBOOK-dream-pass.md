@@ -69,6 +69,25 @@ dreamer spec: `.claude/agents/dreamer.md`.*
 > **dreamer subagent IS pinned to Opus** and that pin is load-bearing — it is the half that
 > reads cold and must think on its feet.
 
+## The B3 refresh arm — grades in a sidecar (RULED s179-D1, built #180)
+
+Every pass runs `python3 knowledge/_gardener.py --refresh`. It re-derives one MECHANICAL probe
+per `MEMORY.md` hook, re-runs it, and restamps `notes/_dream/_MEMORY-GRADES.json` — a SIDECAR,
+never the index: boot cost stays zero and no boot-floor re-base is owed, which is exactly what
+Dave ruled (B-then-review). Grades are `FRESH · AGING · STALE · UNPROVABLE`, and **the schema and
+vocabulary are PROVISIONAL — Dave rules them at the B3 review** (brief §7). `UNPROVABLE` is a
+first-class grade, not a gap: an entry with no re-runnable claim is never quietly called fresh.
+The bounded mitigation is one block in the check-in output (`knowledge/_checkin.py`, the boot
+chain-read seam): starred/blocked entries ONLY, STALE ones listed, the rest counted. **That
+surface is NOT ruled permanent** — every printing logs a row with its cost, measured in real
+tokens, to `notes/_dream/_GRADE-DECISIONS.jsonl` (first live drive #180: header + one alert line
+= **105 real tokens**; the `⚠ SURFACE COST` instrument line that reports it is a further 70 and
+disappears when the surface is ruled). The other half of the return-with-numbers is human and is
+never inferred: when a grade actually changes what you retrieve, say so with
+`--grade-decision <entry-id> --changed yes|no --note "..."`. After one full cycle, both figures
+go back to Dave — the fork is a deferral with a return date. Failures are loud: a missing index,
+a corrupt sidecar or an unknown probe kind BLOCKS; `--selftest-grades` is the mutation test.
+
 ## Guardrails (unchanged, non-negotiable)
 
 Nothing self-promotes; promotion is Dave's alone, on reading the file. The proposals file is

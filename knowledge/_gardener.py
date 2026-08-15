@@ -10,7 +10,12 @@ WHO CONSUMES THIS, NAMED BEFORE THE BUILD (P15, and the ~65-session lesson of
      clicks into ONE ruling message. THE SCHEMA BELOW IS THAT CONTROLLER'S INPUT CONTRACT.
   2. THE DREAM-PASS LANE (`knowledge/_RUNBOOK-dream-pass.md`). The gardener runs as its
      FINDINGS arm, same cadence, same governance. Its pass receipt is the dream-pass's.
-  3. B3's REFRESH ARM (not built — see `refresh_arm()`, which REFUSES rather than pretends).
+  3. B3's REFRESH ARM (BUILT #180 under s179-D1 — see `refresh_arm()`). It produces the
+     SIDECAR `notes/_dream/_MEMORY-GRADES.json`; its consumers are the boot chain-read in
+     `knowledge/_checkin.py` (the ONE bounded mitigation: starred/blocked alerts, cost
+     MEASURED, not ruled permanent) and the B3 review itself, which reads
+     `notes/_dream/_GRADE-DECISIONS.jsonl` for the two numbers Dave is owed.
+     ⚠ THE GRADE SCHEMA IS PROVISIONAL — Dave rules it at that review (brief §7).
 
 WHAT IT DOES. Sweeps a MODEST, RESOLVABLE target list of runbooks + canon docs for claims
 the repo contradicts, and files them as a machine-readable queue. It does not garden prose,
@@ -59,6 +64,12 @@ CLI
     _gardener.py --sweep --apply-tier1    # additionally apply Tier-1 repairs (register first)
     _gardener.py --selftest               # the five mutation tests, plant-then-detect
     _gardener.py --show                   # print the current queue receipt
+    _gardener.py --refresh                # B3 REFRESH ARM: re-probe + restamp the sidecar grades
+    _gardener.py --refresh --dry-run      # grade, print the receipt, write nothing
+    _gardener.py --selftest-grades        # the B3 mutation tests (grades + alert + fence)
+    _gardener.py --grade-decision ID --changed yes|no --note "..."
+                                          # log ONE retrieval decision (the return-with-numbers
+                                          # counter s179-D1 owes Dave). Never inferred.
 Optional: --root DIR (fixture repo, used by --selftest), --cap N, --queue-cap Q.
 Exit 0 = clean. Nonzero = a fence bit, or the self-check refused. Nothing is ever filed on
 a nonzero exit."""
@@ -115,6 +126,24 @@ QUEUE_BASENAME = "_GARDENER-QUEUE.json"
 REGISTER_BASENAME = "_GARDENER-REGISTER.jsonl"
 OUT_DIRNAME = os.path.join("notes", "_dream")
 
+# ── B3 (s179-D1 clause 1, B-THEN-REVIEW). THE SIDECAR. ────────────────────────────────────
+# Grades live HERE, never in MEMORY.md: boot cost zero, no boot-floor re-base, reversible.
+# ⚠ THE GRADE SCHEMA BELOW IS **PROVISIONAL**. Dave rules it at the B3 review (brief §7:
+#   "Grade schema and vocabulary" is on the DO-NOT-RULE list). Every constant in this block
+#   is a PROPOSAL carrying its own reasoning, not a ruling, and the sidecar header says so.
+GRADES_BASENAME = "_MEMORY-GRADES.json"
+GRADE_LOG_BASENAME = "_GRADE-DECISIONS.jsonl"
+GRADE_SCHEMA_ID = "memory-grades/0-PROVISIONAL"
+# vocabulary (PROVISIONAL): four grades, and UNPROVABLE is a FIRST-CLASS one — an entry whose
+# claim no machine can decide is NEVER silently called FRESH [[measuring-tool-must-not-guess]].
+GRADE_VOCAB = ("FRESH", "AGING", "STALE", "UNPROVABLE")
+GRADE_AGING_DAYS = 30        # PROVISIONAL: probe passes but the claim itself hasn't been touched
+# Alert filter (PROVISIONAL). s179-D1: alerts for STARRED/BLOCKED entries ONLY.
+ALERT_MARKS = ("⛔", "★★")   # ★★ or more, or a ⛔ — the marks MEMORY.md already carries
+ALERT_LIST_GRADES = ("STALE",)              # printed one line each
+ALERT_COUNT_GRADES = ("UNPROVABLE", "AGING")  # summarised as ONE count line — surface control
+MEMORY_INDEX_BASENAME = "MEMORY.md"
+
 
 class GardenerBlock(RuntimeError):
     """A fence bit. Never caught to continue — only to report and exit nonzero."""
@@ -136,7 +165,14 @@ class WriteFence:
     Allowed, and nothing else:
       · <root>/notes/_dream/_GARDENER-QUEUE.json      (the proposals/queue file)
       · <root>/notes/_dream/_GARDENER-REGISTER.jsonl  (the Tier-1 register)
+      · <root>/notes/_dream/_MEMORY-GRADES.json       (B3 sidecar grades)
+      · <root>/notes/_dream/_GRADE-DECISIONS.jsonl    (B3 return-with-numbers log)
       · a file on the RESOLVED TARGET LIST — only when apply_tier1 is True.
+
+    ⛔ THE SIDECAR IS THE ONLY GRADES WRITER'S DOOR. Nothing in this programme may write a
+    grade into MEMORY.md — that would be Option A (inline), which s179-D1 did NOT rule and
+    which requires a boot-floor re-base Dave has not given. The memory store stays READ-ONLY
+    here exactly as it is for the sweep (the #80 class).
     """
 
     def __init__(self, root: str, targets: list[str], apply_tier1: bool):
@@ -144,13 +180,16 @@ class WriteFence:
         self.out_dir = os.path.join(self.root, OUT_DIRNAME)
         self.queue_path = os.path.join(self.out_dir, QUEUE_BASENAME)
         self.register_path = os.path.join(self.out_dir, REGISTER_BASENAME)
+        self.grades_path = os.path.join(self.out_dir, GRADES_BASENAME)
+        self.grade_log_path = os.path.join(self.out_dir, GRADE_LOG_BASENAME)
         self.apply_tier1 = apply_tier1
         self._targets = {os.path.abspath(p) for p in targets}
         self.writes: list[str] = []
 
     def check(self, path: str) -> str:
         p = os.path.abspath(path)
-        if p in (self.queue_path, self.register_path):
+        if p in (self.queue_path, self.register_path,
+                 self.grades_path, self.grade_log_path):
             return p
         if self.apply_tier1 and p in self._targets:
             return p
@@ -159,6 +198,8 @@ class WriteFence:
             f"        attempted : {p}\n"
             f"        allowed   : {self.queue_path}\n"
             f"                    {self.register_path}\n"
+            f"                    {self.grades_path}\n"
+            f"                    {self.grade_log_path}\n"
             + ("                    + resolved target list (--apply-tier1)\n"
                if self.apply_tier1 else
                "        (--apply-tier1 not given, so canon is not writable at all)\n")
@@ -616,22 +657,307 @@ def apply_tier1(fence: WriteFence, root: str, queue: dict, pass_id: str) -> list
     return done
 
 
-def refresh_arm() -> dict:
-    """B3 REFRESH ARM — STUB, deliberately inert (P15/P9/P10).
+# ══ B3 — THE REFRESH ARM AND THE SIDECAR ══════════════════════════════════════════════════
+# RULED s179-D1 clause 1 (Dave, #179): B-THEN-REVIEW. Grades in a SIDECAR, boot cost zero, no
+# boot-floor re-base; ONE bounded mitigation = the boot chain-read prints grade alerts for
+# starred/blocked entries ONLY, its real cost MEASURED before it can be ruled permanent; after
+# one full dream-pass cycle the fork RETURNS TO DAVE WITH NUMBERS.
+#
+# WHO CONSUMES THIS, NAMED BEFORE THE BUILD:
+#   1. `knowledge/_checkin.py` boot chain-read → `render_grade_alerts()` (the mitigation, and
+#      the thing whose token cost is being measured). That call is the CONSUMER; without it
+#      this arm would be another [[instrument-without-a-consumer]].
+#   2. The B3 REVIEW itself → `_GRADE-DECISIONS.jsonl`, which is the ONLY place the two
+#      return-with-numbers figures can come from: `kind:"alert"` rows carry the measured
+#      surface cost per boot, `kind:"decision"` rows carry the human statement that a grade
+#      DID or DID NOT change a retrieval decision. A decision row is NEVER inferred from an
+#      alert row — that inference is the whole question Dave is being asked to rule on.
+#
+# ⛔ EVERY FAILURE HERE IS LOUD AND NAMED. A corrupt sidecar BLOCKS; an unresolvable memory
+#    index BLOCKS; a hook whose staleness no machine can decide is graded UNPROVABLE and
+#    COUNTED, never silently skipped and never quietly called FRESH.
 
-    It re-runs the probes behind B3 staleness grades and restamps them. B3's sidecar grades
-    file does not exist and its schema is DAVE'S at B3 review (s179-D1, brief §7). Building a
-    grades file here would mint the exact instrument-without-a-consumer this programme exists
-    to stop, and would pre-empt a Dave gate. So this returns a DECLARED GAP, never a number.
+class GradesBlock(GardenerBlock):
+    """A B3 fence bit. Subclasses GardenerBlock so `--refresh` exits through the same door."""
+
+
+_HOOK_RE = re.compile(r"^-\s+\[(?P<title>[^\]]+)\]\((?P<slug>[^)\s]+\.md)\)(?P<rest>.*)$")
+
+
+def memory_index_path(memory_dir: str) -> str:
+    return os.path.join(os.path.abspath(memory_dir), MEMORY_INDEX_BASENAME)
+
+
+def parse_memory_index(memory_dir: str) -> tuple[list[dict], list[str]]:
+    """(hooks, unlinked_lines). LOUD if the index is missing — never an empty success."""
+    p = memory_index_path(memory_dir)
+    if not os.path.isfile(p):
+        raise GradesBlock(
+            "P8/B3 — the memory index does not resolve, so NOTHING can be graded.\n"
+            f"        expected : {p}\n"
+            "        REFUSING TO GUESS another index. An empty grade set here would read as "
+            "'nothing is stale', which is the exact false-confidence B3 exists to remove.")
+    hooks, unlinked = [], []
+    for i, line in enumerate(open(p, encoding="utf-8").read().splitlines(), 1):
+        s = line.strip()
+        if not s or not s.startswith("- "):
+            continue
+        m = _HOOK_RE.match(s)
+        if not m:
+            unlinked.append(f"{i}: {_flat(s)}")     # DECLARED, never silently dropped
+            continue
+        title = m.group("title")
+        hooks.append({
+            "id": m.group("slug"),
+            "line": i,
+            "title": title,
+            "marks": "".join(sorted({c for c in ALERT_MARKS if c in title})),
+            "starred": any(c in title for c in ALERT_MARKS),
+            "hook": s,
+            "hook_sha": _sha(s),
+        })
+    return hooks, unlinked
+
+
+def _flat(s: str, n: int = 90) -> str:
+    s = " ".join(s.split())
+    return s if len(s) <= n else s[: n - 1] + "…"
+
+
+def _sha(s: str) -> str:
+    import hashlib
+    return hashlib.sha256(s.encode("utf-8")).hexdigest()[:16]
+
+
+def derive_probe(hook: str, root: str) -> dict:
+    """A probe is MECHANICAL or it does not exist (PROVISIONAL kinds).
+
+    kind `path-present` — the hook names exactly ONE backticked repo path. Decidable.
+    kind `none`         — it does not. The entry grades UNPROVABLE, and says why.
     """
-    return {"arm": "refresh", "status": "NOT BUILT",
-            "reason": "B3 sidecar grades file + schema are Dave's gate (s179-D1); "
-                      "a refresh arm with no grades file would grade nothing and claim a pass",
-            "blocks": "B3 build"}
+    cands = [t for t in re.findall(r"`([^`]+)`", hook) if looks_like_path(t)]
+    cands = [t for t in dict.fromkeys(cands)]
+    if len(cands) == 1:
+        return {"kind": "path-present", "path": cands[0]}
+    if len(cands) > 1:
+        return {"kind": "none",
+                "why": f"{len(cands)} path-like tokens in one hook ({', '.join(cands[:4])}) — "
+                       "AMBIGUOUS, and ambiguity resolves UPWARD, never to a guess."}
+    return {"kind": "none", "why": "no backticked repo path in the hook — no mechanical claim "
+                                   "to re-run; staleness here is a JUDGMENT, Dave's or a "
+                                   "reader's, not a machine's."}
+
+
+def resolve_claimed_path(rel: str, root: str, by_base: dict | None) -> tuple[bool, str]:
+    """Does the repo contain what the hook names? (found, evidence).
+
+    ⚠ THE FIRST DRIVE OF THIS ARM ON REAL DATA reported 6 STALE grades for files that EXIST —
+    memory hooks name BASENAMES (`_gauge_tokens.py`), the probe joined them to the repo root,
+    and `os.path.exists` said no. A probe that reports STALE for a present file is worse than
+    no probe: it teaches the reader to ignore the alert. So a bare basename resolves through
+    the repo INDEX, and only a name the index cannot place anywhere is ABSENT.
+    """
+    if os.path.exists(os.path.join(root, rel)):
+        return True, f"`{rel}` EXISTS at that exact path (probe: os.path.exists)"
+    base = os.path.basename(rel)
+    hits = (by_base or {}).get(base, [])
+    if "/" not in rel and hits:
+        return True, (f"`{rel}` EXISTS as {hits[0]}" + (f" (+{len(hits)-1} more)"
+                                                        if len(hits) > 1 else "")
+                      + " (probe: repo basename index)")
+    if "/" in rel and hits:
+        return False, (f"`{rel}` IS ABSENT at that path; a file of that NAME exists at "
+                       f"{hits[0]} — MOVED, not gone (probe: repo basename index)")
+    return False, f"`{rel}` IS ABSENT — no file of that name anywhere in {os.path.basename(root)}"
+
+
+def run_probe(probe: dict, root: str, by_base: dict | None = None) -> tuple[bool | None, str]:
+    """(passed | None-if-unprovable, evidence sentence). NEVER raises for a normal outcome."""
+    kind = probe.get("kind")
+    if kind == "path-present":
+        return resolve_claimed_path(probe["path"], root, by_base)
+    if kind == "text-present":
+        rel, needle = probe["path"], probe["needle"]
+        abs_p = os.path.join(root, rel)
+        if not os.path.exists(abs_p):
+            return False, f"`{rel}` IS ABSENT, so the quoted text cannot be present"
+        ok = needle in open(abs_p, encoding="utf-8", errors="replace").read()
+        return ok, f"{'found' if ok else 'DID NOT find'} {needle!r} in `{rel}`"
+    if kind == "none":
+        return None, probe.get("why", "no probe")
+    raise GradesBlock(
+        f"B3 — unknown probe kind {kind!r} in the sidecar. REFUSING TO GRADE.\n"
+        f"        known kinds: path-present · text-present · none\n"
+        "        An unknown kind is a schema drift, not a pass. Fix the sidecar or the "
+        "PROVISIONAL schema in knowledge/_gardener.py.")
+
+
+def grade_entry(hook: dict, probe: dict, root: str, memory_dir: str,
+                now: float | None = None, aging_days: int = GRADE_AGING_DAYS,
+                by_base: dict | None = None) -> dict:
+    """Grade ONE hook. Every branch names its evidence; no branch returns a bare FRESH."""
+    now = _dt.datetime.now().timestamp() if now is None else now
+    target = os.path.join(os.path.abspath(memory_dir), hook["id"])
+    if not os.path.isfile(target):
+        return {"grade": "STALE", "why": f"the hook's own target `{hook['id']}` is ABSENT from "
+                                         f"the memory store (probe: os.path.isfile)",
+                "probe_ran": True}
+    passed, ev = run_probe(probe, root, by_base)
+    if passed is None:
+        return {"grade": "UNPROVABLE", "why": ev, "probe_ran": False}
+    if not passed:
+        return {"grade": "STALE", "why": ev, "probe_ran": True}
+    age_days = (now - os.path.getmtime(target)) / 86400.0
+    if age_days > aging_days:
+        return {"grade": "AGING", "why": f"{ev}; but the claim itself has not been touched in "
+                                         f"{age_days:.0f} days (limit {aging_days}, PROVISIONAL)",
+                "probe_ran": True}
+    return {"grade": "FRESH", "why": ev, "probe_ran": True}
+
+
+def load_grades(path: str) -> dict:
+    """Read the sidecar. A CORRUPT sidecar is a BLOCK, never an empty dict (silent-skip class)."""
+    if not os.path.isfile(path):
+        return {}
+    raw = open(path, encoding="utf-8").read()
+    try:
+        doc = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise GradesBlock(
+            f"B3 — the sidecar grades file is NOT VALID JSON: {path}\n"
+            f"        json error: {exc}\n"
+            "        REFUSING to treat an unreadable grades file as 'no grades'. A silent "
+            "skip here would print a clean boot while every grade is unknown.") from exc
+    if not isinstance(doc, dict) or doc.get("schema") != GRADE_SCHEMA_ID:
+        raise GradesBlock(
+            f"B3 — sidecar schema mismatch in {path}\n"
+            f"        found : {doc.get('schema') if isinstance(doc, dict) else type(doc).__name__}\n"
+            f"        want  : {GRADE_SCHEMA_ID}\n"
+            "        The schema is PROVISIONAL and Dave's to rule; a mismatch means the file "
+            "and the code disagree about the grammar. Re-run `--refresh` deliberately.")
+    for e in doc.get("entries", []):
+        if e.get("grade") not in GRADE_VOCAB:
+            raise GradesBlock(
+                f"B3 — entry {e.get('id')!r} carries grade {e.get('grade')!r}, which is not in "
+                f"the PROVISIONAL vocabulary {GRADE_VOCAB}. REFUSING to read it as anything.")
+    return doc
+
+
+def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
+                dry: bool = True, now: float | None = None) -> dict:
+    """B3 REFRESH ARM — BUILT #180 under s179-D1. Consumes and produces the sidecar.
+
+    Re-derives a probe for every MEMORY.md hook, re-runs it, restamps the grade. Writes ONLY
+    through the fence, ONLY to the sidecar. Fails LOUD and NAMED on anything unprovable-as-a-
+    file (missing index, corrupt sidecar, unknown probe kind); an unprovable CLAIM is not an
+    error — it is the grade UNPROVABLE, counted and surfaced.
+    """
+    root = os.path.abspath(root)
+    hooks, unlinked = parse_memory_index(memory_dir)
+    prev_doc = load_grades(fence.grades_path) if fence else {}
+    prev = {e["id"]: e for e in prev_doc.get("entries", [])}
+    by_base, _rels = build_index(root, [])       # basename → paths; see resolve_claimed_path
+    entries, counts, changed = [], {g: 0 for g in GRADE_VOCAB}, []
+    for h in hooks:
+        old = prev.get(h["id"], {})
+        probe = old.get("probe") if old.get("probe_pinned") else derive_probe(h["hook"], root)
+        g = grade_entry(h, probe, root, memory_dir, now=now, by_base=by_base)
+        counts[g["grade"]] += 1
+        if old and old.get("grade") != g["grade"]:
+            changed.append(f"{h['id']}: {old.get('grade')} → {g['grade']}")
+        entries.append({
+            "id": h["id"], "title": h["title"], "marks": h["marks"], "starred": h["starred"],
+            "index_line": h["line"], "hook_sha": h["hook_sha"],
+            "probe": probe, "probe_pinned": bool(old.get("probe_pinned")),
+            "grade": g["grade"], "why": g["why"], "probe_ran": g["probe_ran"],
+            "graded_at": _dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        })
+    doc = {
+        "schema": GRADE_SCHEMA_ID,
+        "PROVISIONAL": (
+            "⚠ THE GRADE SCHEMA AND VOCABULARY IN THIS FILE ARE PROVISIONAL. Brief §7 puts "
+            "them on the DO-NOT-RULE list; Dave rules them at the B3 review. Nothing here is "
+            "a ruling. s179-D1 ruled only the SHAPE: sidecar, boot cost zero, alerts for "
+            "starred/blocked entries only, return to Dave with numbers after one cycle."),
+        "ruled_by": "s179-D1 clause 1 (B-THEN-REVIEW) — built #180",
+        "vocabulary": {
+            "FRESH": "a mechanical probe RE-RAN and PASSED, and the claim was touched recently",
+            "AGING": f"probe passes, but the claim is older than {GRADE_AGING_DAYS}d (PROVISIONAL)",
+            "STALE": "a mechanical probe RE-RAN and FAILED, or the hook's target is absent",
+            "UNPROVABLE": "no mechanical probe exists — staleness here is a JUDGMENT, not a "
+                          "measurement. NEVER read as FRESH.",
+        },
+        "alert_rule": {
+            "marks": list(ALERT_MARKS), "listed": list(ALERT_LIST_GRADES),
+            "counted": list(ALERT_COUNT_GRADES),
+            "note": "s179-D1: alerts for STARRED/BLOCKED entries ONLY. Surface control "
+                    "(list vs count) is PROVISIONAL and is what the cost measurement prices.",
+        },
+        "refreshed_at": _dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "memory_index": memory_index_path(memory_dir),
+        "counts": counts,
+        "hooks_seen": len(hooks),
+        "unlinked_index_lines": unlinked,
+        "grade_changes_this_pass": changed,
+        "entries": entries,
+    }
+    if not dry:
+        if fence is None:
+            raise GradesBlock("B3 — refresh asked to WRITE with no WriteFence. Refused: every "
+                              "write in this module goes through the fence (P4).")
+        fence.write(fence.grades_path, json.dumps(doc, indent=2, ensure_ascii=False) + "\n")
+    return doc
+
+
+def grades_status(root: str) -> dict:
+    """Cheap read for the pass receipt. Never grades, never writes."""
+    p = os.path.join(os.path.abspath(root), OUT_DIRNAME, GRADES_BASENAME)
+    if not os.path.isfile(p):
+        return {"arm": "refresh", "status": "NO SIDECAR YET",
+                "reason": f"{os.path.join(OUT_DIRNAME, GRADES_BASENAME)} absent — run "
+                          f"`_gardener.py --refresh`"}
+    doc = load_grades(p)
+    c = doc.get("counts", {})
+    return {"arm": "refresh", "status": "BUILT (#180)",
+            "reason": f"{doc.get('hooks_seen')} hooks graded {doc.get('refreshed_at')} — "
+                      + " · ".join(f"{k} {c.get(k, 0)}" for k in GRADE_VOCAB)}
+
+
+# ── THE BOUNDED MITIGATION: the boot alert surface (rendered here, PRINTED by _checkin.py) ──
+def render_grade_alerts(doc: dict) -> list[str]:
+    """The ONE bounded mitigation of s179-D1: starred/blocked entries ONLY.
+
+    Returned as lines so the consumer can MEASURE them (that measurement is the precondition
+    on ruling this surface permanent). An empty list means 'no starred entry is stale' — an
+    honest silence, and the caller says so rather than printing nothing.
+    """
+    ent = [e for e in doc.get("entries", []) if e.get("starred")]
+    listed = [e for e in ent if e.get("grade") in ALERT_LIST_GRADES]
+    counted = {g: sum(1 for e in ent if e.get("grade") == g) for g in ALERT_COUNT_GRADES}
+    lines: list[str] = []
+    for e in sorted(listed, key=lambda e: e["id"]):
+        lines.append(f"⛔ {e['grade']}  {e['id']} — {_flat(e.get('why', ''), 96)}")
+    if any(counted.values()):
+        lines.append("· " + " · ".join(f"{v} {k}" for k, v in counted.items() if v)
+                     + f"  (of {len(ent)} starred/blocked entries; not listed — surface control)")
+    return lines
+
+
+def log_grade_event(root: str, event: dict) -> str:
+    """Append ONE row to _GRADE-DECISIONS.jsonl through the fence. Returns the path."""
+    fence = WriteFence(root, [], apply_tier1=False)
+    row = dict(event)
+    row.setdefault("at", _dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+    fence.append(fence.grade_log_path, json.dumps(row, ensure_ascii=False) + "\n")
+    return fence.grade_log_path
 
 
 # ══ RECEIPT ═══════════════════════════════════════════════════════════════════════════════
-def receipt(queue: dict, applied: list[dict], dry: bool) -> str:
+def receipt(queue: dict, applied: list[dict], dry: bool, root: str = None) -> str:
+    try:
+        _rs = grades_status(root or REPO)
+    except GardenerBlock as exc:                 # LOUD in the receipt, never a green blank
+        _rs = {"status": "BLOCKED", "reason": _flat(str(exc), 160)}
     t, b = queue["truncated"], queue["backpressure"]
     tiers = {1: 0, 2: 0, 3: 0}
     for it in queue["items"]:
@@ -649,7 +975,7 @@ def receipt(queue: dict, applied: list[dict], dry: bool) -> str:
         f"open by tier    : T1 {tiers.get(1,0)} · T2 {tiers.get(2,0)} · T3 {tiers.get(3,0)}",
         f"tier-1 applied  : {len(applied)}"
         + ("" if applied else "  (default is PENDING — canon untouched without --apply-tier1)"),
-        f"refresh arm     : {refresh_arm()['status']} — {refresh_arm()['reason']}",
+        f"refresh arm     : {_rs['status']} — {_rs['reason']}",
         "──────────────────────────────────────────────────────────────────────",
     ]
     return "\n".join(L)
@@ -673,7 +999,7 @@ def run_sweep(root: str, cap_n: int, queue_cap_q: int, dry: bool, apply_t1: bool
         if apply_t1:
             applied = apply_tier1(fence, root, queue, pass_id)
             fence.write(fence.queue_path, json.dumps(queue, indent=2, ensure_ascii=False) + "\n")
-    print(receipt(queue, applied, dry))
+    print(receipt(queue, applied, dry, root))
     return 0, queue
 
 
@@ -687,6 +1013,14 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--root", default=REPO)
     ap.add_argument("--cap", type=int, default=CAP_N)
     ap.add_argument("--queue-cap", type=int, default=QUEUE_CAP_Q)
+    # ── B3 (s179-D1 clause 1) ──
+    ap.add_argument("--refresh", action="store_true")
+    ap.add_argument("--selftest-grades", action="store_true")
+    ap.add_argument("--memory-dir", default=None)
+    ap.add_argument("--grade-decision", default=None, metavar="ENTRY_ID")
+    ap.add_argument("--changed", default=None, choices=["yes", "no"])
+    ap.add_argument("--note", default=None)
+    ap.add_argument("--session", default=None)
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
@@ -695,10 +1029,47 @@ def main(argv: list[str] | None = None) -> int:
         if not q.get("items"):
             print("queue empty — honest empty state, nothing filed.")
             return 0
-        print(receipt(q, [], dry=True))
+        print(receipt(q, [], dry=True, root=a.root))
+        return 0
+    # ── B3 arms ────────────────────────────────────────────────────────────────────────────
+    if a.selftest_grades:
+        return selftest_grades()
+    if a.grade_decision:
+        if a.changed not in ("yes", "no"):
+            _die(64, "--grade-decision needs --changed yes|no.",
+                 "REFUSING TO GUESS whether the grade changed your retrieval decision — that "
+                 "answer IS the number s179-D1 owes Dave; an inferred one is worthless.")
+        p = log_grade_event(a.root, {"kind": "decision", "entry": a.grade_decision,
+                                     "changed_retrieval": a.changed == "yes",
+                                     "note": a.note or "", "session": a.session or "UNSTATED"})
+        print(f"logged: decision on {a.grade_decision} (changed={a.changed}) → {p}")
+        return 0
+    if a.refresh:
+        mem = a.memory_dir or (MEMORY_DIRS[0] if MEMORY_DIRS else None)
+        try:
+            root = os.path.abspath(a.root)
+            fence = WriteFence(root, [], apply_tier1=False)
+            doc = refresh_arm(root, mem, fence, dry=a.dry_run)
+        except GardenerBlock as exc:
+            _die(4, *str(exc).splitlines())
+        c = doc["counts"]
+        print("── B3 REFRESH RECEIPT (grade schema PROVISIONAL — Dave's at review) ──")
+        print(f"index           : {doc['memory_index']}")
+        print(f"hooks graded    : {doc['hooks_seen']}  "
+              + " · ".join(f"{k} {c[k]}" for k in GRADE_VOCAB))
+        print(f"unlinked lines  : {len(doc['unlinked_index_lines'])} DECLARED, not graded")
+        print(f"grade changes   : {len(doc['grade_changes_this_pass'])}"
+              + ("  (" + "; ".join(doc["grade_changes_this_pass"][:5]) + ")"
+                 if doc["grade_changes_this_pass"] else ""))
+        alerts = render_grade_alerts(doc)
+        print(f"alert surface   : {len(alerts)} line(s) at boot")
+        for ln in alerts:
+            print(f"    {ln}")
+        print("sidecar         : " + ("NOT WRITTEN (--dry-run)" if a.dry_run
+                                      else fence.grades_path))
         return 0
     if not a.sweep:
-        _die(64, "no arm named. Use --sweep, --selftest or --show.",
+        _die(64, "no arm named. Use --sweep, --refresh, --selftest, --selftest-grades or --show.",
              "REFUSING TO GUESS an arm — a bare invocation must never do work (#158).")
     try:
         rc, _ = run_sweep(a.root, a.cap, a.queue_cap, a.dry_run, a.apply_tier1)
@@ -859,6 +1230,148 @@ def selftest() -> int:
             shutil.rmtree(root, ignore_errors=True)
 
     print("ALL MUTATION TESTS PASSED" if ok else "MUTATION TESTS FAILED")
+    return 0 if ok else 1
+
+
+# ══ B3 MUTATION TESTS — plant a grade, THEN look for the alert. Every arm has its CONTROL. ═
+def _mkmem(hooks: list[str]) -> str:
+    """A memory store fixture: MEMORY.md + one file per hook slug."""
+    d = tempfile.mkdtemp(prefix="gardener-mem-")
+    open(os.path.join(d, MEMORY_INDEX_BASENAME), "w", encoding="utf-8").write(
+        "\n".join(hooks) + "\n")
+    for h in hooks:
+        m = _HOOK_RE.match(h.strip())
+        if m:
+            open(os.path.join(d, m.group("slug")), "w", encoding="utf-8").write("body\n")
+    return d
+
+
+def _grade_fixture(hooks: list[str], make_target: bool = False):
+    root = _mkrepo()
+    mem = _mkmem(hooks)
+    if make_target:
+        open(os.path.join(root, "knowledge", "_probe_target.py"), "w").write("x\n")
+    fence = WriteFence(root, [], apply_tier1=False)
+    return root, mem, fence
+
+
+def selftest_grades() -> int:
+    print("B3 GRADE MUTATION TESTS (plant a grade → detect the alert; each shows its CONTROL)")
+    ok = True
+    STARRED = "- [★★ Thing](thing.md) — see `knowledge/_probe_target.py` for the probe"
+    PLAIN = "- [Thing](thing.md) — see `knowledge/_probe_target.py` for the probe"
+    NOPROBE = "- [⛔ Judgment call](judgment.md) — prose only, nothing a machine can re-run"
+
+    # (g1) starred + probe FAILS ⇒ STALE and an alert LINE. Control: probe passes ⇒ no alert.
+    for label, target, want_grade, want_alert in (("target absent", False, "STALE", True),
+                                                  ("target present", True, "FRESH", False)):
+        root, mem, fence = _grade_fixture([STARRED], make_target=target)
+        try:
+            doc = refresh_arm(root, mem, fence, dry=True)
+            g = doc["entries"][0]["grade"]
+            alerts = render_grade_alerts(doc)
+            got_alert = any("thing.md" in a for a in alerts)
+            ok &= _t(f"(g1) starred, {label} ⇒ {want_grade}, alert={want_alert}",
+                     g == want_grade and got_alert == want_alert,
+                     f"grade={g}; alerts={alerts}")
+        finally:
+            shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g2) THE STARRED-ONLY CLAUSE (s179-D1). Same stale entry, marks removed ⇒ NO alert.
+    root, mem, fence = _grade_fixture([PLAIN], make_target=False)
+    try:
+        doc = refresh_arm(root, mem, fence, dry=True)
+        alerts = render_grade_alerts(doc)
+        ok &= _t("(g2) UNSTARRED stale entry ⇒ NO alert (starred/blocked ONLY)",
+                 doc["entries"][0]["grade"] == "STALE" and alerts == [],
+                 f"grade={doc['entries'][0]['grade']}; alerts={alerts} "
+                 f"(control (g1) with ★★ DID alert)")
+    finally:
+        shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g3) CORRUPT SIDECAR ⇒ LOUD NAMED refusal. Control: the file it just wrote loads clean.
+    root, mem, fence = _grade_fixture([STARRED], make_target=True)
+    try:
+        refresh_arm(root, mem, fence, dry=False)
+        control = load_grades(fence.grades_path).get("schema") == GRADE_SCHEMA_ID
+        open(fence.grades_path, "w", encoding="utf-8").write('{"schema": "memory-grades/0-PRO')
+        named = False
+        try:
+            load_grades(fence.grades_path)
+        except GradesBlock as exc:
+            named = "NOT VALID JSON" in str(exc)
+        # and a VALID json with the WRONG schema is refused too, by its own name
+        open(fence.grades_path, "w", encoding="utf-8").write('{"schema": "something/9"}')
+        named2 = False
+        try:
+            load_grades(fence.grades_path)
+        except GradesBlock as exc:
+            named2 = "schema mismatch" in str(exc)
+        ok &= _t("(g3) corrupt/foreign sidecar ⇒ LOUD named BLOCK, never a silent skip",
+                 control and named and named2,
+                 f"control loads={control}; bad-json named={named}; bad-schema named={named2}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g4) NO MECHANICAL PROBE ⇒ UNPROVABLE (never FRESH), counted not listed.
+    root, mem, fence = _grade_fixture([NOPROBE], make_target=True)
+    try:
+        doc = refresh_arm(root, mem, fence, dry=True)
+        e = doc["entries"][0]
+        alerts = render_grade_alerts(doc)
+        ok &= _t("(g4) unprobeable hook ⇒ UNPROVABLE, counted in the alert not listed",
+                 e["grade"] == "UNPROVABLE" and not e["probe_ran"]
+                 and any(a.startswith("· ") and "1 UNPROVABLE" in a for a in alerts),
+                 f"grade={e['grade']}; why={_flat(e['why'], 60)!r}; alerts={alerts}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g5) THE HOOK'S OWN TARGET IS GONE ⇒ STALE naming it. Control: present ⇒ not that reason.
+    root, mem, fence = _grade_fixture([STARRED], make_target=True)
+    try:
+        os.remove(os.path.join(mem, "thing.md"))
+        doc = refresh_arm(root, mem, fence, dry=True)
+        e = doc["entries"][0]
+        ok &= _t("(g5) hook target absent ⇒ STALE, reason NAMES the target",
+                 e["grade"] == "STALE" and "thing.md" in e["why"] and "ABSENT" in e["why"],
+                 f"grade={e['grade']}; why={_flat(e['why'], 70)!r}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g6) FENCE — the sidecar + log are writable; MEMORY.md is NOT (Option A stays unruled).
+    root, mem, fence = _grade_fixture([STARRED], make_target=True)
+    try:
+        allowed = True
+        try:
+            fence.write(fence.grades_path, '{"schema": "%s"}' % GRADE_SCHEMA_ID)
+            fence.append(fence.grade_log_path, "{}\n")
+        except GardenerBlock:
+            allowed = False
+        blocked = False
+        try:
+            fence.write(memory_index_path(mem), "graded inline")
+        except GardenerBlock as exc:
+            blocked = "P4" in str(exc)
+        ok &= _t("(g6) sidecar+log writable, MEMORY.md write BLOCKED (P4, boot cost stays zero)",
+                 allowed and blocked, f"sidecar/log allowed={allowed}; MEMORY.md blocked={blocked}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g7) MISSING MEMORY INDEX ⇒ BLOCK, never an empty (and therefore reassuring) grade set.
+    root = _mkrepo()
+    mem = tempfile.mkdtemp(prefix="gardener-nomem-")
+    try:
+        named = False
+        try:
+            refresh_arm(root, mem, WriteFence(root, [], False), dry=True)
+        except GradesBlock as exc:
+            named = "memory index does not resolve" in str(exc)
+        ok &= _t("(g7) no memory index ⇒ LOUD block, not an empty pass", named,
+                 f"named refusal={named}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    print("ALL B3 MUTATION TESTS PASSED" if ok else "B3 MUTATION TESTS FAILED")
     return 0 if ok else 1
 
 

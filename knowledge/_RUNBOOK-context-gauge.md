@@ -702,7 +702,7 @@ SHAPE ONLY)`. This correction was itself made with no concurrent writer in this 
 **★ THE PLAN BLOCK AT A LANE SEAM — `--block` (B2, brief `_BRIEF-borrowed-instruments-2026-08-12-v2.md` §2).**
 `python3 knowledge/_checkin.py --block` prints six lines — `SOURCE` (provenance, mandatory, line 0)
 · `DONE` · `DOING` · `NEXT` · `STOP` · `BUDGET` — and **it is a RENDERING of state, never a store:
-there is no `current.md` and no fifth register, so if the block is wrong the STATE is wrong — fix the
+there is no current-state scratch file (deliberately — no such file exists in this repo) and no fifth register, so if the block is wrong the STATE is wrong — fix the
 state and regenerate.** `DONE` comes from `_LIVE-STATE.md`'s `## ⏱ LATEST DELTA` heading, `DOING`/`NEXT`
 from the `active` lanes and their step states in `knowledge/_lanes.json` (**all active lanes are LISTED,
 never picked between** — picking would be a ruling), `STOP` from the stop-line figure `_CHAIN.md` itself
