@@ -13,9 +13,38 @@ name: gates
 #
 # Two pip installs: tiktoken + jsonschema. The "zero pip installs, stdlib-only"
 # premise (07-02) pre-dates the real-token ruling (#56); `_gen_chain.py --check`
-# now REFUSES on the estimate fallback rather than silently under-reporting, so
-# without tiktoken step [70] is honestly red, not quietly green. jsonschema was
-# found the same way at #64: CI's first run past step [6] (fonts fixed) reached
+# REFUSES on the estimate fallback rather than silently under-reporting, so
+# without tiktoken step [70] is honestly red, not quietly green.
+#
+# ⛔ #173 CORRECTED A CLAIM THAT WAS FALSE HERE FOR ELEVEN SESSIONS, and the
+# correction is left visible rather than smoothed away. These lines used to stop
+# at the sentence above and let a reader conclude that step [107] could be green
+# in CI. It could not. `real` token measurement is reachable ONLY via
+# `API-KEY.txt` or `knowledge/.token-cache.json`, BOTH GITIGNORED
+# (`.gitignore:57,58`), so a checkout stamps `tape (cl100k ESTIMATE)` where the
+# committed `_CHAIN.md` says `real` and the byte compare could never match.
+# With tiktoken PRESENT and the key/cache ABSENT the old `--check` did not
+# refuse — it rebuilt on the weaker tier and reported STALE, a verdict about the
+# ARTEFACT dressed over a fact about the ENVIRONMENT. A gate that cannot pass is
+# bad; a gate that cannot pass while THIS FILE says it can is worse, because
+# this file is what a reader consults when the gate is red.
+# ⇒ #183 built the queued remedy: `--check` now exits COULD-NOT-ASK — a refusal,
+# never a staleness verdict — when the tier it can reach differs from the tier
+# the committed file is stamped with. CI is still non-zero on [107]; it is now
+# non-zero for a reason that names itself and does not accuse the artefact.
+# ⚠ THIS COMMENT IS PROSE AND NOTHING PARSES IT. If the behaviour above changes,
+# nothing here will go red — see `knowledge/_gen_chain.py` `stamped_tier()` and
+# the COULD-NOT-ASK bites in its `--selftest`, which are the parts that bite.
+#
+# `fetch-depth: 0` on both checkouts is the SECOND, INDEPENDENT #173 cause:
+# `_gen_chain.build_verdict_line()` runs `git show 18c7789:…` (VERDICT_SHA), and
+# a depth-1 clone cannot resolve it, so the BUILD VERDICT line embedded at
+# `_CHAIN.md:35` diverged for that reason too. Either cause alone kept the job
+# red. `_validate_package_delta.py`'s SHIM PROVENANCE check reads a blob at
+# `9dcf62d` and failed the same way — 2 of its CI findings were the clone, not
+# the package.
+#
+# jsonschema was found the same way at #64: CI's first run past step [6] (fonts fixed) reached
 # [75/75] and died on the integrity lint's import — locally present, CI absent.
 # The render-dependent checks (_validate_state_contrast.py, _validate_screen.py
 # --render) run in the separate `render` job below (added #155, Dave's call on
@@ -33,6 +62,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          # #173 cause 2: `git show <VERDICT_SHA>:` and the package SHIM PROVENANCE
+          # blob read both need history. depth-1 made them fail as `invalid object`.
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -64,6 +97,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          # #173 cause 2: `git show <VERDICT_SHA>:` and the package SHIM PROVENANCE
+          # blob read both need history. depth-1 made them fail as `invalid object`.
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:

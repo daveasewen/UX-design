@@ -164,6 +164,68 @@ def evidence_form(pointer: str) -> str:
     return "path"
 
 
+# ---------------------------------------------------------------------------------------------
+# ★ s177-D1 — THE STANDING EVIDENCE-FORMAT RULE, and the classifier it needs. RULED #177,
+# enforcement check PRICED AND QUEUED there (`s172-D3`(e): a new instrument is never built in the
+# same breath as the finding that motivates it), BUILT #183.
+#
+# The rule, verbatim from `_rulings.json` § `s177-D1`:
+#   "an evidence pointer into any file the capture ritual rolls (GOOD-MORNING.md banners,
+#    notes/_GAUGE-LOG.md strata, _LIVE-STATE.md deltas) is invalid on arrival — point at the
+#    commit or the chat"
+#
+# WHERE IT CAME FROM, so it is never re-derived: `s171-D1`'s surviving anchor pointed into
+# `notes/_GAUGE-LOG.md`, which the 2f roll rewrites every wrap. A pointer into a rolling artefact
+# is not "at risk of rotting" — it is GUARANTEED to rot, and the failure it produces is
+# indistinguishable from an ordinary repoint job, which is why five consecutive sessions read it
+# as rot and none of them checked [[read-chain-is-where-staleness-is-free]].
+#
+# ⛔ THE SCOPE IS INSCRIPTION TIME, AND ONLY INSCRIPTION TIME. "Invalid ON ARRIVAL" is the
+# ruling's own wording and it is load-bearing: this list is NOT consulted by `--selftest` or by
+# `render()`. Wiring it into either would turn eleven `s175`/`s176` evidence-format entries that
+# Dave RATIFIED into new reds, i.e. it would re-litigate ratified record by machine
+# [[header-wins-over-audit]] — add, never trim. The ONE consumer is
+# `_inscribe_ruling.py`'s R6, which is the only sanctioned writer of `_rulings.json`; nothing
+# already inscribed is re-judged by this function [[instrument-without-a-consumer]] names the
+# opposite risk, and R6 is the named consumer that answers it.
+#
+# ⚠ THE LIST IS THE RULING'S LIST, ENUMERATED, NEVER INFERRED. No heuristic guesses which files
+# roll — a guessing classifier here would silently start refusing legal pointers the day someone
+# renamed a file [[measuring-tool-must-not-guess]]. Adding a file to this tuple is a RULING, not
+# a maintenance edit.
+ROLLING_FILES = (
+    "GOOD-MORNING.md",      # ★ LATEST banner + the residual line — rolled to _GM-ARCHIVE.md
+    "notes/_GAUGE-LOG.md",  # the strata the 2f roll rewrites every wrap
+    "_LIVE-STATE.md",       # the ⏱ LATEST delta — rolled to _LIVE-STATE-ARCHIVE.md
+)
+
+
+def rolling_target(pointer: str) -> str | None:
+    """The rolling file an evidence pointer aims into, or `None` if it aims at nothing that rolls.
+
+    Only the `anchor` and `path` forms can aim at a file at all: `commit ` and `chat #<n>` are the
+    two forms the ruling names as the CURE, and they are returned `None` unconditionally rather
+    than pattern-matched — a chat line that happens to mention `GOOD-MORNING.md` in its prose is
+    not a pointer into it, and a check that cannot tell USE from MENTION is a check that forbids
+    talking about the problem [[gate-must-quote-what-it-forbids]].
+
+    The path is compared as a PATH — exact match, or the file's own basename at the repo root —
+    never as a substring, so `_GM-ARCHIVE.md` (which is where the banners roll TO, and which does
+    not itself roll) is not caught by the `GOOD-MORNING.md` entry.
+    """
+    if evidence_form(pointer) in ("commit", "chat"):
+        return None
+    path = pointer.split(ANCHOR_SEP, 1)[0]
+    path = path.split(" ", 1)[0].rstrip(":").strip()
+    if path.count(":") and path.rsplit(":", 1)[-1].isdigit():
+        path = path.rsplit(":", 1)[0]
+    path = path.lstrip("./")
+    for rolling in ROLLING_FILES:
+        if path == rolling or path == os.path.basename(rolling):
+            return rolling
+    return None
+
+
 def resolve_anchor(pointer: str) -> tuple[int | None, str]:
     """Resolve `<path>#<literal>` to the line it sits on TODAY. Returns `(lineno, error)`.
 

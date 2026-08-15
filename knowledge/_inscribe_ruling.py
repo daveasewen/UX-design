@@ -24,6 +24,13 @@ FIVE REFUSALS, all LOUD, NAMED, rc nonzero, FILE UNTOUCHED:
   R3 PARSES   — the reconstructed text must `json.loads` and yield exactly one more ruling,
                 whose value equals the entry submitted.
   R4 UNIQUE   — the new id must not already exist.
+  R6 ROLLING  — s177-D1: an evidence pointer into a file the capture ritual ROLLS is INVALID ON
+                ARRIVAL. Point at the commit or the chat; those do not roll. The rolling-file
+                list and the classifier live in `_governs.ROLLING_FILES` / `rolling_target()`
+                and are NOT restated here — same one-place discipline as R5. ⛔ SCOPE: arrival
+                only. Nothing already in `_rulings.json` is re-judged, because eleven such
+                entries are RATIFIED RECORD and re-judging them by machine is exactly the
+                re-stamp this project refuses. Built #183; QUEUED at #177 under `s172-D3`(e).
   R5 EVIDENCE — every evidence line must satisfy the `_governs.py` legal form. That ladder is
                 NOT re-implemented here (two code paths for one ruling guarantees a divergence —
                 that is exactly the #150 defect `evidence_form` was created to end); this module
@@ -169,6 +176,22 @@ def inscribe(entry, path=RULINGS, write=False):
         lines = "\n".join(f"    - {p!r}: {why}" for p, why in bad)
         raise InscriptionRefused(f"⛔ REFUSED (evidence) — illegal evidence pointer(s):\n{lines}\nFile untouched.")
 
+    rolling = [(p, _governs.rolling_target(p)) for p in entry["evidence"]]  # R6 — s177-D1
+    rolling = [(p, t) for p, t in rolling if t]
+    if rolling:
+        lines = "\n".join(
+            f"    - {p!r}: aims into {t!r}, which the capture ritual ROLLS every wrap — this "
+            f"pointer is guaranteed to rot, and when it does the failure is indistinguishable "
+            f"from an ordinary repoint job" for p, t in rolling)
+        raise InscriptionRefused(
+            f"⛔ REFUSED (rolling evidence, s177-D1) — an evidence pointer into a file the "
+            f"capture ritual rolls is INVALID ON ARRIVAL:\n{lines}\n"
+            f"  Rolling files: {', '.join(_governs.ROLLING_FILES)}.\n"
+            f"  The legal cure is to point at what does NOT roll: `commit <sha> …` or "
+            f"`chat #<n> <date> (live) - …`. If the rolled text itself is the evidence, quote it "
+            f"VERBATIM inside the pointer's own prose and anchor the pointer at the commit that "
+            f"carried it. File untouched.")
+
     new_text, at, span = compose(original, entry)
 
     reconstructed = new_text[:at] + new_text[at + len(span):]              # R2 — the proof
@@ -313,6 +336,47 @@ def selftest():
         except InscriptionRefused as ex:
             fails.append(f"arm4 CONTROL: legal commit/chat evidence refused — {ex}")
 
+        # ARM 6 — s177-D1: a pointer into a ROLLING file is refused ON ARRIVAL, and every
+        # named rolling file is driven, not just the first. An arm that proves one entry of a
+        # three-entry list proves the list is READ, never that it is COMPLETE.
+        p6 = _tmp_copy(td)
+        for i_, roll in enumerate(_governs.ROLLING_FILES):
+            r_ = copy.deepcopy(GOOD)
+            r_["id"] = f"zz-selftest-R6-{i_}"
+            r_["evidence"] = [f"{roll}#some anchor text"]
+            try:
+                inscribe(r_, p6, write=True)
+                fails.append(f"arm6: a pointer into the rolling file {roll!r} was ACCEPTED")
+            except InscriptionRefused as ex:
+                if "rolling" not in str(ex):
+                    fails.append(f"arm6: {roll} refused for the WRONG reason — {ex}")
+                elif roll not in str(ex):
+                    fails.append(f"arm6: the refusal does not NAME {roll!r} — {ex}")
+        # ARM 6b — the bare-path form (no anchor) is caught too. The rule is about the FILE.
+        r6b = copy.deepcopy(GOOD); r6b["id"] = "zz-selftest-R6b"
+        r6b["evidence"] = ["_LIVE-STATE.md"]
+        try:
+            inscribe(r6b, p6, write=True); fails.append("arm6b: a bare rolling path was ACCEPTED")
+        except InscriptionRefused as ex:
+            if "rolling" not in str(ex):
+                fails.append(f"arm6b: wrong reason — {ex}")
+        # ARM 6c — CONTROLS, and they are the half that stops R6 becoming a word-ban.
+        #   (i) a chat pointer that MENTIONS a rolling file in its prose is LEGAL — use vs
+        #       mention [[gate-must-quote-what-it-forbids]];
+        #   (ii) _GM-ARCHIVE.md is where the banners roll TO and does not itself roll, so a
+        #        substring matcher would wrongly catch it. It must be ACCEPTED.
+        for cid, ev in (("zz-selftest-R6c", ["chat #000 2026-01-01 (live) - the GOOD-MORNING.md "
+                                             "banner said X, quoted verbatim here"]),
+                        ("zz-selftest-R6d", ["_GM-ARCHIVE.md"]),
+                        ("zz-selftest-R6e", ["commit deadbee - _LIVE-STATE.md delta as it stood"])):
+            ctl = copy.deepcopy(GOOD); ctl["id"] = cid; ctl["evidence"] = ev
+            try:
+                inscribe(ctl, p6, write=False)
+            except InscriptionRefused as ex:
+                fails.append(f"arm6 CONTROL {cid}: a LEGAL pointer was refused — {ex}")
+        if open(p6, encoding="utf-8").read() != open(_tmp_copy(td), encoding="utf-8").read():
+            fails.append("arm6: a rolling refusal MODIFIED the file")
+
         # ARM 5 — every refusal leaves the file untouched
         p5 = _tmp_copy(td)
         o5 = open(p5, encoding="utf-8").read()
@@ -344,7 +408,9 @@ def main():
             return 1
         print("✅ _inscribe_ruling selftest: all arms green "
               "(control accepted · reformat detected · missing key · extra key · dupe id · "
-              "illegal evidence · legal-evidence control · file-untouched-on-refusal)")
+              "illegal evidence · legal-evidence control · file-untouched-on-refusal · "
+              "R6 rolling-file evidence refused for every named file · bare-path form · "
+              "use-vs-mention + roll-TARGET controls accepted)")
         return 0
 
     if not (a.dry_run or a.write):

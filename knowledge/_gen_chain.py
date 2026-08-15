@@ -54,6 +54,7 @@ _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -111,6 +112,56 @@ def unit_word(cg):
     as one of the three. [[measuring-tool-must-not-guess]]: UNKNOWN is never defaulted."""
     tier = cg.measurement_tier()
     return _UNIT_WORDS.get(tier, f"UNRECOGNISED-TIER({tier})")
+
+
+# ---------------------------------------------------------------------------------------------
+# ★ #173 FINDING → THE COULD-NOT-ASK REMEDY (queued at #173, built #183).
+#
+# THE DEFECT, proven at #173 by single-variable isolation and written down so it is never
+# re-derived: `real` token measurement is reachable by exactly two routes — `API-KEY.txt` or
+# `knowledge/.token-cache.json` — and BOTH ARE GITIGNORED (`.gitignore:57,58`). A CI checkout has
+# neither, so it can only stamp `tape (cl100k ESTIMATE)` where the COMMITTED `_CHAIN.md` says
+# `real`. The regenerated text can therefore NEVER byte-match, and `check()` handed that straight
+# to its byte comparison, which could only ever call it "_CHAIN.md is STALE". Dropping the cache
+# file into a clone flipped `--check` from 1 to 0 with nothing else touched — one variable.
+#
+# ⇒ That is a verdict about the ARTEFACT dressed over a fact about the ENVIRONMENT: gate [107]
+# was STALE in CI and FRESH locally ON THE SAME COMMIT. A gate that disagrees with itself across
+# environments is not reporting on the artefact [[gate-cannot-pass-in-one-environment]].
+#
+# ★ THE SHAPE IS #59's, ONE TIER OUT, AND DELIBERATELY SO. #59 refused when the instrument was
+# DEGRADED (no tiktoken at all). That refusal fires from `build()` and covers the `estimate` tier
+# only, because `measurement_degraded()` must NOT be widened to "not real" — `_gen_chain.build()`
+# consumes it as a HARD refusal, so widening it makes `_CHAIN.md` UNGENERABLE offline and kills
+# the one artefact a cold session cannot start without (`_capture_gate.py`'s own ⛔ note above
+# `_REAL_TIER_ENV`). So the widening happens HERE, in `check()` ONLY, where the consequence is a
+# declared unknown rather than an unbuildable chain: `write()` is untouched and an offline build
+# still honestly stamps its own weaker tier.
+#
+# THE CLAUSE: when the tier a measurement would use RIGHT NOW differs from the tier the committed
+# file is STAMPED with, `--check` exits COULD-NOT-ASK — a refusal, not a verdict in either
+# direction — and it must NOT say STALE. Same posture the #58/#59 bites already enforce for the
+# degraded case: report the MEASUREMENT, never prescribe the region [[gate-narrows-its-own-rule]].
+_TIER_BY_UNIT_WORD = {word: tier for tier, word in _UNIT_WORDS.items()}
+_STAMP_RE = re.compile(r"\*\*[\d,]+ (.+?) — the unit is THE WHOLE FILE\*\*")
+
+
+def stamped_tier(text):
+    """The tier the ON-DISK chain was stamped with, read out of its own footer sentence.
+
+    Returns `'real'` · `'cl100k'` · `'estimate'`, or `None` when the footer is absent or carries
+    a word this module does not recognise. ⚠ `None` is NOT "fine" and is never defaulted to the
+    live tier: an unreadable stamp means the comparison CANNOT BE MADE, and the caller says so
+    rather than inventing an agreement [[measuring-tool-must-not-guess]].
+
+    ★ It reads the FOOTER, not the banner, because the footer is the fixed-point sentence — the
+    one figure in the file that is the size of the file containing it, so its unit word is the
+    unit the whole artefact was built in, never a quoted figure from GM's own prose.
+    """
+    m = _STAMP_RE.search(text or "")
+    if not m:
+        return None
+    return _TIER_BY_UNIT_WORD.get(m.group(1).strip())
 
 # ---------------------------------------------------------------------------------------------
 # ★ s125-D1 (DAVE, RULED #125, ENACTED #126) — THE BUILD-STEP COUNT IS GENERATED, NOT TYPED.
@@ -520,6 +571,40 @@ def check(repo=ROOT):
         return 1
     with open(out, encoding="utf-8") as f:
         have = f.read()
+
+    # ---- #173 → #183: COULD-NOT-ASK, and it is asked BEFORE the byte comparison ON PURPOSE.
+    # A tier divergence makes EVERY size figure in `text` differ from `have` for a reason that
+    # has nothing to do with GOOD-MORNING.md or _LIVE-STATE.md changing. If the byte compare ran
+    # first it would always win, and the honest answer would be unreachable — the same ordering
+    # #59 established for the degraded case, one tier out. See `stamped_tier()` above.
+    try:
+        import _capture_gate as _cg_tier
+        live_tier = _cg_tier.measurement_tier()
+    except Exception as ex:                                # pragma: no cover - import guard
+        print(f"  ✗ {OUT_NAME} COULD-NOT-ASK — the tier probe itself is unreachable ({ex}); no "
+              f"freshness verdict is offered in either direction.")
+        return 1
+    stamp = stamped_tier(have)
+    if stamp is None:
+        print(f"  ✗ {OUT_NAME} COULD-NOT-ASK — the committed file carries NO READABLE UNIT STAMP "
+              f"in its footer fixed-point sentence, so the tier it was measured in cannot be "
+              f"compared with this environment's ({live_tier}). This is a REFUSAL, not a "
+              f"content verdict: regenerate with `python3 knowledge/_gen_chain.py`.")
+        return 1
+    if stamp != live_tier:
+        print(f"  ✗ {OUT_NAME} COULD-NOT-ASK — MEASUREMENT REFUSAL, NOT A FRESHNESS "
+              f"VERDICT IN EITHER DIRECTION. The "
+              f"committed file is stamped `{_UNIT_WORDS.get(stamp, stamp)}` ({stamp}); the only "
+              f"tier reachable in THIS environment is `{_UNIT_WORDS.get(live_tier, live_tier)}` "
+              f"({live_tier}). Every size figure would differ for that reason alone, so a byte "
+              f"comparison right now would be noise wearing a verdict, whichever way it fell. "
+              f"⚠ `real` is reachable ONLY via `API-KEY.txt` or `knowledge/.token-cache.json` "
+              f"and BOTH ARE GITIGNORED (#173, proven by single-variable isolation) — so a bare "
+              f"checkout can never agree with a `real` stamp. Give this environment the same "
+              f"measurer, or re-ask where it is reachable. The freshness of {OUT_NAME} is "
+              f"UNKNOWN and is reported as unknown rather than guessed.")
+        return 1
+
     if have != text:
         print(f"  ✗ {OUT_NAME} is STALE — it does not match GOOD-MORNING.md / _LIVE-STATE.md as "
               f"they now stand, so a cold session would read a PREVIOUS session's record as if it "
@@ -671,6 +756,58 @@ def selftest():
         # again, proving the refusal above was the instrument and not a side effect on the tree.
         bite("instrument restored — the SAME fresh tree reports FRESH again, unharmed",
              check(tmp) == 0)
+
+        # ---- #173 → #183: THE COULD-NOT-ASK CLAUSE, MUTATION-PROVEN AT THE STAMP.
+        # ★ The mutation is on the STAMP, not on the environment, and that is deliberate. Driving
+        # this arm by forcing the fallback would only bite on a machine where `real` is reachable
+        # in the first place — i.e. the arm would be silently unreachable in exactly the
+        # environment the defect lives in, which is the very shape #173 found
+        # [[gate-cannot-pass-in-one-environment]]. Rewriting the committed file's own unit word to
+        # a DIFFERENT tier's word reproduces the divergence identically and bites everywhere.
+        # It also proves the ORDERING: the mutated file is byte-different too, so if the byte
+        # compare ran first this arm would read STALE and the honest answer would be unreachable.
+        chain_p = os.path.join(tmp, OUT_NAME)
+        fresh_text = open(chain_p, encoding="utf-8").read()
+        live_stamp = stamped_tier(fresh_text)
+        bite("the freshly written chain carries a READABLE unit stamp (the clause has something "
+             "to compare — an unreadable stamp would make the arm below vacuous)",
+             live_stamp in _UNIT_WORDS)
+        other = next(t for t in _UNIT_WORDS if t != live_stamp)
+        mutated = fresh_text.replace(f" {_UNIT_WORDS[live_stamp]} — the unit is THE WHOLE FILE",
+                                     f" {_UNIT_WORDS[other]} — the unit is THE WHOLE FILE")
+        bite("the stamp mutation actually changed the file (a plant that did not plant would "
+             "make every bite below an assertion)", mutated != fresh_text)
+        open(chain_p, "w", encoding="utf-8").write(mutated)
+        bite("stamped_tier() reads the MUTATED stamp back as the other tier",
+             stamped_tier(open(chain_p, encoding="utf-8").read()) == other)
+        buf2 = io.StringIO()
+        with contextlib.redirect_stdout(buf2):
+            div_rc = check(tmp)
+        div_out = buf2.getvalue()
+        bite("--check on a tier divergence exits non-zero (refuses, never a silent pass)",
+             div_rc == 1)
+        bite("--check calls it COULD-NOT-ASK", "COULD-NOT-ASK" in div_out)
+        bite("--check does NOT call it STALE — a tier divergence is a measurement problem and "
+             "naming it staleness is the #173 defect, reproduced here",
+             "STALE" not in div_out.upper())
+        bite("the refusal NAMES BOTH TIERS, so a reader can see which two instruments disagreed "
+             "rather than being handed a shrug",
+             f"({live_stamp})" in div_out and f"({other})" in div_out)
+        # ARM: an UNREADABLE stamp is could-not-ask too, never a quiet pass.
+        open(chain_p, "w", encoding="utf-8").write(
+            fresh_text.replace(" — the unit is THE WHOLE FILE", " — the unit is the whole file"))
+        buf3 = io.StringIO()
+        with contextlib.redirect_stdout(buf3):
+            nostamp_rc = check(tmp)
+        nostamp_out = buf3.getvalue()
+        bite("--check on an UNREADABLE stamp exits non-zero", nostamp_rc == 1)
+        bite("--check calls an unreadable stamp COULD-NOT-ASK, not STALE",
+             "COULD-NOT-ASK" in nostamp_out and "STALE" not in nostamp_out)
+        # CONTROL — restore the untouched fresh bytes; the SAME tree must report FRESH again,
+        # proving the two refusals above were the STAMP and not damage to the tree.
+        open(chain_p, "w", encoding="utf-8").write(fresh_text)
+        bite("stamp restored — the SAME tree reports FRESH again, so the clause does not "
+             "false-fire on an agreeing stamp", check(tmp) == 0)
 
         with open(os.path.join(tmp, OUT_NAME), "a", encoding="utf-8") as f:
             f.write("\ndrift\n")
