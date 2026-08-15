@@ -374,6 +374,17 @@ def selftest() -> list[str]:
             # `resolve_anchor` for the defect it kills; the legacy `<path>` and `<path>:<int>`
             # forms fall through to the existence check below, unchanged.
             if form == "anchor":
+                # s177-D1 (dream-pass 7 P4a): a SUPERSEDED ruling's anchor is RETIRED, not
+                # repointed — enacting the successor rewrites the very line the anchor names
+                # (s129-D1's anchor died the moment s171-D1 landed in _gauge_tokens.py), so
+                # resolving it is a permanent false-red, one per re-based constant, forever.
+                # ⛔ The skip PRINTS every skipped anchor, never swallows: a silent skip
+                # would let a mislabelled `superseded_by` hide real rot.
+                sup = r.get("superseded_by")
+                if sup:
+                    print(f"_governs: SKIPPED anchor on superseded ruling {r['id']} "
+                          f"(superseded_by {sup}): `{e[:80]}`")
+                    continue
                 _ln, err = resolve_anchor(e)
                 if err:
                     failures.append(f"_governs: ruling {r['id']} {err}")
@@ -406,7 +417,10 @@ def selftest() -> list[str]:
     # 6a. POSITIVE CONTROL FIRST, again. Everything below is failure-only, and a failure-only
     #     suite reads green after a revert that deletes the feature entirely.
     anchored = [(r["id"], e) for r in rulings for e in r.get("evidence", [])
-                if evidence_form(e) == "anchor"]  # #148 chat/#119 commit are legal, never anchors
+                if evidence_form(e) == "anchor"  # #148 chat/#119 commit are legal, never anchors
+                and not r.get("superseded_by")]  # s177-D1: a superseded ruling's anchor is
+                # RETIRED — asking it to resolve against live code is a permanent false-red.
+                # NOT silent: section 5 above PRINTS every skipped anchor before this runs.
     if not anchored:
         failures.append("_governs: NO evidence pointer is in anchor form — either the form was "
                         "reverted out of the index or it never landed. The anchor bites below "

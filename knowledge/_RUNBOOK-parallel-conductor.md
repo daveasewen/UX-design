@@ -103,6 +103,24 @@ how its report is read.**
 breaking its own clause (e). It is enforced by being read at brief-authoring time, which is what this
 runbook is for.
 
+## ★ REQUIRED FIELD in every wrap-sub brief — boot reads (`s177-D1`, dream-pass 7 P2)
+
+*Added 2026-08-15 BY ADDITION, ruled Dave #177.*
+
+Every brief handed to a **wrap sub** MUST carry one line, written by the conductor about itself:
+
+> `boot reads: <files the conductor opened at boot, or NONE>`
+
+**Why:** the conductor's `GOOD-MORNING.md` boot-read is the one repeatedly-measured ~26K process
+cost in the record (#173, #175), and at #176 it became **unmeasurable** — no brief field required
+the declaration, so the wrap could only carry the item UNMEASURED
+[[unrun-search-indistinguishable-from-absent-record]]. A wrap sub cannot measure the conductor's
+window (`s168-D2`); this line is its only data source. **A declared gap passes; a silent one
+fails** — a brief missing the line entirely is a template violation the wrap sub CAN see and must
+name in its report. ⛔ **Explicitly NOT a new gate** (`s172-D3`): this is the cheapest `s129-D5`
+option, a named re-checker in prose. The expiry alternative (strike the item after repeated
+UNMEASURED) was REJECTED at ruling — expiring an unmeasured cost rewards the silence.
+
 ## Worker checklist
 
 1. Do the work; create only NEW files (dossiers, reviews, code — unique names).

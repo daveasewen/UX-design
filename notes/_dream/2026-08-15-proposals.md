@@ -52,7 +52,7 @@ Ranked by prevalence, highest first.
   count kept, the `s129-D5` triage option is **generate it** from the stratum stack, not type it.
   Touches: `GOOD-MORNING.md` (:10, :438), `_LIVE-STATE.md:687`,
   `knowledge/_RUNBOOK-capture-ritual.md` step 2c.
-- status: floated
+- status: DEFERRED s177-D1 — gated on a liveness check of all four STANDING CARRY items (fold a zombie into the fenced list and it gains fence-protected immortality); GM:10 edit must be followed by the copied-header grep
 
 ---
 
@@ -89,7 +89,7 @@ Ranked by prevalence, highest first.
   `s129-D5` three options (**a named re-checker in prose**, not a built one). If Dave prefers, the
   alternative is to **stamp the item with an expiry**: if it reads UNMEASURED twice more, it is
   struck rather than carried.
-- status: floated
+- status: PROMOTED + ENACTED s177-D1 (#177, 2026-08-15) — required boot-reads field added to the wrap-sub brief template, _RUNBOOK-parallel-conductor.md; expiry alternative REJECTED
 
 ---
 
@@ -133,7 +133,7 @@ Ranked by prevalence, highest first.
   `s129-D5` **generate-it** option, and the one that cannot rot at the next re-base.
   ⛔ Consequence to state plainly: this is the third re-base (#109 → `s129-D1` → `s171-D1`); a fourth
   will rot any figure left in prose, so (c)'s form-not-number shape is the only durable one of the three.
-- status: floated
+- status: PROMOTED + ENACTED s177-D1 (#177, 2026-08-15) — three strings fixed in the memory corpus, (c) as form-not-number
 
 ---
 
@@ -185,7 +185,7 @@ Ranked by prevalence, highest first.
   ★ And the generalisable line, if he wants one: **an evidence pointer into a file the capture ritual
   rolls (`GOOD-MORNING.md` banners, `notes/_GAUGE-LOG.md` strata, `_LIVE-STATE.md` deltas) is
   invalid on arrival** — point at the commit or the chat, which do not roll.
-- status: floated
+- status: (a) PROMOTED + ENACTED s177-D1 (#177, 2026-08-15), skip-with-print in _governs.py, MUTATION-PROVEN, s129-D1 marked superseded_by; (b) SIGNED BY DAVE + ENACTED #177 ("okay do P4b") — s171-D1 evidence[0] replaced with a chat-form retirement note preserving the original string verbatim, _governs selftest 12 → 10; evidence-format rule ADOPTED, enforcement check QUEUED not built
 
 ---
 
@@ -259,6 +259,8 @@ hunting anything, plus pass 6's P1–P5 headings, which remain floated and are n
 read in full · `.github/workflows/gates.yml` read · the memory corpus at `.auto-memory/` measured
 (279 files, 1,077,517 bytes; 14-file gauge family, 59,706 bytes) and grepped for boot/stop-line/window
 figures.
+
+**⚠ CORRECTION (#177, at P4b enactment):** this pass reported *"14 FAILs, rc=0"* for `_governs.py --selftest`. The fail count was right; **the rc was wrong** — the source returns `1 if fs else 0` (line 529), so rc was 1 at HEAD. The false rc=0 is the `$?`-after-a-pipe class (memory hook `check-after-its-own-remedy`); the fail COUNT remains the reliable figure throughout.
 
 **⛔ Nothing was written except this file.** `git status --porcelain` was **empty at open and empty at
 close**. `_governs.py --selftest` is read-only and produced no diff; no tracked file was modified, so

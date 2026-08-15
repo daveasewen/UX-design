@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream Pass 7 — Report · 2026-08-15 · v1</title>
+<style>
+:root{
+  --accent:#DB0011;--black:#000;--white:#fff;
+  --grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-4:#B7B7B7;
+  --grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333333;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--s8:8rem;
+  --max-width:1200px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--black);background:var(--white);font-size:1rem;line-height:1.7}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--s4)}
+nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);z-index:10}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+nav .ctx{font-size:.875rem;color:var(--grey-6);letter-spacing:.04em}
+nav .ctx b{color:var(--black);font-weight:500}
+nav .meta{font-size:.75rem;color:var(--grey-6);letter-spacing:.06em;text-transform:uppercase}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.rule{border:none;border-top:1px solid var(--grey-2)}
+header.profile{padding:var(--s7) 0}
+header .wrap{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:end}
+h1{font-size:3.5625rem;font-weight:300;line-height:1.08;letter-spacing:0;margin-top:var(--s3)}
+.tagline{font-size:1.1875rem;line-height:1.5;color:var(--grey-8)}
+.meta-list{margin-top:var(--s3);font-size:.875rem;line-height:1.6;color:var(--grey-7)}
+.meta-list span{color:var(--black);font-weight:500}
+section{padding:var(--s7) 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s5);margin-top:var(--s5)}
+.stat .n{font-size:2.6875rem;font-weight:200;line-height:1.1}
+.stat .c{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-5);margin-top:var(--s1)}
+.proposition{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s6);align-items:start;margin-top:var(--s4)}
+.proposition h2{font-size:2.125rem;font-weight:400;line-height:1.2}
+.divider{border-left:1px solid var(--grey-3);min-height:120px}
+.dimension .wrap{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:5.25rem;font-weight:100;line-height:1;color:var(--grey-4)}
+.dim-label{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s2)}
+.dimension h3{font-size:1.1875rem;font-weight:500;line-height:1.4;margin-bottom:var(--s3)}
+.dimension p{margin-bottom:var(--s2)}
+.prev{font-size:.875rem;color:var(--grey-7);border-top:1px solid var(--grey-2);padding-top:var(--s2);margin-top:var(--s3)}
+.prev b{color:var(--black);font-weight:500}
+code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.875em;background:var(--grey-1);padding:.05em .35em}
+.comparison{background:var(--grey-1)}
+.comparison .wrap{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.verdict{font-size:2.125rem;font-weight:400;line-height:1.25;margin-top:var(--s3)}
+.distinction{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);margin-top:var(--s4)}
+.distinction .cell{background:var(--white);padding:var(--s4)}
+.distinction .cell .head{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s2)}
+.distinction .cell.ours .head{color:var(--accent)}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--grey-2);margin-top:var(--s5)}
+.grid4 .cell{background:var(--grey-1);padding:var(--s4);transition:background .2s}
+.grid4 .cell:hover{background:var(--white)}
+.grid4 .cell .i{font-size:.75rem;letter-spacing:.12em;color:var(--accent);font-weight:500}
+.grid4 .cell h4{font-size:1rem;font-weight:500;margin:var(--s2) 0 var(--s1)}
+.grid4 .cell p{font-size:.875rem;line-height:1.6;color:var(--grey-7)}
+.pull{border-top:1px solid var(--grey-3);padding-top:var(--s4);margin-top:var(--s5);font-size:1.1875rem;font-weight:400;line-height:1.6}
+ul.clean{list-style:none}
+ul.clean li{padding:var(--s2) 0;border-bottom:1px solid var(--grey-2);font-size:.875rem;line-height:1.6}
+ul.clean li:first-child{border-top:1px solid var(--grey-2)}
+footer{padding:var(--s6) 0;font-size:.75rem;color:var(--grey-6);letter-spacing:.04em}
+@media(max-width:800px){
+  header .wrap,.dimension .wrap,.comparison .wrap{grid-template-columns:1fr}
+  .proposition{grid-template-columns:1fr}
+  .divider{display:none}
+  .stats{grid-template-columns:1fr 1fr}
+  .grid4,.distinction{grid-template-columns:1fr}
+  h1{font-size:2.6875rem}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <span class="ctx">Apollo · Memento <b>dream-pass lane</b></span>
+  <span class="meta">Pass 7 · 2026-08-15 · v1</span>
+</div></nav>
+
+<header class="profile"><div class="wrap">
+  <div>
+    <p class="label">Dream pass 7 — run report</p>
+    <h1>Four proposals floated.<br>Nothing ruled, nothing pushed.</h1>
+  </div>
+  <div>
+    <p class="tagline">The weekly consolidation pass ran cold over the project record. Every proposal awaits your eye — with the 2026-08-09 pass still floated, nine proposals now sit on the table across two files.</p>
+    <div class="meta-list">
+      Conductor <span>Fable</span> · Dreamer <span>Opus, pinned, one cold subagent</span><br>
+      Output <span>notes/_dream/2026-08-15-proposals.md</span><br>
+      Commit <span>69fba90</span> · Gate <span>rc=0 — 135 in scope · 0 fail · 3 warn</span>
+    </div>
+  </div>
+</div></header>
+
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Run facts</p>
+  <div class="stats">
+    <div class="stat"><div class="n">4</div><div class="c">Proposals floated</div></div>
+    <div class="stat"><div class="n">4/4</div><div class="c">Spot-checks held</div></div>
+    <div class="stat"><div class="n">7</div><div class="c">Checked clear</div></div>
+    <div class="stat"><div class="n">0</div><div class="c">Rulings — Dave absent</div></div>
+  </div>
+  <div class="proposition">
+    <h2>Scheduled fire, a day early — declared, not reconciled.</h2>
+    <div class="divider"></div>
+    <p>The fire ran Saturday 08:13 against the ruled Sunday 07:10 cadence. Not overdue — pass 6 ran 2026-08-09. Tree was clean at start, HEAD = origin/master = <code>b1ebd78</code>. Transcript coverage gap declared honestly: the prior pass covered through #136; the chain stands at #176. The commit carries <code>after #176</code> — the lane-numbering seam from pass 6 remains unruled.</p>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section class="dimension"><div class="wrap">
+  <div><div class="idx">01</div><div class="dim-label">Highest prevalence</div></div>
+  <div>
+    <h3>The standing-carry line has not been touched in 56 sessions, and its two counters disagree.</h3>
+    <p>Four owed items were copied onto one "STANDING CARRY" line in <code>GOOD-MORNING.md:438</code> precisely so a rolling banner would not lose them. That line was last touched at #120 (2026-08-07) — 56 sessions ago. Its own counter still reads "SEVENTH consecutive roll" while <code>_LIVE-STATE.md</code> says "twelfth roll" for the same item.</p>
+    <p>The mechanism: the <code>s161-D4</code> stale-item fence only reads <code>residual → #N</code> lists, so a carry line outside that form is invisible to it. Both ordinals outside the <code>s128-D2</code> age-bracket system are stale; none of the ~50 bracketed ones are.</p>
+    <p class="prev">Prevalence — <b>2 of 2</b> unbracketed ordinals stale (56 and 71 sessions) · 0 of ~50 bracketed.</p>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section class="dimension"><div class="wrap">
+  <div><div class="idx">02</div><div class="dim-label">Process cost</div></div>
+  <div>
+    <h3>The one repeatedly-measured boot overspend became unmeasurable.</h3>
+    <p>Opening <code>GOOD-MORNING.md</code> at boot costs ~26K tokens per session — the exact reflex the read chain bans. It was measured and declared at #173, measured and declared at #175, and at #176 it went <em>unmeasurable</em>: nothing in the wrap brief requires a boot-read declaration, so the third occurrence left no figure at all.</p>
+    <p class="prev">Prevalence — <b>3 of the last 4 wraps</b> (#173, #175, #176).</p>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section class="dimension"><div class="wrap">
+  <div><div class="idx">03</div><div class="dim-label">Retrieval surface</div></div>
+  <div>
+    <h3>Three memory files publish boot figures that contradict the ruled band.</h3>
+    <p>The ruled boot constant is <code>56,158 ±849</code> (<code>s171-D1</code>). Three memory files still state boot figures outside it — two of them in the <code>description:</code> frontmatter, which is the retrieval surface itself. The starkest: one description says "the boot floor is 75,899 real", 18,892 over the ruled ceiling.</p>
+    <p>Timely, because #176 told you the memory index is due compaction — a compaction pass is exactly when these would be read and reinscribed.</p>
+    <p class="prev">Prevalence — <b>3 of the 5</b> memory files stating a boot number.</p>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section class="dimension"><div class="wrap">
+  <div><div class="idx">04</div><div class="dim-label">Structural</div></div>
+  <div>
+    <h3>Enacting a ruling breaks its predecessor's provenance anchor — by construction.</h3>
+    <p><code>s129-D1</code>'s anchor rotted <em>because</em> <code>s171-D1</code> landed: the re-base rewrote the line the older anchor pointed at. And <code>s171-D1</code>'s own anchor names a string that never existed at its address — read as "pre-existing rot" for five sessions. Two of 157 rulings today, but structurally one per re-base, forever.</p>
+    <p class="prev">Prevalence — <b>2 of 157</b> rulings today · one per re-base by construction.</p>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section class="comparison"><div class="wrap" style="padding-top:var(--s7);padding-bottom:var(--s7)">
+  <div>
+    <p class="label">Conductor spot-check</p>
+    <p class="verdict">4 of 4 receipts held — one imprecision chased and named.</p>
+  </div>
+  <div>
+    <p>Every receipt was independently re-run, never accepted from the dreamer's own numbers. Held exactly: <code>SESSION_ACK</code> counts 1/0/0 · the memory description's 75,899 against the constant at <code>_gauge_tokens.py:166</code> · <code>_governs --selftest</code> at exactly 14 fails · the unresolvable anchor at <code>_GAUGE-LOG.md:1660</code>.</p>
+    <div class="distinction">
+      <div class="cell">
+        <div class="head">The claim</div>
+        <p style="font-size:.875rem;color:var(--grey-7)"><code>git log -L438</code> shows "exactly one commit" touching the standing-carry line.</p>
+      </div>
+      <div class="cell ours">
+        <div class="head">What the re-run found</div>
+        <p style="font-size:.875rem;color:var(--grey-7)">The trace lists three commits — line history includes prior content. The latest touch, <code>e3174d1</code> #120, is the substance of the claim. Benign, but named.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Guardrails &amp; mechanics</p>
+  <div class="grid4">
+    <div class="cell"><span class="i">A</span><h4>One output, verified</h4><p>The dreamer wrote exactly one file, ran no git operations, wrote no memory. Cleanup confirmed by the conductor: only the proposals file new at commit time.</p></div>
+    <div class="cell"><span class="i">B</span><h4>A fence fired and was answered</h4><p>The #170 reused-msgfile gate refused the second commit invocation — the write-back class it exists to catch. Answered with a fresh printf. Recorded as a hit, not a near-miss.</p></div>
+    <div class="cell"><span class="i">C</span><h4>Two paths left dirty, flagged</h4><p>The §🔀 status line in <code>_LIVE-STATE.md</code> (written per step 7b, after the commit by design) and <code>_REHEARSAL-LOG.jsonl</code> (the gate-run append, pass-6 P2's class). Both left out of the lane commit per the mechanical rule.</p></div>
+    <div class="cell"><span class="i">D</span><h4>Gauge stamp</h4><p>Throughput 121,998 real via <code>_checkin.py</code> — the headline unit is throughput, not FILL; FILL was not separately readable this run. Declared, not estimated.</p></div>
+  </div>
+  <p class="pull">Nothing self-promotes. Promotion is Dave's alone, on reading the proposals file. Push is Dave's word.</p>
+</div></section>
+
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Checked clear this pass — do not re-open</p>
+  <ul class="clean" style="margin-top:var(--s4)">
+    <li>The 14 <code>_governs</code> fails are honestly reported and the 12 nits were correctly refused.</li>
+    <li>The gauge log lagging the chain by one is by design (step 2f) — verified across four commits.</li>
+    <li>The <code>s161-D4</code> fence genuinely ran and passed at #176.</li>
+    <li><code>gates.yml</code> / [107] is already carried and priced (residual ⑩).</li>
+    <li>Pass-6 P1 re-measured: still exactly 21 sweep strings, store now 157 — referenced, not re-floated.</li>
+    <li>The 2026-08-09 pass's P1–P5 remain floated awaiting Dave — not re-floated here.</li>
+    <li>This lane's own §🔀 row — barred by the standing scope exclusion.</li>
+  </ul>
+</div></section>
+
+<hr class="rule">
+
+<footer><div class="wrap">
+  Dream pass 7 · conductor report v1 · 2026-08-15 · commit 69fba90 · lane record: _LIVE-STATE.md §🔀 · your next action: read notes/_dream/2026-08-15-proposals.md
+</div></footer>
+
+</body>
+</html>
