@@ -14,27 +14,50 @@
   lane2-donut-sparkline.md): COMPACT Layer-2 — deliberately smaller than the exemplar's set
   (a spark is ambient, not an instrument panel):
     1. VALUE POPOVER — the standalone trend line is ONE focus stop (tabindex=0 + aria-label ==
-       tip; the table remains the per-month truth surface). A spark has no per-point markers by
-       definition (kit-faithful); per-point focus stops would fight the idiom — receipted judgment.
+       tip). A spark has no per-point markers by definition (kit-faithful); per-point focus
+       stops would fight the idiom — receipted judgment.
     2. FIT — rides dv-behaviour's INIT alone: .dv-fit-on (added JS-on to every figure.dv) releases
        the fixed 340px to width:100%, pure CSS. No data-fx machinery: a spark carries NO text, so
        aspect stretch is safe (preserveAspectRatio:none — DV-D02 vacuously held, as promoted).
        JS-off = fixed 340px baked (the DV-D02 static answer).
-    NO legend machinery (single series) · NO table popover / CSV toolbar (compact posture — the
-    native <details> table stays; flag to conductor if the wave wants toolbar parity instead) ·
+    NO legend machinery (single series) · NO table popover / CSV toolbar ·
     NO title slot (axis-free ambient idiom; the sr-only figcaption names it).
+
+  ★★ s182-D2 RULED #182 — THE SPARKLINE IS AN ATOM, ALONE. Three beats, Dave's own words:
+    (1) "this doesn't need a title as it will usually live in a card"; (2) "this is just an atom";
+    (3) "the sparkline is an atom alone, the table cta can be optional in the trend card component".
+  ENACTED HERE: the <details> table disclosure GONE (markup + CSS), the dv-lockup-title markup
+  partial GONE (markup + CSS + data-lockup-title attr), and the table-hook extraContract removed
+  from knowledge/component-types.json $members/Chart-sparkline. The atom = the graphic + its one
+  data-tip mark. dv-fit is UNTOUCHED. The table affordance becomes an OPTIONAL element of the
+  future TREND-CARD component in ICON-BUTTON form (no "View as table" label — a sparkline shows a
+  trend beside a headline figure, it is not an analysis tool); s116-D2's table molecule applies at
+  the COMPOSITION level, and the sparkline atom is outside its scope. The trend card itself is
+  FLOATED, NOT RULED. SUPERSEDES the compact-variant framing in the lane-② notes above and the
+  "dv-005 table on the standalone figure" line below (dv-005 is ADVISORY in _validate_dataviz.py
+  and now fires on this file BY RULING — a declared, accepted advisory, not a defect).
+  ★★ s182-D3 RULED #182 — SPARKLINE COLOUR IS SEMANTIC, NOT PICKED. Dave: "the rules for colours
+  should just follow the red and green ink colours for all themes"; neutral, verbatim: "the default
+  ink near-black colours are fine for the neutrals, white on dark". ENACTED HERE: the stroke reads
+  the TREND (first vs last datum, declared data-trend="up|down|flat" on the svg) and takes the ruled
+  INK — down = rag/error-ink (s151-D1 two-red law), up = rag/success-ink (s155-D1, values by
+  reference to s144-D1), flat = the standing ink. The fork is BACKGROUND-keyed by the theme block,
+  the same mechanism canon.css uses for --error-atom (canon.css:2586 ← --rag-error-ink 307/668).
+  NO VALUE IS MINTED. --data-series-1 no longer strokes this atom.
+  STILL OPEN, DAVE'S AT THE TUNER: scaling only
+  (reviews/SPARKLINE-ATOM-TUNER-2026-08-15-v2.html).
   INLINE-44px KPI SPECIMEN STAYS PASSIVE (aria-hidden, decorative) — the Stat-card composition
   seam is UNTOUCHED (B-Q6 open; ADR-0013 propose-don't-promote).
-  RULINGS BOUND HERE: DV-D08 rebind — control/caption text → .t-cm-chart-label 12/500 (summary,
-  spark caption); the table stays t-cm-legal (truth surface, exemplar precedent). ADR-0015:
+  RULINGS BOUND HERE: DV-D08 rebind — control/caption text → .t-cm-chart-label 12/500 (spark
+  caption; the summary + table it also named are gone under s182-D2). ADR-0015:
   AUTO-BEHAVIOUR markers pre-landed EMPTY below — registration is the conductor's serial.
   WHAT PROMOTED (OBSERVED, kit values verbatim): TWO scales —
   STANDALONE: 580×90 viewBox rendered 340×64, baseline hairline, stroke 2.5, pathLength=2400 draw,
-  endpoint dot r3.5, real 12-month table. INLINE: 200×48 @ 44px, stroke 2, 1000ms draw, endpoint
+  endpoint dot r3.5 (the 12-month table shed at s182-D2). INLINE: 200×48 @ 44px, stroke 2, 1000ms draw, endpoint
   dot r3, aria-hidden.
   WHAT NEWLY JUDGED (receipted): baseline = ink at grid alpha (kit greys have no post-R-D16 home).
   RULES: dv-017 var() strokes only · dv-016 series ≥3:1 both modes · dv-line-011 straight ·
-  dv-line-009 wide aspect · dv-005 table on the standalone figure · DEF-003 CSS-only decorative
+  dv-line-009 wide aspect · dv-005 (advisory) NOW DECLARED-OFF by s182-D2 · DEF-003 CSS-only decorative
   motion · composites-only type. Empty state = compact Empty-state-pattern adaptation.
 -->
 <link rel="stylesheet" href="../canon/type.css">
@@ -72,6 +95,12 @@
   [data-theme="light"]{
     --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1;
     --data-series-1:#766682;
+    /* s182-D3 (#182) — SEMANTIC TREND INK. Same mode-block mechanism canon.css uses for the
+       background-keyed two-red law (--rag-error-ink light #DA1A00 / dark #F6604C, canon.css:307/668,
+       consumed as --error-atom at canon.css:2586). LIGHT = the on-white leg. No value minted. */
+    --spark-down:#DA1A00;   /* rag/error-ink light — s151-D1 two-red law, red on white */
+    --spark-up:#137F3C;     /* rag/success-ink light — s155-D1 mirror (values by ref to s144-D1) */
+    --spark-flat:#1A1A1A;   /* standing ink on light — s182-D3, Dave: "the default ink near-black" */
     --grid-alpha:.10;
     --shadow:#00000033; --pop-border:#FFFFFF00;
     --border-radius-surface:0;
@@ -79,6 +108,10 @@
   [data-theme="dark"]{
     --page:#1A1A1A; --ink:#FFFFFF; --line:#808080;
     --data-series-1:#766682;
+    /* s182-D3 — the NON-WHITE leg of the same fork (canon.css:668/675). */
+    --spark-down:#F6604C;   /* rag/error-ink dark — s151-D1 "the light red everywhere else" */
+    --spark-up:#66CC8D;     /* rag/success-ink dark — s155-D1 / s144-D1 */
+    --spark-flat:#FFFFFF;   /* Dave, s182-D3 verbatim: "white on dark" */
     --grid-alpha:.16;
     --shadow:#000000D9; --pop-border:#808080;
     --border-radius-surface:0;
@@ -91,10 +124,10 @@
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 
   figure.dv{margin:0;}
-  /* dv-head/.dv-title added #68 (dv-lockup): title-only header — sparkline carries no toggle/legend
-     chrome, so this is the minimal literal copy (same rule text as the other five charts). */
-  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
-  .dv-title{margin:0;}
+  /* NO dv-head/.dv-title (s182-D2, #182): the sparkline is an ATOM ALONE — no title slot.
+     Dave: "this doesn't need a title as it will usually live in a card". The dv-lockup-title
+     markup partial and its CSS were removed with the ruling; the accessible name survives on
+     the sr-only figcaption + the svg aria-label. */
   .dv-stage{overflow-x:auto; padding-bottom:4px;}
 
   /* standalone spark — 340×64 render of the 580×90 frame (kit); no text inside, so non-uniform
@@ -103,18 +136,31 @@
   .spark-standalone{display:block; width:340px; height:64px; overflow:visible;}
   figure.dv-fit-on .spark-standalone{width:100%;}
   .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
-  .spark-standalone .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2.5;
+  /* s182-D3: the stroke is SEMANTIC, never a series-ramp pick. A sparkline knows its trend from
+     FIRST-vs-LAST datum; the author declares that reading as data-trend on the svg (up|down|flat),
+     and the fork to the ruled ink is done by the theme block above — identical keying in all four
+     themes, exactly as canon keys --error-atom. Default = flat, so an undeclared trend is neutral,
+     never a guessed colour. */
+  .spark-standalone .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2.5;
     stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
-  .spark-standalone circle.dv-series{fill:var(--data-series-1); stroke:none;}
+  .spark-standalone circle.dv-series{fill:var(--spark-flat); stroke:none;}
+  .spark-standalone[data-trend="up"] .dv-series{stroke:var(--spark-up);}
+  .spark-standalone[data-trend="up"] circle.dv-series{fill:var(--spark-up);}
+  .spark-standalone[data-trend="down"] .dv-series{stroke:var(--spark-down);}
+  .spark-standalone[data-trend="down"] circle.dv-series{fill:var(--spark-down);}
   .spark-standalone polyline.dv-series{outline-offset:4px;}
   .spark-standalone polyline.dv-series:focus-visible{outline:2px solid var(--ink);}
 
   /* inline spark — the KPI / Stat-card scale (200×48 @ 44px, stroke 2, dot r3) */
   .spark-inline{display:block; width:200px; height:44px; overflow:visible;}
   .spark-inline .dv-base{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
-  .spark-inline .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2;
+  .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
     stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;}
-  .spark-inline .dv-end{fill:var(--data-series-1);}
+  .spark-inline .dv-end{fill:var(--spark-flat);}
+  .spark-inline[data-trend="up"] .dv-series{stroke:var(--spark-up);}
+  .spark-inline[data-trend="up"] .dv-end{fill:var(--spark-up);}
+  .spark-inline[data-trend="down"] .dv-series{stroke:var(--spark-down);}
+  .spark-inline[data-trend="down"] .dv-end{fill:var(--spark-down);}
   .spark-caption{opacity:var(--alpha-60); margin:4px 0 0;}
 
   /* entry motion — CSS only (DEF-003): the draw, at each scale's reviewed pace */
@@ -135,23 +181,10 @@
     opacity:0; transition:opacity var(--ease);}
   .dv-tip.on{opacity:1;}
 
-  details.dv-tabledetails{margin:8px 0 0;}
-  details.dv-tabledetails summary{position:relative; cursor:pointer; opacity:var(--alpha-60); width:max-content;}
-  /* 2.5.8 target on the SUMMARY (s114-D5 sweep, #116). A <summary> is an interactive
-     control and was never checked by the old selector-allowlist gate — it sat at text
-     height. The ::before slot belongs to the disclosure affordance here (the native
-     marker is kept: this is the compact posture, no toolbar chrome), so the expander
-     rides ::after — the same canon mechanism in the free pseudo-element slot. */
-  details.dv-tabledetails summary::after{content:""; position:absolute; z-index:0;
-    min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%;
-    top:50%; left:50%; transform:translate(-50%,-50%);}
-  details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
-  details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
-  table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
-  table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:4px;}
-  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
-  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-  table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
+  /* NO table disclosure CSS (s182-D2, #182). The details.dv-tabledetails / table.dv-table
+     rules were removed with the markup they styled — the table affordance is an OPTIONAL
+     element of the future TREND-CARD COMPOSITION (icon-button form, no "View as table"
+     label), not of this atom. s116-D2's table molecule applies at the composition level. */
 
   .dv-empty-frame{width:340px; height:64px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
@@ -165,49 +198,60 @@
 </head>
 <body data-theme="light">
   
-  <h2>Standalone — axis-free trend with its data table (popover + fit)</h2>
-  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page" role="group" aria-labelledby="cs1-h" data-lockup-title="Twelve-month trend, rising">
+  <h2>Standalone — the atom alone (axis-free trend line; popover + fit)</h2>
+  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page" role="group" aria-labelledby="cs1-h">
     <figcaption id="cs1-h" class="sr-only">Twelve-month trend, indexed</figcaption>
-    <div class="dv-head"><!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
-      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-title", group dataviz —
-     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
-     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
-     regenerate: python3 knowledge/gen_component_partials.py -->
-      <h3 class="dv-title t-cm-section-label">Twelve-month trend, rising</h3>
-      <!-- ===== AUTO-MARKUP dv-lockup-title END ===== --></div>
     <div class="dv-stage">
-      <svg class="dv-svg spark-standalone" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 90" preserveAspectRatio="none" role="group" aria-label="Twelve-month trend, rising from 82 to 104.">
+      <svg class="dv-svg spark-standalone" data-trend="up" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 90" preserveAspectRatio="none" role="group" aria-label="Twelve-month trend, rising from 82 to 104.">
         <line class="dv-grid" x1="4" y1="86" x2="576" y2="86" stroke="var(--ink)"/>
-        <polyline class="dv-series" tabindex="0" role="img" aria-label="Twelve-month trend: 82 in January to 104 in December. Monthly values in the table." data-tip="Jan 82 → Dec 104 · monthly values in the table" pathLength="2400" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="4.0,79.2 56.0,86.0 108.0,68.9 160.0,75.8 212.0,58.7 264.0,51.8 316.0,62.1 368.0,45.0 420.0,34.8 472.0,41.6 524.0,24.5 576.0,4.0"/>
-        <circle class="dv-series" cx="576.0" cy="4.0" r="3.5" fill="var(--data-series-1)"/>
+        <polyline class="dv-series" tabindex="0" role="img" aria-label="Twelve-month trend: 82 in January to 104 in December." data-tip="Jan 82 → Dec 104" pathLength="2400" fill="none" stroke="var(--spark-up)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="4.0,79.2 56.0,86.0 108.0,68.9 160.0,75.8 212.0,58.7 264.0,51.8 316.0,62.1 368.0,45.0 420.0,34.8 472.0,41.6 524.0,24.5 576.0,4.0"/>
+        <circle class="dv-series" cx="576.0" cy="4.0" r="3.5" fill="var(--spark-up)"/>
       </svg>
     </div>
-    <details class="dv-tabledetails">
-      <summary class="t-cm-chart-label">View as table</summary>
-      <table class="dv-table t-cm-legal">
-        <caption>Twelve-month trend, indexed</caption>
-        <thead><tr><th scope="col">Month</th><th scope="col">Trend</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Jan</th><td>82</td></tr><tr><th scope="row">Feb</th><td>80</td></tr>
-          <tr><th scope="row">Mar</th><td>85</td></tr><tr><th scope="row">Apr</th><td>83</td></tr>
-          <tr><th scope="row">May</th><td>88</td></tr><tr><th scope="row">Jun</th><td>90</td></tr>
-          <tr><th scope="row">Jul</th><td>87</td></tr><tr><th scope="row">Aug</th><td>92</td></tr>
-          <tr><th scope="row">Sep</th><td>95</td></tr><tr><th scope="row">Oct</th><td>93</td></tr>
-          <tr><th scope="row">Nov</th><td>98</td></tr><tr><th scope="row">Dec</th><td>104</td></tr>
-        </tbody>
-      </table>
-    </details>
+    <!-- s182-D2 (#182): the <details> table disclosure was REMOVED here. "the sparkline is an
+         atom alone, the table cta can be optional in the trend card component" — the affordance
+         moves to the future trend-card COMPOSITION and takes the ICON-BUTTON form there (no
+         "View as table" label; accessible name survives as aria-label). The trend card itself is
+         FLOATED, not ruled. -->
   </figure>
 
   <h2>Inline scale — as composed in a KPI tile (the Stat-card seam, receipted)</h2>
   <div class="dv-animate">
-    <svg class="spark-inline" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+    <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
       <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
       <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
       <circle class="dv-end" cx="197" cy="3.0" r="3"/>
     </svg>
     <p class="spark-caption t-cm-chart-label">Twelve-month trend — decorative at this scale (aria-hidden); the composed tile's value carries the meaning.</p>
   </div>
+
+  <h2>Trend states — the semantic stroke (s182-D3): up · down · flat</h2>
+  <!-- s182-D3 (#182): "the rules for colours should just follow the red and green ink colours for all
+       themes". The trend is read from FIRST vs LAST datum and declared as data-trend on the svg; the
+       ink is forked by the theme block (light = the on-white leg, dark = everywhere-else leg), the same
+       mechanism canon.css uses for --error-atom / --rag-error-ink. Colour is NEVER the only channel
+       here: each line carries its direction in its own aria-label. -->
+  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page" role="group" aria-labelledby="cs2-h">
+    <figcaption id="cs2-h" class="sr-only">Twelve-month trend, falling</figcaption>
+    <div class="dv-stage">
+      <svg class="dv-svg spark-standalone" data-trend="down" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 90" preserveAspectRatio="none" role="group" aria-label="Twelve-month trend, falling from 104 to 82.">
+        <line class="dv-grid" x1="4" y1="86" x2="576" y2="86" stroke="var(--ink)"/>
+        <polyline class="dv-series" tabindex="0" role="img" aria-label="Twelve-month trend: 104 in January to 82 in December, falling." data-tip="Jan 104 → Dec 82" pathLength="2400" fill="none" stroke="var(--spark-down)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="4.0,4.0 56.0,24.5 108.0,41.6 160.0,34.8 212.0,45.0 264.0,62.1 316.0,51.8 368.0,58.7 420.0,75.8 472.0,68.9 524.0,86.0 576.0,79.2"/>
+        <circle class="dv-series" cx="576.0" cy="79.2" r="3.5" fill="var(--spark-down)"/>
+      </svg>
+    </div>
+  </figure>
+
+  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page" role="group" aria-labelledby="cs3-h">
+    <figcaption id="cs3-h" class="sr-only">Twelve-month trend, flat</figcaption>
+    <div class="dv-stage">
+      <svg class="dv-svg spark-standalone" data-trend="flat" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 90" preserveAspectRatio="none" role="group" aria-label="Twelve-month trend, flat at 96.">
+        <line class="dv-grid" x1="4" y1="86" x2="576" y2="86" stroke="var(--ink)"/>
+        <polyline class="dv-series" tabindex="0" role="img" aria-label="Twelve-month trend: 96 in January to 96 in December, flat." data-tip="Jan 96 → Dec 96" pathLength="2400" fill="none" stroke="var(--spark-flat)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="4.0,45.0 56.0,51.8 108.0,41.6 160.0,48.0 212.0,38.5 264.0,49.0 316.0,44.0 368.0,52.0 420.0,41.0 472.0,47.0 524.0,43.0 576.0,45.0"/>
+        <circle class="dv-series" cx="576.0" cy="45.0" r="3.5" fill="var(--spark-flat)"/>
+      </svg>
+    </div>
+  </figure>
 
   <h2>No data — compact Empty-state adaptation</h2>
   <div class="dv-empty-frame" role="group" aria-label="Trend, no data">
@@ -219,15 +263,18 @@
     "component": "Sparkline",
     "vars": { "--page": "background/default", "--ink": "text/default", "--line": "border/subtle",
               "--data-series-1": "data/series/1",
+              "--spark-down": "rag/error-ink", "--spark-up": "rag/success-ink", "--spark-flat": "text/default",
               "--shadow": "elevation/functional", "--pop-border": "elevation/border",
               "--border-radius-surface": "border-radius/surface" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
-      { "fg": "data/series/1", "bg": "background/default", "context": "ui" }
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" },
+      { "fg": "rag/error-ink", "bg": "background/default", "context": "ui" },
+      { "fg": "rag/success-ink", "bg": "background/default", "context": "ui" }
     ],
     "icons": {},
     "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-hidden=\"true\""],
-    "$note": "CHART-REVISIT WAVE LANE ② (2026-07-24): COMPACT Layer-2 — popover + fit only, deliberately below the exemplar's full set (ambient idiom). Popover: the standalone trend line is ONE focus stop (tabindex 0 + aria-label == tip; per-point stops would fight the axis-free idiom — receipted); the table stays the per-month truth surface. Fit: rides dv-behaviour's init alone — .dv-fit-on releases the fixed 340px to width:100% (pure CSS; no text, so aspect stretch is DV-D02-vacuous; JS-off = fixed 340 baked). No legend (single series) · no table-popover/CSV toolbar (compact posture, flag if wave wants parity) · no title slot. INLINE 44px KPI specimen stays PASSIVE (aria-hidden) — Stat-card seam untouched (B-Q6 open; ADR-0013 propose-don't-promote). DV-D08 rebind: summary + spark caption → t-cm-chart-label 12/500; table stays t-cm-legal (exemplar precedent). AUTO-BEHAVIOUR markers pre-landed EMPTY — registration + injection = conductor's serial. Baseline/base = ink at grid alpha (receipted judgment, as siblings); preserveAspectRatio:none safe (no text)."
+    "$note": "s182-D2 (#182) — THE SPARKLINE IS AN ATOM, ALONE. The <details> table disclosure, its CSS, the dv-lockup-title markup partial and the table-hook extraContract are ALL REMOVED: the atom is the graphic + its one data-tip mark. The table affordance is an OPTIONAL element of the future TREND-CARD composition, in ICON-BUTTON form (no 'View as table' label; accessible name survives as aria-label); s116-D2's table molecule applies at the composition level only. The trend card itself is FLOATED, NOT RULED. dv-005 (tabular alternative) is ADVISORY and now fires on this file BY RULING — declared, not a defect. Popover: the trend line is ONE focus stop (tabindex 0 + aria-label == tip; per-point stops would fight the axis-free idiom — receipted). Fit: rides dv-behaviour's init alone — .dv-fit-on releases the fixed 340px to width:100% (pure CSS; no text, so aspect stretch is DV-D02-vacuous; JS-off = fixed 340 baked). No legend (single series) · no title slot. INLINE 44px KPI specimen stays PASSIVE (aria-hidden) — Stat-card seam untouched (B-Q6 open; ADR-0013 propose-don't-promote). DV-D08 rebind: spark caption → t-cm-chart-label 12/500. Baseline/base = ink at grid alpha (receipted judgment, as siblings); preserveAspectRatio:none safe (no text). s182-D3 (#182) — SPARKLINE COLOUR IS SEMANTIC, NOT PICKED: the stroke follows the ruled red/green INK, never a series-ramp pick. Trend read from FIRST-vs-LAST datum, declared as data-trend on the svg (up|down|flat, default flat). Background-keyed exactly as canon keys --error-atom via --rag-error-ink: light leg #DA1A00 down / #137F3C up / #1A1A1A flat, non-white leg #F6604C / #66CC8D / #FFFFFF. Identical in all four themes (measured #182: zero theme-level series overrides). NO VALUE MINTED — every hex is s151-D1 / s155-D1 (via s144-D1) / the standing ink. --data-series-1 is retained as a declared token but no longer strokes the atom. SCALING STILL OPEN — Dave's at reviews/SPARKLINE-ATOM-TUNER-2026-08-15-v2.html."
   }
   </script>
   <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->

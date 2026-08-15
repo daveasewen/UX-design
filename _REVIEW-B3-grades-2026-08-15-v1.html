@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B3 grades review — #182 — Dave's ruling deck</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --paper:#FFFFFF; --red:#DA1A00; /* two-red law: on-white leg, s151-D1 — REUSED, not minted */
+    --grey:#6B6B6B; --line:#D9D9D9; --tint:#F4F4F4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--ink);background:var(--paper);
+       max-width:920px;margin:0 auto;padding:48px 32px;line-height:1.5}
+  h1{font-size:28px;letter-spacing:-.02em;margin-bottom:4px}
+  .kicker{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--grey);margin-bottom:32px}
+  section{border-top:2px solid var(--ink);padding:24px 0 32px}
+  h2{font-size:16px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+  p{margin-bottom:12px;max-width:70ch}
+  .num{font-variant-numeric:tabular-nums}
+  .bar-row{display:flex;align-items:center;gap:12px;margin:6px 0;font-size:14px}
+  .bar-label{width:110px;flex:none;font-weight:600}
+  .bar-track{flex:1;background:var(--tint);height:22px;position:relative}
+  .bar-fill{height:100%;background:var(--ink)}
+  .bar-fill.warn{background:var(--red)}
+  .bar-n{width:70px;flex:none;text-align:right}
+  .note{font-size:13px;color:var(--grey);margin-top:8px}
+  .decision{background:var(--tint);padding:20px;margin-top:16px}
+  .decision h3{font-size:14px;margin-bottom:8px}
+  .decision label{display:block;font-size:14px;margin:6px 0;cursor:pointer}
+  .decision input{margin-right:8px}
+  .pitfall{border-left:3px solid var(--red);padding-left:16px;margin:10px 0;font-size:14px}
+  .stamp{font-size:12px;color:var(--grey);margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
+  #summary{white-space:pre-wrap;background:var(--tint);padding:16px;font-family:ui-monospace,Menlo,monospace;font-size:12px;margin-top:12px;display:none}
+  button{font:inherit;font-size:13px;font-weight:600;background:var(--ink);color:#fff;border:0;padding:10px 18px;cursor:pointer;margin-top:16px}
+  em.term{font-style:normal;font-weight:600}
+</style>
+</head>
+<body>
+<p class="kicker">Apollo · Memento · #182 · 2026-08-15 · writes nothing — taps compile to one paste-able ruling message</p>
+<h1>The grades that cannot prove themselves</h1>
+<p class="kicker">B3 staleness grades — first review, your four calls</p>
+
+<section>
+<h2>01 · What the instrument found</h2>
+<p>Every memory hook was graded by re-running a mechanical probe where one exists. The only probe the grader knows today is <em class="term">"does the backticked file path in the hook still exist?"</em> Just 13 of your 122 hooks contain such a path — so 109 grade <em class="term">UNPROVABLE</em>: not stale, not fresh, simply <em>unmeasurable by machine</em>.</p>
+<div class="bar-row"><span class="bar-label">FRESH</span><div class="bar-track"><div class="bar-fill" style="width:9.8%"></div></div><span class="bar-n num">12</span></div>
+<div class="bar-row"><span class="bar-label">AGING</span><div class="bar-track"><div class="bar-fill" style="width:0.8%"></div></div><span class="bar-n num">1</span></div>
+<div class="bar-row"><span class="bar-label">STALE</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-n num">0</span></div>
+<div class="bar-row"><span class="bar-label">UNPROVABLE</span><div class="bar-track"><div class="bar-fill warn" style="width:89.3%"></div></div><span class="bar-n num">109</span></div>
+<p class="note">All 122 hooks. Of the 56 starred/blocked (the only ones that alert at boot): 49 UNPROVABLE, 7 FRESH.</p>
+<p>The honest reading: this is a finding about the <em>probe</em>, not about your memory. The instrument has one trick, and most hooks are judgment-shaped rather than path-shaped. UNPROVABLE is doing its job — it refuses to pretend.</p>
+</div>
+</section>
+
+<section>
+<h2>02 · Call one — what to do about the 109</h2>
+<p>Three honest options. Note the trap in the middle one.</p>
+<div class="decision" data-q="unprovable">
+<h3>The UNPROVABLE remedy</h3>
+<label><input type="radio" name="q1" value="accept"> <strong>Accept as-is (recommended).</strong> UNPROVABLE is an honest register, not a defect. The grade marks where staleness stays a human judgment — which is most of memory, and rightly so.</label>
+<label><input type="radio" name="q1" value="probes"> <strong>Commission more probe kinds.</strong> e.g. grep-the-quoted-line, ruling-id-exists, date-math on hooks. Priced ~5–8K per probe kind to build + drive on real data. Moves maybe 20–30 hooks out of UNPROVABLE.</label>
+<label><input type="radio" name="q1" value="park"> <strong>Park the question</strong> until the first scheduled cycle's numbers are in.</label>
+<div class="pitfall">Pitfall: more probes means more green ticks on things that were never really the claim — a path existing doesn't make the <em>sentence</em> true. A probe proves the clause, not the feature.</div>
+</div>
+</section>
+
+<section>
+<h2>03 · Call two — the 30-day AGING line</h2>
+<p>AGING currently means "probe passes but the claim is over 30 days old". The 30 is <em class="term">picked, not derived</em> — it shipped inside the provisional schema so the machinery could run. Only 1 hook sits in AGING today, so the setting is nearly free to change.</p>
+<div class="decision" data-q="aging">
+<h3>The threshold</h3>
+<label><input type="radio" name="q2" value="keep30"> <strong>Ratify 30 days.</strong> A month is a reasonable first heartbeat; revisit with cycle data.</label>
+<label><input type="radio" name="q2" value="derive"> <strong>Derive it later</strong> from observed grade-change data once a few scheduled cycles have run; keep 30 as an explicit placeholder until then.</label>
+<label><input type="radio" name="q2" value="other"> <strong>A different number</strong> — say it in chat.</label>
+<div class="pitfall">Pitfall: whatever you pick, it's one constant in the sidecar — but once ratified it becomes canon and moving it needs a ruling, not a tweak.</div>
+</div>
+</section>
+
+<section>
+<h2>04 · Call three — the boot alert's shape</h2>
+<p>The alert costs are <em class="term">measured, not guessed</em>: the standing one-line count costs <span class="num">105 real</span> tokens at every check-in; each individually listed entry adds roughly <span class="num">40 real</span>. With 49 starred/blocked UNPROVABLE, a full listing would be ~2K real per check-in — clearly wrong. The live question is only whether STALE entries (currently zero) stay listed by name.</p>
+<div class="decision" data-q="surface">
+<h3>The surface</h3>
+<label><input type="radio" name="q3" value="asbuilt"> <strong>Keep as built (recommended):</strong> counts only, except STALE listed by name. STALE is rare and actionable; the rest is a number.</label>
+<label><input type="radio" name="q3" value="countsonly"> <strong>Counts only, always</strong> — even STALE stays a number until asked.</label>
+<div class="pitfall">Pitfall: 105 real per check-in × every session forever is a real standing cost. It buys you exactly one thing — noticing when STALE goes nonzero. If that's not worth ~105/check-in, say so now, not at #220.</div>
+</div>
+</section>
+
+<section>
+<h2>05 · Call four — does yesterday's pass start the clock?</h2>
+<p>The ruling says the grades experiment returns to you <em class="term">with numbers after one full dream-pass cycle</em>, and the decisions log deliberately excludes the #180 build-drive rows from that count. Yesterday you ran a manual pass; the first <em>scheduled</em> pass fires tomorrow 07:10. Strictly read, the window opens after tomorrow's run — but the manual pass was a real pass over real data.</p>
+<div class="decision" data-q="window">
+<h3>The counting window</h3>
+<label><input type="radio" name="q4" value="manual"> <strong>Yesterday's manual pass counts</strong> — the window is open; numbers land at the next review.</label>
+<label><input type="radio" name="q4" value="scheduled"> <strong>Hold to the letter (recommended):</strong> the clock starts at tomorrow's scheduled run. One week's honest data beats a same-day sample of one.</label>
+<div class="pitfall">Pitfall: the one retrieval-decision datapoint so far says the grades changed nothing ("the UNPROVABLE count did not change what I retrieved"). If a full cycle says the same, the honest move at the return is to shrink the instrument, not defend it.</div>
+</div>
+</section>
+
+<section>
+<h2>06 · Compile</h2>
+<p>Tap your picks above, then compile. Nothing is written anywhere — you get one message to paste into chat, and I inscribe from your words.</p>
+<button onclick="compile()">Compile ruling message</button>
+<div id="summary"></div>
+</section>
+
+<p class="stamp">Deck writes nothing · colours reuse #DA1A00-on-white + #1A1A1A ink (s151-D1 / s149-D1 untouched, no value minted) · data: notes/_dream/_MEMORY-GRADES.json refreshed 2026-08-15T13:29:47 + _GRADE-DECISIONS.jsonl (10 rows, build-drive rows excluded) · schema stays PROVISIONAL until your word</p>
+
+<script>
+const LABELS={
+ q1:{accept:"UNPROVABLE accepted as an honest register — no new probes",probes:"commission more probe kinds (priced brief to follow)",park:"the 109 question is PARKED until first-cycle numbers"},
+ q2:{keep30:"the 30-day AGING threshold is RATIFIED",derive:"30d stays an explicit PLACEHOLDER; derive from cycle data",other:"a different threshold — stated in chat"},
+ q3:{asbuilt:"alert stays counts-only with STALE listed by name",countsonly:"alert goes counts-only ALWAYS"},
+ q4:{manual:"the counting window opened at yesterday's manual pass",scheduled:"the counting window opens at tomorrow's scheduled pass"}};
+function compile(){
+ const out=[];let missing=0;
+ ["q1","q2","q3","q4"].forEach((q,i)=>{
+  const v=document.querySelector(`input[name=${q}]:checked`);
+  out.push(`${i+1}. `+(v?LABELS[q][v.value]:"(no pick — stays open)"));
+  if(!v)missing++;
+ });
+ const el=document.getElementById("summary");
+ el.style.display="block";
+ el.textContent="B3 REVIEW RULING — #182 — Dave:\n"+out.join("\n")+(missing?`\n(${missing} left open — they carry)`:"\nAll four settled.");
+}
+</script>
+</body>
+</html>

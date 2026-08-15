@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sparkline atom — live tuner (SCALING only) · #182 v2</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<!--
+  SPARKLINE ATOM TUNER — v2, session #182, 2026-08-15.  (v1 is UNTOUCHED and stands as the record.)
+  ⚠ WHAT CHANGED FROM v1: s182-D3 RULED THE COLOUR. Dave: "the rules for colours should just follow
+  the red and green ink colours for all themes"; neutral, verbatim: "the default ink near-black
+  colours are fine for the neutrals, white on dark". The 37-chip colour picker is therefore MOOT and
+  is GONE. In its place is a LIVE SEMANTIC RENDERING section — the atom drawn up / down / flat on both
+  surfaces, each labelled with the ruled value it uses and the ruling that seats it. SCALING is now
+  the ONLY open decision on this page, and the compile button emits only that.
+  WHY THIS EXISTS: s182-D2 ruled the sparkline an ATOM ALONE and left two things open; s182-D3 has
+  since CLOSED the colour. What remains open, explicitly Dave's, explicitly at a tuner: its SCALING — responsive width, height snapped to the 4px grid "in the manner of the
+  EDIT-MODE-UX-PROTOTYPE-2026-07-19-v3 countdown timer (continuous dial, round(d/4)*4 output,
+  numerals to the type ramp)". This file is that instrument, and NOTHING here is a ruling.
+  INTERACTION PATTERN is lifted from EDIT-MODE-UX-PROTOTYPE-2026-07-19-v3.html: floating inspector
+  with a grab bar, free drag, Re-dock, theme toggle, and the snapline readout under the dial.
+  ⛔ NO HEX IS MINTED HERE. Every hex on this page is a RULED value retrieved from
+  knowledge/canon/canon.css and knowledge/_rulings.json: --rag-error-ink #DA1A00 (canon.css:307) /
+  #F6604C (:668) per s151-D1's two-red law; --rag-success-ink #137F3C (:314) / #66CC8D (:675) per
+  s155-D1, values by reference to s144-D1; the standing ink #1A1A1A / #FFFFFF per s182-D3.
+  THE CARD IS A MOCK. It is scenery so the atom can be judged at the size it will actually live at,
+  beside a headline figure. The trend card is FLOATED, NOT RULED (s182-D2, Dave's own words) — do
+  not read the mock as a card design.
+-->
+<style>
+  /* --- tuner chrome (this page's own furniture, not component canon) --- */
+  *{box-sizing:border-box;}
+  body{margin:0; padding:28px 32px 40px; font-family:var(--uf); background:#F4F5F6; color:#1A1A1A;}
+  .hd{max-width:1180px; margin:0 auto 18px;}
+  .hd h1{font-size:22px; font-weight:400; margin:0 0 6px;}
+  .hd p{font-size:13px; line-height:19px; color:#4a5057; margin:0 0 6px; max-width:76ch;}
+  .hd .rule{display:inline-block; font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+    background:#1A1A1A; color:#fff; padding:3px 8px; margin-bottom:8px;}
+  .hint{font-size:12px; color:#6b7178;}
+  .wrap{max-width:1180px; margin:0 auto;}
+  /* the canvas must be TALLER than the floating panel, or the panel overlaps the footer prose
+     (seen in the first render pass and fixed here) */
+  #canvas{position:relative; min-height:420px;}   /* v2: the 37-chip panel is gone, so the canvas no longer needs 800px of headroom — grow() still expands it if the panel is dragged low */
+
+  /* --- the specimen stage: page surface, theme-switched, holding the MOCK card ---
+     width-capped so the inspector DOCKS BESIDE it (the prototype's preferred anchor) rather than
+     falling through to the below-the-component fallback. */
+  .stage{border:1px solid #d9dde1; padding:28px; transition:background .16s;
+    width:min(100%,760px);}
+  /* s182-D3 — the ruled inks, forked by SURFACE exactly as canon.css forks --rag-error-ink
+     (light block :307/:314, dark block :668/:675) and consumes it as --error-atom (:2586). */
+  .lightleg{--page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1; --grid-alpha:.10;
+    --spark-down:#DA1A00; --spark-up:#137F3C; --spark-flat:#1A1A1A;}
+  .darkleg{--page:#1A1A1A; --ink:#FFFFFF; --line:#808080; --grid-alpha:.16;
+    --spark-down:#F6604C; --spark-up:#66CC8D; --spark-flat:#FFFFFF;}
+  .stage[data-theme="light"]{--page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1; --grid-alpha:.10;
+    --spark-down:#DA1A00; --spark-up:#137F3C; --spark-flat:#1A1A1A; background:#FFFFFF;}
+  .stage[data-theme="dark"]{--page:#1A1A1A; --ink:#FFFFFF; --line:#808080; --grid-alpha:.16;
+    --spark-down:#F6604C; --spark-up:#66CC8D; --spark-flat:#FFFFFF; background:#1A1A1A;}
+  .mocktag{font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink);
+    opacity:.5; margin:0 0 8px;}
+  .mockcard{border:1px dashed var(--line); padding:20px 22px; display:inline-block; min-width:300px;}
+  .mockcard .lab{display:block; color:var(--ink); opacity:.6; margin-bottom:10px;}
+  .figrow{display:flex; align-items:flex-end; gap:20px; flex-wrap:wrap;}
+  .headline{color:var(--ink); white-space:nowrap;}
+  .delta{color:var(--ink); opacity:.6; margin-top:6px;}
+
+  /* --- THE ATOM, byte-faithful to knowledge/snippets/Chart-sparkline.reference.html post-strip:
+     the graphic + its one data-tip mark. No title, no table, no chrome. --- */
+  .spark-standalone{display:block; overflow:visible;}
+  .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+  /* the stroke is SEMANTIC (s182-D3): keyed by data-trend on the svg, forked by the surface above.
+     Byte-faithful to knowledge/snippets/Chart-sparkline.reference.html as enacted today. */
+  .spark-standalone .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2.5;
+    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+  .spark-standalone circle.dv-series{fill:var(--spark-flat); stroke:none;}
+  .spark-standalone[data-trend="up"] .dv-series{stroke:var(--spark-up);}
+  .spark-standalone[data-trend="up"] circle.dv-series{fill:var(--spark-up);}
+  .spark-standalone[data-trend="down"] .dv-series{stroke:var(--spark-down);}
+  .spark-standalone[data-trend="down"] circle.dv-series{fill:var(--spark-down);}
+  .spark-standalone polyline.dv-series{outline-offset:4px;}
+  .spark-standalone polyline.dv-series:focus-visible{outline:2px solid var(--ink);}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  /* --- floating inspector (pattern: EDIT-MODE-UX-PROTOTYPE-2026-07-19-v3) --- */
+  .inspector{position:absolute; width:330px; background:#fff; border:1px solid #cfd3d8;
+    box-shadow:0 6px 22px rgba(0,0,0,.14); z-index:5;}
+  .grab{height:20px; cursor:grab; display:flex; align-items:center; justify-content:center;
+    background:#eef0f2; border-bottom:1px solid #e2e5e8;}
+  .grab:active{cursor:grabbing;}
+  .grab .pill{width:30px; height:4px; border-radius:2px; background:#9aa0a6;}
+  .redock{position:absolute; right:8px; top:24px; font-size:10.5px; color:#0b62a4; background:none;
+    border:0; cursor:pointer; display:none;}
+  .redock.show{display:block;}
+  .insp-head{display:flex; justify-content:space-between; align-items:baseline; padding:9px 12px 4px;}
+  .insp-head .name{font-size:13px; font-weight:500;}
+  .insp-head .kind{font-size:10.5px; color:#8a9098; text-transform:uppercase; letter-spacing:.05em;}
+  .insp-body{padding:4px 12px 14px; max-height:660px; overflow:auto;}
+  .ctl{margin:12px 0 0;}
+  .ctl .lab{display:block; font-size:11.5px; color:#4a5057; margin-bottom:5px;}
+  .ctl .lab b{color:#1A1A1A;}
+  input[type=range]{width:100%;}
+  .snapline{display:block; font-size:10.5px; color:#8a9098; margin-top:4px; line-height:15px;}
+  .snapline .s{color:#0b62a4; font-weight:600;}
+  .toggle{display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;}
+  .sw{width:34px; height:18px; border-radius:9px; background:#c9ced3; position:relative; transition:background .16s;}
+  .sw::after{content:""; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%;
+    background:#fff; transition:left .16s;}
+  .sw.on{background:#1A1A1A;} .sw.on::after{left:18px;}
+
+  /* trend demo switch — a DEMO control, not a decision surface (the colour is ruled) */
+  .seg{display:flex; border:1px solid #d5d9dd;}
+  .seg button{flex:1; padding:5px 4px; background:#fff; border:0; border-right:1px solid #e2e5e8;
+    font-family:var(--uf); font-size:11px; color:#4a5057; cursor:pointer;}
+  .seg button:last-child{border-right:0;}
+  .seg button.on{background:#1A1A1A; color:#fff;}
+
+  /* ===== LIVE SEMANTIC RENDERING — the atom drawn three ways on both surfaces ===== */
+  .sem{margin-top:26px; border:1px solid #d9dde1; background:#fff; padding:18px 20px 22px;}
+  .sem > h3{font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:#6b7178;
+    margin:0 0 4px; font-weight:500;}
+  .sem > p{font-size:12px; line-height:18px; color:#4a5057; margin:0 0 14px; max-width:96ch;}
+  .legs{display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:16px;}
+  .leg{border:1px solid #d9dde1; padding:16px 18px 18px;}
+  .leg.lightleg{background:#FFFFFF;} .leg.darkleg{background:#1A1A1A;}
+  .leg h4{font-size:11px; letter-spacing:.05em; text-transform:uppercase; margin:0 0 12px;
+    font-weight:500; color:var(--ink); opacity:.65;}
+  .row{margin:0 0 16px;}
+  .row:last-child{margin-bottom:0;}
+  .row .rl{display:flex; justify-content:space-between; gap:10px; align-items:baseline;
+    font-size:11px; color:var(--ink); opacity:.75; margin-bottom:5px;}
+  .row .rl b{font-weight:500; opacity:1;}
+  .row .rl .val{font-family:ui-monospace,Menlo,monospace; font-size:10.5px;}
+  .row .src{display:block; font-size:10px; line-height:14px; color:var(--ink); opacity:.55; margin-top:4px;}
+  .row .spark-standalone{width:100%; height:56px;}
+
+  .exp{margin-top:14px; border-top:1px solid #e2e5e8; padding-top:12px;}
+  .exp button{width:100%; padding:8px; background:#1A1A1A; color:#fff; border:0; cursor:pointer;
+    font-family:var(--uf); font-size:12px;}
+  .exp textarea{width:100%; height:150px; margin-top:8px; font-family:ui-monospace,Menlo,monospace;
+    font-size:10.5px; line-height:15px; border:1px solid #d5d9dd; padding:7px; display:none;}
+  .exp textarea.show{display:block;}
+  .exp .note{font-size:10px; color:#8a9098; margin-top:6px; display:block;}
+
+  .foot{max-width:1180px; margin:26px auto 0; border-top:1px solid #d9dde1; padding-top:14px;}
+  .foot h3{font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:#6b7178; margin:0 0 7px; font-weight:500;}
+  .foot p{font-size:12px; line-height:18px; color:#4a5057; margin:0 0 8px; max-width:96ch;}
+  .foot code{font-family:ui-monospace,Menlo,monospace; font-size:11px;}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <span class="rule">v2 · scaling is the only open decision</span>
+  <h1>Sparkline atom — scaling tuner</h1>
+  <p><b>Colour is settled.</b> You ruled it at s182-D3: the stroke follows the red and green <b>ink</b>
+     colours, in all four themes — down = the ruled red, up = the green that mirrors it, flat = the
+     default near-black ink, white on dark. So the 37-chip picker is gone; in its place, further down,
+     is a <b>live rendering</b> of the atom drawn all three ways on both surfaces, each labelled with
+     the exact ruled value and the ruling that seats it. <b>The one thing still open and yours is
+     SCALING</b> — responsive width, height snapped to the 4px grid — and that is what the dial and
+     the compile button below are for.</p>
+  <p class="hint"><b>Try it:</b> drag the <b>width</b> dial and watch the height snap to the 4px grid and
+     the headline numeral snap to the type ramp · flip <b>Dark</b> to see the background-keyed ink
+     switch · flick the <b>trend</b> demo switch (up / down / flat — a demo, not a choice) · drag the
+     <b>grab bar</b> to move the panel (<b>Re-dock</b> puts it back) · <b>Compile the scaling ruling</b>
+     when the size is right.</p>
+</div>
+
+<div class="wrap">
+  <div id="canvas">
+
+    <div class="stage" id="stage" data-theme="light">
+      <p class="mocktag">▲ MOCK CARD — scenery only. The trend card is FLOATED, not ruled. Judge the LINE, not the box.</p>
+      <div class="mockcard">
+        <span class="lab t-cm-chart-label">Balance, twelve months</span>
+        <div class="figrow">
+          <div>
+            <span class="headline t-cm-figure-1" id="headline">£104,280</span>
+            <div class="delta t-cm-chart-label" id="deltaline">+22 vs January</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <figure class="dv" style="margin:0;" data-dv-type="spark" role="group" aria-labelledby="tn1-h">
+            <figcaption id="tn1-h" class="sr-only">Twelve-month trend, indexed</figcaption>
+            <svg class="dv-svg spark-standalone" id="spark" data-trend="up" viewBox="0 0 580 90" preserveAspectRatio="none"
+                 role="group" aria-label="Twelve-month trend, rising from 82 to 104.">
+              <line class="dv-grid" x1="4" y1="86" x2="576" y2="86" stroke="var(--ink)"/>
+              <polyline class="dv-series" tabindex="0" role="img"
+                aria-label="Twelve-month trend: 82 in January to 104 in December."
+                data-tip="Jan 82 → Dec 104" pathLength="2400" fill="none"
+                points="4.0,79.2 56.0,86.0 108.0,68.9 160.0,75.8 212.0,58.7 264.0,51.8 316.0,62.1 368.0,45.0 420.0,34.8 472.0,41.6 524.0,24.5 576.0,4.0"/>
+              <circle class="dv-series" cx="576.0" cy="4.0" r="3.5"/>
+            </svg>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <!-- floating inspector — the EDIT-MODE-UX-PROTOTYPE pattern -->
+    <div class="inspector" id="inspector">
+      <div class="grab" id="inspGrab" title="Drag to reposition the controls"><span class="pill"></span></div>
+      <button class="redock" id="redock" type="button">Re-dock ⤺</button>
+      <div class="insp-head"><span class="name">Sparkline atom</span><span class="kind">controls</span></div>
+      <div class="insp-body">
+
+        <div class="ctl">
+          <span class="lab">Width <b><span id="wpx">340</span> px</b> — the dial is continuous; the atom is responsive</span>
+          <input type="range" id="size" min="140" max="620" value="340" step="1">
+          <span class="snapline">dial → 4px grid <span class="s" id="dsnap">64px</span> ·
+            numeral → ramp <span class="s" id="nsnap">52px</span> <span class="s" id="ncls">.t-cm-figure-1</span></span>
+        </div>
+
+        <div class="ctl">
+          <span class="lab">Theme</span>
+          <label class="toggle"><span class="sw" id="themesw"></span> Dark</label>
+        </div>
+
+        <div class="ctl">
+          <span class="lab">Trend — <b>a demo switch, not a decision.</b> The stroke is RULED (s182-D3):
+            it follows the trend, first datum vs last.</span>
+          <div class="seg" id="trendseg">
+            <button type="button" data-trend="up" class="on">Up</button>
+            <button type="button" data-trend="down">Down</button>
+            <button type="button" data-trend="flat">Flat</button>
+          </div>
+          <span class="snapline">stroke now <span class="s" id="strokeread">—</span></span>
+        </div>
+
+        <div class="exp">
+          <button id="compile" type="button">Compile the scaling ruling ⇢</button>
+          <textarea id="out" readonly aria-label="Compiled ruling message"></textarea>
+          <span class="note">Writes nothing anywhere. Copy the text and paste it back to me — that is
+            what makes it a ruling.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <section class="sem" id="sem">
+    <h3>Live semantic rendering — s182-D3, the ruled stroke on both surfaces</h3>
+    <p>Not a picker. This is the atom as it now renders, drawn three ways on each surface. Every hex
+       below is read from <code>knowledge/canon/canon.css</code> at the line noted; nothing here is
+       minted, and nothing here is a choice. The fork is <b>background-keyed</b>, not mode-keyed —
+       the same mechanism canon uses for <code>--error-atom</code>.</p>
+    <div class="legs" id="legs"></div>
+  </section>
+</div>
+
+<div class="foot">
+  <h3>What this file does and does not settle</h3>
+  <p><b>NOT a ruling.</b> Nothing here is inscribed. The compile button produces text for you to paste;
+     it writes no file. The mock card is scenery — <b>the trend card is FLOATED, not ruled</b> (s182-D2,
+     your words: "might be a partially built trend card with option, I haven't decided yet").</p>
+  <p><b>Colour is no longer a question here — it is RULED (s182-D3).</b> The 37-chip picker that stood
+     in this slot in v1 is gone, not hidden: the sparkline stroke is derived from the trend and the
+     background, never picked from the series ramp. Down takes the ruled red ink
+     (<code>#DA1A00</code> on white / <code>#F6604C</code> everywhere else — the two-red law,
+     s151-D1); up takes the green that mirrors it (<code>#137F3C</code> / <code>#66CC8D</code>,
+     s155-D1, values by reference to s144-D1); flat takes the standing ink
+     (<code>#1A1A1A</code> / <code>#FFFFFF</code>), your words: "the default ink near-black colours
+     are fine for the neutrals, white on dark". <b>No value is minted on this page.</b></p>
+  <p><b>FOUR THEMES — measured, not assumed.</b> I checked whether mono / legacy / console / supercharge
+     fork these colours: <code>knowledge/tokens/themes/apollo-legacy.overrides.json</code>,
+     <code>apollo-console.overrides.json</code> and <code>apollo-supercharge.overrides.json</code>
+     contain <b>zero</b> <code>data/series*</code> overrides — grepped, all three empty. So all four
+     themes inherit the same ramp, and light/dark is the COMPLETE picture for a stroke pick, not a
+     v1 shortcut. <b>DECLARED GAP:</b> the three theme files were checked for the SERIES tokens only.
+     If a theme forks the PAGE surface the stroke sits on, the rendered contrast of the ruled inks
+     would move — that is not measured here.</p>
+  <p><b>Scaling, as built:</b> the dial is continuous on width (responsive, exactly the atom's
+     <code>.dv-fit-on</code> behaviour). Height is derived at the atom's reviewed 340×64 proportion
+     and then <b>snapped: <code>Math.round(h/4)*4</code></b>. The headline numeral scales with the
+     atom and snaps to the nearest rung of the real type ramp
+     (<code>.t-cm-figure-1/2/4/3/5/6</code> = 52 / 40 / 32 / 24 / 16 / 14), reported by class name —
+     the countdown-timer mechanism you named. <b>DECLARED GAP:</b> the numeral rung is a
+     <i>proportional</i> pairing I chose for the tuner so you can see the two scale together; the
+     figure/spark size pairing is not itself ruled and does not become one by living here.</p>
+</div>
+
+<script>
+/* ============================================================================
+   TOKENS — read out of knowledge/canon/canon.css (:root = light, [data-theme="dark"] = dark)
+   and transcribed here verbatim. NO VALUE IS INVENTED. Contrast ratios are computed at load
+   from these same values against the page in each mode (#FFFFFF light / #1A1A1A dark), so the
+   number printed beside a specimen cannot drift from the line it labels.
+   ============================================================================ */
+/* THE RULED INKS — retrieved, never guessed. Sources, first-hand:
+     knowledge/canon/canon.css:307  --rag-error-ink:   #DA1A00   (light block)
+     knowledge/canon/canon.css:668  --rag-error-ink:   #F6604C   (dark block)
+     knowledge/canon/canon.css:314  --rag-success-ink: #137F3C   (light block)
+     knowledge/canon/canon.css:675  --rag-success-ink: #66CC8D   (dark block)
+     the standing ink #1A1A1A / #FFFFFF (s182-D3, Dave verbatim).
+   The keying is by SURFACE (two-red law s151-D1: the dark red on WHITE, the light red everywhere
+   else — including dark mode and every non-white ground), which is why the pairs below are labelled
+   "on white" / "everywhere else", not "light mode" / "dark mode". */
+var TRENDS = [
+  { key:'up',   label:'Trend UP — rises',  vr:'--spark-up',
+    light:'#137F3C', dark:'#66CC8D', token:'rag/success-ink',
+    rule:'s155-D1 (green mirrors the two-red law) · values by reference to s144-D1' },
+  { key:'down', label:'Trend DOWN — falls', vr:'--spark-down',
+    light:'#DA1A00', dark:'#F6604C', token:'rag/error-ink',
+    rule:'s151-D1 THE TWO-RED LAW, background-keyed — red ink on white, the light red everywhere else' },
+  { key:'flat', label:'Trend FLAT / neutral', vr:'--spark-flat',
+    light:'#1A1A1A', dark:'#FFFFFF', token:'text/default (the standing ink)',
+    rule:'s182-D3, Dave verbatim: "the default ink near-black colours are fine for the neutrals, white on dark"' }
+];
+var POINTS = {
+  up:   '4.0,79.2 56.0,86.0 108.0,68.9 160.0,75.8 212.0,58.7 264.0,51.8 316.0,62.1 368.0,45.0 420.0,34.8 472.0,41.6 524.0,24.5 576.0,4.0',
+  down: '4.0,4.0 56.0,24.5 108.0,41.6 160.0,34.8 212.0,45.0 264.0,62.1 316.0,51.8 368.0,58.7 420.0,75.8 472.0,68.9 524.0,86.0 576.0,79.2',
+  flat: '4.0,45.0 56.0,51.8 108.0,41.6 160.0,48.0 212.0,38.5 264.0,49.0 316.0,44.0 368.0,52.0 420.0,41.0 472.0,47.0 524.0,43.0 576.0,45.0'
+};
+var ENDS = { up:'4.0', down:'79.2', flat:'45.0' };
+
+/* contrast — sRGB relative luminance, the same maths the dataviz gate uses (dv-016 wants >=3:1
+   for a series fill in BOTH modes; that is why each ruled ink is measured against its own surface). */
+function lin(c){ c=c/255; return c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4); }
+function lum(h){ return 0.2126*lin(parseInt(h.substr(1,2),16)) + 0.7152*lin(parseInt(h.substr(3,2),16))
+                      + 0.0722*lin(parseInt(h.substr(5,2),16)); }
+function ratio(a,b){ var x=lum(a), y=lum(b), hi=Math.max(x,y), lo=Math.min(x,y); return (hi+0.05)/(lo+0.05); }
+
+/* ---- the type ramp, real rungs from knowledge/canon/type.css (figure composites) ---- */
+var RAMP = [[52,'.t-cm-figure-1'],[40,'.t-cm-figure-2'],[32,'.t-cm-figure-4'],
+            [24,'.t-cm-figure-3'],[16,'.t-cm-figure-5'],[14,'.t-cm-figure-6']];
+function nearestRung(v){
+  return RAMP.reduce(function(a,b){ return Math.abs(b[0]-v) < Math.abs(a[0]-v) ? b : a; });
+}
+
+var ASPECT = 340/64;                 /* the atom's reviewed proportion (kit 580x90 rendered 340x64) */
+var state = { w:340, dark:false, trend:'up' };
+
+var stage=document.getElementById('stage'), spark=document.getElementById('spark'),
+    headline=document.getElementById('headline'), deltaline=document.getElementById('deltaline'),
+    canvas=document.getElementById('canvas');
+
+function chosen(){
+  for (var i=0; i<TRENDS.length; i++){ if (TRENDS[i].key === state.trend) { return TRENDS[i]; } }
+  return TRENDS[0];
+}
+function snappedH(){ return Math.round((state.w/ASPECT)/4)*4; }
+
+function apply(){
+  var h = snappedH(), rung = nearestRung(state.w * 0.153);   /* proportional pairing — DECLARED, not ruled */
+  spark.style.width  = state.w + 'px';
+  spark.style.height = h + 'px';
+  headline.style.fontSize = rung[0] + 'px';
+  stage.setAttribute('data-theme', state.dark ? 'dark' : 'light');
+  var t = chosen();
+  spark.setAttribute('data-trend', state.trend);
+  spark.querySelector('polyline').setAttribute('points', POINTS[state.trend]);
+  var dot = spark.querySelector('circle');
+  dot.setAttribute('cy', ENDS[state.trend]);
+  /* the stroke is NOT set here — it comes from the CSS fork above, which is the point */
+  document.getElementById('strokeread').textContent =
+    (state.dark ? t.dark : t.light) + '  ' + t.vr + '  ' + t.token;
+  var segs = document.querySelectorAll('#trendseg button');
+  for (var q=0; q<segs.length; q++){ segs[q].classList.toggle('on', segs[q].dataset.trend === state.trend); }
+  document.getElementById('wpx').textContent   = state.w;
+  document.getElementById('dsnap').textContent = h + 'px';
+  document.getElementById('nsnap').textContent = rung[0] + 'px';
+  document.getElementById('ncls').textContent  = rung[1];
+  deltaline.textContent = (state.trend === 'up' ? '+22 vs January' :
+                           state.trend === 'down' ? '\u221222 vs January' : 'flat vs January')
+                          + ' · stroke = ruled ' + t.token;
+  anchor();
+}
+
+/* ---- build the LIVE SEMANTIC RENDERING: three trends x two surfaces, each labelled with the
+       ruled value it uses and the ruling id that seats it. Contrast vs the surface is measured
+       here, first-hand, from the same hexes that stroke the lines. ---- */
+(function buildSemantic(){
+  var host = document.getElementById('legs'), html = '';
+  var legs = [ ['lightleg','On WHITE (#FFFFFF) — the on-white leg','#FFFFFF','light'],
+               ['darkleg','On DARK (#1A1A1A) — "everywhere else"','#1A1A1A','dark'] ];
+  for (var l=0; l<legs.length; l++){
+    var cls=legs[l][0], head=legs[l][1], bg=legs[l][2], key=legs[l][3];
+    html += '<div class="leg ' + cls + '"><h4>' + head + '</h4>';
+    for (var t=0; t<TRENDS.length; t++){
+      var T=TRENDS[t], hex=T[key], r=ratio(hex,bg).toFixed(2);
+      html += '<div class="row">'
+           +   '<span class="rl"><b>' + T.label + '</b>'
+           +     '<span class="val">' + T.vr + ' = ' + hex + ' · ' + r + ':1</span></span>'
+           +   '<svg class="spark-standalone" data-trend="' + T.key + '" viewBox="0 0 580 90" '
+           +        'preserveAspectRatio="none" role="img" aria-label="' + T.label + ', on ' + bg + '">'
+           +     '<line class="dv-grid" x1="4" y1="86" x2="576" y2="86" stroke="var(--ink)"/>'
+           +     '<polyline class="dv-series" points="' + POINTS[T.key] + '"/>'
+           +     '<circle class="dv-series" cx="576.0" cy="' + ENDS[T.key] + '" r="3.5"/>'
+           +   '</svg>'
+           +   '<span class="src">' + T.token + ' — ' + T.rule + '</span>'
+           + '</div>';
+    }
+    html += '</div>';
+  }
+  host.innerHTML = html;
+})();
+
+/* ---- DRIVE THE KEYING (not a claim — an assertion that runs on load). The background-keyed fork
+       must actually SWITCH: the same trend must compute a DIFFERENT stroke on the two surfaces, and
+       each must equal its ruled value. Result is printed to the console and stamped on the page. ---- */
+(function driveKeying(){
+  function rgb(h){ return 'rgb(' + parseInt(h.substr(1,2),16) + ', ' + parseInt(h.substr(3,2),16)
+                        + ', ' + parseInt(h.substr(5,2),16) + ')'; }
+  var rows = document.querySelectorAll('#legs .leg'), fails = [], checked = 0;
+  for (var l=0; l<rows.length; l++){
+    var key = rows[l].classList.contains('darkleg') ? 'dark' : 'light';
+    for (var t=0; t<TRENDS.length; t++){
+      var T = TRENDS[t];
+      var el = rows[l].querySelector('svg[data-trend="' + T.key + '"] polyline');
+      var got = getComputedStyle(el).stroke, want = rgb(T[key]);
+      checked++;
+      if (got !== want) { fails.push(key + '/' + T.key + ': got ' + got + ' want ' + want); }
+      if (key === 'dark' && T.light !== T.dark) {
+        var other = document.querySelector('.leg.lightleg svg[data-trend="' + T.key + '"] polyline');
+        if (getComputedStyle(other).stroke === got) { fails.push(T.key + ': stroke did NOT switch between surfaces'); }
+      }
+    }
+  }
+  var msg = fails.length ? ('SWITCH DRIVE FAILED — ' + fails.join(' | '))
+                         : ('switch drive PASSED — ' + checked + ' computed strokes match their ruled values, '
+                            + 'and red/green differ between the two surfaces');
+  window.__sparkDrive = { pass: !fails.length, checked: checked, fails: fails };
+  if (fails.length) { console.error(msg); } else { console.log(msg); }
+  var stamp = document.createElement('p');
+  stamp.style.cssText = 'font-size:11px;margin:12px 0 0;color:' + (fails.length ? '#B92F1E' : '#4a5057');
+  stamp.textContent = (fails.length ? '⛔ ' : '✔ ') + msg;
+  document.getElementById('sem').appendChild(stamp);
+})();
+
+document.getElementById('size').addEventListener('input', function(){ state.w = +this.value; apply(); });
+document.getElementById('trendseg').addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('button[data-trend]');
+  if (!b) { return; }
+  state.trend = b.dataset.trend; apply();
+});
+document.getElementById('themesw').addEventListener('click', function(){
+  this.classList.toggle('on'); state.dark = this.classList.contains('on'); apply();
+});
+
+/* ---- COMPILE: emit a paste-able ruling message. Writes NOTHING. ---- */
+document.getElementById('compile').addEventListener('click', function(){
+  var h = snappedH(), rung = nearestRung(state.w * 0.153);
+  var msg =
+'SPARKLINE ATOM — SCALING, ruled at the tuner (reviews/SPARKLINE-ATOM-TUNER-2026-08-15-v2.html).\n' +
+'Closes the LAST item s182-D2 left open. Colour is NOT in this message — it was ruled at s182-D3.\n\n' +
+'SCALING: responsive width, height snapped to the 4px grid.\n' +
+'  reviewed specimen: ' + state.w + ' x ' + h + ' px  (height = round(width / ' + ASPECT.toFixed(4) + ' / 4) * 4)\n' +
+'  width is CONTINUOUS at runtime (.dv-fit-on releases it to the container); the height rule is what is being ruled.\n' +
+'  headline numeral beside it: ' + rung[0] + 'px = ' + rung[1] + ' (type ramp rung, snapped).\n' +
+'\nSTILL NOT RULED by this message: the trend card itself (FLOATED), and the figure/spark size\n' +
+'pairing above, which is the tuner\'s proportional demo, not a decision.\n';
+  var out = document.getElementById('out');
+  out.value = msg; out.classList.add('show'); out.focus(); out.select();
+});
+
+/* ===== inspector anchoring + drag — the EDIT-MODE-UX-PROTOTYPE-2026-07-19-v3 pattern ===== */
+var inspector=document.getElementById('inspector'), redock=document.getElementById('redock'), manual=false;
+function anchor(){
+  if (manual) { return; }
+  var cr=canvas.getBoundingClientRect(), sr=stage.getBoundingClientRect();
+  var gap=16, iw=inspector.offsetWidth||330, rightSpace=sr.right-cr.left+gap;
+  if (rightSpace + iw <= cr.width){ inspector.style.left=rightSpace+'px'; inspector.style.top=(sr.top-cr.top)+'px'; }
+  else { inspector.style.left=Math.max(0,(sr.left-cr.left))+'px'; inspector.style.top=(sr.bottom-cr.top+gap)+'px'; }
+  grow();
+}
+/* the panel FLOATS, so it does not push the page — at narrow widths it docks BELOW the stage and
+   would print straight over the footer prose. Grow the canvas to hold it. (Caught in the render
+   pass at 720px, where the desktop layout looked clean and the narrow one did not.) */
+function grow(){
+  var need = inspector.offsetTop + inspector.offsetHeight + 24;
+  canvas.style.minHeight = Math.max(420, need) + 'px';
+}
+var idrag=false, ox=0, oy=0;
+document.getElementById('inspGrab').addEventListener('pointerdown', function(e){
+  idrag=true; var cr=canvas.getBoundingClientRect(), ir=inspector.getBoundingClientRect();
+  ox=e.clientX-ir.left; oy=e.clientY-ir.top; this.setPointerCapture(e.pointerId); e.preventDefault();
+});
+document.addEventListener('pointermove', function(e){
+  if (!idrag) { return; }
+  var cr=canvas.getBoundingClientRect();
+  inspector.style.left=Math.max(0,Math.min(cr.width-inspector.offsetWidth, e.clientX-cr.left-ox))+'px';
+  inspector.style.top =Math.max(0, e.clientY-cr.top-oy)+'px';
+  manual=true; redock.classList.add('show'); grow();
+});
+document.addEventListener('pointerup', function(){ idrag=false; });
+redock.addEventListener('click', function(){ manual=false; redock.classList.remove('show'); anchor(); });
+window.addEventListener('resize', anchor);
+
+/* the stage needs the layout to settle before the inspector can anchor beside it */
+apply();
+if (document.fonts && document.fonts.ready) { document.fonts.ready.then(anchor); }
+</script>
+</body>
+</html>

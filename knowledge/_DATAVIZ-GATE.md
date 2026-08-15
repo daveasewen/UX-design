@@ -156,6 +156,9 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 - ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
 
 ## ✓ snippets/Chart-sparkline.reference.html — PASS
+- ⚠ spark — dv-005: no real <table> in the chart (a11y spine + tabular alternative).
+- ⚠ spark — dv-005: no real <table> in the chart (a11y spine + tabular alternative).
+- ⚠ spark — dv-005: no real <table> in the chart (a11y spine + tabular alternative).
 
 ## ✓ snippets/Chart-stacked-area.reference.html — PASS
 - ⚠ stacked-area — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.

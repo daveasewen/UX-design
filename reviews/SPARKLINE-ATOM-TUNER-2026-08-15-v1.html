@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sparkline atom — live tuner (colour + scaling) · #182 v1</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<!--
+  SPARKLINE ATOM TUNER — v1, session #182, 2026-08-15.
+  WHY THIS EXISTS: s182-D2 ruled the sparkline an ATOM ALONE and left TWO things open, explicitly
+  Dave's, explicitly at a tuner: (a) the sparkline's COLOUR, candidates from the EXISTING ramp only,
+  and (b) its SCALING — responsive width, height snapped to the 4px grid "in the manner of the
+  EDIT-MODE-UX-PROTOTYPE-2026-07-19-v3 countdown timer (continuous dial, round(d/4)*4 output,
+  numerals to the type ramp)". This file is that instrument, and NOTHING here is a ruling.
+  INTERACTION PATTERN is lifted from EDIT-MODE-UX-PROTOTYPE-2026-07-19-v3.html: floating inspector
+  with a grab bar, free drag, Re-dock, theme toggle, and the snapline readout under the dial.
+  ⛔ NO HEX IS MINTED HERE. Every colour candidate is an EXISTING token read out of
+  knowledge/canon/canon.css (:root = light, [data-theme="dark"] = dark), with its token name and
+  its measured contrast against the page in BOTH modes shown on the chip. Greys and the mono ink
+  are SURFACED as candidates, never pre-swapped.
+  THE CARD IS A MOCK. It is scenery so the atom can be judged at the size it will actually live at,
+  beside a headline figure. The trend card is FLOATED, NOT RULED (s182-D2, Dave's own words) — do
+  not read the mock as a card design.
+-->
+<style>
+  /* --- tuner chrome (this page's own furniture, not component canon) --- */
+  *{box-sizing:border-box;}
+  body{margin:0; padding:28px 32px 40px; font-family:var(--uf); background:#F4F5F6; color:#1A1A1A;}
+  .hd{max-width:1180px; margin:0 auto 18px;}
+  .hd h1{font-size:22px; font-weight:400; margin:0 0 6px;}
+  .hd p{font-size:13px; line-height:19px; color:#4a5057; margin:0 0 6px; max-width:76ch;}
+  .hd .rule{display:inline-block; font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+    background:#1A1A1A; color:#fff; padding:3px 8px; margin-bottom:8px;}
+  .hint{font-size:12px; color:#6b7178;}
+  .wrap{max-width:1180px; margin:0 auto;}
+  /* the canvas must be TALLER than the floating panel, or the panel overlaps the footer prose
+     (seen in the first render pass and fixed here) */
+  #canvas{position:relative; min-height:800px;}
+
+  /* --- the specimen stage: page surface, theme-switched, holding the MOCK card ---
+     width-capped so the inspector DOCKS BESIDE it (the prototype's preferred anchor) rather than
+     falling through to the below-the-component fallback. */
+  .stage{border:1px solid #d9dde1; padding:28px; transition:background .16s;
+    width:min(100%,760px);}
+  .stage[data-theme="light"]{--page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1; --grid-alpha:.10; background:#FFFFFF;}
+  .stage[data-theme="dark"]{--page:#1A1A1A; --ink:#FFFFFF; --line:#808080; --grid-alpha:.16; background:#1A1A1A;}
+  .mocktag{font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink);
+    opacity:.5; margin:0 0 8px;}
+  .mockcard{border:1px dashed var(--line); padding:20px 22px; display:inline-block; min-width:300px;}
+  .mockcard .lab{display:block; color:var(--ink); opacity:.6; margin-bottom:10px;}
+  .figrow{display:flex; align-items:flex-end; gap:20px; flex-wrap:wrap;}
+  .headline{color:var(--ink); white-space:nowrap;}
+  .delta{color:var(--ink); opacity:.6; margin-top:6px;}
+
+  /* --- THE ATOM, byte-faithful to knowledge/snippets/Chart-sparkline.reference.html post-strip:
+     the graphic + its one data-tip mark. No title, no table, no chrome. --- */
+  .spark-standalone{display:block; overflow:visible;}
+  .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+  .spark-standalone .dv-series{fill:none; stroke:var(--stroke); stroke-width:2.5;
+    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+  .spark-standalone circle.dv-series{fill:var(--stroke); stroke:none;}
+  .spark-standalone polyline.dv-series{outline-offset:4px;}
+  .spark-standalone polyline.dv-series:focus-visible{outline:2px solid var(--ink);}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  /* --- floating inspector (pattern: EDIT-MODE-UX-PROTOTYPE-2026-07-19-v3) --- */
+  .inspector{position:absolute; width:330px; background:#fff; border:1px solid #cfd3d8;
+    box-shadow:0 6px 22px rgba(0,0,0,.14); z-index:5;}
+  .grab{height:20px; cursor:grab; display:flex; align-items:center; justify-content:center;
+    background:#eef0f2; border-bottom:1px solid #e2e5e8;}
+  .grab:active{cursor:grabbing;}
+  .grab .pill{width:30px; height:4px; border-radius:2px; background:#9aa0a6;}
+  .redock{position:absolute; right:8px; top:24px; font-size:10.5px; color:#0b62a4; background:none;
+    border:0; cursor:pointer; display:none;}
+  .redock.show{display:block;}
+  .insp-head{display:flex; justify-content:space-between; align-items:baseline; padding:9px 12px 4px;}
+  .insp-head .name{font-size:13px; font-weight:500;}
+  .insp-head .kind{font-size:10.5px; color:#8a9098; text-transform:uppercase; letter-spacing:.05em;}
+  .insp-body{padding:4px 12px 14px; max-height:660px; overflow:auto;}
+  .ctl{margin:12px 0 0;}
+  .ctl .lab{display:block; font-size:11.5px; color:#4a5057; margin-bottom:5px;}
+  .ctl .lab b{color:#1A1A1A;}
+  input[type=range]{width:100%;}
+  .snapline{display:block; font-size:10.5px; color:#8a9098; margin-top:4px; line-height:15px;}
+  .snapline .s{color:#0b62a4; font-weight:600;}
+  .toggle{display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;}
+  .sw{width:34px; height:18px; border-radius:9px; background:#c9ced3; position:relative; transition:background .16s;}
+  .sw::after{content:""; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%;
+    background:#fff; transition:left .16s;}
+  .sw.on{background:#1A1A1A;} .sw.on::after{left:18px;}
+
+  /* colour candidates — tap to pick. Chip carries the TOKEN NAME, never a bare hex. */
+  .grp{margin-top:10px;}
+  .grp h4{font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:#8a9098;
+    margin:10px 0 5px; font-weight:500;}
+  .chips{display:flex; flex-wrap:wrap; gap:5px;}
+  .chip{display:flex; align-items:center; gap:6px; border:1px solid #d5d9dd; background:#fff;
+    padding:4px 7px 4px 5px; cursor:pointer; font-family:var(--uf); font-size:10.5px; color:#33383d;
+    text-align:left; line-height:13px; width:100%;}
+  .chip:hover{border-color:#9aa0a6;}
+  .chip.on{border-color:#1A1A1A; box-shadow:inset 0 0 0 1px #1A1A1A;}
+  .chip .sws{flex:0 0 auto; width:24px; height:16px; border:1px solid rgba(0,0,0,.18); display:flex;}
+  .chip .sws i{flex:1;}
+  .chip .tk{flex:1; font-weight:500; word-break:break-all;}
+  .chip .cr{flex:0 0 auto; color:#8a9098; font-variant-numeric:tabular-nums;}
+  .chip .cr.warn{color:#B92F1E; font-weight:600;}
+  .chip .cur{flex:0 0 auto; font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#0b62a4;}
+
+  .exp{margin-top:14px; border-top:1px solid #e2e5e8; padding-top:12px;}
+  .exp button{width:100%; padding:8px; background:#1A1A1A; color:#fff; border:0; cursor:pointer;
+    font-family:var(--uf); font-size:12px;}
+  .exp textarea{width:100%; height:150px; margin-top:8px; font-family:ui-monospace,Menlo,monospace;
+    font-size:10.5px; line-height:15px; border:1px solid #d5d9dd; padding:7px; display:none;}
+  .exp textarea.show{display:block;}
+  .exp .note{font-size:10px; color:#8a9098; margin-top:6px; display:block;}
+
+  .foot{max-width:1180px; margin:26px auto 0; border-top:1px solid #d9dde1; padding-top:14px;}
+  .foot h3{font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:#6b7178; margin:0 0 7px; font-weight:500;}
+  .foot p{font-size:12px; line-height:18px; color:#4a5057; margin:0 0 8px; max-width:96ch;}
+  .foot code{font-family:ui-monospace,Menlo,monospace; font-size:11px;}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <span class="rule">s182-D2 · still open · Dave's</span>
+  <h1>Sparkline atom — colour + scaling tuner</h1>
+  <p>The atom was stripped to the graphic today (title gone, table disclosure gone). Two things were
+     left open and named as yours, at a tuner: <b>what colour the line is</b>, and <b>how it scales</b>.
+     Everything below is a live control, not a proposal. No hex is invented here — every candidate is
+     a token that already exists in <code>knowledge/canon/canon.css</code>, shown with its own name.</p>
+  <p class="hint"><b>Try it:</b> drag the <b>width</b> dial and watch the height snap to the 4px grid and
+     the headline numeral snap to the type ramp · tap a <b>colour chip</b> to restroke the line ·
+     flip <b>Dark</b> and check the pick again · drag the <b>grab bar</b> to move the panel
+     (<b>Re-dock</b> puts it back) · <b>Compile the ruling</b> when you have landed on a pick.</p>
+</div>
+
+<div class="wrap">
+  <div id="canvas">
+
+    <div class="stage" id="stage" data-theme="light">
+      <p class="mocktag">▲ MOCK CARD — scenery only. The trend card is FLOATED, not ruled. Judge the LINE, not the box.</p>
+      <div class="mockcard">
+        <span class="lab t-cm-chart-label">Balance, twelve months</span>
+        <div class="figrow">
+          <div>
+            <span class="headline t-cm-figure-1" id="headline">£104,280</span>
+            <div class="delta t-cm-chart-label" id="deltaline">+22 vs January</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <figure class="dv" style="margin:0;" data-dv-type="spark" role="group" aria-labelledby="tn1-h">
+            <figcaption id="tn1-h" class="sr-only">Twelve-month trend, indexed</figcaption>
+            <svg class="dv-svg spark-standalone" id="spark" viewBox="0 0 580 90" preserveAspectRatio="none"
+                 role="group" aria-label="Twelve-month trend, rising from 82 to 104.">
+              <line class="dv-grid" x1="4" y1="86" x2="576" y2="86" stroke="var(--ink)"/>
+              <polyline class="dv-series" tabindex="0" role="img"
+                aria-label="Twelve-month trend: 82 in January to 104 in December."
+                data-tip="Jan 82 → Dec 104" pathLength="2400" fill="none"
+                points="4.0,79.2 56.0,86.0 108.0,68.9 160.0,75.8 212.0,58.7 264.0,51.8 316.0,62.1 368.0,45.0 420.0,34.8 472.0,41.6 524.0,24.5 576.0,4.0"/>
+              <circle class="dv-series" cx="576.0" cy="4.0" r="3.5"/>
+            </svg>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <!-- floating inspector — the EDIT-MODE-UX-PROTOTYPE pattern -->
+    <div class="inspector" id="inspector">
+      <div class="grab" id="inspGrab" title="Drag to reposition the controls"><span class="pill"></span></div>
+      <button class="redock" id="redock" type="button">Re-dock ⤺</button>
+      <div class="insp-head"><span class="name">Sparkline atom</span><span class="kind">controls</span></div>
+      <div class="insp-body">
+
+        <div class="ctl">
+          <span class="lab">Width <b><span id="wpx">340</span> px</b> — the dial is continuous; the atom is responsive</span>
+          <input type="range" id="size" min="140" max="620" value="340" step="1">
+          <span class="snapline">dial → 4px grid <span class="s" id="dsnap">64px</span> ·
+            numeral → ramp <span class="s" id="nsnap">52px</span> <span class="s" id="ncls">.t-cm-figure-1</span></span>
+        </div>
+
+        <div class="ctl">
+          <span class="lab">Theme</span>
+          <label class="toggle"><span class="sw" id="themesw"></span> Dark</label>
+        </div>
+
+        <div class="ctl">
+          <span class="lab">Line colour — <b>existing tokens only</b>. Ratios are stroke vs page, light / dark.</span>
+          <div id="palette"></div>
+        </div>
+
+        <div class="exp">
+          <button id="compile" type="button">Compile the ruling ⇢</button>
+          <textarea id="out" readonly aria-label="Compiled ruling message"></textarea>
+          <span class="note">Writes nothing anywhere. Copy the text and paste it back to me — that is
+            what makes it a ruling.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="foot">
+  <h3>What this file does and does not settle</h3>
+  <p><b>NOT a ruling.</b> Nothing here is inscribed. The compile button produces text for you to paste;
+     it writes no file. The mock card is scenery — <b>the trend card is FLOATED, not ruled</b> (s182-D2,
+     your words: "might be a partially built trend card with option, I haven't decided yet").</p>
+  <p><b>Colour candidates are the whole existing set, not a shortlist.</b> Read from
+     <code>knowledge/canon/canon.css</code>: the 5-step series ramp, the 5-step high-contrast ramp, the
+     four data-vis hue ramps (blue / purple / pink / orange / green), the four delta tokens, and the
+     greys + mono ink. Greys are surfaced, not swapped. <b>The current value
+     <code>--data-series-1</code> is in the list and marked CURRENT</b> — no pre-selection away from it.</p>
+  <p><b>The two-red law (s151-D1) and the mono error ink (s149-D1) are untouched and deliberately
+     ABSENT from this palette.</b> <code>#DA1A00</code> / <code>#F6604C</code> are error inks with a
+     background-keyed law of their own; offering them as a data stroke would put a second red in play.
+     <code>--data-delta-loss</code> IS offered because it is a data token — but it carries a
+     "reads as loss" flag on the chip, because a red trend line will be read semantically.</p>
+  <p><b>FOUR THEMES — measured, not assumed.</b> I checked whether mono / legacy / console / supercharge
+     fork these colours: <code>knowledge/tokens/themes/apollo-legacy.overrides.json</code>,
+     <code>apollo-console.overrides.json</code> and <code>apollo-supercharge.overrides.json</code>
+     contain <b>zero</b> <code>data/series*</code> overrides — grepped, all three empty. So all four
+     themes inherit the same ramp, and light/dark is the COMPLETE picture for a stroke pick, not a
+     v1 shortcut. <b>DECLARED GAP:</b> the three theme files were checked for the SERIES tokens only.
+     If a theme forks the PAGE surface the stroke sits on, the contrast numbers on the chips would
+     move — that is not measured here.</p>
+  <p><b>Scaling, as built:</b> the dial is continuous on width (responsive, exactly the atom's
+     <code>.dv-fit-on</code> behaviour). Height is derived at the atom's reviewed 340×64 proportion
+     and then <b>snapped: <code>Math.round(h/4)*4</code></b>. The headline numeral scales with the
+     atom and snaps to the nearest rung of the real type ramp
+     (<code>.t-cm-figure-1/2/4/3/5/6</code> = 52 / 40 / 32 / 24 / 16 / 14), reported by class name —
+     the countdown-timer mechanism you named. <b>DECLARED GAP:</b> the numeral rung is a
+     <i>proportional</i> pairing I chose for the tuner so you can see the two scale together; the
+     figure/spark size pairing is not itself ruled and does not become one by living here.</p>
+</div>
+
+<script>
+/* ============================================================================
+   TOKENS — read out of knowledge/canon/canon.css (:root = light, [data-theme="dark"] = dark)
+   and transcribed here verbatim. NO VALUE IS INVENTED. Contrast ratios are computed at load
+   from these same values against the page in each mode (#FFFFFF light / #1A1A1A dark), so the
+   number on the chip cannot drift from the swatch beside it.
+   ============================================================================ */
+var GROUPS = [
+  { name:'Series ramp — the chart default set', items:[
+    ['--data-series-1','#766682','#766682'],
+    ['--data-series-2','#A45C3A','#A45C3A'],
+    ['--data-series-3','#577C78','#577C78'],
+    ['--data-series-4','#7F7B45','#7F7B45'],
+    ['--data-series-5','#A37E94','#A37E94'] ]},
+  { name:'High-contrast series ramp (theme-forked)', items:[
+    ['--data-series-high-contrast-1','#484D6F','#93B6CC'],
+    ['--data-series-high-contrast-2','#97482C','#E5A78F'],
+    ['--data-series-high-contrast-3','#385F4F','#90BA9B'],
+    ['--data-series-high-contrast-4','#6E465D','#D197A6'],
+    ['--data-series-high-contrast-5','#7C6F34','#E5C283'] ]},
+  { name:'Delta tokens — carry meaning, read semantically', items:[
+    ['--data-delta-gain','#16864E','#1AA05C'],
+    ['--data-delta-neutral','#2573DC','#2674DC'],
+    ['--data-delta-warning','#C58720','#C0831F'],
+    ['--data-delta-loss','#B92F1E','#CC4333'] ]},
+  { name:'Greys + mono ink — surfaced, not pre-swapped', items:[
+    ['--ink','#1A1A1A','#FFFFFF'],
+    ['--data-target-color','#313131','#B7B7B7'],
+    ['--data-axis-color','#626262','#9D9D9D'] ]},
+  { name:'Data-vis hue ramp — blue', items:[
+    ['--data-vis-data-chart-blue-1','#266076','#266076'],
+    ['--data-vis-data-chart-blue-2','#347893','#347893'],
+    ['--data-vis-data-chart-blue-3','#1494C6','#1494C6'],
+    ['--data-vis-data-chart-blue-4','#509EBC','#509EBC'] ]},
+  { name:'Data-vis hue ramp — purple', items:[
+    ['--data-vis-data-chart-purple-1','#7C4386','#7C4386'],
+    ['--data-vis-data-chart-purple-2','#8738AB','#8738AB'],
+    ['--data-vis-data-chart-purple-3','#A752CF','#A752CF'],
+    ['--data-vis-data-chart-purple-4','#B184C7','#B184C7'] ]},
+  { name:'Data-vis hue ramp — green', items:[
+    ['--data-vis-data-chart-green-1','#356512','#356512'],
+    ['--data-vis-data-chart-green-2','#518827','#518827'],
+    ['--data-vis-data-chart-green-3','#4DA90F','#4DA90F'],
+    ['--data-vis-data-chart-green-4','#74A157','#74A157'] ]},
+  { name:'Data-vis hue ramp — orange', items:[
+    ['--data-vis-data-chart-orange-1','#9B4822','#9B4822'],
+    ['--data-vis-data-chart-orange-2','#C64D24','#C64D24'],
+    ['--data-vis-data-chart-orange-3','#ED500D','#ED500D'],
+    ['--data-vis-data-chart-orange-4','#EC7046','#EC7046'] ]},
+  { name:'Data-vis hue ramp — pink', items:[
+    ['--data-vis-data-chart-pink-1','#933D4F','#933D4F'],
+    ['--data-vis-data-chart-pink-2','#C03954','#C03954'],
+    ['--data-vis-data-chart-pink-3','#F14E73','#F14E73'],
+    ['--data-vis-data-chart-pink-4','#E76E84','#E76E84'] ]}
+];
+var CURRENT = '--data-series-1';            /* what the atom strokes with TODAY */
+var SEMANTIC = { '--data-delta-loss':'reads as LOSS', '--data-delta-gain':'reads as GAIN',
+                 '--data-delta-warning':'reads as WARNING', '--data-delta-neutral':'reads as NEUTRAL' };
+
+/* contrast — sRGB relative luminance, the same maths the dataviz gate uses (dv-016 wants >=3:1
+   for a series fill in BOTH modes; that is why both numbers are on every chip). */
+function lin(c){ c=c/255; return c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4); }
+function lum(h){ return 0.2126*lin(parseInt(h.substr(1,2),16)) + 0.7152*lin(parseInt(h.substr(3,2),16))
+                      + 0.0722*lin(parseInt(h.substr(5,2),16)); }
+function ratio(a,b){ var x=lum(a), y=lum(b), hi=Math.max(x,y), lo=Math.min(x,y); return (hi+0.05)/(lo+0.05); }
+
+/* ---- the type ramp, real rungs from knowledge/canon/type.css (figure composites) ---- */
+var RAMP = [[52,'.t-cm-figure-1'],[40,'.t-cm-figure-2'],[32,'.t-cm-figure-4'],
+            [24,'.t-cm-figure-3'],[16,'.t-cm-figure-5'],[14,'.t-cm-figure-6']];
+function nearestRung(v){
+  return RAMP.reduce(function(a,b){ return Math.abs(b[0]-v) < Math.abs(a[0]-v) ? b : a; });
+}
+
+var ASPECT = 340/64;                 /* the atom's reviewed proportion (kit 580x90 rendered 340x64) */
+var state = { w:340, dark:false, token:CURRENT };
+
+var stage=document.getElementById('stage'), spark=document.getElementById('spark'),
+    headline=document.getElementById('headline'), deltaline=document.getElementById('deltaline'),
+    canvas=document.getElementById('canvas');
+
+function chosen(){
+  for (var g=0; g<GROUPS.length; g++){
+    for (var i=0; i<GROUPS[g].items.length; i++){
+      if (GROUPS[g].items[i][0] === state.token) { return GROUPS[g].items[i]; }
+    }
+  }
+  return null;
+}
+function snappedH(){ return Math.round((state.w/ASPECT)/4)*4; }
+
+function apply(){
+  var h = snappedH(), rung = nearestRung(state.w * 0.153);   /* proportional pairing — DECLARED, not ruled */
+  spark.style.width  = state.w + 'px';
+  spark.style.height = h + 'px';
+  headline.style.fontSize = rung[0] + 'px';
+  stage.setAttribute('data-theme', state.dark ? 'dark' : 'light');
+  var t = chosen();
+  stage.style.setProperty('--stroke', state.dark ? t[2] : t[1]);
+  document.getElementById('wpx').textContent   = state.w;
+  document.getElementById('dsnap').textContent = h + 'px';
+  document.getElementById('nsnap').textContent = rung[0] + 'px';
+  document.getElementById('ncls').textContent  = rung[1];
+  deltaline.textContent = '+22 vs January · stroke ' + state.token;
+  var chips = document.querySelectorAll('.chip');
+  for (var i=0; i<chips.length; i++){ chips[i].classList.toggle('on', chips[i].dataset.token === state.token); }
+  anchor();
+}
+
+/* ---- build the palette: one tap-target per EXISTING token, labelled by NAME ---- */
+(function buildPalette(){
+  var host = document.getElementById('palette'), html = '';
+  for (var g=0; g<GROUPS.length; g++){
+    html += '<div class="grp"><h4>' + GROUPS[g].name + '</h4><div class="chips">';
+    for (var i=0; i<GROUPS[g].items.length; i++){
+      var it = GROUPS[g].items[i], rl = ratio(it[1],'#FFFFFF'), rd = ratio(it[2],'#1A1A1A');
+      var warn = (rl < 3 || rd < 3) ? ' warn' : '';
+      html += '<button class="chip" type="button" data-token="' + it[0] + '">'
+            +   '<span class="sws"><i style="background:' + it[1] + '"></i>'
+            +                     '<i style="background:' + it[2] + '"></i></span>'
+            +   '<span class="tk">' + it[0]
+            +     (SEMANTIC[it[0]] ? ' <em style="color:#8a9098;font-style:normal">· ' + SEMANTIC[it[0]] + '</em>' : '')
+            +   '</span>'
+            +   '<span class="cr' + warn + '">' + rl.toFixed(2) + ' / ' + rd.toFixed(2) + '</span>'
+            +   (it[0] === CURRENT ? '<span class="cur">current</span>' : '')
+            + '</button>';
+    }
+    html += '</div></div>';
+  }
+  host.innerHTML = html;
+  host.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('.chip');
+    if (!b) { return; }
+    state.token = b.dataset.token; apply();
+  });
+})();
+
+document.getElementById('size').addEventListener('input', function(){ state.w = +this.value; apply(); });
+document.getElementById('themesw').addEventListener('click', function(){
+  this.classList.toggle('on'); state.dark = this.classList.contains('on'); apply();
+});
+
+/* ---- COMPILE: emit a paste-able ruling message. Writes NOTHING. ---- */
+document.getElementById('compile').addEventListener('click', function(){
+  var t = chosen(), h = snappedH(), rung = nearestRung(state.w * 0.153);
+  var rl = ratio(t[1],'#FFFFFF').toFixed(2), rd = ratio(t[2],'#1A1A1A').toFixed(2);
+  var msg =
+'SPARKLINE ATOM — colour + scaling, ruled at the tuner (reviews/SPARKLINE-ATOM-TUNER-2026-08-15-v1.html).\n' +
+'Closes the two items s182-D2 left open.\n\n' +
+'COLOUR: the sparkline stroke is ' + t[0] + '\n' +
+'  light ' + t[1] + ' · dark ' + t[2] + (t[1] === t[2] ? '  (one value, not theme-forked)' : '  (theme-forked)') + '\n' +
+'  contrast vs page: ' + rl + ':1 light · ' + rd + ':1 dark' +
+      ((rl < 3 || rd < 3) ? '   ⚠ BELOW 3:1 IN ONE MODE — dv-016 would refuse this' : '   (dv-016 >=3:1 both modes: passes)') + '\n' +
+'  the endpoint dot takes the same token.\n' +
+(SEMANTIC[t[0]] ? '  ⚠ this token ' + SEMANTIC[t[0]] + ' — a reader will take the line as carrying that meaning.\n' : '') +
+'\nSCALING: responsive width, height snapped to the 4px grid.\n' +
+'  reviewed specimen: ' + state.w + ' x ' + h + ' px  (height = round(width / ' + ASPECT.toFixed(4) + ' / 4) * 4)\n' +
+'  width is CONTINUOUS at runtime (.dv-fit-on releases it to the container); the height rule is what is being ruled.\n' +
+'  headline numeral beside it: ' + rung[0] + 'px = ' + rung[1] + ' (type ramp rung, snapped).\n' +
+'\nSTILL NOT RULED by this message: the trend card itself (FLOATED), and the figure/spark size\n' +
+'pairing above, which is the tuner\'s proportional demo, not a decision.\n';
+  var out = document.getElementById('out');
+  out.value = msg; out.classList.add('show'); out.focus(); out.select();
+});
+
+/* ===== inspector anchoring + drag — the EDIT-MODE-UX-PROTOTYPE-2026-07-19-v3 pattern ===== */
+var inspector=document.getElementById('inspector'), redock=document.getElementById('redock'), manual=false;
+function anchor(){
+  if (manual) { return; }
+  var cr=canvas.getBoundingClientRect(), sr=stage.getBoundingClientRect();
+  var gap=16, iw=inspector.offsetWidth||330, rightSpace=sr.right-cr.left+gap;
+  if (rightSpace + iw <= cr.width){ inspector.style.left=rightSpace+'px'; inspector.style.top=(sr.top-cr.top)+'px'; }
+  else { inspector.style.left=Math.max(0,(sr.left-cr.left))+'px'; inspector.style.top=(sr.bottom-cr.top+gap)+'px'; }
+  grow();
+}
+/* the panel FLOATS, so it does not push the page — at narrow widths it docks BELOW the stage and
+   would print straight over the footer prose. Grow the canvas to hold it. (Caught in the render
+   pass at 720px, where the desktop layout looked clean and the narrow one did not.) */
+function grow(){
+  var need = inspector.offsetTop + inspector.offsetHeight + 24;
+  canvas.style.minHeight = Math.max(800, need) + 'px';
+}
+var idrag=false, ox=0, oy=0;
+document.getElementById('inspGrab').addEventListener('pointerdown', function(e){
+  idrag=true; var cr=canvas.getBoundingClientRect(), ir=inspector.getBoundingClientRect();
+  ox=e.clientX-ir.left; oy=e.clientY-ir.top; this.setPointerCapture(e.pointerId); e.preventDefault();
+});
+document.addEventListener('pointermove', function(e){
+  if (!idrag) { return; }
+  var cr=canvas.getBoundingClientRect();
+  inspector.style.left=Math.max(0,Math.min(cr.width-inspector.offsetWidth, e.clientX-cr.left-ox))+'px';
+  inspector.style.top =Math.max(0, e.clientY-cr.top-oy)+'px';
+  manual=true; redock.classList.add('show'); grow();
+});
+document.addEventListener('pointerup', function(){ idrag=false; });
+redock.addEventListener('click', function(){ manual=false; redock.classList.remove('show'); anchor(); });
+window.addEventListener('resize', anchor);
+
+/* the stage needs the layout to settle before the inspector can anchor beside it */
+apply();
+if (document.fonts && document.fonts.ready) { document.fonts.ready.then(anchor); }
+</script>
+</body>
+</html>

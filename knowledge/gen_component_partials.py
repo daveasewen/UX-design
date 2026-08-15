@@ -375,9 +375,30 @@ def run(write):
                 if unknown:
                     fails.append(f"{gname}/markup: {mname}: unknown markup name(s) {unknown} — group has {sorted(mk)}")
                     continue
-                missing_mandatory = [n for n in mandatory_names if n not in markup_list]
+                # RULED EXEMPTION from a mandatory markup partial (s182-D2, #182 — the sparkline
+                # atom sheds its title slot). Absence of a mandatory partial stays a LOUD FAIL by
+                # default; the ONLY legal way out is an explicit "markupExempt": {name: reason}
+                # naming the ruling. An empty/blank reason REFUSES — an exemption without a stated
+                # ruling is indistinguishable from the drift this gate exists to catch. An exempt
+                # name may NOT also sit in the markup list (the two declarations contradict).
+                exempt = mconf.get("markupExempt") or {}
+                if not isinstance(exempt, dict):
+                    fails.append(f'{gname}/markup: {mname}: "markupExempt" must be an object {{name: reason}}'); continue
+                bad_exempt = sorted(set(exempt) - set(mk.keys()))
+                if bad_exempt:
+                    fails.append(f"{gname}/markup: {mname}: markupExempt names unknown markup partial(s) {bad_exempt}")
+                    continue
+                for n, why in sorted(exempt.items()):
+                    if not (isinstance(why, str) and why.strip()):
+                        fails.append(f'{gname}/markup: {mname}: markupExempt["{n}"] has no reason — '
+                                     f"an exemption must name the ruling that granted it")
+                    if n in markup_list:
+                        fails.append(f'{gname}/markup: {mname}: "{n}" is both declared in markup and '
+                                     f"exempted — the two declarations contradict")
+                missing_mandatory = [n for n in mandatory_names if n not in markup_list and n not in exempt]
                 if missing_mandatory:
-                    fails.append(f"{gname}/markup: {mname}: missing mandatory markup partial(s) {missing_mandatory}")
+                    fails.append(f"{gname}/markup: {mname}: missing mandatory markup partial(s) {missing_mandatory}"
+                                 f" — carry them, or declare a reasoned \"markupExempt\" entry naming the ruling")
                 for pname in mk:
                     if pname not in markup_list and AUTO_MARKUP_RE(pname).search(html):
                         fails.append(f"{gname}/markup: {mname} does not declare {pname} but carries its "

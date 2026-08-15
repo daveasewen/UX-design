@@ -128,9 +128,13 @@ OUT_DIRNAME = os.path.join("notes", "_dream")
 
 # ── B3 (s179-D1 clause 1, B-THEN-REVIEW). THE SIDECAR. ────────────────────────────────────
 # Grades live HERE, never in MEMORY.md: boot cost zero, no boot-floor re-base, reversible.
-# ⚠ THE GRADE SCHEMA BELOW IS **PROVISIONAL**. Dave rules it at the B3 review (brief §7:
-#   "Grade schema and vocabulary" is on the DO-NOT-RULE list). Every constant in this block
-#   is a PROPOSAL carrying its own reasoning, not a ruling, and the sidecar header says so.
+# ★ B3 REVIEW HELD #182 — `s182-D1` (Dave, 2026-08-15) settles FOUR calls; the rest stays PROVISIONAL:
+#   · alert surface RATIFIED AS BUILT (counts-only, STALE listed by name; measured 105 real/check-in)
+#   · GRADE_AGING_DAYS = 30 stays an EXPLICIT PLACEHOLDER — picked not derived; derive from cycle data
+#   · probe commissioning PARKED behind the first-cycle numbers; UNPROVABLE = honest register, not a defect;
+#     if commissioned later, scope = starred/blocked subset only. Authoring convention in force:
+#     new hooks with mechanical claims carry their probeable token.
+#   · counting window opens at the FIRST SCHEDULED dream-pass (2026-08-16); earlier rows excluded.
 GRADES_BASENAME = "_MEMORY-GRADES.json"
 GRADE_LOG_BASENAME = "_GRADE-DECISIONS.jsonl"
 GRADE_SCHEMA_ID = "memory-grades/0-PROVISIONAL"
