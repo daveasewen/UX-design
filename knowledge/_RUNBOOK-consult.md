@@ -53,7 +53,7 @@ a one-line, checkable fact instead of a trust exercise.
 ## Tier: advisory, for now
 
 This enters at the **advisory tier** (AGENTS principle 5) — it does not fail any build today.
-The promotion path to blocking is a presence-check gate (`_validate_consult.py`: new/changed
+The promotion path to blocking is a presence-check gate (a validate-consult script, not yet built: new/changed
 review sheets and metas must carry a consult receipt) once the tool has earned trust by being
 bite-tested in real use. Do not build that gate pre-emptively; earn it first.
 

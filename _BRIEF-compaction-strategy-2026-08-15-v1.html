@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compaction Strategy — Research &amp; Brief · Apollo #181</title>
+<style>
+:root{
+  --accent:#DA1A00; /* two-red law: on-white red (s151-D1) */
+  --black:#1A1A1A;  /* ink rule: blackest-not-pure-black */
+  --white:#FFFFFF;
+  --grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-4:#B7B7B7;
+  --grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333333;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--s8:8rem;
+  --max-width:1200px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--black);background:var(--white);font-size:1rem;line-height:1.75}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--s4)}
+nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);z-index:10}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+nav .back{font-size:.875rem;color:var(--grey-6);text-decoration:none;letter-spacing:.04em}
+nav .ctx{font-size:.875rem;color:var(--black);letter-spacing:.04em}
+nav .status{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6)}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin-bottom:var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+header.profile{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+header .grid{display:grid;grid-template-columns:3fr 2fr;gap:var(--s6);align-items:end}
+h1{font-size:3.5625rem;font-weight:400;line-height:1.05;letter-spacing:0}
+.meta{font-size:.875rem;color:var(--grey-7);line-height:1.6}
+.meta strong{font-weight:500;color:var(--black)}
+section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+.dimension{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dim-index{font-size:6rem;font-weight:100;line-height:1;color:var(--grey-3)}
+.dim-label{font-size:1.1875rem;font-weight:500;margin-top:var(--s2)}
+h2{font-size:2.125rem;font-weight:400;line-height:1.15;margin-bottom:var(--s4)}
+h3{font-size:1.1875rem;font-weight:500;line-height:1.2;margin:var(--s5) 0 var(--s2)}
+p{margin-bottom:var(--s3)}
+p:last-child{margin-bottom:0}
+.summary-box{background:var(--grey-1);padding:var(--s5);margin-top:var(--s4)}
+.summary-box p{font-size:1.1875rem;line-height:1.6;font-weight:400}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:var(--grey-2);border:1px solid var(--grey-2);margin:var(--s5) 0}
+.stat{background:var(--white);padding:var(--s4)}
+.stat .num{font-size:2.6875rem;font-weight:200;line-height:1.1}
+.stat .cap{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s1)}
+table{width:100%;border-collapse:collapse;font-size:.875rem;margin:var(--s4) 0}
+th{text-align:left;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:var(--grey-7);padding:var(--s2);border-bottom:1px solid var(--grey-3)}
+td{padding:var(--s2);border-bottom:1px solid var(--grey-2);vertical-align:top;line-height:1.6}
+td:first-child{font-weight:500;white-space:nowrap}
+.distinction{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);margin-top:var(--s4)}
+.distinction .cell{background:var(--white);padding:var(--s4)}
+.distinction .head{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500;margin-bottom:var(--s2)}
+.distinction .theirs .head{color:var(--grey-6)}
+.distinction .ours .head{color:var(--accent)}
+.distinction p{font-size:.875rem;line-height:1.7;margin-bottom:var(--s2)}
+.comparison{background:var(--grey-1)}
+.pull{border-top:1px solid var(--grey-3);padding-top:var(--s3);margin-top:var(--s5);font-size:1.1875rem;line-height:1.5}
+.options li{margin-bottom:var(--s3);line-height:1.7}
+ol,ul{padding-left:1.25rem;margin-bottom:var(--s3)}
+li{margin-bottom:var(--s1)}
+.pitfall{border-left:2px solid var(--accent);padding-left:var(--s3);margin-bottom:var(--s4)}
+.pitfall h4{font-size:1rem;font-weight:500;margin-bottom:var(--s1)}
+.pitfall p{font-size:.875rem;color:var(--grey-8);margin-bottom:0}
+footer{padding:var(--s5) 0;font-size:.75rem;color:var(--grey-6);display:flex;justify-content:space-between}
+.qnum{font-weight:500;color:var(--accent);margin-right:.5rem}
+.qlist li{margin-bottom:var(--s3);line-height:1.7;list-style:none}
+@media(max-width:820px){
+  header .grid,.dimension{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .distinction{grid-template-columns:1fr}
+  h1{font-size:2.6875rem}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <span class="back">Apollo / Memento — Token Management</span>
+  <span class="ctx">Compaction Strategy</span>
+  <span class="status">Parked · Research · #181</span>
+</div></nav>
+
+<header class="profile"><div class="wrap">
+  <p class="label">Research &amp; Brief</p>
+  <div class="grid">
+    <h1>Compaction: what the API now does for free, and what it must never be allowed to rule</h1>
+    <div class="meta">
+      <p><strong>Status</strong> Parked research — nothing here is ruled, built, or scheduled.<br>
+      <strong>Session</strong> #181 · 15 Aug 2026<br>
+      <strong>Sources</strong> Anthropic platform docs (compaction, context editing), Anthropic engineering (context engineering, long-running harnesses)<br>
+      <strong>Decision owner</strong> Dave — five questions at the end</p>
+    </div>
+  </div>
+</div></header>
+
+<!-- EXEC SUMMARY -->
+<section><div class="wrap">
+  <div class="dimension">
+    <div><div class="dim-index">00</div><div class="dim-label">The short version</div></div>
+    <div>
+      <div class="summary-box">
+        <p>Anthropic now offers <em>server-side compaction</em>: when a conversation nears a token threshold, the API automatically writes a summary and drops everything before it. It is, in effect, an automated version of our wrap ritual — except the summary is unverified, the ritual is skipped, and the loss is silent. Our whole token-management strategy exists because a confident false inscription is the failure mode. So the recommendation is: <strong>adopt compaction as vocabulary and as a parachute, never as a substitute for the wrap.</strong> Three concrete wiring points are proposed below; none is built.</p>
+      </div>
+      <p style="margin-top:var(--s4)">Your next action: read the five questions in section 06 and rule, defer, or park each. Everything else in this document is receipt.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 01 WHAT IT IS -->
+<section><div class="wrap">
+  <div class="dimension">
+    <div><div class="dim-index">01</div><div class="dim-label">What compaction is</div></div>
+    <div>
+      <h2>The API summarises the past and throws it away</h2>
+      <p>Server-side compaction (beta <code>compact-2026-01-12</code>) watches input tokens. When they cross a configured trigger, the API has the model write a summary of the conversation so far, wraps it in a <em>compaction block</em>, and continues. On every later request, everything before that block is dropped — the summary <em>is</em> the past from then on.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">150K</div><div class="cap">Default trigger (input tokens)</div></div>
+        <div class="stat"><div class="num">50K</div><div class="cap">Minimum allowed trigger</div></div>
+        <div class="stat"><div class="num">~3.5K</div><div class="cap">Typical summary size</div></div>
+        <div class="stat"><div class="num">1×</div><div class="cap">Extra sampling pass, billed</div></div>
+      </div>
+      <h3>The controls that matter to us</h3>
+      <table>
+        <tr><th>Control</th><th>What it does</th><th>Why we care</th></tr>
+        <tr><td>trigger</td><td>Input-token threshold; min 50,000</td><td>Directly comparable to our stop line (FILL 150,929) — same unit, same object (resident context)</td></tr>
+        <tr><td>instructions</td><td>Custom summarisation prompt; <em>replaces</em> the default entirely</td><td>The one lever that could make a summary Memento-shaped — preserve rulings, registers, do-not-rule lists</td></tr>
+        <tr><td>pause_after_compaction</td><td>API stops after writing the summary; caller can splice in preserved messages before continuing</td><td>The hook where a harness could run something wrap-like before the past is discarded</td></tr>
+        <tr><td>usage.iterations</td><td>Per-pass token accounting; top-level usage excludes the compaction pass</td><td>Any gauge reading <code>message.usage</code> must aggregate iterations or it under-reports spend</td></tr>
+      </table>
+      <p>Adjacent machinery, same family: <em>context editing</em> clears old tool results and thinking blocks selectively rather than summarising (finer-grained, no narrative loss); the <em>memory tool</em> lets the model write facts to files before they are cleared — which is architecturally what Memento already does by hand. Anthropic's own engineering guidance for long-running agents recommends exactly our pattern: compaction <em>plus</em> git checkpoints <em>plus</em> progress files, tuned first for recall, because "overly aggressive compaction can result in the loss of subtle but critical context."</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 02 WHERE IT TOUCHES OUR SYSTEM -->
+<section><div class="wrap">
+  <div class="dimension">
+    <div><div class="dim-index">02</div><div class="dim-label">Where it touches us</div></div>
+    <div>
+      <h2>We already run a compaction protocol — by hand, with receipts</h2>
+      <p>Map the vocabulary and the overlap is almost total. Their trigger is our amber line. Their summary is our wrap. Their compaction block is our read chain. Their <code>instructions</code> parameter is our capture ritual. The difference is not mechanism — it is <strong>trust</strong>.</p>
+      <table>
+        <tr><th>API concept</th><th>Memento equivalent</th><th>The gap</th></tr>
+        <tr><td>Trigger threshold</td><td>Amber 160K · stop line FILL 150,929</td><td>Ours is measured by <code>_gauge_tokens.py</code> and check-ins; theirs fires silently</td></tr>
+        <tr><td>Compaction summary</td><td>Wrap ritual → banner + dossier + handoff</td><td>Ours is inscribed in the repo, subject-asserted, reconciled path by path; theirs is one unverified generation</td></tr>
+        <tr><td>Compaction block</td><td><code>_CHAIN.md</code> — the generated contract a cold session reads</td><td>Ours is generated from state and gated; theirs is prose the model wrote about itself</td></tr>
+        <tr><td>Custom instructions</td><td>Capture ritual + DO-NOT-RULE list</td><td>Theirs has no register discipline — floated, standing, and canon would flatten into one paragraph</td></tr>
+        <tr><td>usage.iterations</td><td>FILL vs THROUGHPUT — two objects, never summed</td><td>Compatible, but only if the gauge learns to read iterations</td></tr>
+      </table>
+      <p class="pull">A compaction block is a Polaroid that the system is instructed to treat as a tattoo. Memento's entire design premise is that this substitution is the failure mode — the risk is never forgetting, it is confidently remembering something false.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 03 VERDICT / COMPARISON -->
+<section class="comparison"><div class="wrap">
+  <div class="dimension">
+    <div>
+      <p class="label">Verdict</p>
+      <h2 style="font-size:2.6875rem">Adopt the vocabulary. Refuse the substitution.</h2>
+    </div>
+    <div>
+      <p>Compaction is real, well-designed, and solves the problem our stop line exists for — for systems that have no inscription discipline. We have one. So the question is not "compaction or wrap" but "what does compaction do <em>underneath</em> the wrap."</p>
+      <div class="distinction">
+        <div class="cell theirs">
+          <div class="head">Compaction alone</div>
+          <p>Automatic, cheap to operate, no ritual. One lossy summary, written by the model mid-task, never verified against the repo. No registers, no do-not-rule fence, no subject read-back. A silent gap — and a declared gap passes while a silent one fails.</p>
+        </div>
+        <div class="cell ours">
+          <div class="head">Wrap + compaction as parachute</div>
+          <p>The wrap stays mandatory and stays first. Compaction becomes the declared emergency floor beneath it: if a session ever blows past the stop line un-wrapped, the harness's compaction fires rather than the window dying mid-thought. The parachute is priced, named at check-in, and its summary is treated as UNPROVEN until reconciled against the repo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 04 WIRING OPTIONS -->
+<section><div class="wrap">
+  <div class="dimension">
+    <div><div class="dim-index">04</div><div class="dim-label">Wiring options</div></div>
+    <div>
+      <h2>Three wiring points, smallest first</h2>
+      <ul class="options" style="list-style:none;padding-left:0">
+        <li><strong>W1 — Vocabulary &amp; runbook (words only, ~zero build).</strong> Add a compaction section to <code>_RUNBOOK-context-gauge.md</code>: define the harness's compaction as the layer <em>below</em> the stop line, state that a fired compaction is a declared event to surface at the next check-in, and state the rule that a compaction summary is UNPROVEN inscription — never trusted, always reconciled against <code>_CHAIN.md</code> and git. This is the "read the runbook, not the hook" home for the whole topic.</li>
+        <li><strong>W2 — Gauge compatibility (small, priced build).</strong> Teach <code>_gauge_tokens.py</code> / <code>_checkin.py</code> to read <code>usage.iterations</code> when present, so a compaction pass can never silently corrupt FILL. This is the same class of defect as FILL-vs-THROUGHPUT (#59→#90): a new usage shape that an old gauge mis-sums. Cheap to gate now, expensive to re-discover later.</li>
+        <li><strong>W3 — Sub-agent compaction with Memento instructions (larger, only if a need appears).</strong> For long-running subs, enable compaction with custom <code>instructions</code> drafted from the capture ritual: preserve rulings verbatim, preserve the DO-NOT-RULE list, mark everything else as summary. Note the doc's own warning — with tools defined, the summariser sometimes calls a tool instead of summarising and returns a null block, so the instructions must forbid tool calls. This option is speculative until a sub actually exceeds a window mid-task, which the divvy-plan discipline currently prevents.</li>
+      </ul>
+      <p>Recommended sequence: W1 now (it is a paragraph), W2 when the gauge is next open for edits, W3 parked until observed need. No new instrument in the same breath as the finding — W2 and W3 each get their own priced brief if ruled.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 05 PITFALLS -->
+<section><div class="wrap">
+  <div class="dimension">
+    <div><div class="dim-index">05</div><div class="dim-label">Consequences, replayed</div></div>
+    <div>
+      <h2>What goes wrong if this is done carelessly</h2>
+      <div class="pitfall"><h4>The summary supplants the wrap</h4><p>If compaction is allowed to stand in for the wrap even once, the session it "saved" has no inscribed record — the next session inherits a model-written Polaroid as its only past. Wrap is not optional (#86), and no automation changes that.</p></div>
+      <div class="pitfall"><h4>The gauge mis-reads the new usage shape</h4><p>With compaction enabled, top-level <code>input_tokens</code> excludes the compaction pass. A gauge that sums the old way under-reports real spend and over-reports room to the stop line — the exact FILL/THROUGHPUT confusion class, in a new coat.</p></div>
+      <div class="pitfall"><h4>Registers flatten</h4><p>A default summary has no concept of floated vs standing vs canon. A ruling and a passing thought compress to the same sentence weight. Anything that survives a compaction must be re-graded before it is trusted — conclusions are debt, and a compacted conclusion is debt with the receipt burned.</p></div>
+      <div class="pitfall"><h4>Quota bleed</h4><p>The summarisation pass runs on the <em>same model</em> as the conversation — no cheap-model option server-side. On a Fable or Opus lane, every compaction is a full-model generation charged against the weekly quota. Which budget binds must be named before enabling it anywhere.</p></div>
+      <div class="pitfall"><h4>Cache invalidation cost</h4><p>Each compaction rewrites the cache. Without a separate cache breakpoint on the system prompt, the whole prefix re-caches every time — a recurring, invisible tax. The docs' own mitigation (breakpoint at end of system prompt) must travel with any adoption.</p></div>
+      <div class="pitfall"><h4>The premise may not even be ours to control</h4><p>This session runs inside Cowork's harness; whether and how it compacts is not configured from inside a conversation. W1's runbook text must state plainly which layers we control (subs we launch, API builds) and which we merely observe — an instruction that cannot be enacted where it is written is the #173 class of gate.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 06 QUESTIONS -->
+<section><div class="wrap">
+  <div class="dimension">
+    <div><div class="dim-index">06</div><div class="dim-label">Open to Dave</div></div>
+    <div>
+      <h2>Five questions — rule, defer, or park each</h2>
+      <ul class="qlist" style="padding-left:0">
+        <li><span class="qnum">Q1</span>Does the verdict hold: compaction as parachute-under-the-wrap, never a substitute? (This becomes the standing frame for everything else.)</li>
+        <li><span class="qnum">Q2</span>W1 — inscribe the runbook paragraph now? It is words only; the only cost is that it becomes canon and must be maintained.</li>
+        <li><span class="qnum">Q3</span>W2 — queue the gauge <code>usage.iterations</code> compatibility as a priced brief, or park until compaction is actually enabled somewhere in our stack?</li>
+        <li><span class="qnum">Q4</span>W3 — park sub-agent compaction outright, or keep it warm with a drafted Memento summarisation prompt ready for the first long-running sub that needs it?</li>
+        <li><span class="qnum">Q5</span>Should a fired compaction (wherever we can observe one) be a declared event in the check-in output, alongside the seam and grades blocks? That is a one-line surface with a measured cost precedent (~105 real).</li>
+      </ul>
+      <p class="pull">Nothing in this document is ruled. It is a Polaroid, labelled as one.</p>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;width:100%">
+  <span>Apollo · Memento — Compaction Strategy v1 · #181 · 2026-08-15</span>
+  <span>Sources: platform.claude.com/docs (compaction · context-editing) · anthropic.com/engineering</span>
+</div></footer>
+
+</body>
+</html>
