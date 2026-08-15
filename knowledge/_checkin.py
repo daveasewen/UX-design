@@ -569,6 +569,49 @@ def verify_block(text: str, path: str, fill: dict, repo: str = REPO,
     return (not reasons, reasons, notes)
 
 
+# ------------------------------------------------------- THE SEAM OBLIGATION (`--block` WIRED)
+# ⛔ WHY THIS EXISTS AT ALL. `--block`, `--verify-block` and `--selftest-block` were built at
+# #178 and WIRED INTO NO SEAM: a correct instrument nobody's workflow demands, which is the
+# [[instrument-without-a-consumer]] class minted ~90 times before the rule. This function is the
+# CONSUMER. It is called by the DEFAULT check-in run — the thing already law at every lane seam
+# ("run `_checkin.py`", [[checkin-is-mandatory-not-optional]]) — so the seam now hands back a
+# block that was REGENERATED and GRADED in the same breath, and nobody is ever in the position
+# of having a block to paste. It is deliberately NOT a new command and NOT a new state store
+# (brief §6 P3): the block remains a rendering, and this is only where the rendering is demanded.
+#
+# THREE LEGS, and each is one of the brief's BLOCKs:
+#   P1 (missing SOURCE provenance) -> `verify_block` leg 1, which grades the block we just
+#      rendered against the disk it claims to come from.
+#   P2 (not regenerated / input-hash mismatch) -> `verify_block` legs 2+3, on the SAME integrity
+#      digest `--block` already emits. ⛔ NOT a second hash and NOT a second store.
+#   STATE-UNRESOLVED (new here, and the leg with real teeth at a healthy seam) -> a field that
+#      renders `UNKNOWN — …`. `verify_block` CANNOT catch this: an UNKNOWN is honestly rendered,
+#      honestly hashed and re-derives identically, so a block full of UNKNOWNs is a VALID block
+#      about UNREADABLE state. At a seam that is exactly the thing that must stop the lane — the
+#      block's job is to carry DONE/DOING/NEXT/STOP across the seam, and it cannot carry what it
+#      could not read. The leg is NAMED separately so the refusal says which
+#      [[refusal-names-the-first-obstacle]], and it lives HERE rather than inside `verify_block`
+#      because a CANDIDATE block quoting an UNKNOWN faithfully is not thereby forged.
+_UNRESOLVED_RE = re.compile(r"\bUNKNOWN\s+—")
+
+
+def seam_block(path: str, fill: dict, repo: str = REPO,
+               max_age: int = BLOCK_MAX_AGE_S) -> tuple[bool, str, list[str], list[str]]:
+    """Render the block for THIS seam and grade it on the spot. (ok, block, reasons, notes)."""
+    block = render_block(path, fill, repo=repo)
+    _ok, reasons, notes = verify_block(block, path, fill, repo=repo, max_age=max_age)
+    for line in block.splitlines()[1:]:
+        field = line.split(":", 1)[0].strip()
+        if field == "BUDGET":
+            continue                      # BUDGET names its own refusals in gauge vocabulary
+        if _UNRESOLVED_RE.search(line):
+            reasons.append(f"STATE-UNRESOLVED: {field} did not resolve from state —\n"
+                           f"      {line}\n"
+                           f"    The block is a rendering; an UNKNOWN field means the SEAM has "
+                           f"no {field}. Fix the state, never the block.")
+    return (not reasons, block, reasons, notes)
+
+
 # ------------------------------------------------------------------ the mutation tests (§8)
 # ⛔ A GREEN THAT CANNOT FAIL IS AN ASSERTION [[six-beat-ladder-ruled]]. Every arm below is a
 # DRIVE of the real `render_block` / `verify_block` on a real block, and each mutation must be
@@ -649,6 +692,34 @@ def selftest_block(path: str, fill: dict) -> int:
     os.utime(lanes_p, (st.st_atime, st.st_mtime))          # mtime restored: the leg-1 alibi
     drive("(c) state changed, mtime restored", block, "INTEGRITY")
 
+    # ---------------------------------------------------------------- THE SEAM GATE'S OWN ARMS
+    # ⚠ A SECOND, UNCONTAMINATED COPY. Arm (c) above mutated `tmp`'s lanes file permanently; a
+    # seam arm graded on it would be reported as failing its own leg while actually failing
+    # someone else's mutation [[attribute-the-diff]].
+    tmp2 = tempfile.mkdtemp(prefix="checkin-seam-")
+    for rel in BLOCK_STATE_SOURCES:
+        dst = os.path.join(tmp2, rel)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copy2(os.path.join(REPO, rel), dst)
+
+    def drive_seam(name: str, expect_leg: str | None):
+        ok, _blk, reasons, _ = seam_block(path, fill, repo=tmp2)
+        good = ok if expect_leg is None else (
+            (not ok) and any(r.startswith(expect_leg) for r in reasons))
+        arms.append((name, expect_leg or "ACCEPT", reasons, good))
+        return good
+
+    # CONTROL — the seam gate on healthy state must CLEAR, or every seam rejection below is a
+    # rubber stamp refusing everything.
+    drive_seam("seam control: live state", None)
+
+    # (e) STATE THAT WILL NOT PARSE. The block still renders, still hashes, still re-derives —
+    #     it is a VALID block about UNREADABLE state, which is precisely the case `verify_block`
+    #     cannot see and the seam must refuse.
+    lanes2 = os.path.join(tmp2, "knowledge/_lanes.json")
+    open(lanes2, "w", encoding="utf-8").write("{ this is not JSON")
+    drive_seam("(e) lanes file unparseable -> seam", "STATE-UNRESOLVED")
+
     print("PLAN BLOCK — MUTATION TESTS (each arm DRIVES the real checker)")
     print(f"  temp state copy: {tmp}")
     for name, expect, reasons, good in arms:
@@ -689,6 +760,10 @@ def main() -> int:
                     help="Skip the wrap-gate rehearsal (#92). Default is to run it: a fail "
                          "found at a check-in costs a cheap edit; the same fail found at wrap "
                          "costs a probe→fix→re-gate round at peak fill (#91-F5).")
+    ap.add_argument("--no-block", action="store_true",
+                    help="Skip the B2 seam block. ⛔ An escape hatch for a broken mount, not a "
+                         "convenience: skipping it means the seam has NO graded block and the "
+                         "next brief has nothing legitimate to carry.")
     args = ap.parse_args()
 
     path = find_transcript(args.path)
@@ -836,6 +911,34 @@ def main() -> int:
                   f"state is UNKNOWN, not green. Run `python3 knowledge/_capture_gate.py "
                   f"--rehearse` by hand.")
         print()
+    # ── SEAM — THE PLAN BLOCK (B2, brief §2), WIRED HERE AND ONLY HERE. Same seam as the
+    # rehearsal above and for the same reason: the check-in IS the lane seam, so the block is
+    # regenerated where the seam already is, never carried into it. Printed for use in a
+    # sub-brief / handoff, and GRADED in the same run so a bad seam BLOCKS instead of
+    # narrating. ⛔ Do not add a `--seam` flag: an opt-in seam check is one nobody runs.
+    seam_rc = 0
+    if not args.no_block:
+        # ⚠ `repo=REPO` PASSED EXPLICITLY, not left to the default. Python binds a default at
+        # DEFINITION time, so `seam_block(path, fill)` reads the REPO this module was imported
+        # with and is blind to a test that repoints it — the first drive of this seam end-to-end
+        # measured a corrupted temp tree and reported the LIVE one green
+        # [[attribute-the-diff]]: a measurement whose SUBJECT is not what you think it is.
+        ok, block, reasons, _notes = seam_block(path, fill, repo=REPO, max_age=args.max_age)
+        print("  SEAM        plan block (B2) — REGENERATED from state, graded against it:")
+        for ln in block.splitlines():
+            print(f"    {ln}")
+        if ok:
+            print("    ✅ SEAM CLEAR — provenance complete, integrity digest matches, every "
+                  "field re-derives, no UNKNOWN.")
+        else:
+            seam_rc = 3
+            print(f"    ⛔ SEAM BLOCKED — {len(reasons)} failing leg(s). This block must NOT be "
+                  f"carried into a brief or a handoff:")
+            for i, r in enumerate(reasons, 1):
+                print(f"    {i}. {r}")
+            print("    ⇒ Fix the STATE, then re-run the check-in. Never repair the block "
+                  "(P1/P2, GENERATE-NEVER-INHERIT). Exit code 3.")
+        print()
     if args.window:
         if fill.get("available"):
             print(f"  ratio        {fill['now'] / args.window:.0%} of the {args.window:,} you passed"
@@ -857,7 +960,12 @@ def main() -> int:
     print("  ⚠ KIND  TWO OBJECTS, REPORTED SEPARATELY, NEVER SUMMED OR CONVERTED:")
     print("          headline = THROUGHPUT (cumulative log) · FILL = RESIDENT CONTEXT (`usage`).")
     print("          A stop line is in FILL. Compare FILL to it. #59→#90 compared the other one.")
-    return 0
+    if seam_rc:
+        print()
+        print("  ⛔ EXIT 3 — the SEAM BLOCK above was REJECTED. The reading is still honest; the")
+        print("     SEAM is not. Fix the state named in the failing leg before opening the next")
+        print("     lane or briefing a sub (brief §2 P1/P2).")
+    return seam_rc
 
 
 if __name__ == "__main__":

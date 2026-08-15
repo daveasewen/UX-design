@@ -727,6 +727,30 @@ changed **with its mtime restored** (the nastiest case: a provenance line that i
 is not) — each of which must be rejected **on its own named leg**. Verified by mutating the checker to
 accept everything: the CONTROL still passed and all five mutation arms went red, `rc=1`.
 
+**★★ THE SEAM OBLIGATION — WHERE THE BLOCK IS DEMANDED (wired #179 under `s179-D1`; before that the
+checker existed and no seam asked for it, which is [[instrument-without-a-consumer]] verbatim).**
+**You do not run `--block` at a seam. You run the plain check-in, and the seam block comes with it** —
+`python3 knowledge/_checkin.py` now prints a `SEAM` section that REGENERATES the block from state and
+GRADES it in the same run (`seam_block()`, `_checkin.py`), so the block a brief or handoff carries is
+one the seam itself just certified and there is never a block lying around to paste forward. **Two
+BLOCKs, both from brief §2 P1/P2, and neither is a new store or a second hash** — they reuse the
+`integrity` digest `--block` already emits: a `SOURCE` line whose provenance is incomplete or whose
+mtimes disagree with disk, and a block whose text or state has moved under it, are rejected on their
+named legs; the check-in then **exits 3**, and the reading above it stays honest while the SEAM does
+not. A third leg lives only at the seam — `STATE-UNRESOLVED`, a `DONE`/`DOING`/`NEXT`/`STOP` that
+renders `UNKNOWN — …`. `--verify-block` cannot catch that one and must not: an `UNKNOWN` is honestly
+rendered, honestly hashed and re-derives identically, so it is a **valid block about unreadable state**
+— fine to quote, fatal to cross a seam on. The **wrap seam** carries the same obligation from the other
+side: `_capture_gate.py::plan_block_check()` runs in `wrap_checks` (lane wraps too) and FAILS the wrap
+if state no longer renders a block, so a session cannot close leaving the next seam nothing to render.
+⛔ `--no-block` exists for a broken mount, not for convenience; skipping it means the seam was **not
+graded**, which is not the same as green. Proof it can fail (#179): `--selftest-block` runs 8 arms
+(6 candidate + seam CONTROL + an unparseable lanes file → `STATE-UNRESOLVED`), and blinding
+`_UNRESOLVED_RE` turns the seam arm red while the control stays green;
+`_capture_gate.py --selftest` runs 4 more (live-state CONTROL green, unparseable lanes → FAIL, missing
+state source → FAIL, non-state tree → DECLARED skip), and a rubber-stamp mutant reddens three of them
+while a refuse-everything mutant reddens the CONTROL.
+
 ## The trigger — TWO TIERS (ruled by Dave, 2026-07-21)
 
 Compaction is not one event. Firing the full ritual + fresh session at every Amber would churn

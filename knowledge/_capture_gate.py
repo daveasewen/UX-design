@@ -3718,9 +3718,57 @@ def instrument_stray_check(repo, dirs=INSTRUMENT_READONLY_DIRS):
     return fails, warns
 
 
+def plan_block_check(repo):
+    """B2 SEAM OBLIGATION AT THE WRAP SEAM (brief `_BRIEF-borrowed-instruments-…-v2.md` §2,
+    ruled s179-D1). Returns (fails, warns).
+
+    ⛔ WHAT IT GRADES, AND WHY NOT THE OBVIOUS THING. It does NOT verify a stored block — there
+    is no stored block and there must never be one (§6 P3: a `current.md` is the duplicate-home
+    defect the register system exists to prevent). It grades **whether the state on disk STILL
+    RENDERS a plan block at all**: it drives `_checkin.py`'s own renderer — the SAME code the
+    seam prints, imported, never re-implemented [[a-new-tier-silently-bypasses-its-tests]] — and
+    FAILS if any of DONE/DOING/NEXT/STOP comes back `UNKNOWN — …`.
+
+    That is the wrap-seam half of P1/P2. The check-in half (`_checkin.py` default run) refuses to
+    hand a bad block FORWARD into a brief; this half refuses to CLOSE a session whose state the
+    next session's block cannot be rendered from — the read-chain staleness class, caught at the
+    seam where it becomes durable [[check-after-its-own-remedy]].
+
+    ⚠ BUDGET AND THE TRANSCRIPT ARE NOT TOUCHED HERE. `derive_block_fields` is state-only; the
+    gate must not need a live transcript or tiktoken to run, or it becomes a gate that cannot
+    pass in one environment [[gate-cannot-pass-in-one-environment]].
+    """
+    fails, warns = [], []
+    if not os.path.exists(os.path.join(repo, "_CHAIN.md")):
+        # DECLARED, never silent: a fixture tree is not a state tree, and a gate that fails on
+        # every temp dir gets muted rather than fixed.
+        return fails, [f"B2 PLAN BLOCK check SKIPPED — no `_CHAIN.md` under {repo}, so this is "
+                       f"not a state tree. NOT a pass: the seam was not graded here."]
+    try:
+        sys.path.insert(0, os.path.join(repo, "knowledge"))
+        import _checkin
+        fields = _checkin.derive_block_fields(_checkin.read_block_sources(repo))
+    except SystemExit as e:                                       # read_block_sources refuses loud
+        return ([f"B2 PLAN BLOCK: state does not render a block — {str(e)[:400]}"], warns)
+    except Exception as e:                                        # noqa: BLE001
+        return ([f"B2 PLAN BLOCK: the renderer did not run ({type(e).__name__}: {e}) — the seam "
+                 f"obligation is UNKNOWN, not met. Run `python3 knowledge/_checkin.py` and read "
+                 f"the SEAM section."], warns)
+    for field in ("DONE", "DOING", "NEXT", "STOP"):
+        if re.search(r"\bUNKNOWN\s+—", fields.get(field, "")):
+            fails.append(f"B2 PLAN BLOCK: {field} does not resolve from state — "
+                         f"`{fields[field][:200]}`. A wrap may not close on state the next "
+                         f"seam's block cannot be rendered from. Fix the state (the probe is "
+                         f"named in the string), then re-run `python3 knowledge/_checkin.py`.")
+    return fails, warns
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
+    _bf, _bw = plan_block_check(repo)           # B2 seam obligation — LANE wraps too: a lane
+    fails += _bf                                # seam is the seam this block exists for.
+    warns += _bw
     _sf, _sw = instrument_stray_check(repo)     # #138 — runs for LANE wraps too, on purpose:
     fails += _sf                                # a lane session renders like any other.
     warns += _sw
@@ -6441,8 +6489,55 @@ def selftest_rehearsal():
     return failures
 
 
+def selftest_plan_block_check():
+    """B2 SEAM OBLIGATION — three arms, each DRIVING the real `plan_block_check` on a real tree.
+    ⛔ The CONTROL (a faithful copy of live state, which must be GREEN) is part of the same run:
+    without it, an arm that goes red proves only that the check refuses everything."""
+    failures = []
+    import shutil
+    sources = ("_CHAIN.md", "_LIVE-STATE.md", "knowledge/_lanes.json")
+
+    def tree(td):
+        for rel in sources:
+            dst = os.path.join(td, rel)
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copy2(os.path.join(REPO, rel), dst)
+
+    # CONTROL — live state copied faithfully: the seam obligation is MET.
+    with tempfile.TemporaryDirectory() as td:
+        tree(td)
+        f_, w_ = plan_block_check(td)
+        if f_:
+            failures.append(f"plan-block CONTROL: faithful state copy FAILED the seam check — "
+                            f"the check refuses everything, so its reds prove nothing: {f_}")
+    # (i) STATE THAT WILL NOT RENDER — lanes file unparseable. DOING/NEXT go UNKNOWN.
+    with tempfile.TemporaryDirectory() as td:
+        tree(td)
+        with open(os.path.join(td, "knowledge/_lanes.json"), "w", encoding="utf-8") as f:
+            f.write("{ not JSON at all")
+        f_, _ = plan_block_check(td)
+        if not any("B2 PLAN BLOCK" in x and "DOING" in x for x in f_):
+            failures.append(f"plan-block: an unparseable lanes file did NOT fail the wrap seam "
+                            f"— the wrap would close on state no block renders from: {f_}")
+    # (ii) A MISSING STATE SOURCE — the loud refusal must arrive as a FAIL, not a crash.
+    with tempfile.TemporaryDirectory() as td:
+        tree(td)
+        os.remove(os.path.join(td, "_LIVE-STATE.md"))
+        f_, _ = plan_block_check(td)
+        if not any("B2 PLAN BLOCK" in x for x in f_):
+            failures.append(f"plan-block: a missing state source did not surface as a FAIL: {f_}")
+    # (iii) NOT A STATE TREE — declared skip, never a silent pass.
+    with tempfile.TemporaryDirectory() as td:
+        f_, w_ = plan_block_check(td)
+        if f_ or not any("SKIPPED" in x for x in w_):
+            failures.append(f"plan-block: an empty tree must SKIP with the skip DECLARED, "
+                            f"got fails={f_} warns={w_}")
+    return failures
+
+
 def _selftest_body():
-    failures = (selftest_real_tier_reachable()
+    failures = (selftest_plan_block_check()      # B2 seam obligation, s179-D1 — wired at write
+                + selftest_real_tier_reachable()
                 + selftest_preflight() + selftest_preflight_tokens()
                 + selftest_gauge_refusal_seam()          # #79-D1 paired half
                 + selftest_budgets() + selftest_strata_exempt() + selftest_units()
