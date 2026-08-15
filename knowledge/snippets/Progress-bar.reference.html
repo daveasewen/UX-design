@@ -13,10 +13,13 @@
      variant here — that state overlaps Loading-indicator and which component owns it is
      UNRULED. Do not add one without a ruling.
 
-     ⚠ CONTRAST FINDING, measured before build (runbook step 3), carried in the meta as
-     $finding: the fill-on-track pair (progress/complete on progress/incomplete) clears 3:1
-     in Mono and Console but FAILS in Legacy dark (1.75:1) and Supercharge dark (2.38:1).
-     It is therefore NOT declared as a gated contrastPair. Meaning is carried another way —
+     ⚠ CONTRAST FINDING, carried in the meta as $finding, re-measured after s175-D1: the
+     fill-on-track pair (progress/complete on progress/incomplete) now clears 3:1 in ALL FOUR
+     themes (Mono/Console/Legacy 15.27 light / 9.15 dark, Supercharge 14.02 / 10.46), because
+     progress/complete resolves to theme INK everywhere. It FAILED before s175-D1 in Legacy
+     dark (1.75:1) and Supercharge dark (2.38:1) — those reds MOVED to step/complete, so the
+     failure now sits on the STEP components (Progress-tracker, Stepper). That is OPEN, Dave's.
+     It is still NOT declared as a gated contrastPair. Meaning is carried another way —
      every bar shows a NUMERIC VALUE in text (17.4:1) and every bar carries aria-valuetext,
      so completion never depends on the fill/track boundary alone (1.4.1 / 1.4.11).
      ⚠ The snippet gate resolves against tokens/semantic-colour.json — the MONO base only —
@@ -148,7 +151,7 @@
     ],
     "knownFindings": [
       "DETERMINATE ONLY (s173-D1, Dave). No indeterminate variant: that state overlaps Loading-indicator and its ownership is UNRULED. Deliberate absence, not an omission.",
-      "CONTRAST FINDING, measured before build across all four themes x light/dark: fill-on-track (progress/complete on progress/incomplete) = Mono 15.27/9.15 PASS, Console 15.27/9.15 PASS, Legacy 4.58 light PASS / 1.75 dark FAIL, Supercharge 4.48 light PASS / 2.38 dark FAIL (3:1 non-text threshold). NOT declared as a gated contrastPair — it would be a single-theme green. Meaning carried another way: every bar shows a numeric value in text and carries aria-valuetext, so completion never rests on the fill/track boundary alone (1.4.1).",
+      "CONTRAST FINDING, re-measured against canon/canon.css at HEAD b51b622 after s175-D1: fill-on-track (progress/complete on progress/incomplete) = Mono 15.27 light / 9.15 dark PASS, Console 15.27/9.15 PASS, Legacy 15.27/9.15 PASS, Supercharge 14.02/10.46 PASS. All four themes now clear the 3:1 non-text threshold, because s175-D1 made progress/complete resolve to theme INK in every theme. WAS, before s175-D1: Legacy 4.58 light PASS / 1.75 dark FAIL, Supercharge 4.48 light PASS / 2.38 dark FAIL — those receipts were true of the red fills, which have since MOVED to step/complete, not deleted. THE FAILURE THEREFORE REMAINS ON THE STEP COMPONENTS (Progress-tracker, Stepper), which bind step/complete and still carry those reds; that contrast question is OPEN and queued for Dave, and is not answered here. The pair is still NOT declared as a gated contrastPair — the snippet gate reads the mono base only and could not see the other three legs either way. Meaning is carried another way regardless: every bar shows a numeric value in text and carries aria-valuetext, so completion never rests on the fill/track boundary alone (1.4.1).",
       "P-ADDRESS observed first-hand: progress/incomplete carries NO explicit override in any theme file, yet it resolves to #DFDEDC/#413934 in Supercharge because its $alias points at color/neutral/13 and 6, and Supercharge rebinds the whole color/neutral ramp onto color/warm. A token NAME is not an ADDRESS (#108).",
       "The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it CANNOT see the Legacy/Supercharge legs of any declared pair. The four-theme figures above were computed against canon/canon.css, outside the gate.",
       "Declared pairs were each verified to hold in ALL FOUR themes, light and dark, not just in the mono base the gate reads.",

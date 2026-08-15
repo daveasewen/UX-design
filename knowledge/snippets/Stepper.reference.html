@@ -32,7 +32,8 @@
      precedent), receipt-noted.
   TYPE = composites only in markup: .t-cm-caption step labels · .t-cm-figure-6 dot numerals ·
   .t-cm-label head/legend · .t-cm-button nav · .t-ed-body panel copy. A-Q1 rides.
-  ICONS: yes.svg check byte-matched (Progress-tracker's glyph); error roundel = status-icons.
+  ICONS: yes-thick.svg check byte-matched (Progress-tracker's glyph; the THICK weight from #176 —
+  Dave: "Please use the thick tick icon for all"); error roundel = status-icons.
 -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
@@ -87,9 +88,9 @@
     --text:#1A1A1A;                 /* text/default */
     --text-disabled:#E1E1E1;        /* text/disabled */
     --muted:#1A1A1A;                /* text/secondary (R-D16: collapsed to the single ink) */
-    --complete:#1A1A1A;             /* step/complete (rebound #175 by s175-D1 from progress/complete; value unchanged) */
+    --complete:#66CC8D;             /* step/complete — #176 (WORKING): aliases rag/success, the success-ROUNDEL chain. Legacy alone overrides (#DB0011 light / #FFFFFF dark — the PRIMARY red, ruled off the v1 review page; #A8000B was the withdrawn chat leg). Retired: the ink #1A1A1A */
     --incomplete:#F0F0F0;           /* progress/incomplete */
-    --on-complete:#FFFFFF;          /* text/on-inverse */
+    --on-complete:#1A1A1A;          /* step/on-complete — the mark is the ROUNDEL'S DARK INK (s122-D2 mark camp, #176; was knock-to-page #FFFFFF) */
     --field-bg-default:#FFFFFF00;   /* form/background/default */
     --field-bg-hover:#F0F0F0;       /* form/background/hover */
     --border-default:#808080;       /* form/border/default */
@@ -109,9 +110,9 @@
     --text:#FFFFFF;
     --text-disabled:#808080;
     --muted:#FFFFFF;                /* text/secondary (R-D16: collapsed to the single ink) */
-    --complete:#FFFFFF;
+    --complete:#66CC8D;             /* step/complete — mode-invariant, same as light (rag/success is mode-invariant in Mono) */
     --incomplete:#484848;
-    --on-complete:#333333;          /* text/on-inverse */
+    --on-complete:#1A1A1A;          /* step/on-complete — mode-INVARIANT, exactly as the roundel mark is (s122-D2) */
     --field-bg-default:#FFFFFF00;
     --field-bg-hover:#232323;
     --border-default:#808080;
@@ -239,7 +240,7 @@
 
   <!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <symbol id="st-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.82617 15.685L0.0761719 9.93502L0.924172 9.08802L5.82617 13.988L17.0762 2.73901L17.9242 3.58701L5.82617 15.685Z" fill="currentColor"/></symbol>
+    <symbol id="st-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.91547 15.9421L0.105469 10.1341L1.37747 8.86011L5.91547 13.3971L16.6215 2.69312L17.8935 3.96712L5.91547 15.9421Z" fill="currentColor"/></symbol>
     <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
   </svg>
 
@@ -298,6 +299,25 @@
     </div>
   </div>
 
+  <!-- #176 DECLARED ABSENCE (working, awaiting Dave's eye) — the same s151-D2 migration
+       Input-fields already carries. Two contrastPairs were REMOVED from the list below when
+       step/complete joined the success-ROUNDEL system: background/default on step/complete
+       and step/complete on background/default. MEASURED, NOT ASSUMED: in Mono light both are
+       1.98:1 (#66CC8D on #FFFFFF). THAT PROPERTY IS THE ROUNDEL SYSTEM'S OWN, INHERITED
+       WHOLESALE BY DAVE'S WORD, NOT A REGRESSION INTRODUCED HERE — Input-fields' success
+       roundel binds the identical rag/success chain and declares the identical absence.
+       Meaning never rests on the fill: every step carries a text label and the current step
+       carries aria-current="step" (1.4.1). Rendering gate = _validate_state_contrast.py,
+       s151-D1 clause 4. THE ABSENCE IS DECLARED, NOT SILENT, and the number is queued for
+       Dave's eye — his to accept or send back, not this lane's to "fix" with a value change.
+       #176 RATIFIED BY DAVE, off the rendered v1 page, verbatim: "This component uses the same
+       logic as the roundels, the intent/meaning is carried by the glyph a label, therefor the
+       track and the roundels it is less important that they have Ally contrast. the label and
+       the symbol must carry the contrast not the decoration." The absence above is now RULED,
+       not merely declared. GATED LEGS, listed in contrastPairs below and measured every build:
+       the tick on the completed fill (step/on-complete on step/complete, non-text 3:1) and the
+       step label on the page (text/default on background/default, 4.5:1). DECLARED ABSENCES:
+       fill-on-page and fill-on-track — decoration, salience, not the accessibility channel. -->
   <script type="application/json" id="token-manifest">
   {
     "component": "Stepper",
@@ -308,7 +328,7 @@
       "--muted": "text/secondary",
       "--complete": "step/complete",
       "--incomplete": "progress/incomplete",
-      "--on-complete": "text/on-inverse",
+      "--on-complete": "step/on-complete",
       "--field-bg-default": "form/background/default",
       "--field-bg-hover": "form/background/hover",
       "--border-default": "form/border/default",
@@ -333,8 +353,6 @@
     "contrastPairs": [
       { "fg": "text/default",        "bg": "background/default", "context": "text" },
       { "fg": "text/secondary",      "bg": "background/default", "context": "text" },
-      { "fg": "text/on-inverse",     "bg": "step/complete",      "context": "text" },
-      { "fg": "step/complete",       "bg": "background/default", "context": "ui" },
       { "fg": "form/border/default", "bg": "background/default", "context": "ui" },
       { "fg": "form/border/active",  "bg": "background/default", "context": "ui" },
       { "fg": "rag/error",           "bg": "background/default", "context": "ui" },
@@ -342,7 +360,8 @@
       { "fg": "button/primary/label/default", "bg": "button/primary/background/hover",   "context": "text" },
       { "fg": "button/primary/label/default", "bg": "button/primary/background/pressed", "context": "text" },
       { "fg": "button/quaternary/label/default", "bg": "background/default", "context": "text" },
-      { "fg": "button/quaternary/label/default", "bg": "button/quaternary/background/hover", "context": "text" }
+      { "fg": "button/quaternary/label/default", "bg": "button/quaternary/background/hover", "context": "text" },
+      { "fg": "step/on-complete",    "bg": "step/complete",     "context": "ui" }
     ],
     "requiredAria": ["aria-current", "role=\"progressbar\"", "aria-valuenow", "aria-valuetext", "aria-live", "aria-invalid", "aria-describedby"],
     "icons": {

@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step colour — decision controller (2026-08-14 v1)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  :root{ --sheet-font:"Univers Next HSBC","Helvetica Neue",Arial,sans-serif; }
+  body{margin:0; padding:32px 40px 96px; background:#FFFFFF; color:#1A1A1A; font-family:var(--sheet-font); font-size:17px; line-height:1.55;}
+  h1{font-size:32px; font-weight:300; margin:0 0 8px;}
+  h2{font-size:26px; font-weight:300; margin:56px 0 4px; padding-top:20px; border-top:2px solid #1A1A1A;}
+  h3{font-size:21px; font-weight:500; margin:32px 0 2px;}
+  h4.modehead{font-size:15px; font-weight:500; margin:20px 0 8px; letter-spacing:.04em; text-transform:uppercase; color:#545454;}
+  p{max-width:70ch; margin:6px 0 0;}
+  p.q{font-size:19px; font-weight:500; max-width:none; margin:2px 0 4px;}
+  .lede{font-size:19px;}
+  .pairgrid{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start;}
+  figure.cell{margin:0; border:1px solid #D7D8D6; padding:0;}
+  .cellcap{color:#1A1A1A; font-size:15px; font-weight:500; padding:10px 14px; background:#F3F3F3; border-bottom:1px solid #D7D8D6;}
+  .stage{padding:24px 20px 28px; background:var(--background-default); color:var(--text-default);}
+  .stage *{transition:none !important; animation:none !important;}
+  /* THE INK CANDIDATE. Legacy and Supercharge flatten --complete to a literal at the component
+     scope, so pointing --step-complete alone would change nothing there — this sets the painted
+     variable itself, at the same address every theme writes to. The VALUE is not invented: it is
+     the theme's own progress/complete, i.e. the ink the progress bar already uses. */
+  .stage.inkcand .cn-progress-tracker, .stage.inkcand .cn-stepper{ --complete: var(--progress-complete) !important; --step-complete: var(--progress-complete) !important; }   /* settle before reading (render-verify runbook) */
+  .wideform{margin-bottom:26px;}
+  .narrowform{border-top:1px dashed rgba(128,128,128,.5); padding-top:22px;}
+  .wideform::before,.narrowform::before{display:block; font-size:12px; letter-spacing:.06em; text-transform:uppercase; opacity:.6; margin-bottom:10px; font-family:var(--sheet-font);}
+  .wideform::before{content:"wide container (600px)";}
+  .narrowform::before{content:"narrow container (420px) — the collapse";}
+  .cn-stepper{margin-top:26px; border-top:1px dashed rgba(128,128,128,.5); padding-top:22px;}
+  table.cx{width:100%; border-collapse:collapse; font-size:14px; border-top:1px solid #D7D8D6;}
+  table.cx{background:#FFFFFF; color:#1A1A1A;}
+  table.cx th,table.cx td{text-align:left; padding:6px 14px; border-bottom:1px solid #EDEDED;}
+  table.cx th{font-weight:500; background:#FAFAFA;}
+  .pass{color:#00695E; font-weight:500;} .fail{color:#DA1A00; font-weight:500;} .na{color:#767676;}
+  .swatch{display:inline-block; width:12px; height:12px; border:1px solid #B7B7B7; vertical-align:-1px; margin-right:6px;}
+  .note{background:#F3F3F3; border-left:4px solid #1A1A1A; padding:14px 18px; margin:20px 0; max-width:80ch;}
+  fieldset{border:1px solid #1A1A1A; margin:20px 0; padding:14px 18px; max-width:80ch;}
+  legend{font-weight:500; padding:0 8px;}
+  fieldset label{display:block; padding:6px 0; font-size:18px; cursor:pointer;}
+  input[type=radio]{width:20px; height:20px; vertical-align:-4px; margin-right:10px;}
+  button.exp{font:500 18px/1 var(--sheet-font); padding:14px 22px; background:#1A1A1A; color:#fff; border:0; cursor:pointer;}
+  pre#out{background:#F3F3F3; padding:16px; font-size:14px; white-space:pre-wrap; margin-top:14px;}
+  .chain{font-size:14px; background:#FAFAFA; border:1px solid #EDEDED; padding:12px 16px; margin-top:10px; max-width:100ch;}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.92em;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="st-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.82617 15.685L0.0761719 9.93502L0.924172 9.08802L5.82617 13.988L17.0762 2.73901L17.9242 3.58701L5.82617 15.685Z" fill="currentColor"/></symbol><symbol id="pt-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.82617 15.685L0.0761719 9.93502L0.924172 9.08802L5.82617 13.988L17.0762 2.73901L17.9242 3.58701L5.82617 15.685Z" fill="currentColor"/></symbol></svg>
+
+<h1>Step colour — a page to rule from</h1>
+<p class="lede">Everything below is the real component markup, styled by the real <code>canon.css</code>. Nothing here is enacted, and nothing is recommended. Two questions, then the picker at the bottom.</p>
+<div class="note" style="border-left-color:#DA1A00"><strong>Something to see before you rule.</strong> In Apollo Mono and Apollo Console the completed steps currently paint <em>nothing at all</em> — the dots and the bar fill come out empty. That is not a styling choice; those two themes have no value for the step colour to resolve to, so the paint simply falls away. The left-hand cells below show that honestly. Whichever way you rule, those two themes need a value.</div>
+<div class="note"><strong>No new greys or inks were invented for this page.</strong> Every colour you see is resolved live from a token already in <code>canon.css</code>. The "ink" candidate simply points the step colour at the same ink the progress bar already uses in that theme.</div>
+
+<h2>Question one — should completed steps be coloured, or ink?</h2>
+<p>Legacy is already settled and keeps its red. The other three themes are open. Each pair below is the same component twice: on the left as it renders today, on the right on the theme's own ink. Both the wide dots form and the narrow collapsed form are shown, because the treatment carries into the collapse.</p>
+<section class="theme"><h3>Apollo Mono</h3><p class="q">Should the completed steps in Apollo Mono be coloured, or the theme’s ink?</p><div class="pair"><h4 class="modehead">Light mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">As it renders today</figcaption>
+  <div class="stage" data-theme="light" data-probe-cell="mono|light|As it renders today">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure>
+<figure class="cell">
+  <figcaption class="cellcap">On this theme’s ink</figcaption>
+  <div class="stage inkcand" data-theme="light" data-probe-cell="mono|light|On this theme’s ink">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div><div class="pair"><h4 class="modehead">Dark mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">As it renders today</figcaption>
+  <div class="stage" data-theme="dark" data-probe-cell="mono|dark|As it renders today">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure>
+<figure class="cell">
+  <figcaption class="cellcap">On this theme’s ink</figcaption>
+  <div class="stage inkcand" data-theme="dark" data-probe-cell="mono|dark|On this theme’s ink">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div></section><section class="theme"><h3>Apollo Console</h3><p class="q">Should the completed steps in Apollo Console be coloured, or the theme’s ink?</p><div class="pair"><h4 class="modehead">Light mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">As it renders today</figcaption>
+  <div class="stage" data-theme="light" data-apollo-theme="console" data-probe-cell="console|light|As it renders today">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure>
+<figure class="cell">
+  <figcaption class="cellcap">On this theme’s ink</figcaption>
+  <div class="stage inkcand" data-theme="light" data-apollo-theme="console" data-probe-cell="console|light|On this theme’s ink">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div><div class="pair"><h4 class="modehead">Dark mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">As it renders today</figcaption>
+  <div class="stage" data-theme="dark" data-apollo-theme="console" data-probe-cell="console|dark|As it renders today">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure>
+<figure class="cell">
+  <figcaption class="cellcap">On this theme’s ink</figcaption>
+  <div class="stage inkcand" data-theme="dark" data-apollo-theme="console" data-probe-cell="console|dark|On this theme’s ink">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div></section><section class="theme"><h3>Apollo Supercharge</h3><p class="q">Should the completed steps in Apollo Supercharge be coloured, or the theme’s ink?</p><div class="pair"><h4 class="modehead">Light mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">As it renders today</figcaption>
+  <div class="stage" data-theme="light" data-apollo-theme="supercharge" data-probe-cell="supercharge|light|As it renders today">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure>
+<figure class="cell">
+  <figcaption class="cellcap">On this theme’s ink</figcaption>
+  <div class="stage inkcand" data-theme="light" data-apollo-theme="supercharge" data-probe-cell="supercharge|light|On this theme’s ink">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div><div class="pair"><h4 class="modehead">Dark mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">As it renders today</figcaption>
+  <div class="stage" data-theme="dark" data-apollo-theme="supercharge" data-probe-cell="supercharge|dark|As it renders today">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure>
+<figure class="cell">
+  <figcaption class="cellcap">On this theme’s ink</figcaption>
+  <div class="stage inkcand" data-theme="dark" data-apollo-theme="supercharge" data-probe-cell="supercharge|dark|On this theme’s ink">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div></section>
+
+<h3>Legacy — the ruled reference</h3>
+<p class="q">Already decided. Shown only so you can see what the settled answer looks like.</p>
+<div class="pair"><h4 class="modehead">Light mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">Legacy — already ruled, shown for reference</figcaption>
+  <div class="stage" data-theme="light" data-apollo-theme="legacy" data-probe-cell="legacy|light|Legacy — already ruled, shown for reference">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div><div class="pair"><h4 class="modehead">Dark mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">Legacy — already ruled, shown for reference</figcaption>
+  <div class="stage" data-theme="dark" data-apollo-theme="legacy" data-probe-cell="legacy|dark|Legacy — already ruled, shown for reference">
+    <div class="cn-progress-tracker">
+      <div class="wideform" style="--demo-width:600px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+      <div class="narrowform" style="--demo-width:420px"><div class="pt">
+    <span class="sr-live" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" style="width:40%"></span>
+      </div>
+    </div>
+
+    
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    
+  </div>
+</div>
+    </div>
+    <div class="cn-stepper">
+      <div class="wideform" style="--demo-width:600px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+      <div class="narrowform" style="--demo-width:420px"><div class="st">
+<ol class="steps" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="done"><button type="button" class="step" aria-label="Go back to step 2: Amount (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"/></svg></span><span class="step-label t-cm-caption">Amount</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+<div class="collapse"><div class="head"><span class="count t-cm-label">Step 3 of 4</span><span class="title t-cm-label">Check the details</span></div><div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3" aria-valuetext="Step 3 of 4: Review" aria-label="Payment setup steps"><span class="fill" style="width:75%"></span></div></div>
+</div></div>
+    </div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div>
+
+<h2>Question two — the Legacy progress bar's black</h2>
+<p>In Legacy the progress bar's fill paints the base black, not Legacy's own black. On the left is today; on the right is the same bar on Legacy's own ink. In dark mode both come out the same — the difference only exists in light mode.</p>
+<div class="pair"><h4 class="modehead">Light mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">Bar fill as it renders today</figcaption>
+  <div class="stage" data-theme="light" data-apollo-theme="legacy" data-probe-cell="legacy|light|Bar fill as it renders today">
+    <div class="cn-progress-bar"><div class="specimens"><!-- 1 · linear, default 4px -->
+    <div class="pb">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label">Transferring funds</span>
+        <span class="pb-value t-cm-figure-6">62%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-label="Progress"
+           aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent complete">
+        <div class="pb-fill" style="width:62%"></div>
+      </div>
+    </div>
+
+<!-- 2 · linear, emphasis 8px, with a supporting caption -->
+    <div class="pb pb-lg">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label">Statement download</span>
+        <span class="pb-value t-cm-figure-6">28%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-label="Progress"
+           aria-valuenow="28" aria-valuemin="0" aria-valuemax="100" aria-valuetext="28 percent complete">
+        <div class="pb-fill" style="width:28%"></div>
+      </div>
+      <span class="pb-note t-cm-caption">3.2 MB of 11.4 MB</span>
+    </div>
+</div></div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure>
+<figure class="cell">
+  <figcaption class="cellcap">Bar fill on Legacy’s own ink</figcaption>
+  <div class="stage" data-theme="light" data-apollo-theme="legacy" data-probe-cell="legacy|light|Bar fill on Legacy’s own ink" style="--progress-complete: var(--text-default);">
+    <div class="cn-progress-bar"><div class="specimens"><!-- 1 · linear, default 4px -->
+    <div class="pb">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label">Transferring funds</span>
+        <span class="pb-value t-cm-figure-6">62%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-label="Progress"
+           aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent complete">
+        <div class="pb-fill" style="width:62%"></div>
+      </div>
+    </div>
+
+<!-- 2 · linear, emphasis 8px, with a supporting caption -->
+    <div class="pb pb-lg">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label">Statement download</span>
+        <span class="pb-value t-cm-figure-6">28%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-label="Progress"
+           aria-valuenow="28" aria-valuemin="0" aria-valuemax="100" aria-valuetext="28 percent complete">
+        <div class="pb-fill" style="width:28%"></div>
+      </div>
+      <span class="pb-note t-cm-caption">3.2 MB of 11.4 MB</span>
+    </div>
+</div></div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div><div class="pair"><h4 class="modehead">Dark mode</h4><div class="pairgrid">
+<figure class="cell">
+  <figcaption class="cellcap">Bar fill as it renders today</figcaption>
+  <div class="stage" data-theme="dark" data-apollo-theme="legacy" data-probe-cell="legacy|dark|Bar fill as it renders today">
+    <div class="cn-progress-bar"><div class="specimens"><!-- 1 · linear, default 4px -->
+    <div class="pb">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label">Transferring funds</span>
+        <span class="pb-value t-cm-figure-6">62%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-label="Progress"
+           aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent complete">
+        <div class="pb-fill" style="width:62%"></div>
+      </div>
+    </div>
+
+<!-- 2 · linear, emphasis 8px, with a supporting caption -->
+    <div class="pb pb-lg">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label">Statement download</span>
+        <span class="pb-value t-cm-figure-6">28%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-label="Progress"
+           aria-valuenow="28" aria-valuemin="0" aria-valuemax="100" aria-valuetext="28 percent complete">
+        <div class="pb-fill" style="width:28%"></div>
+      </div>
+      <span class="pb-note t-cm-caption">3.2 MB of 11.4 MB</span>
+    </div>
+</div></div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure>
+<figure class="cell">
+  <figcaption class="cellcap">Bar fill on Legacy’s own ink</figcaption>
+  <div class="stage" data-theme="dark" data-apollo-theme="legacy" data-probe-cell="legacy|dark|Bar fill on Legacy’s own ink" style="--progress-complete: var(--text-default);">
+    <div class="cn-progress-bar"><div class="specimens"><!-- 1 · linear, default 4px -->
+    <div class="pb">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label">Transferring funds</span>
+        <span class="pb-value t-cm-figure-6">62%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-label="Progress"
+           aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent complete">
+        <div class="pb-fill" style="width:62%"></div>
+      </div>
+    </div>
+
+<!-- 2 · linear, emphasis 8px, with a supporting caption -->
+    <div class="pb pb-lg">
+      <div class="pb-head">
+        <span class="pb-label t-cm-label">Statement download</span>
+        <span class="pb-value t-cm-figure-6">28%</span>
+      </div>
+      <div class="pb-track" role="progressbar" aria-label="Progress"
+           aria-valuenow="28" aria-valuemin="0" aria-valuemax="100" aria-valuetext="28 percent complete">
+        <div class="pb-fill" style="width:28%"></div>
+      </div>
+      <span class="pb-note t-cm-caption">3.2 MB of 11.4 MB</span>
+    </div>
+</div></div>
+  </div>
+  <table class="cx"><thead><tr><th>Measured</th><th>Fill</th><th>Behind</th><th>Ratio</th><th>3:1</th></tr></thead><tbody></tbody></table>
+</figure></div></div>
+
+<h2>Your picks</h2>
+<form id="picks">
+<fieldset><legend>Apollo Mono — completed steps</legend>
+  <label><input type="radio" name="mono" value="colour"> Keep colour</label>
+  <label><input type="radio" name="mono" value="ink"> Use ink</label>
+  <label><input type="radio" name="mono" value="undecided" checked> Not deciding yet</label></fieldset>
+<fieldset><legend>Apollo Console — completed steps</legend>
+  <label><input type="radio" name="console" value="colour"> Keep colour</label>
+  <label><input type="radio" name="console" value="ink"> Use ink</label>
+  <label><input type="radio" name="console" value="undecided" checked> Not deciding yet</label></fieldset>
+<fieldset><legend>Apollo Supercharge — completed steps</legend>
+  <label><input type="radio" name="supercharge" value="colour"> Keep colour</label>
+  <label><input type="radio" name="supercharge" value="ink"> Use ink</label>
+  <label><input type="radio" name="supercharge" value="undecided" checked> Not deciding yet</label></fieldset>
+<fieldset><legend>Legacy progress bar — which black</legend>
+  <label><input type="radio" name="legacybar" value="keep"> Leave it as it is</label>
+  <label><input type="radio" name="legacybar" value="legacy-ink"> Put it on Legacy's own ink</label>
+  <label><input type="radio" name="legacybar" value="undecided" checked> Not deciding yet</label></fieldset>
+</form>
+<button class="exp" id="export" type="button">Show my picks as text</button>
+<pre id="out" hidden></pre>
+
+<h2>Where every colour on this page came from</h2>
+<div class="chain" id="chains">Resolving…</div>
+<p style="font-size:14px;color:#545454;margin-top:24px">Nothing on this page changes any token. Picks are held in memory only — nothing is stored.</p>
+
+<script>
+(function(){
+  function srgb(c){c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+  function lum(rgb){return 0.2126*srgb(rgb[0])+0.7152*srgb(rgb[1])+0.0722*srgb(rgb[2]);}
+  function parse(s){var m=s&&s.match(/rgba?\(([^)]+)\)/); if(!m) return null;
+    var p=m[1].split(/[ ,\/]+/).filter(Boolean).map(Number);
+    if(p.length>3 && p[3]===0) return null;                 // fully transparent = not painted
+    return [p[0],p[1],p[2]];}
+  function ratio(a,b){var l1=lum(a),l2=lum(b); if(l1<l2){var t=l1;l1=l2;l2=t;} return (l1+0.05)/(l2+0.05);}
+  function hex(rgb){return '#'+rgb.map(function(v){return ('0'+v.toString(16)).toUpperCase().slice(-2)}).join('');}
+  function bgOf(el){ // walk up for the first painted background
+    while(el){var c=parse(getComputedStyle(el).backgroundColor); if(c) return c; el=el.parentElement;} return [255,255,255];}
+
+  function row(tb,label,fg,bg){
+    var tr=tb.insertRow();
+    function cellv(rgb){ return rgb? '<span class="swatch" style="background:'+hex(rgb)+'"></span>'+hex(rgb) : '<span class="na">not painted</span>'; }
+    var r = (fg&&bg)? ratio(fg,bg) : null;
+    tr.innerHTML='<td>'+label+'</td><td>'+cellv(fg)+'</td><td>'+cellv(bg)+'</td>'+
+      '<td>'+(r?r.toFixed(2)+':1':'<span class="na">n/a</span>')+'</td>'+
+      '<td>'+(r? (r>=3?'<span class="pass">PASS</span>':'<span class="fail">FAIL</span>') : '<span class="na">nothing to measure</span>')+'</td>';
+  }
+
+  document.querySelectorAll('figure.cell').forEach(function(fig){
+    var stage=fig.querySelector('.stage'), tb=fig.querySelector('table.cx tbody');
+    var probes=[
+      ['Tracker — completed dot on the page', '.cn-progress-tracker .wideform li.done .dot', 'page'],
+      ['Tracker — bar fill on its track',      '.cn-progress-tracker .narrowform .track .fill', 'track'],
+      ['Stepper — completed dot on the page',  '.cn-stepper .wideform li.done .dot', 'page'],
+      ['Stepper — bar fill on its track',      '.cn-stepper .narrowform .track .fill', 'track'],
+      ['Bar fill on its track (4px)',          '.cn-progress-bar .pb:not(.pb-lg) .pb-fill', 'track'],
+      ['Bar fill on its track (8px)',          '.cn-progress-bar .pb-lg .pb-fill', 'track']
+    ];
+    probes.forEach(function(p){
+      var el=stage.querySelector(p[1]); if(!el) return;
+      var fg=parse(getComputedStyle(el).backgroundColor);
+      var bg=(p[2]==='track')? parse(getComputedStyle(el.parentElement).backgroundColor)||bgOf(el.parentElement) : bgOf(stage);
+      row(tb,p[0],fg,bg);
+    });
+    if(!tb.rows.length){ row(tb,'—',null,null); }
+  });
+
+  // resolution chain, read live off the document
+  (function(){
+    var out=[], seen={};
+    document.querySelectorAll('.stage').forEach(function(s){
+      var key=s.dataset.probeCell;
+      var probe=s.querySelector('.cn-progress-tracker, .cn-progress-bar');
+      if(!probe) return;
+      var cs=getComputedStyle(probe);
+      var v=['--step-complete','--progress-complete','--progress-incomplete','--text-default','--background-default']
+        .map(function(n){return n+' = '+(cs.getPropertyValue(n).trim()||'(not defined)')}).join(' · ');
+      if(seen[key]) return; seen[key]=1;
+      out.push('<div><strong>'+key+'</strong><br>'+v+'</div>');
+    });
+    document.getElementById('chains').innerHTML=out.join('');
+  })();
+
+  document.getElementById('export').addEventListener('click',function(){
+    var f=document.getElementById('picks'), o={when:new Date().toISOString(), page:'STEP-COLOUR-CONTROLLER-2026-08-14-v1'};
+    ['mono','console','supercharge','legacybar'].forEach(function(n){ o[n]=f.elements[n].value; });
+    var pre=document.getElementById('out'); pre.hidden=false; pre.textContent=JSON.stringify(o,null,2);
+    if(navigator.clipboard) navigator.clipboard.writeText(pre.textContent).catch(function(){});
+  });
+})();
+</script>
+</body>
+</html>

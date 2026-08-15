@@ -299,8 +299,6 @@
   --primary-border-disabled: #E1E1E1;
   --progress-complete: #1A1A1A;
   --progress-incomplete: #F0F0F0;
-  --step-complete: var(--rag-success);
-  --step-on-complete: #1A1A1A;
   --rag-error-background: #F6604C;
   --rag-error-glyph: #F6604C;
   --rag-error-graphic: #F3543E;
@@ -660,8 +658,6 @@
   --primary-border-disabled: #484848;
   --progress-complete: #FFFFFF;
   --progress-incomplete: #484848;
-  --step-complete: var(--rag-success);
-  --step-on-complete: #1A1A1A;
   --rag-error-background: #F6604C;
   --rag-error-glyph: #F6604C;
   --rag-error-graphic: #CC4333;
@@ -1929,7 +1925,7 @@
   --text: var(--text-default);
   --muted: var(--text-secondary);
   --page: var(--background-default);
-  --on-complete: var(--step-on-complete);
+  --on-complete: var(--text-on-inverse);
   --btn-border: var(--tertiary-border-default);
   --btn-hover: var(--tertiary-background-hover);
   --btn-dis-text: var(--text-disabled);
@@ -8030,7 +8026,7 @@
    Progress-bar  (from snippets/Progress-bar.reference.html)
    Aria: role="progressbar", aria-valuenow, aria-valuemin, aria-valuemax, aria-valuetext, aria-labelledby
    Finding: DETERMINATE ONLY (s173-D1, Dave). No indeterminate variant: that state overlaps Loading-indicator and its ownership is UNRULED. Deliberate absence, not an omission.
-   Finding: CONTRAST FINDING, re-measured against canon/canon.css at HEAD b51b622 after s175-D1: fill-on-track (progress/complete on progress/incomplete) = Mono 15.27 light / 9.15 dark PASS, Console 15.27/9.15 PASS, Legacy 15.27/9.15 PASS, Supercharge 14.02/10.46 PASS. All four themes now clear the 3:1 non-text threshold, because s175-D1 made progress/complete resolve to theme INK in every theme. WAS, before s175-D1: Legacy 4.58 light PASS / 1.75 dark FAIL, Supercharge 4.48 light PASS / 2.38 dark FAIL — those receipts were true of the red fills, which have since MOVED to step/complete, not deleted. THE FAILURE THEREFORE REMAINS ON THE STEP COMPONENTS (Progress-tracker, Stepper), which bind step/complete and still carry those reds; that contrast question is OPEN and queued for Dave, and is not answered here. The pair is still NOT declared as a gated contrastPair — the snippet gate reads the mono base only and could not see the other three legs either way. Meaning is carried another way regardless: every bar shows a numeric value in text and carries aria-valuetext, so completion never rests on the fill/track boundary alone (1.4.1).
+   Finding: CONTRAST FINDING, measured before build across all four themes x light/dark: fill-on-track (progress/complete on progress/incomplete) = Mono 15.27/9.15 PASS, Console 15.27/9.15 PASS, Legacy 4.58 light PASS / 1.75 dark FAIL, Supercharge 4.48 light PASS / 2.38 dark FAIL (3:1 non-text threshold). NOT declared as a gated contrastPair — it would be a single-theme green. Meaning carried another way: every bar shows a numeric value in text and carries aria-valuetext, so completion never rests on the fill/track boundary alone (1.4.1).
    Finding: P-ADDRESS observed first-hand: progress/incomplete carries NO explicit override in any theme file, yet it resolves to #DFDEDC/#413934 in Supercharge because its $alias points at color/neutral/13 and 6, and Supercharge rebinds the whole color/neutral ramp onto color/warm. A token NAME is not an ADDRESS (#108).
    Finding: The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it CANNOT see the Legacy/Supercharge legs of any declared pair. The four-theme figures above were computed against canon/canon.css, outside the gate.
    Finding: Declared pairs were each verified to hold in ALL FOUR themes, light and dark, not just in the mono base the gate reads.
@@ -8456,7 +8452,7 @@
   --muted: var(--text-secondary);
   --complete: var(--step-complete);
   --incomplete: var(--progress-incomplete);
-  --on-complete: var(--step-on-complete);
+  --on-complete: var(--text-on-inverse);
   --field-bg-default: var(--form-background-default);
   --field-bg-hover: var(--form-background-hover);
   --border-default: var(--form-border-default);
@@ -9024,7 +9020,7 @@
    edit the override sets and re-run. Theme attr goes on <html> or any
    ancestor of the [data-theme] element; Mono is the base (no block).
    Attrs: legacy=apollo-legacy, mono=apollo-mono, console=apollo-console, supercharge=apollo-supercharge */
-/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (42 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
+/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (40 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
 [data-apollo-theme="legacy"]{
   --badge-background: #DB0011;
   --border-radius-default: 0;
@@ -9046,7 +9042,6 @@
   --mark-warning: #000000;
   --motion-press-darken: 1;
   --motion-press-travel: 0;
-  --progress-complete: #333333;
   --rag-error: #A8000B;
   --rag-error-background: #A8000B;
   --rag-error-glyph: #A8000B;
@@ -9065,7 +9060,6 @@
   --rag-warning-glyph: #FFBB33;
   --rag-warning-tint: #FFF8EA;
   --step-complete: #DB0011;
-  --step-on-complete: #FFFFFF;
   --tabs-active: #DB0011;
   --tabs-badge-background: #DB0011;
   --tabs-inactive: #333333;
@@ -9090,7 +9084,6 @@
   --mark-info: #FFFFFF;
   --mark-success: #FFFFFF;
   --mark-warning: #000000;
-  --progress-complete: #FFFFFF;
   --rag-error: #A8000B;
   --rag-error-background: #A8000B;
   --rag-error-glyph: #A8000B;
@@ -9108,8 +9101,7 @@
   --rag-warning-background: #FFBB33;
   --rag-warning-glyph: #FFBB33;
   --rag-warning-tint: #221701;
-  --step-complete: #FFFFFF;
-  --step-on-complete: #1A1A1A;
+  --step-complete: #DB0011;
   --tabs-badge-background: #DB0011;
   --tabs-inactive: #FFFFFF;
   --text-default: #FFFFFF;
@@ -9782,29 +9774,25 @@
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-progress-bar{
-  --complete: #333333;
   --muted: #545454;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-progress-bar,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-progress-bar{
-  --complete: #FFFFFF;
   --muted: #9B9B9B;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-progress-tracker{
   --complete: #DB0011;
   --muted: #545454;
-  --on-complete: #FFFFFF;
   --press-darken: 1;
   --press-travel: 0;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-progress-tracker,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-progress-tracker{
-  --complete: #FFFFFF;
+  --complete: #DB0011;
   --muted: #9B9B9B;
-  --on-complete: #1A1A1A;
   --press-darken: 1;
   --press-travel: 0;
   --text: #FFFFFF;
@@ -9925,7 +9913,6 @@
   --complete: #DB0011;
   --error: #A8000B;
   --muted: #545454;
-  --on-complete: #FFFFFF;
   --press-darken: 1;
   --press-travel: 0;
   --pri-default: #DB0011;
@@ -9938,10 +9925,9 @@
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-stepper,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-stepper{
-  --complete: #FFFFFF;
+  --complete: #DB0011;
   --error: #A8000B;
   --muted: #9B9B9B;
-  --on-complete: #1A1A1A;
   --press-darken: 1;
   --press-travel: 0;
   --pri-default: #DB0011;
@@ -10066,7 +10052,7 @@
   --text: #FFFFFF;
 }
 
-/* ---- Apollo Console  [data-apollo-theme="console"]  (24 override path(s), 4 mark(s), apollo-console.overrides) ---- */
+/* ---- Apollo Console  [data-apollo-theme="console"]  (23 override path(s), 4 mark(s), apollo-console.overrides) ---- */
 [data-apollo-theme="console"]{
   --badge-background: #B92F1E;
   --border-radius-control: 4px;
@@ -10094,7 +10080,6 @@
   --rag-warning-background: #D5990B;
   --rag-warning-glyph: #D5990B;
   --rag-warning-tint: #F2DEB1;
-  --step-complete: #5DAC7B;
   --tabs-badge-background: #B92F1E;
 }
 [data-apollo-theme="console"][data-theme="dark"],
@@ -10121,7 +10106,6 @@
   --rag-warning-background: #D5990B;
   --rag-warning-glyph: #D5990B;
   --rag-warning-tint: #654D14;
-  --step-complete: #5DAC7B;
   --tabs-badge-background: #B92F1E;
 }
 [data-apollo-theme="console"] .cn-account-card{
@@ -10571,13 +10555,11 @@
 [data-apollo-theme="console"] .cn-progress-tracker{
   --border-radius-control: 4px;
   --border-radius-indicator: 4px;
-  --complete: #5DAC7B;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-progress-tracker,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-progress-tracker{
   --border-radius-control: 4px;
   --border-radius-indicator: 4px;
-  --complete: #5DAC7B;
 }
 [data-apollo-theme="console"] .cn-reorder{
   --drop: #5DAC7B;
@@ -10663,14 +10645,12 @@
 [data-apollo-theme="console"] .cn-stepper{
   --border-radius-control: 4px;
   --border-radius-indicator: 4px;
-  --complete: #5DAC7B;
   --error: #B92F1E;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-stepper,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-stepper{
   --border-radius-control: 4px;
   --border-radius-indicator: 4px;
-  --complete: #5DAC7B;
   --error: #B92F1E;
 }
 [data-apollo-theme="console"] .cn-table{
@@ -10855,7 +10835,7 @@
   --secondary-border-disabled: #CDC8C6;
   --secondary-border-hover: #13110E;
   --secondary-border-pressed: #524842;
-  --step-complete: #5DAC7B;
+  --step-complete: #B92F1E;
   --surface-action: #493F39;
   --surface-action-disabled: #CDC8C6;
   --surface-action-hover: #413934;
@@ -10981,7 +10961,7 @@
   --secondary-border-disabled: #413934;
   --secondary-border-hover: #DFDEDC;
   --secondary-border-pressed: #CDC8C6;
-  --step-complete: #5DAC7B;
+  --step-complete: #CC4333;
   --surface-action: #524842;
   --surface-action-disabled: #413934;
   --surface-action-hover: #635750;
@@ -12228,7 +12208,7 @@
   --btn-dis-border: #CDC8C6;
   --btn-dis-text: #CDC8C6;
   --btn-hover: #DFDEDC;
-  --complete: #5DAC7B;
+  --complete: #B92F1E;
   --incomplete: #DFDEDC;
   --muted: #13110E;
   --page: #F7F6F4;
@@ -12242,7 +12222,7 @@
   --btn-dis-border: #13110E;
   --btn-dis-text: #524842;
   --btn-hover: #2E2A25;
-  --complete: #5DAC7B;
+  --complete: #CC4333;
   --incomplete: #413934;
   --muted: #F7F6F4;
   --page: #1A1A1A;
@@ -12465,7 +12445,7 @@
 [data-apollo-theme="supercharge"] .cn-stepper{
   --border-active: #000000;
   --border-default: #524842;
-  --complete: #5DAC7B;
+  --complete: #B92F1E;
   --error: #B92F1E;
   --field-bg-hover: #DFDEDC;
   --icon: #13110E;
@@ -12489,7 +12469,7 @@
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-stepper{
   --border-active: #F7F6F4;
   --border-default: #524842;
-  --complete: #5DAC7B;
+  --complete: #CC4333;
   --error: #B92F1E;
   --field-bg-hover: #2E2A25;
   --icon: #F7F6F4;

@@ -2876,6 +2876,48 @@
    "measured contrast, 3:1 non-text: Progress-bar Legacy dark 1.75 -> 9.15, Supercharge dark 2.38 -> 10.46"
   ],
   "status": "RULED #175 AND ENACTED THE SAME SESSION for the parts that are ruled. ENACTED: progress/complete is ink in all four themes; step/complete minted and bound; Legacy and Supercharge overrides moved. VERIFIED FIRST-HAND BY THE CONDUCTOR, not taken from the build sub's report: 11 insertions / 11 deletions in canon.css across two regions with zero unattributed hunks, no --status-* touched, no comment block deleted. GATES rc=0 before and after (rc captured directly, never through a pipe): snippet, a11y, radius --strict, coverage, icon, and --check on showroom / snippet-tokens / canon-components / component-partials / theme-cascade, plus theme-cascade --selftest. The type-composite ratchet was red at HEAD at 1101 and is still exactly 1101 - baseline, not regression. machinery: 10 instrument / 52 feature; the 10 are a RETARGET of an existing selftest assertion whose subject moved, mutation-tested to prove it bites - NO NEW INSTRUMENT WAS BUILT (s172-D3). STILL OPEN AND DAVE'S: the three UNDECIDED step-colour themes (mono, console, supercharge); the per-theme-ink generalisation, implied but NOT ruled; the absence of a step/incomplete (the step components still bind progress/incomplete); whether the new selftest clause needs a Legacy mirror; and the fill-on-track contrast failure AS IT APPLIES TO THE STEP COMPONENTS (Legacy dark 1.75, Supercharge dark 2.38) - FIXED for the bar, STILL OPEN for the steps. UNPROVEN AND PRICED: the full 76-snippet _validate_state_contrast.py run exceeds the call cap and is owed to CI; _build_all.py was NOT RUN by instruction, so the composite verdict is CI's."
- }
+ },
+{
+ "id": "s176-D1",
+ "ruled": "#176",
+ "date": "2026-08-14",
+ "by": "Dave",
+ "says": "THE INK PRINCIPLE, RULED: 'BLACKEST INK' RESOLVES PER THEME, AND IT IS THE BLACKEST INK THAT ISN'T PURE BLACK, TO AVOID HALATION. Dave verbatim: 'the simple rule for ink is the blackest ink that isn't pure black, to avoid halation. #13110E for SC / #1a1a1a for Mono and console I think, that might not be right / #333333 for Legacy'. He hedged Mono/Console; verified against the token store BEFORE read-back and all four match what is already shipped: Mono ink = mono/4 #1A1A1A (R-D16); Console LOCKED = Mono on the DNA layers so also #1A1A1A (R-D25); Supercharge ink = warm/2 #13110E (ADR-0014 anchor remap); Legacy body ink = Grey 8 #333333 (col25-011). NO VALUE CHANGES - the store already embodies the principle; this ruling adds the PRINCIPLE plus its RATIONALE (halation), neither previously recorded. DISCHARGES the s175-D1(f) open generalisation. Read back and confirmed firm: 'Ink' for any component means the theme's own darkest text colour, resolved through the alias chain - never #000000 (halation), never one literal shared across themes. Dark-mode counterparts unchanged as previously ruled: Mono/Console #FFFFFF, SC #F7F6F4. Dave: 'yes this is fine'.",
+ "governs": [
+  "the meaning of 'ink'/'blackest ink' wherever a ruling or brief uses it: resolves PER THEME through the alias chain, never one shared literal, never #000000",
+  "knowledge/tokens text/default and every anchor-bound ink role (DECLARATIVE - no value changed by this ruling)",
+  "s175-D1(f) open generalisation (DISCHARGED)"
+ ],
+ "evidence": [
+  "chat #176 2026-08-14 (live) - values given by Dave, verified against the store before read-back, confirmed firm ('yes this is fine')",
+  "knowledge/tokens/themes/apollo-legacy.overrides.json text/default #333333 (Grey 8)",
+  "knowledge/tokens/themes/apollo-supercharge.overrides.json ADR-0014 anchor remap warm/2 #13110E",
+  "R-D16 (Mono ink mono/4 #1A1A1A) and R-D25 (Console locked = Mono)"
+ ],
+ "status": "RULED #176, FIRM, on read-back. NOTHING TO ENACT - the four shipped inks already satisfy the principle; this inscribes the rule and its halation rationale. EXPLICITLY NOT RULED HERE: the three undecided step-tracker colour themes (mono/console/supercharge) remain open and Dave's; s151-D1 and s149-D1 untouched."
+},
+{
+ "id": "s176-D2",
+ "ruled": "#176",
+ "date": "2026-08-14",
+ "by": "Dave",
+ "says": "STEP TRACKERS ADOPT THE SUCCESS-ROUNDEL SYSTEM WHOLESALE, RULED BY EYE OFF TWO LIVE REVIEW PAGES (STEP-COLOUR-CONTROLLER v1, then STEP-SUCCESS-SYSTEM v1 and v2). (a) step/complete aliases rag/success — the roundel chain — so themes inherit: Mono #66CC8D, Console/SC #5DAC7B, mode-invariant. Dave: 'exactly the same system that we use for the success roundels on all, they can just inherit then wholesale.' (b) LEGACY EXCEPTION: PRIMARY red #DB0011 light / #FFFFFF dark. Sequence recorded, all his words: 'the red' (#DB0011 assumed) -> 'warning red' -> 'Legacy error, sorry my mistake' (#A8000B) -> off the v1 page, 'Use the primary red for Legacy' (#DB0011, FINAL). Dark=white SUPERSEDES s175-D1's Legacy red-both-modes, by his word ('both are true'). (c) GLYPHS: thick tick (canon yes-thick.svg) for ALL; Mono/Console/SC tick = dark ink #1A1A1A matching each theme's roundel mark (s122-D2/D3); minted step/on-complete (#1A1A1A base; Legacy #FFFFFF light / #1A1A1A dark). (d) CONTRAST DOCTRINE, his verbatim: 'the intent/meaning is carried by the glyph a label, therefor the track and the roundels it is less important that they have Ally contrast. the label and the symbol must carry the contrast not the decoration.' Gated legs = tick-on-fill + label (all pass, 5.22-8.77 / 12.63-17.45); fill-on-page/track = declared absences with this rationale. This ratifies the declared-absence handling of the six sub-3:1 light fill cells. (e) LEGACY BAR: progress/complete override #333333 light / #FFFFFF dark ('both are true' — the s176-D1 Legacy ink applied to the bar, declared per the fall-through class). (f) LEGACY DARK TICK #1A1A1A is a DECLARED EXCEPTION taken by the build (exact roundel-mark match = white-on-white, forbidden by his own doctrine) — ACCEPTED BY RATIFICATION of the v2 page. (g) MINTED WITH EYES OPEN: 'There will be reviews by others later so some changes might be made in the future, thats just the process. lets get these in for now!' — ratified as-built, future revision expected, not a hedge on firmness. The name step/on-complete stands as-built under the same clause.",
+ "governs": [
+  "knowledge/tokens/semantic-colour.json step/complete ($alias rag/success) and step/on-complete (MINTED, #1A1A1A both modes)",
+  "knowledge/tokens/themes/apollo-legacy.overrides.json step/complete #DB0011|#FFFFFF, step/on-complete #FFFFFF|#1A1A1A, progress/complete #333333|#FFFFFF (NEW, fall-through declared)",
+  "knowledge/tokens/themes/apollo-supercharge.overrides.json (step/complete override TRIMMED — inherits base, add-then-trim honoured)",
+  "knowledge/snippets/Progress-tracker.reference.html + Stepper.reference.html (thick tick, on-complete rebind, gated contrastPairs, doctrine prose)",
+  "knowledge/canon/gen_theme_cascade.py selftest (retargeted + step/on-complete clauses, mutation-tested)",
+  "the s175-D1 open items: three undecided step themes RESOLVED; Legacy dark red SUPERSEDED; step-component contrast finding RESOLVED by doctrine (d)"
+ ],
+ "evidence": [
+  "chat #176 2026-08-14 (live) — four exchanges over three review pages, final ratification 'okay lets mint these'",
+  "reviews/STEP-COLOUR-CONTROLLER-2026-08-14-v1.html · reviews/STEP-SUCCESS-SYSTEM-2026-08-14-v1.html · -v2.html",
+  "two Opus build-sub reports: resolution chains read from each theme's marks block; icon gate byte-match of yes-thick.svg incl. one-character mutation control; 12 mutation receipts across the two builds",
+  "gated contrast measured: tick-on-fill Mono 8.77/8.77 · Legacy 5.22/17.40 · Console 6.34/6.34 · SC 6.34/6.34; labels 12.63-17.45; declared absences recorded per doctrine",
+  "gates rc=0 before/after (captured directly): snippet, a11y, icons, coverage, radius --strict, binds-ratchet, five generator --check, theme-cascade --selftest; type ratchet 1101 unchanged"
+ ],
+ "status": "RULED #176 BY EYE, ENACTED IN THE WORKING TREE THE SAME SESSION, ratified for commit ('lets get these in for now'). Future third-party review revisions EXPECTED per (g). OPEN, DECLARED: _validate_token_forks red at HEAD 3 forks -> 4 with the Legacy bar move — the fork ledger is an UNRULED BASELINE, Dave's; _validate_state_contrast full run owed to CI; step/incomplete untouched; Legacy progress/complete seated as literals not an $alias onto text/default (a live choice, deliberately not taken); composite _build_all.py verdict is CI's."
+}
 ]
 }

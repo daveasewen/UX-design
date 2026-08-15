@@ -545,16 +545,117 @@ def selftest():
         fails.append("supercharge ANCHOR remap neutral/4 -> warm/2 #13110E (Dave 2026-07-22) missing")
     if sc.get("text/default", {}).get("light") != "#13110E":
         fails.append("supercharge effective ink must expand to #13110E through the DNA tier")
-    # s175-D1 MOVED this override from progress/complete to step/complete (values unchanged).
-    # The assertion follows its subject: progress/complete is now INK ONLY in all four themes,
-    # so an override on it would itself be the defect — both halves are asserted.
-    if sc.get("step/complete", {}).get("light") != "#B92F1E":
-        fails.append("supercharge step/complete light != #B92F1E (R-D22 pair, moved by s175-D1)")
+    # step/complete: THE ASSERTION FOLLOWS ITS SUBJECT, TWICE.
+    #   s175-D1 moved the override from progress/complete to step/complete (values unchanged) and
+    #   this clause asserted supercharge light == "#B92F1E".
+    #   s176 (WORKING, Dave's word, awaiting his eye) moved it again: step/complete now ALIASES
+    #   rag/success — the success-ROUNDEL chain — and every theme but Legacy inherits it wholesale.
+    #   Dave: "they can just inherit then wholesale. Except Legacy". So the SUPERCHARGE OVERRIDE WAS
+    #   REMOVED, and #B92F1E/#CC4333 are retired (provenance preserved in the base token's $note).
+    # Assert VALUES, not the absence: these dicts are alias-expanded, so an inherited alias still
+    # resolves to a hex here — the inheritance is checkable, and a stray re-declared override would
+    # show up as a value mismatch. Each theme must equal ITS OWN rag/success, not a hard-coded hex
+    # for the other theme, so a palette move cannot pass by coincidence (a token NAME is not an
+    # ADDRESS — the point of asserting the CHAIN and not the literal).
+    for mode in ("light", "dark"):
+        if base_value("step/complete", mode) != base_value("rag/success", mode):
+            fails.append(f"base step/complete {mode} must inherit rag/success (the roundel chain, s176)")
+        if base_value("step/complete", mode) != "#66CC8D":
+            fails.append(f"base step/complete {mode} != #66CC8D (mono success roundel, s176)")
+    # …AND ASSERT THE EMITTED CHAIN, NOT ONLY THE VALUE. base_value() reads $value; the CSS that
+    # actually paints is emitted from $alias by gen_canon_tokens (a semantic-aliased token emits the
+    # var() reference, not a baked hex). Those two can disagree silently — reverting the $alias to
+    # the old ink pair leaves $value #66CC8D and every value clause above still passes. A green that
+    # cannot fail is an assertion, so the reference itself is asserted in the built canon.css:
+    # step/complete must carry the ROUNDEL'S OWN CHAIN, --step-complete -> var(--rag-success), which
+    # is what makes "inherit wholesale" true per theme rather than a coincidence of hexes.
+    try:
+        _canon = open(CANON).read()
+    except Exception as e:                      # fail LOUD and NAMED, never silently skip
+        fails.append(f"selftest could not read canon.css to assert the step chain: {e}")
+        _canon = ""
+    if "--step-complete: var(--rag-success);" not in _canon:
+        fails.append("canon.css must emit --step-complete: var(--rag-success) — the success-roundel "
+                     "chain (s176). A baked hex here means the $alias was lost and the themes stopped inheriting.")
+    # ⚠ DEFECT FIXED #176-refinement: the six clauses below were written INSIDE the `if ... not in
+    # _canon:` branch above — i.e. they could only ever run when the chain assertion had ALREADY
+    # failed — and they read `mode` after the earlier for-loop had ended, so they silently tested
+    # one mode. A green that cannot fail is an assertion, not a test. They are dedented to module
+    # flow and given their own loop over both modes.
+    con = themes["apollo-console"]["overrides"]
+    for mode in ("light", "dark"):
+        if con.get("step/complete", {}).get(mode) != con.get("rag/success", {}).get(mode):
+            fails.append(f"console step/complete {mode} must inherit its own rag/success (s176)")
+        if con.get("step/complete", {}).get(mode) != "#5DAC7B":
+            fails.append(f"console step/complete {mode} != #5DAC7B (s176)")
+        if sc.get("step/complete", {}).get(mode) != sc.get("rag/success", {}).get(mode):
+            fails.append(f"supercharge step/complete {mode} must inherit its own rag/success (s176)")
+        if sc.get("step/complete", {}).get(mode) != "#5DAC7B":
+            fails.append(f"supercharge step/complete {mode} != #5DAC7B (s176; retired #B92F1E/#CC4333)")
+    # THE MARK. #176 refinement, Dave off the rendered page: "Apollo mono, in the same way as the
+    # roundels, uses the dark ink colour for the glyphs." step/on-complete is minted for it. The
+    # RETIRED policy, preserved: the mark KNOCKED TO THE PAGE (background/default, #FFFFFF light /
+    # #1A1A1A dark). Assert the value AND the emitted var, because the snippet literal and the
+    # store can disagree silently — the whole reason --step-complete painted nothing before #176.
+    for mode in ("light", "dark"):
+        if base_value("step/on-complete", mode) != "#1A1A1A":
+            fails.append(f"base step/on-complete {mode} != #1A1A1A (s122-D2 mark camp, s176)")
+    if "--step-on-complete: #1A1A1A;" not in _canon:
+        fails.append("canon.css must emit --step-on-complete: #1A1A1A — the roundel mark ink (s176). "
+                     "Missing means the token is minted but never painted.")
+    if "--on-complete: var(--step-on-complete);" not in _canon:
+        fails.append("the step components must BIND --on-complete to var(--step-on-complete) (s176); "
+                     "a component-local literal would take the theme cascade out of the loop.")
     # NB these are EFFECTIVE overrides (alias-expanded), so "no declared override" does NOT show up
     # as absence — progress/complete now expands through the warm DNA tier. Assert the VALUE:
     # s175-D1 = the continuous-quantity bar is the theme's own ink, i.e. it tracks text/default.
     if sc.get("progress/complete", {}).get("light") != sc.get("text/default", {}).get("light"):
         fails.append("supercharge progress/complete must resolve to the theme ink (s175-D1)")
+    # LEGACY IS THE ONE EXCEPTION AND MUST STAY ONE. Dave #175 made Legacy's step colour DEFINITE;
+    # Dave #176 kept it definite and RE-VALUED it: "Except Legacy, it uses the red in light mode and
+    # white in dark." PROVENANCE OF THE PREVIOUS ASSERTION, retired here not deleted: this clause
+    # asserted "#DB0011" in BOTH modes (the R-D19 brand red, moved from progress/complete by s175-D1).
+    # WHICH RED MATTERS: Dave said "the red", then "warning red", then corrected himself verbatim —
+    # "Legacy error, sorry my mistake". So light is Legacy's ERROR red, asserted AGAINST ITS PALETTE
+    # and not as a bare literal, and pinned to the literal too so a palette move is caught rather
+    # than silently followed. Dark is the roundel policy's WHITE leg.
+    # …AND THE SUBJECT MOVED A THIRD TIME. #176 refinement, Dave off the RENDERED v1 review page:
+    # "Use the primary red for Legacy." A ruling made against the thing outranks one made against a
+    # description, so light goes BACK to the primary/brand red. RETIRED ASSERTIONS, kept as trail,
+    # not deleted: (a) s175-D1 asserted "#DB0011" both modes; (b) #176-chat asserted light ==
+    # legacy rag/error == "#A8000B" — that clause is now WRONG and is replaced, deliberately.
+    # Light is pinned to the theme's PRIMARY red by chain AND by literal; dark is the white leg,
+    # which Dave did not revisit.
+    if leg.get("step/complete", {}).get("light") != leg.get("button/primary/background/default", {}).get("light"):
+        fails.append("legacy step/complete light must be the theme's PRIMARY red, not the error red (s176 refinement)")
+    if leg.get("step/complete", {}).get("light") != "#DB0011":
+        fails.append("legacy step/complete light != #DB0011 (Legacy PRIMARY red, s176 refinement; "
+                     "NOT #A8000B — that was the withdrawn chat leg — and NOT #FFBB33)")
+    if leg.get("step/complete", {}).get("dark") != "#FFFFFF":
+        fails.append("legacy step/complete dark != #FFFFFF (roundel policy white leg, s176)")
+    # LEGACY IS THE ONE THEME THAT MUST OVERRIDE THE MARK, because it is the one theme whose step
+    # fill is not the success fill — the mark policy binds to the FILL, not the token name.
+    # Light MATCHES Legacy's own roundel mark (marks/success == marks/error == #FFFFFF, s122-D5);
+    # dark is a DECLARED EXCEPTION to #1A1A1A, flagged NOT-RULED, because Legacy's dark step fill
+    # is itself #FFFFFF and an exact match renders a white tick on a white disc.
+    if leg.get("step/on-complete", {}).get("light") != "#FFFFFF":
+        fails.append("legacy step/on-complete light != #FFFFFF (its own roundel mark, s122-D5/s176)")
+    if leg.get("step/on-complete", {}).get("dark") != "#1A1A1A":
+        fails.append("legacy step/on-complete dark != #1A1A1A (declared exception vs the white dark "
+                     "fill, s176 — NOT RULED by Dave, flagged for him)")
+    if leg.get("step/on-complete", {}).get("dark") == leg.get("step/complete", {}).get("dark"):
+        fails.append("legacy dark: the tick and its fill are the SAME colour — an invisible glyph. "
+                     "Dave's doctrine: 'the label and the symbol must carry the contrast'.")
+    # Legacy USED to declare nothing on progress/complete and fell through to the MONO ink #1A1A1A —
+    # the fall-through class: a theme that MEANS a value must DECLARE it. s176 closes that: Legacy
+    # declares its own ink pair. Assert the DECLARATION, not merely the effective value, because an
+    # effective value cannot tell a declaration from an accident — that was the whole defect.
+    for mode, ink in (("light", "#333333"), ("dark", "#FFFFFF")):
+        got = (leg.get("progress/complete") or {}).get(mode)
+        if got != ink:
+            fails.append(f"legacy progress/complete {mode} must be DECLARED as the Legacy ink {ink}, got {got} (s176)")
+    if leg.get("progress/complete", {}).get("light") != leg.get("text/default", {}).get("light"):
+        fails.append("legacy progress/complete light must equal the theme's own body ink (Grey 8, col25-011)")
     # 4b. the sibling fence (ADR-0014, LOCKED): Console may not diverge on DNA/status/dataviz paths
     reg = json.load(open(os.path.join(TOK, "themes", "_themes.json")))
     fence = (reg["themes"]["apollo-console"].get("fencedPaths") or {}).get("prefixes", [])
