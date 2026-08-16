@@ -1996,6 +1996,23 @@ and FAIL LOUD on an unresolvable name. Estimate **PICKED, not derived** — this
 labelled as one [[planning-estimate-is-not-a-measurement]]. ⛔ **Not built, not scheduled, and it needs no
 ruling** — it is a gate candidate, not a value. Whether it is worth the money is the next session's call.
 
+**✅ BUILT #190 (2026-08-16, Opus build sub) — appended, nothing above rewritten.**
+`knowledge/_gate_dataviz_vars.py`. It parses colour-bearing SVG **presentation attributes**
+(`fill` · `stroke` · `stop-color` · `flood-color` · `lighting-color` · `color`) — the surface C2
+structurally cannot see, because C2 reads `<style>`/`style=""` — and resolves each `var(--x)` per
+theme (mono · legacy · console · supercharge), following alias chains, against the file's own CSS,
+its `<link>`ed stylesheets and `canon/canon.css` (base block + that theme's `[data-apollo-theme]`
+block). Unresolvable-in-every-theme ⇒ exit 1, quoted `file:line` + the literal attribute.
+Glob, stated so widening is a visible edit: `knowledge/snippets/*.reference.html` ·
+`knowledge/snippets/DataViz-interactive.html` · `knowledge/_proforma/*.html`.
+**Real-surface measurement, 2026-08-16:** 15 files carry colour presentation attributes,
+**688 references, 0 dead, 0 partial-theme** — the #184 instance class has no survivors in the glob
+today. Selftest = 8 arms (green control on the real Chart-bar · plant-undeclared · declared control ·
+broken alias chain · console-only partial · `var(--x, fallback)` safe · empty population errors ·
+missing `canon.css` errors), all PASS. Wired **ADVISORY** in `_build_all.py` (steps 93–94, route
+rows added, 119/119 label join verified). ⬛ **PICKED, NOT RULED — Dave's:** (a) making it BLOCKING,
+(b) the partial-theme tier warning rather than biting, (c) the attribute list.
+
 **⚠ Related, and deliberately left open:** `knowledge/_DS-IMPROVEMENTS.md:249` still names the OLD vocabulary
 in prose. It is a **period reference describing the #122 defect as it was found**, not a consumer, and
 rewriting it would falsify a dated record. Dave was shown it at #184 and **did not rule**; it stands.
