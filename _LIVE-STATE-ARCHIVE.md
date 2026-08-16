@@ -1,5 +1,19 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-16 #187 (2d, at the #190 wrap) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-16 (Sun from `date`) (**#187**, FABLE conductor, IN-WINDOW wrap, Dave LIVE, ⛔ **NO RULINGS — no `s187-D*` exists**)
+
+**Landed (evidence per claim; gauge MEASURED in-window):**
+
+- ★ **Phase 2 opened**: store rows `W-19`–`W-27` via `_state.add()` (check OK; 48 total · 42 live) · lane divvy `notes/_briefs/2026-08-16-phase2-lane-divvy-brief.md` (`W-27`, rowed at creation) · `W-26` registers the compaction brief.
+- ★ **`W-25` CLOSED VERIFIED-MOOT** — enacted at #178 (`s178-D1`(b), GM:430, commit `2d2ff44`); the `s186-D2` promotion carried a stale premise (the pass-8 P2 class, third surface).
+- ✅ **`W-21` BUILT** — `knowledge/_recheck_119_sweep.py` + sidecar; 21 records: STILL-UNENACTED 1 (`ds-033`) · WEAK-MATCH 1 · UNPROBEABLE 19 DECLARED; selftest mutation-proven both directions. ⬛ `STALE_AFTER_SESSIONS=15` PICKED, Dave's.
+- ✅ **`W-23` ENACTED** — `_RUNBOOK-git-commit.md`: line-7 summary + the `--push` call form added (0 → 3 mentions); `:104` untouched.
+- ⬛ **Dream pass 8 read — ~~P1–P5 floated, Dave's; nothing promoted~~ RETRACTED at #189.** The claim was false when written: `s183-D1` (ruled #183, `knowledge/_rulings.json`) had promoted all five light forms four sessions earlier; `s188-D3` (#188) inscribes the supersession — P1's light version RETIRED by `s188-D1`, P2 STRENGTHENED by `s188-D2`, **P3/P4/P5 IN FORCE**. Struck with its receipt, never re-typed (`s183-D1` P2 as strengthened by `s188-D2`).
+- ⚙ **GAUGE.** boot **56,271** (in band) · FILL at wrap-open **144,361** vs stop **150,929** ⇒ room **6,568**; in-window wrap on room-to-WORKING **55,639** vs 42–49K; **no subs**.
+- ⛔ **NOT RULED / NOT TOUCHED:** pass-8 P1–P5 · the `#174` adjudication · the trend card · every colour value · `knowledge/_rulings.json` (not opened) · `knowledge/_build_all.py` (NOT RUN) · Lanes B/C (open rows) · ⛔ **NOT PUSHED — Dave's word not given.**
+
+
 ## Rolled 2026-08-16 #186 (2d, at the #189 wrap) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-16 (Sun from `date`) (**#186**, FABLE conductor, IN-WINDOW wrap, Dave LIVE throughout, **TWO RULINGS, DAVE'S — `s186-D1` · `s186-D2`**)
 
