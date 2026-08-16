@@ -4,7 +4,10 @@
 `objects/tmp_obj_*` files but **cannot unlink them** (`rm` → "Operation not permitted", even as the
 file's owner). So git commits fail with `Unable to create '.git/index.lock': File exists`, and any git
 command leaves a fresh lock behind. `mv` IS permitted where `rm` is not — that's the whole trick.
-Companion to memory `git-push-method`; git split = Claude commits, Dave pushes via GitHub Desktop.*
+Companion to memory `git-push-method`; git split = Claude commits; push runs from the terminal via
+`bash knowledge/_git_commit.sh --push` **on Dave's explicit word only** (`s133-D2`: master · ff-only ·
+verified; keyed by Dave at #141). GitHub Desktop remains legal on his side. *(Summary corrected #187,
+W-23 — the pre-#133 "Dave pushes via Desktop" split aged out; body correction at step 5 below.)**
 
 ## ★ STEP 0 BEFORE EVERYTHING — ASK FOR THE DELETE GRANT (ruled by Dave #133: "do it")
 
@@ -102,7 +105,10 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
 5. **Hand off to Dave** — "committed at `<hash>`, locks clear, safe to push." Dave pushes via
    **GitHub Desktop only** (never terminal push — it hangs on credentials).
    ⚠ **CORRECTED #141 (2026-08-10, on Dave's word: "you can push I gave you the rights and the key"):**
-   the agent CAN now `git push origin master` from the sandbox — verified live, remote advanced. The
+   the agent CAN now push from the sandbox — verified live, remote advanced. ★ **The ruled CALL FORM
+   is `bash knowledge/_git_commit.sh --push`** (`s133-D2`: *"the ONLY push path"* — master, ff-only,
+   verified; exercised #133 and #135), not a raw `git push`. *(Call form added #187, W-23 — the file
+   had zero mentions of `--push` while the ledger and the `git-push-method` hook both carried it.)* The
    "hangs on credentials" claim was true of the un-keyed default and aged out once Dave installed a key
    ([[assertion-propagation-gap]], same class as step 4b's correction). **Push still only on Dave's
    explicit word — that half of the split stands.** If Desktop ever complains
