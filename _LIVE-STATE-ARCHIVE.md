@@ -1,5 +1,18 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-16 #186 (2d, at the #189 wrap) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-16 (Sun from `date`) (**#186**, FABLE conductor, IN-WINDOW wrap, Dave LIVE throughout, **TWO RULINGS, DAVE'S — `s186-D1` · `s186-D2`**)
+
+**Landed (evidence per claim; gauge MEASURED in-window, not relayed):**
+
+- ⬛ **`s186-D1` — THE COMPACTION FIVE QUESTIONS SETTLED.** Q1 RATIFIED (parachute under the wrap, never a substitute — the standing frame) · Q2 RULED **and enacted words-only**: the W1 paragraph is INSCRIBED in `knowledge/_RUNBOOK-context-gauge.md` § *Platform compaction — the layer BELOW the stop line* (control vs observe stated; fired compaction = declared event; summary = UNPROVEN inscription) · Q3 PARKED (trigger: compaction live in our stack) · Q4 PARKED (trigger: first long-running sub that needs it; the park rationale was questioned by Dave, answered, then picked) · Q5 RULED (declared check-in line — a BUILD ⇒ Phase 2 priced row). Readback ratified: *"firm"*. Inscribed via `_inscribe_ruling.py`, reconstruction proof PASSED.
+- ⬛ **`s186-D2` — THE DREAM-PASS BACKLOG SETTLED.** Pass 6 **P1–P4 PROMOTED** as Phase 2 rows · **P5 RULED KEEP** (the `--all-dirty` hatch stands; the #128 question closes as *kept*) · pass 7 **P1 PROMOTED** (liveness check FIRST; the two bare ordinals deleted, never re-stamped). ★ Verified-moot first: P3 is PART-MOOT (#141 already corrected the substance) and P5's proposed § OPEN line ALREADY EXISTED (born #137). Readback ratified: *"Firm — ratify all"*, covering both `closes_when` conditions.
+- ✅ **`W-18` CLOSED through `_state`'s own load/check/save** — check OK zero failures, diff 3 lines, `closed_by` carries the receipt. **`W-17` stands open, condition RATIFIED.**
+- ✅ **MEMORY STEP 3 RAN (conductor's seat).** The #184 additions were **ALREADY IN THE STORE** (modified 2026-08-16T14:42 — the two-session carry was STALE); only the #185 **forgotten-document hook** was owed: `forgotten-document-class.md` NEW + `MEMORY.md` index line.
+- ⚙ **GAUGE.** boot **56,163 real** (in band) · FILL at wrap-open **125,280 real** (FLOOR, late by one step) vs stop **150,929** ⇒ room **25,649**; wrap run **IN-WINDOW** because room-to-WORKING (**74,720**) exceeded the 42–49K wrap price — budget did not bind, **no subs**.
+- ⛔ **NOT RULED / NOT TOUCHED:** the `#174` adjudication · the trend card (floated) · every colour value · the 4px height-snap · `knowledge/_build_all.py` (**NOT RUN — `#166` labels are JOIN KEYS**) · no floated proposal beyond those named was promoted · ⛔ **NOT PUSHED — push is Dave's word and was NOT given.**
+
+
 ## Rolled 2026-08-16 #185 (2d, at the #188 wrap) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-16 (Sun from `date`) (**#185**, FABLE conductor + this OPUS wrap sub, Dave LIVE throughout, ⛔ **NO RULINGS — no `s185-D*` exists**)
 
