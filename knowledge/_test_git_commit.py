@@ -120,6 +120,11 @@ def build_fixture(root, script_text, banner):
           STUB_TMPL.format(var="STUB_LIVE_STATE_EXIT", name="_build_live_state.py"))
     write(os.path.join(know, "_session.py"),
           STUB_TMPL.format(var="STUB_SESSION_EXIT", name="_session.py"))
+    # #191: the W-20 doc-row gate (wired into _git_commit.sh at #188) had no stub here, so EVERY
+    # commit-path arm had been failing on `can't open file .../_gate_doc_rows.py` since that wiring
+    # — and the three legacy mutation controls were going RED for the WRONG reason [[a-crash-is-not-a-fail]].
+    write(os.path.join(know, "_gate_doc_rows.py"),
+          STUB_TMPL.format(var="STUB_DOC_ROWS_EXIT", name="_gate_doc_rows.py"))
     write(os.path.join(root, "pystubs", "tiktoken.py"), FAKE_TIKTOKEN)
     write(os.path.join(root, "GOOD-MORNING.md"), banner)
     write(os.path.join(root, "README.md"), "fixture repo\n")
@@ -145,6 +150,7 @@ def build_fixture(root, script_text, banner):
         "STUB_CAPTURE_GATE_EXIT": "0",
         "STUB_LIVE_STATE_EXIT": "0",
         "STUB_SESSION_EXIT": "0",
+        "STUB_DOC_ROWS_EXIT": "0",
         # #120: the SESSION_N session-witness gate (post-#116) BLOCKS a --wrap commit
         # without a declared session. Fixtures declare #77 to match BANNER_PRIMARY;
         # the gate's own clauses get dedicated arms (wrap_undeclared_session_blocks,
@@ -522,6 +528,56 @@ def arm_subject_fold(script_text):
         return True, ""
 
 
+def arm_declare_dirt_names_instrumentation(script_text):
+    """W-22 (#191): `--declare-dirt` must NAME an instrumentation append and its writer, and must
+    NOT declare ordinary dirt. The fixture PLANTS a dirty `notes/_REHEARSAL-LOG.jsonl` alongside
+    the fixture's ordinary `work.txt`; both must appear in the dirty list, only the instrumentation
+    path in the DECLARED block [[gate-must-quote-what-it-forbids]]."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        # PLANT it the way the real defect arrives: a TRACKED file the instruments APPEND to.
+        # (An untracked file would be collapsed to `notes/` by `git status --short` and the arm
+        # would be measuring directory collapse, not the declaration [[attribute-the-diff]].)
+        log = os.path.join(root, "notes", "_REHEARSAL-LOG.jsonl")
+        write(log, '{"kind":"rehearse","planted_by":"_test_git_commit.py"}\n')
+        for cmd in (["git", "add", "notes/_REHEARSAL-LOG.jsonl"],
+                    ["git", "commit", "-q", "-m", "rehearsal baseline"]):
+            rc, out = sh(cmd, cwd=root, env=env)
+            if rc != 0:
+                raise RuntimeError("fixture plant failed at %r: %s" % (cmd, out))
+        with open(log, "a", encoding="utf-8") as f:
+            f.write('{"kind":"rehearse","appended_by":"the instrument itself"}\n')
+        rc, out = run_commit(root, env, ["--declare-dirt"])
+        if rc != 0:
+            return False, "--declare-dirt is read-only and must exit 0, got %d; out: %s" % (rc, out[-400:])
+        if "notes/_REHEARSAL-LOG.jsonl" not in out:
+            return False, "planted instrumentation path absent from output: %s" % out[-400:]
+        if "— DECLARED: instrumentation appends among the dirty paths" not in out:
+            return False, "DECLARED block missing though instrumentation dirt was planted: %s" % out[-400:]
+        if "written by:" not in out or "_capture_gate.py" not in out:
+            return False, "declaration did not name the WRITER: %s" % out[-400:]
+        decl = out.split("— DECLARED:", 1)[1]
+        if "work.txt" in decl:
+            return False, "ordinary dirt leaked into the DECLARED block — the declaration over-claims: %s" % decl
+        if "_graph-mark-observations.jsonl" in decl:
+            return False, "a NON-dirty instrumentation path was declared — the check is not reading the blob: %s" % decl
+        return True, ""
+
+
+def arm_declare_dirt_silent_without_instrumentation(script_text):
+    """The other direction: ordinary dirt alone must print the dirty list and NO declaration."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        rc, out = run_commit(root, env, ["--declare-dirt"])
+        if rc != 0:
+            return False, "expected exit 0, got %d; out: %s" % (rc, out[-400:])
+        if "work.txt" not in out:
+            return False, "ordinary dirt missing from the dirty list: %s" % out[-400:]
+        if "DECLARED: instrumentation appends" in out:
+            return False, "DECLARED block fired with no instrumentation path dirty: %s" % out[-400:]
+        return True, ""
+
+
 # ---------------- mutation controls (the arm must go RED against a broken copy) ---------
 
 def mutation_blank_insert_removed(script_text):
@@ -567,6 +623,38 @@ def mutation_lockclear_removed(script_text):
     return True, "went RED as required: %s" % detail
 
 
+def mutation_declare_dirt_call_removed(script_text):
+    """W-22 (#191) — with the `--declare-dirt` consumer's call to `declare_instrumentation_dirt`
+    deleted, the naming arm must go RED. A declaration whose consumer can be deleted silently is
+    [[instrument-without-a-consumer]] in its second shape."""
+    target = '    echo "— dirty paths:"; echo "$DIRT"\n    declare_instrumentation_dirt "$DIRT"\n'
+    if target not in script_text:
+        raise RuntimeError("mutation target not found — the --declare-dirt consumer block in "
+                           "_git_commit.sh moved; update the mutation control")
+    mutated = script_text.replace(
+        target, '    echo "— dirty paths:"; echo "$DIRT"\n    : # MUTATED: declaration call removed\n')
+    ok, detail = arm_declare_dirt_names_instrumentation(mutated)
+    if ok:
+        return False, ("arm_declare_dirt_names_instrumentation stayed GREEN with the declaration "
+                       "call deleted — harness cannot fail")
+    return True, "went RED as required: %s" % detail
+
+
+def mutation_declare_dirt_match_widened(script_text):
+    """The over-claim direction: if the path match is replaced by an unconditional match, EVERY
+    dirty path gets declared. The silent-when-clean arm must go RED."""
+    target = '    case "$blob" in\n      *"$p"*)\n'
+    if target not in script_text:
+        raise RuntimeError("mutation target not found — declare_instrumentation_dirt's case match "
+                           "moved; update the mutation control")
+    mutated = script_text.replace(target, '    case "$blob" in\n      *)  # MUTATED: match widened\n')
+    ok, detail = arm_declare_dirt_silent_without_instrumentation(mutated)
+    if ok:
+        return False, ("arm_declare_dirt_silent_without_instrumentation stayed GREEN against an "
+                       "always-matching declaration — harness cannot fail")
+    return True, "went RED as required: %s" % detail
+
+
 ARMS = [
     ("happy_path_commit_lands", arm_happy_path),
     ("nonwrap_headline_after_prefix_78D3", arm_nonwrap_prefix),
@@ -590,6 +678,10 @@ ARMS = [
     ("MUTATION_blank_insert_removed_bites_124", mutation_blank_insert_removed),
     ("MUTATION_prefix_stripped_bites", mutation_prefix_removed),
     ("MUTATION_lockclear_removed_bites", mutation_lockclear_removed),
+    ("declare_dirt_names_instrumentation_W22", arm_declare_dirt_names_instrumentation),
+    ("declare_dirt_silent_without_instrumentation_W22", arm_declare_dirt_silent_without_instrumentation),
+    ("MUTATION_declare_dirt_call_removed_bites_W22", mutation_declare_dirt_call_removed),
+    ("MUTATION_declare_dirt_match_widened_bites_W22", mutation_declare_dirt_match_widened),
 ]
 
 

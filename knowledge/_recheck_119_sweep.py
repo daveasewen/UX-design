@@ -30,9 +30,13 @@ measured [[gate-must-quote-what-it-forbids]].
 
 CONSUMER. The capture ritual's 2c step reads the sidecar's `stale_after` field: verdicts are
 dated and EXPIRE (s129-D5's expiry arm) — a verdict older than `STALE_AFTER_SESSIONS` sessions
-is reported as EXPIRED by --report, which is the nag that keeps this from becoming the next
-frozen sweep. (Wiring a one-line consumer into _checkin.py is Lane B's seam; until then the
-runbook step and --report are the consumers, and this sentence declares that honestly.)
+is reported as EXPIRED, which is the nag that keeps this from becoming the next frozen sweep.
+✅ WIRED #191: `_checkin.py` prints a `119-SWEEP` boot line — it READS the sidecar (never re-runs
+the probe: a consumer that regenerates its own input can never report that input as stale) and
+flags EXPIRED / UNKNOWN-AGE / missing sidecar LOUDLY. Because the limit is in SESSIONS, `run()`
+now stamps `rechecked_at_session` from `_session.witnesses()['gm_banner']`; a sidecar without
+that stamp reads UNKNOWN-AGE, never FRESH [[measure-dont-convert-units]]. The expiry logic is
+the pure `expiry_state()`, driven by `--selftest` in five arms plus two limit mutations.
 
 SELFTEST. `--selftest` is mutation-tested both directions: it must find ds-033
 STILL-UNENACTED on the real tree, and it must flip to LITERAL-GONE on a mutated copy —
@@ -149,6 +153,40 @@ def probe_record(r, root=ROOT):
     return ("LITERAL-GONE" if ran_any else "UNPROBEABLE"), probes
 
 
+def current_session():
+    """The session number this run happens in, from the store's OWN witness (`_session.witnesses`
+    → `gm_banner`). Returns None when it cannot be read — UNKNOWN is a value, 0 is a lie
+    [[feedback-measuring-tool-must-not-guess]]."""
+    try:
+        sys.path.insert(0, str(ROOT / "knowledge"))
+        import _session  # noqa: PLC0415 — imported lazily so a broken witness cannot break the probe
+        return _session.witnesses(str(ROOT)).get("gm_banner")
+    except Exception:  # noqa: BLE001 — the caller DECLARES the None; it is never defaulted
+        return None
+
+
+def expiry_state(out, now_session):
+    """(state, detail) for the sidecar's age, in the RULED unit (sessions), never converted from
+    days [[measure-dont-convert-units]]. Pure — this is what the _checkin.py consumer calls.
+
+      FRESH        — age < STALE_AFTER_SESSIONS
+      EXPIRED      — age >= it; the verdicts are stale and the re-checker owes a re-run
+      UNKNOWN-AGE  — either end of the subtraction is missing (a sidecar written before the
+                     session stamp existed, or no readable banner witness). DECLARED, never
+                     silently treated as fresh.
+    """
+    n = out.get("stale_after_sessions", STALE_AFTER_SESSIONS)
+    then = out.get("rechecked_at_session")
+    if then is None or now_session is None:
+        return "UNKNOWN-AGE", (
+            f"rechecked_at_session={then!r}, current_session={now_session!r} — age is not "
+            f"computable in SESSIONS (the ruled unit); re-run the re-checker to stamp it")
+    age = now_session - then
+    if age >= n:
+        return "EXPIRED", f"{age} sessions old (limit {n}); verdicts below are STALE — re-run"
+    return "FRESH", f"{age} of {n} sessions"
+
+
 def run(write=True):
     rulings = load_rulings()
     frozen = frozen_subset(rulings)
@@ -157,6 +195,9 @@ def run(write=True):
         "rechecked_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "population": len(frozen),
         "stale_after_sessions": STALE_AFTER_SESSIONS,
+        # #191: expiry is ruled in SESSIONS, so the run must stamp the session it ran in —
+        # `rechecked_at` alone cannot answer the question the limit asks. None is DECLARED.
+        "rechecked_at_session": current_session(),
         "verdicts": {},
     }
     for r in frozen:
@@ -172,7 +213,9 @@ def report(out):
     for v in out["verdicts"].values():
         tally[v["verdict"]] = tally.get(v["verdict"], 0) + 1
     line = " · ".join(f"{k} {n}" for k, n in sorted(tally.items()))
-    print(f"119-sweep recheck: {out['population']} frozen records — {line} · rechecked_at {out['rechecked_at']}")
+    state, detail = expiry_state(out, current_session())
+    print(f"119-sweep recheck: {out['population']} frozen records — {line} · rechecked_at {out['rechecked_at']}"
+          f" · age {state} ({detail})")
     for rid, v in sorted(out["verdicts"].items()):
         if v["verdict"] != "UNPROBEABLE":
             tgt = next((p["target"] for p in v["probes"] if p.get("ran")), "?")
@@ -194,7 +237,28 @@ def selftest():
     if mv == "STILL-UNENACTED":
         print("SELFTEST FAIL: mutated ds-033 still graded STILL-UNENACTED — the probe cannot fail")
         return 2
-    print(f"selftest OK: ds-033 STILL-UNENACTED on real tree · mutated copy → {mv} (the check can fail)")
+    # ── expiry arm (#191) — the consumer's own logic, driven both directions ──────────────
+    base = {"stale_after_sessions": 15, "rechecked_at_session": 100}
+    arms = [("FRESH", dict(base), 110), ("EXPIRED", dict(base), 115),
+            ("EXPIRED", dict(base), 200),
+            ("UNKNOWN-AGE", {"stale_after_sessions": 15, "rechecked_at_session": None}, 110),
+            ("UNKNOWN-AGE", dict(base), None)]
+    for expect, o, now in arms:
+        got, _d = expiry_state(o, now)
+        if got != expect:
+            print(f"SELFTEST FAIL: expiry_state({o}, {now}) → {got!r}, expected {expect!r}")
+            return 2
+    # mutation: a limit read as 0 would call everything EXPIRED; a limit read as huge would
+    # call everything FRESH. Both must be visible in the arm above, so prove the arm bites.
+    if expiry_state({"stale_after_sessions": 999, "rechecked_at_session": 100}, 115)[0] != "FRESH":
+        print("SELFTEST FAIL: expiry arm cannot distinguish the limit — it is an assertion")
+        return 2
+    if expiry_state({"stale_after_sessions": 0, "rechecked_at_session": 100}, 100)[0] != "EXPIRED":
+        print("SELFTEST FAIL: a zero limit did not expire — the comparison is not driven")
+        return 2
+    live = current_session()
+    print(f"selftest OK: ds-033 STILL-UNENACTED on real tree · mutated copy → {mv} (the check can fail)"
+          f"\nselftest OK: expiry_state 5 arms + 2 limit mutations · live session witness = {live!r}")
     return 0
 
 

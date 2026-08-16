@@ -1163,6 +1163,41 @@ def main() -> int:
     except Exception as _e:  # noqa: BLE001 — loud + named, never silent
         print(f"  DREAM       ⛔ SEAM DID NOT RUN ({type(_e).__name__}: "
               f"{' '.join(str(_e).split())[:220]}) — pass status UNKNOWN, not green.")
+    # ── 119-SWEEP RE-CHECKER CONSUMER — W-21 (#187 ⑥(c)), wired #191. ─────────────────────
+    # ⛔ WHY. `_recheck_119_sweep.py` writes a dated sidecar whose verdicts EXPIRE after
+    # STALE_AFTER_SESSIONS (s129-D5's expiry arm) — and until now NOTHING read that expiry, so
+    # the re-checker was on its way to becoming the frozen sweep it was built to unfreeze
+    # [[instrument-without-a-consumer]]. Its own docstring names this seam: "Wiring a one-line
+    # consumer into _checkin.py is Lane B's seam". This is that consumer.
+    # ⛔ IT READS THE SIDECAR, IT DOES NOT RE-RUN THE PROBE — boot is not the place to walk the
+    # tree, and a consumer that regenerates its own input can never report the input as stale.
+    try:
+        import json as _json
+        sys.path.insert(0, os.path.join(REPO, "knowledge"))
+        import _recheck_119_sweep as _rc  # noqa: PLC0415 — lazily; a broken probe must not break boot
+        _sc = os.path.join(REPO, "knowledge", "_119-sweep-recheck.json")
+        if not os.path.exists(_sc):
+            print("  119-SWEEP   ⛔ NO SIDECAR (knowledge/_119-sweep-recheck.json absent) — the 21 "
+                  "frozen #119 statuses are UNKNOWN, not clean. Run "
+                  "`python3 knowledge/_recheck_119_sweep.py`.")
+        else:
+            with open(_sc, encoding="utf-8") as _fh:
+                _out = _json.load(_fh)
+            _state, _detail = _rc.expiry_state(_out, _rc.current_session())
+            _t = {}
+            for _v in _out.get("verdicts", {}).values():
+                _k = _v.get("verdict", "?").split(" (")[0]
+                _t[_k] = _t.get(_k, 0) + 1
+            _flag = {"EXPIRED": "⛔ ", "UNKNOWN-AGE": "⚠ "}.get(_state, "")
+            print(f"  119-SWEEP   {_flag}{_state} — {_detail}; "
+                  + " · ".join(f"{_k} {_n}" for _k, _n in sorted(_t.items()))
+                  + f" (rechecked_at {_out.get('rechecked_at', '?')})")
+            if _state != "FRESH":
+                print("    ⇒ re-run `python3 knowledge/_recheck_119_sweep.py` — an expired verdict "
+                      "is a CONCLUSION PAST ITS DATE (s129-D5), not a green.")
+    except Exception as _e:  # noqa: BLE001 — loud + named, never silent
+        print(f"  119-SWEEP   ⛔ CONSUMER DID NOT RUN ({type(_e).__name__}: "
+              f"{' '.join(str(_e).split())[:220]}) — sweep verdicts UNKNOWN, not green.")
     print()
     if args.window:
         if fill.get("available"):
