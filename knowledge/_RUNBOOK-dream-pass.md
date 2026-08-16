@@ -84,7 +84,21 @@ tokens, to `notes/_dream/_GRADE-DECISIONS.jsonl` (first live drive #180: header 
 = **105 real tokens**; the `⚠ SURFACE COST` instrument line that reports it is a further 70 and
 disappears when the surface is ruled). The other half of the return-with-numbers is human and is
 never inferred: when a grade actually changes what you retrieve, say so with
-`--grade-decision <entry-id> --changed yes|no --note "..."`. After one full cycle, both figures
+`--grade-decision <entry-id> --changed yes|no --note "..."`.
+⛔ **EVERY PASS RECORDS AT LEAST ONE `--grade-decision` ROW for the grades it actually consulted,
+INCLUDING A `--changed no` — a nil return is a datapoint and an absent return is not**
+(`s183-D1`, dream pass 8 P4b). ⛔ **Never backfill or synthesise decision rows** — the human half is
+worth exactly what it is, and inventing it manufactures the CLAIMED class ADR-0016 forbids.
+★ **THE RETURN DATE, AMENDED (`s183-D1`, dream pass 8 P5 form (a)) — the DATE moves, the CONSTANT
+does NOT:** the return-with-numbers reports **after the FIRST cycle on the COST half** (which has
+data now) and **after FIVE cycles on the AGING half**, because `GRADE_AGING_DAYS = 30` cannot move
+a single entry inside a 7-day window — one cycle of AGING evidence would be *no signal* read as
+*no decay* [[unrun-search-indistinguishable-from-absent-record]]. ⛔ `GRADE_AGING_DAYS` is
+UNTOUCHED and stays Dave's at the review; this amends the REVIEW PLAN only.
+★ **The counting window is GENERATED, not noted:** `GRADE_WINDOW_OPEN` in `knowledge/_gardener.py`
+carries the ruled instant (`2026-08-16T06:10:28Z`, the scheduled fire) and the sidecar's schema
+block restates it; the `--refresh` receipt reports countable rows as `at >= window_open`.
+After the cycle above, both figures
 go back to Dave — the fork is a deferral with a return date. Failures are loud: a missing index,
 a corrupt sidecar or an unknown probe kind BLOCKS; `--selftest-grades` is the mutation test.
 

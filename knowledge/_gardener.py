@@ -142,6 +142,13 @@ GRADE_SCHEMA_ID = "memory-grades/0-PROVISIONAL"
 # claim no machine can decide is NEVER silently called FRESH [[measuring-tool-must-not-guess]].
 GRADE_VOCAB = ("FRESH", "AGING", "STALE", "UNPROVABLE")
 GRADE_AGING_DAYS = 30        # PROVISIONAL: probe passes but the claim itself hasn't been touched
+# ── THE COUNTING WINDOW, GENERATED NOT NOTED (s183-D1 enacting dream-8 P4a) ────────────────
+# `s182-D1` CALL 4 ruled the boundary in prose: "the counting window opens at the FIRST
+# SCHEDULED dream-pass; the 2026-08-15 manual pass does NOT count." That is the SCHEDULED
+# FIRE of `memento-dream-pass` (cron 0 7 * * 0), read live from the scheduler:
+# lastRunAt 2026-08-16T06:10:28Z. Written ONCE, here, so countability stops depending on
+# whoever remembered to type a `drive_note` [[instrument-without-a-consumer]].
+GRADE_WINDOW_OPEN = "2026-08-16T06:10:28Z"
 # Alert filter (PROVISIONAL). s179-D1: alerts for STARRED/BLOCKED entries ONLY.
 ALERT_MARKS = ("⛔", "★★")   # ★★ or more, or a ⛔ — the marks MEMORY.md already carries
 ALERT_LIST_GRADES = ("STALE",)              # printed one line each
@@ -747,7 +754,8 @@ def derive_probe(hook: str, root: str) -> dict:
         return {"kind": "none",
                 "why": f"{len(cands)} path-like tokens in one hook ({', '.join(cands[:4])}) — "
                        "AMBIGUOUS, and ambiguity resolves UPWARD, never to a guess."}
-    return {"kind": "none", "why": "no backticked repo path in the hook — no mechanical claim "
+    return {"kind": "none", "why": "no backticked repo path in the MEMORY.md index line — no "
+                                   "mechanical claim "
                                    "to re-run; staleness here is a JUDGMENT, Dave's or a "
                                    "reader's, not a machine's."}
 
@@ -884,6 +892,13 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
             "a ruling. s179-D1 ruled only the SHAPE: sidecar, boot cost zero, alerts for "
             "starred/blocked entries only, return to Dave with numbers after one cycle."),
         "ruled_by": "s179-D1 clause 1 (B-THEN-REVIEW) — built #180",
+        "counting_window_open": GRADE_WINDOW_OPEN,
+        "counting_window_note": (
+            "s182-D1 CALL 4: the return-with-numbers counting window opens at the FIRST "
+            "SCHEDULED dream-pass; the 2026-08-15 manual pass does NOT count. The timestamp "
+            "is the scheduled fire of `memento-dream-pass` read live from the scheduler "
+            "(lastRunAt). GENERATED, not noted: `_GRADE-DECISIONS.jsonl` rows count iff "
+            "at >= this instant (s183-D1 enacting dream-8 P4a)."),
         "vocabulary": {
             "FRESH": "a mechanical probe RE-RAN and PASSED, and the claim was touched recently",
             "AGING": f"probe passes, but the claim is older than {GRADE_AGING_DAYS}d (PROVISIONAL)",
@@ -911,6 +926,68 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
                               "write in this module goes through the fence (P4).")
         fence.write(fence.grades_path, json.dumps(doc, indent=2, ensure_ascii=False) + "\n")
     return doc
+
+
+def hook_file_probe_companion(doc: dict, memory_dir: str, root: str,
+                              by_base: dict | None = None) -> dict:
+    """READ-ONLY companion count (s183-D1 enacting dream-8 P1, smallest step).
+
+    ⛔ THIS CHANGES NO GRADE AND NO SCHEMA. The grading UNIT stays the `MEMORY.md` index line
+    — whether it should be the hook FILE is a DEFINITION and is DAVE'S, deferred to the B3
+    return-with-numbers. This only turns the disputed premise into a number he can rule on:
+    of the N entries graded UNPROVABLE, how many hook FILES carry exactly ONE backticked
+    path-like token that RESOLVES in the repo today — i.e. would satisfy the grader's
+    EXISTING `path-present` rule if the unit were the file.
+    """
+    unprovable = [e for e in doc.get("entries", []) if e.get("grade") == "UNPROVABLE"]
+    if by_base is None:
+        by_base, _ = build_index(root, [])
+    one_resolvable = 0
+    for e in unprovable:
+        hid = e["id"] if e["id"].endswith(".md") else f"{e['id']}.md"
+        p = os.path.join(memory_dir, hid)
+        if not os.path.isfile(p):
+            continue
+        body = open(p, encoding="utf-8").read()
+        if body.startswith("---"):                      # strip YAML frontmatter, if any
+            parts = body.split("\n---", 2)
+            body = parts[-1] if len(parts) > 1 else body
+        cands = [t for t in dict.fromkeys(re.findall(r"`([^`]+)`", body))
+                 if looks_like_path(t)]
+        if len(cands) == 1 and resolve_claimed_path(cands[0], root, by_base)[0]:
+            one_resolvable += 1
+    return {"unprovable": len(unprovable), "one_resolvable_in_file": one_resolvable}
+
+
+def countable_grade_rows(root: str, window_open: str = GRADE_WINDOW_OPEN) -> dict:
+    """How many `_GRADE-DECISIONS.jsonl` rows are INSIDE the ruled counting window.
+
+    s182-D1 CALL 4 ruled the boundary; `GRADE_WINDOW_OPEN` states it once. A row counts iff
+    its `at` stamp is >= the window open. ⚠ Row stamps are LOCAL and naive; the window open is
+    the scheduler's UTC fire. The comparison is made on the naive instant and that limit is
+    DECLARED, not smoothed — it is worth ±1h and nothing currently sits inside that margin.
+    """
+    p = os.path.join(os.path.abspath(root), OUT_DIRNAME, GRADE_LOG_BASENAME)
+    open_naive = window_open.rstrip("Z")
+    total, per_kind = 0, {"alert": 0, "decision": 0}
+    countable = 0
+    if os.path.isfile(p):
+        for ln in open(p, encoding="utf-8").read().splitlines():
+            ln = ln.strip()
+            if not ln:
+                continue
+            try:
+                row = json.loads(ln)
+            except json.JSONDecodeError:
+                continue                     # a malformed append is not a countable datapoint
+            total += 1
+            if str(row.get("at", "")) >= open_naive:
+                countable += 1
+                k = row.get("kind")
+                if k in per_kind:
+                    per_kind[k] += 1
+    return {"window_open": window_open, "rows": total, "countable": countable,
+            "countable_by_kind": per_kind}
 
 
 def grades_status(root: str) -> dict:
@@ -1065,6 +1142,15 @@ def main(argv: list[str] | None = None) -> int:
         print(f"grade changes   : {len(doc['grade_changes_this_pass'])}"
               + ("  (" + "; ".join(doc["grade_changes_this_pass"][:5]) + ")"
                  if doc["grade_changes_this_pass"] else ""))
+        comp = hook_file_probe_companion(doc, mem, root)
+        print(f"companion (P1)  : of {comp['unprovable']} UNPROVABLE, "
+              f"{comp['one_resolvable_in_file']} have exactly one resolvable backticked path "
+              f"in the hook FILE  (READ-ONLY — no grade changed; the grading UNIT is DAVE'S "
+              f"at the B3 return)")
+        cw = countable_grade_rows(root)
+        print(f"countable rows  : {cw['countable']} of {cw['rows']} at >= window_open "
+              f"{cw['window_open']}  (alert {cw['countable_by_kind']['alert']} · "
+              f"decision {cw['countable_by_kind']['decision']})")
         alerts = render_grade_alerts(doc)
         print(f"alert surface   : {len(alerts)} line(s) at boot")
         for ln in alerts:

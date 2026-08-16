@@ -200,6 +200,19 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    survived thirty-eight wraps without anyone reading the number that made it alarming.*
    ⚠️ **The age is REPORTED, never ACTED ON here** — no age triggers anything, nothing expires, and
    nothing may be dropped for being old. What to do about an old carry is Dave's, every time.
+   ⛔ **A RETRACTED CARRY IS STRUCK, NEVER RE-TYPED — ruled `s183-D1` (dream pass 8, P2).**
+   **"WORDING UNCHANGED holds for every carry EXCEPT one whose claim was corrected or retracted
+   since it was written; a retracted carry is struck with its retraction named (session + where
+   the correction is inscribed), never re-typed."**
+   *Why: the 2c EXIT CHECK verifies PRESENCE — that nothing was orphaned — and has no test for
+   TRUTH. A correction is the one event that MUST change wording, and "AGES +1, WORDING UNCHANGED"
+   forbids exactly that [[invariant-cannot-discriminate-reversal]]. #181 asserted the Monday slot
+   was unscheduled · #182 retracted it (Dave caught it) · #183 re-published it verbatim at a
+   correct age. Struck, not deleted: a silently vanished item is indistinguishable from a dropped
+   one, which is what the EXIT CHECK exists to prevent [[feedback-header-wins-over-audit]].*
+   ★ **The circled numerals number THIS session's new items only; carried items are identified by
+   age** (`s183-D1`, dream pass 8 P3 — prose form; carried blocks arrive with their own ①–⑦ and
+   collide with the session's, so the age bracket `s128-D2` defines is the durable identifier).
 
    **2d. Compact the `_LIVE-STATE` delta stack — keep ⏱ LATEST + 2 PRIOR, roll the rest to
    `_LIVE-STATE-ARCHIVE.md`.**
