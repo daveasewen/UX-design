@@ -5688,6 +5688,14 @@ master only · fast-forward only (no force flag exists) · clean tree · remote=
 Auth: fine-grained PAT (this repo, Contents r/w, 90d expiry) in the remote URL on his disk. SUPERSEDES
 `git-push-method`'s Desktop-only clause BY ADDITION — Desktop remains. Credential arm proven refusing
 until the PAT lands. Authority: `knowledge/_rulings.json` § `s133-D2`.
+⏳ **EXPIRY STAMPED (W-24, dream pass 6 P4, added #188 — the line above is UNCHANGED, byte for byte).**
+The token in force was minted **2026-08-08**, so a 90-day life expires **~2026-11-06**: after that date,
+quoting the sentence above is a **declared** defect rather than a silent one, and the ruled push path
+fails with a message about a token nobody re-issued. ⚠ **The record is also known to be inaccurate about
+what is installed:** #133 said of the credential it actually put in force, in its own words, *"this one is
+broader than the ruled shape (single repo, 90 days); it works, but narrowing it when convenient keeps the
+blast radius small."* That is recorded here so the premise stops reading as verified. ⛔ **Whether to
+narrow the scope is DAVE'S security call and is NOT proposed here** — the scope clause above is untouched.
 
 ### s134-D1 — ROUNDEL CONTRAST IS THE GLYPH LEG ONLY (ruled by Dave #134, off the roundel matrix)
 Dave: "we only care about the glyph having enough contrast … it is always accompanied by a label."

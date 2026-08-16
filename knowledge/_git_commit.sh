@@ -27,6 +27,60 @@ set -u
 cd "$(dirname "$0")/.." || exit 1
 
 RECONCILED=0
+
+# ── W-22 (dream pass 6 P2, pass-8 datapoint ee4): THE INSTRUMENTATION APPENDS ARE DECLARED ────
+# The three tracked files our own verification instruments APPEND to while they verify. They are
+# dirty-at-baseline for a reason that is not a worker's uncommitted draft, and until #188 the only
+# machinery that knew this was the ONE s137-D1 exclusion — the other two arrived at a push refusal
+# as anonymous dirt, indistinguishable from someone's half-finished edit.
+#
+# ⛔ THIS IS A DECLARATION, NOT AN EXCLUSION. `PUSH_DIRT`'s exclude list is UNCHANGED and still
+# names exactly one path in full: s137-D1 says "do NOT generalise this to a pattern or a second
+# file", and widening it here would be a sub ruling Dave's open policy question. Whether the other
+# two should also be excluded, committed on the spot, or moved out of the tree is ⬛ DAVE'S — pass
+# 6 P2 is FLOATED, not ruled. What machinery can honestly do without his word is say WHICH dirt is
+# instrument-written and WHICH instrument wrote it, so the refusal is diagnostic
+# [[refusal-names-the-first-obstacle]] instead of a heap of paths.
+INSTRUMENTATION_PATHS=(
+  "notes/_REHEARSAL-LOG.jsonl|_capture_gate.py --wrap / --rehearse, _checkin.py (rehearsal rows)|EXCLUDED from the push gate by s137-D1"
+  "knowledge/_graph-mark-observations.jsonl|the graph mark observers|NOT excluded — its POLICY is ⬛ DAVE'S, unruled (dream pass 6 P2)"
+  "notes/_dream/_GRADE-DECISIONS.jsonl|_checkin.py B3 grade alerts / _gardener.py --grade-decision|NOT excluded — its POLICY is ⬛ DAVE'S, unruled (dream pass 6 P2)"
+)
+
+declare_instrumentation_dirt() {
+  # $1 = a `git status --short` blob (may be empty). Prints a DECLARED block naming any of the
+  # three instrumentation appends inside it. Emits nothing when none of them are dirty.
+  local blob="${1-}" hit=0 rec p writer note
+  for rec in "${INSTRUMENTATION_PATHS[@]}"; do
+    p="${rec%%|*}"; writer="${rec#*|}"; note="${writer#*|}"; writer="${writer%%|*}"
+    case "$blob" in
+      *"$p"*)
+        [ "$hit" -eq 0 ] && echo "— DECLARED: instrumentation appends among the dirty paths (W-22; dream pass 6 P2 is FLOATED, not ruled):"
+        hit=1
+        echo "    $p"
+        echo "      written by: $writer"
+        echo "      status:     $note"
+        ;;
+    esac
+  done
+  [ "$hit" -eq 1 ] && echo "  ⇒ this dirt is machine-written, not an uncommitted draft. ⛔ The POLICY (exclude / commit / relocate) is DAVE'S; this line only DECLARES it."
+  return 0
+}
+
+# `bash knowledge/_git_commit.sh --declare-dirt` — the declaration's OWN consumer, read-only:
+# no staging, no commit, no push, no writes [[instrument-without-a-consumer]]. Exit 0 always;
+# it reports, it does not gate.
+if [ "${1-}" = "--declare-dirt" ]; then
+  DIRT=$(git status --short -- .)
+  if [ -z "$DIRT" ]; then
+    echo "— tree clean: no instrumentation dirt to declare."
+  else
+    echo "— dirty paths:"; echo "$DIRT"
+    declare_instrumentation_dirt "$DIRT"
+  fi
+  exit 0
+fi
+
 # ── PUSH MODE (s133-D2, Dave: "I dont mind if its reasonable gated" → "okay do it") ──────────
 # `bash knowledge/_git_commit.sh --push` — the ONLY push path. Fires ONLY on Dave's explicit
 # in-session word (the caller's attestation, same contract as --reconciled). Gates, each a refusal:
@@ -41,8 +95,13 @@ if [ "$1" = "--push" ]; then
   # P2; 9 sessions of declared instances, priced at #125, homed nowhere until #137). The path is named in
   # full so the exclusion CANNOT silently widen — do NOT generalise this to a pattern or a second file.
   PUSH_DIRT=$(git status --short -- . ':(exclude)notes/_REHEARSAL-LOG.jsonl')
-  [ -z "$PUSH_DIRT" ] || { echo "✗ push refused: tree not clean — commit first (s133-D2; rehearsal log excluded per s137-D1). Dirty paths:"; echo "$PUSH_DIRT"; exit 1; }
-  git config remote.origin.url | grep -q "@github.com" || { echo "✗ push refused: no credential in remote URL. Dave: fine-grained PAT (this repo, Contents r/w, 90d) → paste to Claude → git config remote.origin.url https://<TOKEN>@github.com/daveasewen/UX-design.git"; exit 1; }
+  if [ -n "$PUSH_DIRT" ]; then
+    echo "✗ push refused: tree not clean — commit first (s133-D2; rehearsal log excluded per s137-D1). Dirty paths:"
+    echo "$PUSH_DIRT"
+    declare_instrumentation_dirt "$PUSH_DIRT"
+    exit 1
+  fi
+  git config remote.origin.url | grep -q "@github.com" || { echo "✗ push refused: no credential in remote URL. Dave: fine-grained PAT (this repo, Contents r/w, 90d) — ⛔ do NOT paste it into chat; run this yourself in a terminal: git config remote.origin.url https://<TOKEN>@github.com/daveasewen/UX-design.git   (W-24 / dream pass 6 P4: the credential never transits the chat; the gate behaves identically. Expiry ~2026-11-06 for the token minted 2026-08-08 — if that date has passed, re-issue rather than re-read this line. ⛔ the token's SCOPE is Dave's security call, unproposed.)"; exit 1; }
   LOCAL=$(git rev-parse HEAD)
   git push origin master 2>&1 | grep -v "^remote:" || true
   REMOTE=$(git ls-remote origin refs/heads/master | cut -f1)
@@ -118,6 +177,19 @@ fi
 python3 knowledge/_gen_chain.py --check ||
   fail "_gen_chain.py --check REFUSED (exit non-zero) — its message is printed directly above and it is the authority on the cause; this script does not second-guess it. Nothing has been staged. If it named STALENESS, run: python3 knowledge/_gen_chain.py — then re-run this script. If it named a DEGRADED MEASUREMENT, regenerating will NOT help: fix tiktoken first (pip install tiktoken --break-system-packages) and re-run."
 echo "— chain fresh (_gen_chain.py --check passed)"
+
+# doc-row gate — W-20 (#188), the forgotten-document class (#185): a brief-class document with no
+# store row is invisible to every carry. The commit is the seam where the defect turns DURABLE,
+# so the gate runs here [check-after-its-own-remedy]. Fix = one _state.add() row through the
+# store's own writer. Declared-gap hatch: DOC_ROW_ACK="<real reason>" passes it DECLARED
+# (declared passes, silent fails). Wired by the conductor at #188; Dave may veto the blocking.
+if [ -z "${DOC_ROW_ACK:-}" ]; then
+  python3 knowledge/_gate_doc_rows.py ||
+    fail "doc-row gate REFUSED — an in-scope document has no store row (list printed above). Add the row via _state.add(), or re-run with DOC_ROW_ACK=\"<real reason>\" to pass it as a DECLARED gap. Nothing has been staged."
+  echo "— doc rows present (_gate_doc_rows.py passed)"
+else
+  echo "— doc-row gate: DECLARED GAP — $DOC_ROW_ACK"
+fi
 
 # session-witness consumer — BUILT #89, the honest-certification leg of the #87-D1 drill.
 # ⛔ WHY THIS CANNOT BE FOLDED INTO THE CHECK ABOVE: `_gen_chain.py --check` compares _CHAIN.md

@@ -236,6 +236,38 @@ def read_fill(path: str) -> dict:
             "skipped_synthetic": skipped_synthetic}
 
 
+# ───────────────────────────── s186-D1 Q5 — THE FIRED-COMPACTION DECLARED EVENT ─────────────
+# RULED #186 (Dave, `s186-D1` Q5): *"a fired compaction becomes a declared one-line event in the
+# check-in output"*. Q1 is the frame this line carries: compaction is a PARACHUTE UNDER THE WRAP,
+# never a substitute — the wrap stays mandatory [[feedback-wrap-is-not-optional]].
+#
+# ⛔ FIRED means the MARKER, not a shape. `usage.iterations[].type == "compaction"` is the API's
+# own record that it happened. A >10% fill DROP is "compaction OR a broken read" (the brief's own
+# words) — it is EVIDENCE OF SOMETHING, not evidence of compaction, and declaring a drop as a
+# fired compaction would be [[measure-dont-convert-units]] in event's clothing. Drops keep their
+# own separate ⛔ line below and are NAMED here only as a corroborating count when the marker is
+# ALSO present.
+#
+# SURFACE. Zero lines when nothing fired — the whole point of a declared EVENT. One line when it
+# has. Precedent for the price: the B3 grade-alert surface, MEASURED at ~105 real tokens (not
+# ruled — measured), which is the standing yardstick for an unprompted boot-chain surface.
+COMPACTION_EVENT_PREFIX = "  ⛔ COMPACTION FIRED"
+
+
+def compaction_event(fill: dict) -> str | None:
+    """The ONE declared line, or None. Mutation-proven by `--selftest-compaction`."""
+    if not fill.get("available"):
+        return None
+    n = int(fill.get("compaction_records") or 0)
+    if n <= 0:
+        return None
+    drops = len(fill.get("drops") or [])
+    corrob = f", {drops} corroborating >10% fill drop(s)" if drops else ""
+    return (f"{COMPACTION_EVENT_PREFIX}  {n} `usage.iterations` compaction record(s){corrob}"
+            " — FILL below is POST-compaction; the wrap is still owed"
+            " (s186-D1 Q1: a parachute under the wrap, never a substitute).")
+
+
 # ════════════════════════════════════════════════════════════ B2 — THE PLAN BLOCK (`--block`)
 #
 # The six-line block the Arize harness note calls a "short plan re-injected ahead of noisy
@@ -737,6 +769,79 @@ def selftest_block(path: str, fill: dict) -> int:
     return 0
 
 
+# ---------------------------------------------- s186-D1 Q5's mutation test (`--selftest-compaction`)
+# ⛔ A GREEN THAT CANNOT FAIL IS AN ASSERTION [[six-beat-ladder-ruled]]. Every arm below DRIVES the
+# REAL `read_fill()` on a REAL jsonl file written to a temp dir — not a hand-built dict — so the
+# marker has to survive the actual parse. The CONTROL arm (a transcript with NO compaction, which
+# must produce NO line) is part of the same run: without it, a clause that emits the line
+# unconditionally would pass every other arm [[mutation-tests-the-clause-not-the-feature]].
+def selftest_compaction() -> int:
+    import tempfile
+
+    def write(recs: list[dict]) -> str:
+        fd, p = tempfile.mkstemp(prefix="checkin-compaction-", suffix=".jsonl")
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            for r in recs:
+                fh.write(json.dumps(r) + "\n")
+        return p
+
+    def turn(mid: str, total: int, iters: list | None = None) -> dict:
+        u = {"input_tokens": total, "cache_creation_input_tokens": 0,
+             "cache_read_input_tokens": 0, "output_tokens": 10}
+        if iters is not None:
+            u["iterations"] = iters
+        return {"type": "assistant", "message": {"id": mid, "model": "claude-x", "usage": u}}
+
+    arms: list[tuple[str, str, str | None, bool]] = []
+
+    def drive(name: str, recs: list[dict], expect: str) -> None:
+        line = compaction_event(read_fill(write(recs)))
+        if expect == "NO-LINE":
+            good = line is None
+        else:
+            good = line is not None and line.startswith(COMPACTION_EVENT_PREFIX) and expect in line
+        arms.append((name, expect, line, good))
+
+    # CONTROL — a healthy transcript, no marker. MUST emit nothing, or every arm below is a
+    # rubber stamp that prints the event whatever the transcript says.
+    drive("control: no compaction marker", [turn("a", 1000), turn("b", 1200)], "NO-LINE")
+
+    # (a) THE MARKER FIRED — the ruled case. One line, naming the count.
+    drive("(a) one compaction record",
+          [turn("a", 1000), turn("b", 1200, [{"type": "compaction"}])],
+          "1 `usage.iterations` compaction record(s)")
+
+    # (b) FIRED, WITH A CORROBORATING DROP — the count of drops rides the SAME line, never a
+    #     second one, and never re-declares the drop as the event.
+    drive("(b) marker + >10% fill drop",
+          [turn("a", 10000), turn("b", 1000, [{"type": "compaction"}])],
+          "corroborating >10% fill drop(s)")
+
+    # (c) A DROP WITH NO MARKER — the discrimination that makes the event honest. A >10% drop is
+    #     "compaction OR a broken read"; declaring it as a fired compaction is the defect. MUST
+    #     emit NOTHING here, while the separate drops line (unchanged) still reports it.
+    drive("(c) drop only, no marker", [turn("a", 10000), turn("b", 1000)], "NO-LINE")
+
+    # (d) NO USABLE FILL AT ALL — read_fill refuses; the event must refuse with it, never guess.
+    drive("(d) no usage records at all",
+          [{"type": "user", "message": {"id": "u", "content": "hi"}}], "NO-LINE")
+
+    print("FIRED-COMPACTION DECLARED EVENT (s186-D1 Q5) — MUTATION TESTS")
+    print("  each arm DRIVES the real read_fill() on a real jsonl")
+    for name, expect, line, good in arms:
+        verdict = "PASS" if good else "⛔ FAIL"
+        print(f"  {verdict:<7} {name:<34} expect {expect[:44]!r}")
+        if not good:
+            print(f"          got: {line!r}")
+    failed = [a for a in arms if not a[3]]
+    if failed:
+        print(f"  ⛔ {len(failed)} arm(s) did not behave as specified — the clause is NOT proven.")
+        return 1
+    print(f"  ✅ {len(arms)}/{len(arms)} arms behaved as specified: the control emits NOTHING and")
+    print("     the fired case emits exactly one declared line. The green can fail.")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="On-demand context check-in.")
     ap.add_argument("path", nargs="?", help="Transcript jsonl (default: newest mounted).")
@@ -753,6 +858,9 @@ def main() -> int:
     ap.add_argument("--selftest-block", action="store_true",
                     help="Drive the block's mutation tests (control + 5 mutations). Exit 1 if "
                          "any arm does not behave as specified.")
+    ap.add_argument("--selftest-compaction", action="store_true",
+                    help="Drive the fired-compaction declared event's mutation tests (s186-D1 "
+                         "Q5: control + 4 arms). Exit 1 if any arm does not behave as specified.")
     ap.add_argument("--max-age", type=int, default=BLOCK_MAX_AGE_S,
                     help=f"Seconds a block may be old before --verify-block rejects it "
                          f"(default {BLOCK_MAX_AGE_S}; PICKED, not derived).")
@@ -769,6 +877,9 @@ def main() -> int:
                          "convenience: skipping it means the seam has NO graded block and the "
                          "next brief has nothing legitimate to carry.")
     args = ap.parse_args()
+
+    if args.selftest_compaction:
+        return selftest_compaction()
 
     path = find_transcript(args.path)
     fill = read_fill(path)   # FILL — read off `usage`, independent of every tape figure below
@@ -868,6 +979,11 @@ def main() -> int:
     if lag is not None:
         state = "LIVE" if lag < 300 else f"STALE by {lag/60:.0f} min — treat with suspicion"
         print(f"  freshness    last record {lag:.0f}s behind now — {state}")
+    # s186-D1 Q5 — the DECLARED EVENT, at the HEAD where an event belongs, not buried in the FILL
+    # block where it lived as narration. Prints ONLY when the marker fired: zero surface otherwise.
+    _ce = compaction_event(fill)
+    if _ce:
+        print(_ce)
     print()
     print(f"  MEASURED     {real_measured:>9,} {real_method}  (conversation half, ONE call — the headline)")
     print()
@@ -887,9 +1003,8 @@ def main() -> int:
         print("               `usage` field covers tools + system + messages (Anthropic, quoted")
         print("               in the #59-era brief). What stays dark is the DECOMPOSITION of")
         print("               boot into its sub-parts. Say which of the two you mean.")
-        if fill["compaction_records"]:
-            print(f"               ⛔ {fill['compaction_records']} COMPACTION record(s) in `usage.iterations`"
-                  " — fill is post-compaction.")
+        # ⛔ the compaction narration that used to live here is now the DECLARED EVENT printed at
+        # the head of this report (s186-D1 Q5, `compaction_event()`). It is not printed twice.
         if fill["drops"]:
             print(f"               ⛔ {len(fill['drops'])} turn(s) DROPPED >10% — compaction or a broken"
                   f" read, at turn index {fill['drops'][:5]}.")
