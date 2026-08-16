@@ -79,6 +79,10 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
    ```
    ⚠ **Write `<msgfile>` under a dir this session owns (outputs/), with a UNIQUE name, and `head -1`
    it before `-F`.** Never a fixed `/tmp` name — see the 2026-07-22 gotcha below.
+   ⛔ **AND THE MSGFILE HEADLINE MUST NOT CARRY A SESSION PREFIX OF ITS OWN** — neither
+   `after #N <date> — ` nor `#N <date> — `. **T3 GENERATES the session prefix**, so a headline that
+   already has one comes out DOUBLED in `git log`. Observed #185: the subject doubled and had to be
+   amended from a fresh msgfile in the same session. Start the headline at the actual subject.
 4. **Clear the lock git just re-created**, as the *last* action (any git command, even `status`,
    respawns `index.lock`). Do NOT run another git command after this:
    ```
