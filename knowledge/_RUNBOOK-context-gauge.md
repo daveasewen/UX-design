@@ -815,6 +815,28 @@ That phrasing chains straight into two standing conventions so nothing extra has
   so the handoff is authored while there's still budget to author it well (never scramble it at the
   hard line).
 
+## Platform compaction — the layer BELOW the stop line (`s186-D1`, Dave, 2026-08-16)
+
+Harness/platform **compaction is a parachute under the wrap, never a substitute for it** — Q1 of the
+compaction brief (`_BRIEF-compaction-strategy-2026-08-15-v1.html`), **RATIFIED**. It sits *below* the
+stop line: if a window dies mid-thought and the platform compacts it, that is recovery, not process.
+The wrap remains mandatory ([[feedback-wrap-is-not-optional]]).
+
+**Which layers we control, stated plainly** *(an instruction that cannot be enacted where it is
+written is the #173 gate class)*:
+- **We CONTROL:** compaction settings on **subs we launch** and on **API builds we author** — these
+  are ours to enable, configure, or forbid.
+- **We merely OBSERVE:** this session's own Cowork harness — whether and how it compacts is not
+  configured from inside a conversation. We can only detect and declare a fired compaction.
+
+**Rules that travel with any adoption:** a fired compaction is a **declared event, surfaced at the
+next check-in** (Q5, ruled — one line in `_checkin.py`'s output, ~105 real measured precedent); a
+compaction **summary is UNPROVEN inscription** — never trusted, always reconciled against `_CHAIN.md`
+and git before anything is built on it ([[enactment-register-adr-0016]]). **Parked with triggers:**
+gauge `usage.iterations` compatibility (W2) until compaction is live in our stack (Q3); sub-agent
+compaction with Memento summarisation instructions (W3) until the first long-running sub genuinely
+needs it (Q4) — drafted then, with the real consumer present, not before.
+
 ## Why this ordering matters
 
 The failure mode is a handoff written *after* quality has already degraded — a confidently wrong
