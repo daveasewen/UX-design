@@ -191,6 +191,18 @@ else
   echo "— doc-row gate: DECLARED GAP — $DOC_ROW_ACK"
 fi
 
+# showroom sync gate — s191-D1 (#191, Dave: "yes"). A ruling's deletion (s182-D2) survived four
+# sessions on the generated showroom — Dave's review surface — because nothing at the commit seam
+# checked generated-vs-canon sync. The commit is where staleness turns durable, so the check runs
+# here BLOCKING. Declared-gap hatch mirrors the doc-row gate (declared passes, silent fails).
+if [ -z "${SHOWROOM_ACK:-}" ]; then
+  python3 knowledge/gen_showroom.py --check ||
+    fail "showroom sync gate REFUSED (s191-D1) — generated showroom out of sync with canon (list printed above). Run: python3 knowledge/gen_showroom.py — or re-run with SHOWROOM_ACK=\"<real reason>\" to pass it as a DECLARED gap. Nothing has been staged."
+  echo "— showroom in sync (gen_showroom --check passed, s191-D1)"
+else
+  echo "— showroom sync gate: DECLARED GAP — $SHOWROOM_ACK"
+fi
+
 # session-witness consumer — BUILT #89, the honest-certification leg of the #87-D1 drill.
 # ⛔ WHY THIS CANNOT BE FOLDED INTO THE CHECK ABOVE: `_gen_chain.py --check` compares _CHAIN.md
 # against GOOD-MORNING.md. If GM is a session stale (a skipped wrap), the chain regenerates
