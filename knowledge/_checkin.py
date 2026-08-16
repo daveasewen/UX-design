@@ -1001,6 +1001,54 @@ def main() -> int:
             print(f"    ⛔ GRADE ALERTS DID NOT RUN ({type(_e).__name__}: "
                   f"{' '.join(str(_e).split())[:220]}) — grades are UNKNOWN, not green.")
         print()
+    # ── DREAM-PASS SEAM — #185: a pass that ran + was enacted must be VISIBLE at boot. ─────
+    # ⛔ WHY. On 2026-08-16 pass 8 fired 06:10Z, Dave promoted P1–P5 (s183-D1), the enact
+    # commit landed 13:11 — and the opener reported "I haven't verified it fired" because no
+    # boot surface carried the event. The sidecar alert reports grade COUNTS only; the pass
+    # itself had no consumer ([[instrument-without-a-consumer]]). This line is that consumer.
+    # Evidence = newest proposals FILE (mtime + its own header) and the GIT LOG — never a
+    # banner ([[ritual-output-is-not-evidence]]). Fails LOUD and NAMED, never silent.
+    try:
+        import glob as _glob
+        import subprocess as _sp
+        _props = sorted(_glob.glob(os.path.join(REPO, "notes/_dream/[0-9]*-proposals*.md")),
+                        key=os.path.getmtime)
+        if not _props:
+            print("  DREAM       ⛔ NO PROPOSALS FILE FOUND (notes/_dream/) — pass history is "
+                  "UNKNOWN, not clean.")
+        else:
+            _pf = _props[-1]
+            _pmt = _dt.datetime.fromtimestamp(os.path.getmtime(_pf))
+            _age_h = (_dt.datetime.now() - _pmt).total_seconds() / 3600.0
+            with open(_pf, encoding="utf-8") as _fh:
+                _first = _fh.readline().strip()  # e.g. "# Dream pass 8 — floated proposals"
+            _pm = re.search(r"[Dd]ream pass (\d+)", _first)
+            _pn = _pm.group(1) if _pm else "?"
+            # enactment: search the log SINCE the pass file's day for a commit naming this pass
+            _since = _pmt.strftime("%Y-%m-%d 00:00")
+            _out = _sp.run(["git", "-C", REPO, "log", "--since", _since, "-i", "-E",
+                            "--grep", rf"(enact|promot).*(dream )?pass {_pn}|dream pass {_pn}.*(enact|promot)",
+                            "--format=%h %ad %s", "--date=format:%H:%M"],
+                           capture_output=True, text=True, check=True).stdout.strip()
+            _flag = "⚠ " if _age_h <= 48 else ""
+            _line1 = (f"  DREAM       {_flag}newest = pass {_pn}, file {os.path.basename(_pf)} "
+                      f"(mtime {_pmt:%Y-%m-%d %H:%M}, {_age_h:.0f}h ago)")
+            print(_line1)
+            if _out:
+                _c = _out.splitlines()[0]
+                print(f"    ✅ ENACT COMMIT EXISTS — `{_c}` (git log, --grep on pass {_pn}; "
+                      f"read the proposals file for what was promoted vs still floated).")
+            elif _age_h <= 48:
+                print(f"    ⚠ NO enact/promote commit names pass {_pn} since {_since} (probe: "
+                      f"git log --grep). FRESH PASS, UNRULED OR UNENACTED — proposals await "
+                      f"Dave, or enactment used words this probe misses. READ THE FILE.")
+            else:
+                print(f"    · no enact commit matched since {_since} — pass is >48h old; "
+                      f"consult notes/_MEMENTO-DECISIONS.md, not this probe.")
+    except Exception as _e:  # noqa: BLE001 — loud + named, never silent
+        print(f"  DREAM       ⛔ SEAM DID NOT RUN ({type(_e).__name__}: "
+              f"{' '.join(str(_e).split())[:220]}) — pass status UNKNOWN, not green.")
+    print()
     if args.window:
         if fill.get("available"):
             print(f"  ratio        {fill['now'] / args.window:.0%} of the {args.window:,} you passed"
