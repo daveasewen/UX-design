@@ -1967,3 +1967,35 @@ which is what the component does today. **Dave rules.**
 **Evidence:** `knowledge/components/progress-bar.meta.json` (`tokenValidation.$finding`) ·
 `reviews/REVIEW-174-progress-bar-four-themes-v1.html` (all eight panes, live) ·
 `knowledge/snippets/Progress-bar.reference.html` (`knownFindings`).
+
+## ds-0NN (QUEUED BUILD CANDIDATE, #184) — a dangling dataviz `var()` renders SILENT BLACK and zero of thirteen gates catch it
+
+*(2026-08-16, session #184, MEASURED by an Opus build sub during the `s184-D3` mutation drive — **an agent's finding, NOT a ruling**. Registered here per derivation governance: a DS error goes to this ledger, and a build candidate is priced here rather than smuggled into a banner.)*
+
+**The observation, driven not reasoned.** A `rect` carrying `fill="var(--status-breach)"` **with no declaration
+of `--status-breach` anywhere** — the exact shape left behind by a half-finished rename — paints **black** and
+is reported as a pass by **every gate we own**. The mutation was introduced deliberately, the full local gate
+chain was run, and **thirteen of thirteen came back clean**. Black is a plausible-looking chart colour, so the
+defect has **no visible signature to a reader who was not looking for it**.
+
+**Root cause, named:** `_validate_property_resolves` does not parse a snippet's `fill=` presentation attributes
+against **that snippet's own theme blocks**. It resolves declared custom properties; it never asks whether a
+property a snippet USES is one the snippet DECLARES. The two halves of the question live in the same file and
+nothing joins them.
+
+**Why it matters more than one rename.** `s184-D3` renamed `breach/watch/healthy/info` →
+`negative/monitor/positive/neutral` across `canon.css`, `Chart-bar.reference.html` and
+`sutherland-fixtures.json` — equal +/− on every file, render-proven byte-identical. **That rename was safe
+because a human counted the sites, not because a gate could have caught a miss.** The next rename, in a hurry,
+has no such guarantee. Same class as ds-039: **no gate parses the artefact in the consumer's grammar**
+[[no-gate-parses-the-artefact]].
+
+**The candidate, priced honestly:** a **chart var-resolution gate** — parse every `fill="var(--X)"` /
+`stroke="var(--X)"` in each dataviz snippet, resolve `--X` against that snippet's own declarations plus canon,
+and FAIL LOUD on an unresolvable name. Estimate **PICKED, not derived** — this is a planning estimate and is
+labelled as one [[planning-estimate-is-not-a-measurement]]. ⛔ **Not built, not scheduled, and it needs no
+ruling** — it is a gate candidate, not a value. Whether it is worth the money is the next session's call.
+
+**⚠ Related, and deliberately left open:** `knowledge/_DS-IMPROVEMENTS.md:249` still names the OLD vocabulary
+in prose. It is a **period reference describing the #122 defect as it was found**, not a consumer, and
+rewriting it would falsify a dated record. Dave was shown it at #184 and **did not rule**; it stands.

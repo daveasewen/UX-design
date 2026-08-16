@@ -84,7 +84,7 @@
     --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
     --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
     --data-series-1-hc:#484D6F; --data-series-2-hc:#97482C; --data-series-3-hc:#385F4F;
-    --status-breach:#F3543E; --status-watch:#C58900; --status-healthy:#57A369; --status-info:#6893D3;
+    --status-negative:#F3543E; --status-monitor:#C58900; --status-positive:#57A369; --status-neutral:#6893D3;
     --data-axis:#626262; --axis-alpha:1;
     /* ds-018 A2 (RULED Dave 2026-07-27) — dataviz-tier control chrome, siblings of --data-axis/--data-grid.
        WHY HERE AND NOT canon.css: chart snippets link type.css only and inline their own spine, so canon.css
@@ -107,7 +107,7 @@
     --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
     --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
     --data-series-1-hc:#93B6CC; --data-series-2-hc:#E5A78F; --data-series-3-hc:#90BA9B;
-    --status-breach:#CC4333; --status-watch:#C58900; --status-healthy:#4A9568; --status-info:#2674DC;
+    --status-negative:#CC4333; --status-monitor:#C58900; --status-positive:#4A9568; --status-neutral:#2674DC;
     --data-axis:#9D9D9D; --axis-alpha:1;
     --data-control-label-disabled:#808080; --data-control-swatch-off:currentColor;
     --data-grid:#484848; --grid-alpha:1;
@@ -521,10 +521,10 @@
         <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
         <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">40</text>
         <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
-        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
-        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
-        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
-        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-negative)" x="86.9" y="154.4" width="48.7" height="75.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="Overdue: 14" data-tip="Overdue: 14"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-monitor)" x="217.4" y="181.4" width="48.7" height="48.6" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="Needs attention: 9" data-tip="Needs attention: 9"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-positive)" x="347.9" y="57.2" width="48.7" height="172.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="On track: 32" data-tip="On track: 32"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-neutral)" x="478.4" y="197.6" width="48.7" height="32.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="Information: 6" data-tip="Information: 6"></rect>
         <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Overdue</text>
         <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Needs attention</text>
         <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">On track</text>
@@ -728,8 +728,8 @@
               "--data-axis": "data/axis/color", "--axis-alpha": "data/axis/alpha",
               "--data-control-label-disabled": "data/control/label-disabled/color",
               "--data-grid": "data/grid/color", "--grid-alpha": "data/grid/alpha",
-              "--status-breach": "rag/error-graphic", "--status-watch": "rag/warning-graphic", "--status-healthy": "rag/success-graphic",
-              "--status-info": "rag/information-graphic",
+              "--status-negative": "rag/error-graphic", "--status-monitor": "rag/warning-graphic", "--status-positive": "rag/success-graphic",
+              "--status-neutral": "rag/information-graphic",
               "--shadow": "elevation/functional", "--pop-border": "elevation/border",
               "--border-radius-control": "border-radius/control",
               "--border-radius-surface": "border-radius/surface" },

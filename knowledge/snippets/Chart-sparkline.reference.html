@@ -16,10 +16,12 @@
     1. VALUE POPOVER — the standalone trend line is ONE focus stop (tabindex=0 + aria-label ==
        tip). A spark has no per-point markers by definition (kit-faithful); per-point focus
        stops would fight the idiom — receipted judgment.
-    2. FIT — rides dv-behaviour's INIT alone: .dv-fit-on (added JS-on to every figure.dv) releases
-       the fixed 340px to width:100%, pure CSS. No data-fx machinery: a spark carries NO text, so
-       aspect stretch is safe (preserveAspectRatio:none — DV-D02 vacuously held, as promoted).
-       JS-off = fixed 340px baked (the DV-D02 static answer).
+    2. FIT — ⚠ SUPERSEDED BY s184-D1 (#184), see below. As promoted, fit rode dv-behaviour's INIT
+       alone: .dv-fit-on (added JS-on to every figure.dv) released a fixed 340px to width:100%,
+       with JS-off = fixed 340px baked (the DV-D02 static answer). Since #184 the atom is
+       enclosure-responsive BY DEFAULT and no fixed width exists in either state. What survives
+       from this note: a spark carries NO text, so aspect stretch is safe (preserveAspectRatio:none
+       — DV-D02 vacuously held), and there is still no data-fx machinery.
     NO legend machinery (single series) · NO table popover / CSV toolbar ·
     NO title slot (axis-free ambient idiom; the sr-only figcaption names it).
 
@@ -44,15 +46,26 @@
   reference to s144-D1), flat = the standing ink. The fork is BACKGROUND-keyed by the theme block,
   the same mechanism canon.css uses for --error-atom (canon.css:2586 ← --rag-error-ink 307/668).
   NO VALUE IS MINTED. --data-series-1 no longer strokes this atom.
-  STILL OPEN, DAVE'S AT THE TUNER: scaling only
-  (reviews/SPARKLINE-ATOM-TUNER-2026-08-15-v2.html).
+  ★★ s184-D1 RULED #184 — SPARKLINE SCALING: RESPONSIVE TO ITS ENCLOSURE BY DEFAULT. Dave, verbatim:
+  "the line should be responsive to its enclosure by default"; readback confirmed "this is all
+  correct". This CLOSES the scaling question that s182-D3 left open at the tuner
+  (reviews/SPARKLINE-ATOM-TUNER-2026-08-15-v2.html, its only open decision). ENACTED HERE: the atom
+  carries NO fixed width at any scale — .spark-standalone and .spark-inline are width:100%, the
+  empty-state frame with them, and the JS-gated release (figure.dv-fit-on{width:100%}) is gone
+  because there is nothing left to release. The 200px the inline specimen used to bake in was the
+  SLOT's size, not the atom's: it moves to .spark-kpi-slot, a SPECIMEN-ONLY wrapper standing in for
+  the Stat-card tile, so this page's rendering is unchanged while the atom is now slot-driven.
+  ⚠ HEIGHT IS NOT RULED AND IS NOT TOUCHED: 64px standalone / 44px inline stand exactly as at #182.
+  The 4px-grid height-snap (countdown-dial manner) was carried in the readback and NOT picked — it
+  remains OPEN DIRECTION. Nothing here snaps a height; do not read one in.
   INLINE-44px KPI SPECIMEN STAYS PASSIVE (aria-hidden, decorative) — the Stat-card composition
   seam is UNTOUCHED (B-Q6 open; ADR-0013 propose-don't-promote).
   RULINGS BOUND HERE: DV-D08 rebind — control/caption text → .t-cm-chart-label 12/500 (spark
   caption; the summary + table it also named are gone under s182-D2). ADR-0015:
   AUTO-BEHAVIOUR markers pre-landed EMPTY below — registration is the conductor's serial.
   WHAT PROMOTED (OBSERVED, kit values verbatim): TWO scales —
-  STANDALONE: 580×90 viewBox rendered 340×64, baseline hairline, stroke 2.5, pathLength=2400 draw,
+  STANDALONE: 580×90 viewBox rendered at 64px tall and WHATEVER WIDTH THE SLOT GIVES IT (s184-D1;
+  the promoted 340px render width is retired), baseline hairline, stroke 2.5, pathLength=2400 draw,
   endpoint dot r3.5 (the 12-month table shed at s182-D2). INLINE: 200×48 @ 44px, stroke 2, 1000ms draw, endpoint
   dot r3, aria-hidden.
   WHAT NEWLY JUDGED (receipted): baseline = ink at grid alpha (kit greys have no post-R-D16 home).
@@ -130,11 +143,17 @@
      the sr-only figcaption + the svg aria-label. */
   .dv-stage{overflow-x:auto; padding-bottom:4px;}
 
-  /* standalone spark — 340×64 render of the 580×90 frame (kit); no text inside, so non-uniform
-     scale is safe. FIT (Layer-2, lane ②): JS-on (.dv-fit-on via dv-behaviour init) releases the
-     width to the container — pure CSS, no relayout maths; JS-off keeps the fixed 340. */
-  .spark-standalone{display:block; width:340px; height:64px; overflow:visible;}
-  figure.dv-fit-on .spark-standalone{width:100%;}
+  /* standalone spark — the 580×90 frame rendered at whatever width the slot gives it; no text
+     inside, so non-uniform scale is safe (preserveAspectRatio:none).
+     ★★ s184-D1 RULED #184 — RESPONSIVE TO ITS ENCLOSURE BY DEFAULT. Dave, verbatim: "the line
+     should be responsive to its enclosure by default". The atom no longer carries a width at all:
+     width:100% IS the default, and the old fixed 340px (released only JS-on via .dv-fit-on) is
+     GONE. Consequence: JS-off and JS-on now render identically — the fit behaviour is no longer a
+     JS-gated upgrade, so .dv-fit-on carries no width rule here (the class is still added by
+     dv-behaviour's init and still governs the other charts; this atom simply no longer depends on
+     it). HEIGHT IS UNCHANGED and NOT RULED: 64px stands exactly as before; the 4px-grid height-
+     snap idea remains OPEN DIRECTION (s184-D1 declines to pick it), so nothing here snaps. */
+  .spark-standalone{display:block; width:100%; height:64px; overflow:visible;}
   .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
   /* s182-D3: the stroke is SEMANTIC, never a series-ramp pick. A sparkline knows its trend from
      FIRST-vs-LAST datum; the author declares that reading as data-trend on the svg (up|down|flat),
@@ -151,8 +170,17 @@
   .spark-standalone polyline.dv-series{outline-offset:4px;}
   .spark-standalone polyline.dv-series:focus-visible{outline:2px solid var(--ink);}
 
-  /* inline spark — the KPI / Stat-card scale (200×48 @ 44px, stroke 2, dot r3) */
-  .spark-inline{display:block; width:200px; height:44px; overflow:visible;}
+  /* inline spark — the KPI / Stat-card scale (200×48 frame @ 44px tall, stroke 2, dot r3).
+     s184-D1 applies to the atom at EVERY scale: no fixed width here either. The 200px that used
+     to be baked in was the SLOT's size, not the atom's — it moves to the specimen wrapper
+     (.spark-kpi-slot) below, which stands in for the KPI tile this scale is composed into.
+     Height 44px unchanged (not ruled). */
+  .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
+  /* SPECIMEN ENCLOSURE ONLY — not part of the atom. It exists so this page can show the inline
+     scale filling a KPI-tile-sized slot rather than the whole page; a real Stat-card supplies its
+     own slot. Sized at the width the inline specimen previously baked in, so the rendering here is
+     unchanged from #182 while the atom itself has become enclosure-responsive. */
+  .spark-kpi-slot{width:200px; max-width:100%;}
   .spark-inline .dv-base{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
   .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
     stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;}
@@ -186,7 +214,9 @@
      element of the future TREND-CARD COMPOSITION (icon-button form, no "View as table"
      label), not of this atom. s116-D2's table molecule applies at the composition level. */
 
-  .dv-empty-frame{width:340px; height:64px; display:flex; align-items:center; justify-content:center;
+  /* s184-D1: the empty state is the atom's own footprint, so it is enclosure-responsive too —
+     the old fixed 340px matched the old fixed spark width and dies with it. Height 64px stands. */
+  .dv-empty-frame{width:100%; height:64px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
   .dv-empty-frame p{margin:0; opacity:var(--alpha-60);}
 
@@ -216,12 +246,17 @@
   </figure>
 
   <h2>Inline scale — as composed in a KPI tile (the Stat-card seam, receipted)</h2>
+  <!-- s184-D1 (#184): the atom is responsive to its enclosure by default, so the KPI scale is shown
+       inside a SLOT (.spark-kpi-slot) rather than carrying a width of its own. The slot stands in for
+       the Stat-card tile; the atom fills it. -->
   <div class="dv-animate">
+    <div class="spark-kpi-slot">
     <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
       <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
       <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
       <circle class="dv-end" cx="197" cy="3.0" r="3"/>
     </svg>
+    </div>
     <p class="spark-caption t-cm-chart-label">Twelve-month trend — decorative at this scale (aria-hidden); the composed tile's value carries the meaning.</p>
   </div>
 
@@ -274,7 +309,7 @@
     ],
     "icons": {},
     "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-hidden=\"true\""],
-    "$note": "s182-D2 (#182) — THE SPARKLINE IS AN ATOM, ALONE. The <details> table disclosure, its CSS, the dv-lockup-title markup partial and the table-hook extraContract are ALL REMOVED: the atom is the graphic + its one data-tip mark. The table affordance is an OPTIONAL element of the future TREND-CARD composition, in ICON-BUTTON form (no 'View as table' label; accessible name survives as aria-label); s116-D2's table molecule applies at the composition level only. The trend card itself is FLOATED, NOT RULED. dv-005 (tabular alternative) is ADVISORY and now fires on this file BY RULING — declared, not a defect. Popover: the trend line is ONE focus stop (tabindex 0 + aria-label == tip; per-point stops would fight the axis-free idiom — receipted). Fit: rides dv-behaviour's init alone — .dv-fit-on releases the fixed 340px to width:100% (pure CSS; no text, so aspect stretch is DV-D02-vacuous; JS-off = fixed 340 baked). No legend (single series) · no title slot. INLINE 44px KPI specimen stays PASSIVE (aria-hidden) — Stat-card seam untouched (B-Q6 open; ADR-0013 propose-don't-promote). DV-D08 rebind: spark caption → t-cm-chart-label 12/500. Baseline/base = ink at grid alpha (receipted judgment, as siblings); preserveAspectRatio:none safe (no text). s182-D3 (#182) — SPARKLINE COLOUR IS SEMANTIC, NOT PICKED: the stroke follows the ruled red/green INK, never a series-ramp pick. Trend read from FIRST-vs-LAST datum, declared as data-trend on the svg (up|down|flat, default flat). Background-keyed exactly as canon keys --error-atom via --rag-error-ink: light leg #DA1A00 down / #137F3C up / #1A1A1A flat, non-white leg #F6604C / #66CC8D / #FFFFFF. Identical in all four themes (measured #182: zero theme-level series overrides). NO VALUE MINTED — every hex is s151-D1 / s155-D1 (via s144-D1) / the standing ink. --data-series-1 is retained as a declared token but no longer strokes the atom. SCALING STILL OPEN — Dave's at reviews/SPARKLINE-ATOM-TUNER-2026-08-15-v2.html."
+    "$note": "s182-D2 (#182) — THE SPARKLINE IS AN ATOM, ALONE. The <details> table disclosure, its CSS, the dv-lockup-title markup partial and the table-hook extraContract are ALL REMOVED: the atom is the graphic + its one data-tip mark. The table affordance is an OPTIONAL element of the future TREND-CARD composition, in ICON-BUTTON form (no 'View as table' label; accessible name survives as aria-label); s116-D2's table molecule applies at the composition level only. The trend card itself is FLOATED, NOT RULED. dv-005 (tabular alternative) is ADVISORY and now fires on this file BY RULING — declared, not a defect. Popover: the trend line is ONE focus stop (tabindex 0 + aria-label == tip; per-point stops would fight the axis-free idiom — receipted). Fit: SUPERSEDED BY s184-D1 (#184) — was a JS-gated release of a fixed 340px via .dv-fit-on; now the atom is enclosure-responsive by default (width:100% at both scales, no fixed width in either JS state, so JS-off and JS-on render alike). No text, so aspect stretch stays DV-D02-vacuous. No legend (single series) · no title slot. INLINE 44px KPI specimen stays PASSIVE (aria-hidden) — Stat-card seam untouched (B-Q6 open; ADR-0013 propose-don't-promote). DV-D08 rebind: spark caption → t-cm-chart-label 12/500. Baseline/base = ink at grid alpha (receipted judgment, as siblings); preserveAspectRatio:none safe (no text). s182-D3 (#182) — SPARKLINE COLOUR IS SEMANTIC, NOT PICKED: the stroke follows the ruled red/green INK, never a series-ramp pick. Trend read from FIRST-vs-LAST datum, declared as data-trend on the svg (up|down|flat, default flat). Background-keyed exactly as canon keys --error-atom via --rag-error-ink: light leg #DA1A00 down / #137F3C up / #1A1A1A flat, non-white leg #F6604C / #66CC8D / #FFFFFF. Identical in all four themes (measured #182: zero theme-level series overrides). NO VALUE MINTED — every hex is s151-D1 / s155-D1 (via s144-D1) / the standing ink. --data-series-1 is retained as a declared token but no longer strokes the atom. s184-D1 (#184) — SPARKLINE SCALING: RESPONSIVE TO ITS ENCLOSURE BY DEFAULT ('the line should be responsive to its enclosure by default'). Closes the tuner's last open decision. No fixed width anywhere in the atom; .spark-kpi-slot is a specimen-only enclosure, not part of the atom. HEIGHT NOT RULED, NOT CHANGED (64px / 44px stand); the 4px-grid height-snap stays open direction."
   }
   </script>
   <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
