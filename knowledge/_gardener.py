@@ -809,7 +809,22 @@ def derive_probe_from_file(hook_id: str, memory_dir: str) -> dict | None:
     body = hook_file_body(hook_id, memory_dir)
     if body is None:
         return None
-    cands = [t for t in dict.fromkeys(re.findall(r"`([^`]+)`", body)) if looks_like_path(t)]
+    # #190 USE-vs-MENTION guard: a line ASSERTING a file's absence is not a presence claim.
+    # `memory-md-is-in-the-mount` writes "⚠ `CLAUDE.md` is NOT in the mount — checked #113,
+    # still absent" — grading that as path-present makes the hook FRESH only in the world
+    # where its own claim is FALSE. Scope is the LINE, and the negation must be quoted
+    # [[gate-must-quote-what-it-forbids]]: only NOT/ABSENT/MISSING/never-FRESH wordings drop
+    # the token, and only for tokens on that line.
+    # ⚠ First cut denied every token on any line containing "missing"/"is not" — it bit
+    # `feedback-header-wins-over-audit` ("adding the missing item") and `home-pointer-rot-
+    # class` ("is not a home"), FRESH → UNPROVABLE, on the first real drive. The negation
+    # must be ADJACENT to the token it denies.
+    NEGATED = re.compile(
+        r"`([^`]+)`\s+(?:is\s+NOT\s+(?:in|at|present)\b|IS\s+ABSENT\b|is\s+MISSING\b"
+        r"|does\s+not\s+exist\b|no\s+longer\s+exists\b)", re.IGNORECASE)
+    denied: set[str] = set(NEGATED.findall(body))
+    cands = [t for t in dict.fromkeys(re.findall(r"`([^`]+)`", body))
+             if looks_like_path(t) and t not in denied]
     if not cands:
         return None
     if len(cands) == 1:
@@ -956,7 +971,11 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
     hooks, unlinked = parse_memory_index(memory_dir)
     prev_doc = load_grades(fence.grades_path) if fence else {}
     prev = {e["id"]: e for e in prev_doc.get("entries", [])}
-    by_base, _rels = build_index(root, [])       # basename → paths; see resolve_claimed_path
+    # #190: memory_dir is IN the index. Hooks legally name memory-store files
+    # (`MEMORY-ARCHIVE.md`) — indexing the repo alone graded them false-STALE, the exact
+    # ignore-the-alert class resolve_claimed_path's docstring warns about. The sweep arm
+    # (sweep(), line ~455) already indexes memory_dirs; this arm now matches it.
+    by_base, _rels = build_index(root, [memory_dir])  # basename → paths; see resolve_claimed_path
     entries, counts, changed = [], {g: 0 for g in GRADE_VOCAB}, []
     for h in hooks:
         old = prev.get(h["id"], {})
