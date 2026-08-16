@@ -52,6 +52,7 @@ _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import ast                              # #82: the real-tier check must read STRUCTURE, not text
 import datetime
+import difflib                           # s188-D2: the 2c carry gate's PAIRING guard (only)
 import glob
 import hashlib
 import importlib
@@ -2926,6 +2927,223 @@ def _rulings_status_map(repo):
         return None, f"{type(e).__name__}: {e}"
 
 
+# ════════════════════════════════════ THE 2c CARRY GATE — s188-D2 (Dave, RULED #188) ═══════
+# THE RULE IT ENFORCES, verbatim from the ruling: *"The 2c carry rule's 'AGES +1, WORDING
+# UNCHANGED' invariant gains exactly one exit: a carried claim's wording may change ONLY to
+# record a retraction, and the edit MUST cite its receipt (the run or commit that proved the
+# claim false), the same way a repo claim cites git log. An edit without a receipt token is
+# refused by the carry gate exactly as today."*
+#
+# ⚠ DECLARED AT BIRTH, because the ruling's premise says "exactly as today" and TODAY IS NOT
+# WHAT IT SOUNDS LIKE: before this build there was NO carry gate in code at all. `s183-D1` P2
+# and the "AGES +1, WORDING UNCHANGED" invariant lived ONLY as prose in
+# `_RUNBOOK-capture-ritual.md` §2c — a rule no machine had ever refused anything under
+# [[instrument-without-a-consumer]]. So the carve-out could not be added to an existing gate:
+# the gate is BUILT HERE and the carve-out is built INTO it, which is why both directions have
+# to be mutation-proven before it blocks (they are: `--selftest`, the (C*) bites).
+#
+# THE IDENTITY PROBLEM, and why the age bracket solves it. A wording-change check needs to pair
+# an item across two banners, and wording is the very thing that moved. The pairing key is the
+# thing `s128-D2` made mandatory and this gate does NOT invent: the AGE BRACKET. A carry ages
+# by exactly one per wrap, so a PRIOR item at `[N]` pairs with a LATEST item at `[N+1]`, and the
+# pair is only accepted when the two texts are ALSO near-identical (`CARRY_SIM_MIN`). Both
+# conditions must hold, which is what keeps this off unrelated items that merely share an age.
+#
+# ⛔ WHAT IT DOES NOT DO. It does not detect a DROPPED carry (that is 2c's EXIT CHECK, prose,
+# and widening this gate to presence would duplicate a rule at a second home). It does not
+# judge whether a retraction is TRUE — only that the edit cites a receipt a reader can follow.
+# ★ BLOCKING AT BIRTH, because s188-D2 says "refused" and a warn is not a refusal — but the
+#   base rate was MEASURED BEFORE THE FLAG WAS SET, not assumed. The gate was driven on the
+#   last TEN archived wrap pairs in `_GM-ARCHIVE.md` (each rebuilt into a LATEST/PRIOR
+#   fixture): 11 un-receipted rewordings total — 1 · 0 · 7 · 0 · 0 · 1 · 0 · 2 · 0 · 0. Every
+#   sampled one is the SAME shape and none is cosmetic: a carry TRUNCATED as it ages, dropping
+#   the evidence pointer it was born with (`… not instrumented (s172-D3(e))` → `… not
+#   instrumented`; `ELEVEN _governs FAILS — s179's own two were fixed to 0; the remainder is
+#   RATIFIED RECORD` → `ELEVEN _governs FAILS — RATIFIED RECORD`). That is exactly the drift
+#   the invariant exists to stop, at ~1 per wrap, which a wrap can afford to fix.
+#   ⚠ AN EARLIER PAIRING KEY (similarity ratio) SCORED 72 ON THE SAME TEN WRAPS. The extra 61
+#   were FALSE PAIRS, not findings — the number moved because the KEY changed, and it is
+#   recorded here so nobody re-quotes 72 as a measurement of anything.
+CARRY_GATE_BLOCKING = True       # s188-D2 built #189, mutation-proven both directions first
+CARRY_SIM_MIN = 0.86             # ⚠ PICKED, NOT DERIVED — the same standing as
+                                 # `GRADE_AGING_DAYS` and `STALE_AFTER_SESSIONS`. It is a
+                                 # PAIRING guard, not a verdict: below it the two items are
+                                 # not treated as the same carry at all.
+_AGE_RE = re.compile(r"\[(\d+)(?:\s*[—-][^\]]*)?\]")
+_RETRACTION_MARKER_RE = re.compile(r"RETRACT(?:ED|ION)|STRUCK|~~", re.I)
+_RECEIPT_SESSION_RE = re.compile(r"#\d{1,4}\b")
+_RECEIPT_INSCRIPTION_RE = re.compile(r"s\d{2,4}-D\d+|`[^`]+\.(?:py|md|json|css|html|sh)[^`]*`"
+                                     r"|\b[0-9a-f]{7,40}\b")
+_RESIDUAL_LINE_RE = re.compile(r"^>?\s*\*\*residual\s*→\s*#(\d+)", re.I)
+
+
+def _carry_norm(seg):
+    """Normalise a carry segment for comparison: age bracket, marks and emphasis removed."""
+    s = _AGE_RE.sub(" ", seg)
+    s = re.sub(r"[*_`~]+", " ", s)
+    s = re.sub(r"[⚠⬛✅★⛔⚙·•]+", " ", s)
+    return " ".join(s.split()).casefold()
+
+
+def _carry_title(seg):
+    """The carry's IDENTITY: its normalised text before the first em dash (s128-D2's shape,
+    `⚠ **TITLE [N]** — body`). A retraction strikes the title but keeps its words, so the key
+    survives exactly the edit the carve-out permits."""
+    head = re.split(r"—", seg, 1)[0]
+    return _carry_norm(head)
+
+
+def _carry_items(residual_line):
+    """The `·`-separated carry segments of one residual line that CARRY AN AGE.
+
+    A segment with no `[N]` bracket is this session's NEW item (`[NEW — 0]` is stripped to 0 by
+    `_AGE_RE`, so new items DO carry age 0 and pair with `[1]` next wrap — which is exactly the
+    contract). Returns [(age:int, segment:str)].
+    """
+    # ⛔ STRIP THE LINE'S OWN PREFIX FIRST. `> **residual → #189:**` differs from `→ #190` by
+    # construction every single wrap, and leaving it inside the first segment made the FIRST
+    # carry on every banner read as "reworded" — caught by the (C1) bite before this gate was
+    # wired, which is the whole reason the bite is a PAIR and not a smoke test.
+    body = re.sub(r"^>?\s*\*\*residual\s*→\s*#\d+:?\*\*", "", residual_line.strip())
+    out = []
+    for seg in body.split("·"):
+        m = _AGE_RE.search(seg)
+        if m and len(_carry_norm(seg)) >= 20:      # a bare bracket is not a carry
+            out.append((int(m.group(1)), seg.strip()))
+    return out
+
+
+def retraction_receipt(text):
+    """(ok, why-NOT). The carve-out's ONE test, applied to the CHANGED wording.
+
+    s188-D2 requires TWO things of a wording change, and this function refuses each by name:
+      1. it must SAY it is a retraction (marker: RETRACTED / RETRACTION / STRUCK / ~~strike~~)
+      2. it must CITE the receipt — a session `#N` *and* an inscription a reader can open
+         (a ruling id `sNNN-DN`, a backticked repo path, or a commit sha)
+    ⛔ A marker without a receipt is the failure this gate exists for: "we changed our minds"
+    is prose; "#182 proved it false, inscribed at `s183-D1`" is a record.
+    """
+    if not _RETRACTION_MARKER_RE.search(text):
+        return False, ("the wording changed but says NOTHING about a retraction — the 2c "
+                       "invariant is AGES +1, WORDING UNCHANGED, and the only exit (s188-D2) "
+                       "is a retraction that names itself (RETRACTED / STRUCK / ~~struck~~)")
+    has_session = bool(_RECEIPT_SESSION_RE.search(text))
+    has_inscription = bool(_RECEIPT_INSCRIPTION_RE.search(text))
+    if has_session and has_inscription:
+        return True, ""
+    missing = []
+    if not has_session:
+        missing.append("the SESSION that proved it false (`#N`)")
+    if not has_inscription:
+        missing.append("WHERE the correction is inscribed (a ruling id `sNNN-DN`, a backticked "
+                       "repo path, or a commit sha)")
+    return False, ("a retraction WITHOUT its receipt is refused (s188-D2) — missing "
+                   + " and ".join(missing))
+
+
+def carry_wording_check(repo):
+    """s188-D2 — the 2c carry gate. Returns (fails, notes). BLOCKING (`CARRY_GATE_BLOCKING`).
+
+    Pairs every aged carry on the ★ PRIOR banner's `residual → #N` line with the same carry on
+    the ★ LATEST banner's line (`[N]` → `[N+1]`, near-identical text). Identical wording passes
+    silently. CHANGED wording passes ONLY with a retraction receipt, and FAILS without one,
+    quoting both texts so the reader can see exactly what moved.
+    """
+    fails, notes = [], []
+    gm_path = os.path.join(repo, "GOOD-MORNING.md")
+    if not os.path.exists(gm_path):
+        notes.append("2c carry gate: no GOOD-MORNING.md — UNMEASURED, not assumed clean.")
+        return fails, notes
+    with open(gm_path, encoding="utf-8") as f:
+        gm_text = f.read()
+    lines = gm_text.splitlines()
+    latest_start = next((i for i, ln in enumerate(lines)
+                         if _BANNER_LATEST_START_RE.match(ln)), None)
+    prior_start = next((i for i, ln in enumerate(lines)
+                        if _BANNER_PRIOR_START_RE.match(ln)), None)
+    if latest_start is None or prior_start is None or prior_start <= latest_start:
+        notes.append("2c carry gate: no ★ LATEST + ★ PRIOR pair found — UNMEASURED. ⛔ Not a "
+                     "pass: with one banner there is nothing to carry FROM, and the banner "
+                     "structure itself is graded by other checks.")
+        return fails, notes
+    prior_end = next((i for i in range(prior_start + 1, len(lines))
+                      if _BANNER_PRIOR_START_RE.match(lines[i])), len(lines))
+
+    def _residual(lo, hi):
+        return next((lines[i] for i in range(lo, hi) if _RESIDUAL_LINE_RE.match(lines[i].strip())
+                     or "**residual → #" in lines[i]), None)
+
+    latest_line = _residual(latest_start, prior_start)
+    prior_line = _residual(prior_start, prior_end)
+    if latest_line is None or prior_line is None:
+        notes.append("2c carry gate: one of the two banners has no `**residual → #N:**` line — "
+                     "UNMEASURED. The roll-claim check (T2 #77) grades that line's presence; "
+                     "this gate refuses to invent a carry set from prose.")
+        return fails, notes
+
+    latest_items = _carry_items(latest_line)
+    prior_items = _carry_items(prior_line)
+    by_age = {}
+    for age, seg in latest_items:
+        by_age.setdefault(age, []).append(seg)
+    checked = changed = 0
+    for age, seg in prior_items:
+        norm = _carry_norm(seg)
+        cands = by_age.get(age + 1, [])
+        if not cands:
+            continue                     # dropped, consumed, or not aged — 2c's EXIT CHECK
+        if any(_carry_norm(c) == norm for c in cands):
+            checked += 1
+            continue                     # AGES +1, WORDING UNCHANGED — the invariant holds
+        # ⚠ SIMILARITY IS NOT THE PAIRING KEY — the TITLE IS. Two attempts were driven before
+        # this one and both were wrong on real data: a ratio-only guard missed the dominant
+        # shape (carries are TRUNCATED, not paraphrased — the evidence pointer falls off the
+        # end, and a 25% truncation scores ~0.85), and a shared-opening guard missed the case
+        # the ruling is actually about (a STRUCK retraction diverges early, by design). The
+        # banner's own grammar gives a structural key for free: every carry is
+        # `⚠ **TITLE [N]** — body`, and a retraction strikes the TITLE but keeps its words. So
+        # the key is the normalised text BEFORE the first em dash, and the ratio is reported
+        # as evidence, never used as the test.
+        key = _carry_title(seg)
+        best = next((c for c in cands if _carry_title(c) == key and key), None)
+        if best is None:
+            continue                     # not the same carry — no pairing, no claim
+        ratio = difflib.SequenceMatcher(None, norm, _carry_norm(best)).ratio()
+        checked += 1
+        changed += 1
+        ok, why = retraction_receipt(best)
+        if ok:
+            notes.append(f"2c carry gate: `[{age}]`→`[{age + 1}]` wording CHANGED and carries "
+                         f"its retraction receipt (s188-D2 carve-out) — {_flat_carry(best)}")
+        else:
+            fails.append(
+                f"2c CARRY WORDING CHANGED WITHOUT A RETRACTION RECEIPT (s188-D2) — "
+                f"`[{age}]`→`[{age + 1}]`, {ratio:.2f} similar. {why}.\n"
+                f"        WAS (#PRIOR): {_flat_carry(seg)}\n"
+                f"        NOW (LATEST): {_flat_carry(best)}\n"
+                f"        Remedy: restore the wording verbatim, OR strike it as a retraction "
+                f"naming the session that disproved it and where the correction is inscribed "
+                f"(_RUNBOOK-capture-ritual.md §2c, s183-D1 P2 / s188-D2).")
+    if prior_items and checked == 0:
+        notes.append(
+            "2c carry gate: NOTHING PAIRED — the LATEST banner carries BY REFERENCE (the "
+            "'PRIOR CARRIES, AGES +1, WORDING UNCHANGED' sentence pointing at the PRIOR "
+            "banner) rather than re-typing the list. ⛔ THAT IS NOT A PASS: with no re-typed "
+            "text there is nothing for this gate to compare, and it says so instead of "
+            "reporting a clean run [[measuring-tool-must-not-guess]].")
+    notes.append(f"2c carry gate (s188-D2): {len(prior_items)} aged carries on the PRIOR "
+                 f"residual, {checked} paired into LATEST, {changed} reworded, "
+                 f"{len(fails)} without a receipt. ⛔ Pairing key = the age bracket + "
+                 f"the title before the em dash (STRUCTURAL); an unpaired carry is NOT graded here — "
+                 f"presence is 2c's EXIT CHECK, prose.")
+    return fails, notes
+
+
+def _flat_carry(s, n=140):
+    s = " ".join(s.split())
+    return s if len(s) <= n else s[: n - 1] + "…"
+
+
 def stale_top_item_check(repo):
     """s161-D4 (Dave, RULED #161) — a wrap may not certify an OWED-WORK claim that cites a
     ruling id whose `_rulings.json` status already says ENACTED. Returns (fails, notes).
@@ -3857,6 +4075,12 @@ def wrap_checks(repo, today, lane=False):
                                                  # failure it catches carried a false "owed" for
                                                  # TWO sessions, refuted the whole time by the
                                                  # store this same wrap already parses.
+        f_, n_ = carry_wording_check(repo)       # ★ s188-D2 #188 — the 2c carry gate: AGES +1,
+        (fails if CARRY_GATE_BLOCKING else warns).extend(f_)   # WORDING UNCHANGED, with ONE
+        notes += n_                              # exit — a retraction that cites its receipt.
+                                                 # ★ BLOCKING at birth; the measured base rate
+                                                 # is at CARRY_GATE_BLOCKING (11 in 10 wraps,
+                                                 # all genuine truncation-drops).
         f_, n_ = title_generation_check(repo)    # #120 residual ⓪ — RENAME+NEXT-TITLE must be
         fails += f_                              # MECHANISED (`_gen_titles.py`), not hand-typed
         notes += n_                              # prose; BLOCKING, receipt is the only witness.
@@ -6535,8 +6759,108 @@ def selftest_plan_block_check():
     return failures
 
 
+def _carry_gm(latest_items, prior_items, latest_no=189, prior_no=188):
+    """A two-banner GOOD-MORNING fixture whose residual lines carry exactly what is asked."""
+    def resid(n, items):
+        return "> **residual → #%d:** " % n + " · ".join(items)
+    return "\n".join([
+        "> ## ★ LATEST — 2026-08-16 (Sun **#%d**, wrap)" % latest_no,
+        resid(latest_no + 1, latest_items),
+        "",
+        "> ## ★ PRIOR — 2026-08-16 (Sun **#%d**, wrap)" % prior_no,
+        resid(prior_no + 1, prior_items),
+        "",
+    ]) + "\n"
+
+
+def selftest_carry_gate():
+    """s188-D2 — THE CARVE-OUT, BOTH DIRECTIONS. Every bite states its CONTROL.
+
+    ⛔ The whole point of the ruling is asymmetry: the SAME wording change passes WITH a
+    receipt and is refused WITHOUT one. So every bite here is a PAIR, and the pair differs by
+    the receipt alone — otherwise the green proves only that the parser runs.
+    """
+    failures = []
+    WAS = ("⚠ **THE MONDAY SLOT IS UNSCHEDULED [3]** — no scheduler row exists for it, "
+           "checked live this session")
+
+    def run(latest_item, prior_item=WAS):
+        with tempfile.TemporaryDirectory() as td:
+            with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+                f.write(_carry_gm([latest_item], [prior_item]))
+            return carry_wording_check(td)
+
+    # (C1) THE INVARIANT — same wording, age +1 ⇒ silent pass. This is the CONTROL for all below.
+    f_, n_ = run(WAS.replace("[3]", "[4]"))
+    if f_:
+        failures.append(f"carry gate: an UNCHANGED carry aged +1 was refused — the gate is "
+                        f"biting the normal case, which would refuse every wrap: {f_}")
+    if not any("1 paired" in x or "paired into LATEST" in x for x in n_):
+        failures.append(f"carry gate: the unchanged case produced no receipt note: {n_}")
+
+    # (C2) REWORDED, NO RECEIPT ⇒ REFUSED, and the refusal QUOTES both texts.
+    f_, _ = run("⚠ **THE MONDAY SLOT IS UNSCHEDULED [4]** — no scheduler row exists for it")
+    if not any("WITHOUT A RETRACTION RECEIPT" in x for x in f_):
+        failures.append(f"carry gate: a reworded carry with NO receipt was NOT refused — "
+                        f"s188-D2's 'refused exactly as today' half is dead: {f_}")
+    elif not (any("WAS (#PRIOR)" in x and "NOW (LATEST)" in x for x in f_)):
+        failures.append(f"carry gate: the refusal did not quote BOTH texts — a reader cannot "
+                        f"see what moved: {f_}")
+
+    # (C3) THE CARVE-OUT — the SAME change, struck WITH a receipt ⇒ ACCEPTED. (C2 is its control.)
+    f_, n_ = run("⚠ ~~THE MONDAY SLOT IS UNSCHEDULED~~ **[4]** — **RETRACTED at #182**, the "
+                 "slot IS scheduled; correction inscribed at `s183-D1`")
+    if f_:
+        failures.append(f"carry gate: a retraction WITH its receipt was refused — the s188-D2 "
+                        f"carve-out does not exist: {f_}")
+    if not any("carries its retraction receipt" in x for x in n_):
+        failures.append(f"carry gate: an accepted carve-out left no note naming it: {n_}")
+
+    # (C4) HALF A RECEIPT IS NOT A RECEIPT — each half refused BY NAME. Control: (C3) passes.
+    for label, item, want in (
+            ("marker + session, no inscription",
+             "⚠ ~~THE MONDAY SLOT IS UNSCHEDULED~~ **[4]** — RETRACTED at #182", "WHERE"),
+            ("marker + inscription, no session",
+             "⚠ ~~THE MONDAY SLOT IS UNSCHEDULED~~ **[4]** — RETRACTED, see `s183-D1`",
+             "SESSION"),
+            ("changed with NO marker at all",
+             "⚠ **THE MONDAY SLOT IS UNSCHEDULED [4]** — corrected, see `s183-D1` at #182",
+             "says NOTHING about a retraction")):
+        f_, _ = run(item)
+        if not any(want in x for x in f_):
+            failures.append(f"carry gate: {label} was not refused by name (wanted {want!r}): "
+                            f"{f_}")
+
+    # (C5) THE PAIRING KEY MUST BITE BOTH WAYS. An UNRELATED item at the next age is NOT the
+    #      same carry and must NOT be graded as a rewording (a false fire here refuses honest
+    #      wraps); the near-identical one at the next age MUST be.
+    f_, _ = run("⚠ **THE BASE RED 30 IS UNCHANGED [4]** — rag/text/on-dark, 3.14:1")
+    if f_:
+        failures.append(f"carry gate: an UNRELATED item at age+1 was graded as a rewording — "
+                        f"the similarity guard is not holding: {f_}")
+    f_, _ = run(WAS.replace("[3]", "[9]"))          # right wording, WRONG age ⇒ no pair
+    if f_:
+        failures.append(f"carry gate: a carry whose age did not go +1 was paired anyway: {f_}")
+
+    # (C6) NO GM / NO RESIDUAL ⇒ DECLARED UNMEASURED, never a silent clean run.
+    with tempfile.TemporaryDirectory() as td:
+        f_, n_ = carry_wording_check(td)
+        if f_ or not any("UNMEASURED" in x for x in n_):
+            failures.append(f"carry gate: a missing GOOD-MORNING.md must DECLARE unmeasured: "
+                            f"fails={f_} notes={n_}")
+    with tempfile.TemporaryDirectory() as td:
+        with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+            f.write("> ## ★ LATEST — (#189)\n> prose\n\n> ## ★ PRIOR — (#188)\n> prose\n")
+        f_, n_ = carry_wording_check(td)
+        if f_ or not any("UNMEASURED" in x for x in n_):
+            failures.append(f"carry gate: banners with no residual line must DECLARE "
+                            f"unmeasured: fails={f_} notes={n_}")
+    return failures
+
+
 def _selftest_body():
-    failures = (selftest_plan_block_check()      # B2 seam obligation, s179-D1 — wired at write
+    failures = (selftest_carry_gate()            # ★ s188-D2 — the 2c carve-out, both directions
+                + selftest_plan_block_check()    # B2 seam obligation, s179-D1 — wired at write
                 + selftest_real_tier_reachable()
                 + selftest_preflight() + selftest_preflight_tokens()
                 + selftest_gauge_refusal_seam()          # #79-D1 paired half

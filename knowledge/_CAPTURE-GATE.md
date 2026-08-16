@@ -1,12 +1,12 @@
 # Capture gate report — mode: build
-*Generated 2026-08-15 by `_capture_gate.py`. Scope: 138 file(s) at/after cutover 2026-07-26.*
+*Generated 2026-08-16 by `_capture_gate.py`. Scope: 145 file(s) at/after cutover 2026-07-26.*
 
 ## WARN
 - ds-021 (C) DECLARED GAP — `knowledge/_context_gauge.py` counts in cl100k and cannot name a REAL tier. REFUSES without tiktoken unless --estimate labels the output (#74). Honest about estimate-vs-nothing; still blind to cl100k-vs-real.
 - ds-021 (C) CALIBRATION — `knowledge/_measure_tokenizer.py`. #53's instrument — prints a tape|real|ratio|drift table. ⚠ 0 Python consumers, flagged by #77's periphery inventory, re-probed #81 and STILL zero. It is the reason #80 re-derived a ruling #54 had already made: an instrument ships WITH ITS READER, and a measurement nothing re-reads decays into a rediscovery.
 
 ## NOTE
-- ⚠ RULINGS ALREADY GOVERN WHAT YOU ARE TOUCHING (files touched this session) — 22 found. READ BEFORE RE-DERIVING:
+- ⚠ RULINGS ALREADY GOVERN WHAT YOU ARE TOUCHING (files touched this session) — 20 found. READ BEFORE RE-DERIVING:
   ▸ ds-021 — RULED #54 (2026-07-30, Dave): ONE unit: REAL Claude tokens. cl100k/tiktoken is a LABELLED estimator and is 'never a unit a cap is stated in'.
       status: RULED #54, ENACTMENT SHAPE (C) ruled #81-D1, enactment IN PROGRESS #81
       ⚠ The three homes were declared UNTOUCHED at #54 and were still untouched at #80. Do not re-derive the ratio; it is measured and ruled.
@@ -30,10 +30,6 @@
       status: BUILT #80, mutation-tested x3
       ⚠ NOT SystemExit - count() is a library function inside a 39+-check gate and BaseException would slip _arm()'s except Exception. A precedent is a claim about a CALL SITE, not a repo.
       evidence: _DECISION-HISTORY/2026-08-02-the-79-dossier.md
-  ▸ chain-cut — RULED GM-D7-am / #33 (2026-07-28, Dave): _CHAIN.md is the WHOLE read chain. Everything else is retrieval, never a reading list. Do not open GOOD-MORNING.md to 'check'.
-      status: ENACTED #33, held 7 consecutive sessions
-      ⚠ _gen_chain.py iterates to a FIXED POINT - the footer states the size of the file containing it. Any unit change must re-converge.
-      evidence: _DECISION-HISTORY/2026-07-28-cutting-the-eager-read-chain.md
   ▸ derivation-governance — RULED ADR-0016 era (2026-07-29, Dave): The engine never derives-and-promotes. Promotion is Dave's alone; a threshold reached must FORK TO DAVE, never self-apply.
       status: STANDING
       ⚠ This is why ratio_status() must SAY something at n>=4 rather than silently firming the constant.
@@ -46,15 +42,6 @@
       evidence: knowledge/_capture_gate.py
   ▸ gauge-log-one-writer — RULED #96 (2026-08-05, Dave): ONE WRITER: only roll_2f creates gauge-log session sections; wraps never hand-write them. Collisions are marked exceptions by addition.
       status: RULED #96 - status field added #119 in a metadata sweep; enactment state NOT asserted here (UNPROVEN by this sweep) - read the evidence pointers
-      evidence: notes/_MEMENTO-DECISIONS.md
-  ▸ ds-025 — RULED #109 (2026-08-06, Dave): ds-025 item 1 (the boot floor) is RE-SCOPED, not closed (#109-D3). The boot TOTAL is now measured - 75,899 real (first turn 65,400 +/- 1,400, n=5, plus _CHAIN.md 10,499 additive at turn 2) against a previously published 30,499 +/- 8,000, a 45,400 under-report. That half is closed. Item 1 now means the DECOMPOSITION of the 56,308 first-turn remainder only (MEMORY.md's 8,470 is already split out and measured); it closes when the 56,308 is split, not before. Dave asked to understand the re-scope before ruling it, and approved the re-scope itself; he has NOT signed off the knowledge/_gauge_tokens.py code change line-by-line, so the code is ENACTED + UNRATIFIED, not a closed loop. Retires the false 'boot never measured in 36 sessions' wording at notes/_MEMENTO-DECISIONS.md:1297, :1399, :1562 (struck through at source, not deleted) and at GOOD-MORNING.md's header + DO-FIRST pointer.
-      status: RULED #109 - status field added #119 in a metadata sweep; enactment state NOT asserted here (UNPROVEN by this sweep) - read the evidence pointers
-      evidence: _DECISION-HISTORY/2026-08-06-109-boot-floor-measured.md
-      evidence: notes/_MEMENTO-DECISIONS.md
-      evidence: knowledge/_DS-IMPROVEMENTS.md
-  ▸ ds-036 — RULED #109 (2026-08-06, Dave): STANDING CONSTRAINT, verbatim (#109-D4): "Lets fix this properly, no patches no sticking plasters." Governs the four-phase #110 follow-on to the boot-floor finding: P1 split the 56,308 first-turn remainder by tokenising what is actually on disk (skill frontmatter, CLAUDE.md, plugin manifests), Cowork system prompt falls out as the residual by subtraction - collapses from a multi-session throwaway-boot project to a one-pass morning; P2 cut unearning boot rent - seven MCP servers load unauthenticated (Asana, Atlassian, Intercom, Linear, Notion, Slack, Figma) plus a duplicate second Figma server, each drop needs Dave's call + a re-measure; P3 gate it - a boot-ceiling gate that fails loud on drift, the mechanical form of this ruling; P4 the _CHAIN.md corpus-trim option, correctly priced at 14% of the floor. Priced and awaiting Dave's confirm to open #110, not yet running.
-      status: RULED #109 - status field added #119 in a metadata sweep; enactment state NOT asserted here (UNPROVEN by this sweep) - read the evidence pointers
-      evidence: _DECISION-HISTORY/2026-08-06-109-boot-floor-measured.md
       evidence: notes/_MEMENTO-DECISIONS.md
   ▸ s110-D1 — RULED #110 (2026-08-06, Dave): Open the four-phase boot-rent plan (ds-036); P1 delegated to a Sonnet sub. Chosen over P2-first, over cranking the design queue, and over research candidates 1+2.
       status: RULED #110 - status field added #119 in a metadata sweep; enactment state NOT asserted here (UNPROVEN by this sweep) - read the evidence pointers
@@ -81,18 +68,14 @@
       status: ENACTED #128 2026-08-08. `knowledge/_capture_gate.py` gained the `c_block` comparison branch (`elif bill_of(chain_file) > bill_of(c_block)`), STILL ADVISORY and still a WARN - arming/re-dialling/retiring the tier remains Dave's word alone.
       evidence: notes/_MEMENTO-DECISIONS.md:3373 — I'll go with all your recommendations
       evidence: notes/_dream/2026-08-08-proposals.md
-  ▸ d0802-P2b — RULED #76 (dream pass 4) (2026-08-02, Dave): GOOD-MORNING.md hardcoded chain figure (4,585 tape prose block) replaced with the chain_file_tk('.') pointer form the same file already uses.
-      status: ENACTED #128 2026-08-08. `GOOD-MORNING.md:125` no longer carries a figure: the prose now points at `chain_file_tk('.')` and says the figure MOVES, the form the same file uses at :427.
+  ▸ d0802-P3 — RULED #76 (dream pass 4) (2026-08-02, Dave): _RUNBOOK-capture-ritual.md:89 amended to carry #28's ruling: next-title at top; rename delivered to CHAT only. Rename half deliberately not gated.
+      status: ENACTED #128 2026-08-08. `knowledge/_RUNBOOK-capture-ritual.md:89` now orders the NEXT SESSION TITLE only, and carries #28's amendment inline: the retrospective rename is delivered in CHAT at wrap and never written into GOOD-MORNING.md.
       evidence: notes/_MEMENTO-DECISIONS.md:3373 — I'll go with all your recommendations
       evidence: notes/_dream/2026-08-08-proposals.md
-  ▸ d0802-P4 — RULED #76 (dream pass 4) (2026-08-02, Dave): consult-receipts stratum line carries the running 'Nth of M' count (~8 tape/wrap).
-      status: ENACTED #128 2026-08-08. The running-count form is inscribed at the ONE copy of the consult-receipt form, `knowledge/_search_core.py` (the file the gate's probe imports): the stratum line carries `#N (Nth of M)`.
+  ▸ d0802-P7 — RULED #76 (dream pass 4) (2026-08-02, Dave): Declare-LAST residual clause: when 2c/2d/2f are skipped, the residual must state the size: stamp is therefore the prior session's and by roughly how much the artefact moved. Structural; survives its dead motivating receipt (P7 DEAD-AND-INVERTED, proposal untouched).
+      status: ENACTED #128 2026-08-08. The declare-LAST clause is inscribed at the size-stamp spec in `knowledge/_RUNBOOK-capture-ritual.md`: when 2c/2d/2f are skipped the residual must state the SIZE of the skip - that the stamp is #N-1's and roughly how far the artefact has moved. NO GATE.
       evidence: notes/_MEMENTO-DECISIONS.md:3373 — I'll go with all your recommendations
       evidence: notes/_dream/2026-08-08-proposals.md
-  ▸ s148-D1 — RULED #148 (2026-08-10, Dave): CLEAR THE STEP-11 BLOCK BOTH WAYS - picked from a three-option set ('Fix both now', the recommendation): (a) give live-chat provenance a LEGAL pointer form in _governs.py ('chat #<n> ...', the #119 commit-form precedent, [[honest-refusal-needs-a-legal-form]]) instead of letting the anchor predicate claim the word 'chat' as a path; (b) BACKFILL governs/evidence/status on the schema-drifted rulings (s142-D1 x5, s143-D1 x3, s146-D1 x2, s147-D1 x3, s147-D2 x3 missing fields; s135-D3/s143-D1/s144-D1/s145-D1 chat-evidence misclassified as anchors) from their own records, inferred fields MARKED as backfilled. Found by the #148 full _build_all.py drive at step 11 - a dead-runner casualty, second family after #147's 245 RAG values.
-      status: ENACTED #148: legal form + selftest clause 6g (positive + three negative controls); entries backfilled textually, untouched entries asserted parse-equal.
-      evidence: knowledge/_governs.py
-      evidence: chat #148 (live) - Dave's pick from the three-option set
   ▸ s161-D4 — RULED #161 (2026-08-12, Dave): THE STALE-TOP-ITEM FENCE, BLOCK NOT WARN. A wrap may not certify a 'next top item' (or equivalent owed-work claim) that cites a ruling id whose _rulings.json status already says ENACTED - the #159/#160 defect that carried 's142-D1 wave enactment owed' two sessions past its fact, refuted the whole time by the store the wrap already parses. Conductor recommended block-not-warn (a warn under wrap heat is a warn nobody reads) with a bite test proving the gate can fail, driven on the real #160 wrap text as the red fixture. Dave: 'okay do it', after '2 sessions carried the wrong information, this is a waste of time'.
       status: RULED #161. Enactment delegated same session; conductor replays the gate in-window.
       evidence: chat #161 2026-08-12 (live) - Dave verbatim 'okay do it' on the read-back naming block-not-warn + bite test
@@ -101,10 +84,14 @@
       status: RULED #161 after read-back; closes G8. No code change owed - enforcement was already retired; the state item closes.
       evidence: chat #161 2026-08-12 (live) - staged batch answer 'Pin, but lets return to this because i need an explanation for this', conductor read-back surfacing #74-D3, then Dave verbatim 'G8 retire completely'
       evidence: knowledge/_capture_gate.py:125-137 (the retirement comment block, #74-D3)
-  ▸ s168-D3 — RULED #168 (2026-08-13, Dave): SUB-SPEND ACCOUNTING, OPTION 2 - Dave: 'I like both... lets do option 2'. (a) A gauge-log block MAY carry ONE optional line `subs <N> tokens (n=<count>)`. ABSENT IS LEGAL AND NEVER DEFAULTED. The word `job` is FORBIDDEN on that line - containment, not style: gen_dashboard.py's _JOB_RE sweeps the whole file and a `job`-spelled subs line would move an S/M/L band edge silently. Guarded by _capture_gate.py::gauge_log_subs_line, 12 arms, SUBS_LINE_BLOCKING=True - the TIER is a DECLARED CHOICE, not part of the ruling, and a downgrade is Dave's. Runbook section added at _RUNBOOK-capture-ritual.md step 2f. (b) EFFORT-SWITCH AGENT DEFINITIONS: .claude/agents/opus-deep.md (effort: max) and .claude/agents/opus-fast.md (effort: low). NOTE: they were NOT registered mid-session - first live use is #169.
-      status: RULED #168 AND ENACTED IN-WINDOW for (a) - gate live and BLOCKING, runbook section written, first real subs line written by the #168 wrap. (b) BUILT NOT REGISTERED - agent defs exist on disk; first live use #169.
-      evidence: chat #168 2026-08-13 (live) - Dave: 'I like both... lets do option 2'; FIRM
-      evidence: knowledge/_capture_gate.py::gauge_log_subs_line - 12 arms, proven against _JOB_RE
-      evidence: knowledge/_RUNBOOK-capture-ritual.md
+  ▸ s188-D1 — RULED #188 (2026-08-16, Dave): PASS-8 P1 RULED: THE GRADING UNIT IS THE HOOK FILE. _gardener.py's grader reads the memory hook FILE (index-line fallback permitted, file first), aligning the grader with the s182-D1 authoring convention already in force. The index stays lean - no proof-tokens required in MEMORY.md lines (boot rent stays flat). CONSEQUENCE ACCEPTED IN THE SAME WORD: the 109-of-122 and 50-of-57 UNPROVABLE figures were measured on the wrong text; they are re-measured after the grader change and the B3 return-with-numbers restarts its count on the honest figures. BUILD QUEUED to #189, not built at #188.
+      status: ruled
+      evidence: chat #188 2026-08-16 (live) - implications laid out (grade the file / grade the line / both); Dave: '1. Grade the file (your recommendation)'
+  ▸ s188-D2 — RULED #188 (2026-08-16, Dave): PASS-8 P2 RULED: NARROW RETRACTION CARVE-OUT, RECEIPT REQUIRED. The 2c carry rule's 'AGES +1, WORDING UNCHANGED' invariant gains exactly one exit: a carried claim's wording may change ONLY to record a retraction, and the edit MUST cite its receipt (the run or commit that proved the claim false), the same way a repo claim cites git log. An edit without a receipt token is refused by the carry gate exactly as today. The carve-out is mutation-tested like any gate before it is trusted. BUILD QUEUED to #189, not built at #188. Pass-8 P3/P4/P5 remain FLOATED, carried to #189 undecided.
+      status: ruled
+      evidence: chat #188 2026-08-16 (live) - carve-out vs keep-frozen vs drop-invariant laid out with the twice-carried retracted claim as the driving case; Dave: '2. same again, your recommendation - narrow carve-out, receipt required'
+  ▸ s188-D3 — RULED #188 (2026-08-16, Dave): SUPERSESSION, EXPLICIT: s188-D1 (grader reads the hook FILE) SUPERSEDES the P1 clause of s183-D1 (the light version: index-line grading + companion count + refusal-string fix), which is RETIRED. s188-D2 (receipt-required retraction carve-out) stands as a STRENGTHENING AMENDMENT to s183-D1's P2 clause, not a reversal. Dave's word: 'I just want the most robust version of this so we don't have to revisit it, the point behind all this is you have full spectrum context, with as little failures as possible.' s183-D1's P3/P4/P5 clauses are UNTOUCHED and remain in force. FINDING RECORDED IN THE SAME WORD: the #187 chain asserted pass-8 P1-P5 were floated/unruled while s183-D1 had held their promotion for four sessions; the conductor believed the chain over the rulings store and re-put settled rulings as options - the retrieval-default class. The rulings store is the authority on 'was this ruled'; the chain is not.
+      status: ruled
+      evidence: chat #188 2026-08-16 (live) - the s183-D1/s188-D1 delta was asserted to Dave plainly and he picked the robust version
   ⛔ These are DECIDED. Re-deriving one is the #80 defect; re-opening one is Dave's alone.
 

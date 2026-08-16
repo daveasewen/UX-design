@@ -210,6 +210,21 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    was unscheduled · #182 retracted it (Dave caught it) · #183 re-published it verbatim at a
    correct age. Struck, not deleted: a silently vanished item is indistinguishable from a dropped
    one, which is what the EXIT CHECK exists to prevent [[feedback-header-wins-over-audit]].*
+   ⛔ **AND THE RETRACTION MUST CITE ITS RECEIPT — ruled `s188-D2` (#188), a STRENGTHENING
+   AMENDMENT to `s183-D1` P2, not a reversal.** A carried claim's wording may change ONLY to
+   record a retraction, and the edit must name **the session that proved it false AND where the
+   correction is inscribed** (a ruling id, a repo path, or a commit sha) — the same way a repo
+   claim cites `git log`. **A wording change without a receipt is REFUSED at the wrap.**
+   *Machinery, built #189: `carry_wording_check()` in `knowledge/_capture_gate.py`, BLOCKING,
+   wired inside `wrap_checks()`. It pairs each aged carry on the ★ PRIOR banner's `residual → #N`
+   line with the same carry on ★ LATEST (`[N]`→`[N+1]`, matched on the title before the em dash),
+   passes identical wording silently, and quotes both texts when it refuses. ⚠ It does NOT see a
+   DROPPED carry — that is this step's EXIT CHECK above, which stays prose. ⚠ Nor does it see a
+   carry made BY REFERENCE ("PRIOR CARRIES, AGES +1, WORDING UNCHANGED" pointing at the PRIOR
+   banner instead of re-typing the list); it DECLARES that case unmeasured rather than reporting
+   a clean run. Measured before it was wired: 11 un-receipted rewordings across the ten wraps
+   archived before #189, every sampled one a carry truncated as it aged, dropping the evidence
+   pointer it was born with.*
    ★ **The circled numerals number THIS session's new items only; carried items are identified by
    age** (`s183-D1`, dream pass 8 P3 — prose form; carried blocks arrive with their own ①–⑦ and
    collide with the session's, so the age bracket `s128-D2` defines is the durable identifier).

@@ -760,6 +760,63 @@ def derive_probe(hook: str, root: str) -> dict:
                                    "reader's, not a machine's."}
 
 
+def hook_file_body(hook_id: str, memory_dir: str) -> str | None:
+    """The hook FILE's text, frontmatter stripped. None when the file is not there.
+
+    ⛔ NEVER raises for an absent file — absence is the CALLER's grade (`grade_entry` already
+    grades a missing target STALE and names it). A read error IS loud: an unreadable file is
+    not an empty one [[a-crash-is-not-a-fail]].
+    """
+    hid = hook_id if hook_id.endswith(".md") else f"{hook_id}.md"
+    p = os.path.join(os.path.abspath(memory_dir), hid)
+    if not os.path.isfile(p):
+        return None
+    try:
+        body = open(p, encoding="utf-8").read()
+    except OSError as exc:
+        raise GradesBlock(
+            f"B3 — the hook FILE exists but could not be READ: {p}\n"
+            f"        cause  : {type(exc).__name__}: {exc}\n"
+            "        REFUSING to fall back to the index line here: a silent fallback on an "
+            "unreadable file is indistinguishable from a file with no claim, and s188-D1 "
+            "made the FILE the grading unit.") from exc
+    if body.startswith("---"):                      # strip YAML frontmatter, if any
+        parts = body.split("\n---", 2)
+        body = parts[-1] if len(parts) > 1 else body
+    return body
+
+
+def derive_probe_from_file(hook_id: str, memory_dir: str) -> dict | None:
+    """s188-D1 — THE GRADING UNIT IS THE HOOK FILE. Derive the probe from the FILE's claims.
+
+    RULED `s188-D1` (#188, Dave: "1. Grade the file"), SUPERSEDING the `s183-D1` P1 light
+    version (index-line grading + a read-only companion count), which `s188-D3` RETIRED.
+
+    Returns None when the file yields NO mechanical claim — the caller then falls back to the
+    INDEX LINE, which `s188-D1` permits explicitly ("index-line fallback permitted, file
+    first"). It never returns a probe it could not build.
+
+    ⚠ THE MULTI-PATH RULE IS DELIBERATELY *NOT* THE INDEX LINE'S. On an index LINE, two
+    path-like tokens are AMBIGUOUS — one 90-char line cannot be claiming both. A hook FILE is
+    prose about a finding and routinely names several files, and EVERY ONE of them is a claim
+    the file makes about the repo. So the file's probe is `paths-present`: ALL named paths must
+    resolve, and the evidence NAMES the first that does not. Refusing to grade a multi-path
+    file (the index line's rule) would have made this build a no-op — 112 of 127 entries would
+    have stayed UNPROVABLE for the same reason as before, which is a green that cannot fail.
+    ⛔ PROVISIONAL like the rest of the schema: the all-must-resolve reading is the builder's,
+    not Dave's, and it is on the review list, not inscribed as a ruling.
+    """
+    body = hook_file_body(hook_id, memory_dir)
+    if body is None:
+        return None
+    cands = [t for t in dict.fromkeys(re.findall(r"`([^`]+)`", body)) if looks_like_path(t)]
+    if not cands:
+        return None
+    if len(cands) == 1:
+        return {"kind": "path-present", "path": cands[0], "source": "hook-file (s188-D1)"}
+    return {"kind": "paths-present", "paths": cands, "source": "hook-file (s188-D1)"}
+
+
 def resolve_claimed_path(rel: str, root: str, by_base: dict | None) -> tuple[bool, str]:
     """Does the repo contain what the hook names? (found, evidence).
 
@@ -778,6 +835,19 @@ def resolve_claimed_path(rel: str, root: str, by_base: dict | None) -> tuple[boo
                                                         if len(hits) > 1 else "")
                       + " (probe: repo basename index)")
     if "/" in rel and hits:
+        # ⚠ THE SAME CLASS AGAIN, FOUND ON THE FIRST FILE-UNIT DRIVE (#189, s188-D1). Hook
+        # FILES write paths relative to where the reader is standing — `tokens/themes/
+        # _themes.json`, `_review/_review-overlay.html` — and the repo holds them one or two
+        # segments deeper. Joined to the ROOT they "don't exist", and the grade read STALE for
+        # six live files. A PATH-COMPONENT SUFFIX match is not a guess: `a/b/c.md` resolving to
+        # `knowledge/a/b/c.md` is the SAME file by every segment the hook wrote. Only a name
+        # the index places somewhere that does NOT end with the claimed segments is MOVED.
+        want = "/" + rel.lstrip("./")
+        suffix = [h for h in hits if ("/" + h.replace(os.sep, "/")).endswith(want)]
+        if suffix:
+            return True, (f"`{rel}` EXISTS as {suffix[0]}" + (f" (+{len(suffix)-1} more)"
+                          if len(suffix) > 1 else "") + " (probe: path-suffix match — the "
+                          "hook wrote the path relative to a deeper directory)")
         return False, (f"`{rel}` IS ABSENT at that path; a file of that NAME exists at "
                        f"{hits[0]} — MOVED, not gone (probe: repo basename index)")
     return False, f"`{rel}` IS ABSENT — no file of that name anywhere in {os.path.basename(root)}"
@@ -788,6 +858,24 @@ def run_probe(probe: dict, root: str, by_base: dict | None = None) -> tuple[bool
     kind = probe.get("kind")
     if kind == "path-present":
         return resolve_claimed_path(probe["path"], root, by_base)
+    if kind == "paths-present":
+        # s188-D1: the hook FILE's claims. ALL must resolve; the evidence NAMES the failure.
+        paths = probe.get("paths") or []
+        if not paths:
+            raise GradesBlock(
+                "B3 — a `paths-present` probe carries NO paths. REFUSING TO GRADE.\n"
+                "        An empty claim set would grade FRESH on nothing, which is the exact "
+                "false confidence B3 exists to remove.")
+        misses = []
+        for rel in paths:
+            ok, ev = resolve_claimed_path(rel, root, by_base)
+            if not ok:
+                misses.append(ev)
+        if misses:
+            return False, (f"{len(misses)} of {len(paths)} paths named in the hook FILE DO NOT "
+                           f"resolve — first: {misses[0]}")
+        return True, (f"all {len(paths)} paths named in the hook FILE resolve "
+                      f"(first: `{paths[0]}`; probe: os.path.exists + repo basename index)")
     if kind == "text-present":
         rel, needle = probe["path"], probe["needle"]
         abs_p = os.path.join(root, rel)
@@ -799,7 +887,7 @@ def run_probe(probe: dict, root: str, by_base: dict | None = None) -> tuple[bool
         return None, probe.get("why", "no probe")
     raise GradesBlock(
         f"B3 — unknown probe kind {kind!r} in the sidecar. REFUSING TO GRADE.\n"
-        f"        known kinds: path-present · text-present · none\n"
+        f"        known kinds: path-present · paths-present · text-present · none\n"
         "        An unknown kind is a schema drift, not a pass. Fix the sidecar or the "
         "PROVISIONAL schema in knowledge/_gardener.py.")
 
@@ -872,7 +960,14 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
     entries, counts, changed = [], {g: 0 for g in GRADE_VOCAB}, []
     for h in hooks:
         old = prev.get(h["id"], {})
-        probe = old.get("probe") if old.get("probe_pinned") else derive_probe(h["hook"], root)
+        if old.get("probe_pinned"):
+            probe = old.get("probe")
+        else:
+            # s188-D1: FILE FIRST, index line as the declared fallback.
+            probe = derive_probe_from_file(h["id"], memory_dir)
+            if probe is None:
+                probe = dict(derive_probe(h["hook"], root))
+                probe["source"] = "index-line FALLBACK (hook file names no repo path)"
         g = grade_entry(h, probe, root, memory_dir, now=now, by_base=by_base)
         counts[g["grade"]] += 1
         if old and old.get("grade") != g["grade"]:
@@ -892,6 +987,13 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
             "a ruling. s179-D1 ruled only the SHAPE: sidecar, boot cost zero, alerts for "
             "starred/blocked entries only, return to Dave with numbers after one cycle."),
         "ruled_by": "s179-D1 clause 1 (B-THEN-REVIEW) — built #180",
+        "grading_unit": (
+            "THE HOOK FILE (s188-D1, ruled #188) — the probe is derived from the memory hook "
+            "FILE's backticked repo paths; the MEMORY.md index line is the DECLARED fallback "
+            "when the file names none. s188-D3 RETIRED the s183-D1 P1 light version. ⚠ The "
+            "counts in this file after 2026-08-16 are NOT comparable with the ones before it: "
+            "the earlier 109-of-122 / 50-of-57 UNPROVABLE figures were measured on the WRONG "
+            "TEXT and Dave accepted the re-measure in the same word."),
         "counting_window_open": GRADE_WINDOW_OPEN,
         "counting_window_note": (
             "s182-D1 CALL 4: the return-with-numbers counting window opens at the FIRST "
@@ -928,35 +1030,24 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
     return doc
 
 
-def hook_file_probe_companion(doc: dict, memory_dir: str, root: str,
-                              by_base: dict | None = None) -> dict:
-    """READ-ONLY companion count (s183-D1 enacting dream-8 P1, smallest step).
+def probe_source_split(doc: dict) -> dict:
+    """Where did each probe come from? (s188-D1's receipt line.)
 
-    ⛔ THIS CHANGES NO GRADE AND NO SCHEMA. The grading UNIT stays the `MEMORY.md` index line
-    — whether it should be the hook FILE is a DEFINITION and is DAVE'S, deferred to the B3
-    return-with-numbers. This only turns the disputed premise into a number he can rule on:
-    of the N entries graded UNPROVABLE, how many hook FILES carry exactly ONE backticked
-    path-like token that RESOLVES in the repo today — i.e. would satisfy the grader's
-    EXISTING `path-present` rule if the unit were the file.
+    ⛔ REPLACES `hook_file_probe_companion` — the read-only companion count that `s183-D1` P1
+    ordered and `s188-D3` RETIRED when the FILE became the grading unit. The companion existed
+    to price a question Dave has now answered; keeping it would report a hypothetical about a
+    unit that is no longer hypothetical [[instrument-without-a-consumer]].
     """
-    unprovable = [e for e in doc.get("entries", []) if e.get("grade") == "UNPROVABLE"]
-    if by_base is None:
-        by_base, _ = build_index(root, [])
-    one_resolvable = 0
-    for e in unprovable:
-        hid = e["id"] if e["id"].endswith(".md") else f"{e['id']}.md"
-        p = os.path.join(memory_dir, hid)
-        if not os.path.isfile(p):
-            continue
-        body = open(p, encoding="utf-8").read()
-        if body.startswith("---"):                      # strip YAML frontmatter, if any
-            parts = body.split("\n---", 2)
-            body = parts[-1] if len(parts) > 1 else body
-        cands = [t for t in dict.fromkeys(re.findall(r"`([^`]+)`", body))
-                 if looks_like_path(t)]
-        if len(cands) == 1 and resolve_claimed_path(cands[0], root, by_base)[0]:
-            one_resolvable += 1
-    return {"unprovable": len(unprovable), "one_resolvable_in_file": one_resolvable}
+    split = {"hook-file": 0, "index-line-fallback": 0, "pinned": 0}
+    for e in doc.get("entries", []):
+        src = str((e.get("probe") or {}).get("source", ""))
+        if e.get("probe_pinned"):
+            split["pinned"] += 1
+        elif src.startswith("hook-file"):
+            split["hook-file"] += 1
+        else:
+            split["index-line-fallback"] += 1
+    return split
 
 
 def countable_grade_rows(root: str, window_open: str = GRADE_WINDOW_OPEN) -> dict:
@@ -1142,11 +1233,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"grade changes   : {len(doc['grade_changes_this_pass'])}"
               + ("  (" + "; ".join(doc["grade_changes_this_pass"][:5]) + ")"
                  if doc["grade_changes_this_pass"] else ""))
-        comp = hook_file_probe_companion(doc, mem, root)
-        print(f"companion (P1)  : of {comp['unprovable']} UNPROVABLE, "
-              f"{comp['one_resolvable_in_file']} have exactly one resolvable backticked path "
-              f"in the hook FILE  (READ-ONLY — no grade changed; the grading UNIT is DAVE'S "
-              f"at the B3 return)")
+        sp = probe_source_split(doc)
+        print(f"probe source    : hook FILE {sp['hook-file']} · index-line FALLBACK "
+              f"{sp['index-line-fallback']} · pinned {sp['pinned']}  "
+              f"(s188-D1: the grading UNIT is the hook FILE, file first)")
         cw = countable_grade_rows(root)
         print(f"countable rows  : {cw['countable']} of {cw['rows']} at >= window_open "
               f"{cw['window_open']}  (alert {cw['countable_by_kind']['alert']} · "
@@ -1324,21 +1414,28 @@ def selftest() -> int:
 
 
 # ══ B3 MUTATION TESTS — plant a grade, THEN look for the alert. Every arm has its CONTROL. ═
-def _mkmem(hooks: list[str]) -> str:
-    """A memory store fixture: MEMORY.md + one file per hook slug."""
+def _mkmem(hooks: list[str], bodies: dict | None = None) -> str:
+    """A memory store fixture: MEMORY.md + one file per hook slug.
+
+    `bodies` maps slug → file text (s188-D1 made the FILE the grading unit, so the fixture
+    must be able to say what the file CLAIMS). Default `body\\n` names no repo path, which is
+    exactly the index-line FALLBACK case the older tests (g1–g7) were written against.
+    """
     d = tempfile.mkdtemp(prefix="gardener-mem-")
     open(os.path.join(d, MEMORY_INDEX_BASENAME), "w", encoding="utf-8").write(
         "\n".join(hooks) + "\n")
     for h in hooks:
         m = _HOOK_RE.match(h.strip())
         if m:
-            open(os.path.join(d, m.group("slug")), "w", encoding="utf-8").write("body\n")
+            slug = m.group("slug")
+            open(os.path.join(d, slug), "w", encoding="utf-8").write(
+                (bodies or {}).get(slug, "body\n"))
     return d
 
 
-def _grade_fixture(hooks: list[str], make_target: bool = False):
+def _grade_fixture(hooks: list[str], make_target: bool = False, bodies: dict | None = None):
     root = _mkrepo()
-    mem = _mkmem(hooks)
+    mem = _mkmem(hooks, bodies)
     if make_target:
         open(os.path.join(root, "knowledge", "_probe_target.py"), "w").write("x\n")
     fence = WriteFence(root, [], apply_tier1=False)
@@ -1458,6 +1555,112 @@ def selftest_grades() -> int:
             named = "memory index does not resolve" in str(exc)
         ok &= _t("(g7) no memory index ⇒ LOUD block, not an empty pass", named,
                  f"named refusal={named}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # ── s188-D1: THE GRADING UNIT IS THE HOOK FILE (built #189) ────────────────────────────
+    # (g8) THE WHOLE CLAUSE. Index line carries NO probe (it would grade UNPROVABLE, and DID
+    #      before this build — that is the CONTROL, run below with an empty file). The FILE
+    #      names a repo path ⇒ the entry is now GRADED, from the FILE.
+    for label, body, want_grade, want_src in (
+            ("file names a resolvable path", "It lives at `knowledge/_probe_target.py`.\n",
+             "FRESH", "hook-file"),
+            ("file names an ABSENT path", "It lives at `knowledge/_no_such_file.py`.\n",
+             "STALE", "hook-file"),
+            ("file names NO path (CONTROL — pre-s188-D1 behaviour)", "prose only\n",
+             "UNPROVABLE", "index-line FALLBACK")):
+        root, mem, fence = _grade_fixture([NOPROBE], make_target=True,
+                                          bodies={"judgment.md": body})
+        try:
+            doc = refresh_arm(root, mem, fence, dry=True)
+            e = doc["entries"][0]
+            src = str(e["probe"].get("source", ""))
+            ok &= _t(f"(g8) {label} ⇒ {want_grade}, probe from {want_src}",
+                     e["grade"] == want_grade and src.startswith(want_src),
+                     f"grade={e['grade']}; source={src!r}; why={_flat(e['why'], 70)!r}")
+        finally:
+            shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g9) MULTI-PATH FILE ⇒ `paths-present`, ALL must resolve. Mutation: break ONE of two.
+    #      ⚠ This is where the index line's rule and the file's rule DIVERGE on purpose: the
+    #      SAME two tokens on an index line are AMBIGUOUS and grade UNPROVABLE (asserted).
+    TWO_OK = "Both `knowledge/_probe_target.py` and `knowledge/_probe_two.py` are live.\n"
+    TWO_BAD = "Both `knowledge/_probe_target.py` and `knowledge/_gone_forever.py` are live.\n"
+    for label, body, want in (("all resolve", TWO_OK, "FRESH"),
+                              ("one absent", TWO_BAD, "STALE")):
+        root, mem, fence = _grade_fixture([NOPROBE], make_target=True,
+                                          bodies={"judgment.md": body})
+        try:
+            open(os.path.join(root, "knowledge", "_probe_two.py"), "w").write("x\n")
+            doc = refresh_arm(root, mem, fence, dry=True)
+            e = doc["entries"][0]
+            named = want == "FRESH" or "_gone_forever.py" in e["why"]
+            ok &= _t(f"(g9) multi-path hook file, {label} ⇒ {want} (failure NAMES the path)",
+                     e["grade"] == want and e["probe"]["kind"] == "paths-present" and named,
+                     f"grade={e['grade']}; kind={e['probe'].get('kind')}; "
+                     f"why={_flat(e['why'], 80)!r}")
+        finally:
+            shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+    # the DIVERGENCE control: the same two tokens on the INDEX LINE stay AMBIGUOUS
+    two_line = ("- [⛔ Judgment call](judgment.md) — `knowledge/_probe_target.py` and "
+                "`knowledge/_probe_two.py`")
+    p = derive_probe(two_line, ".")
+    ok &= _t("(g9c) CONTROL — two paths on the INDEX LINE stay AMBIGUOUS (kind `none`)",
+             p["kind"] == "none" and "AMBIGUOUS" in p["why"], f"probe={p}")
+
+    # (g10) AN EMPTY `paths-present` PROBE IS A LOUD BLOCK, never a FRESH on nothing.
+    named = False
+    try:
+        run_probe({"kind": "paths-present", "paths": []}, ".")
+    except GradesBlock as exc:
+        named = "carries NO paths" in str(exc)
+    control_ok, _ev = run_probe({"kind": "paths-present",
+                                 "paths": ["knowledge/_gardener.py"]}, REPO)
+    ok &= _t("(g10) empty paths-present ⇒ LOUD named BLOCK; control with a real path passes",
+             named and control_ok is True, f"named={named}; control={control_ok}")
+
+    # (g12) PATH-SUFFIX RESOLUTION — a hook writing `knowledge/_probe_target.py` as
+    #       `_probe_target.py`-with-a-directory resolves; a WRONG directory still reads MOVED.
+    #       (The 6-false-STALE class, found again on the first file-unit drive.)
+    root = _mkrepo()
+    try:
+        by_base, _r = build_index(root, [])
+        got_ok, ev_ok = resolve_claimed_path("knowledge/_probe_target.py", root, by_base)
+        open(os.path.join(root, "knowledge", "_probe_target.py"), "w").write("x\n")
+        by_base, _r = build_index(root, [])
+        hit, ev_hit = resolve_claimed_path("knowledge/_probe_target.py", root, by_base)
+        deep, ev_deep = resolve_claimed_path("_probe_target.py", root, by_base)
+        wrong, ev_wrong = resolve_claimed_path("elsewhere/_probe_target.py", root, by_base)
+        ok &= _t("(g12) suffix-written path resolves; a WRONG directory still reads MOVED",
+                 hit is True and deep is True and wrong is False
+                 and "MOVED" in ev_wrong and got_ok is False,
+                 f"exact={hit}; bare={deep}; wrong-dir={wrong} ({_flat(ev_wrong, 60)!r}); "
+                 f"pre-create control={got_ok}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+    # (g11) AN UNREADABLE HOOK FILE IS LOUD, NOT A SILENT FALLBACK.
+    #       Control: the same file readable ⇒ a probe comes back.
+    root, mem, fence = _grade_fixture([NOPROBE], make_target=True,
+                                      bodies={"judgment.md": "`knowledge/_probe_target.py`\n"})
+    try:
+        control = (derive_probe_from_file("judgment.md", mem) or {}).get("kind")
+        target = os.path.join(mem, "judgment.md")
+        os.chmod(target, 0)
+        named = False
+        try:
+            derive_probe_from_file("judgment.md", mem)
+        except GradesBlock as exc:
+            named = "could not be READ" in str(exc)
+        os.chmod(target, 0o644)
+        if os.geteuid() == 0:                 # root ignores the mode bit — DECLARE, never fake
+            ok &= _t("(g11) unreadable hook file ⇒ LOUD block  [SKIPPED: running as root]",
+                     True, "chmod 0 does not deny root; the branch is UNPROVEN in this "
+                           "environment and says so [[a-crash-is-not-a-fail]]")
+        else:
+            ok &= _t("(g11) unreadable hook file ⇒ LOUD named block, not a silent fallback",
+                     named and control == "path-present",
+                     f"named={named}; control kind={control!r}")
     finally:
         shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
 
