@@ -978,6 +978,13 @@ def main(argv=None):
         path = os.path.join(HERE, rel)
         print(f"\n=== [{i}/{len(STEPS)}] {label} — {rel} ===")
         r = subprocess.run([sys.executable, path] + extra_args)
+        if r.returncode == 77:
+            # #193 COULD-NOT-ASK (see knowledge/_could_not_ask.py): the step DECLARED an
+            # input this environment cannot reach — a fact about the environment, not a
+            # verdict about the tree. Counted and printed, never an abort; a silent skip
+            # would be the defect, so the step's own first line has already named it.
+            print(f"\n⊘ step '{label}' COULD-NOT-ASK (exit 77) — declared refusal, build continues")
+            continue
         if r.returncode != 0:
             kind, remedy = route(label)
             if kind == GATE:
