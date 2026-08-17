@@ -125,6 +125,13 @@ def build_fixture(root, script_text, banner):
     # — and the three legacy mutation controls were going RED for the WRONG reason [[a-crash-is-not-a-fail]].
     write(os.path.join(know, "_gate_doc_rows.py"),
           STUB_TMPL.format(var="STUB_DOC_ROWS_EXIT", name="_gate_doc_rows.py"))
+    # #192: the s191-D1 showroom sync gate (wired into _git_commit.sh at #191) had no stub here —
+    # the SAME blind-harness class as the #188 doc-row gate, recurring one session later: all 14
+    # commit-path arms were crashing on `can't open file .../gen_showroom.py` and the three legacy
+    # mutation controls were green for the WRONG reason [[a-crash-is-not-a-fail]]. The recurrence
+    # is why the detector below (_gate_harness_stubs.py) exists as an ARM, not a reminder.
+    write(os.path.join(know, "gen_showroom.py"),
+          STUB_TMPL.format(var="STUB_SHOWROOM_EXIT", name="gen_showroom.py"))
     write(os.path.join(root, "pystubs", "tiktoken.py"), FAKE_TIKTOKEN)
     write(os.path.join(root, "GOOD-MORNING.md"), banner)
     write(os.path.join(root, "README.md"), "fixture repo\n")
@@ -151,6 +158,7 @@ def build_fixture(root, script_text, banner):
         "STUB_LIVE_STATE_EXIT": "0",
         "STUB_SESSION_EXIT": "0",
         "STUB_DOC_ROWS_EXIT": "0",
+        "STUB_SHOWROOM_EXIT": "0",
         # #120: the SESSION_N session-witness gate (post-#116) BLOCKS a --wrap commit
         # without a declared session. Fixtures declare #77 to match BANNER_PRIMARY;
         # the gate's own clauses get dedicated arms (wrap_undeclared_session_blocks,
@@ -204,8 +212,22 @@ def arm_happy_path(script_text):
             return False, "dirty file was not staged; out: %s" % out[-400:]
         if "✓ done" not in out:
             return False, "success line missing"
-        if "⚠ HEAD message does not match" in out:
-            return False, "stale-msgfile mismatch warning fired on happy path"
+        # #192 — DEAD ASSERTION REPLACED. This arm used to assert the ABSENCE of
+        # "⚠ HEAD message does not match", a string RETIRED at #128 when the substring warning
+        # became the #171 SUBJECT-IDENTITY ASSERT. Grepped at #192: that text appears NOWHERE in
+        # _git_commit.sh, so the check could not fire in either direction — a green that cannot
+        # fail is an assertion [[unmatched-grep-is-not-an-absence]]. Assert the LIVE seam instead:
+        # the #171 assert must have RUN and agreed, and no mismatch may have been reported.
+        if "SUBJECT MISMATCH" in out:
+            return False, "the #171 subject-identity assert reported a mismatch on the happy path"
+        if "subject asserted identical to the headline T3 generated" not in out:
+            return False, "the #171 subject-identity assert did not run; out tail: %s" % out[-400:]
+        # #192 — the two gates whose absent stubs blinded this harness (doc-row #188, showroom
+        # s191-D1) must be SEEN to run on the happy path, not merely stubbed into silence.
+        if "— doc rows present" not in out:
+            return False, "doc-row gate (W-20) did not run on the happy path; out tail: %s" % out[-400:]
+        if "— showroom in sync" not in out:
+            return False, "showroom sync gate (s191-D1) did not run on the happy path; out tail: %s" % out[-400:]
         subj = head_subject(root)
         if subj != EXPECT_NONWRAP:
             return False, "subject %r != expected %r" % (subj, EXPECT_NONWRAP)
@@ -344,6 +366,66 @@ def arm_gen_chain_refusal(script_text):
             return False, "staged before the chain check refused"
         if head_hash(root) != before:
             return False, "HEAD advanced despite chain refusal"
+        return True, ""
+
+
+def arm_doc_row_gate_refusal(script_text):
+    """W-20 (#188) — the doc-row gate BLOCKS pre-stage when red, and its DOC_ROW_ACK hatch passes
+    it as a DECLARED gap. #192: a stub existed for this gate since #191 but NOTHING drove it, so
+    STUB_DOC_ROWS_EXIT was never once non-zero — the stub made the arms RUN, not the gate TESTED.
+    """
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        env["STUB_DOC_ROWS_EXIT"] = "1"
+        before = head_hash(root)
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc == 0:
+            return False, "red doc-row gate did NOT block the commit"
+        if "doc-row gate REFUSED" not in out:
+            return False, "doc-row refusal message missing; out tail: %s" % out[-400:]
+        if not staged_empty(root):
+            return False, "staged despite the doc-row refusal"
+        if head_hash(root) != before:
+            return False, "HEAD advanced despite the doc-row refusal"
+        # declared passes, silent fails: the ACK hatch must let the SAME red gate through, named.
+        env["DOC_ROW_ACK"] = "fixture-declared gap (#192 arm)"
+        rc2, out2 = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc2 != 0:
+            return False, "DOC_ROW_ACK did not pass the red gate (exit %d); out tail: %s" % (rc2, out2[-400:])
+        if "doc-row gate: DECLARED GAP — fixture-declared gap (#192 arm)" not in out2:
+            return False, "the declared gap was not NAMED in the output; out tail: %s" % out2[-400:]
+        if head_hash(root) == before:
+            return False, "commit did not land under the declared-gap hatch"
+        return True, ""
+
+
+def arm_showroom_gate_refusal(script_text):
+    """s191-D1 (#191, Dave: "yes") — the showroom sync gate BLOCKS pre-stage when red, with the
+    same SHOWROOM_ACK declared-gap hatch. This gate had NO stub at all until #192, which is the
+    blind-harness recurrence the detector below exists to catch."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        env["STUB_SHOWROOM_EXIT"] = "1"
+        before = head_hash(root)
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc == 0:
+            return False, "red showroom gate did NOT block the commit"
+        if "showroom sync gate REFUSED (s191-D1)" not in out:
+            return False, "showroom refusal message missing; out tail: %s" % out[-400:]
+        if "STUB gen_showroom.py args=['--check']" not in out:
+            return False, "the gate was not invoked with --check; out tail: %s" % out[-400:]
+        if not staged_empty(root):
+            return False, "staged despite the showroom refusal"
+        if head_hash(root) != before:
+            return False, "HEAD advanced despite the showroom refusal"
+        env["SHOWROOM_ACK"] = "fixture-declared gap (#192 arm)"
+        rc2, out2 = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc2 != 0:
+            return False, "SHOWROOM_ACK did not pass the red gate (exit %d); out tail: %s" % (rc2, out2[-400:])
+        if "showroom sync gate: DECLARED GAP — fixture-declared gap (#192 arm)" not in out2:
+            return False, "the declared gap was not NAMED in the output; out tail: %s" % out2[-400:]
+        if head_hash(root) == before:
+            return False, "commit did not land under the declared-gap hatch"
         return True, ""
 
 
@@ -578,7 +660,55 @@ def arm_declare_dirt_silent_without_instrumentation(script_text):
         return True, ""
 
 
+def arm_harness_stub_coverage(script_text):
+    """W-33 (#192) — THE DETECTOR'S CONSUMER. _gate_harness_stubs.py checks that every gate
+    _git_commit.sh invokes has a fixture stub above. Twice now a gate was wired in unstubbed
+    (#188 doc-row, #191 showroom) and the resulting CRASH read as a result; this arm is what
+    makes the third time impossible [[instrument-without-a-consumer]].
+
+    It reads the REAL files on disk (not `script_text`), because the coverage question is about
+    the repo's true harness/script pair, not about a mutated copy.
+    """
+    sys.path.insert(0, HERE)
+    import _gate_harness_stubs
+    try:
+        missing = _gate_harness_stubs.unstubbed()
+    except RuntimeError as e:
+        return False, "detector failed LOUD: %s" % e
+    if missing:
+        return False, ("BLIND HARNESS — _git_commit.sh invokes unstubbed gate(s): %s. Every "
+                       "commit-path arm would crash on them and the crash would read as a result."
+                       % ", ".join(n for n, _ in missing))
+    return True, ""
+
+
 # ---------------- mutation controls (the arm must go RED against a broken copy) ---------
+
+def mutation_harness_stub_detector_bites(script_text):
+    """W-33 (#192) — plant an unstubbed gate invocation on a COPY of _git_commit.sh and prove the
+    detector REFUSES; the real tree is never touched (tempdir copies only, [[a-crash-is-not-a-fail]]
+    demands the detector be shown able to fail, not asserted to be)."""
+    with tempfile.TemporaryDirectory() as root:
+        sys.path.insert(0, HERE)
+        import _gate_harness_stubs
+        planted = os.path.join(root, "_git_commit.sh")
+        write(planted, script_text +
+              '\npython3 knowledge/_gate_totally_unstubbed.py --check || fail "planted"\n')
+        harness_copy = os.path.join(root, "_test_git_commit.py")
+        with open(os.path.abspath(__file__), encoding="utf-8") as f:
+            write(harness_copy, f.read())
+        missing = _gate_harness_stubs.unstubbed(planted, harness_copy)
+        names = [n for n, _ in missing]
+        if "_gate_totally_unstubbed.py" not in names:
+            return False, ("detector stayed GREEN against a planted unstubbed gate invocation — "
+                           "it cannot fail; found only %r" % names)
+        # and the CLEAN direction, same call, so a detector that simply always-refuses is caught:
+        if _gate_harness_stubs.unstubbed():
+            return False, "detector refuses on the REAL clean tree — it always-refuses, useless"
+        return True, "went RED on the planted gate and GREEN on the clean tree: %s" % names
+
+
+
 
 def mutation_blank_insert_removed(script_text):
     """#124 — with the T3 blank-line insert deleted, the fold arm must go RED (the post-commit
@@ -682,6 +812,10 @@ ARMS = [
     ("declare_dirt_silent_without_instrumentation_W22", arm_declare_dirt_silent_without_instrumentation),
     ("MUTATION_declare_dirt_call_removed_bites_W22", mutation_declare_dirt_call_removed),
     ("MUTATION_declare_dirt_match_widened_bites_W22", mutation_declare_dirt_match_widened),
+    ("doc_row_gate_refusal_and_ack_W20", arm_doc_row_gate_refusal),
+    ("showroom_gate_refusal_and_ack_s191D1", arm_showroom_gate_refusal),
+    ("harness_stub_coverage_W33", arm_harness_stub_coverage),
+    ("MUTATION_harness_stub_detector_bites_W33", mutation_harness_stub_detector_bites),
 ]
 
 
