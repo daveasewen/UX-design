@@ -1,5 +1,19 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-16 #188 (2d, at the #191 wrap) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-16 (Sun from `date`) (**#188**, FABLE conductor, IN-WINDOW wrap, Dave LIVE, **THREE RULINGS, DAVE'S — `s188-D1` · `s188-D2` · `s188-D3`**)
+
+**Landed (evidence per claim; gauge MEASURED at every lane seam):**
+
+- ✅ **Lane B landed** — one Opus sub (106,202 quota tokens, n=1), replayed. `W-19`: compaction declared line in `_checkin.py`, mutation-proven both directions, surface 88–105 real MEASURED. `W-22`: `INSTRUMENTATION_PATHS` + `declare_instrumentation_dirt()` in `_git_commit.sh`, driven in a faked-remote clone; POLICY stays Dave's. `W-24`: refusal reworded + expiry stamp (`notes/_MEMENTO-DECISIONS.md:5691`, ~2026-11-06); token-scope region byte-identical vs `git show HEAD:` (diff in the sub report).
+- ✅ **Lane C landed** — `knowledge/_gate_doc_rows.py` (`W-20`): fail-arm on the REAL pre-row store (`6b98be3`), mutation-arm green, first draft's mention≠home defect found and fixed; WIRED blocking into `_git_commit.sh` (`DOC_ROW_ACK` hatch) and driven to refuse at the seam. Live finding: 3 unrowed s176 briefs → rows `W-28`–`W-30` via `_state.add()`; store 53, gate green. ⬛ `BASELINE_DATE=2026-08-15` PICKED.
+- ★ **THREE RULINGS inscribed** (`_inscribe_ruling.py`, 170→173): `s188-D1` grader reads the hook FILE · `s188-D2` retraction carve-out, receipt required · `s188-D3` supersession EXPLICIT — D1 retires `s183-D1`'s P1 light version, D2 strengthens its P2, **P3/P4/P5 of `s183-D1` UNTOUCHED, IN FORCE**. Builds queued `W-31`/`W-32` to #189, ⛔ not built.
+- ★ **THE FINDING:** the #187 chain said pass-8 P1–P5 were floated while `s183-D1` had held their promotion for four sessions; the conductor believed the chain and re-put settled rulings as options. Delta asserted plainly; Dave picked the robust version. **The rulings store is the authority on "was this ruled"; the chain is not** (now inscribed in `s188-D3`).
+- ⚙ **GAUGE.** boot **56,303** (in band) · FILL at wrap-open **133,776** vs stop **150,929** ⇒ room **17,153**; in-window wrap on room-to-WORKING **66,224** vs 42–49K · **subs 106,202 (n=1)**.
+- ⛔ **NOT RULED / NOT TOUCHED:** the `#174` adjudication · the trend card · every colour value · `_build_all.py` (NOT RUN) · pass-8 P4's human half · the crank-up decision · ⛔ **NOT PUSHED — Dave's word not given.**
+- ✅ **RITUAL RAN IN FULL after the gate refused the declared skips** — 2c/2d/2f via `_gm_move.py` (receipts on stdout), `_roll_state.py` line generated, stratum #188 written. The one true skip, DECLARED: the narrative dossier (~2K of arc lives in this delta + the banner).
+
+
 ## Rolled 2026-08-16 #187 (2d, at the #190 wrap) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-16 (Sun from `date`) (**#187**, FABLE conductor, IN-WINDOW wrap, Dave LIVE, ⛔ **NO RULINGS — no `s187-D*` exists**)
 
