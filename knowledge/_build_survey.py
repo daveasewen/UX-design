@@ -21,6 +21,15 @@ SKIPPED, never silently omitted: you can see exactly what was not asked.
 `--include-mutating` exists, requires a dirty-tree refusal to pass first, and should be run on
 a clean tree you are willing to `git checkout`.
 
+★ #193 — THREE VERDICTS, NOT TWO. A step may PASS, FAIL, or REFUSE: exit 77 plus a
+`COULD-NOT-ASK:` line (`_could_not_ask.py`) means the step could not reach an input HERE and
+said so in its own words — a gitignored token cache, an uninstalled browser, an evidence file
+outside the committed tree. Those are COUNTED and PRINTED IN FULL, and excluded from the exit
+code, because a job that goes red for a fact about the RUNNER teaches its readers to ignore red.
+⚠ The exclusion is only honest because the refusals are LOUD: a silent skip would be the defect,
+not the fix. Real FAILs still fail, and a step that is MISSING or TIMED OUT still fails too —
+nobody asked it and it never said why, which is not the same thing as a refusal.
+
 ⚠ A SKIPPED STEP IS NOT A PASSING STEP. The summary counts them separately and the exit code
 ignores them. A survey that let "not asked" blend into "fine" would be the confident-blank
 class this repo refuses everywhere else.
@@ -46,6 +55,9 @@ from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __f
 import os
 import subprocess
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _could_not_ask as cna  # noqa: E402 - after the path insert, by necessity
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -165,7 +177,7 @@ def main():
                   "  resumes over instead of blessing it.")
             return 2
 
-    failed, passed, skipped, errored = [], [], [], []
+    failed, passed, skipped, errored, refused = [], [], [], [], []
     outside = 0
     for i, (label, script, args) in enumerate(all_steps, 1):
         if rng and not (rng[0] <= i <= rng[1]):
@@ -184,6 +196,15 @@ def main():
             print(f"  ⏱ [{i:>2}] {label[:62]}"); continue
         if r.returncode == 0:
             passed.append((i, label)); print(f"  ✅ [{i:>2}] {label[:62]}")
+        elif cna.is_refusal(r.returncode):
+            # ★ #193 — THE THIRD VERDICT. The step did not pass and did not fail: it declared, in
+            # its own words, that the input it needed is unreachable HERE (a gitignored token
+            # cache, an uninstalled browser, an evidence file outside the committed tree). It is
+            # COUNTED, PRINTED WITH ITS OWN REASON, and excluded from the exit code — a silent
+            # skip would be the defect, not the fix [[measuring-tool-must-not-guess]].
+            reason = cna.reason_in(r.stdout + r.stderr)
+            refused.append((i, label, script, args, reason))
+            print(f"  ⊘ [{i:>2}] {label[:62]}  COULD-NOT-ASK")
         else:
             # First meaningful failure line — QUOTED, never summarised into a count.
             lines = [l for l in (r.stdout + r.stderr).splitlines()
@@ -193,10 +214,16 @@ def main():
             print(f"  ❌ [{i:>2}] {label[:62]}  exit {r.returncode}")
 
     print("\n" + "=" * 78)
-    print(f"SURVEY: {len(passed)} pass · {len(failed)} FAIL · {len(errored)} could-not-ask · "
+    print(f"SURVEY: {len(passed)} pass · {len(failed)} FAIL · {len(refused)} COULD-NOT-ASK "
+          f"(self-declared refusals) · {len(errored)} unaskable (missing/timed out) · "
           f"{len(skipped)} not asked (mutating)"
           + (f" · {outside} outside --range {rng[0]}:{rng[1]} (not asked)" if rng else ""))
     print("⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.")
+    print("⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could\n"
+          "  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact\n"
+          "  verdict (#173/#183, generalised #193). Every one is printed in full below. A step\n"
+          "  that timed out or is MISSING is a different thing and still fails: nobody asked it\n"
+          "  and it never said why.")
     if rng:
         print("⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or "
               "consecutive ranges covering them, says anything about the build.")
@@ -207,8 +234,22 @@ def main():
             print(f"\n  [{i}] {label}")
             print(f"      python3 knowledge/{script} {' '.join(args)}   (exit {rc})")
             print(f"      {first}")
+    if refused:
+        print(f"\nCOULD-NOT-ASK ({len(refused)}) — each step's OWN words about the input it could "
+              f"not reach.\nThese do NOT fail the survey; they also do not pass. If one of them "
+              f"is here because the\nenvironment is wrong rather than because the input is "
+              f"genuinely unreachable, FIX THE ENVIRONMENT:")
+        for i, label, script, args, reason in refused:
+            print(f"\n  [{i}] {label}")
+            print(f"      python3 knowledge/{script} {' '.join(args)}   (exit {cna.EXIT})")
+            # ⚠ a refusal with no marked line is REPORTED AS SUCH, never given a manufactured
+            # reason — the convention's whole point is that the gate says why, not the survey.
+            no_words = ("(exit 77 but NO `COULD-NOT-ASK:` line — the step used the convention's "
+                        "code without its words; see its full output)")
+            print(f"      {reason or no_words}")
     if errored:
-        print(f"\nCOULD NOT ASK ({len(errored)}) — a refusal, not a verdict in either direction:")
+        print(f"\nUNASKABLE ({len(errored)}) — nobody asked these and they never said why "
+              f"(missing script / timeout). Counted as failures:")
         for i, label, script, why in errored:
             print(f"  [{i}] {label} — {why}")
     if skipped and not include_mut:

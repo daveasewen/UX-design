@@ -81,6 +81,7 @@ ROOT = os.path.dirname(HERE)
 if HERE not in sys.path:
     sys.path.insert(0, HERE)
 import _state  # noqa: E402 - after the path insert, by necessity
+import _could_not_ask as cna  # noqa: E402 - after the path insert, by necessity
 OUTD = os.path.join(ROOT, "dashboard")
 OUT = os.path.join(OUTD, "index.html")
 
@@ -174,6 +175,131 @@ def run_gates(enabled=True):
         return []
     with _fut.ThreadPoolExecutor(max_workers=len(GATES)) as ex:
         return list(ex.map(_run_gate, GATES))
+
+
+# ---------------------------------------------------------------------------
+# ★ #193 — WHY `--check` HAD TO GAIN A COULD-NOT-ASK PATH, MEASURED BEFORE IT WAS BUILT.
+#
+# This page BAKES LIVE GATE RESULTS (the eight above) into its own prose: "11 checks, 4 rulings,
+# nobody else's to answer" is not a store read, it is `_governs.py --selftest`'s verdict rendered
+# as a sentence. So `--check` is only a question about the STORES when this environment can run
+# those gates on the same inputs.
+#
+# It cannot. Single-variable isolation, a bare clone of this very commit vs. the working tree:
+# the clone renders "14 checks, 6 rulings" and three extra FAIL lines, every one of them of the
+# form *"ruling ds-034 points at `outputs/_FINDING-…-v1.md` … which does not exist"*. Those
+# evidence files exist here and are NOT TRACKED BY GIT, so a checkout cannot have them. Nothing
+# about the dashboard, the stores, or the rulings changed — the gate was answering a different
+# question because it was looking at a different tree, and `--check` reported that as
+# "dashboard/index.html is OUT OF SYNC", an accusation aimed at the artefact
+# [[gate-cannot-pass-in-one-environment]].
+#
+# ⇒ THE CLAUSE: when the page differs AND a live gate's own output names a path OUTSIDE THE
+# COMMITTED TREE, `--check` refuses (COULD-NOT-ASK) and NAMES the gate and the path. It does not
+# say the page is stale, because it cannot know.
+# ⛔ KEYED ON THE UNTRACKED PATH, NEVER ON "am I in CI". Commit those evidence files and this
+# environment answers again — on any machine, with no env var anywhere in the path.
+# ⚠ AND IT STILL BITES: with no untracked path named by any gate, a real divergence is still a
+# FAILURE (exit 1). Both directions are driven in `refusal_selftest()`.
+# ⚠ The extension must be ALPHABETIC. The first cut allowed `[A-Za-z0-9]` and duly reported the
+# contrast ratio `5.22/17.40` as an untracked path — a refusal keyed on noise is a refusal that
+# will one day fire for no reason, which is exactly how a gate stops being read.
+_PATHLIKE = re.compile(r"[`'\"]([A-Za-z0-9_][A-Za-z0-9_./\-]*\.[A-Za-z]{1,5})[`'\"]")
+
+
+def untracked_inputs(gates, repo=ROOT):
+    """`[(gate_name, path), …]` — repo-relative paths a live gate NAMED that git does not track.
+
+    An untracked path is an input this environment may have and a checkout cannot (or the exact
+    reverse), so any verdict resting on it is a verdict about the runner. ⚠ Refuses to guess: if
+    `git` itself cannot be asked, that is returned as its own named entry rather than silently
+    yielding an empty list, which would read as "all inputs are committed"
+    [[measuring-tool-must-not-guess]].
+    """
+    cand = {}
+    for g in gates or []:
+        for ln in g.get("lines", []):
+            for m in _PATHLIKE.findall(ln):
+                if m.startswith("/") or ".." in m:
+                    continue
+                cand.setdefault(m, g["name"])
+    if not cand:
+        return []
+    try:
+        p = subprocess.run(["git", "ls-files", "--"] + sorted(cand), cwd=repo,
+                           capture_output=True, text=True, timeout=30)
+        if p.returncode != 0:
+            return [("git", "REFUSED: `git ls-files` exited %d (%s) — which inputs are committed "
+                            "is UNKNOWN here" % (p.returncode, p.stderr.strip()[:120]))]
+        tracked = set(p.stdout.split("\n"))
+    except Exception as exc:                                   # a crash is not a fail
+        return [("git", "REFUSED, NAMED: %s — which inputs are committed is UNKNOWN here" % exc)]
+    return sorted((gate, path) for path, gate in cand.items() if path not in tracked)
+
+
+def mismatch_verdict(gates):
+    """The verdict when the rendered page differs from the committed one: `77` when a live gate
+    read an input outside the committed tree, else `1`. Extracted so BOTH branches are driven by
+    `refusal_selftest()` rather than asserted about — a refusal path nothing exercises is the
+    [[instrument-without-a-consumer]] class, and a refusal that swallows the staleness verdict is
+    worse than the staleness.
+    """
+    outside = untracked_inputs(gates)
+    if outside:
+        named = "; ".join("%s names `%s`" % (g, p) for g, p in outside[:6])
+        more = "" if len(outside) <= 6 else " (and %d more)" % (len(outside) - 6)
+        return cna.refuse(
+            "dashboard/index.html",
+            "the page differs, but a live gate baked into it is reading INPUTS OUTSIDE "
+            "THE COMMITTED TREE, so its verdict — and therefore this page — cannot be "
+            "reproduced here: %s%s. Every one of those paths is untracked, so an "
+            "environment that has them and one that does not will render different "
+            "prose from the SAME commit. This is a REFUSAL, not a staleness verdict in "
+            "either direction: the page's agreement with the stores is UNKNOWN here and "
+            "is reported as unknown. Ask it where those inputs are present (a working "
+            "tree that holds them), or commit them." % (named, more))
+    print("gen_dashboard --check FAIL — dashboard/index.html is OUT OF SYNC with the "
+          "stores or with a live gate result. Re-run `python3 knowledge/gen_dashboard.py`.")
+    return 1
+
+
+def refusal_selftest(arm):
+    """#193 arms, driven through the real functions. `arm(name, ok, detail)` is the caller's."""
+    real_fail = [{"name": "provenance", "lines": [
+        "FAIL _governs: ruling ds-034 is missing a `status` value",
+        "FAIL _governs: ruling ds-035 points at `knowledge/_rulings.json` (in "
+        "`knowledge/_rulings.json…`) which does not exist"]}]
+    # ★ DIRECTION 1 — the refusal must NOT fire when every path a gate named is committed. This
+    # is the arm that stops the cure being worse than the disease: a real divergence still FAILS.
+    import io as _io0
+    import contextlib as _ctx0
+    with _ctx0.redirect_stdout(_io0.StringIO()):    # the FAIL lines below are arms, not verdicts
+        tracked_rc, empty_rc = mismatch_verdict(real_fail), mismatch_verdict([])
+    arm("a mismatch whose gate output names only TRACKED paths is a FAILURE (1), not a refusal",
+        untracked_inputs(real_fail) == [] and tracked_rc == 1,
+        "untracked_inputs saw %r" % (untracked_inputs(real_fail),))
+    arm("…and with no gate output at all it is STILL a failure (no gates, no excuse)",
+        empty_rc == 1, "an empty gate set produced a refusal")
+    # ★ DIRECTION 2 — the refusal fires on the input that is genuinely unreachable elsewhere.
+    ghost = "outputs/__no_such_evidence_file_2026__.md"
+    unreachable = [{"name": "provenance", "lines": [
+        "FAIL _governs: ruling ds-034 points at `%s` which does not exist" % ghost]}]
+    found = untracked_inputs(unreachable)
+    arm("an UNTRACKED path named by a live gate is detected, and attributed to its gate",
+        found == [("provenance", ghost)], repr(found))
+    import io as _io
+    import contextlib as _ctx
+    _b = _io.StringIO()
+    with _ctx.redirect_stdout(_b):
+        rc = mismatch_verdict(unreachable)
+    out = _b.getvalue()
+    arm("…and that mismatch REFUSES with the convention's exit code (77), never 1",
+        cna.is_refusal(rc), "got %r" % rc)
+    arm("the refusal is machine-readable and NAMES the gate and the path",
+        (cna.reason_in(out) or "").startswith(cna.MARKER) and ghost in out and "provenance" in out,
+        out[:200])
+    arm("the refusal does NOT accuse the page of being out of sync",
+        "OUT OF SYNC" not in out, out[:200])
 
 
 # ---------------------------------------------------------------------------
@@ -1487,8 +1613,13 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     return "\n".join(o) + "\n"
 
 
-def build(with_gates=True):
+def build(with_gates=True, gates_sink=None):
     gates = run_gates(with_gates)
+    # #193 — the caller may need the SAME gate results this page was rendered from; re-running
+    # them would be a second measurement of a moving target (two readers of one object, the
+    # drift class). One run, handed out.
+    if gates_sink is not None:
+        gates_sink.extend(gates)
     gmap = {g["name"]: g for g in gates}
     state = read_state()
     rulings = read_rulings()
@@ -1639,6 +1770,9 @@ def effort_selftest():
     arm("no effort value is authored in the store (Dave's alone)",
         not authored, "found rungs on %r — if these are Dave's, this arm is the one to "
                       "change, deliberately, with his word attached" % (authored,))
+
+    # 8. #193 — the COULD-NOT-ASK path, both directions, driven through the real functions.
+    refusal_selftest(arm)
     return fails, n
 
 
@@ -1672,16 +1806,18 @@ def main(argv):
         return 0
     check = "--check" in argv
     with_gates = "--no-gates" not in argv
-    html = build(with_gates)
+    gates_seen = []
+    html = build(with_gates, gates_sink=gates_seen)
     if check:
         if not os.path.exists(OUT):
             print("gen_dashboard --check FAIL — %s does not exist." % os.path.relpath(OUT, ROOT))
             return 1
         cur = _read(OUT)
         if cur != html:
-            print("gen_dashboard --check FAIL — dashboard/index.html is OUT OF SYNC with the "
-                  "stores or with a live gate result. Re-run `python3 knowledge/gen_dashboard.py`.")
-            return 1
+            # #193 — before accusing the page, ask whether this environment could reach the
+            # inputs the page was rendered from. See `untracked_inputs()` above for the
+            # single-variable isolation that found this.
+            return mismatch_verdict(gates_seen)
         print("gen_dashboard --check OK — dashboard/index.html in sync.")
         return 0
     os.makedirs(OUTD, exist_ok=True)

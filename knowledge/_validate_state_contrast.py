@@ -64,14 +64,26 @@ except ModuleNotFoundError as _e:
     # (`sync_playwright()` calls below), so `python3 _validate_state_contrast.py --selftest` on a
     # box without the module still prints a StateContrastSelftestError and exits 2 — the same
     # contract as "chromium would not launch" a few lines below, not a bare traceback at rc=1.
+    # #193 — the same refusal, now in the RULED SHAPE. #133 already made this a NAMED exception
+    # at rc=2 instead of a bare traceback, which was the right instinct and half the fix: rc=2 is
+    # this file's "bad arguments / refuses to run" code, so a survey still could not tell "you
+    # typed a wrong flag" from "this box physically cannot host the browser this gate measures
+    # with". `StateContrastUnreachable` carries the same words to `_could_not_ask.EXIT` (77) and
+    # a `COULD-NOT-ASK:` line, so the refusal is countable rather than merely readable.
+    # ⛔ Keyed on the IMPORT FAILING, never on a runner's identity — install playwright here and
+    # the refusal disappears on this very machine.
     def sync_playwright():
-        raise StateContrastSelftestError(
+        raise StateContrastUnreachable(
             f"the 'playwright' module is not installed ({_PLAYWRIGHT_IMPORT_ERROR}) — this gate cannot be proven "
             "without it; run `pip install playwright && playwright install chromium`")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SNIP = os.path.join(HERE, "snippets")
 SEL = 'a, button, [role="radio"], [role="button"], [role="switch"], [role="tab"], [tabindex]:not([tabindex="-1"]), label, summary'
+
+
+sys.path.insert(0, HERE)
+import _could_not_ask as cna  # noqa: E402 - after the path insert, by necessity
 
 
 class StateContrastArgError(Exception):
@@ -84,6 +96,18 @@ class StateContrastReportError(Exception):
 
 class StateContrastSelftestError(Exception):
     """The selftest could not be RUN. That is a failure, not a skip."""
+
+
+class StateContrastUnreachable(StateContrastSelftestError):
+    """The INSTRUMENT is absent — a browser this box cannot host, not a verdict about the CSS.
+
+    ⚠ Subclasses the selftest error on purpose: every existing `except` that already handled
+    "could not be run" keeps working unchanged. What is new is that `__main__` recognises THIS
+    one and answers it in the #193 COULD-NOT-ASK convention (exit 77 + a marked line) instead of
+    rc=2, so a survey can count it as a refusal rather than a failure — and so a reader is told
+    WHERE the proof actually lives (the `render` job in `.github/workflows/gates.yml`, which
+    installs chromium and runs these arms BLOCKING).
+    """
 
 
 HOLE_REASON_UNRECORDED = ("reason NOT RECORDED by the measurement that produced this record — "
@@ -963,6 +987,39 @@ def selftest():
     except StateContrastArgError:
         check("arm_unmatched_filter_is_named", True)
 
+    # ---- #193: THE COULD-NOT-ASK PATH, DRIVEN, BOTH DIRECTIONS -------------------------------
+    # ⚠ These arms run the script AS A SUBPROCESS with a `playwright` package that raises on
+    # import, because the refusal lives in the `__main__` handler and an import cannot see it —
+    # and because the exit CODE is the thing consumers read [[mutation-tests-the-clause-not-the-
+    # feature]]. Driving the real absence (rather than asserting about it) is what makes this a
+    # test: this very process HAS playwright, so nothing here is proven by the environment.
+    import subprocess as _sp
+    import tempfile as _tf
+    with _tf.TemporaryDirectory() as _td:
+        _pkg = os.path.join(_td, "playwright")
+        os.makedirs(_pkg)
+        with open(os.path.join(_pkg, "__init__.py"), "w", encoding="utf-8") as _f:
+            _f.write("raise ModuleNotFoundError(\"No module named 'playwright' (planted)\")\n")
+        _env = dict(os.environ, PYTHONPATH=_td + os.pathsep + os.environ.get("PYTHONPATH", ""))
+        _blind = _sp.run([sys.executable, os.path.abspath(__file__), "--selftest"],
+                         capture_output=True, text=True, env=_env, cwd=HERE, timeout=180)
+        _out = _blind.stdout + _blind.stderr
+        check("arm_no_playwright_is_a_refusal_not_a_failure", _blind.returncode == cna.EXIT,
+              f"expected exit {cna.EXIT} (COULD-NOT-ASK), got {_blind.returncode}: {_out[-300:]}")
+        check("arm_refusal_is_machine_readable_and_names_its_reason",
+              (cna.reason_in(_out) or "") .startswith(cna.MARKER) and "playwright" in _out,
+              f"no marked reason line in: {_out[-300:]}")
+        check("arm_refusal_says_where_the_proof_lives", "render" in _out and "gates.yml" in _out,
+              "a refusal that cannot point at the job that DOES prove this is a shrug")
+        # ★ THE OTHER DIRECTION — the refusal must not swallow every other verdict on the same
+        # box. With the instrument STILL absent, a bad argument is an ARGUMENT error (2), not a
+        # could-not-ask: the refusal is keyed on the missing import, nothing wider.
+        _bad = _sp.run([sys.executable, os.path.abspath(__file__), "--wat"],
+                       capture_output=True, text=True, env=_env, cwd=HERE, timeout=60)
+        check("arm_refusal_is_scoped_to_the_missing_import", _bad.returncode == 2,
+              f"a bad flag returned {_bad.returncode} on a playwright-less box; the refusal has "
+              f"widened into a catch-all")
+
     # ---- geometry: driven in a real browser, on real files ------------------------------------
     got = _measure_fixtures()
     sib = got["sibling_paint_is_seen"]
@@ -1227,6 +1284,14 @@ def main(argv):
 if __name__ == "__main__":
     try:
         sys.exit(main(sys.argv[1:]))
+    except StateContrastUnreachable as e:
+        # #193 — a refusal, not a verdict, and it says where the verdict IS.
+        sys.exit(cna.refuse(
+            "_validate_state_contrast.py",
+            f"{e} ⇒ THIS IS NOT A SKIP: these arms (including the s152-D1 mutation control) run "
+            f"BLOCKING in the `render` job of .github/workflows/gates.yml, which installs "
+            f"chromium — that job is where this gate's proof of record lives. Nothing here is "
+            f"claimed green; the question was unaskable on this box."))
     except (StateContrastArgError, StateContrastReportError, StateContrastSelftestError,
             StateContrastCarrierError) as e:
         print(f"{type(e).__name__}: {e}", file=sys.stderr)

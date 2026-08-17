@@ -78,6 +78,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
+import _could_not_ask as cna  # noqa: E402 - after the path insert, by necessity
+
 VERSION = "v2"
 RELEASE_DATE = "2026-08-07"          # version label on the FILENAME, not a measurement
 OUT_REL = os.path.join("reviews", f"MEMENTO-SCHEMATIC-{RELEASE_DATE}-{VERSION}.html")
@@ -217,6 +219,84 @@ def _measurer():
 def _unit_word():
     import _gen_chain as gc
     return gc.unit_word(_measurer())
+
+
+# ---------------------------------------------------------------------------------------------
+# ★ #193 — THE COULD-NOT-ASK CLAUSE, THE SAME DISEASE #173/#183 FOUND, THE SAME SHAPE OF REMEDY.
+#
+# MEASURED, not assumed: a bare checkout of THIS commit (no `API-KEY.txt`, no
+# `knowledge/.token-cache.json` — both gitignored, `.gitignore:57,58`) renders this page with
+# `8,246 tape (cl100k ESTIMATE)` where the committed file says `12,871 real`. So:
+#   · `--check` reported "STALE — a figure in it no longer matches disk", a verdict about the
+#     ARTEFACT dressed over a fact about the ENVIRONMENT [[gate-cannot-pass-in-one-environment]];
+#   · `--selftest` failed on the CAPTION GEOMETRY arm (`worst: (39, 'chain')`) — because the
+#     fallback's unit WORD is longer than `real`, the caption overflowed its box. A geometry
+#     complaint that is really an instrument complaint is the same lie in fancier dress.
+#
+# ⇒ Both paths now ASK THE TIER FIRST and refuse by the ruled convention (`_could_not_ask.py`,
+# exit 77 + a `COULD-NOT-ASK:` line) rather than accusing the page. ⚠ The refusal is keyed on the
+# UNIT WORDS THE COMMITTED FILE CARRIES vs the tier reachable here — never on "am I in CI", which
+# would recreate the #173 lie in a new shape.
+_TIER_FIGURE = None
+
+
+def stamped_tiers(text):
+    """The tiers the ON-DISK page was rendered in, read out of its own figures.
+
+    Returns a `set` of `'real'` · `'cl100k'` · `'estimate'`, EMPTY when the page carries no
+    recognisable unit word. ⚠ An empty set is NOT "fine" and is never defaulted to the live tier:
+    a page whose unit cannot be read cannot be compared, and the caller says so
+    [[measuring-tool-must-not-guess]].
+
+    ★ It reads the FIGURES, not a footer, because this artefact has no single fixed-point
+    sentence — every token figure carries its own unit word, and a page rendered in two tiers is
+    itself a fact worth seeing rather than averaging away.
+    """
+    global _TIER_FIGURE
+    if _TIER_FIGURE is None:
+        import re
+        import _gen_chain as gc
+        alt = "|".join(re.escape(w) for w in sorted(gc._UNIT_WORDS.values(), key=len, reverse=True))
+        _TIER_FIGURE = (re.compile(r"[\d,]+\s+(" + alt + ")"),
+                        {w: t for t, w in gc._UNIT_WORDS.items()})
+    rx, by_word = _TIER_FIGURE
+    return {by_word[m] for m in rx.findall(text or "") if m in by_word}
+
+
+def tier_refusal(subject, have_text, extra=""):
+    """A `_could_not_ask.EXIT` when this environment cannot reproduce the committed page's unit,
+    else `None` — so both `check()` and `selftest()` ask the identical question in one place.
+
+    ⚠ Deliberately asked BEFORE any comparison. A tier divergence makes EVERY token figure differ
+    for a reason that has nothing to do with the tree; if the byte compare (or the caption
+    measurement) ran first it would always win and the honest answer would be unreachable — the
+    ordering `_gen_chain.check()` established at #183, for the same reason.
+    """
+    import _gen_chain as gc
+    try:
+        live = _measurer().measurement_tier()
+    except Exception as ex:                                # pragma: no cover - import guard
+        return cna.refuse(subject, f"the tier probe itself is unreachable ({ex}); no verdict is "
+                                   f"offered in either direction.")
+    stamped = stamped_tiers(have_text)
+    if not stamped:
+        return cna.refuse(subject, "the committed page carries NO READABLE UNIT WORD on any "
+                                   "token figure, so the instrument it was rendered with cannot "
+                                   f"be compared with this environment's ({live}). A REFUSAL, "
+                                   "not a content verdict: regenerate with "
+                                   "`python3 knowledge/_gen_schematic.py`.")
+    if live not in stamped:
+        return cna.refuse(subject, (
+            f"MEASUREMENT REFUSAL, NOT A CONTENT VERDICT IN EITHER DIRECTION. The committed page "
+            f"carries figures in {sorted(gc._UNIT_WORDS.get(t, t) for t in stamped)}; the only "
+            f"tier reachable in THIS environment is `{gc._UNIT_WORDS.get(live, live)}` ({live}). "
+            f"Every token figure would differ for that reason alone. ⚠ `real` is reachable ONLY "
+            f"via `API-KEY.txt` or `knowledge/.token-cache.json` and BOTH ARE GITIGNORED (#173, "
+            f"proven by single-variable isolation), so a bare checkout can never agree with a "
+            f"`real` page. Give this environment the same measurer, or re-ask where it is "
+            f"reachable — this artefact's content is UNKNOWN here and is reported as unknown "
+            f"rather than guessed.{extra}"))
+    return None
 
 
 def facts_chain(repo=ROOT):
@@ -935,7 +1015,6 @@ def check(repo=ROOT, out_path=None):
     ⚠ Compares CONTENT, never mtime: the retrieval index was bitten by exactly that (#32).
     A stale schematic is the v1 failure verbatim, so this is the whole point of the module.
     """
-    text = render(repo)
     out = out_path or os.path.join(repo, OUT_REL)
     shown = os.path.relpath(out, repo) if out_path is None else out   # name the file ACTUALLY read
     if not os.path.exists(out):
@@ -943,6 +1022,11 @@ def check(repo=ROOT, out_path=None):
         return 1
     with open(out, encoding="utf-8") as f:
         have = f.read()
+    # #193 — the tier question, BEFORE the render and the byte compare (see `tier_refusal`).
+    refused = tier_refusal(shown, have)
+    if refused is not None:
+        return refused
+    text = render(repo)
     if have != text:
         import difflib
         d = [l for l in difflib.unified_diff(have.splitlines(), text.splitlines(),
@@ -967,6 +1051,26 @@ def selftest():
         print(f"    {'✓' if ok else '✗'} {what}")
         if not ok:
             fails.append(what)
+
+    # ---- #193: THE TIER QUESTION IS ASKED FIRST, AND IT IS ASKED OF THE SELFTEST TOO.
+    # MEASURED in a bare clone of this commit: with the key/cache absent, the caption-geometry
+    # arm goes red with `worst: (39, 'chain')` — not because a caption was mis-sized, but because
+    # `tape (cl100k ESTIMATE)` is 16 characters longer than `real` and the figure it labels sits
+    # in a fixed box. The arms below measure a page rendered by THIS environment's instrument;
+    # where that instrument cannot reproduce the committed page's unit, they are measuring a
+    # different artefact and their red is a fact about the runner. So: refuse, name it, and say
+    # WHERE the proof is reachable — never a silent skip, never an env-var opt-out.
+    _committed = os.path.join(ROOT, OUT_REL)
+    if os.path.exists(_committed):
+        with open(_committed, encoding="utf-8") as _f:
+            _have = _f.read()
+        _ref = tier_refusal(
+            f"{OUT_REL} --selftest", _have,
+            extra=" ⇒ THESE BITES ARE NOT SKIPPED, THEY ARE UNASKABLE HERE: they are asked in "
+                  "full wherever `real` is reachable (any session holding `API-KEY.txt` or the "
+                  "token cache), and that run is the proof of record.")
+        if _ref is not None:
+            return _ref
 
     text = render(ROOT)
     bite("renders against the live repo without refusing wholesale", len(text) > 6000)
@@ -1016,7 +1120,42 @@ def selftest():
         bite("check() PASSES on a faithful copy", check(ROOT, out_path=p) == 0)
         with open(p, "w", encoding="utf-8") as f:
             f.write(text.replace("</body>", "<p>27 blocking validators</p></body>"))
-        bite("check() FAILS on a hand-patched copy (mutation)", check(ROOT, out_path=p) == 1)
+        patched_rc = check(ROOT, out_path=p)
+        bite("check() FAILS on a hand-patched copy (mutation)", patched_rc == 1)
+        # ★ #193 — THE ARM THAT KEEPS THE REFUSAL HONEST. The mutation above leaves every unit
+        # word AGREEING with this environment, so the tier clause must NOT fire: a real content
+        # break on the reachable tier is a FAILURE (1), never a refusal (77). A gate whose
+        # could-not-ask path swallows its own purpose is worse than the disease it cures.
+        bite("and that failure is a FAILURE, not a refusal — the tier clause does not swallow "
+             "a real staleness on the reachable tier", not cna.is_refusal(patched_rc))
+        # ★ #193 — THE OTHER DIRECTION. Rewriting the copy's UNIT WORDS to a tier this
+        # environment cannot reach reproduces the #173 divergence exactly, and bites on ANY
+        # machine — driving it by removing the API key would only bite where `real` is reachable
+        # in the first place, i.e. the arm would be unreachable in the very environment the
+        # defect lives in [[gate-cannot-pass-in-one-environment]].
+        gc_units = gc._UNIT_WORDS
+        here_tier = _measurer().measurement_tier()
+        other = next(t for t in gc_units if t != here_tier)
+        moved = text.replace(f" {gc_units[here_tier]}", f" {gc_units[other]}")
+        bite("the unit-word mutation actually changed the file (a plant that did not plant "
+             "would make the arms below assertions)", moved != text)
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(moved)
+        bite("stamped_tiers() reads the MUTATED page back as the other tier",
+             other in stamped_tiers(moved) and here_tier not in stamped_tiers(moved))
+        import contextlib as _ctx
+        import io as _io
+        _buf = _io.StringIO()
+        with _ctx.redirect_stdout(_buf):
+            tier_rc = check(ROOT, out_path=p)
+        tier_out = _buf.getvalue()
+        bite("check() REFUSES (exit 77) when the committed page's unit is unreachable here",
+             cna.is_refusal(tier_rc))
+        bite("and it does NOT call it STALE — a tier divergence is a measurement problem, and "
+             "naming it staleness is the #173 defect reproduced",
+             "STALE" not in tier_out.upper() and cna.MARKER in tier_out)
+        bite("the refusal NAMES BOTH instruments, so a reader can see which two disagreed",
+             gc_units[other] in tier_out and gc_units[here_tier] in tier_out)
         os.remove(p)
         bite("check() FAILS when the artefact is missing", check(ROOT, out_path=p) == 1)
 

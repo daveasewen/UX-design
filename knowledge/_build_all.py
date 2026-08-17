@@ -465,7 +465,14 @@ STEPS = [
     ("instrument-fit selftest (advisory, ds-015)", "_build_instrument_fit.py", ["--selftest"]),
     ("instrument fit — can the gate SEE the property? (advisory, ds-015)",
      "_build_instrument_fit.py"),
+    # #193: the COULD-NOT-ASK convention (exit 77 + a marked line) is read by `_build_survey.py`
+    # and written by four gates. Its own bites are wired HERE because a selftest nothing runs is
+    # the [[instrument-without-a-consumer]] class — and this one guards the exact codes every
+    # consumer branches on. APPENDED, never inserted: step indices are quoted in comments,
+    # commit messages and the CI notes, and renumbering them would silently invalidate all of it.
     ("integrity lint (gate)", "_build_integrity.py"),
+    ("could-not-ask convention selftest (#193 — the third verdict's exit code + marker)",
+     "_could_not_ask.py", ["--selftest"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -720,6 +727,16 @@ ROUTE_ROWS = [
     ("instrument fit — can the gate SEE the property? (advisory, ds-015)", ADVISORY, None),
     ("integrity lint (gate)", GATE,
      "\n❌ integrity gate failed (exit {code}) — see knowledge/_INTEGRITY-REPORT.md"),
+    # #193: GATE, not ADVISORY. Four gates and the survey branch on the exact code and marker
+    # this selftest asserts; if they drift apart, a refusal silently becomes a failure again (or,
+    # far worse, a failure silently becomes a refusal) and the survey's exit stops meaning
+    # anything. ⚠ The row landed WITH the step, in the same edit — a STEPS entry with no route is
+    # the (a)-class omission recorded three times above, and `_gen_schematic --selftest` catches
+    # it (it did, on this very change: "1 unrouted").
+    ("could-not-ask convention selftest (#193 — the third verdict's exit code + marker)", GATE,
+     "\n❌ could-not-ask convention selftest failed (exit {code}) — the refusal exit code or its "
+     "`COULD-NOT-ASK:` marker has drifted from what _build_survey.py and four gates branch on. "
+     "Run: python3 knowledge/_could_not_ask.py --selftest"),
     # #146: rows for the four #139 steps that landed in STEPS with no route — the gap that
     # aborted every build since #139 (check_routes raised UNKNOWN STEP ID before step 1).
     ("KG edge parse-gate + s135-D4 resolutions-consumed check", GATE,

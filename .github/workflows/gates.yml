@@ -36,6 +36,41 @@ name: gates
 # nothing here will go red — see `knowledge/_gen_chain.py` `stamped_tier()` and
 # the COULD-NOT-ASK bites in its `--selftest`, which are the parts that bite.
 #
+# ---- CORRECTION, 2026-08-17 (#193) — the sentence above is now HALF TRUE, and the
+# half that changed is the half a reader acts on. #183's remedy was correct and it
+# was LOCAL: the refusal was spelled in prose, exited `1`, and NO CONSUMER COULD
+# TELL IT FROM A FAILURE. So the survey printed "0 could-not-ask" in the same
+# breath as "❌ [109] … exit 1", stayed red, and the "Knowledge build" step below
+# never ran at all — a queue of unknown length behind one refusal that had already
+# named itself.
+# ⇒ #193 FORMALISED the convention in `knowledge/_could_not_ask.py`: EXIT 77 plus a
+# first line beginning `COULD-NOT-ASK:`, carrying the gate's own reason. Four gates
+# were wired to it, each keyed on an input it can PROVE is unreachable — never on
+# "am I in CI", which is the #173 lie in a new shape:
+#   [109] `_gen_chain.py --check`            — committed unit stamp vs reachable tier (#183, retrofitted to 77)
+#   [112] `_gen_schematic.py --check`        — same disease: the committed page's unit words vs this tier
+#   [113] `_gen_schematic.py --selftest`     — same key; its caption-geometry arm was going red because
+#                                              `tape (cl100k ESTIMATE)` is 16 chars longer than `real`
+#   [59]  `gen_dashboard.py --check`         — the page BAKES live gate results; `_governs` was naming
+#                                              `outputs/…` evidence files that are UNTRACKED, so a
+#                                              checkout and a working tree render different prose from
+#                                              the SAME commit (isolated in a bare clone, one variable)
+#   [71]  `_validate_state_contrast.py`      — playwright absent in THIS job; its proof of record is the
+#                                              `render` job below, which installs chromium and runs the
+#                                              same arms BLOCKING. The refusal says so, in the output.
+# `_build_survey.py` now reports THREE verdicts — pass · FAIL · COULD-NOT-ASK — and
+# the refusals are COUNTED AND PRINTED IN FULL but excluded from its exit code. They
+# are NOT skips: a silent skip would be the defect, not the fix. A step that is
+# MISSING or TIMED OUT is still a failure — it never said why.
+# ⚠ STILL PROSE, STILL UNPARSED — but now the claims here are each pinned to a bite:
+# the exit code and marker are asserted in `_could_not_ask.py --selftest` (wired as
+# the last entry of `_build_all.STEPS`, so the survey asks it), and every gate above
+# carries BOTH directions — the refusal fires when its input is gone, AND a real
+# staleness on the reachable tier still exits 1, mutation-proven in its own selftest.
+# ⚠ RESIDUAL, NOT FIXED HERE: [13] (capture/provenance) and [115] (package delta) are
+# Dave-owned and were red on this commit before and after #193. The survey step can
+# still be red for those two; nothing in #193 touched them.
+#
 # `fetch-depth: 0` on both checkouts is the SECOND, INDEPENDENT #173 cause:
 # `_gen_chain.build_verdict_line()` runs `git show 18c7789:…` (VERDICT_SHA), and
 # a depth-1 clone cannot resolve it, so the BUILD VERDICT line embedded at
