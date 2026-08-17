@@ -51,6 +51,10 @@ from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __f
 import os, re, sys, glob, tempfile
 try:
     from playwright.sync_api import sync_playwright
+    _PLAYWRIGHT_IMPORT_ERROR = None   # ⚠ ALWAYS BOUND, both branches. `main()` reads it as the
+    # reachability probe (see `_playwright_unreachable()`); a name that exists only on the failing
+    # branch would make the probe itself raise NameError on the box where the instrument is
+    # PRESENT — a measuring tool that crashes where it can measure.
 except ModuleNotFoundError as _e:
     _PLAYWRIGHT_IMPORT_ERROR = repr(_e)  # `as _e` is scoped to the except block (Python 3 deletes
     # it on exit), so the closure below must capture a plain string now, not the exception object.
@@ -73,9 +77,7 @@ except ModuleNotFoundError as _e:
     # ⛔ Keyed on the IMPORT FAILING, never on a runner's identity — install playwright here and
     # the refusal disappears on this very machine.
     def sync_playwright():
-        raise StateContrastUnreachable(
-            f"the 'playwright' module is not installed ({_PLAYWRIGHT_IMPORT_ERROR}) — this gate cannot be proven "
-            "without it; run `pip install playwright && playwright install chromium`")
+        raise _playwright_unreachable()
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SNIP = os.path.join(HERE, "snippets")
@@ -110,6 +112,33 @@ class StateContrastUnreachable(StateContrastSelftestError):
     """
 
 
+def _playwright_unreachable():
+    """The refusal's ONE home (ADR-0017 write-once): the stub `sync_playwright()` above and the
+    early probe in `main()` must say the SAME words, or a reader gets two accounts of one fact."""
+    return StateContrastUnreachable(
+        f"the 'playwright' module is not installed ({_PLAYWRIGHT_IMPORT_ERROR}) — this gate cannot "
+        "be proven without it; run `pip install playwright && playwright install chromium`")
+
+
+# ⛔ #194 — THE FORK BOMB, AND WHY THE PROBE MUST COME FIRST.
+# #193 gave this gate a COULD-NOT-ASK refusal and two arms to prove it, and those arms drive the
+# real consumer path: a SUBPROCESS of this very file, `--selftest`, with a planted `playwright`
+# package that raises on import. Correct instinct — the exit CODE is what a consumer reads, so it
+# must be driven, not asserted [[mutation-tests-the-clause-not-the-feature]]. But at #193 the
+# refusal fired only on FIRST USE of the browser, and the browser arms sit BELOW these subprocess
+# arms in `selftest()`. So the child reached the same two arms and spawned a grandchild — with the
+# planted PYTHONPATH inherited, so IT had no playwright either, so IT spawned a great-grandchild.
+# An unbounded recursion of processes, each doing all the pure work of a full selftest first.
+# MEASURED on 711bfd1: `--selftest` on a playwright-less box ran 40s+ with no end in sight (killed
+# by `timeout`); CI's render job — where playwright IS present, so the step was BLOCKING and green
+# before d44f023 — died on `subprocess.TimeoutExpired ... timed out after 180 seconds`, the parent
+# waiting on a child that was waiting on a child.
+# ⇒ FIX, at the seam rather than at the symptom: `main()` PROBES reachability before it runs a
+# single arm, so a playwright-less invocation refuses in milliseconds and the recursion has no
+# second level — the child's whole job is now the one thing the arms actually ask it. Timeouts are
+# cut to the size of the answer and an arm MEASURES the child's wall clock, so the bomb cannot
+# come back unnoticed. ⚠ Keyed on the IMPORT, never on a runner's identity — install playwright
+# here and both the refusal and the fast path change on this very machine.
 HOLE_REASON_UNRECORDED = ("reason NOT RECORDED by the measurement that produced this record — "
                           "re-run the gate; do not infer one")
 
@@ -1001,9 +1030,22 @@ def selftest():
         with open(os.path.join(_pkg, "__init__.py"), "w", encoding="utf-8") as _f:
             _f.write("raise ModuleNotFoundError(\"No module named 'playwright' (planted)\")\n")
         _env = dict(os.environ, PYTHONPATH=_td + os.pathsep + os.environ.get("PYTHONPATH", ""))
+        # ⚠ #194: TIMEOUT CUT TO THE SIZE OF THE ANSWER. A refusal is a probe and an exit; 30s is
+        # already two orders of magnitude of slack. The old 180s was large enough to hide the
+        # recursion as a HANG rather than surface it as a bite — and in CI it became the failure.
+        import time as _time
+        _t0 = _time.monotonic()
         _blind = _sp.run([sys.executable, os.path.abspath(__file__), "--selftest"],
-                         capture_output=True, text=True, env=_env, cwd=HERE, timeout=180)
+                         capture_output=True, text=True, env=_env, cwd=HERE, timeout=30)
+        _blind_secs = _time.monotonic() - _t0
         _out = _blind.stdout + _blind.stderr
+        # ★ THE FORK-BOMB GUARD, MEASURED not assumed. The refusal's whole contract is that it
+        # fires BEFORE the expensive work; a child that took seconds of browser time to say "I
+        # have no browser" would be honest and still wrong, and it is exactly what recursing
+        # looked like. A wall clock is the only thing that can tell those two apart from here.
+        check("arm_refusal_fires_before_any_expensive_work", _blind_secs < 10.0,
+              f"the playwright-less child took {_blind_secs:.1f}s to refuse — it is doing work "
+              f"before the probe (at #193 it re-entered --selftest recursively and never ended)")
         check("arm_no_playwright_is_a_refusal_not_a_failure", _blind.returncode == cna.EXIT,
               f"expected exit {cna.EXIT} (COULD-NOT-ASK), got {_blind.returncode}: {_out[-300:]}")
         check("arm_refusal_is_machine_readable_and_names_its_reason",
@@ -1015,7 +1057,7 @@ def selftest():
         # box. With the instrument STILL absent, a bad argument is an ARGUMENT error (2), not a
         # could-not-ask: the refusal is keyed on the missing import, nothing wider.
         _bad = _sp.run([sys.executable, os.path.abspath(__file__), "--wat"],
-                       capture_output=True, text=True, env=_env, cwd=HERE, timeout=60)
+                       capture_output=True, text=True, env=_env, cwd=HERE, timeout=30)
         check("arm_refusal_is_scoped_to_the_missing_import", _bad.returncode == 2,
               f"a bad flag returned {_bad.returncode} on a playwright-less box; the refusal has "
               f"widened into a catch-all")
@@ -1263,6 +1305,12 @@ def selftest():
 def main(argv):
     filters, want_selftest = parse_args(argv)
     if want_selftest:
+        # ⛔ #194 — BEFORE ANY WORK. See the fork-bomb note above `HOLE_REASON_UNRECORDED`. The
+        # probe sits AFTER parse_args on purpose: a bad flag is still an ARGUMENT error (2) on a
+        # playwright-less box, so the refusal stays scoped to the missing import and does not
+        # widen into a catch-all that swallows every other verdict here.
+        if _PLAYWRIGHT_IMPORT_ERROR is not None:
+            raise _playwright_unreachable()
         return selftest()
     res = run(filters)
     text, total, refused, fellback, carrier_fails = render_report(res)

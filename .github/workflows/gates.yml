@@ -71,6 +71,35 @@ name: gates
 # Dave-owned and were red on this commit before and after #193. The survey step can
 # still be red for those two; nothing in #193 touched them.
 #
+# ---- CORRECTION TO THE CORRECTION, 2026-08-17 (#194) — the #193 wiring landed with
+# two defects that run 32021654025 (on 711bfd1) exposed. BOTH FIXED; no job structure
+# changed.
+#   [71] HUNG, in BOTH jobs. The two arms #193 added drive the refusal by running THIS
+#        FILE as a subprocess with a planted, un-importable `playwright` — the right
+#        instinct, since the exit CODE is what a consumer reads. But the refusal fired
+#        only on FIRST USE of the browser, below those arms, so the child re-entered
+#        `--selftest`, spawned a grandchild that inherited the planted PYTHONPATH, and
+#        recursed without bound. gates job: >60s, killed. render job (playwright
+#        PRESENT, step BLOCKING, green before d44f023): `TimeoutExpired … 180 seconds`
+#        — a parent waiting on a child waiting on a child. FIX: `main()` probes
+#        reachability BEFORE any arm runs, so a playwright-less run refuses in
+#        milliseconds. MEASURED here: 40s+ (unbounded) → 0.045s. Child timeouts cut
+#        180s/60s → 30s, and a new arm MEASURES the child's wall clock (<10s), so the
+#        recursion cannot return as a silent hang. Both #193 arms kept and still pass:
+#        the refusal fires (77), and a bad flag on the same box still exits 2.
+#   [13] RED IN CI, GREEN LOCALLY — the #173 shape again, in a new place, and NOT the
+#        Dave-owned residual named just above. Its trigger-index arm walks every
+#        evidence pointer in `_rulings.json`; three of them (ds-034, ds-035) name
+#        gitignored `outputs/_FINDING-…` / `_PARTITION-…` artefacts. Present on the
+#        machine that wrote them, absent from ANY checkout — so the gate's verdict was
+#        a function of where it ran. Reproduced with `git clone --no-hardlinks . …`.
+#        FIX: those pointers now REFUSE via the same convention (77, marked line, each
+#        unreachable input named), keyed on `git check-ignore` — never on a CI env var,
+#        and never on a path prefix. A TRACKED file that was deleted is not ignored, so
+#        real rot still exits 1 everywhere. Mutation-proven in the bare clone BOTH
+#        ways: untouched → 77 with 0 reds; one planted rotten pointer → 1, with the
+#        refusals printed but not counted. A real red always outranks a refusal.
+#
 # `fetch-depth: 0` on both checkouts is the SECOND, INDEPENDENT #173 cause:
 # `_gen_chain.build_verdict_line()` runs `git show 18c7789:…` (VERDICT_SHA), and
 # a depth-1 clone cannot resolve it, so the BUILD VERDICT line embedded at

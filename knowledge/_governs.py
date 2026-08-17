@@ -343,8 +343,37 @@ def render(hits: list[dict], because: str) -> str:
     return "\n".join(lines)
 
 
-def selftest() -> list[str]:
-    """Bites, each failing for a DISTINCT reason. A green that cannot fail is an assertion."""
+def checkout_cannot_hold(rel: str) -> bool:
+    """True iff THIS REPO'S OWN IGNORE RULES exclude `rel` — so no clean checkout can carry it.
+
+    ⛔ #194 — THE KEY FOR A COULD-NOT-ASK REFUSAL, and the reason it is this and nothing else.
+    An evidence pointer at a path under `outputs/` resolves on the machine that WROTE it and can
+    never resolve in a bare clone, because `.gitignore` excludes it. On 711bfd1 that is precisely
+    why `_capture_gate.py --selftest` was green locally and RED in CI ([13]): three pointers on
+    ds-034/ds-035 name gitignored `outputs/_FINDING-…` and `_PARTITION-…` files. Reporting that
+    as "a pointer index whose pointers rot" is the #173 lie in a new shape — a verdict that is a
+    function of WHERE it ran [[gate-cannot-pass-in-one-environment]].
+
+    ⚠ AND IT MUST NOT SILENCE REAL ROT, which is the whole risk of adding a refusal. This asks
+    git, not an env var and not a path prefix: a TRACKED file that was deleted is NOT ignored, so
+    it still fails, loudly, everywhere. `git check-ignore` exits 0 for ignored, 1 for not, and
+    128 when it cannot answer — and 128 is read as NOT IGNORED on purpose, so an unreadable git
+    falls to the FAILING side. A refusal you cannot prove is not a refusal
+    [[measuring-tool-must-not-guess]].
+    """
+    return subprocess.run(["git", "check-ignore", "-q", "--", rel],
+                          cwd=REPO, capture_output=True).returncode == 0
+
+
+def selftest(refusals: list[str] | None = None) -> list[str]:
+    """Bites, each failing for a DISTINCT reason. A green that cannot fail is an assertion.
+
+    `refusals` — #194, the COULD-NOT-ASK channel (`_could_not_ask.py`). Pass a list and evidence
+    pointers this CHECKOUT cannot hold (see `checkout_cannot_hold`) are collected there instead
+    of counted as failures. ⚠ OPT-IN by design: with no list passed, they stay FAILURES exactly
+    as before, so no caller that has not been taught the third verdict is silently softened.
+    Either way each one is PRINTED — an unreachable input is never inferred from silence.
+    """
     failures: list[str] = []
     rulings = load()
 
@@ -468,6 +497,15 @@ def selftest() -> list[str]:
                 continue
             for t in tokens:
                 if not os.path.exists(os.path.join(REPO, t)):
+                    if checkout_cannot_hold(t):
+                        # #194: UNREACHABLE INPUT, not rot. Said out loud either way.
+                        msg = (f"ruling {r['id']}'s evidence `{t}` is excluded by this repo's "
+                               f"own .gitignore — no checkout can hold it, so whether it has "
+                               f"rotted is UNASKABLE here; the machine that wrote it is where "
+                               f"that question has an answer")
+                        print(f"_governs: COULD-NOT-ASK — {msg}")
+                        (refusals if refusals is not None else failures).append(msg)
+                        continue
                     failures.append(f"_governs: ruling {r['id']} points at `{t}` (in `{e[:70]}…`) "
                                     f"which does not exist — a pointer index whose pointers rot "
                                     f"is worse than none")
@@ -585,10 +623,22 @@ def main() -> int:
     a = ap.parse_args()
 
     if a.selftest:
-        fs = selftest()
+        rf: list[str] = []
+        fs = selftest(refusals=rf)
         print("\n".join(f"  FAIL {f}" for f in fs) if fs else
-              "  _governs.py selftest: all bites green")
-        return 1 if fs else 0
+              "  _governs.py selftest: all bites green"
+              + (f" ({len(rf)} pointer(s) UNASKABLE in this checkout)" if rf else ""))
+        # #194 — a REAL failure outranks a refusal: 1 wins over 77 whenever both are present, so
+        # a refusal can never be the reason a red went unreported.
+        if fs:
+            return 1
+        if rf:
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            import _could_not_ask as cna
+            return cna.refuse("_governs.py --selftest",
+                              f"{len(rf)} evidence pointer(s) name paths this checkout cannot "
+                              f"hold: " + " · ".join(rf))
+        return 0
 
     try:
         rulings = load()

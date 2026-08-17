@@ -5494,7 +5494,17 @@ def selftest_cross_instrument_units():
     # bill of health. If `_governs` cannot be imported, this gate's consumer is gone.
     try:
         import _governs
-        g_fail = _governs.selftest()
+        # #194 — THE THIRD VERDICT, wired at the one arm that actually reads the live tree.
+        # `_governs.selftest()` walks every evidence pointer in `_rulings.json` against the
+        # filesystem. Some of those pointers name gitignored `outputs/` artefacts: present on the
+        # machine that wrote them, absent from ANY clean checkout. That is why this step was green
+        # locally and red in CI on 711bfd1 — the gate's verdict was a function of where it ran.
+        # An unreachable input REFUSES (77) and names itself; anything else still FAILS (1).
+        # See `_governs.checkout_cannot_hold()` for the key, and why it is git and not an env var.
+        g_ref: list[str] = []
+        g_fail = _governs.selftest(refusals=g_ref)
+        for _gr in g_ref:
+            SELFTEST_REFUSALS.append(f"trigger index: {_gr}")
         if g_fail:
             # ⛔ WIDENED #130 (`s130-D2`). This reported `g_fail[0]` ALONE. At #127 that made
             # *"one rotten pointer"* out of THIRTY: the count was never published, so every fail
@@ -6858,8 +6868,18 @@ def selftest_carry_gate():
     return failures
 
 
+# ⛔ #194 — THE SELFTEST'S COULD-NOT-ASK CHANNEL, one home for the whole suite.
+# Sub-suites return `list[str]` of FAILURES and that contract is untouched; an arm that discovers
+# its INPUT is unreachable appends here instead, and `_selftest_body()` turns a run that has only
+# refusals into exit 77 with a marked line naming each one. Module-level because the sub-suites
+# are called as a flat sum expression; CLEARED at the top of every body so a second call in one
+# process cannot inherit the first's refusals.
+SELFTEST_REFUSALS: list = []
+
+
 def _selftest_body():
-    failures = (selftest_carry_gate()            # ★ s188-D2 — the 2c carve-out, both directions
+    SELFTEST_REFUSALS.clear()
+    failures = (selftest_carry_gate()          # ★ s188-D2 — the 2c carve-out, both directions
                 + selftest_plan_block_check()    # B2 seam obligation, s179-D1 — wired at write
                 + selftest_real_tier_reachable()
                 + selftest_preflight() + selftest_preflight_tokens()
@@ -6918,9 +6938,26 @@ def _selftest_body():
         if os.path.exists(rpt):
             failures.append("wrap mode wrote a report file — S-D3 clobber fix regressed")
     if failures:
+        # ★ A REAL RED OUTRANKS A REFUSAL. If anything actually failed, the refusals are still
+        # PRINTED (never swallowed) but the exit code is 1: a refusal must never be the reason a
+        # measured failure went unreported, which is the one way this convention could do harm.
         for x in failures:
             print(f"  ❌ selftest: {x}")
+        for x in SELFTEST_REFUSALS:
+            print(f"  ⊘ selftest COULD-NOT-ASK (not counted): {x}")
         return 1
+    if SELFTEST_REFUSALS:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import _could_not_ask as cna
+        print(f"  ⊘ capture-gate selftest: every reachable arm passed; "
+              f"{len(SELFTEST_REFUSALS)} arm(s) could not be asked in this checkout")
+        return cna.refuse(
+            "_capture_gate.py --selftest",
+            f"{len(SELFTEST_REFUSALS)} arm(s) read an input this checkout cannot hold — "
+            + " · ".join(SELFTEST_REFUSALS)
+            + " ⇒ THIS IS NOT A SKIP: every other arm passed here, and these arms have their "
+              "proof of record on a tree that carries the ignored artefacts (a working session's "
+              "own repo), never on a bare clone.")
     print("  ✅ capture-gate selftest: all failure classes bite; green control passes")
     return 0
 
