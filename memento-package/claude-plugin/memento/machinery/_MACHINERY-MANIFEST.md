@@ -11,10 +11,10 @@ build step, not a copy step; a half-renamed copy would be neither auditable nor 
 
 | file | source | src commit | bytes / lines | verbatim? |
 |---|---|---|---|---|
-| `_gen_chain.py` | `knowledge/_gen_chain.py` | `514f4bd` 2026-08-02 | 25,616 / 445 | yes — **RE-SYNCED #79** |
-| `_memento_search.py` | `knowledge/_memento_search.py` | `e3174d1` 2026-08-07 | 11,531 / 259 | yes — **RE-SYNCED s124** (post-#115 tally, Dave's word) |
-| `_graph_edges.py` | `knowledge/_graph_edges.py` | `ce0cc7f` 2026-08-06 | 12,134 / 272 | yes — **ADDED s124** (import dep of the synced search; data files stay behind, loud degrade) |
-| `_search_core.py` | `knowledge/_search_core.py` | `59148f3` 2026-07-28 | 11,869 / 255 | yes |
+| `_gen_chain.py` | `knowledge/_gen_chain.py` | `d44f023` 2026-08-17 | 53,274 / 874 | yes — **RE-SYNCED #193** (COULD-NOT-ASK wiring) |
+| `_memento_search.py` | `knowledge/_memento_search.py` | `2bc83b4` 2026-08-12 | 11,926 / 265 | yes — **RE-SYNCED #193** |
+| `_graph_edges.py` | `knowledge/_graph_edges.py` | `2bc83b4` 2026-08-12 | 12,529 / 278 | yes — **RE-SYNCED #193** |
+| `_search_core.py` | `knowledge/_search_core.py` | `2bc83b4` 2026-08-12 | 13,266 / 273 | yes — **RE-SYNCED #193** |
 | `_consult-lexicon.json` | `knowledge/_consult-lexicon.json` | `dbb0ef7` 2026-07-18 | 3,361 / 93 | yes |
 
 ## What is deliberately NOT copied

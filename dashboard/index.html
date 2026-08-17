@@ -210,7 +210,7 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <div class="lede">
 <p><strong>33 things are open.</strong> 18 of them are yours to rule, 15 are mine to build. 19 of the open items still have no checkable close condition — they are the frozen legacy set, and that set may only shrink.
 <p>6 of 8 gates were run just now and passed; 1 failed. The type-composite gate is not counted as a pass or a fail — it reports declared debt, which is a third thing.
-<p>The provenance gate is the one that is red, and it is red on purpose: 11 checks fail across 4 rulings that are missing a <code>governs</code>, <code>evidence</code> or <code>status</code> value. <strong>Those values are yours and nobody else&rsquo;s</strong> — authoring them would be inventing provenance, so this page lists them and stops.
+<p>The provenance gate is the one that is red, and it is red on purpose: 5 checks fail across 3 rulings that are missing a <code>governs</code>, <code>evidence</code> or <code>status</code> value. <strong>Those values are yours and nobody else&rsquo;s</strong> — authoring them would be inventing provenance, so this page lists them and stops.
 <p>The order everything is shown in is a <strong>PROPOSAL</strong> — a score I compute from the store at build time, out of 5 weighted criteria printed in full below. It is not a ruling and it does not persist: you overrule it by writing a <code>priority_override</code> rank on the item, and an overruled item says <strong>DAVE OVERRULED</strong> wherever it appears. <strong>No item carries an override yet</strong> — the field is absent everywhere, because a priority I write into the store and then read back is not your judgement, it is mine wearing your name.</p>
 <p><span class="v v-fail">Flagged problem</span> — <strong>9 of 54 items carry any <code>links</code></strong> (17%). The dependency graph the score's heaviest criterion (Unlock, weight 0.353) needs <em>does not exist in the data</em>, so every score on this page is flagged LOW CONFIDENCE and the unlock column reads zero for everything. This is MEASURED and QUEUED, not repaired: backfilling links would mean inventing the dependency graph and then scoring against my own invention. It is yours, and it is Friday 2026-08-14 work.</p>
 <p>Everything on this page was read out of the stores or measured by running the thing. Nothing is asserted from memory.</p>
@@ -243,7 +243,7 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 <tr><td class="gate">palette-tier</td><td><span class="v v-pass">PASS</span></td><td>0</td><td class="head">every theme names a palette per family (s157-D2)</td><td class="head">OK — every theme declares a palette per family; every declaration resolves; no theme hand-carries a divergent palette-owned value; no undeclared duplication.</td></tr>
 <tr><td class="gate">theme-cascade</td><td><span class="v v-pass">PASS</span></td><td>0</td><td class="head">the projected cascade matches canon.css</td><td class="head">gen_theme_cascade --check OK — 207 override path(s), 209 component projection(s) in sync.</td></tr>
 <tr><td class="gate">showroom</td><td><span class="v v-pass">PASS</span></td><td>0</td><td class="head">the 75 component pages are in sync</td><td class="head">gen_showroom --check OK — 76 page(s) + index in sync.</td></tr>
-<tr><td class="gate">provenance</td><td><span class="v v-fail">FAIL</span></td><td>1</td><td class="head">every ruling points a reader at canon</td><td class="head">  FAIL _governs: ruling s178-D1 evidence `commits 99833a2 / 76b024c / b51b622 / fa0729b - the archaeology of the 8 lines; fork count 3-&gt;4 at fa0729b as s176-D2 recorded` carries NO</td></tr>
+<tr><td class="gate">provenance</td><td><span class="v v-fail">FAIL</span></td><td>1</td><td class="head">every ruling points a reader at canon</td><td class="head">  FAIL _governs: ruling s176-D2 evidence `gates rc=0 before/after (captured directly): snippet, a11y, icons, coverage, radius --strict, binds-ratchet, five generator --check, theme</td></tr>
 <tr><td class="gate">type-composites</td><td><span class="v v-debt">DEBT</span></td><td>1</td><td class="head">raw type declarations outside the composites</td><td class="head">TYPE GATE FAIL — 1097 violation(s) across 90/91 file(s).  TYPE-001 ×31 · TYPE-002 ×1050 · TYPE-003 ×16</td></tr>
 </tbody></table>
 <p class="sourceline">Each row is a real subprocess run from this generator (read-only invocations only). <code>--ratchet</code> is deliberately NOT run: it writes a store, and a reporting surface must not repair what it reports.</p>
@@ -259,7 +259,7 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 </div>
 <div class="stat-card" role="group" aria-label="Rulings with a provenance gap">
 <p class="lbl16 t-cm-caption">Rulings with a provenance gap</p>
-<span class="amt t-cm-figure-3"><span>4</span></span>
+<span class="amt t-cm-figure-3"><span>3</span></span>
 <span class="delta"><span class="t-cm-figure-6">Dave&#x27;s to supply</span></span>
 </div>
 <div class="stat-card" role="group" aria-label="Open items">
@@ -918,20 +918,14 @@ ol.fails li{font-size:15px;line-height:1.6;padding:.45rem 0;max-width:100ch;}
 </div></section>
 <section class="band"><div class="wrap">
 <p class="label">Yours alone — the provenance gap</p>
-<h2>11 checks, 4 rulings, nobody else&rsquo;s to answer</h2>
-<p>These are the live words of <code>knowledge/_governs.py --selftest</code>, run by this generator. Each one wants a <code>governs</code>, <code>evidence</code> or <code>status</code> value on a ruling in <code>_rulings.json</code>. <strong>No value has been drafted, guessed, or suggested here</strong> — a provenance field authored by an agent is a false inscription, which is the failure this gate exists to catch. Rulings affected: s175-D1, s176-D1, s176-D2, s178-D1.</p>
+<h2>5 checks, 3 rulings, nobody else&rsquo;s to answer</h2>
+<p>These are the live words of <code>knowledge/_governs.py --selftest</code>, run by this generator. Each one wants a <code>governs</code>, <code>evidence</code> or <code>status</code> value on a ruling in <code>_rulings.json</code>. <strong>No value has been drafted, guessed, or suggested here</strong> — a provenance field authored by an agent is a false inscription, which is the failure this gate exists to catch. Rulings affected: s175-D1, s176-D1, s176-D2.</p>
 <ol class="fails">
 <li>FAIL _governs: ruling s175-D1 evidence `git diff at the #175 wrap - net rendered change is Progress-bar only, Legacy and Supercharge only: Legacy #DB0011 -&gt; #1A1A1A/#FFFFFF, Supercharge #B92F1E/#CC4333 -&gt; #13110E/#F7F6F4` carries NO pointer — prose provenance needs the `chat #&lt;n&gt;`/`commit ` legal form, never a bare sentence</li>
 <li>FAIL _governs: ruling s175-D1 evidence `step components byte-identical in all 8 theme x mode cells against a HEAD control` carries NO pointer — prose provenance needs the `chat #&lt;n&gt;`/`commit ` legal form, never a bare sentence</li>
 <li>FAIL _governs: ruling s175-D1 evidence `measured contrast, 3:1 non-text: Progress-bar Legacy dark 1.75 -&gt; 9.15, Supercharge dark 2.38 -&gt; 10.46` carries NO pointer — prose provenance needs the `chat #&lt;n&gt;`/`commit ` legal form, never a bare sentence</li>
 <li>FAIL _governs: ruling s176-D1 evidence `R-D16 (Mono ink mono/4 #1A1A1A) and R-D25 (Console locked = Mono)` carries NO pointer — prose provenance needs the `chat #&lt;n&gt;`/`commit ` legal form, never a bare sentence</li>
-<li>FAIL _governs: ruling s176-D2 evidence `two Opus build-sub reports: resolution chains read from each theme&#x27;s marks block; icon gate byte-match of yes-thick.svg incl. one-character mutation control; 12 mutation receipts across the two builds` carries NO pointer — prose provenance needs the `chat #&lt;n&gt;`/`commit ` legal form, never a bare sentence</li>
-<li>FAIL _governs: ruling s176-D2 points at `8.77/8.77` (in `gated contrast measured: tick-on-fill Mono 8.77/8.77 · Legacy 5.22/17.…`) which does not exist — a pointer index whose pointers rot is worse than none</li>
-<li>FAIL _governs: ruling s176-D2 points at `5.22/17.40` (in `gated contrast measured: tick-on-fill Mono 8.77/8.77 · Legacy 5.22/17.…`) which does not exist — a pointer index whose pointers rot is worse than none</li>
-<li>FAIL _governs: ruling s176-D2 points at `6.34/6.34` (in `gated contrast measured: tick-on-fill Mono 8.77/8.77 · Legacy 5.22/17.…`) which does not exist — a pointer index whose pointers rot is worse than none</li>
-<li>FAIL _governs: ruling s176-D2 points at `6.34/6.34` (in `gated contrast measured: tick-on-fill Mono 8.77/8.77 · Legacy 5.22/17.…`) which does not exist — a pointer index whose pointers rot is worse than none</li>
 <li>FAIL _governs: ruling s176-D2 evidence `gates rc=0 before/after (captured directly): snippet, a11y, icons, coverage, radius --strict, binds-ratchet, five generator --check, theme-cascade --selftest; type ratchet 1101 unchanged` carries NO pointer — prose provenance needs the `chat #&lt;n&gt;`/`commit ` legal form, never a bare sentence</li>
-<li>FAIL _governs: ruling s178-D1 evidence `commits 99833a2 / 76b024c / b51b622 / fa0729b - the archaeology of the 8 lines; fork count 3-&gt;4 at fa0729b as s176-D2 recorded` carries NO pointer — prose provenance needs the `chat #&lt;n&gt;`/`commit ` legal form, never a bare sentence</li>
 </ol>
 <p class="sourceline">SOURCE · live run, <code>python3 knowledge/_governs.py --selftest</code>. The gate could not run at all for five sessions (#158–#163) because _build_all.py aborted above it — see _LIVE-STATE.md #164.</p>
 </div></section>
