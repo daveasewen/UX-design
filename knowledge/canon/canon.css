@@ -52,6 +52,8 @@
   --color-mono-raise-1: #1F1F1F;
   --color-mono-raise-2: #232323;
   --color-mono-raise-3: #272727;
+  --color-mono-hover-1: #636363;
+  --color-mono-hover-2: #B2B2B2;
   --color-neutral-1: #000000;
   --color-neutral-2: #050505;
   --color-neutral-3: #0F0F0F;
@@ -70,6 +72,8 @@
   --color-neutral-raise-1: #1F1F1F;
   --color-neutral-raise-2: #232323;
   --color-neutral-raise-3: #272727;
+  --color-neutral-hover-1: #636363;
+  --color-neutral-hover-2: #B2B2B2;
   --color-warm-1: #000000;
   --color-warm-2: #13110E;
   --color-warm-3: #1C1915;
@@ -464,7 +468,7 @@
   --surface-action-pressed: #313131;
   --surface-action-disabled: #E1E1E1;
   --surface-action-primary: #1A1A1A;
-  --surface-action-primary-hover: #626262;
+  --surface-action-primary-hover: #636363;
   --surface-action-primary-pressed: #000000;
   --surface-transparent: #FFFFFF00;
 
@@ -822,7 +826,7 @@
   --surface-action-pressed: #B7B7B7;
   --surface-action-disabled: #484848;
   --surface-action-primary: #FAFAFA;
-  --surface-action-primary-hover: #B7B7B7;
+  --surface-action-primary-hover: #B2B2B2;
   --surface-action-primary-pressed: #FFFFFF;
   --surface-transparent: #FFFFFF00;
 }
@@ -1082,8 +1086,8 @@
 /* PRIMARY — Mono monochrome fill, inverse label; pressed inverts via the per-mode token flip.
      HOVER renders as operational OPACITY 0.68 (--alpha-68, #99-D1 — migrated from ADR-0009/B-D3's 0.70
      to the 4% ladder, ties round DOWN) over the page: color-mix flattens the default fill at the
-     primitive's strength over --page. --pri-hover holds the STORED colour-equivalent (#626262/#B7B7B7,
-     derived at the pre-ladder 0.70 — re-derivation registered, not silently redone) for colour-only /
+     primitive's strength over --page. --pri-hover holds the STORED colour-equivalent (#636363/#B2B2B2,
+     re-derived AT 0.68 in s198-D1 and minted as color/neutral/hover-1|hover-2 by s198-D2) for colour-only /
      chromatic consumers — bound in the manifest, not used for the opacity render. */
 .cn-button .btn.primary{background:var(--pri-default); color:var(--pri-label);}
 .cn-button .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) calc(var(--alpha-68) * 100%), var(--page));}
@@ -7826,8 +7830,10 @@
 }
 /* ===== AUTO-PARTIAL press-physics END ===== */
 .cn-icon-button .iconbtn:disabled{cursor:not-allowed; opacity:1;}
-/* PRIMARY — monochrome fill, inverse glyph; hover = operational 0.70 opacity over the page (ADR-0009/B-D3);
-     --pri-hover holds the stored colour-equivalent (#626262/#B7B7B7) for colour-only consumers. */
+/* PRIMARY — monochrome fill, inverse glyph; hover = operational 0.70 opacity over the page (ADR-0009/B-D3
+     — NOT yet migrated to the 0.68 4%-ladder alpha the button family uses, see line ~1087);
+     --pri-hover holds the stored colour-equivalent (#636363/#B2B2B2, re-derived at 0.68 by s198-D1,
+     minted as color/neutral/hover-1|hover-2 by s198-D2) for colour-only consumers. */
 .cn-icon-button .iconbtn.primary{background:var(--pri-default); color:var(--pri-glyph);}
 .cn-icon-button .iconbtn.primary:hover{background:color-mix(in srgb, var(--pri-default) 70%, var(--page));}
 .cn-icon-button .iconbtn.primary.is-pressed{background:var(--pri-pressed);}
@@ -10771,7 +10777,7 @@
   --border-radius-control: 4px;
 }
 
-/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (141 override path(s), 4 mark(s), apollo-supercharge.overrides) ---- */
+/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (143 override path(s), 4 mark(s), apollo-supercharge.overrides) ---- */
 [data-apollo-theme="supercharge"]{
   --background-default: #F7F6F4;
   --badge-background: #B92F1E;
@@ -10811,6 +10817,8 @@
   --color-neutral-7: #493F39;
   --color-neutral-8: #524842;
   --color-neutral-9: #635750;
+  --color-neutral-hover-1: #493F39;
+  --color-neutral-hover-2: #806E65;
   --color-neutral-raise-1: #2A2621;
   --color-neutral-raise-2: #2E2A25;
   --color-neutral-raise-3: #322E29;

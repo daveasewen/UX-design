@@ -1134,11 +1134,11 @@
         },
         "hover": {
           "light": {
-            "$value": "#626262",
+            "$value": "#636363",
             "$type": "color"
           },
           "dark": {
-            "$value": "#B7B7B7",
+            "$value": "#B2B2B2",
             "$type": "color"
           },
           "$alias": {
@@ -1151,9 +1151,9 @@
                 "mechanism": [
                   "opacity"
                 ],
-                "opacity": 0.7,
+                "opacity": 0.68,
                 "colourIsEquivalent": true,
-                "note": "Mono hover renders via OPACITY (fill fades over background/default at this alpha). The colour $value is the ramp-snapped opaque EQUIVALENT, stored for colour-only consumers/adapters. A chromatic theme instead sets mechanism:[colour] with a distinct hue; a theme may set both. Per ADR-0009. Opacity migrates to a first-class number/opacity token with the style-builder + snippet rebind.",
+                "note": "Mono hover renders via OPACITY (fill fades over background/default at this alpha, re-derived to 0.68 in s198-D1). The colour $value is the EXACT opaque equivalent — no longer ramp-snapped: s198-D2 minted color/neutral/hover-1/hover-2 to carry it — stored for colour-only consumers/adapters. A chromatic theme instead sets mechanism:[colour] with a distinct hue; a theme may set both. Per ADR-0009. Opacity migrates to a first-class number/opacity token with the style-builder + snippet rebind.",
                 "fades": "button/primary/background/default",
                 "over": "background/default"
               }
@@ -2875,19 +2875,19 @@
     },
     "action-primary-hover": {
       "light": {
-        "$value": "#626262",
+        "$value": "#636363",
         "$type": "color"
       },
       "dark": {
-        "$value": "#B7B7B7",
+        "$value": "#B2B2B2",
         "$type": "color"
       },
       "$alias": {
-        "light": "color/neutral/7",
-        "dark": "color/neutral/10"
+        "light": "color/neutral/hover-1",
+        "dark": "color/neutral/hover-2"
       },
       "$description": "Hover ground for the Mono primary action button. Stored as a real colour token (hover is a colour change, not opacity) so it can flex later. Default intensifies: darker in light, brighter in dark. Values are Dave's to dial on the review sheet; ruled 2026-07-20.",
-      "$note": "Hover value is opacity-DERIVED then ramp-SNAPPED: the default ground faded toward the page background (α≈0.90) and snapped to the nearest color/mono step, so the ergonomics are 'just opacity' but the stored artifact is a compliant ramp colour. Values are Dave's to dial on the review sheet. 2026-07-20."
+      "$note": "Hover value is opacity-DERIVED at alpha 0.68 (the default ground faded over background/default) and, since s198-D1, kept EXACT rather than ramp-snapped: s198-D2 minted color/neutral/hover-1 #636363 (light) and hover-2 #B2B2B2 (dark) so the derived value is itself a named primitive step. Values are Dave's to dial on the review sheet. 2026-08-17."
     },
     "action-primary-pressed": {
       "light": {
