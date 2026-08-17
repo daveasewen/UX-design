@@ -9,12 +9,12 @@
 | verdict | count | meaning |
 |---|---:|---|
 | **PROVEN** | 5 | a check names it AND a selftest proves that check can FAIL on it |
-| **CLAIMED** | 23 | a check names it, nothing proves it can fail — the dangerous middle |
+| **CLAIMED** | 24 | a check names it, nothing proves it can fail — the dangerous middle |
 | **UNPROVEN** | 55 | no executable check names it at all |
 | **NOT-GATEABLE** | 0 | the ledger says so explicitly, with a reason |
-| **TOTAL** | 83 | |
+| **TOTAL** | 84 | |
 
-**5 of 83 rulings (6%) are PROVEN.** That number is the finding, not a failure of this script.
+**5 of 84 rulings (6%) are PROVEN.** That number is the finding, not a failure of this script.
 
 **Denominator (P2, 2026-07-28): 4 ledgers harvested — `_proforma/_DATAVIZ-DECISIONS.md` · `_proforma/_RAG-DECISIONS.md` · `_proforma/_TYPE-DECISIONS.md` · `_proforma/_BUTTON-DECISIONS.md` — plus `docs/decisions/ADR-*.md`. Deliberately OUTSIDE it: the Memento governance set (`notes/_MEMENTO-DECISIONS.md`, ~50 keyed rulings) and the ds-* body (`knowledge/_DS-IMPROVEMENTS.md`). Read the 6% as *of the pillar ledgers*, not *of the project*.**
 
@@ -44,6 +44,7 @@
 | `ADR-0014` | **CLAIMED** | ADR-0014 — Per-theme neutral primitives: the neutral DNA tier + the opacity-snaps-to-ramp state test | knowledge/_validate_palette_tier.py, knowledge/_validate_state_snap.py | `docs/decisions/ADR-0014-per-theme-neutral-primitives-state-snap.md` |
 | `ADR-0015` | **PROVEN** | ADR-0015 — Behaviour partials: the dataviz interaction layer as generated JS | knowledge/gen_component_partials.py | `docs/decisions/ADR-0015-behaviour-partials-dataviz.md` |
 | `ADR-0016` | **PROVEN** | ADR-0016 — Enactment proof: rulings must be provably LIVE, not merely inscribed | knowledge/_validate_dataviz.py | `docs/decisions/ADR-0016-enactment-proof-register.md` |
+| `ADR-0017` | **CLAIMED** | ADR-0017 — WRITE-ONCE: live facts get ONE home and addresses; history gets copies, dated and frozen | knowledge/_validate_state_contrast.py | `docs/decisions/ADR-0017-write-once-live-facts.md` |
 | `B-D1` | **UNPROVEN** | B-D1 — Apollo Mono primary carries NO red (2026-07-20). Source: Dave. FIRM. | — | `_proforma/_BUTTON-DECISIONS.md` |
 | `B-D2` | **UNPROVEN** | B-D2 — Mono primary token ladder minted; completes `button/*` (2026-07-20). | — | `_proforma/_BUTTON-DECISIONS.md` |
 | `B-D3` | **UNPROVEN** | B-D3 — Hover = dual token; mechanism is selectable (2026-07-20). → ADR-0009. | — | `_proforma/_BUTTON-DECISIONS.md` |

@@ -31,6 +31,16 @@ that names a surface the base map knows re-values that ground (the palette tier
 still wins on the keys it owns, per s158-D4). A declared overrideSet that cannot
 be read is a NAMED refusal (OverrideRefusal), never a silent fall-back to base.
 
+WARN (MINOR-DEFECT) TIER (s194-D1, Dave #194). A pair a ruling ABOLISHES is not
+deleted from the report and is not a gating error either. It is MEASURED, printed
+with its real ratio, stamped `⚠ minor (ruled <id>)`, and does NOT affect the exit
+code. Dave: "this should be a warning not an error. if it was a proper ally review
+it would be a minor defect". The severity vocabulary is pass / minor / gating and
+is applied CONSERVATIVELY — `minor` is reachable only through the named pairs in
+_contrast_utils.MINOR_PAIRS (theme-scoped), so every other row keeps the verdict it
+had before. A general graded-defect rating is FLOATED (_DS-IMPROVEMENTS.md), not
+ruled, and is deliberately NOT built here.
+
 Usage:
   python3 knowledge/_build_surface_contrast_audit.py            # audit + write + gate
   python3 knowledge/_build_surface_contrast_audit.py --selftest  # reader selftest, no writes
@@ -49,11 +59,46 @@ from _contrast_utils import (
     load_dark_surfaces, resolve_dark_surface, standard_dark_surfaces,
     legacy_exemption, _leaf_dark_hex, _group_prefix, _excluded_surfaces,
     luminance, hex_to_rgb,
+    minor_pair, ground_names_for,
     CONTRAST_ALLOWLIST,
 )
 
+# --- s194-D1 (Dave, #194): the severity vocabulary this report speaks. --------
+# Three verdicts, applied CONSERVATIVELY. "minor" is reachable ONLY through
+# _contrast_utils.MINOR_PAIRS, i.e. only for a pair a ruling names; nothing else
+# changes verdict. Dave #194: "this should be a warning not an error. if it was
+# a proper ally review it would be a minor defect."
+#   pass   -> OK / ALLOWED / EXEMPTED  (exit code unaffected)
+#   minor  -> MINOR                    (measured, reported, stamped, NON-GATING)
+#   gating -> POOR_CONTRAST            (fails the build, exactly as before)
+# This is NOT a general grading system; the graded-rating idea is FLOATED in
+# _DS-IMPROVEMENTS.md, promotion Dave's alone.
+SEVERITY = {
+    "OK": "pass", "ALLOWED": "pass", "EXEMPTED": "pass",
+    "MINOR": "minor", "POOR_CONTRAST": "gating",
+}
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 TOK = os.path.join(ROOT, "tokens")
+
+
+def _active_base(tok_dir=None):
+    """The registry's activeBase theme key — the theme the BASE pass reads.
+
+    s194: the base pass is not theme-less, it IS apollo-mono. Naming it lets a
+    theme-scoped ruled-pair exclusion apply to the base pass without a hardcoded
+    theme name anywhere. Read from the registry, never assumed; a missing/broken
+    registry falls back to the documented activeBase so the reader still runs
+    (the per-theme legs raise their own NAMED refusals for that case).
+    """
+    try:
+        reg = json.load(open(os.path.join(tok_dir or TOK, "themes", "_themes.json")))
+        return reg.get("activeBase") or "apollo-mono"
+    except Exception:
+        return "apollo-mono"
+
+
+ACTIVE_BASE = _active_base()
 
 
 def leaves(node, path="", out=None):
@@ -211,15 +256,20 @@ def _state_suffix(token_name):
     return last if last in STATE_SUFFIXES else None
 
 
-def resolve_ground(token_name, surfaces, default_dark, raised_dark):
+def resolve_ground(token_name, surfaces, default_dark, raised_dark, theme=None):
     """Return (surface_hex, label) with s170 state matching applied.
+
+    s194: `theme` is the tokens/themes/_themes.json key the pair is being graded
+    under (the base pass passes ACTIVE_BASE, i.e. apollo-mono). It is used ONLY
+    to select theme-scoped ruled-pair exclusions; every other decision is
+    theme-blind exactly as before.
 
     Delegates to resolve_dark_surface for every skip decision (light-only,
     on-inverse, the named per-token carve-outs) and for the fall-back, so this
     wrapper can only ever NARROW the candidate set — never widen it, never
     change which tokens are audited.
     """
-    base = resolve_dark_surface(token_name, surfaces, default_dark, raised_dark)
+    base = resolve_dark_surface(token_name, surfaces, default_dark, raised_dark, theme)
     if base[0] is None:
         return base
     state = _state_suffix(token_name)
@@ -228,7 +278,7 @@ def resolve_ground(token_name, surfaces, default_dark, raised_dark):
     grp = _group_prefix(token_name)
     if not grp:
         return base
-    excluded = _excluded_surfaces(token_name)
+    excluded = _excluded_surfaces(token_name, theme)
     matched = [hx for nm, hx in surfaces.items()
                if nm.startswith(grp + "/") and nm not in excluded
                and _state_suffix(nm) == state]
@@ -240,12 +290,12 @@ def resolve_ground(token_name, surfaces, default_dark, raised_dark):
     return (worst, grp)
 
 
-def grade(name, node, surfaces, default_dark, raised_dark):
+def grade(name, node, surfaces, default_dark, raised_dark, theme=None):
     """Grade one token against a given surface map. Returns a record or None."""
     dark_val = mode_val(node, "dark")
     if not (isinstance(dark_val, str) and dark_val.startswith("#")):
         return None
-    surface, label = resolve_ground(name, surfaces, default_dark, raised_dark)
+    surface, label = resolve_ground(name, surfaces, default_dark, raised_dark, theme)
     if surface is None:
         return None
     context = "text" if "text" in name else "ui"
@@ -280,8 +330,11 @@ def audit_themes(sem_leaves, base_surfaces, tok_dir, default_dark, raised_dark):
             if "light" not in node or "dark" not in node:
                 continue
             th_node = ovr.get(name, node)
-            base_rec = grade(name, node, base_surfaces, default_dark, raised_dark)
-            th_rec = grade(name, th_node, smap, default_dark, raised_dark)
+            # The base pass IS the activeBase theme's reading (apollo-mono), so it
+            # is graded under ACTIVE_BASE; the theme leg under its own key. s194:
+            # this is what keeps a mono-scoped exclusion out of Legacy/Console/SC.
+            base_rec = grade(name, node, base_surfaces, default_dark, raised_dark, ACTIVE_BASE)
+            th_rec = grade(name, th_node, smap, default_dark, raised_dark, tkey)
             if base_rec is None or th_rec is None:
                 continue
             if (th_rec["surface"] == base_rec["surface"]
@@ -313,15 +366,25 @@ def audit_themes(sem_leaves, base_surfaces, tok_dir, default_dark, raised_dark):
                               if hx == th_rec["surface"] and n in base_surfaces
                               and grp and n.startswith(grp + "/")), None)
             exempt = legacy_exemption(name, owner or "") if meta["attr"] == "legacy" else None
+            # s194-D1 WARN tier, theme-scoped: only a pair the ruling names under
+            # THIS theme is downgraded to MINOR. Legacy/Console/Supercharge are
+            # not named, so their white-on-error rows stay measured and gating.
+            minor = None if th_rec["passes"] else minor_pair(
+                name, ground_names_for(name, th_rec["surface"], smap), tkey)
             if th_rec["passes"]:
                 status = "OK"
+            elif minor:
+                status = "MINOR"
             elif exempt:
                 status = "EXEMPTED"
             elif th_rec["allowlisted"]:
                 status = "ALLOWED"
             else:
                 status = "POOR_CONTRAST"
-            th_rec.update({"theme": tkey, "theme_label": meta["label"],
+            th_rec.update({"severity": SEVERITY[status],
+                           "ruling": (minor or {}).get("ruling"),
+                           "minor_reason": (minor or {}).get("reason"),
+                           "theme": tkey, "theme_label": meta["label"],
                            "palette": meta["palette"], "surface_token": owner,
                            "override_set": meta["override_set"],
                            "ink_source": "theme-override" if name in ovr else "base",
@@ -337,6 +400,66 @@ def audit_themes(sem_leaves, base_surfaces, tok_dir, default_dark, raised_dark):
             th_rec.pop("passes"); th_rec.pop("allowlisted")
             rows.append(th_rec)
     return palettes, rows
+
+
+def audit_base(sem_leaves, surfaces, default_dark, raised_dark):
+    """The BASE pass (= the activeBase theme's reading). Returns (audit, poor, skipped).
+
+    Factored out at s194 so the selftest DRIVES this reader rather than a copy of
+    it: the arms below assert on the very records the report is built from, so a
+    change to the verdict logic here cannot pass unnoticed. `poor` is the gating
+    list — s194-D1 MINOR rows are deliberately NOT in it.
+    """
+    audit, poor, skipped = [], [], []
+    for name, node in sorted(sem_leaves.items()):
+        if not is_text_or_icon_token(name):
+            continue
+        if "light" not in node or "dark" not in node:
+            continue
+        dark_val = mode_val(node, "dark")
+        if not (isinstance(dark_val, str) and dark_val.startswith("#")):
+            continue
+
+        surface, label = resolve_ground(name, surfaces, default_dark, raised_dark, ACTIVE_BASE)
+        if surface is None:
+            skipped.append({"token": name, "dark_value": dark_val, "reason": label})
+            continue
+
+        context = "text" if "text" in name else "ui"
+        threshold = 4.5 if context == "text" else 3.0
+        ratio = contrast_ratio(dark_val, surface)
+        passes = is_sufficient_contrast(ratio, context=context)
+        allowlisted = name in CONTRAST_ALLOWLIST
+        # s194-D1: a ruled-abolished pairing is a MINOR defect — still measured,
+        # still printed with its real ratio, stamped with the ruling, and NOT
+        # gating. The base pass reads the activeBase theme, so it is tested
+        # under ACTIVE_BASE.
+        gnames = ground_names_for(name, surface, surfaces)
+        minor = None if passes else minor_pair(name, gnames, ACTIVE_BASE)
+
+        if passes:
+            status = "OK"
+        elif minor:
+            status = "MINOR"
+        elif allowlisted:
+            status = "ALLOWED"
+        else:
+            status = "POOR_CONTRAST"
+
+        rec = {
+            "token": name, "dark_value": dark_val,
+            "surface": surface, "surface_label": label,
+            "surface_token": (minor or {}).get("surface_token") or (gnames[0] if gnames else None),
+            "contrast_ratio": ratio, "threshold": threshold, "context": context,
+            "status": status, "severity": SEVERITY[status],
+            "ruling": (minor or {}).get("ruling"),
+            "minor_reason": (minor or {}).get("reason"),
+            "allowlist_reason": CONTRAST_ALLOWLIST.get(name) if (status == "ALLOWED") else None,
+        }
+        audit.append(rec)
+        if status == "POOR_CONTRAST":
+            poor.append(rec)
+    return audit, poor, skipped
 
 
 def _selftest():
@@ -566,6 +689,71 @@ def _selftest():
               "default=%s pressed=%s" % (real_ovr["button/primary/background/default"]["dark"]["$value"],
                                          real_ovr["button/primary/background/pressed"]["dark"]["$value"]))
 
+        # --- Arm 7 (s194-D1, Dave #194): the WARN (MINOR-DEFECT) TIER.
+        # The ruling changed the SHAPE of this decision: the mono white-on-error
+        # pair is NOT removed from the report, it is DOWNGRADED. So the arms must
+        # assert PRESENCE + ratio + stamp, never absence:
+        #   7a — the mono row is PRESENT, measured at its real ratio, verdict
+        #        MINOR/severity 'minor', stamped ruling s194-D1. This arm fails
+        #        both on the pre-#194 body (row present but POOR/gating) AND on
+        #        the exclusion form built earlier at #194 (row absent).
+        #   7b — MINOR is NON-GATING: the row is not in the `poor` list the exit
+        #        code is computed from, and the base pass has no gating failures.
+        #   7c — the tier is THEME-SCOPED: legacy/console/supercharge are not
+        #        named by the ruling, so their white-on-error rows stay measured
+        #        and gating-eligible (they pass on merit, at their own ratios).
+        #   7d — CONSERVATIVE: exactly ONE row in the whole report is minor.
+        #   7e — _excluded_surfaces still ACCUMULATES across family prefixes (the
+        #        pre-#194 first-match `return` dropped R-D3/R-D12 amber/green/info),
+        #        and rag/error-background is NOT among the exclusions any more —
+        #        the ruling forbids removing it.
+        b_audit, b_poor, _b_skip = audit_base(sem_l, surf, dd, rd)
+        b_map = {r["token"]: r for r in b_audit}
+        woe_mono = b_map.get("rag/text/on-dark")
+        check("A7a s194-D1 WARN tier: the mono white-on-error row is PRESENT, measured, stamped",
+              woe_mono is not None
+              and woe_mono["dark_value"] == "#FFFFFF"
+              and woe_mono["surface"] == "#F6604C"
+              and woe_mono["surface_token"] == "rag/error-background"
+              and woe_mono["contrast_ratio"] == 3.14
+              and woe_mono["status"] == "MINOR" and woe_mono["severity"] == "minor"
+              and woe_mono["ruling"] == "s194-D1",
+              "%s on %s (%s) = %s:1 %s/%s ruled %s" % (
+                  woe_mono and woe_mono["dark_value"], woe_mono and woe_mono["surface"],
+                  woe_mono and woe_mono["surface_token"], woe_mono and woe_mono["contrast_ratio"],
+                  woe_mono and woe_mono["status"], woe_mono and woe_mono["severity"],
+                  woe_mono and woe_mono["ruling"]))
+        check("A7b MINOR is NON-GATING: it is absent from the gating list, base pass clean",
+              woe_mono not in b_poor and len(b_poor) == 0,
+              "gating rows=%s" % [r["token"] for r in b_poor])
+        woe = {r["theme"]: r for r in rows
+               if r["token"] == "rag/text/on-dark" and r["surface_token"] == "rag/error-background"}
+        check("A7c the tier is THEME-SCOPED: the three NON-mono rows stay MEASURED and GATING-eligible",
+              set(woe) == {"apollo-legacy", "apollo-console", "apollo-supercharge"}
+              and all(r["status"] == "OK" and r["severity"] == "pass"
+                      and r["ruling"] is None and r["dark_value"] == "#FFFFFF"
+                      for r in woe.values()),
+              "; ".join("%s %s on %s %s:1 %s" % (k, r["dark_value"], r["surface"],
+                                                 r["contrast_ratio"], r["status"])
+                        for k, r in sorted(woe.items())))
+        all_min = [r for r in b_audit if r["status"] == "MINOR"] + \
+                  [r for r in rows if r["status"] == "MINOR"]
+        check("A7d CONSERVATIVE: exactly ONE minor row in the whole report; no other verdict moved",
+              len(all_min) == 1 and all_min[0]["token"] == "rag/text/on-dark"
+              and all(r["severity"] in ("pass", "gating")
+                      for r in b_audit + rows if r["status"] != "MINOR"),
+              "minor rows=%s" % [(r.get("theme", ACTIVE_BASE), r["token"]) for r in all_min])
+        mono_x = _excluded_surfaces("rag/text/on-dark", ACTIVE_BASE)
+        leg_x = _excluded_surfaces("rag/text/on-dark", "apollo-legacy")
+        check("A7e exclusions ACCUMULATE across family prefixes, and error-background is NOT excluded",
+              {"rag/warning-background", "rag/success-background",
+               "rag/information-background"} <= set(mono_x)
+              and {"rag/warning-background", "rag/success-background",
+                   "rag/information-background"} <= set(leg_x)
+              and "rag/error-background" not in mono_x
+              and "rag/error-background" not in leg_x,
+              "mono=%s" % sorted(mono_x))
+
         # --- Arm 5 (s170): NAMED refusal — declared overrideSet missing.
         r2 = os.path.join(tmp, "ref2")
         shutil.copytree(TOK, r2)
@@ -595,41 +783,11 @@ sem = leaves(json.load(open(os.path.join(TOK, "semantic-colour.json"))))
 surfaces = load_dark_surfaces(sem)
 DEFAULT_DARK, RAISED_DARK = standard_dark_surfaces(TOK)
 
-audit, poor, skipped = [], [], []
-
-for name, node in sorted(sem.items()):
-    if not is_text_or_icon_token(name):
-        continue
-    if "light" not in node or "dark" not in node:
-        continue
-    dark_val = mode_val(node, "dark")
-    if not (isinstance(dark_val, str) and dark_val.startswith("#")):
-        continue
-
-    surface, label = resolve_ground(name, surfaces, DEFAULT_DARK, RAISED_DARK)
-    if surface is None:
-        skipped.append({"token": name, "dark_value": dark_val, "reason": label})
-        continue
-
-    context = "text" if "text" in name else "ui"
-    threshold = 4.5 if context == "text" else 3.0
-    ratio = contrast_ratio(dark_val, surface)
-    passes = is_sufficient_contrast(ratio, context=context)
-    allowlisted = name in CONTRAST_ALLOWLIST
-
-    rec = {
-        "token": name, "dark_value": dark_val,
-        "surface": surface, "surface_label": label,
-        "contrast_ratio": ratio, "threshold": threshold, "context": context,
-        "status": "OK" if passes else ("ALLOWED" if allowlisted else "POOR_CONTRAST"),
-        "allowlist_reason": CONTRAST_ALLOWLIST.get(name) if (allowlisted and not passes) else None,
-    }
-    audit.append(rec)
-    if not passes and not allowlisted:
-        poor.append(rec)
+audit, poor, skipped = audit_base(sem, surfaces, DEFAULT_DARK, RAISED_DARK)
 
 ok_count = sum(1 for r in audit if r["status"] == "OK")
 allowed = [r for r in audit if r["status"] == "ALLOWED"]
+minor_rows = [r for r in audit if r["status"] == "MINOR"]
 
 # s169 ruling C': regrade palette-owned grounds per theme. A refusal here is
 # fatal and NAMED — a theme whose declared palette cannot be read must not be
@@ -644,6 +802,10 @@ except OverrideRefusal as e:
     sys.exit(2)
 theme_poor = [r for r in theme_rows if r["status"] == "POOR_CONTRAST"]
 theme_exempt = [r for r in theme_rows if r["status"] == "EXEMPTED"]
+theme_minor = [r for r in theme_rows if r["status"] == "MINOR"]
+# s194-D1: minor rows are NON-GATING. They are counted and printed, never added
+# to `poor`/`theme_poor` — the two lists the exit code is computed from.
+all_minor = minor_rows + theme_minor
 
 audit_json = {
     "$description": "Text/icon dark-mode contrast audit. Each token is tested against the worst-case (lightest) dark surface it can sit on, resolved from the store (page default + raised island, or its own group's surfaces). s170 (Dave, #170): a STATE-SUFFIXED ink is paired only with its OWN state's ground (default<->default, pressed<->pressed); worst-case across states is used only where no state-matched ground exists. on-light tokens are excluded (light-only). Allowlisted disabled-state tokens are reported but do not gate. POOR_CONTRAST (non-allowlisted, below threshold) FAILS the build.",
@@ -653,10 +815,12 @@ audit_json = {
     "totals": {
         "text_icon_tokens": len(audit), "ok": ok_count,
         "allowed_exceptions": len(allowed), "poor_contrast": len(poor),
+        "minor_defects": len(minor_rows),
         "skipped_light_only": len(skipped),
         "per_theme_regraded": len(theme_rows),
         "per_theme_poor_contrast": len(theme_poor),
         "per_theme_exempted": len(theme_exempt),
+        "per_theme_minor_defects": len(theme_minor),
     },
     "per_theme": {
         "$description": "s169+s170 (ruling C'): pairs whose GROUND is palette-owned (s157-D2 tier, single-sourced by s158-D4) or whose INK the theme re-binds in its own overrideSet, regraded per theme via tokens/themes/_themes.json -> ragPalette + overrideSet. Rows appear only where the theme's resolved surface or ink DIFFERS from the base pass, so the activeBase (apollo-mono) reading is not double-counted; 'moved' names which of ink/ground/ink+ground shifted and 'ink_source' says whether the ink came from the theme's override set. POOR_CONTRAST rows GATE on the same terms as the base pass; EXEMPTED = an R-D24 Legacy pair matched in _contrast_utils.LEGACY_THEME_EXEMPTIONS (documented, never counted as a pass).",
@@ -664,8 +828,13 @@ audit_json = {
         "override_sets": {k: v["override_set"] for k, v in theme_palettes.items()},
         "rows": theme_rows,
         "poor_contrast": theme_poor,
+        "minor_defects": theme_minor,
     },
     "poor_contrast": poor,
+    "minor_defects": {
+        "$description": "s194-D1 (Dave, #194) WARN tier: pairs a ruling ABOLISHES stay MEASURED and REPORTED with their real ratio, stamped with the ruling that downgrades them, and do NOT gate the build. Dave #194: 'this should be a warning not an error. if it was a proper ally review it would be a minor defect'. Reachable only via _contrast_utils.MINOR_PAIRS — a named pair under a named theme; every other row keeps its previous verdict. Severity vocabulary: pass / minor / gating.",
+        "rows": all_minor,
+    },
     "allowed_exceptions": allowed,
     "skipped_light_only": skipped,
     "tokens": OrderedDict((r["token"], r) for r in audit),
@@ -677,9 +846,9 @@ L = [
     "",
     f"> Each text/icon token is tested against the **worst-case (lightest) dark surface it can sit on**, resolved from the store — page default `{DEFAULT_DARK}` + raised island `{RAISED_DARK}`, or the token's own group surfaces. Since **s170** a state-suffixed ink (e.g. `.../label/default`) is paired only with its OWN state's ground — worst-case across states is a fall-back, not the rule. `on-light` tokens are excluded (light-only). Disabled-state tokens are allowlisted (reported, not gated). Text needs 4.5:1, icons/UI need 3:1.",
     "",
-    f"**Result:** {ok_count} pass · {len(allowed)} allowed exception(s) · **{len(poor)} gating failure(s)** · {len(skipped)} skipped (light-only).",
+    f"**Result:** {ok_count} pass · {len(allowed)} allowed exception(s) · **{len(minor_rows)} minor defect(s) (⚠ warn, non-gating)** · **{len(poor)} gating failure(s)** · {len(skipped)} skipped (light-only).",
     "",
-    f"**Per-theme (s169 grounds + s170 overrides):** {len(theme_rows)} pair(s) regraded where a theme moves the ground or the ink · **{len(theme_poor)} gating failure(s)** · {len(theme_exempt)} R-D24 exempted.",
+    f"**Per-theme (s169 grounds + s170 overrides):** {len(theme_rows)} pair(s) regraded where a theme moves the ground or the ink · **{len(theme_poor)} gating failure(s)** · {len(theme_minor)} minor (⚠ warn) · {len(theme_exempt)} R-D24 exempted.",
     "",
 ]
 if theme_rows:
@@ -688,7 +857,8 @@ if theme_rows:
           "| Theme | Palette | Token | Moved | Ink (base → theme) | Ground (base → theme) | Contrast | Need | Status |",
           "|---|---|---|---|---|---|---|---|---|"]
     for r in theme_rows:
-        badge = {"OK": "✅ OK", "ALLOWED": "🟡 ALLOWED", "EXEMPTED": "🟡 EXEMPTED", "POOR_CONTRAST": "❌ POOR"}[r["status"]]
+        badge = {"OK": "✅ OK", "ALLOWED": "🟡 ALLOWED", "EXEMPTED": "🟡 EXEMPTED",
+                 "MINOR": "⚠ minor (ruled %s)" % (r.get("ruling") or "—"), "POOR_CONTRAST": "❌ POOR"}[r["status"]]
         ink = (f"`{r['base_dark_value']}` → `{r['dark_value']}`" if r["ink_source"] == "theme-override"
                else f"`{r['dark_value']}`")
         # surface_token is None when the ground is the page/raised fallback rather
@@ -697,6 +867,17 @@ if theme_rows:
         gnd = (f"{gname}`{r['base_surface']}` → `{r['surface']}`"
                if r["surface"] != r["base_surface"] else f"{gname}`{r['surface']}`")
         L.append(f"| **{r['theme_label']}** (`{r['theme']}`) | `{r['palette']}` | `{r['token']}` | {r['moved']} | {ink} | {gnd} | **{r['contrast_ratio']}:1** | {r['threshold']}:1 | {badge} |")
+    L.append("")
+if all_minor:
+    L += ["## ⚠ Minor defects — measured, reported, NOT gating (s194-D1)", "",
+          "> **s194-D1 (Dave, #194):** *\"this should be a warning not an error. if it was a proper ally review it would be a minor defect\"*. A pairing a ruling ABOLISHES is not deleted from this report and is not a build failure either — it is measured, printed with its real ratio, and stamped with the ruling that downgrades it. These rows do NOT affect the exit code.", "",
+          "| Theme | Token | Ink | Ground | Contrast | Need | Verdict | Ruling |",
+          "|---|---|---|---|---|---|---|---|"]
+    for r in all_minor:
+        L.append(f"| `{r.get('theme', ACTIVE_BASE)}` | `{r['token']}` | `{r['dark_value']}` | `{r.get('surface_token') or 'page/raised'}` `{r['surface']}` | **{r['contrast_ratio']}:1** | {r['threshold']}:1 | ⚠ minor | `{r.get('ruling')}` |")
+    L += ["", "Why each is minor:", ""]
+    for r in all_minor:
+        L.append(f"- `{r['token']}` × `{r.get('surface_token')}` under `{r.get('theme', ACTIVE_BASE)}` — {r.get('minor_reason')}")
     L.append("")
 if poor:
     L += ["## ❌ Gating failures — these FAIL the build", "",
@@ -721,14 +902,18 @@ if skipped:
 L += ["## All audited text/icon tokens", "",
       "| Token | Dark value | Surface | Contrast | Status |", "|---|---|---|---|---|"]
 for r in audit:
-    badge = {"OK": "✅ OK", "ALLOWED": "🟡 ALLOWED", "POOR_CONTRAST": "❌ POOR"}[r["status"]]
+    badge = {"OK": "✅ OK", "ALLOWED": "🟡 ALLOWED",
+             "MINOR": "⚠ minor (ruled %s)" % (r.get("ruling") or "—"),
+             "POOR_CONTRAST": "❌ POOR"}[r["status"]]
     L.append(f"| `{r['token']}` | `{r['dark_value']}` | `{r['surface']}` | {r['contrast_ratio']}:1 | {badge} |")
 open(os.path.join(ROOT, "_TEXT-CONTRAST-AUDIT.md"), "w").write("\n".join(L))
 
-print(f"text/icon contrast audit: {ok_count} OK, {len(allowed)} allowed, {len(poor)} GATING FAIL, {len(skipped)} skipped(light-only)")
+print(f"text/icon contrast audit: {ok_count} OK, {len(allowed)} allowed, {len(minor_rows)} MINOR(warn), {len(poor)} GATING FAIL, {len(skipped)} skipped(light-only)")
+for r in all_minor:
+    print(f"  \u26a0 minor (ruled {r.get('ruling')}) [{r.get('theme', ACTIVE_BASE)}] {r['token']}: {r['contrast_ratio']}:1 on {r['surface']} ({r.get('surface_token')}) — non-gating")
 for r in poor:
     print(f"  ❌ {r['token']}: {r['contrast_ratio']}:1 on {r['surface']} (need {r['threshold']}:1, {r['context']})")
-print(f"per-theme palette grounds ({len(theme_palettes)} themes declared): {len(theme_rows)} regraded, {len(theme_poor)} GATING FAIL, {len(theme_exempt)} R-D24 exempted")
+print(f"per-theme palette grounds ({len(theme_palettes)} themes declared): {len(theme_rows)} regraded, {len(theme_poor)} GATING FAIL, {len(theme_minor)} MINOR(warn), {len(theme_exempt)} R-D24 exempted")
 for r in theme_poor:
     print(f"  ❌ [{r['theme']}] {r['token']}: {r['contrast_ratio']}:1 on {r['surface']} ({r['surface_token']}, was {r['base_surface']} in base) (need {r['threshold']}:1, {r['context']})")
 sys.exit(1 if (poor or theme_poor) else 0)

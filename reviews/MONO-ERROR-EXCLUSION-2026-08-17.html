@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mono error ink — the white-on-error phantom, theme-scoped exclusion (s194)</title>
+<!--
+  MONO ERROR EXCLUSION REVIEW — session #194, 2026-08-17.
+  Dave's ruling, verbatim: "white-on-error shouldn't exist anyway, the glyphs in mono always the
+  default dark ink in both dark and light mode. have the exclusion made theme-scoped and applied,
+  but maybe we have a review first, just to double check."
+
+  SCOPE, STATED ONCE: NO palette value changed. NO generated canon/*.css changed. The only edits are
+  to the AUDIT INSTRUMENT — knowledge/_contrast_utils.py + knowledge/_build_surface_contrast_audit.py.
+  Every hex below is read from the live token store; every ratio is computed by
+  knowledge/_contrast_utils.contrast_ratio at build time, not typed by hand.
+-->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+:root{
+  --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --page:#FFFFFF; --ink:#1A1A1A; --border:#E1E1E1; --muted:#5B5B5B; --raised:#1D1D1D;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--page); color:var(--ink); font-family:var(--font); -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px; margin:0 auto; padding:2.25rem 2rem 6rem;}
+h1{font-size:28px; line-height:1.15; font-weight:400; margin:0 0 6px;}
+h2{font-size:18px; font-weight:500; margin:0 0 4px;}
+h3{font-size:13px; font-weight:500; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:0 0 12px;}
+p{font-size:14px; line-height:1.55; color:#333; margin:0 0 10px; max-width:78ch;}
+code{font:12px/1.4 ui-monospace,"SF Mono",Menlo,Consolas,monospace; background:#F2F2F2; padding:1px 5px; border-radius:2px;}
+.meta{font-size:12px; color:var(--muted); margin:0 0 20px;}
+.scope{border:1px solid var(--ink); border-left-width:4px; padding:12px 16px; margin:0 0 28px; background:#FAFAFA;}
+.scope p{margin:0 0 6px; font-size:13px;} .scope p:last-child{margin:0;}
+.quote{border-left:3px solid #F6604C; padding:2px 0 2px 14px; margin:0 0 24px; font-size:15px; line-height:1.5;}
+section{margin:0 0 44px; padding-top:28px; border-top:1px solid var(--border);}
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(430px,1fr)); gap:22px;}
+.card{border:1px solid var(--border); padding:16px 16px 12px;}
+.card-h{margin:0 0 14px;}
+.src{font-size:12px; color:var(--muted); margin:0; line-height:1.5;}
+.tiles{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.tile-h{display:flex; justify-content:space-between; align-items:baseline; margin:0 0 6px; gap:8px;}
+.mode{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);}
+.stamp{font:11px/1 ui-monospace,Menlo,monospace; color:var(--ink); background:#F2F2F2; padding:3px 6px;}
+.tile:nth-child(2) .alert-wrap{background:var(--raised);}
+.alert{display:flex; align-items:center; gap:10px; padding:14px 14px; min-height:64px;}
+.alert .lab{font-size:14px; font-weight:500; line-height:1.3;}
+.alert .g{display:inline-flex; flex:0 0 auto;}
+.tile:nth-child(2){padding:10px; background:var(--raised);}
+.tile:nth-child(2) .mode{color:#9B9B9B;}
+.tile:nth-child(2) .stamp{background:#333; color:#FFF;}
+.tile:nth-child(2) .hexes{color:#9B9B9B;}
+.hexes{font-size:11px; color:var(--muted); margin:6px 0 0;}
+.story{font-size:13px; color:#333; margin:14px 0 0;}
+table{border-collapse:collapse; width:100%; font-size:13px;}
+th,td{border:1px solid var(--border); padding:7px 10px; text-align:left; vertical-align:top;}
+th{background:#FAFAFA; font-weight:500;}
+.gone{text-decoration:line-through; color:var(--muted);}
+.ok{color:#0B6B3A; font-weight:500;} .bad{color:#B92F1E; font-weight:500;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Mono error ink — the white-on-error phantom</h1>
+<p class="meta">Review for Dave · session #194 · 2026-08-17 · pending ruling <b>s194-D1</b> · enacts <b>s149-D1</b> in the audit instrument</p>
+
+<blockquote class="quote">“white-on-error shouldn’t exist anyway, the glyphs in mono always the default dark ink in both dark and light mode. have the exclusion made theme-scoped and applied, but maybe we have a review first, just to double check.”<br><span style="font-size:12px;color:#5B5B5B">— Dave, #194</span></blockquote>
+
+<div class="scope">
+  <p><b>What changed:</b> the audit instrument only — <code>knowledge/_contrast_utils.py</code> and <code>knowledge/_build_surface_contrast_audit.py</code>.</p>
+  <p><b>What did NOT change:</b> no palette value, no token value, no generated <code>canon/*.css</code>. Nothing you can see on screen moves.</p>
+  <p><b>The point:</b> the gate was grading <code>#FFFFFF</code> against Mono’s <code>#F6604C</code> (3.14:1) — a pairing s149-D1 abolished. It was measuring a state that cannot occur. That row is gone; the three themes that really do carry white on their error fill are still measured and still gate.</p>
+</div>
+
+<section>
+<h3>The error treatment as actually built — per theme, both modes</h3>
+<p>Each tile is the live fill and the live ink, with the ratio computed by the same function the gate uses. Dark-mode tiles sit on the raised island <code>#1D1D1D</code>; the error fill and its ink are mode-invariant in all four themes, which is exactly Dave’s “both dark and light mode”.</p>
+<div class="grid">
+    <article class="card" data-theme-card="mono">
+      <header class="card-h">
+        <h2>Apollo Mono</h2>
+        <p class="src">fill: <code>rag/error-background</code> — <code>palettes/rag/mono.json → error-background</code> — <b>#F6604C</b>, mode-invariant<br>
+           ink: <code>rag/text/on-light (#1A1A1A) — the s149-D1 mono error ink camp</code></p>
+      </header>
+      <div class="tiles">
+        
+      <div class="tile">
+        <div class="tile-h"><span class="mode">Light mode</span><span class="stamp">5.55:1 · AA text ✓</span></div>
+        <div class="alert" style="background:#F6604C; color:#1A1A1A;">
+          <span class="g"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.2"/></svg></span>
+          <span class="lab">Payment could not be authorised</span>
+        </div>
+        <div class="hexes"><code>#1A1A1A</code> on <code>#F6604C</code></div>
+      </div>
+        
+      <div class="tile">
+        <div class="tile-h"><span class="mode">Dark mode</span><span class="stamp">5.55:1 · AA text ✓</span></div>
+        <div class="alert" style="background:#F6604C; color:#1A1A1A;">
+          <span class="g"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.2"/></svg></span>
+          <span class="lab">Payment could not be authorised</span>
+        </div>
+        <div class="hexes"><code>#1A1A1A</code> on <code>#F6604C</code></div>
+      </div>
+      </div>
+      <p class="story">Dark ink in BOTH modes. s149-D1, and Dave #194: “the glyphs in mono always the default dark ink in both dark and light mode.”</p>
+    </article>
+    <article class="card" data-theme-card="legacy">
+      <header class="card-h">
+        <h2>Apollo Legacy</h2>
+        <p class="src">fill: <code>rag/error-background</code> — <code>palettes/rag/legacy.json → error-background</code> — <b>#A8000B</b>, mode-invariant<br>
+           ink: <code>rag/text/on-dark (#FFFFFF)</code></p>
+      </header>
+      <div class="tiles">
+        
+      <div class="tile">
+        <div class="tile-h"><span class="mode">Light mode</span><span class="stamp">7.87:1 · AA text ✓</span></div>
+        <div class="alert" style="background:#A8000B; color:#FFFFFF;">
+          <span class="g"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.2"/></svg></span>
+          <span class="lab">Payment could not be authorised</span>
+        </div>
+        <div class="hexes"><code>#FFFFFF</code> on <code>#A8000B</code></div>
+      </div>
+        
+      <div class="tile">
+        <div class="tile-h"><span class="mode">Dark mode</span><span class="stamp">7.87:1 · AA text ✓</span></div>
+        <div class="alert" style="background:#A8000B; color:#FFFFFF;">
+          <span class="g"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.2"/></svg></span>
+          <span class="lab">Payment could not be authorised</span>
+        </div>
+        <div class="hexes"><code>#FFFFFF</code> on <code>#A8000B</code></div>
+      </div>
+      </div>
+      <p class="story">Legacy darkens the error fill to #A8000B and DOES carry white. Untouched by this change — still measured, still gating.</p>
+    </article>
+    <article class="card" data-theme-card="console">
+      <header class="card-h">
+        <h2>Apollo Console</h2>
+        <p class="src">fill: <code>rag/error-background</code> — <code>palettes/rag/console-supercharge.json → error-background</code> — <b>#B92F1E</b>, mode-invariant<br>
+           ink: <code>rag/text/on-dark (#FFFFFF)</code></p>
+      </header>
+      <div class="tiles">
+        
+      <div class="tile">
+        <div class="tile-h"><span class="mode">Light mode</span><span class="stamp">6.02:1 · AA text ✓</span></div>
+        <div class="alert" style="background:#B92F1E; color:#FFFFFF;">
+          <span class="g"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.2"/></svg></span>
+          <span class="lab">Payment could not be authorised</span>
+        </div>
+        <div class="hexes"><code>#FFFFFF</code> on <code>#B92F1E</code></div>
+      </div>
+        
+      <div class="tile">
+        <div class="tile-h"><span class="mode">Dark mode</span><span class="stamp">6.02:1 · AA text ✓</span></div>
+        <div class="alert" style="background:#B92F1E; color:#FFFFFF;">
+          <span class="g"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.2"/></svg></span>
+          <span class="lab">Payment could not be authorised</span>
+        </div>
+        <div class="hexes"><code>#FFFFFF</code> on <code>#B92F1E</code></div>
+      </div>
+      </div>
+      <p class="story">Console shares the darkened #B92F1E fill and carries white. Untouched — still measured, still gating.</p>
+    </article>
+    <article class="card" data-theme-card="supercharge">
+      <header class="card-h">
+        <h2>Apollo Supercharge</h2>
+        <p class="src">fill: <code>rag/error-background</code> — <code>palettes/rag/console-supercharge.json → error-background</code> — <b>#B92F1E</b>, mode-invariant<br>
+           ink: <code>rag/text/on-dark (#FFFFFF)</code></p>
+      </header>
+      <div class="tiles">
+        
+      <div class="tile">
+        <div class="tile-h"><span class="mode">Light mode</span><span class="stamp">6.02:1 · AA text ✓</span></div>
+        <div class="alert" style="background:#B92F1E; color:#FFFFFF;">
+          <span class="g"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.2"/></svg></span>
+          <span class="lab">Payment could not be authorised</span>
+        </div>
+        <div class="hexes"><code>#FFFFFF</code> on <code>#B92F1E</code></div>
+      </div>
+        
+      <div class="tile">
+        <div class="tile-h"><span class="mode">Dark mode</span><span class="stamp">6.02:1 · AA text ✓</span></div>
+        <div class="alert" style="background:#B92F1E; color:#FFFFFF;">
+          <span class="g"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.2"/></svg></span>
+          <span class="lab">Payment could not be authorised</span>
+        </div>
+        <div class="hexes"><code>#FFFFFF</code> on <code>#B92F1E</code></div>
+      </div>
+      </div>
+      <p class="story">Supercharge consumes the same shared palette file as Console. Untouched — still measured, still gating.</p>
+    </article>
+</div>
+</section>
+
+<section>
+<h3>The audit rows — before / after</h3>
+<table>
+<thead><tr><th>Theme</th><th>Pair</th><th>Ratio</th><th>Before (#193)</th><th>After (#194)</th></tr></thead>
+<tbody>
+<tr><td><b>Apollo Mono</b> (base pass)</td><td><code>rag/text/on-dark</code> <code>#FFFFFF</code> × <code>rag/error-background</code> <code>#F6604C</code></td><td>3.14:1</td><td class="bad">❌ POOR — 1 gating failure</td><td class="gone">row removed — pairing forbidden by s149-D1</td></tr>
+<tr><td><b>Apollo Mono</b> (base pass)</td><td><code>rag/text/on-dark</code> <code>#FFFFFF</code> × page/raised <code>#1D1D1D</code></td><td>16.86:1</td><td>—</td><td class="ok">✅ OK — the token is still audited, on a ground the ruling permits</td></tr>
+<tr><td><b>Apollo Legacy</b></td><td><code>rag/text/on-dark</code> <code>#FFFFFF</code> × <code>rag/error-background</code> <code>#A8000B</code></td><td>7.87:1</td><td class="ok">✅ OK</td><td class="ok">✅ OK — retained, still gating</td></tr>
+<tr><td><b>Apollo Console</b></td><td><code>rag/text/on-dark</code> <code>#FFFFFF</code> × <code>rag/error-background</code> <code>#B92F1E</code></td><td>6.02:1</td><td class="ok">✅ OK</td><td class="ok">✅ OK — retained, still gating</td></tr>
+<tr><td><b>Apollo Supercharge</b></td><td><code>rag/text/on-dark</code> <code>#FFFFFF</code> × <code>rag/error-background</code> <code>#B92F1E</code></td><td>6.02:1</td><td class="ok">✅ OK</td><td class="ok">✅ OK — retained, still gating</td></tr>
+</tbody>
+</table>
+<p style="margin-top:14px"><b>Gate:</b> <code>_build_surface_contrast_audit.py</code> went from <b>exit 1 — 1 gating failure</b> to <b>exit 0 — 18 pass, 5 allowed, 0 gating failures</b>; the per-theme leg still regrades <b>9 pairs, 0 failures</b> (the three rows above among them). <code>_build_indicator_contrast_audit.py</code> unchanged: 46 OK, 0 failures.</p>
+</section>
+
+<section>
+<h3>What the exclusion can and cannot do</h3>
+<p>The exclusion table is now <b>theme-scoped</b>: an entry names the themes it applies under, so Mono can drop a forbidden pairing without blinding the other three. Two mutation proofs were run against the live tree and reverted:</p>
+<ul style="font-size:13px; line-height:1.6; max-width:78ch;">
+  <li><b>It does not over-suppress.</b> Planting a genuinely bad Mono ink (<code>rag/text/on-dark</code> → <code>#333333</code>) made the gate go red at 1.33:1 on <code>#1D1D1D</code> — the token is still measured.</li>
+  <li><b>It does not blind other themes.</b> Planting a light error fill in <code>palettes/rag/legacy.json</code> (<code>#A8000B</code> → <code>#F6604C</code>) made Legacy’s white-on-error go red at 3.14:1.</li>
+</ul>
+<p>Four permanent selftest arms (A7a–A7d) now hold the ruling: the Mono scope, the non-scope for the other three, the family-accumulation fix, and the three retained rows by name. Selftest: 30 arms, 0 failed.</p>
+</section>
+
+<section>
+<h3>What this review does NOT settle</h3>
+<p>It shows what the ERROR TREATMENT looks like and what the AUDIT now measures. It does not prove that no component anywhere still paints white on an error fill in Mono — that is a separate sweep of the snippets, not of the token audit. If you want that fenced too, it needs its own gate.</p>
+</section>
+
+</div>
+</body>
+</html>

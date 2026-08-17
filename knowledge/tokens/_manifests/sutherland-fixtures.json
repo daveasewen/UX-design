@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 75,
+  "componentCount": 76,
   "fixtures": [
     {
       "component": "Accordion",
@@ -862,10 +862,10 @@
           "--data-control-label-disabled": "data/control/label-disabled/color",
           "--data-grid": "data/grid/color",
           "--grid-alpha": "data/grid/alpha",
-          "--status-negative": "rag/error",
-          "--status-monitor": "rag/warning",
-          "--status-positive": "rag/success",
-          "--status-neutral": "rag/information",
+          "--status-negative": "rag/error-graphic",
+          "--status-monitor": "rag/warning-graphic",
+          "--status-positive": "rag/success-graphic",
+          "--status-neutral": "rag/information-graphic",
           "--shadow": "elevation/functional",
           "--pop-border": "elevation/border",
           "--border-radius-control": "border-radius/control",
@@ -4472,10 +4472,10 @@
       }
     },
     {
-      "component": "Progress tracker",
-      "category": "molecule",
-      "referenceSnippet": "snippets/Progress-tracker.reference.html",
-      "meta": "components/progress-tracker.meta.json",
+      "component": "Progress bar",
+      "category": "atom",
+      "referenceSnippet": "snippets/Progress-bar.reference.html",
+      "meta": "components/progress-bar.meta.json",
       "contract": {
         "tokenBindings": {
           "--complete": "progress/complete",
@@ -4483,7 +4483,102 @@
           "--text": "text/default",
           "--muted": "text/secondary",
           "--page": "background/default",
-          "--on-complete": "text/on-inverse",
+          "--border-radius-indicator": "border-radius/indicator"
+        },
+        "requiredAria": [
+          "role=\"progressbar\"",
+          "aria-valuenow",
+          "aria-valuemin",
+          "aria-valuemax",
+          "aria-valuetext",
+          "aria-labelledby"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/secondary",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "progress/complete",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "shape",
+            "type": "enum",
+            "values": [
+              "linear",
+              "circular"
+            ],
+            "default": "linear",
+            "$note": "Linear for inline/full-width progress in a flow; circular for a compact badge-like completeness score."
+          },
+          {
+            "name": "size",
+            "type": "enum",
+            "values": [
+              "default",
+              "emphasis"
+            ],
+            "default": "default",
+            "$note": "Linear only: 4px rule (default) or 8px (emphasis). Circular is a single 96px specimen; further rungs need a ruling, not an invention."
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "default": 0,
+            "$note": "Current progress, on the min..max scale. Drives both the visual fill and aria-valuenow."
+          },
+          {
+            "name": "min",
+            "type": "number",
+            "default": 0
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "default": 100
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "$note": "The accessible name. Required — a bar with no name announces only a number."
+          },
+          {
+            "name": "valueText",
+            "type": "string",
+            "$note": "Human-readable value for AT (aria-valuetext). Required whenever the scale is not a plain percentage — e.g. '1,450 pounds of 2,000 pounds saved'."
+          },
+          {
+            "name": "showValue",
+            "type": "boolean",
+            "default": true,
+            "$note": "Renders the numeric value as visible text. Default TRUE and it is load-bearing, not decoration — see the contrast $finding: the numeric text is the meaning-carrier regardless of the fill/track ratio, and it was the only carrier in the two themes where that pair failed 3:1 before s175-D1."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Progress tracker",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Progress-tracker.reference.html",
+      "meta": "components/progress-tracker.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--step-fill": "step/complete",
+          "--incomplete": "progress/incomplete",
+          "--text": "text/default",
+          "--muted": "text/secondary",
+          "--page": "background/default",
+          "--on-complete": "step/on-complete",
           "--btn-border": "tertiary/border/default",
           "--btn-hover": "tertiary/background/hover",
           "--btn-dis-text": "text/disabled",
@@ -4508,19 +4603,14 @@
             "context": "text"
           },
           {
-            "fg": "progress/complete",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "text/on-inverse",
-            "bg": "progress/complete",
-            "context": "icon"
-          },
-          {
             "fg": "text/default",
             "bg": "progress/incomplete",
             "context": "text"
+          },
+          {
+            "fg": "step/on-complete",
+            "bg": "step/complete",
+            "context": "ui"
           }
         ],
         "props": [
@@ -5276,6 +5366,9 @@
           "--ink": "text/default",
           "--line": "border/subtle",
           "--data-series-1": "data/series/1",
+          "--spark-down": "rag/error-ink",
+          "--spark-up": "rag/success-ink",
+          "--spark-flat": "text/default",
           "--shadow": "elevation/functional",
           "--pop-border": "elevation/border",
           "--border-radius-surface": "border-radius/surface"
@@ -5295,6 +5388,16 @@
           },
           {
             "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error-ink",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/success-ink",
             "bg": "background/default",
             "context": "ui"
           }
@@ -5671,9 +5774,9 @@
           "--text": "text/default",
           "--text-disabled": "text/disabled",
           "--muted": "text/secondary",
-          "--complete": "progress/complete",
+          "--step-fill": "step/complete",
           "--incomplete": "progress/incomplete",
-          "--on-complete": "text/on-inverse",
+          "--on-complete": "step/on-complete",
           "--field-bg-default": "form/background/default",
           "--field-bg-hover": "form/background/hover",
           "--border-default": "form/border/default",
@@ -5716,16 +5819,6 @@
             "context": "text"
           },
           {
-            "fg": "text/on-inverse",
-            "bg": "progress/complete",
-            "context": "text"
-          },
-          {
-            "fg": "progress/complete",
-            "bg": "background/default",
-            "context": "ui"
-          },
-          {
             "fg": "form/border/default",
             "bg": "background/default",
             "context": "ui"
@@ -5764,6 +5857,11 @@
             "fg": "button/quaternary/label/default",
             "bg": "button/quaternary/background/hover",
             "context": "text"
+          },
+          {
+            "fg": "step/on-complete",
+            "bg": "step/complete",
+            "context": "ui"
           }
         ],
         "props": [

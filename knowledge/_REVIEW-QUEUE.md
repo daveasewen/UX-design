@@ -2,7 +2,7 @@
 
 > Every assertion in the component metas that is **not** directly observed canon. Formalises the in-prose confidence convention (Graphify-borrow #1). 🔴 **review** = verify before trusting; 🟡 **inferred** = reasoned, lower urgency. `asserted` items (the default) are not listed. Generated — regenerate after editing metas: `python3 knowledge/_build_review_queue.py`. Vocabulary in `_CONFIDENCE.md`; machine detail in `_REVIEW-QUEUE.json`.
 
-**Totals:** 172 items across 56 components — 159 🔴 review, 13 🟡 inferred. By category: other 65, anti-pattern 52, token-rebind 29, accessibility 26.
+**Totals:** 175 items across 57 components — 162 🔴 review, 13 🟡 inferred. By category: other 67, anti-pattern 53, token-rebind 29, accessibility 26.
 
 Most-flagged components: Confirmation (10), Account card (9), Action bar (8), Tab-bar (7), Badge (6), Eyebrow (6), Avatar (5), Button (5).
 
@@ -137,7 +137,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Summary**
 - 🔴 `accessibility.screenReader` — REVIEW (inferred): confirm amounts read naturally (e.g. '£250.00' as 'two hundred and fifty pounds'); the value carries meaning, not its right-alignment.
 
-## Anti-patterns — confirm or promote to asserted (52)
+## Anti-patterns — confirm or promote to asserted (53)
 
 **Accordion**
 - 🔴 `antiPatterns` — REVIEW (inferred): hiding required or critical information inside a collapsed panel
@@ -217,6 +217,9 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Modals**
 - 🔴 `antiPatterns` — REVIEW (inferred): stacking multiple modals/dialogs at once
 
+**Progress bar**
+- 🔴 `antiPatterns` — REVIEW (inferred): rounding the track corners — border-radius/indicator resolves to 0 and the angular rule applies
+
 **Progress tracker**
 - 🔴 `antiPatterns` — REVIEW (inferred): using a progress tracker for an unknown number of steps (use an indeterminate loading indicator instead)
 
@@ -235,7 +238,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `antiPatterns` — REVIEW (inferred): labels in UPPERCASE — house type rule is sentence case.
 - 🔴 `antiPatterns` — REVIEW (inferred): applying the pills variant's rounding/elevation to the standard bar — those are fenced to the exploratory pills variant; the standard bar stays flat/angular.
 
-## Other (65)
+## Other (67)
 
 **Account card**
 - 🔴 `tokens.$balance-type-finding` — REVIEW: the balance uses a display/amount type (30px / line-height 1.1 / tabular-nums / -0.01em) with NO dedicated typography token. The gap report flagged 'display/amount type + money-format' as missing — confirm the size/role and add a…
@@ -349,6 +352,9 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Popover**
 - 🔴 `slots.content.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
+**Progress tracker**
+- 🔴 `tokens.track-complete` — step/complete — #176 (WORKING, awaiting Dave's eye): INHERITS THE SUCCESS-ROUNDEL SYSTEM WHOLESALE. The token now aliases rag/success, the exact chain the RAG roundels bind, so each theme takes ITS OWN success colour rather than a hard-c…
+
 **Scatter plot**
 - 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 - 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
@@ -364,6 +370,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Stepper**
+- 🔴 `tokens.steps` — step/complete + progress/incomplete + background/default as the mark (was progress/complete under R-D22: 'progress is STRUCTURE — ink pair, never status colour'; REBOUND #175 by s175-D1. R-D22's ink rule now belongs to progress/complete …
 - 🔴 `slots.steps.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Summary**

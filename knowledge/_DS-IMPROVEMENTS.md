@@ -2113,3 +2113,59 @@ are already applications of it. Receipts, by instance:
 *Hard limits (both already ruled in this repo):* (1) address-without-resolver is the binds gap —
 worse than a copy; (2) dated PERIOD RECORDS are exempt — rewriting them falsifies history (#184
 ruling on this file's line 249; header-wins-over-audit). Write-once governs LIVE facts only.
+
+---
+
+## ds-0NN (FLOATED CANDIDATE, #194, 2026-08-17) — audit verdicts are BOOLEAN; a graded defect rating with an automated report is the shape Dave floated
+
+**Status:** FLOATED by Dave, 2026-08-17 (#194). **NOT ruled — promotion is Dave's alone.** Nothing
+built beyond the narrow WARN tier s194-D1 *did* rule (see below); this entry is the record of the
+larger idea, not a licence to build it.
+
+**Dave's words (#194, verbatim):** *"a future development may be a graded rating of defects rather
+than a boolean one, with an automated report, Apollo must serve new design systems as well as the
+ones we are creating, so its a system development tool and the decisions can be passed to the
+designer."*
+
+**Finding (the gap the words name).** Every contrast/a11y gate in `knowledge/` speaks a two-value
+verdict: it passes, or it fails the build. The only escape hatches are per-instance and hand-listed
+— `CONTRAST_ALLOWLIST` (disabled states), `LEGACY_THEME_EXEMPTIONS` (R-D24), `RULED_PAIR_EXCLUSIONS`
+(pairings a ruling forbids). Each is binary again: fully counted, or fully removed. A real a11y
+review does not work that way — it grades (blocker / major / minor / advisory) and hands the
+judgement to the designer. Dave's #194 case was exactly this: mono white-on-error is a genuine
+measurement (3.14:1) about a state a ruling abolished — not a build-stopper, not a non-event.
+
+**What was ALREADY ruled and built at #194 (the floor this candidate sits on, do not re-open):**
+s194-D1 gave `_build_surface_contrast_audit.py` a THREE-word severity vocabulary — `pass` / `minor`
+/ `gating` — with `minor` reachable ONLY through the named, theme-scoped pairs in
+`_contrast_utils.MINOR_PAIRS`. One row is minor today. That is a ruled carve-out, deliberately
+conservative; it is NOT the graded system described here.
+
+**The candidate (unpriced, deliberately — pricing it invites building it):**
+1. A shared severity vocabulary across the audit family (surface, indicator, icon-delta, compose),
+   not one reader — today each gate owns its own verdict words.
+2. Grading rules that are DERIVED rather than hand-listed: distance below threshold, whether the
+   pairing is reachable in a live component, whether a ruling covers it.
+3. An automated report addressed to a DESIGNER, not to CI: the decisions surfaced for a human to
+   take, which is the "passed to the designer" half of Dave's sentence and the half no current
+   artefact does.
+4. The portability requirement Dave named: this must work for a design system Apollo did not
+   author, so grading may not depend on Apollo's own token names or ruling IDs.
+
+**Blast radius if adopted:** every contrast gate's exit-code semantics, `_TEXT-CONTRAST-AUDIT.json`
+consumers, the dashboard's red counts, and the review layer. Large — which is why it is floated.
+
+**Pitfalls, replayed (Dave #165):**
+- **A grading system is a way to stop failing.** Every downgrade path is a route by which a real
+  defect becomes a warning nobody reads. Any promotion must ship with the mutation proof that a
+  genuine failure still turns the build RED (the s194-D1 arms A7b/A7c are the pattern).
+- **A vocabulary with no consumer is dormant-claim debt** ([[instrument-without-a-consumer]],
+  [[conclusions-are-debt-s129-d5]]). Grades that no report and no reader acts on are decoration.
+- **Derived grades are a generator.** [[do-not-rule-list-cannot-fence-a-generator]] — if grading
+  rules are derived, they will re-grade rows nobody asked about; the regions it owns must be named
+  BEFORE it runs.
+- **Portability is the hard half.** A rule keyed to `rag/*` or to `s1NN-D1` ids does not travel to
+  a foreign design system; the abstraction has to be over MEASUREMENTS, not over Apollo's names.
+
+**Reconciliation owed:** Dave's alone. Promote, re-scope, or park with a dated reason — nothing
+here may be enacted on the engine's own judgement (Governance, this file).

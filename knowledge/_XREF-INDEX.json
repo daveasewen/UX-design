@@ -10,7 +10,7 @@
     "focus-indicators.md"
   ],
   "totals": {
-    "components": 75,
+    "components": 76,
     "with_deprecated_bindings": 19,
     "god_node_count": 28
   },
@@ -2926,18 +2926,76 @@
       "deprecated_bindings": [],
       "deprecated_count": 0
     },
+    "Progress bar": {
+      "name": "Progress bar",
+      "category": "atom",
+      "figma_node": "",
+      "tokens": [
+        "background/default",
+        "border-radius/indicator",
+        "progress/complete",
+        "progress/incomplete",
+        "step/complete",
+        "text/default",
+        "text/secondary"
+      ],
+      "token_count": 7,
+      "god_nodes_touched": [
+        "background/default",
+        "text/default",
+        "text/secondary"
+      ],
+      "wcag_sc": [
+        "1.4.1",
+        "1.4.11",
+        "2.3.3",
+        "4.1.2",
+        "4.1.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Using this for work of unknown duration — that is Loading indicator. There is deliberately no indeterminate variant here (s173-D1)",
+          "Relying on the fill/track boundary alone to convey progress. The pair clears 3:1 in all four themes since s175-D1 (it did NOT in Legacy dark or Supercharge dark before it), but the numeric value is still what carries the meaning — always render it",
+          "Omitting the accessible name, which leaves AT announcing a percentage with no subject",
+          "Using aria-valuenow on a non-percentage scale without aria-valuetext, so AT reads '1450' with no units",
+          "Putting role=progressbar on a decorative svg as well as on its caption — the value is then announced twice",
+          "Adding a focus indicator or tabindex: a determinate progress bar is passive and must not sit in the tab order",
+          "Animating the fill without a prefers-reduced-motion block (fails the a11y gate)"
+        ],
+        "inferred_review": [
+          "REVIEW (inferred): rounding the track corners — border-radius/indicator resolves to 0 and the angular rule applies"
+        ]
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
     "Progress tracker": {
       "name": "Progress tracker",
       "category": "molecule",
       "figma_node": "Cgbtrmfp15ruNFkIAClpkI:267:10760",
       "tokens": [
+        "background/default",
         "progress/complete",
         "progress/incomplete",
-        "text/default"
+        "rag/success",
+        "step/complete",
+        "step/on-complete",
+        "text/default",
+        "text/on-inverse"
       ],
-      "token_count": 3,
+      "token_count": 8,
       "god_nodes_touched": [
-        "text/default"
+        "background/default",
+        "rag/success",
+        "text/default",
+        "text/on-inverse"
       ],
       "wcag_sc": [
         "1.3.1",
@@ -3581,18 +3639,24 @@
       "category": "organism",
       "figma_node": null,
       "tokens": [
+        "background/default",
         "border-radius/control",
         "border-radius/indicator",
         "progress/complete",
         "progress/incomplete",
         "rag/error",
+        "rag/success",
+        "step/complete",
+        "step/on-complete",
         "text/default",
         "text/on-inverse"
       ],
-      "token_count": 7,
+      "token_count": 11,
       "god_nodes_touched": [
+        "background/default",
         "border-radius/control",
         "rag/error",
+        "rag/success",
         "text/default",
         "text/on-inverse"
       ],

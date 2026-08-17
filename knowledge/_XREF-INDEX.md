@@ -2,7 +2,7 @@
 
 > One traversable record per component joining **tokens · god-nodes · WCAG SCs · guidelines · anti-patterns · deprecated bindings**. Generated derived view over the canon (Graphify-borrow #4); regenerate after editing metas/tokens/compliance KG/the guideline map: `python3 knowledge/_build_xref_index.py`. Machine-readable detail in `_XREF-INDEX.json`.
 
-**Totals:** 75 components · 19 with deprecated bindings · 28 god-nodes (blast≥7).
+**Totals:** 76 components · 19 with deprecated bindings · 28 god-nodes (blast≥7).
 
 **Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode, focus-indicators.
 
@@ -57,7 +57,8 @@
 | Pagination | mol | 12 | background/default, border/subsection, border/active, icon/default… | 1.3.1, 1.4.1, 2.4.4, 2.5.8, 4.1.2 | platform-web, horizontal-scroll | 7 |
 | Pie chart | org | 4 | background/default, border/subtle, series/1, text/default | 1.3.1, 1.4.1, 1.4.11 | — |  |
 | Popover | mol | 6 | background/default, border-radius/surface, elevation/border, elevation/functional… | 1.4.13, 2.1.2, 2.4.3, 2.4.7, 2.5.8, 4.1.2 | — |  |
-| Progress tracker | mol | 3 | text/default | 1.3.1, 1.4.1, 4.1.3 | time-based-indicators |  |
+| Progress bar | ato | 7 | background/default, text/default, text/secondary | 1.4.1, 1.4.11, 2.3.3, 4.1.2, 4.1.3 | — |  |
+| Progress tracker | mol | 8 | background/default, rag/success, text/default, text/on-inverse | 1.3.1, 1.4.1, 4.1.3 | time-based-indicators |  |
 | Quick actions | mol | 3 | icon/default, text/default, text/disabled | 1.1.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | calls-to-action, icons | 6 |
 | Reorder | ato | 3 | icon/default, rag/success, background/hover | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | icons |  |
 | Scatter plot | org | 4 | background/default, series/1, text/default | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
@@ -71,7 +72,7 @@
 | Stacked area chart | org | 3 | background/default, series/1 | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
 | Stat card | mol | 6 | border-radius/surface, border/subtle, rag/error, rag/success… | 1.3.1, 1.4.1, 1.4.11 | — |  |
 | Status indicator | ato | 9 | rag/error, rag/success, text/default, text/disabled | 1.4.1, 1.4.11, 1.4.3, 4.1.3 | tone-of-voice, time-based-indicators, icons | 1 |
-| Stepper | org | 7 | border-radius/control, rag/error, text/default, text/on-inverse | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
+| Stepper | org | 11 | background/default, border-radius/control, rag/error, rag/success… | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
 | Summary | mol | 4 | border/subsection, text/default, text/secondary, font-family/default | 1.3.1, 1.4.10, 1.4.3 | — |  |
 | Tab-bar | mol | 9 | border/subtle, elevation/functional, background/default, background/default… | 1.3.1, 1.4.1, 1.4.3, 2.4.3 | — |  |
 | Table | org | 5 | background/default, text/default | 1.3.1, 1.3.2, 1.4.10 | horizontal-scroll, typography-usage, view-controls-sort |  |

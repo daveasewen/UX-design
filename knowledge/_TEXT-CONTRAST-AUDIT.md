@@ -2,9 +2,9 @@
 
 > Each text/icon token is tested against the **worst-case (lightest) dark surface it can sit on**, resolved from the store — page default `#1A1A1A` + raised island `#1D1D1D`, or the token's own group surfaces. Since **s170** a state-suffixed ink (e.g. `.../label/default`) is paired only with its OWN state's ground — worst-case across states is a fall-back, not the rule. `on-light` tokens are excluded (light-only). Disabled-state tokens are allowlisted (reported, not gated). Text needs 4.5:1, icons/UI need 3:1.
 
-**Result:** 17 pass · 5 allowed exception(s) · **1 gating failure(s)** · 5 skipped (light-only).
+**Result:** 17 pass · 5 allowed exception(s) · **1 minor defect(s) (⚠ warn, non-gating)** · **0 gating failure(s)** · 5 skipped (light-only).
 
-**Per-theme (s169 grounds + s170 overrides):** 9 pair(s) regraded where a theme moves the ground or the ink · **0 gating failure(s)** · 0 R-D24 exempted.
+**Per-theme (s169 grounds + s170 overrides):** 9 pair(s) regraded where a theme moves the ground or the ink · **0 gating failure(s)** · 0 minor (⚠ warn) · 0 R-D24 exempted.
 
 ## Per-theme palette-resolved pairs (s157-D2 palette tier)
 
@@ -22,11 +22,17 @@
 | **Apollo Supercharge** (`apollo-supercharge`) | `palettes/rag/console-supercharge.json` | `rag/text/on-dark` | ground | `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
 | **Apollo Supercharge** (`apollo-supercharge`) | `palettes/rag/console-supercharge.json` | `rag/text/on-information` | ink+ground | `#1A1A1A` → `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
 
-## ❌ Gating failures — these FAIL the build
+## ⚠ Minor defects — measured, reported, NOT gating (s194-D1)
 
-| Token | Dark value | Surface | Contrast | Need | Context |
-|---|---|---|---|---|---|
-| `rag/text/on-dark` | `#FFFFFF` | `#F6604C` (rag) | **3.14:1** | 4.5:1 | text |
+> **s194-D1 (Dave, #194):** *"this should be a warning not an error. if it was a proper ally review it would be a minor defect"*. A pairing a ruling ABOLISHES is not deleted from this report and is not a build failure either — it is measured, printed with its real ratio, and stamped with the ruling that downgrades it. These rows do NOT affect the exit code.
+
+| Theme | Token | Ink | Ground | Contrast | Need | Verdict | Ruling |
+|---|---|---|---|---|---|---|---|
+| `apollo-mono` | `rag/text/on-dark` | `#FFFFFF` | `rag/error-background` `#F6604C` | **3.14:1** | 4.5:1 | ⚠ minor | `s194-D1` |
+
+Why each is minor:
+
+- `rag/text/on-dark` × `rag/error-background` under `apollo-mono` — s149-D1 (Dave; ENACTED #158, APPROVED #159) + s194-D1 (Dave #194: "white-on-error shouldn't exist anyway, the glyphs in mono always the default dark ink in both dark and light mode"): under MONO the error fill #F6604C carries the dark ink camp #1A1A1A in BOTH modes, so white-on-error is an ABOLISHED STATE, not a live pairing. The measure stays on the record — s194-D1: "this should be a warning not an error… a proper a11y review would call it a minor defect" — so the row is reported at WARN and does NOT gate. Scope is MONO ONLY: Legacy (#A8000B), Console and Supercharge (#B92F1E) darken the error fill and DO carry white, so their rows stay measured and GATING.
 
 ## Allowed exceptions (reported, not gated)
 
@@ -66,7 +72,7 @@
 | `icon/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `icon/default-reverse` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `icon/disabled` | `#808080` | `#1D1D1D` | 4.27:1 | ✅ OK |
-| `rag/text/on-dark` | `#FFFFFF` | `#F6604C` | 3.14:1 | ❌ POOR |
+| `rag/text/on-dark` | `#FFFFFF` | `#F6604C` | 3.14:1 | ⚠ minor (ruled s194-D1) |
 | `rag/text/on-information` | `#1A1A1A` | `#F6604C` | 5.55:1 | ✅ OK |
 | `tertiary/text/disabled` | `#808080` | `#484848` | 2.32:1 | 🟡 ALLOWED |
 | `tertiary/text/pressed` | `#FFFFFF` | `#1A1A1A` | 17.4:1 | ✅ OK |

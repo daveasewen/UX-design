@@ -7,11 +7,13 @@
     "text_icon_tokens": 23,
     "ok": 17,
     "allowed_exceptions": 5,
-    "poor_contrast": 1,
+    "poor_contrast": 0,
+    "minor_defects": 1,
     "skipped_light_only": 5,
     "per_theme_regraded": 9,
     "per_theme_poor_contrast": 0,
-    "per_theme_exempted": 0
+    "per_theme_exempted": 0,
+    "per_theme_minor_defects": 0
   },
   "per_theme": {
     "$description": "s169+s170 (ruling C'): pairs whose GROUND is palette-owned (s157-D2 tier, single-sourced by s158-D4) or whose INK the theme re-binds in its own overrideSet, regraded per theme via tokens/themes/_themes.json -> ragPalette + overrideSet. Rows appear only where the theme's resolved surface or ink DIFFERS from the base pass, so the activeBase (apollo-mono) reading is not double-counted; 'moved' names which of ink/ground/ink+ground shifted and 'ink_source' says whether the ink came from the theme's override set. POOR_CONTRAST rows GATE on the same terms as the base pass; EXEMPTED = an R-D24 Legacy pair matched in _contrast_utils.LEGACY_THEME_EXEMPTIONS (documented, never counted as a pass).",
@@ -36,6 +38,9 @@
         "contrast_ratio": 5.22,
         "threshold": 3.0,
         "context": "ui",
+        "severity": "pass",
+        "ruling": null,
+        "minor_reason": null,
         "theme": "apollo-legacy",
         "theme_label": "Apollo Legacy",
         "palette": "palettes/rag/legacy.json",
@@ -58,6 +63,9 @@
         "contrast_ratio": 5.22,
         "threshold": 3.0,
         "context": "ui",
+        "severity": "pass",
+        "ruling": null,
+        "minor_reason": null,
         "theme": "apollo-legacy",
         "theme_label": "Apollo Legacy",
         "palette": "palettes/rag/legacy.json",
@@ -80,6 +88,9 @@
         "contrast_ratio": 7.87,
         "threshold": 4.5,
         "context": "text",
+        "severity": "pass",
+        "ruling": null,
+        "minor_reason": null,
         "theme": "apollo-legacy",
         "theme_label": "Apollo Legacy",
         "palette": "palettes/rag/legacy.json",
@@ -102,6 +113,9 @@
         "contrast_ratio": 7.87,
         "threshold": 4.5,
         "context": "text",
+        "severity": "pass",
+        "ruling": null,
+        "minor_reason": null,
         "theme": "apollo-legacy",
         "theme_label": "Apollo Legacy",
         "palette": "palettes/rag/legacy.json",
@@ -124,6 +138,9 @@
         "contrast_ratio": 6.07,
         "threshold": 4.5,
         "context": "text",
+        "severity": "pass",
+        "ruling": null,
+        "minor_reason": null,
         "theme": "apollo-legacy",
         "theme_label": "Apollo Legacy",
         "palette": "palettes/rag/legacy.json",
@@ -146,6 +163,9 @@
         "contrast_ratio": 6.02,
         "threshold": 4.5,
         "context": "text",
+        "severity": "pass",
+        "ruling": null,
+        "minor_reason": null,
         "theme": "apollo-console",
         "theme_label": "Apollo Console",
         "palette": "palettes/rag/console-supercharge.json",
@@ -168,6 +188,9 @@
         "contrast_ratio": 6.02,
         "threshold": 4.5,
         "context": "text",
+        "severity": "pass",
+        "ruling": null,
+        "minor_reason": null,
         "theme": "apollo-console",
         "theme_label": "Apollo Console",
         "palette": "palettes/rag/console-supercharge.json",
@@ -190,6 +213,9 @@
         "contrast_ratio": 6.02,
         "threshold": 4.5,
         "context": "text",
+        "severity": "pass",
+        "ruling": null,
+        "minor_reason": null,
         "theme": "apollo-supercharge",
         "theme_label": "Apollo Supercharge",
         "palette": "palettes/rag/console-supercharge.json",
@@ -212,6 +238,9 @@
         "contrast_ratio": 6.02,
         "threshold": 4.5,
         "context": "text",
+        "severity": "pass",
+        "ruling": null,
+        "minor_reason": null,
         "theme": "apollo-supercharge",
         "theme_label": "Apollo Supercharge",
         "palette": "palettes/rag/console-supercharge.json",
@@ -227,31 +256,44 @@
         "allowlist_reason": null
       }
     ],
-    "poor_contrast": []
+    "poor_contrast": [],
+    "minor_defects": []
   },
-  "poor_contrast": [
-    {
-      "token": "rag/text/on-dark",
-      "dark_value": "#FFFFFF",
-      "surface": "#F6604C",
-      "surface_label": "rag",
-      "contrast_ratio": 3.14,
-      "threshold": 4.5,
-      "context": "text",
-      "status": "POOR_CONTRAST",
-      "allowlist_reason": null
-    }
-  ],
+  "poor_contrast": [],
+  "minor_defects": {
+    "$description": "s194-D1 (Dave, #194) WARN tier: pairs a ruling ABOLISHES stay MEASURED and REPORTED with their real ratio, stamped with the ruling that downgrades them, and do NOT gate the build. Dave #194: 'this should be a warning not an error. if it was a proper ally review it would be a minor defect'. Reachable only via _contrast_utils.MINOR_PAIRS — a named pair under a named theme; every other row keeps its previous verdict. Severity vocabulary: pass / minor / gating.",
+    "rows": [
+      {
+        "token": "rag/text/on-dark",
+        "dark_value": "#FFFFFF",
+        "surface": "#F6604C",
+        "surface_label": "rag",
+        "surface_token": "rag/error-background",
+        "contrast_ratio": 3.14,
+        "threshold": 4.5,
+        "context": "text",
+        "status": "MINOR",
+        "severity": "minor",
+        "ruling": "s194-D1",
+        "minor_reason": "s149-D1 (Dave; ENACTED #158, APPROVED #159) + s194-D1 (Dave #194: \"white-on-error shouldn't exist anyway, the glyphs in mono always the default dark ink in both dark and light mode\"): under MONO the error fill #F6604C carries the dark ink camp #1A1A1A in BOTH modes, so white-on-error is an ABOLISHED STATE, not a live pairing. The measure stays on the record — s194-D1: \"this should be a warning not an error… a proper a11y review would call it a minor defect\" — so the row is reported at WARN and does NOT gate. Scope is MONO ONLY: Legacy (#A8000B), Console and Supercharge (#B92F1E) darken the error fill and DO carry white, so their rows stay measured and GATING.",
+        "allowlist_reason": null
+      }
+    ]
+  },
   "allowed_exceptions": [
     {
       "token": "button/primary/label/disabled",
       "dark_value": "#808080",
       "surface": "#484848",
       "surface_label": "button/primary",
+      "surface_token": "button/primary/background/disabled",
       "contrast_ratio": 2.32,
       "threshold": 3.0,
       "context": "ui",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     {
@@ -259,10 +301,14 @@
       "dark_value": "#808080",
       "surface": "#484848",
       "surface_label": "button/secondary",
+      "surface_token": "button/secondary/background/disabled",
       "contrast_ratio": 2.32,
       "threshold": 3.0,
       "context": "ui",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     {
@@ -270,10 +316,14 @@
       "dark_value": "#808080",
       "surface": "#484848",
       "surface_label": "tertiary",
+      "surface_token": "tertiary/background/disabled",
       "contrast_ratio": 2.32,
       "threshold": 4.5,
       "context": "text",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     {
@@ -281,10 +331,14 @@
       "dark_value": "#808080",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 4.27,
       "threshold": 4.5,
       "context": "text",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     {
@@ -292,10 +346,14 @@
       "dark_value": "#808080",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 4.27,
       "threshold": 4.5,
       "context": "text",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled label ink — visible ghost, exempt from WCAG 1.4.3 (inactive UI component)."
     }
   ],
@@ -332,10 +390,14 @@
       "dark_value": "#333333",
       "surface": "#FAFAFA",
       "surface_label": "button/primary",
+      "surface_token": "button/primary/background/default",
       "contrast_ratio": 12.1,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "button/primary/label/default": {
@@ -343,10 +405,14 @@
       "dark_value": "#333333",
       "surface": "#FAFAFA",
       "surface_label": "button/primary",
+      "surface_token": "button/primary/background/default",
       "contrast_ratio": 12.1,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "button/primary/label/disabled": {
@@ -354,10 +420,14 @@
       "dark_value": "#808080",
       "surface": "#484848",
       "surface_label": "button/primary",
+      "surface_token": "button/primary/background/disabled",
       "contrast_ratio": 2.32,
       "threshold": 3.0,
       "context": "ui",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     "button/quaternary/label/default": {
@@ -365,10 +435,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#232323",
       "surface_label": "button/quaternary",
+      "surface_token": "button/quaternary/background/hover",
       "contrast_ratio": 15.72,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "button/quaternary/label/disabled": {
@@ -376,10 +450,14 @@
       "dark_value": "#808080",
       "surface": "#232323",
       "surface_label": "button/quaternary",
+      "surface_token": "button/quaternary/background/hover",
       "contrast_ratio": 3.98,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "button/secondary/label/default": {
@@ -387,10 +465,14 @@
       "dark_value": "#000000",
       "surface": "#808080",
       "surface_label": "button/secondary",
+      "surface_token": "button/secondary/background/default",
       "contrast_ratio": 5.32,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "button/secondary/label/disabled": {
@@ -398,10 +480,14 @@
       "dark_value": "#808080",
       "surface": "#484848",
       "surface_label": "button/secondary",
+      "surface_token": "button/secondary/background/disabled",
       "contrast_ratio": 2.32,
       "threshold": 3.0,
       "context": "ui",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     "button/tertiary/label/default": {
@@ -409,10 +495,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#232323",
       "surface_label": "button/tertiary",
+      "surface_token": "button/tertiary/background/hover",
       "contrast_ratio": 15.72,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "button/tertiary/label/disabled": {
@@ -420,10 +510,14 @@
       "dark_value": "#808080",
       "surface": "#232323",
       "surface_label": "button/tertiary",
+      "surface_token": "button/tertiary/background/hover",
       "contrast_ratio": 3.98,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "data/control/label-disabled/color": {
@@ -431,10 +525,14 @@
       "dark_value": "#808080",
       "surface": "#1D1D1D",
       "surface_label": "data/control",
+      "surface_token": null,
       "contrast_ratio": 4.27,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "data/text/on-series": {
@@ -442,10 +540,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#1D1D1D",
       "surface_label": "data",
+      "surface_token": null,
       "contrast_ratio": 16.86,
       "threshold": 4.5,
       "context": "text",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "icon/default": {
@@ -453,10 +555,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 16.86,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "icon/default-reverse": {
@@ -464,10 +570,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 16.86,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "icon/disabled": {
@@ -475,10 +585,14 @@
       "dark_value": "#808080",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 4.27,
       "threshold": 3.0,
       "context": "ui",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "rag/text/on-dark": {
@@ -486,10 +600,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#F6604C",
       "surface_label": "rag",
+      "surface_token": "rag/error-background",
       "contrast_ratio": 3.14,
       "threshold": 4.5,
       "context": "text",
-      "status": "POOR_CONTRAST",
+      "status": "MINOR",
+      "severity": "minor",
+      "ruling": "s194-D1",
+      "minor_reason": "s149-D1 (Dave; ENACTED #158, APPROVED #159) + s194-D1 (Dave #194: \"white-on-error shouldn't exist anyway, the glyphs in mono always the default dark ink in both dark and light mode\"): under MONO the error fill #F6604C carries the dark ink camp #1A1A1A in BOTH modes, so white-on-error is an ABOLISHED STATE, not a live pairing. The measure stays on the record — s194-D1: \"this should be a warning not an error… a proper a11y review would call it a minor defect\" — so the row is reported at WARN and does NOT gate. Scope is MONO ONLY: Legacy (#A8000B), Console and Supercharge (#B92F1E) darken the error fill and DO carry white, so their rows stay measured and GATING.",
       "allowlist_reason": null
     },
     "rag/text/on-information": {
@@ -497,10 +615,14 @@
       "dark_value": "#1A1A1A",
       "surface": "#F6604C",
       "surface_label": "rag",
+      "surface_token": "rag/error-background",
       "contrast_ratio": 5.55,
       "threshold": 4.5,
       "context": "text",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "tertiary/text/disabled": {
@@ -508,10 +630,14 @@
       "dark_value": "#808080",
       "surface": "#484848",
       "surface_label": "tertiary",
+      "surface_token": "tertiary/background/disabled",
       "contrast_ratio": 2.32,
       "threshold": 4.5,
       "context": "text",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     "tertiary/text/pressed": {
@@ -519,10 +645,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#1A1A1A",
       "surface_label": "tertiary",
+      "surface_token": "tertiary/background/active",
       "contrast_ratio": 17.4,
       "threshold": 4.5,
       "context": "text",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "text/default": {
@@ -530,10 +660,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 16.86,
       "threshold": 4.5,
       "context": "text",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "text/disabled": {
@@ -541,10 +675,14 @@
       "dark_value": "#808080",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 4.27,
       "threshold": 4.5,
       "context": "text",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     "text/on-disabled": {
@@ -552,10 +690,14 @@
       "dark_value": "#808080",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 4.27,
       "threshold": 4.5,
       "context": "text",
       "status": "ALLOWED",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": "Disabled label ink — visible ghost, exempt from WCAG 1.4.3 (inactive UI component)."
     },
     "text/reverse": {
@@ -563,10 +705,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 16.86,
       "threshold": 4.5,
       "context": "text",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     },
     "text/secondary": {
@@ -574,10 +720,14 @@
       "dark_value": "#FFFFFF",
       "surface": "#1D1D1D",
       "surface_label": "page/raised",
+      "surface_token": null,
       "contrast_ratio": 16.86,
       "threshold": 4.5,
       "context": "text",
       "status": "OK",
+      "severity": "pass",
+      "ruling": null,
+      "minor_reason": null,
       "allowlist_reason": null
     }
   }

@@ -8,7 +8,7 @@
 
 | SC | Result | Granularity | Coverage |
 |---|---|---|---|
-| 1.4.11 | ✅ pass | component | 29/30 applies_to components have a bound audited token or a gated snippet contrastPair |
+| 1.4.11 | ✅ pass | component | 30/31 applies_to components have a bound audited token or a gated snippet contrastPair |
 | 1.4.3 | ❌ fail | component | 30/30 applies_to components have a bound audited token |
 | 2.3.3 | ✅ pass | component | — |
 | 2.5.8 | ✅ pass | component | — |
@@ -17,7 +17,7 @@
 
 ### 1.4.11
 
-29/30 applies_to components have a bound audited token or a gated snippet contrastPair. 29 pass, 0 fail, 1 not_covered.
+30/31 applies_to components have a bound audited token or a gated snippet contrastPair. 30 pass, 0 fail, 1 not_covered.
 
 **Not covered** (applies_to claims this SC but the blast-radius scan found no bound audited token — either the component genuinely doesn't touch this colour category, or the scan's meta-text matching missed a prose-only reference): Alert
 
@@ -30,7 +30,8 @@
 | Bullet chart | `Chart-bullet.reference.html` | ✅ pass | data/series/1 on background/default (light) = 5.26:1 (pass); data/series/1 on background/default (dark) = 3.31:1 (pass) |
 | Candlestick chart | `Chart-candlestick.reference.html` | ✅ pass | data/delta/gain on background/default (light) = 4.61:1 (pass); data/delta/gain on background/default (dark) = 5.16:1 (pass); data/delta/loss on background/default (light) = 6.02:1 (pass); data/delta/loss on background/default (dark) = 3.66:1 (pass) |
 | Links | `Links.reference.html` | ✅ pass | button/primary/background/default on background/default (light) = 17.4:1 (pass); button/primary/background/default on background/default (dark) = 16.67:1 (pass); icon/default on background/default (light) = 17.4:1 (pass); icon/default on background/default (dark) = 17.4:1 (pass) |
-| Sparkline | `Chart-sparkline.reference.html` | ✅ pass | data/series/1 on background/default (light) = 5.26:1 (pass); data/series/1 on background/default (dark) = 3.31:1 (pass) |
+| Progress bar | `Progress-bar.reference.html` | ✅ pass | progress/complete on background/default (light) = 17.4:1 (pass); progress/complete on background/default (dark) = 17.4:1 (pass) |
+| Sparkline | `Chart-sparkline.reference.html` | ✅ pass | data/series/1 on background/default (light) = 5.26:1 (pass); data/series/1 on background/default (dark) = 3.31:1 (pass); rag/error-ink on background/default (light) = 5.09:1 (pass); rag/error-ink on background/default (dark) = 5.55:1 (pass); rag/success-ink on background/default (light) = 5.09:1 (pass); rag/success-ink on background/default (dark) = 8.77:1 (pass) |
 | Stacked area chart | `Chart-stacked-area.reference.html` | ✅ pass | data/series/1 on background/default (light) = 5.26:1 (pass); data/series/1 on background/default (dark) = 3.31:1 (pass); data/series/2 on background/default (light) = 5.04:1 (pass); data/series/2 on background/default (dark) = 3.46:1 (pass); data/series/3 on background/default (light) = 4.61:1 (pass); data/series/3 on background/default (dark) = 3.78:1 (pass); data/series-high-contrast/1 on background/default (light) = 8.18:1 (pass); data/series-high-contrast/1 on background/default (dark) = 8.13:1 (pass); data/series-high-contrast/2 on background/default (light) = 6.4:1 (pass); data/series-high-contrast/2 on background/default (dark) = 8.5:1 (pass); data/series-high-contrast/3 on background/default (light) = 7.2:1 (pass); data/series-high-contrast/3 on background/default (dark) = 8.02:1 (pass) |
 
 ### 1.4.3

@@ -326,6 +326,10 @@ _(174 of 456 exhaustive combos already clear 4.5:1; 32 transparent/composite sur
 | Amount-input.reference.html | rag/error | background/default | dark | 5.55 | pass-3(roundel) |
 | Chart-bar.reference.html | rag/error | background/default | light | 3.14 | pass-3(roundel) |
 | Chart-bar.reference.html | rag/error | background/default | dark | 5.55 | pass-3(roundel) |
+| Chart-sparkline.reference.html | rag/error-ink | background/default | light | 5.09 | pass-3(roundel) |
+| Chart-sparkline.reference.html | rag/error-ink | background/default | dark | 5.55 | pass-3(roundel) |
+| Chart-sparkline.reference.html | rag/success-ink | background/default | light | 5.09 | pass-3(roundel) |
+| Chart-sparkline.reference.html | rag/success-ink | background/default | dark | 8.77 | pass-3(roundel) |
 | Date-picker.reference.html | rag/error | background/default | light | 3.14 | pass-3(roundel) |
 | Date-picker.reference.html | rag/error | background/default | dark | 5.55 | pass-3(roundel) |
 | Date-range-picker.reference.html | rag/error | background/default | light | 3.14 | pass-3(roundel) |

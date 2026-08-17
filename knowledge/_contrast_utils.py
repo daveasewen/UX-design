@@ -156,6 +156,23 @@ def legacy_exemption(token_name, ground_name):
             return f"{LEGACY_THEME_EXEMPTIONS['ruling']}: {why}"
     return None
 
+# --- s194-D1 (Dave, #194): THEME-SCOPED entries. ------------------------------
+# Until #194 this table was prefix-keyed ONLY, so any entry added for one theme
+# blinded all four. A value may now be either:
+#   - a plain string  -> the exclusion applies under EVERY theme (unchanged), or
+#   - a dict {"themes": [<theme key>, ...], "reason": "..."} -> the entry applies
+#     ONLY under the named themes; every other theme is unaffected.
+# Theme keys are the tokens/themes/_themes.json keys (apollo-mono is activeBase,
+# i.e. the base pass). Callers that do not pass a theme get the theme-agnostic
+# entries only — a scoped entry never silently widens.
+#
+# ⚠ s194-D1 also RULED the SHAPE of the mono white-on-error decision: it is NOT
+# an exclusion. Dave: "this should be a warning not an error. if it was a proper
+# ally review it would be a minor defect". A pair a ruling abolishes stays
+# MEASURED and REPORTED — see MINOR_PAIRS below, which uses this same scoping
+# vocabulary. Removing a row from the report is reserved for pairings that are
+# physically impossible (light-only inks, inverting surfaces), never for ones a
+# ruling merely forbids.
 RULED_PAIR_EXCLUSIONS = {
     "rag/text": {
         "rag/warning-background":
@@ -176,11 +193,108 @@ RULED_PAIR_EXCLUSIONS = {
     },
 }
 
-def _excluded_surfaces(token_name):
-    for prefix, pairs in RULED_PAIR_EXCLUSIONS.items():
-        if token_name.startswith(prefix):
-            return pairs
-    return {}
+def _theme_applies(spec, theme):
+    """s194-D1 scoping vocabulary, shared by RULED_PAIR_EXCLUSIONS and MINOR_PAIRS.
+
+    A plain-string spec is theme-agnostic (applies everywhere). A dict spec
+    applies only under the theme keys it names; theme=None never matches a
+    scoped entry, so a scoped entry can never silently widen.
+    """
+    if not isinstance(spec, dict):
+        return True
+    return theme is not None and theme in spec.get("themes", ())
+
+
+def _excluded_surfaces(token_name, theme=None):
+    """Surfaces this token may not be paired with, under `theme`.
+
+    Defect fixed at s194 (#194): FIRST-MATCH RETURN — the old body returned on
+    the first matching prefix, so a more specific family key
+    ('rag/text/on-dark') silently DROPPED the broader family's entries
+    ('rag/text'). Entries now ACCUMULATE across every matching prefix (more
+    specific keys are applied last and win on a genuine clash).
+
+    `theme` selects theme-scoped entries via _theme_applies (s194-D1 vocabulary).
+    Returns {surface-token: reason string}.
+    """
+    out = {}
+    for prefix, pairs in sorted(RULED_PAIR_EXCLUSIONS.items(), key=lambda kv: len(kv[0])):
+        if not token_name.startswith(prefix):
+            continue
+        for surface, spec in pairs.items():
+            if not _theme_applies(spec, theme):
+                continue
+            out[surface] = spec["reason"] if isinstance(spec, dict) else spec
+    return out
+
+
+# --- s194-D1 (Dave, #194): the WARN (minor-defect) tier. ----------------------
+# A pair a ruling ABOLISHES is not a phantom to be deleted from the report and
+# not a gating error either — it is a MINOR DEFECT: measured, reported with its
+# real ratio, stamped with the ruling that downgrades it, and NON-GATING.
+# Dave, #194: "this should be a warning not an error. if it was a proper ally
+# review it would be a minor defect."
+#
+# Deliberately NOT a general grading system. Only pairs a ruling names appear
+# here; every other row keeps the verdict it has always had. (The graded /
+# automated defect-rating idea Dave floated at #194 is FLOATED in
+# _DS-IMPROVEMENTS.md, promotion Dave's alone — do not pre-build it here.)
+#
+# Same shape as RULED_PAIR_EXCLUSIONS: {token prefix: {ground token: spec}}, and
+# the same s194-D1 theme scoping via _theme_applies.
+MINOR_PAIRS = {
+    "rag/text/on-dark": {
+        "rag/error-background": {
+            "themes": ["apollo-mono"],
+            "ruling": "s194-D1",
+            "reason":
+                "s149-D1 (Dave; ENACTED #158, APPROVED #159) + s194-D1 (Dave #194: "
+                "\"white-on-error shouldn't exist anyway, the glyphs in mono always the "
+                "default dark ink in both dark and light mode\"): under MONO the error "
+                "fill #F6604C carries the dark ink camp #1A1A1A in BOTH modes, so "
+                "white-on-error is an ABOLISHED STATE, not a live pairing. The measure "
+                "stays on the record — s194-D1: \"this should be a warning not an error… "
+                "a proper a11y review would call it a minor defect\" — so the row is "
+                "reported at WARN and does NOT gate. Scope is MONO ONLY: Legacy "
+                "(#A8000B), Console and Supercharge (#B92F1E) darken the error fill and "
+                "DO carry white, so their rows stay measured and GATING.",
+        },
+    },
+}
+
+
+def minor_pair(token_name, ground_names, theme=None):
+    """Return the s194-D1 WARN spec for this pair, or None.
+
+    `ground_names` is every token name in the theme's surface map carrying the
+    resolved ground hex (a hex is usually owned by more than one name — e.g.
+    #F6604C is rag/error, rag/error-ink, rag/error-glyph AND rag/error-background).
+    A ruling names the ground it means; a match on that name is the hit.
+
+    Returns a dict {ruling, reason, surface_token} — never mutates the table.
+    """
+    names = set(ground_names or ())
+    hit = None
+    for prefix, pairs in sorted(MINOR_PAIRS.items(), key=lambda kv: len(kv[0])):
+        if not token_name.startswith(prefix):
+            continue
+        for ground, spec in pairs.items():
+            if ground in names and _theme_applies(spec, theme):
+                hit = {"ruling": spec["ruling"], "reason": spec["reason"],
+                       "surface_token": ground}
+    return hit
+
+
+def ground_names_for(token_name, surface_hex, surfaces):
+    """Every surface-token name carrying `surface_hex` within this token's group.
+
+    Used to name the ground a row was graded against (and to test it against
+    MINOR_PAIRS). Group-scoped so an unrelated token that happens to share the
+    hex cannot claim the row (the s170 wrong-name defect).
+    """
+    grp = _group_prefix(token_name)
+    return sorted(nm for nm, hx in (surfaces or {}).items()
+                  if hx == surface_hex and (not grp or nm.startswith(grp + "/")))
 
 def is_light_only(token_name):
     """Tokens designed for light surfaces only (e.g. */on-light) are not used in
@@ -223,7 +337,7 @@ def _group_prefix(token_name):
             return token_name.split(marker)[0]
     return ""
 
-def resolve_dark_surface(token_name, surfaces, default_dark, raised_dark):
+def resolve_dark_surface(token_name, surfaces, default_dark, raised_dark, theme=None):
     """Return (surface_hex, label) — the worst-case (lightest) dark surface this
     token must stay legible on — or (None, reason) to skip.
 
@@ -242,7 +356,7 @@ def resolve_dark_surface(token_name, surfaces, default_dark, raised_dark):
     if token_name == "text/on-success":
         return (None, "sits ONLY on rag/success-background (the R-D14 green success fill), never the page/raised ground; validated per-component via the Button success contrast pair (black on green = 7.65:1 light / 7.45:1 dark) — same shape as text/on-action above")
     grp = _group_prefix(token_name)
-    excluded = _excluded_surfaces(token_name)
+    excluded = _excluded_surfaces(token_name, theme)
     candidates = [hx for nm, hx in surfaces.items()
                   if grp and nm.startswith(grp + "/") and nm not in excluded]
     if not candidates:

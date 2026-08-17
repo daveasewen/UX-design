@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 68/75 components clean · 7 leak a primitive. Store: 192 semantic colour tokens (light+dark), 65 flat (dark==light), 225 primitives.
+**Coverage:** 69/76 components clean · 7 leak a primitive. Store: 198 semantic colour tokens (light+dark), 68 flat (dark==light), 225 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -68,7 +68,8 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Pagination | ✅ clean | — | `form/background/default` |
 | Pie chart | ✅ clean | — | `data/series/1` |
 | Popover | ✅ clean | — | — |
-| Progress tracker | ✅ clean | — | — |
+| Progress bar | ✅ clean | — | `step/complete` |
+| Progress tracker | ✅ clean | — | `rag/success`, `step/complete`, `step/on-complete` |
 | Quick actions | ✅ clean | — | — |
 | Reorder | ✅ clean | — | `rag/success` |
 | Scatter plot | ✅ clean | — | `data/series/1` |
@@ -82,7 +83,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Stacked area chart | ✅ clean | — | `data/series/1`, `data/text/on-series` |
 | Stat card | ✅ clean | — | `rag/error`, `rag/success` |
 | Status indicator | ✅ clean | — | `rag/error`, `rag/success`, `rag/warning` |
-| Stepper | ✅ clean | — | `rag/error` |
+| Stepper | ✅ clean | — | `rag/error`, `rag/success`, `step/complete`, `step/on-complete` |
 | Summary | ✅ clean | — | — |
 | Tab-bar | ✅ clean | — | — |
 | Table | ✅ clean | — | — |

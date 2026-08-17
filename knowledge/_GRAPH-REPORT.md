@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 76 components · 1016 tokens defined · 112 tokens referenced by components · compliance: 31 rules x 75 components (31 SCs).
+**Totals:** 76 components · 1016 tokens defined · 112 tokens referenced by components · compliance: 31 rules x 76 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 

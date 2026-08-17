@@ -81,11 +81,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **54 items · 34 live · 19 Dave's · 15 mine · 35 carry a stated close condition · **19 UNCONDITIONED**.**
+> **55 items · 35 live · 20 Dave's · 15 mine · 36 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (19) — 14 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (20) — 15 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -100,6 +100,7 @@
 > - `G5` **Four advisory size caps as a set (_capture_gate.py:4843–4858** — *closes when:* Re-measured in real (G9 first), then Dave ratifies the set in one pass
 > - `G6` **DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING = False** — *closes when:* Dave rules the streak number + per-candidate OFFLOAD/TRIM/KEEP calls
 > - `G9` **ds-023 re-measurement programme** — *closes when:* Dave rules the programme
+> - `W-34` **Apollo-on-Claude architecture brief awaits Dave's sitting (5 decisions)** — *closes when:* Dave rules D1-D5 in notes/_briefs/2026-08-17-194-apollo-on-claude-brief.md (lane priority, public shape, engine boundary, branding, Memento scope) or drops the lane
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -113,7 +114,7 @@
 
 ---
 
-*(Chain ends. **22,443 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **22,565 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 65,971 real and stays whole for retrieval; you have paid for
 34% of it, and that is the intended figure, not a shortfall.)*
