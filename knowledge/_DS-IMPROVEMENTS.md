@@ -2016,3 +2016,100 @@ rows added, 119/119 label join verified). ⬛ **PICKED, NOT RULED — Dave's:** 
 **⚠ Related, and deliberately left open:** `knowledge/_DS-IMPROVEMENTS.md:249` still names the OLD vocabulary
 in prose. It is a **period reference describing the #122 defect as it was found**, not a consumer, and
 rewriting it would falsify a dated record. Dave was shown it at #184 and **did not rule**; it stands.
+
+## ds-0NN (PARKED CANDIDATE, #192, 2026-08-17) — builder-decision data is CARRIED but PROSE-SHAPED: a chart's analytical intent (and its kin) cannot be looked up, only inferred
+
+**Status:** PARKED by Dave, 2026-08-17 (#192): *"park this as a priced candidate … leave receipts
+for another lane to reconcile."* No meta change, no gate, no generator change made.
+
+**Finding (measured, #192).** Surveyed all **77** `knowledge/components/*.meta.json`. The decision
+data a builder needs largely EXISTS — `purpose` (77/77), `antiPatterns` (77/77), `relationships`
+with `livesInside`/`mustNotNeighbour`/`commonPatterns` (77/77) and `triggeredBy` (26), `variants[].use`
+(66) — but it is prose-shaped. Concrete instance (Dave's example): no field says a butterfly chart
+answers COMPARISON while a candlestick answers CHANGE-OVER-TIME; the fact is in `purpose` prose across
+the 7 Chart metas, so "which chart for this dataset?" is inference, not lookup. You cannot ask
+machinery *"list every chart whose job is comparison"*. Same shape recurs beyond intent: sibling
+redirects ("use Alert instead") live inside `antiPatterns` strings, not as a structured pointer;
+charts carry no data-shape field (series count / relationship arity).
+
+**Research receipts (#192, web, 2026-08-17):**
+- The intent vocabulary is SETTLED in the field — comparison · change-over-time · distribution ·
+  relationship · composition. Adopt, never invent. FT Visual Vocabulary is the practitioner canon
+  (9-category superset): https://data.europa.eu/apps/data-visualisation-guide/choosing-charts-the-message
+  · academic convergence: https://pmc.ncbi.nlm.nih.gov/articles/PMC7861272/
+- Machine consumption of such fields exists but only in full recommender engines — Draco (UW,
+  constraints + learned weights, https://idl.uw.edu/draco, paper
+  https://idl.cs.washington.edu/files/2019-Draco-InfoVis.pdf) and TaskVis
+  (https://shenleixian.github.io/pdf/TaskVis_EuroVis.pdf). Different weight class; not our shape.
+- Practitioner design systems (IBM Carbon https://carbondesignsystem.com/data-visualization/chart-types/,
+  FT) ship this as human guidance pages, NOT metadata fields. A structured field would be ahead of
+  the field — engineered, but with no borrowed convention beyond the vocabulary itself.
+
+**The candidate, priced (planning estimates, PICKED not derived [[planning-estimate-is-not-a-measurement]]):**
+1. **`intent` + `notFor`** on the 7 Chart metas, fixed 5-word vocabulary above — ~10 lines/file,
+   S-band. Converts chart choice from inference to lookup.
+2. **Structured sibling redirect** — e.g. `insteadUse: {"error toast": "Alert"}` alongside the
+   antiPatterns prose — vocabulary = existing component names, checkable against the meta set. M-band
+   across 77 files IF widened beyond charts; charts+status family alone is S-band.
+3. **NO gate, NO generator change** until a consumer exists — [[instrument-without-a-consumer]] +
+   ADR-0013 ruling 3 (accrete from observed duplication, never speculation). Natural first consumer:
+   a builder brief or the review layer; if an agent ever picks charts, the vocabulary check is built
+   WITH that agent, not before.
+
+**Blast radius if adopted:** 7 Chart metas (candidate 1) / up to 77 metas (candidate 2); zero token,
+zero snippet, zero canon change. Gates unaffected until a consumer lands.
+
+**Pitfall, replayed:** a field nobody reads is dormant-claim debt ([[conclusions-are-debt-s129-d5]]).
+Mitigation: the 5-word vocabulary is stable (decades old in the field), so it ages slowly — unlike
+binds addresses. The reconciling lane should decide consumer-first vs field-first, then move.
+
+**Reconciliation owed by another lane (Dave's instruction):** pick candidate scope (1 only / 1+2),
+name the first consumer, then land field + consumer together or re-park with a dated reason.
+
+**ARCHITECTURE RECOMMENDATION (recorded #192 at Dave's instruction — FLOATED, not ruled):**
+the intent vocabulary must live as a KG ENTITY with metas carrying ADDRESSES into it — never
+inline strings, never data inside the generator. The pattern to copy is the alias hop
+(`_STANDARDS.md` §1: component var → type-group → semantic role → value; one entity, many
+references). Concretely: the 5 intents live ONCE (section in `component-types.json` or a small
+`intent` store beside it, each carrying definition + notFor + FT provenance); `Chart-*.meta.json`
+carries `intent: "comparison"` as an address; `insteadUse` values are addresses to component metas.
+The generator gains only RESOLUTION — unknown intent refuses, dangling `insteadUse` refuses.
+**Binding rule: entity and first resolver land TOGETHER, or the addresses are prose with extra
+syntax** — an unresolved address is the #145 binds gap (looks checked, is not), which is worse
+than a copy.
+
+**GENERALISATION (recorded #192 at Dave's instruction — FLOATED, candidate-ADR shaped, Dave's to
+promote): the WRITE-ONCE principle — live facts get ONE home and addresses; history gets copies,
+dated and frozen.** The system's worst recurring defects are violations of it and its best fixes
+are already applications of it. Receipts, by instance:
+
+*Violations (the defect classes):*
+- #41 — read-chain instruction lived inside the 433-line file it governed; five sessions paid full
+  price while calling the chain CUT (→ `knowledge/_gen_chain.py`, WHY block).
+- #145 (this file's alert case) — meta `binds` addresses that nothing resolves; four gates mention
+  binds, none reads `semantic-colour.json` (`components/alert.meta.json`, status-prop `$status`).
+- #167 — `_state.json` home pointers rot as GOOD-MORNING rolls (home-pointer-rot class).
+- #185 — B3 figures quoted into prose went WRONG-TEXT; copies of live numbers staled silently.
+- ds-037 — the rules index cannot tell an ENFORCED rule from a CANDIDATE (entity-registry gap).
+
+*Applications (the fixes that already enact it):*
+- `knowledge/_gen_chain.py` — chain GENERATED from one source (GM header + ★ LATEST banner).
+- `knowledge/_gen_lanes.py` — one implementation; `_capture_gate.py::lane_routing_check` IMPORTS
+  it, "never a second copy" (mover≠gate lesson, #20).
+- canon.css regenerated from snippets (`canon/gen_canon_components.py`) — snippets are the single
+  source of truth; review decisions cannot diverge (#s pre-33 loss class, closed).
+- s177-D1 — "no evidence pointers into rolling files": an address is only safe pointing at a
+  non-moving home.
+- #182 NEW-HOOK CONVENTION — mechanical claims carry their probeable token: the address travels,
+  not the copy.
+- s188-D1 — the grader reads the hook FILE, not a restatement.
+- token spine + alias hop itself — Apollo's colour/type system is already write-once end to end.
+
+*Candidate next instances (unpriced, for the reconciling lane or a future ADR):*
+- meta `$status`/`$note` fields quoting ruling prose at length → address into `_rulings.json`
+  + local one-liner.
+- MEMORY.md hooks restating memory-file content → hook-as-address (s188-D1 direction).
+
+*Hard limits (both already ruled in this repo):* (1) address-without-resolver is the binds gap —
+worse than a copy; (2) dated PERIOD RECORDS are exempt — rewriting them falsifies history (#184
+ruling on this file's line 249; header-wins-over-audit). Write-once governs LIVE facts only.
