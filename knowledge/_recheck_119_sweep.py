@@ -191,7 +191,7 @@ def run(write=True):
     rulings = load_rulings()
     frozen = frozen_subset(rulings)
     out = {
-        "schema": "119-sweep-recheck v1 (W-21, s186-D2; sidecar because _rulings.json is append-only via _inscribe_ruling.py)",
+        "schema": "119-sweep-recheck v2 (v1 = W-21, s186-D2; v2 bump #192: declares `rechecked_at_session` added #191 — the shape changed, so the version says so; sidecar because _rulings.json is append-only via _inscribe_ruling.py)",
         "rechecked_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "population": len(frozen),
         "stale_after_sessions": STALE_AFTER_SESSIONS,
