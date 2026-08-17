@@ -823,9 +823,24 @@ def derive_probe_from_file(hook_id: str, memory_dir: str) -> dict | None:
         r"`([^`]+)`\s+(?:is\s+NOT\s+(?:in|at|present)\b|IS\s+ABSENT\b|is\s+MISSING\b"
         r"|does\s+not\s+exist\b|no\s+longer\s+exists\b)", re.IGNORECASE)
     denied: set[str] = set(NEGATED.findall(body))
+    # s191-D2 (#191, Dave: the two graded-STALE-forever hooks named things that legally live
+    # OUTSIDE the repo — a per-session /tmp script, the app's plugin cache). A hook may declare
+    # this with an ADJACENT marker: `path` (NON-REPO: <where it actually lives>). The token then
+    # stops being a repo claim; the WHERE is mandatory so a future reader can go look. A hook
+    # whose EVERY path is declared non-repo grades UNPROVABLE with the declaration as evidence —
+    # honestly unverifiable from this repo, never falsely STALE. Marker scope is the token, same
+    # adjacency discipline as NEGATED [[gate-must-quote-what-it-forbids]].
+    NONREPO = re.compile(r"`([^`]+)`\s*\(NON-REPO:\s*([^)]+)\)")
+    nonrepo: dict[str, str] = {m[0]: m[1].strip() for m in NONREPO.findall(body)}
     cands = [t for t in dict.fromkeys(re.findall(r"`([^`]+)`", body))
-             if looks_like_path(t) and t not in denied]
+             if looks_like_path(t) and t not in denied and t not in nonrepo]
     if not cands:
+        if nonrepo:
+            first = sorted(nonrepo)[0]
+            return {"kind": "none", "source": "hook-file (s191-D2 NON-REPO declared)",
+                    "why": (f"all {len(nonrepo)} path claim(s) are DECLARED NON-REPO — "
+                            f"`{first}` lives: {nonrepo[first]} — honestly unverifiable "
+                            f"from this repo, not stale (s191-D2)")}
         return None
     if len(cands) == 1:
         return {"kind": "path-present", "path": cands[0], "source": "hook-file (s188-D1)"}
@@ -1682,6 +1697,25 @@ def selftest_grades() -> int:
                      f"named={named}; control kind={control!r}")
     finally:
         shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g13) s191-D2 NON-REPO DECLARATION. A hook whose only path claim carries the adjacent
+    #       `path` (NON-REPO: <where>) marker grades UNPROVABLE with the declaration as
+    #       evidence. Control (the mutation): SAME body, marker stripped ⇒ STALE. Both ways.
+    for label, body, want_grade in (
+            ("declared", "`ghost.py` (NON-REPO: recreated in /tmp each session)\n", "UNPROVABLE"),
+            ("undeclared control", "`ghost.py` is the render script\n", "STALE")):
+        root, mem, fence = _grade_fixture(
+            ["- [★★ Ghost](ghost-note.md) — about `ghost.py`"],
+            make_target=False, bodies={"ghost-note.md": body})
+        try:
+            doc = refresh_arm(root, mem, fence, dry=True)
+            e = doc["entries"][0]
+            want_why = ("NON-REPO" in e["why"]) if want_grade == "UNPROVABLE" else True
+            ok &= _t(f"(g13) non-repo marker, {label} ⇒ {want_grade}",
+                     e["grade"] == want_grade and want_why,
+                     f"grade={e['grade']}; why={_flat(e['why'], 90)!r}")
+        finally:
+            shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
 
     print("ALL B3 MUTATION TESTS PASSED" if ok else "B3 MUTATION TESTS FAILED")
     return 0 if ok else 1

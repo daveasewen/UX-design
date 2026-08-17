@@ -241,10 +241,11 @@ this runbook). Terms: `knowledge/assets/WebfontUserGuide-2024.pdf`.
 ```bash
 export LD_LIBRARY_PATH=$HOME/.local/chromelibs/root/usr/lib/aarch64-linux-gnu:$LD_LIBRARY_PATH \
        PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1
-python3 /tmp/render.py
+cp knowledge/_render/render.py /tmp/render.py   # s191-D2: CANONICAL HOME is the repo — COPY, never retype
+python3 /tmp/render.py <page.html> <out.png>
 ```
 ```python
-# /tmp/render.py — the proven shape (2026-07-23)
+# knowledge/_render/render.py — the proven shape (2026-07-23; HOMED in-repo #191, s191-D2)
 from playwright.sync_api import sync_playwright
 import glob, os
 shell = glob.glob(os.path.expanduser(
