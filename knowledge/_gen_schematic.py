@@ -218,7 +218,16 @@ def _measurer():
 
 def _unit_word():
     import _gen_chain as gc
-    return gc.unit_word(_measurer())
+    return _CAPTION_UNITS.get(gc.unit_word(_measurer()), gc.unit_word(_measurer()))
+
+
+# #193 CAPTION GEOMETRY, the class fix: `tape (cl100k ESTIMATE)` (22 chars) overflows a fixed
+# caption box that `real` (4 chars) fits — measured `worst: (39, 'chain')` on the tape tier. The
+# unit must still be NAMED [[measure-dont-convert-units]], so it is COMPACTED, never dropped:
+# `cl100k EST` names the instrument and its estimate status in 10 chars. Schematic-local map —
+# `_gen_chain._UNIT_WORDS` is in the memento-package VERBATIM SET and must not move for this.
+# ⚠ stamped_tiers() below recognises BOTH spellings, so a committed page in either form is read.
+_CAPTION_UNITS = {"tape (cl100k ESTIMATE)": "cl100k EST"}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -256,9 +265,11 @@ def stamped_tiers(text):
     if _TIER_FIGURE is None:
         import re
         import _gen_chain as gc
-        alt = "|".join(re.escape(w) for w in sorted(gc._UNIT_WORDS.values(), key=len, reverse=True))
-        _TIER_FIGURE = (re.compile(r"[\d,]+\s+(" + alt + ")"),
-                        {w: t for t, w in gc._UNIT_WORDS.items()})
+        words = {w: t for t, w in gc._UNIT_WORDS.items()}
+        words.update({_CAPTION_UNITS[w]: t for t, w in gc._UNIT_WORDS.items()
+                      if w in _CAPTION_UNITS})  # #193 compact caption spellings, same tiers
+        alt = "|".join(re.escape(w) for w in sorted(words, key=len, reverse=True))
+        _TIER_FIGURE = (re.compile(r"[\d,]+\s+(" + alt + ")"), words)
     rx, by_word = _TIER_FIGURE
     return {by_word[m] for m in rx.findall(text or "") if m in by_word}
 
@@ -1136,7 +1147,13 @@ def selftest():
         gc_units = gc._UNIT_WORDS
         here_tier = _measurer().measurement_tier()
         other = next(t for t in gc_units if t != here_tier)
-        moved = text.replace(f" {gc_units[here_tier]}", f" {gc_units[other]}")
+        # #193 compact captions: the page carries the tier's CAPTION spelling where one is
+        # defined, so the plant must swap whichever spelling is actually on the page — a plant
+        # keyed to the long form alone does not plant on the tape tier, and every arm below it
+        # would be measuring nothing.
+        def _spelling(t):
+            return _CAPTION_UNITS.get(gc_units[t], gc_units[t])
+        moved = text.replace(f" {_spelling(here_tier)}", f" {_spelling(other)}")
         bite("the unit-word mutation actually changed the file (a plant that did not plant "
              "would make the arms below assertions)", moved != text)
         with open(p, "w", encoding="utf-8") as f:
