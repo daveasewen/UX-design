@@ -357,8 +357,8 @@ STEPS = [
     # ds-0NN (priced #184, built #190): C2 reads <style>/style="" USES. A chart's colours
     # live in SVG PRESENTATION ATTRIBUTES, which no gate parsed — a dangling fill="var(--x)"
     # painted SILENT BLACK past thirteen of thirteen gates. This gate parses the markup.
-    # ADVISORY on purpose: making it BLOCKING is Dave's call, not a builder's.
-    ("dataviz var-resolution gate — markup fill/stroke var() per theme (advisory, ds-0NN #184)",
+    # BLOCKING since s191-D3 (#191, Dave's word) — was ADVISORY-on-purpose #190 awaiting his call.
+    ("dataviz var-resolution gate — markup fill/stroke var() per theme (BLOCKING s191-D3, ds-0NN #184)",
      "_gate_dataviz_vars.py"),
     ("dataviz var-resolution gate selftest — 8 arms incl. alias chain + missing target (ds-0NN)",
      "_gate_dataviz_vars.py", ["--selftest"]),
@@ -691,8 +691,9 @@ ROUTE_ROWS = [
     ("property-resolves gate C2 — silent-lookup class (BLOCKING, ds-018, promoted s121-D1)", GATE,
      "\n❌ property-resolves gate C2 failed (exit {code}) — a var() resolves to NOTHING and the property silently takes its INITIAL value (ds-018). knowledge/_validate_property_resolves.py — if the name is an --alpha-*/--mark token, run: python3 knowledge/gen_token_ramp.py"),
     ("property-resolves gate C2 selftest — 4 bites + a bite-the-bite", ABORT, None),
-    ("dataviz var-resolution gate — markup fill/stroke var() per theme (advisory, ds-0NN #184)", ADVISORY, None),
-    ("dataviz var-resolution gate selftest — 8 arms incl. alias chain + missing target (ds-0NN)", ADVISORY, None),
+    ("dataviz var-resolution gate — markup fill/stroke var() per theme (BLOCKING s191-D3, ds-0NN #184)", GATE,
+     "\n❌ dataviz var-resolution gate failed (exit {code}) — a chart colour var() resolves in NO theme and would render SILENT BLACK (s191-D3, promoted from advisory on Dave's word #191). Run: python3 knowledge/_gate_dataviz_vars.py"),
+    ("dataviz var-resolution gate selftest — 8 arms incl. alias chain + missing target (ds-0NN)", ABORT, None),
     ("reverse-text edge-extremity check {#col26-020} (advisory)", ADVISORY, None),
     ("compliance verification edges — applies_to vs verified_by (advisory)", ADVISORY, None),
     ("external automatable-check refs — axe-core import (advisory)", ADVISORY, None),
