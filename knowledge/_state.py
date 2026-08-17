@@ -85,8 +85,11 @@ SCHEMA = 1
 # Those describe a DESIGN DECISION's life; these describe a PIECE OF WORK's life. Borrowing the
 # vocabulary would fuse two domains that close for different reasons — and the graph is already
 # the cautionary tale, running two vocabularies that disagree by one.
-STATES = ("open", "blocked", "ruled", "done", "dropped")
-LIVE_STATES = ("open", "blocked", "ruled")      # still costs a session something
+STATES = ("open", "blocked", "ruled", "done", "dropped", "parked")
+# `parked` added #195 — MECHANICAL enactment of s194-D2, whose text moves W-34 open → parked
+# with a named external trigger; the wrap wrote the state before this vocabulary learned the
+# word, so step 25 refused an honest statement ([[honest-refusal-needs-a-legal-form]]).
+LIVE_STATES = ("open", "blocked", "ruled")      # still costs a session something — parked does NOT
 OWNERS = ("dave", "claude")
 
 CONDITIONED = "stated"

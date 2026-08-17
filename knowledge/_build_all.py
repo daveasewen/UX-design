@@ -343,6 +343,12 @@ STEPS = [
      "_validate_binds_resolve.py"),
     ("binds-resolve selftest — 5 bites incl. any-store clause (#146)",
      "_validate_binds_resolve.py", ["--selftest"]),
+    # s195-D1 (Dave's word "wire it", #195): the chart-intent address layer. The vocabulary is
+    # ADOPTED (FT), lives ONCE in chart-intents.json (ADR-0017); this gate is resolution only.
+    ("chart-intent resolve gate — meta intent address → chart-intents.json (BLOCKING s195-D1)",
+     "_validate_intent_resolve.py"),
+    ("chart-intent resolve selftest — 4 bites incl. list case + absent store (s195-D1)",
+     "_validate_intent_resolve.py", ["--selftest"]),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
     # WIRED 2026-07-27 (ds-014): this selftest already existed and ran only by hand, so nothing
     # proved dv-004 could fail — and it could not, on `stacked-column`. Exactly the rot the
@@ -756,6 +762,10 @@ ROUTE_ROWS = [
      "\n❌ binds-resolve gate failed (exit {code}) — a reference.html lost its token-manifest, a manifest var no longer resolves, or a meta binds address points at nothing (renamed rung / untaught store). Run: python3 knowledge/_validate_binds_resolve.py"),
     ("binds-resolve selftest — 5 bites incl. any-store clause (#146)", GATE,
      "\n❌ binds-resolve selftest failed (exit {code}) — python3 knowledge/_validate_binds_resolve.py --selftest"),
+    ("chart-intent resolve gate — meta intent address → chart-intents.json (BLOCKING s195-D1)", GATE,
+     "\n❌ chart-intent resolve gate failed (exit {code}) — a meta's `intent` is not a key of chart-intents.json, or the store is absent (s195-D1; the vocabulary is ADOPTED, a new word enters only by Dave's ruling). Run: python3 knowledge/_validate_intent_resolve.py"),
+    ("chart-intent resolve selftest — 4 bites incl. list case + absent store (s195-D1)", GATE,
+     "\n❌ chart-intent resolve selftest failed (exit {code}) — python3 knowledge/_validate_intent_resolve.py --selftest"),
     # #158: the named-palette tier (s157-D2). Routed GATE, not ADVISORY — the ruling makes
     # the sharing STRUCTURAL, so an undeclared or divergent palette is a defect, not a note.
     ("palette-tier gate — every theme names a palette per family, no divergent hand-carry (s157-D2)", GATE,
