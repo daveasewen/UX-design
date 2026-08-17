@@ -80,11 +80,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **57 items · 36 live · 19 Dave's · 17 mine · 38 carry a stated close condition · **19 UNCONDITIONED**.**
+> **58 items · 37 live · 20 Dave's · 17 mine · 39 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (19) — 14 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (20) — 15 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -99,6 +99,7 @@
 > - `G5` **Four advisory size caps as a set (_capture_gate.py:4843–4858** — *closes when:* Re-measured in real (G9 first), then Dave ratifies the set in one pass
 > - `G6` **DEFER_STREAK = 6 (_gm_usage.py:353) + USAGE_HISTORY_BLOCKING = False** — *closes when:* Dave rules the streak number + per-candidate OFFLOAD/TRIM/KEEP calls
 > - `G9` **ds-023 re-measurement programme** — *closes when:* Dave rules the programme
+> - `W-37` **--pri-hover re-derivation at --alpha-68 awaits Dave's eye** — *closes when:* Dave rules by eye whether --surface-action-primary-hover keeps the stored hexes (#626262/#B7B7B7) or takes the 0.68 re-derivation (#636363/#B2B2B2), and the ruling is inscribed
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -112,7 +113,7 @@
 
 ---
 
-*(Chain ends. **12,239 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **12,364 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 68,390 real and stays whole for retrieval; you have paid for
 18% of it, and that is the intended figure, not a shortfall.)*

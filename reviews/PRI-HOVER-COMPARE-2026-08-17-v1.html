@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>--pri-hover compare — stored (α 0.70 era) vs re-derived at --alpha-68 — 2026-08-17 v1</title>
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; font-family:ui-sans-serif,system-ui,sans-serif; background:#F3F3F3; color:#1A1A1A;}
+  .wrap{max-width:1180px; margin:0 auto; padding:32px 24px 80px;}
+  h1{font-size:24px; margin:0 0 4px;}
+  .sub{font-size:14px; opacity:.7; margin:0 0 28px;}
+  .note{background:#fff; border:1px solid #D7D8D6; padding:16px 18px; margin:0 0 28px; font-size:14px; line-height:1.55;}
+  .note code{background:#F3F3F3; padding:1px 4px;}
+  h2{font-size:17px; margin:34px 0 10px; border-bottom:1px solid #D7D8D6; padding-bottom:6px;}
+  .stage{padding:28px 24px; border:1px solid #D7D8D6;}
+  .stage[data-theme="light"]{background:#FFFFFF;}
+  .stage[data-theme="dark"]{background:#1A1A1A;}
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:28px;}
+  .col h3{font-size:13px; letter-spacing:.06em; text-transform:uppercase; margin:0 0 4px;}
+  .stage[data-theme="light"] .col h3, .stage[data-theme="light"] .cap{color:#1A1A1A;}
+  .stage[data-theme="dark"] .col h3, .stage[data-theme="dark"] .cap{color:#F0EFED;}
+  .cap{font-size:12px; line-height:1.5; margin:0 0 14px; opacity:.75; font-family:ui-monospace,Menlo,monospace;}
+  .row{display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:10px;}
+  .swatch{width:96px; height:44px; border:1px solid rgba(128,128,128,.5);}
+  .forced:hover{}
+  /* FORCED-HOVER specimens: the real canon rule painted without needing a pointer,
+     so both candidates are visible side by side at once. */
+  .cn-button .btn.primary.force-stored{background:var(--force-stored) !important;}
+  .cn-button .btn.primary.force-derived{background:var(--force-derived) !important;}
+  .math{font-family:ui-monospace,Menlo,monospace; font-size:12.5px; line-height:1.7; background:#FBFBFB; border:1px solid #E1E1E1; padding:14px 16px; white-space:pre-wrap; margin:12px 0 0;}
+  .flag{border-left:3px solid #DA1A00; padding-left:12px;}
+  table{border-collapse:collapse; font-size:13px; margin-top:10px; background:#fff;}
+  th,td{border:1px solid #D7D8D6; padding:6px 10px; text-align:left; font-family:ui-monospace,Menlo,monospace;}
+  th{background:#F3F3F3;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>--pri-hover: stored colour-equivalent vs re-derived at <code>--alpha-68</code></h1>
+<p class="sub">reviews/PRI-HOVER-COMPARE-2026-08-17-v1.html &middot; session #197 &middot; BUILD ONLY — nothing promoted, no live token touched. Dave rules by eye.</p>
+
+<div class="note">
+<strong>What is being compared.</strong> The primary button's hover in canon renders as an
+<em>operational opacity</em>: <code>.cn-button .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) calc(var(--alpha-68) * 100%), var(--page));}</code>
+(canon.css:1089). Separately, <code>--pri-hover</code> holds a <strong>stored colour-equivalent</strong> hex for colour-only /
+chromatic consumers — <code>--surface-action-primary-hover</code>, canon.css:467 (light) and :825 (dark). Those two hexes
+were derived at the <strong>retired</strong> alpha <strong>0.70</strong> (ADR-0009 / B-D3), before <code>#99-D1</code> migrated the
+render to the 4%-ladder value <strong>0.68</strong>. So the stored hex and the rendered hover no longer come from the same number.
+This page shows both, on the real specimen, in both themes.
+</div>
+
+<h2>The derivation basis (measured, not assumed)</h2>
+<div class="math">MONO LIGHT   --pri-default = --button-primary-background-default = --surface-action-primary = #1A1A1A   (canon.css:466)
+             --page        = --background-default                                              = #FFFFFF   (canon.css:272)
+             stored --pri-hover = --surface-action-primary-hover                               = #626262   (canon.css:467)
+
+MONO DARK    --pri-default = --surface-action-primary                                          = #FAFAFA   (canon.css:824)
+             --page        = --background-default = --surface-digital-black                    = #1A1A1A   (canon.css:816, :633)
+             stored --pri-hover = --surface-action-primary-hover                               = #B7B7B7   (canon.css:825)
+
+ARITHMETIC (color-mix in srgb — straight per-channel mix of the gamma-encoded values):
+             out = alpha * pri-default  +  (1 - alpha) * page
+
+LIGHT @ 0.70 (retired):  0.70 x 26  + 0.30 x 255 = 18.20 + 76.50 =  94.70 -> 95  = #5F5F5F
+LIGHT @ 0.68 (live):     0.68 x 26  + 0.32 x 255 = 17.68 + 81.60 =  99.28 -> 99  = #636363   <-- RE-DERIVED
+
+DARK  @ 0.70 (retired):  0.70 x 250 + 0.30 x 26  = 175.00 + 7.80 = 182.80 -> 183 = #B7B7B7
+DARK  @ 0.68 (live):     0.68 x 250 + 0.32 x 26  = 170.00 + 8.32 = 178.32 -> 178 = #B2B2B2   <-- RE-DERIVED</div>
+
+<div class="note flag" style="margin-top:18px">
+<strong>Finding surfaced by the arithmetic, NOT ruled here.</strong> The <em>dark</em> stored value reproduces the
+0.70 composite <em>exactly</em> (#B7B7B7). The <em>light</em> stored value does <strong>not</strong>: 0.70 over white gives
+#5F5F5F, but the stored hex is #626262 — which implies an alpha of ~<strong>0.6856</strong>
+(solve 98 = a&middot;26 + (1&minus;a)&middot;255 &rarr; a = 157/229 = 0.6856). So the light stored hex was never a clean 0.70 composite;
+it sits <em>one step</em> from the live 0.68 answer (#636363, &Delta;1 per channel) and five steps from the 0.70 one.
+The dark delta is the larger move: #B7B7B7 &rarr; #B2B2B2, &Delta;5 per channel. Stated as an observation for Dave's eye; no change made.
+</div>
+
+<table>
+<tr><th>theme</th><th>stored (in canon today)</th><th>re-derived @ 0.68</th><th>per-channel delta</th></tr>
+<tr><td>mono light</td><td>#626262</td><td>#636363</td><td>+1 (lighter)</td></tr>
+<tr><td>mono dark</td><td>#B7B7B7</td><td>#B2B2B2</td><td>&minus;5 (darker)</td></tr>
+</table>
+
+<h2>Light theme — real specimens</h2>
+<div class="stage" data-theme="light" style="--force-stored:#626262; --force-derived:#636363;">
+  <div class="cols">
+    <div class="col cn-button">
+      <h3>STORED &mdash; #626262</h3>
+      <p class="cap">--pri-hover as it stands in canon.css:467<br>(derived at the retired alpha 0.70 era)</p>
+      <div class="row">
+        <button class="btn primary force-stored" type="button">Confirm payment</button>
+        <button class="btn primary force-stored" type="button">Continue</button>
+        <span class="swatch" style="background:#626262"></span>
+      </div>
+      <div class="row"><button class="btn primary" type="button">default (hover me &mdash; live 0.68 render)</button></div>
+    </div>
+    <div class="col cn-button">
+      <h3>RE-DERIVED @ 0.68 &mdash; #636363</h3>
+      <p class="cap">0.68 x #1A1A1A + 0.32 x #FFFFFF<br>= 99.28 &rarr; 99 = #636363</p>
+      <div class="row">
+        <button class="btn primary force-derived" type="button">Confirm payment</button>
+        <button class="btn primary force-derived" type="button">Continue</button>
+        <span class="swatch" style="background:#636363"></span>
+      </div>
+      <div class="row"><button class="btn primary" type="button">default (hover me &mdash; live 0.68 render)</button></div>
+    </div>
+  </div>
+</div>
+
+<h2>Dark theme — real specimens</h2>
+<div class="stage" data-theme="dark" style="--force-stored:#B7B7B7; --force-derived:#B2B2B2;">
+  <div class="cols">
+    <div class="col cn-button">
+      <h3>STORED &mdash; #B7B7B7</h3>
+      <p class="cap">--pri-hover as it stands in canon.css:825<br>(exact 0.70 composite)</p>
+      <div class="row">
+        <button class="btn primary force-stored" type="button">Confirm payment</button>
+        <button class="btn primary force-stored" type="button">Continue</button>
+        <span class="swatch" style="background:#B7B7B7"></span>
+      </div>
+      <div class="row"><button class="btn primary" type="button">default (hover me &mdash; live 0.68 render)</button></div>
+    </div>
+    <div class="col cn-button">
+      <h3>RE-DERIVED @ 0.68 &mdash; #B2B2B2</h3>
+      <p class="cap">0.68 x #FAFAFA + 0.32 x #1A1A1A<br>= 178.32 &rarr; 178 = #B2B2B2</p>
+      <div class="row">
+        <button class="btn primary force-derived" type="button">Confirm payment</button>
+        <button class="btn primary force-derived" type="button">Continue</button>
+        <span class="swatch" style="background:#B2B2B2"></span>
+      </div>
+      <div class="row"><button class="btn primary" type="button">default (hover me &mdash; live 0.68 render)</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="note" style="margin-top:28px">
+<strong>How to read it.</strong> The two forced columns paint the candidate hex directly onto the real
+<code>.cn-button .btn.primary</code> specimen so both can be seen at once without a pointer. The fourth button in each
+column is left untouched: hovering it shows what canon actually renders today via the live <code>--alpha-68</code>
+color-mix — that is the target the stored hex is supposed to be the colour-equivalent OF.
+<br><br>
+<strong>Scope.</strong> No live token file was edited by this build. The re-derived hexes exist only on this page.
+The flip (or non-flip) of <code>--surface-action-primary-hover</code> is Dave's to rule, next session, by eye.
+</div>
+
+</div>
+</body>
+</html>
