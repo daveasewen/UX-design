@@ -222,6 +222,17 @@ STEPS = [
     # purpose: both hold an ADR-0014 "declare what you consume" join — neutralRamp there,
     # ragPalette here. The defect it closes had NO instrument at all: 12 hex-identical RAG
     # keys duplicated across two ratified override files with nothing declaring the sharing.
+    # WIRED #196, the same pass it was built (brief
+    # `notes/_briefs/2026-08-17-196-stale-queue-gate-brief.md`, Dave: "a proper fix,
+    # thorough and tested"). Re-measures every §C·1 queue item's stated work-state
+    # against disk and git, so a prose claim cannot outlive reality again (STEP 2 read
+    # "open" for twelve sessions after `df44e51` landed it). Routed ADVISORY — the
+    # findings are Dave's queue, and the gate ships WARN by his ruling; the SELFTEST is
+    # ABORT, because a stale-queue gate that has stopped biting is a silent instrument.
+    ("stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (WARN, #196)",
+     "_validate_queue_fresh.py"),
+    ("stale-queue selftest — 13 bites incl. both mutation directions + scope (#196)",
+     "_validate_queue_fresh.py", ["--selftest"]),
     ("palette-tier gate — every theme names a palette per family, no divergent hand-carry (s157-D2)", "_validate_palette_tier.py"),
     ("palette-tier selftest — 10 mutation bites (s157-D2)", "_validate_palette_tier.py", ["--selftest"]),
     ("radius gate — no hardcoded border-radius; shape is a theme flex slot (ADR-0010)", "_validate_radius.py"),
@@ -766,6 +777,13 @@ ROUTE_ROWS = [
      "\n❌ chart-intent resolve gate failed (exit {code}) — a meta's `intent` is not a key of chart-intents.json, or the store is absent (s195-D1; the vocabulary is ADOPTED, a new word enters only by Dave's ruling). Run: python3 knowledge/_validate_intent_resolve.py"),
     ("chart-intent resolve selftest — 4 bites incl. list case + absent store (s195-D1)", GATE,
      "\n❌ chart-intent resolve selftest failed (exit {code}) — python3 knowledge/_validate_intent_resolve.py --selftest"),
+    # #196: the stale-queue pair. The row landed WITH the step, in the same edit — a STEPS
+    # entry with no route aborts every full build above step 1 (the (a)-class omission
+    # recorded three times above).
+    # BLOCKING flip = Dave's word (#196) — flip ADVISORY -> GATE here and SEVERITY in
+    # _validate_queue_fresh.py together; neither alone is the promotion.
+    ("stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (WARN, #196)", ADVISORY, None),
+    ("stale-queue selftest — 13 bites incl. both mutation directions + scope (#196)", ABORT, None),
     # #158: the named-palette tier (s157-D2). Routed GATE, not ADVISORY — the ruling makes
     # the sharing STRUCTURAL, so an undeclared or divergent palette is a defect, not a note.
     ("palette-tier gate — every theme names a palette per family, no divergent hand-carry (s157-D2)", GATE,
