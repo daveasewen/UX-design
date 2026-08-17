@@ -6271,6 +6271,9 @@
   --page: var(--background-default);
   --ink: var(--text-default);
   --line: var(--border-subtle);
+  --spark-down: var(--rag-error-ink);
+  --spark-up: var(--rag-success-ink);
+  --spark-flat: var(--text-default);
   --shadow: var(--elevation-functional);
   --pop-border: var(--elevation-border);
   --grid-alpha: .10;
@@ -6284,28 +6287,56 @@
 .cn-chart-sparkline .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-sparkline figure.dv{margin:0;}
-/* dv-head/.dv-title added #68 (dv-lockup): title-only header — sparkline carries no toggle/legend
-     chrome, so this is the minimal literal copy (same rule text as the other five charts). */
-.cn-chart-sparkline .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
-.cn-chart-sparkline .dv-title{margin:0;}
+/* NO dv-head/.dv-title (s182-D2, #182): the sparkline is an ATOM ALONE — no title slot.
+     Dave: "this doesn't need a title as it will usually live in a card". The dv-lockup-title
+     markup partial and its CSS were removed with the ruling; the accessible name survives on
+     the sr-only figcaption + the svg aria-label. */
 .cn-chart-sparkline .dv-stage{overflow-x:auto; padding-bottom:4px;}
-/* standalone spark — 340×64 render of the 580×90 frame (kit); no text inside, so non-uniform
-     scale is safe. FIT (Layer-2, lane ②): JS-on (.dv-fit-on via dv-behaviour init) releases the
-     width to the container — pure CSS, no relayout maths; JS-off keeps the fixed 340. */
-.cn-chart-sparkline .spark-standalone{display:block; width:340px; height:64px; overflow:visible;}
-.cn-chart-sparkline figure.dv-fit-on .spark-standalone{width:100%;}
+/* standalone spark — the 580×90 frame rendered at whatever width the slot gives it; no text
+     inside, so non-uniform scale is safe (preserveAspectRatio:none).
+     ★★ s184-D1 RULED #184 — RESPONSIVE TO ITS ENCLOSURE BY DEFAULT. Dave, verbatim: "the line
+     should be responsive to its enclosure by default". The atom no longer carries a width at all:
+     width:100% IS the default, and the old fixed 340px (released only JS-on via .dv-fit-on) is
+     GONE. Consequence: JS-off and JS-on now render identically — the fit behaviour is no longer a
+     JS-gated upgrade, so .dv-fit-on carries no width rule here (the class is still added by
+     dv-behaviour's init and still governs the other charts; this atom simply no longer depends on
+     it). HEIGHT IS UNCHANGED and NOT RULED: 64px stands exactly as before; the 4px-grid height-
+     snap idea remains OPEN DIRECTION (s184-D1 declines to pick it), so nothing here snaps. */
+.cn-chart-sparkline .spark-standalone{display:block; width:100%; height:64px; overflow:visible;}
 .cn-chart-sparkline .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
-.cn-chart-sparkline .spark-standalone .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2.5;
+/* s182-D3: the stroke is SEMANTIC, never a series-ramp pick. A sparkline knows its trend from
+     FIRST-vs-LAST datum; the author declares that reading as data-trend on the svg (up|down|flat),
+     and the fork to the ruled ink is done by the theme block above — identical keying in all four
+     themes, exactly as canon keys --error-atom. Default = flat, so an undeclared trend is neutral,
+     never a guessed colour. */
+.cn-chart-sparkline .spark-standalone .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2.5;
     stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
-.cn-chart-sparkline .spark-standalone circle.dv-series{fill:var(--data-series-1); stroke:none;}
+.cn-chart-sparkline .spark-standalone circle.dv-series{fill:var(--spark-flat); stroke:none;}
+.cn-chart-sparkline .spark-standalone[data-trend="up"] .dv-series{stroke:var(--spark-up);}
+.cn-chart-sparkline .spark-standalone[data-trend="up"] circle.dv-series{fill:var(--spark-up);}
+.cn-chart-sparkline .spark-standalone[data-trend="down"] .dv-series{stroke:var(--spark-down);}
+.cn-chart-sparkline .spark-standalone[data-trend="down"] circle.dv-series{fill:var(--spark-down);}
 .cn-chart-sparkline .spark-standalone polyline.dv-series{outline-offset:4px;}
 .cn-chart-sparkline .spark-standalone polyline.dv-series:focus-visible{outline:2px solid var(--ink);}
-/* inline spark — the KPI / Stat-card scale (200×48 @ 44px, stroke 2, dot r3) */
-.cn-chart-sparkline .spark-inline{display:block; width:200px; height:44px; overflow:visible;}
+/* inline spark — the KPI / Stat-card scale (200×48 frame @ 44px tall, stroke 2, dot r3).
+     s184-D1 applies to the atom at EVERY scale: no fixed width here either. The 200px that used
+     to be baked in was the SLOT's size, not the atom's — it moves to the specimen wrapper
+     (.spark-kpi-slot) below, which stands in for the KPI tile this scale is composed into.
+     Height 44px unchanged (not ruled). */
+.cn-chart-sparkline .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
+/* SPECIMEN ENCLOSURE ONLY — not part of the atom. It exists so this page can show the inline
+     scale filling a KPI-tile-sized slot rather than the whole page; a real Stat-card supplies its
+     own slot. Sized at the width the inline specimen previously baked in, so the rendering here is
+     unchanged from #182 while the atom itself has become enclosure-responsive. */
+.cn-chart-sparkline .spark-kpi-slot{width:200px; max-width:100%;}
 .cn-chart-sparkline .spark-inline .dv-base{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
-.cn-chart-sparkline .spark-inline .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2;
+.cn-chart-sparkline .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
     stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;}
-.cn-chart-sparkline .spark-inline .dv-end{fill:var(--data-series-1);}
+.cn-chart-sparkline .spark-inline .dv-end{fill:var(--spark-flat);}
+.cn-chart-sparkline .spark-inline[data-trend="up"] .dv-series{stroke:var(--spark-up);}
+.cn-chart-sparkline .spark-inline[data-trend="up"] .dv-end{fill:var(--spark-up);}
+.cn-chart-sparkline .spark-inline[data-trend="down"] .dv-series{stroke:var(--spark-down);}
+.cn-chart-sparkline .spark-inline[data-trend="down"] .dv-end{fill:var(--spark-down);}
 .cn-chart-sparkline .spark-caption{opacity:var(--alpha-60); margin:4px 0 0;}
 /* entry motion — CSS only (DEF-003): the draw, at each scale's reviewed pace */
 @media (prefers-reduced-motion:no-preference){
@@ -6323,24 +6354,13 @@
     border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
     opacity:0; transition:opacity var(--ease);}
 .cn-chart-sparkline .dv-tip.on{opacity:1;}
-.cn-chart-sparkline details.dv-tabledetails{margin:8px 0 0;}
-.cn-chart-sparkline details.dv-tabledetails summary{position:relative; cursor:pointer; opacity:var(--alpha-60); width:max-content;}
-/* 2.5.8 target on the SUMMARY (s114-D5 sweep, #116). A <summary> is an interactive
-     control and was never checked by the old selector-allowlist gate — it sat at text
-     height. The ::before slot belongs to the disclosure affordance here (the native
-     marker is kept: this is the compact posture, no toolbar chrome), so the expander
-     rides ::after — the same canon mechanism in the free pseudo-element slot. */
-.cn-chart-sparkline details.dv-tabledetails summary::after{content:""; position:absolute; z-index:0;
-    min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%;
-    top:50%; left:50%; transform:translate(-50%,-50%);}
-.cn-chart-sparkline details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
-.cn-chart-sparkline details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
-.cn-chart-sparkline table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
-.cn-chart-sparkline table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:4px;}
-.cn-chart-sparkline table.dv-table th, .cn-chart-sparkline table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
-.cn-chart-sparkline table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
-.cn-chart-sparkline table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
-.cn-chart-sparkline .dv-empty-frame{width:340px; height:64px; display:flex; align-items:center; justify-content:center;
+/* NO table disclosure CSS (s182-D2, #182). The details.dv-tabledetails / table.dv-table
+     rules were removed with the markup they styled — the table affordance is an OPTIONAL
+     element of the future TREND-CARD COMPOSITION (icon-button form, no "View as table"
+     label), not of this atom. s116-D2's table molecule applies at the composition level. */
+/* s184-D1: the empty state is the atom's own footprint, so it is enclosure-responsive too —
+     the old fixed 340px matched the old fixed spark width and dies with it. Height 64px stands. */
+.cn-chart-sparkline .dv-empty-frame{width:100%; height:64px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-sparkline .dv-empty-frame p{margin:0; opacity:var(--alpha-60);}
 @media (prefers-reduced-motion: reduce){
@@ -9425,11 +9445,13 @@
 [data-apollo-theme="legacy"] .cn-chart-sparkline{
   --ink: #333333;
   --line: #D7D8D6;
+  --spark-flat: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-sparkline,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-sparkline{
   --ink: #FFFFFF;
   --line: #404040;
+  --spark-flat: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-chart-stacked-area{
   --ink: #333333;
@@ -11550,6 +11572,7 @@
   --line: #CDC8C6;
   --page: #F7F6F4;
   --pop-border: #FFFFFF00;
+  --spark-flat: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-sparkline,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-sparkline{
@@ -11557,6 +11580,7 @@
   --line: #524842;
   --page: #1A1A1A;
   --pop-border: #524842;
+  --spark-flat: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-chart-stacked-area{
   --baseline: #13110E;

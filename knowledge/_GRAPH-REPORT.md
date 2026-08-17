@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 75 components · 1010 tokens defined · 110 tokens referenced by components · compliance: 31 rules x 75 components (31 SCs).
+**Totals:** 76 components · 1016 tokens defined · 112 tokens referenced by components · compliance: 31 rules x 75 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,8 +10,8 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 59 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
-| `background/default` | 35 | Accordion, Account selector, Amount display, Bar chart, Box plot, Bullet chart… |
+| `text/default` | 60 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
+| `background/default` | 38 | Accordion, Account selector, Amount display, Bar chart, Box plot, Bullet chart… |
 | `icon/default` | 25 | Accordion, Avatar, Button, Cards, Dropdown, File upload… |
 | `elevation/functional` | 22 | Account selector, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Combo chart, Date picker… |
 | `text/reverse` | 18 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
@@ -20,9 +20,9 @@ Change one of these and the listed number of components is affected. Use before 
 | `rag/error` | 16 | Amount input, Bar chart, Date picker, Date-range picker, Dropdown, File upload… |
 | `elevation/border` | 15 | Account selector, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Combo chart, Date picker… |
 | `icon/default-reverse` | 15 | Avatar, Button, Cards, Dropdown, Hero, Icon button… |
+| `rag/success` | 15 | Account card, Amount input, Bar chart, Button, Confirmation, File upload… |
 | `tertiary/background/hover` | 15 | Accordion, Avatar, Button, Cards, Confirmation, Data grid… |
 | `data/series/1` | 13 | Bar chart, Box plot, Bullet chart, Butterfly chart (horizontal), Butterfly chart (vertical), Combo chart… |
-| `rag/success` | 13 | Account card, Amount input, Bar chart, Button, Confirmation, File upload… |
 | `typography/font-family/default` | 13 | Account card, Action bar, Amount display, Avatar, Badge, Breadcrumbs… |
 | `form/border/default` | 12 | Account card, Account selector, Data grid, Dropdown, File upload, Input fields… |
 
@@ -30,13 +30,13 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Group | Components |
 |---|---|
-| `text/` | 63 |
-| `background/` | 35 |
+| `text/` | 64 |
+| `background/` | 38 |
 | `tertiary/` | 27 |
 | `icon/` | 27 |
+| `rag/` | 23 |
 | `elevation/` | 22 |
-| `rag/` | 22 |
-| `border-radius/` | 20 |
+| `border-radius/` | 21 |
 | `border/` | 19 |
 | `form/` | 17 |
 | `data/` | 15 |
@@ -51,12 +51,13 @@ Change one of these and the listed number of components is affected. Use before 
 | `focus/` | 4 |
 | `scrollbar/` | 3 |
 | `blur/` | 3 |
+| `progress/` | 3 |
+| `step/` | 3 |
 | `image/` | 2 |
 | `border-width/` | 2 |
 | `table/` | 2 |
 | `button/` | 2 |
 | `layout/` | 2 |
-| `progress/` | 2 |
 | `timer/` | 1 |
 | `gap/` | 1 |
 | `target/` | 1 |
@@ -90,7 +91,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-900 of 1010 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+904 of 1016 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
@@ -125,6 +126,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `overlay/` | 4 |
 | `progress/` | 4 |
 | `scrollbar/` | 4 |
+| `step/` | 4 |
 | `timer/` | 4 |
 | `badge/` | 3 |
 | `layout/` | 3 |
