@@ -58,6 +58,7 @@
     "name": { "type": "string" },
     "category": { "enum": ["atom", "molecule", "organism", "template", "page"] },
     "purpose": { "type": "string", "description": "what it is for, in English the agent can reason about" },
+    "intent": { "description": "ADDRESS into knowledge/chart-intents.json — the analytical question this chart answers (comparison | change-over-time | distribution | relationship | composition). A word, or a list where the purpose genuinely spans two. OPTIONAL: charts carry it, other components do not. Resolver: knowledge/_validate_intent_resolve.py — an unknown word refuses. Values live ONCE in the store (ADR-0017); never redefine them here.", "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" }, "minItems": 1 }] },
     "props": {
       "type": "array",
       "items": {
