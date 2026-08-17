@@ -272,6 +272,10 @@ def check_freshness():
                 shutil.copytree(src, scratch_knowledge / name)
         scratch_gen = scratch_knowledge / "gen_kg_edges.py"
         shutil.copy2(GEN_SCRIPT, scratch_gen)
+        # #193: the generator carries the #158 help-gate, whose walk-up looks for
+        # `_helpgate.py` beside it — the scratch tree must carry it too, or the copy
+        # dies on import and the freshness question is never asked.
+        shutil.copy2(HERE / "_helpgate.py", scratch_knowledge / "_helpgate.py")
         # s135-D4: the generator addresses its resolutions input at
         # ROOT.parent / "reviews" / <name> — mirror that into the scratch tree
         # or the regeneration REFUSES (which is the correct refusal, but here
