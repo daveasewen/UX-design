@@ -780,9 +780,13 @@ ROUTE_ROWS = [
     # #196: the stale-queue pair. The row landed WITH the step, in the same edit — a STEPS
     # entry with no route aborts every full build above step 1 (the (a)-class omission
     # recorded three times above).
-    # BLOCKING flip = Dave's word (#196) — flip ADVISORY -> GATE here and SEVERITY in
-    # _validate_queue_fresh.py together; neither alone is the promotion.
-    ("stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (WARN, #196)", ADVISORY, None),
+    # FLIPPED #198 on Dave's word: s197-D1 held the gate at WARN until it survived one
+    # real banner roll — MET by the #197 roll (5b77cce, GOOD-MORNING.md:522). ADVISORY ->
+    # GATE here and SEVERITY -> "blocking" in _validate_queue_fresh.py moved together;
+    # neither alone is the promotion. GATE tier = red + remedy at the commit seam, NOT
+    # ABORT. ⚠ The label string is a routing join key duplicated in STEPS — never edit it.
+    ("stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (WARN, #196)", GATE,
+     "\n❌ stale-queue gate failed (exit {code}) — a §C·1 queue item's stated state is contradicted by disk or git, or a live item carries no qprobe tail. Run: python3 knowledge/_validate_queue_fresh.py"),
     ("stale-queue selftest — 13 bites incl. both mutation directions + scope (#196)", ABORT, None),
     # #158: the named-palette tier (s157-D2). Routed GATE, not ADVISORY — the ruling makes
     # the sharing STRUCTURAL, so an undeclared or divergent palette is a defect, not a note.

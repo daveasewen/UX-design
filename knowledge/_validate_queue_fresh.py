@@ -74,10 +74,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 GM = os.path.join(REPO, "GOOD-MORNING.md")
 
-# SEVERITY — this gate is routed WARN (ADVISORY) in _build_all.py: it reports,
-# the build continues.
-# BLOCKING flip = Dave's word (#196)
-SEVERITY = "warn"
+# SEVERITY — this gate is routed GATE (BLOCKING) in _build_all.py. The promotion
+# condition of s197-D1 was "stay WARN until it survives one real banner roll, then
+# flip at the following session": MET by the #197 roll (commit 5b77cce, recorded
+# GOOD-MORNING.md:522), and Dave gave the word at #198. BLOCKING is the repo's GATE
+# tier — red + remedy, caught at the commit seam; the build itself keeps running,
+# it is NOT ABORT. This constant is display-only (printed at main()); the routing
+# truth is the ROUTE_ROWS entry in _build_all.py, and the two must move together.
+SEVERITY = "blocking"
 
 SECTION_START_RE = re.compile(r"^##\s*1\.\s*★\s*NEXT STRANDS")
 NEXT_HEADING_RE = re.compile(r"^##\s")
