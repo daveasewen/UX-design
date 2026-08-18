@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review — hover-1 / hover-2 primitive names · #199</title>
+<style>
+  :root{ --ink:#1A1A1A; --paper:#FFFFFF; --sub:#626262; --line:#E4E4E4; }
+  *{box-sizing:border-box; margin:0}
+  body{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; background:var(--paper); color:var(--ink); padding:48px 40px 96px; max-width:1200px; margin:0 auto;}
+  h1{font-size:28px; letter-spacing:-0.02em; margin-bottom:6px}
+  .meta{color:var(--sub); font-size:13px; margin-bottom:36px}
+  h2{font-size:15px; text-transform:uppercase; letter-spacing:0.08em; margin:44px 0 16px; border-top:2px solid var(--ink); padding-top:12px}
+  p{font-size:15px; line-height:1.55; max-width:70ch; margin-bottom:12px}
+  code{font-family:"SF Mono",Menlo,monospace; font-size:0.9em; background:#F4F4F4; padding:1px 5px; border-radius:3px}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; margin:20px 0}
+  .card{border:1px solid var(--line); padding:0; overflow:hidden}
+  .card .strip{padding:24px; display:flex; flex-direction:column; gap:12px; align-items:flex-start}
+  .card h3{font-size:13px; padding:10px 14px; border-bottom:1px solid var(--line); font-weight:600}
+  .card h3 small{color:var(--sub); font-weight:400; float:right}
+  .btn{border:none; padding:12px 22px; font-size:14px; font-weight:600; cursor:pointer; transition:background .12s; border-radius:2px}
+  .swrow{font-family:"SF Mono",Menlo,monospace; font-size:11px; display:flex; gap:8px; align-items:center}
+  .sw{width:14px; height:14px; display:inline-block; border:1px solid rgba(128,128,128,.4)}
+  .note{font-size:12px; color:var(--sub); padding:10px 14px; border-top:1px solid var(--line); line-height:1.5}
+  .dk{background:#161616; color:#FAFAFA}
+  .dk .note{color:#9A9A9A; border-color:#333}
+  .dk h3{border-color:#333}
+  .sc-l{background:#F7F6F4; color:#25211C}
+  .sc-d{background:#13110E; color:#F0EFED}
+  .sc-d .note{color:#AA9B92; border-color:#312C26}
+  .sc-d h3{border-color:#312C26}
+
+  table{border-collapse:collapse; font-size:13px; margin:16px 0; width:100%}
+  th,td{border:1px solid var(--line); padding:8px 12px; text-align:left; vertical-align:top}
+  th{background:#F4F4F4; font-size:12px; text-transform:uppercase; letter-spacing:.05em}
+  td code{background:none; padding:0}
+
+  .opt{border:1px solid var(--line); padding:16px 18px; margin-bottom:12px; cursor:pointer; display:block}
+  .opt:hover{border-color:var(--ink)}
+  .opt input{margin-right:10px}
+  .opt .why{font-size:13px; color:var(--sub); margin-top:6px; line-height:1.5}
+  .flag{background:#FFF8E6; border:1px solid #E8D9A0; padding:14px 18px; font-size:14px; line-height:1.55; margin:16px 0; max-width:78ch}
+</style>
+</head>
+<body>
+
+<h1>The <code>hover-1</code> / <code>hover-2</code> primitive names</h1>
+<div class="meta">Session #199 · 2026-08-18 · minted at s198-D2 (values ruled s198-D1) — the names shipped as the enactor's pick; this page puts your eye on them. Hover every button below — the hovers are live, real values.</div>
+
+<h2>What shipped</h2>
+<p>The 0.68-derived hover values became named primitive steps: <code>color/mono/hover-1</code> <b>#636363</b> (light) and <code>color/mono/hover-2</code> <b>#B2B2B2</b> (dark), mirrored as <code>color/neutral/hover-1|hover-2</code> in the DNA tier. <code>surface/action-primary-hover</code> aliases them. Supercharge overrides the neutral pair onto <code>warm/7</code> / <code>warm/10</code> — per your ruling this morning (s199-D1) that snap is settled, not a debt.</p>
+
+<h2>Live spread — four themes, light + dark</h2>
+<div class="grid">
+  <div class="card">
+    <h3>Mono · light <small>base</small></h3>
+    <div class="strip">
+      <button class="btn" style="background:#1A1A1A;color:#FAFAFA"
+        onmouseover="this.style.background='#636363'" onmouseout="this.style.background='#1A1A1A'"
+        onmousedown="this.style.background='#000'" onmouseup="this.style.background='#636363'">Primary action</button>
+      <div class="swrow"><span class="sw" style="background:#1A1A1A"></span>default neutral/4</div>
+      <div class="swrow"><span class="sw" style="background:#636363"></span>hover <b>&nbsp;hover-1 #636363</b></div>
+      <div class="swrow"><span class="sw" style="background:#000"></span>pressed neutral/1</div>
+    </div>
+    <div class="note">Exact 0.68 derivation, no longer ramp-snapped. Nearest rung mono/7 #626262.</div>
+  </div>
+
+  <div class="card dk">
+    <h3>Mono · dark <small>base</small></h3>
+    <div class="strip">
+      <button class="btn" style="background:#FAFAFA;color:#1A1A1A"
+        onmouseover="this.style.background='#B2B2B2'" onmouseout="this.style.background='#FAFAFA'"
+        onmousedown="this.style.background='#FFF'" onmouseup="this.style.background='#B2B2B2'">Primary action</button>
+      <div class="swrow"><span class="sw" style="background:#FAFAFA"></span>default neutral/14</div>
+      <div class="swrow"><span class="sw" style="background:#B2B2B2"></span>hover <b>&nbsp;hover-2 #B2B2B2</b></div>
+      <div class="swrow"><span class="sw" style="background:#FFF"></span>pressed neutral/15</div>
+    </div>
+    <div class="note">Nearest rung mono/10 #B7B7B7.</div>
+  </div>
+
+  <div class="card">
+    <h3>Console · light <small>inherits mono</small></h3>
+    <div class="strip">
+      <button class="btn" style="background:#1A1A1A;color:#FAFAFA"
+        onmouseover="this.style.background='#636363'" onmouseout="this.style.background='#1A1A1A'"
+        onmousedown="this.style.background='#000'" onmouseup="this.style.background='#636363'">Primary action</button>
+      <div class="swrow"><span class="sw" style="background:#636363"></span>hover-1 #636363 <i>by design</i></div>
+    </div>
+    <div class="note">Console takes the mono hover change by inheritance — this render is that inheritance, by eye (closes part of residual ④'s "unrendered" flag).</div>
+  </div>
+
+  <div class="card dk">
+    <h3>Console · dark <small>inherits mono</small></h3>
+    <div class="strip">
+      <button class="btn" style="background:#FAFAFA;color:#1A1A1A"
+        onmouseover="this.style.background='#B2B2B2'" onmouseout="this.style.background='#FAFAFA'"
+        onmousedown="this.style.background='#FFF'" onmouseup="this.style.background='#B2B2B2'">Primary action</button>
+      <div class="swrow"><span class="sw" style="background:#B2B2B2"></span>hover-2 #B2B2B2 <i>by design</i></div>
+    </div>
+    <div class="note">Same inheritance, dark leg.</div>
+  </div>
+
+  <div class="card sc-l">
+    <h3>Supercharge · light <small>ramp snap — settled s199-D1</small></h3>
+    <div class="strip">
+      <button class="btn" style="background:#25211C;color:#F7F6F4"
+        onmouseover="this.style.background='#493F39'" onmouseout="this.style.background='#25211C'"
+        onmousedown="this.style.background='#000'" onmouseup="this.style.background='#493F39'">Primary action</button>
+      <div class="swrow"><span class="sw" style="background:#25211C"></span>default warm/4</div>
+      <div class="swrow"><span class="sw" style="background:#493F39"></span>hover <b>&nbsp;warm/7 #493F39</b></div>
+    </div>
+    <div class="note">neutral/hover-1 → warm/7. Specific ramp value, per your ruling — no 0.68 derivation.</div>
+  </div>
+
+  <div class="card sc-d">
+    <h3>Supercharge · dark <small>ramp snap — settled s199-D1</small></h3>
+    <div class="strip">
+      <button class="btn" style="background:#F0EFED;color:#25211C"
+        onmouseover="this.style.background='#806E65'" onmouseout="this.style.background='#F0EFED'"
+        onmousedown="this.style.background='#F7F6F4'" onmouseup="this.style.background='#806E65'">Primary action</button>
+      <div class="swrow"><span class="sw" style="background:#F0EFED"></span>default warm/14</div>
+      <div class="swrow"><span class="sw" style="background:#806E65"></span>hover <b>&nbsp;warm/10 #806E65</b></div>
+    </div>
+    <div class="note">neutral/hover-2 → warm/10.</div>
+  </div>
+
+  <div class="card">
+    <h3>Legacy · light <small>own red ramp</small></h3>
+    <div class="strip">
+      <button class="btn" style="background:#DB0011;color:#FFF"
+        onmouseover="this.style.background='#BA1110'" onmouseout="this.style.background='#DB0011'">Primary action</button>
+      <div class="swrow"><span class="sw" style="background:#DB0011"></span>default #DB0011 (Legacy's alone)</div>
+      <div class="swrow"><span class="sw" style="background:#BA1110"></span>hover red/700 #BA1110</div>
+    </div>
+    <div class="note">Legacy binds its own button ramp directly — <code>hover-1/hover-2</code> are not consumed here. Shown for the full spread only.</div>
+  </div>
+
+  <div class="card dk">
+    <h3>Legacy · dark <small>own red ramp</small></h3>
+    <div class="strip">
+      <button class="btn" style="background:#DB0011;color:#FFF"
+        onmouseover="this.style.background='#BA1110'" onmouseout="this.style.background='#DB0011'">Primary action</button>
+      <div class="swrow"><span class="sw" style="background:#BA1110"></span>hover #BA1110 (same both modes)</div>
+    </div>
+    <div class="note">Colour-only state feedback per B-D7.</div>
+  </div>
+</div>
+
+<h2>The naming question — what "-1 / -2" is actually encoding</h2>
+<p>Every other mono step is a numbered <b>ramp rung</b> (<code>mono/7</code>, <code>mono/10</code>). But <code>hover-1</code> / <code>hover-2</code> encode <b>light mode vs dark mode</b> — a different meaning wearing the same suffix shape. The precedent <code>raise-1..3</code> encodes elevation offsets, so the tier already has suffixes that aren't ramp positions; the question is whether a mode-pair should look like a sequence.</p>
+
+<div class="flag"><b>One collision worth your eye:</b> the deprecated Sutherland tokens <code>icon/on-light&nbsp;(depricate)/hover-1</code> and <code>hover-2</code> share these exact leaf names. They're retiring, but until they're gone a grep for <code>hover-1</code> hits both families.</div>
+
+<table>
+  <tr><th></th><th>Light primitive</th><th>Dark primitive</th></tr>
+  <tr><td><b>A · As shipped</b></td><td><code>color/mono/hover-1</code></td><td><code>color/mono/hover-2</code></td></tr>
+  <tr><td><b>B · Mode-named</b></td><td><code>color/mono/hover-light</code></td><td><code>color/mono/hover-dark</code></td></tr>
+  <tr><td><b>C · Derivation-named</b></td><td><code>color/mono/hover-on-4</code></td><td><code>color/mono/hover-on-14</code></td></tr>
+</table>
+
+<h2>Your call</h2>
+<label class="opt"><input type="radio" name="nm" onchange="pick('A')"><b>A — Keep hover-1 / hover-2 as shipped.</b>
+  <div class="why">Zero churn; matches the raise-1..3 "suffix ≠ ramp rung" precedent; the deprecated clash dies when Sutherland tokens do.</div></label>
+<label class="opt"><input type="radio" name="nm" onchange="pick('B')"><b>B — Rename to hover-light / hover-dark.</b>
+  <div class="why">Says what it means; kills the grep collision now. Cost: a rename pass across colour.json, the neutral mirrors, the Supercharge overrides and semantic aliases (small, mechanical, gated).</div></label>
+<label class="opt"><input type="radio" name="nm" onchange="pick('C')"><b>C — Name by what they're derived from: hover-on-4 / hover-on-14.</b>
+  <div class="why">Encodes the derivation (0.68 over neutral/4 and neutral/14). Most precise, least readable; breaks if the ground rung ever moves.</div></label>
+<label class="opt"><input type="radio" name="nm" onchange="pick('other')"><b>Something else</b> — tell me in chat.</label>
+
+<script>
+function pick(o){
+  const el=document.createElement('div'); el.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1A1A1A;color:#FAFAFA;padding:10px 22px;font-size:14px;border-radius:3px';
+  el.textContent='Picked '+o+' — say it in chat to make it a ruling.';
+  document.body.appendChild(el); setTimeout(()=>el.remove(),3500);
+}
+</script>
+</body>
+</html>
