@@ -2169,3 +2169,19 @@ consumers, the dashboard's red counts, and the review layer. Large — which is 
 
 **Reconciliation owed:** Dave's alone. Promote, re-scope, or park with a dated reason — nothing
 here may be enacted on the engine's own judgement (Governance, this file).
+
+## ds-0NN (QUEUED BUILD CANDIDATE, #201, 2026-08-18) — `size/segmented-control/min-hit-area` (44) has no consumer gate; a 36px target ships clean
+
+The token is minted (`s200-D4`) and its semantics are ruled (`s201-D2` hit zone; `s201-D3` hit box
+= max(44, visual height) — natural above the floor). But no gate reads it: a segmented control
+rendered at 36px with no expanded interactive target passes every existing validator
+([[instrument-without-a-consumer]] — declared as pitfall (c) at #200, still true after #201).
+
+**Shape of the gate:** parse rendered specimens/snippets in the consumer's grammar
+([[no-gate-parses-the-artefact]]) — assert that any element carrying the segmented-control role
+with visual height < 44 presents an interactive box (::after or padded target) ≥ 44px computed.
+The `SEGMENTED-SCALE-SPECIMEN-2026-08-18-v1.html` ::after geometry (verified 8/8 at #201) is the
+reference implementation. Must ship with a mutation proof: remove the ::after and the gate goes RED
+(the s194-D1 arms pattern, this file's Governance note).
+
+**Priced, not built** — queued at #201 for a component-work window. Enactment call is Dave's.

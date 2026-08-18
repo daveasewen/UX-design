@@ -1,5 +1,17 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-18 #198 (2d, at the #201 wrap) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-18 (Tue from `date`) (**#198**, FABLE conductor + 5 OPUS subs (1 read-back · 2 build · 1 worker · this wrap sub), DELEGATED wrap, **TWO RULINGS, DAVE'S — `s198-D1` · `s198-D2`**)
+
+**Landed (evidence per claim; two work commits before this wrap — `f0ab051` · `5297f47`, in that order, read back from `git log`. ⛔ NEITHER PUSHED — push is Dave's word and it was not given.)**
+
+- ★★ **THE STALE-QUEUE GATE IS BLOCKING (`f0ab051`)** — `s197-D1`'s condition was met by the **#197** roll (`5b77cce`, `GOOD-MORNING.md:522`) and **Dave gave the word**. The **ADVISORY→GATE route row and `SEVERITY=blocking` moved TOGETHER**; de-risked by driving the real grammar — fake sha FAILED naming the item · stripped tail FAILED on presence · unmutated PASSED · real `GOOD-MORNING.md` byte-identical. `W-36` CLOSED. ⚠ **Its route LABEL still reads `(WARN, #196)` — a join key, two-table edit owed.**
+- ★★ **`s198-D1` + `s198-D2` RULED, INSCRIBED AND ENACTED (`5297f47`)** — stored `--pri-hover` **re-derived at 0.68**: light `#626262`→**`#636363`**, dark `#B7B7B7`→**`#B2B2B2`**; and **`color/mono/hover-1|hover-2` + neutral mirrors MINTED**, aliases re-pointed. Inscribed by the CONDUCTOR via `_inscribe_ruling.py` (**184 → 186**); ⛔ this wrap sub did not open `knowledge/_rulings.json`. Dave ruled off `reviews/PRI-HOVER-COMPARE-2026-08-17-v1.html` (*"the suggestions are approved"*, readback confirmed). `W-37` CLOSED. Token-tier gate strict 0 fails, rc=0.
+- ⚠ **A SILENT SUPERCHARGE DROP WAS CAUGHT AND FENCED** — the first regen would have dropped Supercharge's hover to the mono greys; scope-preserving overrides added (`neutral/hover-1`→warm/7, `hover-2`→warm/10) for **zero pixel change**. ⚠ It is a SNAP, not a 0.68 warm derivation — **DAVE'S**, carried.
+- ⚙ **GAUGE.** boot **56,173 real** (in band) · **FILL at wrap-open 136,659 real** — UNDER the ADVISORY stop line **150,929** by **14,270**; wall **256,000** BINDS, working **200,000** untouched. **subs 257,563 tokens (n=4, MEASURED)**. ⚙ **QUOTA: NOT relayed this session — DECLARED ABSENT, never invented.**
+- ⛔ **NOT RUN / NOT TOUCHED:** `_build_all.py` (a partial run strands the tree ⇒ downstream baked artefacts are stale wrt the 4 new canon vars) · `knowledge/_rulings.json` · the auto-memory store (NON-REPO, conductor's seat — memory step 3 is DECLARED OWED).
+
+
 ## Rolled 2026-08-18 #197 (2d, at the #200 wrap) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-17 (Mon from `date`) (**#197**, FABLE conductor + 2 OPUS subs (1 worker · this wrap sub), DELEGATED wrap, **ONE RULING, DAVE'S — `s197-D1`**)
 
