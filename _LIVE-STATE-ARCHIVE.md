@@ -1,5 +1,19 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-18 #195 (2d, at the #198 wrap) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-17 (Mon from `date`) (**#195**, FABLE conductor + 2 OPUS subs (1 build · this wrap sub), DELEGATED wrap, **ONE RULING, DAVE'S — `s195-D1`**)
+
+**Landed (evidence per claim; two work commits before this wrap — `69ca19e` · `e194a93`, in that order; every sha read back from `git log`):**
+
+- ⬛ **`s195-D1` RULED AND ENACTED — THE CHART-INTENT FIELD STANDS ON ALL 14 METAS AND ITS RESOLVER IS WIRED BLOCKING** — the ds-0NN candidate PARKED at #192 and deferred at #193/#194 lands with scope **"intent field only"**. The five-word FT vocabulary lives **ONCE** in **`knowledge/chart-intents.json`** (write-once, ADR-0017 / `s192-D1`); each chart meta carries an intent **ADDRESS**. Inscribed by the CONDUCTOR via `_inscribe_ruling.py` (182→183) — ⛔ **this wrap sub wrote NOTHING into `knowledge/_rulings.json`.**
+- ★ **THE CARRIED COUNT WAS WRONG: 7 RECORDED, 14 MEASURED** — the parked "7" was the `Chart-*` wave only; the conductor counted the corpus and Dave widened the ruling (*"Yes, all 14"*). A carried COUNT is the same defect class as a carried premise [[premise-ages-faster-than-rule]].
+- ⬛ **DAVE'S TWO CONTENT CALLS** — `chart-combo` = **change-over-time** (*"1. change-over-time"*); `chart-stacked-area` keeps **TWO** words (*"this is is right it should be 2"*). ⛔ The vocabulary is **ADOPTED**: a sixth word enters only by his ruling.
+- ✅ **THE FIRST CONSUMER IS WIRED BLOCKING (`e194a93`)** — `knowledge/_validate_intent_resolve.py`, routes **120 → 122**, `check_routes` green; green on the real corpus (**14 metas, 15 addresses**), **mutation-proven both directions**, 4 selftest bites; the schema's `intent` property forced by `additionalProperties: false`.
+- ⚠ **A DECLARED MISFIRE, THE CONDUCTOR'S OWN, AND IT EXPOSED #194 ENACTMENT DEBT** — an unrecognized flag (`--check-routes`) started a REAL partial `_build_all.py` run, aborted at **step 25**; 32 compliance outputs git-restored to HEAD, no lasting harm. The abort exposed that `W-34`'s state `parked` had **no legal form in `_state.py`'s `STATES`** — step 25 was refusing an honest statement [[honest-refusal-needs-a-legal-form]]; widened mechanically per `s194-D2`'s own text, selftest **57 bites green**. ⚠ **A FIFTH not-green step that #194's "4 not-green" count could not have seen** (it was measured at the #193 HEAD, before #194's wrap wrote `parked`).
+- ⚙ **GAUGE.** boot **56,881 real** (in band) · **FILL at wrap-open 133,809 real** — the conductor's own `_checkin.py` measurement, relayed: **UNDER the ADVISORY stop line 150,929 by 17,120**, wall **256,000** binding (`s190-D2`) — the wrap is DELEGATED because the room is under the 42–49K wrap band, not on fill panic · **subs 68,107 tokens (n=1, MEASURED)**, this wrap sub's own spend EXCLUDED and not measurable from inside it. Effort band **M**. ⚙ QUOTA, RELAYED: All **36%** · Fable **47%**, reset Thu 10:59PM, day 5 of 7 — crank taken as MORE DELEGATION IN ONE WINDOW.
+- ⛔ **NOT RULED / NOT TOUCHED:** the **sibling-redirect / `insteadUse` candidate** (re-PARKED by reference to the #192 record, ⛔ no fresh dated receipt) · the **CI count of not-green steps** (still UNREAD; the local count moved 4 → 5-with-`W-34`, both LOCAL — CI is the arbiter) · the **`2c2f481` pushed-but-recorded-unpushed discrepancy** · **ds-034/ds-035** evidence homing · the **per-theme dedup leak** · **`W-34`**'s external trigger · both **`.jsonl`** policies · the **memory-index compaction** (NON-REPO: the conductor's auto-memory store) · every `G`-item. ⛔ **NOT PUSHED — push is Dave's word and it was not taken.**
+
+
 ## Rolled 2026-08-17 #194 (2d, at the #197 wrap) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-17 (Mon from `date`) (**#194**, FABLE conductor + 4 OPUS subs (2 build · 1 warn-tier · this wrap sub), DELEGATED wrap, **TWO RULINGS, DAVE'S — `s194-D1` · `s194-D2`**)
 
