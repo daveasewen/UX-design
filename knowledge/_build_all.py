@@ -227,9 +227,9 @@ STEPS = [
     # thorough and tested"). Re-measures every §C·1 queue item's stated work-state
     # against disk and git, so a prose claim cannot outlive reality again (STEP 2 read
     # "open" for twelve sessions after `df44e51` landed it). Routed ADVISORY — the
-    # findings are Dave's queue, and the gate ships WARN by his ruling; the SELFTEST is
+    # findings are Dave's queue, and the gate shipped WARN by his ruling (flipped BLOCKING #198, f0ab051, s197-D1 condition met); the SELFTEST is
     # ABORT, because a stale-queue gate that has stopped biting is a silent instrument.
-    ("stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (WARN, #196)",
+    ("stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (BLOCKING, #198)",
      "_validate_queue_fresh.py"),
     ("stale-queue selftest — 13 bites incl. both mutation directions + scope (#196)",
      "_validate_queue_fresh.py", ["--selftest"]),
@@ -785,7 +785,7 @@ ROUTE_ROWS = [
     # GATE here and SEVERITY -> "blocking" in _validate_queue_fresh.py moved together;
     # neither alone is the promotion. GATE tier = red + remedy at the commit seam, NOT
     # ABORT. ⚠ The label string is a routing join key duplicated in STEPS — never edit it.
-    ("stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (WARN, #196)", GATE,
+    ("stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (BLOCKING, #198)", GATE,
      "\n❌ stale-queue gate failed (exit {code}) — a §C·1 queue item's stated state is contradicted by disk or git, or a live item carries no qprobe tail. Run: python3 knowledge/_validate_queue_fresh.py"),
     ("stale-queue selftest — 13 bites incl. both mutation directions + scope (#196)", ABORT, None),
     # #158: the named-palette tier (s157-D2). Routed GATE, not ADVISORY — the ruling makes

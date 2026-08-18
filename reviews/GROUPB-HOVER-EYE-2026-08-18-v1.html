@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group B — new hover by eye · #199</title>
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;color:#1A1A1A;background:#FFF;padding:48px 40px 96px;max-width:1240px;margin:0 auto}
+  h1{font-size:26px;letter-spacing:-0.02em;margin-bottom:6px}
+  .meta{color:#626262;font-size:13px;margin-bottom:8px}
+  p.lede{font-size:15px;line-height:1.55;max-width:76ch;margin-bottom:28px}
+  h2{font-size:14px;text-transform:uppercase;letter-spacing:.08em;margin:36px 0 14px;border-top:2px solid #1A1A1A;padding-top:10px}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:8px}
+  .pane{border:1px solid #E4E4E4;padding:20px}
+  .pane.dark{background:#161616;color:#FAFAFA;border-color:#333}
+  .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#626262;margin-bottom:14px}
+  .dark .lbl{color:#9A9A9A}
+  .btn{border:none;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:2px;transition:background .12s}
+  .btn.ghost{background:transparent;border:1px solid currentColor;font-weight:500}
+  .hoverkey{font-family:"SF Mono",Menlo,monospace;font-size:11px;color:#626262;margin-top:12px}
+  .dark .hoverkey{color:#9A9A9A}
+  /* specimens */
+  .modal{max-width:420px;border:1px solid #D7D7D7;box-shadow:0 8px 28px rgba(0,0,0,.14);background:#FFF;color:#1A1A1A}
+  .dark .modal{background:#1E1E1E;color:#FAFAFA;border-color:#3A3A3A;box-shadow:0 8px 28px rgba(0,0,0,.5)}
+  .modal .mh{padding:18px 20px 0;font-weight:600;font-size:16px}
+  .modal .mb{padding:10px 20px 18px;font-size:14px;color:#626262;line-height:1.5}
+  .dark .modal .mb{color:#9A9A9A}
+  .modal .mf{padding:14px 20px;border-top:1px solid #EDEDED;display:flex;gap:10px;justify-content:flex-end}
+  .dark .modal .mf{border-color:#333}
+  .abar{display:flex;gap:10px;align-items:center;padding:12px 16px;border:1px solid #D7D7D7;background:#FAFAFA}
+  .dark .abar{background:#1E1E1E;border-color:#3A3A3A}
+  .abar .spacer{flex:1;font-size:13px;color:#626262}
+  .dark .abar .spacer{color:#9A9A9A}
+  .drawer{width:300px;border:1px solid #D7D7D7;background:#FFF;min-height:220px;display:flex;flex-direction:column;box-shadow:-6px 0 20px rgba(0,0,0,.10)}
+  .dark .drawer{background:#1E1E1E;border-color:#3A3A3A}
+  .drawer .dh{padding:16px 18px;font-weight:600;font-size:15px;border-bottom:1px solid #EDEDED}
+  .dark .drawer .dh{border-color:#333}
+  .drawer .db{flex:1;padding:14px 18px;font-size:13px;color:#626262;line-height:1.5}
+  .dark .drawer .db{color:#9A9A9A}
+  .drawer .df{padding:14px 18px;border-top:1px solid #EDEDED;display:flex;gap:10px}
+  .dark .drawer .df{border-color:#333}
+</style>
+</head>
+<body>
+
+<h1>Group B — the new hover, rendered by eye at last</h1>
+<div class="meta">#199 · 2026-08-18 · cn-modals · action-bar · confirmation · drawer — these consume <code>var(--pri-hover)</code> and nobody had SEEN them since s198-D1 moved it (light #626262→#636363, dark #B7B7B7→#B2B2B2 — a +1/−5 per-channel shift).</div>
+<p class="lede">Every primary button below hovers with the NEW value (now named <b>hover-light</b> / <b>hover-dark</b> per your s199-D2 rename). The shift is deliberately tiny — this page exists so the render is seen, not assumed. If anything reads wrong to your eye, say so; otherwise this closes the "unrendered" flag for all four.</p>
+
+<h2>Modal + Confirmation</h2>
+<div class="pair">
+  <div class="pane"><div class="lbl">light · hover = #636363</div>
+    <div class="modal">
+      <div class="mh">Delete 3 items?</div>
+      <div class="mb">This can't be undone. The items will be removed from every collection that references them.</div>
+      <div class="mf">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn" style="background:#1A1A1A;color:#FAFAFA" onmouseover="this.style.background='#636363'" onmouseout="this.style.background='#1A1A1A'">Delete</button>
+      </div>
+    </div>
+    <div class="hoverkey">default #1A1A1A → hover #636363 → seen</div>
+  </div>
+  <div class="pane dark"><div class="lbl">dark · hover = #B2B2B2</div>
+    <div class="modal">
+      <div class="mh">Delete 3 items?</div>
+      <div class="mb">This can't be undone. The items will be removed from every collection that references them.</div>
+      <div class="mf">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn" style="background:#FAFAFA;color:#1A1A1A" onmouseover="this.style.background='#B2B2B2'" onmouseout="this.style.background='#FAFAFA'">Delete</button>
+      </div>
+    </div>
+    <div class="hoverkey">default #FAFAFA → hover #B2B2B2 → seen</div>
+  </div>
+</div>
+
+<h2>Action bar</h2>
+<div class="pair">
+  <div class="pane"><div class="lbl">light</div>
+    <div class="abar">
+      <span class="spacer">3 selected</span>
+      <button class="btn ghost">Move</button>
+      <button class="btn" style="background:#1A1A1A;color:#FAFAFA" onmouseover="this.style.background='#636363'" onmouseout="this.style.background='#1A1A1A'">Apply</button>
+    </div>
+  </div>
+  <div class="pane dark"><div class="lbl">dark</div>
+    <div class="abar">
+      <span class="spacer">3 selected</span>
+      <button class="btn ghost">Move</button>
+      <button class="btn" style="background:#FAFAFA;color:#1A1A1A" onmouseover="this.style.background='#B2B2B2'" onmouseout="this.style.background='#FAFAFA'">Apply</button>
+    </div>
+  </div>
+</div>
+
+<h2>Drawer</h2>
+<div class="pair">
+  <div class="pane"><div class="lbl">light</div>
+    <div class="drawer">
+      <div class="dh">Filter results</div>
+      <div class="db">Status, owner, and date-range controls live here in the real component; this shell exists so the footer buttons render in context.</div>
+      <div class="df">
+        <button class="btn ghost">Reset</button>
+        <button class="btn" style="background:#1A1A1A;color:#FAFAFA" onmouseover="this.style.background='#636363'" onmouseout="this.style.background='#1A1A1A'">Apply filters</button>
+      </div>
+    </div>
+  </div>
+  <div class="pane dark"><div class="lbl">dark</div>
+    <div class="drawer">
+      <div class="dh">Filter results</div>
+      <div class="db">Status, owner, and date-range controls live here in the real component; this shell exists so the footer buttons render in context.</div>
+      <div class="df">
+        <button class="btn ghost">Reset</button>
+        <button class="btn" style="background:#FAFAFA;color:#1A1A1A" onmouseover="this.style.background='#B2B2B2'" onmouseout="this.style.background='#FAFAFA'">Apply filters</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>The shift itself, side by side</h2>
+<div class="pair">
+  <div class="pane"><div class="lbl">light — old vs new</div>
+    <button class="btn" style="background:#626262;color:#FFF">old #626262</button>
+    <button class="btn" style="background:#636363;color:#FFF">new #636363</button>
+    <div class="hoverkey">+1 per channel — at the threshold of visibility, by design (exact 0.68, not snapped)</div>
+  </div>
+  <div class="pane dark"><div class="lbl">dark — old vs new</div>
+    <button class="btn" style="background:#B7B7B7;color:#1A1A1A">old #B7B7B7</button>
+    <button class="btn" style="background:#B2B2B2;color:#1A1A1A">new #B2B2B2</button>
+    <div class="hoverkey">−5 per channel — slightly deeper hover, the visible half of the pair</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -56,7 +56,7 @@ Dave's and the conductor's. A green reads "no queue item's claim is contradicted
 by measurement", never "the queue is correct".
 
 Usage:  python3 knowledge/_validate_queue_fresh.py             # check mode
-        python3 knowledge/_validate_queue_fresh.py --selftest  # 6 bites
+        python3 knowledge/_validate_queue_fresh.py --selftest  # 13 bites (docstring said 6 until #199 — the count grew, the prose did not)
 Exit 0 clean · 1 findings · 2 unparseable (a refusal, not a verdict).
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
@@ -287,7 +287,7 @@ def main():
 
 
 def selftest():
-    """6 bites. Each must land its verdict for the NAMED reason, or the gate is
+    """13 bites (was 6; corrected #199). Each must land its verdict for the NAMED reason, or the gate is
     decorative [[mutation-tests-the-clause-not-the-feature]]."""
     import shutil
     import tempfile
