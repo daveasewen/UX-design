@@ -1,5 +1,19 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-18 #196 (2d, at the #199 wrap) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-17 (Mon from `date`) (**#196**, FABLE conductor + 2 OPUS subs (1 gate build · this wrap sub), DELEGATED wrap, ⛔ **ZERO RULINGS — no `s196-D*` exists**)
+
+**Landed (evidence per claim; ONE work commit, `e95ea60`, read back from `git log` and PUSHED on Dave's word):**
+
+- ★★ **THE OPENING PLAN WAS ABORTED BY SURVEY, AND THAT IS THE SESSION'S FINDING.** The window opened to fire the 8-chart wave in three sub lanes. The survey found **all 8 charts already landed at `df44e51` (#95), twelve sessions earlier** — metas and reference snippets verified on disk, intent fields included — while `GOOD-MORNING.md` §C·1(a) STEP 2 still read as an open divvy plan. ★ **SECOND recurrence on that exact line** (#26 was the first, and its own correction note is still in the file). ⛔ **No sub was fired at the phantom work.**
+- ★★ **THE CLASS FIX IS BUILT AND ROUTED — `knowledge/_validate_queue_fresh.py` (`e95ea60`), Dave's ask in his own words:** *"we keep missing decisions already made"* … *"I want a proper fix, thorough and tested"*. **Grammar:** each §C·1 item carries a `qprobe` annotation — `state=open|landed|partial`, a `receipt=` for a landed claim, a `declared=` honest-refusal form for an item that names no probeable artefact. **Presence rule:** an unannotated §C·1 item FAILS. **Tier: WARN** (⬛ the BLOCKING flip is DAVE'S, deferred). **Routed** in `_build_all.py`, steps **122 → 124**, wiring **39/39**. **Mutation-proven BOTH directions**, the FAIL arm replaying today's own twelve-session miss and quoting path+line; **13 selftest bites** including 3 scope traps. ⚠ The conductor re-ran the drive and one mutation with his own eyes before the commit.
+- ✅ **`ds-033` ENACTED (`e95ea60`)** — `knowledge/canon/type.css:180` dark background `#111` → `#1A1A1A`, enacting Dave's OLD `#108-D1`; the 119-sweep re-run flipped the sidecar record **STILL-UNENACTED → LITERAL-GONE** and the unenacted column is now **0**. ⚠ **For the record: the ruled literal was the dark BACKGROUND; the decision note's word "ink" was loose, and the specimen title is the authority.**
+- ⚠ **TWO RECORD CORRECTIONS MEASURED, NOT ASSUMED.** **(a)** legend-centring is **CLOSED** by `#106-D1` (Option A) — it had been carried as open in a memory hook, which was corrected in-window. **(b)** `--pri-hover`'s true remainder is the **stored colour-equivalents** `#626262` / `#B7B7B7`, derived at the retired `0.70` rather than the live `--alpha-68` ⇒ ⬛ **DAVE'S promotion, not a build.**
+- ⚠ **COMMIT-PATH MISFIRES, DECLARED:** T3's reused-msgfile gate fired twice — once legitimately (T3 writes the session prefix back into the msgfile) and once because the conductor's own leading `#196 2026-08-17 —` stamp collided with that grammar — and `--reconciled`'s explicit-paths requirement was met on the fourth attempt. **Nothing was staged on any refusal**; the subject-assert took its **23rd** live drive at `e95ea60` and did not fail.
+- ⚠ **CONSEQUENCES (Dave #165):** the new gate reads §C·1 and the roll machinery was verified **not** to write §C (no script writes GM at all) — but the grammar has **never run against the tails**: unproven in anger, declared · WARN means a stale claim now warns at every commit and **blocks nothing until Dave flips it** · the presence rule covers **§C·1 only** — banners and memory hooks carry the same class **unguarded**, a priced candidate and not a build.
+
+
+
 ## Rolled 2026-08-18 #195 (2d, at the #198 wrap) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-17 (Mon from `date`) (**#195**, FABLE conductor + 2 OPUS subs (1 build · this wrap sub), DELEGATED wrap, **ONE RULING, DAVE'S — `s195-D1`**)
 
