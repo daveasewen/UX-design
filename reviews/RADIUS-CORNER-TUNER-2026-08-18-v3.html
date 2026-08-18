@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segmented-control scale tuner — 2026-08-18 v3 (dimension-first)</title>
+<!-- SEGMENTED-CONTROL SCALE TUNER — 2026-08-18 v3, session #200 follow-on.
+     v1 and v2 ARE KEPT (reviews/RADIUS-CORNER-TUNER-2026-08-18-v1.html / -v2.html), not replaced.
+
+     WHAT CHANGED vs v2 — Dave, live at #200:
+       v2 tuned RADII with padding as a side dial. v3 is DIMENSION-FIRST: the segmented control has
+       FOUR scale steps whose TOTAL HEIGHT is the tuned input (24 / 36 / 44 / 48 px default).
+       Padding scales within each step; container radius is set per step; the THUMB radius is never
+       typed — it DERIVES as container − padding (s200-D1 clause c, applied at mint time).
+
+     MINTED STATE READ FROM DISK 2026-08-18 (cited, not remembered):
+       knowledge/tokens/themes/apollo-console.overrides.json
+         :7  border-radius/default              4
+         :12 border-radius/control              8
+         :17 border-radius/surface              20
+         :22 border-radius/container            20   (MINTED s200-D2 / s200-D3, console only)
+         :27 padding/segmented-control/small    2
+         :32 padding/segmented-control/medium   4
+         :37 padding/segmented-control/large    6
+         :42 border-radius/segmented-thumb/small   18   (= 20 − 2, derived at mint time)
+         :47 border-radius/segmented-thumb/medium  16   (= 20 − 4)
+         :52 border-radius/segmented-thumb/large   14   (= 20 − 6)
+         :57 padding/card/internal              20
+       knowledge/tokens/layout.json
+         :114-145 border-radius block; :139 container aliases border-radius/default (base 0)
+                  — s200-D3: nothing was written for mono / legacy / supercharge.
+
+     NOT canon. NOT gated. Nothing here mints. The existing small / medium / large tokens stand
+     on disk until Dave pastes this page's export and it is enacted through the normal route. -->
+<style>
+  :root{ --uf:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--uf); background:#F4F4F4; color:#1A1A1A; -webkit-font-smoothing:antialiased;}
+
+  header{padding:20px 28px; background:#111; color:#fff;}
+  header h1{margin:0; font-size:18px; font-weight:500;}
+  header p{margin:8px 0 0; font-size:13px; color:#B7B7B7; max-width:92ch; line-height:1.55;}
+  header .v{font-size:11px; color:#7FE0A8; letter-spacing:.04em;}
+  header q{color:#E6E6E6; font-style:italic;}
+
+  .banner{margin:0; padding:18px 28px; background:#FBEED2; border-bottom:1px solid #E4D3A8; color:#4A3A12;}
+  .banner h2{margin:0 0 6px; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#8A6A16;}
+  .banner .two{display:grid; grid-template-columns:1fr 1fr; gap:26px; max-width:150ch;}
+  @media (max-width:820px){ .banner .two{grid-template-columns:1fr;} }
+  .banner p{margin:0 0 6px; font-size:13px; line-height:1.55;}
+  .banner ul{margin:4px 0 0 18px; padding:0; font-size:13px; line-height:1.6;}
+
+  .labelnote{margin:0; padding:12px 28px; background:#F7DFF0; border-bottom:1px solid #E7C6DD;
+    color:#7A2A63; font-size:12.5px; line-height:1.55;}
+  .labelnote b{font-weight:600;}
+
+  .stage{padding:24px 28px 8px;}
+  .modebtns{display:flex; gap:6px; margin:0 0 18px;}
+  .modebtns button{font:inherit; font-size:13px; padding:7px 12px; border:1px solid #C4C4C4; background:#fff;
+    color:#1A1A1A; cursor:pointer;}
+  .modebtns button[aria-pressed="true"]{background:#111; color:#fff; border-color:#111;}
+  .modebtns button:focus-visible{outline:2px solid #305A85; outline-offset:2px;}
+
+  .cols{display:grid; grid-template-columns:repeat(4,minmax(280px,1fr)); gap:18px; align-items:start;}
+  @media (max-width:1400px){ .cols{grid-template-columns:repeat(2,minmax(280px,1fr));} }
+  @media (max-width:760px){ .cols{grid-template-columns:1fr;} }
+
+  .col{background:#fff; border:1px solid #DADADA; padding:18px 18px 20px;}
+  .col h3{margin:0 0 2px; font-size:15px; font-weight:500;}
+  .col .rename{width:100%; font:500 15px/1.2 var(--uf); border:1px dashed #C4C4C4; background:#FCFCFC;
+    padding:5px 7px; color:#1A1A1A;}
+  .col .renamehint{display:block; font-size:10.5px; color:#8E8E8E; margin:4px 0 14px;}
+
+  .slider{margin:0 0 14px;}
+  .slider .row{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:3px;}
+  .slider label{font-size:13.5px; font-weight:500;}
+  .slider .sub{display:block; font-size:10.5px; color:#767676; font-weight:400; margin-top:1px;}
+  .slider .val{font-size:14px; font-variant-numeric:tabular-nums; font-weight:500; flex:none;}
+  .slider.dirty .val{color:#B06A00;}
+  .slider input[type=range]{width:100%; accent-color:#111; margin:2px 0 0;}
+
+  .derived{border:1px dashed #C4C4C4; padding:10px 12px; margin:2px 0 14px;
+    font:12px/1.7 ui-monospace,Menlo,Consolas,monospace; color:#333;}
+  .derived b{font-weight:700;}
+  .derived .lbl{color:#767676;}
+  .derived .warn{color:#B06A00; font-weight:700;}
+  .derived .ok{color:#1E7A4B;}
+  .pillflag{display:block; margin-top:8px; padding:7px 9px; font:500 11.5px/1.45 var(--uf);
+    background:#FBEED2; color:#7A5405; border-left:3px solid #B06A00;}
+  .pillflag.off{background:#EFEFEF; color:#5A5A5A; border-left-color:#C4C4C4;}
+
+  .spechead{font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:#767676; margin:14px 0 7px;}
+  .swatch{padding:16px 14px; border:1px solid #DADADA; margin:0 0 10px; position:relative;}
+  .swatch.light{background:#FFFFFF;}
+  .swatch.dark{background:#1A1A1A;}
+  .swatch .tag{position:absolute; top:5px; right:7px; font-size:9.5px; letter-spacing:.05em;
+    text-transform:uppercase; opacity:.55;}
+  .swatch.light .tag{color:#1A1A1A;} .swatch.dark .tag{color:#FFFFFF;}
+
+  /* ---- the specimen: true pixel height, border-box so height is the OUTER height ---- */
+  .seg{position:relative; display:inline-flex; align-items:stretch; border:1px solid var(--sg-formborder);
+    background:transparent; height:var(--sg-h); padding:var(--sg-pad); border-radius:var(--sg-r);}
+  .seg .ind{position:absolute; top:var(--sg-pad); bottom:var(--sg-pad); left:var(--sg-pad);
+    width:calc(50% - var(--sg-pad)); background:var(--sg-secondary); border-radius:var(--sg-thumb);}
+  .seg .ghost{position:absolute; top:var(--sg-pad); bottom:var(--sg-pad); left:var(--sg-pad);
+    width:calc(50% - var(--sg-pad)); border:1px dotted #B06A00; border-radius:var(--sg-hint);
+    pointer-events:none; z-index:3;}
+  .seg button{position:relative; z-index:2; flex:1 1 0; height:100%; padding:0 var(--sg-inline); border:0;
+    background:transparent; font:500 var(--sg-fs)/1 var(--uf); color:var(--sg-text);
+    white-space:nowrap; cursor:default;}
+  .seg button:first-of-type{color:var(--sg-oncontrast);}
+  .swatch.light .seg{--sg-formborder:#808080; --sg-secondary:#000000; --sg-text:#1A1A1A; --sg-oncontrast:#FFFFFF;}
+  .swatch.dark  .seg{--sg-formborder:#808080; --sg-secondary:#FFFFFF; --sg-text:#FFFFFF; --sg-oncontrast:#1A1A1A;}
+  .swatch.mono .seg{--sg-r:0px !important; --sg-thumb:0px !important;}
+
+  .monorow{margin-top:2px; font-size:11px; color:#767676; line-height:1.5;}
+
+  .toggles{display:flex; gap:18px; flex-wrap:wrap; align-items:center; margin:0 0 16px; font-size:12.5px; color:#444;}
+  .toggles label{display:inline-flex; align-items:center; gap:6px; cursor:pointer;}
+
+  #export{margin:22px 28px 40px; padding:16px; background:#0E0E0E; color:#E6E6E6; border-radius:6px;}
+  #export h2{margin:0 0 8px; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:#9A9A9A;}
+  #export textarea{width:100%; min-height:300px; background:#000; color:#7FE0A8; border:1px solid #2A2A2A;
+    font:12px/1.5 ui-monospace,Menlo,Consolas,monospace; padding:12px; resize:vertical;}
+  #export .exrow{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:8px; flex-wrap:wrap;}
+  #export button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid #3A3A3A; background:#1C1C1C;
+    color:#fff; cursor:pointer;}
+  #export button.primary{background:#1E5B3A; border-color:#2E7A50;}
+  #export small{color:#8A8A8A; max-width:78ch; line-height:1.5;}
+  #exstatus{color:#7FE0A8; font-size:12px;}
+</style>
+</head>
+<body>
+  <header>
+    <h1>Segmented-control scale tuner — <span class="v">2026-08-18 v3 · dimension-first · four steps</span></h1>
+    <p>v2 tuned corners with padding as a side dial. v3 turns it round, per Dave at #200: the segmented
+       control has <strong>four scale steps</strong> and the tuned input is the control's
+       <strong>total height</strong> — 24 / 36 / 44 / 48&nbsp;px by default. Padding scales inside each
+       step, container radius is set per step, and the <strong>thumb radius is never typed</strong>: it
+       derives as <code>container&nbsp;−&nbsp;padding</code> (s200-D1 clause c). The page derives live so
+       you can tune; the export is a <em>mint draft of concrete numbers</em> — no runtime derivation
+       anywhere (s200-D1 clause a).</p>
+  </header>
+
+  <div class="banner">
+    <div class="two">
+      <div>
+        <h2>What this page decides</h2>
+        <ul>
+          <li><strong>Total height</strong> per scale step (four steps, 4px increments).</li>
+          <li><strong>Padding</strong> per step (2px steps, s200-D1 clause d).</li>
+          <li><strong>Container radius</strong> per step — and whether one radius can serve all four.</li>
+          <li>The <strong>derived thumb radius</strong> that falls out of the two above.</li>
+          <li>The <strong>names</strong> of the four steps (see the label note below).</li>
+        </ul>
+      </div>
+      <div>
+        <h2>What this page does <em>not</em> do</h2>
+        <ul>
+          <li><strong>Nothing mints here.</strong> The export is a draft; it mints only if you paste it
+              and it is enacted through the normal route.</li>
+          <li>The existing <code>small</code> / <code>medium</code> / <code>large</code> tokens
+              (2 / 4 / 6 with thumbs 18 / 16 / 14) <strong>stand on disk unchanged</strong> until then.</li>
+          <li>No other theme is touched — s200-D3 scope is console-only, and mono / legacy / supercharge
+              have no container entry at all.</li>
+          <li>No formula is ruled. The derivation is a tuning aid and a mint-time step, not machinery.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p class="labelnote"><b>Labels RULED by Dave, #200: <code>xs / s / m / l</code>.</b> (The conductor's
+     scale-1..4 pick was vetoed live — "xs/s/m/l. is good".) The name boxes below remain editable and
+     whatever you type is carried through the export, so a further rename survives.</p>
+
+  <div class="stage">
+    <div class="modebtns" id="modebtns">
+      <button type="button" data-mode="light" aria-pressed="true">Light</button>
+      <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+      <button type="button" data-mode="both" aria-pressed="false">Both</button>
+    </div>
+
+    <div class="toggles">
+      <label><input type="checkbox" id="showhint"> Show concentric hint (dotted) — a hint, never applied</label>
+      <label><input type="checkbox" id="showmono" checked> Show mono square reference (radius 0, no override)</label>
+      <button type="button" id="reset" style="font:inherit;font-size:12.5px;padding:6px 12px;border:1px solid #111;background:#fff;cursor:pointer;">Reset to starting values</button>
+    </div>
+
+    <div class="cols" id="cols"></div>
+  </div>
+
+  <div id="export">
+    <h2>Mint draft — paste-ready</h2>
+    <textarea readonly id="ta"></textarea>
+    <div class="exrow">
+      <small>Shape mirrors <code>knowledge/tokens/themes/apollo-console.overrides.json</code> (plain px
+        numbers). Every entry is <code>$proposed: true</code> — this is a draft, not a mint. Thumb radii are
+        emitted as <strong>concrete numbers</strong>, derived once here at draft time, exactly as s200-D1
+        clause a requires. The <code>$alias</code> convention is preserved for any role that still follows
+        <code>border-radius/default</code>. Scale labels ride along so a rename survives the export.</small>
+      <span>
+        <span id="exstatus"></span>
+        <button type="button" id="rebuild">Rebuild draft</button>
+        <button type="button" class="primary" id="copy">Copy export</button>
+      </span>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- MINTED STATE, read from disk 2026-08-18 (cited in the head comment) ---------- */
+  var MINTED = {
+    container: 20,                      /* apollo-console.overrides.json:22 */
+    padding:  { small:2, medium:4, large:6 },        /* :27 :32 :37 */
+    thumb:    { small:18, medium:16, large:14 },     /* :42 :47 :52 */
+    surface:  20,                       /* :17 */
+    control:  8,                        /* :12 */
+    def:      4                         /* :7  */
+  };
+
+  /* ---------- STARTING VALUES — DECLARED PICKS, not rulings ----------
+     height   24 / 36 / 44 / 48   Dave's numbers, live at #200.
+     padding   2 /  4 /  6 /  6   the three MINTED console paddings in order, with the fourth step
+                                  repeating 6 (padding is not obliged to keep climbing once the thumb
+                                  has room). Claude's pick — say the word and it becomes 2/4/6/8.
+     radius   20 / 20 / 20 / 20   the single MINTED container radius on EVERY step, deliberately, so the
+                                  small end shows where the one-radius assumption breaks: 20 on a 24px
+                                  control is already past pill.
+     font   11 / 12 / 14 / 16     plausible type ramp per step. Claude's pick, unruled.
+     inline  8 / 12 / 14 / 16     horizontal label padding per step. Claude's pick, unruled.          */
+  var SCALES = [
+    { key:'xs', label:'xs', h:24, pad:2, r:20, fs:11, inline:8  },
+    { key:'s',  label:'s',  h:36, pad:4, r:20, fs:12, inline:12 },
+    { key:'m',  label:'m',  h:44, pad:6, r:20, fs:14, inline:14 },
+    { key:'l',  label:'l',  h:48, pad:6, r:20, fs:16, inline:16 }
+  ];
+  var START = JSON.parse(JSON.stringify(SCALES));
+
+  var mode = 'light';
+  var showHint = false;
+  var showMono = true;
+  var cols = document.getElementById('cols');
+  var ta   = document.getElementById('ta');
+
+  function derivedThumb(s){ return Math.max(0, s.r - s.pad); }
+  function isPill(s){ return s.r >= s.h / 2; }
+  function thumbHeight(s){ return Math.max(0, s.h - 2 * s.pad - 2); }   /* 1px border each side */
+  function thumbIsPill(s){ var t = thumbHeight(s); return t > 0 && derivedThumb(s) >= t / 2; }
+
+  function sliderHTML(i, kind, labelText, subText, min, max, step, value, unit){
+    return '' +
+      '<div class="slider" data-i="' + i + '" data-kind="' + kind + '">' +
+        '<div class="row"><label>' + labelText + '<span class="sub">' + subText + '</span></label>' +
+        '<span class="val">' + value + unit + '</span></div>' +
+        '<input type="range" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '">' +
+      '</div>';
+  }
+
+  function specimenHTML(s, tone, monoFlag){
+    var cls = 'swatch ' + tone + (monoFlag ? ' mono' : '');
+    var tag = monoFlag ? 'mono — square, no override' : (tone === 'dark' ? 'console dark' : 'console light');
+    return '<div class="' + cls + '"><span class="tag">' + tag + '</span>' +
+      '<span class="seg">' +
+        '<span class="ind"></span>' +
+        (showHint && !monoFlag ? '<span class="ghost"></span>' : '') +
+        '<button type="button">Monthly</button><button type="button">Year to date</button>' +
+      '</span></div>';
+  }
+
+  function colHTML(s, i){
+    return '<div class="col" data-i="' + i + '">' +
+      '<input class="rename" value="' + s.label + '" data-i="' + i + '" aria-label="name for step ' + (i+1) + '">' +
+      '<span class="renamehint">Editable — the name you type is carried into the export.</span>' +
+
+      sliderHTML(i, 'h',   'Total height', 'outer height, 4px steps', 16, 72, 4, s.h, 'px') +
+      sliderHTML(i, 'pad', 'Padding',      'track inset, 2px steps (s200-D1 clause d)', 0, 12, 2, s.pad, 'px') +
+      sliderHTML(i, 'r',   'Container radius', 'outer radius of the concentric pair', 0, 36, 1, s.r, 'px') +
+
+      '<div class="derived" data-derived="' + i + '"></div>' +
+
+      '<div class="spechead">Specimen — true pixel height</div>' +
+      '<div data-spec="' + i + '"></div>' +
+      '<p class="monorow">Mono is shown square (radius 0) for contrast — that is the layout.json base ' +
+      'alias, not a token invented here. s200-D3 wrote nothing for mono / legacy / supercharge.</p>' +
+    '</div>';
+  }
+
+  function paint(i){
+    var s = SCALES[i];
+    var col = cols.querySelector('.col[data-i="' + i + '"]');
+    var thumb = derivedThumb(s), tH = thumbHeight(s), hint = thumb;
+
+    /* specimens */
+    var spec = col.querySelector('[data-spec="' + i + '"]');
+    var html = '';
+    if (mode === 'light' || mode === 'both') html += specimenHTML(s, 'light', false);
+    if (mode === 'dark'  || mode === 'both') html += specimenHTML(s, 'dark',  false);
+    if (showMono) html += specimenHTML(s, (mode === 'dark' ? 'dark' : 'light'), true);
+    spec.innerHTML = html;
+    spec.querySelectorAll('.seg').forEach(function(el){
+      el.style.setProperty('--sg-h',      s.h + 'px');
+      el.style.setProperty('--sg-pad',    s.pad + 'px');
+      el.style.setProperty('--sg-r',      s.r + 'px');
+      el.style.setProperty('--sg-thumb',  thumb + 'px');
+      el.style.setProperty('--sg-hint',   hint + 'px');
+      el.style.setProperty('--sg-fs',     s.fs + 'px');
+      el.style.setProperty('--sg-inline', s.inline + 'px');
+    });
+
+    /* readout */
+    var pill = isPill(s), tpill = thumbIsPill(s);
+    var d = col.querySelector('[data-derived="' + i + '"]');
+    d.innerHTML =
+      '<span class="lbl">height</span>&nbsp; <b>' + s.h + 'px</b><br>' +
+      '<span class="lbl">padding</span>&nbsp; <b>' + s.pad + 'px</b><br>' +
+      '<span class="lbl">container radius</span>&nbsp; <b>' + s.r + 'px</b><br>' +
+      '<span class="lbl">thumb radius (derived: ' + s.r + ' − ' + s.pad + ')</span>&nbsp; <b>' + thumb + 'px</b><br>' +
+      '<span class="lbl">thumb box height</span>&nbsp; <b>' + tH + 'px</b><br>' +
+      '<span class="lbl">type size</span>&nbsp; <b>' + s.fs + 'px</b>' +
+      '<span class="pillflag' + (pill ? '' : ' off') + '">' +
+        (pill
+          ? '⚠ PILL — container radius ' + s.r + 'px is ≥ half the ' + s.h + 'px height (' + (s.h/2) + 'px). ' +
+            'The corners have merged into a capsule; extra radius does nothing visible.' +
+            (tpill ? ' The derived thumb (' + thumb + 'px vs ' + tH + 'px box) is a capsule too.' : '')
+          : 'Not pill — ' + s.r + 'px is under half the ' + s.h + 'px height (' + (s.h/2) + 'px), so the ' +
+            'corner is still a corner.' + (tpill ? ' ⚠ but the derived THUMB is pill at ' + thumb + 'px in a ' + tH + 'px box.' : '')) +
+      '</span>';
+
+    ['h','pad','r'].forEach(function(kind){
+      var box = col.querySelector('.slider[data-kind="' + kind + '"]');
+      box.querySelector('.val').textContent = s[kind] + 'px';
+      box.classList.toggle('dirty', s[kind] !== START[i][kind]);
+    });
+  }
+
+  function paintAll(){ SCALES.forEach(function(_, i){ paint(i); }); renderExport(); }
+
+  function buildDraft(){
+    var block = {
+      $draft: 'segmented-control scale re-shape — DIMENSION-FIRST (four steps)',
+      $theme: 'apollo-console',
+      $attr:  'console',
+      $source: 'reviews/RADIUS-CORNER-TUNER-2026-08-18-v3.html',
+      $date:  '2026-08-18',
+      $proposed: true,
+      $note: 'DRAFT ONLY — pasting this does not mint anything. IF Dave pastes and enacts it, this ' +
+             'dimension-first re-shape SUPERSEDES the padding-first small/medium/large segmented mint of ' +
+             's200-D2 / s200-D3 (console padding 2/4/6 with concrete thumb radii 18/16/14): four scale ' +
+             'steps keyed by TOTAL HEIGHT replace the three size words. Until that happens the minted ' +
+             'small/medium/large tokens on disk STAND UNCHANGED. Thumb radii below are CONCRETE numbers ' +
+             'derived once at draft time per s200-D1 clause c (container − padding) — no runtime ' +
+             'derivation anywhere (clause a). Scope is CONSOLE ONLY (s200-D3); nothing is written for ' +
+             'mono / legacy / supercharge, which keep the layout.json base alias (radius 0, squares).',
+      $labels: SCALES.map(function(s){ return s.label; }),
+      $labelNote: 'Step names xs/s/m/l are RULED by Dave, #200 ("xs/s/m/l. is good"), vetoing the ' +
+                  'conductor’s scale-1..4 pick. Whatever appears in $labels is what was typed on ' +
+                  'the tuner; the token keys below use those same labels.',
+      $mintedStateAtDraftTime: {
+        'border-radius/container': MINTED.container,
+        'padding/segmented-control': MINTED.padding,
+        'border-radius/segmented-thumb': MINTED.thumb,
+        $note: 'Read from knowledge/tokens/themes/apollo-console.overrides.json on 2026-08-18 ' +
+               '(lines 22 / 27,32,37 / 42,47,52). Present for provenance, not for pasting.'
+      },
+      scales: {},
+      overrides: { 'border-radius': {}, 'size': {}, 'padding': {} }
+    };
+
+    SCALES.forEach(function(s){
+      var k = s.label || s.key;
+      var thumb = derivedThumb(s);
+      block.scales[k] = {
+        height:            s.h,
+        padding:           s.pad,
+        containerRadius:   s.r,
+        thumbRadius:       thumb,
+        $derivation:       'thumbRadius = containerRadius (' + s.r + ') − padding (' + s.pad + ') = ' + thumb,
+        pill:              isPill(s),
+        typeSize:          s.fs,
+        inlinePadding:     s.inline,
+        $proposed:         true
+      };
+      block.overrides['size']['segmented-control/' + k] = {
+        $value: s.h, $type: 'number', $proposed: true,
+        $note: 'Total outer height — the TUNED input of the dimension-first shape (#200).'
+      };
+      block.overrides['padding']['segmented-control/' + k] = {
+        $value: s.pad, $type: 'number', $proposed: true,
+        $note: 'Track inset at this step; 2px steps so stacked totals snap to the 4px grid (s200-D1 clause d).'
+      };
+      block.overrides['border-radius']['segmented-container/' + k] = {
+        $value: s.r, $type: 'number', $proposed: true,
+        $note: 'Outer radius of the concentric pair at this step.' +
+               (isPill(s) ? ' ⚠ PILL at this height (' + s.r + ' ≥ ' + (s.h/2) + ').' : '')
+      };
+      block.overrides['border-radius']['segmented-thumb/' + k] = {
+        $value: thumb, $type: 'number', $proposed: true,
+        $note: 'DERIVED AT DRAFT TIME per s200-D1: container (' + s.r + ') − padding (' + s.pad + ') = ' +
+               thumb + '. Plain static number (clause a).'
+      };
+    });
+
+    /* roles untouched by this draft keep their cascade — emitted as $alias, never flattened */
+    block.overrides['border-radius']['container'] = {
+      $value: MINTED.container, $type: 'number',
+      $note: 'UNCHANGED minted value (apollo-console.overrides.json:22). Carried for context; the ' +
+             'per-step segmented radii above do not replace the general container role.'
+    };
+    block.overrides['border-radius']['indicator'] = {
+      $alias: 'border-radius/default', $value: MINTED.def, $type: 'number',
+      $note: 'Still following border-radius/default — alias preserved, not flattened.'
+    };
+
+    return block;
+  }
+
+  function renderExport(){
+    var block = buildDraft();
+    var head = [
+      '// apollo-console — segmented-control SCALE draft, dimension-first, 2026-08-18 (tuner v3)',
+      '// steps: ' + SCALES.map(function(s){ return (s.label||s.key) + ' ' + s.h + 'px'; }).join(' · '),
+      '// thumb radii DERIVED (container − padding), concrete numbers, no runtime derivation',
+      '// DRAFT — $proposed throughout. Nothing mints until Dave pastes this and it is enacted.',
+      '// minted small/medium/large (2/4/6 · 18/16/14) STAND on disk until then.'
+    ].join('\n');
+    ta.value = head + '\n' + JSON.stringify(block, null, 2);
+    var st = document.getElementById('exstatus');
+    try { JSON.parse(JSON.stringify(block)); st.textContent = 'valid JSON'; }
+    catch (err) { st.textContent = 'JSON ERROR: ' + err.message; }
+  }
+
+  /* ---------- wiring ---------- */
+  cols.innerHTML = SCALES.map(colHTML).join('');
+
+  cols.addEventListener('input', function(e){
+    var t = e.target;
+    if (t.type === 'range') {
+      var box = t.closest('.slider');
+      var i = parseInt(box.getAttribute('data-i'), 10);
+      var kind = box.getAttribute('data-kind');
+      SCALES[i][kind] = parseInt(t.value, 10);
+      paint(i); renderExport();
+    } else if (t.classList.contains('rename')) {
+      var j = parseInt(t.getAttribute('data-i'), 10);
+      SCALES[j].label = t.value.trim() || SCALES[j].key;
+      renderExport();
+    }
+  });
+
+  document.getElementById('modebtns').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    mode = b.getAttribute('data-mode');
+    this.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+    paintAll();
+  });
+  document.getElementById('showhint').addEventListener('change', function(){ showHint = this.checked; paintAll(); });
+  document.getElementById('showmono').addEventListener('change', function(){ showMono = this.checked; paintAll(); });
+  document.getElementById('rebuild').addEventListener('click', renderExport);
+  document.getElementById('reset').addEventListener('click', function(){
+    SCALES = JSON.parse(JSON.stringify(START));
+    cols.innerHTML = SCALES.map(colHTML).join('');
+    paintAll();
+  });
+  document.getElementById('copy').addEventListener('click', function(){
+    var b = this; ta.select();
+    try { document.execCommand('copy'); b.textContent = 'Copied';
+          setTimeout(function(){ b.textContent = 'Copy export'; }, 1400); } catch (err) {}
+  });
+
+  paintAll();
+})();
+</script>
+</body>
+</html>

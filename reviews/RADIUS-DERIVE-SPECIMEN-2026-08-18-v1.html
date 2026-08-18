@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radius derivation &mdash; PROPOSAL specimen (s200-D1)</title>
+<style>
+ :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+ body{margin:0;padding:32px;background:#f4f4f5;color:#1a1a1a;line-height:1.5}
+ header{max-width:920px;margin:0 auto 32px}
+ h1{font-size:24px;margin:0 0 8px}
+ .meta{font-size:12px;color:#555;font-family:ui-monospace,Menlo,monospace}
+ .banner{border:2px solid #DA1A00;padding:12px 16px;margin:16px 0;background:#fff}
+ .banner b{color:#DA1A00}
+ .formula{background:#fff;border:1px solid #ccc;padding:16px;margin:16px 0}
+ .formula li{margin:6px 0}
+ section.theme{max-width:920px;margin:0 auto 24px;padding:24px;border:1px solid #ccc}
+ section.light{background:#ffffff;color:#1a1a1a}
+ section.dark{background:#141414;color:#f0f0f0;border-color:#333}
+ h2{font-size:18px;margin:0 0 4px}
+ .mode{font-size:12px;font-weight:400;opacity:.6;text-transform:uppercase;letter-spacing:.08em}
+ h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin:24px 0 12px;font-weight:600}
+ .tnote{font-size:13px;opacity:.75;margin:0 0 8px}
+ .row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+ .specimen{flex:0 0 260px}
+ .seg{display:inline-flex;gap:0;background:#d9d9dd;box-sizing:border-box}
+ .dark .seg{background:#2b2b2f}
+ .thumb{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);padding:8px 14px;font-size:13px;font-weight:600}
+ .dark .thumb{background:#4a4a52;color:#fff}
+ .segbtn{padding:8px 14px;font-size:13px;opacity:.65}
+ .card{background:#fff;border:1px solid #c9c9cf;box-sizing:border-box;width:240px}
+ .dark .card{background:#1e1e22;border-color:#3a3a40}
+ .cardinner{background:#e8e8ee;border:1px dashed #9a9aa5;padding:16px;font-size:12px;text-align:center}
+ .dark .cardinner{background:#2a2a30;border-color:#55555f}
+ table.vals{margin-top:12px;font-size:12px;border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,monospace}
+ table.vals td{padding:2px 6px 2px 0;vertical-align:top;border-bottom:1px solid rgba(128,128,128,.25)}
+ .tag{font-size:10px;text-transform:uppercase;letter-spacing:.05em;opacity:.6;text-align:right}
+ .tag.prop{color:#DA1A00;opacity:1;font-weight:700}
+ .dark .tag.prop{color:#F6604C}
+ .warn{font-size:11px;margin-top:8px;padding:8px;border-left:3px solid #DA1A00;background:rgba(218,26,0,.06)}
+ .dark .warn{border-left-color:#F6604C;background:rgba(246,96,76,.1)}
+</style></head><body>
+<header>
+ <h1>Radius / padding derivation &mdash; PROPOSAL specimen</h1>
+ <p class="meta">
+   Ruling: s200-D1 (#200, 2026-08-18) &mdash; mint-time derivation.<br>
+   Generated FROM: knowledge/_derive-radius-proposal.json &nbsp;|&nbsp; generator: knowledge/gen_radius_derive.py<br>
+   Proposal generated at: 2026-08-18T07:59:03+00:00 &nbsp;|&nbsp; page baked at: 2026-08-18T07:59:55+00:00
+ </p>
+ <div class="banner">
+  <b>EVERYTHING DERIVED ON THIS PAGE IS PROPOSED.</b> Nothing here is minted and nothing
+  is canon. The card padding formula, the three scales, their paddings and the derived-radius
+  floor are all starting values for Dave to tune or reject. No token file was touched.
+  <br><br>
+  <b>Colour is not under review here.</b> The specimens use neutral greys deliberately &mdash;
+  the judgement asked for is geometric (do the corners look concentric?), so no theme palette
+  has been applied or invented.
+ </div>
+ <div class="formula">
+  <b>The mechanism, in plain words</b>
+  <ul>
+   <li><b>Cards:</b> the card takes its minted radius, and its internal padding is worked out
+       from that radius &mdash; take whichever is bigger, the radius or 8px,
+       then round up to the nearest even number. So a 20px radius gives 20px padding; a square
+       (0px) card still gets 8px of breathing room. <i>(formula PROPOSED)</i></li>
+   <li><b>Segmented controls:</b> the padding is hand-tuned per size &mdash; small 2px, medium 4px, large 6px
+       as starting points &mdash; and the thumb&rsquo;s radius is then simply the container&rsquo;s
+       radius minus that padding. That is what makes the inner and outer curves sit concentric,
+       and it means a new size needs one number tuned, not two. <i>(scales and paddings PROPOSED)</i></li>
+   <li><b>Every padding steps in 2px</b> so that stacked totals always land on the 4px grid.
+       <i>(this part is RULED, s200-D1)</i></li>
+   <li><b>Floor:</b> derived radii are floored at 2px so a thumb never
+       goes negative &mdash; except where the theme is deliberately square, which is flagged rather
+       than silently rounded. <i>(floor PROPOSED)</i></li>
+  </ul>
+ </div>
+</header>
+
+  <section class="theme light">
+    <h2>apollo-console <span class="mode">light</span></h2>
+    <p class="tnote">Console dials roles independently: default 4, control 8, surface 20. container 20 is a PROPOSED SLOT (not minted).</p>
+    <h3>Segmented controls &mdash; thumb radius = container radius &minus; padding</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="seg" style="border-radius:20px;padding:2px">
+          <div class="thumb" style="border-radius:18px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>small</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>20px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>2px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>18px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>20 &minus; 2 = 18px</td><td class="tag">&mdash;</td></tr>
+        </table>
+        
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:20px;padding:4px">
+          <div class="thumb" style="border-radius:16px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>medium</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>20px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>4px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>16px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>20 &minus; 4 = 16px</td><td class="tag">&mdash;</td></tr>
+        </table>
+        
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:20px;padding:6px">
+          <div class="thumb" style="border-radius:14px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>large</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>20px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>6px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>14px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>20 &minus; 6 = 14px</td><td class="tag">&mdash;</td></tr>
+        </table>
+        
+      </div></div>
+    <h3>Cards &mdash; padding derived from radius</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="card" style="border-radius:20px;padding:20px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>surface</td><td class="tag">surface (minted)</td></tr>
+          <tr><td>radius</td><td>20px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>20px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(20, 8) &rarr; snap 2px = 20px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div>
+      <div class="specimen">
+        <div class="card" style="border-radius:20px;padding:20px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>container (PROPOSED SLOT)</td><td class="tag">container (PROPOSED SLOT)</td></tr>
+          <tr><td>radius</td><td>20px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>20px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(20, 8) &rarr; snap 2px = 20px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div></div>
+  </section>
+  <section class="theme dark">
+    <h2>apollo-console <span class="mode">dark</span></h2>
+    <p class="tnote">Console dials roles independently: default 4, control 8, surface 20. container 20 is a PROPOSED SLOT (not minted).</p>
+    <h3>Segmented controls &mdash; thumb radius = container radius &minus; padding</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="seg" style="border-radius:20px;padding:2px">
+          <div class="thumb" style="border-radius:18px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>small</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>20px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>2px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>18px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>20 &minus; 2 = 18px</td><td class="tag">&mdash;</td></tr>
+        </table>
+        
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:20px;padding:4px">
+          <div class="thumb" style="border-radius:16px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>medium</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>20px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>4px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>16px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>20 &minus; 4 = 16px</td><td class="tag">&mdash;</td></tr>
+        </table>
+        
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:20px;padding:6px">
+          <div class="thumb" style="border-radius:14px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>large</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>20px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>6px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>14px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>20 &minus; 6 = 14px</td><td class="tag">&mdash;</td></tr>
+        </table>
+        
+      </div></div>
+    <h3>Cards &mdash; padding derived from radius</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="card" style="border-radius:20px;padding:20px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>surface</td><td class="tag">surface (minted)</td></tr>
+          <tr><td>radius</td><td>20px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>20px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(20, 8) &rarr; snap 2px = 20px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div>
+      <div class="specimen">
+        <div class="card" style="border-radius:20px;padding:20px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>container (PROPOSED SLOT)</td><td class="tag">container (PROPOSED SLOT)</td></tr>
+          <tr><td>radius</td><td>20px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>20px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(20, 8) &rarr; snap 2px = 20px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div></div>
+  </section>
+  <section class="theme light">
+    <h2>mono <span class="mode">light</span></h2>
+    <p class="tnote">Mono is the BASE: every radius role is 0 (square). No container slot proposed — falls back to surface (0).</p>
+    <h3>Segmented controls &mdash; thumb radius = container radius &minus; padding</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:2px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>small</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>2px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 2 = -2px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:4px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>medium</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>4px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 4 = -4px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:6px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>large</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>6px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 6 = -6px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div></div>
+    <h3>Cards &mdash; padding derived from radius</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>surface</td><td class="tag">surface (minted)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div>
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>container (PROPOSED SLOT)</td><td class="tag">container (PROPOSED SLOT)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div></div>
+  </section>
+  <section class="theme dark">
+    <h2>mono <span class="mode">dark</span></h2>
+    <p class="tnote">Mono is the BASE: every radius role is 0 (square). No container slot proposed — falls back to surface (0).</p>
+    <h3>Segmented controls &mdash; thumb radius = container radius &minus; padding</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:2px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>small</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>2px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 2 = -2px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:4px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>medium</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>4px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 4 = -4px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:6px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>large</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>6px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 6 = -6px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div></div>
+    <h3>Cards &mdash; padding derived from radius</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>surface</td><td class="tag">surface (minted)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div>
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>container (PROPOSED SLOT)</td><td class="tag">container (PROPOSED SLOT)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div></div>
+  </section>
+  <section class="theme light">
+    <h2>apollo-legacy <span class="mode">light</span></h2>
+    <p class="tnote">Legacy overrides border-radius/default to 0 — same square shape as mono. No container slot proposed.</p>
+    <h3>Segmented controls &mdash; thumb radius = container radius &minus; padding</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:2px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>small</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>2px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 2 = -2px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:4px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>medium</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>4px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 4 = -4px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:6px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>large</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>6px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 6 = -6px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div></div>
+    <h3>Cards &mdash; padding derived from radius</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>surface</td><td class="tag">surface (minted)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div>
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>container (PROPOSED SLOT)</td><td class="tag">container (PROPOSED SLOT)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div></div>
+  </section>
+  <section class="theme dark">
+    <h2>apollo-legacy <span class="mode">dark</span></h2>
+    <p class="tnote">Legacy overrides border-radius/default to 0 — same square shape as mono. No container slot proposed.</p>
+    <h3>Segmented controls &mdash; thumb radius = container radius &minus; padding</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:2px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>small</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>2px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 2 = -2px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:4px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>medium</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>4px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 4 = -4px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:6px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>large</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>6px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 6 = -6px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div></div>
+    <h3>Cards &mdash; padding derived from radius</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>surface</td><td class="tag">surface (minted)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div>
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>container (PROPOSED SLOT)</td><td class="tag">container (PROPOSED SLOT)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div></div>
+  </section>
+  <section class="theme light">
+    <h2>apollo-supercharge <span class="mode">light</span></h2>
+    <p class="tnote">Supercharge declares NO border-radius override at all — it inherits the mono base verbatim (0). Nothing invented here.</p>
+    <h3>Segmented controls &mdash; thumb radius = container radius &minus; padding</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:2px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>small</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>2px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 2 = -2px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:4px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>medium</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>4px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 4 = -4px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:6px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>large</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>6px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 6 = -6px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div></div>
+    <h3>Cards &mdash; padding derived from radius</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>surface</td><td class="tag">surface (minted)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div>
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>container (PROPOSED SLOT)</td><td class="tag">container (PROPOSED SLOT)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div></div>
+  </section>
+  <section class="theme dark">
+    <h2>apollo-supercharge <span class="mode">dark</span></h2>
+    <p class="tnote">Supercharge declares NO border-radius override at all — it inherits the mono base verbatim (0). Nothing invented here.</p>
+    <h3>Segmented controls &mdash; thumb radius = container radius &minus; padding</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:2px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>small</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>2px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 2 = -2px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:4px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>medium</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>4px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 4 = -4px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div>
+      <div class="specimen">
+        <div class="seg" style="border-radius:0px;padding:6px">
+          <div class="thumb" style="border-radius:0px">Day</div>
+          <div class="segbtn">Week</div>
+          <div class="segbtn">Month</div>
+        </div>
+        <table class="vals">
+          <tr><td>scale</td><td>large</td><td class="tag ruled">given</td></tr>
+          <tr><td>container radius</td><td>0px</td><td class="tag">minted / proposed slot</td></tr>
+          <tr><td>padding</td><td>6px</td><td class="tag prop">PROPOSED</td></tr>
+          <tr><td>thumb radius</td><td><b>0px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>raw</td><td>0 &minus; 6 = -6px</td><td class="tag">floor/square flag</td></tr>
+        </table>
+        <p class="warn">container radius is 0 (square theme). The PROPOSED floor of 2px would round a deliberately square theme, so this renders 0 and is FLAGGED — floor-vs-square precedence is Dave’s to rule.</p>
+      </div></div>
+    <h3>Cards &mdash; padding derived from radius</h3>
+    <div class="row">
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>surface</td><td class="tag">surface (minted)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div>
+      <div class="specimen">
+        <div class="card" style="border-radius:0px;padding:8px">
+          <div class="cardinner">inner content box</div>
+        </div>
+        <table class="vals">
+          <tr><td>role</td><td>container (PROPOSED SLOT)</td><td class="tag">container (PROPOSED SLOT)</td></tr>
+          <tr><td>radius</td><td>0px</td><td class="tag">minted</td></tr>
+          <tr><td>padding</td><td><b>8px</b></td><td class="tag prop">PROPOSED (derived)</td></tr>
+          <tr><td>working</td><td>max(0, 8) &rarr; snap 2px = 8px</td><td class="tag">&mdash;</td></tr>
+        </table>
+      </div></div>
+  </section>
+<footer style="max-width:920px;margin:24px auto;font-size:12px;color:#555">
+ Values baked from the proposal file; this page contains no scripts and computes nothing at runtime.
+</footer>
+</body></html>

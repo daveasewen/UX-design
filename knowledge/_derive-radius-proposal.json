@@ -1,0 +1,418 @@
+{
+  "$schema": "apollo/derive-radius-proposal/1",
+  "$generator": "knowledge/gen_radius_derive.py",
+  "$ruling": "s200-D1 (#200, 2026-08-18) \u2014 mint-time derivation mechanism",
+  "$status": "PROPOSAL ONLY \u2014 nothing here is minted, nothing here is canon.",
+  "$proposed": true,
+  "$decidesNothing": [
+    "card padding formula max(radius, 8) snapped to 2px \u2014 PROPOSED (Claude's pick)",
+    "scale set small/medium/large \u2014 PROPOSED",
+    "scale paddings 2/4/6 \u2014 PROPOSED starting values, Dave tunes",
+    "derived-radius floor of 2 \u2014 PROPOSED"
+  ],
+  "$mintedAt200": {
+    "$ruling": "s200-D2 minted, s200-D3 narrowed scope to CONSOLE ONLY",
+    "$note": "These values are no longer proposals for apollo-console \u2014 they are minted tokens on disk. Everything else in this file, and EVERY value for mono / apollo-legacy / apollo-supercharge, remains PROPOSAL ONLY and UNRATIFIED (s200-D3: squares-stay-square and the dropped 2px floor are open until Dave tunes or rules them). data-mark stays PROPOSED, untouched.",
+    "console_minted": {
+      "border-radius/container": 20,
+      "padding/segmented-control": {
+        "small": 2,
+        "medium": 4,
+        "large": 6
+      },
+      "border-radius/segmented-thumb": {
+        "small": 18,
+        "medium": 16,
+        "large": 14
+      },
+      "padding/card/internal": 20
+    },
+    "$formulaStatus": "the card padding formula max(radius,8) snap-2 is STILL PROPOSED (s200-D1 scope limit); only the RESULTING console value was minted, after Dave saw it rendered."
+  },
+  "$knobs": {
+    "card_padding_min": 8,
+    "padding_step": 2,
+    "derived_radius_floor": 2,
+    "scales": {
+      "small": 2,
+      "medium": 4,
+      "large": 6
+    }
+  },
+  "$inputs": [
+    "knowledge/tokens/layout.json (border-radius family)",
+    "knowledge/tokens/themes/apollo-console.overrides.json",
+    "knowledge/tokens/themes/apollo-legacy.overrides.json",
+    "knowledge/tokens/themes/apollo-supercharge.overrides.json"
+  ],
+  "themes": {
+    "apollo-console": {
+      "radii": {
+        "default": 4,
+        "control": 8,
+        "surface": 20,
+        "indicator": 4,
+        "container": 20,
+        "segmented-thumb/small": 18,
+        "segmented-thumb/medium": 16,
+        "segmented-thumb/large": 14,
+        "segmented-container/s": 8,
+        "segmented-thumb/s": 6
+      },
+      "radii_provenance": {
+        "default": "apollo-console override border-radius/default",
+        "control": "apollo-console override border-radius/control",
+        "surface": "apollo-console override border-radius/surface",
+        "indicator": "apollo-console override border-radius/default (alias)",
+        "container": "apollo-console override border-radius/container",
+        "segmented-thumb/small": "apollo-console override border-radius/segmented-thumb/small",
+        "segmented-thumb/medium": "apollo-console override border-radius/segmented-thumb/medium",
+        "segmented-thumb/large": "apollo-console override border-radius/segmented-thumb/large",
+        "segmented-container/s": "apollo-console override border-radius/segmented-container/s",
+        "segmented-thumb/s": "apollo-console override border-radius/segmented-thumb/s"
+      },
+      "card": {
+        "$proposed": true,
+        "radius_role": "surface",
+        "radius": 20,
+        "padding": 20,
+        "formula": "padding = max(radius, 8) snapped to 2px (PROPOSED, s200-D1)",
+        "inputs": {
+          "radius": 20,
+          "min": 8,
+          "snap": 2
+        },
+        "container_variant": {
+          "$proposed": true,
+          "radius_role": "container (MINTED role, s200-D2/s200-D3)",
+          "radius": 20,
+          "padding": 20,
+          "inputs": {
+            "radius": 20,
+            "min": 8,
+            "snap": 2
+          }
+        }
+      },
+      "segmented": {
+        "small": {
+          "$proposed": true,
+          "padding": 2,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 20,
+          "thumb_radius_raw": 18,
+          "thumb_radius": 18,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 20,
+            "padding": 2
+          },
+          "$squareThemeConflict": false,
+          "$squareThemeNote": null
+        },
+        "medium": {
+          "$proposed": true,
+          "padding": 4,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 20,
+          "thumb_radius_raw": 16,
+          "thumb_radius": 16,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 20,
+            "padding": 4
+          },
+          "$squareThemeConflict": false,
+          "$squareThemeNote": null
+        },
+        "large": {
+          "$proposed": true,
+          "padding": 6,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 20,
+          "thumb_radius_raw": 14,
+          "thumb_radius": 14,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 20,
+            "padding": 6
+          },
+          "$squareThemeConflict": false,
+          "$squareThemeNote": null
+        }
+      }
+    },
+    "mono": {
+      "radii": {
+        "default": 0,
+        "control": 0,
+        "surface": 0,
+        "indicator": 0,
+        "container": 0
+      },
+      "radii_provenance": {
+        "default": "layout.json border-radius/default (mono base)",
+        "control": "layout.json border-radius/control (mono base)",
+        "surface": "layout.json border-radius/surface (mono base)",
+        "indicator": "layout.json border-radius/indicator (mono base)",
+        "container": "layout.json border-radius/container (mono base)"
+      },
+      "card": {
+        "$proposed": true,
+        "radius_role": "surface",
+        "radius": 0,
+        "padding": 8,
+        "formula": "padding = max(radius, 8) snapped to 2px (PROPOSED, s200-D1)",
+        "inputs": {
+          "radius": 0,
+          "min": 8,
+          "snap": 2
+        },
+        "container_variant": {
+          "$proposed": true,
+          "radius_role": "container (MINTED role, s200-D2/s200-D3)",
+          "radius": 0,
+          "padding": 8,
+          "inputs": {
+            "radius": 0,
+            "min": 8,
+            "snap": 2
+          }
+        }
+      },
+      "segmented": {
+        "small": {
+          "$proposed": true,
+          "padding": 2,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 0,
+          "thumb_radius_raw": -2,
+          "thumb_radius": 0,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 0,
+            "padding": 2
+          },
+          "$squareThemeConflict": true,
+          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+        },
+        "medium": {
+          "$proposed": true,
+          "padding": 4,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 0,
+          "thumb_radius_raw": -4,
+          "thumb_radius": 0,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 0,
+            "padding": 4
+          },
+          "$squareThemeConflict": true,
+          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+        },
+        "large": {
+          "$proposed": true,
+          "padding": 6,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 0,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 0,
+            "padding": 6
+          },
+          "$squareThemeConflict": true,
+          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+        }
+      }
+    },
+    "apollo-legacy": {
+      "radii": {
+        "default": 0,
+        "control": 0,
+        "surface": 0,
+        "indicator": 0,
+        "container": 0
+      },
+      "radii_provenance": {
+        "default": "apollo-legacy override border-radius/default",
+        "control": "apollo-legacy override border-radius/default (alias)",
+        "surface": "apollo-legacy override border-radius/default (alias)",
+        "indicator": "apollo-legacy override border-radius/default (alias)",
+        "container": "apollo-legacy override border-radius/default (alias)"
+      },
+      "card": {
+        "$proposed": true,
+        "radius_role": "surface",
+        "radius": 0,
+        "padding": 8,
+        "formula": "padding = max(radius, 8) snapped to 2px (PROPOSED, s200-D1)",
+        "inputs": {
+          "radius": 0,
+          "min": 8,
+          "snap": 2
+        },
+        "container_variant": {
+          "$proposed": true,
+          "radius_role": "container (MINTED role, s200-D2/s200-D3)",
+          "radius": 0,
+          "padding": 8,
+          "inputs": {
+            "radius": 0,
+            "min": 8,
+            "snap": 2
+          }
+        }
+      },
+      "segmented": {
+        "small": {
+          "$proposed": true,
+          "padding": 2,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 0,
+          "thumb_radius_raw": -2,
+          "thumb_radius": 0,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 0,
+            "padding": 2
+          },
+          "$squareThemeConflict": true,
+          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+        },
+        "medium": {
+          "$proposed": true,
+          "padding": 4,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 0,
+          "thumb_radius_raw": -4,
+          "thumb_radius": 0,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 0,
+            "padding": 4
+          },
+          "$squareThemeConflict": true,
+          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+        },
+        "large": {
+          "$proposed": true,
+          "padding": 6,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 0,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 0,
+            "padding": 6
+          },
+          "$squareThemeConflict": true,
+          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+        }
+      }
+    },
+    "apollo-supercharge": {
+      "radii": {
+        "default": 0,
+        "control": 0,
+        "surface": 0,
+        "indicator": 0,
+        "container": 0
+      },
+      "radii_provenance": {
+        "default": "layout.json border-radius/default (mono base)",
+        "control": "layout.json border-radius/control (mono base)",
+        "surface": "layout.json border-radius/surface (mono base)",
+        "indicator": "layout.json border-radius/indicator (mono base)",
+        "container": "layout.json border-radius/container (mono base)",
+        "$note": "apollo-supercharge declares NO border-radius override \u2014 it inherits the mono base verbatim."
+      },
+      "card": {
+        "$proposed": true,
+        "radius_role": "surface",
+        "radius": 0,
+        "padding": 8,
+        "formula": "padding = max(radius, 8) snapped to 2px (PROPOSED, s200-D1)",
+        "inputs": {
+          "radius": 0,
+          "min": 8,
+          "snap": 2
+        },
+        "container_variant": {
+          "$proposed": true,
+          "radius_role": "container (MINTED role, s200-D2/s200-D3)",
+          "radius": 0,
+          "padding": 8,
+          "inputs": {
+            "radius": 0,
+            "min": 8,
+            "snap": 2
+          }
+        }
+      },
+      "segmented": {
+        "small": {
+          "$proposed": true,
+          "padding": 2,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 0,
+          "thumb_radius_raw": -2,
+          "thumb_radius": 0,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 0,
+            "padding": 2
+          },
+          "$squareThemeConflict": true,
+          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+        },
+        "medium": {
+          "$proposed": true,
+          "padding": 4,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 0,
+          "thumb_radius_raw": -4,
+          "thumb_radius": 0,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 0,
+            "padding": 4
+          },
+          "$squareThemeConflict": true,
+          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+        },
+        "large": {
+          "$proposed": true,
+          "padding": 6,
+          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "container_radius": 0,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "floor_applied": false,
+          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "inputs": {
+            "container_radius": 0,
+            "padding": 6
+          },
+          "$squareThemeConflict": true,
+          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+        }
+      }
+    }
+  },
+  "$generatedAt": "2026-08-18T09:56:53+00:00"
+}

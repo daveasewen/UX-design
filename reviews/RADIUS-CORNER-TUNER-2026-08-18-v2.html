@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radius / corner tuner — 2026-08-18 v2 (standalone)</title>
+<!-- LIVE RADIUS / CORNER TUNER — 2026-08-18 v2, session #199 follow-on.
+     v1 IS KEPT (reviews/RADIUS-CORNER-TUNER-2026-08-18-v1.html), not replaced.
+
+     WHAT CHANGED vs v1:
+       · SEGMENTED-SWITCH slider added (PROPOSED, not a canon token). Dave, s199-D3:
+         "need a separate carve out for the switch - not the container - the radii cant match,
+          it has an effect on the matching of the curve. I need to tune separately."
+         The inner thumb radius now moves INDEPENDENTLY of control / container / surface.
+       · NESTED-CURVE specimen added — a large segmented control ("Monthly | Year to date") with a
+         readout of outer radius, inner radius, the difference, the specimen padding, and the classic
+         concentric HINT (inner = outer − padding). The hint is a HINT, not a rule: it is drawn as a
+         dotted reference, never applied automatically.
+       · Which slider drives the segmented CONTAINER is switchable (control = today's canon binding,
+         container = proposed slot, surface) so the pairing can be judged both ways.
+       · CANON SNAPSHOT RE-READ from disk 2026-08-18 (v1's baked numbers were pre-enactment):
+           console control 4 → 8 · surface 12 → 20   (enacted at e41e05b, s199-D3)
+       · Export carries the new slot as $proposed, alongside container + data-mark. The $alias
+         cascade is preserved exactly as in v1 — never flattened.
+
+     SNAPSHOT PROVENANCE (read from disk, 2026-08-18):
+       mono        default 0 · control alias · surface alias · indicator alias
+                   knowledge/tokens/layout.json:114-136 (border-radius block)
+       legacy      default 0 · roles alias
+                   knowledge/tokens/themes/apollo-legacy.overrides.json:183 (border-radius/default = 0)
+       console     default 4 · control 8 · surface 20 · indicator alias(=4)
+                   knowledge/tokens/themes/apollo-console.overrides.json:7 / :12 / :17
+       supercharge no border-radius override in apollo-supercharge.overrides.json — inherits the mono base
+     container 20 and data-mark 0 are PROPOSED slots from the v1 export — NOT canon.
+     segmented-switch is PROPOSED and has NO canon value at all — Dave tunes it here.
+     NOT canon, NOT gated, nothing here decides anything. -->
+<style>
+  :root{ --uf:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--uf); background:#F4F4F4; color:#1A1A1A; -webkit-font-smoothing:antialiased;}
+  header{padding:20px 28px; background:#111; color:#fff;}
+  header h1{margin:0; font-size:18px; font-weight:500;}
+  header p{margin:6px 0 0; font-size:13px; color:#B7B7B7; max-width:86ch; line-height:1.5;}
+  header .v{font-size:11px; color:#7FE0A8; letter-spacing:.04em;}
+  header q{color:#E6E6E6; font-style:italic;}
+
+  .wrap{display:grid; grid-template-columns:360px 1fr; gap:0; align-items:start;}
+  @media (max-width:900px){ .wrap{grid-template-columns:1fr;} .rail{position:static !important; border-right:0 !important; border-bottom:1px solid #DADADA;} }
+
+  .rail{padding:20px 24px; border-right:1px solid #DADADA; position:sticky; top:0; background:#F4F4F4;}
+  .grp{margin:0 0 22px;}
+  .grp h2{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#767676; margin:0 0 10px;}
+  .themebtns,.modebtns,.drvbtns{display:flex; flex-wrap:wrap; gap:6px;}
+  .themebtns button,.modebtns button,.drvbtns button{font:inherit; font-size:13px; padding:7px 12px; border:1px solid #C4C4C4;
+    background:#fff; color:#1A1A1A; cursor:pointer;}
+  .themebtns button[aria-pressed="true"],.modebtns button[aria-pressed="true"],.drvbtns button[aria-pressed="true"]{background:#111; color:#fff; border-color:#111;}
+  .themebtns button:focus-visible,.modebtns button:focus-visible,.drvbtns button:focus-visible{outline:2px solid #305A85; outline-offset:2px;}
+
+  .slider{margin:0 0 16px;}
+  .slider .row{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:3px;}
+  .slider label{font-size:14px; font-weight:500;}
+  .slider .role{display:block; font-size:11px; color:#767676; font-weight:400; margin-top:1px;}
+  .slider .val{font-size:14px; font-variant-numeric:tabular-nums; font-weight:500; flex:none;}
+  .slider .canon{font-size:11px; color:#8E8E8E; font-variant-numeric:tabular-nums;}
+  .slider .canon b{font-weight:500; color:#5A5A5A;}
+  .slider.dirty .val{color:#B06A00;}
+  .slider.base label::after{content:"base"; font-size:9px; letter-spacing:.04em; text-transform:uppercase;
+    color:#1E5B8A; background:#DCEBF7; padding:1px 5px; margin-left:7px; border-radius:2px; vertical-align:middle;}
+  .slider.proposed label::after{content:"proposed"; font-size:9px; letter-spacing:.04em; text-transform:uppercase;
+    color:#B06A00; background:#FBEED2; padding:1px 5px; margin-left:7px; border-radius:2px; vertical-align:middle;}
+  .slider.newslot label::after{content:"new · proposed"; background:#F7DFF0; color:#8B2F72;}
+  .slider input[type=range]{width:100%; accent-color:#111; margin:2px 0 0;}
+  .rail .actions{display:flex; gap:8px; margin-top:6px; flex-wrap:wrap;}
+  .rail .actions button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid #111; background:#111; color:#fff; cursor:pointer;}
+  .rail .actions button.ghost{background:#fff; color:#111;}
+  .rail .actions button:focus-visible{outline:2px solid #305A85; outline-offset:2px;}
+  .rail .aliasnote{font-size:11px; color:#767676; line-height:1.45; margin:2px 0 12px;}
+  .rail .carve{font-size:11px; color:#8B2F72; line-height:1.45; margin:-8px 0 14px; border-left:2px solid #E7C6DD; padding-left:8px;}
+
+  /* ---- preview canvas: colours + radii are LOCAL vars set by JS from the inlined snapshot ---- */
+  .stage{padding:24px 28px;}
+  #preview{background:var(--pv-bg); color:var(--pv-text); border:1px solid #DADADA; padding:28px;
+    transition:background .2s, color .2s;}
+  .specgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:24px;}
+  .spec{display:flex; flex-direction:column; gap:10px; align-items:flex-start;}
+  .spec .cap{font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--pv-text2); opacity:.8;}
+  .spec .tag-role{font-size:10px; padding:1px 6px; border:1px solid currentColor; border-radius:2px; opacity:.55;}
+
+  .p-btn{display:inline-flex; align-items:center; justify-content:center; height:44px; padding:0 18px;
+    background:var(--pv-primary); color:#FFFFFF; border:0; font:500 15px/1 var(--uf);
+    border-radius:var(--r-control); cursor:default;}
+  .p-btn.sec{background:transparent; color:var(--pv-text); border:1px solid var(--pv-formborder);}
+  .p-btn.sm{height:36px; padding:0 14px; font-size:14px;}
+  .p-input{height:44px; min-width:180px; padding:0 14px; background:var(--pv-bg); color:var(--pv-text);
+    border:1px solid var(--pv-formborder); border-radius:var(--r-control); font:15px/1 var(--uf);
+    display:flex; align-items:center;}
+  .p-chip{display:inline-flex; align-items:center; height:28px; padding:0 12px; font-size:13px;
+    background:var(--pv-tertiary); color:var(--pv-text); border:1px solid var(--pv-border);
+    border-radius:var(--r-control);}
+
+  /* segmented control — OUTER radius from --r-seg-outer, INNER thumb from --r-segmented-switch */
+  .p-seg{position:relative; display:inline-flex; padding:var(--seg-pad,2px); border:1px solid var(--pv-formborder);
+    background:transparent; border-radius:var(--r-seg-outer);}
+  .p-seg .ind{position:absolute; top:var(--seg-pad,2px); bottom:var(--seg-pad,2px); left:var(--seg-pad,2px);
+    width:calc(50% - var(--seg-pad,2px)); background:var(--pv-secondary); border-radius:var(--r-segmented-switch);}
+  .p-seg button{position:relative; z-index:1; flex:1 1 0; min-width:92px; height:28px; padding:0 14px; border:0;
+    background:transparent; font:500 12px/1 var(--uf); color:var(--pv-text); white-space:nowrap; cursor:default;}
+  .p-seg button:first-of-type{color:var(--pv-bg);}
+
+  .p-card{background:var(--pv-surface); color:var(--pv-text); border:1px solid var(--pv-border);
+    border-radius:var(--r-surface); padding:16px; box-shadow:0 0 16px #00000014; width:100%;}
+  .p-card h3{margin:0 0 6px; font-size:15px; font-weight:500;}
+  .p-card p{margin:0; font-size:13px; color:var(--pv-text2); opacity:.8;}
+  .p-card .cardbtns{display:flex; gap:8px; margin-top:14px;}
+
+  .p-panel{background:var(--pv-surface); color:var(--pv-text); border:1px solid var(--pv-border);
+    border-radius:var(--r-container); box-shadow:0 6px 22px #0000001f; overflow:hidden; width:100%;}
+  .p-panel .hd{padding:12px 16px; font:500 14px/1 var(--uf); border-bottom:1px solid var(--pv-border);}
+  .p-panel .bd{padding:14px 16px; display:flex; flex-direction:column; gap:9px;}
+  .p-panel .ln{height:9px; border-radius:2px; background:var(--pv-tertiary); border:1px solid var(--pv-border);}
+  .p-panel .ln.short{width:60%;}
+  .p-panel .ft{padding:12px 16px; display:flex; gap:8px; justify-content:flex-end; border-top:1px solid var(--pv-border);}
+
+  .p-badge{display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:22px; padding:0 7px;
+    background:var(--pv-secondary); color:var(--pv-bg); font:700 12px/1 var(--uf); border-radius:999px;}
+  .p-progress{height:8px; width:180px; background:var(--pv-tertiary); border:1px solid var(--pv-border);
+    border-radius:var(--r-indicator); overflow:hidden;}
+  .p-progress i{display:block; height:100%; width:62%; background:var(--pv-secondary);}
+  .p-status{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 10px; font-size:12px;
+    background:var(--pv-tertiary); color:var(--pv-text); border:1px solid var(--pv-border);
+    border-radius:var(--r-indicator);}
+  .p-bars{display:flex; align-items:flex-end; gap:10px; height:90px;}
+  .p-bars span{width:26px; background:var(--pv-secondary);
+    border-radius:var(--r-data-mark) var(--r-data-mark) 0 0;}
+  .note{margin:20px 0 0; font-size:12px; color:var(--pv-text2); opacity:.8; max-width:78ch; line-height:1.55;}
+
+  /* ---- nested-curve bench (the s199-D3 subject) ---- */
+  .bench{margin:0 0 26px; padding:22px 24px; border:1px solid var(--pv-border); background:var(--pv-surface);}
+  .bench h3{margin:0 0 4px; font:500 15px/1.3 var(--uf);}
+  .bench .sub{margin:0 0 18px; font-size:12px; color:var(--pv-text2); opacity:.85; max-width:80ch; line-height:1.5;}
+  .bench .big{transform-origin:left top;}
+  .bench .big .p-seg button{height:44px; min-width:150px; font-size:15px;}
+  .bench .row2{display:flex; gap:34px; flex-wrap:wrap; align-items:flex-start;}
+  .bench .readout{font:12px/1.7 ui-monospace,Menlo,Consolas,monospace; color:var(--pv-text);
+    border:1px dashed var(--pv-border); padding:12px 14px; min-width:270px;}
+  .bench .readout b{font-weight:700;}
+  .bench .readout .hint{color:var(--pv-text2); opacity:.85;}
+  .bench .readout .match{color:#1E7A4B;}
+  .bench .padrow{display:flex; align-items:center; gap:10px; margin-top:16px; font-size:12px; color:var(--pv-text2);}
+  .bench .padrow input{width:170px; accent-color:var(--pv-secondary);}
+  .bench .hintbox{margin-top:14px; font-size:11.5px; line-height:1.55; color:var(--pv-text2); opacity:.9; max-width:80ch;}
+  .bench .ghostcurve{position:absolute; top:var(--seg-pad,2px); bottom:var(--seg-pad,2px); left:var(--seg-pad,2px);
+    width:calc(50% - var(--seg-pad,2px)); border:1px dotted #B06A00; border-radius:var(--r-hint); pointer-events:none; z-index:2;}
+  .bench .toggles{display:flex; gap:16px; align-items:center; margin-top:14px; font-size:12px; color:var(--pv-text2); flex-wrap:wrap;}
+  .bench label.chk{display:inline-flex; align-items:center; gap:6px; cursor:pointer;}
+
+  #export{margin:22px 28px 40px; padding:16px; background:#0E0E0E; color:#E6E6E6; border-radius:6px;}
+  #export h2{margin:0 0 8px; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:#9A9A9A;}
+  #export textarea{width:100%; min-height:260px; background:#000; color:#7FE0A8; border:1px solid #2A2A2A;
+    font:12px/1.5 ui-monospace,Menlo,Consolas,monospace; padding:12px; resize:vertical;}
+  #export .exrow{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:8px; flex-wrap:wrap;}
+  #export button{font:inherit; font-size:13px; padding:7px 14px; border:1px solid #3A3A3A; background:#1C1C1C; color:#fff; cursor:pointer;}
+  #export small{color:#8A8A8A; max-width:70ch; line-height:1.5;}
+</style>
+</head>
+<body>
+  <header>
+    <h1>Radius / corner tuner — <span class="v">2026-08-18 v2 · standalone · segmented-switch carve-out</span></h1>
+    <p>Everything v1 did, plus the s199-D3 carve-out: <q>need a separate carve out for the switch — not the
+       container — the radii can't match, it has an effect on the matching of the curve. I need to tune
+       separately.</q> The <strong>segmented-switch</strong> slider drives the inner thumb only and moves
+       independently of control / container / surface. Canon starts are re-read from disk on 2026-08-18
+       (console is now control&nbsp;8 · surface&nbsp;20, enacted since v1 was written). Container,
+       data-mark and segmented-switch are PROPOSED slots — not canon tokens today. Nothing here is enacted.</p>
+  </header>
+
+  <div class="wrap">
+    <div class="rail">
+      <div class="grp">
+        <h2>Theme</h2>
+        <div class="themebtns" id="themebtns">
+          <button type="button" data-theme="console" aria-pressed="true">Console</button>
+          <button type="button" data-theme="mono" aria-pressed="false">Mono</button>
+          <button type="button" data-theme="legacy" aria-pressed="false">Legacy</button>
+          <button type="button" data-theme="supercharge" aria-pressed="false">Supercharge</button>
+        </div>
+      </div>
+      <div class="grp">
+        <h2>Ground</h2>
+        <div class="modebtns" id="modebtns">
+          <button type="button" data-mode="light" aria-pressed="true">Light</button>
+          <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+        </div>
+      </div>
+
+      <div class="grp">
+        <h2>Radius roles</h2>
+        <div class="slider base" data-role="default">
+          <div class="row"><label>Default<span class="role">theme base — aliased roles follow it</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="28" step="1" value="0">
+          <div class="canon">canon: <b><span>0px</span></b> · <span class="src">layout.json</span></div>
+        </div>
+        <p class="aliasnote" id="aliasnote">Roles still following default: control, surface, indicator.
+          Move a role's own slider to break it off default (that break is shown in the export).</p>
+
+        <div class="slider" data-role="control">
+          <div class="row"><label>Control<span class="role">buttons · inputs · chips · segmented container</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="28" step="1" value="0">
+          <div class="canon">canon: <b><span>0px</span></b> · <span class="src">alias → default</span></div>
+        </div>
+        <div class="slider newslot" data-role="segmented-switch">
+          <div class="row"><label>Segmented switch<span class="role">the inner thumb ONLY — never the container</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="28" step="1" value="0">
+          <div class="canon">canon: <b><span>—</span></b> · <span class="src">s199-D3 carve-out, no token today</span></div>
+        </div>
+        <p class="carve">s199-D3: nested radii cannot share a value. This slider never follows
+          <em>default</em>, <em>control</em> or <em>container</em> — it is dialled on its own.</p>
+
+        <div class="slider" data-role="surface">
+          <div class="row"><label>Surface<span class="role">cards</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="28" step="1" value="0">
+          <div class="canon">canon: <b><span>0px</span></b> · <span class="src">alias → default</span></div>
+        </div>
+        <div class="slider proposed" data-role="container">
+          <div class="row"><label>Container<span class="role">dialogs · panels · sheets · tables</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="28" step="1" value="0">
+          <div class="canon">canon: <b><span>—</span></b> · <span class="src">v1 proposal, seeds from surface</span></div>
+        </div>
+        <div class="slider" data-role="indicator">
+          <div class="row"><label>Indicator<span class="role">progress · status chips · badges (non-pill)</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="28" step="1" value="0">
+          <div class="canon">canon: <b><span>0px</span></b> · <span class="src">alias → default</span></div>
+        </div>
+        <div class="slider proposed" data-role="data-mark">
+          <div class="row"><label>Data mark<span class="role">chart bar tops</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="28" step="1" value="0">
+          <div class="canon">canon: <b><span>—</span></b> · <span class="src">v1 proposal, seeds 0 (square today)</span></div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="ghost" id="reset">Reset to canon</button>
+          <button type="button" class="ghost" id="relink">Re-link roles to default</button>
+        </div>
+      </div>
+
+      <div class="grp">
+        <h2>Segmented container driven by</h2>
+        <div class="drvbtns" id="drvbtns">
+          <button type="button" data-drv="control" aria-pressed="true">control</button>
+          <button type="button" data-drv="container" aria-pressed="false">container</button>
+          <button type="button" data-drv="surface" aria-pressed="false">surface</button>
+        </div>
+        <p class="aliasnote">Today the segmented container binds <code>border-radius/control</code>.
+          The other two are here only so the pairing can be judged against the rounder slots —
+          picking one is not a ruling and is not written to the export.</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div id="preview">
+
+        <div class="bench">
+          <h3>Nested curve — segmented control (the s199-D3 subject)</h3>
+          <p class="sub">Outer container and inner thumb are driven by <em>different</em> sliders. Judge the
+             curve match at the corners: when the two radii are wrong relative to the padding, the thumb reads
+             as either too square inside a soft pill, or too round and floating.</p>
+          <div class="row2">
+            <div class="big">
+              <div class="p-seg" id="benchseg">
+                <span class="ind"></span><span class="ghostcurve" id="ghost" hidden></span>
+                <button>Monthly</button><button>Year to date</button>
+              </div>
+              <div class="padrow">
+                <label for="padrange">Specimen padding</label>
+                <input type="range" id="padrange" min="0" max="12" step="1" value="4">
+                <span id="padval">4px</span>
+                <span style="opacity:.7">— specimen geometry, not a token</span>
+              </div>
+              <div class="toggles">
+                <label class="chk"><input type="checkbox" id="showhint"> Show concentric hint (dotted)</label>
+              </div>
+            </div>
+            <div class="readout" id="benchout"></div>
+          </div>
+          <p class="hintbox"><strong>The concentric hint is a hint, not a rule.</strong> The classic
+             construction is <code>inner = outer − padding</code>, which keeps the two arcs on a constant
+             offset. It is drawn dotted only when you ask for it, and it is never applied to the thumb.
+             s199-D3 is precisely the ruling that the two radii must be tunable apart — so if your eye
+             disagrees with the arithmetic, your eye wins.</p>
+        </div>
+
+        <div class="specgrid">
+          <div class="spec"><span class="cap">Primary button</span><span class="tag-role">control</span><span class="p-btn">Continue</span></div>
+          <div class="spec"><span class="cap">Secondary button</span><span class="tag-role">control</span><span class="p-btn sec">Cancel</span></div>
+          <div class="spec"><span class="cap">Input field</span><span class="tag-role">control</span><span class="p-input">£1,240.00</span></div>
+          <div class="spec"><span class="cap">Chip / tag</span><span class="tag-role">control</span><span class="p-chip">Savings</span></div>
+          <div class="spec"><span class="cap">Segmented control (small)</span><span class="tag-role">container + segmented-switch</span>
+            <div class="p-seg"><span class="ind"></span><button>Monthly</button><button>Year to date</button></div></div>
+          <div class="spec"><span class="cap">Card + buttons (lock-up)</span><span class="tag-role">surface + control</span>
+            <div class="p-card"><h3>Everyday account</h3><p>Balance climbed steadily through the year.</p>
+              <div class="cardbtns"><span class="p-btn sm">View</span><span class="p-btn sec sm">Details</span></div></div></div>
+          <div class="spec"><span class="cap">Modal / dialog</span><span class="tag-role">container + control</span>
+            <div class="p-panel"><div class="hd">Move money</div>
+              <div class="bd"><span class="ln"></span><span class="ln short"></span></div>
+              <div class="ft"><span class="p-btn sec sm">Cancel</span><span class="p-btn sm">Confirm</span></div></div></div>
+          <div class="spec"><span class="cap">Dropdown panel</span><span class="tag-role">container</span>
+            <div class="p-panel"><div class="bd"><span class="ln"></span><span class="ln short"></span><span class="ln"></span></div></div></div>
+          <div class="spec"><span class="cap">Badge</span><span class="tag-role">always round — not tuned</span><span class="p-badge">3</span></div>
+          <div class="spec"><span class="cap">Progress</span><span class="tag-role">indicator</span><span class="p-progress"><i></i></span></div>
+          <div class="spec"><span class="cap">Status chip</span><span class="tag-role">indicator</span><span class="p-status">Settled</span></div>
+          <div class="spec"><span class="cap">Chart bars</span><span class="tag-role">data-mark</span>
+            <div class="p-bars"><span style="height:60%"></span><span style="height:85%"></span><span style="height:45%"></span><span style="height:100%"></span></div></div>
+        </div>
+        <p class="note">Badges are ruled always-round (literal 999px) and are shown for reference only.
+           Preview colours are a 2026-08-18 snapshot of the theme cascade — they are context for judging
+           corners, not the subject of this sheet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="export">
+    <h2>Override set — paste-ready</h2>
+    <textarea readonly></textarea>
+    <div class="exrow"><small>Shape mirrors <code>knowledge/tokens/themes/apollo-&lt;theme&gt;.overrides.json</code> (px numbers).
+      Roles still matching default are emitted as <code>$alias</code> so the cascade is preserved rather than flattened.
+      <code>segmented-switch</code>, <code>container</code> and <code>data-mark</code> are PROPOSED slots
+      (not canon tokens) — flagged <code>$proposed</code> in the block. Pasting this does not mint anything.</small>
+      <button type="button" id="copy">Copy</button></div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- SNAPSHOT re-read from disk 2026-08-18 ----
+     tokens/layout.json:114-136 · themes/apollo-legacy.overrides.json:183
+     themes/apollo-console.overrides.json:7 (default 4) :12 (control 8) :17 (surface 20)
+     apollo-supercharge.overrides.json — no border-radius keys, inherits the mono base
+     null = the role is ALIASED to border-radius/default in the store                              */
+  var CANON = {
+    mono:        { def:0, control:null, surface:null, indicator:null },
+    legacy:      { def:0, control:null, surface:null, indicator:null },
+    console:     { def:4, control:8,    surface:20,   indicator:null },
+    supercharge: { def:0, control:null, surface:null, indicator:null }
+  };
+  var COLOURS = {
+    mono: {
+      light:{ bg:'#FFFFFF', text:'#1A1A1A', text2:'#1A1A1A', border:'#E1E1E1', formborder:'#808080', surface:'#FFFFFF', tertiary:'#FFFFFF', primary:'#DB0011', secondary:'#000000' },
+      dark: { bg:'#1A1A1A', text:'#FFFFFF', text2:'#FFFFFF', border:'#808080', formborder:'#808080', surface:'#1F1F1F', tertiary:'#1F1F1F', primary:'#DB0011', secondary:'#FFFFFF' }
+    },
+    legacy: {
+      light:{ bg:'#FFFFFF', text:'#333333', text2:'#545454', border:'#D7D8D6', formborder:'#808080', surface:'#FFFFFF', tertiary:'#FFFFFF', primary:'#DB0011', secondary:'#000000' },
+      dark: { bg:'#1A1A1A', text:'#FFFFFF', text2:'#9B9B9B', border:'#404040', formborder:'#808080', surface:'#1F1F1F', tertiary:'#1F1F1F', primary:'#DB0011', secondary:'#FFFFFF' }
+    },
+    console: {
+      light:{ bg:'#FFFFFF', text:'#1A1A1A', text2:'#1A1A1A', border:'#E1E1E1', formborder:'#808080', surface:'#FFFFFF', tertiary:'#FFFFFF', primary:'#DB0011', secondary:'#000000' },
+      dark: { bg:'#1A1A1A', text:'#FFFFFF', text2:'#FFFFFF', border:'#808080', formborder:'#808080', surface:'#1F1F1F', tertiary:'#1F1F1F', primary:'#DB0011', secondary:'#FFFFFF' }
+    },
+    supercharge: {
+      light:{ bg:'#F7F6F4', text:'#13110E', text2:'#13110E', border:'#CDC8C6', formborder:'#524842', surface:'#F7F6F4', tertiary:'#F7F6F4', primary:'#DB0011', secondary:'#13110E' },
+      dark: { bg:'#1A1A1A', text:'#F7F6F4', text2:'#F7F6F4', border:'#524842', formborder:'#524842', surface:'#2A2621', tertiary:'#2A2621', primary:'#DB0011', secondary:'#F7F6F4' }
+    }
+  };
+
+  var ROLES    = ['default','control','segmented-switch','surface','container','indicator','data-mark'];
+  var ALIASED  = ['control','surface','indicator'];      /* canon roles that alias border-radius/default */
+  var PROPOSED = { 'segmented-switch':true, container:true, 'data-mark':true };
+
+  var preview = document.getElementById('preview');
+  var ta      = document.querySelector('#export textarea');
+  var els = {}, seed = {}, linked = {};
+  var theme = 'console', mode = 'light';
+  var segDriver = 'control';                              /* which slider drives the segmented CONTAINER */
+  var segPad = 4;
+
+  document.querySelectorAll('.slider').forEach(function(s){
+    var r = s.getAttribute('data-role');
+    els[r] = { box:s, input:s.querySelector('input'), val:s.querySelector('.val'), canon:s.querySelector('.canon b span') };
+    els[r].input.addEventListener('input', function(){
+      var px = parseInt(els[r].input.value, 10);
+      if (r === 'default') {
+        ROLES.forEach(function(o){ if (o !== 'default' && linked[o]) setPx(o, px); });
+      } else {
+        linked[r] = false;                                /* dialling a role breaks it off default */
+      }
+      setPx(r, px);
+      refresh();
+    });
+  });
+
+  function setPx(r, px){
+    els[r].input.value = px;
+    els[r].val.textContent = px + 'px';
+    preview.style.setProperty('--r-' + r, px + 'px');
+    els[r].box.classList.toggle('dirty', px !== seed[r]);
+  }
+
+  function cur(r){ return parseInt(els[r].input.value, 10); }
+
+  function seedFromCanon(){
+    var c = CANON[theme];
+    seed['default']   = c.def;
+    seed.control      = (c.control   === null) ? c.def : c.control;
+    seed.surface      = (c.surface   === null) ? c.def : c.surface;
+    seed.indicator    = (c.indicator === null) ? c.def : c.indicator;
+    seed.container    = seed.surface;                     /* v1 proposal seeds from surface */
+    seed['data-mark'] = 0;                                /* v1 proposal seeds square */
+    seed['segmented-switch'] = seed.control;              /* starts EQUAL so any divergence is visible */
+
+    linked = { control:(c.control===null), surface:(c.surface===null), indicator:(c.indicator===null),
+               container:false, 'data-mark':false, 'segmented-switch':false };
+
+    ROLES.forEach(function(r){
+      setPx(r, seed[r]);
+      els[r].canon.textContent = PROPOSED[r] ? '—' : seed[r] + 'px';
+    });
+    refresh();
+  }
+
+  function applyColours(){
+    var c = COLOURS[theme][mode];
+    Object.keys(c).forEach(function(k){ preview.style.setProperty('--pv-' + k, c[k]); });
+  }
+
+  function segOuter(){ return cur(segDriver); }
+
+  function paintSeg(){
+    preview.style.setProperty('--r-seg-outer', segOuter() + 'px');
+    preview.style.setProperty('--seg-pad', segPad + 'px');
+    var hint = Math.max(0, segOuter() - segPad);
+    preview.style.setProperty('--r-hint', hint + 'px');
+
+    var inner = cur('segmented-switch'), outer = segOuter(), diff = inner - outer;
+    var matchesHint = (inner === hint);
+    document.getElementById('benchout').innerHTML =
+      'container (' + segDriver + ')&nbsp; <b>' + outer + 'px</b><br>' +
+      'switch (segmented-switch)&nbsp; <b>' + inner + 'px</b><br>' +
+      'difference (inner − outer)&nbsp; <b>' + (diff > 0 ? '+' : '') + diff + 'px</b><br>' +
+      'specimen padding&nbsp; <b>' + segPad + 'px</b><br>' +
+      '<span class="hint">concentric hint (outer − pad) = ' + hint + 'px' +
+      (matchesHint ? ' <span class="match">· inner is ON the hint</span>' : ' · inner is ' +
+        Math.abs(inner - hint) + 'px ' + (inner > hint ? 'rounder' : 'tighter') + ' than the hint') +
+      '</span>';
+  }
+
+  function refresh(){
+    var still = ALIASED.filter(function(r){ return linked[r]; });
+    document.getElementById('aliasnote').textContent = still.length
+      ? 'Roles still following default: ' + still.join(', ') + '. Move a role’s own slider to break it off default (that break is shown in the export).'
+      : 'No role is following default any more — every canon role carries its own value. "Re-link roles to default" puts them back on the alias.';
+    paintSeg();
+    renderExport();
+  }
+
+  function renderExport(){
+    var lines = [];
+    lines.push('// apollo-' + theme + ' — border-radius roles, tuner pick 2026-08-18 (v2)');
+    lines.push('// canon start: default ' + seed['default'] + ' · control ' + seed.control +
+               ' · surface ' + seed.surface + ' · indicator ' + seed.indicator);
+    lines.push('// segmented-switch + container + data-mark are PROPOSED slots — not canon tokens today');
+    lines.push('// s199-D3: the segmented SWITCH radius is carved out from the container radius');
+
+    var changed = ROLES.filter(function(r){ return cur(r) !== seed[r]; });
+    lines.push('// ' + (changed.length ? 'changed: ' + changed.join(', ') : 'all values match canon'));
+
+    var block = { $attr:theme, overrides:{ 'border-radius':{} } };
+    var br = block.overrides['border-radius'];
+    br['default'] = { $value: cur('default'), $type:'number' };
+    ROLES.forEach(function(r){
+      if (r === 'default') return;
+      var entry = { $value:cur(r), $type:'number' };
+      if (!PROPOSED[r] && linked[r]) entry.$alias = 'border-radius/default';
+      if (PROPOSED[r]) entry.$proposed = true;
+      if (r === 'segmented-switch') {
+        entry.$note = 's199-D3 (Dave, 2026-08-18): the segmented-control SWITCH needs its own carve-out — ' +
+                      'inner and outer radii cannot share a value, it changes the curve match. ' +
+                      'PROPOSED slot, tuned on reviews/RADIUS-CORNER-TUNER-2026-08-18-v2.html ' +
+                      'against a ' + segOuter() + 'px container at ' + segPad + 'px padding.';
+      }
+      br[r] = entry;
+    });
+    ta.value = lines.join('\n') + '\n' + JSON.stringify(block, null, 2);
+  }
+
+  document.getElementById('themebtns').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    theme = b.getAttribute('data-theme');
+    this.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+    applyColours(); seedFromCanon();
+  });
+  document.getElementById('modebtns').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    mode = b.getAttribute('data-mode');
+    this.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+    applyColours();
+  });
+  document.getElementById('drvbtns').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    segDriver = b.getAttribute('data-drv');
+    this.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+    refresh();
+  });
+  document.getElementById('padrange').addEventListener('input', function(){
+    segPad = parseInt(this.value, 10);
+    document.getElementById('padval').textContent = segPad + 'px';
+    refresh();
+  });
+  document.getElementById('showhint').addEventListener('change', function(){
+    document.getElementById('ghost').hidden = !this.checked;
+  });
+  document.getElementById('reset').addEventListener('click', seedFromCanon);
+  document.getElementById('relink').addEventListener('click', function(){
+    var px = cur('default');
+    ALIASED.forEach(function(r){ linked[r] = true; setPx(r, px); });
+    refresh();
+  });
+  document.getElementById('copy').addEventListener('click', function(){
+    var b = this; ta.select();
+    try { document.execCommand('copy'); b.textContent = 'Copied';
+          setTimeout(function(){ b.textContent = 'Copy'; }, 1400); } catch(err){}
+  });
+
+  applyColours();
+  seedFromCanon();
+})();
+</script>
+</body>
+</html>
