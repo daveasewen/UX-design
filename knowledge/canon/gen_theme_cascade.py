@@ -82,8 +82,15 @@ def _store(fname):
 def _store_for(path):
     if path.startswith("color/"):
         return _store("colour.json")
-    if path.startswith(("border-radius/", "border-width/", "breakpoint/", "layout/", "focus-ring/", "target/")):
+    if path.startswith(("border-radius/", "border-width/", "breakpoint/", "layout/", "focus-ring/",
+                        "target/", "size/")):
+        # s202-D1 (#202): size/segmented-control/* is minted in the BASE layout store (mono is the
+        # base theme), so the three square themes resolve the segmented dimensions Console tuned.
         return _store("layout.json")
+    if path.startswith("padding/") or path.startswith("gap/"):
+        # s202-D1 (#202): padding/segmented-control/* lives in the base spacing store. Without this
+        # route base_value() would look in semantic-colour.json and KeyError.
+        return _store("spacing.json")
     if path.startswith("motion/"):
         return _store("motion.json")
     if path.startswith("component-type/"):

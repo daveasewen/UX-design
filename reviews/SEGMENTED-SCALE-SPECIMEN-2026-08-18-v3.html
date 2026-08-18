@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Segmented control scale &mdash; MINTED specimen (s201-D1 / s201-D2), apollo-console</title>
+<style>
+ :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+ body{margin:0;padding:24px;background:#f4f4f5;color:#1a1a1a;line-height:1.5}
+ header,footer{max-width:1140px;margin:0 auto 32px}
+ h1{font-size:24px;margin:0 0 8px}
+ .meta{font-size:12px;color:#555;font-family:ui-monospace,Menlo,monospace}
+ .banner{border:2px solid #DA1A00;padding:12px 16px;margin:16px 0;background:#fff}
+ .banner b{color:#DA1A00}
+ .formula{background:#fff;border:1px solid #ccc;padding:16px;margin:16px 0}
+ .formula li{margin:6px 0}
+ .controls{max-width:1140px;margin:0 auto 24px;padding:12px 16px;background:#fff;border:1px solid #ccc;
+           display:flex;gap:24px;align-items:center;flex-wrap:wrap;font-size:13px}
+ .controls label{display:flex;gap:8px;align-items:center;cursor:pointer}
+
+ section.theme{max-width:1140px;margin:0 auto 24px;padding:20px;border:1px solid #ccc;box-sizing:border-box}
+ /* Dark mode is a REAL second palette (own surface/ink/track/thumb values), not a CSS filter. */
+ section.light{background:#ffffff;color:#1a1a1a}
+ section.dark{background:#141414;color:#f0f0f0;border-color:#333}
+ h2{font-size:18px;margin:0 0 4px}
+ .mode{font-size:12px;font-weight:400;opacity:.6;text-transform:uppercase;letter-spacing:.08em}
+ h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin:24px 0 12px;font-weight:600}
+ .tnote{font-size:13px;opacity:.75;margin:0 0 8px}
+ .row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+ .specimen{flex:0 0 248px;min-width:0;max-width:248px}
+
+ /* ---- the control ------------------------------------------------------ */
+ .segwrap{position:relative;display:inline-block;margin:22px 0 8px}
+ .seg{position:relative;display:inline-flex;box-sizing:border-box;background:#d9d9dd;
+      isolation:isolate;user-select:none}
+ .dark .seg{background:#2b2b2f}
+ .seg .thumb{position:absolute;top:var(--pad);left:0;height:calc(var(--h) - (2 * var(--pad)));
+             background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.28);z-index:0;
+             transition:transform .18s ease, width .18s ease}
+ .dark .seg .thumb{background:#4a4a52}
+ .seg button{position:relative;z-index:1;flex:1 1 0;min-width:0;background:none;border:0;margin:0;
+             color:inherit;font:inherit;line-height:1;cursor:pointer;opacity:.62;
+             display:flex;align-items:center;justify-content:center;
+             height:calc(var(--h) - (2 * var(--pad)));font-size:var(--fs);padding:0 var(--px)}
+ .seg button[aria-selected="true"]{opacity:1;font-weight:600}
+
+ /* ---- 44px hit zone (s201-D2): interactive box only, visual box untouched ---- */
+ .seg button::after{content:"";position:absolute;left:0;right:0;
+   top:50%;height:var(--hit);transform:translateY(-50%);}
+ .segwrap.showhit .seg button::after{outline:1.5px dashed #DA1A00;background:rgba(218,26,0,.12)}
+ .dark .segwrap.showhit .seg button::after{outline-color:#F6604C;background:rgba(246,96,76,.14)}
+ .segwrap.showhit .hitlabel{display:block}
+ .hitlabel{display:none;position:absolute;left:0;top:-18px;font-size:10px;font-family:ui-monospace,Menlo,monospace;
+           color:#DA1A00;white-space:nowrap}
+ .dark .hitlabel{color:#F6604C}
+
+ table.vals{margin-top:12px;font-size:11px;border-collapse:collapse;width:100%;table-layout:fixed;
+            font-family:ui-monospace,Menlo,monospace}
+ table.vals td{padding:3px 6px 3px 0;vertical-align:top;border-bottom:1px solid rgba(128,128,128,.25);
+               overflow-wrap:anywhere}
+ table.vals td.k{opacity:.72;width:47%}
+ table.vals td:nth-child(2){width:22%}
+ .tag{font-size:9px;text-transform:uppercase;letter-spacing:.04em;opacity:.6;text-align:right;overflow-wrap:anywhere}
+ .tag.minted{color:#0a6b2d;opacity:1;font-weight:700}
+ .dark .tag.minted{color:#5fd48b}
+ .tag.prop{color:#DA1A00;opacity:1;font-weight:700}
+ .dark .tag.prop{color:#F6604C}
+ .warn{font-size:11px;margin-top:8px;padding:8px;border-left:3px solid #DA1A00;background:rgba(218,26,0,.06)}
+ .dark .warn{border-left-color:#F6604C;background:rgba(246,96,76,.1)}
+ code{font-family:ui-monospace,Menlo,monospace;font-size:11px}
+</style></head><body>
+
+<header>
+ <h1>Segmented control scale &mdash; minted specimen</h1>
+ <p class="meta">
+   Theme: <b>apollo-console ONLY</b> (s200-D3 scope &mdash; no segmented scale entries exist for mono / legacy / supercharge).<br>
+   Rulings: <b>s202-D2 (#202, corrected reading &mdash; the thumb IS &ldquo;the switch&rdquo;; thumb = container &minus; 6)</b> &middot;
+   s201-D1 (xs/s/m/l scale, #201) &middot; s200-D4 (scale <code>s</code>, #200) &middot; s201-D2 (44 = HIT ZONE) &middot; s200-D1 clause a (concrete mint-time derivation).<br>
+   Values read from: <code>knowledge/tokens/themes/apollo-console.overrides.json</code> &mdash; inlined here, key by key.<br>
+   Page baked: 2026-08-18 (v3, #202). Copied from <code>-v1</code> unchanged except the thumb radii and the label type scale.
+ </p>
+ <div class="banner">
+  <b>WHAT CHANGED SINCE <code>-v1</code> (which you approved by eye).</b> Two things, and nothing else.
+  <br>1. <b>The thumb corners are tighter: 0 / 2 / 4 / 6</b>, re-minted at <code>s202-D2</code>. The
+  s199-D3 carve-out you asked for &mdash; &ldquo;the switch, not the container&rdquo; &mdash; turned out to
+  BE this thumb; there is no separate two-state switch. Its radius no longer derives from the track inset,
+  it derives from the dial you tuned: <b>container &minus; 6, floored at 0</b>. At <code>xs</code> the
+  thumb is now square (6 &minus; 6 = 0).
+  <br>2. <b>The label sizes are on the real type scale: 12 / 14 / 16 / 16</b>
+  (<code>font-7</code> / <code>font-6</code> / <code>font-5</code> / <code>font-5</code>). The old 11px
+  at <code>xs</code> was off-scale &mdash; no such size exists. These bindings are still
+  <span class="tag prop">PROPOSED</span>: the sizes are real tokens, but nothing rules that a segmented
+  label must take them.
+  <br>Everything else &mdash; heights, insets, container radii, the 44px hit zone, the greys, the layout
+  &mdash; is <code>-v1</code> verbatim.
+  <br><br>
+  <b>The geometry on this page is MINTED, not proposed.</b> Every height, track inset and radius below
+  is a literal value read out of the console overrides file and printed next to its token key.
+  <br><br>
+  <b>The label type sizes are REAL TOKENS on a PROPOSED binding; the horizontal label padding has no
+  token at all.</b> Sizes are <code>typography/font-size/font-7|font-6|font-5</code> = 12 / 14 / 16 / 16.
+  Paddings (8 / 12 / 14 / 16) come from the tuner v3 export draft and no token exists for them.
+  Both are flagged <span class="tag prop">PROPOSED</span> in every table.
+  <br><br>
+  <b>Colour is not under review here.</b> Neutral greys are used deliberately, in both modes &mdash; the
+  judgement asked for is geometric and dimensional. No console palette has been applied or invented,
+  and no new token key appears anywhere on this page.
+  <br><br>
+  <b>Values are inlined, not read from <code>canon.css</code>.</b> The built stylesheet does not yet
+  carry the #200/#201 tokens, so relying on it would render stale numbers silently.
+ </div>
+ <div class="formula">
+  <b>What you are looking at, in plain words</b>
+  <ul>
+   <li><b>Four sizes, tuned by height.</b> You pick the total outer height (24 / 36 / 44 / 48) and the
+       track inset (2 / 2 / 4 / 4). Everything else follows.</li>
+   <li><b>The thumb is tuned, not calculated from the inset.</b> Its radius is the container&rsquo;s radius
+       minus <b>6</b> &mdash; the dial you set on the tuner &mdash; never below 0. That is what makes the
+       thumb read as a distinctly tighter shape inside its track rather than a scaled copy of it.
+       A future tuner pass re-tunes that one number and every size follows.</li>
+   <li><b>Those thumb radii are real numbers on disk, not a live sum.</b> The subtraction was done once,
+       at mint time, and the answer written down (s200-D1 clause a). Nothing computes at runtime.</li>
+   <li><b>44 is a finger, not a box.</b> The two small sizes stay visually small &mdash; 24 and 36 &mdash;
+       but the area that actually responds to a tap is stretched to 44 tall. Turn the overlay on to see
+       the difference between what you see and what you can hit.</li>
+  </ul>
+ </div>
+</header>
+
+<div class="controls">
+  <label><input type="checkbox" id="hittoggle"> <b>Show the 44px hit zone</b> (dashed / tinted)</label>
+  <span style="opacity:.7">The controls are live &mdash; click a segment and the thumb moves.</span>
+</div>
+
+<section class="theme light" id="sec-light">
+  <h2>apollo-console <span class="mode">light</span></h2>
+  <p class="tnote">All four scales, left to right: xs &middot; s &middot; m &middot; l.</p>
+  <div class="row" data-scales></div>
+</section>
+
+<section class="theme dark" id="sec-dark">
+  <h2>apollo-console <span class="mode">dark</span></h2>
+  <p class="tnote">Real second palette (own track / thumb / ink values). Not a filter, not an inversion.</p>
+  <div class="row" data-scales></div>
+</section>
+
+<footer>
+ <div class="formula">
+  <b>Token trace &mdash; every number on this page, and where it came from</b>
+  <table class="vals" style="max-width:760px">
+   <tr><td class="k">size/segmented-control/xs</td><td>24</td><td class="tag minted">MINTED s201-D1</td></tr>
+   <tr><td class="k">size/segmented-control/s</td><td>36</td><td class="tag minted">MINTED s200-D4</td></tr>
+   <tr><td class="k">size/segmented-control/m</td><td>44</td><td class="tag minted">MINTED s201-D1</td></tr>
+   <tr><td class="k">size/segmented-control/l</td><td>48</td><td class="tag minted">MINTED s201-D1</td></tr>
+   <tr><td class="k">padding/segmented-control/{xs,s,m,l}</td><td>2 / 2 / 4 / 4</td><td class="tag minted">MINTED</td></tr>
+   <tr><td class="k">border-radius/segmented-container/{xs,s,m,l}</td><td>6 / 8 / 10 / 12</td><td class="tag minted">MINTED</td></tr>
+   <tr><td class="k">border-radius/segmented-thumb/{xs,s,m,l}</td><td><b>0 / 2 / 4 / 6</b></td><td class="tag minted">RE-MINTED s202-D2</td></tr>
+   <tr><td class="k">&nbsp;&nbsp;&rarr; the tuned dial</td><td>6</td><td class="tag minted">s202-D2 &mdash; container &minus; 6, floored 0</td></tr>
+   <tr><td class="k">size/segmented-control/min-hit-area</td><td>44</td><td class="tag minted">MINTED &mdash; hit zone (s201-D2)</td></tr>
+   <tr><td class="k">typography/font-size/{font-7,font-6,font-5,font-5}</td><td>12 / 14 / 16 / 16</td><td class="tag prop">PROPOSED BINDING (real tokens)</td></tr>
+   <tr><td class="k">(no token) label inline padding</td><td>8 / 12 / 14 / 16</td><td class="tag prop">PROPOSED (tuner v3)</td></tr>
+  </table>
+  <p style="font-size:12px;opacity:.8;margin-top:12px">
+   Note the two coincidences that are <i>not</i> the same fact: scale <code>m</code>&rsquo;s visual height
+   happens to be 44, the same figure as <code>min-hit-area</code>. At <code>m</code> and <code>l</code>
+   the hit zone therefore adds nothing; at <code>xs</code> and <code>s</code> it is the whole point.
+   And <code>m</code> and <code>l</code> share a label size of 16 (<code>font-5</code>) because the type
+   scale has no step between them &mdash; that is the scale, not a tuning choice. The thumb radii no longer
+   collide: the single dial makes them step 0 / 2 / 4 / 6, one per size.
+  </p>
+ </div>
+</footer>
+
+<script>
+// Values inlined from knowledge/tokens/themes/apollo-console.overrides.json (read 2026-08-18).
+// MINTED: h, pad, rc, rt (rt re-minted s202-D2 = rc - 6, floored 0).
+// PROPOSED BINDING: fs (real typography/font-size tokens font-7/6/5).  No token at all: px.
+var MIN_HIT = 44;                       // size/segmented-control/min-hit-area  (s201-D2 HIT ZONE)
+var DIAL = 6;  // s202-D2 tuned dial: thumb = max(container - 6, 0)
+var SCALES = [
+ {id:'xs', h:24, pad:2, rc:6,  rt:0, fs:12, px:8 , ft:'font-7'},
+ {id:'s',  h:36, pad:2, rc:8,  rt:2, fs:14, px:12, ft:'font-6'},
+ {id:'m',  h:44, pad:4, rc:10, rt:4, fs:16, px:14, ft:'font-5'},
+ {id:'l',  h:48, pad:4, rc:12, rt:6, fs:16, px:16, ft:'font-5'}
+];
+var LABELS = ['Day','Week','Month'];
+
+function row(s, mode){
+  var hitExpands = s.h < MIN_HIT;
+  var wrap = document.createElement('div');
+  wrap.className = 'specimen';
+  var mint = '<td class="tag minted">MINTED</td>';
+  var prop = '<td class="tag prop">PROPOSED</td>';
+  wrap.innerHTML =
+   '<div class="segwrap' + (hitExpands ? ' hitable' : '') + '">' +
+     '<span class="hitlabel">hit zone ' + Math.max(MIN_HIT, s.h) + 'px' +
+       (hitExpands ? ' (visual ' + s.h + 'px)' : ' = visual height') + '</span>' +
+     '<div class="seg" style="--h:' + s.h + 'px;--pad:' + s.pad + 'px;--fs:' + s.fs + 'px;--px:' + s.px + 'px;--hit:' +
+        Math.max(MIN_HIT, s.h) + 'px;height:' + s.h + 'px;padding:' + s.pad + 'px;border-radius:' + s.rc + 'px">' +
+       '<div class="thumb" style="border-radius:' + s.rt + 'px"></div>' +
+       LABELS.map(function(l,i){
+         return '<button type="button" role="tab" aria-selected="' + (i===0) + '">' + l + '</button>';
+       }).join('') +
+     '</div>' +
+   '</div>' +
+   '<table class="vals">' +
+    '<tr><td class="k">scale</td><td><b>' + s.id + '</b></td><td class="tag">&mdash;</td></tr>' +
+    '<tr><td class="k">size/segmented-control/' + s.id + '</td><td>' + s.h + 'px</td>' + mint + '</tr>' +
+    '<tr><td class="k">padding/segmented-control/' + s.id + '</td><td>' + s.pad + 'px</td>' + mint + '</tr>' +
+    '<tr><td class="k">border-radius/segmented-container/' + s.id + '</td><td>' + s.rc + 'px</td>' + mint + '</tr>' +
+    '<tr><td class="k">border-radius/segmented-thumb/' + s.id + '</td><td><b>' + s.rt + 'px</b></td>' +
+      '<td class="tag minted">MINTED CONCRETE</td></tr>' +
+    '<tr><td class="k">&nbsp;&nbsp;&rarr; mint-time sum</td><td>' + s.rc + ' &minus; ' + DIAL + ' (dial) = ' + s.rt +
+      '</td><td class="tag">s202-D2 &mdash; static on disk, no runtime derivation</td></tr>' +
+    '<tr><td class="k">hit target height</td><td>' + Math.max(MIN_HIT, s.h) + 'px</td>' +
+      (hitExpands ? '<td class="tag minted">EXPANDED &mdash; visual ' + s.h + 'px unchanged</td>'
+                  : '<td class="tag">no expansion needed</td>') + '</tr>' +
+    '<tr><td class="k">typography/font-size/' + s.ft + '</td><td>' + s.fs + 'px</td>' +
+      '<td class="tag prop">PROPOSED BINDING</td></tr>' +
+    '<tr><td class="k">label inline padding <i>(no token)</i></td><td>' + s.px + 'px</td>' + prop + '</tr>' +
+   '</table>' +
+   (hitExpands ? '<div class="warn">Visual box ' + s.h + 'px, hit box ' + MIN_HIT +
+       'px &mdash; the tap target overhangs the control by ' + ((MIN_HIT - s.h)/2) +
+       'px top and bottom. s201-D2.</div>' : '');
+  return wrap;
+}
+
+function wire(seg){
+  var thumb = seg.querySelector('.thumb');
+  var btns  = Array.prototype.slice.call(seg.querySelectorAll('button'));
+  function move(i){
+    btns.forEach(function(b,j){ b.setAttribute('aria-selected', String(i===j)); });
+    var b = btns[i];
+    thumb.style.width = b.offsetWidth + 'px';
+    thumb.style.transform = 'translateX(' + b.offsetLeft + 'px)';
+  }
+  btns.forEach(function(b,i){ b.addEventListener('click', function(){ move(i); }); });
+  seg.__move = move;
+  move(0);
+}
+
+['sec-light','sec-dark'].forEach(function(id){
+  var host = document.getElementById(id).querySelector('[data-scales]');
+  SCALES.forEach(function(s){ host.appendChild(row(s, id)); });
+});
+Array.prototype.forEach.call(document.querySelectorAll('.seg'), wire);
+// re-seat thumbs once fonts settle (button widths depend on the rendered face)
+window.addEventListener('load', function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.seg'), function(s){ if(s.__move) s.__move(
+    Array.prototype.slice.call(s.querySelectorAll('button')).findIndex(function(b){return b.getAttribute('aria-selected')==='true';})); });
+});
+
+document.getElementById('hittoggle').addEventListener('change', function(e){
+  Array.prototype.forEach.call(document.querySelectorAll('.segwrap'), function(w){
+    w.classList.toggle('showhit', e.target.checked);
+  });
+});
+</script>
+</body></html>

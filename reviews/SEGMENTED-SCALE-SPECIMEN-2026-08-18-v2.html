@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Segmented control scale &mdash; ALL FOUR THEMES (s202-D1), specimen v2</title>
+<!-- REAL palettes: the theme colours below are NOT invented here. They come from the built
+     canon.css theme cascade, applied through [data-apollo-theme] + [data-theme="dark"].
+     type.css is linked too (a specimen that drops it silently renders the wrong face). -->
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+ body{margin:0;padding:24px;background:#f4f4f5;color:#1a1a1a;line-height:1.5;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+ header,footer{max-width:1180px;margin:0 auto 28px}
+ h1{font-size:24px;margin:0 0 8px}
+ .meta{font-size:12px;color:#555;font-family:ui-monospace,Menlo,monospace}
+ .banner{border:2px solid #DA1A00;padding:12px 16px;margin:16px 0;background:#fff}
+ .banner b{color:#DA1A00}
+ .formula{background:#fff;border:1px solid #ccc;padding:16px;margin:16px 0}
+ .controls{position:sticky;top:0;z-index:50;max-width:1180px;margin:0 auto 20px;padding:12px 16px;
+           background:#fff;border:1px solid #ccc;display:flex;gap:20px;align-items:center;
+           flex-wrap:wrap;font-size:13px}
+ .controls label{display:flex;gap:8px;align-items:center;cursor:pointer}
+
+ /* ---- assert panel ----------------------------------------------------- */
+ #asserts{max-width:1180px;margin:0 auto 24px;background:#fff;border:2px solid #999;padding:12px 16px;
+          font-family:ui-monospace,Menlo,monospace;font-size:12px}
+ #asserts h3{margin:0 0 8px;font-size:13px;letter-spacing:.05em;text-transform:uppercase}
+ #asserts .verdict{font-weight:700;font-size:14px;padding:6px 0}
+ #asserts .pass{color:#0a6b2d}
+ #asserts .fail{color:#DA1A00}
+ #asserts table{border-collapse:collapse;width:100%}
+ #asserts td,#asserts th{padding:2px 8px 2px 0;text-align:left;border-bottom:1px solid #eee;
+                         vertical-align:top}
+ #asserts tr.bad td{background:rgba(218,26,0,.08)}
+
+ /* ---- theme sections --------------------------------------------------- */
+ section.theme{max-width:1180px;margin:0 auto 20px;padding:20px;border:1px solid #ccc;
+               box-sizing:border-box;background:var(--surface);color:var(--text-default)}
+ section.theme[data-theme="dark"]{border-color:#333}
+ h2{font-size:17px;margin:0 0 2px}
+ .mode{font-size:12px;font-weight:400;opacity:.6;text-transform:uppercase;letter-spacing:.08em}
+ .tnote{font-size:12px;opacity:.75;margin:0 0 8px}
+ .row{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+ .specimen{flex:0 0 250px;min-width:0;max-width:250px}
+ @media (max-width:760px){ .specimen{flex:1 1 100%;max-width:none} }
+
+ /* ---- the control: EVERY dimension is a token var, nothing hardcoded ---- */
+ .segwrap{position:relative;display:inline-block;margin:22px 0 8px}
+ .seg{position:relative;display:inline-flex;box-sizing:border-box;isolation:isolate;user-select:none;
+      background:var(--surface-subtle);
+      height:var(--seg-h);padding:var(--seg-pad);border-radius:var(--seg-rc)}
+ .seg .thumb{position:absolute;top:var(--seg-pad);left:0;
+             height:calc(var(--seg-h) - (2 * var(--seg-pad)));
+             background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.28);z-index:0;
+             border-radius:var(--seg-rt);
+             transition:transform .18s ease, width .18s ease}
+ .seg button{position:relative;z-index:1;flex:1 1 0;min-width:0;background:none;border:0;margin:0;
+             color:inherit;font:inherit;line-height:1;cursor:pointer;opacity:.62;
+             display:flex;align-items:center;justify-content:center;
+             height:calc(var(--seg-h) - (2 * var(--seg-pad)));
+             font-size:var(--seg-fs);padding:0 var(--seg-px)}
+ .seg button[aria-selected="true"]{opacity:1;font-weight:600}
+
+ /* ---- hit zone (s201-D2 / s201-D3): hit = max(min-hit-area, visual height) --- */
+ .seg button::after{content:"";position:absolute;left:0;right:0;top:50%;
+   height:var(--seg-hit);transform:translateY(-50%);}
+ .segwrap.showhit .seg button::after{outline:1.5px dashed #DA1A00;background:rgba(218,26,0,.12)}
+ [data-theme="dark"] .segwrap.showhit .seg button::after{outline-color:#F6604C;background:rgba(246,96,76,.14)}
+ .segwrap.showhit .hitlabel{display:block}
+ .hitlabel{display:none;position:absolute;left:0;top:-18px;font-size:10px;
+           font-family:ui-monospace,Menlo,monospace;color:#DA1A00;white-space:nowrap}
+ [data-theme="dark"] .hitlabel{color:#F6604C}
+
+ table.vals{margin-top:12px;font-size:11px;border-collapse:collapse;width:100%;table-layout:fixed;
+            font-family:ui-monospace,Menlo,monospace}
+ table.vals td{padding:3px 6px 3px 0;vertical-align:top;
+               border-bottom:1px solid rgba(128,128,128,.25);overflow-wrap:anywhere}
+ table.vals td.k{opacity:.72;width:52%}
+ .tag{font-size:9px;text-transform:uppercase;letter-spacing:.04em;opacity:.6;text-align:right;
+      overflow-wrap:anywhere}
+ .tag.minted{color:#0a6b2d;opacity:1;font-weight:700}
+ [data-theme="dark"] .tag.minted{color:#5fd48b}
+ .tag.prop{color:#DA1A00;opacity:1;font-weight:700}
+ [data-theme="dark"] .tag.prop{color:#F6604C}
+ .warn{font-size:11px;margin-top:8px;padding:8px;border-left:3px solid #DA1A00;
+       background:rgba(218,26,0,.06)}
+ [data-theme="dark"] .warn{border-left-color:#F6604C;background:rgba(246,96,76,.1)}
+ code{font-family:ui-monospace,Menlo,monospace;font-size:11px}
+</style></head><body>
+<div style="max-width:1100px;margin:0 auto 20px;padding:14px 16px;border:2px solid #DA1A00;background:rgba(218,26,0,.06);font:600 14px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1A1A1A">
+SUPERSEDED (#202, Dave, 2026-08-18) &mdash; the console thumb radii shown on this page (4/6/6/8) NO LONGER MATCH THE STORE. s202-D2&rsquo;s corrected reading re-minted them to 0/2/4/6 (thumb = container &minus; 6, floored 0).
+<span style="display:block;margin-top:6px;font-weight:400">The square themes (mono / legacy / supercharge) are still 0 and still correct here. For live console numbers see <code>SEGMENTED-SCALE-SPECIMEN-2026-08-18-v3.html</code>.</span>
+</div>
+
+
+<header>
+ <h1>Segmented control &mdash; four scales &times; four themes</h1>
+ <p class="meta">
+  Rulings on this page: <b>s202-D1</b> (#202 &mdash; mono / legacy / supercharge inherit Console&rsquo;s
+  tuned segmented dimensions; radii 0) &middot; s201-D5 (square themes: thumb = max(container &minus; padding, 0))
+  &middot; s201-D1 (xs/s/m/l dimension-first scales) &middot; s201-D2 / s201-D3 (44 = hit zone, hit = max(44, visual))
+  &middot; s200-D1 clause a (concrete numbers, minted, never live).<br>
+  Values read at runtime from <code>knowledge/canon/canon.css</code> via the token vars &mdash; this page
+  hardcodes no geometry. Page baked 2026-08-18. Version v2 (v1 was console-only).
+ </p>
+ <div class="banner">
+  <b>What changed since v1.</b> v1 showed console alone with numbers typed into the page. v2 shows
+  <b>all four themes</b>, light and dark, on the <b>real palettes</b> from the built cascade, and every
+  height, inset and radius is read <i>out of the stylesheet</i> &mdash; so if a theme fails to resolve a
+  token, this page shows it rather than hiding it behind a typed-in number.
+  <br><br>
+  <b>The asserts below are DRIVEN, not described.</b> On open, the page measures the rendered control
+  with <code>getComputedStyle</code> for every theme &times; scale, including the pseudo-element that
+  carries the hit zone, and prints a pass/fail line per check.
+  <br><br>
+  <b>Type size and label padding are still PROPOSED.</b> No token exists for them; they are tagged
+  <span class="tag prop">PROPOSED</span> and are not part of the s202-D1 mint.
+ </div>
+ <div class="formula">
+  <b>In plain words</b>
+  <ul>
+   <li><b>The three square themes now have the same sizes as Console.</b> Same heights (24/36/44/48),
+       same track insets (2/2/4/4). Only the corners differ.</li>
+   <li><b>Console is round, the other three are square.</b> Console&rsquo;s corners are 6/8/10/12 outside
+       and 4/6/6/8 inside. Mono, Legacy and Supercharge are 0 and 0 &mdash; a square inside a square.</li>
+   <li><b>A square theme does not get a nudge of curve.</b> The old proposed &ldquo;floor of 2&rdquo;
+       would have rounded them slightly; s201-D5 rules it out. Squares stay square.</li>
+   <li><b>44 is a finger, not a box.</b> At xs and s the visible control stays small while the tappable
+       area is stretched to 44. Turn the overlay on to see it.</li>
+  </ul>
+ </div>
+</header>
+
+<div class="controls">
+  <label><input type="checkbox" id="hittoggle"> <b>Show the 44px hit zone</b></label>
+  <label><input type="checkbox" id="darkonly"> Dark sections only</label>
+  <span style="opacity:.7">Controls are live &mdash; click a segment, the thumb moves.</span>
+</div>
+
+<div id="asserts"><h3>Computed-style asserts</h3><div class="verdict">running&hellip;</div></div>
+
+<div id="sections"></div>
+
+<footer>
+ <div class="formula">
+  <b>Token trace</b>
+  <table class="vals" style="max-width:820px">
+   <tr><td class="k">size/segmented-control/{xs,s,m,l}</td><td>24 / 36 / 44 / 48</td>
+       <td class="tag minted">MINTED &mdash; console s200-D4/s201-D1, base s202-D1</td></tr>
+   <tr><td class="k">padding/segmented-control/{xs,s,m,l}</td><td>2 / 2 / 4 / 4</td>
+       <td class="tag minted">MINTED &mdash; console s200-D4/s201-D1, base s202-D1</td></tr>
+   <tr><td class="k">border-radius/segmented-container/{xs,s,m,l}</td>
+       <td>console 6 / 8 / 10 / 12 &mdash; base 0 / 0 / 0 / 0</td>
+       <td class="tag minted">MINTED &mdash; base s202-D1 (s201-D5)</td></tr>
+   <tr><td class="k">border-radius/segmented-thumb/{xs,s,m,l}</td>
+       <td>console 4 / 6 / 6 / 8 &mdash; base 0 / 0 / 0 / 0</td>
+       <td class="tag minted">MINTED CONCRETE &mdash; max(container &minus; padding, 0), s201-D5</td></tr>
+   <tr><td class="k">size/segmented-control/min-hit-area</td><td>44</td>
+       <td class="tag minted">MINTED &mdash; hit zone s201-D2 / s201-D3</td></tr>
+   <tr><td class="k">(no token) label type size</td><td>11 / 12 / 14 / 16</td>
+       <td class="tag prop">PROPOSED (tuner v3)</td></tr>
+   <tr><td class="k">(no token) label inline padding</td><td>8 / 12 / 14 / 16</td>
+       <td class="tag prop">PROPOSED (tuner v3)</td></tr>
+  </table>
+ </div>
+</footer>
+
+<script>
+// ---------------------------------------------------------------- the matrix
+// THEMES: attribute value = the [data-apollo-theme] hook emitted by gen_theme_cascade.
+// mono is the BASE theme and carries no attribute (it IS :root).
+var THEMES = [
+  {attr:null,          label:'apollo-mono (base)',   expectRound:false},
+  {attr:'legacy',      label:'apollo-legacy',        expectRound:false},
+  {attr:'console',     label:'apollo-console',       expectRound:true },
+  {attr:'supercharge', label:'apollo-supercharge',   expectRound:false}
+];
+var SCALES = ['xs','s','m','l'];
+// PROPOSED, no token (tuner v3 draft) — declared here so it is never mistaken for minted.
+var PROPOSED_TYPE = {xs:{fs:11,px:8}, s:{fs:12,px:12}, m:{fs:14,px:14}, l:{fs:16,px:16}};
+var LABELS = ['Day','Week','Month'];
+
+function px(v){ var n = parseFloat(v); return isNaN(n) ? null : Math.round(n * 100) / 100; }
+
+function specimen(scale, expectRound){
+  var t = PROPOSED_TYPE[scale];
+  var wrap = document.createElement('div');
+  wrap.className = 'specimen';
+  wrap.innerHTML =
+   '<div class="segwrap" data-scale="' + scale + '">' +
+     '<span class="hitlabel"></span>' +
+     '<div class="seg" style="' +
+        '--seg-h:var(--size-segmented-control-' + scale + ');' +
+        '--seg-pad:var(--padding-segmented-control-' + scale + ');' +
+        '--seg-rc:var(--border-radius-segmented-container-' + scale + ');' +
+        '--seg-rt:var(--border-radius-segmented-thumb-' + scale + ');' +
+        '--seg-hit:max(var(--size-segmented-control-min-hit-area), var(--size-segmented-control-' + scale + '));' +
+        '--seg-fs:' + t.fs + 'px;--seg-px:' + t.px + 'px">' +
+       '<div class="thumb"></div>' +
+       LABELS.map(function(l,i){
+         return '<button type="button" role="tab" aria-selected="' + (i===0) + '">' + l + '</button>';
+       }).join('') +
+     '</div>' +
+   '</div>' +
+   '<table class="vals" data-readout></table>';
+  return wrap;
+}
+
+// ---------------------------------------------------------------- build page
+var host = document.getElementById('sections');
+THEMES.forEach(function(th){
+  ['light','dark'].forEach(function(mode){
+    var sec = document.createElement('section');
+    sec.className = 'theme mode-' + mode;
+    sec.setAttribute('data-theme', mode);
+    if (th.attr) sec.setAttribute('data-apollo-theme', th.attr);
+    sec.innerHTML = '<h2>' + th.label + ' <span class="mode">' + mode + '</span></h2>' +
+      '<p class="tnote">Scales left to right: xs &middot; s &middot; m &middot; l. Corners expected: <b>' +
+      (th.expectRound ? 'ROUNDED (console overrides)' : 'SQUARE (0, s201-D5)') + '</b>.</p>' +
+      '<div class="row"></div>';
+    var row = sec.querySelector('.row');
+    SCALES.forEach(function(s){ row.appendChild(specimen(s, th.expectRound)); });
+    sec.__theme = th;
+    host.appendChild(sec);
+  });
+});
+
+function wire(seg){
+  var thumb = seg.querySelector('.thumb');
+  var btns  = Array.prototype.slice.call(seg.querySelectorAll('button'));
+  function move(i){
+    btns.forEach(function(b,j){ b.setAttribute('aria-selected', String(i===j)); });
+    thumb.style.width = btns[i].offsetWidth + 'px';
+    thumb.style.transform = 'translateX(' + btns[i].offsetLeft + 'px)';
+  }
+  btns.forEach(function(b,i){ b.addEventListener('click', function(){ move(i); }); });
+  seg.__move = move; move(0);
+}
+Array.prototype.forEach.call(document.querySelectorAll('.seg'), wire);
+
+// ---------------------------------------------------------------- ASSERTS (driven)
+// EXPECTED is the ruling written as numbers. Console = its own mint (s200-D4/s201-D1);
+// every other theme = the s202-D1 base set. If canon.css does not resolve a token the
+// measured value comes back 0/NaN and the row FAILS — an absent var cannot pass quietly.
+var EXPECTED = {
+  height:  {xs:24, s:36, m:44, l:48},
+  padding: {xs:2,  s:2,  m:4,  l:4},
+  console: {container:{xs:6,s:8,m:10,l:12},  thumb:{xs:4,s:6,m:6,l:8}},
+  square:  {container:{xs:0,s:0,m:0,l:0},    thumb:{xs:0,s:0,m:0,l:0}},
+  minHit:  44
+};
+
+function runAsserts(){
+  var rows = [], fails = 0;
+  Array.prototype.forEach.call(document.querySelectorAll('section.theme'), function(sec){
+    var th = sec.__theme, mode = sec.getAttribute('data-theme');
+    Array.prototype.forEach.call(sec.querySelectorAll('.segwrap'), function(wrap){
+      var scale = wrap.getAttribute('data-scale');
+      var seg = wrap.querySelector('.seg');
+      var thumb = wrap.querySelector('.thumb');
+      var btn = wrap.querySelector('button');
+      var cs = getComputedStyle(seg), cst = getComputedStyle(thumb);
+      var after = getComputedStyle(btn, '::after');
+      var exp = th.expectRound ? EXPECTED.console : EXPECTED.square;
+      var got = {
+        height:    px(cs.height),
+        padding:   px(cs.paddingTop),
+        container: px(cs.borderTopLeftRadius),
+        thumb:     px(cst.borderTopLeftRadius),
+        hit:       px(after.height)
+      };
+      var want = {
+        height:    EXPECTED.height[scale],
+        padding:   EXPECTED.padding[scale],
+        container: exp.container[scale],
+        thumb:     exp.thumb[scale],
+        hit:       Math.max(EXPECTED.minHit, EXPECTED.height[scale])
+      };
+      Object.keys(want).forEach(function(k){
+        var ok = got[k] === want[k];
+        if (!ok) fails++;
+        rows.push({theme: th.label, mode: mode, scale: scale, check: k,
+                   want: want[k], got: got[k], ok: ok});
+      });
+      // readout table, per specimen
+      var tb = wrap.parentNode.querySelector('[data-readout]');
+      tb.innerHTML =
+        '<tr><td class="k">scale</td><td><b>' + scale + '</b></td><td class="tag">&mdash;</td></tr>' +
+        '<tr><td class="k">size/segmented-control/' + scale + '</td><td>' + got.height + 'px</td>' +
+          '<td class="tag minted">MINTED</td></tr>' +
+        '<tr><td class="k">padding/segmented-control/' + scale + '</td><td>' + got.padding + 'px</td>' +
+          '<td class="tag minted">MINTED</td></tr>' +
+        '<tr><td class="k">border-radius/segmented-container/' + scale + '</td><td>' + got.container + 'px</td>' +
+          '<td class="tag minted">MINTED</td></tr>' +
+        '<tr><td class="k">border-radius/segmented-thumb/' + scale + '</td><td><b>' + got.thumb + 'px</b></td>' +
+          '<td class="tag minted">CONCRETE &mdash; max(' + got.container + ' &minus; ' + got.padding + ', 0)</td></tr>' +
+        '<tr><td class="k">hit target height</td><td>' + got.hit + 'px</td>' +
+          '<td class="tag">' + (got.height < EXPECTED.minHit ? 'EXPANDED, visual unchanged' : 'natural (s201-D3)') + '</td></tr>' +
+        '<tr><td class="k">label type size <i>(no token)</i></td><td>' + PROPOSED_TYPE[scale].fs + 'px</td>' +
+          '<td class="tag prop">PROPOSED</td></tr>' +
+        '<tr><td class="k">label inline padding <i>(no token)</i></td><td>' + PROPOSED_TYPE[scale].px + 'px</td>' +
+          '<td class="tag prop">PROPOSED</td></tr>';
+      wrap.querySelector('.hitlabel').textContent =
+        'hit zone ' + got.hit + 'px' + (got.height < got.hit ? ' (visual ' + got.height + 'px)' : ' = visual height');
+      var old = wrap.parentNode.querySelector('.warn');
+      if (old) old.remove();
+      if (got.height < EXPECTED.minHit) {
+        var w = document.createElement('div');
+        w.className = 'warn';
+        w.innerHTML = 'Visual box ' + got.height + 'px, hit box ' + got.hit + 'px &mdash; the target overhangs by ' +
+                      ((got.hit - got.height) / 2) + 'px top and bottom. s201-D2 / s201-D3.';
+        wrap.parentNode.appendChild(w);
+      }
+    });
+  });
+
+  var panel = document.getElementById('asserts');
+  var bad = rows.filter(function(r){ return !r.ok; });
+  var html = '<h3>Computed-style asserts &mdash; ' + rows.length + ' checks, ' +
+             (THEMES.length * 2) + ' theme&times;mode blocks, viewport ' + window.innerWidth + 'px</h3>' +
+    '<div class="verdict ' + (fails ? 'fail' : 'pass') + '">' +
+      (fails ? 'FAIL &mdash; ' + fails + ' of ' + rows.length + ' checks did not match the ruling'
+             : 'PASS &mdash; all ' + rows.length + ' checks match the ruling (s202-D1 / s201-D5 / s201-D3)') +
+    '</div>' +
+    '<table><tr><th>theme</th><th>mode</th><th>scale</th><th>check</th><th>want</th><th>got</th><th></th></tr>' +
+    (bad.length ? bad : rows).map(function(r){
+      return '<tr class="' + (r.ok ? '' : 'bad') + '"><td>' + r.theme + '</td><td>' + r.mode + '</td><td>' +
+             r.scale + '</td><td>' + r.check + '</td><td>' + r.want + '</td><td>' + r.got + '</td><td>' +
+             (r.ok ? 'ok' : 'MISMATCH') + '</td></tr>';
+    }).join('') + '</table>' +
+    '<p style="opacity:.7">' + (bad.length ? 'Only failing rows are listed.'
+       : 'All rows listed. A missing var resolves to 0/NaN and would fail here, not pass quietly.') + '</p>';
+  panel.innerHTML = html;
+  window.__SEG_ASSERTS__ = {total: rows.length, fails: fails, rows: rows, width: window.innerWidth};
+}
+
+window.addEventListener('load', function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.seg'), function(s){ if (s.__move) s.__move(0); });
+  runAsserts();
+});
+var _rt; window.addEventListener('resize', function(){ clearTimeout(_rt); _rt = setTimeout(runAsserts, 150); });
+
+document.getElementById('hittoggle').addEventListener('change', function(e){
+  Array.prototype.forEach.call(document.querySelectorAll('.segwrap'), function(w){
+    w.classList.toggle('showhit', e.target.checked);
+  });
+});
+document.getElementById('darkonly').addEventListener('change', function(e){
+  Array.prototype.forEach.call(document.querySelectorAll('section.theme.mode-light'), function(s){
+    s.style.display = e.target.checked ? 'none' : '';
+  });
+});
+</script>
+</body></html>

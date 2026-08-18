@@ -2,45 +2,38 @@
   "$schema": "apollo/derive-radius-proposal/1",
   "$generator": "knowledge/gen_radius_derive.py",
   "$ruling": "s200-D1 (#200, 2026-08-18) \u2014 mint-time derivation mechanism",
-  "$status": "PROPOSAL ONLY \u2014 nothing here is minted, nothing here is canon.",
-  "$proposed": true,
-  "$decidesNothing": [
-    "card padding formula max(radius, 8) snapped to 2px \u2014 PROPOSED (Claude's pick)",
-    "scale set small/medium/large \u2014 PROPOSED",
-    "scale paddings 2/4/6 \u2014 PROPOSED starting values, Dave tunes",
-    "derived-radius floor of 2 \u2014 PROPOSED"
+  "$status": "MIXED REGISTER \u2014 the FORMULAE are RULED (s201-D4 card padding, s202-D2 segmented thumb) and the INPUTS are read from the minted token store. This file remains a DERIVATION RECORD, not canon: minting is still a separate, Dave-authorised act (s200-D1 clause a, mint-time only).",
+  "$ruledFormulae": [
+    "card padding = max(radius, 8) snapped to 2px \u2014 RULED s201-D4 (#201)",
+    "segmented thumb = max(container - 6, 0) \u2014 RULED s202-D2 (#202, corrected reading); the 6 is Dave's TUNED DIAL, re-tunable by a future tuner pass; squares stay square (s201-D5 shape retained, padding retired as the input)"
   ],
-  "$mintedAt200": {
-    "$ruling": "s200-D2 minted, s200-D3 narrowed scope to CONSOLE ONLY",
-    "$note": "These values are no longer proposals for apollo-console \u2014 they are minted tokens on disk. Everything else in this file, and EVERY value for mono / apollo-legacy / apollo-supercharge, remains PROPOSAL ONLY and UNRATIFIED (s200-D3: squares-stay-square and the dropped 2px floor are open until Dave tunes or rules them). data-mark stays PROPOSED, untouched.",
-    "console_minted": {
-      "border-radius/container": 20,
-      "padding/segmented-control": {
-        "small": 2,
-        "medium": 4,
-        "large": 6
-      },
-      "border-radius/segmented-thumb": {
-        "small": 18,
-        "medium": 16,
-        "large": 14
-      },
-      "padding/card/internal": 20
-    },
-    "$formulaStatus": "the card padding formula max(radius,8) snap-2 is STILL PROPOSED (s200-D1 scope limit); only the RESULTING console value was minted, after Dave saw it rendered."
+  "$decidesNothing": [
+    "which values get MINTED, and for which themes \u2014 Dave's act, never this script's",
+    "the segmented scale set and its paddings \u2014 READ from the store (s201-D1 xs/s/m/l), not proposed here; the retired small/medium/large names are never emitted"
+  ],
+  "$superseded": {
+    "derived_radius_floor_2": "PROPOSED floor of 2 for derived thumb radii \u2014 SUPERSEDED by the max(container - X, 0) shape. Never applied; recorded so the retirement is legible.",
+    "thumb_derives_from_padding": "the thumb radius USED to derive from the track padding (s200-D1 clause c, s201-D5). SUPERSEDED by s202-D2 (#202, corrected reading): the input is now the tuned dial 6. Console's concentric 4/6/6/8 became 0/2/4/6 in the same motion.",
+    "scale_set_small_medium_large": "the padding-first small/medium/large scale set (paddings 2/4/6) was RETIRED at s201-D1 and is no longer emitted anywhere in this file."
+  },
+  "$mintedState": {
+    "console": "s200-D2/s200-D3 + s201-D1 \u2014 border-radius/container 20, and the dimension-first xs/s/m/l segmented set (sizes 24/36/44/48, paddings 2/2/4/4, container radii 6/8/10/12, thumbs 0/2/4/6 re-minted at s202-D2 from 4/6/6/8), padding/card/internal 20.",
+    "mono_legacy_supercharge": "s202-D1 (#202) \u2014 the BASE segmented set: Console's dimensions inherited verbatim (sizes 24/36/44/48, paddings 2/2/4/4) with container and thumb radii 0 per s201-D5 / s202-D2: max(0 - 6, 0) = 0."
   },
   "$knobs": {
     "card_padding_min": 8,
     "padding_step": 2,
-    "derived_radius_floor": 2,
-    "scales": {
-      "small": 2,
-      "medium": 4,
-      "large": 6
-    }
+    "segmented_thumb_dial": 6,
+    "segmented_scale_order": [
+      "xs",
+      "s",
+      "m",
+      "l"
+    ]
   },
   "$inputs": [
-    "knowledge/tokens/layout.json (border-radius family)",
+    "knowledge/tokens/layout.json (border-radius family + segmented-container scales)",
+    "knowledge/tokens/spacing.json (padding/segmented-control scales)",
     "knowledge/tokens/themes/apollo-console.overrides.json",
     "knowledge/tokens/themes/apollo-legacy.overrides.json",
     "knowledge/tokens/themes/apollo-supercharge.overrides.json"
@@ -53,11 +46,14 @@
         "surface": 20,
         "indicator": 4,
         "container": 20,
-        "segmented-thumb/small": 18,
-        "segmented-thumb/medium": 16,
-        "segmented-thumb/large": 14,
+        "segmented-container/xs": 6,
+        "segmented-thumb/xs": 0,
+        "segmented-container/m": 10,
+        "segmented-thumb/m": 4,
+        "segmented-container/l": 12,
+        "segmented-thumb/l": 6,
         "segmented-container/s": 8,
-        "segmented-thumb/s": 6
+        "segmented-thumb/s": 2
       },
       "radii_provenance": {
         "default": "apollo-console override border-radius/default",
@@ -65,25 +61,28 @@
         "surface": "apollo-console override border-radius/surface",
         "indicator": "apollo-console override border-radius/default (alias)",
         "container": "apollo-console override border-radius/container",
-        "segmented-thumb/small": "apollo-console override border-radius/segmented-thumb/small",
-        "segmented-thumb/medium": "apollo-console override border-radius/segmented-thumb/medium",
-        "segmented-thumb/large": "apollo-console override border-radius/segmented-thumb/large",
+        "segmented-container/xs": "apollo-console override border-radius/segmented-container/xs",
+        "segmented-thumb/xs": "apollo-console override border-radius/segmented-thumb/xs",
+        "segmented-container/m": "apollo-console override border-radius/segmented-container/m",
+        "segmented-thumb/m": "apollo-console override border-radius/segmented-thumb/m",
+        "segmented-container/l": "apollo-console override border-radius/segmented-container/l",
+        "segmented-thumb/l": "apollo-console override border-radius/segmented-thumb/l",
         "segmented-container/s": "apollo-console override border-radius/segmented-container/s",
         "segmented-thumb/s": "apollo-console override border-radius/segmented-thumb/s"
       },
       "card": {
-        "$proposed": true,
+        "$ruled": "s201-D4 (#201, Dave, 2026-08-18) \u2014 max(radius, 8) snapped to 2px",
         "radius_role": "surface",
         "radius": 20,
         "padding": 20,
-        "formula": "padding = max(radius, 8) snapped to 2px (PROPOSED, s200-D1)",
+        "formula": "padding = max(radius, 8) snapped to 2px \u2014 RULED s201-D4, applied at MINT TIME only (s200-D1 clause a)",
         "inputs": {
           "radius": 20,
           "min": 8,
           "snap": 2
         },
         "container_variant": {
-          "$proposed": true,
+          "$ruled": "s201-D4 formula applied to the container role radius",
           "radius_role": "container (MINTED role, s200-D2/s200-D3)",
           "radius": 20,
           "padding": 20,
@@ -95,53 +94,81 @@
         }
       },
       "segmented": {
-        "small": {
-          "$proposed": true,
+        "xs": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
           "padding": 2,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
-          "container_radius": 20,
-          "thumb_radius_raw": 18,
-          "thumb_radius": 18,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/xs)",
+          "container_radius": 6,
+          "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/xs)",
+          "container_role_radius": 20,
+          "thumb_dial": 6,
+          "thumb_radius_raw": 0,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
           "inputs": {
-            "container_radius": 20,
-            "padding": 2
+            "container_radius": 6,
+            "dial": 6
           },
-          "$squareThemeConflict": false,
-          "$squareThemeNote": null
+          "$paddingIsNotAnInput": "padding 2 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": false,
+          "$squareNote": null
         },
-        "medium": {
-          "$proposed": true,
+        "s": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 2,
+          "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/s)",
+          "container_radius": 8,
+          "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/s)",
+          "container_role_radius": 20,
+          "thumb_dial": 6,
+          "thumb_radius_raw": 2,
+          "thumb_radius": 2,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 8,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 2 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": false,
+          "$squareNote": null
+        },
+        "m": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
           "padding": 4,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
-          "container_radius": 20,
-          "thumb_radius_raw": 16,
-          "thumb_radius": 16,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/m)",
+          "container_radius": 10,
+          "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/m)",
+          "container_role_radius": 20,
+          "thumb_dial": 6,
+          "thumb_radius_raw": 4,
+          "thumb_radius": 4,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
           "inputs": {
-            "container_radius": 20,
-            "padding": 4
+            "container_radius": 10,
+            "dial": 6
           },
-          "$squareThemeConflict": false,
-          "$squareThemeNote": null
+          "$paddingIsNotAnInput": "padding 4 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": false,
+          "$squareNote": null
         },
-        "large": {
-          "$proposed": true,
-          "padding": 6,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
-          "container_radius": 20,
-          "thumb_radius_raw": 14,
-          "thumb_radius": 14,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+        "l": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 4,
+          "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/l)",
+          "container_radius": 12,
+          "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/l)",
+          "container_role_radius": 20,
+          "thumb_dial": 6,
+          "thumb_radius_raw": 6,
+          "thumb_radius": 6,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
           "inputs": {
-            "container_radius": 20,
-            "padding": 6
+            "container_radius": 12,
+            "dial": 6
           },
-          "$squareThemeConflict": false,
-          "$squareThemeNote": null
+          "$paddingIsNotAnInput": "padding 4 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": false,
+          "$squareNote": null
         }
       }
     },
@@ -161,18 +188,18 @@
         "container": "layout.json border-radius/container (mono base)"
       },
       "card": {
-        "$proposed": true,
+        "$ruled": "s201-D4 (#201, Dave, 2026-08-18) \u2014 max(radius, 8) snapped to 2px",
         "radius_role": "surface",
         "radius": 0,
         "padding": 8,
-        "formula": "padding = max(radius, 8) snapped to 2px (PROPOSED, s200-D1)",
+        "formula": "padding = max(radius, 8) snapped to 2px \u2014 RULED s201-D4, applied at MINT TIME only (s200-D1 clause a)",
         "inputs": {
           "radius": 0,
           "min": 8,
           "snap": 2
         },
         "container_variant": {
-          "$proposed": true,
+          "$ruled": "s201-D4 formula applied to the container role radius",
           "radius_role": "container (MINTED role, s200-D2/s200-D3)",
           "radius": 0,
           "padding": 8,
@@ -184,53 +211,81 @@
         }
       },
       "segmented": {
-        "small": {
-          "$proposed": true,
+        "xs": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
           "padding": 2,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/xs (base, s202-D1))",
           "container_radius": 0,
-          "thumb_radius_raw": -2,
-          "thumb_radius": 0,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
-          "inputs": {
-            "container_radius": 0,
-            "padding": 2
-          },
-          "$squareThemeConflict": true,
-          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
-        },
-        "medium": {
-          "$proposed": true,
-          "padding": 4,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
-          "container_radius": 0,
-          "thumb_radius_raw": -4,
-          "thumb_radius": 0,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
-          "inputs": {
-            "container_radius": 0,
-            "padding": 4
-          },
-          "$squareThemeConflict": true,
-          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
-        },
-        "large": {
-          "$proposed": true,
-          "padding": 6,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
-          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/xs (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
           "thumb_radius_raw": -6,
           "thumb_radius": 0,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
           "inputs": {
             "container_radius": 0,
-            "padding": 6
+            "dial": 6
           },
-          "$squareThemeConflict": true,
-          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+          "$paddingIsNotAnInput": "padding 2 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+        },
+        "s": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 2,
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/s (base, s202-D1))",
+          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/s (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 0,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 2 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+        },
+        "m": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 4,
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/m (base, s202-D1))",
+          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/m (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 0,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 4 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+        },
+        "l": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 4,
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/l (base, s202-D1))",
+          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/l (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 0,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 4 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         }
       }
     },
@@ -250,18 +305,18 @@
         "container": "apollo-legacy override border-radius/default (alias)"
       },
       "card": {
-        "$proposed": true,
+        "$ruled": "s201-D4 (#201, Dave, 2026-08-18) \u2014 max(radius, 8) snapped to 2px",
         "radius_role": "surface",
         "radius": 0,
         "padding": 8,
-        "formula": "padding = max(radius, 8) snapped to 2px (PROPOSED, s200-D1)",
+        "formula": "padding = max(radius, 8) snapped to 2px \u2014 RULED s201-D4, applied at MINT TIME only (s200-D1 clause a)",
         "inputs": {
           "radius": 0,
           "min": 8,
           "snap": 2
         },
         "container_variant": {
-          "$proposed": true,
+          "$ruled": "s201-D4 formula applied to the container role radius",
           "radius_role": "container (MINTED role, s200-D2/s200-D3)",
           "radius": 0,
           "padding": 8,
@@ -273,53 +328,81 @@
         }
       },
       "segmented": {
-        "small": {
-          "$proposed": true,
+        "xs": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
           "padding": 2,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/xs (base, s202-D1))",
           "container_radius": 0,
-          "thumb_radius_raw": -2,
-          "thumb_radius": 0,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
-          "inputs": {
-            "container_radius": 0,
-            "padding": 2
-          },
-          "$squareThemeConflict": true,
-          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
-        },
-        "medium": {
-          "$proposed": true,
-          "padding": 4,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
-          "container_radius": 0,
-          "thumb_radius_raw": -4,
-          "thumb_radius": 0,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
-          "inputs": {
-            "container_radius": 0,
-            "padding": 4
-          },
-          "$squareThemeConflict": true,
-          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
-        },
-        "large": {
-          "$proposed": true,
-          "padding": 6,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
-          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/xs (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
           "thumb_radius_raw": -6,
           "thumb_radius": 0,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
           "inputs": {
             "container_radius": 0,
-            "padding": 6
+            "dial": 6
           },
-          "$squareThemeConflict": true,
-          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+          "$paddingIsNotAnInput": "padding 2 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+        },
+        "s": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 2,
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/s (base, s202-D1))",
+          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/s (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 0,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 2 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+        },
+        "m": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 4,
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/m (base, s202-D1))",
+          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/m (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 0,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 4 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+        },
+        "l": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 4,
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/l (base, s202-D1))",
+          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/l (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 0,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 4 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         }
       }
     },
@@ -340,18 +423,18 @@
         "$note": "apollo-supercharge declares NO border-radius override \u2014 it inherits the mono base verbatim."
       },
       "card": {
-        "$proposed": true,
+        "$ruled": "s201-D4 (#201, Dave, 2026-08-18) \u2014 max(radius, 8) snapped to 2px",
         "radius_role": "surface",
         "radius": 0,
         "padding": 8,
-        "formula": "padding = max(radius, 8) snapped to 2px (PROPOSED, s200-D1)",
+        "formula": "padding = max(radius, 8) snapped to 2px \u2014 RULED s201-D4, applied at MINT TIME only (s200-D1 clause a)",
         "inputs": {
           "radius": 0,
           "min": 8,
           "snap": 2
         },
         "container_variant": {
-          "$proposed": true,
+          "$ruled": "s201-D4 formula applied to the container role radius",
           "radius_role": "container (MINTED role, s200-D2/s200-D3)",
           "radius": 0,
           "padding": 8,
@@ -363,56 +446,84 @@
         }
       },
       "segmented": {
-        "small": {
-          "$proposed": true,
+        "xs": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
           "padding": 2,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/xs (base, s202-D1))",
           "container_radius": 0,
-          "thumb_radius_raw": -2,
-          "thumb_radius": 0,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
-          "inputs": {
-            "container_radius": 0,
-            "padding": 2
-          },
-          "$squareThemeConflict": true,
-          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
-        },
-        "medium": {
-          "$proposed": true,
-          "padding": 4,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
-          "container_radius": 0,
-          "thumb_radius_raw": -4,
-          "thumb_radius": 0,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
-          "inputs": {
-            "container_radius": 0,
-            "padding": 4
-          },
-          "$squareThemeConflict": true,
-          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
-        },
-        "large": {
-          "$proposed": true,
-          "padding": 6,
-          "$paddingStatus": "PROPOSED starting value (2px step) \u2014 Dave tunes",
-          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/xs (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
           "thumb_radius_raw": -6,
           "thumb_radius": 0,
-          "floor_applied": false,
-          "formula": "thumb_radius = container_radius - padding, floored at 2 (PROPOSED)",
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
           "inputs": {
             "container_radius": 0,
-            "padding": 6
+            "dial": 6
           },
-          "$squareThemeConflict": true,
-          "$squareThemeNote": "container radius is 0 (square theme): the PROPOSED floor of 2 would round a deliberately-square theme's thumb. Emitted as 0 and FLAGGED \u2014 the floor-vs-square precedence is Dave's to rule, not this script's."
+          "$paddingIsNotAnInput": "padding 2 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+        },
+        "s": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 2,
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/s (base, s202-D1))",
+          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/s (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 0,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 2 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+        },
+        "m": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 4,
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/m (base, s202-D1))",
+          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/m (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 0,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 4 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+        },
+        "l": {
+          "$ruled": "s202-D2 (#202, Dave, 2026-08-18, corrected reading) \u2014 thumb = max(container - 6, 0); the dial replaces padding as the input, s201-D5's squares-stay-square shape retained",
+          "padding": 4,
+          "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/l (base, s202-D1))",
+          "container_radius": 0,
+          "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/l (base, s202-D1))",
+          "container_role_radius": 0,
+          "thumb_dial": 6,
+          "thumb_radius_raw": -6,
+          "thumb_radius": 0,
+          "formula": "thumb_radius = max(container_radius - 6, 0) \u2014 RULED s202-D2 (tuned dial; padding is NOT an input)",
+          "inputs": {
+            "container_radius": 0,
+            "dial": 6
+          },
+          "$paddingIsNotAnInput": "padding 4 is carried here as the control's real spacing token; s202-D2 removed it from the thumb radius derivation",
+          "$square": true,
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         }
       }
     }
   },
-  "$generatedAt": "2026-08-18T09:56:53+00:00"
+  "$generatedAt": "2026-08-18T20:23:57+00:00"
 }

@@ -139,7 +139,55 @@
       "$alias": "border-radius/default",
       "$value": "0px",
       "$type": "dimension",
-      "$note": "Outer wrappers that HOLD other radiused things: segmented-control tracks, toolbars/segmented groups, panel shells. Distinct from 'surface' because a container's radius is the OUTER of a concentric pair — the inner thumb radius derives as container − padding (s200-D1 clause c). PROMOTED from PROPOSED SLOT to canon by s200-D2 / s200-D3 (#200, Dave, 2026-08-18); console overrides it to 20, and per s200-D3 nothing was written for mono/legacy/supercharge — they follow this base alias like every other role."
+      "$note": "Outer wrappers that HOLD other radiused things: segmented-control tracks, toolbars/segmented groups, panel shells. Distinct from 'surface' because a container's radius is the OUTER of a concentric pair — the inner thumb radius derives as container − padding (s200-D1 clause c). PROMOTED from PROPOSED SLOT to canon by s200-D2 / s200-D3 (#200, Dave, 2026-08-18); console overrides it to 20, and per s200-D3 nothing was written for mono/legacy/supercharge — they follow this base alias like every other role. ⚠ s202-D2 corrected reading (#202, Dave, 2026-08-18): the inner thumb radius no longer derives from the track PADDING — it derives from the TUNED DIAL 6, thumb = max(container − 6, 0). Padding remains a real spacing token; it simply no longer feeds the radius."
+    },
+    "segmented-container": {
+      "$description": "Per-scale OUTER radius of the segmented control's concentric pair. Base = 0 (square themes: mono, legacy, supercharge). Console overrides per scale (6/8/10/12) in tokens/themes/apollo-console.overrides.json — s201-D1.",
+      "$reconstructionNote": "⚠ PROVENANCE: this family's per-scale $note text was RECONSTRUCTED at #202 after an accidental `git checkout` in the same session discarded the uncommitted s202-D1 base mint. The VALUES (all 0px) and the ruling (s202-D1) are unchanged and independently corroborated by knowledge/_derive-radius-proposal.json; the prose is a faithful restatement, not a byte-for-byte restore.",
+      "xs": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18) — BASE tier (mono is the base theme; legacy and supercharge inherit it). inherit-console-dimensions: the three square themes take Console's tuned segmented DIMENSIONS verbatim (sizes + paddings), and s201-D5 square radii: container and thumb are 0. Outer radius at scale `xs`: 0px, square. Concrete number on disk, no runtime derivation (s200-D1 clause a). Console's own value at `xs` is unchanged."
+      },
+      "s": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18) — BASE tier (mono is the base theme; legacy and supercharge inherit it). inherit-console-dimensions: the three square themes take Console's tuned segmented DIMENSIONS verbatim (sizes + paddings), and s201-D5 square radii: container and thumb are 0. Outer radius at scale `s`: 0px, square. Concrete number on disk, no runtime derivation (s200-D1 clause a). Console's own value at `s` is unchanged."
+      },
+      "m": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18) — BASE tier (mono is the base theme; legacy and supercharge inherit it). inherit-console-dimensions: the three square themes take Console's tuned segmented DIMENSIONS verbatim (sizes + paddings), and s201-D5 square radii: container and thumb are 0. Outer radius at scale `m`: 0px, square. Concrete number on disk, no runtime derivation (s200-D1 clause a). Console's own value at `m` is unchanged."
+      },
+      "l": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18) — BASE tier (mono is the base theme; legacy and supercharge inherit it). inherit-console-dimensions: the three square themes take Console's tuned segmented DIMENSIONS verbatim (sizes + paddings), and s201-D5 square radii: container and thumb are 0. Outer radius at scale `l`: 0px, square. Concrete number on disk, no runtime derivation (s200-D1 clause a). Console's own value at `l` is unchanged."
+      }
+    },
+    "segmented-thumb": {
+      "$description": "Per-scale INNER radius of the segmented control's sliding THUMB — the inner half of the concentric pair, and the thing s199-D3 called 'the switch' (s202-D2 corrected reading, #202). Base = 0 for the square themes (mono, legacy, supercharge): max(0 − 6, 0) = 0. Console overrides per scale (0/2/4/6) in tokens/themes/apollo-console.overrides.json — s202-D2.",
+      "$reconstructionNote": "⚠ PROVENANCE: this family's per-scale $note text was RECONSTRUCTED at #202 after an accidental `git checkout` in the same session discarded the uncommitted s202-D1 base mint. The VALUES (all 0px) are unchanged and independently corroborated by knowledge/_derive-radius-proposal.json; the prose is a faithful restatement carrying the s202-D2 corrected derivation, not a byte-for-byte restore.",
+      "xs": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18), derivation input corrected by s202-D2 (#202, Dave, same day) — BASE tier. Thumb = max(container − 6, 0), where 6 is the TUNED DIAL Dave set on the corner tuner; the square themes' container is 0, so the thumb is 0 at every scale and squares stay square (s201-D5). Scale `xs`: 0px. Concrete number on disk, no runtime derivation (s200-D1 clause a)."
+      },
+      "s": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18), derivation input corrected by s202-D2 (#202, Dave, same day) — BASE tier. Thumb = max(container − 6, 0), where 6 is the TUNED DIAL Dave set on the corner tuner; the square themes' container is 0, so the thumb is 0 at every scale and squares stay square (s201-D5). Scale `s`: 0px. Concrete number on disk, no runtime derivation (s200-D1 clause a)."
+      },
+      "m": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18), derivation input corrected by s202-D2 (#202, Dave, same day) — BASE tier. Thumb = max(container − 6, 0), where 6 is the TUNED DIAL Dave set on the corner tuner; the square themes' container is 0, so the thumb is 0 at every scale and squares stay square (s201-D5). Scale `m`: 0px. Concrete number on disk, no runtime derivation (s200-D1 clause a)."
+      },
+      "l": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18), derivation input corrected by s202-D2 (#202, Dave, same day) — BASE tier. Thumb = max(container − 6, 0), where 6 is the TUNED DIAL Dave set on the corner tuner; the square themes' container is 0, so the thumb is 0 at every scale and squares stay square (s201-D5). Scale `l`: 0px. Concrete number on disk, no runtime derivation (s200-D1 clause a)."
+      }
     }
   },
   "border-width": {

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Segmented SWITCH carve-out &mdash; beside or replace? (s202-D2), compare v2</title>
+<!-- REAL palette + REAL geometry: every colour and every number below is read at runtime out of
+     the built cascade in knowledge/canon/canon.css. This page hardcodes no geometry.
+     type.css is linked too (a specimen that drops it silently renders the wrong face). -->
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+ body{margin:0;padding:24px;background:#f4f4f5;color:#1a1a1a;line-height:1.5;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+ header,footer{max-width:1240px;margin:0 auto 28px}
+ h1{font-size:24px;margin:0 0 8px}
+ .meta{font-size:12px;color:#555;font-family:ui-monospace,Menlo,monospace}
+ .banner{border:2px solid #DA1A00;padding:12px 16px;margin:16px 0;background:#fff}
+ .banner b{color:#DA1A00}
+ .formula{background:#fff;border:1px solid #ccc;padding:16px;margin:16px 0}
+ .controls{position:sticky;top:0;z-index:50;max-width:1240px;margin:0 auto 20px;padding:12px 16px;
+           background:#fff;border:1px solid #ccc;display:flex;gap:20px;align-items:center;
+           flex-wrap:wrap;font-size:13px}
+ .controls label{display:flex;gap:8px;align-items:center;cursor:pointer}
+
+ #asserts{max-width:1240px;margin:0 auto 24px;background:#fff;border:2px solid #999;padding:12px 16px;
+          font-family:ui-monospace,Menlo,monospace;font-size:12px}
+ #asserts h3{margin:0 0 8px;font-size:13px;letter-spacing:.05em;text-transform:uppercase}
+ #asserts .verdict{font-weight:700;font-size:14px;padding:6px 0}
+ #asserts .pass{color:#0a6b2d}
+ #asserts .fail{color:#DA1A00}
+ #asserts table{border-collapse:collapse;width:100%}
+ #asserts td,#asserts th{padding:2px 8px 2px 0;text-align:left;border-bottom:1px solid #eee;
+                         vertical-align:top}
+ #asserts tr.bad td{background:rgba(218,26,0,.08)}
+
+ section.mode{max-width:1240px;margin:0 auto 20px;padding:20px;border:1px solid #ccc;
+              box-sizing:border-box;background:var(--surface);color:var(--text-default)}
+ section.mode[data-theme="dark"]{border-color:#333}
+ h2{font-size:17px;margin:0 0 2px}
+ .modetag{font-size:12px;font-weight:400;opacity:.6;text-transform:uppercase;letter-spacing:.08em}
+ .cols{display:flex;gap:24px;align-items:flex-start;margin-top:12px}
+ .col{flex:1 1 0;min-width:0;padding:16px;box-sizing:border-box;
+      border:1px solid rgba(128,128,128,.4);background:var(--surface-subtle)}
+ .col h3{margin:0 0 2px;font-size:15px}
+ .col .lede{font-size:12px;opacity:.8;margin:0 0 14px}
+ @media (max-width:900px){ .cols{flex-wrap:wrap} .col{flex:1 1 100%} }
+
+ .scale{padding:14px 0;border-top:1px solid rgba(128,128,128,.25)}
+ .scale:first-of-type{border-top:0}
+ .scalename{font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.65;
+            font-family:ui-monospace,Menlo,monospace}
+ .pair{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-end;margin-top:8px}
+ .unit{min-width:0}
+ .unitlabel{font-size:11px;opacity:.7;margin-bottom:6px}
+ .readout{font-family:ui-monospace,Menlo,monospace;font-size:11px;opacity:.8;margin-top:6px}
+
+ /* the control: every dimension is a token var */
+ /* colours are canon's OWN segmented-control roles (canon.css .cn-segmented-control) — nothing invented */
+ .seg{position:relative;display:inline-flex;box-sizing:border-box;isolation:isolate;user-select:none;
+      background:var(--tertiary-background-default);border:1px solid var(--form-border-default);
+      color:var(--text-default);
+      height:var(--seg-h);padding:var(--seg-pad);border-radius:var(--seg-rc)}
+ /* THE MOVING PART — box model mirrored from knowledge/snippets/Segmented-control.reference.html
+    (.seg .ind). An absolutely-positioned child's containing block is the PADDING box of .seg, so
+    top/bottom/left of var(--seg-pad) give the CONTENT box exactly: equal inset on all four sides,
+    height derived by the layout engine rather than by arithmetic that forgot the 1px border.
+    v1 hand-rolled height:calc(--seg-h - 2*--seg-pad) against a border-box height and pinned left:0,
+    which left the thumb flush to the bottom border at xs/s and 2px asymmetric at m/l. */
+ .seg .thumb{position:absolute;top:var(--seg-pad);bottom:var(--seg-pad);left:var(--seg-pad);width:0;
+             background:var(--secondary-background-default);z-index:0;
+             border-radius:var(--seg-rt);
+             transition:left .18s ease, width .18s ease}
+ .seg button{position:relative;z-index:1;flex:1 1 0;min-width:0;background:none;border:0;margin:0;
+             color:inherit;font:inherit;line-height:1;cursor:pointer;opacity:.62;
+             display:flex;align-items:center;justify-content:center;align-self:stretch;
+             font-size:var(--seg-fs);padding:0 var(--seg-px);white-space:nowrap}
+ .seg button[aria-selected="true"]{opacity:1;font-weight:600;color:var(--text-on-inverse)}
+ code{font-family:ui-monospace,Menlo,monospace;font-size:11px}
+ .tag{font-size:9px;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+ .tag.minted{color:#0a6b2d}
+ [data-theme="dark"] .tag.minted{color:#5fd48b}
+ table.vals{margin-top:12px;font-size:11px;border-collapse:collapse;width:100%;
+            font-family:ui-monospace,Menlo,monospace}
+ table.vals td{padding:3px 6px 3px 0;border-bottom:1px solid rgba(128,128,128,.25)}
+ table.vals td.k{opacity:.72}
+</style></head><body>
+
+<header>
+ <div class="banner" style="border-width:4px">
+  <b>SUPERSEDED &mdash; do not rule from this page.</b> Dave, on this version:
+  <b>&ldquo;its still not working, why?&rdquo;</b>
+  <br><br>
+  The corners on this page paint correctly &mdash; that was proven afterwards by sampling the actual
+  pixels at eight times resolution. What was wrong was the presentation: a 2px arc drawn at real size,
+  nested three pixels inside a track whose own corner is 8px, cannot be judged by eye. The replacement
+  adds a loupe and an isolate control.
+  <br><br>
+  Current version: <b>SEGMENTED-SWITCH-COMPARE-2026-08-18-v3.html</b>
+ </div>
+ <h1>The segmented <em>switch</em> corner &mdash; beside the thumb, or in place of it?</h1>
+ <p class="meta">
+  Console theme only, light and dark, all four scales. Geometry and colour read at runtime from
+  <code>knowledge/canon/canon.css</code>. Baked 2026-08-18. Version v2 &mdash; supersedes v1 (thumb box model rebuilt against the reference implementation; asserts now measure geometry, not computed style).
+ </p>
+
+ <div class="banner">
+  <b>What is settled and what is not.</b> Dave has ruled the carve-out itself: Console gets its own
+  segmented-<b>switch</b> corner, one dial of <b>6</b> off the container, giving
+  <b>0 &middot; 2 &middot; 4 &middot; 6</b> across xs, s, m and l. Those four numbers are minted and on disk.
+  <br><br>
+  <b>The open question on this page is scope</b>, and it is a question for the eye, not the arithmetic:
+  should the new switch corner sit <b>beside</b> the existing thumb corner &mdash; two tokens, the plain
+  segmented control keeps its softer 4/6/6/8 &mdash; or should it <b>replace</b> it, so every segmented
+  thumb in Console tightens to 0/2/4/6? Left column is beside. Right column is replace.
+  Nothing on this page decides it.
+ </div>
+
+ <div class="formula">
+  <b>In plain words</b>
+  <ul>
+   <li><b>Same outer box in both columns.</b> Heights, insets and outer corners never change here.
+       The only thing moving is the corner on the inner moving part.</li>
+   <li><b>Beside</b> means the plain three-up control stays as it is today &mdash; softer inner corner,
+       4 at xs up to 8 at l &mdash; and only the two-state switch tightens.</li>
+   <li><b>Replace</b> means one inner corner for everything Console draws inside a segmented track:
+       0 at xs, 6 at l. Tighter, more concentric, and one fewer token to reason about.</li>
+   <li><b>Where to look:</b> the top control in each block is the plain segmented control; the bottom
+       one is the switch. In the left column those two differ. In the right column they match.</li>
+  </ul>
+ </div>
+</header>
+
+<div class="controls">
+  <label><input type="checkbox" id="darkonly"> Dark section only</label>
+  <span style="opacity:.7">Controls are live &mdash; click a segment, the thumb moves.</span>
+</div>
+
+<div id="asserts"><h3>Geometry + radius asserts</h3><div class="verdict">running&hellip;</div></div>
+
+<div id="sections"></div>
+
+<footer>
+ <div class="formula">
+  <b>Token trace</b>
+  <table class="vals" style="max-width:900px">
+   <tr><td class="k">size/segmented-control/{xs,s,m,l}</td><td>24 / 36 / 44 / 48</td>
+       <td class="tag minted">MINTED s200-D4 / s201-D1</td></tr>
+   <tr><td class="k">padding/segmented-control/{xs,s,m,l}</td><td>2 / 2 / 4 / 4</td>
+       <td class="tag minted">MINTED s200-D4 / s201-D1</td></tr>
+   <tr><td class="k">border-radius/segmented-container/{xs,s,m,l}</td><td>console 6 / 8 / 10 / 12</td>
+       <td class="tag minted">MINTED s201-D1</td></tr>
+   <tr><td class="k">border-radius/segmented-thumb/{xs,s,m,l}</td><td>console 4 / 6 / 6 / 8</td>
+       <td class="tag minted">MINTED s200-D4 / s201-D1</td></tr>
+   <tr><td class="k">border-radius/segmented-switch/{xs,s,m,l}</td><td>console 0 / 2 / 4 / 6 &mdash; base 0</td>
+       <td class="tag minted">MINTED s202-D2 (#202)</td></tr>
+  </table>
+  <p style="font-size:12px;margin:12px 0 0">
+   The square themes &mdash; mono, legacy, supercharge &mdash; carry 0 for the switch corner exactly as
+   they carry 0 for the thumb (s201-D5 / s202-D1), so this choice changes nothing outside Console.
+  </p>
+ </div>
+</footer>
+
+<script>
+const SCALES = ["xs","s","m","l"];
+const FS  = {xs:"11px", s:"13px", m:"14px", l:"15px"};   /* PROPOSED — no type token yet */
+const PX  = {xs:"8px",  s:"12px", m:"14px", l:"16px"};   /* PROPOSED — no padding token yet */
+
+function cssvar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function makeSeg(scale, kind, radiusVar){
+  const wrap = document.createElement("div");
+  wrap.className = "unit";
+  const lab = document.createElement("div");
+  lab.className = "unitlabel";
+  lab.textContent = kind === "switch" ? "switch variant (two states)" : "plain segmented control";
+  wrap.appendChild(lab);
+
+  const seg = document.createElement("div");
+  seg.className = "seg" + (kind === "switch" ? " switch" : "");
+  seg.style.setProperty("--seg-h",   `var(--size-segmented-control-${scale})`);
+  seg.style.setProperty("--seg-pad", `var(--padding-segmented-control-${scale})`);
+  seg.style.setProperty("--seg-rc",  `var(--border-radius-segmented-container-${scale})`);
+  seg.style.setProperty("--seg-rt",  `var(${radiusVar})`);
+  seg.style.setProperty("--seg-fs",  FS[scale]);
+  seg.style.setProperty("--seg-px",  PX[scale]);
+  seg.dataset.radiusVar = radiusVar;
+  seg.dataset.scale = scale;
+  seg.dataset.kind  = kind;
+
+  const thumb = document.createElement("div");
+  thumb.className = "thumb";
+  seg.appendChild(thumb);
+
+  const labels = kind === "switch" ? ["Off","On"] : ["Day","Week","Month"];
+  labels.forEach((t,i)=>{
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = t;
+    b.setAttribute("aria-selected", i === (kind==="switch"?1:0) ? "true" : "false");
+    b.addEventListener("click", ()=>{ select(seg, b); });
+    seg.appendChild(b);
+  });
+  wrap.appendChild(seg);
+
+  const ro = document.createElement("div");
+  ro.className = "readout";
+  wrap.appendChild(ro);
+  seg._readout = ro;
+
+  requestAnimationFrame(()=>{ position(seg); paintReadout(seg); });
+  return wrap;
+}
+
+function select(seg, btn){
+  seg.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected", b===btn?"true":"false"));
+  position(seg);
+}
+/* rect-based, mirroring moveInd() in the reference: the .thumb containing block is .seg's PADDING
+   box, so subtract seg.clientLeft (the border) as well as the seg's own viewport origin. offsetLeft
+   is the trap v1 fell into — it is measured from a different origin than left:0 resolves against. */
+function position(seg){
+  const btn = seg.querySelector('button[aria-selected="true"]');
+  const thumb = seg.querySelector(".thumb");
+  if(!btn || !thumb) return;
+  const sr = seg.getBoundingClientRect(), br = btn.getBoundingClientRect();
+  thumb.style.left  = (br.left - sr.left - seg.clientLeft) + "px";
+  thumb.style.width = br.width + "px";
+}
+function paintReadout(seg){
+  const thumb = seg.querySelector(".thumb");
+  const cs = getComputedStyle(seg), ct = getComputedStyle(thumb);
+  seg._readout.textContent =
+    `height ${cs.height} · inset ${cs.paddingLeft} · outer ${cs.borderTopLeftRadius} · inner ${ct.borderTopLeftRadius}`;
+}
+
+function buildColumn(variant){
+  const col = document.createElement("div");
+  col.className = "col";
+  const h = document.createElement("h3");
+  h.textContent = variant === "beside" ? "Beside — two tokens" : "Replace — one token";
+  const p = document.createElement("p");
+  p.className = "lede";
+  p.textContent = variant === "beside"
+    ? "The plain control keeps today's softer inner corner (4/6/6/8). Only the switch takes the new 0/2/4/6."
+    : "The new 0/2/4/6 becomes the inner corner everywhere the segmented control is drawn — plain and switch alike.";
+  col.appendChild(h); col.appendChild(p);
+
+  SCALES.forEach(scale=>{
+    const s = document.createElement("div");
+    s.className = "scale";
+    const n = document.createElement("div");
+    n.className = "scalename";
+    n.textContent = `scale ${scale}`;
+    s.appendChild(n);
+    const pair = document.createElement("div");
+    pair.className = "pair";
+    const plainVar = variant === "beside"
+      ? `--border-radius-segmented-thumb-${scale}`
+      : `--border-radius-segmented-switch-${scale}`;
+    pair.appendChild(makeSeg(scale, "plain",  plainVar));
+    pair.appendChild(makeSeg(scale, "switch", `--border-radius-segmented-switch-${scale}`));
+    s.appendChild(pair);
+    col.appendChild(s);
+  });
+  return col;
+}
+
+const host = document.getElementById("sections");
+["light","dark"].forEach(mode=>{
+  const sec = document.createElement("section");
+  sec.className = "mode";
+  sec.setAttribute("data-apollo-theme","console");   /* the cascade's attr value is "console" ($attr), not the theme id */
+  sec.setAttribute("data-theme", mode);
+  const head = document.createElement("h2");
+  head.innerHTML = `Apollo Console <span class="modetag">${mode}</span>`;
+  sec.appendChild(head);
+  const cols = document.createElement("div");
+  cols.className = "cols";
+  cols.appendChild(buildColumn("beside"));
+  cols.appendChild(buildColumn("replace"));
+  sec.appendChild(cols);
+  host.appendChild(sec);
+});
+
+document.getElementById("darkonly").addEventListener("change", e=>{
+  document.querySelectorAll('section.mode[data-theme="light"]')
+    .forEach(s=>s.style.display = e.target.checked ? "none" : "");
+});
+
+/* ---------- DRIVEN asserts: read the RENDERED corner, don't describe it ---------- */
+const EXPECT_SWITCH = {xs:0, s:2, m:4, l:6};
+const EXPECT_THUMB  = {xs:4, s:6, m:6, l:8};
+/* v1 asserted only computed STYLE — it read the CSS value back and passed clean across a defect
+   Dave could see. v2 asserts GEOMETRY off getBoundingClientRect: where the thumb actually sits
+   inside the track, on all four sides. A style read cannot see a box that overflows its parent. */
+function geom(seg){
+  const thumb = seg.querySelector(".thumb");
+  const sr = seg.getBoundingClientRect(), tr = thumb.getBoundingClientRect();
+  const r = n => Math.round(n * 100) / 100;
+  return { left:r(tr.left - sr.left), top:r(tr.top - sr.top),
+           right:r(sr.right - tr.right), bottom:r(sr.bottom - tr.bottom),
+           th:r(tr.height), sh:r(sr.height) };
+}
+function runAsserts(){
+  const rows = []; let fails = 0;
+  document.querySelectorAll("section.mode").forEach(sec=>{
+    const mode = sec.getAttribute("data-theme");
+    sec.querySelectorAll(".col").forEach(col=>{
+      const variant = col.querySelector("h3").textContent.startsWith("Beside") ? "beside" : "replace";
+      col.querySelectorAll(".seg").forEach(seg=>{
+        const scale = seg.dataset.scale, kind = seg.dataset.kind;
+        const cs   = getComputedStyle(seg);
+        const pad  = parseFloat(cs.paddingLeft) || 0;
+        const bord = parseFloat(cs.borderTopWidth) || 0;
+        const inset = pad + bord;                       /* the inset the EYE sees, border included */
+        const g = geom(seg);
+
+        /* 1 — radius: the corner Dave is being asked to rule */
+        const want = (kind === "switch" || variant === "replace")
+                     ? EXPECT_SWITCH[scale] : EXPECT_THUMB[scale];
+        const got  = parseFloat(getComputedStyle(seg.querySelector(".thumb")).borderTopLeftRadius) || 0;
+        const okR  = Math.abs(got - want) < 0.51;
+
+        /* 2 — geometry, measured not described:
+             - vertical inset equal top and bottom, and equal to the track's own border+padding
+             - thumb height = track height - 2*inset  (v1's arithmetic forgot the 1px border)
+             - thumb box coincides with the SELECTED segment's box (the horizontal invariant;
+               `left == inset` only holds when segment ONE is selected, which the switch is not)
+             - nothing overflows the track on any side */
+        const btn = seg.querySelector('button[aria-selected="true"]');
+        const sr = seg.getBoundingClientRect(), br = btn.getBoundingClientRect();
+        const tr = seg.querySelector(".thumb").getBoundingClientRect();
+        const okT = Math.abs(g.top    - inset) < 0.51;
+        const okB = Math.abs(g.bottom - inset) < 0.51;
+        const okH = Math.abs(g.th - (g.sh - 2*inset)) < 0.51;
+        const okSeat = Math.abs(tr.left - br.left) < 0.51 && Math.abs(tr.right - br.right) < 0.51;
+        const okGutter = g.left >= inset - 0.51 && g.right >= inset - 0.51;
+        const noOverflow = g.top >= -0.01 && g.bottom >= -0.01 && g.left >= -0.01 && g.right >= -0.01;
+        const okG = okT && okB && okH && okSeat && okGutter && noOverflow;
+
+        const ok = okR && okG;
+        if(!ok) fails++;
+        const why = [okR?"":"radius", okT?"":"top", okB?"":"bottom", okH?"":"height",
+                     okSeat?"":"not-seated-on-segment", okGutter?"":"gutter",
+                     noOverflow?"":"OVERFLOW"].filter(Boolean).join(" ");
+        rows.push(`<tr class="${ok?"":"bad"}"><td>${mode}</td><td>${variant}</td><td>${scale}</td>`
+                + `<td>${kind}</td>`
+                + `<td>r ${want}px</td><td>r ${got}px</td>`
+                + `<td>inset ${inset}px</td>`
+                + `<td>t${g.top} r${g.right} b${g.bottom} l${g.left}</td>`
+                + `<td>h ${g.th}/${g.sh}</td>`
+                + `<td class="${ok?"pass":"fail"}">${ok?"PASS":"FAIL "+why}</td></tr>`);
+      });
+    });
+  });
+  const box = document.getElementById("asserts");
+  box.innerHTML = `<h3>Geometry + radius asserts</h3>`
+   + `<div class="verdict ${fails?"fail":"pass"}">${fails?fails+" FAIL":"ALL PASS"} — ${rows.length} controls, `
+   + `each checked twice: rendered corner radius, AND the thumb's measured box inside the track `
+   + `(equal top/bottom inset, height = track \u2212 2\u00d7inset, thumb seated exactly on the selected segment, no overflow)</div>`
+   + `<table><tr><th>mode</th><th>column</th><th>scale</th><th>control</th><th>want</th><th>got</th>`
+   + `<th>inset</th><th>thumb offsets t/r/b/l</th><th>height</th><th></th></tr>`
+   + rows.join("") + `</table>`;
+}
+window.addEventListener("load", ()=>{
+  document.querySelectorAll(".seg").forEach(s=>{ position(s); paintReadout(s); });
+  setTimeout(runAsserts, 120);
+});
+</script>
+</body></html>

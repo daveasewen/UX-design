@@ -123,6 +123,12 @@ UNMEASURED) was REJECTED at ruling — expiring an unmeasured cost rewards the s
 
 ## Worker checklist
 
+0. ⛔ **NEVER run `git checkout`/`git restore` on a path while the tree carries uncommitted work**
+   — it silently destroys other sessions'/subs' uncommitted enactments. *(Inscribed #202: a work sub
+   `git checkout`-ed two token files to undo its own formatting slip and destroyed the same session's
+   uncommitted s202-D1 base mint; values were recovered, the `$note` prose was not, byte-for-byte.)*
+   To read a file as it was at a commit, use `git show <sha>:<path>` (same rule as the stash trap in
+   `_RUNBOOK-capture-ritual.md` 2c). Undo your own mistake by re-editing, never by checkout.
 1. Do the work; create only NEW files (dossiers, reviews, code — unique names).
 2. Do NOT write `GOOD-MORNING`/`_LIVE-STATE`/`_FUTURE-STATE`. Touch `MEMORY.md` only as a **surgical
    append**, never a rewrite (a rule you must record → put it in the receipt, let the conductor inscribe).

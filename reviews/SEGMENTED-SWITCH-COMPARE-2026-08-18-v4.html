@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Segmented switch radii &mdash; BESIDE vs REPLACE (s202-D2), apollo-console</title>
+<style>
+ :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+ body{margin:0;padding:24px;background:#f4f4f5;color:#1a1a1a;line-height:1.5}
+ header,footer{max-width:1140px;margin:0 auto 32px}
+ h1{font-size:24px;margin:0 0 8px}
+ .meta{font-size:12px;color:#555;font-family:ui-monospace,Menlo,monospace}
+ .banner{border:2px solid #DA1A00;padding:12px 16px;margin:16px 0;background:#fff}
+ .banner b{color:#DA1A00}
+ .formula{background:#fff;border:1px solid #ccc;padding:16px;margin:16px 0}
+ .formula li{margin:6px 0}
+ .controls{max-width:1140px;margin:0 auto 24px;padding:12px 16px;background:#fff;border:1px solid #ccc;
+           display:flex;gap:24px;align-items:center;flex-wrap:wrap;font-size:13px}
+ .controls label{display:flex;gap:8px;align-items:center;cursor:pointer}
+
+ section.theme{max-width:1140px;margin:0 auto 24px;padding:20px;border:1px solid #ccc;box-sizing:border-box}
+ /* Dark mode is a REAL second palette (own surface/ink/track/thumb values), not a CSS filter. */
+ section.light{background:#ffffff;color:#1a1a1a}
+ section.dark{background:#141414;color:#f0f0f0;border-color:#333}
+ h2{font-size:18px;margin:0 0 4px}
+ .mode{font-size:12px;font-weight:400;opacity:.6;text-transform:uppercase;letter-spacing:.08em}
+ h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin:24px 0 12px;font-weight:600}
+ .tnote{font-size:13px;opacity:.75;margin:0 0 8px}
+ .row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+ .specimen{flex:0 0 248px;min-width:0;max-width:248px}
+
+ /* ---- scale block: two labelled columns, BESIDE and REPLACE ------------- */
+ .scaleblock{margin:0 0 28px;padding:0 0 20px;border-bottom:1px solid rgba(128,128,128,.28)}
+ .scaleblock:last-child{border-bottom:0}
+ .scalehead{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px}
+ .cols{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+ .col{flex:0 0 520px;max-width:520px;min-width:0;box-sizing:border-box;
+      padding:12px 14px;border:1px solid rgba(128,128,128,.35)}
+ .colhead{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:0 0 2px}
+ .colsub{font-size:12px;opacity:.75;margin:0 0 4px}
+
+ /* ---- the control (UNCHANGED from the approved specimen) ---------------- */
+ .segwrap{position:relative;display:inline-block;margin:22px 0 8px}
+ .seg{position:relative;display:inline-flex;box-sizing:border-box;background:#d9d9dd;
+      isolation:isolate;user-select:none}
+ .dark .seg{background:#2b2b2f}
+ .seg .thumb{position:absolute;top:var(--pad);left:0;height:calc(var(--h) - (2 * var(--pad)));
+             background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.28);z-index:0;
+             transition:transform .18s ease, width .18s ease}
+ .dark .seg .thumb{background:#4a4a52}
+ .seg button{position:relative;z-index:1;flex:1 1 0;min-width:0;background:none;border:0;margin:0;
+             color:inherit;font:inherit;line-height:1;cursor:pointer;opacity:.62;
+             display:flex;align-items:center;justify-content:center;
+             height:calc(var(--h) - (2 * var(--pad)));font-size:var(--fs);padding:0 var(--px)}
+ .seg button[aria-selected="true"]{opacity:1;font-weight:600}
+
+ /* ---- 44px hit zone (s201-D2): interactive box only, visual box untouched ---- */
+ .seg button::after{content:"";position:absolute;left:0;right:0;
+   top:50%;height:var(--hit);transform:translateY(-50%);}
+ .segwrap.showhit .seg button::after{outline:1.5px dashed #DA1A00;background:rgba(218,26,0,.12)}
+ .dark .segwrap.showhit .seg button::after{outline-color:#F6604C;background:rgba(246,96,76,.14)}
+ .segwrap.showhit .hitlabel{display:block}
+ .hitlabel{display:none;position:absolute;left:0;top:-18px;font-size:10px;font-family:ui-monospace,Menlo,monospace;
+           color:#DA1A00;white-space:nowrap}
+ .dark .hitlabel{color:#F6604C}
+
+ .variant{display:inline-block;vertical-align:top;margin:0 28px 0 0}
+ .vlabel{font-size:11px;font-family:ui-monospace,Menlo,monospace;opacity:.7;margin:0}
+
+ table.vals{margin-top:12px;font-size:11px;border-collapse:collapse;width:100%;table-layout:fixed;
+            font-family:ui-monospace,Menlo,monospace}
+ table.vals td{padding:3px 6px 3px 0;vertical-align:top;border-bottom:1px solid rgba(128,128,128,.25);
+               overflow-wrap:anywhere}
+ table.vals td.k{opacity:.72;width:47%}
+ table.vals td:nth-child(2){width:22%}
+ .tag{font-size:9px;text-transform:uppercase;letter-spacing:.04em;opacity:.6;text-align:right;overflow-wrap:anywhere}
+ .tag.minted{color:#0a6b2d;opacity:1;font-weight:700}
+ .dark .tag.minted{color:#5fd48b}
+ .tag.prop{color:#DA1A00;opacity:1;font-weight:700}
+ .dark .tag.prop{color:#F6604C}
+ .warn{font-size:11px;margin-top:8px;padding:8px;border-left:3px solid #DA1A00;background:rgba(218,26,0,.06)}
+ .dark .warn{border-left-color:#F6604C;background:rgba(246,96,76,.1)}
+ code{font-family:ui-monospace,Menlo,monospace;font-size:11px}
+</style></head><body>
+<div style="max-width:1100px;margin:0 auto 20px;padding:14px 16px;border:2px solid #DA1A00;background:rgba(218,26,0,.06);font:600 14px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1A1A1A">
+QUESTION DISSOLVED &mdash; s199-D3&rsquo;s &ldquo;switch&rdquo; is the thumb itself (Dave, #202). No two-state variant exists; console thumbs re-minted 0/2/4/6.
+<span style="display:block;margin-top:6px;font-weight:400">See <code>SEGMENTED-SCALE-SPECIMEN-2026-08-18-v3.html</code>. Everything below this line is kept as the record of the question, not as a live choice.</span>
+</div>
+
+
+<header>
+ <h1>Segmented switch radii &mdash; two ways of using the same numbers</h1>
+ <p class="meta">
+   Theme: <b>apollo-console ONLY</b>. Built by copying the specimen you approved at #201
+   (<code>reviews/SEGMENTED-SCALE-SPECIMEN-2026-08-18-v1.html</code>) and adding a second control
+   and a second column. The control itself &mdash; track, thumb, shadow, type &mdash; is untouched.<br>
+   Values inlined key by key, not read from <code>canon.css</code>. Page baked: 2026-08-18.<br>
+   Supersedes SEGMENTED-SWITCH-COMPARE v1, v2 and v3.
+ </p>
+ <div class="banner">
+  <b>Everything on this page is settled except one thing.</b> The four control heights
+  (24 / 36 / 44 / 48), the four track insets (2 / 2 / 4 / 4), the existing thumb radii
+  (4 / 6 / 6 / 8) and the new switch radii (0 / 2 / 4 / 6) are all minted numbers. Nothing here is
+  asking you to re-tune a number.
+  <br><br>
+  <b>The one open question is scope: which column&rsquo;s grammar ships?</b>
+  In the <b>BESIDE</b> column the new squarer radii apply to the two-segment switch only, and the
+  ordinary three-segment control keeps the rounder 4 / 6 / 6 / 8 it already has &mdash; two shapes
+  living side by side. In the <b>REPLACE</b> column the squarer radii apply to everything, switch and
+  ordinary control alike &mdash; one shape everywhere. Same numbers in both columns; only the reach
+  differs. <b>That reach is yours to rule; it is not decided.</b>
+  <br><br>
+  <b>Colour is not under review.</b> Neutral greys, both modes, exactly as on the specimen you
+  approved. No palette has been applied or invented and no new token key appears on this page.
+ </div>
+ <div class="formula">
+  <b>What you are looking at, in plain words</b>
+  <ul>
+   <li><b>Four sizes down the page</b> &mdash; xs, s, m, l. Each size gets its own block.</li>
+   <li><b>Two columns inside each block.</b> Left is BESIDE, right is REPLACE. Compare left to right.</li>
+   <li><b>Two controls inside each column.</b> The three-segment one (Day / Week / Month) is the
+       ordinary segmented control. The two-segment one (Off / On) is the switch variant.</li>
+   <li><b>Only the corners differ between the columns.</b> Heights, insets, type and spacing are
+       identical everywhere. If the two columns look the same to you at a given size, that is a real
+       finding, not a mistake &mdash; at <code>m</code> and <code>l</code> the difference is small.</li>
+   <li><b>The outer corner never moves.</b> Every control on this page &mdash; both columns, both
+       variants, all four sizes &mdash; uses the minted container radius
+       <code>border-radius/segmented-container/{xs,s,m,l}</code> = 6 / 8 / 10 / 12 (s201-D1).
+       Only the <b>thumb</b> corner changes. Per s202-D2 the switch thumb radius is that container
+       radius minus 6, and the container is left alone &mdash; so at the switch the inner curve is
+       deliberately <b>not</b> concentric with the outer one. That break is the carve-out, not a
+       slip.</li>
+   <li><b>The controls are live.</b> Click a segment and the thumb moves.</li>
+  </ul>
+ </div>
+</header>
+
+<div class="controls">
+  <label><input type="checkbox" id="hittoggle"> <b>Show the 44px hit zone</b> (dashed / tinted)</label>
+  <span style="opacity:.7">The controls are live &mdash; click a segment and the thumb moves.</span>
+</div>
+
+<section class="theme light" id="sec-light">
+  <h2>apollo-console <span class="mode">light</span></h2>
+  <p class="tnote">Four scales top to bottom: xs &middot; s &middot; m &middot; l. BESIDE on the left, REPLACE on the right.</p>
+  <div class="row" data-scales style="display:block"></div>
+</section>
+
+<section class="theme dark" id="sec-dark">
+  <h2>apollo-console <span class="mode">dark</span></h2>
+  <p class="tnote">Real second palette (own track / thumb / ink values). Not a filter, not an inversion.</p>
+  <div class="row" data-scales style="display:block"></div>
+</section>
+
+<footer>
+ <div class="formula">
+  <b>Token trace &mdash; every number on this page, and where it came from</b>
+  <table class="vals" style="max-width:820px">
+   <tr><td class="k">size/segmented-control/{xs,s,m,l}</td><td>24 / 36 / 44 / 48</td><td class="tag minted">MINTED s201-D1 &middot; s200-D4</td></tr>
+   <tr><td class="k">padding/segmented-control/{xs,s,m,l}</td><td>2 / 2 / 4 / 4</td><td class="tag minted">MINTED</td></tr>
+   <tr><td class="k">border-radius/segmented-thumb/{xs,s,m,l}</td><td>4 / 6 / 6 / 8</td><td class="tag minted">MINTED CONCRETE (#201)</td></tr>
+   <tr><td class="k">border-radius/segmented-container/{xs,s,m,l}</td><td>6 / 8 / 10 / 12</td><td class="tag minted">MINTED</td></tr>
+   <tr><td class="k"><b>border-radius/segmented-switch/{xs,s,m,l}</b></td><td><b>0 / 2 / 4 / 6</b></td><td class="tag minted">MINTED s202-D2 &mdash; console overrides</td></tr>
+   <tr><td class="k">&nbsp;&nbsp;&rarr; the container it sits in</td><td>6 / 8 / 10 / 12</td><td class="tag minted">UNCHANGED &mdash; s202-D2: thumb = container &minus; 6, container stays</td></tr>
+   <tr><td class="k">size/segmented-control/min-hit-area</td><td>44</td><td class="tag minted">MINTED &mdash; hit zone (s201-D2)</td></tr>
+   <tr><td class="k">(no token) label type size</td><td>11 / 12 / 14 / 16</td><td class="tag prop">PROPOSED (tuner v3)</td></tr>
+   <tr><td class="k">(no token) label inline padding</td><td>8 / 12 / 14 / 16</td><td class="tag prop">PROPOSED (tuner v3)</td></tr>
+   <tr><td class="k"><b>scope: switch-only vs everything</b></td><td><b>&mdash;</b></td><td class="tag prop">OPEN &mdash; Dave&rsquo;s ruling, this page</td></tr>
+  </table>
+  <p style="font-size:12px;opacity:.8;margin-top:12px">
+   One line, if you only read one: <b>all the numbers are settled; the only question is whether the
+   squarer corners belong to the switch alone (BESIDE) or to every segmented control (REPLACE).</b>
+  </p>
+ </div>
+</footer>
+
+<script>
+// Values inlined from knowledge/tokens/themes/apollo-console.overrides.json (read 2026-08-18).
+// MINTED: h, pad, rContainer, rThumb (#201), rSwitch (s202-D2).  PROPOSED (tuner v3 draft): fs, px.
+var MIN_HIT = 44;                       // size/segmented-control/min-hit-area  (s201-D2 HIT ZONE)
+var SCALES = [
+ {id:'xs', h:24, pad:2, rc:6,  rt:4, rs:0, fs:11, px:8 },
+ {id:'s',  h:36, pad:2, rc:8,  rt:6, rs:2, fs:12, px:12},
+ {id:'m',  h:44, pad:4, rc:10, rt:6, rs:4, fs:14, px:14},
+ {id:'l',  h:48, pad:4, rc:12, rt:8, rs:6, fs:16, px:16}
+];
+var PLAIN  = ['Day','Week','Month'];
+var SWITCH = ['Off','On'];
+
+// one control: labels, thumb radius rt, container radius rc
+function control(s, labels, rt, rc, caption){
+  var hitExpands = s.h < MIN_HIT;
+  return '<div class="variant">' +
+   '<p class="vlabel">' + caption + '</p>' +
+   '<div class="segwrap' + (hitExpands ? ' hitable' : '') + '">' +
+     '<span class="hitlabel">hit zone ' + Math.max(MIN_HIT, s.h) + 'px' +
+       (hitExpands ? ' (visual ' + s.h + 'px)' : ' = visual height') + '</span>' +
+     '<div class="seg" style="--h:' + s.h + 'px;--pad:' + s.pad + 'px;--fs:' + s.fs + 'px;--px:' + s.px + 'px;--hit:' +
+        Math.max(MIN_HIT, s.h) + 'px;height:' + s.h + 'px;padding:' + s.pad + 'px;border-radius:' + rc + 'px">' +
+       '<div class="thumb" style="border-radius:' + rt + 'px"></div>' +
+       labels.map(function(l,i){
+         return '<button type="button" role="tab" aria-selected="' + (i===0) + '">' + l + '</button>';
+       }).join('') +
+     '</div>' +
+   '</div></div>';
+}
+
+function valrow(k, v, tagclass, tagtext){
+  return '<tr><td class="k">' + k + '</td><td>' + v + '</td><td class="tag ' + (tagclass||'') + '">' +
+         tagtext + '</td></tr>';
+}
+
+function column(s, kind){
+  // BESIDE : plain keeps the #201 thumb radii; switch takes the new s202-D2 radii.
+  // REPLACE: plain AND switch both take the new s202-D2 radii.
+  var beside   = (kind === 'beside');
+  // s202-D2: the CONTAINER radius is the minted border-radius/segmented-container/<scale> in every
+  // case — it never moves. Only the THUMB radius differs (switch = container − 6).
+  var plainRt  = beside ? s.rt : s.rs;
+  var plainRc  = s.rc;
+  var swRt     = s.rs;
+  var swRc     = s.rc;
+  var head     = beside ? 'BESIDE' : 'REPLACE';
+  var sub      = beside
+    ? 'The squarer radii apply to the switch only. The ordinary control keeps the corners it already has &mdash; two shapes side by side.'
+    : 'The squarer radii apply to everything. The ordinary control gives up its rounder corners &mdash; one shape everywhere.';
+
+  var html = '<div class="col"><p class="colhead">' + head + '</p><p class="colsub">' + sub + '</p>' +
+    control(s, PLAIN,  plainRt, plainRc, 'ordinary control &mdash; 3 segments &mdash; thumb ' + plainRt + 'px / container ' + plainRc + 'px') +
+    control(s, SWITCH, swRt,    swRc,    'switch variant &mdash; 2 segments &mdash; thumb ' + swRt + 'px / container ' + swRc + 'px') +
+    '<table class="vals">';
+
+  html += valrow('scale', '<b>' + s.id + '</b>', '', '&mdash;');
+  html += valrow('size/segmented-control/' + s.id, s.h + 'px', 'minted', 'MINTED');
+  html += valrow('padding/segmented-control/' + s.id, s.pad + 'px', 'minted', 'MINTED');
+
+  if (beside) {
+    html += valrow('ordinary &rarr; border-radius/segmented-thumb/' + s.id,
+                   '<b>' + plainRt + 'px</b>', 'minted', 'MINTED CONCRETE (#201) &mdash; unchanged');
+    html += valrow('ordinary &rarr; border-radius/segmented-container/' + s.id,
+                   plainRc + 'px', 'minted', 'MINTED &mdash; unchanged');
+  } else {
+    html += valrow('ordinary &rarr; border-radius/segmented-switch/' + s.id + ' <i>(applied)</i>',
+                   '<b>' + plainRt + 'px</b>', 'minted', 'MINTED s202-D2 &mdash; replaces ' + s.rt + 'px');
+    html += valrow('ordinary &rarr; border-radius/segmented-container/' + s.id,
+                   plainRc + 'px', 'minted', 'MINTED &mdash; unchanged');
+  }
+
+  html += valrow('switch &rarr; border-radius/segmented-switch/' + s.id,
+                 '<b>' + swRt + 'px</b>', 'minted', 'MINTED s202-D2 &mdash; container ' + s.rc + ' &minus; 6');
+  html += valrow('switch &rarr; border-radius/segmented-container/' + s.id,
+                 swRc + 'px', 'minted', 'MINTED &mdash; unchanged');
+  html += valrow('hit target height', Math.max(MIN_HIT, s.h) + 'px',
+                 (s.h < MIN_HIT ? 'minted' : ''),
+                 (s.h < MIN_HIT ? 'EXPANDED &mdash; visual ' + s.h + 'px unchanged' : 'no expansion needed'));
+  html += valrow('label type size <i>(no token)</i>', s.fs + 'px', 'prop', 'PROPOSED');
+  html += valrow('label inline padding <i>(no token)</i>', s.px + 'px', 'prop', 'PROPOSED');
+  html += '</table>';
+
+  if (!beside) {
+    html += '<div class="warn">In this column the ordinary control loses its #201 corners: ' +
+            s.rt + 'px becomes ' + s.rs + 'px. That is the whole cost of REPLACE, and the whole ' +
+            'question on the page.</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function scaleblock(s){
+  var d = document.createElement('div');
+  d.className = 'scaleblock';
+  d.innerHTML = '<p class="scalehead">scale ' + s.id + ' &mdash; height ' + s.h + 'px, inset ' + s.pad + 'px</p>' +
+                '<div class="cols">' + column(s, 'beside') + column(s, 'replace') + '</div>';
+  return d;
+}
+
+function wire(seg){
+  var thumb = seg.querySelector('.thumb');
+  var btns  = Array.prototype.slice.call(seg.querySelectorAll('button'));
+  function move(i){
+    btns.forEach(function(b,j){ b.setAttribute('aria-selected', String(i===j)); });
+    var b = btns[i];
+    thumb.style.width = b.offsetWidth + 'px';
+    thumb.style.transform = 'translateX(' + b.offsetLeft + 'px)';
+  }
+  btns.forEach(function(b,i){ b.addEventListener('click', function(){ move(i); }); });
+  seg.__move = move;
+  move(0);
+}
+
+['sec-light','sec-dark'].forEach(function(id){
+  var host = document.getElementById(id).querySelector('[data-scales]');
+  SCALES.forEach(function(s){ host.appendChild(scaleblock(s)); });
+});
+Array.prototype.forEach.call(document.querySelectorAll('.seg'), wire);
+// re-seat thumbs once fonts settle (button widths depend on the rendered face)
+window.addEventListener('load', function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.seg'), function(s){ if(s.__move) s.__move(
+    Array.prototype.slice.call(s.querySelectorAll('button')).findIndex(function(b){return b.getAttribute('aria-selected')==='true';})); });
+});
+
+document.getElementById('hittoggle').addEventListener('change', function(e){
+  Array.prototype.forEach.call(document.querySelectorAll('.segwrap'), function(w){
+    w.classList.toggle('showhit', e.target.checked);
+  });
+});
+</script>
+</body></html>

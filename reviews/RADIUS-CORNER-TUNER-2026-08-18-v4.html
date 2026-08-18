@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segmented-switch radius carve-out tuner — 2026-08-18 v4</title>
+<!-- SEGMENTED-SWITCH RADIUS CARVE-OUT TUNER — 2026-08-18 v4, session #202.
+     v1 / v2 / v3 ARE KEPT (reviews/RADIUS-CORNER-TUNER-2026-08-18-v{1,2,3}.html), not replaced.
+
+     WHY THIS PAGE EXISTS — the s199-D3 RESIDUAL, still open:
+       apollo-console.overrides.json:12, on border-radius/control (= 8):
+         "⚠ Segmented-control SWITCH is ruled to get its OWN carve-out token — inner/outer nested
+          radii cannot share a value (curve matching) — NOT minted yet, Dave tunes it on tuner v2."
+       That carve-out has never been minted, and no tuner has exposed it. v4 exposes it: a live
+       control for the carve-out, side by side with what the switch looks like when it merely shares
+       border-radius/control.
+
+     THIS PAGE DECIDES NOTHING. In particular it does NOT pick what the carve-out MEANS. Three
+     candidate semantics are offered as a choice, all UNRULED; whichever is selected is recorded in
+     the export as a PROPOSED reading, not as a ruling. Dave tunes; Dave rules.
+
+     MINTED STATE READ FROM DISK 2026-08-18 (cited, not remembered):
+       knowledge/tokens/themes/apollo-console.overrides.json
+         border-radius/default 4 · control 8 · surface 20 · container 20
+         size/segmented-control      xs 24 · s 36 · m 44 · l 48
+         padding/segmented-control   xs 2  · s 2  · m 4  · l 4
+         border-radius/segmented-container  xs 6 · s 8 · m 10 · l 12
+         border-radius/segmented-thumb      xs 4 · s 6 · m 6  · l 8   (= container − padding, mint-time)
+         size/segmented-control/min-hit-area 44
+       knowledge/tokens/layout.json + knowledge/tokens/spacing.json (BASE, minted s202-D1 at #202)
+         size/segmented-control      24 / 36 / 44 / 48   (Console's dimensions, inherited)
+         padding/segmented-control   2 / 2 / 4 / 4
+         border-radius/segmented-container 0 / 0 / 0 / 0   (s201-D5 — squares stay square)
+         border-radius/segmented-thumb     0 / 0 / 0 / 0   (max(container − padding, 0) = 0)
+
+     NOT canon. NOT gated. Nothing here mints. -->
+<style>
+  :root{ --uf:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--uf); background:#F4F4F4; color:#1A1A1A; -webkit-font-smoothing:antialiased;}
+
+  header{padding:20px 28px; background:#111; color:#fff;}
+  header h1{margin:0; font-size:18px; font-weight:500;}
+  header p{margin:8px 0 0; font-size:13px; color:#B7B7B7; max-width:96ch; line-height:1.55;}
+  header .v{font-size:11px; color:#7FE0A8; letter-spacing:.04em;}
+  header q{color:#E6E6E6; font-style:italic;}
+
+  .banner{margin:0; padding:18px 28px; background:#FBEED2; border-bottom:1px solid #E4D3A8; color:#4A3A12;}
+  .banner h2{margin:0 0 6px; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#8A6A16;}
+  .banner p{margin:0 0 6px; font-size:13px; line-height:1.55; max-width:120ch;}
+  .banner ul{margin:4px 0 0 18px; padding:0; font-size:13px; line-height:1.6; max-width:120ch;}
+
+  .semantics{margin:0; padding:16px 28px; background:#EAF1F8; border-bottom:1px solid #C9D8E8; color:#17334F;}
+  .semantics h2{margin:0 0 8px; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#2C5C8A;}
+  .semantics .opts{display:grid; grid-template-columns:repeat(3,minmax(260px,1fr)); gap:14px;}
+  @media (max-width:1000px){ .semantics .opts{grid-template-columns:1fr;} }
+  .semantics label{display:block; background:#fff; border:1px solid #C9D8E8; padding:12px 14px; cursor:pointer;
+    font-size:13px; line-height:1.5;}
+  .semantics label:has(input:checked){border-color:#2C5C8A; box-shadow:inset 0 0 0 1px #2C5C8A;}
+  .semantics label b{display:block; margin-bottom:4px; font-size:13.5px;}
+  .semantics .unruled{display:inline-block; margin-top:6px; font-size:10.5px; letter-spacing:.04em;
+    text-transform:uppercase; color:#8A6A16; background:#FBEED2; padding:2px 6px;}
+
+  .stage{padding:24px 28px 8px;}
+  .toprow{display:flex; flex-wrap:wrap; gap:22px; align-items:flex-start; margin:0 0 18px;}
+  .modebtns{display:flex; gap:6px;}
+  .modebtns button{font:inherit; font-size:13px; padding:7px 12px; border:1px solid #C4C4C4; background:#fff;
+    color:#1A1A1A; cursor:pointer;}
+  .modebtns button[aria-pressed="true"]{background:#111; color:#fff; border-color:#111;}
+  .toggles{display:flex; gap:18px; align-items:center; font-size:13px;}
+
+  .carve{background:#fff; border:2px solid #2C5C8A; padding:16px 18px; margin:0 0 20px;}
+  .carve h3{margin:0 0 4px; font-size:15px; font-weight:600;}
+  .carve .sub{font-size:12px; color:#5E5E5E; margin:0 0 12px; max-width:110ch; line-height:1.55;}
+  .carve .dial{display:flex; gap:18px; align-items:center; flex-wrap:wrap;}
+  .carve input[type=range]{flex:1 1 320px; accent-color:#2C5C8A;}
+  .carve .big{font:600 26px/1 var(--uf); font-variant-numeric:tabular-nums; min-width:90px;}
+  .carve .cmp{font:12px/1.7 ui-monospace,Menlo,Consolas,monospace; color:#333; margin-top:10px;}
+  .carve .cmp .lbl{color:#767676;}
+
+  .cols{display:grid; grid-template-columns:repeat(4,minmax(280px,1fr)); gap:18px; align-items:start;}
+  @media (max-width:1400px){ .cols{grid-template-columns:repeat(2,minmax(280px,1fr));} }
+  @media (max-width:760px){ .cols{grid-template-columns:1fr;} }
+
+  .col{background:#fff; border:1px solid #DADADA; padding:18px 18px 20px;}
+  .col h3{margin:0 0 2px; font-size:15px; font-weight:500;}
+  .col .scaleid{font-size:11px; color:#767676; letter-spacing:.05em; text-transform:uppercase;}
+  .slider{margin:12px 0 12px;}
+  .slider .row{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:3px;}
+  .slider label{font-size:13.5px; font-weight:500;}
+  .slider .sub{display:block; font-size:10.5px; color:#767676; font-weight:400; margin-top:1px;}
+  .slider .val{font-size:14px; font-variant-numeric:tabular-nums; font-weight:500;}
+  .slider.dirty .val{color:#B06A00;}
+  .slider input[type=range]{width:100%; accent-color:#111; margin:2px 0 0;}
+
+  .derived{border:1px dashed #C4C4C4; padding:10px 12px; margin:2px 0 12px;
+    font:12px/1.7 ui-monospace,Menlo,Consolas,monospace; color:#333;}
+  .derived .lbl{color:#767676;}
+  .flag{display:block; margin-top:8px; padding:7px 9px; font:500 11.5px/1.45 var(--uf);
+    background:#FBEED2; color:#7A5405; border-left:3px solid #B06A00;}
+  .flag.off{background:#EFEFEF; color:#5A5A5A; border-left-color:#C4C4C4;}
+
+  .spechead{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:#767676; margin:10px 0 6px;}
+  .swatch{padding:14px; margin:0 0 10px; position:relative;}
+  .swatch.light{background:#FFFFFF; border:1px solid #E1E1E1;}
+  .swatch.dark {background:#1D1D1D; border:1px solid #333;}
+  .swatch .tag{position:absolute; top:4px; right:6px; font-size:9.5px; letter-spacing:.04em;
+    text-transform:uppercase; color:#8E8E8E;}
+  .swatch.dark .tag{color:#8A8A8A;}
+  .swatch .cap{display:block; font-size:11px; color:#767676; margin:0 0 8px;}
+  .swatch.dark .cap{color:#A0A0A0;}
+
+  .seg{position:relative; display:inline-flex; box-sizing:border-box; isolation:isolate;
+       height:var(--sg-h); padding:var(--sg-pad); border-radius:var(--sg-r);
+       background:#EDEDED; border:1px solid #D2D2D2;}
+  .dark .seg, .swatch.dark .seg{background:#2B2B2B; border-color:#3A3A3A;}
+  .seg .ind{position:absolute; top:var(--sg-pad); left:var(--sg-pad); bottom:var(--sg-pad);
+       width:calc(50% - var(--sg-pad)); background:#FFFFFF; border-radius:var(--sg-thumb);
+       box-shadow:0 1px 2px rgba(0,0,0,.25); z-index:0;}
+  .swatch.dark .seg .ind{background:#4A4A4A;}
+  .seg button{position:relative; z-index:1; background:none; border:0; margin:0; color:inherit;
+       font:inherit; font-size:var(--sg-fs); line-height:1; cursor:pointer;
+       padding:0 var(--sg-inline); display:inline-flex; align-items:center; justify-content:center;
+       height:calc(var(--sg-h) - 2 * var(--sg-pad) - 2px); color:#1A1A1A;}
+  .swatch.dark .seg button{color:#F0F0F0;}
+  .seg .ghost{position:absolute; top:var(--sg-pad); left:var(--sg-pad); bottom:var(--sg-pad);
+       width:calc(50% - var(--sg-pad)); border:1.5px dashed #B06A00; border-radius:var(--sg-ghost);
+       z-index:2; pointer-events:none;}
+
+  .exportwrap{padding:8px 28px 40px;}
+  .exportwrap h2{font-size:13px; letter-spacing:.05em; text-transform:uppercase; color:#767676; margin:18px 0 8px;}
+  textarea{width:100%; height:340px; font:12px/1.55 ui-monospace,Menlo,Consolas,monospace;
+    border:1px solid #C4C4C4; padding:12px; background:#fff; color:#1A1A1A;}
+  .exrow{display:flex; justify-content:space-between; gap:18px; align-items:center; margin-top:8px; flex-wrap:wrap;}
+  .exrow small{font-size:11.5px; color:#767676; max-width:90ch; line-height:1.5;}
+  .exrow button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid #C4C4C4; background:#fff; cursor:pointer;}
+  .exrow button.primary{background:#111; color:#fff; border-color:#111;}
+  #exstatus{font:12px ui-monospace,Menlo,monospace; color:#1E7A4B; margin-right:10px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Segmented-switch radius carve-out — tuner <span class="v">v4 · 2026-08-18 · #202</span></h1>
+  <p>
+    The open item from <b>s199-D3</b>: console broke <code>border-radius/control</code> off the default alias
+    and set it to 8, with a note that the segmented <b>switch</b> is ruled to get its <b>own</b> carve-out
+    token, because <q>inner/outer nested radii cannot share a value (curve matching)</q>. That token was never
+    minted and no tuner exposed it. This page exposes it: one dial, live, against the real minted geometry.
+    v1&ndash;v3 are kept untouched.
+  </p>
+</header>
+
+<div class="banner">
+  <h2>What is decided, and what is not</h2>
+  <ul>
+    <li><b>Minted and shown as-is:</b> console heights 24/36/44/48, insets 2/2/4/4, container radii 6/8/10/12,
+        thumb radii 4/6/6/8, <code>border-radius/control</code> 8. The three square themes' base set
+        (minted <b>s202-D1</b> at #202) is the same geometry with radii 0.</li>
+    <li><b>Not decided here:</b> the carve-out's VALUE, and what the carve-out MEANS. Pick a reading below —
+        whichever you pick is exported as a <i>proposed</i> reading with your number attached.</li>
+    <li><b>Square themes are not on the dial.</b> s201-D5 rules their thumb as max(container &minus; padding, 0)
+        = 0. A carve-out for console cannot round them; they are shown for contrast only.</li>
+  </ul>
+</div>
+
+<div class="semantics">
+  <h2>What should the carve-out token MEAN? &mdash; unruled, pick one to explore</h2>
+  <div class="opts" id="semopts">
+    <label><input type="radio" name="sem" value="absolute" checked>
+      <b>A &mdash; one absolute radius for the switch</b>
+      A single value used for the moving switch at every scale, replacing the per-scale derived thumb radii.
+      Simple to state; the curve stops matching the container as the scale changes.
+      <span class="unruled">unruled</span></label>
+    <label><input type="radio" name="sem" value="offset">
+      <b>B &mdash; an offset from the container radius</b>
+      The switch radius is the container radius minus this number, per scale &mdash; the concentric rule with a
+      tunable gap instead of the padding. Curve matching survives across scales.
+      <span class="unruled">unruled</span></label>
+    <label><input type="radio" name="sem" value="cap">
+      <b>C &mdash; a cap on the derived radius</b>
+      Keep container &minus; padding, but never exceed this number. Only bites at the large end.
+      <span class="unruled">unruled</span></label>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="carve">
+    <h3>Carve-out dial <span style="font-weight:400;font-size:12px;color:#767676">
+      &mdash; proposed key <code>border-radius/segmented-switch</code> (name is also unruled)</span></h3>
+    <p class="sub">Left of the slider: what the switch looks like today, deriving from the container.
+      Right of it: what your carve-out does. The dashed outline in each specimen (toggle below) is the
+      <i>current</i> derived radius, so you can see exactly what the carve-out is changing.</p>
+    <div class="dial">
+      <span class="big" id="carveval">6px</span>
+      <input type="range" id="carve" min="0" max="24" step="1" value="6">
+      <span style="font-size:12px;color:#767676">0&ndash;24px, 1px steps</span>
+    </div>
+    <div class="cmp" id="carvecmp"></div>
+  </div>
+
+  <div class="toprow">
+    <div class="modebtns" id="modebtns">
+      <button type="button" data-mode="light" aria-pressed="true">Light</button>
+      <button type="button" data-mode="dark"  aria-pressed="false">Dark</button>
+      <button type="button" data-mode="both"  aria-pressed="false">Both</button>
+    </div>
+    <div class="toggles">
+      <label><input type="checkbox" id="showghost" checked> Show the current derived radius as a dashed ghost</label>
+      <label><input type="checkbox" id="showsquare" checked> Show a square theme for contrast (s202-D1 base)</label>
+    </div>
+  </div>
+
+  <div class="cols" id="cols"></div>
+</div>
+
+<div class="exportwrap">
+  <h2>Export &mdash; paste to Dave&rsquo;s enactment route</h2>
+  <textarea id="ta" spellcheck="false"></textarea>
+  <div class="exrow">
+    <small>Same shape as the tuner v3 export: a <code>$proposed</code> draft block with the carve-out key,
+      the chosen semantics, and the per-scale numbers it produces. Pasting this mints nothing.</small>
+    <span>
+      <span id="exstatus"></span>
+      <button type="button" id="rebuild">Rebuild draft</button>
+      <button type="button" id="reset">Reset</button>
+      <button type="button" class="primary" id="copy">Copy export</button>
+    </span>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- MINTED STATE, read from disk 2026-08-18 ---------- */
+  var CONSOLE = {
+    control: 8, def: 4, surface: 20, container: 20,
+    scales: [
+      {key:'xs', h:24, pad:2, rc:6,  rt:4, fs:11, inline:8 },
+      {key:'s',  h:36, pad:2, rc:8,  rt:6, fs:12, inline:12},
+      {key:'m',  h:44, pad:4, rc:10, rt:6, fs:14, inline:14},
+      {key:'l',  h:48, pad:4, rc:12, rt:8, fs:16, inline:16}
+    ],
+    minHit: 44
+  };
+  /* BASE (mono / legacy / supercharge), minted s202-D1 at #202: same dimensions, radii 0. */
+  var BASE_RADII_ZERO = true;
+
+  var carve = 6, semantics = 'absolute', mode = 'light', showGhost = true, showSquare = true;
+  var CARVE_START = 6;
+  var cols = document.getElementById('cols'), ta = document.getElementById('ta');
+
+  /* The three candidate readings, applied. NONE of these is ruled. */
+  function switchRadius(s){
+    if (semantics === 'absolute') return carve;
+    if (semantics === 'offset')   return Math.max(0, s.rc - carve);
+    if (semantics === 'cap')      return Math.min(s.rt, carve);
+    return s.rt;
+  }
+  function thumbBox(s){ return Math.max(0, s.h - 2*s.pad - 2); }
+  function isPill(r, box){ return box > 0 && r >= box/2; }
+
+  function segHTML(s, tone, square){
+    var r  = square ? 0 : switchRadius(s);
+    var rc = square ? 0 : s.rc;
+    var ghost = (!square && showGhost) ? '<span class="ghost"></span>' : '';
+    var tag = square ? 'square theme — s202-D1 base' : ('console ' + tone);
+    return '<div class="swatch ' + tone + '">' +
+      '<span class="tag">' + tag + '</span>' +
+      '<span class="cap">' + (square
+          ? 'container 0 · switch 0 — s201-D5, not tunable here'
+          : 'container ' + rc + 'px · switch ' + r + 'px' +
+            (showGhost ? ' (dashed = current derived ' + s.rt + 'px)' : '')) + '</span>' +
+      '<span class="seg" style="--sg-h:' + s.h + 'px;--sg-pad:' + s.pad + 'px;--sg-r:' + rc + 'px;' +
+        '--sg-thumb:' + r + 'px;--sg-ghost:' + s.rt + 'px;--sg-fs:' + s.fs + 'px;--sg-inline:' + s.inline + 'px">' +
+        '<span class="ind"></span>' + ghost +
+        '<button type="button">Monthly</button><button type="button">Year to date</button>' +
+      '</span></div>';
+  }
+
+  function colHTML(s, i){
+    return '<div class="col" data-i="' + i + '">' +
+      '<span class="scaleid">scale</span><h3>' + s.key + ' &mdash; ' + s.h + 'px</h3>' +
+      '<div class="derived" data-derived="' + i + '"></div>' +
+      '<div class="spechead">Specimen &mdash; true pixel height</div>' +
+      '<div data-spec="' + i + '"></div>' +
+    '</div>';
+  }
+
+  function paint(i){
+    var s = CONSOLE.scales[i];
+    var col = cols.querySelector('.col[data-i="' + i + '"]');
+    var r = switchRadius(s), box = thumbBox(s), pill = isPill(r, box);
+
+    var spec = col.querySelector('[data-spec="' + i + '"]'), html = '';
+    if (mode === 'light' || mode === 'both') html += segHTML(s, 'light', false);
+    if (mode === 'dark'  || mode === 'both') html += segHTML(s, 'dark',  false);
+    if (showSquare) html += segHTML(s, (mode === 'dark' ? 'dark' : 'light'), true);
+    spec.innerHTML = html;
+
+    col.querySelector('[data-derived="' + i + '"]').innerHTML =
+      '<span class="lbl">height / inset</span>&nbsp; <b>' + s.h + '</b> / <b>' + s.pad + '</b>px' +
+      ' <span class="lbl">(minted)</span><br>' +
+      '<span class="lbl">container radius</span>&nbsp; <b>' + s.rc + 'px</b> <span class="lbl">(minted)</span><br>' +
+      '<span class="lbl">switch today (derived ' + s.rc + ' &minus; ' + s.pad + ')</span>&nbsp; <b>' + s.rt + 'px</b><br>' +
+      '<span class="lbl">switch with carve-out</span>&nbsp; <b>' + r + 'px</b>' +
+      ' <span class="lbl">(' + (r === s.rt ? 'no change' : (r > s.rt ? '+' : '') + (r - s.rt) + 'px') + ')</span><br>' +
+      '<span class="lbl">switch box height</span>&nbsp; <b>' + box + 'px</b><br>' +
+      '<span class="lbl">hit target</span>&nbsp; <b>' + Math.max(CONSOLE.minHit, s.h) + 'px</b>' +
+      ' <span class="lbl">(max(44, height) — s201-D3)</span>' +
+      '<span class="flag' + (pill ? '' : ' off') + '">' + (pill
+        ? '⚠ The switch is a capsule at this scale — ' + r + 'px is ≥ half its ' + box + 'px box. Extra radius does nothing visible.'
+        : 'Not a capsule — ' + r + 'px is under half the ' + box + 'px box, so the corner is still a corner.') +
+      '</span>';
+  }
+
+  function paintCompare(){
+    document.getElementById('carveval').textContent = carve + 'px';
+    var rows = CONSOLE.scales.map(function(s){
+      var r = switchRadius(s);
+      return s.key + ': ' + s.rt + ' → ' + r + (r === s.rt ? '' : ' (' + (r > s.rt ? '+' : '') + (r - s.rt) + ')');
+    }).join(' &nbsp;·&nbsp; ');
+    document.getElementById('carvecmp').innerHTML =
+      '<span class="lbl">border-radius/control (minted, shared today)</span>&nbsp; <b>' + CONSOLE.control + 'px</b><br>' +
+      '<span class="lbl">reading</span>&nbsp; <b>' + semantics + '</b> ' +
+      '<span class="lbl">— UNRULED, exported as proposed</span><br>' +
+      '<span class="lbl">switch radius, per scale (today → carve-out)</span><br>&nbsp;&nbsp;' + rows;
+  }
+
+  function paintAll(){ CONSOLE.scales.forEach(function(_, i){ paint(i); }); paintCompare(); renderExport(); }
+
+  function buildDraft(){
+    var per = {};
+    CONSOLE.scales.forEach(function(s){
+      per[s.key] = {
+        height: s.h, padding: s.pad, containerRadius: s.rc,
+        switchRadiusToday: s.rt,
+        switchRadiusProposed: switchRadius(s),
+        delta: switchRadius(s) - s.rt,
+        switchBoxHeight: thumbBox(s),
+        capsule: isPill(switchRadius(s), thumbBox(s))
+      };
+    });
+    return {
+      $draft: 'segmented-switch radius CARVE-OUT — the s199-D3 residual',
+      $theme: 'apollo-console',
+      $attr: 'console',
+      $source: 'reviews/RADIUS-CORNER-TUNER-2026-08-18-v4.html',
+      $date: '2026-08-18',
+      $session: 202,
+      $proposed: true,
+      $note: 'DRAFT ONLY — pasting this mints nothing. It carries the s199-D3 residual: the segmented ' +
+             'SWITCH is ruled to get its own carve-out token because inner and outer nested radii cannot ' +
+             'share a value, but neither the VALUE nor the MEANING has been ruled. Both are Dave’s. ' +
+             'This page offered three readings and recorded the one selected; the other two remain open. ' +
+             'Scope CONSOLE ONLY — mono / legacy / supercharge are square by s201-D5 and their base ' +
+             'segmented set (s202-D1, #202) carries radii 0, which no carve-out here touches.',
+      $openQuestions: [
+        'the carve-out VALUE (' + carve + 'px is a tuner position, not a ruling)',
+        'the carve-out MEANING — absolute / offset-from-container / cap on the derived radius',
+        'the token KEY name (border-radius/segmented-switch is a placeholder)',
+        'whether the carve-out replaces the per-scale segmented-thumb mint or sits beside it'
+      ],
+      carveOut: {
+        proposedKey: 'border-radius/segmented-switch',
+        value: carve,
+        semantics: semantics,
+        semanticsMeaning: (semantics === 'absolute'
+            ? 'one absolute switch radius at every scale'
+            : semantics === 'offset'
+              ? 'switch radius = containerRadius − value, per scale'
+              : 'switch radius = min(containerRadius − padding, value)'),
+        $status: 'PROPOSED — unruled value AND unruled meaning'
+      },
+      $mintedStateAtDraftTime: {
+        'border-radius/control': CONSOLE.control,
+        'border-radius/container': CONSOLE.container,
+        'size/segmented-control': {xs:24, s:36, m:44, l:48},
+        'padding/segmented-control': {xs:2, s:2, m:4, l:4},
+        'border-radius/segmented-container': {xs:6, s:8, m:10, l:12},
+        'border-radius/segmented-thumb': {xs:4, s:6, m:6, l:8},
+        'size/segmented-control/min-hit-area': CONSOLE.minHit,
+        base_s202_D1: {
+          'size/segmented-control': {xs:24, s:36, m:44, l:48},
+          'padding/segmented-control': {xs:2, s:2, m:4, l:4},
+          'border-radius/segmented-container': {xs:0, s:0, m:0, l:0},
+          'border-radius/segmented-thumb': {xs:0, s:0, m:0, l:0},
+          $note: 'mono / legacy / supercharge, minted s202-D1 (#202): Console dimensions inherited, ' +
+                 'radii 0 per s201-D5. Present for provenance, not for pasting.'
+        },
+        $note: 'Read from knowledge/tokens/themes/apollo-console.overrides.json, knowledge/tokens/layout.json ' +
+               'and knowledge/tokens/spacing.json on 2026-08-18. Provenance only.'
+      },
+      perScale: per,
+      overrides: (function(){
+        var ov = {'border-radius': {}};
+        if (semantics === 'absolute') {
+          ov['border-radius']['segmented-switch'] = {
+            $value: carve, $type: 'number', $proposed: true,
+            $note: 'Carve-out for the segmented SWITCH (s199-D3 residual). One absolute radius at every ' +
+                   'scale. UNRULED value and UNRULED reading — tuner v4 position only.'
+          };
+        } else {
+          CONSOLE.scales.forEach(function(s){
+            ov['border-radius']['segmented-switch/' + s.key] = {
+              $value: switchRadius(s), $type: 'number', $proposed: true,
+              $note: 'Carve-out for the segmented SWITCH at scale `' + s.key + '` (s199-D3 residual), ' +
+                     'reading "' + semantics + '" with dial ' + carve + ': ' +
+                     (semantics === 'offset'
+                       ? 'container (' + s.rc + ') − ' + carve + ' = ' + switchRadius(s)
+                       : 'min(derived ' + s.rt + ', ' + carve + ') = ' + switchRadius(s)) +
+                     '. Concrete number, derived at draft time (s200-D1 clause a). UNRULED.'
+            };
+          });
+        }
+        return ov;
+      })()
+    };
+  }
+
+  function renderExport(){
+    var block = buildDraft();
+    var head = [
+      '// apollo-console — segmented-SWITCH radius carve-out draft, 2026-08-18 (tuner v4, #202)',
+      '// the s199-D3 residual: the switch is ruled to get its own token; value + meaning still open',
+      '// reading: ' + semantics + '  ·  dial: ' + carve + 'px',
+      '// per scale (today → proposed): ' + CONSOLE.scales.map(function(s){
+           return s.key + ' ' + s.rt + '→' + switchRadius(s); }).join(' · '),
+      '// DRAFT — $proposed throughout. Nothing mints until Dave enacts it.'
+    ].join('\n');
+    ta.value = head + '\n' + JSON.stringify(block, null, 2);
+    var st = document.getElementById('exstatus');
+    try { JSON.parse(ta.value.split('\n').slice(5).join('\n')); st.textContent = 'valid JSON'; }
+    catch (err) { st.textContent = 'JSON ERROR: ' + err.message; }
+  }
+
+  /* ---------- wiring ---------- */
+  cols.innerHTML = CONSOLE.scales.map(colHTML).join('');
+
+  document.getElementById('carve').addEventListener('input', function(){
+    carve = parseInt(this.value, 10); paintAll();
+  });
+  document.getElementById('semopts').addEventListener('change', function(e){
+    if (e.target.name === 'sem') { semantics = e.target.value; paintAll(); }
+  });
+  document.getElementById('modebtns').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    mode = b.getAttribute('data-mode');
+    this.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+    paintAll();
+  });
+  document.getElementById('showghost').addEventListener('change', function(){ showGhost = this.checked; paintAll(); });
+  document.getElementById('showsquare').addEventListener('change', function(){ showSquare = this.checked; paintAll(); });
+  document.getElementById('rebuild').addEventListener('click', renderExport);
+  document.getElementById('reset').addEventListener('click', function(){
+    carve = CARVE_START; semantics = 'absolute';
+    document.getElementById('carve').value = carve;
+    document.querySelector('input[name="sem"][value="absolute"]').checked = true;
+    paintAll();
+  });
+  document.getElementById('copy').addEventListener('click', function(){
+    var b = this; ta.select();
+    try { document.execCommand('copy'); b.textContent = 'Copied';
+          setTimeout(function(){ b.textContent = 'Copy export'; }, 1400); } catch (err) {}
+  });
+
+  paintAll();
+  window.__TUNER_V4__ = {carve: carve, semantics: semantics};
+})();
+</script>
+</body>
+</html>
