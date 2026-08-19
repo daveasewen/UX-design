@@ -52,6 +52,11 @@ the loader never skips silently and the runner prints a RESIDUAL count.
 USAGE
   python3 knowledge/_probe_registry/_registry.py --list          # the manifest as a table
   python3 knowledge/_probe_registry/_registry.py --run           # drive every probe (rc=1 on findings)
+  ⛔ THREE VERDICTS, NOT TWO (#208, the #193 convention): a probe PASSES (rc 0, findings=0),
+     FAILS (a measured finding), or REFUSES (rc 77 + a `COULD-NOT-ASK:` line — it could not
+     be asked). A refusal is printed in its own block, in the probe's own words, and does
+     NOT fail the run — mirroring `_build_survey.py`. `verdict()` holds that rule alone and
+     `--selftest` bites it both ways.
   python3 knowledge/_probe_registry/_registry.py --run --survey  # drive every probe, rc=0 always
   python3 knowledge/_probe_registry/_registry.py --run --probe P-2
   python3 knowledge/_probe_registry/_registry.py --run --skip-env sandbox-render
@@ -71,6 +76,7 @@ _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 
 import json, os, re, subprocess, sys, tempfile
+import _could_not_ask as cna  # noqa: E402 — the #193 three-verdict convention (77 + marked line)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -206,6 +212,24 @@ def _run_one(row, extra=()):
     return p.returncode, findings, out, " ".join(cmd[1:])
 
 
+def verdict(rc, findings):
+    """THE THREE VERDICTS (+ SKIP), in ONE place so they can be bitten (#208).
+
+    ⛔ Why this is a function and not four inline `if`s: before #208 the runner bucketed on
+    `rc != 0`, so an honest refusal (77) and a measured red (1) were the same verdict — the
+    exact confusion `_could_not_ask.py` exists to end. One predicate, one selftest arm.
+    A probe that RAN and found nothing PASSES; a probe that ran and found something, or would
+    not say how much (findings=UNKNOWN), FAILS; a probe that could not be asked REFUSES.
+    """
+    if rc is None:
+        return "SKIP"
+    if cna.is_refusal(rc):
+        return "REFUSED"
+    if rc == 0 and findings == 0:
+        return "PASS"
+    return "FAIL"
+
+
 def run(rows, only=None, skip_env=(), survey=False, quiet=False, extra=()):
     """Drive the probes. Returns (rc, results). rc=1 if any probe found something or errored,
     unless --survey. A probe that CANNOT run in this environment is REPORTED, never defaulted."""
@@ -228,19 +252,38 @@ def run(rows, only=None, skip_env=(), survey=False, quiet=False, extra=()):
     print("\n" + "=" * 78)
     print("REGISTRY RUN SUMMARY (%d probe(s))" % len(results))
     print("%-6s %-15s %-5s %-9s %s" % ("id", "env", "rc", "findings", "class"))
-    bad = 0
-    for row, rc, findings, _out in results:
-        if rc is None:
+    bad, refused = 0, []
+    for row, rc, findings, out in results:
+        v = verdict(rc, findings)
+        if v == "SKIP":
             print("%-6s %-15s %-5s %-9s %s" % (row["id"], row["environment"], "-", "SKIP",
                                                row["klass"]))
+            continue
+        # ⛔ #208 THREE VERDICTS, NOT TWO (the #193 convention, mirrored from _build_survey.py):
+        # a probe may PASS, FAIL, or REFUSE. A refusal (77 + a `COULD-NOT-ASK:` line) is a
+        # question that was never asked, not a measured red — counting it as `bad` is the exact
+        # confusion the convention exists to end. It does NOT pass either: it is printed in its
+        # own block, in the probe's own words, so a green run can never hide it.
+        if v == "REFUSED":
+            refused.append((row, cna.reason_in(out)))
+            print("%-6s %-15s %-5d %-9s %s" % (row["id"], row["environment"], rc,
+                                               "REFUSED", row["klass"]))
             continue
         print("%-6s %-15s %-5d %-9s %s" % (row["id"], row["environment"], rc,
                                            findings if findings is not None else "UNKNOWN",
                                            row["klass"]))
-        if rc != 0 or findings is None or findings > 0:
+        if v == "FAIL":
             bad += 1
     print("⚠ %d probe(s) reported findings, an UNKNOWN count, or a non-zero rc." % bad
-          if bad else "✅ every probe ran and reported findings=0.")
+          if bad else "✅ every probe that RAN reported findings=0.")
+    if refused:
+        print("\n⛔ COULD-NOT-ASK (%d) — these probes did NOT run, and this run says NOTHING "
+              "about their class.\n   They do not fail this run; they also do not pass. Each "
+              "line is the probe's OWN reason:" % len(refused))
+        for row, reason in refused:
+            no_words = ("(exit %d but NO `COULD-NOT-ASK:` line — the probe used the convention's "
+                        "code without its words; see its full output)" % cna.EXIT)
+            print("   [%s] %s\n       %s" % (row["id"], row["klass"], reason or no_words))
     print("⛔ A green registry run proves THE PROBES RAN, not that the tree is clean. Each "
           "probe's `blind` field says what it cannot see; the verifier brief keeps free hunting "
           "mandatory for exactly that reason.")
@@ -248,7 +291,7 @@ def run(rows, only=None, skip_env=(), survey=False, quiet=False, extra=()):
 
 
 def selftests(rows, only=None, skip_env=()):
-    rc_total, table = 0, []
+    rc_total, table, refusals = 0, [], []
     for row in rows:
         if only and row["id"] not in only:
             continue
@@ -259,11 +302,23 @@ def selftests(rows, only=None, skip_env=()):
                            cwd=ROOT, capture_output=True, text=True)
         print("\n=== %s --selftest" % row["script"])
         print(((p.stdout or "") + (p.stderr or "")).rstrip())
-        table.append((row["id"], str(p.returncode), row["script"]))
-        rc_total |= (1 if p.returncode else 0)
+        out = (p.stdout or "") + (p.stderr or "")
+        # #208: a selftest that could not RUN (77 + marked line) is not a selftest that FAILED.
+        tag = "%d(COULD-NOT-ASK)" % p.returncode if cna.is_refusal(p.returncode) \
+            else str(p.returncode)
+        table.append((row["id"], tag, row["script"]))
+        if cna.is_refusal(p.returncode):
+            refusals.append((row["id"], cna.reason_in(out)))
+        else:
+            rc_total |= (1 if p.returncode else 0)
     print("\nSELFTEST rc TABLE")
     for pid, rc, script in table:
         print("  %-6s rc=%-4s %s" % (pid, rc, script))
+    if refusals:
+        print("⛔ %d selftest(s) COULD NOT ASK — they did not run and did not pass:"
+              % len(refusals))
+        for pid, reason in refusals:
+            print("   [%s] %s" % (pid, reason or "(no `COULD-NOT-ASK:` line — see full output)"))
     return rc_total
 
 
@@ -352,6 +407,25 @@ def selftest():
         fails.append("LIVE MANIFEST UNPARSEABLE: %d defect(s)" % len(live_defects))
     else:
         print("  ✅ live manifest parses: %d probe(s), 0 defects" % len(live_rows))
+
+    # ---- THE CONSUMER HALF (#208): the runner must tell a REFUSAL from a RED, both directions.
+    # [[instrument-without-a-consumer]] — the 77 convention only buys anything if the thing that
+    # reads the exit code has been TAUGHT it, and that teaching is what these bites hold.
+    for label, args, want in (
+            ("a probe that ran clean PASSES", (0, 0), "PASS"),
+            ("a probe with findings FAILS", (1, 3), "FAIL"),
+            ("a non-zero rc with findings=0 still FAILS (a crash is not a pass)", (2, 0), "FAIL"),
+            ("findings=UNKNOWN FAILS — a count nobody gave is not a clean count", (0, None),
+             "FAIL"),
+            ("77 + no findings is a REFUSAL, never a red", (cna.EXIT, None), "REFUSED"),
+            ("77 is a REFUSAL even when a findings= line was printed", (cna.EXIT, 0), "REFUSED"),
+            ("a skipped probe is neither", (None, None), "SKIP")):
+        got = verdict(*args)
+        if got != want:
+            fails.append("VERDICT WRONG: %s — verdict%r gave %r, expected %r"
+                         % (label, args, got, want))
+        else:
+            print("  ✅ verdict: %s" % label)
 
     if fails:
         print("⛔ _registry selftest: %d failure(s)" % len(fails))

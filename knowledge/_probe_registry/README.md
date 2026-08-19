@@ -34,7 +34,12 @@ P-3 needs a browser. Stage it per `knowledge/_RUNBOOK-render-verify.md`, then:
 export PYTHONPATH=/var/tmp/pylibs PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-s197 \
        LD_LIBRARY_PATH=/var/tmp/chromelibs/root/usr/lib/aarch64-linux-gnu TMPDIR=/var/tmp
 ```
-Without it P-3 **REFUSES BY NAME and exits 1** — it never reports a pass it did not measure.
+Without it P-3 **REFUSES BY NAME and exits 77 COULD-NOT-ASK** (`knowledge/_could_not_ask.py`,
+the #193 convention: exit 77 + a first line beginning `COULD-NOT-ASK:` carrying its own reason)
+— it never reports a pass it did not measure, and ⛔ #208 a consumer can now tell that refusal
+from the `1` a MEASURED finding returns. `_registry.py --run` prints refusals in their own
+block and excludes them from its exit code (the `_build_survey.py` posture); a refused probe
+does not fail the run and does not pass it.
 Skip it deliberately with `--skip-env sandbox-render`; the skip is printed, never silent.
 
 ## Declared boundaries

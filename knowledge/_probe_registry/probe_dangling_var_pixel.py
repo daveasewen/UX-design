@@ -36,7 +36,10 @@ for the conductor, not something this lane may edit.
 ⛔ ENVIRONMENT SPLIT, DECLARED (#173): this probe needs Chromium + Playwright per
 `knowledge/_RUNBOOK-render-verify.md`. It runs in the SANDBOX today. It is **UNPROVEN in CI** —
 `s204-D1` item 5 owns the CI pixel leg, not this lane. When the browser is absent the probe
-REFUSES by name and exits 1; it never reports a pass it did not measure
+REFUSES by name and exits **77 COULD-NOT-ASK** (`knowledge/_could_not_ask.py`, #193) with a
+first line carrying its own reason — ⛔ #208: it used to exit 1, which a CI consumer reads as a
+MEASURED failure; an honest refusal now has a legal form no consumer can confuse with a red.
+A real failure still exits 1. It never reports a pass it did not measure
 [[feedback-measuring-tool-must-not-guess]]. Env vars it needs (runbook §sandbox):
     PYTHONPATH=/var/tmp/pylibs  PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-<n>
     LD_LIBRARY_PATH=/var/tmp/chromelibs/root/usr/lib/aarch64-linux-gnu  TMPDIR=/var/tmp
@@ -53,7 +56,8 @@ USAGE
   python3 knowledge/_probe_registry/probe_dangling_var_pixel.py --check
   python3 knowledge/_probe_registry/probe_dangling_var_pixel.py --check --glob '<pattern>'
   python3 knowledge/_probe_registry/probe_dangling_var_pixel.py --selftest
-EXIT: 0 clean · 1 findings OR a declared environment refusal.
+EXIT: 0 clean · 1 findings (a MEASURED failure) · 77 COULD-NOT-ASK (a declared environment
+refusal — the browser could not be reached, so the question was never asked).
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -63,6 +67,7 @@ _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 
 import glob as globmod, io, os, re, shutil, sys, tempfile
+import _could_not_ask as cna  # noqa: E402 — the #193 convention: 77 + a `COULD-NOT-ASK:` line
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -218,9 +223,14 @@ def check(patterns=None):
         return 1
     findings, controls, refusal = drive(paths)
     if refusal:
-        print("  ⛔ %s" % refusal)
-        print("PROBE P-3 — findings=UNKNOWN (environment refused)")
-        return 1
+        # ⛔ #208: a refusal used to exit 1, which every consumer reads as a MEASURED failure.
+        # It now carries the #193 legal form — exit 77 + a `COULD-NOT-ASK:` first line naming
+        # the input it could not reach. A real failure below still exits 1
+        # [[honest-refusal-needs-a-legal-form]]. The refusal is keyed on the UNREACHABLE INPUT
+        # (playwright / headless_shell), NEVER on "am I in CI" — see _could_not_ask.py.
+        rc = cna.refuse("P-3 dangling-var PIXEL test", refusal)
+        print("PROBE P-3 — findings=UNKNOWN (environment refused, exit %d)" % rc)
+        return rc
     black = [f for f in findings if f.get("pix") and f["pix"]["black"] > 0]
     unsampled = [c for c in controls if not c.get("pix")]
     print("P-3 dangling-var pixel test: %d page(s) rendered over %s · %d suspect(s), %d of them "
@@ -259,9 +269,10 @@ def selftest():
     fails = []
     kwargs, refusal = _browser_env()
     if refusal:
-        print("⛔ P-3 selftest cannot run: %s" % refusal)
-        print("   This is a DECLARED environment gap (#173), reported as rc=1 — never a pass.")
-        return 1
+        rc = cna.refuse("P-3 selftest", refusal)
+        print("   This is a DECLARED environment gap (#173), reported as rc=%d COULD-NOT-ASK — "
+              "never a pass, and distinguishable from the rc=1 a real red returns." % rc)
+        return rc
     tmp = tempfile.mkdtemp(prefix="p3-selftest-", dir=os.environ.get("TMPDIR", "/var/tmp"))
     src = os.path.join(ROOT, "knowledge", "snippets", "Chart-bar.reference.html")
     if not os.path.exists(src):
