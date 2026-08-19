@@ -105,6 +105,12 @@ which remedy is Dave's call:
 - **(c)** an enactment-checklist line, the cheapest and the weakest — a convention with no gate is a
   preference.
 
+*(⚠ Addendum #205 2026-08-19 — correction by addition, nothing above trimmed: the count is re-based
+76 → **92** metas (dir entries 96), `ASSERT-009` re-based in `knowledge/_assertions.json`. The drift was
+caught exactly as this finding predicted — the registered count refused, aborting a `_build_all` run at
+the veracity gate. The remedy choice (a)/(b)/(c) remains open and Dave's; live copy in
+`_LIVE-STATE.md` § OPEN.)*
+
 ⬛ **OPEN → #132, owner DAVE.** Dave also asked, in the same beat, **how the design KG is used, indexed
 and checked** — the honest answer today is: *used* by hand and by whoever reads it, *indexed* nowhere,
 *checked* by nothing. That answer belongs beside the gap, which is why both are recorded here.

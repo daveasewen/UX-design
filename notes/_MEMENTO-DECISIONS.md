@@ -5625,6 +5625,7 @@ false, nothing re-checks it* — **the fifth medium**.
 meta token-claims · **(c)** an enactment-checklist line. His attached question — *how is the design KG used,
 indexed and checked?* — is answered honestly as **by hand · nowhere · nothing**, and is homed in
 `_LIVE-STATE.md` § OPEN.
+*(⚠ COUNT RE-BASED #205 2026-08-19: 76 → **92** metas — `ASSERT-009` re-based in `knowledge/_assertions.json`, live copy + full note in `_LIVE-STATE.md` § OPEN. The figures above are #131's measurement, kept verbatim as history.)*
 
 ### WHAT #131 DID NOT CLOSE
 

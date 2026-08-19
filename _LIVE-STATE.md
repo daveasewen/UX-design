@@ -597,7 +597,8 @@ re-validated — the *file* is current; the *class* is not fixed.
 ⚠ **Dave's attached question, recorded so it is not lost: how IS the design KG used, indexed and checked?**
 Honest answer as of #131: **used by hand · indexed nowhere · checked by nothing.** Narrative:
 `_DECISION-HISTORY/2026-08-08-131-the-legacy-rag-fills-and-the-design-kg-nothing-checks.md` § Finding 3.
-[born #131 · guards: the 76 `knowledge/components/*.meta.json` files + the count itself (ASSERT-009) · until: Dave picks (a), (b) or (c)]
+⚠ **COUNT RE-BASED #205 2026-08-19 (Dave: "do it"): 76 → 92 metas** (dir entries 96; growth = the #196–#204 component waves incl. the six `s204-D1` P2 components). `ASSERT-009` re-based 77→92 in `knowledge/_assertions.json` — it caught the drift by ABORTing a chore sub's `_build_all` at the veracity gate, which is the assertion doing its job. The #131 measurement prose above is kept verbatim as history. ⚠ The old "77 repo-wide" framing is retired: repo-wide `*.meta.json` is now 176 (snippet metas), a different population. The remedy question below is UNCHANGED and still Dave's.
+[born #131 · guards: the 92 `knowledge/components/*.meta.json` files + the count itself (ASSERT-009, re-based #205) · until: Dave picks (a), (b) or (c)]
 
 ### ⬛ NEW #131 — CONSOLE/SC LIGHTER INFORMATION BLUE: DIRECTION ONLY, NO VALUE (born #131)
 

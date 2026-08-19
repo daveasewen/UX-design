@@ -119,3 +119,29 @@ as his rather than tuned by a wrap.
 
 The trial produced its amendments the only way amendments are worth having: by failing in public,
 in a window where somebody was watching.
+
+---
+
+## Addendum — #205 read-back (2026-08-19, conductor; corrections by addition, never trim)
+
+Two claims above did not survive verification at #205's opener:
+
+**(a) §5's "[13] and [114] are still red by measurement" was stale at the moment it was written.**
+The #204 banner's own item ⑧ records `[114]` going rc=0 *during* that same wrap (ratio 0.22 after
+the banner shrank), and CI run 32250513147 on `973d3fa` confirms it: `[114]` is absent from the
+failure set. The actual reds on that head were **six** — `[3]` `[13]` `[40]` `[45]` `[50]` `[110]` —
+five of them the stale-baked-artefact class from the six new components landing without a complete
+`_build_all.py` pass (declared at banner ⑬(d), but not connected to a CI prediction). Re-based at
+#205: a chore sub regenerated the five (`f71202e`), each `--check` rc=0 first-hand
+(`notes/_receipts/2026-08-19-205-choresub-claim-table.md`); CI verdict on `df2c9eb` is the ruling
+read-back. `[13]` remains the one honest standing red (`_governs.py` matcher). `[114]`'s 0.40
+constant remains ⬛ Dave's, untouched.
+
+**(b) The provenance block's both-way-link claim is half true.** This file IS named on the
+★ LATEST banner (item ⑯); it is NOT named anywhere in `_LIVE-STATE.md` (grep, 0 matches, #205).
+The missing back-link is left to the next spine-writer pass rather than hand-patched into a
+generated file.
+
+New at #205, not above: `_build_all.py` full sequential coverage is now BLOCKED at step 10 —
+ASSERT-009 asserts 77 component metas, the tree has 92 (the six new components' own drift). The
+fix touches four ruled docs and is routed to Dave, not a sub.
