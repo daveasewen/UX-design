@@ -134,9 +134,68 @@ clear_locks() {
 
 fail() { echo "✗ $1" >&2; exit 1; }
 
+# ── T3 PREFIX COUNTER — ONE IMPLEMENTATION, THREE CONSUMERS (#208) ───────────────────────────
+# The prefix T3 generates has TWO legal shapes: `after #<n> <date> — ` (non-wrap) and
+# `#<n> <date> — ` (wrap). Counting them is the primitive under the msgfile-reuse gate below,
+# the post-commit subject assert, and `--selftest`. It exists ONCE because the #170 gate matched
+# only the `after ` shape: feeding a WRAP msgfile (line 1 = `#207 2026-08-18 — …`) into a
+# NON-WRAP run walked straight past it and produced `after #208 2026-08-19 — #207 2026-08-18 — …`.
+# That is 1 of the 8 documented doubled/tripled subjects, and it is why this counts BOTH shapes.
+# ⚠ `— ` here is U+2014 + space, the same literal T3 emits; a hyphen is not this prefix.
+prefix_count() {
+  python3 -c 'import re,sys; print(len(re.findall(r"(?:after )?#\d+ \d{4}-\d{2}-\d{2} — ", sys.argv[1])))' "$1"
+}
+
+# ── #208 SELFTEST — the msgfile-prefix gate, BOTH DIRECTIONS, no repo state touched ──────────
+# `bash knowledge/_git_commit.sh --selftest`. Read-only: no staging, no commit, no push, no
+# writes [[instrument-without-a-consumer]]. Every arm names the class it bites.
+if [ "${1-}" = "--selftest" ]; then
+  SF_FAILS=0
+  bite() { # bite <name> <expected> <actual>
+    if [ "$2" = "$3" ]; then echo "  [OK]   $1 (expected $2)"; else
+      echo "  [FAIL] $1 — expected $2, got $3"; SF_FAILS=$((SF_FAILS + 1)); fi
+  }
+  echo "— #208 msgfile-prefix gate selftest"
+  # FIRES: every shape a reused msgfile actually arrives in
+  bite "non-wrap prefix (the #170 shape) is seen"       1 "$(prefix_count 'after #207 2026-08-18 — wave1 receipts')"
+  bite "WRAP prefix (the shape #170 MISSED) is seen"    1 "$(prefix_count '#207 2026-08-18 — wrap: session close')"
+  bite "doubled non-wrap prefix counts 2"               2 "$(prefix_count 'after #208 2026-08-19 — after #207 2026-08-18 — x')"
+  bite "wrap-into-non-wrap stack counts 2 (the hole)"   2 "$(prefix_count 'after #208 2026-08-19 — #207 2026-08-18 — x')"
+  bite "tripled counts 3"                               3 "$(prefix_count 'after #1 2026-01-01 — after #1 2026-01-01 — after #1 2026-01-01 — x')"
+  # STAYS SILENT: near misses that a looser matcher would eat
+  bite "a fresh subject carries no prefix"              0 "$(prefix_count 'wave1: make CI legible')"
+  bite "session ref with no date is not a prefix"       0 "$(prefix_count '#208 — fix the gates')"
+  bite "date with no session ref is not a prefix"       0 "$(prefix_count '2026-08-19 — fix the gates')"
+  bite "hyphen is not the em-dash separator"            0 "$(prefix_count 'after #207 2026-08-18 - wave1 receipts')"
+  bite "prose mentioning a session mid-line"            0 "$(prefix_count 'fixes the class #205 found')"
+  if [ "$SF_FAILS" -ne 0 ]; then
+    echo "✗ selftest FAILED — $SF_FAILS bite(s)"; exit 1
+  fi
+  echo "✓ selftest OK — 10 bites: 5 fire, 5 stay silent"
+  exit 0
+fi
+
 [ -n "$MSGFILE" ] || fail "no msgfile given. Usage: _git_commit.sh --reconciled <msgfile>"
 [ -s "$MSGFILE" ] || fail "msgfile '$MSGFILE' missing or empty (stale-msgfile trap — see runbook gotchas)"
 echo "— msgfile head: $(head -1 "$MSGFILE")"
+
+# ── REUSED-MSGFILE GATE, AT THE DOOR (#208; widens the #170 gate) ────────────────────────────
+# The #170 gate lives INSIDE T3's non-wrap branch and matches only `after #N <date> — `. Two
+# holes, both documented in the 8-instance count: (1) a WRAP msgfile's line 1 is `#N <date> — `,
+# which that regex does not see, so reusing a wrap msgfile on a non-wrap run stacked a second
+# prefix; (2) the wrap branch never asked the question at all, and silently DROPS line 1 into
+# the void (it takes the body from line 2 onward), so a reused wrap msgfile lost its first line
+# with no word said. Asking HERE — before any gate that can refuse, and long before T3 writes
+# anything — makes the answer independent of which branch T3 will take.
+# ⛔ The #170 in-branch check is LEFT IN PLACE, unchanged. Two gates on one class is not
+# duplication when the inner one is the one that has been proven to bite.
+MSG_L1=$(head -1 "$MSGFILE")
+if [ "$(prefix_count "$MSG_L1")" -gt 0 ]; then
+  fail "REUSED-MSGFILE GATE (#208, widening #170): line 1 of '$MSGFILE' already carries a T3 prefix — \"$(printf '%s' "$MSG_L1" | cut -c1-80)\". This file has been through a commit run before, so this run would stack a second prefix (the doubled-subject class, 8 documented instances). REMEDY: write a FRESH msgfile with a FRESH name — one printf per invocation, never a reused path:
+    printf '%s\\n' '<your one-line summary>' '' '<body…>' > outputs/_msg-<session>-<slug>-\$(date +%s).txt
+  Nothing has been staged, and this msgfile has not been modified."
+fi
+echo "— msgfile line 1 carries no T3 prefix (#208 reuse gate passed)"
 
 if [ "$RECONCILED" -ne 1 ]; then
   echo "✗ refusing to stage: run 'git status --short', account for EVERY dirty path (step 0.5),"
@@ -201,6 +260,42 @@ if [ -z "${SHOWROOM_ACK:-}" ]; then
   echo "— showroom in sync (gen_showroom --check passed, s191-D1)"
 else
   echo "— showroom sync gate: DECLARED GAP — $SHOWROOM_ACK"
+fi
+
+# ── MENTION-MAP FRESHNESS GATE — the [110] re-stale CLASS, 3rd recurrence (#208) ──────────────
+# ⛔ THE CLASS, NOT THE INSTANCE. `knowledge/_graph-mention-map.json` is derived from
+# `_decision-graph.json` + `_memento-index.json`, which are themselves derived from the corpus.
+# So ANY doc/generator change re-stales it, and CI step [110] (`_build_graph_mention_map.py
+# --check`) goes red — in the SURVEY step, which asks the committed tree BEFORE any rebuild, so
+# the later "Knowledge build" step regenerating it cannot rescue the read. It was repaired
+# targeted three times (#205 pitfall (d); d07e85c / 49ba965 → 5a716a6) because nothing at the
+# COMMIT SEAM — the one place staleness turns durable — ever asked the question.
+#
+# OWNED REGIONS, WRITTEN DOWN BEFORE RUNNING THE GENERATOR [[do-not-rule-list-cannot-fence-a-generator]]:
+#   `_build_graph_mention_map.py` writes EXACTLY ONE path — `knowledge/_graph-mention-map.json`,
+#   whole-file overwrite (`OUT_PATH`, the file's only `open(..., "w")` outside its selftest
+#   tempfile). It READS `_decision-graph.json` and `_memento-index.json` and writes neither.
+#   Probe: `grep -n '"w"' knowledge/_build_graph_mention_map.py` → the selftest tempfile and
+#   OUT_PATH, nothing else. That single-owner, single-file property is why regenerating here is
+#   safe; it is NOT a licence to run any other generator at this seam.
+#
+# ⛔ AND IT DOES NOT STAGE WHAT YOU DID NOT NAME. Regenerating is safe; staging silently is not
+# (P5, ruled Dave 2026-08-02 — `git add -A` retired). So a stale map is REGENERATED (announced,
+# one path named) and then REFUSED, with the path to add to your `--reconciled` list. One
+# re-run, and the class cannot reach a commit. Declared-gap hatch mirrors its two neighbours.
+if [ -z "${MENTION_MAP_ACK:-}" ]; then
+  if python3 knowledge/_build_graph_mention_map.py --check >/dev/null 2>&1; then
+    echo "— mention map fresh (_build_graph_mention_map.py --check passed, #208 [110] class gate)"
+  else
+    echo "— mention map STALE — regenerating the ONE file this generator owns:"
+    python3 knowledge/_build_graph_mention_map.py ||
+      fail "the mention-map generator itself REFUSED (its named cause is printed above; it is the authority on it — this script does not second-guess it). Nothing has been staged."
+    python3 knowledge/_build_graph_mention_map.py --check ||
+      fail "mention map STILL stale after a targeted regeneration — that is nondeterminism in the generator or a mid-flight input, NOT the ordinary re-stale class. Do not re-run blind; read _build_graph_mention_map.py. Nothing has been staged."
+    fail "MENTION-MAP GATE (#208, the [110] re-stale class, 3rd recurrence): the map was stale and has been REGENERATED just now — knowledge/_graph-mention-map.json. It is NOT staged, because this script never stages a path you did not name (P5, ruled 2026-08-02). Re-run this exact command with that path appended to your list. Nothing has been staged by this run."
+  fi
+else
+  echo "— mention-map gate: DECLARED GAP — $MENTION_MAP_ACK"
 fi
 
 # session-witness consumer — BUILT #89, the honest-certification leg of the #87-D1 drill.
@@ -307,7 +402,18 @@ fi
 # prefix-stacking write-back, a doubled subject landed and the assert still printed
 # "— subject asserted identical to msgfile line 1" and exited 0. The msgfile is now a
 # DIAGNOSTIC in that failure text, never the authority.
-T3_OUT=$(python3 - "$MSGFILE" "$WRAP" "${SESSION_N:-}" "$(date +%F)" 2>&1 <<'PYEOF'
+# ⛔ #208 — T3 NO LONGER WRITES TO THE CALLER'S MSGFILE. It renders to a SEPARATE file and the
+# commit is made from that. Before this, T3 rewrote `$MSGFILE` in place and then five more
+# refusals could still fire (lock survived · no paths named · nothing staged · empty commit ·
+# a git error) — every one of which left the caller holding a msgfile that had already grown a
+# prefix. The caller then fixed the named problem, re-ran the SAME file, and stacked a second
+# prefix: that is the mechanism behind the 8 doubled/tripled subjects, and no gate could undo
+# it because the mutation happened before the refusal. A render file makes the msgfile
+# READ-ONLY input for the whole run, so a refusal costs nothing and a retry is safe.
+# ⚠ The render file is DERIVED and disposable: it sits beside the msgfile (session-owned dir,
+# gitignored `outputs/`), is overwritten every run, and is never staged.
+RENDERED="${MSGFILE}.t3-rendered"
+T3_OUT=$(python3 - "$MSGFILE" "$WRAP" "${SESSION_N:-}" "$(date +%F)" "$RENDERED" 2>&1 <<'PYEOF'
 import re, sys
 msgfile = sys.argv[1]
 wrap = sys.argv[2]  # "1" on --wrap commits, "0" otherwise (#78-D3)
@@ -396,7 +502,8 @@ body = body_lines[1:]
 # STRUCTURAL, not cosmetic — insert it whenever the body doesn't already start blank.
 if body and body[0].strip():
     body = [""] + body
-with open(msgfile, "w", encoding="utf-8") as f:
+# #208: the RENDER file, never `msgfile` — see the shell comment above this heredoc.
+with open(sys.argv[5], "w", encoding="utf-8") as f:
     f.write("\n".join([headline] + body) + "\n")
 if fallback_note:
     print(fallback_note)
@@ -439,6 +546,30 @@ UNSTAGED_DIRTY=$(git status --porcelain | grep -c '^.[MD?]' || true)
   echo "⚠ $UNSTAGED_DIRTY dirty path(s) NOT staged — deliberate under explicit-path staging; they stay for the next commit"
 git diff --cached --quiet && fail "nothing staged — empty commit refused"
 
+# ── MENTION-MAP GATE, SECOND HALF: REGENERATED-BUT-NOT-STAGED (#208) ──────────────────────────
+# The freshness gate above proves the map on DISK is current. This proves the map going into the
+# COMMIT is. Under explicit-path staging those are different claims, and the difference is the
+# hole the three targeted repairs kept falling through: regenerate the map, commit without
+# naming it, and CI's survey reads the OLD blob against the NEW corpus — red again, with a clean
+# local `--check`. Asked after staging because that is when the answer exists.
+MAP_PATH="knowledge/_graph-mention-map.json"
+if ! git diff --quiet -- "$MAP_PATH" 2>/dev/null; then
+  fail "MENTION-MAP GATE (#208, second half): '$MAP_PATH' differs from HEAD and is NOT staged — the commit would carry the OLD map against a NEW corpus, which is exactly what CI's survey step [110] reads (it asks the committed tree BEFORE any rebuild). Append '$MAP_PATH' to your named paths and re-run. Nothing has been committed."
+fi
+echo "— mention map is either unchanged or staged (#208 [110] second-half assert)"
+
+# ── DOC-ROW GATE, SECOND HALF: THE DOCS OF *THIS* COMMIT (#208) ─────────────────────────────
+# The pre-staging run above can only see docs that are ALREADY COMMITTED (its population comes
+# from `git log`), so a single-commit session that adds a brief ships it unrowed and the gate
+# reports PASS while doing it (#207 postscript). `_gate_doc_rows.py` now ALSO reads
+# `git diff --cached --diff-filter=A` — but that set is EMPTY until the staging loop above has
+# run, so the answer only exists here. Same DOC_ROW_ACK hatch: declared passes, silent fails.
+if [ -z "${DOC_ROW_ACK:-}" ]; then
+  python3 knowledge/_gate_doc_rows.py ||
+    fail "doc-row gate REFUSED (post-staging) — a document STAGED IN THIS COMMIT has no store row (list printed above). Add the row via _state.add(), or re-run with DOC_ROW_ACK=\"<real reason>\" to pass it DECLARED."
+  echo "— doc rows present for this commit's staged adds (_gate_doc_rows.py, post-staging)"
+fi
+
 clear_locks
 
 BEFORE=$(git rev-parse HEAD)
@@ -450,7 +581,9 @@ BEFORE=$(git rev-parse HEAD)
 # the subject of a `#128 … / <blank> / body` msgfile came back as literally `body`; with
 # `--cleanup=verbatim`, `#128 …`. Nothing warned. `verbatim` also means the msgfile is committed
 # exactly as written — which is the property the assert below relies on.
-git -c user.name="Claude" -c user.email="claude@anthropic.com" commit --cleanup=verbatim -F "$MSGFILE" 2>&1 |
+# #208: `-F "$RENDERED"`, not `-F "$MSGFILE"` — the msgfile is READ-ONLY input for this run.
+[ -s "$RENDERED" ] || fail "T3 exited 0 but wrote no render file at '$RENDERED' — the commit message the assert compares against would not exist. Nothing has been committed."
+git -c user.name="Claude" -c user.email="claude@anthropic.com" commit --cleanup=verbatim -F "$RENDERED" 2>&1 |
   grep -v 'unable to unlink' || true
 AFTER=$(git rev-parse HEAD)
 [ "$BEFORE" != "$AFTER" ] || fail "HEAD did not advance — commit did not land"
@@ -484,6 +617,24 @@ if [ "$GIT_SUBJ" != "$GEN_SUBJ" ]; then
   exit 1
 fi
 echo "— subject asserted identical to the headline T3 generated (in memory, not re-read from the msgfile — #171)"
+# ── #208 — EXACTLY-ONE-PREFIX ASSERT, on the COMMITTED subject ────────────────────────────────
+# The identity assert above compares the subject to the headline T3 generated. It cannot see a
+# prefix that was ALREADY in the generated headline, which is precisely what a reused msgfile
+# produces (`after #208 … — after #207 … — x` is a faithful copy of what T3 built). So the
+# CLASS gets its own check, on `git log -1 --format=%s` — the artefact a reader actually meets.
+# Both refusals are post-commit BY DESIGN: this is the seam where a doubled subject turns
+# DURABLE, and the remedy (amend before the push) is only available here.
+SUBJ_PREFIXES=$(prefix_count "$GIT_SUBJ")
+if [ "$SUBJ_PREFIXES" -ne 1 ]; then
+  echo "✗ SUBJECT PREFIX COUNT = $SUBJ_PREFIXES (must be exactly 1) — the doubled-subject class (#208, 8 documented instances)." >&2
+  echo "    git %s : $(printf '%s' "$GIT_SUBJ" | cut -c1-160)" >&2
+  echo "  0 means T3's prefix never reached the subject (check --cleanup=verbatim survived);" >&2
+  echo "  2+ means a msgfile was reused and the prefix stacked. The commit LANDED: fix the" >&2
+  echo "  msgfile (FRESH file, fresh printf) and 'git commit --amend -F <fresh>' BEFORE Dave pushes." >&2
+  clear_locks
+  exit 1
+fi
+echo "— subject carries exactly ONE T3 prefix (#208 doubled-subject assert)"
 
 # last action: clear the lock git just respawned; no git command after this
 clear_locks

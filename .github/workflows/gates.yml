@@ -100,6 +100,41 @@ name: gates
 #        ways: untouched → 77 with 0 reds; one planted rotten pointer → 1, with the
 #        refusals printed but not counted. A real red always outranks a refusal.
 #
+# ---- THIRD CORRECTION, 2026-08-19 (#208, wave 1 — "make CI legible"). The #194 note above says
+# "[13] (capture/provenance) and [115] (package delta) are Dave-owned and were red on this commit
+# before and after #193". THAT SENTENCE WAS HALF WRONG ABOUT [13] AND IT IS THE HALF A READER ACTS
+# ON: [13] was red for a MECHANICAL reason with no Dave-judgment in it anywhere — `_governs.py`'s
+# matcher, which `_capture_gate.py --selftest` runs as its trigger-index arm.
+#   THE PREMISE, MEASURED FIRST (not inherited): on this tree, before the fix,
+#   `python3 knowledge/_governs.py --selftest` → exit 1, one failure:
+#   "an unrelated path matched a ruling — the matcher is too loose to carry information", and
+#   `python3 knowledge/_capture_gate.py --selftest` → exit 1 with that as its ONLY red. So [13]
+#   was red LOCALLY TOO — the "green locally" half of the brief was itself stale. Reproduced in a
+#   bare clone (`git clone --no-hardlinks . /var/tmp/ciclone`, the #194 method): baseline clone
+#   → `_governs` 1, `_capture_gate --selftest` 1. Same verdict both environments, so [13] was
+#   never a #173-class environment gate at all; #194 had already fixed that half.
+#   THE CAUSE: `matches()` also compared a bare `governs` entry against every PATH SEGMENT of the
+#   target. `s202-D3` governs the bare token `knowledge`, so ONE ruling governed every file in
+#   the repo's biggest directory — including `knowledge/_totally_unrelated_xyzzy.py`, the
+#   selftest's own negative control. FIXED in `knowledge/_governs.py`: a bare entry is a FILE NAME
+#   or a SYMBOL, never a path segment; an entry naming a real DIRECTORY governs nothing and is
+#   DECLARED BY NAME on every run (⬛ re-scoping a ruling is Dave's, via `_inscribe_ruling.py`).
+#   ⚠ No subtree scope was invented in its place, deliberately — `opacity-primitives-4pct` carries
+#   `knowledge/`, today a no-op, and a subtree reading would WIDEN a live ruling.
+#   AFTER, on this tree: `_governs --selftest` → 0 · `_capture_gate --selftest` → 0. In the bare
+#   clone with the fix applied: BOTH → 77 (COULD-NOT-ASK — the three gitignored `outputs/…`
+#   evidence pointers of #194, refusing in the legal form the survey excludes from its exit code).
+#   ⇒ [13] is now pass locally and pass-with-declaration in CI, from the SAME check, with a real
+#   red still outranking the refusal — driven by planting a rotten pointer at #194 and unchanged
+#   here.
+# ⚠ [115] is untouched by #208 and its constant is still ⬛ DAVE'S.
+# ⚠ STILL PROSE, STILL UNPARSED. The bite is `knowledge/_governs.py --selftest` arms 3/3a, which
+# include a mutation control: the pre-#208 arm restored → 2 failures.
+#
+# ---- AND ONE GATE THAT DID NOT EXIST (#208). `knowledge/_git_commit.sh --selftest` is wired as a
+# step below. It is the consumer for the msgfile-prefix gate [[instrument-without-a-consumer]] —
+# the class behind 8 doubled/tripled commit subjects. See the `prefix_count` block in that file.
+#
 # `fetch-depth: 0` on both checkouts is the SECOND, INDEPENDENT #173 cause:
 # `_gen_chain.build_verdict_line()` runs `git show 18c7789:…` (VERDICT_SHA), and
 # a depth-1 clone cannot resolve it, so the BUILD VERDICT line embedded at
@@ -149,6 +184,12 @@ jobs:
 
       - name: Advisory bite-tests — advisory checks must bite (and never block)
         run: python3 knowledge/_tests/test_advisory.py
+
+      # #208 — the commit script's own gate finally has a runner. `--selftest` is READ-ONLY (no
+      # staging, no commit, no push, no writes) and drives the msgfile-prefix counter both ways:
+      # 5 shapes that must fire, 5 near misses that must stay silent.
+      - name: Commit-script selftest — the msgfile-prefix gate bites both directions (#208)
+        run: bash knowledge/_git_commit.sh --selftest
 
   # Render job — added #155 (Dave ruled: "keep the ubuntu solution", on #153-A ⑨).
   # BLOCKING: the state-contrast selftest (57 arms incl. the s152-D1 mutation

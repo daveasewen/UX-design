@@ -13,8 +13,7 @@
 - consequence: Shareable real-face material is blocked by ASSET DELIVERY, not permission — there is nothing to embed. Licence side is renewal-pending; Dave assesses the gap as procedural and low-risk (ruled 2026-07-18, do not re-litigate). REFRAMED from 'blocker' the same week: within-HSBC distribution is CLOSED, ruled 'leave'.
 - clears when: The Latin webfont files (WOFF + WOFF2) physically land in knowledge/assets/fonts/. Watch for Ultralight in the pack — a sixth weight below Thin = a TYPE RULING, not an asset drop.
 - asserted in: `knowledge/_proforma/_TYPE-DECISIONS.md`, `_LIVE-STATE.md`, `GOOD-MORNING.md`, `memory:univers-webfont-blocker`
-- last verified: 2026-07-18
-- ⚠ **STALE:** last verified 32d ago, window is 30d
+- last verified: 2026-08-19
 
 ## ✓ ASSERT-002 — environment
 
@@ -78,5 +77,5 @@
 - check: `count=92 (want eq 92) in root=repo`
 - consequence: If the count flips, every #131 record that names the corpus size is stale - _LIVE-STATE.md OPEN, GOOD-MORNING.md's banner, the ledger and the dossier all repeat it. Re-count, then correct all four in one pass.
 - clears when: Dave rules the component-spec-KG remedy (index / parse-gate / checklist line) and the chosen mechanism, not this assertion, becomes what re-checks the metas.
-- asserted in: `_LIVE-STATE.md`, `GOOD-MORNING.md`, `notes/_MEMENTO-DECISIONS.md`, `_DECISION-HISTORY/2026-08-08-131-the-legacy-rag-fills-and-the-design-kg-nothing-checks.md`
+- asserted in: `_LIVE-STATE.md`, `notes/_MEMENTO-DECISIONS.md`, `_DECISION-HISTORY/2026-08-08-131-the-legacy-rag-fills-and-the-design-kg-nothing-checks.md`, `knowledge/README.md`
 - last verified: 2026-08-19

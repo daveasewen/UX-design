@@ -277,20 +277,53 @@ def resolve_anchor(pointer: str) -> tuple[int | None, str]:
     return hits[0], ""
 
 
+def names_a_directory(gn: str) -> bool:
+    """True iff a normalised `governs` entry points at a real DIRECTORY in this repo.
+
+    ⛔ #208 — SUCH AN ENTRY IS UNDER-SPECIFIED, AND IT GOVERNS NOTHING. Two live entries are of
+    this shape (`s202-D3` → `knowledge`, `opacity-primitives-4pct` → `knowledge/`) and they are
+    DECLARED by name in `selftest()`, never swallowed. See `matches()`.
+    """
+    if not gn:
+        return False
+    return os.path.isdir(os.path.join(REPO, gn.rstrip("/")))
+
+
 def matches(ruling: dict, targets: set[str]) -> bool:
     """A ruling governs a target if any `governs` entry matches a path (by suffix, so a
     repo-relative entry matches an absolute path) or a bare symbol name.
 
-    ⚠ Suffix matching is deliberate and it is the loose direction on purpose: a MISSED ruling
-    is the failure this file exists to prevent, and a spurious extra ruling costs three lines of
-    reading. The asymmetry is the design, not sloppiness.
+    ⚠ Suffix matching on FILE names is deliberate and it is the loose direction on purpose: a
+    MISSED ruling is the failure this file exists to prevent, and a spurious extra ruling costs
+    three lines of reading. The asymmetry is the design, not sloppiness.
+
+    ⛔ #208 — THE ARM THAT WAS TOO LOOSE, AND WHY IT WENT. What stood here also matched a bare
+    entry against ANY PATH SEGMENT of the target:
+
+        if "/" not in gn and gn in t.replace("/", " ").split():
+
+    For a bare entry that happens to name a DIRECTORY (`s202-D3` governs `knowledge`), that arm
+    made the ruling govern EVERY FILE IN THE REPO'S BIGGEST DIRECTORY — including
+    `knowledge/_totally_unrelated_xyzzy.py`, the selftest's own negative control, which is why
+    the `_governs` selftest and its consumer `_capture_gate.py --selftest` ([13]) were standing
+    red for sessions. For every OTHER bare entry the arm was dead weight: a bare entry matching
+    a target's BASENAME is already caught by `t.endswith("/" + gn)`, and a bare SYMBOL target is
+    already caught by `gn == t`. Its ONLY distinct effect was directory-segment matching.
+
+    ⛔ AND NO DIRECTORY SCOPE WAS PUT IN ITS PLACE, DELIBERATELY. The obvious-looking fix — read
+    a trailing `/` as "everything under here" — WIDENS a live ruling: `opacity-primitives-4pct`
+    ("Opacity primitives run in 4% steps") carries `knowledge/`, today a no-op, and a subtree
+    reading would hand it the whole `knowledge/` tree. Narrowing a mis-scoped entry to nothing
+    and SAYING SO is honest; widening one silently is the [[gate-glob-scope-rule]] failure with
+    the sign flipped. ⬛ What these two rulings govern is DAVE'S (via `_inscribe_ruling.py`, the
+    only legal writer) — `selftest()` names both entries on every run and prints the remedy.
     """
     for g in ruling.get("governs", []):
         gn = _norm(g)
+        if not gn or names_a_directory(gn):
+            continue
         for t in targets:
             if gn == t or t.endswith("/" + gn) or gn.endswith("/" + t):
-                return True
-            if "/" not in gn and gn in t.replace("/", " ").split():
                 return True
     return False
 
@@ -396,6 +429,65 @@ def selftest(refusals: list[str] | None = None) -> list[str]:
     if surface({"knowledge/_totally_unrelated_xyzzy.py"}, rulings):
         failures.append("_governs: an unrelated path matched a ruling — the matcher is too "
                         "loose to carry information")
+
+    # 3a. #208 — THE PRECISION ARMS, BOTH DIRECTIONS, on SYNTHETIC rulings so they are exercised
+    #     whatever the live corpus happens to hold (a bite that depends on today's data is a
+    #     bite that quietly stops biting). One arm per clause.
+    _bare_dir = {"id": "SYNTH-bare-dir", "governs": ["knowledge"]}
+    _slash_dir = {"id": "SYNTH-slash-dir", "governs": ["knowledge/"]}
+    if matches(_bare_dir, {"knowledge/_totally_unrelated_xyzzy.py"}):
+        failures.append("_governs: a bare entry `knowledge` matched a PATH SEGMENT — the #208 "
+                        "too-loose arm is back and one ruling governs the whole tree again")
+    if matches(_slash_dir, {"knowledge/_totally_unrelated_xyzzy.py"}):
+        failures.append("_governs: a `knowledge/` entry matched a file under it — #208 refuses "
+                        "subtree scope on purpose (it would WIDEN opacity-primitives-4pct); a "
+                        "directory entry governs nothing and is DECLARED instead")
+    if not matches({"id": "SYNTH-file", "governs": ["_capture_gate.py"]},
+                   {"knowledge/_capture_gate.py"}):
+        failures.append("_governs: a bare FILE name stopped matching its repo-relative path — "
+                        "the #208 narrowing cut too deep; basename suffix matching must stand")
+    if not matches({"id": "SYNTH-sym", "governs": ["measure_tokens"]}, {"measure_tokens"}):
+        failures.append("_governs: a bare SYMBOL stopped matching itself — the #208 narrowing "
+                        "cut too deep; the symbol path is the one that catches an edit inside "
+                        "an ungoverned-looking file")
+    if matches({"id": "SYNTH-near", "governs": ["_capture_gate.py"]},
+               {"knowledge/_capture_gate_helpers.py"}):
+        failures.append("_governs: `_capture_gate.py` matched `_capture_gate_helpers.py` — a "
+                        "NEAR MISS must miss, or the suffix arm is prefix-matching")
+
+    # 3b. ⬛ DECLARED, NEVER SILENT (#208). A `governs` entry that names a real DIRECTORY is
+    #     under-specified: it used to govern that whole subtree by accident (bare form) or
+    #     nothing at all (slash form), and it now governs nothing in BOTH forms. Printing it by
+    #     name is the difference between a narrowing and a disappearance.
+    #     ⛔ NOT a failure: what a ruling governs is DAVE'S, and a matcher may not re-scope a
+    #     ruling by going red at it. Re-scoping goes through `_inscribe_ruling.py`.
+    #     ⚠ TWO SHAPES, AND ONLY ONE OF THEM CHANGED BEHAVIOUR. A directory entry CONTAINING a
+    #     `/` (`knowledge/tokens`, `knowledge/snippets/`) never matched a file path before #208
+    #     either — the old arm 3 required a bare token — so those are a PRE-EXISTING
+    #     under-specification, counted in one line, not shouted 32 times into every capture-gate
+    #     run. A BARE directory token is the one that lost reach here, and it is named in full.
+    _dir_slashed: list[str] = []
+    for r in rulings:
+        for g in r.get("governs", []):
+            gn = _norm(g)
+            if not names_a_directory(gn):
+                continue
+            if "/" in gn:  # ⚠ the OLD arm 3's own guard was `"/" not in gn` — same test, so
+                           #   this classifies by what actually changed, not by what looks tidy
+                _dir_slashed.append(f"{r['id']}→{g}")
+                continue
+            print(f"_governs: ⬛ DECLARED (#208) — ruling {r['id']} governs the BARE token `{g}`, "
+                  f"which is a real DIRECTORY. Before #208 it matched every path carrying a "
+                  f"`{gn.rstrip('/')}` segment (the too-loose arm, and the reason the negative "
+                  f"control and [13] were red); it now governs NOTHING. REACH LOST HERE. "
+                  f"Remedy: name the files/symbols it really governs, via `_inscribe_ruling.py` "
+                  f"— the only legal writer of _rulings.json. ⛔ That scope is Dave's call, not "
+                  f"this gate's.")
+    if _dir_slashed:
+        print(f"_governs: ⬛ DECLARED (#208) — {len(_dir_slashed)} `governs` entr(ies) name a "
+              f"DIRECTORY with a path separator; they governed no file BEFORE #208 and govern "
+              f"none after (unchanged, pre-existing under-specification, not a #208 narrowing): "
+              f"{', '.join(_dir_slashed)}")
 
     # 4. ⛔ THE FAIL-LOUD SEAM. An unreadable index must RAISE, never return []. This is the
     #    whole difference between this file and the search it replaces.

@@ -51,8 +51,41 @@ FAIL_ARM_COMMIT = "6b98be3"  # #186 — the offender's pre-row store state
 def _git(*args):
     return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, check=True).stdout
 
-def population():
-    """[(add_date, path)] for tracked brief-class docs added on/after BASELINE_DATE."""
+def staged_adds():
+    """[(date, path)] for brief-class docs ADDED IN THE INDEX and not yet committed.
+
+    #207 postscript — THE SINGLE-COMMIT BLINDSPOT. `population()` reads `git log`, which by
+    construction only knows about docs that are ALREADY COMMITTED. So the gate could only
+    ever fail on the commit AFTER the one that introduced an unrowed doc: a session that adds
+    a brief and commits once — the ordinary shape of a wrap — ships it unrowed and unseen,
+    and the gate reports PASS while doing it. That is the forgotten-document class walking
+    straight through its own gate.
+
+    The staged set is the missing half: files with an ADD in the index against HEAD are the
+    docs THIS commit is about to introduce. They carry today's date because that is the date
+    the commit will bear; the gate's frozen-legacy cutoff then treats them exactly like any
+    other new doc. Empty index (nothing staged) => empty list, and the gate behaves as before.
+    """
+    from datetime import date
+    try:
+        out = _git("diff", "--cached", "--diff-filter=A", "--name-only",
+                   "--", "notes/_briefs", "_BRIEF-*")
+    except subprocess.CalledProcessError:
+        # No HEAD to diff against (a virgin repo). NOT silently treated as "nothing staged" —
+        # said out loud, because a silent empty here would restore the exact blindspot.
+        print("⚠ staged-add scan REFUSED: `git diff --cached` failed (no HEAD?) — the "
+              "current commit's adds are NOT covered by this run")
+        return []
+    today = date.today().isoformat()
+    return sorted((today, p.strip()) for p in out.splitlines() if p.strip())
+
+
+def population(staged=None):
+    """[(add_date, path)] for brief-class docs in scope: committed adds on/after
+    BASELINE_DATE, PLUS the adds staged in the CURRENT commit (#207 postscript).
+
+    `staged` is injectable so the selftest can plant one without touching the real index.
+    """
     out = _git("log", "--diff-filter=A", "--format=C %as", "--name-only",
                "--", "notes/_briefs", "_BRIEF-*")
     date, first_seen = None, {}
@@ -64,7 +97,12 @@ def population():
             if any(p.startswith(t) or os.path.basename(p).startswith("_BRIEF-") for t in PATTERNS):
                 first_seen[p] = date  # log is newest-first; last write wins = oldest = first add
     tracked = set(_git("ls-files").splitlines())
-    return sorted((d, p) for p, d in first_seen.items() if p in tracked and d >= BASELINE_DATE)
+    pop = {p: d for p, d in first_seen.items() if p in tracked and d >= BASELINE_DATE}
+    for d, p in (staged_adds() if staged is None else staged):
+        if any(p.startswith(t) or os.path.basename(p).startswith("_BRIEF-") for t in PATTERNS) \
+                and d >= BASELINE_DATE:
+            pop.setdefault(p, d)   # a committed first-add date WINS over today's stamp
+    return sorted((d, p) for p, d in pop.items())
 
 def _homes(store_text):
     import json
@@ -84,9 +122,12 @@ def unrowed(store_text, pop):
 def check():
     with open(STORE) as f:
         text = f.read()
-    pop = population()
+    staged = staged_adds()
+    pop = population(staged=staged)
     miss = unrowed(text, pop)
-    print(f"doc-row gate: population {len(pop)} (added >= {BASELINE_DATE}, PICKED) · unrowed {len(miss)}")
+    print(f"doc-row gate: population {len(pop)} (added >= {BASELINE_DATE}, PICKED) · "
+          f"of which staged-in-THIS-commit {len(staged)} (#207 postscript: the single-commit "
+          f"blindspot) · unrowed {len(miss)}")
     for d, p in miss:
         print(f"  ⛔ UNROWED: {p} (added {d}) — invisible to every carry; fix = one _state.add() row")
     if miss:
@@ -113,8 +154,33 @@ def selftest():
         live = f.read()
     miss_live = unrowed(live, pop)
     print(f"{'⚠ pass-arm: LIVE FINDING — ' + str(len(miss_live)) + ' unrowed now' if miss_live else '✅ pass-arm: live store clean'}")
-    # mutation-arm: delete one known reference from the live text; gate must flag it
-    victim = pop[-1][1]
+    # staged-arm (#208): the single-commit blindspot. A doc that exists ONLY in the index
+    # must enter the population and be flagged when unrowed. Planted, not staged for real —
+    # this arm must never touch the git index. Both directions: absent from the default
+    # population, present the moment the staged set names it.
+    ghost = "notes/_briefs/9999-99-99-__staged-arm-not-a-real-file.md"
+    assert not any(p == ghost for _, p in population(staged=[])), \
+        "⛔ STAGED-ARM setup: the ghost doc is somehow already in the committed population"
+    from datetime import date as _date
+    pop_staged = population(staged=[(_date.today().isoformat(), ghost)])
+    if not any(p == ghost for _, p in pop_staged):
+        print("⛔ SELFTEST STAGED-ARM: a doc added in the CURRENT commit did not enter the "
+              "population — the #207 single-commit blindspot is back.")
+        return 1
+    if not any(p == ghost for _, p in unrowed(live, pop_staged)):
+        print("⛔ SELFTEST STAGED-ARM: the staged doc entered the population but was not "
+              "flagged unrowed — the gate sees it and says nothing.")
+        return 1
+    print(f"✅ staged-arm: a doc present ONLY in the index is seen and flagged "
+          f"({len(staged_adds())} real staged add(s) in this tree right now).")
+    # mutation-arm: delete one known reference from the live text; gate must flag it.
+    # The victim must be a CURRENTLY-ROWED doc: picking pop[-1] blindly could pick an unrowed
+    # one (e.g. a staged add), and then the arm passes without deleting anything — vacuous.
+    rowed = [p for _, p in pop if not any(p == q for _, q in unrowed(live, pop))]
+    if not rowed:
+        print("⛔ SELFTEST MUTATION-ARM: no rowed doc to mutate — arm is vacuous, not green.")
+        return 1
+    victim = rowed[-1]
     key = victim if victim in live else os.path.basename(victim)
     mutated = live.replace(key, "X" * len(key))
     if not any(p == victim for _, p in unrowed(mutated, pop)):

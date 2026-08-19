@@ -21,7 +21,16 @@ The generators must run in this order because later ones read earlier outputs:
                                                  Reads the vendored axe-core snapshot in compliance/_vendor/, no network.)
   10. _build_integrity.py                    -> _INTEGRITY-REPORT.md   (the gate; needs 3)
 
-Run:  python3 knowledge/_build_all.py
+Run:  python3 knowledge/_build_all.py                # FULL build — deliberate, NO argv
+      python3 knowledge/_build_all.py --selftest     # no step runs, nothing is written
+      python3 knowledge/_build_all.py --range A-B    # chunked pass, steps A..B (#148)
+      python3 knowledge/_build_all.py --resume [N]   # continue a chunked pass (default N=15)
+
+ARGV IS A CONTRACT (#208). Those four forms are the whole of it. An unknown argument is
+REFUSED — loud, named, rc=2, nothing built — never treated as "no flags given", which is
+spelled "build everything". #204 ran the full build BY ACCIDENT exactly that way. `-h` /
+`--help` are answered earlier, by `_helpgate.help_gate`, and never reach the contract.
+
 Exits non-zero if EITHER gate fails: the integrity lint (step 8, any ERROR) or
 the contrast audits (steps 6-7, any non-allowlisted token below its dark-mode
 threshold). Both run to completion first so every report is fresh. This is the
@@ -919,6 +928,41 @@ def selftest():
     else:
         raise AssertionError("selftest (e): garbage --range accepted")
     print("  selftest (e): chunk coverage contract — carries rc, refuses gap/HEAD-move/code-move, loud and named ✓")
+    # (f) #208 ARGV CONTRACT. Every arm here runs against check_argv/main only and EXITS
+    # BEFORE any build step — the refusal path returns from main() above the first
+    # subprocess.run, and the accept-arms never call main() at all. Both directions on the
+    # real contract: unknown tokens MUST be refused, known flags MUST still be accepted.
+    for bad_argv, must_name in [
+        (["notes/_briefs/whatever.md"], "UNKNOWN ARGUMENT"),   # the #204 shape: a non-flag
+        (["--wrap"], "UNKNOWN ARGUMENT"),                      # a flag from another script
+        (["--selftest", "--nope"], "UNKNOWN ARGUMENT"),        # legal flag + junk is JUNK
+        (["--range"], "REQUIRES a value"),                     # value-taking flag, no value
+        (["--range", "1-3", "--resume"], "MUTUALLY EXCLUSIVE"),
+    ]:
+        why = check_argv(bad_argv)
+        assert why and must_name in why, \
+            f"selftest (f): {bad_argv!r} was ACCEPTED or refused unnamed — got {why!r}"
+    for good_argv in [[], ["--selftest"], ["--range", "1-3"], ["--resume"], ["--resume", "5"],
+                      ["--resume", "--selftest"]]:
+        assert check_argv(good_argv) is None, \
+            f"selftest (f): the contract rejected a KNOWN form {good_argv!r} — {check_argv(good_argv)}"
+    # mutation control for (f): a guard that cannot refuse must be caught. Mutant premise =
+    # "every token is known" (i.e. the pre-#208 behaviour, which looked at nothing).
+    _orig = dict(ARGV_FLAGS)
+    try:
+        ARGV_FLAGS["notes/_briefs/whatever.md"] = 0
+        assert check_argv(["notes/_briefs/whatever.md"]) is None, \
+            "mutation setup failed — the mutant did not make the junk token legal"
+    finally:
+        ARGV_FLAGS.clear(); ARGV_FLAGS.update(_orig)
+    assert check_argv(["notes/_briefs/whatever.md"]), \
+        "selftest (f): the mutant was not restored — the guard is now permanently blind"
+    # and the REFUSAL ITSELF, driven through main(): non-zero, and no step can have run
+    # because main() returns on the line before check_routes().
+    assert main(["--definitely-not-a-flag"]) == 2, \
+        "selftest (f): main() did not refuse unknown argv with rc=2 — it fell through to the build"
+    print("  selftest (f): #208 argv contract — 5 illegal forms refused NAMED, 6 legal forms "
+          "accepted, mutation control bites, main() returns rc=2 before step 1 ✓")
     print(f"selftest PASS — exact-ID failure routing over {n} steps; unknown never defaulted (#77)")
     return 0
 
@@ -978,8 +1022,82 @@ def _parse_range(spec, total):
     return a, b
 
 
+# ---- #208: the ARGV CONTRACT -------------------------------------------------------------
+# THE INCIDENT: at #204 a wrap ran the FULL BUILD BY ACCIDENT. main() read argv by
+# membership test only (`"--selftest" in argv`, `"--range" in argv`), so ANY token it did not
+# recognise was not rejected — it was not looked at. A non-flag argument was therefore taken
+# as "no flags given", which is spelled "build everything". This is the same class the
+# help-gate exists for (#158/#157: `gen_showroom.py --help` REWROTE showroom/ because there
+# was no argv contract at all); the fix is the same shape — an EXPLICIT contract, and an
+# unknown token refuses LOUD and NAMED instead of falling through to the expensive default.
+#
+# The asymmetry is the point: the default path of this script is the most expensive and least
+# reversible thing in the repo, so it must be reached DELIBERATELY (a bare, exactly-empty
+# argv), never by a typo landing in the else-branch.
+ARGV_FLAGS = {
+    "--selftest": 0,       # no value
+    "--range": 1,          # REQUIRES a value: A-B
+    "--resume": "?",       # OPTIONAL integer value (chunk size, default 15)
+}
+ARGV_REMEDY = (
+    "REMEDY — the whole contract, and nothing else is accepted:\n"
+    "    python3 knowledge/_build_all.py                # FULL build (deliberate, no argv)\n"
+    "    python3 knowledge/_build_all.py --selftest     # no step runs, nothing is written\n"
+    "    python3 knowledge/_build_all.py --range A-B    # chunked pass, steps A..B\n"
+    "    python3 knowledge/_build_all.py --resume [N]   # continue a chunked pass\n"
+    "  If you meant the full build, run it with NO arguments at all — this script will not\n"
+    "  infer it from an argument it does not understand (#204: that is how a wrap ran the\n"
+    "  build by accident)."
+)
+
+
+def check_argv(argv):
+    """Validate argv against ARGV_FLAGS. Returns None when legal; otherwise the NAMED
+    reason, as a string. Pure: never builds, never writes, never exits — the caller
+    decides. Kept separate from main() precisely so the selftest can bite it without
+    going anywhere near a build step."""
+    i = 0
+    while i < len(argv):
+        tok = argv[i]
+        if tok not in ARGV_FLAGS:
+            near = [f for f in ARGV_FLAGS if tok.lstrip("-")[:4] and tok.lstrip("-")[:4] in f]
+            hint = f" (did you mean {' or '.join(near)}?)" if near else ""
+            return (f"UNKNOWN ARGUMENT {tok!r}{hint} — known flags are "
+                    f"{', '.join(sorted(ARGV_FLAGS))}")
+        arity = ARGV_FLAGS[tok]
+        if arity == 1:
+            if i + 1 >= len(argv):
+                return f"{tok} REQUIRES a value and none followed it"
+            i += 2
+        elif arity == "?":
+            nxt = argv[i + 1] if i + 1 < len(argv) else None
+            i += 2 if (nxt is not None and nxt not in ARGV_FLAGS and nxt.isdigit()) else 1
+        else:
+            i += 1
+    if "--range" in argv and "--resume" in argv:
+        return "--range and --resume are MUTUALLY EXCLUSIVE — one chunk contract per call"
+    return None
+
+
+def _refuse_argv(reason, argv):
+    """The loud, named refusal. NOTHING is built and nothing is written."""
+    print("=" * 72)
+    print("❌ _build_all.py REFUSED — ARGV CONTRACT (#208 guard; the #204 accidental build)")
+    print("=" * 72)
+    print(f"  argv seen: {argv}")
+    print(f"  reason:    {reason}")
+    print("  ⛔ NOTHING WAS BUILT — no generator ran, no report was rewritten, no gate verdict")
+    print("     was produced. This is a REFUSAL, not a build result: do not read it as green")
+    print("     and do not read it as a gate failure.")
+    print(ARGV_REMEDY)
+    return 2
+
+
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
+    bad = check_argv(argv)          # #208: BEFORE anything — an unknown token never falls
+    if bad:                         # through to the full build (see the note above)
+        return _refuse_argv(bad, argv)
     if "--selftest" in argv:
         return selftest()          # short-circuits: the build loop below never runs
     check_routes()                 # fail loud BEFORE step 1 if STEPS and ROUTE_ROWS disagree
