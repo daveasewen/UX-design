@@ -2185,3 +2185,27 @@ reference implementation. Must ship with a mutation proof: remove the ::after an
 (the s194-D1 arms pattern, this file's Governance note).
 
 **Priced, not built** — queued at #201 for a component-work window. Enactment call is Dave's.
+
+## Probe-promotion candidature (RECORDED #207, 2026-08-19) — three probes, one live catch each, promotion DAVE'S
+
+`_promote.py` (W-45) emitted three twice-caught candidates at #206 and correctly wrote nothing
+(mtime-proven). This entry is the durable home its spec named (the #185 forgotten-document class
+is why stdout is not a home). **Recording, not promoting** — promotion is Dave's under this
+file's Governance.
+
+In plain words, the candidates:
+
+1. **The duplicate-id / unresolved-IDREF scan** (probe P-2) — mined the #204 duplicate-ids catch;
+   live-caught 46 findings across 7 pre-#204 review files at #206.
+2. **The premise-vs-store scan** (probe P-4) — mined #203/#204 unrowed-document occasions;
+   live-caught the #206 brief itself (repaired, row W-50) and the 2026-08-16 closeout-plan brief
+   (still unrowed) at #206.
+3. **The stale-figure grep** (probe P-5) — mined #173/#203 stale-figure occasions; live-caught
+   `knowledge/README.md:13` "(38 metas)" vs live 92 at #206 (repaired #207, ASSERT-009).
+
+**The honest basis (Dave's addendum, #207):** each has ONE live catch; the rest is mined history.
+Whether a mined historical occasion counts as a "catch" toward `s204-D1`'s twice-caught bar is an
+UNRULED vocabulary question (store searched #207 — `_memento_search.py` + `_rulings.json` grep:
+the ruled text says "catches a real defect twice", no definition of catch). **If mined history
+does not count, the ruled answer is already "wait".** That vocabulary call, and promotion itself,
+are Dave's. Home of the full critique: `notes/_briefs/2026-08-19-207-addendum-206-report-critique.md`.
