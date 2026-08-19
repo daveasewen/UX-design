@@ -191,6 +191,19 @@ jobs:
       - name: Commit-script selftest — the msgfile-prefix gate bites both directions (#208)
         run: bash knowledge/_git_commit.sh --selftest
 
+      # #208 — W-44 IN CI. The `s204-D1` precondition (driven in >= 1 real verifier wave) was met
+      # this session; Dave ruled the wiring. It is ALSO a step in `_build_all.STEPS` (advisory),
+      # but it gets its own CI step because `_build_survey.py` only surveys steps whose argv is
+      # `--check`/`--selftest` (`NON_MUTATING`) — this one takes a PATH, so the survey LISTS it
+      # and does not run it. Without this step the linter would be wired and never asked in CI.
+      # continue-on-error MIRRORS the advisory route in _build_all.py, and the reason is MEASURED,
+      # not assumed: the four #208 tables are clean, and the FROZEN #204/#206/#207 tables carry 6
+      # lint failures + 3 rc mismatches that ADR-0017 does not let this lane rewrite.
+      # ⬛ FLIPPING THIS TO BLOCKING IS DAVE'S, once that historical residual is triaged.
+      - name: Claim-table evidence linter — s182-D1 tokens + expected observations (W-44, advisory)
+        continue-on-error: true
+        run: python3 knowledge/_validate_evidence.py notes/_claims
+
   # Render job — added #155 (Dave ruled: "keep the ubuntu solution", on #153-A ⑨).
   # BLOCKING: the state-contrast selftest (57 arms incl. the s152-D1 mutation
   # control) — this is the proof that had no runner outside the sandbox.
@@ -222,3 +235,19 @@ jobs:
       - name: Full state-contrast sweep — ADVISORY until the Banner 8 clear (#151 open)
         continue-on-error: true
         run: python3 knowledge/_validate_state_contrast.py
+
+      # #208 — W-45 IN CI, AND IT BELONGS IN *THIS* JOB, DECLARED. The registry holds 5 probes;
+      # P-3 (dangling dataviz var → silent black, the #184 class) is `environment:
+      # sandbox-render` and needs Chromium+Playwright, which ONLY this job installs. In the
+      # `gates` job P-3 would refuse every run (77 + `COULD-NOT-ASK:`) and the one class with a
+      # mutation-proven silent failure mode would never actually be asked in CI. The other four
+      # probes are pure python and cost seconds, so running the whole registry here asks MORE,
+      # not less. ⚠ This is the ONE place P-3 is ever really driven — if this step moves, that
+      # class goes back to being remembered rather than run.
+      # continue-on-error MIRRORS the ADVISORY route in `_build_all.STEPS`: ⬛ promoting a probe
+      # to a BLOCKING gate is DAVE'S (derivation governance, and the registry's own docstring).
+      # ⚠ #208 also fixed the exit that made this legible: a run in which EVERY probe REFUSED
+      # used to exit 0 and read as green. It now exits 77 with the marked line.
+      - name: Probe registry — every historically-found defect class, re-driven (W-45, advisory)
+        continue-on-error: true
+        run: python3 knowledge/_probe_registry/_registry.py --run

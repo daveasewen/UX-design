@@ -29,14 +29,18 @@ LOUD INCONSISTENCIES (rc=1, never a silent reclassification)
     that lost its label; both are decisions nobody made.
 
 USAGE
-  python3 knowledge/_join_claim_tables.py <claims.jsonl> <challenges.jsonl> [--md <out.md>]
+  python3 knowledge/_join_claim_tables.py <claims.jsonl> [<claims2.jsonl> …] <challenges.jsonl> [--md <out.md>]
   python3 knowledge/_join_claim_tables.py --selftest
 
 EXIT CODES: 0 = joined, nothing inconsistent (surfaced rows are NOT a failure — they are the
 product). 1 = parse residual or a loud inconsistency. 2 = bad invocation.
 
-CONSUMER at birth: the conductor's seat at the PM-wave seam, per `s204-D1`. Declared: NOT
-wired into `_build_all.py` or CI until driven in >= 1 real wave.
+CONSUMER at birth: the conductor's seat at the PM-wave seam, per `s204-D1` — DRIVEN there in
+the #208 wave (3 claim tables + 1 challenge table, 55/60 rows).
+⚠ STILL NOT a `_build_all.py` step, deliberately and unlike its two siblings: this tool's output
+is a DIFF FOR A HUMAN at a wave seam, not an assertion about the tree. A build has no wave to
+join and nothing to do with the answer. Its `--selftest` is the part a build could ask, and that
+is a ⬛ priced TODO, not an oversight (#208).
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -110,7 +114,10 @@ def render(surfaced, confirmed, inconsistent, claims, challenges, residual, path
     L.append("")
     L.append("*⛔ GENERATED. Do not hand-edit — edit the JSONL and re-run (write-once, ADR-0017).*")
     L.append("")
-    L.append("**Sources:** `%s` (%d claim row(s)) · `%s` (%d challenge row(s))"
+    # #208: paths[0] may name SEVERAL claim tables (one per build-PM), already backticked by
+    # main(). Every source is cited BY NAME — the whole point of the N:1 change is that no temp
+    # file gets written into a generated provenance line.
+    L.append("**Sources:** %s (%d claim row(s)) · `%s` (%d challenge row(s))"
              % (paths[0], len(claims), paths[1], len(challenges)))
     L.append("")
     L.append("**Verdict tally (parsed rows only):** " + " · ".join(
@@ -163,14 +170,36 @@ def _cell(s):
 def main(argv):
     consumed = {argv[i + 1] for i, a in enumerate(argv) if a == "--md" and i + 1 < len(argv)}
     args = [a for a in argv if not a.startswith("--") and a not in consumed]
-    if len(args) != 2:
-        sys.stderr.write("✖ REFUSED: need exactly <claims.jsonl> <challenges.jsonl>; got %r\n"
+    # ⛔ #208 — N:1, because A WAVE IS N:1 AND THE JOIN WAS 1:1. The #208 wave ran three
+    # build-PMs against ONE verifier, and this refusal forced the conductor to `cat` the three
+    # tables into a temp file — after which the generated `## Sources` header cited THAT TEMP
+    # PATH as the provenance of the join, an ADR-0017 wound inside a GENERATED file. The last
+    # positional is the CHALLENGES table (there is exactly one verifier seat per wave); every
+    # earlier one is a claims table. One file is still a refusal — a join needs both sides.
+    if len(args) < 2:
+        sys.stderr.write("✖ REFUSED: need <claims.jsonl> [<claims2.jsonl> …] <challenges.jsonl> "
+                         "— the LAST path is the challenge table; got %r\n"
                          "  (%s --help for the contract)\n" % (args, os.path.basename(__file__)))
         return 2
-    cpath, hpath = args
-    claims, cdef = CT.load(cpath, expect_kind="claim")
+    cpaths, hpath = args[:-1], args[-1]
+    claims, cdef, residual = [], [], 0
+    seen = {}
+    for cp in cpaths:
+        rs, ds = CT.load(cp, expect_kind="claim")
+        residual += CT.report_defects(ds, cp)
+        for r in rs:
+            if r["id"] in seen:
+                # LOUD, never a silent last-wins: two lanes claiming the same id is a join-key
+                # collision, and the join key is the whole instrument.
+                print("⛔ DUPLICATE CLAIM ID %r — in %s and %s. The id is the JOIN KEY; a "
+                      "collision means one of the two rows would answer for the other."
+                      % (r["id"], seen[r["id"]], cp))
+                residual += 1
+            seen[r["id"]] = cp
+        claims.extend(rs)
     challenges, hdef = CT.load(hpath, expect_kind="challenge")
-    residual = CT.report_defects(cdef, cpath) + CT.report_defects(hdef, hpath)
+    residual += CT.report_defects(hdef, hpath)
+    cpath = " · ".join("`%s`" % p for p in cpaths)
 
     surfaced, confirmed, inconsistent = join(claims, challenges)
     text = render(surfaced, confirmed, inconsistent, claims, challenges, residual, (cpath, hpath))

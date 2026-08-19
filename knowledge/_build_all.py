@@ -499,6 +499,40 @@ STEPS = [
     ("integrity lint (gate)", "_build_integrity.py"),
     ("could-not-ask convention selftest (#193 — the third verdict's exit code + marker)",
      "_could_not_ask.py", ["--selftest"]),
+    # ── #208 · W-44 + W-45 WIRED, the `s204-D1` precondition MET ────────────────────────────
+    # `s204-D1` held both instruments OUT of this file and CI *until driven in >= 1 real
+    # verifier wave*. That wave ran this session: three PM claim tables (55 rows) and a
+    # 55-challenge adversarial run, 51 CONFIRMED / 2 CONTRADICTED, receipt at
+    # `notes/_receipts/2026-08-19-208-verifier-wave.md`. Dave ruled the wiring.
+    # ⚠ APPENDED, never inserted (see the note above) — and EVERY one of these three carries a
+    # ROUTE_ROWS row landing in the SAME edit: a STEPS entry with no route aborts every full
+    # build above step 1 (the #119/#164 class, recorded four times in the route table).
+    #
+    # W-45 · the probe registry. Drives every historically-found defect class as a SCRIPT so
+    # the next verifier does not re-derive the hunt from memory. ADVISORY, deliberately:
+    # promoting any probe to a BLOCKING build gate is DAVE'S (derivation governance, and the
+    # registry's own docstring says so) — wiring it as a gate here would make that ruling for
+    # him. What this step buys today is that the probes RUN on every build instead of only when
+    # a verifier remembers them. ⚠ A probe that REFUSES (77 + a `COULD-NOT-ASK:` line, e.g. P-3
+    # needs playwright, absent in the sandbox and present in the CI `render` job) is printed in
+    # its own block and does NOT fail the run — the #193 three-verdict convention.
+    ("probe registry — every historically-found defect class, re-driven (W-45, advisory)",
+     "_probe_registry/_registry.py", ["--run"]),
+    # W-44 · the evidence linter over EVERY claim/challenge table. `s182-D1` conformance plus
+    # the #208 expected-OBSERVATION sampler (an exit code is not an observation).
+    # ADVISORY, and the reason is measured, not assumed: at wiring time the four #208 tables
+    # are clean but the FROZEN #204/#206/#207 tables carry 6 lint failures and 3 rc mismatches
+    # between them. Under ADR-0017 history is frozen, so those rows are not mine to rewrite,
+    # and a gate born red is a gate that gets switched off (the #79 lesson, quoted above).
+    # ⬛ FLIPPING THIS TO BLOCKING IS DAVE'S, once the historical residual is triaged.
+    ("claim-table evidence linter — s182-D1 tokens + expected observations (W-44, advisory)",
+     "_validate_evidence.py", ["notes/_claims"]),
+    # Wave 1's punted item 4. `_governs.py --selftest` already has a consumer — `_capture_gate`
+    # runs its matcher as the trigger-index arm at [12]/[13] — so this is LEGIBILITY: when the
+    # matcher breaks, the build says `_governs`, not `capture gate, somewhere inside`. #208
+    # spent a whole wave re-deriving exactly that diagnosis from a red [13].
+    ("governs matcher selftest — the [12]/[13] trigger-index arm, named (#208 legibility)",
+     "_governs.py", ["--selftest"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -803,6 +837,16 @@ ROUTE_ROWS = [
      "\n❌ palette-tier gate failed (exit {code}) — a theme declares no ragPalette/neutralRamp, a declaration dangles, a palette key is silently absent, a tint became palette-owned, or a theme's override set diverges from its palette. Run: python3 knowledge/_validate_palette_tier.py"),
     ("palette-tier selftest — 10 mutation bites (s157-D2)", GATE,
      "\n❌ palette-tier selftest failed (exit {code}) — python3 knowledge/_validate_palette_tier.py --selftest"),
+    # #208 — the three W-44/W-45 rows, landing in the SAME edit as their STEPS entries. The
+    # label strings are ROUTING JOIN KEYS duplicated verbatim in STEPS — never edit one alone.
+    ("probe registry — every historically-found defect class, re-driven (W-45, advisory)",
+     ADVISORY, None),
+    ("claim-table evidence linter — s182-D1 tokens + expected observations (W-44, advisory)",
+     ADVISORY, None),
+    ("governs matcher selftest — the [12]/[13] trigger-index arm, named (#208 legibility)", GATE,
+     "\n❌ governs matcher selftest failed (exit {code}) — the ruling-to-path matcher that "
+     "`_capture_gate.py --selftest` runs as its trigger-index arm ([12]/[13]) is broken or too "
+     "loose. Run: python3 knowledge/_governs.py --selftest"),
 ]
 
 

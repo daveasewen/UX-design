@@ -142,8 +142,28 @@ fail() { echo "✗ $1" >&2; exit 1; }
 # NON-WRAP run walked straight past it and produced `after #208 2026-08-19 — #207 2026-08-18 — …`.
 # That is 1 of the 8 documented doubled/tripled subjects, and it is why this counts BOTH shapes.
 # ⚠ `— ` here is U+2014 + space, the same literal T3 emits; a hyphen is not this prefix.
+# ⛔ #208 NEW-2, FIXED THE SAME SESSION IT WAS FOUND — this counter was `re.findall`, i.e.
+# UNANCHORED, and it refused an HONEST subject that QUOTED a prior one mid-line ("restores the
+# `after #207 … — x` subject"). The #170 gate this widens has always been ANCHORED (`re.match`,
+# :487 in the T3 block below). An unanchored counter is not a wider gate, it is a DIFFERENT one:
+# it counts MENTIONS, and a mention is not a prefix. It now counts the STACK — how many prefixes
+# sit consecutively AT THE START, which is the only place stacking can happen, because T3 always
+# prepends. `after #208 … — after #207 … — x` still counts 2; the honest quote counts 1.
+# ⚠ `— ` here is U+2014 + space, the same literal T3 emits; a hyphen is not this prefix.
 prefix_count() {
-  python3 -c 'import re,sys; print(len(re.findall(r"(?:after )?#\d+ \d{4}-\d{2}-\d{2} — ", sys.argv[1])))' "$1"
+  python3 - "$1" <<'PY'
+import re, sys
+s = sys.argv[1]
+pat = re.compile(r"^(?:after )?#\d+ \d{4}-\d{2}-\d{2} — ")
+n = 0
+while True:
+    m = pat.match(s)
+    if not m:
+        break
+    n += 1
+    s = s[m.end():]
+print(n)
+PY
 }
 
 # ── #208 SELFTEST — the msgfile-prefix gate, BOTH DIRECTIONS, no repo state touched ──────────
@@ -168,10 +188,19 @@ if [ "${1-}" = "--selftest" ]; then
   bite "date with no session ref is not a prefix"       0 "$(prefix_count '2026-08-19 — fix the gates')"
   bite "hyphen is not the em-dash separator"            0 "$(prefix_count 'after #207 2026-08-18 - wave1 receipts')"
   bite "prose mentioning a session mid-line"            0 "$(prefix_count 'fixes the class #205 found')"
+  # ⛔ NEW-2 (#208 verifier): the arms above never carried a DATE mid-line, so the false positive
+  # they were meant to fence never got exercised. These two are that case, both directions.
+  bite "honest subject QUOTING a prior prefix mid-line" 1 "$(prefix_count 'after #208 2026-08-19 — restores the after #207 2026-08-18 — x subject')"
+  bite "a quoted prefix with no prefix of its own"      0 "$(prefix_count 'restores the after #207 2026-08-18 — x subject')"
+  bite "a prefix after a leading word is not a stack"   0 "$(prefix_count 'see after #207 2026-08-18 — x')"
+  # the ACK hatch exists and is spelled the same way as its two neighbours (declared passes,
+  # silent fails). A hatch nothing asserts is a hatch that can be deleted by accident.
+  if grep -q 'PREFIX_ACK' "$0"; then echo "  [OK]   PREFIX_ACK hatch present (declared passes, silent fails)";
+  else echo "  [FAIL] PREFIX_ACK hatch absent — the door gate has no legal form for a declared exception"; SF_FAILS=$((SF_FAILS + 1)); fi
   if [ "$SF_FAILS" -ne 0 ]; then
     echo "✗ selftest FAILED — $SF_FAILS bite(s)"; exit 1
   fi
-  echo "✓ selftest OK — 10 bites: 5 fire, 5 stay silent"
+  echo "✓ selftest OK — 14 bites: 6 fire, 7 stay silent, 1 hatch present"
   exit 0
 fi
 
@@ -189,8 +218,15 @@ echo "— msgfile head: $(head -1 "$MSGFILE")"
 # anything — makes the answer independent of which branch T3 will take.
 # ⛔ The #170 in-branch check is LEFT IN PLACE, unchanged. Two gates on one class is not
 # duplication when the inner one is the one that has been proven to bite.
+# ⛔ #208 NEW-2: the counter is ANCHORED (see prefix_count above) — it asks "does line 1 START
+# with a stacked prefix", not "does the word appear somewhere". An honest subject that QUOTES a
+# prior one is no longer refused. Declared-gap hatch: PREFIX_ACK="<real reason>" passes it
+# DECLARED, spelled exactly like its neighbours DOC_ROW_ACK / SHOWROOM_ACK / SESSION_ACK
+# (declared passes, silent fails) — a gate with no legal exception invites the workaround.
 MSG_L1=$(head -1 "$MSGFILE")
-if [ "$(prefix_count "$MSG_L1")" -gt 0 ]; then
+if [ -n "${PREFIX_ACK:-}" ]; then
+  echo "— reused-msgfile gate: DECLARED GAP — $PREFIX_ACK"
+elif [ "$(prefix_count "$MSG_L1")" -gt 0 ]; then
   fail "REUSED-MSGFILE GATE (#208, widening #170): line 1 of '$MSGFILE' already carries a T3 prefix — \"$(printf '%s' "$MSG_L1" | cut -c1-80)\". This file has been through a commit run before, so this run would stack a second prefix (the doubled-subject class, 8 documented instances). REMEDY: write a FRESH msgfile with a FRESH name — one printf per invocation, never a reused path:
     printf '%s\\n' '<your one-line summary>' '' '<body…>' > outputs/_msg-<session>-<slug>-\$(date +%s).txt
   Nothing has been staged, and this msgfile has not been modified."

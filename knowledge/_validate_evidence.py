@@ -15,9 +15,30 @@ mechanism, and forcing a token onto them would manufacture false provenance.
 ⛔ A PATH token that does NOT EXIST is a HARD FAIL: a dead pointer is worse than no pointer,
 because it reads as evidence (`ritual-output-is-not-evidence`).
 
+⛔ #208 — THREE POINTER DIALECTS, because the rule above had no legal form for two honest
+statements and one laundering hole (all three found by driving the #208 verifier wave):
+  · `absent:knowledge/_foo.py` — an ABSENCE CLAIM. The linter checks the path does NOT exist,
+    and HARD-FAILS if it does. Before this, a finding whose whole subject was a missing file
+    had to HIDE the path behind an `rc=1, no output` figure — the linter was satisfied by
+    hiding the subject (`honest-refusal-needs-a-legal-form`, three independent instances).
+  · `notes/_vfy.txt (NON-REPO: /…/vfy/full)` — the RULED `s191-D2` marker, now HONOURED. A
+    verifier's material genuinely lives in scratch clones; the marker declares WHERE and the
+    existence check stands down for that pointer only (marker must follow within 60 chars).
+  · `notes/_vfy.txt…` — a trailing ellipsis USED TO PASS UNCHECKED, so one keystroke laundered
+    any dead pointer past the gate. It is now resolved as a PREFIX: at least one real path must
+    start with it, else it is a DEAD POINTER like any other. `*`/`?`/`[` globs are unchanged.
+
 LEG 2 — SAMPLING. A seeded random subset of rows has its first COMMAND token RE-RUN and its
 exit code compared with the row's declared `rc`. `--seed` makes every run reproducible; the
 seed and the drawn ids are PRINTED, so a report can quote which rows were actually sampled.
+
+⛔ #208 — AN EXIT CODE IS NOT AN OBSERVATION. `git show`, `grep -c`, `find`, `ls` and `sed -n`
+exit 0 for ANY content, so for read-style evidence — most of a claim table — rc-only sampling
+proves RUNNABILITY, not REPRODUCTION. The #208 verifier watched this gate print PASS over two
+rows whose content it had just proved false. A row may now declare `expect_stdout_contains`
+(substring of stdout) and/or `expect_count` (the last stdout line, as an integer); when either
+is present the sampler compares the OBSERVATION and an OBSERVATION MISMATCH is a rc=1 failure.
+Rows without them behave EXACTLY as before — the schema changed by ADDITION.
 
 ⛔ THE REFUSAL CONTRACT (the reason this linter does not lie): a command it cannot honestly run
 is REFUSED — loudly, by name, with the reason — and never defaulted to a pass. Three refusal
@@ -40,8 +61,15 @@ USAGE
 EXIT: 0 clean · 1 lint failure, parse residual, rc mismatch (or a refusal under --strict-sample)
       · 2 bad invocation.
 
-CONSUMER at birth: the PM-wave seam, alongside `_join_claim_tables.py`. Declared: NOT wired
-into `_build_all.py` or CI until item 1 is driven in >= 1 real wave (`s204-D1`).
+CONSUMER at birth: the PM-wave seam, alongside `_join_claim_tables.py`.
+✅ WIRED #208 — the `s204-D1` precondition (driven in >= 1 real wave) was MET by the #208
+verifier wave (55 claim rows, 60 challenges, receipt `notes/_receipts/2026-08-19-208-verifier-
+wave.md`) and Dave ruled the wiring. Now `_build_all.STEPS` (ADVISORY) over `notes/_claims`,
+plus its own CI step in the `gates` job. ADVISORY and not blocking BY MEASUREMENT: the frozen
+#204/#206/#207 tables carry lint failures ADR-0017 does not let a later lane rewrite.
+⬛ Promoting it to BLOCKING is DAVE'S.
+A DIRECTORY argument is legal and lints every `*.jsonl` in it; relative paths resolve against
+the repo root, so the step does not depend on the build's cwd.
 
 Selftest: plants a token-less mechanical row, a dead path pointer, and an rc mismatch — each
 must be named; removing each must go green. Includes a REFUSAL arm proving a side-effecting
@@ -55,7 +83,7 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 
-import sys, os, re, json, random, shutil, subprocess
+import sys, os, re, json, glob, random, shutil, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _claimtable as CT
 
@@ -93,7 +121,40 @@ def commands(row):
     return out
 
 
-GLOB_NEXT = ("*", "?", "[", "\u2026")
+GLOB_NEXT = ("*", "?", "[")
+ELLIPSIS = "\u2026"
+ABSENT_PREFIX = "absent:"
+NONREPO_MARKER = "(NON-REPO:"
+NONREPO_WINDOW = 60   # chars after the pointer in which the ruled s191-D2 marker must appear
+
+
+def pointers(ev):
+    """[(path, mode)] \u2014 every repo-relative pointer WITH the dialect it was written in (#208).
+
+    mode is EXISTS   \u2014 the default: the path must exist on disk (the pre-#208 rule, unchanged)
+           ABSENT   \u2014 written `absent:<path>`: the claim IS the absence, so the path must NOT
+                      exist. The legal form for a finding whose subject is a missing file.
+           NON-REPO \u2014 followed by the ruled `s191-D2` `(NON-REPO: <where>)` marker: the home is
+                      DECLARED elsewhere, so this linter cannot and does not judge existence.
+           PREFIX   \u2014 written with a trailing ellipsis: a TRUNCATION, resolved as a prefix
+                      glob. At least one real path must start with it. #208 closes the
+                      laundering hole where one keystroke excused any dead pointer.
+    A `*`/`?`/`[` metacharacter still means PATTERN and is excluded entirely (see paths_in)."""
+    out = []
+    for m in PATH_RE.finditer(ev):
+        p = m.group(1)
+        nxt = ev[m.end():m.end() + 1]
+        if nxt in GLOB_NEXT or p.endswith("-") or p.endswith("/"):
+            continue
+        if NONREPO_MARKER in ev[m.end():m.end() + NONREPO_WINDOW]:
+            out.append((p, "NON-REPO"))
+        elif ev[max(0, m.start() - len(ABSENT_PREFIX)):m.start()] == ABSENT_PREFIX:
+            out.append((p, "ABSENT"))
+        elif nxt == ELLIPSIS:
+            out.append((p, "PREFIX"))
+        else:
+            out.append((p, "EXISTS"))
+    return out
 
 
 def paths_in(ev):
@@ -101,19 +162,13 @@ def paths_in(ev):
     PATTERN, not a pointer, and is excluded — `reviews/REVIEW-204-*.html` names a real family of
     files, and reporting it as a dead pointer is a false positive that would train a reader to
     ignore the check (found by driving this linter on the #204 tables, fix loop amendment ②)."""
-    out = []
-    for m in PATH_RE.finditer(ev):
-        nxt = ev[m.end():m.end() + 1]
-        if nxt in GLOB_NEXT or m.group(1).endswith("-") or m.group(1).endswith("/"):
-            continue
-        out.append(m.group(1))
-    return out
+    return [p for p, mode in pointers(ev) if mode == "EXISTS"]
 
 
 def tokens(row):
     ev = row.get("evidence", "")
     cmds = commands(row)
-    paths = paths_in(ev)
+    paths = pointers(ev)
     figs = FIGURE_RE.findall(ev)
     return cmds, paths, figs
 
@@ -123,11 +178,32 @@ def lint(rows):
     fails = []
     for r in rows:
         cmds, paths, figs = tokens(r)
-        for p in paths:
+        for p, mode in paths:
             p2 = p.rstrip(".,;:)")
-            if not os.path.exists(os.path.join(ROOT, p2.split(":")[0])):
+            abs_p = os.path.join(ROOT, p2.split(":")[0])
+            if mode == "NON-REPO":
+                continue      # s191-D2: the home is DECLARED elsewhere; not this linter's to judge
+            if mode == "ABSENT":
+                if os.path.exists(abs_p):
+                    fails.append((r["id"], "FALSE ABSENCE: evidence declares `absent:%s`, but that "
+                                           "path EXISTS on disk — an absence claim whose subject is "
+                                           "present is the same defect as a dead pointer, mirrored"
+                                  % p2))
+            elif mode == "PREFIX":
+                # #208: a trailing ellipsis is a TRUNCATION, not a licence. Resolve it.
+                if not glob.glob(abs_p + "*"):
+                    fails.append((r["id"], "DEAD POINTER (truncated): evidence names `%s…`, and NO "
+                                           "path on disk starts with it — the trailing ellipsis "
+                                           "does not make a dead pointer legal (#208 laundering "
+                                           "hole). Write the full path, or `absent:%s` if the "
+                                           "ABSENCE is the claim, or add the ruled "
+                                           "`(NON-REPO: <where>)` marker" % (p2, p2)))
+            elif not os.path.exists(abs_p):
                 fails.append((r["id"], "DEAD POINTER: evidence names `%s`, which does not exist "
-                                       "on disk — a dead pointer reads as evidence" % p2))
+                                       "on disk — a dead pointer reads as evidence. If the "
+                                       "ABSENCE is the claim, write `absent:%s`; if the file "
+                                       "lives outside the repo, use the ruled s191-D2 marker "
+                                       "`(NON-REPO: <where>)`" % (p2, p2)))
         if not is_mechanical(r):
             continue
         if not (cmds or paths or figs):
@@ -138,16 +214,41 @@ def lint(rows):
     return fails
 
 
+def _without_paths(cmd):
+    """The command with its PATH-LIKE operands removed (#208).
+
+    An UNSAFE marker inside a FILE NAME is a name, not an action: `grep -c X
+    knowledge/_git_commit.sh` was refused as UNSAFE because the substring `commit` appears in
+    the path, which made every claim about the commit script structurally unverifiable. Verbs
+    are still matched on the operand-free command, so `git commit -m …` is refused exactly as
+    before. Redirects and `$(`/backtick substitution are matched on the FULL string — those are
+    shell syntax, not operands."""
+    return " ".join(t for t in cmd.split()
+                    if not ("/" in t or t.endswith(".py") or t.endswith(".sh")
+                            or t.endswith(".jsonl") or t.endswith(".json")
+                            or t.endswith(".md") or t.endswith(".yml")))
+
+
+SHELL_MARKERS = (">", ">>", "|& ", "$(", "`")
+
+
 def classify(cmd):
     """(verdict, reason). verdict ∈ RUNNABLE | SIDE-EFFECTS | UNSAFE | NOT-IN-ENV."""
     head = cmd.split()[0]
+    stripped = _without_paths(cmd)
     for m in UNSAFE_MARKERS:
-        if m in cmd:
+        if m in (cmd if m in SHELL_MARKERS else stripped):
             return "UNSAFE", "contains %r — arbitrary effect, no allowlist can vouch for it" % m
     if head in ("python3", "python"):
         if " -c" in cmd:
             return "UNSAFE", "`python3 -c` runs arbitrary code — cannot be judged read-only"
         if "--check" in cmd or "--selftest" in cmd or "--dry-run" in cmd:
+            pass
+        elif "--run" in cmd and "_probe_registry/" in cmd:
+            # #208 verifier finding 8: `_registry.py --run [--probe P-N]` is a READ-ONLY probe
+            # drive, and the classifier refused it purely for lacking a `--check`. The exception
+            # is deliberately NARROW — it is keyed on the registry's own directory, not on the
+            # word `--run`, which means nothing on its own anywhere else in this repo.
             pass
         else:
             return ("SIDE-EFFECTS",
@@ -160,15 +261,54 @@ def classify(cmd):
     return "RUNNABLE", ""
 
 
+def observe(row, out):
+    """#208 — compare an OBSERVATION, not an exit code. Returns [] or [reason].
+
+    Only fires when the row DECLARED an expectation; a row without one is judged exactly as it
+    was before (`rc` only), which is what keeps this a change BY ADDITION."""
+    problems = []
+    want = row.get("expect_stdout_contains")
+    if want is not None and want not in out:
+        problems.append("stdout does NOT contain %r (declared expect_stdout_contains). "
+                        "First 120 chars of stdout: %r" % (want, out[:120]))
+    if "expect_count" in row:
+        lines = [l.strip() for l in out.splitlines() if l.strip()]
+        if not lines:
+            problems.append("expect_count=%d declared, but the command printed NOTHING on "
+                            "stdout — an empty observation is never a pass"
+                            % row["expect_count"])
+        else:
+            try:
+                got = int(lines[-1].split()[0])
+            except (ValueError, IndexError):
+                problems.append("expect_count=%d declared, but the last stdout line %r does not "
+                                "parse as an integer — a count that cannot be read is a LOUD "
+                                "failure, not a pass" % (row["expect_count"], lines[-1][:60]))
+            else:
+                if got != row["expect_count"]:
+                    problems.append("expect_count=%d declared, command observed %d"
+                                    % (row["expect_count"], got))
+    return problems
+
+
 def sample(rows, n, seed, strict=False):
-    """Seeded re-run of a subset. Returns (results, mismatches, refusals)."""
-    pool = [r for r in rows if commands(r)]
+    """Seeded re-run of a subset. Returns (results, mismatches, refusals).
+
+    #208: `mismatches` now carries BOTH kinds of divergence — an rc mismatch and an OBSERVATION
+    mismatch — because both mean the same thing to a caller: the evidence no longer reproduces."""
+    has_cmd = [r for r in rows if commands(r)]
+    # #208: a row that DECLARED an expected observation asked to be checked. It is never left to
+    # chance — it is drawn ALWAYS, on top of the seeded random draw over everything else.
+    forced = [r for r in has_cmd if "expect_stdout_contains" in r or "expect_count" in r]
+    pool = [r for r in has_cmd if r not in forced]
     rng = random.Random(seed)
-    drawn = rng.sample(pool, min(n, len(pool))) if pool else []
+    drawn = forced + (rng.sample(pool, min(n, len(pool))) if pool else [])
     drawn.sort(key=lambda r: r["id"])
     results, mismatches, refusals = [], [], []
-    print("── SAMPLER · seed=%d · pool=%d row(s) with a command · drawn=%d: %s"
-          % (seed, len(pool), len(drawn), ", ".join(r["id"] for r in drawn) or "none"))
+    print("── SAMPLER · seed=%d · pool=%d row(s) with a command · %d with a declared observation "
+          "(always drawn) · drawn=%d: %s"
+          % (seed, len(has_cmd), len(forced), len(drawn),
+             ", ".join(r["id"] for r in drawn) or "none"))
     for r in drawn:
         cmd = commands(r)[0]
         verdict, reason = classify(cmd)
@@ -194,14 +334,24 @@ def sample(rows, n, seed, strict=False):
             continue
         declared = r.get("rc")
         results.append((r["id"], cmd, rc, declared))
+        # #208: the OBSERVATION check runs first — it is the one that can see content.
+        obs = observe(r, p.stdout or "")
+        for reason in obs:
+            mismatches.append((r["id"], cmd, rc, declared))
+            print("  ⛔ OBSERVATION MISMATCH %s — `%s`\n      %s" % (r["id"], cmd[:80], reason))
         if declared is None:
-            print("  ⚠ RAN (no declared rc to compare) %s — `%s` → rc=%d" % (r["id"], cmd[:80], rc))
+            if not obs:
+                print("  ⚠ RAN (no declared rc to compare) %s — `%s` → rc=%d"
+                      % (r["id"], cmd[:80], rc))
         elif rc != declared:
             mismatches.append((r["id"], cmd, rc, declared))
             print("  ⛔ RC MISMATCH %s — `%s` → rc=%d, row declares rc=%d"
                   % (r["id"], cmd[:80], rc, declared))
-        else:
-            print("  ✅ RAN %s — `%s` → rc=%d (matches declared)" % (r["id"], cmd[:80], rc))
+        elif not obs:
+            checked = " + OBSERVATION" if ("expect_stdout_contains" in r
+                                           or "expect_count" in r) else ""
+            print("  ✅ RAN %s — `%s` → rc=%d (matches declared%s)"
+                  % (r["id"], cmd[:80], rc, checked))
     if refusals:
         print("── DECLARED GAP: %d of %d sampled row(s) were NOT run. Refusal is the honest "
               "answer; none of them is counted as a pass." % (len(refusals), len(drawn)))
@@ -216,8 +366,29 @@ def main(argv):
             skip.add(argv[i + 1])
     paths = [p for p in paths if p not in skip]
     if not paths:
-        sys.stderr.write("✖ REFUSED: need at least one <rows.jsonl>\n")
+        sys.stderr.write("✖ REFUSED: need at least one <rows.jsonl> (a DIRECTORY is also legal — "
+                         "every *.jsonl in it is linted)\n")
         return 2
+    # #208 WIRING: `_build_all.py` runs steps with an arbitrary cwd, and the wave seam wants ONE
+    # invocation over a whole directory of tables (the verifier had to `cat` three files into a
+    # temp path to get past a 1:1 limit elsewhere). Both are resolved here, LOUDLY: a token that
+    # names neither a real path nor a repo-relative one is a REFUSAL, never a silent skip.
+    expanded, missing = [], []
+    for p in paths:
+        cand = p if os.path.exists(p) else os.path.join(ROOT, p)
+        if not os.path.exists(cand):
+            missing.append(p)
+        elif os.path.isdir(cand):
+            found = sorted(glob.glob(os.path.join(cand, "*.jsonl")))
+            if not found:
+                missing.append(p + " (directory contains no *.jsonl)")
+            expanded.extend(found)
+        else:
+            expanded.append(cand)
+    if missing:
+        sys.stderr.write("✖ REFUSED: no such claim table(s): %s\n" % ", ".join(missing))
+        return 2
+    paths = expanded
     n = int(argv[argv.index("--sample") + 1]) if "--sample" in argv else DEFAULT_SAMPLE
     seed = int(argv[argv.index("--seed") + 1]) if "--seed" in argv else DEFAULT_SEED
     strict = "--strict-sample" in argv
@@ -241,12 +412,18 @@ def main(argv):
 
     bad = len(fails) + residual + len(mism) + (len(refus) if strict else 0)
     if bad:
-        print("⛔ EVIDENCE GATE FAIL — %d lint · %d unparsed · %d rc mismatch%s"
+        print("⛔ EVIDENCE GATE FAIL — %d lint · %d unparsed · %d rc/observation mismatch%s"
               % (len(fails), residual, len(mism),
                  " · %d refusal(s) under --strict-sample" % len(refus) if strict else ""))
         return 1
+    nobs = sum(1 for r in rows if "expect_stdout_contains" in r or "expect_count" in r)
     print("✅ EVIDENCE GATE PASS — every mechanical row carries a probeable token; "
-          "0 rc mismatch(es); %d declared refusal(s)." % len(refus))
+          "0 rc/observation mismatch(es); %d row(s) carried a declared OBSERVATION and every one "
+          "reproduced; %d declared refusal(s)." % (nobs, len(refus)))
+    if not nobs:
+        print("⚠ NOT ONE ROW declared an expected observation (`expect_stdout_contains` / "
+              "`expect_count`). For read-style evidence this run proved the commands still RUN, "
+              "not that they still SAY what the rows claim (#208, the exit-code blindness).")
     return 0
 
 
@@ -310,6 +487,88 @@ def selftest():
     else:
         print("  ✅ glob arm (other direction): a genuinely dead path is still flagged")
 
+    # --- #208 ABSENCE dialect: both directions ---
+    rows, _ = CT.load(write("abs1.jsonl", [_row("E-10",
+                            evidence="the gate has no hatch: `absent:knowledge/_no_such_9f3a.py`")]))
+    if lint(rows):
+        fails.append("ABSENCE: an `absent:` pointer at a genuinely missing path was still a "
+                     "failure — the honest statement has no legal form: %r" % lint(rows))
+    else:
+        print("  ✅ absence arm: `absent:<missing path>` is LEGAL — the claim IS the absence")
+    rows, _ = CT.load(write("abs2.jsonl", [_row("E-11",
+                            evidence="`absent:knowledge/_validate_evidence.py`")]))
+    if not any("FALSE ABSENCE" in r for _, r in lint(rows)):
+        fails.append("ABSENCE (other direction): `absent:` on a path that EXISTS was not caught "
+                     "— an absence claim whose subject is present must fail like a dead pointer")
+    else:
+        print("  ✅ absence arm (other direction): `absent:` on an EXISTING path is FALSE ABSENCE")
+
+    # --- #208 s191-D2 NON-REPO marker, and the ellipsis LAUNDERING HOLE it replaces ---
+    rows, _ = CT.load(write("nr.jsonl", [_row("E-12",
+                            evidence="notes/_vfy_9f3a.txt (NON-REPO: /sessions/x/vfy/full)")]))
+    if lint(rows):
+        fails.append("s191-D2: the ruled `(NON-REPO: <where>)` marker was not honoured: %r"
+                     % lint(rows))
+    else:
+        print("  ✅ s191-D2 arm: a pointer with the ruled `(NON-REPO: …)` marker is legal")
+    rows, _ = CT.load(write("ell.jsonl", [_row("E-13", evidence="notes/_vfy_9f3a.txt…")]))
+    if not any("truncated" in r for _, r in lint(rows)):
+        fails.append("LAUNDERING HOLE OPEN: a trailing ellipsis still excuses a dead pointer — "
+                     "one keystroke past the gate is the hole #208 found")
+    else:
+        print("  ✅ ellipsis arm: a truncated pointer matching NOTHING is a DEAD POINTER")
+    rows, _ = CT.load(write("ell2.jsonl", [_row("E-14", evidence="knowledge/_validate_evid…")]))
+    if lint(rows):
+        fails.append("ELLIPSIS TOO TIGHT: a truncation that DOES resolve to a real file was "
+                     "reported dead: %r" % lint(rows))
+    else:
+        print("  ✅ ellipsis arm (other direction): a truncation that resolves is not a failure")
+
+    # --- #208 EXPECTED OBSERVATION: the exit-code blindness, both directions ---
+    obs_bad = _row("E-15", evidence="`ls knowledge`", rc=0,
+                   expect_stdout_contains="_this_string_is_not_in_the_listing_9f3a")
+    rows, _ = CT.load(write("obs1.jsonl", [obs_bad]))
+    _, mism_o, _ = sample(rows, 5, 205)
+    if not mism_o:
+        fails.append("EXIT-CODE BLINDNESS: a command that exits 0 while its stdout CONTRADICTS "
+                     "the row was passed — this is the #208 finding, unfixed")
+    else:
+        print("  ✅ observation arm: rc=0 with contradicting stdout is an OBSERVATION MISMATCH")
+    rows, _ = CT.load(write("obs2.jsonl", [_row("E-16", evidence="`ls knowledge`", rc=0,
+                                                expect_stdout_contains="_validate_evidence.py")]))
+    _, mism_o2, _ = sample(rows, 5, 205)
+    if mism_o2:
+        fails.append("REMOVAL NOT GREEN: a TRUE expected observation was reported as a mismatch")
+    else:
+        print("  ✅ observation arm (other direction): a true expectation reproduces")
+    rows, _ = CT.load(write("obs3.jsonl", [_row("E-17", rc=0, expect_count=99,
+                            evidence="`grep -c def knowledge/_claimtable.py`")]))
+    _, mism_o3, _ = sample(rows, 5, 205)
+    if not mism_o3:
+        fails.append("expect_count: a wrong declared count was not caught")
+    else:
+        print("  ✅ expect_count arm: a wrong count is caught (`grep -c` exits 0 regardless)")
+    _ndef = subprocess.run(["bash", "-c", "grep -c def knowledge/_claimtable.py"], cwd=ROOT,
+                           capture_output=True, text=True).stdout.strip()
+    rows, _ = CT.load(write("obs4.jsonl", [_row("E-18", rc=0, expect_count=int(_ndef),
+                            evidence="`grep -c def knowledge/_claimtable.py`")]))
+    _, mism_o4, _ = sample(rows, 5, 205)
+    if mism_o4:
+        fails.append("expect_count (other direction): the TRUE count was reported as a mismatch")
+    else:
+        print("  ✅ expect_count arm (other direction): the true count (%s) reproduces" % _ndef)
+    # a declared observation is never left to the seeded draw
+    many_o = [_row("D-%02d" % i, evidence="`ls knowledge` -> rc=0", rc=0) for i in range(30)]
+    many_o.append(_row("Z-1", evidence="`ls knowledge` -> rc=0", rc=0,
+                       expect_stdout_contains="_nope_9f3a"))
+    rows, _ = CT.load(write("forced.jsonl", many_o))
+    _, mism_f, _ = sample(rows, 1, 205)
+    if not any(i == "Z-1" for i, _, _, _ in mism_f):
+        fails.append("FORCED DRAW: a row carrying a declared observation was left to chance in a "
+                     "31-row table sampled at n=1 — an expectation must always be checked")
+    else:
+        print("  ✅ forced-draw arm: a row with a declared observation is ALWAYS sampled")
+
     # --- direction 2: REMOVE the defects — the same rows go green ---
     rows, _ = CT.load(write("clean.jsonl", [_row("E-1"), _row("E-2",
                             evidence="`git ls-files knowledge/_claimtable.py` -> rc=0")]))
@@ -343,6 +602,18 @@ def selftest():
                      "a tracked audit; #204 declared this stop")
     else:
         print("  ✅ refusal arm: a bare `_validate_*.py` is REFUSED [SIDE-EFFECTS], not run")
+    # #208: a marker inside a FILE NAME is a name, not an action — both directions.
+    if classify("grep -c PREFIX_ACK knowledge/_git_commit.sh")[0] != "RUNNABLE":
+        fails.append("PATH-NAME REFUSAL: a read-only grep was refused because its FILE NAME "
+                     "contains an unsafe verb — every claim about that file is then unverifiable")
+    else:
+        print("  ✅ path-name arm: `grep … knowledge/_git_commit.sh` is RUNNABLE, not UNSAFE")
+    for _c in ("git commit -m x", "git checkout HEAD~1", "git push origin master",
+               "ls knowledge > /var/tmp/out"):
+        if classify(_c)[0] != "UNSAFE":
+            fails.append("UNSAFE TOO LOOSE: %r was not refused" % _c)
+    print("  ✅ path-name arm (other direction): git commit/checkout/push and a redirect are "
+          "still REFUSED [UNSAFE]")
     rows, _ = CT.load(write("unsafe.jsonl", [_row("E-7", evidence="`python3 -c \"print(1)\"` -> rc=0")]))
     _, _, refus2 = sample(rows, 5, 205)
     if not any(v == "UNSAFE" for _, v, _, _ in refus2):

@@ -29,6 +29,17 @@ THE SCHEMA (one JSONL row = one object; `kind` selects the row's dialect):
                       CONFIRMED one — a fence touch is never collapsed into a count.
     rc        int   — the exit code the evidence command is DECLARED to produce. The evidence
                       linter's sampler compares a re-run's rc against this.
+    expect_stdout_contains  str — ⛔ #208, THE EXIT-CODE-BLINDNESS FIX (schema change BY
+                      ADDITION — every pre-#208 row is still legal and behaves exactly as
+                      before). `rc` alone proves RUNNABILITY, not REPRODUCTION: `git show`,
+                      `grep -c`, `find`, `ls`, `sed -n` all exit 0 for ANY content, so the
+                      #208 verifier wave watched `EVIDENCE GATE PASS` certify two rows whose
+                      content it had just proved false. When THIS field is present the
+                      sampler additionally requires the substring in the command's STDOUT —
+                      an OBSERVATION, not an exit code.
+    expect_count            int — same fix, counting dialect: the last non-empty stdout line
+                      must parse as this integer (`grep -c`, `wc -l`, `git rev-list --count`).
+                      An unparseable line is a LOUD failure, never a pass.
     section   str   — the human grouping the row came from (render only; never joined on).
     lane      str   — the wave lane the row belongs to (render only; never joined on).
 
@@ -41,8 +52,8 @@ prints a RESIDUAL count. A helper that returns fewer rows than the file has line
 saying so, is the whole class this repo keeps re-finding.
 
 CONSUMER at birth: `_join_claim_tables.py`, `_validate_evidence.py`, `_gen_claim_table_md.py`.
-Declared: NOT wired into `_build_all.py` or CI — `s204-D1` forbids that until item 1 has been
-driven in at least one real PM wave.
+✅ #208: the `s204-D1` precondition was met by the #208 verifier wave and Dave ruled the wiring,
+so this schema is now read on every build and in CI via `_validate_evidence.py`.
 
 Selftest: `python3 knowledge/_claimtable.py --selftest` — plants one defect of each parse
 class and proves the loader names it, then proves removing the defect goes green.
@@ -61,7 +72,10 @@ VERDICTS = ("CONFIRMED", "CONTRADICTED", "UNTESTED", "NEW")
 KINDS = ("claim", "challenge")
 
 COMMON_REQUIRED = ("id", "kind", "claim", "evidence")
-OPTIONAL = ("note", "fence", "rc", "section", "lane")
+OPTIONAL = ("note", "fence", "rc", "section", "lane",
+            # #208 expected-OBSERVATION fields (see the docstring). BY ADDITION: a row without
+            # them samples exactly as it did before, so the four 208-* tables stay legal.
+            "expect_stdout_contains", "expect_count")
 ALLOWED = set(COMMON_REQUIRED) | set(OPTIONAL) | {"tag", "verdict"}
 
 
@@ -107,6 +121,23 @@ def validate_row(row, path="<mem>", lineno=0):
                                             "claimant's word, never the challenger's"))
     if "rc" in row and not isinstance(row["rc"], int):
         out.append(Defect(path, lineno, "rc=%r is not an integer exit code" % (row["rc"],)))
+    # #208 expected-observation fields. Typed here so a mistyped expectation is a PARSE
+    # failure, not a sampler surprise — the sampler must never have to guess what to compare.
+    if "expect_count" in row and (isinstance(row["expect_count"], bool)
+                                  or not isinstance(row["expect_count"], int)):
+        out.append(Defect(path, lineno, "expect_count=%r is not an integer — it is compared "
+                                        "against the command's last stdout line"
+                          % (row["expect_count"],)))
+    if "expect_stdout_contains" in row and not (
+            isinstance(row["expect_stdout_contains"], str)
+            and row["expect_stdout_contains"].strip()):
+        out.append(Defect(path, lineno, "expect_stdout_contains=%r must be a NON-EMPTY string "
+                                        "— an empty expectation matches everything, which is "
+                                        "the exit-code blindness it exists to fix"
+                          % (row.get("expect_stdout_contains"),)))
+    if ("expect_stdout_contains" in row or "expect_count" in row) and not row.get("evidence", ""):
+        out.append(Defect(path, lineno, "expected-observation field(s) with no `evidence` "
+                                        "command to observe"))
     for f in ("note", "fence", "section", "lane"):
         if f in row and not isinstance(row[f], str):
             out.append(Defect(path, lineno, "`%s` must be a string (free text), got %s"

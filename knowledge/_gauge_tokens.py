@@ -163,8 +163,20 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # 56,746 − 56,158 = 588). Same method as s129-D1 (half-range), re-measured, not re-argued.
 # ⛔ WHAT DID NOT MOVE, AND MAY NOT: the wrap-open stop line (150,929), BUDGET_WORKING,
 # BUDGET_AMBER, BUDGET_HARD. A costlier boot moves the ROOM, never the LINE.
-BOOT_FIRSTTURN_TK = 56_158
-BOOT_FIRSTTURN_ERR = 849
+# ✅ RE-BASED AGAIN #208, 2026-08-19 — `s208-D1`, DAVE'S CALL ("yes, re-base, same method as
+# last time"). The s171-D1 block above stands as HISTORY, untrimmed. Drift declared across
+# three consecutive sessions above the 55,309–57,007 band with one sign:
+#     #199 56,214 · #200 56,252 · #201 56,375 · #202 56,315 · #206 57,133 · #207 57,903 · #208 57,050
+#     (n=7, min 56,214, max 57,903, mean 56,749)
+# ⛔ THE RULED VALUE IS 56,749 — the n=7 mean shown to Dave at #208. Error bar 1,154 =
+# half-range needed for the bar to cover the whole series (57,903 − 56,749 = 1,154 >
+# 56,749 − 56,214 = 535). Same method as s129-D1/s171-D1 (half-range), re-measured, not re-argued.
+# ⛔ DAVE'S RIDER, BINDING (s208-D1, his words: "I don't want to move the goals just so the
+# system stops complaining"): a re-base is measurement honesty, never target acceptance.
+# The boot-reduction work (worklist item 24, the #110 boot-rent plan) stays OPEN, and the
+# next re-base proposal must arrive WITH a boot-reduction option priced beside it.
+BOOT_FIRSTTURN_TK = 56_749
+BOOT_FIRSTTURN_ERR = 1_154
 
 
 def _cache() -> dict:

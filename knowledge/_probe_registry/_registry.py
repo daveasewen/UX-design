@@ -64,9 +64,16 @@ USAGE
   python3 knowledge/_probe_registry/_registry.py --selftest      # THIS loader's plant-then-detect
 
 CONSUMER AT BIRTH: the verifier-PM brief of every wave — the ready-to-paste paragraph lives in
-`README.md` in this directory. DECLARED: not wired into `_build_all.py` or CI. `s204-D1` forbids
-that until the registry has been driven in >= 1 real wave, and promotion of any probe to a build
-gate is DAVE'S (derivation governance), never this tool's.
+`README.md` in this directory.
+✅ WIRED #208 — the `s204-D1` precondition (driven in >= 1 real wave) was MET by the #208
+verifier wave and Dave ruled the wiring: `--run` is now a `_build_all.STEPS` entry (ADVISORY)
+and a CI step in the **render** job, which is the only job that installs Playwright and can
+therefore actually ask P-3. ⬛ Promotion of any probe to a BLOCKING gate remains DAVE'S
+(derivation governance), never this tool's — which is why both routes are advisory.
+⚠ #208 also fixed the exit that made the wiring legible: a run in which EVERY selected probe
+REFUSED used to exit 0 (refusals were counted, then dropped at the exit) and read as green in a
+caller's log. It now exits 77 with the `COULD-NOT-ASK:` line. A run where at least one probe ran
+is unchanged.
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -287,6 +294,23 @@ def run(rows, only=None, skip_env=(), survey=False, quiet=False, extra=()):
     print("⛔ A green registry run proves THE PROBES RAN, not that the tree is clean. Each "
           "probe's `blind` field says what it cannot see; the verifier brief keeps free hunting "
           "mandatory for exactly that reason.")
+    # ⛔ #208 WIRING FINDING, fixed here. Driving the wiring lane asked the question the build
+    # step depends on — "does `_build_all.py`'s rc=77 COULD-NOT-ASK branch ever RECEIVE a 77
+    # from this runner?" — and MEASURED the answer: no. Refusals were counted per probe and
+    # then discarded at the exit, so a run in which EVERY probe refused (no playwright, nothing
+    # asked, nothing known) exited 0 and read as green in a caller's log. That is the #193
+    # confusion inverted: not a refusal counted as a failure, but a refusal counted as a PASS.
+    # A run that asked NOTHING now REFUSES in the convention's own form (77 + the marked line),
+    # which is the only exit that says "I could not be asked". A run where at least one probe
+    # ran keeps its old exit exactly — the refusals of the others stay printed, not counted.
+    ran = len(results) - len(refused) - sum(1 for r, rc, f, o in results
+                                            if verdict(rc, f) == "SKIP")
+    if refused and ran == 0 and not survey:
+        print("\n%s registry --run: %d of %d probe(s) REFUSED and NOT ONE RAN — this run asked "
+              "nothing and therefore knows nothing. Exiting %d (COULD-NOT-ASK), never 0: a "
+              "green exit here would read as 'the classes are clean' in a caller's log."
+              % (cna.MARKER, len(refused), len(results), cna.EXIT))
+        return cna.EXIT, results
     return (0 if survey else (1 if bad else 0)), results
 
 
