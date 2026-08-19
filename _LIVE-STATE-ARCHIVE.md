@@ -1,5 +1,20 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-19 #205 (2d, at the #205 wrap) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-18 (Tue from `date`) (**#202**, FABLE conductor + 7 OPUS work subs (plus this OPUS wrap sub), DELEGATED wrap, **THREE RULINGS, DAVE'S — `s202-D1` · `s202-D2` · `s202-D3`** — the switch was the THUMB)
+
+**Landed (evidence per claim; ⛔ ZERO work commits before this wrap — every artefact below was UNCOMMITTED at wrap-open and lands in the wrap commit, reconciled path by path):**
+
+- ★★ **`s202-D1` RULED AND ENACTED — the square themes inherit Console's segmented DIMENSIONS at the BASE tier** — `knowledge/tokens/layout.json` + `knowledge/tokens/spacing.json`: sizes 24/36/44/48, paddings 2/2/4/4, radii 0 at every scale, and `min-hit-area` 44 moved to base. Closes #201's residual ③ (ruled-but-unminted for mono/legacy/supercharge).
+- ★★★ **`s202-D2` RULED — THE SWITCH CARVE-OUT IS THE THUMB (the session's CORRECTED reading)** — the first reading ("switch" = a two-state variant) was enacted, minted, and built into three compare pages that Dave rejected by eye (*"the switch is still wrong"* · *"is your sub on drugs?"*); the store read (`s199-D3` + `s200-D1`) settled it. Console thumbs RE-MINTED **4/6/6/8 → 0/2/4/6** (container − dial 6, floored 0); the `segmented-switch` tokens are UN-MINTED, **gone not shadowed** (grep verified at the wrap); `knowledge/gen_radius_derive.py` derives thumb = `max(container − 6, 0)` with padding RETIRED as a radius input; beside-vs-replace is DISSOLVED.
+- ★★ **`s202-D3` RULED — OPEN-QUESTION PROVENANCE BINDING** — no question framed as open reaches Dave without the store search run and its hits quoted alongside.
+- ✅ **#201's CI PREMISE CORRECTED: CI SURVEYS, IT NEVER REGENERATES** — so the four staleness fails (blast-radius · canon components · theme cascade · mention map) were repaired **locally in this window**, and `knowledge/canon/canon.css`'s pre-rename `--color-*-hover-1|2` vars were cleared via `gen_canon_tokens.py` (`grep -c` → 0 at the wrap).
+- ✅ **THE DERIVE SIDECAR IS REPAIRED — #201's residual ① CONSUMED** — `gen_radius_derive.py --check` **rc=0** and `--selftest` **rc=0** (the selftest carries an `s202-D2` dial proof: dial=6, padding proven inert); the six token gates all rc=0, re-run by the wrap sub.
+- ✅ **`reviews/SEGMENTED-SCALE-SPECIMEN-2026-08-18-v3.html`** — the approved v1 grammar with corrected thumbs and labels on the REAL type scale 12/14/16/16 (`font-7`/`font-6`/`font-5`; the earlier 11px was off-scale). `-v2` and all three `SEGMENTED-SWITCH-COMPARE-*` pages are stamped SUPERSEDED / QUESTION-DISSOLVED, kept not deleted.
+- ⛔ **A SUB'S `git checkout` DESTROYED UNCOMMITTED WORK** — the `s202-D1` `$note` prose; values recovered and corroborated against `knowledge/_derive-radius-proposal.json`, prose RECONSTRUCTED and marked `$reconstructionNote` in `knowledge/tokens/layout.json`. Gated by addition: worker-checklist **step 0** in `knowledge/_RUNBOOK-parallel-conductor.md:126` bans a sub's `git checkout`/`git restore` while the tree carries uncommitted work.
+- ⚙ **GAUGE.** boot **56,315 real** (in band) · **FILL at wrap-open 207,226 real** — ⛔ PAST the ADVISORY stop line 150,929 by **56,297**, the 200,000 working line CROSSED, the 256,000 wall BINDING (`s190-D2`). Cause named: the vocabulary collision, seven work-sub cycles. **subs 666,600 tokens (n=7, MEASURED)**. Effort band **L**. QUOTA panel **DECLARED ABSENT** (not relayed).
+- ⛔ **NOT RUN / NOT TOUCHED / NOT DONE:** `_build_all.py` (a partial run strands the tree) · **NO PUSH — no push word was given this session, so CI has not seen #202 and the read-back is owed** · the type-scale label bindings (PROPOSED, Dave's) and the glossary class-fix (FLOATED, Dave's) are **not ruled by this wrap**.
+
 ## Rolled 2026-08-19 #204 (2d, at the #204 wrap) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-18 (Tue from `date`) (**#201**, FABLE conductor + 1 OPUS work sub (plus this OPUS wrap sub), DELEGATED wrap, **FIVE RULINGS, DAVE'S — `s201-D1` · `s201-D2` · `s201-D3` · `s201-D4` · `s201-D5`**)
 
