@@ -100,6 +100,32 @@ print("STUB {name} args=%r exit=%s" % (sys.argv[1:], code))
 sys.exit(int(code))
 '''
 
+# #208 — the mention-map gate (the [110] re-stale class) cannot use STUB_TMPL: it invokes ONE
+# generator in TWO modes and the second mode must CHANGE the first mode's answer (regenerate,
+# then re-check fresh). A single fixed exit code can only ever exercise the generator-refused
+# branch, which would leave the branch that actually matters — regenerated-then-refuse-with-the-
+# path — untested [[mutation-tests-the-clause-not-the-feature]]. So: STUB_MENTION_MAP_STALE picks
+# the starting state, STUB_MENTION_MAP_REGEN_EXIT decides whether the regeneration itself refuses,
+# and a marker (written INSIDE .git, so it never shows up as a dirty path) carries "a regeneration
+# has happened" from the second invocation back to the third.
+STUB_MENTION_MAP = '''#!/usr/bin/env python3
+import os, sys
+marker = os.environ["STUB_MENTION_MAP_MARKER"]
+regen_exit = os.environ.get("STUB_MENTION_MAP_REGEN_EXIT", "0")
+if not regen_exit.isdigit():
+    sys.exit("stub _build_graph_mention_map.py: STUB_MENTION_MAP_REGEN_EXIT is not a digit: %r"
+             % regen_exit)
+stale = os.environ.get("STUB_MENTION_MAP_STALE", "0") == "1"
+if "--check" in sys.argv[1:]:
+    fresh = (not stale) or os.path.exists(marker)
+    print("STUB _build_graph_mention_map.py args=%r fresh=%s" % (sys.argv[1:], fresh))
+    sys.exit(0 if fresh else 1)
+print("STUB _build_graph_mention_map.py args=%r regenerate exit=%s" % (sys.argv[1:], regen_exit))
+if regen_exit == "0":
+    open(marker, "w").close()
+sys.exit(int(regen_exit))
+'''
+
 FAKE_TIKTOKEN = '''class _Enc:
     def encode(self, s):
         return [0] * max(1, len(s) // 4)
@@ -132,7 +158,16 @@ def build_fixture(root, script_text, banner):
     # is why the detector below (_gate_harness_stubs.py) exists as an ARM, not a reminder.
     write(os.path.join(know, "gen_showroom.py"),
           STUB_TMPL.format(var="STUB_SHOWROOM_EXIT", name="gen_showroom.py"))
+    # #208: the mention-map freshness gate (the [110] re-stale class) was wired into
+    # _git_commit.sh THIS session with no stub here — the THIRD occurrence of the blind-harness
+    # class (#188 doc-row, #191 showroom), and this time the W-33 detector caught it as a red arm
+    # in CI run #355 rather than a human noticing 14 arms crashing [[a-crash-is-not-a-fail]].
+    write(os.path.join(know, "_build_graph_mention_map.py"), STUB_MENTION_MAP)
     write(os.path.join(root, "pystubs", "tiktoken.py"), FAKE_TIKTOKEN)
+    # The gate's SECOND half asks whether the map differs from HEAD but is unstaged. That
+    # question only has a meaningful answer if the map is a TRACKED file, so the fixture commits
+    # one at init (see arm_mention_map_regenerated_not_staged).
+    write(os.path.join(know, "_graph-mention-map.json"), '{"fixture": "mention map at HEAD"}\n')
     write(os.path.join(root, "GOOD-MORNING.md"), banner)
     write(os.path.join(root, "README.md"), "fixture repo\n")
 
@@ -159,6 +194,10 @@ def build_fixture(root, script_text, banner):
         "STUB_SESSION_EXIT": "0",
         "STUB_DOC_ROWS_EXIT": "0",
         "STUB_SHOWROOM_EXIT": "0",
+        "STUB_MENTION_MAP_STALE": "0",
+        "STUB_MENTION_MAP_REGEN_EXIT": "0",
+        # marker lives inside .git so a regeneration never registers as a dirty working path
+        "STUB_MENTION_MAP_MARKER": os.path.join(root, ".git", "stub-mention-map-regenerated"),
         # #120: the SESSION_N session-witness gate (post-#116) BLOCKS a --wrap commit
         # without a declared session. Fixtures declare #77 to match BANNER_PRIMARY;
         # the gate's own clauses get dedicated arms (wrap_undeclared_session_blocks,
@@ -228,6 +267,11 @@ def arm_happy_path(script_text):
             return False, "doc-row gate (W-20) did not run on the happy path; out tail: %s" % out[-400:]
         if "— showroom in sync" not in out:
             return False, "showroom sync gate (s191-D1) did not run on the happy path; out tail: %s" % out[-400:]
+        # #208 — same rule for the mention-map gate's two halves: SEEN to run, not stubbed silent.
+        if "— mention map fresh" not in out:
+            return False, "mention-map freshness gate (#208) did not run on the happy path; out tail: %s" % out[-400:]
+        if "— mention map is either unchanged or staged" not in out:
+            return False, "mention-map second-half assert (#208) did not run on the happy path; out tail: %s" % out[-400:]
         subj = head_subject(root)
         if subj != EXPECT_NONWRAP:
             return False, "subject %r != expected %r" % (subj, EXPECT_NONWRAP)
@@ -426,6 +470,80 @@ def arm_showroom_gate_refusal(script_text):
             return False, "the declared gap was not NAMED in the output; out tail: %s" % out2[-400:]
         if head_hash(root) == before:
             return False, "commit did not land under the declared-gap hatch"
+        return True, ""
+
+
+def arm_mention_map_stale_regenerates_and_refuses(script_text):
+    """#208 — the mention-map freshness gate (the [110] re-stale class, 3rd recurrence). A STALE
+    map must be REGENERATED (announced, one path named) and then REFUSED, so the caller re-runs
+    naming the path — regenerating silently would stage what nobody named (P5). Drives the stub
+    non-zero so the gate is TESTED, not merely RUN [[green-tests-cannot-see-scope]]."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        env["STUB_MENTION_MAP_STALE"] = "1"
+        before = head_hash(root)
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc == 0:
+            return False, "a STALE mention map did NOT block the commit"
+        if "— mention map STALE — regenerating" not in out:
+            return False, "the regeneration was not ANNOUNCED; out tail: %s" % out[-600:]
+        if "STUB _build_graph_mention_map.py args=[] regenerate" not in out:
+            return False, "the generator was never invoked in regenerate mode; out tail: %s" % out[-600:]
+        if "MENTION-MAP GATE (#208" not in out or "knowledge/_graph-mention-map.json" not in out:
+            return False, "the refusal did not NAME the gate and the path to add; out tail: %s" % out[-600:]
+        if not staged_empty(root):
+            return False, "staged despite the mention-map refusal — P5 violated"
+        if head_hash(root) != before:
+            return False, "HEAD advanced despite the mention-map refusal"
+        # the generator's OWN refusal is a different, louder failure: it must not be swallowed.
+        env2 = dict(env)
+        env2["STUB_MENTION_MAP_REGEN_EXIT"] = "1"
+        env2["STUB_MENTION_MAP_MARKER"] = os.path.join(root, ".git", "marker-2")
+        rc2, out2 = run_commit(root, env2, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc2 == 0:
+            return False, "a REFUSING generator did not block the commit"
+        if "the mention-map generator itself REFUSED" not in out2:
+            return False, "generator-refusal message missing; out tail: %s" % out2[-600:]
+        # declared passes, silent fails: the ACK hatch lets the SAME stale map through, named.
+        env["MENTION_MAP_ACK"] = "fixture-declared gap (#208 arm)"
+        rc3, out3 = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc3 != 0:
+            return False, "MENTION_MAP_ACK did not pass the stale gate (exit %d); out tail: %s" % (rc3, out3[-600:])
+        if "mention-map gate: DECLARED GAP — fixture-declared gap (#208 arm)" not in out3:
+            return False, "the declared gap was not NAMED in the output; out tail: %s" % out3[-600:]
+        if head_hash(root) == before:
+            return False, "commit did not land under the declared-gap hatch"
+        return True, ""
+
+
+def arm_mention_map_regenerated_not_staged(script_text):
+    """#208 second half — a map that is FRESH on disk but differs from HEAD and was not named in
+    the staged paths must block. That is the exact hole the three targeted [110] repairs fell
+    through: green `--check` locally, OLD blob in the commit, red survey in CI."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        # fresh on disk (STALE=0), but modified relative to HEAD and NOT among STAGE_PATHS
+        write(os.path.join(root, "knowledge", "_graph-mention-map.json"),
+              '{"fixture": "mention map REGENERATED, not named"}\n')
+        before = head_hash(root)
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc == 0:
+            return False, "an unstaged regenerated map did NOT block the commit"
+        if "MENTION-MAP GATE (#208, second half)" not in out:
+            return False, "second-half refusal message missing; out tail: %s" % out[-600:]
+        if head_hash(root) != before:
+            return False, "HEAD advanced despite the second-half refusal"
+        # naming the path is the documented remedy — it must actually clear the gate.
+        rc2, out2 = run_commit(root, env,
+                               ["--reconciled", "msg.txt"] + STAGE_PATHS
+                               + ["knowledge/_graph-mention-map.json"])
+        if rc2 != 0:
+            return False, ("naming the map path did NOT clear the second-half gate (exit %d); "
+                           "out tail: %s" % (rc2, out2[-600:]))
+        if "— mention map is either unchanged or staged" not in out2:
+            return False, "the second-half assert did not report a pass; out tail: %s" % out2[-600:]
+        if head_hash(root) == before:
+            return False, "commit did not land once the map path was named"
         return True, ""
 
 
@@ -814,6 +932,8 @@ ARMS = [
     ("MUTATION_declare_dirt_match_widened_bites_W22", mutation_declare_dirt_match_widened),
     ("doc_row_gate_refusal_and_ack_W20", arm_doc_row_gate_refusal),
     ("showroom_gate_refusal_and_ack_s191D1", arm_showroom_gate_refusal),
+    ("mention_map_stale_regenerates_and_refuses_208", arm_mention_map_stale_regenerates_and_refuses),
+    ("mention_map_regenerated_not_staged_208", arm_mention_map_regenerated_not_staged),
     ("harness_stub_coverage_W33", arm_harness_stub_coverage),
     ("MUTATION_harness_stub_detector_bites_W33", mutation_harness_stub_detector_bites),
 ]
