@@ -94,7 +94,7 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **68 items · 43 live · 21 Dave's · 22 mine · 49 carry a stated close condition · **19 UNCONDITIONED**.**
+> **70 items · 45 live · 21 Dave's · 24 mine · 51 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
@@ -121,14 +121,14 @@
 > - `W-15` **LEDGER § ★ #59** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-16` **UNHOMED PAIR, copied up at the #78 2c EXIT CHECK** — *closes when:* ⛔ **none stated — cannot close until you name one**
 >
-> **MINE (22), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47`
+> **MINE (24), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **20,023 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **20,035 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 71,077 real and stays whole for retrieval; you have paid for
 28% of it, and that is the intended figure, not a shortfall.)*
