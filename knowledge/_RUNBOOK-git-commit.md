@@ -110,8 +110,11 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
    verified; exercised #133 and #135), not a raw `git push`. *(Call form added #187, W-23 — the file
    had zero mentions of `--push` while the ledger and the `git-push-method` hook both carried it.)* The
    "hangs on credentials" claim was true of the un-keyed default and aged out once Dave installed a key
-   ([[assertion-propagation-gap]], same class as step 4b's correction). **Push still only on Dave's
-   explicit word — that half of the split stands.** If Desktop ever complains
+   ([[assertion-propagation-gap]], same class as step 4b's correction). ~~**Push still only on Dave's
+   explicit word — that half of the split stands.**~~ ⚠ **CORRECTED #207 (`s207-D1`, Dave live in chat:
+   "you are free to push whanevr you like, im comfortable with that now"): push is now at the
+   CONDUCTOR'S JUDGMENT.** The call form (`--push`, master, ff-only, verified) and the CI read-back
+   owed in chat (`s203-D1`) both stand unchanged. If Desktop ever complains
    about a lock, Dave can delete `.git/index.lock` on his side (his machine has normal permissions).
 
 ## Gotchas
