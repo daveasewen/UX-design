@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drawer / side sheet &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 24px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--background-default,#1A1A1A);}   /* the PAGE token: REVIEW-174 used --surface-digital-black, a different token, which misreports what the overlay floats on */
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .pane-sub{opacity:.65; margin:22px 0 8px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .band{border:1px solid #E1E1E1; background:#FFF; padding:16px 20px; margin:0 0 20px; max-width:900px;}
+  .band ul{margin:8px 0 0; padding-left:20px;}
+  .band li{margin:0 0 7px;}
+  .tag{display:inline-block; border:1px solid #1A1A1A; padding:1px 6px; margin-right:6px;}
+</style>
+</head>
+<body>
+
+  <h1 class="t-cm-heading">Drawer / side sheet</h1>
+  <div class="lede">
+    <p class="t-ed-body">A page-edge side sheet for focused sub-tasks that keep the page context visible.
+    The panes below show the snippet's own static anatomy specimen &mdash; the same sheet the live drawer
+    uses, laid in-flow &mdash; rendered through the generated <code>canon.css</code>.</p>
+    <div class="note">
+      <p class="t-ed-body-small"><strong>Read this first &mdash; the brief's premise did not hold.</strong>
+      Wave&nbsp;3 was briefed from the itinerary of <strong>2026-07-14</strong>, which marks this component
+      <em>Gap</em>. It is not a gap: the gated snippet, the meta, the showroom page and the
+      <code>MIGRATED_SNIPPETS</code> entry all landed on <strong>2026-07-22</strong>, eight days after that
+      snapshot. Nothing was re-built here. This page is an <strong>audit surface</strong>: the existing
+      approved artefact, rendered through the real generated <code>canon.css</code> across all four themes,
+      so your eye can rule on what is actually there. Everything below is
+      <strong>PROPOSED #203, Dave's eye owed</strong> &mdash; nothing on this page is a ruling.</p>
+    </div>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">How Drawer differs from its gated siblings</p>
+    <ul class="t-ed-body-small">
+      <li><span class="tag">vs Modals</span> Drawer <strong>shares the modal mechanics</strong> &mdash; scrim,
+        <code>aria-modal="true"</code>, focus trap, <code>inert</code> background, Esc closes, focus returns to
+        the trigger &mdash; but <strong>docks to the page edge</strong> instead of centring, so the page stays
+        glanceable behind it. Modals for a decision that must interrupt; Drawer for adjacent detail.</li>
+      <li><span class="tag">vs Popover</span> The opposite pole of one axis: Drawer is <strong>modal and
+        trapped</strong>, Popover is <strong>non-modal and untrapped</strong>. Nothing overlaps.</li>
+      <li><span class="tag">vs Toast</span> A Drawer is dismissed by the user; a Toast dismisses itself.</li>
+    </ul>
+  </div>
+  <div class="note">
+    <p class="t-ed-body-small"><strong>Gate finding &mdash; not this lane's, and not fixed here.</strong>
+    <code>_validate_snippets.py</code> is <strong>red at HEAD</strong>: 18 failures, all one class,
+    <code>DRIFT --pri-hover</code>, across <strong>nine</strong> snippets (Action-bar, Button, Confirmation,
+    <strong>Drawer</strong>, Empty-state, Form-layout, Icon-button, Modals, Stepper). Those snippets still
+    carry the pre-<code>s198-D1</code> ramp-snapped literals <code>#626262</code> light / <code>#B7B7B7</code>
+    dark; the token store now says <code>#636363</code> / <code>#B2B2B2</code> (minted at
+    <code>s198-D2</code>, renamed <code>hover-light</code> / <code>hover-dark</code> at <code>s199-D2</code>).
+    The snippets were never re-synced. <code>canon.css</code> <em>is</em> correct &mdash; it resolves
+    <code>var(--primary-background-hover)</code> &mdash; so the panes above show the <strong>right</strong>
+    hover, and only the snippet files are stale. Four of the six Wave&nbsp;3 lanes touch an affected file.
+    One re-sync by the conductor, not six lanes each patching shared state.</p>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">The rest of the audit &mdash; all PROPOSED, all yours</p>
+    <ul class="t-ed-body-small">
+      <li><strong>One side only.</strong> <code>side</code> is an enum whose only value is <code>"right"</code>.
+        Left-docked drawers &mdash; navigation, filters, RTL &mdash; are unbuilt. Deliberate scope box, or gap?
+        Never ruled.</li>
+      <li><strong>Fixed 400px, full-width under 480px</strong>, and the footer stacks its buttons there.
+        Narrow this window past 900px to watch the panes reflow.</li>
+      <li><strong>44px hit area &mdash; checked by hand, passes.</strong> Footer buttons are 44px tall; the
+        close &times; is a 36px visual with a 44&times;44 <code>::before</code>. Note the file's own comment:
+        the wave-1 receipt <em>claimed</em> 44 and the file <em>measured</em> 36, and the conductor corrected
+        the receipt to the file. That class of error has happened here before.</li>
+      <li><strong>Footer order is primary-first, left-aligned</strong>, mirroring Modals. Consistent.</li>
+      <li><strong>Type-composite debt: 3 violations</strong>, all demo chrome, none in the component.</li>
+      <li><strong>The buttons are a namespaced mirror</strong> (<code>.dbtn</code>, not <code>.btn</code>), to
+        keep clear of the acknowledged <code>type.css</code> blast radius. It is a hand copy of canon Button,
+        so it can drift from canon Button silently &mdash; no gate ties the two together.</li>
+    </ul>
+  </div>  <div class="note">
+    <p class="t-ed-body-small"><strong>Measured finding, all four themes &mdash; in Supercharge dark the only thing
+    holding this overlay off the page is a hairline at 1.96:1.</strong> These overlays are lifted by the
+    elevation recipe: a shadow in light, a 1px border in dark. In <strong>light</strong> the panel is
+    <em>exactly</em> the page colour in every theme (1.00:1) and the shadow does all the work &mdash; that is
+    the canon recipe and it reads fine. In <strong>dark</strong> the border takes over, and it is not equal
+    across themes: mono's hairline is <code>#808080</code> on <code>#1A1A1A</code> = <strong>4.41:1</strong>,
+    comfortable; Supercharge's is <code>#524842</code> on <code>#1A1A1A</code> = <strong>1.96:1</strong>,
+    <strong>under the 3:1 non-text floor</strong>. Compare the mono-dark and supercharge-dark panes below.
+    Pre-existing and theme-level, not this component's &mdash; but it is the component that shows it.
+    <strong>PROPOSED #203, Dave's eye owed.</strong></p>
+  </div>
+
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-drawer">
+    <div class="sheet specimen" role="group" aria-labelledby="stitle-mono-light">
+      <div class="sheet-head"><h3 class="t-ed-heading-4 em" id="stitle-mono-light">Transaction details</h3>
+        <button class="close" type="button" aria-label="Close drawer"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+      <div class="sheet-body">
+        <p class="t-ed-body">Header, scrollable body and footer actions — primary first, left-aligned. The live drawer above uses exactly this structure.</p>
+        <p class="t-ed-body-small">Reference: coffee shop payment · Yesterday 14:32 · Current account</p>
+      </div>
+      <div class="sheet-foot">
+        <button class="dbtn primary t-cm-button t-cm-slot" type="button">Download receipt</button>
+        <button class="dbtn secondary t-cm-button t-cm-slot" type="button">Report an issue</button>
+      </div>
+    </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-drawer">
+    <div class="sheet specimen" role="group" aria-labelledby="stitle-mono-dark">
+      <div class="sheet-head"><h3 class="t-ed-heading-4 em" id="stitle-mono-dark">Transaction details</h3>
+        <button class="close" type="button" aria-label="Close drawer"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+      <div class="sheet-body">
+        <p class="t-ed-body">Header, scrollable body and footer actions — primary first, left-aligned. The live drawer above uses exactly this structure.</p>
+        <p class="t-ed-body-small">Reference: coffee shop payment · Yesterday 14:32 · Current account</p>
+      </div>
+      <div class="sheet-foot">
+        <button class="dbtn primary t-cm-button t-cm-slot" type="button">Download receipt</button>
+        <button class="dbtn secondary t-cm-button t-cm-slot" type="button">Report an issue</button>
+      </div>
+    </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-drawer">
+    <div class="sheet specimen" role="group" aria-labelledby="stitle-legacy-light">
+      <div class="sheet-head"><h3 class="t-ed-heading-4 em" id="stitle-legacy-light">Transaction details</h3>
+        <button class="close" type="button" aria-label="Close drawer"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+      <div class="sheet-body">
+        <p class="t-ed-body">Header, scrollable body and footer actions — primary first, left-aligned. The live drawer above uses exactly this structure.</p>
+        <p class="t-ed-body-small">Reference: coffee shop payment · Yesterday 14:32 · Current account</p>
+      </div>
+      <div class="sheet-foot">
+        <button class="dbtn primary t-cm-button t-cm-slot" type="button">Download receipt</button>
+        <button class="dbtn secondary t-cm-button t-cm-slot" type="button">Report an issue</button>
+      </div>
+    </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-drawer">
+    <div class="sheet specimen" role="group" aria-labelledby="stitle-legacy-dark">
+      <div class="sheet-head"><h3 class="t-ed-heading-4 em" id="stitle-legacy-dark">Transaction details</h3>
+        <button class="close" type="button" aria-label="Close drawer"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+      <div class="sheet-body">
+        <p class="t-ed-body">Header, scrollable body and footer actions — primary first, left-aligned. The live drawer above uses exactly this structure.</p>
+        <p class="t-ed-body-small">Reference: coffee shop payment · Yesterday 14:32 · Current account</p>
+      </div>
+      <div class="sheet-foot">
+        <button class="dbtn primary t-cm-button t-cm-slot" type="button">Download receipt</button>
+        <button class="dbtn secondary t-cm-button t-cm-slot" type="button">Report an issue</button>
+      </div>
+    </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-drawer">
+    <div class="sheet specimen" role="group" aria-labelledby="stitle-console-light">
+      <div class="sheet-head"><h3 class="t-ed-heading-4 em" id="stitle-console-light">Transaction details</h3>
+        <button class="close" type="button" aria-label="Close drawer"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+      <div class="sheet-body">
+        <p class="t-ed-body">Header, scrollable body and footer actions — primary first, left-aligned. The live drawer above uses exactly this structure.</p>
+        <p class="t-ed-body-small">Reference: coffee shop payment · Yesterday 14:32 · Current account</p>
+      </div>
+      <div class="sheet-foot">
+        <button class="dbtn primary t-cm-button t-cm-slot" type="button">Download receipt</button>
+        <button class="dbtn secondary t-cm-button t-cm-slot" type="button">Report an issue</button>
+      </div>
+    </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-drawer">
+    <div class="sheet specimen" role="group" aria-labelledby="stitle-console-dark">
+      <div class="sheet-head"><h3 class="t-ed-heading-4 em" id="stitle-console-dark">Transaction details</h3>
+        <button class="close" type="button" aria-label="Close drawer"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+      <div class="sheet-body">
+        <p class="t-ed-body">Header, scrollable body and footer actions — primary first, left-aligned. The live drawer above uses exactly this structure.</p>
+        <p class="t-ed-body-small">Reference: coffee shop payment · Yesterday 14:32 · Current account</p>
+      </div>
+      <div class="sheet-foot">
+        <button class="dbtn primary t-cm-button t-cm-slot" type="button">Download receipt</button>
+        <button class="dbtn secondary t-cm-button t-cm-slot" type="button">Report an issue</button>
+      </div>
+    </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-drawer">
+    <div class="sheet specimen" role="group" aria-labelledby="stitle-supercharge-light">
+      <div class="sheet-head"><h3 class="t-ed-heading-4 em" id="stitle-supercharge-light">Transaction details</h3>
+        <button class="close" type="button" aria-label="Close drawer"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+      <div class="sheet-body">
+        <p class="t-ed-body">Header, scrollable body and footer actions — primary first, left-aligned. The live drawer above uses exactly this structure.</p>
+        <p class="t-ed-body-small">Reference: coffee shop payment · Yesterday 14:32 · Current account</p>
+      </div>
+      <div class="sheet-foot">
+        <button class="dbtn primary t-cm-button t-cm-slot" type="button">Download receipt</button>
+        <button class="dbtn secondary t-cm-button t-cm-slot" type="button">Report an issue</button>
+      </div>
+    </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-drawer">
+    <div class="sheet specimen" role="group" aria-labelledby="stitle-supercharge-dark">
+      <div class="sheet-head"><h3 class="t-ed-heading-4 em" id="stitle-supercharge-dark">Transaction details</h3>
+        <button class="close" type="button" aria-label="Close drawer"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+      <div class="sheet-body">
+        <p class="t-ed-body">Header, scrollable body and footer actions — primary first, left-aligned. The live drawer above uses exactly this structure.</p>
+        <p class="t-ed-body-small">Reference: coffee shop payment · Yesterday 14:32 · Current account</p>
+      </div>
+      <div class="sheet-foot">
+        <button class="dbtn primary t-cm-button t-cm-slot" type="button">Download receipt</button>
+        <button class="dbtn secondary t-cm-button t-cm-slot" type="button">Report an issue</button>
+      </div>
+    </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

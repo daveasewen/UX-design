@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sidebar / nav rail &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 24px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:1100px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:20px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--background-default,#1A1A1A);}
+  .pane-cap{opacity:.65; margin:0 0 12px;}
+  .pane-body{padding:0 !important;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .band{border:1px solid #E1E1E1; background:#FFF; padding:16px 20px; margin:0 0 20px; max-width:900px;}
+  .band ul{margin:8px 0 0; padding-left:20px;}
+  .band li{margin:0 0 7px;}
+  .tag{display:inline-block; border:1px solid #1A1A1A; padding:1px 6px; margin-right:6px;}
+  table.m{border-collapse:collapse; margin-top:10px;}
+  table.m th, table.m td{border:1px solid #E1E1E1; padding:5px 10px; text-align:left;}
+
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family, font-size or font-weight anywhere — every text element carries
+     a .t-cm-* composite from canon/type.css (the Progress-bar precedent, #174). */
+  :root{ --ease:160ms cubic-bezier(.4,0,.2,1); }
+      *{box-sizing:border-box;}
+  .pane-body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted);}                   /* explicit gap above — leading-trim is ON */
+  .frames{display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;}
+
+  /* ---- the app frame: bounded, so the column is visible at rest in any still ---- */
+  .sn-frame{display:flex; height:540px; border:1px solid var(--rule); border-radius:var(--radius); overflow:hidden; background:var(--page);}
+  .sn-canvas{flex:1; min-width:180px; padding:20px; display:flex; flex-direction:column; gap:12px;}
+  .sn-canvas span{display:block; height:10px; background:var(--sub-rule);}
+  .sn-canvas span:nth-child(1){width:44%;} .sn-canvas span:nth-child(2){width:78%;}
+  .sn-canvas span:nth-child(3){width:66%;} .sn-canvas span:nth-child(4){width:84%;}
+
+  /* ---- the nav column ---- */
+  .sn{flex:none; width:248px; display:flex; flex-direction:column; background:var(--panel);
+      border-right:1px solid var(--rule); transition:width var(--ease);}
+  .sn.is-rail{width:64px;}
+
+  .sn-head{display:flex; align-items:center; gap:8px; min-height:56px; padding:0 8px 0 16px;
+           border-bottom:1px solid var(--sub-rule);}
+  .sn-brand{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            text-box-edge:text text; color:var(--text);}
+  .sn-toggle{flex:none; width:44px; height:44px; border:0; background:transparent; color:var(--icon);
+             cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+             border-radius:var(--radius);}
+  .sn-toggle svg{width:16px; height:16px; fill:currentColor;}
+  .sn-toggle:hover{background:var(--hover);}
+  .sn-toggle:active{background:var(--pressed);}
+  .sn-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sn.is-rail .sn-head{padding:0 10px; justify-content:center;}
+
+  .sn-body{flex:1; overflow-y:auto; padding:8px 0; display:flex; flex-direction:column; gap:8px;}
+  .sn-group{display:flex; flex-direction:column; gap:2px;}
+  .sn-group + .sn-group{border-top:1px solid var(--sub-rule); padding-top:8px;}
+  .sn-group-label{display:block; padding:6px 16px; color:var(--muted); opacity:.72;}
+  .sn ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
+
+  .sn-link{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 16px;
+           color:var(--text); text-decoration:none; position:relative;
+           transition:background var(--ease);}
+  .sn-link .si{flex:none; display:inline-flex; width:18px; height:18px; color:var(--icon);}
+  .sn-link .si svg{width:18px; height:18px; fill:currentColor;}
+  .sn-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            text-box-edge:text text;}
+  .sn-link:hover{background:var(--hover);}
+  .sn-link:active{background:var(--pressed);}
+  .sn-link:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  /* CURRENT LOCATION — aria-current for AT + a 3px leading bar (a SHAPE, present or absent)
+     + a surface change. Colour is the third carrier, never the only one. */
+  .sn-link[aria-current="page"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+
+  /* collapsible group heading */
+  .sn-group-toggle{display:flex; align-items:center; gap:12px; width:100%; min-height:44px;
+                   padding:0 16px; border:0; background:transparent; color:var(--text);
+                   cursor:pointer; text-align:left; border-radius:var(--radius);}
+  .sn-group-toggle .sc{flex:none; display:inline-flex; width:12px; height:12px; color:var(--icon);
+                       transition:transform var(--ease);}
+  .sn-group-toggle .sc svg{width:12px; height:12px; fill:currentColor;}
+  .sn-group-toggle[aria-expanded="true"] .sc{transform:rotate(180deg);}
+  .sn-group-toggle .sn-label{flex:1;}
+  .sn-group-toggle:hover{background:var(--hover);}
+  .sn-group-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sn-sub .sn-link{padding-left:46px;}
+
+  .sn-foot{border-top:1px solid var(--sub-rule); padding:8px 0;}
+
+  /* ---- RAIL: labels are HIDDEN, not removed — the accessible name survives the collapse ---- */
+  .sn.is-rail .sn-group-label,
+  .sn.is-rail .sn-brand{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
+  .sn.is-rail .sn-label{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
+  .sn.is-rail .sn-link{justify-content:center; padding:0; width:64px; min-height:44px;}
+  .sn.is-rail .sn-group + .sn-group{padding-top:8px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+
+.pane-body{
+  --page: var(--background-default);
+  --panel: var(--tertiary-background-default);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --icon: var(--icon-default);
+  --rule: var(--divider-border-section);
+  --sub-rule: var(--divider-border-subsection);
+  --hover: var(--tertiary-background-hover);
+  --pressed: var(--form-background-pressed);
+  --indicator: var(--primary-border-default);
+  --focus: var(--focus-ring);
+  --radius: var(--border-radius-surface);
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="ic-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 5H1.5C0.675 5 0 5.675 0 6.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V6.5C18 5.675 17.325 5 16.5 5ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V6.5C1.2 6.337 1.337 6.2 1.5 6.2H16.5C16.663 6.2 16.8 6.337 16.8 6.5V16.5ZM3 12H5V10H3V12ZM14.8 2.6H3.2C2.537 2.6 2 3.137 2 3.8H16C16 3.137 15.463 2.6 14.8 2.6ZM12.8 0H5.2C4.537 0 4 0.537 4 1.2H14C14 0.537 13.463 0 12.8 0Z" fill="currentColor"/></symbol>
+    <symbol id="ic-card" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 6H1.5C0.675 6 0 6.675 0 7.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V7.5C18 6.675 17.325 6 16.5 6ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V10.2H16.8V16.5ZM16.8 9H1.2V7.5C1.2 7.337 1.337 7.2 1.5 7.2H16.5C16.663 7.2 16.8 7.337 16.8 7.5V9ZM15 12H12V13.2H15V12ZM13.05 1.221C13.085 1.207 13.122 1.2 13.159 1.2C13.262 1.2 13.389 1.258 13.441 1.387L14.82 4.8H16.114L14.553 0.938C14.318 0.355 13.753 0 13.159 0C12.973 0 12.784 0.035 12.601 0.109L0.988 4.8H4.192L13.05 1.221Z" fill="currentColor"/></symbol>
+    <symbol id="ic-transfer" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.003 7.18915H11.997V5.98497H15.003V7.18915ZM6.05701 8.62698L5.09401 9.58853H8.748V10.7837H5.06701L6.05701 11.7632H4.36501L2.79002 10.1996L4.36501 8.62698H6.05701ZM7.551 12.2216L9.126 13.7942L7.551 15.3309H5.85901L6.84901 14.3783H3.17702V13.1561H6.82201L5.85901 12.1946L7.551 12.2216ZM6.00301 7.18915C4.05227 7.18188 2.2899 8.35058 1.54002 10.1487C0.790141 11.9469 1.20094 14.0191 2.58033 15.3964C3.95972 16.7738 6.03509 17.1839 7.83595 16.4352C9.63682 15.6864 10.8073 13.9267 10.8 11.9789C10.7901 9.3377 8.64821 7.199 6.00301 7.18915ZM6.00301 5.99395C8.43708 5.99033 10.6332 7.45254 11.5655 9.6976C12.4978 11.9427 11.9823 14.5275 10.2599 16.2448C8.53746 17.9621 5.94795 18.4728 3.70091 17.5386C1.45386 16.6043 -0.00725782 14.4093 2.71165e-05 11.9789C2.34e-05 8.66709 2.6862 5.98094 6.00301 5.97598V5.99395ZM18 1.49175V10.4782C17.9986 10.6786 17.9589 10.8768 17.883 11.0623C17.6403 11.6097 17.0966 11.9623 16.497 11.9609H13.212C13.2075 11.5663 13.1714 11.1726 13.104 10.7837H16.497C16.664 10.779 16.7983 10.6449 16.803 10.4782V4.18768H4.20301V5.02342C3.78991 5.13033 3.3865 5.27161 2.99702 5.44578V1.49175C3.00197 0.666427 3.67343 -1.47967e-05 4.50001 2.46473e-10H16.497C17.3236 -1.47967e-05 17.995 0.666427 18 1.49175ZM16.497 1.1952H4.50001C4.42125 1.1952 4.3457 1.22644 4.29 1.28205C4.23431 1.33767 4.20301 1.4131 4.20301 1.49175V2.99248H16.803V1.49175C16.7981 1.32652 16.6625 1.19512 16.497 1.1952Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chart" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0V7H18C18 3.134 14.866 0 11 0ZM12.2 1.325C14.437 1.797 16.203 3.563 16.675 5.8H12.2V1.325ZM9 2H8C3.582 2 0 5.582 0 10C0 14.418 3.582 18 8 18C12.418 18 16 14.418 16 10V9H9V2ZM1.2 10C1.2 6.318 4.143 3.317 7.8 3.21V9.551L2.885 14.466C1.839 13.27 1.2 11.71 1.2 10ZM8 16.8C6.392 16.8 4.914 16.236 3.749 15.299L8 11.049L12.251 15.299C11.086 16.236 9.608 16.8 8 16.8ZM14.79 10.2C14.742 11.831 14.12 13.317 13.115 14.466L8.849 10.2H14.79Z" fill="currentColor"/></symbol>
+    <symbol id="ic-settings" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.376 6.992C16.208 6.374 15.96 5.774 15.634 5.206L16.319 3.592L14.408 1.68L12.794 2.365C12.225 2.04 11.626 1.791 11.007 1.623L10.352 0H7.648L6.992 1.624C6.374 1.791 5.774 2.04 5.206 2.365L3.592 1.68L1.68 3.592L2.365 5.206C2.04 5.774 1.791 6.374 1.624 6.992L0 7.648V10.351L1.624 11.007C1.791 11.626 2.04 12.225 2.366 12.794L1.68 14.408L3.592 16.32L5.206 15.635C5.775 15.961 6.374 16.209 6.993 16.377L7.648 18H10.351L11.007 16.377C11.625 16.209 12.225 15.961 12.794 15.635L14.408 16.32L16.32 14.408L15.635 12.794C15.961 12.225 16.209 11.626 16.377 11.007L18 10.352V7.648L16.376 6.992ZM15.374 10.118L15.218 10.694C15.077 11.214 14.867 11.72 14.593 12.198L14.298 12.715L14.53 13.263L14.899 14.132L14.132 14.899L12.716 14.297L12.199 14.593C11.721 14.866 11.215 15.077 10.694 15.218L10.119 15.374L9.542 16.8H8.458L7.882 15.375L7.306 15.219C6.785 15.078 6.28 14.867 5.802 14.594L5.285 14.298L4.736 14.53L3.868 14.899L3.101 14.132L3.703 12.716L3.407 12.199C3.134 11.721 2.923 11.215 2.782 10.694L2.626 10.119L1.2 9.542V8.458L2.625 7.882L2.781 7.307C2.922 6.786 3.133 6.28 3.406 5.802L3.702 5.285L3.47 4.737L3.101 3.868L3.868 3.101L5.285 3.703L5.802 3.407C6.28 3.134 6.786 2.924 7.307 2.782L7.882 2.626L8.458 1.2H9.543L10.119 2.625L10.694 2.781C11.215 2.922 11.721 3.133 12.199 3.406L12.716 3.702L14.133 3.1L14.9 3.867L14.297 5.285L14.593 5.802C14.866 6.279 15.076 6.785 15.218 7.306L15.374 7.881L15.927 8.104L16.8 8.458V9.542L15.374 10.118ZM9 4.8C7.878 4.8 6.823 5.237 6.03 6.03C5.237 6.823 4.8 7.878 4.8 9C4.8 10.122 5.237 11.177 6.03 11.97C6.823 12.763 7.878 13.2 9 13.2C10.122 13.2 11.176 12.763 11.97 11.97C12.764 11.177 13.2 10.122 13.2 9C13.2 7.878 12.763 6.823 11.97 6.03C11.177 5.237 10.122 4.8 9 4.8ZM11.121 11.121C10.536 11.707 9.768 12 9 12C8.232 12 7.464 11.707 6.878 11.121C5.707 9.95 5.707 8.05 6.878 6.879C7.464 6.293 8.232 6 9 6C9.768 6 10.536 6.293 11.121 6.879C12.293 8.05 12.293 9.95 11.121 11.121Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol>
+  </svg>
+  <h1 class="t-cm-heading">Sidebar / nav rail</h1>
+  <div class="lede">
+    <p class="t-ed-body">Itinerary row&nbsp;36. The persistent vertical navigation of a desktop application
+    frame: a full-height column of grouped destinations with one current location, that collapses to an
+    icon-only <strong>rail</strong> without losing its accessible names. Both states are shown side by side in
+    every pane.</p>    <div class="note">
+      <p class="t-ed-body-small"><strong>Read this first.</strong> This is a <strong>new</strong> component,
+      built at #203 through the gated-component route. Step&nbsp;0 proved the row genuinely absent, unlike
+      18 of the 18 rows wave&nbsp;3a was briefed on &mdash; the probes are quoted in
+      <code>notes/_receipts/2026-08-19-203-wave3b-laneI-navigation-depth.md</code>. Every pane below is the
+      <strong>real gated snippet markup</strong>, extracted from the artefact by the builder with a
+      fail-loud content assertion, rendered through the generated <code>canon.css</code>. Nothing here is a
+      ruling: every judgement call is <strong>PROPOSED #203, Dave's eye owed</strong>.</p>
+    </div>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">The collision with the gated Navigations family &mdash; checked, not assumed</p>
+    <ul class="t-ed-body-small">
+      <li><code>Navigations.reference.html</code> is <strong>64 lines</strong> and renders exactly one thing:
+        a horizontal web masthead.</li>
+      <li>Its <em>meta</em> claims a wider family &mdash; <code>anchors</code>, <code>nav-bar-bottom</code>,
+        <code>nav-bar-top</code> &mdash; that the artefact does not contain. The meta's own note admits it:
+        &ldquo;a web masthead only&rdquo;.</li>
+      <li>Nothing in that family is a persistent vertical column, and nothing in it collapses. The masthead is
+        page <em>chrome</em>; this is the <em>frame</em> of an application.</li>
+      <li><strong>PROPOSED:</strong> Sidebar nav stands alone, or is absorbed as a <code>type</code> of
+        Navigations. Component promotion is yours &mdash; surfaced, not resolved.</li>
+    </ul>
+  </div>  <div class="note">
+    <p class="t-ed-body-small"><strong>Measured &mdash; the brand-red &ldquo;you are here&rdquo; bar is under
+    the 3:1 floor in Supercharge dark.</strong> <code>primary/border/default</code> (#DB0011) against the
+    ground it sits beside:</p>
+    <table class="m t-cm-caption">
+      <tr><th>ground</th><th>mono</th><th>legacy</th><th>console</th><th>supercharge</th></tr>
+      <tr><td>raised surface, light</td><td>5.22</td><td>5.22</td><td>5.22</td><td>4.84</td></tr>
+      <tr><td>raised surface, dark</td><td>3.16</td><td>3.16</td><td>3.16</td><td><strong>2.88 &mdash; fails</strong></td></tr>
+      <tr><td>hover surface, light</td><td>4.58</td><td>4.58</td><td>4.58</td><td>3.89</td></tr>
+      <tr><td>hover surface, dark</td><td>3.01</td><td>3.01</td><td>3.01</td><td><strong>2.73 &mdash; fails</strong></td></tr>
+    </table>
+    <p class="t-ed-body-small">It is deliberately <strong>not</strong> declared as a gated contrast pair &mdash;
+    that would be a green that cannot fail in the one theme where it is false. The component leans on the
+    <strong>shape</strong> carrier instead: the bar is present or absent, and <code>aria-current</code> says so
+    to assistive tech. <strong>PROPOSED:</strong> Supercharge dark either needs its own current-location value,
+    or the pattern needs a non-red mark in that theme. Your call.</p>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">Two more for your eye</p>
+    <ul class="t-ed-body-small">
+      <li><strong>The rail keeps its names.</strong> Collapsed labels are visually hidden, not removed, so every
+        link still has a text-derived accessible name and no <code>aria-label</code> has to restate it.
+        <strong>PROPOSED:</strong> a rail item has no <em>visible</em> name, so a hovering mouse user gets
+        nothing. Composing the gated Tooltip onto rail items is the obvious answer and is deliberately not built
+        here &mdash; that would be inventing a composition rule.</li>
+      <li><strong>Console's corners.</strong> Square corners come from <code>border-radius/surface</code>, which
+        resolves to 0. Any rounding you see in the Console panes is your own <code>s199-D3</code> arriving
+        through <code>canon.css</code>, not a drift in this file.</li>
+    </ul>
+  </div>
+  <div class="theme">
+    <h2 class="t-ed-heading-4">Mono</h2>
+    <div class="grid">
+    <section class="pane" data-apollo-theme="mono" data-theme="light">
+      <p class="pane-cap t-cm-caption">Mono &middot; light</p>
+      <div class="pane-body"><div class="specimens">
+
+    <div>
+      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names</p>
+      <div class="frames">
+
+        <!-- 1 · EXPANDED -->
+        <div class="sn-frame">
+          <nav class="sn" aria-label="Main">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body__p1" aria-label="Collapse navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn1-body__p1">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g1__p1">Money</span>
+                <ul aria-labelledby="sn1-g1__p1">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <button class="sn-group-toggle" type="button" aria-expanded="true" aria-controls="sn1-cards__p1">
+                  <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="sn-label t-cm-label">Cards</span>
+                  <span class="sc" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn1-cards__p1">
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Card list</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Limits and controls</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g2__p1">Insight</span>
+                <ul aria-labelledby="sn1-g2__p1">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- 2 · RAIL (collapsed) -->
+        <div class="sn-frame">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body__p1" aria-label="Expand navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn2-body__p1">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g1__p1">Money</span>
+                <ul aria-labelledby="sn2-g1__p1">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g2__p1">Insight</span>
+                <ul aria-labelledby="sn2-g2__p1">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    <section class="pane" data-apollo-theme="mono" data-theme="dark">
+      <p class="pane-cap t-cm-caption">Mono &middot; dark</p>
+      <div class="pane-body"><div class="specimens">
+
+    <div>
+      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names</p>
+      <div class="frames">
+
+        <!-- 1 · EXPANDED -->
+        <div class="sn-frame">
+          <nav class="sn" aria-label="Main">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body__p2" aria-label="Collapse navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn1-body__p2">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g1__p2">Money</span>
+                <ul aria-labelledby="sn1-g1__p2">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <button class="sn-group-toggle" type="button" aria-expanded="true" aria-controls="sn1-cards__p2">
+                  <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="sn-label t-cm-label">Cards</span>
+                  <span class="sc" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn1-cards__p2">
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Card list</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Limits and controls</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g2__p2">Insight</span>
+                <ul aria-labelledby="sn1-g2__p2">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- 2 · RAIL (collapsed) -->
+        <div class="sn-frame">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body__p2" aria-label="Expand navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn2-body__p2">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g1__p2">Money</span>
+                <ul aria-labelledby="sn2-g1__p2">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g2__p2">Insight</span>
+                <ul aria-labelledby="sn2-g2__p2">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    </div>
+  </div>
+  <div class="theme">
+    <h2 class="t-ed-heading-4">Legacy</h2>
+    <div class="grid">
+    <section class="pane" data-apollo-theme="legacy" data-theme="light">
+      <p class="pane-cap t-cm-caption">Legacy &middot; light</p>
+      <div class="pane-body"><div class="specimens">
+
+    <div>
+      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names</p>
+      <div class="frames">
+
+        <!-- 1 · EXPANDED -->
+        <div class="sn-frame">
+          <nav class="sn" aria-label="Main">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body__p3" aria-label="Collapse navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn1-body__p3">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g1__p3">Money</span>
+                <ul aria-labelledby="sn1-g1__p3">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <button class="sn-group-toggle" type="button" aria-expanded="true" aria-controls="sn1-cards__p3">
+                  <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="sn-label t-cm-label">Cards</span>
+                  <span class="sc" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn1-cards__p3">
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Card list</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Limits and controls</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g2__p3">Insight</span>
+                <ul aria-labelledby="sn1-g2__p3">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- 2 · RAIL (collapsed) -->
+        <div class="sn-frame">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body__p3" aria-label="Expand navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn2-body__p3">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g1__p3">Money</span>
+                <ul aria-labelledby="sn2-g1__p3">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g2__p3">Insight</span>
+                <ul aria-labelledby="sn2-g2__p3">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    <section class="pane" data-apollo-theme="legacy" data-theme="dark">
+      <p class="pane-cap t-cm-caption">Legacy &middot; dark</p>
+      <div class="pane-body"><div class="specimens">
+
+    <div>
+      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names</p>
+      <div class="frames">
+
+        <!-- 1 · EXPANDED -->
+        <div class="sn-frame">
+          <nav class="sn" aria-label="Main">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body__p4" aria-label="Collapse navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn1-body__p4">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g1__p4">Money</span>
+                <ul aria-labelledby="sn1-g1__p4">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <button class="sn-group-toggle" type="button" aria-expanded="true" aria-controls="sn1-cards__p4">
+                  <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="sn-label t-cm-label">Cards</span>
+                  <span class="sc" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn1-cards__p4">
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Card list</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Limits and controls</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g2__p4">Insight</span>
+                <ul aria-labelledby="sn1-g2__p4">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- 2 · RAIL (collapsed) -->
+        <div class="sn-frame">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body__p4" aria-label="Expand navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn2-body__p4">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g1__p4">Money</span>
+                <ul aria-labelledby="sn2-g1__p4">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g2__p4">Insight</span>
+                <ul aria-labelledby="sn2-g2__p4">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    </div>
+  </div>
+  <div class="theme">
+    <h2 class="t-ed-heading-4">Console</h2>
+    <div class="grid">
+    <section class="pane" data-apollo-theme="console" data-theme="light">
+      <p class="pane-cap t-cm-caption">Console &middot; light</p>
+      <div class="pane-body"><div class="specimens">
+
+    <div>
+      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names</p>
+      <div class="frames">
+
+        <!-- 1 · EXPANDED -->
+        <div class="sn-frame">
+          <nav class="sn" aria-label="Main">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body__p5" aria-label="Collapse navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn1-body__p5">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g1__p5">Money</span>
+                <ul aria-labelledby="sn1-g1__p5">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <button class="sn-group-toggle" type="button" aria-expanded="true" aria-controls="sn1-cards__p5">
+                  <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="sn-label t-cm-label">Cards</span>
+                  <span class="sc" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn1-cards__p5">
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Card list</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Limits and controls</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g2__p5">Insight</span>
+                <ul aria-labelledby="sn1-g2__p5">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- 2 · RAIL (collapsed) -->
+        <div class="sn-frame">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body__p5" aria-label="Expand navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn2-body__p5">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g1__p5">Money</span>
+                <ul aria-labelledby="sn2-g1__p5">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g2__p5">Insight</span>
+                <ul aria-labelledby="sn2-g2__p5">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    <section class="pane" data-apollo-theme="console" data-theme="dark">
+      <p class="pane-cap t-cm-caption">Console &middot; dark</p>
+      <div class="pane-body"><div class="specimens">
+
+    <div>
+      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names</p>
+      <div class="frames">
+
+        <!-- 1 · EXPANDED -->
+        <div class="sn-frame">
+          <nav class="sn" aria-label="Main">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body__p6" aria-label="Collapse navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn1-body__p6">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g1__p6">Money</span>
+                <ul aria-labelledby="sn1-g1__p6">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <button class="sn-group-toggle" type="button" aria-expanded="true" aria-controls="sn1-cards__p6">
+                  <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="sn-label t-cm-label">Cards</span>
+                  <span class="sc" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn1-cards__p6">
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Card list</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Limits and controls</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g2__p6">Insight</span>
+                <ul aria-labelledby="sn1-g2__p6">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- 2 · RAIL (collapsed) -->
+        <div class="sn-frame">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body__p6" aria-label="Expand navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn2-body__p6">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g1__p6">Money</span>
+                <ul aria-labelledby="sn2-g1__p6">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g2__p6">Insight</span>
+                <ul aria-labelledby="sn2-g2__p6">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    </div>
+  </div>
+  <div class="theme">
+    <h2 class="t-ed-heading-4">Supercharge</h2>
+    <div class="grid">
+    <section class="pane" data-apollo-theme="supercharge" data-theme="light">
+      <p class="pane-cap t-cm-caption">Supercharge &middot; light</p>
+      <div class="pane-body"><div class="specimens">
+
+    <div>
+      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names</p>
+      <div class="frames">
+
+        <!-- 1 · EXPANDED -->
+        <div class="sn-frame">
+          <nav class="sn" aria-label="Main">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body__p7" aria-label="Collapse navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn1-body__p7">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g1__p7">Money</span>
+                <ul aria-labelledby="sn1-g1__p7">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <button class="sn-group-toggle" type="button" aria-expanded="true" aria-controls="sn1-cards__p7">
+                  <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="sn-label t-cm-label">Cards</span>
+                  <span class="sc" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn1-cards__p7">
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Card list</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Limits and controls</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g2__p7">Insight</span>
+                <ul aria-labelledby="sn1-g2__p7">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- 2 · RAIL (collapsed) -->
+        <div class="sn-frame">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body__p7" aria-label="Expand navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn2-body__p7">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g1__p7">Money</span>
+                <ul aria-labelledby="sn2-g1__p7">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g2__p7">Insight</span>
+                <ul aria-labelledby="sn2-g2__p7">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    <section class="pane" data-apollo-theme="supercharge" data-theme="dark">
+      <p class="pane-cap t-cm-caption">Supercharge &middot; dark</p>
+      <div class="pane-body"><div class="specimens">
+
+    <div>
+      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names</p>
+      <div class="frames">
+
+        <!-- 1 · EXPANDED -->
+        <div class="sn-frame">
+          <nav class="sn" aria-label="Main">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body__p8" aria-label="Collapse navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn1-body__p8">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g1__p8">Money</span>
+                <ul aria-labelledby="sn1-g1__p8">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <button class="sn-group-toggle" type="button" aria-expanded="true" aria-controls="sn1-cards__p8">
+                  <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="sn-label t-cm-label">Cards</span>
+                  <span class="sc" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn1-cards__p8">
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Card list</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Limits and controls</span></a></li>
+                </ul>
+              </div>
+
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn1-g2__p8">Insight</span>
+                <ul aria-labelledby="sn1-g2__p8">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- 2 · RAIL (collapsed) -->
+        <div class="sn-frame">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head">
+              <span class="sn-brand t-cm-label">Business banking</span>
+              <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body__p8" aria-label="Expand navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
+              </button>
+            </div>
+
+            <div class="sn-body" id="sn2-body__p8">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g1__p8">Money</span>
+                <ul aria-labelledby="sn2-g1__p8">
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn2-g2__p8">Insight</span>
+                <ul aria-labelledby="sn2-g2__p8">
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+          <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    </div>
+  </div>
+
+</body>
+</html>

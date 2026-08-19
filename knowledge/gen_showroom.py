@@ -133,8 +133,12 @@ CATEGORIES = [
                            # workers never edit this file):
                            "form-layout", "amount-input", "textarea", "secure-entry",
                            "account-selector", "date-picker", "date-range-picker",
-                           "time-picker", "file-upload", "stepper"]),
-    ("Navigation",        ["navigations", "breadcrumbs", "pagination", "tabs", "tab-bar"]),
+                           "time-picker", "file-upload", "stepper",
+                           # Wave 3b, #203 (conductor-registered):
+                           "combobox", "multi-select", "tags-input"]),
+    ("Navigation",        ["navigations", "breadcrumbs", "pagination", "tabs", "tab-bar",
+                           # Wave 3b, #203 (conductor-registered):
+                           "command-palette", "sidebar-nav", "anchor-nav"]),
     ("Feedback and status", ["notifications", "status-indicator", "badge", "loading-indicator",
                            "progress-tracker", "tooltip", "confirmation", "modals",
                            "countdown-timer",
@@ -144,7 +148,9 @@ CATEGORIES = [
     ("Data and content",  ["table", "cards", "list-items", "account-card", "amount-display",
                            "summary", "accordion",
                            # Phase-2 wave 1 (worker B) + wave 2 (worker C):
-                           "stat-card", "data-grid"]),
+                           "stat-card", "data-grid",
+                           # Wave 3b, #203 (conductor-registered):
+                           "kpi-tile", "timeline", "avatar-group"]),
     ("Identity and display", ["avatar", "tags", "eyebrow", "headers", "hero", "divider",
                            "video-player"]),
     # Phase-2 wave 2 (worker D's lane; bucket cut by the conductor — provisional-agent

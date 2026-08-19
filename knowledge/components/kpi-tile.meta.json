@@ -1,0 +1,166 @@
+{
+  "name": "KPI tile",
+  "category": "molecule",
+  "$status": "PROPOSED #203, Dave's eye owed",
+  "$floated": "⛔ THE COMPONENT ITSELF IS FLOATED, NOT RULED. s182-D2 (#182) names it and explicitly declines to rule it — Dave, verbatim, quoted in that ruling: 'might be a partially built trend card with option, I haven't decided yet', and the ruling's own words: 'FLOATED, NOT RULED: the trend-card component itself — never launder into a ruling.' Itinerary row 55 is therefore NOT an ordinary gap a worker may close. This meta is a drawn proposal for Dave's eye; nothing in it is a ruling, and it must not be promoted, gated or registered without his word.",
+  "purpose": "A dashboard tile that states a metric, how it changed, and the SHAPE of that change: label, value, delta and period (the Stat-card anatomy, verbatim) plus the Chart-sparkline atom at its inline scale in a slot. Use it when the reader needs to see how a number moved over time, not merely whether it moved. A KPI tile with no series is a Stat card and should be one.",
+  "$differsFromStatCard": "THE BRIEF'S EXPLICIT REQUIREMENT, answered plainly. Stat card (GATED) is a PASSIVE ATOM — label · value · delta · period — and it ALREADY carries full delta semantics: arrow, sign and wording, the R-D5 three-channel treatment. So 'metric + delta' (the itinerary's wording for row 55) was never the gap; only 'spark' was. KPI tile is a MOLECULE that composes two already-approved artefacts and draws nothing new: Stat card's anatomy verbatim, and Chart-sparkline's .spark-inline scale verbatim. THE ONE REAL DIFFERENCE: Stat card states the CHANGE (a signed delta against one prior period); KPI tile states the SHAPE of the change (twelve points of history). Choose Stat card when the reader needs the number and whether it moved; choose KPI tile when the reader needs to see HOW it moved. The sparkline atom anticipated this composition: its own source calls .spark-inline 'the KPI / Stat-card scale' and carries .spark-kpi-slot as 'a SPECIMEN-ONLY wrapper standing in for the Stat-card tile'. Neither parent file was touched.",
+  "props": [
+    {
+      "name": "size",
+      "type": "enum",
+      "values": [
+        "display",
+        "compact"
+      ],
+      "default": "display",
+      "$note": "display = .t-cm-figure-4 (32px) value; compact = .t-cm-figure-3 (24px) for dense boards. Inherited from Stat card unchanged.",
+      "$status": "PROPOSED #203, Dave's eye owed"
+    },
+    {
+      "name": "trend",
+      "type": "enum",
+      "values": [
+        "up",
+        "down",
+        "flat"
+      ],
+      "default": "flat",
+      "binds": {
+        "up": "rag/success-ink",
+        "down": "rag/error-ink",
+        "flat": "text/default"
+      },
+      "$note": "Declared as data-trend on the svg and read from the FIRST vs LAST datum. Binds the INK seat because s182-D3 RULES the sparkline stroke semantic ('the rules for colours should just follow the red and green ink colours for all themes') and that ruling's governs-list says the future trend card inherits it when built.",
+      "$status": "RULED for the stroke by s182-D3; the tile's use of it is PROPOSED #203"
+    },
+    {
+      "name": "delta",
+      "type": "enum",
+      "values": [
+        "up",
+        "down",
+        "flat"
+      ],
+      "default": "flat",
+      "binds": {
+        "up": "rag/success",
+        "down": "rag/error"
+      },
+      "$note": "⛔ INHERITED UNCHANGED FROM THE GATED Stat-card — the FILL seat, not the ink seat. This is the LIVE two-red question and it is Dave's; see $finding-two-seats. Flat deltas take no arrow and no colour at all ('No change', full ink).",
+      "$status": "INHERITED from Stat card, FLAGGED not resolved — Dave's"
+    },
+    {
+      "name": "tableCta",
+      "type": "boolean",
+      "default": false,
+      "$note": "Opt-in icon-button affordance enacting s182-D2's standing direction for this component: 'table CTA optional, icon-button form'. No visible label — Dave: 'a sparkline shows a trend beside a headline figure, it is not an analysis tool'. Accessible name survives as aria-label. 44x44.",
+      "$status": "PROPOSED #203, Dave's eye owed"
+    }
+  ],
+  "variants": [
+    {
+      "name": "display",
+      "use": "the default board tile — 32px value, full-width spark beneath the delta"
+    },
+    {
+      "name": "compact",
+      "use": "dense boards where many tiles share a row — 24px value, same spark"
+    },
+    {
+      "name": "with-table-cta",
+      "use": "the tile can hand off to a tabular view of the same series (s182-D2 standing direction)"
+    }
+  ],
+  "slots": {
+    "spark": {
+      "accepts": {
+        "capability": [
+          "trend-series"
+        ]
+      },
+      "required": false,
+      "use": "holds the Chart-sparkline atom at inline scale; the atom is enclosure-responsive by default (s184-D1) so the SLOT owns the width and the atom fills it. Empty slot means the tile should have been a Stat card.",
+      "$status": "PROPOSED #203, Dave's eye owed"
+    }
+  },
+  "tokens": {
+    "surface": "tertiary/background/default",
+    "border": "border/subtle",
+    "text": "text/default",
+    "page": "background/default",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface (0 — square; no exemption applies)",
+    "delta": {
+      "up": "rag/success — the FILL seat, inherited from Stat card, FLAGGED",
+      "down": "rag/error — the FILL seat, inherited from Stat card, FLAGGED"
+    },
+    "spark": {
+      "up": "rag/success-ink — the INK seat, ruled for this atom by s182-D3",
+      "down": "rag/error-ink — the INK seat, ruled for this atom by s182-D3",
+      "flat": "text/default — the standing ink (s182-D3, Dave: 'the default ink near-black colours are fine for the neutrals, white on dark')"
+    }
+  },
+  "$finding-two-seats": "⛔⛔ THE LIVE TWO-RED QUESTION IS VISIBLE ON THIS ONE TILE, AND IS DELIBERATELY NOT RESOLVED HERE (lane brief: inherit the current binding, flag, do not resolve). The tile paints TWO green/red seats side by side because its two parents bind different ones and BOTH were inherited unchanged. The DELTA ARROW takes rag/success #66CC8D / rag/error #F6604C — the FILL seat, byte-for-byte from the gated Stat-card manifest; on a white card that green measures 1.980:1 (measured #203 with the repo's own _contrast_utils.contrast_ratio). The SPARK STROKE takes rag/success-ink #137F3C / rag/error-ink #DA1A00 — the INK seat that s182-D3 rules for this atom; on a white card that green measures 5.090:1. MEASURED ACROSS ALL FOUR THEMES #203 IN A REAL BROWSER, which CORRECTS the smaller claim first drafted here ('they converge in dark mode'): they converge in MONO DARK ONLY. The spark ink is theme-INVARIANT by ruling (s182-D3, measured #182: zero theme-level series overrides) while the arrow fill FORKS PER THEME, so the two seats disagree in SEVEN OF EIGHT PANES. Computed values read off the DOM — arrow vs spark, ratio against that pane's own surface: mono light #66CC8D 1.98 vs #137F3C 5.09 (arrow UNDER the 3:1 floor); mono dark #66CC8D 8.31 vs #66CC8D 8.31 (the one agreement); legacy light #00847F 4.56 vs #137F3C 5.09; legacy dark #00847F 3.62 vs #66CC8D 8.31; console light #5DAC7B 2.74 vs #137F3C 5.09 (arrow UNDER the floor); console dark #5DAC7B 6.01 vs #66CC8D 8.31; supercharge light #5DAC7B 2.54 vs #137F3C 4.71 (arrow UNDER the floor); supercharge dark #5DAC7B 5.48 vs #66CC8D 7.57. THREE of the four themes put the light-mode arrow under the 3:1 non-text floor, not one. s151-D1 clause 2 ('text AND atoms alike') reads as though it already governs the arrow, and Lane E measured the same leg independently this session; but rebinding a ruled colour seat is Dave's, the arrow-only fill treatment may have been deliberate, and surface-never-swap binds. WHICHEVER WAY IT GOES, Stat card and KPI tile must move TOGETHER — a fix to one that leaves the other is exactly how this seam arrived.",
+  "relationships": {
+    "livesInside": [
+      "Template — dashboard",
+      "Lock-up — stats band"
+    ],
+    "commonPatterns": [
+      "dashboard summary band",
+      "trend board",
+      "account overview"
+    ],
+    "mustNotNeighbour": []
+  },
+  "accessibility": {
+    "relatedSC": [
+      "1.4.1",
+      "1.4.3",
+      "1.4.11",
+      "2.4.7",
+      "2.5.8",
+      "1.3.1"
+    ],
+    "role": "Each tile is role=\"group\" with an aria-label naming the metric and its period — inherited from Stat card unchanged.",
+    "spark": "The inline spark is aria-hidden and PASSIVE by design (s184-D1: 'INLINE-44px KPI SPECIMEN STAYS PASSIVE'). The tile's value and delta carry the meaning; the line is ambient. It is therefore not a focus stop and needs no per-point markers.",
+    "colourIsNeverAlone": "Direction is carried three ways — the arrow glyph, the sign on the number, and the word 'up'/'down' — never by colour. Flat deltas say 'No change' and take no colour at all. The spark additionally declares its direction as data-trend. Dave is astigmatic and red/yellow are problem hues, so nothing here leans on hue.",
+    "targetSize": "The optional table CTA is 44x44, the ruled min-hit-area, enforced BY HAND — no gate reads the target token (measured and stated, not assumed)."
+  },
+  "antiPatterns": [
+    "Never ship a KPI tile with an empty spark slot — that is a Stat card, and it should be one.",
+    "Never let the delta text wear the delta colour. Dark rag/error measures 3.66 and fails 4.5 as text; the arrow glyph carries the colour at the 3:1 atom floor and the number stays ink (R-D5/R-D6, inherited from Stat card).",
+    "Never give the inline spark per-point focus stops or hover markers — a spark is ambient and the markers fight the axis-free idiom (receipted at #182).",
+    "Never label the table affordance 'View as table'. s182-D2: icon-button form, accessible name only.",
+    "Never fix the arrow seat here alone. Stat card and KPI tile bind the same delta seat and must move together.",
+    "REVIEW Never promote, gate or register this component without Dave's word — s182-D2 floated it and never ruled it."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json + layout.json, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate rc=0, 0 failures on this file. Every declared var matches the store in BOTH modes. No new token minted and none wanted: both values the arrow question would need (rag/success-ink, rag/error-ink) already exist and are already ruled.",
+    "declaredAbsence": "rag/success on tertiary/background/default is NOT declared as a passing contrast pair — it measures 1.980:1. Per s151-D2 the rag-on-neutral class belongs to the RENDERING gate (_validate_state_contrast.py) where the non-colour carrier is checkable against real DOM. The absence is DECLARED, not silent, and it is the flagged arrow-seat question.",
+    "notRegistered": "This file is absent from knowledge/component-types.json (a shared file, outside the lane fence), so it takes no AUTO-BEHAVIOUR dataviz partial and its spark is baked static. Declared, not an omission — the conductor's call whether registration is wanted.",
+    "renderProof": "Driven in Chromium via goto(file://…), never set_content(). 8/8 panes rendered, 0 page errors, all four themes forking correctly (console radius 20px present, supercharge surface #F7F6F4/#2A2621, legacy text #333333). Font asserted by canvas measurement against three controls, never fonts.check(): target 'Univers Next for HSBC' = 390, alias 'Univers Next HSBC' = 390, DejaVu Sans = 416, nonexistent face = 351 — the real HSBC cut, both aliases landing on it. Table CTA measured 44x44 in 8/8 panes."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 55 (2026-07-14), 'KPI / trend tile — Metric + delta + spark', P2 Depth. Built #203 Wave 3b Lane K from two gated parents (Stat-card, Chart-sparkline), both untouched. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it."
+  },
+  "interactive": false,
+  "stateModel": "simple",
+  "responsive": {
+    "board": "grid auto-fill, minmax(240px, 1fr), 16px gap — inherited from Stat card",
+    "spark": "carries NO width of its own (s184-D1, 'responsive to its enclosure by default'); the tile's slot owns the width and the atom fills it. Height 44px is NOT ruled and is not changed here.",
+    "$status": "PROPOSED #203, Dave's eye owed"
+  },
+  "dimensions": {
+    "padding": 16,
+    "gap": 8,
+    "sparkHeight": 44,
+    "arrowGlyph": 16,
+    "tableCta": 44,
+    "$note": "sparkHeight 44 and the 200x48 viewBox are Chart-sparkline's inline scale, unchanged. tableCta 44 is the ruled min-hit-area."
+  }
+}

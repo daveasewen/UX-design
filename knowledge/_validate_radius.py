@@ -44,6 +44,16 @@ STRICT_FILES = [
 # Phase-1 migration ratchet: rebinding a snippet's radius onto the token
 # (CSS + manifest + theme-block declarations) and adding it here is ONE change.
 MIGRATED_SNIPPETS = {
+    # Wave 3b, #203 (conductor-registered from lane I/J/K receipts):
+    "Command-palette.reference.html",
+    "Sidebar-nav.reference.html",
+    "Anchor-nav.reference.html",
+    "Combobox.reference.html",
+    "Multi-select.reference.html",
+    "Tags-input.reference.html",
+    "Kpi-tile.reference.html",
+    "Timeline.reference.html",
+    "Avatar-group.reference.html",
     "Button.reference.html",
     "Cards.reference.html",
     "Tabs.reference.html",

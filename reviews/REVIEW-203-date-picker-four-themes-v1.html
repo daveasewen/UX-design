@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Date picker &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:920px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  .pane{padding:24px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:920px;}
+  .proposed{border-left:3px solid #808080; padding:8px 0 8px 12px; margin:16px 0; max-width:920px;}
+  .gallery{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:24px 32px;}
+  .gallery > *{min-width:0;}
+  .pane{overflow-x:auto;}          /* never silently clip a specimen */
+  
+  .cap{margin:0 0 8px; opacity:.7;}
+  .narrow{max-width:360px;}
+  .narrow .grid{grid-template-columns:1fr;}
+  ul{max-width:920px;}
+</style>
+</head>
+<body>
+<h1 class="t-cm-heading">Date picker</h1>
+<div class="lede">
+  <p class="t-ed-body">The gated Date picker, rendered through the generated canon.css in all four Apollo themes, light and dark, on one page. Every pane is the real snippet markup &mdash; the calendar cells are produced by a faithful port of the snippet&rsquo;s own build() function, not hand-drawn.</p>
+  <div class="note">
+    <p class="t-ed-body"><strong>Read this first.</strong> This component was <strong>not built in #203</strong>.
+    It was built on 2026-07-22 (Phase-2 wave 2) and has been gated ever since. The Wave-3 brief carried
+    it as a P1 <em>gap</em> from the 2026-07-14 itinerary; that status column is <strong>stale</strong>.
+    Nothing in the gated snippet was edited. This page exists because the component has never been put
+    in front of your eye across <strong>all four themes at once</strong> &mdash; only through the showroom's
+    one-at-a-time theme switcher.</p>
+  </div>
+  <div class="proposed">
+    <p class="t-ed-body"><strong>PROPOSED #203, Dave's eye owed</strong> &mdash; nothing below is ruled:</p>
+    <ul class="t-ed-body"><li>The three date/time components each carry <strong>9 type-composite violations</strong> (27 total) &mdash; raw <code>font:</code> / <code>font-weight:</code> declarations that predate the composite ratchet. They are inside the standing 1,097 debt, not new. Proposal: a follow-up lane rebinds all three onto <code>.t-cm-*</code>. Not fixed here &mdash; editing a gated snippet is outside this lane&rsquo;s fence.</li><li><code>form/border/active</code> resolves to pure <code>#000000</code> in mono light. Ink is ruled blackest-not-pure-black (s175-D1/s176-D1) for <em>ink</em>; whether a <em>border</em> token is in that camp is a token question, surfaced not swapped.</li><li>Day cells carry no press physics (selection targets, not buttons) &mdash; a #147-era decision that was receipt-flagged for review and has never been ruled.</li><li>The four <code>.dp-nav</code> month/year buttons are button-family membership <em>candidates</em> (ADR-0013); <code>$members</code> registration is still unmade.</li><li><strong>Measured this session:</strong> the calendar panel has a hard floor of about <strong>336px</strong> — seven 40px cells plus gaps and padding, none of which compress. In the 360px column at the bottom of this page the panel therefore overflows its container. On a 360px phone the calendar would need either smaller cells or a full-screen presentation. Neither is ruled; the component has no answer for it today.</li></ul>
+  </div>
+  <p class="t-ed-body-small">Static page: &ldquo;today&rdquo; is pinned to <strong>22 July 2026</strong> so the
+  today-ring is visible in every pane. In the live snippet the ring follows the real date.</p>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="ic-calendar" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 1V0H13.8V1H4.2V0H3V1H0V18H14.2L18 14.2V1H15ZM14.2 16.303V14.2H16.303L14.2 16.303ZM16.8 13H13V16.8H1.2V6H16.8V13ZM16.8 4.8H1.2V2.2H3V3.5H4.2V2.2H13.8V3.5H15V2.2H16.8V4.8ZM8.8 10.029V15H10V7.971L7.003 9.667L7.594 10.712L8.8 10.029Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-dbl-left" viewBox="0 0 18 18"><path d="M9 1H10.696L2.698 9L10.696 17H9L1 9L9 1Z" fill="currentColor"/> <path d="M17.696 1L9.698 9L17.696 17H16L8 9L16 1H17.696Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-dbl-right" viewBox="0 0 18 18"><path d="M0.695312 1L8.69331 9L0.695312 17H2.39131L10.3913 9L2.39131 1H0.695312Z" fill="currentColor"/> <path d="M9.39131 1H7.69531L15.6933 9L7.69531 17H9.39131L17.3913 9L9.39131 1Z" fill="currentColor"/></symbol>
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+  </svg>
+
+<section class="theme" data-apollo-theme="mono">
+  <h2 class="t-cm-section-label">Apollo Mono</h2>
+  <div class="grid">
+    <div class="pane" data-theme="light">
+      <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+      <div class="cn-date-picker"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+  <!-- ================= LIVE ================= -->
+
+  <div class="dp" id="live-dp-mono-light">
+    <div class="dp-lblrow"><label class="t-cm-label" for="f-date-mono-light">Payment date</label></div>
+    <p class="dp-help t-ed-body-small" id="f-date-help-mono-light">Format: DD/MM/YYYY.</p>
+    <div class="dp-box">
+      <input id="f-date-mono-light" name="date" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10"
+        autocomplete="off" aria-describedby="f-date-help f-date-msg-mono-light">
+      <button type="button" class="tail-btn" id="dp-open-mono-light" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose date from calendar">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg>
+      </button>
+    </div>
+    <div class="dp-msg" id="f-date-msg-mono-light" aria-live="polite"></div>
+
+    <div class="dp-panel" id="dp-panel-mono-light" role="dialog" aria-modal="false" aria-label="Choose date">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" id="dp-prev-y-mono-light" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-prev-m-mono-light" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label" id="dp-title-mono-light" aria-live="polite">July 2026</span>
+        <button type="button" class="dp-nav" id="dp-next-m-mono-light" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-next-y-mono-light" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="dp-grid-mono-light" role="grid" aria-label="Days"></div>
+    </div>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <div class="gallery">
+    <div>
+      <p class="cap t-cm-caption">Completed</p>
+      <div class="dp is-completed">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-done-mono-light">Payment date</label></div>
+        <div class="dp-box"><input id="s-done-mono-light" type="text" value="22/07/2026" tabindex="-1" aria-label="Completed example">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Error — ink message, red stroke</p>
+      <div class="dp is-error">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-err-mono-light">Payment date</label></div>
+        <div class="dp-box"><input id="s-err-mono-light" type="text" value="31/02/2026" aria-invalid="true" aria-describedby="s-err-msg-mono-light" tabindex="-1">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="dp-msg" id="s-err-msg-mono-light"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter a real date, like 22/07/2026.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Disabled</p>
+      <div class="dp is-disabled">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-dis-mono-light">Payment date</label></div>
+        <p class="dp-help t-ed-body-small">Unavailable for this payment type.</p>
+        <div class="dp-box"><input id="s-dis-mono-light" type="text" disabled aria-label="Disabled example">
+          <button type="button" class="tail-btn" disabled aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp" style="max-width:368px;">
+    <div class="dp-panel is-static" role="presentation">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label">July 2026</span>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="static-grid-mono-light" role="grid" aria-label="July 2026"><div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="1 July 2026" tabindex="-1">1</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="2 July 2026" tabindex="-1">2</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="3 July 2026" tabindex="-1">3</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="4 July 2026" tabindex="-1">4</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="5 July 2026" tabindex="-1">5</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="6 July 2026" tabindex="-1">6</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="7 July 2026" tabindex="-1">7</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="true" aria-label="8 July 2026" tabindex="-1">8</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="9 July 2026" tabindex="-1">9</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="10 July 2026" tabindex="-1">10</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="11 July 2026" tabindex="-1">11</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="12 July 2026" tabindex="-1">12</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="13 July 2026" tabindex="-1">13</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="14 July 2026" tabindex="-1">14</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="15 July 2026" tabindex="-1">15</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="16 July 2026" tabindex="-1">16</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="17 July 2026" tabindex="-1">17</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="18 July 2026" tabindex="-1">18</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="19 July 2026" tabindex="-1">19</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="20 July 2026" tabindex="-1">20</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="21 July 2026" tabindex="-1">21</button>
+<button type="button" class="dp-day t-cm-figure-5 is-today" role="gridcell" aria-selected="false" aria-current="date" aria-label="22 July 2026" tabindex="-1">22</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="23 July 2026" tabindex="-1">23</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="24 July 2026" tabindex="-1">24</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="25 July 2026" tabindex="-1">25</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="26 July 2026" tabindex="-1">26</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="27 July 2026" tabindex="-1">27</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="28 July 2026" tabindex="-1">28</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="29 July 2026" tabindex="-1">29</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="30 July 2026" tabindex="-1">30</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="31 July 2026" tabindex="-1">31</button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+</div></div>
+    </div>
+  </div></div>
+    </div>
+    <div class="pane" data-theme="dark">
+      <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+      <div class="cn-date-picker"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+  <!-- ================= LIVE ================= -->
+
+  <div class="dp" id="live-dp-mono-dark">
+    <div class="dp-lblrow"><label class="t-cm-label" for="f-date-mono-dark">Payment date</label></div>
+    <p class="dp-help t-ed-body-small" id="f-date-help-mono-dark">Format: DD/MM/YYYY.</p>
+    <div class="dp-box">
+      <input id="f-date-mono-dark" name="date" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10"
+        autocomplete="off" aria-describedby="f-date-help f-date-msg-mono-dark">
+      <button type="button" class="tail-btn" id="dp-open-mono-dark" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose date from calendar">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg>
+      </button>
+    </div>
+    <div class="dp-msg" id="f-date-msg-mono-dark" aria-live="polite"></div>
+
+    <div class="dp-panel" id="dp-panel-mono-dark" role="dialog" aria-modal="false" aria-label="Choose date">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" id="dp-prev-y-mono-dark" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-prev-m-mono-dark" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label" id="dp-title-mono-dark" aria-live="polite">July 2026</span>
+        <button type="button" class="dp-nav" id="dp-next-m-mono-dark" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-next-y-mono-dark" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="dp-grid-mono-dark" role="grid" aria-label="Days"></div>
+    </div>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <div class="gallery">
+    <div>
+      <p class="cap t-cm-caption">Completed</p>
+      <div class="dp is-completed">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-done-mono-dark">Payment date</label></div>
+        <div class="dp-box"><input id="s-done-mono-dark" type="text" value="22/07/2026" tabindex="-1" aria-label="Completed example">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Error — ink message, red stroke</p>
+      <div class="dp is-error">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-err-mono-dark">Payment date</label></div>
+        <div class="dp-box"><input id="s-err-mono-dark" type="text" value="31/02/2026" aria-invalid="true" aria-describedby="s-err-msg-mono-dark" tabindex="-1">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="dp-msg" id="s-err-msg-mono-dark"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter a real date, like 22/07/2026.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Disabled</p>
+      <div class="dp is-disabled">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-dis-mono-dark">Payment date</label></div>
+        <p class="dp-help t-ed-body-small">Unavailable for this payment type.</p>
+        <div class="dp-box"><input id="s-dis-mono-dark" type="text" disabled aria-label="Disabled example">
+          <button type="button" class="tail-btn" disabled aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp" style="max-width:368px;">
+    <div class="dp-panel is-static" role="presentation">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label">July 2026</span>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="static-grid-mono-dark" role="grid" aria-label="July 2026"><div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="1 July 2026" tabindex="-1">1</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="2 July 2026" tabindex="-1">2</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="3 July 2026" tabindex="-1">3</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="4 July 2026" tabindex="-1">4</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="5 July 2026" tabindex="-1">5</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="6 July 2026" tabindex="-1">6</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="7 July 2026" tabindex="-1">7</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="true" aria-label="8 July 2026" tabindex="-1">8</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="9 July 2026" tabindex="-1">9</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="10 July 2026" tabindex="-1">10</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="11 July 2026" tabindex="-1">11</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="12 July 2026" tabindex="-1">12</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="13 July 2026" tabindex="-1">13</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="14 July 2026" tabindex="-1">14</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="15 July 2026" tabindex="-1">15</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="16 July 2026" tabindex="-1">16</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="17 July 2026" tabindex="-1">17</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="18 July 2026" tabindex="-1">18</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="19 July 2026" tabindex="-1">19</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="20 July 2026" tabindex="-1">20</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="21 July 2026" tabindex="-1">21</button>
+<button type="button" class="dp-day t-cm-figure-5 is-today" role="gridcell" aria-selected="false" aria-current="date" aria-label="22 July 2026" tabindex="-1">22</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="23 July 2026" tabindex="-1">23</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="24 July 2026" tabindex="-1">24</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="25 July 2026" tabindex="-1">25</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="26 July 2026" tabindex="-1">26</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="27 July 2026" tabindex="-1">27</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="28 July 2026" tabindex="-1">28</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="29 July 2026" tabindex="-1">29</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="30 July 2026" tabindex="-1">30</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="31 July 2026" tabindex="-1">31</button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+</div></div>
+    </div>
+  </div></div>
+    </div>
+  </div>
+</section>
+<section class="theme" data-apollo-theme="legacy">
+  <h2 class="t-cm-section-label">Apollo Legacy</h2>
+  <div class="grid">
+    <div class="pane" data-theme="light">
+      <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+      <div class="cn-date-picker"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+  <!-- ================= LIVE ================= -->
+
+  <div class="dp" id="live-dp-legacy-light">
+    <div class="dp-lblrow"><label class="t-cm-label" for="f-date-legacy-light">Payment date</label></div>
+    <p class="dp-help t-ed-body-small" id="f-date-help-legacy-light">Format: DD/MM/YYYY.</p>
+    <div class="dp-box">
+      <input id="f-date-legacy-light" name="date" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10"
+        autocomplete="off" aria-describedby="f-date-help f-date-msg-legacy-light">
+      <button type="button" class="tail-btn" id="dp-open-legacy-light" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose date from calendar">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg>
+      </button>
+    </div>
+    <div class="dp-msg" id="f-date-msg-legacy-light" aria-live="polite"></div>
+
+    <div class="dp-panel" id="dp-panel-legacy-light" role="dialog" aria-modal="false" aria-label="Choose date">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" id="dp-prev-y-legacy-light" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-prev-m-legacy-light" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label" id="dp-title-legacy-light" aria-live="polite">July 2026</span>
+        <button type="button" class="dp-nav" id="dp-next-m-legacy-light" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-next-y-legacy-light" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="dp-grid-legacy-light" role="grid" aria-label="Days"></div>
+    </div>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <div class="gallery">
+    <div>
+      <p class="cap t-cm-caption">Completed</p>
+      <div class="dp is-completed">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-done-legacy-light">Payment date</label></div>
+        <div class="dp-box"><input id="s-done-legacy-light" type="text" value="22/07/2026" tabindex="-1" aria-label="Completed example">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Error — ink message, red stroke</p>
+      <div class="dp is-error">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-err-legacy-light">Payment date</label></div>
+        <div class="dp-box"><input id="s-err-legacy-light" type="text" value="31/02/2026" aria-invalid="true" aria-describedby="s-err-msg-legacy-light" tabindex="-1">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="dp-msg" id="s-err-msg-legacy-light"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter a real date, like 22/07/2026.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Disabled</p>
+      <div class="dp is-disabled">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-dis-legacy-light">Payment date</label></div>
+        <p class="dp-help t-ed-body-small">Unavailable for this payment type.</p>
+        <div class="dp-box"><input id="s-dis-legacy-light" type="text" disabled aria-label="Disabled example">
+          <button type="button" class="tail-btn" disabled aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp" style="max-width:368px;">
+    <div class="dp-panel is-static" role="presentation">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label">July 2026</span>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="static-grid-legacy-light" role="grid" aria-label="July 2026"><div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="1 July 2026" tabindex="-1">1</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="2 July 2026" tabindex="-1">2</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="3 July 2026" tabindex="-1">3</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="4 July 2026" tabindex="-1">4</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="5 July 2026" tabindex="-1">5</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="6 July 2026" tabindex="-1">6</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="7 July 2026" tabindex="-1">7</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="true" aria-label="8 July 2026" tabindex="-1">8</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="9 July 2026" tabindex="-1">9</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="10 July 2026" tabindex="-1">10</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="11 July 2026" tabindex="-1">11</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="12 July 2026" tabindex="-1">12</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="13 July 2026" tabindex="-1">13</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="14 July 2026" tabindex="-1">14</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="15 July 2026" tabindex="-1">15</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="16 July 2026" tabindex="-1">16</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="17 July 2026" tabindex="-1">17</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="18 July 2026" tabindex="-1">18</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="19 July 2026" tabindex="-1">19</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="20 July 2026" tabindex="-1">20</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="21 July 2026" tabindex="-1">21</button>
+<button type="button" class="dp-day t-cm-figure-5 is-today" role="gridcell" aria-selected="false" aria-current="date" aria-label="22 July 2026" tabindex="-1">22</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="23 July 2026" tabindex="-1">23</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="24 July 2026" tabindex="-1">24</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="25 July 2026" tabindex="-1">25</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="26 July 2026" tabindex="-1">26</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="27 July 2026" tabindex="-1">27</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="28 July 2026" tabindex="-1">28</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="29 July 2026" tabindex="-1">29</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="30 July 2026" tabindex="-1">30</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="31 July 2026" tabindex="-1">31</button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+</div></div>
+    </div>
+  </div></div>
+    </div>
+    <div class="pane" data-theme="dark">
+      <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+      <div class="cn-date-picker"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+  <!-- ================= LIVE ================= -->
+
+  <div class="dp" id="live-dp-legacy-dark">
+    <div class="dp-lblrow"><label class="t-cm-label" for="f-date-legacy-dark">Payment date</label></div>
+    <p class="dp-help t-ed-body-small" id="f-date-help-legacy-dark">Format: DD/MM/YYYY.</p>
+    <div class="dp-box">
+      <input id="f-date-legacy-dark" name="date" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10"
+        autocomplete="off" aria-describedby="f-date-help f-date-msg-legacy-dark">
+      <button type="button" class="tail-btn" id="dp-open-legacy-dark" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose date from calendar">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg>
+      </button>
+    </div>
+    <div class="dp-msg" id="f-date-msg-legacy-dark" aria-live="polite"></div>
+
+    <div class="dp-panel" id="dp-panel-legacy-dark" role="dialog" aria-modal="false" aria-label="Choose date">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" id="dp-prev-y-legacy-dark" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-prev-m-legacy-dark" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label" id="dp-title-legacy-dark" aria-live="polite">July 2026</span>
+        <button type="button" class="dp-nav" id="dp-next-m-legacy-dark" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-next-y-legacy-dark" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="dp-grid-legacy-dark" role="grid" aria-label="Days"></div>
+    </div>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <div class="gallery">
+    <div>
+      <p class="cap t-cm-caption">Completed</p>
+      <div class="dp is-completed">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-done-legacy-dark">Payment date</label></div>
+        <div class="dp-box"><input id="s-done-legacy-dark" type="text" value="22/07/2026" tabindex="-1" aria-label="Completed example">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Error — ink message, red stroke</p>
+      <div class="dp is-error">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-err-legacy-dark">Payment date</label></div>
+        <div class="dp-box"><input id="s-err-legacy-dark" type="text" value="31/02/2026" aria-invalid="true" aria-describedby="s-err-msg-legacy-dark" tabindex="-1">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="dp-msg" id="s-err-msg-legacy-dark"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter a real date, like 22/07/2026.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Disabled</p>
+      <div class="dp is-disabled">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-dis-legacy-dark">Payment date</label></div>
+        <p class="dp-help t-ed-body-small">Unavailable for this payment type.</p>
+        <div class="dp-box"><input id="s-dis-legacy-dark" type="text" disabled aria-label="Disabled example">
+          <button type="button" class="tail-btn" disabled aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp" style="max-width:368px;">
+    <div class="dp-panel is-static" role="presentation">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label">July 2026</span>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="static-grid-legacy-dark" role="grid" aria-label="July 2026"><div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="1 July 2026" tabindex="-1">1</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="2 July 2026" tabindex="-1">2</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="3 July 2026" tabindex="-1">3</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="4 July 2026" tabindex="-1">4</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="5 July 2026" tabindex="-1">5</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="6 July 2026" tabindex="-1">6</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="7 July 2026" tabindex="-1">7</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="true" aria-label="8 July 2026" tabindex="-1">8</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="9 July 2026" tabindex="-1">9</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="10 July 2026" tabindex="-1">10</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="11 July 2026" tabindex="-1">11</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="12 July 2026" tabindex="-1">12</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="13 July 2026" tabindex="-1">13</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="14 July 2026" tabindex="-1">14</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="15 July 2026" tabindex="-1">15</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="16 July 2026" tabindex="-1">16</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="17 July 2026" tabindex="-1">17</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="18 July 2026" tabindex="-1">18</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="19 July 2026" tabindex="-1">19</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="20 July 2026" tabindex="-1">20</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="21 July 2026" tabindex="-1">21</button>
+<button type="button" class="dp-day t-cm-figure-5 is-today" role="gridcell" aria-selected="false" aria-current="date" aria-label="22 July 2026" tabindex="-1">22</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="23 July 2026" tabindex="-1">23</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="24 July 2026" tabindex="-1">24</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="25 July 2026" tabindex="-1">25</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="26 July 2026" tabindex="-1">26</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="27 July 2026" tabindex="-1">27</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="28 July 2026" tabindex="-1">28</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="29 July 2026" tabindex="-1">29</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="30 July 2026" tabindex="-1">30</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="31 July 2026" tabindex="-1">31</button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+</div></div>
+    </div>
+  </div></div>
+    </div>
+  </div>
+</section>
+<section class="theme" data-apollo-theme="console">
+  <h2 class="t-cm-section-label">Apollo Console</h2>
+  <div class="grid">
+    <div class="pane" data-theme="light">
+      <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+      <div class="cn-date-picker"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+  <!-- ================= LIVE ================= -->
+
+  <div class="dp" id="live-dp-console-light">
+    <div class="dp-lblrow"><label class="t-cm-label" for="f-date-console-light">Payment date</label></div>
+    <p class="dp-help t-ed-body-small" id="f-date-help-console-light">Format: DD/MM/YYYY.</p>
+    <div class="dp-box">
+      <input id="f-date-console-light" name="date" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10"
+        autocomplete="off" aria-describedby="f-date-help f-date-msg-console-light">
+      <button type="button" class="tail-btn" id="dp-open-console-light" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose date from calendar">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg>
+      </button>
+    </div>
+    <div class="dp-msg" id="f-date-msg-console-light" aria-live="polite"></div>
+
+    <div class="dp-panel" id="dp-panel-console-light" role="dialog" aria-modal="false" aria-label="Choose date">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" id="dp-prev-y-console-light" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-prev-m-console-light" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label" id="dp-title-console-light" aria-live="polite">July 2026</span>
+        <button type="button" class="dp-nav" id="dp-next-m-console-light" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-next-y-console-light" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="dp-grid-console-light" role="grid" aria-label="Days"></div>
+    </div>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <div class="gallery">
+    <div>
+      <p class="cap t-cm-caption">Completed</p>
+      <div class="dp is-completed">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-done-console-light">Payment date</label></div>
+        <div class="dp-box"><input id="s-done-console-light" type="text" value="22/07/2026" tabindex="-1" aria-label="Completed example">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Error — ink message, red stroke</p>
+      <div class="dp is-error">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-err-console-light">Payment date</label></div>
+        <div class="dp-box"><input id="s-err-console-light" type="text" value="31/02/2026" aria-invalid="true" aria-describedby="s-err-msg-console-light" tabindex="-1">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="dp-msg" id="s-err-msg-console-light"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter a real date, like 22/07/2026.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Disabled</p>
+      <div class="dp is-disabled">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-dis-console-light">Payment date</label></div>
+        <p class="dp-help t-ed-body-small">Unavailable for this payment type.</p>
+        <div class="dp-box"><input id="s-dis-console-light" type="text" disabled aria-label="Disabled example">
+          <button type="button" class="tail-btn" disabled aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp" style="max-width:368px;">
+    <div class="dp-panel is-static" role="presentation">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label">July 2026</span>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="static-grid-console-light" role="grid" aria-label="July 2026"><div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="1 July 2026" tabindex="-1">1</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="2 July 2026" tabindex="-1">2</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="3 July 2026" tabindex="-1">3</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="4 July 2026" tabindex="-1">4</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="5 July 2026" tabindex="-1">5</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="6 July 2026" tabindex="-1">6</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="7 July 2026" tabindex="-1">7</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="true" aria-label="8 July 2026" tabindex="-1">8</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="9 July 2026" tabindex="-1">9</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="10 July 2026" tabindex="-1">10</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="11 July 2026" tabindex="-1">11</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="12 July 2026" tabindex="-1">12</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="13 July 2026" tabindex="-1">13</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="14 July 2026" tabindex="-1">14</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="15 July 2026" tabindex="-1">15</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="16 July 2026" tabindex="-1">16</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="17 July 2026" tabindex="-1">17</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="18 July 2026" tabindex="-1">18</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="19 July 2026" tabindex="-1">19</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="20 July 2026" tabindex="-1">20</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="21 July 2026" tabindex="-1">21</button>
+<button type="button" class="dp-day t-cm-figure-5 is-today" role="gridcell" aria-selected="false" aria-current="date" aria-label="22 July 2026" tabindex="-1">22</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="23 July 2026" tabindex="-1">23</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="24 July 2026" tabindex="-1">24</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="25 July 2026" tabindex="-1">25</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="26 July 2026" tabindex="-1">26</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="27 July 2026" tabindex="-1">27</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="28 July 2026" tabindex="-1">28</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="29 July 2026" tabindex="-1">29</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="30 July 2026" tabindex="-1">30</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="31 July 2026" tabindex="-1">31</button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+</div></div>
+    </div>
+  </div></div>
+    </div>
+    <div class="pane" data-theme="dark">
+      <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+      <div class="cn-date-picker"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+  <!-- ================= LIVE ================= -->
+
+  <div class="dp" id="live-dp-console-dark">
+    <div class="dp-lblrow"><label class="t-cm-label" for="f-date-console-dark">Payment date</label></div>
+    <p class="dp-help t-ed-body-small" id="f-date-help-console-dark">Format: DD/MM/YYYY.</p>
+    <div class="dp-box">
+      <input id="f-date-console-dark" name="date" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10"
+        autocomplete="off" aria-describedby="f-date-help f-date-msg-console-dark">
+      <button type="button" class="tail-btn" id="dp-open-console-dark" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose date from calendar">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg>
+      </button>
+    </div>
+    <div class="dp-msg" id="f-date-msg-console-dark" aria-live="polite"></div>
+
+    <div class="dp-panel" id="dp-panel-console-dark" role="dialog" aria-modal="false" aria-label="Choose date">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" id="dp-prev-y-console-dark" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-prev-m-console-dark" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label" id="dp-title-console-dark" aria-live="polite">July 2026</span>
+        <button type="button" class="dp-nav" id="dp-next-m-console-dark" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-next-y-console-dark" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="dp-grid-console-dark" role="grid" aria-label="Days"></div>
+    </div>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <div class="gallery">
+    <div>
+      <p class="cap t-cm-caption">Completed</p>
+      <div class="dp is-completed">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-done-console-dark">Payment date</label></div>
+        <div class="dp-box"><input id="s-done-console-dark" type="text" value="22/07/2026" tabindex="-1" aria-label="Completed example">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Error — ink message, red stroke</p>
+      <div class="dp is-error">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-err-console-dark">Payment date</label></div>
+        <div class="dp-box"><input id="s-err-console-dark" type="text" value="31/02/2026" aria-invalid="true" aria-describedby="s-err-msg-console-dark" tabindex="-1">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="dp-msg" id="s-err-msg-console-dark"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter a real date, like 22/07/2026.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Disabled</p>
+      <div class="dp is-disabled">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-dis-console-dark">Payment date</label></div>
+        <p class="dp-help t-ed-body-small">Unavailable for this payment type.</p>
+        <div class="dp-box"><input id="s-dis-console-dark" type="text" disabled aria-label="Disabled example">
+          <button type="button" class="tail-btn" disabled aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp" style="max-width:368px;">
+    <div class="dp-panel is-static" role="presentation">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label">July 2026</span>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="static-grid-console-dark" role="grid" aria-label="July 2026"><div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="1 July 2026" tabindex="-1">1</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="2 July 2026" tabindex="-1">2</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="3 July 2026" tabindex="-1">3</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="4 July 2026" tabindex="-1">4</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="5 July 2026" tabindex="-1">5</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="6 July 2026" tabindex="-1">6</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="7 July 2026" tabindex="-1">7</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="true" aria-label="8 July 2026" tabindex="-1">8</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="9 July 2026" tabindex="-1">9</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="10 July 2026" tabindex="-1">10</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="11 July 2026" tabindex="-1">11</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="12 July 2026" tabindex="-1">12</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="13 July 2026" tabindex="-1">13</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="14 July 2026" tabindex="-1">14</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="15 July 2026" tabindex="-1">15</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="16 July 2026" tabindex="-1">16</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="17 July 2026" tabindex="-1">17</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="18 July 2026" tabindex="-1">18</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="19 July 2026" tabindex="-1">19</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="20 July 2026" tabindex="-1">20</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="21 July 2026" tabindex="-1">21</button>
+<button type="button" class="dp-day t-cm-figure-5 is-today" role="gridcell" aria-selected="false" aria-current="date" aria-label="22 July 2026" tabindex="-1">22</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="23 July 2026" tabindex="-1">23</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="24 July 2026" tabindex="-1">24</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="25 July 2026" tabindex="-1">25</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="26 July 2026" tabindex="-1">26</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="27 July 2026" tabindex="-1">27</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="28 July 2026" tabindex="-1">28</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="29 July 2026" tabindex="-1">29</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="30 July 2026" tabindex="-1">30</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="31 July 2026" tabindex="-1">31</button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+</div></div>
+    </div>
+  </div></div>
+    </div>
+  </div>
+</section>
+<section class="theme" data-apollo-theme="supercharge">
+  <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+  <div class="grid">
+    <div class="pane" data-theme="light">
+      <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+      <div class="cn-date-picker"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+  <!-- ================= LIVE ================= -->
+
+  <div class="dp" id="live-dp-supercharge-light">
+    <div class="dp-lblrow"><label class="t-cm-label" for="f-date-supercharge-light">Payment date</label></div>
+    <p class="dp-help t-ed-body-small" id="f-date-help-supercharge-light">Format: DD/MM/YYYY.</p>
+    <div class="dp-box">
+      <input id="f-date-supercharge-light" name="date" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10"
+        autocomplete="off" aria-describedby="f-date-help f-date-msg-supercharge-light">
+      <button type="button" class="tail-btn" id="dp-open-supercharge-light" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose date from calendar">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg>
+      </button>
+    </div>
+    <div class="dp-msg" id="f-date-msg-supercharge-light" aria-live="polite"></div>
+
+    <div class="dp-panel" id="dp-panel-supercharge-light" role="dialog" aria-modal="false" aria-label="Choose date">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" id="dp-prev-y-supercharge-light" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-prev-m-supercharge-light" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label" id="dp-title-supercharge-light" aria-live="polite">July 2026</span>
+        <button type="button" class="dp-nav" id="dp-next-m-supercharge-light" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-next-y-supercharge-light" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="dp-grid-supercharge-light" role="grid" aria-label="Days"></div>
+    </div>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <div class="gallery">
+    <div>
+      <p class="cap t-cm-caption">Completed</p>
+      <div class="dp is-completed">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-done-supercharge-light">Payment date</label></div>
+        <div class="dp-box"><input id="s-done-supercharge-light" type="text" value="22/07/2026" tabindex="-1" aria-label="Completed example">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Error — ink message, red stroke</p>
+      <div class="dp is-error">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-err-supercharge-light">Payment date</label></div>
+        <div class="dp-box"><input id="s-err-supercharge-light" type="text" value="31/02/2026" aria-invalid="true" aria-describedby="s-err-msg-supercharge-light" tabindex="-1">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="dp-msg" id="s-err-msg-supercharge-light"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter a real date, like 22/07/2026.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Disabled</p>
+      <div class="dp is-disabled">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-dis-supercharge-light">Payment date</label></div>
+        <p class="dp-help t-ed-body-small">Unavailable for this payment type.</p>
+        <div class="dp-box"><input id="s-dis-supercharge-light" type="text" disabled aria-label="Disabled example">
+          <button type="button" class="tail-btn" disabled aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp" style="max-width:368px;">
+    <div class="dp-panel is-static" role="presentation">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label">July 2026</span>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="static-grid-supercharge-light" role="grid" aria-label="July 2026"><div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="1 July 2026" tabindex="-1">1</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="2 July 2026" tabindex="-1">2</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="3 July 2026" tabindex="-1">3</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="4 July 2026" tabindex="-1">4</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="5 July 2026" tabindex="-1">5</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="6 July 2026" tabindex="-1">6</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="7 July 2026" tabindex="-1">7</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="true" aria-label="8 July 2026" tabindex="-1">8</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="9 July 2026" tabindex="-1">9</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="10 July 2026" tabindex="-1">10</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="11 July 2026" tabindex="-1">11</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="12 July 2026" tabindex="-1">12</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="13 July 2026" tabindex="-1">13</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="14 July 2026" tabindex="-1">14</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="15 July 2026" tabindex="-1">15</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="16 July 2026" tabindex="-1">16</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="17 July 2026" tabindex="-1">17</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="18 July 2026" tabindex="-1">18</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="19 July 2026" tabindex="-1">19</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="20 July 2026" tabindex="-1">20</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="21 July 2026" tabindex="-1">21</button>
+<button type="button" class="dp-day t-cm-figure-5 is-today" role="gridcell" aria-selected="false" aria-current="date" aria-label="22 July 2026" tabindex="-1">22</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="23 July 2026" tabindex="-1">23</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="24 July 2026" tabindex="-1">24</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="25 July 2026" tabindex="-1">25</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="26 July 2026" tabindex="-1">26</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="27 July 2026" tabindex="-1">27</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="28 July 2026" tabindex="-1">28</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="29 July 2026" tabindex="-1">29</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="30 July 2026" tabindex="-1">30</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="31 July 2026" tabindex="-1">31</button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+</div></div>
+    </div>
+  </div></div>
+    </div>
+    <div class="pane" data-theme="dark">
+      <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+      <div class="cn-date-picker"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+  <!-- ================= LIVE ================= -->
+
+  <div class="dp" id="live-dp-supercharge-dark">
+    <div class="dp-lblrow"><label class="t-cm-label" for="f-date-supercharge-dark">Payment date</label></div>
+    <p class="dp-help t-ed-body-small" id="f-date-help-supercharge-dark">Format: DD/MM/YYYY.</p>
+    <div class="dp-box">
+      <input id="f-date-supercharge-dark" name="date" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10"
+        autocomplete="off" aria-describedby="f-date-help f-date-msg-supercharge-dark">
+      <button type="button" class="tail-btn" id="dp-open-supercharge-dark" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose date from calendar">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg>
+      </button>
+    </div>
+    <div class="dp-msg" id="f-date-msg-supercharge-dark" aria-live="polite"></div>
+
+    <div class="dp-panel" id="dp-panel-supercharge-dark" role="dialog" aria-modal="false" aria-label="Choose date">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" id="dp-prev-y-supercharge-dark" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-prev-m-supercharge-dark" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label" id="dp-title-supercharge-dark" aria-live="polite">July 2026</span>
+        <button type="button" class="dp-nav" id="dp-next-m-supercharge-dark" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-next-y-supercharge-dark" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="dp-grid-supercharge-dark" role="grid" aria-label="Days"></div>
+    </div>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <div class="gallery">
+    <div>
+      <p class="cap t-cm-caption">Completed</p>
+      <div class="dp is-completed">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-done-supercharge-dark">Payment date</label></div>
+        <div class="dp-box"><input id="s-done-supercharge-dark" type="text" value="22/07/2026" tabindex="-1" aria-label="Completed example">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Error — ink message, red stroke</p>
+      <div class="dp is-error">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-err-supercharge-dark">Payment date</label></div>
+        <div class="dp-box"><input id="s-err-supercharge-dark" type="text" value="31/02/2026" aria-invalid="true" aria-describedby="s-err-msg-supercharge-dark" tabindex="-1">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="dp-msg" id="s-err-msg-supercharge-dark"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter a real date, like 22/07/2026.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Disabled</p>
+      <div class="dp is-disabled">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-dis-supercharge-dark">Payment date</label></div>
+        <p class="dp-help t-ed-body-small">Unavailable for this payment type.</p>
+        <div class="dp-box"><input id="s-dis-supercharge-dark" type="text" disabled aria-label="Disabled example">
+          <button type="button" class="tail-btn" disabled aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp" style="max-width:368px;">
+    <div class="dp-panel is-static" role="presentation">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label">July 2026</span>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="static-grid-supercharge-dark" role="grid" aria-label="July 2026"><div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="1 July 2026" tabindex="-1">1</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="2 July 2026" tabindex="-1">2</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="3 July 2026" tabindex="-1">3</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="4 July 2026" tabindex="-1">4</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="5 July 2026" tabindex="-1">5</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="6 July 2026" tabindex="-1">6</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="7 July 2026" tabindex="-1">7</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="true" aria-label="8 July 2026" tabindex="-1">8</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="9 July 2026" tabindex="-1">9</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="10 July 2026" tabindex="-1">10</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="11 July 2026" tabindex="-1">11</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="12 July 2026" tabindex="-1">12</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="13 July 2026" tabindex="-1">13</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="14 July 2026" tabindex="-1">14</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="15 July 2026" tabindex="-1">15</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="16 July 2026" tabindex="-1">16</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="17 July 2026" tabindex="-1">17</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="18 July 2026" tabindex="-1">18</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="19 July 2026" tabindex="-1">19</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="20 July 2026" tabindex="-1">20</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="21 July 2026" tabindex="-1">21</button>
+<button type="button" class="dp-day t-cm-figure-5 is-today" role="gridcell" aria-selected="false" aria-current="date" aria-label="22 July 2026" tabindex="-1">22</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="23 July 2026" tabindex="-1">23</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="24 July 2026" tabindex="-1">24</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="25 July 2026" tabindex="-1">25</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="26 July 2026" tabindex="-1">26</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="27 July 2026" tabindex="-1">27</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="28 July 2026" tabindex="-1">28</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="29 July 2026" tabindex="-1">29</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="30 July 2026" tabindex="-1">30</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="31 July 2026" tabindex="-1">31</button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+</div></div>
+    </div>
+  </div></div>
+    </div>
+  </div>
+</section>
+<section class="theme narrow" data-apollo-theme="mono">
+  <h2 class="t-cm-section-label">Responsive &mdash; 360px column (Apollo Mono)</h2>
+  <p class="t-ed-body-small" style="max-width:920px">A 360px column is an iPhone-SE-width content area. Anything that overflows here overflows on a small phone. Scroll a pane sideways if it clips &mdash; the clipping is the finding, not a bug in this page.</p>
+  <div class="grid">
+    <div class="pane" data-theme="light"><div class="pane-cap t-cm-caption">narrow &middot; light</div><div class="cn-date-picker"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+  <!-- ================= LIVE ================= -->
+
+  <div class="dp" id="live-dp-narrow">
+    <div class="dp-lblrow"><label class="t-cm-label" for="f-date-narrow">Payment date</label></div>
+    <p class="dp-help t-ed-body-small" id="f-date-help-narrow">Format: DD/MM/YYYY.</p>
+    <div class="dp-box">
+      <input id="f-date-narrow" name="date" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10"
+        autocomplete="off" aria-describedby="f-date-help f-date-msg-narrow">
+      <button type="button" class="tail-btn" id="dp-open-narrow" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose date from calendar">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg>
+      </button>
+    </div>
+    <div class="dp-msg" id="f-date-msg-narrow" aria-live="polite"></div>
+
+    <div class="dp-panel" id="dp-panel-narrow" role="dialog" aria-modal="false" aria-label="Choose date">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" id="dp-prev-y-narrow" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-prev-m-narrow" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label" id="dp-title-narrow" aria-live="polite">July 2026</span>
+        <button type="button" class="dp-nav" id="dp-next-m-narrow" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" id="dp-next-y-narrow" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="dp-grid-narrow" role="grid" aria-label="Days"></div>
+    </div>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <div class="gallery">
+    <div>
+      <p class="cap t-cm-caption">Completed</p>
+      <div class="dp is-completed">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-done-narrow">Payment date</label></div>
+        <div class="dp-box"><input id="s-done-narrow" type="text" value="22/07/2026" tabindex="-1" aria-label="Completed example">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Error — ink message, red stroke</p>
+      <div class="dp is-error">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-err-narrow">Payment date</label></div>
+        <div class="dp-box"><input id="s-err-narrow" type="text" value="31/02/2026" aria-invalid="true" aria-describedby="s-err-msg-narrow" tabindex="-1">
+          <button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="dp-msg" id="s-err-msg-narrow"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter a real date, like 22/07/2026.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap t-cm-caption">Disabled</p>
+      <div class="dp is-disabled">
+        <div class="dp-lblrow"><label class="t-cm-label" for="s-dis-narrow">Payment date</label></div>
+        <p class="dp-help t-ed-body-small">Unavailable for this payment type.</p>
+        <div class="dp-box"><input id="s-dis-narrow" type="text" disabled aria-label="Disabled example">
+          <button type="button" class="tail-btn" disabled aria-label="Choose date from calendar"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp" style="max-width:368px;">
+    <div class="dp-panel is-static" role="presentation">
+      <div class="dp-head">
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="dp-title t-cm-label">July 2026</span>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <div class="dp-week" aria-hidden="true">
+        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
+      </div>
+      <div class="dp-grid" id="static-grid-narrow" role="grid" aria-label="July 2026"><div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="1 July 2026" tabindex="-1">1</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="2 July 2026" tabindex="-1">2</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="3 July 2026" tabindex="-1">3</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="4 July 2026" tabindex="-1">4</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="5 July 2026" tabindex="-1">5</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="6 July 2026" tabindex="-1">6</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="7 July 2026" tabindex="-1">7</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="true" aria-label="8 July 2026" tabindex="-1">8</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="9 July 2026" tabindex="-1">9</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="10 July 2026" tabindex="-1">10</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="11 July 2026" tabindex="-1">11</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="12 July 2026" tabindex="-1">12</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="13 July 2026" tabindex="-1">13</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="14 July 2026" tabindex="-1">14</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="15 July 2026" tabindex="-1">15</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="16 July 2026" tabindex="-1">16</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="17 July 2026" tabindex="-1">17</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="18 July 2026" tabindex="-1">18</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="19 July 2026" tabindex="-1">19</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="20 July 2026" tabindex="-1">20</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="21 July 2026" tabindex="-1">21</button>
+<button type="button" class="dp-day t-cm-figure-5 is-today" role="gridcell" aria-selected="false" aria-current="date" aria-label="22 July 2026" tabindex="-1">22</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="23 July 2026" tabindex="-1">23</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="24 July 2026" tabindex="-1">24</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="25 July 2026" tabindex="-1">25</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="26 July 2026" tabindex="-1">26</button>
+</div>
+<div role="row" style="display:contents">
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="27 July 2026" tabindex="-1">27</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="28 July 2026" tabindex="-1">28</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="29 July 2026" tabindex="-1">29</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="30 July 2026" tabindex="-1">30</button>
+<button type="button" class="dp-day t-cm-figure-5" role="gridcell" aria-selected="false" aria-label="31 July 2026" tabindex="-1">31</button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+<button type="button" class="dp-day t-cm-figure-5 is-empty" role="gridcell" aria-hidden="true" tabindex="-1"></button>
+</div></div>
+    </div>
+  </div></div></div>
+  </div>
+</section>
+</body>
+</html>

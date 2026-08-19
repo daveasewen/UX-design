@@ -1614,6 +1614,10 @@
      values meanwhile (driftAllow) — the dark rag-SURFACE token gap is still open, see
      dark-rag-token-gaps. GLOBAL solid banners are untouched: their icons are already
      reverse-knockout (white/dark shape, fill-coloured mark) and pass the mark leg. */
+[data-theme="dark"] .cn-notifications .note.tint .ic{color:#FFFFFF;}
+[data-theme="dark"] .cn-notifications .note.tint, [data-theme="dark"] .cn-notifications .note.tint.warn, [data-theme="dark"] .cn-notifications .note.tint.ok{--mark:#000000;}
+[data-theme="dark"] .cn-notifications .inline .ic{color:#FFFFFF;}
+[data-theme="dark"] .cn-notifications .inline, [data-theme="dark"] .cn-notifications .inline.warn{--mark:#000000;}
 @container (max-width: 480px){
 .cn-notifications .note.global .actions{flex-direction:column; gap:8px; align-items:stretch;}
 .cn-notifications .note.global .actions button{width:100%;}
@@ -1855,6 +1859,7 @@
 .cn-input-fields .field.is-completed .box input{font-weight:500;}
 /* error: black border + 4px RED bottom-stroke + opaque fill; message stays text/default */
 .cn-input-fields .field.is-error .box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-input-fields .field.is-error .box{border-color:var(--error);}
 /* dark: the WHITE active border read as overlaying the red bar (Dave 2026-07-02) — error border goes full red; #DB0011 on black = 4.02 ≥3 ✓ */
 .cn-input-fields .field.is-error .box input{font-weight:500;}
 /* disabled: muted border + text/icon disabled */
@@ -1866,6 +1871,7 @@
 .cn-input-fields .err-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
 .cn-input-fields .err-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
 /* rag roundel policy: shape = rag colour, mark knocks to page */
+[data-theme="dark"] .cn-input-fields .err-msg .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark (mark already = page) */
 .cn-input-fields .err-msg p{flex:1; min-width:0; font:400 16px/24px var(--font); color:var(--text); margin:0;}
 /* ---------- UNDERLINE field (prior canon, kept) ---------- */
@@ -1884,6 +1890,7 @@
 .cn-input-fields .uhelp{font:400 12px/16px var(--font); color:var(--text); opacity:var(--alpha-72); margin:8px 0 0;}
 .cn-input-fields .uic{position:absolute; right:2px; top:28px; transform:translateY(-50%); display:flex; color:var(--success); --mark:var(--page);}
 /* rag roundel policy: shape = rag colour, mark knocks to page */
+[data-theme="dark"] .cn-input-fields .uic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-input-fields .ufield.is-ok .uctrl input{border-bottom:3px solid var(--success);}
 .cn-input-fields .ufield.is-error .uctrl input{border-bottom:3px solid var(--error);}
@@ -3938,6 +3945,7 @@
 /* states */
 .cn-amount-input .ai-group.is-completed .ai-box input{font-weight:500;}
 .cn-amount-input .ai-group.is-error .ai-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-amount-input .ai-group.is-error .ai-box{border-color:var(--error);}
 /* dark: error border goes full red (Input-fields, Dave 2026-07-02) */
 .cn-amount-input .ai-group.is-error .ai-box input{font-weight:500;}
 .cn-amount-input .ai-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
@@ -3947,6 +3955,7 @@
 .cn-amount-input .ai-msg:empty{display:none;}
 .cn-amount-input .ai-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
 /* rag roundel policy */
+[data-theme="dark"] .cn-amount-input .ai-msg .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-amount-input .ai-msg.is-ok .ic{color:var(--success);}
 .cn-amount-input .ai-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
@@ -3959,6 +3968,180 @@
 @media (max-width:480px){
 .cn-amount-input .ai-group, .cn-amount-input .gallery{max-width:none;}
 .cn-amount-input .gallery{grid-template-columns:1fr;}
+}
+
+/* ============================================================
+   Anchor-nav  (from snippets/Anchor-nav.reference.html)
+   Aria: <nav, aria-label, aria-current="true", aria-labelledby
+   Finding: THIS IS NOT TABS. Tabs swaps panels and removes the inactive ones from the document; an anchor nav hides nothing and every section stays scrollable. The nav is a shortcut, not a switch. Announcing one as the other is the classic defect this component exists to prevent.
+   Finding: aria-current="true", NOT "page". The page has not changed — the reader's location within it has. Sidebar nav uses "page" for the same reason inverted: there, the destination IS a different page.
+   Finding: THE CLAIMED-BUT-ABSENT VARIANT. navigations.meta.json declares an `anchors` variant with a brand-red underline indicator and a pattern `in-page-anchor-nav`, but Navigations.reference.html contains no anchors markup — verified first-hand at #203 (the file is 64 lines and renders one <header>). This snippet makes that claimed variant real and keeps the underline indicator it describes. PROPOSED #203, Dave's eye owed: whether the Navigations meta should now point at this component, or keep claiming a variant it does not render. Editing that shared meta was out of this lane's fence.
+   Finding: CURRENT-SECTION CARRIERS: a BAR that is present or absent (a shape difference), plus aria-current, plus colour. Colour is third, never alone — Dave is astigmatic and red is a problem hue. The indicator is NOT declared as a contrastPair, and the measurement that decided it was taken against the real canon.css in all four themes: primary/border/default (#DB0011) on background/default is 5.22 light / 3.33 dark in every theme (the horizontal bar's ground), but on tertiary/background/hover — the ground under the vertical rail's current row — it is 4.58/3.01 in mono, legacy and console and 3.89 light / 2.73 dark FAIL in SUPERCHARGE. Declaring it would be a green that cannot fail in the theme where it is false (the #174 precedent). The shape carrier is what the component leans on. PROPOSED #203, Dave's eye owed — the same seam Sidebar nav reports.
+   Finding: 44px MIN HIT AREA enforced by hand — no gate reads target/min. Every anchor link in both placements is min-height:44px.
+   Finding: SCROLLSPY IS REAL, NOT STAGED. Both specimens use IntersectionObserver against the scroll container, so the marked link changes as the reader scrolls, and the initial marked state is authored in the markup so the component is correct in a still with JS off. Feature-detected: with no IntersectionObserver the authored state simply stands and every link still works.
+   Finding: MEASURED, AND THE GATE CAUGHT IT: divider/border/section on background/default is 1.31:1 in mono light (#E1E1E1 on #FFFFFF). It was declared as a ui contrastPair in the first draft and the snippet gate failed the file. It is NOT a defect and it is NOT declared: a section divider is a decorative separator between blocks of prose, not a boundary a user must perceive to operate the component — 1.4.11 governs meaning-bearing boundaries. The boundaries that DO carry meaning here (the current-section bar, the link text) are measured and carried by shape as well as colour. Recorded because an undeclared pair and an unmeasured pair look identical afterwards.
+   Finding: The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css.
+   Scope: .cn-anchor-nav   ============================================================ */
+.cn-anchor-nav{
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --bar-bg: var(--tertiary-background-default);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --rule: var(--divider-border-section);
+  --sub-rule: var(--divider-border-subsection);
+  --hover: var(--tertiary-background-hover);
+  --indicator: var(--primary-border-default);
+  --focus: var(--focus-ring);
+  --radius: var(--border-radius-surface);
+}
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+.cn-anchor-nav :is(button, .cn-anchor-nav a, .cn-anchor-nav label, .cn-anchor-nav span, .cn-anchor-nav small, .cn-anchor-nav strong, .cn-anchor-nav em, .cn-anchor-nav b, .cn-anchor-nav i, .cn-anchor-nav th, .cn-anchor-nav td, .cn-anchor-nav dt, .cn-anchor-nav dd, .cn-anchor-nav li, .cn-anchor-nav figcaption, .cn-anchor-nav legend, .cn-anchor-nav caption, .cn-anchor-nav summary, .cn-anchor-nav output, .cn-anchor-nav time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* NOTE: no raw font-family, font-size or font-weight anywhere — every text element carries
+     a .t-cm-* or .t-ed-* composite from canon/type.css (the Progress-bar precedent, #174).
+     Wrapping prose takes Editorial composites, single-line labels take Component ones — the
+     deciding rule from the type gate's own docstring. */
+.cn-anchor-nav .specimens{display:flex; flex-direction:column; gap:32px;}
+.cn-anchor-nav .spec-note{color:var(--muted);}
+/* explicit gap above — leading-trim is ON */
+/* ---- the scrolling document, bounded so scrollspy is real and visible at rest ---- */
+.cn-anchor-nav .an-doc{position:relative; height:380px; overflow-y:auto; scroll-behavior:smooth;
+          max-width:820px; border:1px solid var(--rule); border-radius:var(--radius);
+          background:var(--page);}
+.cn-anchor-nav .an-doc section{padding:20px 24px 32px; scroll-margin-top:56px; border-top:1px solid var(--sub-rule);}
+.cn-anchor-nav .an-doc section:first-of-type{border-top:0;}
+.cn-anchor-nav .an-doc h2{margin:0 0 12px;}
+.cn-anchor-nav .an-doc p{margin:0 0 12px; color:var(--text); text-box-trim:normal;}
+/* wrapping prose keeps its line box */
+.cn-anchor-nav .an-doc p:last-child{margin-bottom:0;}
+/* ---- placement A · sticky horizontal bar ---- */
+.cn-anchor-nav .an-bar{position:sticky; top:0; z-index:2; display:flex; gap:4px; overflow-x:auto;
+          padding:0 12px; background:var(--bar-bg); border-bottom:1px solid var(--rule);}
+.cn-anchor-nav .an-bar a{display:inline-flex; align-items:center; min-height:44px; padding:0 12px;
+            color:var(--text); text-decoration:none; white-space:nowrap;
+            transition:background var(--ease), box-shadow var(--ease);}
+.cn-anchor-nav .an-bar a:hover{background:var(--hover);}
+.cn-anchor-nav .an-bar a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+/* CURRENT SECTION — a bar that is present or absent (shape), plus aria-current, plus colour */
+.cn-anchor-nav .an-bar a[aria-current="true"]{box-shadow:inset 0 -3px 0 var(--indicator);}
+/* ---- placement B · vertical "on this page" rail ---- */
+.cn-anchor-nav .an-split{display:flex; gap:0; height:380px; max-width:820px;
+            border:1px solid var(--rule); border-radius:var(--radius); overflow:hidden;}
+.cn-anchor-nav .an-split .an-doc{flex:1; min-width:0; height:100%; border:0;}
+.cn-anchor-nav .an-rail{flex:none; width:216px; padding:16px 0; border-left:1px solid var(--rule);
+           background:var(--bar-bg); overflow-y:auto;}
+.cn-anchor-nav .an-rail-label{display:block; padding:0 16px 8px; color:var(--muted); opacity:.72;}
+.cn-anchor-nav .an-rail ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
+.cn-anchor-nav .an-rail a{display:flex; align-items:center; min-height:44px; padding:0 16px;
+             color:var(--text); text-decoration:none;
+             transition:background var(--ease), box-shadow var(--ease);}
+.cn-anchor-nav .an-rail a .an-t{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+                   text-box-edge:text text;}
+.cn-anchor-nav .an-rail a:hover{background:var(--hover);}
+.cn-anchor-nav .an-rail a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-anchor-nav .an-rail a[aria-current="true"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+/* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users).
+     scroll-behavior is reset to auto here, so an anchor jump lands instantly. */
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Avatar-group  (from snippets/Avatar-group.reference.html)
+   Aria: role="img", aria-label, aria-hidden="true", <ul, <li
+   Reuses: Avatar (the disc, verbatim — surface, ring, round exemption, size ramp)
+   Scope: .cn-avatar-group   ============================================================ */
+.cn-avatar-group{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --ease: 140ms ease;
+  --surface: var(--tertiary-background-hover);
+  --ring: var(--border-subtle);
+  --text: var(--text-default);
+  --icon: var(--icon-default);
+  --focus: var(--focus-ring);
+  --page: var(--background-default);
+  --stack-ring: var(--background-default);
+  --card: var(--tertiary-background-default);
+  --card-border: var(--border-subtle);
+}
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
+.cn-avatar-group :is(button, .cn-avatar-group a, .cn-avatar-group label, .cn-avatar-group span, .cn-avatar-group small, .cn-avatar-group strong, .cn-avatar-group b, .cn-avatar-group th, .cn-avatar-group td, .cn-avatar-group dt, .cn-avatar-group dd, .cn-avatar-group li, .cn-avatar-group figcaption, .cn-avatar-group legend, .cn-avatar-group caption, .cn-avatar-group summary, .cn-avatar-group output, .cn-avatar-group time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* NO raw font-family on body — every text element carries a composite (Progress-bar precedent). */
+.cn-avatar-group .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+.cn-avatar-group .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:44rem;}
+.cn-avatar-group .demo-card{background:var(--card); border:1px solid var(--card-border);
+    border-radius:var(--border-radius-surface); padding:16px; display:inline-block;}
+.cn-avatar-group .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+/* ---- the disc — Avatar.reference verbatim (round exemption, same surface/ring/text tokens) ---- */
+.cn-avatar-group .avg-face{border-radius:50%;   /* EXEMPTION: round (Avatar + Badge are the two documented ones) */
+    background:var(--surface); color:var(--text); display:inline-flex; align-items:center;
+    justify-content:center; overflow:hidden; flex:none;}
+/* NOTE: no font-weight here. Avatar declares a raw font-weight:500 on its disc (a TYPE-002
+     violation counted in the 1,097 debt); the same 500 is carried on-ramp by the composite
+     classes used per size below (ctl-12 / ctl-14 / section-label are all weight 500). */
+.cn-avatar-group .avg-face svg{width:60%; height:60%; fill:var(--icon);}
+/* ---- the arrangement: overlap + separator ring ---- */
+.cn-avatar-group .avg{display:inline-flex; align-items:center;}
+.cn-avatar-group .avg .avg-face{box-shadow:0 0 0 2px var(--stack-ring);}
+/* separates the discs from each other */
+.cn-avatar-group .avg .avg-face + .avg-face, .cn-avatar-group .avg .avg-item + .avg-item .avg-face{margin-left:var(--overlap);}
+.cn-avatar-group .avg.sm{--overlap:-8px;}
+.cn-avatar-group .avg.sm .avg-face{width:32px; height:32px;}
+.cn-avatar-group .avg.md{--overlap:-12px;}
+.cn-avatar-group .avg.md .avg-face{width:44px; height:44px;}
+.cn-avatar-group .avg.lg{--overlap:-16px;}
+.cn-avatar-group .avg.lg .avg-face{width:64px; height:64px;}
+/* stacking order: first member sits on top, so the set reads left-to-right as a hand of cards */
+.cn-avatar-group .avg .avg-face:nth-child(1){z-index:6;}
+.cn-avatar-group .avg .avg-face:nth-child(2){z-index:5;}
+.cn-avatar-group .avg .avg-face:nth-child(3){z-index:4;}
+.cn-avatar-group .avg .avg-face:nth-child(4){z-index:3;}
+.cn-avatar-group .avg .avg-face:nth-child(5){z-index:2;}
+.cn-avatar-group .avg .avg-face:nth-child(6){z-index:1;}
+/* ---- overflow counter: a disc that carries a number, not a person ---- */
+.cn-avatar-group .avg-more{background:var(--surface); color:var(--text); opacity:var(--alpha-96);}
+/* ---- interactive: MEDIUM AND LARGE ONLY (44px min-hit-area, enforced by hand) ---- */
+.cn-avatar-group a.avg-face, .cn-avatar-group button.avg-face{cursor:pointer; text-decoration:none; padding:0; border:0;}
+.cn-avatar-group a.avg-face:focus-visible, .cn-avatar-group button.avg-face:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-avatar-group a.avg-face:hover, .cn-avatar-group button.avg-face:hover{box-shadow:0 0 0 2px var(--stack-ring), 0 0 0 3px var(--ring);}
+/* ---- group-as-one-target: the correct answer when the set is small (32px discs) ---- */
+.cn-avatar-group .avg-btn{display:inline-flex; align-items:center; min-height:44px; padding:0 4px;
+    background:transparent; border:0; border-radius:var(--border-radius-surface); cursor:pointer;
+    color:var(--text);}
+.cn-avatar-group .avg-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ---- roster variant: the real list, when the individuals ARE the content ---- */
+.cn-avatar-group ul.avg-roster{list-style:none; margin:0; padding:0; display:inline-flex; align-items:center;}
+.cn-avatar-group ul.avg-roster li{display:inline-flex;}
+@media (prefers-reduced-motion: reduce){
+
 }
 
 /* ============================================================
@@ -4177,6 +4360,7 @@
      silently killed DV-D09 (h-bar default = series-3) and the R-D9 status ramp. The fill attributes
      on each rect are the single source of series colour; do not reintroduce a CSS fill here. */
 .cn-chart-bar rect.dv-series:hover{filter:brightness(1.12);}
+[data-theme="dark"] .cn-chart-bar rect.dv-series:hover{filter:brightness(1.22);}
 .cn-chart-bar .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 /* entry motion — CSS only (DEF-003): grow-from-baseline (columns) / from-left (h-bars) */
 @media (prefers-reduced-motion:no-preference){
@@ -4550,6 +4734,7 @@
 .cn-chart-bullet .dv-range-3{fill:var(--dv-range-3);}
 .cn-chart-bullet .dv-measure{fill:var(--data-series-1); transition:filter var(--ease);}
 .cn-chart-bullet .dv-measure:hover{filter:brightness(1.12);}
+[data-theme="dark"] .cn-chart-bullet .dv-measure:hover{filter:brightness(1.22);}
 .cn-chart-bullet .dv-target{stroke:var(--ink); stroke-width:3;}
 .cn-chart-bullet .dv-measure[tabindex]:focus-visible, .cn-chart-bullet .dv-target[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 @media (prefers-reduced-motion:no-preference){
@@ -4652,6 +4837,7 @@
 /* ds-020: no .dv-grid / text.dv-axis / text.dv-label rules here — see header note. */
 .cn-chart-butterfly-h rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
 .cn-chart-butterfly-h rect.dv-series:hover{filter:brightness(1.12);}
+[data-theme="dark"] .cn-chart-butterfly-h rect.dv-series:hover{filter:brightness(1.22);}
 .cn-chart-butterfly-h .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 @media (prefers-reduced-motion:no-preference){
 .cn-chart-butterfly-h .dv-animate rect.dv-series[data-grow="left"]{transform-box:fill-box; transform-origin:right; animation:cn-chart-butterfly-h-dvGrowXL var(--grow) both;}
@@ -4813,6 +4999,7 @@
 /* ds-020: no .dv-grid / text.dv-axis / text.dv-label rules here — see header note. */
 .cn-chart-butterfly-v rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
 .cn-chart-butterfly-v rect.dv-series:hover{filter:brightness(1.12);}
+[data-theme="dark"] .cn-chart-butterfly-v rect.dv-series:hover{filter:brightness(1.22);}
 .cn-chart-butterfly-v .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 @media (prefers-reduced-motion:no-preference){
 .cn-chart-butterfly-v .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:cn-chart-butterfly-v-dvGrowY var(--grow) both;}
@@ -5118,6 +5305,7 @@
 /* bars — Chart-bar language: grow-from-baseline, hover brightness */
 .cn-chart-combo rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
 .cn-chart-combo rect.dv-series:hover{filter:brightness(1.12);}
+[data-theme="dark"] .cn-chart-combo rect.dv-series:hover{filter:brightness(1.22);}
 /* line CASING — page-colour under-stroke (intersection mechanism, header decision 2).
      NOT class dv-series: the gate must never contrast-check page-vs-page. */
 .cn-chart-combo polyline.dv-casing{stroke:var(--page); fill:none;}
@@ -5346,6 +5534,7 @@
      isolate/highlight; hover keeps the kit's brightness lift as a second hover channel. */
 .cn-chart-donut path.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
 .cn-chart-donut path.dv-series:hover{filter:brightness(1.12);}
+[data-theme="dark"] .cn-chart-donut path.dv-series:hover{filter:brightness(1.22);}
 .cn-chart-donut path.dv-series:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 /* sweep annotations — baked VISIBLE (.show in markup); the future dv-behaviour sweep hook
      strips .show and re-adds per data-seq as each segment grows (proforma sequencing). */
@@ -5553,6 +5742,7 @@
      the gap (same idiom as dv-004's donut/pie segment strokes). */
 .cn-chart-histogram rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease); stroke:var(--page); stroke-width:2;}
 .cn-chart-histogram rect.dv-series:hover{filter:brightness(1.12);}
+[data-theme="dark"] .cn-chart-histogram rect.dv-series:hover{filter:brightness(1.22);}
 .cn-chart-histogram .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 /* contiguous bins share an x-edge; a hover/focus outline on shared-edge rects can visually
      bleed into the neighbour, so the outline goes INSET here rather than bar's outside offset. */
@@ -5948,6 +6138,7 @@
 .cn-chart-pie .dv-svg{display:block; overflow:visible; flex:none; margin-inline:auto;}
 .cn-chart-pie path.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
 .cn-chart-pie path.dv-series:hover{filter:brightness(1.12);}
+[data-theme="dark"] .cn-chart-pie path.dv-series:hover{filter:brightness(1.22);}
 .cn-chart-pie path.dv-series:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-pie .dv-anno{opacity:0; transition:opacity 300ms cubic-bezier(.4,0,.2,1);}
 .cn-chart-pie .dv-anno.show{opacity:1;}
@@ -6563,6 +6754,246 @@
 }
 
 /* ============================================================
+   Combobox  (from snippets/Combobox.reference.html)
+   Aria: role="combobox", aria-autocomplete, aria-expanded, aria-controls, role="listbox", role="option", aria-selected, aria-activedescendant
+   Finding: SINGLE-select only, deliberately. Chips-in-field belongs to Multi-select (row 22) and free entry to Tags-input (row 23); a combobox that accepts arbitrary text is a different contract (aria-autocomplete="both") and is not built here.
+   Finding: MATCH EMPHASIS uses an underline, not a weight. A weight change would need a raw font-weight declaration, which TYPE-002 forbids, and there is no .t-cm-* emphasis hook equivalent to the editorial .em. Proposed as a DS improvement in the lane receipt (#203) — PROPOSED, Dave's eye owed.
+   Finding: The active-descendant highlight carries an inset 3px rule as well as the hover fill, so the highlighted row is never distinguished by colour alone (1.4.1).
+   Finding: The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only. The four-theme legs are NOT measured by it; the four-theme review page is reviews/REVIEW-203-combobox-four-themes-v1.html.
+   Finding: NO canon component block exists for this snippet yet: knowledge/canon/canon.css carries no .cn-combobox scope, because gen_canon_components.py is Lane G's exclusive surface this wave and no generator was run. The conductor's regeneration creates it.
+   Scope: .cn-combobox   ============================================================ */
+.cn-combobox{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --mark-error: #1A1A1A;
+  --mark-warning: #1A1A1A;
+  --mark-success: #1A1A1A;
+  --mark-info: #1A1A1A;
+  --mark: var(--mark-info);
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --focus: var(--focus-ring);
+  --menu-surface: var(--background-default);
+  --menu-border: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --divider: var(--divider-border-section);
+}
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+.cn-combobox .is-error{--mark: var(--mark-error);}
+.cn-combobox .is-warning{--mark: var(--mark-warning);}
+.cn-combobox .is-ok, .cn-combobox .is-success{--mark: var(--mark-success);}
+.cn-combobox .is-info{--mark: var(--mark-info);}
+/* ===== AUTO-TOKENS END ===== */
+/* NOTE: no raw font declaration anywhere in this file — every text element carries a
+     .t-cm-* / .t-ed-* composite from canon/type.css (the Progress-bar precedent).
+     TYPE-002 contribution: 0. */
+.cn-combobox .sec{color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-combobox .note{color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
+.cn-combobox .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+.cn-combobox .sr-live{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%);}
+/* ---------- the field (Input-fields BOXED anatomy, unchanged) ---------- */
+.cn-combobox .cb{position:relative; max-width:420px; margin:0 0 32px;}
+.cn-combobox .cb-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-combobox .cb-lblrow label{color:var(--text);}
+.cn-combobox .cb-opt-marker{color:var(--text);}
+.cn-combobox .cb-help{color:var(--text); margin:0 0 8px;}
+.cn-combobox .cb-box{display:flex; align-items:center; gap:8px; min-height:var(--target-min); padding:0 4px 0 16px;
+    border:1px solid var(--border-default); background:var(--field-bg-default);
+    border-radius:var(--border-radius-control); position:relative; color:var(--icon);
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease);}
+.cn-combobox .cb-box input{flex:1; min-width:0; border:0; background:transparent; padding:0; color:var(--text);}
+.cn-combobox .cb-box input::placeholder{color:var(--text); opacity:1;}
+.cn-combobox .cb-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-combobox .cb-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-combobox .cb-box input:focus{outline:none;}
+.cn-combobox .cb-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-combobox .cb-box:has(input:focus-visible){outline:none;}
+/* UNDERLINE variant — the second gated field style (Dropdown/Input-fields keep both) */
+.cn-combobox .cb.underline .cb-box{border:0; border-bottom:1px solid var(--border-default); padding-left:0;}
+.cn-combobox .cb.underline .cb-box:focus-within{border-bottom:2px solid var(--border-active); box-shadow:none;}
+/* the disclosure toggle — a real button, 44x44, never a bare glyph */
+.cn-combobox .cb-toggle{display:inline-flex; align-items:center; justify-content:center;
+    width:var(--target-min); height:var(--target-min); flex:0 0 auto; padding:0;
+    border:0; background:transparent; color:var(--icon); cursor:pointer;
+    border-radius:var(--border-radius-control); transition:transform var(--ease);}
+.cn-combobox .cb-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-combobox .cb[data-open="true"] .cb-toggle{transform:rotate(180deg);}
+/* states */
+.cn-combobox .cb.is-error .cb-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-combobox .cb.is-error .cb-box{border-color:var(--error);}
+/* dark: full red border (Input-fields, Dave 2026-07-02) */
+.cn-combobox .cb.is-disabled .cb-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-combobox .cb.is-disabled .cb-lblrow label, .cn-combobox .cb.is-disabled .cb-help{color:var(--text-disabled);}
+.cn-combobox .cb-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
+.cn-combobox .cb.is-completed .cb-box input{color:var(--text);}
+.cn-combobox .cb-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-combobox .cb-msg:empty{display:none;}
+.cn-combobox .cb-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* rag roundel policy */
+[data-theme="dark"] .cn-combobox .cb-msg .ic{color:#FFFFFF;}
+/* policy dark: white shape + black mark */
+.cn-combobox .cb-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message stays INK */
+/* ---------- the popup: gated Dropdown menu grammar, copied ---------- */
+.cn-combobox .cb-menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:4px 0;
+    list-style:none; z-index:20; max-height:296px; overflow:auto;
+    background:var(--menu-surface); border:1px solid var(--menu-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow);
+    opacity:0; transform:translateY(-6px); pointer-events:none;
+    transition:opacity var(--ease), transform var(--ease);}
+.cn-combobox .cb-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
+.cn-combobox .cb-opt{display:flex; align-items:center; justify-content:space-between; gap:8px;
+    min-height:var(--target-min); padding:0 12px; color:var(--text); cursor:pointer;}
+.cn-combobox .cb-opt[hidden]{display:none;}
+.cn-combobox .cb-opt:hover{background:var(--field-bg-hover);}
+/* active descendant — background AND an inset rule, so the highlight is never colour-alone */
+.cn-combobox .cb-opt.is-active{background:var(--field-bg-hover); box-shadow:inset 3px 0 0 0 var(--border-active);}
+.cn-combobox .cb-opt .tick{width:16px; height:16px; opacity:0; flex:0 0 auto;}
+.cn-combobox .cb-opt[aria-selected="true"] .tick{opacity:1;}
+.cn-combobox .cb-opt .tick path{stroke:var(--icon); stroke-width:2.4; fill:none;}
+.cn-combobox .cb-mtch{text-decoration:underline; text-underline-offset:2px;}
+/* matched run — never colour, never weight */
+.cn-combobox .cb-sep{height:1px; background:var(--divider); margin:8px 0; list-style:none;}
+.cn-combobox .cb-empty{padding:12px; color:var(--text); margin:0;}
+.cn-combobox .cb-empty[hidden]{display:none;}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+.cn-combobox .cb{max-width:none;}
+}
+
+/* ============================================================
+   Command-palette  (from snippets/Command-palette.reference.html)
+   Aria: role="dialog", aria-modal="true", role="combobox", aria-expanded, aria-controls, aria-activedescendant, role="listbox", role="group", role="option", aria-selected, role="status", aria-label
+   Finding: STILL-VISIBLE BY CONSTRUCTION. The panel is position:absolute inside a bounded .cp-stage, never position:fixed, so the component renders at rest in a screenshot, a showroom thumbnail and a review pane with no JS and no page-local override. This is a deliberate answer to the #203 Lane D finding that Popover cannot be seen standing still.
+   Finding: ACTIVE-OPTION CARRIERS: the aria-activedescendant target declares aria-selected="true", changes surface to tertiary/background/hover, AND carries a 3px inset INK bar (text/default, s175-D1). Three carriers, none of them hue — required because Dave is astigmatic and red/yellow are problem hues. The hover surface change alone measures 1.07:1 against the panel in mono light, which is why it is never the only carrier and is NOT declared as a contrastPair.
+   Finding: BRAND RED IS DELIBERATELY ABSENT. In this navigation family brand red marks CURRENT LOCATION (Sidebar nav, Anchor nav, and the gated Navigations anchors underline). A palette cursor is transient selection, not location, so it takes ink. PROPOSED #203, Dave's eye owed.
+   Finding: OVERLAP WITH THE GATED MASTHEAD SEARCH FLYOUT (Navigations meta, flyout=search) is real: both are a modal search surface opened from the global chrome. This component additionally searches ACTIONS and is keyboard-reachable. Whether the flyout becomes a placement of this component or stays separate is a component-promotion question and is NOT resolved here.
+   Finding: 44px MIN HIT AREA enforced by hand — no gate reads target/min. Every .cp-opt is min-height:44px; the field is 48px. The keycap hints are non-interactive labels, not targets.
+   Finding: A FOUR-THEME MEASUREMENT CHANGED THIS FILE. The first draft bound the field's focus-within stroke to form/border/default, which the MONO-only snippet gate passed at 3.95:1 light / 4.17:1 dark. Measured against the real canon.css in all four themes it is 1.69:1 in SUPERCHARGE DARK (#524842 on #2A2621) — under the 3:1 non-text floor, on the only visible focus affordance the field had. Rebound to form/border/active (INK: 21.00/19.44 light, 16.48/13.91 dark, all four themes). The failing token is the SAME #524842 that #203 Lane D measured at 1.96:1 as the Supercharge-dark elevation hairline — one theme-level seam, found twice from two directions. Queued for _DS-IMPROVEMENTS.md via the receipt; not fixed here, the token files are fenced.
+   Finding: SHORTCUT BINDING NOT RULED. The footer shows Ctrl+K as the reopen hint. The platform-correct pairing (Ctrl on Windows, Command on macOS) and whether the product claims this chord at all are PROPOSED #203, Dave's.
+   Finding: The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css.
+   Scope: .cn-command-palette   ============================================================ */
+.cn-command-palette{
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --panel: var(--tertiary-background-default);
+  --scrim: var(--overlay-version1);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --icon: var(--icon-default);
+  --rule: var(--divider-border-subsection);
+  --hover: var(--tertiary-background-hover);
+  --field-active: var(--form-border-active);
+  --focus: var(--focus-ring);
+  --shadow: var(--elevation-functional);
+  --elev-border: var(--elevation-border);
+  --radius: var(--border-radius-surface);
+}
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+.cn-command-palette :is(button, .cn-command-palette a, .cn-command-palette label, .cn-command-palette span, .cn-command-palette small, .cn-command-palette strong, .cn-command-palette em, .cn-command-palette b, .cn-command-palette i, .cn-command-palette th, .cn-command-palette td, .cn-command-palette dt, .cn-command-palette dd, .cn-command-palette li, .cn-command-palette figcaption, .cn-command-palette legend, .cn-command-palette caption, .cn-command-palette summary, .cn-command-palette output, .cn-command-palette time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* NOTE: this snippet declares NO raw font-family, font-size or font-weight anywhere —
+     every text element carries a .t-cm-* composite from canon/type.css (the Progress-bar
+     precedent, #174). TYPE-002 contribution: 0. */
+.cn-command-palette .specimens{display:flex; flex-direction:column; gap:32px;}
+.cn-command-palette .spec-note{color:var(--muted);}
+/* explicit gap above — leading-trim is ON */
+/* ---- the stage: the app behind the palette, bounded so the component is visible at rest ---- */
+.cn-command-palette .cp-stage{position:relative; overflow:hidden; height:460px; max-width:820px;
+            background:var(--page); border:1px solid var(--rule); border-radius:var(--radius);}
+.cn-command-palette .cp-stage-mock{padding:20px; display:flex; flex-direction:column; gap:12px;}
+.cn-command-palette .cp-stage-mock span{display:block; height:10px; background:var(--rule);}
+.cn-command-palette .cp-stage-mock span:nth-child(1){width:38%;}
+.cn-command-palette .cp-stage-mock span:nth-child(2){width:72%;}
+.cn-command-palette .cp-stage-mock span:nth-child(3){width:64%;}
+.cn-command-palette .cp-stage-mock span:nth-child(4){width:80%;}
+.cn-command-palette .cp-stage-mock span:nth-child(5){width:46%;}
+.cn-command-palette .cp-scrim{position:absolute; inset:0; background:var(--scrim);}
+/* ---- the panel ---- */
+.cn-command-palette .cp{position:absolute; left:50%; transform:translateX(-50%); top:40px;
+      width:min(560px, calc(100% - 32px)); background:var(--panel);
+      border:1px solid var(--elev-border); border-radius:var(--radius);
+      box-shadow:0 8px 24px var(--shadow); display:flex; flex-direction:column;
+      max-height:calc(100% - 80px); overflow:hidden;}
+/* ---- the query field: the Search-field chrome, composed, not re-drawn ---- */
+.cn-command-palette .cp-field{display:flex; align-items:center; gap:12px; height:48px; padding:0 12px;
+            border-bottom:1px solid var(--rule);}
+.cn-command-palette .cp-field .mag{flex:none; display:inline-flex; width:20px; height:20px; color:var(--icon);}
+.cn-command-palette .cp-field .mag svg{width:20px; height:20px; fill:currentColor;}
+.cn-command-palette .cp-field input{flex:1; min-width:0; height:100%; border:0; background:transparent;
+                  color:var(--text); outline:none;}
+.cn-command-palette .cp-field input::placeholder{color:var(--muted); opacity:.62;}
+.cn-command-palette .cp-field input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
+/* focus-within stroke takes form/border/active (INK), not form/border/default — measured:
+     form/border/default is 1.69:1 on the raised surface in Supercharge dark. See the manifest. */
+.cn-command-palette .cp-field:focus-within{box-shadow:inset 0 -2px 0 var(--field-active);}
+.cn-command-palette .cp-field input:focus-visible{outline:none;}
+/* ---- keycap hints ---- */
+.cn-command-palette kbd{display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:20px;
+      padding:0 5px; border:1px solid var(--rule); border-radius:var(--radius);
+      color:var(--muted); background:transparent;}
+/* ---- results ---- */
+.cn-command-palette .cp-results{overflow:auto; padding:4px 0; scrollbar-gutter:stable;}
+.cn-command-palette .cp-group + .cp-group{border-top:1px solid var(--rule); margin-top:4px; padding-top:4px;}
+.cn-command-palette .cp-group-label{display:block; padding:6px 16px; color:var(--muted); opacity:.72;}
+.cn-command-palette .cp-opt{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 16px;
+          color:var(--text); cursor:pointer; position:relative;
+          transition:background var(--ease);}
+.cn-command-palette .cp-opt .oi{flex:none; display:inline-flex; width:18px; height:18px; color:var(--icon);}
+.cn-command-palette .cp-opt .oi svg{width:18px; height:18px; fill:currentColor;}
+.cn-command-palette .cp-opt .ol{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+              text-box-edge:text text;}
+/* truncating label — descenders survive */
+.cn-command-palette .cp-opt .om{flex:none; color:var(--muted); opacity:.72;}
+.cn-command-palette .cp-opt:hover{background:var(--hover);}
+/* ACTIVE (aria-activedescendant target): surface + a 3px INK bar + aria-selected.
+     Three carriers, none of them hue. */
+.cn-command-palette .cp-opt[aria-selected="true"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--text);}
+.cn-command-palette .cp-opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+/* ---- empty result set ---- */
+.cn-command-palette .cp-empty{display:flex; flex-direction:column; gap:4px; padding:28px 16px; color:var(--muted);}
+/* ---- footer hint bar ---- */
+.cn-command-palette .cp-foot{display:flex; align-items:center; gap:16px; flex-wrap:wrap; min-height:40px;
+           padding:8px 16px; border-top:1px solid var(--rule); color:var(--muted);}
+.cn-command-palette .cp-foot .hint{display:inline-flex; align-items:center; gap:6px;}
+/* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Confirmation  (from snippets/Confirmation.reference.html)
    Aria: role="group", aria-labelledby, aria-hidden="true"
    Reuses: Button (primary + ghost)
@@ -6947,6 +7378,7 @@
 /* states */
 .cn-date-picker .dp.is-completed .dp-box input{font-weight:500;}
 .cn-date-picker .dp.is-error .dp-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-date-picker .dp.is-error .dp-box{border-color:var(--error);}
 /* dark: error border goes full red (Input-fields, Dave 2026-07-02) */
 .cn-date-picker .dp.is-error .dp-box input{font-weight:500;}
 .cn-date-picker .dp-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
@@ -6957,6 +7389,7 @@
 .cn-date-picker .dp-msg:empty{display:none;}
 .cn-date-picker .dp-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
 /* roundel: shape = rag colour, mark knocks to page */
+[data-theme="dark"] .cn-date-picker .dp-msg .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-date-picker .dp-msg.is-ok .ic{color:var(--success);}
 .cn-date-picker .dp-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
@@ -7113,6 +7546,7 @@
 .cn-date-range-picker .dr-box .tail-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-date-range-picker .dr-group.is-completed .dr-box input{font-weight:500;}
 .cn-date-range-picker .dr-group.is-error .dr-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-date-range-picker .dr-group.is-error .dr-box{border-color:var(--error);}
 .cn-date-range-picker .dr-group.is-error .dr-box input{font-weight:500;}
 .cn-date-range-picker .dr-group.is-disabled .dr-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
 .cn-date-range-picker .dr-group.is-disabled .dr-lblrow label, .cn-date-range-picker .dr-group.is-disabled .dr-help{color:var(--text-disabled);}
@@ -7121,6 +7555,7 @@
 .cn-date-range-picker .dr-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
 .cn-date-range-picker .dr-msg:empty{display:none;}
 .cn-date-range-picker .dr-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+[data-theme="dark"] .cn-date-range-picker .dr-msg .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-date-range-picker .dr-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
 /* message text stays INK */
@@ -7524,6 +7959,7 @@
 .cn-file-upload .fu-row .fstate{flex-shrink:0; display:inline-flex; align-items:center; gap:8px;}
 .cn-file-upload .fu-row .fstate .ic{color:var(--success); --mark:var(--page);}
 .cn-file-upload .fu-row.is-error .fstate .ic{color:var(--error);}
+[data-theme="dark"] .cn-file-upload .fu-row .fstate .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-file-upload .fu-row .fmsg{display:flex; gap:8px; align-items:flex-start; margin:4px 0 0; color:var(--text);}
 .cn-file-upload .fu-row .fmsg p{margin:0;}
@@ -7677,6 +8113,7 @@
 /* states */
 .cn-form-layout .fl-group.is-completed .fl-box input{font-weight:500;}
 .cn-form-layout .fl-group.is-error .fl-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-form-layout .fl-group.is-error .fl-box{border-color:var(--error);}
 /* dark: error border goes full red (Input-fields, Dave 2026-07-02) */
 .cn-form-layout .fl-group.is-error .fl-box input{font-weight:500;}
 .cn-form-layout .fl-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
@@ -7687,6 +8124,7 @@
 .cn-form-layout .fl-msg:empty{display:none;}
 .cn-form-layout .fl-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
 /* rag roundel policy: shape = rag colour, mark knocks to page */
+[data-theme="dark"] .cn-form-layout .fl-msg .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-form-layout .fl-msg.is-ok .ic{color:var(--success);}
 .cn-form-layout .fl-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
@@ -7709,6 +8147,7 @@
 .cn-form-layout .fl-summary a{color:var(--text); text-decoration:underline; text-underline-offset:2px;}
 .cn-form-layout .fl-summary a:hover{text-decoration-thickness:2px;}
 .cn-form-layout .fl-summary a:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+[data-theme="dark"] .cn-form-layout .fl-summary .fl-sumtitle{color:var(--text);}
 /* ---------- action bar — button-family candidates (ADR-0013; registration = conductor) ---------- */
 .cn-form-layout .fl-actions{display:flex; gap:12px; justify-content:flex-end; align-items:center; margin:8px 0 0;}
 .cn-form-layout .fl-btn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer;
@@ -7869,6 +8308,104 @@
 }
 
 /* ============================================================
+   Kpi-tile  (from snippets/Kpi-tile.reference.html)
+   Aria: role="group", aria-label, aria-hidden="true"
+   Scope: .cn-kpi-tile   ============================================================ */
+.cn-kpi-tile{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --ease: 140ms ease;
+  --surface: var(--tertiary-background-default);
+  --border: var(--border-subtle);
+  --text: var(--text-default);
+  --page: var(--background-default);
+  --focus: var(--focus-ring);
+  --up: var(--rag-success);
+  --down: var(--rag-error);
+  --spark-up: var(--rag-success-ink);
+  --spark-down: var(--rag-error-ink);
+  --spark-flat: var(--text-default);
+  --grid-alpha: .10;
+}
+[data-theme="dark"] .cn-kpi-tile{
+  --grid-alpha: .16;
+}
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
+.cn-kpi-tile :is(button, .cn-kpi-tile a, .cn-kpi-tile label, .cn-kpi-tile span, .cn-kpi-tile small, .cn-kpi-tile strong, .cn-kpi-tile b, .cn-kpi-tile th, .cn-kpi-tile td, .cn-kpi-tile dt, .cn-kpi-tile dd, .cn-kpi-tile li, .cn-kpi-tile figcaption, .cn-kpi-tile legend, .cn-kpi-tile caption, .cn-kpi-tile summary, .cn-kpi-tile output, .cn-kpi-tile time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* NOTE: this snippet declares NO raw font-family on body — every text element carries a
+     .t-cm-* composite from canon/type.css, which is the mandatory route. The usual
+     `body{font-family:var(--font)}` boilerplate is exactly the declaration the shrink-only
+     ratchet counts, and it is redundant once every element is composed. Progress-bar
+     (the #174 walked example) is the precedent; Stat-card and Chart-sparkline both still
+     carry it and each contributes 3 to the debt. TYPE-002 contribution here: 0. */
+.cn-kpi-tile .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+.cn-kpi-tile .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-kpi-tile .board{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px; max-width:800px;}
+/* ---- the tile — Stat-card's Cards surface recipe, unchanged ---- */
+.cn-kpi-tile .kpi-tile{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    padding:16px; display:flex; flex-direction:column; gap:8px; position:relative;}
+.cn-kpi-tile .kpi-tile .lbl16{margin:0; opacity:var(--alpha-60);}
+/* ---- the value — the Amount-display atom, verbatim via Stat-card ---- */
+.cn-kpi-tile .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+/* ---- the delta row — Stat-card verbatim. Arrow wears the FILL seat; text stays ink. ---- */
+.cn-kpi-tile .delta{display:flex; align-items:center; gap:4px;}
+.cn-kpi-tile .delta .arrow{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
+.cn-kpi-tile .delta .arrow svg{width:16px; height:16px; display:block; fill:currentColor;}
+.cn-kpi-tile .delta.up .arrow{color:var(--up);}
+.cn-kpi-tile .delta.down .arrow{color:var(--down);}
+.cn-kpi-tile .delta .per{opacity:var(--alpha-60); margin-left:4px;}
+/* ---- THE ONE NEW PART: the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
+.cn-kpi-tile .kpi-spark{margin-top:4px; width:100%;}
+.cn-kpi-tile .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
+.cn-kpi-tile .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+.cn-kpi-tile .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
+    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+.cn-kpi-tile .spark-inline .dv-end{fill:var(--spark-flat);}
+.cn-kpi-tile .spark-inline[data-trend="up"] .dv-series{stroke:var(--spark-up);}
+.cn-kpi-tile .spark-inline[data-trend="up"] .dv-end{fill:var(--spark-up);}
+.cn-kpi-tile .spark-inline[data-trend="down"] .dv-series{stroke:var(--spark-down);}
+.cn-kpi-tile .spark-inline[data-trend="down"] .dv-end{fill:var(--spark-down);}
+/* ---- OPT-IN table CTA (s182-D2 standing direction) — icon-button form, no label ---- */
+.cn-kpi-tile .kpi-cta{position:absolute; top:8px; right:8px; width:44px; height:44px; flex:none;
+    display:inline-flex; align-items:center; justify-content:center; padding:0;
+    background:transparent; border:0; border-radius:var(--border-radius-surface);
+    color:var(--text); opacity:var(--alpha-60); cursor:pointer; transition:opacity var(--ease);}
+.cn-kpi-tile .kpi-cta svg{width:18px; height:18px; display:block; fill:currentColor;}
+.cn-kpi-tile .kpi-cta:hover{opacity:var(--alpha-96);}
+.cn-kpi-tile .kpi-cta:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
+.cn-kpi-tile .kpi-tile.has-cta .lbl16{padding-right:40px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Modal-lightbox  (from snippets/Modal-lightbox.reference.html)
    Aria: role="dialog", aria-modal, aria-label, role="status"
    Scope: .cn-modal-lightbox   ============================================================ */
@@ -7967,6 +8504,157 @@
 }
 @media (prefers-reduced-motion: reduce){
 .cn-modal-lightbox .lb-ctl:active{filter:none !important;}
+}
+
+/* ============================================================
+   Multi-select  (from snippets/Multi-select.reference.html)
+   Aria: role="combobox", aria-autocomplete, aria-expanded, role="listbox", aria-multiselectable, role="option", aria-selected, aria-activedescendant
+   Finding: TWO VARIANTS ARE SHIPPED AND NEITHER IS RULED THE DEFAULT (chips-in-field vs count summary). PROPOSED #203, Dave's eye owed — the trade is visible choices against a stable field height.
+   Finding: The chip is the gated Tags chip, copied — including the 24px hit pseudo-element on the dismiss button. It is NOT the Selection-controls chip, which is a direct toggle: this one is a receipt of a choice made in the list, and removal is its only interaction.
+   Finding: The dismiss buttons are 24px, not 44px. That is the gated Tags behaviour (WCAG 2.5.8 minimum) inherited unchanged, not a new decision — raising it would change Tags too, which is a shared artefact and not this lane's to touch. Flagged for the 44px hit-area sweep (wave 3b lane L).
+   Finding: Selecting does NOT close the list — the whole point of a multi-select. Escape closes; the count is announced politely after every change.
+   Finding: The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only. The four-theme legs are NOT measured by it; see reviews/REVIEW-203-multi-select-four-themes-v1.html.
+   Finding: NO canon component block exists yet: canon.css carries no .cn-multi-select scope, because no generator was run this wave (gen_canon_components.py is Lane G's exclusive surface). The conductor's regeneration creates it.
+   Scope: .cn-multi-select   ============================================================ */
+.cn-multi-select{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --mark-error: #1A1A1A;
+  --mark-warning: #1A1A1A;
+  --mark-success: #1A1A1A;
+  --mark-info: #1A1A1A;
+  --mark: var(--mark-info);
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --chip-ease: 220ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --focus: var(--focus-ring);
+  --menu-surface: var(--background-default);
+  --menu-border: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --divider: var(--divider-border-section);
+}
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+.cn-multi-select .is-error{--mark: var(--mark-error);}
+.cn-multi-select .is-warning{--mark: var(--mark-warning);}
+.cn-multi-select .is-ok, .cn-multi-select .is-success{--mark: var(--mark-success);}
+.cn-multi-select .is-info{--mark: var(--mark-info);}
+/* ===== AUTO-TOKENS END ===== */
+/* No raw font declaration anywhere in this file — every text element carries a composite
+     from canon/type.css (Progress-bar precedent). TYPE-002 contribution: 0. */
+.cn-multi-select .sec{color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-multi-select .note{color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
+.cn-multi-select .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+.cn-multi-select .sr-live{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%);}
+/* ---------- the field ---------- */
+.cn-multi-select .ms{position:relative; max-width:460px; margin:0 0 32px;}
+.cn-multi-select .ms-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-multi-select .ms-lblrow label{color:var(--text);}
+.cn-multi-select .ms-help{color:var(--text); margin:8px 0 0;}
+.cn-multi-select .ms-box{display:flex; align-items:center; flex-wrap:wrap; gap:8px;
+    min-height:var(--target-min); padding:6px 4px 6px 12px;
+    border:1px solid var(--border-default); background:var(--field-bg-default);
+    border-radius:var(--border-radius-control); color:var(--icon);
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease);}
+.cn-multi-select .ms-box input{flex:1 1 8ch; min-width:8ch; border:0; background:transparent; padding:0;
+    color:var(--text); height:32px;}
+.cn-multi-select .ms-box input::placeholder{color:var(--text); opacity:1;}
+.cn-multi-select .ms-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-multi-select .ms-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-multi-select .ms-box input:focus{outline:none;}
+.cn-multi-select .ms-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-multi-select .ms-box:has(input:focus-visible){outline:none;}
+.cn-multi-select .ms-toggle{display:inline-flex; align-items:center; justify-content:center;
+    width:var(--target-min); height:var(--target-min); flex:0 0 auto; margin-left:auto; padding:0;
+    border:0; background:transparent; color:var(--icon); cursor:pointer;
+    border-radius:var(--border-radius-control); transition:transform var(--ease);}
+.cn-multi-select .ms-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-multi-select .ms[data-open="true"] .ms-toggle{transform:rotate(180deg);}
+/* variant B — count summary: one row, never grows */
+.cn-multi-select .ms.summary .ms-box{flex-wrap:nowrap;}
+.cn-multi-select .ms-count{color:var(--text); white-space:nowrap;}
+/* states */
+.cn-multi-select .ms.is-error .ms-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-multi-select .ms.is-error .ms-box{border-color:var(--error);}
+.cn-multi-select .ms.is-disabled .ms-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-multi-select .ms.is-disabled .ms-lblrow label, .cn-multi-select .ms.is-disabled .ms-help{color:var(--text-disabled);}
+.cn-multi-select .ms-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
+.cn-multi-select .ms-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-multi-select .ms-msg:empty{display:none;}
+.cn-multi-select .ms-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+[data-theme="dark"] .cn-multi-select .ms-msg .ic{color:#FFFFFF;}
+.cn-multi-select .ms-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message stays INK */
+/* ---------- the chip: Tags.reference.html grammar, copied ---------- */
+.cn-multi-select .chp{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; max-width:100%;
+    border:1px solid var(--border-default); border-radius:var(--border-radius-control);
+    background:transparent; color:var(--text); white-space:nowrap; overflow:hidden;
+    transition:max-width var(--chip-ease), opacity var(--chip-ease), margin var(--chip-ease),
+               padding var(--chip-ease), border-width var(--chip-ease);}
+.cn-multi-select .chp .lbl{overflow:visible; min-width:0;}
+.cn-multi-select .chp .x{position:relative; display:inline-flex; width:1.54em; height:1.54em; padding:0; border:0;
+    background:transparent; color:var(--icon); cursor:pointer; align-items:center; justify-content:center;
+    flex:0 0 auto; transition:transform 130ms cubic-bezier(.4,0,.2,1), color 140ms ease;}
+/* WCAG 2.5.8 — 24x24 hit target without changing the visible glyph */
+.cn-multi-select .chp .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px;}
+.cn-multi-select .chp .x svg{width:.85em; height:.85em; fill:currentColor;}
+.cn-multi-select .chp .x:hover{transform:scale(1.4);}
+.cn-multi-select .chp .x:active{transform:scale(1.15); transition:transform 90ms ease-out;}
+.cn-multi-select .chp .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-multi-select .chp.removing{max-width:0; opacity:0; margin-right:0; padding-left:0; padding-right:0; border-width:0;}
+/* ---------- the list: Dropdown menu grammar, copied ---------- */
+.cn-multi-select .ms-menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:4px 0;
+    list-style:none; z-index:20; max-height:296px; overflow:auto;
+    background:var(--menu-surface); border:1px solid var(--menu-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow);
+    opacity:0; transform:translateY(-6px); pointer-events:none;
+    transition:opacity var(--ease), transform var(--ease);}
+.cn-multi-select .ms-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
+.cn-multi-select .ms-opt{display:flex; align-items:center; justify-content:space-between; gap:8px;
+    min-height:var(--target-min); padding:0 12px; color:var(--text); cursor:pointer;}
+.cn-multi-select .ms-opt[hidden]{display:none;}
+.cn-multi-select .ms-opt:hover{background:var(--field-bg-hover);}
+.cn-multi-select .ms-opt.is-active{background:var(--field-bg-hover); box-shadow:inset 3px 0 0 0 var(--border-active);}
+.cn-multi-select .ms-opt .tick{width:16px; height:16px; opacity:0; flex:0 0 auto;}
+.cn-multi-select .ms-opt[aria-selected="true"] .tick{opacity:1;}
+.cn-multi-select .ms-opt .tick path{stroke:var(--icon); stroke-width:2.4; fill:none;}
+.cn-multi-select .ms-sep{height:1px; background:var(--divider); margin:8px 0; list-style:none;}
+.cn-multi-select .ms-empty{padding:12px; color:var(--text); margin:0;}
+.cn-multi-select .ms-empty[hidden]{display:none;}
+@media (prefers-reduced-motion: reduce){
+.cn-multi-select .chp .x:hover, .cn-multi-select .chp .x:active{transform:none !important;}
+}
+@media (max-width:480px){
+.cn-multi-select .ms{max-width:none;}
 }
 
 /* ============================================================
@@ -8203,11 +8891,13 @@
 .cn-secure-entry .se-group.is-done .se-cell{border-color:var(--border-disabled);}
 .cn-secure-entry .se-group.is-error .se-cell{border-color:var(--border-active);}
 /* mono — the RAG signal lives in the message */
+[data-theme="dark"] .cn-secure-entry .se-group.is-error .se-cell{border-color:var(--error);}
 /* dark: red border reads (Input-fields error precedent) */
 .cn-secure-entry .se-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
 .cn-secure-entry .se-msg:empty{display:none;}
 .cn-secure-entry .se-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
 /* rag roundel policy */
+[data-theme="dark"] .cn-secure-entry .se-msg .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-secure-entry .se-msg.is-ok .ic{color:var(--success);}
 .cn-secure-entry .se-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
@@ -8324,6 +9014,108 @@
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion */
 @media (prefers-reduced-motion: reduce){
 .cn-segmented-control .seg .ind{transition:none !important;}
+}
+
+/* ============================================================
+   Sidebar-nav  (from snippets/Sidebar-nav.reference.html)
+   Aria: <nav, aria-label, aria-current="page", aria-expanded, aria-controls, aria-labelledby
+   Finding: COLLISION CHECKED, NOT ASSUMED (#203 step 0). Navigations.reference.html renders a horizontal masthead only — 64 lines, one <header>. Its meta CLAIMS a wider family (anchors, nav-bar-bottom, nav-bar-top) that the artefact does not contain, and its own $finding admits 'a web masthead only'. Nothing in that family is a persistent vertical column and nothing in it collapses. PROPOSED #203, Dave's eye owed: stand alone, or become a `type` of Navigations. Component promotion is on the DO-NOT-RULE list, so this is surfaced and left open.
+   Finding: CURRENT-LOCATION CARRIERS: aria-current="page" (AT) + a 3px leading BAR whose presence/absence is a shape difference + a surface change to tertiary/background/hover. Colour is the third carrier and never the only one, because Dave is astigmatic and red is a problem hue.
+   Finding: THE BAR IS BRAND RED BY PRECEDENT, NOT BY INVENTION. Navigations.reference.html:27 marks its current masthead item with an inset box-shadow in the same brand red. This copies the approved artefact. IT IS NOT DECLARED AS A contrastPair, and here is the measurement that decided it, taken against the real canon.css in all four themes — primary/border/default (#DB0011) on tertiary/background/hover, the surface the bar actually sits beside on a current row: mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, SUPERCHARGE 3.89 light / 2.73 dark FAIL. On the resting raised surface the same red is 5.22/3.16 in three themes and 4.84/2.88 FAIL in Supercharge dark. Declaring it would be a green that cannot fail in the theme where it is false — the exact green the #174 receipt refused to write. This is why the SHAPE carrier (bar present or absent) plus aria-current do the work, and why colour is third. PROPOSED #203, Dave's eye owed: Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme.
+   Finding: RAIL ACCESSIBLE NAMES SURVIVE THE COLLAPSE: labels are visually hidden (clip-path), not removed, so each link keeps a text-derived accessible name and no aria-label restates it. PROPOSED #203: a rail item has no visible name, so a hovering mouse user gets nothing — composing the gated Tooltip onto rail items is the obvious answer and is NOT built here (it would be inventing a composition rule).
+   Finding: 44px MIN HIT AREA enforced by hand — no gate reads target/min. Every .sn-link is min-height:44px, the rail item is 64x44, the collapse toggle is 44x44, the group toggle is min-height:44px.
+   Finding: SQUARE CORNERS throughout (border-radius/surface resolves 0). Console's ruled 20px surface radius (s199-D3) arrives through canon.css at the review layer, not from this file.
+   Finding: The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css.
+   Scope: .cn-sidebar-nav   ============================================================ */
+.cn-sidebar-nav{
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --panel: var(--tertiary-background-default);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --icon: var(--icon-default);
+  --rule: var(--divider-border-section);
+  --sub-rule: var(--divider-border-subsection);
+  --hover: var(--tertiary-background-hover);
+  --pressed: var(--form-background-pressed);
+  --indicator: var(--primary-border-default);
+  --focus: var(--focus-ring);
+  --radius: var(--border-radius-surface);
+}
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+.cn-sidebar-nav :is(button, .cn-sidebar-nav a, .cn-sidebar-nav label, .cn-sidebar-nav span, .cn-sidebar-nav small, .cn-sidebar-nav strong, .cn-sidebar-nav em, .cn-sidebar-nav b, .cn-sidebar-nav i, .cn-sidebar-nav th, .cn-sidebar-nav td, .cn-sidebar-nav dt, .cn-sidebar-nav dd, .cn-sidebar-nav li, .cn-sidebar-nav figcaption, .cn-sidebar-nav legend, .cn-sidebar-nav caption, .cn-sidebar-nav summary, .cn-sidebar-nav output, .cn-sidebar-nav time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* NOTE: no raw font-family, font-size or font-weight anywhere — every text element carries
+     a .t-cm-* composite from canon/type.css (the Progress-bar precedent, #174). */
+.cn-sidebar-nav .specimens{display:flex; flex-direction:column; gap:32px;}
+.cn-sidebar-nav .spec-note{color:var(--muted);}
+/* explicit gap above — leading-trim is ON */
+.cn-sidebar-nav .frames{display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;}
+/* ---- the app frame: bounded, so the column is visible at rest in any still ---- */
+.cn-sidebar-nav .sn-frame{display:flex; height:540px; border:1px solid var(--rule); border-radius:var(--radius); overflow:hidden; background:var(--page);}
+.cn-sidebar-nav .sn-canvas{flex:1; min-width:180px; padding:20px; display:flex; flex-direction:column; gap:12px;}
+.cn-sidebar-nav .sn-canvas span{display:block; height:10px; background:var(--sub-rule);}
+.cn-sidebar-nav .sn-canvas span:nth-child(1){width:44%;}
+.cn-sidebar-nav .sn-canvas span:nth-child(2){width:78%;}
+.cn-sidebar-nav .sn-canvas span:nth-child(3){width:66%;}
+.cn-sidebar-nav .sn-canvas span:nth-child(4){width:84%;}
+/* ---- the nav column ---- */
+.cn-sidebar-nav .sn{flex:none; width:248px; display:flex; flex-direction:column; background:var(--panel);
+      border-right:1px solid var(--rule); transition:width var(--ease);}
+.cn-sidebar-nav .sn.is-rail{width:64px;}
+.cn-sidebar-nav .sn-head{display:flex; align-items:center; gap:8px; min-height:56px; padding:0 8px 0 16px;
+           border-bottom:1px solid var(--sub-rule);}
+.cn-sidebar-nav .sn-brand{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            text-box-edge:text text; color:var(--text);}
+.cn-sidebar-nav .sn-toggle{flex:none; width:44px; height:44px; border:0; background:transparent; color:var(--icon);
+             cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+             border-radius:var(--radius);}
+.cn-sidebar-nav .sn-toggle svg{width:16px; height:16px; fill:currentColor;}
+.cn-sidebar-nav .sn-toggle:hover{background:var(--hover);}
+.cn-sidebar-nav .sn-toggle:active{background:var(--pressed);}
+.cn-sidebar-nav .sn-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-sidebar-nav .sn.is-rail .sn-head{padding:0 10px; justify-content:center;}
+.cn-sidebar-nav .sn-body{flex:1; overflow-y:auto; padding:8px 0; display:flex; flex-direction:column; gap:8px;}
+.cn-sidebar-nav .sn-group{display:flex; flex-direction:column; gap:2px;}
+.cn-sidebar-nav .sn-group + .sn-group{border-top:1px solid var(--sub-rule); padding-top:8px;}
+.cn-sidebar-nav .sn-group-label{display:block; padding:6px 16px; color:var(--muted); opacity:.72;}
+.cn-sidebar-nav .sn ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
+.cn-sidebar-nav .sn-link{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 16px;
+           color:var(--text); text-decoration:none; position:relative;
+           transition:background var(--ease);}
+.cn-sidebar-nav .sn-link .si{flex:none; display:inline-flex; width:18px; height:18px; color:var(--icon);}
+.cn-sidebar-nav .sn-link .si svg{width:18px; height:18px; fill:currentColor;}
+.cn-sidebar-nav .sn-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            text-box-edge:text text;}
+.cn-sidebar-nav .sn-link:hover{background:var(--hover);}
+.cn-sidebar-nav .sn-link:active{background:var(--pressed);}
+.cn-sidebar-nav .sn-link:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+/* CURRENT LOCATION — aria-current for AT + a 3px leading bar (a SHAPE, present or absent)
+     + a surface change. Colour is the third carrier, never the only one. */
+.cn-sidebar-nav .sn-link[aria-current="page"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+/* collapsible group heading */
+.cn-sidebar-nav .sn-group-toggle{display:flex; align-items:center; gap:12px; width:100%; min-height:44px;
+                   padding:0 16px; border:0; background:transparent; color:var(--text);
+                   cursor:pointer; text-align:left; border-radius:var(--radius);}
+.cn-sidebar-nav .sn-group-toggle .sc{flex:none; display:inline-flex; width:12px; height:12px; color:var(--icon);
+                       transition:transform var(--ease);}
+.cn-sidebar-nav .sn-group-toggle .sc svg{width:12px; height:12px; fill:currentColor;}
+.cn-sidebar-nav .sn-group-toggle[aria-expanded="true"] .sc{transform:rotate(180deg);}
+.cn-sidebar-nav .sn-group-toggle .sn-label{flex:1;}
+.cn-sidebar-nav .sn-group-toggle:hover{background:var(--hover);}
+.cn-sidebar-nav .sn-group-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-sidebar-nav .sn-sub .sn-link{padding-left:46px;}
+.cn-sidebar-nav .sn-foot{border-top:1px solid var(--sub-rule); padding:8px 0;}
+/* ---- RAIL: labels are HIDDEN, not removed — the accessible name survives the collapse ---- */
+.cn-sidebar-nav .sn.is-rail .sn-group-label, .cn-sidebar-nav .sn.is-rail .sn-brand{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
+.cn-sidebar-nav .sn.is-rail .sn-label{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
+.cn-sidebar-nav .sn.is-rail .sn-link{justify-content:center; padding:0; width:64px; min-height:44px;}
+.cn-sidebar-nav .sn.is-rail .sn-group + .sn-group{padding-top:8px;}
+/* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+@media (prefers-reduced-motion: reduce){
+
 }
 
 /* ============================================================
@@ -8579,10 +9371,12 @@
 .cn-stepper .st-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
 :root[data-modality="pointer"] .cn-stepper .st-box:has(input:focus-visible){outline:none;}
 .cn-stepper .st-group.is-error .st-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-stepper .st-group.is-error .st-box{border-color:var(--error);}
 .cn-stepper .st-group.is-error .st-box input{font-weight:500;}
 .cn-stepper .st-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
 .cn-stepper .st-msg:empty{display:none;}
 .cn-stepper .st-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+[data-theme="dark"] .cn-stepper .st-msg .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-stepper .st-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
 /* message text stays INK */
@@ -8719,6 +9513,132 @@
 }
 
 /* ============================================================
+   Tags-input  (from snippets/Tags-input.reference.html)
+   Aria: aria-describedby, aria-invalid, aria-live, aria-label
+   Finding: THE CHIP IS THE GATED TAGS CHIP, COPIED — not a second chip. Row 45 Tags stays the display atom; this component is its input half. If the chip changes, it changes in Tags first.
+   Finding: NO SUGGESTIONS. A tags input with a suggestion list would be this composed with Multi-select (row 22). That composition is PROPOSED #203, Dave's eye owed, and is deliberately not built here.
+   Finding: APPROACHING THE LIMIT is said in WORDS ("1 more tag allowed"), not in weight or colour. A weight change would need a raw font-weight declaration, which TYPE-002 forbids — there is no .t-cm-* emphasis hook equivalent to the editorial .em. Proposed as a DS improvement in the lane receipt.
+   Finding: TWO-KEYSTROKE BACKSPACE: the first Backspace on an empty field ARMS the last chip (an inset outline, never colour alone) and announces it; the second removes it. A single-keystroke delete loses data silently for touch-typists. PROPOSED #203, Dave's eye owed.
+   Finding: The dismiss buttons are 24px, inherited unchanged from the gated Tags chip (WCAG 2.5.8 minimum), not 44px. Raising it would change Tags, a shared artefact this lane may not touch. Flagged for the 44px hit-area sweep (wave 3b lane L).
+   Finding: The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only. The four-theme legs are NOT measured by it; see reviews/REVIEW-203-tags-input-four-themes-v1.html.
+   Finding: NO canon component block exists yet: canon.css carries no .cn-tags-input scope, because no generator was run this wave (gen_canon_components.py is Lane G's exclusive surface). The conductor's regeneration creates it.
+   Scope: .cn-tags-input   ============================================================ */
+.cn-tags-input{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --mark-error: #1A1A1A;
+  --mark-warning: #1A1A1A;
+  --mark-success: #1A1A1A;
+  --mark-info: #1A1A1A;
+  --mark: var(--mark-info);
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --chip-ease: 220ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --focus: var(--focus-ring);
+  --divider: var(--divider-border-section);
+}
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+.cn-tags-input .is-error{--mark: var(--mark-error);}
+.cn-tags-input .is-warning{--mark: var(--mark-warning);}
+.cn-tags-input .is-ok, .cn-tags-input .is-success{--mark: var(--mark-success);}
+.cn-tags-input .is-info{--mark: var(--mark-info);}
+/* ===== AUTO-TOKENS END ===== */
+/* No raw font declaration anywhere in this file — every text element carries a composite
+     from canon/type.css (Progress-bar precedent). TYPE-002 contribution: 0. */
+.cn-tags-input .sec{color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+.cn-tags-input .note{color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
+.cn-tags-input .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+.cn-tags-input .sr-live{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%);}
+/* ---------- the field ---------- */
+.cn-tags-input .ti{max-width:460px; margin:0 0 32px;}
+.cn-tags-input .ti-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-tags-input .ti-lblrow label{color:var(--text);}
+.cn-tags-input .ti-help{color:var(--text); margin:0 0 8px;}
+.cn-tags-input .ti-box{display:flex; align-items:center; flex-wrap:wrap; gap:8px;
+    min-height:var(--target-min); padding:6px 12px;
+    border:1px solid var(--border-default); background:var(--field-bg-default);
+    border-radius:var(--border-radius-control); color:var(--icon);
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease);}
+.cn-tags-input .ti-box input{flex:1 1 10ch; min-width:10ch; border:0; background:transparent; padding:0;
+    color:var(--text); height:32px;}
+.cn-tags-input .ti-box input::placeholder{color:var(--text); opacity:1;}
+.cn-tags-input .ti-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-tags-input .ti-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-tags-input .ti-box input:focus{outline:none;}
+.cn-tags-input .ti-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-tags-input .ti-box:has(input:focus-visible){outline:none;}
+/* states */
+.cn-tags-input .ti.is-error .ti-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-tags-input .ti.is-error .ti-box{border-color:var(--error);}
+.cn-tags-input .ti.is-disabled .ti-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-tags-input .ti.is-disabled .ti-lblrow label, .cn-tags-input .ti.is-disabled .ti-help, .cn-tags-input .ti.is-disabled .ti-count{color:var(--text-disabled);}
+.cn-tags-input .ti-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
+.cn-tags-input .ti-foot{display:flex; gap:16px; align-items:flex-start; margin:8px 0 0;}
+.cn-tags-input .ti-foot .ti-help{margin:0; flex:1; min-width:0;}
+.cn-tags-input .ti-count{color:var(--text); white-space:nowrap; margin-left:auto;}
+.cn-tags-input .ti-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-tags-input .ti-msg:empty{display:none;}
+.cn-tags-input .ti-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+[data-theme="dark"] .cn-tags-input .ti-msg .ic{color:#FFFFFF;}
+.cn-tags-input .ti-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message stays INK */
+/* ---------- the chip: Tags.reference.html grammar, copied ---------- */
+.cn-tags-input .chp{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; max-width:100%;
+    border:1px solid var(--border-default); border-radius:var(--border-radius-control);
+    background:transparent; color:var(--text); white-space:nowrap; overflow:hidden;
+    transition:max-width var(--chip-ease), opacity var(--chip-ease), margin var(--chip-ease),
+               padding var(--chip-ease), border-width var(--chip-ease);}
+.cn-tags-input .chp .lbl{overflow:visible; min-width:0;}
+.cn-tags-input .chp .x{position:relative; display:inline-flex; width:1.54em; height:1.54em; padding:0; border:0;
+    background:transparent; color:var(--icon); cursor:pointer; align-items:center; justify-content:center;
+    flex:0 0 auto; transition:transform 130ms cubic-bezier(.4,0,.2,1), color 140ms ease;}
+/* WCAG 2.5.8 — 24x24 hit target without changing the visible glyph */
+.cn-tags-input .chp .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px;}
+.cn-tags-input .chp .x svg{width:.85em; height:.85em; fill:currentColor;}
+.cn-tags-input .chp .x:hover{transform:scale(1.4);}
+.cn-tags-input .chp .x:active{transform:scale(1.15); transition:transform 90ms ease-out;}
+.cn-tags-input .chp .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-tags-input .chp.removing{max-width:0; opacity:0; margin-right:0; padding-left:0; padding-right:0; border-width:0;}
+/* the chip about to be taken back by Backspace — an outline change, never colour alone */
+.cn-tags-input .chp.is-armed{box-shadow:inset 0 0 0 1px var(--border-active);}
+@media (prefers-reduced-motion: reduce){
+.cn-tags-input .chp .x:hover, .cn-tags-input .chp .x:active{transform:none !important;}
+}
+@media (max-width:480px){
+.cn-tags-input .ti{max-width:none;}
+}
+
+/* ============================================================
    Textarea  (from snippets/Textarea.reference.html)
    Aria: aria-invalid, aria-describedby
    Scope: .cn-textarea   ============================================================ */
@@ -8794,6 +9714,7 @@
 /* states */
 .cn-textarea .tx-group.is-completed .tx-box textarea{font-weight:500;}
 .cn-textarea .tx-group.is-error .tx-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-textarea .tx-group.is-error .tx-box{border-color:var(--error);}
 /* dark: error border goes full red (Input-fields, Dave 2026-07-02) */
 .cn-textarea .tx-box textarea:disabled{color:var(--text-disabled); cursor:not-allowed; resize:none;}
 .cn-textarea .tx-group.is-disabled .tx-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
@@ -8807,6 +9728,7 @@
 .cn-textarea .tx-msg:empty{display:none;}
 .cn-textarea .tx-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
 /* rag roundel policy */
+[data-theme="dark"] .cn-textarea .tx-msg .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-textarea .tx-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
 /* message stays INK */
@@ -8902,6 +9824,7 @@
 .cn-time-picker .tp-box .tail-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-time-picker .tp.is-completed .tp-box input{font-weight:500;}
 .cn-time-picker .tp.is-error .tp-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-time-picker .tp.is-error .tp-box{border-color:var(--error);}
 /* dark: error border goes full red */
 .cn-time-picker .tp.is-error .tp-box input{font-weight:500;}
 .cn-time-picker .tp.is-disabled .tp-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
@@ -8911,6 +9834,7 @@
 .cn-time-picker .tp-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
 .cn-time-picker .tp-msg:empty{display:none;}
 .cn-time-picker .tp-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+[data-theme="dark"] .cn-time-picker .tp-msg .ic{color:#FFFFFF;}
 /* policy dark: WHITE shape + black mark */
 .cn-time-picker .tp-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
 /* message text stays INK */
@@ -8938,6 +9862,127 @@
 @media (max-width:480px){
 .cn-time-picker .tp, .cn-time-picker .gallery{max-width:none;}
 .cn-time-picker .gallery{grid-template-columns:1fr;}
+}
+
+/* ============================================================
+   Timeline  (from snippets/Timeline.reference.html)
+   Aria: <ol, <li, aria-labelledby, aria-label, aria-hidden="true", role="img"
+   Reuses: List items (status chip form B + avatar atom, verbatim), Progress-tracker (rail mechanism, rotated vertical; semantics deliberately NOT inherited), Amount-display (tabular figure composite)
+   Scope: .cn-timeline   ============================================================ */
+.cn-timeline{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --ease: 140ms ease;
+  --rail-x: 5px;
+  --node: 12px;
+  --surface: var(--tertiary-background-default);
+  --divider: var(--divider-border-section);
+  --rail: var(--divider-border-section);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --page: var(--background-default);
+  --focus: var(--focus-ring);
+  --avatar: var(--tertiary-background-hover);
+  --tag-border: var(--form-border-default);
+  --success: var(--rag-success);
+  --warning: var(--rag-warning);
+  --error: var(--rag-error);
+  --info: var(--rag-information);
+  --success-tint: var(--rag-success-tint);
+  --warning-tint: var(--rag-warning-tint);
+  --error-tint: var(--rag-error-tint);
+  --info-tint: var(--rag-information-tint);
+}
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement;
+   headings/body excluded. Wrapping prose keeps its natural line box (text-box-trim:normal). */
+.cn-timeline :is(button, .cn-timeline a, .cn-timeline label, .cn-timeline span, .cn-timeline small, .cn-timeline strong, .cn-timeline b, .cn-timeline th, .cn-timeline td, .cn-timeline dt, .cn-timeline dd, .cn-timeline li, .cn-timeline figcaption, .cn-timeline legend, .cn-timeline caption, .cn-timeline summary, .cn-timeline output, .cn-timeline time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* NO raw font-family on body — every text element carries a composite (Progress-bar precedent). */
+.cn-timeline .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+.cn-timeline .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-timeline .tl{width:var(--demo-width, 460px); max-width:100%; container-type:inline-size;
+    background:var(--surface); border:1px solid var(--divider); border-radius:var(--border-radius-surface);
+    padding:16px;}
+/* ---- date group: the time axis made explicit ---- */
+.cn-timeline .tl-group + .tl-group{margin-top:20px;}
+.cn-timeline .tl-group > h3{margin:0 0 12px; opacity:var(--alpha-60);}
+/* ---- the rail. Mechanism copied from Progress-tracker (li::before connector + .dot node),
+         rotated to vertical. The connector is drawn on the ENTRY, not the list, so a group can
+         start and end cleanly without a stub of line hanging past the first/last node. ---- */
+.cn-timeline ol.tl-list{list-style:none; margin:0; padding:0;}
+.cn-timeline ol.tl-list > li{position:relative; padding:0 0 20px 28px; display:flex; flex-direction:column; gap:4px;}
+.cn-timeline ol.tl-list > li:last-child{padding-bottom:0;}
+.cn-timeline ol.tl-list > li::before{content:""; position:absolute; left:var(--rail-x); top:14px; bottom:-2px;
+    width:2px; background:var(--rail);}
+.cn-timeline ol.tl-list > li:last-child::before{display:none;}
+.cn-timeline .tl-node{position:absolute; left:0; top:4px; width:var(--node); height:var(--node);
+    border-radius:50%; background:var(--rail); z-index:1;}
+.cn-timeline li.ok  .tl-node{background:var(--success);}
+.cn-timeline li.warn .tl-node{background:var(--warning);}
+.cn-timeline li.err .tl-node{background:var(--error);}
+.cn-timeline li.inf .tl-node{background:var(--info);}
+/* ---- entry body: line 1 = title | amount, then meta, then optional description ---- */
+.cn-timeline .tl-line{display:flex; align-items:baseline; gap:12px; min-width:0;}
+.cn-timeline .tl-title{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-box-edge:text text;}
+/* truncating label — don't clip descenders */
+.cn-timeline .tl-amount{flex:none; margin-left:auto; white-space:nowrap;}
+.cn-timeline .tl-meta{display:flex; align-items:center; gap:8px; flex-wrap:wrap; opacity:var(--alpha-60);}
+.cn-timeline .tl-desc{margin:0; color:var(--muted); text-box-trim:normal;}
+/* wrapping prose keeps its line box */
+/* ---- status chip = the Status-indicator atom (form B), copied from List-items ---- */
+.cn-timeline .status{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap; flex:none;}
+.cn-timeline .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+.cn-timeline .status.ok{background:var(--success-tint);}
+.cn-timeline .status.ok .dot{background:var(--success);}
+.cn-timeline .status.warn{background:var(--warning-tint);}
+.cn-timeline .status.warn .dot{background:var(--warning);}
+.cn-timeline .status.err{background:var(--error-tint);}
+.cn-timeline .status.err .dot{background:var(--error);}
+.cn-timeline .status.inf{background:var(--info-tint);}
+.cn-timeline .status.inf .dot{background:var(--info);}
+/* ---- activity-feed form: the actor avatar replaces the status node ---- */
+.cn-timeline ol.tl-list.has-avatar > li{padding-left:48px;}
+.cn-timeline ol.tl-list.has-avatar > li::before{left:17px;}
+.cn-timeline .tl-avatar{position:absolute; left:0; top:0; width:36px; height:36px; flex:none;
+    border-radius:50%;   /* EXEMPTION: Avatar is round (with Badge, the two documented exemptions) */
+    background:var(--avatar); color:var(--text);
+    display:inline-flex; align-items:center; justify-content:center; z-index:1; overflow:hidden;}
+/* ---- the one interactive affordance: load older. 44px min-hit-area, by hand. ---- */
+.cn-timeline .tl-more{margin-top:16px; min-height:44px; width:100%; display:inline-flex; align-items:center;
+    justify-content:center; padding:0 16px; background:transparent; color:var(--text);
+    border:1px solid var(--tag-border); border-radius:var(--border-radius-surface); cursor:pointer;
+    transition:background var(--ease);}
+.cn-timeline .tl-more:hover{background:var(--avatar);}
+.cn-timeline .tl-more:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){
+
 }
 
 /* ============================================================
@@ -9252,6 +10297,26 @@
   --success: #00847F;
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-anchor-nav{
+  --muted: #545454;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-anchor-nav,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-anchor-nav{
+  --muted: #9B9B9B;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-avatar-group{
+  --card-border: #D7D8D6;
+  --ring: #D7D8D6;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-avatar-group,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-avatar-group{
+  --card-border: #404040;
+  --ring: #404040;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-avatar{
   --text: #333333;
 }
@@ -9479,6 +10544,24 @@
   --ink: #FFFFFF;
   --line: #404040;
 }
+[data-apollo-theme="legacy"] .cn-combobox{
+  --error: #A8000B;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-combobox,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-combobox{
+  --error: #A8000B;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-command-palette{
+  --muted: #545454;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-command-palette,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-command-palette{
+  --muted: #9B9B9B;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-confirmation{
   --muted: #545454;
   --on-pri: #FFFFFF;
@@ -9701,6 +10784,21 @@
   --success: #00847F;
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-kpi-tile{
+  --border: #D7D8D6;
+  --down: #A8000B;
+  --spark-flat: #333333;
+  --text: #333333;
+  --up: #00847F;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-kpi-tile,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-kpi-tile{
+  --border: #404040;
+  --down: #A8000B;
+  --spark-flat: #FFFFFF;
+  --text: #FFFFFF;
+  --up: #00847F;
+}
 [data-apollo-theme="legacy"] .cn-links{
   --arrow: #DB0011;
   --text: #333333;
@@ -9770,6 +10868,15 @@
   --press-travel: 0;
   --pri: #DB0011;
   --pri-hover: #BA1110;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-multi-select{
+  --error: #A8000B;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-multi-select,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-multi-select{
+  --error: #A8000B;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-navigations{
@@ -9908,6 +11015,15 @@
   --error-atom: var(--error);  /* s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value */
   --label: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-sidebar-nav{
+  --muted: #545454;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-sidebar-nav,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-sidebar-nav{
+  --muted: #9B9B9B;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-skeleton-loader{
   --line: #D7D8D6;
   --text: #333333;
@@ -10035,6 +11151,15 @@
   --badge-bg: var(--tabs-active);
   --badge-ink: var(--text-reverse);
 }
+[data-apollo-theme="legacy"] .cn-tags-input{
+  --error: #A8000B;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-tags-input,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-tags-input{
+  --error: #A8000B;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-tags{
   --text: #333333;
 }
@@ -10059,6 +11184,31 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-time-picker{
   --error: #A8000B;
   --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-timeline{
+  --error: #A8000B;
+  --error-tint: #F9F2F3;
+  --info: #305A85;
+  --info-tint: #EBEFF4;
+  --muted: #545454;
+  --success: #00847F;
+  --success-tint: #E5F2F2;
+  --text: #333333;
+  --warning: #FFBB33;
+  --warning-tint: #FFF8EA;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-timeline,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-timeline{
+  --error: #A8000B;
+  --error-tint: #260005;
+  --info: #305A85;
+  --info-tint: #000D1B;
+  --muted: #9B9B9B;
+  --success: #00847F;
+  --success-tint: #001615;
+  --text: #FFFFFF;
+  --warning: #FFBB33;
+  --warning-tint: #221701;
 }
 [data-apollo-theme="legacy"] .cn-toast{
   --info: #305A85;
@@ -10251,6 +11401,20 @@
   --error: #B92F1E;
   --success: #5DAC7B;
 }
+[data-apollo-theme="console"] .cn-anchor-nav{
+  --radius: 20px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-anchor-nav,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-anchor-nav{
+  --radius: 20px;
+}
+[data-apollo-theme="console"] .cn-avatar-group{
+  --border-radius-surface: 20px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-avatar-group,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-avatar-group{
+  --border-radius-surface: 20px;
+}
 [data-apollo-theme="console"] .cn-badge{
   --number: var(--text-reverse);
   --surface: #B92F1E;
@@ -10426,6 +11590,24 @@
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
 }
+[data-apollo-theme="console"] .cn-combobox{
+  --border-radius-control: 8px;
+  --border-radius-surface: 20px;
+  --error: #B92F1E;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-combobox,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-combobox{
+  --border-radius-control: 8px;
+  --border-radius-surface: 20px;
+  --error: #B92F1E;
+}
+[data-apollo-theme="console"] .cn-command-palette{
+  --radius: 20px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-command-palette,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-command-palette{
+  --radius: 20px;
+}
 [data-apollo-theme="console"] .cn-confirmation{
   --border-radius-control: 8px;
   --success: #5DAC7B;
@@ -10541,6 +11723,17 @@
   --error: #B92F1E;
   --success: #5DAC7B;
 }
+[data-apollo-theme="console"] .cn-kpi-tile{
+  --border-radius-surface: 20px;
+  --down: #B92F1E;
+  --up: #5DAC7B;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-kpi-tile,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-kpi-tile{
+  --border-radius-surface: 20px;
+  --down: #B92F1E;
+  --up: #5DAC7B;
+}
 [data-apollo-theme="console"] .cn-links{
   --border-radius-control: 8px;
 }
@@ -10588,6 +11781,17 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-modals{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+}
+[data-apollo-theme="console"] .cn-multi-select{
+  --border-radius-control: 8px;
+  --border-radius-surface: 20px;
+  --error: #B92F1E;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-multi-select,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-multi-select{
+  --border-radius-control: 8px;
+  --border-radius-surface: 20px;
+  --error: #B92F1E;
 }
 [data-apollo-theme="console"] .cn-notifications{
   --border-radius-surface: 20px;
@@ -10665,6 +11869,13 @@
   --border-radius-control: 8px;
   --error: #B92F1E;
   --error-atom: var(--error);  /* s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value */
+}
+[data-apollo-theme="console"] .cn-sidebar-nav{
+  --radius: 20px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-sidebar-nav,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-sidebar-nav{
+  --radius: 20px;
 }
 [data-apollo-theme="console"] .cn-skeleton-loader{
   --border-radius-indicator: 4px;
@@ -10759,6 +11970,15 @@
   --badge-bg: var(--tabs-active);
   --badge-ink: var(--text-reverse);
 }
+[data-apollo-theme="console"] .cn-tags-input{
+  --border-radius-control: 8px;
+  --error: #B92F1E;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-tags-input,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-tags-input{
+  --border-radius-control: 8px;
+  --error: #B92F1E;
+}
 [data-apollo-theme="console"] .cn-tags{
   --border-radius-control: 8px;
 }
@@ -10785,6 +12005,31 @@
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
   --error: #B92F1E;
+}
+[data-apollo-theme="console"] .cn-timeline{
+  --border-radius-indicator: 4px;
+  --border-radius-surface: 20px;
+  --error: #B92F1E;
+  --error-tint: #EECDC9;
+  --info: #5A85C1;
+  --info-tint: #D1DDEE;
+  --success: #5DAC7B;
+  --success-tint: #D2E8DA;
+  --warning: #D5990B;
+  --warning-tint: #F2DEB1;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-timeline,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-timeline{
+  --border-radius-indicator: 4px;
+  --border-radius-surface: 20px;
+  --error: #B92F1E;
+  --error-tint: #60231C;
+  --info: #5A85C1;
+  --info-tint: #364963;
+  --success: #5DAC7B;
+  --success-tint: #355441;
+  --warning: #D5990B;
+  --warning-tint: #654D14;
 }
 [data-apollo-theme="console"] .cn-toast{
   --border-radius-surface: 20px;
@@ -11234,6 +12479,46 @@
   --text: #F7F6F4;
   --text-disabled: #524842;
 }
+[data-apollo-theme="supercharge"] .cn-anchor-nav{
+  --bar-bg: #F7F6F4;
+  --hover: #DFDEDC;
+  --muted: #13110E;
+  --page: #F7F6F4;
+  --rule: #CDC8C6;
+  --sub-rule: #DFDEDC;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-anchor-nav,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-anchor-nav{
+  --bar-bg: #2A2621;
+  --hover: #2E2A25;
+  --muted: #F7F6F4;
+  --page: #1A1A1A;
+  --rule: #524842;
+  --sub-rule: #524842;
+  --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-avatar-group{
+  --card: #F7F6F4;
+  --card-border: #CDC8C6;
+  --icon: #13110E;
+  --page: #F7F6F4;
+  --ring: #CDC8C6;
+  --stack-ring: #F7F6F4;
+  --surface: #DFDEDC;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-avatar-group,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-avatar-group{
+  --card: #2A2621;
+  --card-border: #524842;
+  --icon: #F7F6F4;
+  --page: #1A1A1A;
+  --ring: #524842;
+  --stack-ring: #1A1A1A;
+  --surface: #2E2A25;
+  --text: #F7F6F4;
+}
 [data-apollo-theme="supercharge"] .cn-avatar{
   --icon: #13110E;
   --page: #F7F6F4;
@@ -11640,6 +12925,60 @@
   --line: #524842;
   --page: #1A1A1A;
   --pop-border: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-combobox{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --divider: #CDC8C6;
+  --error: #B92F1E;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --menu-border: #FFFFFF00;
+  --menu-surface: #F7F6F4;
+  --page: #F7F6F4;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-combobox,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-combobox{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --divider: #524842;
+  --error: #B92F1E;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --menu-border: #524842;
+  --menu-surface: #1A1A1A;
+  --page: #1A1A1A;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-command-palette{
+  --elev-border: #FFFFFF00;
+  --field-active: #000000;
+  --hover: #DFDEDC;
+  --icon: #13110E;
+  --muted: #13110E;
+  --page: #F7F6F4;
+  --panel: #F7F6F4;
+  --rule: #DFDEDC;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-command-palette,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-command-palette{
+  --elev-border: #524842;
+  --field-active: #F7F6F4;
+  --hover: #2E2A25;
+  --icon: #F7F6F4;
+  --muted: #F7F6F4;
+  --page: #1A1A1A;
+  --panel: #2A2621;
+  --rule: #524842;
+  --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-confirmation{
   --ghost-hover: #DFDEDC;
@@ -12063,6 +13402,25 @@
   --text: #F7F6F4;
   --text-disabled: #524842;
 }
+[data-apollo-theme="supercharge"] .cn-kpi-tile{
+  --border: #CDC8C6;
+  --down: #B92F1E;
+  --page: #F7F6F4;
+  --spark-flat: #13110E;
+  --surface: #F7F6F4;
+  --text: #13110E;
+  --up: #5DAC7B;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-kpi-tile,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-kpi-tile{
+  --border: #524842;
+  --down: #B92F1E;
+  --page: #1A1A1A;
+  --spark-flat: #F7F6F4;
+  --surface: #2A2621;
+  --text: #F7F6F4;
+  --up: #5DAC7B;
+}
 [data-apollo-theme="supercharge"] .cn-links{
   --arrow: #13110E;
   --icon: #13110E;
@@ -12187,6 +13545,37 @@
   --sec-hover: #2E2A25;
   --surface: #2A2621;
   --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-multi-select{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --divider: #CDC8C6;
+  --error: #B92F1E;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --menu-border: #FFFFFF00;
+  --menu-surface: #F7F6F4;
+  --page: #F7F6F4;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-multi-select,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-multi-select{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --divider: #524842;
+  --error: #B92F1E;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --menu-border: #524842;
+  --menu-surface: #1A1A1A;
+  --page: #1A1A1A;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
 }
 [data-apollo-theme="supercharge"] .cn-navigations{
   --hover: #DFDEDC;
@@ -12446,6 +13835,29 @@
   --page: #1A1A1A;
   --reverse: #F7F6F4;
 }
+[data-apollo-theme="supercharge"] .cn-sidebar-nav{
+  --hover: #DFDEDC;
+  --icon: #13110E;
+  --muted: #13110E;
+  --page: #F7F6F4;
+  --panel: #F7F6F4;
+  --pressed: #AA9B92;
+  --rule: #CDC8C6;
+  --sub-rule: #DFDEDC;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-sidebar-nav,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-sidebar-nav{
+  --hover: #2E2A25;
+  --icon: #F7F6F4;
+  --muted: #F7F6F4;
+  --page: #1A1A1A;
+  --panel: #2A2621;
+  --pressed: #413934;
+  --rule: #524842;
+  --sub-rule: #524842;
+  --text: #F7F6F4;
+}
 [data-apollo-theme="supercharge"] .cn-skeleton-loader{
   --bone: #DFDEDC;
   --line: #CDC8C6;
@@ -12651,6 +14063,33 @@
   --badge-bg: var(--tabs-active);
   --badge-ink: var(--text-reverse);
 }
+[data-apollo-theme="supercharge"] .cn-tags-input{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --divider: #CDC8C6;
+  --error: #B92F1E;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --page: #F7F6F4;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-tags-input,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-tags-input{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --divider: #524842;
+  --error: #B92F1E;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --page: #1A1A1A;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
+}
 [data-apollo-theme="supercharge"] .cn-tags{
   --border: #524842;
   --hover: #DFDEDC;
@@ -12717,6 +14156,43 @@
   --page: #1A1A1A;
   --text: #F7F6F4;
   --text-disabled: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-timeline{
+  --avatar: #DFDEDC;
+  --divider: #CDC8C6;
+  --error: #B92F1E;
+  --error-tint: #F1E0DC;
+  --info: #5A85C1;
+  --info-tint: #D6E3EC;
+  --muted: #13110E;
+  --page: #F7F6F4;
+  --rail: #CDC8C6;
+  --success: #5DAC7B;
+  --success-tint: #DCEDE3;
+  --surface: #F7F6F4;
+  --tag-border: #524842;
+  --text: #13110E;
+  --warning: #D5990B;
+  --warning-tint: #F6E5CC;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-timeline,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-timeline{
+  --avatar: #2E2A25;
+  --divider: #524842;
+  --error: #B92F1E;
+  --error-tint: #2C120D;
+  --info: #5A85C1;
+  --info-tint: #092131;
+  --muted: #F7F6F4;
+  --page: #1A1A1A;
+  --rail: #524842;
+  --success: #5DAC7B;
+  --success-tint: #12291D;
+  --surface: #2A2621;
+  --tag-border: #524842;
+  --text: #F7F6F4;
+  --warning: #D5990B;
+  --warning-tint: #3C2C13;
 }
 [data-apollo-theme="supercharge"] .cn-toast{
   --elev-bd: #FFFFFF00;

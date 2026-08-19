@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anchor nav — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Anchor / scrollspy (gated). Itinerary row 37, P3.
+     IN-PAGE section navigation: a list of links to headings inside the CURRENT document, where
+     the link matching the section you are reading marks itself automatically as you scroll
+     (scrollspy). Two placements, one grammar: a STICKY HORIZONTAL BAR and a VERTICAL
+     "on this page" rail.
+
+     HOW THIS DIFFERS FROM ITS GATED NEIGHBOURS:
+       • Tabs (gated) swaps PANELS — only one panel exists at a time and the others are removed
+         from the document. This never hides anything: every section is present and scrollable,
+         and the nav is a shortcut, not a switch. Getting these two confused is the classic
+         a11y defect — a tab that is really an anchor announces the wrong thing.
+       • Navigations (gated) MOVES YOU BETWEEN PAGES. This moves you WITHIN one page. Its meta
+         claims an `anchors` variant with a brand-red underline indicator, but the artefact
+         renders a masthead only and contains no anchors markup — checked first-hand at #203.
+         This snippet is where that claimed variant becomes real, and it keeps the underline
+         indicator the meta describes rather than inventing a new one.
+       • Breadcrumbs (gated) says where the page sits in a hierarchy. This says where the
+         READER sits in the page.
+
+     ARIA, deliberately: the current section link is aria-current="true", NOT
+     aria-current="page" — the page has not changed, the location within it has. The nav is a
+     <nav> landmark with its own accessible name so a screen-reader user can find and skip it
+     (2.4.1 Bypass Blocks).
+
+     TWO CARRIERS, never hue alone (Dave is astigmatic; red is a problem hue): the indicator is
+     a BAR that is present or absent — a shape difference — plus aria-current. Colour is third.
+
+     REDUCED MOTION: smooth scrolling is opt-out, honoured by the standard block below. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family, font-size or font-weight anywhere — every text element carries
+     a .t-cm-* or .t-ed-* composite from canon/type.css (the Progress-bar precedent, #174).
+     Wrapping prose takes Editorial composites, single-line labels take Component ones — the
+     deciding rule from the type gate's own docstring. */
+  :root{ --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{ --page:#FFFFFF; --bar-bg:#FFFFFF; --text:#1A1A1A; --muted:#1A1A1A; --rule:#E1E1E1; --sub-rule:#F0F0F0; --hover:#F0F0F0; --indicator:#DB0011; --focus:#305A85; --radius:0; }
+  [data-theme="dark"]{ --page:#1A1A1A; --bar-bg:#1F1F1F; --text:#FFFFFF; --muted:#FFFFFF; --rule:#808080; --sub-rule:#808080; --hover:#232323; --indicator:#DB0011; --focus:#4587A7; --radius:0; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted);}                  /* explicit gap above — leading-trim is ON */
+
+  /* ---- the scrolling document, bounded so scrollspy is real and visible at rest ---- */
+  .an-doc{position:relative; height:380px; overflow-y:auto; scroll-behavior:smooth;
+          max-width:820px; border:1px solid var(--rule); border-radius:var(--radius);
+          background:var(--page);}
+  .an-doc section{padding:20px 24px 32px; scroll-margin-top:56px; border-top:1px solid var(--sub-rule);}
+  .an-doc section:first-of-type{border-top:0;}
+  .an-doc h2{margin:0 0 12px;}
+  .an-doc p{margin:0 0 12px; color:var(--text); text-box-trim:normal;}   /* wrapping prose keeps its line box */
+  .an-doc p:last-child{margin-bottom:0;}
+
+  /* ---- placement A · sticky horizontal bar ---- */
+  .an-bar{position:sticky; top:0; z-index:2; display:flex; gap:4px; overflow-x:auto;
+          padding:0 12px; background:var(--bar-bg); border-bottom:1px solid var(--rule);}
+  .an-bar a{display:inline-flex; align-items:center; min-height:44px; padding:0 12px;
+            color:var(--text); text-decoration:none; white-space:nowrap;
+            transition:background var(--ease), box-shadow var(--ease);}
+  .an-bar a:hover{background:var(--hover);}
+  .an-bar a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  /* CURRENT SECTION — a bar that is present or absent (shape), plus aria-current, plus colour */
+  .an-bar a[aria-current="true"]{box-shadow:inset 0 -3px 0 var(--indicator);}
+
+  /* ---- placement B · vertical "on this page" rail ---- */
+  .an-split{display:flex; gap:0; height:380px; max-width:820px;
+            border:1px solid var(--rule); border-radius:var(--radius); overflow:hidden;}
+  .an-split .an-doc{flex:1; min-width:0; height:100%; border:0;}
+  .an-rail{flex:none; width:216px; padding:16px 0; border-left:1px solid var(--rule);
+           background:var(--bar-bg); overflow-y:auto;}
+  .an-rail-label{display:block; padding:0 16px 8px; color:var(--muted); opacity:.72;}
+  .an-rail ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
+  .an-rail a{display:flex; align-items:center; min-height:44px; padding:0 16px;
+             color:var(--text); text-decoration:none;
+             transition:background var(--ease), box-shadow var(--ease);}
+  .an-rail a .an-t{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+                   text-box-edge:text text;}
+  .an-rail a:hover{background:var(--hover);}
+  .an-rail a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .an-rail a[aria-current="true"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users).
+     scroll-behavior is reset to auto here, so an anchor jump lands instantly. */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <div class="specimens">
+
+    <!-- 1 · STICKY HORIZONTAL BAR -->
+    <div>
+      <p class="spec-note t-cm-caption">Sticky bar — the current section marks itself as the reader scrolls</p>
+      <div class="an-doc" data-anchor-nav>
+        <nav class="an-bar" aria-label="On this page">
+          <a href="#a-rates" aria-current="true">Rates</a>
+          <a href="#a-fees">Fees</a>
+          <a href="#a-eligibility">Eligibility</a>
+          <a href="#a-protection">Protection</a>
+        </nav>
+
+        <section id="a-rates" aria-labelledby="a-rates-h">
+          <h2 class="t-ed-heading-4" id="a-rates-h">Rates</h2>
+          <p class="t-ed-body">The rate shown is the annual equivalent rate and assumes interest stays in the account for a full twelve months. It is variable, so it can change after the account is opened.</p>
+          <p class="t-ed-body">Interest is calculated daily on the cleared balance and paid on the first working day of each month.</p>
+        </section>
+
+        <section id="a-fees" aria-labelledby="a-fees-h">
+          <h2 class="t-ed-heading-4" id="a-fees-h">Fees</h2>
+          <p class="t-ed-body">There is no monthly account fee. Charges may still apply for services outside the standard account, such as a same-day payment or a duplicate statement.</p>
+          <p class="t-ed-body">A full list of charges is set out in the account terms, which you can download at any time.</p>
+        </section>
+
+        <section id="a-eligibility" aria-labelledby="a-eligibility-h">
+          <h2 class="t-ed-heading-4" id="a-eligibility-h">Eligibility</h2>
+          <p class="t-ed-body">You need to be eighteen or over and resident in the United Kingdom. You can hold one account of this type at a time.</p>
+          <p class="t-ed-body">Opening the account will not affect your credit score, though we will run an identity check.</p>
+        </section>
+
+        <section id="a-protection" aria-labelledby="a-protection-h">
+          <h2 class="t-ed-heading-4" id="a-protection-h">Protection</h2>
+          <p class="t-ed-body">Eligible deposits are protected up to the current limit under the deposit guarantee scheme. The limit applies per person, per banking licence, not per account.</p>
+          <p class="t-ed-body">If you hold more than one account with us, the balances are added together when the limit is worked out.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 2 · VERTICAL RAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">Vertical rail — the same grammar where the page has room beside it</p>
+      <div class="an-split">
+        <div class="an-doc" data-anchor-nav data-anchor-rail="b-rail">
+          <section id="b-what" aria-labelledby="b-what-h">
+            <h2 class="t-ed-heading-4" id="b-what-h">What you get</h2>
+            <p class="t-ed-body">A single view of your balances, a payment tool that remembers your regular payees, and statements going back seven years.</p>
+            <p class="t-ed-body">Everything here also works on the mobile app, with the same sign-in.</p>
+          </section>
+          <section id="b-setup" aria-labelledby="b-setup-h">
+            <h2 class="t-ed-heading-4" id="b-setup-h">Setting it up</h2>
+            <p class="t-ed-body">Most people finish in under ten minutes. You will need a form of photo identification and a recent proof of address.</p>
+            <p class="t-ed-body">You can save your progress and come back later without starting again.</p>
+          </section>
+          <section id="b-moving" aria-labelledby="b-moving-h">
+            <h2 class="t-ed-heading-4" id="b-moving-h">Moving your payments</h2>
+            <p class="t-ed-body">Standing orders and direct debits can be transferred for you. Nothing moves until you confirm the date.</p>
+            <p class="t-ed-body">Your old account stays open until the switch completes.</p>
+          </section>
+          <section id="b-help" aria-labelledby="b-help-h">
+            <h2 class="t-ed-heading-4" id="b-help-h">If something goes wrong</h2>
+            <p class="t-ed-body">Report a problem from inside the app and you will get a reference straight away. Most cases are resolved within three working days.</p>
+            <p class="t-ed-body">Nothing you report here affects your ability to use the account in the meantime.</p>
+          </section>
+        </div>
+
+        <nav class="an-rail" id="b-rail" aria-label="On this page">
+          <span class="an-rail-label t-cm-caption">On this page</span>
+          <ul>
+            <li><a href="#b-what" aria-current="true"><span class="an-t t-cm-label">What you get</span></a></li>
+            <li><a href="#b-setup"><span class="an-t t-cm-label">Setting it up</span></a></li>
+            <li><a href="#b-moving"><span class="an-t t-cm-label">Moving your payments</span></a></li>
+            <li><a href="#b-help"><span class="an-t t-cm-label">If something goes wrong</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Anchor nav",
+    "vars": {
+      "--page": "background/default",
+      "--bar-bg": "tertiary/background/default",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--rule": "divider/border/section",
+      "--sub-rule": "divider/border/subsection",
+      "--hover": "tertiary/background/hover",
+      "--indicator": "primary/border/default",
+      "--focus": "focus/ring",
+      "--radius": "border-radius/surface"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" }
+    ],
+    "knownFindings": [
+      "THIS IS NOT TABS. Tabs swaps panels and removes the inactive ones from the document; an anchor nav hides nothing and every section stays scrollable. The nav is a shortcut, not a switch. Announcing one as the other is the classic defect this component exists to prevent.",
+      "aria-current=\"true\", NOT \"page\". The page has not changed — the reader's location within it has. Sidebar nav uses \"page\" for the same reason inverted: there, the destination IS a different page.",
+      "THE CLAIMED-BUT-ABSENT VARIANT. navigations.meta.json declares an `anchors` variant with a brand-red underline indicator and a pattern `in-page-anchor-nav`, but Navigations.reference.html contains no anchors markup — verified first-hand at #203 (the file is 64 lines and renders one <header>). This snippet makes that claimed variant real and keeps the underline indicator it describes. PROPOSED #203, Dave's eye owed: whether the Navigations meta should now point at this component, or keep claiming a variant it does not render. Editing that shared meta was out of this lane's fence.",
+      "CURRENT-SECTION CARRIERS: a BAR that is present or absent (a shape difference), plus aria-current, plus colour. Colour is third, never alone — Dave is astigmatic and red is a problem hue. The indicator is NOT declared as a contrastPair, and the measurement that decided it was taken against the real canon.css in all four themes: primary/border/default (#DB0011) on background/default is 5.22 light / 3.33 dark in every theme (the horizontal bar's ground), but on tertiary/background/hover — the ground under the vertical rail's current row — it is 4.58/3.01 in mono, legacy and console and 3.89 light / 2.73 dark FAIL in SUPERCHARGE. Declaring it would be a green that cannot fail in the theme where it is false (the #174 precedent). The shape carrier is what the component leans on. PROPOSED #203, Dave's eye owed — the same seam Sidebar nav reports.",
+      "44px MIN HIT AREA enforced by hand — no gate reads target/min. Every anchor link in both placements is min-height:44px.",
+      "SCROLLSPY IS REAL, NOT STAGED. Both specimens use IntersectionObserver against the scroll container, so the marked link changes as the reader scrolls, and the initial marked state is authored in the markup so the component is correct in a still with JS off. Feature-detected: with no IntersectionObserver the authored state simply stands and every link still works.",
+      "MEASURED, AND THE GATE CAUGHT IT: divider/border/section on background/default is 1.31:1 in mono light (#E1E1E1 on #FFFFFF). It was declared as a ui contrastPair in the first draft and the snippet gate failed the file. It is NOT a defect and it is NOT declared: a section divider is a decorative separator between blocks of prose, not a boundary a user must perceive to operate the component — 1.4.11 governs meaning-bearing boundaries. The boundaries that DO carry meaning here (the current-section bar, the link text) are measured and carried by shape as well as colour. Recorded because an undeclared pair and an unmeasured pair look identical afterwards.",
+      "The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css."
+    ],
+    "requiredAria": ["<nav", "aria-label", "aria-current=\"true\"", "aria-labelledby"]
+  }
+  </script>
+  <script>
+    /* SCROLLSPY — IntersectionObserver against the scroll container. The authored aria-current
+       in the markup is the no-JS answer; this only ever moves it. */
+    (function(){
+      if(!('IntersectionObserver' in window)) return;
+      document.querySelectorAll('[data-anchor-nav]').forEach(function(doc){
+        var railId = doc.getAttribute('data-anchor-rail');
+        var nav = railId ? document.getElementById(railId) : doc.querySelector('nav');
+        if(!nav) return;
+        var links = Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]'));
+        var sections = links.map(function(a){ return doc.querySelector(a.getAttribute('href')); });
+        var visible = {};
+        function mark(){
+          var first = null;
+          for(var i=0;i<sections.length;i++){
+            if(sections[i] && visible[sections[i].id]){ first = i; break; }
+          }
+          if(first === null) return;
+          links.forEach(function(a,i){
+            if(i === first){ a.setAttribute('aria-current','true'); }
+            else { a.removeAttribute('aria-current'); }
+          });
+        }
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(e){ visible[e.target.id] = e.isIntersecting; });
+          mark();
+        }, { root: doc, rootMargin: '-56px 0px -55% 0px', threshold: 0 });
+        sections.forEach(function(s){ if(s) io.observe(s); });
+      });
+    })();
+  </script>
+  </body>
+</html>

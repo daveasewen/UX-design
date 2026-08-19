@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anchor / scrollspy &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 24px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:1100px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:20px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--background-default,#1A1A1A);}
+  .pane-cap{opacity:.65; margin:0 0 12px;}
+  .pane-body{padding:0 !important;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .band{border:1px solid #E1E1E1; background:#FFF; padding:16px 20px; margin:0 0 20px; max-width:900px;}
+  .band ul{margin:8px 0 0; padding-left:20px;}
+  .band li{margin:0 0 7px;}
+  .tag{display:inline-block; border:1px solid #1A1A1A; padding:1px 6px; margin-right:6px;}
+  table.m{border-collapse:collapse; margin-top:10px;}
+  table.m th, table.m td{border:1px solid #E1E1E1; padding:5px 10px; text-align:left;}
+
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family, font-size or font-weight anywhere — every text element carries
+     a .t-cm-* or .t-ed-* composite from canon/type.css (the Progress-bar precedent, #174).
+     Wrapping prose takes Editorial composites, single-line labels take Component ones — the
+     deciding rule from the type gate's own docstring. */
+  :root{ --ease:160ms cubic-bezier(.4,0,.2,1); }
+      *{box-sizing:border-box;}
+  .pane-body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted);}                  /* explicit gap above — leading-trim is ON */
+
+  /* ---- the scrolling document, bounded so scrollspy is real and visible at rest ---- */
+  .an-doc{position:relative; height:380px; overflow-y:auto; scroll-behavior:smooth;
+          max-width:820px; border:1px solid var(--rule); border-radius:var(--radius);
+          background:var(--page);}
+  .an-doc section{padding:20px 24px 32px; scroll-margin-top:56px; border-top:1px solid var(--sub-rule);}
+  .an-doc section:first-of-type{border-top:0;}
+  .an-doc h2{margin:0 0 12px;}
+  .an-doc p{margin:0 0 12px; color:var(--text); text-box-trim:normal;}   /* wrapping prose keeps its line box */
+  .an-doc p:last-child{margin-bottom:0;}
+
+  /* ---- placement A · sticky horizontal bar ---- */
+  .an-bar{position:sticky; top:0; z-index:2; display:flex; gap:4px; overflow-x:auto;
+          padding:0 12px; background:var(--bar-bg); border-bottom:1px solid var(--rule);}
+  .an-bar a{display:inline-flex; align-items:center; min-height:44px; padding:0 12px;
+            color:var(--text); text-decoration:none; white-space:nowrap;
+            transition:background var(--ease), box-shadow var(--ease);}
+  .an-bar a:hover{background:var(--hover);}
+  .an-bar a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  /* CURRENT SECTION — a bar that is present or absent (shape), plus aria-current, plus colour */
+  .an-bar a[aria-current="true"]{box-shadow:inset 0 -3px 0 var(--indicator);}
+
+  /* ---- placement B · vertical "on this page" rail ---- */
+  .an-split{display:flex; gap:0; height:380px; max-width:820px;
+            border:1px solid var(--rule); border-radius:var(--radius); overflow:hidden;}
+  .an-split .an-doc{flex:1; min-width:0; height:100%; border:0; border-radius:0;}
+  .an-rail{flex:none; width:216px; padding:16px 0; border-left:1px solid var(--rule);
+           background:var(--bar-bg); overflow-y:auto;}
+  .an-rail-label{display:block; padding:0 16px 8px; color:var(--muted); opacity:.72;}
+  .an-rail ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
+  .an-rail a{display:flex; align-items:center; min-height:44px; padding:0 16px;
+             color:var(--text); text-decoration:none;
+             transition:background var(--ease), box-shadow var(--ease);}
+  .an-rail a .an-t{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+                   text-box-edge:text text;}
+  .an-rail a:hover{background:var(--hover);}
+  .an-rail a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .an-rail a[aria-current="true"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users).
+     scroll-behavior is reset to auto here, so an anchor jump lands instantly. */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+
+.pane-body{
+  --page: var(--background-default);
+  --bar-bg: var(--tertiary-background-default);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --rule: var(--divider-border-section);
+  --sub-rule: var(--divider-border-subsection);
+  --hover: var(--tertiary-background-hover);
+  --indicator: var(--primary-border-default);
+  --focus: var(--focus-ring);
+  --radius: var(--border-radius-surface);
+}
+</style>
+</head>
+<body>
+
+  <h1 class="t-cm-heading">Anchor / scrollspy</h1>
+  <div class="lede">
+    <p class="t-ed-body">Itinerary row&nbsp;37. In-page section navigation: links to headings inside the
+    <em>current</em> document, where the link matching the section you are reading marks itself as you scroll.
+    Two placements, one grammar &mdash; a sticky horizontal bar and a vertical &ldquo;on this page&rdquo; rail.
+    <strong>Scroll inside the panes</strong>: the marking is real, driven by an IntersectionObserver.</p>    <div class="note">
+      <p class="t-ed-body-small"><strong>Read this first.</strong> This is a <strong>new</strong> component,
+      built at #203 through the gated-component route. Step&nbsp;0 proved the row genuinely absent, unlike
+      18 of the 18 rows wave&nbsp;3a was briefed on &mdash; the probes are quoted in
+      <code>notes/_receipts/2026-08-19-203-wave3b-laneI-navigation-depth.md</code>. Every pane below is the
+      <strong>real gated snippet markup</strong>, extracted from the artefact by the builder with a
+      fail-loud content assertion, rendered through the generated <code>canon.css</code>. Nothing here is a
+      ruling: every judgement call is <strong>PROPOSED #203, Dave's eye owed</strong>.</p>
+    </div>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">How it differs from its gated neighbours</p>
+    <ul class="t-ed-body-small">
+      <li><span class="tag">vs Tabs</span> Tabs <strong>swaps panels</strong> &mdash; only one exists at a time
+        and the rest are removed from the document. This hides nothing: every section stays present and
+        scrollable, and the nav is a shortcut, not a switch. Announcing one as the other is the classic
+        accessibility defect this component exists to prevent.</li>
+      <li><span class="tag">vs Navigations</span> That moves you between <em>pages</em>. This moves you within
+        <em>one</em> page &mdash; hence <code>aria-current="true"</code>, not <code>"page"</code>.</li>
+      <li><span class="tag">vs Breadcrumbs</span> Breadcrumbs says where the <em>page</em> sits. This says where
+        the <em>reader</em> sits.</li>
+    </ul>
+  </div>
+  <div class="note">
+    <p class="t-ed-body-small"><strong>A claimed variant that was never built.</strong>
+    <code>navigations.meta.json</code> declares an <code>anchors</code> variant with a brand-red underline
+    indicator and a pattern <code>in-page-anchor-nav</code> &mdash; but the gated artefact contains no anchors
+    markup at all. This snippet makes that claimed variant real and keeps the underline it describes rather than
+    inventing a new one. <strong>PROPOSED:</strong> the Navigations meta should now point here, or stop claiming
+    a variant it does not render. Editing that shared meta was outside this lane's fence.</p>
+  </div>  <div class="note">
+    <p class="t-ed-body-small"><strong>Measured &mdash; the brand-red &ldquo;you are here&rdquo; bar is under
+    the 3:1 floor in Supercharge dark.</strong> <code>primary/border/default</code> (#DB0011) against the
+    ground it sits beside:</p>
+    <table class="m t-cm-caption">
+      <tr><th>ground</th><th>mono</th><th>legacy</th><th>console</th><th>supercharge</th></tr>
+      <tr><td>raised surface, light</td><td>5.22</td><td>5.22</td><td>5.22</td><td>4.84</td></tr>
+      <tr><td>raised surface, dark</td><td>3.16</td><td>3.16</td><td>3.16</td><td><strong>2.88 &mdash; fails</strong></td></tr>
+      <tr><td>hover surface, light</td><td>4.58</td><td>4.58</td><td>4.58</td><td>3.89</td></tr>
+      <tr><td>hover surface, dark</td><td>3.01</td><td>3.01</td><td>3.01</td><td><strong>2.73 &mdash; fails</strong></td></tr>
+    </table>
+    <p class="t-ed-body-small">It is deliberately <strong>not</strong> declared as a gated contrast pair &mdash;
+    that would be a green that cannot fail in the one theme where it is false. The component leans on the
+    <strong>shape</strong> carrier instead: the bar is present or absent, and <code>aria-current</code> says so
+    to assistive tech. <strong>PROPOSED:</strong> Supercharge dark either needs its own current-location value,
+    or the pattern needs a non-red mark in that theme. Your call.</p>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">One measurement worth recording</p>
+    <ul class="t-ed-body-small">
+      <li><strong>The gate caught a pair that should never have been declared.</strong> The first draft declared
+        <code>divider/border/section</code> on the page as a 3:1 pair; the snippet gate failed it at
+        <strong>1.31:1</strong>. It is not a defect &mdash; a section divider is a decorative separator between
+        blocks of prose, not a boundary you must perceive to operate the component. The declaration was removed
+        and the reasoning recorded, because afterwards an undeclared pair and an unmeasured one look identical.</li>
+    </ul>
+  </div>
+  <div class="theme">
+    <h2 class="t-ed-heading-4">Mono</h2>
+    <div class="grid">
+    <section class="pane" data-apollo-theme="mono" data-theme="light">
+      <p class="pane-cap t-cm-caption">Mono &middot; light</p>
+      <div class="pane-body"><div class="specimens">
+
+    <!-- 1 · STICKY HORIZONTAL BAR -->
+    <div>
+      <p class="spec-note t-cm-caption">Sticky bar — the current section marks itself as the reader scrolls</p>
+      <div class="an-doc" data-anchor-nav>
+        <nav class="an-bar" aria-label="On this page">
+          <a href="#a-rates__p1" aria-current="true">Rates</a>
+          <a href="#a-fees__p1">Fees</a>
+          <a href="#a-eligibility__p1">Eligibility</a>
+          <a href="#a-protection__p1">Protection</a>
+        </nav>
+
+        <section id="a-rates__p1" aria-labelledby="a-rates-h__p1">
+          <h2 class="t-ed-heading-4" id="a-rates-h__p1">Rates</h2>
+          <p class="t-ed-body">The rate shown is the annual equivalent rate and assumes interest stays in the account for a full twelve months. It is variable, so it can change after the account is opened.</p>
+          <p class="t-ed-body">Interest is calculated daily on the cleared balance and paid on the first working day of each month.</p>
+        </section>
+
+        <section id="a-fees__p1" aria-labelledby="a-fees-h__p1">
+          <h2 class="t-ed-heading-4" id="a-fees-h__p1">Fees</h2>
+          <p class="t-ed-body">There is no monthly account fee. Charges may still apply for services outside the standard account, such as a same-day payment or a duplicate statement.</p>
+          <p class="t-ed-body">A full list of charges is set out in the account terms, which you can download at any time.</p>
+        </section>
+
+        <section id="a-eligibility__p1" aria-labelledby="a-eligibility-h__p1">
+          <h2 class="t-ed-heading-4" id="a-eligibility-h__p1">Eligibility</h2>
+          <p class="t-ed-body">You need to be eighteen or over and resident in the United Kingdom. You can hold one account of this type at a time.</p>
+          <p class="t-ed-body">Opening the account will not affect your credit score, though we will run an identity check.</p>
+        </section>
+
+        <section id="a-protection__p1" aria-labelledby="a-protection-h__p1">
+          <h2 class="t-ed-heading-4" id="a-protection-h__p1">Protection</h2>
+          <p class="t-ed-body">Eligible deposits are protected up to the current limit under the deposit guarantee scheme. The limit applies per person, per banking licence, not per account.</p>
+          <p class="t-ed-body">If you hold more than one account with us, the balances are added together when the limit is worked out.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 2 · VERTICAL RAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">Vertical rail — the same grammar where the page has room beside it</p>
+      <div class="an-split">
+        <div class="an-doc" data-anchor-nav data-anchor-rail="b-rail__p1">
+          <section id="b-what__p1" aria-labelledby="b-what-h__p1">
+            <h2 class="t-ed-heading-4" id="b-what-h__p1">What you get</h2>
+            <p class="t-ed-body">A single view of your balances, a payment tool that remembers your regular payees, and statements going back seven years.</p>
+            <p class="t-ed-body">Everything here also works on the mobile app, with the same sign-in.</p>
+          </section>
+          <section id="b-setup__p1" aria-labelledby="b-setup-h__p1">
+            <h2 class="t-ed-heading-4" id="b-setup-h__p1">Setting it up</h2>
+            <p class="t-ed-body">Most people finish in under ten minutes. You will need a form of photo identification and a recent proof of address.</p>
+            <p class="t-ed-body">You can save your progress and come back later without starting again.</p>
+          </section>
+          <section id="b-moving__p1" aria-labelledby="b-moving-h__p1">
+            <h2 class="t-ed-heading-4" id="b-moving-h__p1">Moving your payments</h2>
+            <p class="t-ed-body">Standing orders and direct debits can be transferred for you. Nothing moves until you confirm the date.</p>
+            <p class="t-ed-body">Your old account stays open until the switch completes.</p>
+          </section>
+          <section id="b-help__p1" aria-labelledby="b-help-h__p1">
+            <h2 class="t-ed-heading-4" id="b-help-h__p1">If something goes wrong</h2>
+            <p class="t-ed-body">Report a problem from inside the app and you will get a reference straight away. Most cases are resolved within three working days.</p>
+            <p class="t-ed-body">Nothing you report here affects your ability to use the account in the meantime.</p>
+          </section>
+        </div>
+
+        <nav class="an-rail" id="b-rail__p1" aria-label="On this page">
+          <span class="an-rail-label t-cm-caption">On this page</span>
+          <ul>
+            <li><a href="#b-what__p1" aria-current="true"><span class="an-t t-cm-label">What you get</span></a></li>
+            <li><a href="#b-setup__p1"><span class="an-t t-cm-label">Setting it up</span></a></li>
+            <li><a href="#b-moving__p1"><span class="an-t t-cm-label">Moving your payments</span></a></li>
+            <li><a href="#b-help__p1"><span class="an-t t-cm-label">If something goes wrong</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    <section class="pane" data-apollo-theme="mono" data-theme="dark">
+      <p class="pane-cap t-cm-caption">Mono &middot; dark</p>
+      <div class="pane-body"><div class="specimens">
+
+    <!-- 1 · STICKY HORIZONTAL BAR -->
+    <div>
+      <p class="spec-note t-cm-caption">Sticky bar — the current section marks itself as the reader scrolls</p>
+      <div class="an-doc" data-anchor-nav>
+        <nav class="an-bar" aria-label="On this page">
+          <a href="#a-rates__p2" aria-current="true">Rates</a>
+          <a href="#a-fees__p2">Fees</a>
+          <a href="#a-eligibility__p2">Eligibility</a>
+          <a href="#a-protection__p2">Protection</a>
+        </nav>
+
+        <section id="a-rates__p2" aria-labelledby="a-rates-h__p2">
+          <h2 class="t-ed-heading-4" id="a-rates-h__p2">Rates</h2>
+          <p class="t-ed-body">The rate shown is the annual equivalent rate and assumes interest stays in the account for a full twelve months. It is variable, so it can change after the account is opened.</p>
+          <p class="t-ed-body">Interest is calculated daily on the cleared balance and paid on the first working day of each month.</p>
+        </section>
+
+        <section id="a-fees__p2" aria-labelledby="a-fees-h__p2">
+          <h2 class="t-ed-heading-4" id="a-fees-h__p2">Fees</h2>
+          <p class="t-ed-body">There is no monthly account fee. Charges may still apply for services outside the standard account, such as a same-day payment or a duplicate statement.</p>
+          <p class="t-ed-body">A full list of charges is set out in the account terms, which you can download at any time.</p>
+        </section>
+
+        <section id="a-eligibility__p2" aria-labelledby="a-eligibility-h__p2">
+          <h2 class="t-ed-heading-4" id="a-eligibility-h__p2">Eligibility</h2>
+          <p class="t-ed-body">You need to be eighteen or over and resident in the United Kingdom. You can hold one account of this type at a time.</p>
+          <p class="t-ed-body">Opening the account will not affect your credit score, though we will run an identity check.</p>
+        </section>
+
+        <section id="a-protection__p2" aria-labelledby="a-protection-h__p2">
+          <h2 class="t-ed-heading-4" id="a-protection-h__p2">Protection</h2>
+          <p class="t-ed-body">Eligible deposits are protected up to the current limit under the deposit guarantee scheme. The limit applies per person, per banking licence, not per account.</p>
+          <p class="t-ed-body">If you hold more than one account with us, the balances are added together when the limit is worked out.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 2 · VERTICAL RAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">Vertical rail — the same grammar where the page has room beside it</p>
+      <div class="an-split">
+        <div class="an-doc" data-anchor-nav data-anchor-rail="b-rail__p2">
+          <section id="b-what__p2" aria-labelledby="b-what-h__p2">
+            <h2 class="t-ed-heading-4" id="b-what-h__p2">What you get</h2>
+            <p class="t-ed-body">A single view of your balances, a payment tool that remembers your regular payees, and statements going back seven years.</p>
+            <p class="t-ed-body">Everything here also works on the mobile app, with the same sign-in.</p>
+          </section>
+          <section id="b-setup__p2" aria-labelledby="b-setup-h__p2">
+            <h2 class="t-ed-heading-4" id="b-setup-h__p2">Setting it up</h2>
+            <p class="t-ed-body">Most people finish in under ten minutes. You will need a form of photo identification and a recent proof of address.</p>
+            <p class="t-ed-body">You can save your progress and come back later without starting again.</p>
+          </section>
+          <section id="b-moving__p2" aria-labelledby="b-moving-h__p2">
+            <h2 class="t-ed-heading-4" id="b-moving-h__p2">Moving your payments</h2>
+            <p class="t-ed-body">Standing orders and direct debits can be transferred for you. Nothing moves until you confirm the date.</p>
+            <p class="t-ed-body">Your old account stays open until the switch completes.</p>
+          </section>
+          <section id="b-help__p2" aria-labelledby="b-help-h__p2">
+            <h2 class="t-ed-heading-4" id="b-help-h__p2">If something goes wrong</h2>
+            <p class="t-ed-body">Report a problem from inside the app and you will get a reference straight away. Most cases are resolved within three working days.</p>
+            <p class="t-ed-body">Nothing you report here affects your ability to use the account in the meantime.</p>
+          </section>
+        </div>
+
+        <nav class="an-rail" id="b-rail__p2" aria-label="On this page">
+          <span class="an-rail-label t-cm-caption">On this page</span>
+          <ul>
+            <li><a href="#b-what__p2" aria-current="true"><span class="an-t t-cm-label">What you get</span></a></li>
+            <li><a href="#b-setup__p2"><span class="an-t t-cm-label">Setting it up</span></a></li>
+            <li><a href="#b-moving__p2"><span class="an-t t-cm-label">Moving your payments</span></a></li>
+            <li><a href="#b-help__p2"><span class="an-t t-cm-label">If something goes wrong</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    </div>
+  </div>
+  <div class="theme">
+    <h2 class="t-ed-heading-4">Legacy</h2>
+    <div class="grid">
+    <section class="pane" data-apollo-theme="legacy" data-theme="light">
+      <p class="pane-cap t-cm-caption">Legacy &middot; light</p>
+      <div class="pane-body"><div class="specimens">
+
+    <!-- 1 · STICKY HORIZONTAL BAR -->
+    <div>
+      <p class="spec-note t-cm-caption">Sticky bar — the current section marks itself as the reader scrolls</p>
+      <div class="an-doc" data-anchor-nav>
+        <nav class="an-bar" aria-label="On this page">
+          <a href="#a-rates__p3" aria-current="true">Rates</a>
+          <a href="#a-fees__p3">Fees</a>
+          <a href="#a-eligibility__p3">Eligibility</a>
+          <a href="#a-protection__p3">Protection</a>
+        </nav>
+
+        <section id="a-rates__p3" aria-labelledby="a-rates-h__p3">
+          <h2 class="t-ed-heading-4" id="a-rates-h__p3">Rates</h2>
+          <p class="t-ed-body">The rate shown is the annual equivalent rate and assumes interest stays in the account for a full twelve months. It is variable, so it can change after the account is opened.</p>
+          <p class="t-ed-body">Interest is calculated daily on the cleared balance and paid on the first working day of each month.</p>
+        </section>
+
+        <section id="a-fees__p3" aria-labelledby="a-fees-h__p3">
+          <h2 class="t-ed-heading-4" id="a-fees-h__p3">Fees</h2>
+          <p class="t-ed-body">There is no monthly account fee. Charges may still apply for services outside the standard account, such as a same-day payment or a duplicate statement.</p>
+          <p class="t-ed-body">A full list of charges is set out in the account terms, which you can download at any time.</p>
+        </section>
+
+        <section id="a-eligibility__p3" aria-labelledby="a-eligibility-h__p3">
+          <h2 class="t-ed-heading-4" id="a-eligibility-h__p3">Eligibility</h2>
+          <p class="t-ed-body">You need to be eighteen or over and resident in the United Kingdom. You can hold one account of this type at a time.</p>
+          <p class="t-ed-body">Opening the account will not affect your credit score, though we will run an identity check.</p>
+        </section>
+
+        <section id="a-protection__p3" aria-labelledby="a-protection-h__p3">
+          <h2 class="t-ed-heading-4" id="a-protection-h__p3">Protection</h2>
+          <p class="t-ed-body">Eligible deposits are protected up to the current limit under the deposit guarantee scheme. The limit applies per person, per banking licence, not per account.</p>
+          <p class="t-ed-body">If you hold more than one account with us, the balances are added together when the limit is worked out.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 2 · VERTICAL RAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">Vertical rail — the same grammar where the page has room beside it</p>
+      <div class="an-split">
+        <div class="an-doc" data-anchor-nav data-anchor-rail="b-rail__p3">
+          <section id="b-what__p3" aria-labelledby="b-what-h__p3">
+            <h2 class="t-ed-heading-4" id="b-what-h__p3">What you get</h2>
+            <p class="t-ed-body">A single view of your balances, a payment tool that remembers your regular payees, and statements going back seven years.</p>
+            <p class="t-ed-body">Everything here also works on the mobile app, with the same sign-in.</p>
+          </section>
+          <section id="b-setup__p3" aria-labelledby="b-setup-h__p3">
+            <h2 class="t-ed-heading-4" id="b-setup-h__p3">Setting it up</h2>
+            <p class="t-ed-body">Most people finish in under ten minutes. You will need a form of photo identification and a recent proof of address.</p>
+            <p class="t-ed-body">You can save your progress and come back later without starting again.</p>
+          </section>
+          <section id="b-moving__p3" aria-labelledby="b-moving-h__p3">
+            <h2 class="t-ed-heading-4" id="b-moving-h__p3">Moving your payments</h2>
+            <p class="t-ed-body">Standing orders and direct debits can be transferred for you. Nothing moves until you confirm the date.</p>
+            <p class="t-ed-body">Your old account stays open until the switch completes.</p>
+          </section>
+          <section id="b-help__p3" aria-labelledby="b-help-h__p3">
+            <h2 class="t-ed-heading-4" id="b-help-h__p3">If something goes wrong</h2>
+            <p class="t-ed-body">Report a problem from inside the app and you will get a reference straight away. Most cases are resolved within three working days.</p>
+            <p class="t-ed-body">Nothing you report here affects your ability to use the account in the meantime.</p>
+          </section>
+        </div>
+
+        <nav class="an-rail" id="b-rail__p3" aria-label="On this page">
+          <span class="an-rail-label t-cm-caption">On this page</span>
+          <ul>
+            <li><a href="#b-what__p3" aria-current="true"><span class="an-t t-cm-label">What you get</span></a></li>
+            <li><a href="#b-setup__p3"><span class="an-t t-cm-label">Setting it up</span></a></li>
+            <li><a href="#b-moving__p3"><span class="an-t t-cm-label">Moving your payments</span></a></li>
+            <li><a href="#b-help__p3"><span class="an-t t-cm-label">If something goes wrong</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    <section class="pane" data-apollo-theme="legacy" data-theme="dark">
+      <p class="pane-cap t-cm-caption">Legacy &middot; dark</p>
+      <div class="pane-body"><div class="specimens">
+
+    <!-- 1 · STICKY HORIZONTAL BAR -->
+    <div>
+      <p class="spec-note t-cm-caption">Sticky bar — the current section marks itself as the reader scrolls</p>
+      <div class="an-doc" data-anchor-nav>
+        <nav class="an-bar" aria-label="On this page">
+          <a href="#a-rates__p4" aria-current="true">Rates</a>
+          <a href="#a-fees__p4">Fees</a>
+          <a href="#a-eligibility__p4">Eligibility</a>
+          <a href="#a-protection__p4">Protection</a>
+        </nav>
+
+        <section id="a-rates__p4" aria-labelledby="a-rates-h__p4">
+          <h2 class="t-ed-heading-4" id="a-rates-h__p4">Rates</h2>
+          <p class="t-ed-body">The rate shown is the annual equivalent rate and assumes interest stays in the account for a full twelve months. It is variable, so it can change after the account is opened.</p>
+          <p class="t-ed-body">Interest is calculated daily on the cleared balance and paid on the first working day of each month.</p>
+        </section>
+
+        <section id="a-fees__p4" aria-labelledby="a-fees-h__p4">
+          <h2 class="t-ed-heading-4" id="a-fees-h__p4">Fees</h2>
+          <p class="t-ed-body">There is no monthly account fee. Charges may still apply for services outside the standard account, such as a same-day payment or a duplicate statement.</p>
+          <p class="t-ed-body">A full list of charges is set out in the account terms, which you can download at any time.</p>
+        </section>
+
+        <section id="a-eligibility__p4" aria-labelledby="a-eligibility-h__p4">
+          <h2 class="t-ed-heading-4" id="a-eligibility-h__p4">Eligibility</h2>
+          <p class="t-ed-body">You need to be eighteen or over and resident in the United Kingdom. You can hold one account of this type at a time.</p>
+          <p class="t-ed-body">Opening the account will not affect your credit score, though we will run an identity check.</p>
+        </section>
+
+        <section id="a-protection__p4" aria-labelledby="a-protection-h__p4">
+          <h2 class="t-ed-heading-4" id="a-protection-h__p4">Protection</h2>
+          <p class="t-ed-body">Eligible deposits are protected up to the current limit under the deposit guarantee scheme. The limit applies per person, per banking licence, not per account.</p>
+          <p class="t-ed-body">If you hold more than one account with us, the balances are added together when the limit is worked out.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 2 · VERTICAL RAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">Vertical rail — the same grammar where the page has room beside it</p>
+      <div class="an-split">
+        <div class="an-doc" data-anchor-nav data-anchor-rail="b-rail__p4">
+          <section id="b-what__p4" aria-labelledby="b-what-h__p4">
+            <h2 class="t-ed-heading-4" id="b-what-h__p4">What you get</h2>
+            <p class="t-ed-body">A single view of your balances, a payment tool that remembers your regular payees, and statements going back seven years.</p>
+            <p class="t-ed-body">Everything here also works on the mobile app, with the same sign-in.</p>
+          </section>
+          <section id="b-setup__p4" aria-labelledby="b-setup-h__p4">
+            <h2 class="t-ed-heading-4" id="b-setup-h__p4">Setting it up</h2>
+            <p class="t-ed-body">Most people finish in under ten minutes. You will need a form of photo identification and a recent proof of address.</p>
+            <p class="t-ed-body">You can save your progress and come back later without starting again.</p>
+          </section>
+          <section id="b-moving__p4" aria-labelledby="b-moving-h__p4">
+            <h2 class="t-ed-heading-4" id="b-moving-h__p4">Moving your payments</h2>
+            <p class="t-ed-body">Standing orders and direct debits can be transferred for you. Nothing moves until you confirm the date.</p>
+            <p class="t-ed-body">Your old account stays open until the switch completes.</p>
+          </section>
+          <section id="b-help__p4" aria-labelledby="b-help-h__p4">
+            <h2 class="t-ed-heading-4" id="b-help-h__p4">If something goes wrong</h2>
+            <p class="t-ed-body">Report a problem from inside the app and you will get a reference straight away. Most cases are resolved within three working days.</p>
+            <p class="t-ed-body">Nothing you report here affects your ability to use the account in the meantime.</p>
+          </section>
+        </div>
+
+        <nav class="an-rail" id="b-rail__p4" aria-label="On this page">
+          <span class="an-rail-label t-cm-caption">On this page</span>
+          <ul>
+            <li><a href="#b-what__p4" aria-current="true"><span class="an-t t-cm-label">What you get</span></a></li>
+            <li><a href="#b-setup__p4"><span class="an-t t-cm-label">Setting it up</span></a></li>
+            <li><a href="#b-moving__p4"><span class="an-t t-cm-label">Moving your payments</span></a></li>
+            <li><a href="#b-help__p4"><span class="an-t t-cm-label">If something goes wrong</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    </div>
+  </div>
+  <div class="theme">
+    <h2 class="t-ed-heading-4">Console</h2>
+    <div class="grid">
+    <section class="pane" data-apollo-theme="console" data-theme="light">
+      <p class="pane-cap t-cm-caption">Console &middot; light</p>
+      <div class="pane-body"><div class="specimens">
+
+    <!-- 1 · STICKY HORIZONTAL BAR -->
+    <div>
+      <p class="spec-note t-cm-caption">Sticky bar — the current section marks itself as the reader scrolls</p>
+      <div class="an-doc" data-anchor-nav>
+        <nav class="an-bar" aria-label="On this page">
+          <a href="#a-rates__p5" aria-current="true">Rates</a>
+          <a href="#a-fees__p5">Fees</a>
+          <a href="#a-eligibility__p5">Eligibility</a>
+          <a href="#a-protection__p5">Protection</a>
+        </nav>
+
+        <section id="a-rates__p5" aria-labelledby="a-rates-h__p5">
+          <h2 class="t-ed-heading-4" id="a-rates-h__p5">Rates</h2>
+          <p class="t-ed-body">The rate shown is the annual equivalent rate and assumes interest stays in the account for a full twelve months. It is variable, so it can change after the account is opened.</p>
+          <p class="t-ed-body">Interest is calculated daily on the cleared balance and paid on the first working day of each month.</p>
+        </section>
+
+        <section id="a-fees__p5" aria-labelledby="a-fees-h__p5">
+          <h2 class="t-ed-heading-4" id="a-fees-h__p5">Fees</h2>
+          <p class="t-ed-body">There is no monthly account fee. Charges may still apply for services outside the standard account, such as a same-day payment or a duplicate statement.</p>
+          <p class="t-ed-body">A full list of charges is set out in the account terms, which you can download at any time.</p>
+        </section>
+
+        <section id="a-eligibility__p5" aria-labelledby="a-eligibility-h__p5">
+          <h2 class="t-ed-heading-4" id="a-eligibility-h__p5">Eligibility</h2>
+          <p class="t-ed-body">You need to be eighteen or over and resident in the United Kingdom. You can hold one account of this type at a time.</p>
+          <p class="t-ed-body">Opening the account will not affect your credit score, though we will run an identity check.</p>
+        </section>
+
+        <section id="a-protection__p5" aria-labelledby="a-protection-h__p5">
+          <h2 class="t-ed-heading-4" id="a-protection-h__p5">Protection</h2>
+          <p class="t-ed-body">Eligible deposits are protected up to the current limit under the deposit guarantee scheme. The limit applies per person, per banking licence, not per account.</p>
+          <p class="t-ed-body">If you hold more than one account with us, the balances are added together when the limit is worked out.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 2 · VERTICAL RAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">Vertical rail — the same grammar where the page has room beside it</p>
+      <div class="an-split">
+        <div class="an-doc" data-anchor-nav data-anchor-rail="b-rail__p5">
+          <section id="b-what__p5" aria-labelledby="b-what-h__p5">
+            <h2 class="t-ed-heading-4" id="b-what-h__p5">What you get</h2>
+            <p class="t-ed-body">A single view of your balances, a payment tool that remembers your regular payees, and statements going back seven years.</p>
+            <p class="t-ed-body">Everything here also works on the mobile app, with the same sign-in.</p>
+          </section>
+          <section id="b-setup__p5" aria-labelledby="b-setup-h__p5">
+            <h2 class="t-ed-heading-4" id="b-setup-h__p5">Setting it up</h2>
+            <p class="t-ed-body">Most people finish in under ten minutes. You will need a form of photo identification and a recent proof of address.</p>
+            <p class="t-ed-body">You can save your progress and come back later without starting again.</p>
+          </section>
+          <section id="b-moving__p5" aria-labelledby="b-moving-h__p5">
+            <h2 class="t-ed-heading-4" id="b-moving-h__p5">Moving your payments</h2>
+            <p class="t-ed-body">Standing orders and direct debits can be transferred for you. Nothing moves until you confirm the date.</p>
+            <p class="t-ed-body">Your old account stays open until the switch completes.</p>
+          </section>
+          <section id="b-help__p5" aria-labelledby="b-help-h__p5">
+            <h2 class="t-ed-heading-4" id="b-help-h__p5">If something goes wrong</h2>
+            <p class="t-ed-body">Report a problem from inside the app and you will get a reference straight away. Most cases are resolved within three working days.</p>
+            <p class="t-ed-body">Nothing you report here affects your ability to use the account in the meantime.</p>
+          </section>
+        </div>
+
+        <nav class="an-rail" id="b-rail__p5" aria-label="On this page">
+          <span class="an-rail-label t-cm-caption">On this page</span>
+          <ul>
+            <li><a href="#b-what__p5" aria-current="true"><span class="an-t t-cm-label">What you get</span></a></li>
+            <li><a href="#b-setup__p5"><span class="an-t t-cm-label">Setting it up</span></a></li>
+            <li><a href="#b-moving__p5"><span class="an-t t-cm-label">Moving your payments</span></a></li>
+            <li><a href="#b-help__p5"><span class="an-t t-cm-label">If something goes wrong</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    <section class="pane" data-apollo-theme="console" data-theme="dark">
+      <p class="pane-cap t-cm-caption">Console &middot; dark</p>
+      <div class="pane-body"><div class="specimens">
+
+    <!-- 1 · STICKY HORIZONTAL BAR -->
+    <div>
+      <p class="spec-note t-cm-caption">Sticky bar — the current section marks itself as the reader scrolls</p>
+      <div class="an-doc" data-anchor-nav>
+        <nav class="an-bar" aria-label="On this page">
+          <a href="#a-rates__p6" aria-current="true">Rates</a>
+          <a href="#a-fees__p6">Fees</a>
+          <a href="#a-eligibility__p6">Eligibility</a>
+          <a href="#a-protection__p6">Protection</a>
+        </nav>
+
+        <section id="a-rates__p6" aria-labelledby="a-rates-h__p6">
+          <h2 class="t-ed-heading-4" id="a-rates-h__p6">Rates</h2>
+          <p class="t-ed-body">The rate shown is the annual equivalent rate and assumes interest stays in the account for a full twelve months. It is variable, so it can change after the account is opened.</p>
+          <p class="t-ed-body">Interest is calculated daily on the cleared balance and paid on the first working day of each month.</p>
+        </section>
+
+        <section id="a-fees__p6" aria-labelledby="a-fees-h__p6">
+          <h2 class="t-ed-heading-4" id="a-fees-h__p6">Fees</h2>
+          <p class="t-ed-body">There is no monthly account fee. Charges may still apply for services outside the standard account, such as a same-day payment or a duplicate statement.</p>
+          <p class="t-ed-body">A full list of charges is set out in the account terms, which you can download at any time.</p>
+        </section>
+
+        <section id="a-eligibility__p6" aria-labelledby="a-eligibility-h__p6">
+          <h2 class="t-ed-heading-4" id="a-eligibility-h__p6">Eligibility</h2>
+          <p class="t-ed-body">You need to be eighteen or over and resident in the United Kingdom. You can hold one account of this type at a time.</p>
+          <p class="t-ed-body">Opening the account will not affect your credit score, though we will run an identity check.</p>
+        </section>
+
+        <section id="a-protection__p6" aria-labelledby="a-protection-h__p6">
+          <h2 class="t-ed-heading-4" id="a-protection-h__p6">Protection</h2>
+          <p class="t-ed-body">Eligible deposits are protected up to the current limit under the deposit guarantee scheme. The limit applies per person, per banking licence, not per account.</p>
+          <p class="t-ed-body">If you hold more than one account with us, the balances are added together when the limit is worked out.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 2 · VERTICAL RAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">Vertical rail — the same grammar where the page has room beside it</p>
+      <div class="an-split">
+        <div class="an-doc" data-anchor-nav data-anchor-rail="b-rail__p6">
+          <section id="b-what__p6" aria-labelledby="b-what-h__p6">
+            <h2 class="t-ed-heading-4" id="b-what-h__p6">What you get</h2>
+            <p class="t-ed-body">A single view of your balances, a payment tool that remembers your regular payees, and statements going back seven years.</p>
+            <p class="t-ed-body">Everything here also works on the mobile app, with the same sign-in.</p>
+          </section>
+          <section id="b-setup__p6" aria-labelledby="b-setup-h__p6">
+            <h2 class="t-ed-heading-4" id="b-setup-h__p6">Setting it up</h2>
+            <p class="t-ed-body">Most people finish in under ten minutes. You will need a form of photo identification and a recent proof of address.</p>
+            <p class="t-ed-body">You can save your progress and come back later without starting again.</p>
+          </section>
+          <section id="b-moving__p6" aria-labelledby="b-moving-h__p6">
+            <h2 class="t-ed-heading-4" id="b-moving-h__p6">Moving your payments</h2>
+            <p class="t-ed-body">Standing orders and direct debits can be transferred for you. Nothing moves until you confirm the date.</p>
+            <p class="t-ed-body">Your old account stays open until the switch completes.</p>
+          </section>
+          <section id="b-help__p6" aria-labelledby="b-help-h__p6">
+            <h2 class="t-ed-heading-4" id="b-help-h__p6">If something goes wrong</h2>
+            <p class="t-ed-body">Report a problem from inside the app and you will get a reference straight away. Most cases are resolved within three working days.</p>
+            <p class="t-ed-body">Nothing you report here affects your ability to use the account in the meantime.</p>
+          </section>
+        </div>
+
+        <nav class="an-rail" id="b-rail__p6" aria-label="On this page">
+          <span class="an-rail-label t-cm-caption">On this page</span>
+          <ul>
+            <li><a href="#b-what__p6" aria-current="true"><span class="an-t t-cm-label">What you get</span></a></li>
+            <li><a href="#b-setup__p6"><span class="an-t t-cm-label">Setting it up</span></a></li>
+            <li><a href="#b-moving__p6"><span class="an-t t-cm-label">Moving your payments</span></a></li>
+            <li><a href="#b-help__p6"><span class="an-t t-cm-label">If something goes wrong</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    </div>
+  </div>
+  <div class="theme">
+    <h2 class="t-ed-heading-4">Supercharge</h2>
+    <div class="grid">
+    <section class="pane" data-apollo-theme="supercharge" data-theme="light">
+      <p class="pane-cap t-cm-caption">Supercharge &middot; light</p>
+      <div class="pane-body"><div class="specimens">
+
+    <!-- 1 · STICKY HORIZONTAL BAR -->
+    <div>
+      <p class="spec-note t-cm-caption">Sticky bar — the current section marks itself as the reader scrolls</p>
+      <div class="an-doc" data-anchor-nav>
+        <nav class="an-bar" aria-label="On this page">
+          <a href="#a-rates__p7" aria-current="true">Rates</a>
+          <a href="#a-fees__p7">Fees</a>
+          <a href="#a-eligibility__p7">Eligibility</a>
+          <a href="#a-protection__p7">Protection</a>
+        </nav>
+
+        <section id="a-rates__p7" aria-labelledby="a-rates-h__p7">
+          <h2 class="t-ed-heading-4" id="a-rates-h__p7">Rates</h2>
+          <p class="t-ed-body">The rate shown is the annual equivalent rate and assumes interest stays in the account for a full twelve months. It is variable, so it can change after the account is opened.</p>
+          <p class="t-ed-body">Interest is calculated daily on the cleared balance and paid on the first working day of each month.</p>
+        </section>
+
+        <section id="a-fees__p7" aria-labelledby="a-fees-h__p7">
+          <h2 class="t-ed-heading-4" id="a-fees-h__p7">Fees</h2>
+          <p class="t-ed-body">There is no monthly account fee. Charges may still apply for services outside the standard account, such as a same-day payment or a duplicate statement.</p>
+          <p class="t-ed-body">A full list of charges is set out in the account terms, which you can download at any time.</p>
+        </section>
+
+        <section id="a-eligibility__p7" aria-labelledby="a-eligibility-h__p7">
+          <h2 class="t-ed-heading-4" id="a-eligibility-h__p7">Eligibility</h2>
+          <p class="t-ed-body">You need to be eighteen or over and resident in the United Kingdom. You can hold one account of this type at a time.</p>
+          <p class="t-ed-body">Opening the account will not affect your credit score, though we will run an identity check.</p>
+        </section>
+
+        <section id="a-protection__p7" aria-labelledby="a-protection-h__p7">
+          <h2 class="t-ed-heading-4" id="a-protection-h__p7">Protection</h2>
+          <p class="t-ed-body">Eligible deposits are protected up to the current limit under the deposit guarantee scheme. The limit applies per person, per banking licence, not per account.</p>
+          <p class="t-ed-body">If you hold more than one account with us, the balances are added together when the limit is worked out.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 2 · VERTICAL RAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">Vertical rail — the same grammar where the page has room beside it</p>
+      <div class="an-split">
+        <div class="an-doc" data-anchor-nav data-anchor-rail="b-rail__p7">
+          <section id="b-what__p7" aria-labelledby="b-what-h__p7">
+            <h2 class="t-ed-heading-4" id="b-what-h__p7">What you get</h2>
+            <p class="t-ed-body">A single view of your balances, a payment tool that remembers your regular payees, and statements going back seven years.</p>
+            <p class="t-ed-body">Everything here also works on the mobile app, with the same sign-in.</p>
+          </section>
+          <section id="b-setup__p7" aria-labelledby="b-setup-h__p7">
+            <h2 class="t-ed-heading-4" id="b-setup-h__p7">Setting it up</h2>
+            <p class="t-ed-body">Most people finish in under ten minutes. You will need a form of photo identification and a recent proof of address.</p>
+            <p class="t-ed-body">You can save your progress and come back later without starting again.</p>
+          </section>
+          <section id="b-moving__p7" aria-labelledby="b-moving-h__p7">
+            <h2 class="t-ed-heading-4" id="b-moving-h__p7">Moving your payments</h2>
+            <p class="t-ed-body">Standing orders and direct debits can be transferred for you. Nothing moves until you confirm the date.</p>
+            <p class="t-ed-body">Your old account stays open until the switch completes.</p>
+          </section>
+          <section id="b-help__p7" aria-labelledby="b-help-h__p7">
+            <h2 class="t-ed-heading-4" id="b-help-h__p7">If something goes wrong</h2>
+            <p class="t-ed-body">Report a problem from inside the app and you will get a reference straight away. Most cases are resolved within three working days.</p>
+            <p class="t-ed-body">Nothing you report here affects your ability to use the account in the meantime.</p>
+          </section>
+        </div>
+
+        <nav class="an-rail" id="b-rail__p7" aria-label="On this page">
+          <span class="an-rail-label t-cm-caption">On this page</span>
+          <ul>
+            <li><a href="#b-what__p7" aria-current="true"><span class="an-t t-cm-label">What you get</span></a></li>
+            <li><a href="#b-setup__p7"><span class="an-t t-cm-label">Setting it up</span></a></li>
+            <li><a href="#b-moving__p7"><span class="an-t t-cm-label">Moving your payments</span></a></li>
+            <li><a href="#b-help__p7"><span class="an-t t-cm-label">If something goes wrong</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    <section class="pane" data-apollo-theme="supercharge" data-theme="dark">
+      <p class="pane-cap t-cm-caption">Supercharge &middot; dark</p>
+      <div class="pane-body"><div class="specimens">
+
+    <!-- 1 · STICKY HORIZONTAL BAR -->
+    <div>
+      <p class="spec-note t-cm-caption">Sticky bar — the current section marks itself as the reader scrolls</p>
+      <div class="an-doc" data-anchor-nav>
+        <nav class="an-bar" aria-label="On this page">
+          <a href="#a-rates__p8" aria-current="true">Rates</a>
+          <a href="#a-fees__p8">Fees</a>
+          <a href="#a-eligibility__p8">Eligibility</a>
+          <a href="#a-protection__p8">Protection</a>
+        </nav>
+
+        <section id="a-rates__p8" aria-labelledby="a-rates-h__p8">
+          <h2 class="t-ed-heading-4" id="a-rates-h__p8">Rates</h2>
+          <p class="t-ed-body">The rate shown is the annual equivalent rate and assumes interest stays in the account for a full twelve months. It is variable, so it can change after the account is opened.</p>
+          <p class="t-ed-body">Interest is calculated daily on the cleared balance and paid on the first working day of each month.</p>
+        </section>
+
+        <section id="a-fees__p8" aria-labelledby="a-fees-h__p8">
+          <h2 class="t-ed-heading-4" id="a-fees-h__p8">Fees</h2>
+          <p class="t-ed-body">There is no monthly account fee. Charges may still apply for services outside the standard account, such as a same-day payment or a duplicate statement.</p>
+          <p class="t-ed-body">A full list of charges is set out in the account terms, which you can download at any time.</p>
+        </section>
+
+        <section id="a-eligibility__p8" aria-labelledby="a-eligibility-h__p8">
+          <h2 class="t-ed-heading-4" id="a-eligibility-h__p8">Eligibility</h2>
+          <p class="t-ed-body">You need to be eighteen or over and resident in the United Kingdom. You can hold one account of this type at a time.</p>
+          <p class="t-ed-body">Opening the account will not affect your credit score, though we will run an identity check.</p>
+        </section>
+
+        <section id="a-protection__p8" aria-labelledby="a-protection-h__p8">
+          <h2 class="t-ed-heading-4" id="a-protection-h__p8">Protection</h2>
+          <p class="t-ed-body">Eligible deposits are protected up to the current limit under the deposit guarantee scheme. The limit applies per person, per banking licence, not per account.</p>
+          <p class="t-ed-body">If you hold more than one account with us, the balances are added together when the limit is worked out.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 2 · VERTICAL RAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">Vertical rail — the same grammar where the page has room beside it</p>
+      <div class="an-split">
+        <div class="an-doc" data-anchor-nav data-anchor-rail="b-rail__p8">
+          <section id="b-what__p8" aria-labelledby="b-what-h__p8">
+            <h2 class="t-ed-heading-4" id="b-what-h__p8">What you get</h2>
+            <p class="t-ed-body">A single view of your balances, a payment tool that remembers your regular payees, and statements going back seven years.</p>
+            <p class="t-ed-body">Everything here also works on the mobile app, with the same sign-in.</p>
+          </section>
+          <section id="b-setup__p8" aria-labelledby="b-setup-h__p8">
+            <h2 class="t-ed-heading-4" id="b-setup-h__p8">Setting it up</h2>
+            <p class="t-ed-body">Most people finish in under ten minutes. You will need a form of photo identification and a recent proof of address.</p>
+            <p class="t-ed-body">You can save your progress and come back later without starting again.</p>
+          </section>
+          <section id="b-moving__p8" aria-labelledby="b-moving-h__p8">
+            <h2 class="t-ed-heading-4" id="b-moving-h__p8">Moving your payments</h2>
+            <p class="t-ed-body">Standing orders and direct debits can be transferred for you. Nothing moves until you confirm the date.</p>
+            <p class="t-ed-body">Your old account stays open until the switch completes.</p>
+          </section>
+          <section id="b-help__p8" aria-labelledby="b-help-h__p8">
+            <h2 class="t-ed-heading-4" id="b-help-h__p8">If something goes wrong</h2>
+            <p class="t-ed-body">Report a problem from inside the app and you will get a reference straight away. Most cases are resolved within three working days.</p>
+            <p class="t-ed-body">Nothing you report here affects your ability to use the account in the meantime.</p>
+          </section>
+        </div>
+
+        <nav class="an-rail" id="b-rail__p8" aria-label="On this page">
+          <span class="an-rail-label t-cm-caption">On this page</span>
+          <ul>
+            <li><a href="#b-what__p8" aria-current="true"><span class="an-t t-cm-label">What you get</span></a></li>
+            <li><a href="#b-setup__p8"><span class="an-t t-cm-label">Setting it up</span></a></li>
+            <li><a href="#b-moving__p8"><span class="an-t t-cm-label">Moving your payments</span></a></li>
+            <li><a href="#b-help__p8"><span class="an-t t-cm-label">If something goes wrong</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div></div>
+    </section>
+    </div>
+  </div>
+<script><script>
+    /* SCROLLSPY — IntersectionObserver against the scroll container. The authored aria-current
+       in the markup is the no-JS answer; this only ever moves it. */
+    (function(){
+      if(!('IntersectionObserver' in window)) return;
+      document.querySelectorAll('[data-anchor-nav]').forEach(function(doc){
+        var railId = doc.getAttribute('data-anchor-rail');
+        var nav = railId ? document.getElementById(railId) : doc.querySelector('nav');
+        if(!nav) return;
+        var links = Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]'));
+        var sections = links.map(function(a){ return doc.querySelector(a.getAttribute('href')); });
+        var visible = {};
+        function mark(){
+          var first = null;
+          for(var i=0;i<sections.length;i++){
+            if(sections[i] && visible[sections[i].id]){ first = i; break; }
+          }
+          if(first === null) return;
+          links.forEach(function(a,i){
+            if(i === first){ a.setAttribute('aria-current','true'); }
+            else { a.removeAttribute('aria-current'); }
+          });
+        }
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(e){ visible[e.target.id] = e.isIntersecting; });
+          mark();
+        }, { root: doc, rootMargin: '-56px 0px -55% 0px', threshold: 0 });
+        sections.forEach(function(s){ if(s) io.observe(s); });
+      });
+    })();
+  </script></script>
+</body>
+</html>

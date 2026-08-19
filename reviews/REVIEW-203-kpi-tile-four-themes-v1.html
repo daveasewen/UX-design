@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KPI / trend tile &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; overflow-x:auto; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note-info{border-left-color:#305A85;}
+  .cn-kpi-tile .demo-h{margin-top:20px;}
+  .cn-kpi-tile .demo-h:first-child{margin-top:0;}
+/* ---- the .cn-kpi-tile scope: what gen_canon_components.py WOULD emit. Hand-mirrored here
+   because the generator surface belongs to another lane this wave; every binding below is
+   derived from the snippet's own #token-manifest, not typed by hand. ---- */
+.cn-kpi-tile{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --ease: 140ms ease;
+  --ease:140ms ease;
+  --surface: var(--tertiary-background-default);
+  --border: var(--border-subtle);
+  --text: var(--text-default);
+  --page: var(--background-default);
+  --focus: var(--focus-ring);
+  --up: var(--rag-success);
+  --down: var(--rag-error);
+  --spark-up: var(--rag-success-ink);
+  --spark-down: var(--rag-error-ink);
+  --spark-flat: var(--text-default);
+  --border-radius-surface: var(--border-radius-surface);
+}
+
+.cn-kpi-tile :is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+.cn-kpi-tile{color:var(--text);}
+.cn-kpi-tile .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+.cn-kpi-tile .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-kpi-tile .board{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px; max-width:800px;}
+.cn-kpi-tile .kpi-tile{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    padding:16px; display:flex; flex-direction:column; gap:8px; position:relative;}
+.cn-kpi-tile .kpi-tile .lbl16{margin:0; opacity:var(--alpha-60);}
+.cn-kpi-tile .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+.cn-kpi-tile .delta{display:flex; align-items:center; gap:4px;}
+.cn-kpi-tile .delta .arrow{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
+.cn-kpi-tile .delta .arrow svg{width:16px; height:16px; display:block; fill:currentColor;}
+.cn-kpi-tile .delta.up .arrow{color:var(--up);}
+.cn-kpi-tile .delta.down .arrow{color:var(--down);}
+.cn-kpi-tile .delta .per{opacity:var(--alpha-60); margin-left:4px;}
+.cn-kpi-tile .kpi-spark{margin-top:4px; width:100%;}
+.cn-kpi-tile .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
+.cn-kpi-tile .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+.cn-kpi-tile .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
+    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+.cn-kpi-tile .spark-inline .dv-end{fill:var(--spark-flat);}
+.cn-kpi-tile .spark-inline[data-trend="up"] .dv-series{stroke:var(--spark-up);}
+.cn-kpi-tile .spark-inline[data-trend="up"] .dv-end{fill:var(--spark-up);}
+.cn-kpi-tile .spark-inline[data-trend="down"] .dv-series{stroke:var(--spark-down);}
+.cn-kpi-tile .spark-inline[data-trend="down"] .dv-end{fill:var(--spark-down);}
+.cn-kpi-tile .kpi-cta{position:absolute; top:8px; right:8px; width:44px; height:44px; flex:none;
+    display:inline-flex; align-items:center; justify-content:center; padding:0;
+    background:transparent; border:0; border-radius:var(--border-radius-surface);
+    color:var(--text); opacity:var(--alpha-60); cursor:pointer; transition:opacity var(--ease);}
+.cn-kpi-tile .kpi-cta svg{width:18px; height:18px; display:block; fill:currentColor;}
+.cn-kpi-tile .kpi-cta:hover{opacity:var(--alpha-96);}
+.cn-kpi-tile .kpi-cta:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
+.cn-kpi-tile .kpi-tile.has-cta .lbl16{padding-right:40px;}
+@media (prefers-reduced-motion: reduce){.cn-kpi-tile *, .cn-kpi-tile *::before, .cn-kpi-tile *::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+[data-apollo-theme="legacy"] .cn-kpi-tile{
+  --border: #D7D8D6;
+  --down: #A8000B;
+  --text: #333333;
+  --up: #00847F;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-kpi-tile,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-kpi-tile{
+  --border: #404040;
+  --down: #A8000B;
+  --text: #FFFFFF;
+  --up: #00847F;
+}
+[data-apollo-theme="console"] .cn-kpi-tile{
+  --border-radius-surface: 20px;
+  --down: #B92F1E;
+  --up: #5DAC7B;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-kpi-tile,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-kpi-tile{
+  --border-radius-surface: 20px;
+  --down: #B92F1E;
+  --up: #5DAC7B;
+}
+[data-apollo-theme="supercharge"] .cn-kpi-tile{
+  --border: #CDC8C6;
+  --down: #B92F1E;
+  --page: #F7F6F4;
+  --surface: #F7F6F4;
+  --text: #13110E;
+  --up: #5DAC7B;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-kpi-tile,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-kpi-tile{
+  --border: #524842;
+  --down: #B92F1E;
+  --page: #1A1A1A;
+  --surface: #2A2621;
+  --text: #F7F6F4;
+  --up: #5DAC7B;
+}
+[data-theme="dark"] .cn-kpi-tile{
+  --grid-alpha: .16;
+}
+[data-apollo-theme="legacy"] .cn-kpi-tile{
+  --ink: #333333;
+  --line: #D7D8D6;
+  --spark-flat: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-kpi-tile,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-kpi-tile{
+  --ink: #FFFFFF;
+  --line: #404040;
+  --spark-flat: #FFFFFF;
+}
+[data-apollo-theme="console"] .cn-kpi-tile{
+  --border-radius-surface: 20px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-kpi-tile,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-kpi-tile{
+  --border-radius-surface: 20px;
+}
+[data-apollo-theme="supercharge"] .cn-kpi-tile{
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+  --spark-flat: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-kpi-tile,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-kpi-tile{
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+  --pop-border: #524842;
+  --spark-flat: #F7F6F4;
+}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">KPI / trend tile</h1>
+  <div class="lede">
+<p class="t-ed-body">Itinerary row 55, <strong>PROPOSED #203 &mdash; your eye owed on all of it</strong>. Real snippet markup rendered through the canon theme cascade in all four themes, light and dark.</p>
+<div class="note"><p class="t-ed-body-small"><strong>This component is FLOATED, not ruled &mdash; and that is your own ruling, not my caution.</strong> <code>s182-D2</code> names it and declines to rule it. Your words, quoted in the ruling: &ldquo;might be a partially built trend card with option, I haven&rsquo;t decided yet&rdquo;, and the ruling adds &ldquo;never launder into a ruling&rdquo;. So row 55 was never an ordinary gap for a sub to close. What is below is the drawing that lets you answer it by eye. Nothing here closes anything.</p></div><div class="note note-info"><p class="t-ed-body-small"><strong>How it differs from the gated Stat card &mdash; in one line.</strong> Stat card states the <em>change</em>; the KPI tile states the <em>shape</em> of the change. Everything else is Stat card, copied verbatim: the label, the value, the arrow, the wording, the period. The only addition is the twelve-point spark, and that is the Chart-sparkline atom at the exact inline scale its own source already calls &ldquo;the KPI / Stat-card scale&rdquo;. A KPI tile with no series is a Stat card and should be one.</p></div><div class="note"><p class="t-ed-body-small"><strong>⛔ Look along the rows: the arrow and the line beneath it are DIFFERENT GREENS in seven of these eight panes.</strong> This is the live two-red question. I have deliberately not resolved it &mdash; I inherited both bindings exactly as they stand. The <strong>arrow</strong> takes the FILL seat it inherits from the gated Stat card, and that seat <em>forks per theme</em>. The <strong>spark line</strong> takes the INK seat that <code>s182-D3</code> <em>rules</em> for this atom &mdash; &ldquo;the rules for colours should just follow the red and green ink colours for all themes&rdquo; &mdash; and that seat is theme-<em>invariant</em> by that ruling. One forks, one does not, so they disagree almost everywhere. Measured in the browser today:</p><table class="t-ed-body-small" style="border-collapse:collapse;margin:8px 0"><tr style="text-align:left"><th style="padding:2px 14px 2px 0">theme</th><th style="padding:2px 14px 2px 0">mode</th><th style="padding:2px 14px 2px 0">arrow (fill)</th><th style="padding:2px 14px 2px 0">spark (ink)</th><th>agree?</th></tr><tr><td style="padding:2px 14px 2px 0">mono</td><td style="padding:2px 14px 2px 0">light</td><td style="padding:2px 14px 2px 0"><code>#66CC8D</code> 1.98:1</td><td style="padding:2px 14px 2px 0"><code>#137F3C</code> 5.09:1</td><td>differ &mdash; <strong>arrow under 3:1</strong></td></tr><tr><td style="padding:2px 14px 2px 0">mono</td><td style="padding:2px 14px 2px 0">dark</td><td style="padding:2px 14px 2px 0"><code>#66CC8D</code> 8.31:1</td><td style="padding:2px 14px 2px 0"><code>#66CC8D</code> 8.31:1</td><td><strong>agree</strong></td></tr><tr><td style="padding:2px 14px 2px 0">legacy</td><td style="padding:2px 14px 2px 0">light</td><td style="padding:2px 14px 2px 0"><code>#00847F</code> 4.56:1</td><td style="padding:2px 14px 2px 0"><code>#137F3C</code> 5.09:1</td><td>differ</td></tr><tr><td style="padding:2px 14px 2px 0">legacy</td><td style="padding:2px 14px 2px 0">dark</td><td style="padding:2px 14px 2px 0"><code>#00847F</code> 3.62:1</td><td style="padding:2px 14px 2px 0"><code>#66CC8D</code> 8.31:1</td><td>differ</td></tr><tr><td style="padding:2px 14px 2px 0">console</td><td style="padding:2px 14px 2px 0">light</td><td style="padding:2px 14px 2px 0"><code>#5DAC7B</code> 2.74:1</td><td style="padding:2px 14px 2px 0"><code>#137F3C</code> 5.09:1</td><td>differ &mdash; <strong>arrow under 3:1</strong></td></tr><tr><td style="padding:2px 14px 2px 0">console</td><td style="padding:2px 14px 2px 0">dark</td><td style="padding:2px 14px 2px 0"><code>#5DAC7B</code> 6.01:1</td><td style="padding:2px 14px 2px 0"><code>#66CC8D</code> 8.31:1</td><td>differ</td></tr><tr><td style="padding:2px 14px 2px 0">supercharge</td><td style="padding:2px 14px 2px 0">light</td><td style="padding:2px 14px 2px 0"><code>#5DAC7B</code> 2.54:1</td><td style="padding:2px 14px 2px 0"><code>#137F3C</code> 4.71:1</td><td>differ &mdash; <strong>arrow under 3:1</strong></td></tr><tr><td style="padding:2px 14px 2px 0">supercharge</td><td style="padding:2px 14px 2px 0">dark</td><td style="padding:2px 14px 2px 0"><code>#5DAC7B</code> 5.48:1</td><td style="padding:2px 14px 2px 0"><code>#66CC8D</code> 7.57:1</td><td>differ</td></tr></table><p class="t-ed-body-small"><strong>Three of the four themes put the light-mode arrow under the 3:1 non-text floor</strong> &mdash; not one, as the mono-only reading suggested. Only mono dark agrees. <strong>Rebinding a ruled colour seat is yours.</strong> Whichever way you go, Stat card and KPI tile have to move together &mdash; fixing one and leaving the other is how this seam arrived.</p></div><div class="note note-info"><p class="t-ed-body-small"><strong>The optional table button</strong> is your own standing direction from <code>s182-D2</code>: icon-button form, no &ldquo;View as table&rdquo; label, because &ldquo;a sparkline shows a trend beside a headline figure, it is not an analysis tool&rdquo;. It is 44&times;44 and opens nothing &mdash; the table panel is a composition-level artefact and I did not invent one.</p></div>
+  </div>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-kpi-tile">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg + arrow-down.svg (via Stat-card) -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Display size — figure-4 value (32px) with the twelve-point spark</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale, copied verbatim from Chart-sparkline. PASSIVE and
+             aria-hidden by design (s184-D1: "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's
+             value and delta carry the meaning; the line is ambient. Trend is read from FIRST vs LAST
+             datum and DECLARED as data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: no arrow, "No change", full ink — Stat-card's flat rule, and the spark takes
+             the standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,39.0 55.9,32.0 73.5,33.5 91.2,28.0 108.8,29.5 126.5,22.0 144.1,24.5 161.7,17.0 179.4,14.5 197.0,9.0"/>
+          <circle class="dv-end" cx="197" cy="9.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,12.0 20.6,18.0 38.3,15.5 55.9,22.0 73.5,19.5 91.2,26.0 108.8,24.5 126.5,30.0 144.1,28.5 161.7,34.0 179.4,32.5 197.0,37.0"/>
+          <circle class="dv-end" cx="197" cy="37.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,25.0 20.6,22.0 38.3,26.5 55.9,23.0 73.5,27.0 91.2,24.0 108.8,21.5 126.5,26.0 144.1,23.5 161.7,26.5 179.4,24.0 197.0,25.0"/>
+          <circle class="dv-end" cx="197" cy="25.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Optional table affordance — icon-button form, no label (s182-D2 standing direction)</h2>
+  <div class="board">
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged arrow-seat question above. The two INK pairs ARE declared: they pass in both modes. -->
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-kpi-tile">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg + arrow-down.svg (via Stat-card) -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Display size — figure-4 value (32px) with the twelve-point spark</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale, copied verbatim from Chart-sparkline. PASSIVE and
+             aria-hidden by design (s184-D1: "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's
+             value and delta carry the meaning; the line is ambient. Trend is read from FIRST vs LAST
+             datum and DECLARED as data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: no arrow, "No change", full ink — Stat-card's flat rule, and the spark takes
+             the standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,39.0 55.9,32.0 73.5,33.5 91.2,28.0 108.8,29.5 126.5,22.0 144.1,24.5 161.7,17.0 179.4,14.5 197.0,9.0"/>
+          <circle class="dv-end" cx="197" cy="9.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,12.0 20.6,18.0 38.3,15.5 55.9,22.0 73.5,19.5 91.2,26.0 108.8,24.5 126.5,30.0 144.1,28.5 161.7,34.0 179.4,32.5 197.0,37.0"/>
+          <circle class="dv-end" cx="197" cy="37.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,25.0 20.6,22.0 38.3,26.5 55.9,23.0 73.5,27.0 91.2,24.0 108.8,21.5 126.5,26.0 144.1,23.5 161.7,26.5 179.4,24.0 197.0,25.0"/>
+          <circle class="dv-end" cx="197" cy="25.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Optional table affordance — icon-button form, no label (s182-D2 standing direction)</h2>
+  <div class="board">
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged arrow-seat question above. The two INK pairs ARE declared: they pass in both modes. -->
+  
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-kpi-tile">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg + arrow-down.svg (via Stat-card) -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Display size — figure-4 value (32px) with the twelve-point spark</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale, copied verbatim from Chart-sparkline. PASSIVE and
+             aria-hidden by design (s184-D1: "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's
+             value and delta carry the meaning; the line is ambient. Trend is read from FIRST vs LAST
+             datum and DECLARED as data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: no arrow, "No change", full ink — Stat-card's flat rule, and the spark takes
+             the standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,39.0 55.9,32.0 73.5,33.5 91.2,28.0 108.8,29.5 126.5,22.0 144.1,24.5 161.7,17.0 179.4,14.5 197.0,9.0"/>
+          <circle class="dv-end" cx="197" cy="9.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,12.0 20.6,18.0 38.3,15.5 55.9,22.0 73.5,19.5 91.2,26.0 108.8,24.5 126.5,30.0 144.1,28.5 161.7,34.0 179.4,32.5 197.0,37.0"/>
+          <circle class="dv-end" cx="197" cy="37.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,25.0 20.6,22.0 38.3,26.5 55.9,23.0 73.5,27.0 91.2,24.0 108.8,21.5 126.5,26.0 144.1,23.5 161.7,26.5 179.4,24.0 197.0,25.0"/>
+          <circle class="dv-end" cx="197" cy="25.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Optional table affordance — icon-button form, no label (s182-D2 standing direction)</h2>
+  <div class="board">
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged arrow-seat question above. The two INK pairs ARE declared: they pass in both modes. -->
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-kpi-tile">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg + arrow-down.svg (via Stat-card) -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Display size — figure-4 value (32px) with the twelve-point spark</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale, copied verbatim from Chart-sparkline. PASSIVE and
+             aria-hidden by design (s184-D1: "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's
+             value and delta carry the meaning; the line is ambient. Trend is read from FIRST vs LAST
+             datum and DECLARED as data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: no arrow, "No change", full ink — Stat-card's flat rule, and the spark takes
+             the standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,39.0 55.9,32.0 73.5,33.5 91.2,28.0 108.8,29.5 126.5,22.0 144.1,24.5 161.7,17.0 179.4,14.5 197.0,9.0"/>
+          <circle class="dv-end" cx="197" cy="9.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,12.0 20.6,18.0 38.3,15.5 55.9,22.0 73.5,19.5 91.2,26.0 108.8,24.5 126.5,30.0 144.1,28.5 161.7,34.0 179.4,32.5 197.0,37.0"/>
+          <circle class="dv-end" cx="197" cy="37.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,25.0 20.6,22.0 38.3,26.5 55.9,23.0 73.5,27.0 91.2,24.0 108.8,21.5 126.5,26.0 144.1,23.5 161.7,26.5 179.4,24.0 197.0,25.0"/>
+          <circle class="dv-end" cx="197" cy="25.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Optional table affordance — icon-button form, no label (s182-D2 standing direction)</h2>
+  <div class="board">
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged arrow-seat question above. The two INK pairs ARE declared: they pass in both modes. -->
+  
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-kpi-tile">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg + arrow-down.svg (via Stat-card) -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Display size — figure-4 value (32px) with the twelve-point spark</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale, copied verbatim from Chart-sparkline. PASSIVE and
+             aria-hidden by design (s184-D1: "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's
+             value and delta carry the meaning; the line is ambient. Trend is read from FIRST vs LAST
+             datum and DECLARED as data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: no arrow, "No change", full ink — Stat-card's flat rule, and the spark takes
+             the standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,39.0 55.9,32.0 73.5,33.5 91.2,28.0 108.8,29.5 126.5,22.0 144.1,24.5 161.7,17.0 179.4,14.5 197.0,9.0"/>
+          <circle class="dv-end" cx="197" cy="9.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,12.0 20.6,18.0 38.3,15.5 55.9,22.0 73.5,19.5 91.2,26.0 108.8,24.5 126.5,30.0 144.1,28.5 161.7,34.0 179.4,32.5 197.0,37.0"/>
+          <circle class="dv-end" cx="197" cy="37.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,25.0 20.6,22.0 38.3,26.5 55.9,23.0 73.5,27.0 91.2,24.0 108.8,21.5 126.5,26.0 144.1,23.5 161.7,26.5 179.4,24.0 197.0,25.0"/>
+          <circle class="dv-end" cx="197" cy="25.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Optional table affordance — icon-button form, no label (s182-D2 standing direction)</h2>
+  <div class="board">
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged arrow-seat question above. The two INK pairs ARE declared: they pass in both modes. -->
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-kpi-tile">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg + arrow-down.svg (via Stat-card) -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Display size — figure-4 value (32px) with the twelve-point spark</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale, copied verbatim from Chart-sparkline. PASSIVE and
+             aria-hidden by design (s184-D1: "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's
+             value and delta carry the meaning; the line is ambient. Trend is read from FIRST vs LAST
+             datum and DECLARED as data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: no arrow, "No change", full ink — Stat-card's flat rule, and the spark takes
+             the standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,39.0 55.9,32.0 73.5,33.5 91.2,28.0 108.8,29.5 126.5,22.0 144.1,24.5 161.7,17.0 179.4,14.5 197.0,9.0"/>
+          <circle class="dv-end" cx="197" cy="9.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,12.0 20.6,18.0 38.3,15.5 55.9,22.0 73.5,19.5 91.2,26.0 108.8,24.5 126.5,30.0 144.1,28.5 161.7,34.0 179.4,32.5 197.0,37.0"/>
+          <circle class="dv-end" cx="197" cy="37.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,25.0 20.6,22.0 38.3,26.5 55.9,23.0 73.5,27.0 91.2,24.0 108.8,21.5 126.5,26.0 144.1,23.5 161.7,26.5 179.4,24.0 197.0,25.0"/>
+          <circle class="dv-end" cx="197" cy="25.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Optional table affordance — icon-button form, no label (s182-D2 standing direction)</h2>
+  <div class="board">
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged arrow-seat question above. The two INK pairs ARE declared: they pass in both modes. -->
+  
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-kpi-tile">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg + arrow-down.svg (via Stat-card) -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Display size — figure-4 value (32px) with the twelve-point spark</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale, copied verbatim from Chart-sparkline. PASSIVE and
+             aria-hidden by design (s184-D1: "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's
+             value and delta carry the meaning; the line is ambient. Trend is read from FIRST vs LAST
+             datum and DECLARED as data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: no arrow, "No change", full ink — Stat-card's flat rule, and the spark takes
+             the standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,39.0 55.9,32.0 73.5,33.5 91.2,28.0 108.8,29.5 126.5,22.0 144.1,24.5 161.7,17.0 179.4,14.5 197.0,9.0"/>
+          <circle class="dv-end" cx="197" cy="9.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,12.0 20.6,18.0 38.3,15.5 55.9,22.0 73.5,19.5 91.2,26.0 108.8,24.5 126.5,30.0 144.1,28.5 161.7,34.0 179.4,32.5 197.0,37.0"/>
+          <circle class="dv-end" cx="197" cy="37.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,25.0 20.6,22.0 38.3,26.5 55.9,23.0 73.5,27.0 91.2,24.0 108.8,21.5 126.5,26.0 144.1,23.5 161.7,26.5 179.4,24.0 197.0,25.0"/>
+          <circle class="dv-end" cx="197" cy="25.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Optional table affordance — icon-button form, no label (s182-D2 standing direction)</h2>
+  <div class="board">
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged arrow-seat question above. The two INK pairs ARE declared: they pass in both modes. -->
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-kpi-tile">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg + arrow-down.svg (via Stat-card) -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Display size — figure-4 value (32px) with the twelve-point spark</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale, copied verbatim from Chart-sparkline. PASSIVE and
+             aria-hidden by design (s184-D1: "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's
+             value and delta carry the meaning; the line is ambient. Trend is read from FIRST vs LAST
+             datum and DECLARED as data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: no arrow, "No change", full ink — Stat-card's flat rule, and the spark takes
+             the standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,39.0 55.9,32.0 73.5,33.5 91.2,28.0 108.8,29.5 126.5,22.0 144.1,24.5 161.7,17.0 179.4,14.5 197.0,9.0"/>
+          <circle class="dv-end" cx="197" cy="9.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,12.0 20.6,18.0 38.3,15.5 55.9,22.0 73.5,19.5 91.2,26.0 108.8,24.5 126.5,30.0 144.1,28.5 161.7,34.0 179.4,32.5 197.0,37.0"/>
+          <circle class="dv-end" cx="197" cy="37.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,25.0 20.6,22.0 38.3,26.5 55.9,23.0 73.5,27.0 91.2,24.0 108.8,21.5 126.5,26.0 144.1,23.5 161.7,26.5 179.4,24.0 197.0,25.0"/>
+          <circle class="dv-end" cx="197" cy="25.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Optional table affordance — icon-button form, no label (s182-D2 standing direction)</h2>
+  <div class="board">
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged arrow-seat question above. The two INK pairs ARE declared: they pass in both modes. -->
+  
+  </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

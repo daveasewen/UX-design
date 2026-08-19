@@ -1,0 +1,103 @@
+{
+  "name": "Timeline",
+  "category": "organism",
+  "$status": "PROPOSED #203, Dave's eye owed",
+  "purpose": "The passive, ordered record of things that have already happened, where the time axis IS the structure: a vertical rail threading date-grouped entries, newest first. Two forms from one grammar — transaction history (status node + amount, the fintech case the itinerary names) and activity feed (actor avatar + what they did).",
+  "$differsFromNeighbours": {
+    "$why": "Three gated components already sit close to this one, and a reader will otherwise reach for the wrong one. Stated here because the brief requires a new component to say how it differs from its gated siblings.",
+    "vs List-items (Transaction row, GATED)": "List-items is an INTERACTIVE, UNORDERED list — every row is a <button> with hover/pressed/disabled/processing states — and it answers 'which transaction do I want to open?'. Timeline is PASSIVE and ORDERED (<ol>), carries no press states, and answers 'what happened, in what order?'. The tell: remove the ordering from a Timeline and it becomes meaningless; remove it from List-items and nothing is lost. Where a feed genuinely needs each entry to open a detail view, the correct answer is List-items inside a date group — NOT a Timeline that grows buttons. The RAG chip and avatar atoms here are List-items' own, copied verbatim.",
+    "vs Progress-tracker (GATED, display-only)": "Visually the closest, and the one most likely to be mistaken for this. Progress-tracker shows a KNOWN, FINITE, FORWARD process with done/current/upcoming steps and a completion the user is travelling toward; it carries aria-current=\"step\" and role=\"progressbar\". Timeline has no current step, no upcoming, no completion and no total — it is open-ended and backward-looking. The rail MECHANISM (li::before connector + node) is Progress-tracker's, rotated to vertical; the SEMANTICS are deliberately not inherited.",
+    "vs Notifications (GATED, persistent)": "Notifications are messages awaiting the user's action. A Timeline entry is a record of something already done; it asks nothing."
+  },
+  "props": [
+    { "name": "form", "type": "enum", "values": ["history", "activity"], "default": "history",
+      "$note": "history = status node + amount (transaction history); activity = actor avatar + what they did (activity feed). One grammar, two node treatments.",
+      "$status": "PROPOSED #203, Dave's eye owed" },
+    { "name": "status", "type": "enum", "values": ["none", "ok", "warn", "err", "inf"], "default": "none",
+      "binds": { "ok": "rag/success", "warn": "rag/warning", "err": "rag/error", "inf": "rag/information" },
+      "$note": "Colours the rail node AND the entry's status chip. The chip always carries a WORD, so the dot never carries meaning alone (s151-D1 clause 4).",
+      "$status": "PROPOSED #203, Dave's eye owed" },
+    { "name": "grouped", "type": "boolean", "default": true,
+      "$note": "Date group headings ('Today, 19 August'). Ungrouped is legal for short feeds but loses the axis the component exists for.",
+      "$status": "PROPOSED #203, Dave's eye owed" }
+  ],
+  "variants": [
+    { "name": "history", "use": "transaction history — status node, amount, optional explanatory line" },
+    { "name": "activity", "use": "activity feed — actor avatar replaces the status node; who did what, when" },
+    { "name": "empty", "use": "no activity in the window; a single line of prose, no rail" }
+  ],
+  "tokens": {
+    "surface": "tertiary/background/default",
+    "divider": "divider/border/section",
+    "rail": "divider/border/section",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "page": "background/default",
+    "focus": "focus/ring",
+    "avatar": "tertiary/background/hover",
+    "controlBorder": "form/border/default",
+    "radius": "border-radius/surface + border-radius/indicator (both 0 — square)",
+    "status": {
+      "ok": "rag/success + rag/success-tint",
+      "warn": "rag/warning + rag/warning-tint",
+      "err": "rag/error + rag/error-tint",
+      "inf": "rag/information + rag/information-tint"
+    }
+  },
+  "relationships": {
+    "livesInside": ["Template — dashboard", "Template — report", "account detail page"],
+    "commonPatterns": ["transaction history", "audit trail", "approval activity"],
+    "mustNotNeighbour": []
+  },
+  "accessibility": {
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "1.4.11", "2.4.7", "2.5.8"],
+    "structure": "An <ol> inside a <section> with a heading, so AT gets both the count and the order for free. Dates are real <time datetime> elements.",
+    "focus": "Entries are NOT focusable — nothing to do on a record. The only focus stop is the optional 'Load older activity' control.",
+    "colourIsNeverAlone": "Every status node dot is accompanied by its RAG tint chip carrying a word — 'Completed', 'Failed', 'Pending', 'Submitted' — per s151-D1 clause 4, where the symbol and label carry meaning and the fill's own contrast is secondary. Neutral label on every RAG tint measures 8.21–14.46 in both modes (measured #203). The warning dot alone is under 3:1, which is precisely why it never travels alone. Dave is astigmatic and red/yellow are problem hues.",
+    "targetSize": "'Load older activity' is min-height 44px, the ruled min-hit-area, enforced BY HAND — no gate reads the target token.",
+    "prose": "Wrapping description lines use the Editorial composite (.t-ed-body-small) and keep their natural line box (text-box-trim:normal), per the runbook's deciding rule: single-line -> Component, wrapping -> Editorial."
+  },
+  "antiPatterns": [
+    "⛔ Never put aria-current=\"step\" or role=\"progressbar\" on a Timeline. It borrows Progress-tracker's rail mechanism but has no current step, no total and no completion — those roles would lie to AT.",
+    "Never make Timeline entries into buttons. If entries must open, the component you want is List-items inside a date group.",
+    "Never let a status dot travel without its word — the warning dot alone is under 3:1 and colour would be the only carrier.",
+    "Never reverse the order to oldest-first without changing the date headings with it; the axis is the component.",
+    "Never rely on line-height to separate stacked lines — leading-trim is ON, so every stack carries an explicit tokenised gap.",
+    "REVIEW Never present the 90-day empty-state window as a product rule; it is invented specimen copy standing in for one."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json + layout.json, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate rc=0, 0 failures on this file. Every declared var matches the store in BOTH modes. No new token minted and none wanted.",
+    "declaredAbsence": "The rag-on-neutral pairs (a RAG dot on the card surface) are NOT declared as passing pairs — per s151-D2 that class belongs to the RENDERING gate (_validate_state_contrast.py) where the non-colour carrier is checkable against real DOM. The neutral-label-on-tint pairs ARE declared and pass in both modes.",
+    "reusedVerbatim": "Status chip (form B) and avatar disc copied from List-items; rail mechanism copied from Progress-tracker. Both source files untouched."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 56 (2026-07-14), 'Timeline / activity feed — Transaction history pattern', P2 Depth. Verified absent first-hand #203 (ls + content grep across timeline/activity/feed/history/audit). Built #203 Wave 3b Lane K. No Figma node binds this component."
+  },
+  "interactive": false,
+  "stateModel": "simple",
+  "responsive": {
+    "container": "container-type:inline-size; the entry line collapses title/amount onto separate rows as width falls",
+    "rail": "fixed 28px gutter (48px in the avatar form) at every width — the axis must not collapse",
+    "$status": "PROPOSED #203, Dave's eye owed — narrow-viewport reflow below 360px is unexamined and not claimed"
+  },
+  "dimensions": {
+    "railGutter": 28,
+    "railGutterAvatar": 48,
+    "node": 12,
+    "statusDot": 8,
+    "avatar": 36,
+    "entryGap": 4,
+    "entryPaddingBottom": 20,
+    "groupGap": 20,
+    "loadMore": 44,
+    "$note": "node 12 and statusDot 8 are graphic marks, not targets. loadMore 44 is the ruled min-hit-area."
+  },
+  "$openQuestions": [
+    "The 12px rail node and the 8px status dot are ROUND. That is a reading of the angular rule, not a ruled exemption — Avatar and Badge are the two documented ones. Square nodes are equally buildable; Dave's eye is owed.",
+    "Newest-first ordering is asserted here, not ruled.",
+    "Whether the activity form should also carry a status node alongside the avatar (both, or avatar only) is unresolved; the specimen shows avatar only."
+  ]
+}

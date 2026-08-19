@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timeline / activity feed &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; overflow-x:auto; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note-info{border-left-color:#305A85;}
+  .cn-timeline .demo-h{margin-top:20px;}
+  .cn-timeline .demo-h:first-child{margin-top:0;}
+/* ---- the .cn-timeline scope: what gen_canon_components.py WOULD emit. Hand-mirrored here
+   because the generator surface belongs to another lane this wave; every binding below is
+   derived from the snippet's own #token-manifest, not typed by hand. ---- */
+.cn-timeline{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --ease: 140ms ease;
+  --ease:140ms ease;
+  --rail-x:5px;
+  --node:12px;
+  --surface: var(--tertiary-background-default);
+  --divider: var(--divider-border-section);
+  --rail: var(--divider-border-section);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --page: var(--background-default);
+  --focus: var(--focus-ring);
+  --avatar: var(--tertiary-background-hover);
+  --tag-border: var(--form-border-default);
+  --success: var(--rag-success);
+  --warning: var(--rag-warning);
+  --error: var(--rag-error);
+  --info: var(--rag-information);
+  --success-tint: var(--rag-success-tint);
+  --warning-tint: var(--rag-warning-tint);
+  --error-tint: var(--rag-error-tint);
+  --info-tint: var(--rag-information-tint);
+  --border-radius-indicator: var(--border-radius-indicator);
+  --border-radius-surface: var(--border-radius-surface);
+}
+
+.cn-timeline :is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+.cn-timeline{color:var(--text);}
+.cn-timeline .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+.cn-timeline .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-timeline .tl{width:var(--demo-width, 460px); max-width:100%; container-type:inline-size;
+    background:var(--surface); border:1px solid var(--divider); border-radius:var(--border-radius-surface);
+    padding:16px;}
+.cn-timeline .tl-group + .tl-group{margin-top:20px;}
+.cn-timeline .tl-group > h3{margin:0 0 12px; opacity:var(--alpha-60);}
+.cn-timeline ol.tl-list{list-style:none; margin:0; padding:0;}
+.cn-timeline ol.tl-list > li{position:relative; padding:0 0 20px 28px; display:flex; flex-direction:column; gap:4px;}
+.cn-timeline ol.tl-list > li:last-child{padding-bottom:0;}
+.cn-timeline ol.tl-list > li::before{content:""; position:absolute; left:var(--rail-x); top:14px; bottom:-2px;
+    width:2px; background:var(--rail);}
+.cn-timeline ol.tl-list > li:last-child::before{display:none;}
+.cn-timeline .tl-node{position:absolute; left:0; top:4px; width:var(--node); height:var(--node);
+    border-radius:50%; background:var(--rail); z-index:1;}
+.cn-timeline li.ok  .tl-node{background:var(--success);}
+.cn-timeline li.warn .tl-node{background:var(--warning);}
+.cn-timeline li.err .tl-node{background:var(--error);}
+.cn-timeline li.inf .tl-node{background:var(--info);}
+.cn-timeline .tl-line{display:flex; align-items:baseline; gap:12px; min-width:0;}
+.cn-timeline .tl-title{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-box-edge:text text;}
+.cn-timeline .tl-amount{flex:none; margin-left:auto; white-space:nowrap;}
+.cn-timeline .tl-meta{display:flex; align-items:center; gap:8px; flex-wrap:wrap; opacity:var(--alpha-60);}
+.cn-timeline .tl-desc{margin:0; color:var(--muted); text-box-trim:normal;}
+.cn-timeline .status{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap; flex:none;}
+.cn-timeline .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+.cn-timeline .status.ok{background:var(--success-tint);}
+.cn-timeline .status.ok .dot{background:var(--success);}
+.cn-timeline .status.warn{background:var(--warning-tint);}
+.cn-timeline .status.warn .dot{background:var(--warning);}
+.cn-timeline .status.err{background:var(--error-tint);}
+.cn-timeline .status.err .dot{background:var(--error);}
+.cn-timeline .status.inf{background:var(--info-tint);}
+.cn-timeline .status.inf .dot{background:var(--info);}
+.cn-timeline ol.tl-list.has-avatar > li{padding-left:48px;}
+.cn-timeline ol.tl-list.has-avatar > li::before{left:17px;}
+.cn-timeline .tl-avatar{position:absolute; left:0; top:0; width:36px; height:36px; flex:none;
+    border-radius:50%;   
+    background:var(--avatar); color:var(--text);
+    display:inline-flex; align-items:center; justify-content:center; z-index:1; overflow:hidden;}
+.cn-timeline .tl-more{margin-top:16px; min-height:44px; width:100%; display:inline-flex; align-items:center;
+    justify-content:center; padding:0 16px; background:transparent; color:var(--text);
+    border:1px solid var(--tag-border); border-radius:var(--border-radius-surface); cursor:pointer;
+    transition:background var(--ease);}
+.cn-timeline .tl-more:hover{background:var(--avatar);}
+.cn-timeline .tl-more:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){.cn-timeline *, .cn-timeline *::before, .cn-timeline *::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+[data-apollo-theme="legacy"] .cn-timeline{
+  --error: #A8000B;
+  --error-tint: #F9F2F3;
+  --info: #305A85;
+  --info-tint: #EBEFF4;
+  --muted: #545454;
+  --success: #00847F;
+  --success-tint: #E5F2F2;
+  --text: #333333;
+  --warning: #FFBB33;
+  --warning-tint: #FFF8EA;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-timeline,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-timeline{
+  --error: #A8000B;
+  --error-tint: #260005;
+  --info: #305A85;
+  --info-tint: #000D1B;
+  --muted: #9B9B9B;
+  --success: #00847F;
+  --success-tint: #001615;
+  --text: #FFFFFF;
+  --warning: #FFBB33;
+  --warning-tint: #221701;
+}
+[data-apollo-theme="console"] .cn-timeline{
+  --border-radius-indicator: 4px;
+  --error: #B92F1E;
+  --error-tint: #EECDC9;
+  --info: #5A85C1;
+  --info-tint: #D1DDEE;
+  --success: #5DAC7B;
+  --success-tint: #D2E8DA;
+  --warning: #D5990B;
+  --warning-tint: #F2DEB1;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-timeline,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-timeline{
+  --border-radius-indicator: 4px;
+  --error: #B92F1E;
+  --error-tint: #60231C;
+  --info: #5A85C1;
+  --info-tint: #364963;
+  --success: #5DAC7B;
+  --success-tint: #355441;
+  --warning: #D5990B;
+  --warning-tint: #654D14;
+}
+[data-apollo-theme="supercharge"] .cn-timeline{
+  --avatar: #DFDEDC;
+  --disabled-surface: #CDC8C6;
+  --disabled-text: #CDC8C6;
+  --divider: #CDC8C6;
+  --error: #B92F1E;
+  --error-tint: #F1E0DC;
+  --hover: #DFDEDC;
+  --icon: #13110E;
+  --info: #5A85C1;
+  --info-tint: #D6E3EC;
+  --muted: #13110E;
+  --page: #F7F6F4;
+  --pressed: #493F39;
+  --reverse: #F7F6F4;
+  --success: #5DAC7B;
+  --success-tint: #DCEDE3;
+  --surface: #F7F6F4;
+  --tag-border: #524842;
+  --text: #13110E;
+  --warning: #D5990B;
+  --warning-tint: #F6E5CC;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-timeline,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-timeline{
+  --avatar: #2E2A25;
+  --disabled-surface: #413934;
+  --disabled-text: #524842;
+  --divider: #524842;
+  --error: #B92F1E;
+  --error-tint: #2C120D;
+  --hover: #2E2A25;
+  --icon: #F7F6F4;
+  --info: #5A85C1;
+  --info-tint: #092131;
+  --muted: #F7F6F4;
+  --page: #1A1A1A;
+  --pressed: #13110E;
+  --reverse: #F7F6F4;
+  --success: #5DAC7B;
+  --success-tint: #12291D;
+  --surface: #2A2621;
+  --tag-border: #524842;
+  --text: #F7F6F4;
+  --warning: #D5990B;
+  --warning-tint: #3C2C13;
+}
+[data-apollo-theme="legacy"] .cn-timeline{
+  --error: #A8000B;
+  --error-tint: #F9F2F3;
+  --info: #305A85;
+  --info-tint: #EBEFF4;
+  --label: #333333;
+  --success: #00847F;
+  --success-tint: #E5F2F2;
+  --warning: #FFBB33;
+  --warning-tint: #FFF8EA;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-timeline,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-timeline{
+  --error: #A8000B;
+  --error-tint: #260005;
+  --info: #305A85;
+  --info-tint: #000D1B;
+  --label: #FFFFFF;
+  --success: #00847F;
+  --success-tint: #001615;
+  --warning: #FFBB33;
+  --warning-tint: #221701;
+}
+[data-apollo-theme="console"] .cn-timeline{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 4px;
+  --error: #B92F1E;
+  --error-tint: #EECDC9;
+  --info: #5A85C1;
+  --info-tint: #D1DDEE;
+  --success: #5DAC7B;
+  --success-tint: #D2E8DA;
+  --warning: #D5990B;
+  --warning-tint: #F2DEB1;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-timeline,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-timeline{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 4px;
+  --error: #B92F1E;
+  --error-tint: #60231C;
+  --info: #5A85C1;
+  --info-tint: #364963;
+  --success: #5DAC7B;
+  --success-tint: #355441;
+  --warning: #D5990B;
+  --warning-tint: #654D14;
+}
+[data-apollo-theme="supercharge"] .cn-timeline{
+  --disabled: #CDC8C6;
+  --divider: #CDC8C6;
+  --error: #B92F1E;
+  --error-tint: #F1E0DC;
+  --info: #5A85C1;
+  --info-tint: #D6E3EC;
+  --label: #13110E;
+  --neutral: #524842;
+  --page: #F7F6F4;
+  --success: #5DAC7B;
+  --success-tint: #DCEDE3;
+  --warning: #D5990B;
+  --warning-tint: #F6E5CC;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-timeline,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-timeline{
+  --disabled: #524842;
+  --divider: #524842;
+  --error: #B92F1E;
+  --error-tint: #2C120D;
+  --info: #5A85C1;
+  --info-tint: #092131;
+  --label: #F7F6F4;
+  --neutral: #FFFFFF;
+  --page: #1A1A1A;
+  --success: #5DAC7B;
+  --success-tint: #12291D;
+  --warning: #D5990B;
+  --warning-tint: #3C2C13;
+}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">Timeline / activity feed</h1>
+  <div class="lede">
+<p class="t-ed-body">Itinerary row 56, <strong>PROPOSED #203 &mdash; your eye owed</strong>. Verified absent first-hand: no snippet or meta existed under timeline, activity, feed, history or audit.</p>
+<div class="note note-info"><p class="t-ed-body-small"><strong>Three gated components already sit close to this one</strong>, so the meta says plainly how it differs. <code>List-items</code> is the <em>interactive, unordered</em> transaction row &mdash; every row a button &mdash; and answers &ldquo;which one do I open?&rdquo;. <code>Progress-tracker</code> is a <em>finite forward process</em> with done / current / upcoming. This is neither: it is the passive, ordered record, and the time axis <em>is</em> the structure. The tell: take the ordering away and a Timeline stops meaning anything.</p></div><div class="note note-info"><p class="t-ed-body-small"><strong>It borrows Progress-tracker&rsquo;s rail and refuses its semantics.</strong> The connector-and-node mechanism is copied from the gated component; <code>aria-current</code> and <code>role="progressbar"</code> are deliberately <em>not</em>, because a timeline has no current step, no total and no completion. Putting them on would lie to a screen reader.</p></div><div class="note note-info"><p class="t-ed-body-small"><strong>Colour never travels alone.</strong> Every status dot has its word beside it &mdash; Completed, Pending, Failed, Submitted. The neutral label on every RAG tint measures 8.21&ndash;14.46 in both modes. The warning dot on its own is under 3:1, which is precisely why it never appears on its own. Squint at Legacy and Supercharge: the meaning should survive the hue entirely.</p></div><div class="note"><p class="t-ed-body-small"><strong>PROPOSED, your call &mdash; the rail nodes are round.</strong> The 12px node and the 8px status dot are circles. That is my reading of the angular rule, not a ruled exemption: Avatar and Badge are the two documented ones. Square nodes are equally buildable. Also unruled: newest-first ordering, and whether the activity form should carry a status node <em>as well as</em> the avatar.</p></div>
+  </div>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-timeline">
+
+  <h2 class="t-cm-caption demo-h">Transaction history — status node + amount (the itinerary's named case)</h2>
+  <section class="tl" aria-labelledby="tl1-h">
+    <h2 id="tl1-h" class="sr-only">Transaction history</h2>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list">
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Payment to Meridian Supplies</span>
+            <span class="tl-amount t-cm-figure-6">−£1,240.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T14:32">14:32</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+        <li class="warn">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Standing order — Kestrel Property</span>
+            <span class="tl-amount t-cm-figure-6">−£2,100.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T09:05">09:05</time>
+            <span class="status warn t-cm-legal"><span class="dot" aria-hidden="true"></span>Pending</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">Held for review because the amount is above your usual range for this payee. No action is needed unless you want to cancel it.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Yesterday, 18 August</h3>
+      <ol class="tl-list">
+        <li class="err">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Card payment — Northgate Fuel</span>
+            <span class="tl-amount t-cm-figure-6">−£64.20</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T18:47">18:47</time>
+            <span class="status err t-cm-legal"><span class="dot" aria-hidden="true"></span>Failed</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">The merchant declined the authorisation. Nothing left your account.</p>
+        </li>
+        <li class="inf">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Faster payment received — Alder Consulting</span>
+            <span class="tl-amount t-cm-figure-6">+£3,800.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T11:12">11:12</time>
+            <span class="status inf t-cm-legal"><span class="dot" aria-hidden="true"></span>Submitted</span>
+          </span>
+        </li>
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Direct debit — Halden Insurance</span>
+            <span class="tl-amount t-cm-figure-6">−£88.40</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T06:00">06:00</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <button type="button" class="tl-more t-cm-button">Load older activity</button>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Activity feed — the actor avatar replaces the status node</h2>
+  <section class="tl" aria-labelledby="tl2-h">
+    <h2 id="tl2-h" class="sr-only">Account activity</h2>
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list has-avatar">
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Priya Anand">PA</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Priya Anand approved a payment</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T14:30">14:30</time></span>
+          <p class="tl-desc t-ed-body-small">Payment to Meridian Supplies, £1,240.00, approved at the second authorisation step.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Jordan Lee">JL</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Jordan Lee added a payee</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T10:18">10:18</time></span>
+          <p class="tl-desc t-ed-body-small">Alder Consulting was added to the payee list and is awaiting a second approver.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Sam Okafor">SO</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Sam Okafor changed a limit</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T08:44">08:44</time></span>
+          <p class="tl-desc t-ed-body-small">The daily payment limit moved from £10,000 to £25,000.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Empty — no activity yet</h2>
+  <section class="tl" aria-labelledby="tl3-h">
+    <h2 id="tl3-h" class="sr-only">Transaction history</h2>
+    <p class="t-ed-body-small" style="margin:0; opacity:var(--alpha-60)">No activity in the last 90 days.</p>
+  </section>
+
+  <!-- s151-D2: the rag-on-neutral pairs (a RAG dot sitting on the card surface) are NOT declared
+       below — they belong to the RENDERING gate (_validate_state_contrast.py), where the
+       non-colour carrier is checkable against real DOM, per s151-D1 clause 4. Every dot here is
+       accompanied by its word, so the dot never carries meaning alone. The neutral-label-on-tint
+       pairs ARE declared: they pass in both modes (8.21–14.46, measured #203). -->
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-timeline">
+
+  <h2 class="t-cm-caption demo-h">Transaction history — status node + amount (the itinerary's named case)</h2>
+  <section class="tl" aria-labelledby="tl1-h">
+    <h2 id="tl1-h" class="sr-only">Transaction history</h2>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list">
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Payment to Meridian Supplies</span>
+            <span class="tl-amount t-cm-figure-6">−£1,240.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T14:32">14:32</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+        <li class="warn">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Standing order — Kestrel Property</span>
+            <span class="tl-amount t-cm-figure-6">−£2,100.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T09:05">09:05</time>
+            <span class="status warn t-cm-legal"><span class="dot" aria-hidden="true"></span>Pending</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">Held for review because the amount is above your usual range for this payee. No action is needed unless you want to cancel it.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Yesterday, 18 August</h3>
+      <ol class="tl-list">
+        <li class="err">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Card payment — Northgate Fuel</span>
+            <span class="tl-amount t-cm-figure-6">−£64.20</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T18:47">18:47</time>
+            <span class="status err t-cm-legal"><span class="dot" aria-hidden="true"></span>Failed</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">The merchant declined the authorisation. Nothing left your account.</p>
+        </li>
+        <li class="inf">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Faster payment received — Alder Consulting</span>
+            <span class="tl-amount t-cm-figure-6">+£3,800.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T11:12">11:12</time>
+            <span class="status inf t-cm-legal"><span class="dot" aria-hidden="true"></span>Submitted</span>
+          </span>
+        </li>
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Direct debit — Halden Insurance</span>
+            <span class="tl-amount t-cm-figure-6">−£88.40</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T06:00">06:00</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <button type="button" class="tl-more t-cm-button">Load older activity</button>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Activity feed — the actor avatar replaces the status node</h2>
+  <section class="tl" aria-labelledby="tl2-h">
+    <h2 id="tl2-h" class="sr-only">Account activity</h2>
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list has-avatar">
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Priya Anand">PA</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Priya Anand approved a payment</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T14:30">14:30</time></span>
+          <p class="tl-desc t-ed-body-small">Payment to Meridian Supplies, £1,240.00, approved at the second authorisation step.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Jordan Lee">JL</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Jordan Lee added a payee</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T10:18">10:18</time></span>
+          <p class="tl-desc t-ed-body-small">Alder Consulting was added to the payee list and is awaiting a second approver.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Sam Okafor">SO</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Sam Okafor changed a limit</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T08:44">08:44</time></span>
+          <p class="tl-desc t-ed-body-small">The daily payment limit moved from £10,000 to £25,000.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Empty — no activity yet</h2>
+  <section class="tl" aria-labelledby="tl3-h">
+    <h2 id="tl3-h" class="sr-only">Transaction history</h2>
+    <p class="t-ed-body-small" style="margin:0; opacity:var(--alpha-60)">No activity in the last 90 days.</p>
+  </section>
+
+  <!-- s151-D2: the rag-on-neutral pairs (a RAG dot sitting on the card surface) are NOT declared
+       below — they belong to the RENDERING gate (_validate_state_contrast.py), where the
+       non-colour carrier is checkable against real DOM, per s151-D1 clause 4. Every dot here is
+       accompanied by its word, so the dot never carries meaning alone. The neutral-label-on-tint
+       pairs ARE declared: they pass in both modes (8.21–14.46, measured #203). -->
+  
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-timeline">
+
+  <h2 class="t-cm-caption demo-h">Transaction history — status node + amount (the itinerary's named case)</h2>
+  <section class="tl" aria-labelledby="tl1-h">
+    <h2 id="tl1-h" class="sr-only">Transaction history</h2>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list">
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Payment to Meridian Supplies</span>
+            <span class="tl-amount t-cm-figure-6">−£1,240.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T14:32">14:32</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+        <li class="warn">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Standing order — Kestrel Property</span>
+            <span class="tl-amount t-cm-figure-6">−£2,100.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T09:05">09:05</time>
+            <span class="status warn t-cm-legal"><span class="dot" aria-hidden="true"></span>Pending</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">Held for review because the amount is above your usual range for this payee. No action is needed unless you want to cancel it.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Yesterday, 18 August</h3>
+      <ol class="tl-list">
+        <li class="err">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Card payment — Northgate Fuel</span>
+            <span class="tl-amount t-cm-figure-6">−£64.20</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T18:47">18:47</time>
+            <span class="status err t-cm-legal"><span class="dot" aria-hidden="true"></span>Failed</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">The merchant declined the authorisation. Nothing left your account.</p>
+        </li>
+        <li class="inf">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Faster payment received — Alder Consulting</span>
+            <span class="tl-amount t-cm-figure-6">+£3,800.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T11:12">11:12</time>
+            <span class="status inf t-cm-legal"><span class="dot" aria-hidden="true"></span>Submitted</span>
+          </span>
+        </li>
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Direct debit — Halden Insurance</span>
+            <span class="tl-amount t-cm-figure-6">−£88.40</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T06:00">06:00</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <button type="button" class="tl-more t-cm-button">Load older activity</button>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Activity feed — the actor avatar replaces the status node</h2>
+  <section class="tl" aria-labelledby="tl2-h">
+    <h2 id="tl2-h" class="sr-only">Account activity</h2>
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list has-avatar">
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Priya Anand">PA</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Priya Anand approved a payment</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T14:30">14:30</time></span>
+          <p class="tl-desc t-ed-body-small">Payment to Meridian Supplies, £1,240.00, approved at the second authorisation step.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Jordan Lee">JL</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Jordan Lee added a payee</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T10:18">10:18</time></span>
+          <p class="tl-desc t-ed-body-small">Alder Consulting was added to the payee list and is awaiting a second approver.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Sam Okafor">SO</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Sam Okafor changed a limit</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T08:44">08:44</time></span>
+          <p class="tl-desc t-ed-body-small">The daily payment limit moved from £10,000 to £25,000.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Empty — no activity yet</h2>
+  <section class="tl" aria-labelledby="tl3-h">
+    <h2 id="tl3-h" class="sr-only">Transaction history</h2>
+    <p class="t-ed-body-small" style="margin:0; opacity:var(--alpha-60)">No activity in the last 90 days.</p>
+  </section>
+
+  <!-- s151-D2: the rag-on-neutral pairs (a RAG dot sitting on the card surface) are NOT declared
+       below — they belong to the RENDERING gate (_validate_state_contrast.py), where the
+       non-colour carrier is checkable against real DOM, per s151-D1 clause 4. Every dot here is
+       accompanied by its word, so the dot never carries meaning alone. The neutral-label-on-tint
+       pairs ARE declared: they pass in both modes (8.21–14.46, measured #203). -->
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-timeline">
+
+  <h2 class="t-cm-caption demo-h">Transaction history — status node + amount (the itinerary's named case)</h2>
+  <section class="tl" aria-labelledby="tl1-h">
+    <h2 id="tl1-h" class="sr-only">Transaction history</h2>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list">
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Payment to Meridian Supplies</span>
+            <span class="tl-amount t-cm-figure-6">−£1,240.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T14:32">14:32</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+        <li class="warn">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Standing order — Kestrel Property</span>
+            <span class="tl-amount t-cm-figure-6">−£2,100.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T09:05">09:05</time>
+            <span class="status warn t-cm-legal"><span class="dot" aria-hidden="true"></span>Pending</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">Held for review because the amount is above your usual range for this payee. No action is needed unless you want to cancel it.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Yesterday, 18 August</h3>
+      <ol class="tl-list">
+        <li class="err">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Card payment — Northgate Fuel</span>
+            <span class="tl-amount t-cm-figure-6">−£64.20</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T18:47">18:47</time>
+            <span class="status err t-cm-legal"><span class="dot" aria-hidden="true"></span>Failed</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">The merchant declined the authorisation. Nothing left your account.</p>
+        </li>
+        <li class="inf">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Faster payment received — Alder Consulting</span>
+            <span class="tl-amount t-cm-figure-6">+£3,800.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T11:12">11:12</time>
+            <span class="status inf t-cm-legal"><span class="dot" aria-hidden="true"></span>Submitted</span>
+          </span>
+        </li>
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Direct debit — Halden Insurance</span>
+            <span class="tl-amount t-cm-figure-6">−£88.40</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T06:00">06:00</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <button type="button" class="tl-more t-cm-button">Load older activity</button>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Activity feed — the actor avatar replaces the status node</h2>
+  <section class="tl" aria-labelledby="tl2-h">
+    <h2 id="tl2-h" class="sr-only">Account activity</h2>
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list has-avatar">
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Priya Anand">PA</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Priya Anand approved a payment</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T14:30">14:30</time></span>
+          <p class="tl-desc t-ed-body-small">Payment to Meridian Supplies, £1,240.00, approved at the second authorisation step.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Jordan Lee">JL</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Jordan Lee added a payee</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T10:18">10:18</time></span>
+          <p class="tl-desc t-ed-body-small">Alder Consulting was added to the payee list and is awaiting a second approver.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Sam Okafor">SO</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Sam Okafor changed a limit</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T08:44">08:44</time></span>
+          <p class="tl-desc t-ed-body-small">The daily payment limit moved from £10,000 to £25,000.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Empty — no activity yet</h2>
+  <section class="tl" aria-labelledby="tl3-h">
+    <h2 id="tl3-h" class="sr-only">Transaction history</h2>
+    <p class="t-ed-body-small" style="margin:0; opacity:var(--alpha-60)">No activity in the last 90 days.</p>
+  </section>
+
+  <!-- s151-D2: the rag-on-neutral pairs (a RAG dot sitting on the card surface) are NOT declared
+       below — they belong to the RENDERING gate (_validate_state_contrast.py), where the
+       non-colour carrier is checkable against real DOM, per s151-D1 clause 4. Every dot here is
+       accompanied by its word, so the dot never carries meaning alone. The neutral-label-on-tint
+       pairs ARE declared: they pass in both modes (8.21–14.46, measured #203). -->
+  
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-timeline">
+
+  <h2 class="t-cm-caption demo-h">Transaction history — status node + amount (the itinerary's named case)</h2>
+  <section class="tl" aria-labelledby="tl1-h">
+    <h2 id="tl1-h" class="sr-only">Transaction history</h2>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list">
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Payment to Meridian Supplies</span>
+            <span class="tl-amount t-cm-figure-6">−£1,240.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T14:32">14:32</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+        <li class="warn">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Standing order — Kestrel Property</span>
+            <span class="tl-amount t-cm-figure-6">−£2,100.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T09:05">09:05</time>
+            <span class="status warn t-cm-legal"><span class="dot" aria-hidden="true"></span>Pending</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">Held for review because the amount is above your usual range for this payee. No action is needed unless you want to cancel it.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Yesterday, 18 August</h3>
+      <ol class="tl-list">
+        <li class="err">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Card payment — Northgate Fuel</span>
+            <span class="tl-amount t-cm-figure-6">−£64.20</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T18:47">18:47</time>
+            <span class="status err t-cm-legal"><span class="dot" aria-hidden="true"></span>Failed</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">The merchant declined the authorisation. Nothing left your account.</p>
+        </li>
+        <li class="inf">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Faster payment received — Alder Consulting</span>
+            <span class="tl-amount t-cm-figure-6">+£3,800.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T11:12">11:12</time>
+            <span class="status inf t-cm-legal"><span class="dot" aria-hidden="true"></span>Submitted</span>
+          </span>
+        </li>
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Direct debit — Halden Insurance</span>
+            <span class="tl-amount t-cm-figure-6">−£88.40</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T06:00">06:00</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <button type="button" class="tl-more t-cm-button">Load older activity</button>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Activity feed — the actor avatar replaces the status node</h2>
+  <section class="tl" aria-labelledby="tl2-h">
+    <h2 id="tl2-h" class="sr-only">Account activity</h2>
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list has-avatar">
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Priya Anand">PA</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Priya Anand approved a payment</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T14:30">14:30</time></span>
+          <p class="tl-desc t-ed-body-small">Payment to Meridian Supplies, £1,240.00, approved at the second authorisation step.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Jordan Lee">JL</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Jordan Lee added a payee</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T10:18">10:18</time></span>
+          <p class="tl-desc t-ed-body-small">Alder Consulting was added to the payee list and is awaiting a second approver.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Sam Okafor">SO</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Sam Okafor changed a limit</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T08:44">08:44</time></span>
+          <p class="tl-desc t-ed-body-small">The daily payment limit moved from £10,000 to £25,000.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Empty — no activity yet</h2>
+  <section class="tl" aria-labelledby="tl3-h">
+    <h2 id="tl3-h" class="sr-only">Transaction history</h2>
+    <p class="t-ed-body-small" style="margin:0; opacity:var(--alpha-60)">No activity in the last 90 days.</p>
+  </section>
+
+  <!-- s151-D2: the rag-on-neutral pairs (a RAG dot sitting on the card surface) are NOT declared
+       below — they belong to the RENDERING gate (_validate_state_contrast.py), where the
+       non-colour carrier is checkable against real DOM, per s151-D1 clause 4. Every dot here is
+       accompanied by its word, so the dot never carries meaning alone. The neutral-label-on-tint
+       pairs ARE declared: they pass in both modes (8.21–14.46, measured #203). -->
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-timeline">
+
+  <h2 class="t-cm-caption demo-h">Transaction history — status node + amount (the itinerary's named case)</h2>
+  <section class="tl" aria-labelledby="tl1-h">
+    <h2 id="tl1-h" class="sr-only">Transaction history</h2>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list">
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Payment to Meridian Supplies</span>
+            <span class="tl-amount t-cm-figure-6">−£1,240.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T14:32">14:32</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+        <li class="warn">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Standing order — Kestrel Property</span>
+            <span class="tl-amount t-cm-figure-6">−£2,100.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T09:05">09:05</time>
+            <span class="status warn t-cm-legal"><span class="dot" aria-hidden="true"></span>Pending</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">Held for review because the amount is above your usual range for this payee. No action is needed unless you want to cancel it.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Yesterday, 18 August</h3>
+      <ol class="tl-list">
+        <li class="err">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Card payment — Northgate Fuel</span>
+            <span class="tl-amount t-cm-figure-6">−£64.20</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T18:47">18:47</time>
+            <span class="status err t-cm-legal"><span class="dot" aria-hidden="true"></span>Failed</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">The merchant declined the authorisation. Nothing left your account.</p>
+        </li>
+        <li class="inf">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Faster payment received — Alder Consulting</span>
+            <span class="tl-amount t-cm-figure-6">+£3,800.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T11:12">11:12</time>
+            <span class="status inf t-cm-legal"><span class="dot" aria-hidden="true"></span>Submitted</span>
+          </span>
+        </li>
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Direct debit — Halden Insurance</span>
+            <span class="tl-amount t-cm-figure-6">−£88.40</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T06:00">06:00</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <button type="button" class="tl-more t-cm-button">Load older activity</button>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Activity feed — the actor avatar replaces the status node</h2>
+  <section class="tl" aria-labelledby="tl2-h">
+    <h2 id="tl2-h" class="sr-only">Account activity</h2>
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list has-avatar">
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Priya Anand">PA</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Priya Anand approved a payment</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T14:30">14:30</time></span>
+          <p class="tl-desc t-ed-body-small">Payment to Meridian Supplies, £1,240.00, approved at the second authorisation step.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Jordan Lee">JL</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Jordan Lee added a payee</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T10:18">10:18</time></span>
+          <p class="tl-desc t-ed-body-small">Alder Consulting was added to the payee list and is awaiting a second approver.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Sam Okafor">SO</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Sam Okafor changed a limit</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T08:44">08:44</time></span>
+          <p class="tl-desc t-ed-body-small">The daily payment limit moved from £10,000 to £25,000.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Empty — no activity yet</h2>
+  <section class="tl" aria-labelledby="tl3-h">
+    <h2 id="tl3-h" class="sr-only">Transaction history</h2>
+    <p class="t-ed-body-small" style="margin:0; opacity:var(--alpha-60)">No activity in the last 90 days.</p>
+  </section>
+
+  <!-- s151-D2: the rag-on-neutral pairs (a RAG dot sitting on the card surface) are NOT declared
+       below — they belong to the RENDERING gate (_validate_state_contrast.py), where the
+       non-colour carrier is checkable against real DOM, per s151-D1 clause 4. Every dot here is
+       accompanied by its word, so the dot never carries meaning alone. The neutral-label-on-tint
+       pairs ARE declared: they pass in both modes (8.21–14.46, measured #203). -->
+  
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-timeline">
+
+  <h2 class="t-cm-caption demo-h">Transaction history — status node + amount (the itinerary's named case)</h2>
+  <section class="tl" aria-labelledby="tl1-h">
+    <h2 id="tl1-h" class="sr-only">Transaction history</h2>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list">
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Payment to Meridian Supplies</span>
+            <span class="tl-amount t-cm-figure-6">−£1,240.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T14:32">14:32</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+        <li class="warn">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Standing order — Kestrel Property</span>
+            <span class="tl-amount t-cm-figure-6">−£2,100.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T09:05">09:05</time>
+            <span class="status warn t-cm-legal"><span class="dot" aria-hidden="true"></span>Pending</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">Held for review because the amount is above your usual range for this payee. No action is needed unless you want to cancel it.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Yesterday, 18 August</h3>
+      <ol class="tl-list">
+        <li class="err">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Card payment — Northgate Fuel</span>
+            <span class="tl-amount t-cm-figure-6">−£64.20</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T18:47">18:47</time>
+            <span class="status err t-cm-legal"><span class="dot" aria-hidden="true"></span>Failed</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">The merchant declined the authorisation. Nothing left your account.</p>
+        </li>
+        <li class="inf">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Faster payment received — Alder Consulting</span>
+            <span class="tl-amount t-cm-figure-6">+£3,800.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T11:12">11:12</time>
+            <span class="status inf t-cm-legal"><span class="dot" aria-hidden="true"></span>Submitted</span>
+          </span>
+        </li>
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Direct debit — Halden Insurance</span>
+            <span class="tl-amount t-cm-figure-6">−£88.40</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T06:00">06:00</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <button type="button" class="tl-more t-cm-button">Load older activity</button>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Activity feed — the actor avatar replaces the status node</h2>
+  <section class="tl" aria-labelledby="tl2-h">
+    <h2 id="tl2-h" class="sr-only">Account activity</h2>
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list has-avatar">
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Priya Anand">PA</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Priya Anand approved a payment</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T14:30">14:30</time></span>
+          <p class="tl-desc t-ed-body-small">Payment to Meridian Supplies, £1,240.00, approved at the second authorisation step.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Jordan Lee">JL</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Jordan Lee added a payee</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T10:18">10:18</time></span>
+          <p class="tl-desc t-ed-body-small">Alder Consulting was added to the payee list and is awaiting a second approver.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Sam Okafor">SO</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Sam Okafor changed a limit</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T08:44">08:44</time></span>
+          <p class="tl-desc t-ed-body-small">The daily payment limit moved from £10,000 to £25,000.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Empty — no activity yet</h2>
+  <section class="tl" aria-labelledby="tl3-h">
+    <h2 id="tl3-h" class="sr-only">Transaction history</h2>
+    <p class="t-ed-body-small" style="margin:0; opacity:var(--alpha-60)">No activity in the last 90 days.</p>
+  </section>
+
+  <!-- s151-D2: the rag-on-neutral pairs (a RAG dot sitting on the card surface) are NOT declared
+       below — they belong to the RENDERING gate (_validate_state_contrast.py), where the
+       non-colour carrier is checkable against real DOM, per s151-D1 clause 4. Every dot here is
+       accompanied by its word, so the dot never carries meaning alone. The neutral-label-on-tint
+       pairs ARE declared: they pass in both modes (8.21–14.46, measured #203). -->
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-timeline">
+
+  <h2 class="t-cm-caption demo-h">Transaction history — status node + amount (the itinerary's named case)</h2>
+  <section class="tl" aria-labelledby="tl1-h">
+    <h2 id="tl1-h" class="sr-only">Transaction history</h2>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list">
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Payment to Meridian Supplies</span>
+            <span class="tl-amount t-cm-figure-6">−£1,240.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T14:32">14:32</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+        <li class="warn">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Standing order — Kestrel Property</span>
+            <span class="tl-amount t-cm-figure-6">−£2,100.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-19T09:05">09:05</time>
+            <span class="status warn t-cm-legal"><span class="dot" aria-hidden="true"></span>Pending</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">Held for review because the amount is above your usual range for this payee. No action is needed unless you want to cancel it.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Yesterday, 18 August</h3>
+      <ol class="tl-list">
+        <li class="err">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Card payment — Northgate Fuel</span>
+            <span class="tl-amount t-cm-figure-6">−£64.20</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T18:47">18:47</time>
+            <span class="status err t-cm-legal"><span class="dot" aria-hidden="true"></span>Failed</span>
+          </span>
+          <p class="tl-desc t-ed-body-small">The merchant declined the authorisation. Nothing left your account.</p>
+        </li>
+        <li class="inf">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Faster payment received — Alder Consulting</span>
+            <span class="tl-amount t-cm-figure-6">+£3,800.00</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T11:12">11:12</time>
+            <span class="status inf t-cm-legal"><span class="dot" aria-hidden="true"></span>Submitted</span>
+          </span>
+        </li>
+        <li class="ok">
+          <span class="tl-node" aria-hidden="true"></span>
+          <span class="tl-line">
+            <span class="tl-title t-cm-ctl-14">Direct debit — Halden Insurance</span>
+            <span class="tl-amount t-cm-figure-6">−£88.40</span>
+          </span>
+          <span class="tl-meta">
+            <time class="t-cm-legal" datetime="2026-08-18T06:00">06:00</time>
+            <span class="status ok t-cm-legal"><span class="dot" aria-hidden="true"></span>Completed</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <button type="button" class="tl-more t-cm-button">Load older activity</button>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Activity feed — the actor avatar replaces the status node</h2>
+  <section class="tl" aria-labelledby="tl2-h">
+    <h2 id="tl2-h" class="sr-only">Account activity</h2>
+    <div class="tl-group">
+      <h3 class="t-cm-caption">Today, 19 August</h3>
+      <ol class="tl-list has-avatar">
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Priya Anand">PA</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Priya Anand approved a payment</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T14:30">14:30</time></span>
+          <p class="tl-desc t-ed-body-small">Payment to Meridian Supplies, £1,240.00, approved at the second authorisation step.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Jordan Lee">JL</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Jordan Lee added a payee</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T10:18">10:18</time></span>
+          <p class="tl-desc t-ed-body-small">Alder Consulting was added to the payee list and is awaiting a second approver.</p>
+        </li>
+        <li>
+          <span class="tl-avatar t-cm-caption" role="img" aria-label="Sam Okafor">SO</span>
+          <span class="tl-line"><span class="tl-title t-cm-ctl-14">Sam Okafor changed a limit</span></span>
+          <span class="tl-meta"><time class="t-cm-legal" datetime="2026-08-19T08:44">08:44</time></span>
+          <p class="tl-desc t-ed-body-small">The daily payment limit moved from £10,000 to £25,000.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <h2 class="t-cm-caption demo-h">Empty — no activity yet</h2>
+  <section class="tl" aria-labelledby="tl3-h">
+    <h2 id="tl3-h" class="sr-only">Transaction history</h2>
+    <p class="t-ed-body-small" style="margin:0; opacity:var(--alpha-60)">No activity in the last 90 days.</p>
+  </section>
+
+  <!-- s151-D2: the rag-on-neutral pairs (a RAG dot sitting on the card surface) are NOT declared
+       below — they belong to the RENDERING gate (_validate_state_contrast.py), where the
+       non-colour carrier is checkable against real DOM, per s151-D1 clause 4. Every dot here is
+       accompanied by its word, so the dot never carries meaning alone. The neutral-label-on-tint
+       pairs ARE declared: they pass in both modes (8.21–14.46, measured #203). -->
+  
+  </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

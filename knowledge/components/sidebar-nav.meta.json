@@ -1,0 +1,146 @@
+{
+  "name": "Sidebar nav",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "The persistent vertical navigation of a desktop application frame: a full-height column of grouped destinations with exactly one current location, which collapses to an icon-only RAIL without losing its accessible names. Use it where the product is an application the user stays inside, rather than a site they pass through. Itinerary row 36 (P2, 'Desktop app frame nav').",
+  "$status": "PROPOSED #203, Dave's eye owed — new component, built through the gated-component route at #203 wave 3b lane I. Nothing about it is ruled, least of all whether it should exist separately from Navigations.",
+  "props": [
+    {
+      "name": "collapsed",
+      "type": "boolean",
+      "default": false,
+      "$note": "false = 248px expanded column; true = 64px rail. The toggle carries aria-expanded and aria-controls."
+    },
+    {
+      "name": "groups",
+      "type": "array",
+      "$note": "Ordered groups. A group may be a plain labelled list or a COLLAPSIBLE section with its own disclosure button."
+    },
+    {
+      "name": "currentHref",
+      "type": "string",
+      "$note": "Drives aria-current=\"page\" on exactly one link. More than one current location is a defect, not a variant."
+    },
+    {
+      "name": "footerItems",
+      "type": "array",
+      "$note": "Persistent utilities pinned below the scrolling body — settings, help, sign out."
+    }
+  ],
+  "variants": [
+    {
+      "name": "expanded",
+      "use": "the default desktop column: icon + label, group headings visible"
+    },
+    {
+      "name": "rail",
+      "use": "collapsed to 64px, icon-only, labels visually hidden but present in the accessibility tree"
+    }
+  ],
+  "tokens": {
+    "page": "background/default — the canvas beside the column",
+    "panel": "tertiary/background/default — the nav surface",
+    "text": "text/default @ .t-cm-label",
+    "muted": "text/secondary @ .t-cm-caption — group headings",
+    "icon": "icon/default",
+    "rule": "divider/border/section — the outer frame and the column's right edge",
+    "sub-rule": "divider/border/subsection — between groups and around the header and footer",
+    "hover": "tertiary/background/hover — hover AND the current row's ground",
+    "pressed": "form/background/pressed",
+    "indicator": "primary/border/default (#DB0011, both modes) — the 3px current-location bar",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface (0; Console renders 20 via s199-D3, which is Dave's ruling arriving correctly)",
+    "$note": "The indicator follows the one gated navigation artefact: Navigations.reference.html:27 marks its current masthead item with an inset box-shadow in the same brand red. Copied, not invented."
+  },
+  "relationships": {
+    "livesInside": [
+      "App shell (left edge, full height)"
+    ],
+    "mustNotNeighbour": [
+      "A second primary navigation on the same screen — one primary nav per screen"
+    ],
+    "commonPatterns": [
+      "desktop app frame",
+      "collapsible rail",
+      "grouped destination list"
+    ]
+  },
+  "accessibility": {
+    "landmarks": "A <nav> landmark with an accessible name. The rail keeps its own name so the two states are distinguishable in a landmark list.",
+    "currentLocation": "aria-current=\"page\" on exactly one link — 'page' because the destination IS a different page (Anchor nav uses aria-current=\"true\" for the same reason inverted).",
+    "collapse": "The toggle is a real button with aria-expanded and aria-controls naming the body it collapses.",
+    "collapsibleGroup": "A group heading that opens a sub-list is a button with aria-expanded and aria-controls, not a link.",
+    "railNames": "Rail labels are visually hidden (clip-path), NOT removed and NOT replaced by aria-label — the link keeps a text-derived accessible name, so nothing has to be restated and nothing can drift out of sync.",
+    "targetArea": "Every link is min-height 44px; the rail item is 64x44; the collapse toggle is 44x44.",
+    "colourIndependence": "Current location is carried by aria-current + a bar whose presence/absence is a shape difference + a surface change. Colour is third, never alone.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1 Use of Color",
+      "1.4.11",
+      "2.4.1 Bypass Blocks",
+      "2.4.5 Multiple Ways",
+      "2.4.7 Focus Visible",
+      "2.5.8 Target Size (Minimum)",
+      "4.1.2"
+    ]
+  },
+  "antiPatterns": [
+    "Marking the current item with the red bar ONLY — it measures 2.73:1 in Supercharge dark and is a problem hue for an astigmatic reader either way",
+    "Dropping labels from the accessibility tree when the rail collapses (aria-label restating a label that already exists is the milder version of the same mistake)",
+    "A rail with no tooltip — a mouse user gets an unlabelled icon column and no way to learn what it means",
+    "Two links carrying aria-current at once",
+    "Using this AND a masthead primary nav on the same screen",
+    "Animating the collapse without honouring prefers-reduced-motion"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json for the authored mono values (via _validate_snippets.py, rc=0) AND knowledge/canon/canon.css for the four-theme legs (computed outside the gate)",
+    "result": "PASS on every declared pair in all four themes. One UNDECLARED indicator measurement is a real finding for Dave.",
+    "fourThemeContrast": {
+      "text/default on tertiary/background/default": "mono 17.40 / 16.48 · legacy 12.63 / 16.48 · console 17.40 / 16.48 · supercharge 17.45 / 13.91 — all PASS 4.5",
+      "text/secondary on tertiary/background/default": "mono 17.40 / 16.48 · legacy 7.57 / 5.93 · console 17.40 / 16.48 · supercharge 17.45 / 13.91 — all PASS 4.5",
+      "icon/default on tertiary/background/default": "mono 17.40 / 16.48 · legacy 17.40 / 16.48 · console 17.40 / 16.48 · supercharge 17.45 / 13.91 — all PASS 3.0",
+      "text/default on tertiary/background/hover": "mono 15.27 / 15.72 · legacy 11.09 / 15.72 · console 15.27 / 15.72 · supercharge 14.02 / 13.19 — all PASS 4.5",
+      "icon/default on tertiary/background/hover": "mono 15.27 / 15.72 · legacy 15.27 / 15.72 · console 15.27 / 15.72 · supercharge 14.02 / 13.19 — all PASS 3.0"
+    },
+    "$finding": "THE CURRENT-LOCATION BAR IS UNDER THE 3:1 FLOOR IN SUPERCHARGE DARK. primary/border/default (#DB0011) on the ground it sits beside — on tertiary/background/hover, which is what a current row renders: mono 4.58 light / 3.01 dark · legacy 4.58 / 3.01 · console 4.58 / 3.01 · SUPERCHARGE 3.89 light / 2.73 dark FAIL. On the resting raised surface: 5.22/3.16 in three themes, 4.84/2.88 FAIL in Supercharge dark. It is deliberately NOT declared as a contrastPair — that would be a green that cannot fail in the one theme where it is false (#174 precedent). The component leans on the SHAPE carrier and aria-current instead. PROPOSED #203, Dave's eye owed: Supercharge dark either needs its own current-location value, or the pattern needs a non-red mark in that theme.",
+    "$collision": "CHECKED FIRST-HAND, NOT ASSUMED (#203 step 0). Navigations.reference.html is 64 lines and renders one <header> — a horizontal web masthead. Its meta CLAIMS a family (anchors, nav-bar-bottom, nav-bar-top) the artefact does not contain, and its own $finding admits 'a web masthead only'. Nothing in that family is a persistent vertical column and nothing in it collapses. PROPOSED #203, Dave's: Sidebar nav stands alone, or is absorbed as a `type` of Navigations. Component promotion is on the DO-NOT-RULE list, so it is surfaced and left open."
+  },
+  "provenance": {
+    "source": "code",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Sidebar-nav.reference.html",
+    "$note": "Not derived from a Figma node. Built from Apollo's own gated grammar: the Navigations current-item indicator, the List-items row rhythm, the Icon-button target sizing.",
+    "$review": "reviews/REVIEW-203-sidebar-nav-four-themes-v1.html — 4 themes x light/dark, the real gated markup through the generated canon.css (#203)",
+    "$slots": "brand: Product or workspace name in the header. Hidden in the rail.; item.icon: 18px library glyph. In the rail it is the only visible identifier — see the antiPattern about rails without tooltips.; item.label: Single line, truncating. .t-cm-label."
+  },
+  "responsive": {
+    "$note": "Below the desktop breakpoint the correct answer is almost certainly a Drawer, not a rail. NOT specified here — that is a placement ruling, and the gated Drawer already exists to be composed. PROPOSED #203."
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Sidebar-nav.reference.html"
+      }
+    ],
+    "reuses": [
+      {
+        "ref": "component:tooltip",
+        "$note": "PROPOSED: rail items need a visible name on hover. Not built here — inventing a composition rule was out of scope."
+      },
+      {
+        "ref": "component:drawer",
+        "$note": "PROPOSED: the sub-desktop placement"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:desktop-app-frame"
+      }
+    ]
+  },
+  "$distinctFrom": [
+    "component:navigations — OPEN: horizontal masthead vs persistent vertical frame. See $collision. Dave's.",
+    "component:tab-bar — app bottom tab bar — the mobile answer to the same job"
+  ]
+}

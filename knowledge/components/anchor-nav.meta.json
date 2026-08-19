@@ -1,0 +1,141 @@
+{
+  "name": "Anchor nav",
+  "interactive": true,
+  "category": "molecule",
+  "purpose": "In-page section navigation with scrollspy: links to headings inside the CURRENT document, where the link matching the section being read marks itself automatically as the reader scrolls. Two placements, one grammar — a sticky horizontal bar and a vertical 'on this page' rail. Use it on long single-page content (product terms, rates and fees, a long article) where the reader needs to see the shape of the page and jump inside it. Itinerary row 37 (P3, 'In-page section nav').",
+  "$status": "PROPOSED #203, Dave's eye owed — new component, built through the gated-component route at #203 wave 3b lane I. Nothing about it is ruled.",
+  "props": [
+    {
+      "name": "placement",
+      "type": "enum",
+      "values": [
+        "bar",
+        "rail"
+      ],
+      "default": "bar",
+      "$note": "Sticky horizontal bar above the content, or a vertical rail beside it. Structural variance — a different assembly, not a scaled parameter."
+    },
+    {
+      "name": "sections",
+      "type": "array",
+      "$note": "Ordered {id, label} pairs, one per section heading. The ids are real document ids — the links are real fragment links and work with JavaScript off."
+    },
+    {
+      "name": "currentId",
+      "type": "string",
+      "$note": "The section currently in view. Authored in the markup as the no-JS answer; the scrollspy only ever MOVES it."
+    },
+    {
+      "name": "offset",
+      "type": "number",
+      "default": 56,
+      "$note": "Pixels of sticky chrome above the content. Drives both scroll-margin-top on the sections and the observer's top rootMargin — one number, two consumers."
+    }
+  ],
+  "variants": [
+    {
+      "name": "bar",
+      "use": "sticky horizontal strip at the top of the scrolling region; the current section carries a bottom bar"
+    },
+    {
+      "name": "rail",
+      "use": "vertical list beside the content; the current section carries a leading bar and a surface change"
+    }
+  ],
+  "tokens": {
+    "page": "background/default — the document ground",
+    "bar-bg": "tertiary/background/default — the sticky bar and the rail surface, so they read as chrome over the prose",
+    "text": "text/default @ .t-cm-label (links) / .t-ed-body (prose) / .t-ed-heading-4 (section headings)",
+    "muted": "text/secondary @ .t-cm-caption",
+    "rule": "divider/border/section — the outer frame and the bar's bottom edge",
+    "sub-rule": "divider/border/subsection — between sections",
+    "hover": "tertiary/background/hover — hover AND the rail's current-row ground",
+    "indicator": "primary/border/default (#DB0011, both modes) — the 3px current-section bar, matching the indicator navigations.meta.json describes for its (unbuilt) anchors variant",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface (0; Console renders 20 via s199-D3)",
+    "$note": "Wrapping prose takes Editorial composites and single-line labels take Component ones — the type gate's own deciding rule. This snippet contributes 0 to the type-composite debt."
+  },
+  "relationships": {
+    "livesInside": [
+      "Long-form page (top, or right-hand column)"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "on this page",
+      "sticky section bar",
+      "long-document wayfinding"
+    ]
+  },
+  "accessibility": {
+    "landmarks": "A <nav> landmark named 'On this page', so it is findable and skippable (2.4.1 Bypass Blocks).",
+    "currentSection": "aria-current=\"true\", NOT \"page\" — the page has not changed, the reader's location within it has. Sidebar nav uses \"page\" for the inverse reason.",
+    "sections": "Each section is a <section> with aria-labelledby pointing at its own visible heading, so the region has a name.",
+    "noJs": "The initial current-section state is authored in the markup and every link is a real fragment link, so the component is correct and operable with JavaScript off. The IntersectionObserver is feature-detected and only ever moves the mark.",
+    "targetArea": "Every link is min-height 44px in both placements.",
+    "colourIndependence": "The current section is carried by aria-current + a bar whose presence/absence is a shape difference. Colour is third, never alone.",
+    "motion": "scroll-behavior:smooth is neutralised by the prefers-reduced-motion block, so an anchor jump lands instantly for a motion-sensitive reader.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1 Use of Color",
+      "1.4.11",
+      "2.2.2",
+      "2.3.3 Animation from Interactions",
+      "2.4.1 Bypass Blocks",
+      "2.4.7 Focus Visible",
+      "2.5.8 Target Size (Minimum)",
+      "4.1.2"
+    ]
+  },
+  "antiPatterns": [
+    "Building it as Tabs — tabs swap panels and remove the inactive ones from the document; an anchor nav hides nothing. Announcing one as the other is the classic defect this component exists to prevent",
+    "aria-current=\"page\" on a same-page anchor",
+    "Marking the current section by the red bar alone",
+    "A scrollspy that only works with JavaScript — the authored state must stand on its own",
+    "Forgetting scroll-margin-top, so a jump lands with the heading hidden behind the sticky bar",
+    "Smooth scrolling that ignores prefers-reduced-motion"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json for the authored mono values (via _validate_snippets.py, rc=0) AND knowledge/canon/canon.css for the four-theme legs (computed outside the gate)",
+    "result": "PASS on every declared pair in all four themes. One pair was REMOVED after the gate failed it, and one indicator measurement is a finding for Dave.",
+    "fourThemeContrast": {
+      "text/default on background/default": "mono 17.40 / 17.40 · legacy 12.63 / 17.40 · console 17.40 / 17.40 · supercharge 17.45 / 16.11 — all PASS 4.5",
+      "text/secondary on background/default": "mono 17.40 / 17.40 · legacy 7.57 / 6.26 · console 17.40 / 17.40 · supercharge 17.45 / 16.11 — all PASS 4.5",
+      "text/default on tertiary/background/default": "mono 17.40 / 16.48 · legacy 12.63 / 16.48 · console 17.40 / 16.48 · supercharge 17.45 / 13.91 — all PASS 4.5",
+      "text/default on tertiary/background/hover": "mono 15.27 / 15.72 · legacy 11.09 / 15.72 · console 15.27 / 15.72 · supercharge 14.02 / 13.19 — all PASS 4.5"
+    },
+    "$removedPair": "divider/border/section on background/default was declared as a 3:1 ui pair in the first draft and the SNIPPET GATE FAILED THE FILE at 1.31:1 (#E1E1E1 on #FFFFFF, mono light). It is not a defect and it is not declared: a section divider is a decorative separator between blocks of prose, not a boundary a user must perceive to operate the component — 1.4.11 governs meaning-bearing boundaries. Recorded because afterwards an undeclared pair and an unmeasured one look identical.",
+    "$finding": "THE CURRENT-SECTION BAR IS UNDER THE 3:1 FLOOR IN SUPERCHARGE DARK, in the rail placement. primary/border/default (#DB0011) on background/default (the bar placement's ground) is 5.22 light / 3.33 dark in every theme and PASSES; on tertiary/background/hover (the rail's current-row ground) it is 4.58/3.01 in mono, legacy and console and 3.89 light / 2.73 dark FAIL in Supercharge. NOT declared as a contrastPair for the #174 reason. Same seam Sidebar nav reports. PROPOSED #203, Dave's eye owed.",
+    "$claimedVariant": "navigations.meta.json declares an `anchors` variant with a brand-red underline indicator and a commonPattern `in-page-anchor-nav`, but Navigations.reference.html contains no anchors markup — verified first-hand at #203 (64 lines, one <header>). This snippet makes that claimed variant real and keeps the indicator the meta describes. PROPOSED #203, Dave's: the Navigations meta should point here, or stop claiming a variant it does not render. Editing that shared meta was outside the lane's fence."
+  },
+  "provenance": {
+    "source": "code",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Anchor-nav.reference.html",
+    "$note": "Not derived from a Figma node. The indicator grammar is copied from Navigations.reference.html:27 and from the anchors description in navigations.meta.json.",
+    "$review": "reviews/REVIEW-203-anchor-nav-four-themes-v1.html — 4 themes x light/dark, the real gated markup through the generated canon.css (#203)",
+    "$slots": "railHeading: The rail's visible heading ('On this page'). The bar has no visible heading — its accessible name lives on the <nav>."
+  },
+  "behaviour": {
+    "scrollspy": "IntersectionObserver rooted on the scroll container, rootMargin '-56px 0px -55% 0px', threshold 0. The FIRST intersecting section in document order wins, so scrolling up and down produces a stable, monotonic mark rather than a flicker between two partly-visible sections.",
+    "jump": "Real fragment links plus scroll-margin-top on each section, so the heading clears the sticky bar.",
+    "motion": "standard ease only; smooth scrolling and every transition are neutralised under prefers-reduced-motion."
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Anchor-nav.reference.html"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:in-page-anchor-nav"
+      }
+    ]
+  },
+  "$distinctFrom": [
+    "component:tabs — Tabs swaps panels; this hides nothing",
+    "component:navigations — OPEN: its meta claims an anchors variant it does not render. See $claimedVariant. Dave's.",
+    "component:breadcrumbs — Breadcrumbs says where the page sits; this says where the reader sits"
+  ]
+}

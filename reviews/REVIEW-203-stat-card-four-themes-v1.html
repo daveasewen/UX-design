@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stat / metric card &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .spec-cap{opacity:.5; margin:20px 0 8px;}
+  .cn-stat-card{padding:0 !important;}
+  .cn-stat-card h2{display:none;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note-info{border-left-color:#305A85;}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">Stat / metric card</h1>
+  <div class="lede">
+    <p class="t-ed-body">The gated <code>Stat-card</code> component, rendered through the generated
+    <code>canon.css</code> in all four themes &mdash; light and dark. Two sizes (figure-4 display at 32px,
+    figure-3 compact at 24px) and three delta registers: up, down, and no change. Real snippet markup throughout.</p>
+    <div class="note note-info">
+      <p class="t-ed-body-small"><strong>Colour is never the only carrier here.</strong> Every delta declares
+      <code>data-carries="symbol label"</code> &mdash; an arrow glyph <em>and</em> the word &ldquo;up&rdquo; or
+      &ldquo;down&rdquo; sit beside the figure. That is deliberate for your eye: red and green are the two hues you
+      read least reliably, so direction has to survive the colour being wrong. Squint at Legacy and Supercharge
+      &mdash; the rise and the fall should still land.</p>
+    </div>
+    <div class="note note-info">
+      <p class="t-ed-body-small"><strong>PROPOSED #203, your eye owed &mdash; the <code>spark</code> slot.</strong> The Wave-3
+      brief named a sparkline slot as a candidate for this card. It is <strong>not built</strong>, and I have not built it.
+      The gated <code>Chart-sparkline</code> already exists as its own component, so the real question is a composition
+      one: does the stat card grow a slot, or does a board simply place a sparkline under a card? Yours to settle.</p>
+    </div>
+    <div class="note note-info">
+      <p class="t-ed-body-small"><strong>Declared absence, not a silent one.</strong> This component&rsquo;s
+      rag-on-neutral contrast pairs were moved out of the embedded manifest and onto the rendering gate
+      (<code>_validate_state_contrast.py</code>) under <code>s151-D2</code>, so the non-colour carrier is checked
+      against real DOM rather than asserted. That is why the manifest below looks shorter than you might expect.</p>
+    </div>
+    <div class="note">
+      <p class="t-ed-body-small"><strong>Measured defect, your call &mdash; the delta arrows are bound to the FILL reds and greens,
+      not the ink ones.</strong> <code>--up</code> binds <code>rag/success</code> and <code>--down</code> binds
+      <code>rag/error</code>. Those are the <em>fill</em> family &mdash; banner and roundel backgrounds. The store&rsquo;s own note
+      says so in as many words: &ldquo;<code>rag.error</code> is the FILL family &hellip; a different seat.&rdquo; Your two-red law
+      (<code>s151-D1</code>) says the dark ink red is what goes <em>&ldquo;on WHITE &mdash; text AND atoms alike&rdquo;</em>, and
+      <code>s155-D1</code> mirrors that in green. These arrows are atoms, and in the four light panes they are sitting on white.
+      <br><br>
+      Measured first-hand today with the repo&rsquo;s own <code>_contrast_utils</code>:</p>
+      <ul class="t-ed-body-small">
+        <li>down arrow as built &mdash; <code>#F6604C</code> on white = <strong>3.14:1</strong> (scrapes the 3:1 non-text floor)</li>
+        <li>down arrow on the ruled ink red <code>#DA1A00</code> = <strong>5.09:1</strong></li>
+        <li>up arrow as built &mdash; <code>#66CC8D</code> on white = <strong>1.98:1</strong> &mdash; <strong>this one fails 3:1 outright</strong></li>
+        <li>up arrow on the ruled green mirror <code>#137F3C</code> = <strong>5.09:1</strong></li>
+      </ul>
+      <p class="t-ed-body-small">Both dark legs are already correct (5.26:1 and 8.31:1). It is the light legs only, and it is a
+      two-token rebind &mdash; <code>rag/error</code> &rarr; <code>rag/error-ink</code>, <code>rag/success</code> &rarr;
+      <code>rag/success-ink</code>. <strong>I have not touched it.</strong> Rebinding a ruled colour seat is yours, not a
+      sub&rsquo;s, and the arrow-only treatment may have been deliberate. Look at the pale green &ldquo;+12.4% up&rdquo; arrow in the
+      four light panes above and you will see the 1.98 with your own eye. The words carry the meaning regardless, which is
+      why nothing is broken &mdash; only quieter than you ruled.</p>
+    </div>
+
+  </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="sc-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="sc-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+  </svg>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-stat-card">
+<p class="spec-cap t-cm-caption">Display size — figure-4 value (32px)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+  </div>
+
+  <p class="spec-cap t-cm-caption">Compact — figure-3 value (24px, dense boards)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+    </div>
+  </div>
+
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-stat-card">
+<p class="spec-cap t-cm-caption">Display size — figure-4 value (32px)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+  </div>
+
+  <p class="spec-cap t-cm-caption">Compact — figure-3 value (24px, dense boards)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+    </div>
+  </div>
+
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-stat-card">
+<p class="spec-cap t-cm-caption">Display size — figure-4 value (32px)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+  </div>
+
+  <p class="spec-cap t-cm-caption">Compact — figure-3 value (24px, dense boards)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+    </div>
+  </div>
+
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-stat-card">
+<p class="spec-cap t-cm-caption">Display size — figure-4 value (32px)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+  </div>
+
+  <p class="spec-cap t-cm-caption">Compact — figure-3 value (24px, dense boards)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+    </div>
+  </div>
+
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-stat-card">
+<p class="spec-cap t-cm-caption">Display size — figure-4 value (32px)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+  </div>
+
+  <p class="spec-cap t-cm-caption">Compact — figure-3 value (24px, dense boards)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+    </div>
+  </div>
+
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-stat-card">
+<p class="spec-cap t-cm-caption">Display size — figure-4 value (32px)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+  </div>
+
+  <p class="spec-cap t-cm-caption">Compact — figure-3 value (24px, dense boards)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+    </div>
+  </div>
+
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-stat-card">
+<p class="spec-cap t-cm-caption">Display size — figure-4 value (32px)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+  </div>
+
+  <p class="spec-cap t-cm-caption">Compact — figure-3 value (24px, dense boards)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+    </div>
+  </div>
+
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-stat-card">
+<p class="spec-cap t-cm-caption">Display size — figure-4 value (32px)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+  </div>
+
+  <p class="spec-cap t-cm-caption">Compact — figure-3 value (24px, dense boards)</p>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+    </div>
+  </div>
+
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

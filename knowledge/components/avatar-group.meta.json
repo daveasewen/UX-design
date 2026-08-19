@@ -1,0 +1,93 @@
+{
+  "name": "Avatar group",
+  "category": "molecule",
+  "$status": "PROPOSED #203, Dave's eye owed",
+  "purpose": "A set of people shown as one object: overlapping Avatar discs, primary-first, with an overflow counter when the set is longer than the display cap. The unit of meaning is the GROUP ('five people are on this approval'), not the individuals.",
+  "$differsFromAvatar": "Avatar (GATED) is the single disc — initials, image or icon, sizes small/medium/large, optionally linking to one profile. Avatar group adds NOTHING to that disc: the disc markup, its surface, its ring and its round exemption are copied verbatim. What it adds is the ARRANGEMENT — negative-margin overlap, a separator ring, a display cap, an overflow counter, and a single accessible name for the whole set. Rule of thumb: one person = Avatar; a countable set of people = Avatar group; a list of people you act on individually = List-items.",
+  "props": [
+    { "name": "size", "type": "enum", "values": ["small", "medium", "large"], "default": "medium",
+      "$note": "32 / 44 / 64 — Avatar's own ramp, copied exactly. Overlap follows at -8 / -12 / -16 (a quarter of the disc), so a member always shows enough of itself to read as a separate person.",
+      "$status": "PROPOSED #203, Dave's eye owed" },
+    { "name": "max", "type": "number", "default": 3,
+      "$note": "Display cap. Members beyond it collapse into the overflow counter. 3 is a specimen choice, not a ruled default.",
+      "$status": "PROPOSED #203, Dave's eye owed" },
+    { "name": "interactive", "type": "enum", "values": ["none", "members", "group"], "default": "none",
+      "$note": "⛔ 'members' is offered at MEDIUM and LARGE ONLY — a 32px interactive disc breaches the ruled 44px min-hit-area. Small sets that must be clickable take 'group': one 44px target for the whole stack.",
+      "$status": "PROPOSED #203, Dave's eye owed" },
+    { "name": "announce", "type": "enum", "values": ["group", "roster"], "default": "group",
+      "$note": "⚠ TWO ACCESSIBLE SHAPES FOR ONE COMPONENT — a decision, not a feature. See $openQuestions.",
+      "$status": "PROPOSED #203, Dave's eye owed" }
+  ],
+  "variants": [
+    { "name": "group-announced", "use": "the default — one accessible name for the set, discs hidden from AT; the set is the meaning" },
+    { "name": "roster", "use": "a real list where every member is announced; use when the individuals ARE the content" },
+    { "name": "members-interactive", "use": "each disc is its own 44px target linking to that person (medium and large only)" },
+    { "name": "group-target", "use": "the whole stack is one 44px button — the correct answer for small stacks" }
+  ],
+  "tokens": {
+    "surface": "tertiary/background/hover — the disc fill, from Avatar",
+    "ring": "border/subtle — REBOUND, see tokenValidation.rebind",
+    "text": "text/default",
+    "icon": "icon/default",
+    "focus": "focus/ring",
+    "page": "background/default",
+    "stackRing": "background/default — the 2px separator between overlapping discs. ⚠ see $finding-ring",
+    "radius": "50% — EXEMPTION: Avatar is one of the two documented exemptions to the angular brand rule (the other is Badge)"
+  },
+  "$finding-ring": "⚠ THE ONE REAL WEAKNESS, SHOWN IN THE SPECIMEN RATHER THAN DESCRIBED. The separator ring binds background/default, so the stack only separates correctly ON THE PAGE. Dropped onto a card (tertiary/background/default) or a hover wash, the ring is the wrong colour. In LIGHT mode the card is also white and the defect hides; in DARK mode the page is #1A1A1A and the card is #1F1F1F, so the rings read as dark halos around each disc. The specimen carries an on-card block so Dave can see it in both themes side by side. The honest fixes are a surface-keyed token or a --stack-ring the consumer sets; both are Dave's, and neither is invented here (grey-tint and ink swaps are surface-never-swap items).",
+  "relationships": {
+    "livesInside": ["List items", "Timeline", "Cards", "Table", "Headers"],
+    "commonPatterns": ["approvers on a payment", "members of a shared account", "participants on a thread"],
+    "mustNotNeighbour": []
+  },
+  "accessibility": {
+    "relatedSC": ["1.1.1", "1.3.1", "1.4.3", "2.4.7", "2.5.8", "4.1.2"],
+    "theCoreDecision": "A stack of discs read out one-by-one is noise ('J L, P A, S O, plus three'). So in the DEFAULT form the GROUP carries the accessible name and the count in words — role=\"img\" with an aria-label naming every visible member AND the overflow ('Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more') — and the individual discs are aria-hidden. This is the PROPOSED reading, not a ruled one.",
+    "theAlternative": "The 'roster' variant does the opposite: a real <ul> where each member is announced, the count comes from the list itself, and there is no overflow disc because a roster does not cap. It is for the case where the individuals genuinely are the content.",
+    "colourIsNeverAlone": "The overflow counter's '+3' is never the only carrier of the count — the group's accessible name spells it as 'and 3 more'.",
+    "targetSize": "Interactive members are built at MEDIUM (44) and LARGE (64) only. The 32px interactive disc is not built at all, because the ruled 44px min-hit-area forbids it and no gate reads that token; enforcement here is by hand, by omission. Small stacks that must be clickable become one 44px group target."
+  },
+  "antiPatterns": [
+    "⛔ Never make a 32px disc interactive — it breaches the ruled 44px min-hit-area, and no gate will catch it for you.",
+    "Never announce every disc in the default stacked form; a stack read disc-by-disc is noise, which is the whole reason the group carries the name.",
+    "Never let '+3' be the only place the count exists — spell it in the accessible name.",
+    "Never use Avatar group where the user must act on individuals one at a time; that is List-items.",
+    "Never use the class name 'avatar' for the disc here — canon/type.css binds .avatar to a 14px composite which silently beats the per-size composite on the large disc. The class is avg-face for exactly this reason.",
+    "REVIEW Never drop the group onto a card without deciding the separator ring first — the ring binds the page colour and will be wrong (see $finding-ring)."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json + layout.json, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate rc=0, 0 failures on this file. Every declared var matches the store in BOTH modes. No new token minted; one is PROPOSED (a surface-keyed stack ring) and is Dave's, see $finding-ring.",
+    "rebind": "⚠ FINDING, per the gated-component runbook step 2. The gated Avatar's ring var carries a DEPRECATED pair — its light leg exists only in tokens/_manifests/depricate-tokens.json — AND Avatar does not declare that var in its manifest, so _validate_snippets.py has never seen it. This file declares the var and binds it to the live border/subtle (#E1E1E1 light / #808080 dark). Avatar itself was NOT edited: it is a gated shared artefact and the fix is the conductor's to merge.",
+    "typeDivergence": "Avatar's large disc uses a raw 24px font-size, which is off the component ramp and part of the type-composite debt. This file uses .t-cm-section-label (20px, weight 500), the nearest ramp rung — a PROPOSED divergence from the parent, declared rather than silent. Small and medium use .t-cm-ctl-12 and .t-cm-ctl-14, which preserve Avatar's weight 500 on-ramp. TYPE-002 contribution: 0."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 57 (2026-07-14), 'Avatar group — Stacked avatars', P2 Depth. Verified absent first-hand #203 (ls + content grep across avatar/group/stack/cluster/facepile). Built #203 Wave 3b Lane K from the gated Avatar, untouched. No Figma node binds this component."
+  },
+  "interactive": false,
+  "stateModel": "simple",
+  "responsive": {
+    "behaviour": "inline-flex; the stack does not reflow — it caps. When width is short the answer is a lower max, not a wrap.",
+    "$status": "PROPOSED #203, Dave's eye owed"
+  },
+  "dimensions": {
+    "small": 32,
+    "medium": 44,
+    "large": 64,
+    "overlapSmall": -8,
+    "overlapMedium": -12,
+    "overlapLarge": -16,
+    "separatorRing": 2,
+    "groupTarget": 44,
+    "$note": "Sizes are Avatar's ramp verbatim. Overlap is a quarter of the disc at every size."
+  },
+  "$openQuestions": [
+    "TWO ACCESSIBLE SHAPES FOR ONE COMPONENT is a decision, not a feature. Should Avatar group ship both the group-announced and roster forms, or should one be the component and the other be a documented composition of plain Avatars?",
+    "The separator ring's token — see $finding-ring. A surface-keyed token, a consumer-set var, or accept the page-only limitation?",
+    "Display cap default of 3 is a specimen choice.",
+    "Should the overflow counter be interactive by default (it opens the full set), or passive?",
+    "Stacking order: this specimen puts the FIRST member on top, so the set reads left-to-right like a hand of cards. Last-on-top is equally common."
+  ]
+}

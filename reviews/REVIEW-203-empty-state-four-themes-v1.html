@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Empty state &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .spec-cap{opacity:.5; margin:20px 0 8px;}
+  .cn-empty-state{padding:0 !important;}
+  .cn-empty-state h2{display:none;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note-info{border-left-color:#305A85;}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">Empty state</h1>
+  <div class="lede">
+    <p class="t-ed-body">The gated <code>Empty-state</code> component, rendered through the generated
+    <code>canon.css</code> in all four themes &mdash; light and dark. Three registers: <strong>first-run</strong>
+    (invite the first action), <strong>no results</strong> (offer the way back), <strong>quiet</strong>
+    (legitimately nothing to do, no action at all). Every pane is the real snippet markup, not a redraw.</p>
+    <div class="note note-info">
+      <p class="t-ed-body-small"><strong>PROPOSED #203, your eye owed &mdash; the glyph.</strong> The icon library has no
+      spot-illustration set, so an empty region is text-led with a decorative 48px glyph held at 0.4 ink. That was the
+      component&rsquo;s own recorded finding, carried forward untested across themes. Look along the eight panes: in
+      <strong>Console</strong> and <strong>Supercharge dark</strong> that 0.4 glyph is the faintest thing on the page.
+      The question is whether 0.4 is right in every theme, or whether the glyph should go and the title carry it alone.</p>
+    </div>
+    <div class="note note-info">
+      <p class="t-ed-body-small"><strong>PROPOSED #203 &mdash; one action, maximum.</strong> First-run offers a button,
+      no-results offers a text link, quiet offers nothing. That escalation is deliberate and worth a nod or a no.</p>
+    </div>
+    <div class="note">
+      <p class="t-ed-body-small"><strong>Defect found, deliberately NOT fixed here (outside this lane&rsquo;s fence).</strong>
+      <code>Empty-state.reference.html</code> declares <code>--pri-hover</code> as <code>#626262</code> light /
+      <code>#B7B7B7</code> dark, but the token store now says <code>#636363</code> / <code>#B2B2B2</code> after
+      <code>s198-D1</code>. The snippet gate is <strong>already red at HEAD</strong> on exactly this, across nine
+      snippets &mdash; eight of them nothing to do with this lane. It is a one-line-per-file correction for the
+      conductor, not a decision for you.</p>
+    </div>
+    <div class="note">
+      <p class="t-ed-body-small"><strong>Measured, your call &mdash; the no-results link is an 18px-tall target.</strong> The
+      first-run <em>button</em> measures exactly 44&times;44 in all eight panes, as ruled. The no-results
+      <em>&ldquo;Clear the search&rdquo;</em> text link measures <strong>18px tall</strong> in all eight. No gate enforces the
+      44px minimum, so nothing has ever gone red on it. Whether a recovery link inside an empty state should be a
+      44px target, or whether inline links are legitimately exempt, is a rule you have not written down &mdash; so I have
+      not written it either. Flagging, not fixing.</p>
+    </div>
+
+  </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="es-task" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 8.2H13V7H8V8.2ZM5 8.2H6.2V7H5V8.2ZM8 11.2H13V10H8V11.2ZM5 11.2H6.2V10H5V11.2ZM8 14.2H13V13H8V14.2ZM5 14.2H6.2V13H5V14.2ZM13 2L11 0H7L5 2H1V18H17V2H13ZM6.2 2.497L7.497 1.2H10.503L11.8 2.497V3.8H6.2V2.497ZM15.8 16.8H2.2V3.2H5V5H13V3.2H15.8V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="es-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+  </svg>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-empty-state">
+<p class="spec-cap t-cm-caption">First-run — nothing exists yet, invite the first action</p>
+  <section class="empty" aria-labelledby="es1-mono-l">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-task"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es1-mono-l">No saved payees yet</h3>
+    <p class="t-ed-body-small">Add a payee once and future payments take seconds.</p>
+    <span class="gap"></span>
+    <button class="ebtn t-cm-button t-cm-slot" type="button">Add a payee</button>
+  </section>
+
+  <p class="spec-cap t-cm-caption">No results — the filter matched nothing, offer the way back</p>
+  <section class="empty" aria-labelledby="es2-mono-l">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-search"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es2-mono-l">No transactions match</h3>
+    <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
+    <span class="gap"></span>
+    <a href="#">Clear the search</a>
+  </section>
+
+  <p class="spec-cap t-cm-caption">Quiet — legitimately nothing to do, no action</p>
+  <section class="empty" aria-labelledby="es3-mono-l">
+    <h3 class="t-ed-heading-4 em" id="es3-mono-l">You're all caught up</h3>
+    <p class="t-ed-body-small">New notifications will appear here.</p>
+  </section>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-empty-state">
+<p class="spec-cap t-cm-caption">First-run — nothing exists yet, invite the first action</p>
+  <section class="empty" aria-labelledby="es1-mono-d">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-task"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es1-mono-d">No saved payees yet</h3>
+    <p class="t-ed-body-small">Add a payee once and future payments take seconds.</p>
+    <span class="gap"></span>
+    <button class="ebtn t-cm-button t-cm-slot" type="button">Add a payee</button>
+  </section>
+
+  <p class="spec-cap t-cm-caption">No results — the filter matched nothing, offer the way back</p>
+  <section class="empty" aria-labelledby="es2-mono-d">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-search"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es2-mono-d">No transactions match</h3>
+    <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
+    <span class="gap"></span>
+    <a href="#">Clear the search</a>
+  </section>
+
+  <p class="spec-cap t-cm-caption">Quiet — legitimately nothing to do, no action</p>
+  <section class="empty" aria-labelledby="es3-mono-d">
+    <h3 class="t-ed-heading-4 em" id="es3-mono-d">You're all caught up</h3>
+    <p class="t-ed-body-small">New notifications will appear here.</p>
+  </section>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-empty-state">
+<p class="spec-cap t-cm-caption">First-run — nothing exists yet, invite the first action</p>
+  <section class="empty" aria-labelledby="es1-legacy-l">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-task"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es1-legacy-l">No saved payees yet</h3>
+    <p class="t-ed-body-small">Add a payee once and future payments take seconds.</p>
+    <span class="gap"></span>
+    <button class="ebtn t-cm-button t-cm-slot" type="button">Add a payee</button>
+  </section>
+
+  <p class="spec-cap t-cm-caption">No results — the filter matched nothing, offer the way back</p>
+  <section class="empty" aria-labelledby="es2-legacy-l">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-search"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es2-legacy-l">No transactions match</h3>
+    <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
+    <span class="gap"></span>
+    <a href="#">Clear the search</a>
+  </section>
+
+  <p class="spec-cap t-cm-caption">Quiet — legitimately nothing to do, no action</p>
+  <section class="empty" aria-labelledby="es3-legacy-l">
+    <h3 class="t-ed-heading-4 em" id="es3-legacy-l">You're all caught up</h3>
+    <p class="t-ed-body-small">New notifications will appear here.</p>
+  </section>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-empty-state">
+<p class="spec-cap t-cm-caption">First-run — nothing exists yet, invite the first action</p>
+  <section class="empty" aria-labelledby="es1-legacy-d">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-task"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es1-legacy-d">No saved payees yet</h3>
+    <p class="t-ed-body-small">Add a payee once and future payments take seconds.</p>
+    <span class="gap"></span>
+    <button class="ebtn t-cm-button t-cm-slot" type="button">Add a payee</button>
+  </section>
+
+  <p class="spec-cap t-cm-caption">No results — the filter matched nothing, offer the way back</p>
+  <section class="empty" aria-labelledby="es2-legacy-d">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-search"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es2-legacy-d">No transactions match</h3>
+    <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
+    <span class="gap"></span>
+    <a href="#">Clear the search</a>
+  </section>
+
+  <p class="spec-cap t-cm-caption">Quiet — legitimately nothing to do, no action</p>
+  <section class="empty" aria-labelledby="es3-legacy-d">
+    <h3 class="t-ed-heading-4 em" id="es3-legacy-d">You're all caught up</h3>
+    <p class="t-ed-body-small">New notifications will appear here.</p>
+  </section>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-empty-state">
+<p class="spec-cap t-cm-caption">First-run — nothing exists yet, invite the first action</p>
+  <section class="empty" aria-labelledby="es1-console-l">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-task"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es1-console-l">No saved payees yet</h3>
+    <p class="t-ed-body-small">Add a payee once and future payments take seconds.</p>
+    <span class="gap"></span>
+    <button class="ebtn t-cm-button t-cm-slot" type="button">Add a payee</button>
+  </section>
+
+  <p class="spec-cap t-cm-caption">No results — the filter matched nothing, offer the way back</p>
+  <section class="empty" aria-labelledby="es2-console-l">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-search"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es2-console-l">No transactions match</h3>
+    <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
+    <span class="gap"></span>
+    <a href="#">Clear the search</a>
+  </section>
+
+  <p class="spec-cap t-cm-caption">Quiet — legitimately nothing to do, no action</p>
+  <section class="empty" aria-labelledby="es3-console-l">
+    <h3 class="t-ed-heading-4 em" id="es3-console-l">You're all caught up</h3>
+    <p class="t-ed-body-small">New notifications will appear here.</p>
+  </section>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-empty-state">
+<p class="spec-cap t-cm-caption">First-run — nothing exists yet, invite the first action</p>
+  <section class="empty" aria-labelledby="es1-console-d">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-task"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es1-console-d">No saved payees yet</h3>
+    <p class="t-ed-body-small">Add a payee once and future payments take seconds.</p>
+    <span class="gap"></span>
+    <button class="ebtn t-cm-button t-cm-slot" type="button">Add a payee</button>
+  </section>
+
+  <p class="spec-cap t-cm-caption">No results — the filter matched nothing, offer the way back</p>
+  <section class="empty" aria-labelledby="es2-console-d">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-search"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es2-console-d">No transactions match</h3>
+    <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
+    <span class="gap"></span>
+    <a href="#">Clear the search</a>
+  </section>
+
+  <p class="spec-cap t-cm-caption">Quiet — legitimately nothing to do, no action</p>
+  <section class="empty" aria-labelledby="es3-console-d">
+    <h3 class="t-ed-heading-4 em" id="es3-console-d">You're all caught up</h3>
+    <p class="t-ed-body-small">New notifications will appear here.</p>
+  </section>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-empty-state">
+<p class="spec-cap t-cm-caption">First-run — nothing exists yet, invite the first action</p>
+  <section class="empty" aria-labelledby="es1-supercharge-l">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-task"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es1-supercharge-l">No saved payees yet</h3>
+    <p class="t-ed-body-small">Add a payee once and future payments take seconds.</p>
+    <span class="gap"></span>
+    <button class="ebtn t-cm-button t-cm-slot" type="button">Add a payee</button>
+  </section>
+
+  <p class="spec-cap t-cm-caption">No results — the filter matched nothing, offer the way back</p>
+  <section class="empty" aria-labelledby="es2-supercharge-l">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-search"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es2-supercharge-l">No transactions match</h3>
+    <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
+    <span class="gap"></span>
+    <a href="#">Clear the search</a>
+  </section>
+
+  <p class="spec-cap t-cm-caption">Quiet — legitimately nothing to do, no action</p>
+  <section class="empty" aria-labelledby="es3-supercharge-l">
+    <h3 class="t-ed-heading-4 em" id="es3-supercharge-l">You're all caught up</h3>
+    <p class="t-ed-body-small">New notifications will appear here.</p>
+  </section>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-empty-state">
+<p class="spec-cap t-cm-caption">First-run — nothing exists yet, invite the first action</p>
+  <section class="empty" aria-labelledby="es1-supercharge-d">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-task"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es1-supercharge-d">No saved payees yet</h3>
+    <p class="t-ed-body-small">Add a payee once and future payments take seconds.</p>
+    <span class="gap"></span>
+    <button class="ebtn t-cm-button t-cm-slot" type="button">Add a payee</button>
+  </section>
+
+  <p class="spec-cap t-cm-caption">No results — the filter matched nothing, offer the way back</p>
+  <section class="empty" aria-labelledby="es2-supercharge-d">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-search"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es2-supercharge-d">No transactions match</h3>
+    <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
+    <span class="gap"></span>
+    <a href="#">Clear the search</a>
+  </section>
+
+  <p class="spec-cap t-cm-caption">Quiet — legitimately nothing to do, no action</p>
+  <section class="empty" aria-labelledby="es3-supercharge-d">
+    <h3 class="t-ed-heading-4 em" id="es3-supercharge-d">You're all caught up</h3>
+    <p class="t-ed-body-small">New notifications will appear here.</p>
+  </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

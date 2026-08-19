@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avatar group &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; overflow-x:auto; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note-info{border-left-color:#305A85;}
+  .cn-avatar-group .demo-h{margin-top:20px;}
+  .cn-avatar-group .demo-h:first-child{margin-top:0;}
+/* ---- the .cn-avatar-group scope: what gen_canon_components.py WOULD emit. Hand-mirrored here
+   because the generator surface belongs to another lane this wave; every binding below is
+   derived from the snippet's own #token-manifest, not typed by hand. ---- */
+.cn-avatar-group{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --ease: 140ms ease;
+  --ease:140ms ease;
+  --surface: var(--tertiary-background-hover);
+  --ring: var(--border-subtle);
+  --text: var(--text-default);
+  --icon: var(--icon-default);
+  --focus: var(--focus-ring);
+  --page: var(--background-default);
+  --stack-ring: var(--background-default);
+  --card: var(--tertiary-background-default);
+  --card-border: var(--border-subtle);
+  --border-radius-surface: var(--border-radius-surface);
+}
+
+.cn-avatar-group :is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+.cn-avatar-group{color:var(--text);}
+.cn-avatar-group .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+.cn-avatar-group .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:44rem;}
+.cn-avatar-group .demo-card{background:var(--card); border:1px solid var(--card-border);
+    border-radius:var(--border-radius-surface); padding:16px; display:inline-block;}
+.cn-avatar-group .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-avatar-group .avg-face{border-radius:50%;   
+    background:var(--surface); color:var(--text); display:inline-flex; align-items:center;
+    justify-content:center; overflow:hidden; flex:none;}
+.cn-avatar-group .avg-face svg{width:60%; height:60%; fill:var(--icon);}
+.cn-avatar-group .avg{display:inline-flex; align-items:center;}
+.cn-avatar-group .avg .avg-face{box-shadow:0 0 0 2px var(--stack-ring);}
+.cn-avatar-group .avg .avg-face + .avg-face, .cn-avatar-group .avg .avg-item + .avg-item .avg-face{margin-left:var(--overlap);}
+.cn-avatar-group .avg.sm{--overlap:-8px;}
+.cn-avatar-group .avg.sm .avg-face{width:32px; height:32px;}
+.cn-avatar-group .avg.md{--overlap:-12px;}
+.cn-avatar-group .avg.md .avg-face{width:44px; height:44px;}
+.cn-avatar-group .avg.lg{--overlap:-16px;}
+.cn-avatar-group .avg.lg .avg-face{width:64px; height:64px;}
+.cn-avatar-group .avg .avg-face:nth-child(1){z-index:6;}
+.cn-avatar-group .avg .avg-face:nth-child(2){z-index:5;}
+.cn-avatar-group .avg .avg-face:nth-child(3){z-index:4;}
+.cn-avatar-group .avg .avg-face:nth-child(4){z-index:3;}
+.cn-avatar-group .avg .avg-face:nth-child(5){z-index:2;}
+.cn-avatar-group .avg .avg-face:nth-child(6){z-index:1;}
+.cn-avatar-group .avg-more{background:var(--surface); color:var(--text); opacity:var(--alpha-96);}
+.cn-avatar-group a.avg-face, .cn-avatar-group button.avg-face{cursor:pointer; text-decoration:none; padding:0; border:0;}
+.cn-avatar-group a.avg-face:focus-visible, .cn-avatar-group button.avg-face:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-avatar-group a.avg-face:hover, .cn-avatar-group button.avg-face:hover{box-shadow:0 0 0 2px var(--stack-ring), 0 0 0 3px var(--ring);}
+.cn-avatar-group .avg-btn{display:inline-flex; align-items:center; min-height:44px; padding:0 4px;
+    background:transparent; border:0; border-radius:var(--border-radius-surface); cursor:pointer;
+    color:var(--text);}
+.cn-avatar-group .avg-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-avatar-group ul.avg-roster{list-style:none; margin:0; padding:0; display:inline-flex; align-items:center;}
+.cn-avatar-group ul.avg-roster li{display:inline-flex;}
+@media (prefers-reduced-motion: reduce){.cn-avatar-group *, .cn-avatar-group *::before, .cn-avatar-group *::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+[data-theme="dark"] .cn-avatar-group{
+  --ring: #404040;
+}
+[data-apollo-theme="legacy"] .cn-avatar-group{
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-avatar-group,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-avatar-group{
+  --text: #FFFFFF;
+}
+[data-apollo-theme="supercharge"] .cn-avatar-group{
+  --icon: #13110E;
+  --page: #F7F6F4;
+  --surface: #DFDEDC;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-avatar-group,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-avatar-group{
+  --icon: #F7F6F4;
+  --page: #1A1A1A;
+  --surface: #2E2A25;
+  --text: #F7F6F4;
+}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">Avatar group</h1>
+  <div class="lede">
+<p class="t-ed-body">Itinerary row 57, <strong>PROPOSED #203 &mdash; your eye owed</strong>. The gated Avatar disc, copied verbatim; what is new is only the arrangement.</p>
+<div class="note note-info"><p class="t-ed-body-small"><strong>It adds nothing to the disc.</strong> Avatar&rsquo;s surface, ring, round exemption and 32/44/64 size ramp are copied as they stand. What this adds is the overlap, the separator ring, the display cap, the overflow counter, and one accessible name for the whole set. One person = Avatar; a countable set = Avatar group; a list of people you act on individually = List-items.</p></div><div class="note"><p class="t-ed-body-small"><strong>⚠ The ring defect is shown, not described &mdash; scroll to the last block in each pane.</strong> The separator ring binds <code>background/default</code>, so the stack only separates correctly <em>on the page</em>. Dropped onto a card it is the wrong colour. In light mode the card is also white and the fault hides; <strong>in the dark panes the page is #1A1A1A and the card is #1F1F1F, so every disc wears a dark halo</strong>. The fixes are a surface-keyed token or a ring the consumer sets &mdash; both yours, and I invented neither.</p></div><div class="note"><p class="t-ed-body-small"><strong>PROPOSED, your call &mdash; two accessible shapes for one component.</strong> By default the GROUP carries the name and the discs are hidden from screen readers, because a stack read out disc-by-disc is noise. The &ldquo;roster&rdquo; variant does the opposite for when the individuals genuinely are the content. Two shapes is a decision, not a feature.</p></div><div class="note note-info"><p class="t-ed-body-small"><strong>Interactive discs are built at medium and large only.</strong> A 32px clickable disc would breach the ruled 44px minimum, and no gate reads that token &mdash; so it is enforced by simply not building it. Small stacks that need to be clickable become one 44px target instead.</p></div>
+  </div>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-avatar-group">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/informative/… the guest-user glyph, via Avatar.reference -->
+    <symbol id="avg-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Sizes — small 32 · medium 44 · large 64 (Avatar's own ramp)</h2>
+  <p class="avg sm" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-12" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg lg" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+    <span class="avg-face t-cm-section-label" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-section-label" aria-hidden="true">+3</span>
+  </p>
+  <p class="demo-note t-ed-body-small">One accessible name for the whole set; the discs are aria-hidden. The count is spelled in words in that name, so "+3" is never the only carrier.</p>
+
+  <h2 class="t-cm-caption demo-h">Mixed content — initials, icon, and a member with no name</h2>
+  <p class="avg md" role="img" aria-label="On this thread: Jordan Lee, Priya Anand, and one guest" style="margin:0">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#avg-user"/></svg></span>
+  </p>
+
+  <h2 class="t-cm-caption demo-h">Interactive members — medium and large only (44px min-hit-area)</h2>
+  <p class="avg md" style="margin:0">
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
+    <button type="button" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers">+3</button>
+  </p>
+  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum.</p>
+
+  <h2 class="t-cm-caption demo-h">Group as one target — the answer for small stacks</h2>
+  <button type="button" class="avg-btn" aria-label="Show all 6 approvers">
+    <span class="avg sm" aria-hidden="true">
+      <span class="avg-face t-cm-ctl-12">JL</span>
+      <span class="avg-face t-cm-ctl-12">PA</span>
+      <span class="avg-face t-cm-ctl-12">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-12">+3</span>
+    </span>
+  </button>
+
+  <h2 class="t-cm-caption demo-h">Roster variant — when the individuals ARE the content</h2>
+  <ul class="avg-roster avg md" aria-label="Approvers">
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Jordan Lee">JL</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Priya Anand">PA</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Sam Okafor">SO</span></li>
+  </ul>
+  <p class="demo-note t-ed-body-small">A real list: each member is announced, the count comes from the list itself, and there is no overflow disc because a roster does not cap. Two accessible shapes for one component is a decision, not a feature — Dave's.</p>
+
+  <h2 class="t-cm-caption demo-h">⚠ The ring defect, shown rather than described — the same group on a card</h2>
+  <div class="demo-card">
+    <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+    </p>
+  </div>
+  <p class="demo-note t-ed-body-small">The separator ring binds background/default, so on a card surface it is the wrong colour. In light mode the card is also white and the defect hides; in dark mode the page is #1A1A1A and the card is #1F1F1F, so the rings read as dark halos. Compare the two themes side by side on the review page. The fix is a surface-keyed token or a consumer-set ring — both are Dave's, and neither is invented here.</p>
+
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-avatar-group">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/informative/… the guest-user glyph, via Avatar.reference -->
+    <symbol id="avg-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Sizes — small 32 · medium 44 · large 64 (Avatar's own ramp)</h2>
+  <p class="avg sm" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-12" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg lg" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+    <span class="avg-face t-cm-section-label" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-section-label" aria-hidden="true">+3</span>
+  </p>
+  <p class="demo-note t-ed-body-small">One accessible name for the whole set; the discs are aria-hidden. The count is spelled in words in that name, so "+3" is never the only carrier.</p>
+
+  <h2 class="t-cm-caption demo-h">Mixed content — initials, icon, and a member with no name</h2>
+  <p class="avg md" role="img" aria-label="On this thread: Jordan Lee, Priya Anand, and one guest" style="margin:0">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#avg-user"/></svg></span>
+  </p>
+
+  <h2 class="t-cm-caption demo-h">Interactive members — medium and large only (44px min-hit-area)</h2>
+  <p class="avg md" style="margin:0">
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
+    <button type="button" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers">+3</button>
+  </p>
+  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum.</p>
+
+  <h2 class="t-cm-caption demo-h">Group as one target — the answer for small stacks</h2>
+  <button type="button" class="avg-btn" aria-label="Show all 6 approvers">
+    <span class="avg sm" aria-hidden="true">
+      <span class="avg-face t-cm-ctl-12">JL</span>
+      <span class="avg-face t-cm-ctl-12">PA</span>
+      <span class="avg-face t-cm-ctl-12">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-12">+3</span>
+    </span>
+  </button>
+
+  <h2 class="t-cm-caption demo-h">Roster variant — when the individuals ARE the content</h2>
+  <ul class="avg-roster avg md" aria-label="Approvers">
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Jordan Lee">JL</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Priya Anand">PA</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Sam Okafor">SO</span></li>
+  </ul>
+  <p class="demo-note t-ed-body-small">A real list: each member is announced, the count comes from the list itself, and there is no overflow disc because a roster does not cap. Two accessible shapes for one component is a decision, not a feature — Dave's.</p>
+
+  <h2 class="t-cm-caption demo-h">⚠ The ring defect, shown rather than described — the same group on a card</h2>
+  <div class="demo-card">
+    <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+    </p>
+  </div>
+  <p class="demo-note t-ed-body-small">The separator ring binds background/default, so on a card surface it is the wrong colour. In light mode the card is also white and the defect hides; in dark mode the page is #1A1A1A and the card is #1F1F1F, so the rings read as dark halos. Compare the two themes side by side on the review page. The fix is a surface-keyed token or a consumer-set ring — both are Dave's, and neither is invented here.</p>
+
+  
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-avatar-group">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/informative/… the guest-user glyph, via Avatar.reference -->
+    <symbol id="avg-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Sizes — small 32 · medium 44 · large 64 (Avatar's own ramp)</h2>
+  <p class="avg sm" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-12" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg lg" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+    <span class="avg-face t-cm-section-label" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-section-label" aria-hidden="true">+3</span>
+  </p>
+  <p class="demo-note t-ed-body-small">One accessible name for the whole set; the discs are aria-hidden. The count is spelled in words in that name, so "+3" is never the only carrier.</p>
+
+  <h2 class="t-cm-caption demo-h">Mixed content — initials, icon, and a member with no name</h2>
+  <p class="avg md" role="img" aria-label="On this thread: Jordan Lee, Priya Anand, and one guest" style="margin:0">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#avg-user"/></svg></span>
+  </p>
+
+  <h2 class="t-cm-caption demo-h">Interactive members — medium and large only (44px min-hit-area)</h2>
+  <p class="avg md" style="margin:0">
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
+    <button type="button" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers">+3</button>
+  </p>
+  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum.</p>
+
+  <h2 class="t-cm-caption demo-h">Group as one target — the answer for small stacks</h2>
+  <button type="button" class="avg-btn" aria-label="Show all 6 approvers">
+    <span class="avg sm" aria-hidden="true">
+      <span class="avg-face t-cm-ctl-12">JL</span>
+      <span class="avg-face t-cm-ctl-12">PA</span>
+      <span class="avg-face t-cm-ctl-12">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-12">+3</span>
+    </span>
+  </button>
+
+  <h2 class="t-cm-caption demo-h">Roster variant — when the individuals ARE the content</h2>
+  <ul class="avg-roster avg md" aria-label="Approvers">
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Jordan Lee">JL</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Priya Anand">PA</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Sam Okafor">SO</span></li>
+  </ul>
+  <p class="demo-note t-ed-body-small">A real list: each member is announced, the count comes from the list itself, and there is no overflow disc because a roster does not cap. Two accessible shapes for one component is a decision, not a feature — Dave's.</p>
+
+  <h2 class="t-cm-caption demo-h">⚠ The ring defect, shown rather than described — the same group on a card</h2>
+  <div class="demo-card">
+    <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+    </p>
+  </div>
+  <p class="demo-note t-ed-body-small">The separator ring binds background/default, so on a card surface it is the wrong colour. In light mode the card is also white and the defect hides; in dark mode the page is #1A1A1A and the card is #1F1F1F, so the rings read as dark halos. Compare the two themes side by side on the review page. The fix is a surface-keyed token or a consumer-set ring — both are Dave's, and neither is invented here.</p>
+
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-avatar-group">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/informative/… the guest-user glyph, via Avatar.reference -->
+    <symbol id="avg-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Sizes — small 32 · medium 44 · large 64 (Avatar's own ramp)</h2>
+  <p class="avg sm" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-12" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg lg" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+    <span class="avg-face t-cm-section-label" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-section-label" aria-hidden="true">+3</span>
+  </p>
+  <p class="demo-note t-ed-body-small">One accessible name for the whole set; the discs are aria-hidden. The count is spelled in words in that name, so "+3" is never the only carrier.</p>
+
+  <h2 class="t-cm-caption demo-h">Mixed content — initials, icon, and a member with no name</h2>
+  <p class="avg md" role="img" aria-label="On this thread: Jordan Lee, Priya Anand, and one guest" style="margin:0">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#avg-user"/></svg></span>
+  </p>
+
+  <h2 class="t-cm-caption demo-h">Interactive members — medium and large only (44px min-hit-area)</h2>
+  <p class="avg md" style="margin:0">
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
+    <button type="button" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers">+3</button>
+  </p>
+  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum.</p>
+
+  <h2 class="t-cm-caption demo-h">Group as one target — the answer for small stacks</h2>
+  <button type="button" class="avg-btn" aria-label="Show all 6 approvers">
+    <span class="avg sm" aria-hidden="true">
+      <span class="avg-face t-cm-ctl-12">JL</span>
+      <span class="avg-face t-cm-ctl-12">PA</span>
+      <span class="avg-face t-cm-ctl-12">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-12">+3</span>
+    </span>
+  </button>
+
+  <h2 class="t-cm-caption demo-h">Roster variant — when the individuals ARE the content</h2>
+  <ul class="avg-roster avg md" aria-label="Approvers">
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Jordan Lee">JL</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Priya Anand">PA</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Sam Okafor">SO</span></li>
+  </ul>
+  <p class="demo-note t-ed-body-small">A real list: each member is announced, the count comes from the list itself, and there is no overflow disc because a roster does not cap. Two accessible shapes for one component is a decision, not a feature — Dave's.</p>
+
+  <h2 class="t-cm-caption demo-h">⚠ The ring defect, shown rather than described — the same group on a card</h2>
+  <div class="demo-card">
+    <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+    </p>
+  </div>
+  <p class="demo-note t-ed-body-small">The separator ring binds background/default, so on a card surface it is the wrong colour. In light mode the card is also white and the defect hides; in dark mode the page is #1A1A1A and the card is #1F1F1F, so the rings read as dark halos. Compare the two themes side by side on the review page. The fix is a surface-keyed token or a consumer-set ring — both are Dave's, and neither is invented here.</p>
+
+  
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-avatar-group">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/informative/… the guest-user glyph, via Avatar.reference -->
+    <symbol id="avg-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Sizes — small 32 · medium 44 · large 64 (Avatar's own ramp)</h2>
+  <p class="avg sm" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-12" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg lg" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+    <span class="avg-face t-cm-section-label" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-section-label" aria-hidden="true">+3</span>
+  </p>
+  <p class="demo-note t-ed-body-small">One accessible name for the whole set; the discs are aria-hidden. The count is spelled in words in that name, so "+3" is never the only carrier.</p>
+
+  <h2 class="t-cm-caption demo-h">Mixed content — initials, icon, and a member with no name</h2>
+  <p class="avg md" role="img" aria-label="On this thread: Jordan Lee, Priya Anand, and one guest" style="margin:0">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#avg-user"/></svg></span>
+  </p>
+
+  <h2 class="t-cm-caption demo-h">Interactive members — medium and large only (44px min-hit-area)</h2>
+  <p class="avg md" style="margin:0">
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
+    <button type="button" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers">+3</button>
+  </p>
+  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum.</p>
+
+  <h2 class="t-cm-caption demo-h">Group as one target — the answer for small stacks</h2>
+  <button type="button" class="avg-btn" aria-label="Show all 6 approvers">
+    <span class="avg sm" aria-hidden="true">
+      <span class="avg-face t-cm-ctl-12">JL</span>
+      <span class="avg-face t-cm-ctl-12">PA</span>
+      <span class="avg-face t-cm-ctl-12">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-12">+3</span>
+    </span>
+  </button>
+
+  <h2 class="t-cm-caption demo-h">Roster variant — when the individuals ARE the content</h2>
+  <ul class="avg-roster avg md" aria-label="Approvers">
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Jordan Lee">JL</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Priya Anand">PA</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Sam Okafor">SO</span></li>
+  </ul>
+  <p class="demo-note t-ed-body-small">A real list: each member is announced, the count comes from the list itself, and there is no overflow disc because a roster does not cap. Two accessible shapes for one component is a decision, not a feature — Dave's.</p>
+
+  <h2 class="t-cm-caption demo-h">⚠ The ring defect, shown rather than described — the same group on a card</h2>
+  <div class="demo-card">
+    <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+    </p>
+  </div>
+  <p class="demo-note t-ed-body-small">The separator ring binds background/default, so on a card surface it is the wrong colour. In light mode the card is also white and the defect hides; in dark mode the page is #1A1A1A and the card is #1F1F1F, so the rings read as dark halos. Compare the two themes side by side on the review page. The fix is a surface-keyed token or a consumer-set ring — both are Dave's, and neither is invented here.</p>
+
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-avatar-group">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/informative/… the guest-user glyph, via Avatar.reference -->
+    <symbol id="avg-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Sizes — small 32 · medium 44 · large 64 (Avatar's own ramp)</h2>
+  <p class="avg sm" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-12" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg lg" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+    <span class="avg-face t-cm-section-label" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-section-label" aria-hidden="true">+3</span>
+  </p>
+  <p class="demo-note t-ed-body-small">One accessible name for the whole set; the discs are aria-hidden. The count is spelled in words in that name, so "+3" is never the only carrier.</p>
+
+  <h2 class="t-cm-caption demo-h">Mixed content — initials, icon, and a member with no name</h2>
+  <p class="avg md" role="img" aria-label="On this thread: Jordan Lee, Priya Anand, and one guest" style="margin:0">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#avg-user"/></svg></span>
+  </p>
+
+  <h2 class="t-cm-caption demo-h">Interactive members — medium and large only (44px min-hit-area)</h2>
+  <p class="avg md" style="margin:0">
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
+    <button type="button" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers">+3</button>
+  </p>
+  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum.</p>
+
+  <h2 class="t-cm-caption demo-h">Group as one target — the answer for small stacks</h2>
+  <button type="button" class="avg-btn" aria-label="Show all 6 approvers">
+    <span class="avg sm" aria-hidden="true">
+      <span class="avg-face t-cm-ctl-12">JL</span>
+      <span class="avg-face t-cm-ctl-12">PA</span>
+      <span class="avg-face t-cm-ctl-12">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-12">+3</span>
+    </span>
+  </button>
+
+  <h2 class="t-cm-caption demo-h">Roster variant — when the individuals ARE the content</h2>
+  <ul class="avg-roster avg md" aria-label="Approvers">
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Jordan Lee">JL</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Priya Anand">PA</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Sam Okafor">SO</span></li>
+  </ul>
+  <p class="demo-note t-ed-body-small">A real list: each member is announced, the count comes from the list itself, and there is no overflow disc because a roster does not cap. Two accessible shapes for one component is a decision, not a feature — Dave's.</p>
+
+  <h2 class="t-cm-caption demo-h">⚠ The ring defect, shown rather than described — the same group on a card</h2>
+  <div class="demo-card">
+    <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+    </p>
+  </div>
+  <p class="demo-note t-ed-body-small">The separator ring binds background/default, so on a card surface it is the wrong colour. In light mode the card is also white and the defect hides; in dark mode the page is #1A1A1A and the card is #1F1F1F, so the rings read as dark halos. Compare the two themes side by side on the review page. The fix is a surface-keyed token or a consumer-set ring — both are Dave's, and neither is invented here.</p>
+
+  
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-avatar-group">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/informative/… the guest-user glyph, via Avatar.reference -->
+    <symbol id="avg-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Sizes — small 32 · medium 44 · large 64 (Avatar's own ramp)</h2>
+  <p class="avg sm" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-12" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg lg" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+    <span class="avg-face t-cm-section-label" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-section-label" aria-hidden="true">+3</span>
+  </p>
+  <p class="demo-note t-ed-body-small">One accessible name for the whole set; the discs are aria-hidden. The count is spelled in words in that name, so "+3" is never the only carrier.</p>
+
+  <h2 class="t-cm-caption demo-h">Mixed content — initials, icon, and a member with no name</h2>
+  <p class="avg md" role="img" aria-label="On this thread: Jordan Lee, Priya Anand, and one guest" style="margin:0">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#avg-user"/></svg></span>
+  </p>
+
+  <h2 class="t-cm-caption demo-h">Interactive members — medium and large only (44px min-hit-area)</h2>
+  <p class="avg md" style="margin:0">
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
+    <button type="button" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers">+3</button>
+  </p>
+  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum.</p>
+
+  <h2 class="t-cm-caption demo-h">Group as one target — the answer for small stacks</h2>
+  <button type="button" class="avg-btn" aria-label="Show all 6 approvers">
+    <span class="avg sm" aria-hidden="true">
+      <span class="avg-face t-cm-ctl-12">JL</span>
+      <span class="avg-face t-cm-ctl-12">PA</span>
+      <span class="avg-face t-cm-ctl-12">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-12">+3</span>
+    </span>
+  </button>
+
+  <h2 class="t-cm-caption demo-h">Roster variant — when the individuals ARE the content</h2>
+  <ul class="avg-roster avg md" aria-label="Approvers">
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Jordan Lee">JL</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Priya Anand">PA</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Sam Okafor">SO</span></li>
+  </ul>
+  <p class="demo-note t-ed-body-small">A real list: each member is announced, the count comes from the list itself, and there is no overflow disc because a roster does not cap. Two accessible shapes for one component is a decision, not a feature — Dave's.</p>
+
+  <h2 class="t-cm-caption demo-h">⚠ The ring defect, shown rather than described — the same group on a card</h2>
+  <div class="demo-card">
+    <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+    </p>
+  </div>
+  <p class="demo-note t-ed-body-small">The separator ring binds background/default, so on a card surface it is the wrong colour. In light mode the card is also white and the defect hides; in dark mode the page is #1A1A1A and the card is #1F1F1F, so the rings read as dark halos. Compare the two themes side by side on the review page. The fix is a surface-keyed token or a consumer-set ring — both are Dave's, and neither is invented here.</p>
+
+  
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-avatar-group">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/informative/… the guest-user glyph, via Avatar.reference -->
+    <symbol id="avg-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Sizes — small 32 · medium 44 · large 64 (Avatar's own ramp)</h2>
+  <p class="avg sm" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-12" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-12" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0 0 16px">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+  </p>
+  <p class="avg lg" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+    <span class="avg-face t-cm-section-label" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-section-label" aria-hidden="true">SO</span>
+    <span class="avg-face avg-more t-cm-section-label" aria-hidden="true">+3</span>
+  </p>
+  <p class="demo-note t-ed-body-small">One accessible name for the whole set; the discs are aria-hidden. The count is spelled in words in that name, so "+3" is never the only carrier.</p>
+
+  <h2 class="t-cm-caption demo-h">Mixed content — initials, icon, and a member with no name</h2>
+  <p class="avg md" role="img" aria-label="On this thread: Jordan Lee, Priya Anand, and one guest" style="margin:0">
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+    <span class="avg-face t-cm-ctl-14" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#avg-user"/></svg></span>
+  </p>
+
+  <h2 class="t-cm-caption demo-h">Interactive members — medium and large only (44px min-hit-area)</h2>
+  <p class="avg md" style="margin:0">
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
+    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
+    <button type="button" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers">+3</button>
+  </p>
+  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum.</p>
+
+  <h2 class="t-cm-caption demo-h">Group as one target — the answer for small stacks</h2>
+  <button type="button" class="avg-btn" aria-label="Show all 6 approvers">
+    <span class="avg sm" aria-hidden="true">
+      <span class="avg-face t-cm-ctl-12">JL</span>
+      <span class="avg-face t-cm-ctl-12">PA</span>
+      <span class="avg-face t-cm-ctl-12">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-12">+3</span>
+    </span>
+  </button>
+
+  <h2 class="t-cm-caption demo-h">Roster variant — when the individuals ARE the content</h2>
+  <ul class="avg-roster avg md" aria-label="Approvers">
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Jordan Lee">JL</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Priya Anand">PA</span></li>
+    <li class="avg-item"><span class="avg-face t-cm-ctl-14" role="img" aria-label="Sam Okafor">SO</span></li>
+  </ul>
+  <p class="demo-note t-ed-body-small">A real list: each member is announced, the count comes from the list itself, and there is no overflow disc because a roster does not cap. Two accessible shapes for one component is a decision, not a feature — Dave's.</p>
+
+  <h2 class="t-cm-caption demo-h">⚠ The ring defect, shown rather than described — the same group on a card</h2>
+  <div class="demo-card">
+    <p class="avg md" role="img" aria-label="Approvers: Jordan Lee, Priya Anand, Sam Okafor, and 3 more" style="margin:0">
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">JL</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">PA</span>
+      <span class="avg-face t-cm-ctl-14" aria-hidden="true">SO</span>
+      <span class="avg-face avg-more t-cm-ctl-14" aria-hidden="true">+3</span>
+    </p>
+  </div>
+  <p class="demo-note t-ed-body-small">The separator ring binds background/default, so on a card surface it is the wrong colour. In light mode the card is also white and the defect hides; in dark mode the page is #1A1A1A and the card is #1F1F1F, so the rings read as dark halos. Compare the two themes side by side on the review page. The fix is a surface-keyed token or a consumer-set ring — both are Dave's, and neither is invented here.</p>
+
+  
+  </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

@@ -1,0 +1,68 @@
+{
+  "name": "Tags input",
+  "category": "molecule",
+  "purpose": "A field the user types free values into, each committed as a removable chip. Use it where the vocabulary is the user's own — payment references, labels, search terms — and no list can be offered. The gated Tags atom is the display half of this: same chip, no field.",
+  "$provenance-note": "NEW at #203 (wave 3b, lane J) against itinerary row 23 (P2, 'Free-entry token field'). Verified absent first-hand: Tags.reference.html EXISTS and is gated, but it is a display atom — grep for <input / contenteditable in it returns nothing, and its meta declares category 'atom' with variants tag and tag-link only. No tags-input snippet or meta existed under any slug.",
+  "interactive": true,
+  "props": [
+    { "name": "max", "type": "number", "default": 8, "$status": "PROPOSED #203, Dave's eye owed — 8 is the reference's illustrative ceiling, not a ruled product limit." },
+    { "name": "commitKeys", "type": "enum", "values": ["enter", "enter+comma"], "default": "enter+comma", "$note": "Comma is included because reference lists are habitually comma-separated; blur also commits a pending value rather than discarding it." },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "focus", "disabled", "error"], "default": "default", "$note": "Same state channel as Input-fields/Textarea — inherited." },
+    { "name": "backspaceBehaviour", "type": "enum", "values": ["arm-then-remove", "remove-immediately"], "default": "arm-then-remove", "$status": "PROPOSED #203, Dave's eye owed. The first Backspace on an empty field ARMS the last chip (an inset outline, announced politely); a second removes it. Immediate removal loses data silently for fast typists, but two keystrokes is more work for everyone." }
+  ],
+  "variants": [
+    { "name": "with tags", "use": "The working state — chips wrap inside the field and the counter reports how many remain." },
+    { "name": "empty", "use": "A plain one-row field, so it never looks broken before use; the help text states how a value is committed." }
+  ],
+  "tokens": {
+    "field-background": "form/background/default (transparent), hover form/background/hover",
+    "field-border": "form/border/default; focus-within form/border/active + a 4px inset bottom stroke; disabled form/border/disabled; refusal a 4px inset rag/error stroke (dark: full rag/error border)",
+    "chip": "INHERITED FROM TAGS — 1px form/border/default on transparent, border-radius/control, label text/default, dismiss glyph icon/default. No new chip tokens.",
+    "chip-armed": "a 1px inset rule in form/border/active on the chip Backspace is about to take — an outline change, never colour alone",
+    "text": "text/default; disabled text/disabled",
+    "counter": "text/default at .t-cm-legal; the approaching-limit signal is the WORDING, not a weight or a colour",
+    "focus": "focus/ring",
+    "shape": "border-radius/control (field and chip)",
+    "hit-area": "target/min (44px) on the field row. Chip dismiss 24px — the gated Tags value, inherited unchanged."
+  },
+  "relationships": {
+    "livesInside": ["Form", "Filter bar", "Dialog"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["free-entry token field", "payment reference list", "label editor"]
+  },
+  "accessibility": {
+    "roles": "A plain text input — deliberately NOT role=combobox, because there is no list to expand and claiming one would be a lie to AT. Each chip's dismiss is a real button with a purposeful accessible name ('Remove INV-4471').",
+    "keyboard": "Enter or comma commits; blur commits a pending value; Backspace on an empty field arms the last chip and a second Backspace removes it; each dismiss button is tabbable.",
+    "announcements": "A polite live region announces every add, every removal, the armed chip, and each refusal — the chip list changes outside the caret's reading position, so silence would be a data loss the user cannot perceive.",
+    "states": "Refusals set aria-invalid + aria-describedby on the input and render a message that pairs a symbol with words and stays ink. Duplicates and the limit are refused explicitly, never silently dropped.",
+    "targetArea": "Field row 44px; chip dismiss 24px (WCAG 2.5.8 minimum), inherited from Tags and flagged rather than silently raised.",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.11", "2.1.1", "2.4.7", "2.5.8", "3.3.1", "4.1.2", "4.1.3"],
+    "$sc-note": "3.3.3 Error Suggestion genuinely applies (the refusals tell the user what to do), but it is NOT in the KNOWN_SC compliance lookup _build_integrity.py reads, and that lookup is a shared file this lane may not edit. Declared here rather than dropped silently — PROPOSED for the conductor: add 3.3.3 to the lookup."
+  },
+  "antiPatterns": [
+    "Dropping a duplicate or an over-limit value silently. A refusal the user cannot see is indistinguishable from a bug.",
+    "Discarding a half-typed value on blur. It is committed instead — the user typed it on purpose.",
+    "Drawing a second chip. This is the Tags chip; changes belong in Tags.",
+    "Claiming role=combobox without a list. There are no options here; announcing a collapsed listbox that never opens is worse than plain input semantics.",
+    "Signalling 'nearly at the limit' with colour or weight. The wording carries it — colour alone fails 1.4.1 and weight would need a raw font declaration TYPE-002 forbids."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS — 15 declared vars resolve in both light and dark; 5 declared contrast pairs clear their thresholds in both modes (snippet gate rc=0).",
+    "$scope": "MONO base only. The other three themes are shown, not measured, in reviews/REVIEW-203-tags-input-four-themes-v1.html.",
+    "$deprecated": "No deprecated tokens bound. The OUTLINED Tags chip is used, which is already rebound onto form/*; the filled-chip deprecation recorded in tags.meta.json is not inherited.",
+    "$notGenerated": "canon.css carries NO .cn-tags-input scope yet — no generator was run by this lane (Lane G owns that surface at #203)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Itinerary row 23. Mine-from named in the brief: Ant / Untitled. No Figma node; the chip comes from the gated Tags node (413:10962) via the Tags snippet."
+  },
+  "edges": {
+    "renderedBy": [{ "ref": "snippet:Tags-input.reference.html" }],
+    "containedBy": [{ "ref": "component:tags", "$note": "shares the Tags chip, copied not re-drawn" }],
+    "commonPattern": [{ "ref": "pattern:free-entry-token-field" }]
+  }
+}

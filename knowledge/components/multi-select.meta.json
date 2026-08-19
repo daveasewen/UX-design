@@ -1,0 +1,69 @@
+{
+  "name": "Multi-select",
+  "category": "molecule",
+  "purpose": "Choose several values from a fixed list and keep them visible. The field holds a filtering input; the list stays open while choices are made; each choice appears as a removable chip. Use it for statement accounts, filter facets, recipients — anywhere the answer is a set rather than a value.",
+  "$provenance-note": "NEW at #203 (wave 3b, lane J) against itinerary row 22 (P2, 'Chips-in-field selection'). Verified absent first-hand: ls knowledge/snippets/ | grep -i multi → only Chart-combo/other unrelated names; no multi-select meta; grep -rn 'aria-multiselectable' knowledge/snippets/ → 0 hits. The gated Dropdown META lists a 'multi-select (non-native)' VARIANT, but its snippet implements single-select only (its own header says 'CANONICAL REFERENCE for the non-native single-select Dropdown'), so the variant was documented and never built.",
+  "interactive": true,
+  "props": [
+    { "name": "display", "type": "enum", "values": ["chips-in-field", "count-summary"], "default": "chips-in-field", "$status": "PROPOSED #203, Dave's eye owed. Both are built. Chips-in-field keeps every choice visible but grows the field; count-summary keeps the field one row tall and moves the chips beneath it. Which is the default is a design decision, not this lane's to rule." },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "focus", "disabled", "error"], "default": "default", "$note": "Same state channel as Input-fields/Textarea — inherited, not re-specified." },
+    { "name": "open", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Behavioural/content-presence state, no token consequence." },
+    { "name": "max", "type": "number", "$note": "Optional ceiling on the number of selections. Not exercised in the reference — the limit story is demonstrated on Tags-input, where free entry makes it load-bearing." }
+  ],
+  "variants": [
+    { "name": "chips-in-field", "use": "Every selection visible and individually removable; the field wraps and grows." },
+    { "name": "count-summary", "use": "The field states the count and stays one row tall, so dense forms and toolbars do not reflow as choices are made." }
+  ],
+  "tokens": {
+    "field-background": "form/background/default (transparent), hover form/background/hover",
+    "field-border": "form/border/default; focus-within form/border/active + a 4px inset bottom stroke; disabled form/border/disabled; error a 4px inset rag/error stroke (dark: full rag/error border)",
+    "chip": "INHERITED FROM TAGS — 1px form/border/default on a transparent fill, border-radius/control (square in Mono), label text/default, dismiss glyph icon/default. No new chip tokens are introduced.",
+    "text": "text/default; disabled text/disabled",
+    "icon": "icon/default; disabled icon/disabled",
+    "menu-surface": "background/default",
+    "menu-elevation": "light elevation/functional; dark elevation/border (grey outline)",
+    "menu-divider": "divider/border/section",
+    "option-highlight": "form/background/hover fill PLUS a 3px inset rule in form/border/active — never colour-alone",
+    "focus": "focus/ring",
+    "shape": "border-radius/control (field, chip, toggle), border-radius/surface (floating menu)",
+    "hit-area": "target/min (44px) on the field row, the disclosure toggle and every option row. The chip dismiss button is 24px — the gated Tags value, inherited unchanged."
+  },
+  "relationships": {
+    "livesInside": ["Form", "Filter bar", "Toolbar", "Dialog"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["multi-select facet list", "statement account picker", "recipient picker"]
+  },
+  "accessibility": {
+    "roles": "input[role=combobox] + aria-autocomplete=\"list\" + aria-expanded + aria-controls; popup role=listbox with aria-multiselectable=\"true\" and role=option children carrying aria-selected. Highlight via aria-activedescendant — focus never leaves the input.",
+    "keyboard": "Down opens; Up/Down move the highlight; Enter toggles the highlighted option WITHOUT closing; Escape closes; Backspace on an empty input removes the last selection. Each chip's dismiss button is in the tab order.",
+    "announcements": "A polite live region announces the selection count after every change, because the visual chip appears outside the reading order of the user's current position.",
+    "states": "Disabled and error exposed programmatically (disabled, aria-invalid + aria-describedby). The error message pairs a symbol with words and stays ink.",
+    "targetArea": "Field row, toggle and option rows 44px. Chip dismiss 24px (WCAG 2.5.8 minimum) — inherited from Tags, flagged rather than silently raised.",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.11", "2.1.1", "2.4.7", "2.5.8", "4.1.2", "4.1.3"]
+  },
+  "antiPatterns": [
+    "Closing the list after each choice. The whole point is picking several without re-opening.",
+    "Drawing a second chip. The chip is the gated Tags chip; if it changes, it changes in Tags first.",
+    "Confusing this chip with the Selection-controls chip. That one is a toggle the user presses directly; this one is a receipt of a choice made in the list, and removal is its only interaction.",
+    "Leaving the selection count unannounced — a chip added below the caret is invisible to a screen-reader user.",
+    "Silently truncating the chip row. If the field must stay one row tall, use the count-summary variant, which says how many are chosen, rather than hiding choices."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS — 19 declared vars resolve in both light and dark; 5 declared contrast pairs clear their thresholds in both modes (snippet gate rc=0).",
+    "$scope": "MONO base only. The other three themes are shown, not measured, in reviews/REVIEW-203-multi-select-four-themes-v1.html.",
+    "$deprecated": "No deprecated tokens bound. Note that the gated Tags META still records deprecated fills for the FILLED chip; this component uses the OUTLINED chip the Tags SNIPPET actually ships, which is already rebound onto form/*.",
+    "$notGenerated": "canon.css carries NO .cn-multi-select scope yet — no generator was run by this lane (Lane G owns that surface at #203)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Itinerary row 22. Mine-from named in the brief: Ant / Carbon. No Figma node; the Dropdown node's multi-select variant was documented in dropdown.meta.json but never implemented."
+  },
+  "edges": {
+    "renderedBy": [{ "ref": "snippet:Multi-select.reference.html" }],
+    "commonPattern": [{ "ref": "pattern:multi-select-facet-list" }, { "ref": "pattern:filter-control" }]
+  }
+}

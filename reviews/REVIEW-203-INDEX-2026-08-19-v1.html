@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>#203 Wave-3 review index — 18 four-theme spreads</title>
+<style>
+  :root{--ink:#1A1A1A;--rule:#E1E1E1;--warn:#DA1A00;--dim:#636363}
+  body{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;color:var(--ink);margin:40px auto;max-width:960px;padding:0 24px;line-height:1.5}
+  h1{font-size:22px;font-weight:600;margin:0 0 4px}
+  .sub{color:var(--dim);font-size:14px;margin-bottom:28px}
+  h2{font-size:15px;font-weight:600;border-bottom:1px solid var(--ink);padding-bottom:6px;margin:32px 0 0}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  td{padding:9px 12px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  td:first-child{white-space:nowrap;width:220px}
+  a{color:var(--ink)}
+  .flag{color:var(--warn);font-weight:600}
+  .note{color:var(--dim)}
+</style>
+</head>
+<body>
+<h1>Wave-3 review index — session #203, 2026-08-19</h1>
+<p class="sub">All 18 components already existed (built 2026-07-22; the itinerary's Status column was five weeks stale).
+Six Opus lanes built the four-theme × light/dark spreads these components never had. Every page: live specimens copied from the gated snippets, responsive, both modes.
+<span class="flag">Red flags</span> = a measured defect for your eye; grey notes = proposed, yours to rule.</p>
+
+<h2>Lane A — forms core</h2>
+<table>
+<tr><td><a href="REVIEW-203-alert-four-themes-v1.html">Alert / inline callout</a></td><td class="note">Callout grammar exists TWICE — Form-layout shares zero markup/CSS with Alert. Consolidate or keep both?</td></tr>
+<tr><td><a href="REVIEW-203-textarea-four-themes-v1.html">Textarea</a></td><td class="note">Meets 44px hit target by geometry only; nothing declares it.</td></tr>
+<tr><td><a href="REVIEW-203-form-layout-four-themes-v1.html">Form layout + validation</a></td><td class="note">Driven error state: all 24 legs ≥4.5:1. Clean.</td></tr>
+</table>
+
+<h2>Lane B — date &amp; time</h2>
+<table>
+<tr><td><a href="REVIEW-203-date-picker-four-themes-v1.html">Date picker</a></td><td class="note">Calendar grid grammar DUPLICATED (18 of 19 shared rules byte-identical with range picker); hard ~336px floor overflows a 360px phone column.</td></tr>
+<tr><td><a href="REVIEW-203-date-range-picker-four-themes-v1.html">Date-range picker</a></td><td class="note">Same duplication, other half.</td></tr>
+<tr><td><a href="REVIEW-203-time-picker-four-themes-v1.html">Time picker</a></td><td class="note">Correctly distinct (listbox). SC-dark page/ink evidence adds n=76 to the G14 question awaiting you.</td></tr>
+</table>
+
+<h2>Lane C — money &amp; secure</h2>
+<table>
+<tr><td><a href="REVIEW-203-amount-display-four-themes-v1.html">Amount display</a></td><td class="note">Clean.</td></tr>
+<tr><td><a href="REVIEW-203-amount-input-four-themes-v1.html">Amount input</a></td><td><span class="flag">39px tall</span> — 5px under the ruled 44 minimum, every theme.</td></tr>
+<tr><td><a href="REVIEW-203-secure-entry-four-themes-v1.html">OTP / secure entry</a></td><td><span class="flag">42px cell ≤480px</span> — 2px under 44.</td></tr>
+</table>
+
+<h2>Lane D — overlays</h2>
+<table>
+<tr><td><a href="REVIEW-203-toast-four-themes-v1.html">Toast / snackbar</a></td><td class="note">Duplicates Notifications' Snackbar — same job/ARIA, opposite chrome. Rendered side-by-side on the page. Keep one?</td></tr>
+<tr><td><a href="REVIEW-203-drawer-four-themes-v1.html">Drawer / side sheet</a></td><td><span class="flag">SC dark: 1.96:1 hairline</span> is the only edge lifting it off the page (mono's is 4.41:1).</td></tr>
+<tr><td><a href="REVIEW-203-popover-four-themes-v1.html">Popover</a></td><td><span class="flag">Surface = page token</span> — 1.00:1 against its own background, all four themes.</td></tr>
+</table>
+
+<h2>Lane E — data display</h2>
+<table>
+<tr><td><a href="REVIEW-203-empty-state-four-themes-v1.html">Empty state</a></td><td class="note">Glyph at 0.4 ink per theme — proposed, yours; recovery link is 18px vs the ruled 44.</td></tr>
+<tr><td><a href="REVIEW-203-stat-card-four-themes-v1.html">Stat / metric card</a></td><td><span class="flag">Two-red-law breach, measured</span> — delta arrows bind the FILL seat: green 1.98:1 on white (ruled ink seat = 5.09:1). Not swapped; numbers on the page.</td></tr>
+<tr><td><a href="REVIEW-203-data-grid-four-themes-v1.html">Data grid</a></td><td class="note">Already has inline edit — the brief's proposed cut would be a deletion. Keep or cut is yours. 8 live independent grids + layout controller.</td></tr>
+</table>
+
+<h2>Lane F — flow &amp; load</h2>
+<table>
+<tr><td><a href="REVIEW-203-skeleton-loader-four-themes-v1.html">Skeleton loader</a></td><td class="note">Zero contrastPairs — a green that cannot fail; also misses type.css (TYPE-001).</td></tr>
+<tr><td><a href="REVIEW-203-file-upload-four-themes-v1.html">File upload</a></td><td><span class="flag">Progress track invisible in all four dark modes</span> (1.11:1 vs the gated 1.90:1), and the bar has neither percentage text nor aria-valuetext.</td></tr>
+<tr><td><a href="REVIEW-203-stepper-four-themes-v1.html">Stepper (interactive)</a></td><td><span class="flag">Completed steps read RED in Legacy.</span></td></tr>
+</table>
+
+<p class="sub" style="margin-top:28px">Receipts: notes/_receipts/2026-08-19-203-wave3-lane[A–F]-*.md · Brief: _BRIEF-wave3-foundations-2026-08-19-v1.md<br>
+Conductor repairs this session: --pri-hover re-sync (9 snippets, snippet gate 18→0, rc=0) · showroom regenerated (9 pages).<br>
+Priced, not done: gen_canon_components.py dark-rule drop (33 rules / 19 snippets, Lane C receipt) — changes rendered output, your eye first.</p>
+</body>
+</html>

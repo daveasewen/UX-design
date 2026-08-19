@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stepper (interactive) - four themes x light/dark (#203, Lane F)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; align-items:start;}
+  .pane{min-width:0; overflow-x:auto; padding:24px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .prop{border-left:3px solid #6893D3; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  table.m{border-collapse:collapse; margin:16px 0; background:#FFF;}
+  table.m th, table.m td{border:1px solid #E1E1E1; padding:6px 10px; text-align:left;}
+  .sw{display:inline-block; width:22px; height:12px; border:1px solid #B7B7B7; vertical-align:middle; margin-right:6px;}
+  iframe.live{width:100%; height:820px; border:1px solid #E1E1E1; background:#FFF;}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="st-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.91547 15.9421L0.105469 10.1341L1.37747 8.86011L5.91547 13.3971L16.6215 2.69312L17.8935 3.96712L5.91547 15.9421Z" fill="currentColor"/></symbol>
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+  </svg>
+  <h1 class="t-cm-heading">Stepper (interactive) - four themes x light/dark (#203, Lane F)</h1>
+  <div class="lede"><p class="t-ed-body"><strong>Read this first.</strong> The brief sent me to build this component from nothing, on the strength of the itinerary spreadsheet marking it <em>Status = Gap</em>. <strong>It is not a gap - it already exists, and has for some time.</strong> I verified that by hand before writing a line: the snippet is in the tree, the meta is in the tree, and for File upload and Stepper the meta’s own purpose field names its itinerary row and says it was built. So I did not rebuild anything. Rebuilding would have thrown away real work. What I did instead is the part that genuinely had never been done: <strong>put the component in front of you across all four themes, light and dark</strong>, and chase down the specific defect the brief named.</p><p class="t-ed-body">Itinerary row 34. It was built to do exactly what the brief describes: take Progress-tracker’s visual grammar - 28px dots, 4px connector, done = fill plus check, current = inset ring, and the same dots-to-track collapse - and add the interaction Progress-tracker deliberately lacks. <strong>On the reconcile question the Stepper is already clean:</strong> its track binds <code>progress/incomplete</code>, its fill binds <code>step/complete</code>, it binds the indicator radius, and it carries <code>aria-valuetext</code>. It is the File-upload bar that is the outlier, not this.</p></div>
+
+<div class="note"><p class="t-ed-body-small"><strong>This file is failing a gate right now, and it is not from anything I did:</strong> <code>_validate_snippets.py</code> is <strong>red at HEAD</strong> - 18 failures across nine snippets, all the identical defect, and Stepper is one of them. Each declares <code>--pri-hover</code> as <code>#626262</code> / <code>#B7B7B7</code> while the token store now says <code>#636363</code> / <code>#B2B2B2</code>. That is the <code>--pri-hover</code> mint from #198 and #199 landing in the store without these nine snippets following it. It is one value per file, it belongs to no single lane, and <strong>it is queued for the conductor rather than quietly patched here.</strong> Visually it is a few units on a button hover - you will not see it in these panes.</p></div><div class="prop"><p class="t-ed-body-small"><strong>Worth your eye.</strong> The completed-step fill is <code>step/complete</code>, which aliases <code>rag/success</code> - the green roundel chain from #176 - and <strong>Legacy overrides it to the primary red</strong>. So in the Legacy panes below, completed steps read <em>red</em>, not green. That is a ruled inheritance rather than a mistake, but red-for-done is exactly the kind of thing that should be looked at rather than assumed, and red is a problem hue for you. Compare the Legacy row against the other three and say whether it stands.</p></div><div class="prop"><p class="t-ed-body-small"><strong>PROPOSED #203, your eye owed.</strong> The Stepper uses <code>role="progressbar"</code> with <code>aria-valuemin="1"</code> and <code>aria-valuemax="4"</code>, counting <em>steps</em>, where the gated Progress bar counts <em>percent</em>, 0 to 100. I think that divergence is correct - it matches Progress-tracker, and "Step 2 of 4" is what a screen reader should say in a flow, not "50 percent". So I am recording it as a deliberate documented divergence rather than an inconsistency to iron out. Say if you disagree.</p></div>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid" style="grid-template-columns:1fr">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono . light</div>
+        <div class="cn-stepper" style="--demo-width:760px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-mono-light">
+    <span class="sr-live" id="stLive-mono-light" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-mono-light" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-mono-light">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-mono-light">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-mono-light">
+        <span class="fill" id="st-fill-mono-light" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-mono-light" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-mono-light" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-mono-light">
+        <label class="lbl t-cm-label" for="f-amt-mono-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-mono-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-mono-light">
+        </div>
+        <div class="st-msg" id="f-amt-msg-mono-light" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-mono-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-mono-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-mono-light" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-mono-light" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-mono-light">
+    <span class="sr-live" id="stLive-s2-mono-light" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-mono-light" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-mono-light">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-mono-light">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-mono-light">
+        <span class="fill" id="st-fill-s2-mono-light" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-mono-light" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-mono-light" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-mono-light">
+        <label class="lbl t-cm-label" for="f-amt-s2-mono-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-mono-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-mono-light" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-mono-light" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-mono-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-mono-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-mono-light" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-mono-light" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono . dark</div>
+        <div class="cn-stepper" style="--demo-width:760px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-mono-dark">
+    <span class="sr-live" id="stLive-mono-dark" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-mono-dark" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-mono-dark">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-mono-dark">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-mono-dark">
+        <span class="fill" id="st-fill-mono-dark" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-mono-dark" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-mono-dark" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-mono-dark">
+        <label class="lbl t-cm-label" for="f-amt-mono-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-mono-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-mono-dark">
+        </div>
+        <div class="st-msg" id="f-amt-msg-mono-dark" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-mono-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-mono-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-mono-dark" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-mono-dark" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-mono-dark">
+    <span class="sr-live" id="stLive-s2-mono-dark" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-mono-dark" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-mono-dark">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-mono-dark">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-mono-dark">
+        <span class="fill" id="st-fill-s2-mono-dark" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-mono-dark" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-mono-dark" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-mono-dark">
+        <label class="lbl t-cm-label" for="f-amt-s2-mono-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-mono-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-mono-dark" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-mono-dark" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-mono-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-mono-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-mono-dark" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-mono-dark" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid" style="grid-template-columns:1fr">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy . light</div>
+        <div class="cn-stepper" style="--demo-width:760px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-legacy-light">
+    <span class="sr-live" id="stLive-legacy-light" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-legacy-light" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-legacy-light">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-legacy-light">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-legacy-light">
+        <span class="fill" id="st-fill-legacy-light" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-legacy-light" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-legacy-light" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-legacy-light">
+        <label class="lbl t-cm-label" for="f-amt-legacy-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-legacy-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-legacy-light">
+        </div>
+        <div class="st-msg" id="f-amt-msg-legacy-light" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-legacy-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-legacy-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-legacy-light" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-legacy-light" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-legacy-light">
+    <span class="sr-live" id="stLive-s2-legacy-light" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-legacy-light" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-legacy-light">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-legacy-light">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-legacy-light">
+        <span class="fill" id="st-fill-s2-legacy-light" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-legacy-light" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-legacy-light" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-legacy-light">
+        <label class="lbl t-cm-label" for="f-amt-s2-legacy-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-legacy-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-legacy-light" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-legacy-light" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-legacy-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-legacy-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-legacy-light" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-legacy-light" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy . dark</div>
+        <div class="cn-stepper" style="--demo-width:760px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-legacy-dark">
+    <span class="sr-live" id="stLive-legacy-dark" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-legacy-dark" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-legacy-dark">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-legacy-dark">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-legacy-dark">
+        <span class="fill" id="st-fill-legacy-dark" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-legacy-dark" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-legacy-dark" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-legacy-dark">
+        <label class="lbl t-cm-label" for="f-amt-legacy-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-legacy-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-legacy-dark">
+        </div>
+        <div class="st-msg" id="f-amt-msg-legacy-dark" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-legacy-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-legacy-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-legacy-dark" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-legacy-dark" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-legacy-dark">
+    <span class="sr-live" id="stLive-s2-legacy-dark" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-legacy-dark" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-legacy-dark">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-legacy-dark">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-legacy-dark">
+        <span class="fill" id="st-fill-s2-legacy-dark" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-legacy-dark" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-legacy-dark" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-legacy-dark">
+        <label class="lbl t-cm-label" for="f-amt-s2-legacy-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-legacy-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-legacy-dark" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-legacy-dark" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-legacy-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-legacy-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-legacy-dark" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-legacy-dark" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid" style="grid-template-columns:1fr">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console . light</div>
+        <div class="cn-stepper" style="--demo-width:760px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-console-light">
+    <span class="sr-live" id="stLive-console-light" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-console-light" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-console-light">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-console-light">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-console-light">
+        <span class="fill" id="st-fill-console-light" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-console-light" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-console-light" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-console-light">
+        <label class="lbl t-cm-label" for="f-amt-console-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-console-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-console-light">
+        </div>
+        <div class="st-msg" id="f-amt-msg-console-light" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-console-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-console-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-console-light" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-console-light" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-console-light">
+    <span class="sr-live" id="stLive-s2-console-light" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-console-light" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-console-light">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-console-light">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-console-light">
+        <span class="fill" id="st-fill-s2-console-light" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-console-light" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-console-light" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-console-light">
+        <label class="lbl t-cm-label" for="f-amt-s2-console-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-console-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-console-light" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-console-light" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-console-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-console-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-console-light" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-console-light" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console . dark</div>
+        <div class="cn-stepper" style="--demo-width:760px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-console-dark">
+    <span class="sr-live" id="stLive-console-dark" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-console-dark" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-console-dark">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-console-dark">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-console-dark">
+        <span class="fill" id="st-fill-console-dark" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-console-dark" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-console-dark" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-console-dark">
+        <label class="lbl t-cm-label" for="f-amt-console-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-console-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-console-dark">
+        </div>
+        <div class="st-msg" id="f-amt-msg-console-dark" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-console-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-console-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-console-dark" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-console-dark" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-console-dark">
+    <span class="sr-live" id="stLive-s2-console-dark" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-console-dark" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-console-dark">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-console-dark">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-console-dark">
+        <span class="fill" id="st-fill-s2-console-dark" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-console-dark" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-console-dark" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-console-dark">
+        <label class="lbl t-cm-label" for="f-amt-s2-console-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-console-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-console-dark" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-console-dark" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-console-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-console-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-console-dark" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-console-dark" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid" style="grid-template-columns:1fr">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge . light</div>
+        <div class="cn-stepper" style="--demo-width:760px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-supercharge-light">
+    <span class="sr-live" id="stLive-supercharge-light" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-supercharge-light" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-supercharge-light">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-supercharge-light">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-supercharge-light">
+        <span class="fill" id="st-fill-supercharge-light" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-supercharge-light" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-supercharge-light" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-supercharge-light">
+        <label class="lbl t-cm-label" for="f-amt-supercharge-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-supercharge-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-supercharge-light">
+        </div>
+        <div class="st-msg" id="f-amt-msg-supercharge-light" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-supercharge-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-supercharge-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-supercharge-light" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-supercharge-light" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-supercharge-light">
+    <span class="sr-live" id="stLive-s2-supercharge-light" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-supercharge-light" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-supercharge-light">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-supercharge-light">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-supercharge-light">
+        <span class="fill" id="st-fill-s2-supercharge-light" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-supercharge-light" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-supercharge-light" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-supercharge-light">
+        <label class="lbl t-cm-label" for="f-amt-s2-supercharge-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-supercharge-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-supercharge-light" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-supercharge-light" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-supercharge-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-supercharge-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-supercharge-light" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-supercharge-light" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge . dark</div>
+        <div class="cn-stepper" style="--demo-width:760px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-supercharge-dark">
+    <span class="sr-live" id="stLive-supercharge-dark" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-supercharge-dark" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-supercharge-dark">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-supercharge-dark">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-supercharge-dark">
+        <span class="fill" id="st-fill-supercharge-dark" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-supercharge-dark" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-supercharge-dark" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-supercharge-dark">
+        <label class="lbl t-cm-label" for="f-amt-supercharge-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-supercharge-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-supercharge-dark">
+        </div>
+        <div class="st-msg" id="f-amt-msg-supercharge-dark" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-supercharge-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-supercharge-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-supercharge-dark" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-supercharge-dark" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-supercharge-dark">
+    <span class="sr-live" id="stLive-s2-supercharge-dark" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-supercharge-dark" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-supercharge-dark">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-supercharge-dark">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-supercharge-dark">
+        <span class="fill" id="st-fill-s2-supercharge-dark" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-supercharge-dark" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-supercharge-dark" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-supercharge-dark">
+        <label class="lbl t-cm-label" for="f-amt-s2-supercharge-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-supercharge-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-supercharge-dark" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-supercharge-dark" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-supercharge-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-supercharge-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-supercharge-dark" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-supercharge-dark" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Responsive - narrow container</h2>
+    <p class="t-ed-body-small" style="max-width:900px">This is the important one. At a container width of 520px or less the dots collapse to a continuous track with a numeric head. The wide panes above are forced to 760px so you see the dots; the two below are 420px so you should see the collapsed form instead.</p>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono . light . narrow</div>
+        <div class="cn-stepper" style="--demo-width:420px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-narrowmono-light">
+    <span class="sr-live" id="stLive-narrowmono-light" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-narrowmono-light" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-narrowmono-light">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-narrowmono-light">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-narrowmono-light">
+        <span class="fill" id="st-fill-narrowmono-light" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-narrowmono-light" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-narrowmono-light" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-narrowmono-light">
+        <label class="lbl t-cm-label" for="f-amt-narrowmono-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-narrowmono-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-narrowmono-light">
+        </div>
+        <div class="st-msg" id="f-amt-msg-narrowmono-light" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-narrowmono-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-narrowmono-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-narrowmono-light" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-narrowmono-light" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-narrowmono-light">
+    <span class="sr-live" id="stLive-s2-narrowmono-light" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-narrowmono-light" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-narrowmono-light">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-narrowmono-light">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-narrowmono-light">
+        <span class="fill" id="st-fill-s2-narrowmono-light" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-narrowmono-light" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-narrowmono-light" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-narrowmono-light">
+        <label class="lbl t-cm-label" for="f-amt-s2-narrowmono-light">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-narrowmono-light" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-narrowmono-light" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-narrowmono-light" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-narrowmono-light" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-narrowmono-light" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-narrowmono-light" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-narrowmono-light" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono . dark . narrow</div>
+        <div class="cn-stepper" style="--demo-width:420px">
+<div style="display:flex;flex-direction:column;gap:32px"><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 1 of 4 - nothing completed yet</p><div class="st" id="st-narrowmono-dark">
+    <span class="sr-live" id="stLive-narrowmono-dark" aria-live="polite"></span>
+    <ol class="steps" id="st-steps-narrowmono-dark" aria-label="Payment setup steps"><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">1</span><span class="step-label t-cm-caption">Details</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-narrowmono-dark">Step 1 of 4</span>
+        <span class="title t-cm-label" id="st-title-narrowmono-dark">Who are you paying?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Details" aria-label="Payment setup steps" id="st-track-narrowmono-dark">
+        <span class="fill" id="st-fill-narrowmono-dark" style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-narrowmono-dark" aria-label="Step 1: Details">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-narrowmono-dark" aria-label="Step 2: Amount" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group" id="g-amt-narrowmono-dark">
+        <label class="lbl t-cm-label" for="f-amt-narrowmono-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-narrowmono-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-narrowmono-dark">
+        </div>
+        <div class="st-msg" id="f-amt-msg-narrowmono-dark" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-narrowmono-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-narrowmono-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-narrowmono-dark" type="button" disabled="">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-narrowmono-dark" type="button">Next</button>
+    </div>
+  </div></div><div><p class="t-cm-caption" style="opacity:.65;margin:0 0 8px">State 2 of 4 - step 1 done (filled dot + check), step 2 current (inset ring)</p><div class="st" id="st-s2-narrowmono-dark">
+    <span class="sr-live" id="stLive-s2-narrowmono-dark" aria-live="polite">Step 2 of 4: Amount</span>
+    <ol class="steps" id="st-steps-s2-narrowmono-dark" aria-label="Payment setup steps"><li class="done"><button type="button" class="step" data-go="1" aria-label="Go back to step 1: Details (completed)"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#st-check"></use></svg></span><span class="step-label t-cm-caption">Details</span></button></li><li class="current" aria-current="step"><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">2</span><span class="step-label t-cm-caption">Amount</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">3</span><span class="step-label t-cm-caption">Review</span></span></li><li class=""><span class="step"><span class="dot t-cm-figure-6" aria-hidden="true">4</span><span class="step-label t-cm-caption">Confirm</span></span></li></ol>
+    <div class="collapse">
+      <div class="head">
+        <span class="count t-cm-label" id="st-count-s2-narrowmono-dark">Step 2 of 4</span>
+        <span class="title t-cm-label" id="st-title-s2-narrowmono-dark">How much?</span>
+      </div>
+      <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Step 2 of 4: Amount" aria-label="Payment setup steps" id="st-track-s2-narrowmono-dark">
+        <span class="fill" id="st-fill-s2-narrowmono-dark" style="width: 50%;"></span>
+      </div>
+    </div>
+
+    <section class="st-panel" id="p-1-s2-narrowmono-dark" aria-label="Step 1: Details" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Who are you paying?</h3>
+      <p class="t-ed-body">Choose the payee and the account to pay from. (Demo copy — this panel
+        stands in for the step's real content.)</p>
+    </section>
+
+    <section class="st-panel" id="p-2-s2-narrowmono-dark" aria-label="Step 2: Amount">
+      <h3 class="t-cm-label" tabindex="-1">How much?</h3>
+      <div class="st-group is-error" id="g-amt-s2-narrowmono-dark">
+        <label class="lbl t-cm-label" for="f-amt-s2-narrowmono-dark">Amount</label>
+        <div class="st-box">
+          <span class="pfx t-cm-label" aria-hidden="true">GBP</span>
+          <input id="f-amt-s2-narrowmono-dark" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="f-amt-msg-s2-narrowmono-dark" aria-invalid="true">
+        </div>
+        <div class="st-msg" id="f-amt-msg-s2-narrowmono-dark" aria-live="polite"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"></use></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </section>
+
+    <section class="st-panel" id="p-3-s2-narrowmono-dark" aria-label="Step 3: Review" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Check the details</h3>
+      <p class="t-ed-body">Review the payee, amount and date before you confirm.</p>
+    </section>
+
+    <section class="st-panel" id="p-4-s2-narrowmono-dark" aria-label="Step 4: Confirm" hidden="">
+      <h3 class="t-cm-label" tabindex="-1">Ready to send</h3>
+      <p class="t-ed-body">Confirming will schedule your payment. You can cancel any time before it sends.</p>
+    </section>
+
+    <div class="st-nav">
+      <button class="st-ghost t-cm-button" id="st-back-s2-narrowmono-dark" type="button">Back</button>
+      <button class="st-primary t-cm-button" id="st-next-s2-narrowmono-dark" type="button">Next</button>
+    </div>
+  </div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme">
+    <h2 class="t-cm-section-label">Live behaviour (the real snippet, Apollo Mono only)</h2>
+    <p class="t-ed-body-small" style="max-width:900px">The panes above are static. They are the component markup rendered through the generated <code>canon.css</code>, which is the only route that shows all four themes - a snippet’s own inline CSS hard-codes the Mono values. To actually <em>drive</em> the component, here is the real file in a frame. It is Mono-only, by construction.</p>
+    <iframe class="live" src="../knowledge/snippets/Stepper.reference.html" title="Stepper (interactive) - four themes x light/dark (#203, Lane F) - live"></iframe>
+  </section>
+</body>
+</html>

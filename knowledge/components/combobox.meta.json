@@ -1,0 +1,68 @@
+{
+  "name": "Combobox",
+  "category": "molecule",
+  "purpose": "A text input that filters a list of options as the user types, and commits one of them. Use it instead of Dropdown when the option set is long enough that typing beats scrolling — countries, payees, currencies, branches. The value always comes from the list: free text is not accepted.",
+  "$provenance-note": "NEW at #203 (wave 3b, lane J) against itinerary row 21 (P2, 'Type-ahead select'). Verified absent first-hand before building: ls knowledge/snippets/ | grep -i combo → nothing; ls knowledge/components/ → no combobox/autocomplete/typeahead meta; grep -rn 'aria-autocomplete' knowledge/snippets/ → 0 hits. The gated Dropdown carries role=\"combobox\" on a BUTTON trigger, which is the select pattern, not this one.",
+  "interactive": true,
+  "props": [
+    { "name": "fieldStyle", "type": "enum", "values": ["boxed", "underline"], "default": "boxed", "$note": "Both gated field styles are supported so a form need not change its field style to gain a combobox. Matches Dropdown, which also keeps both." },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "focus", "completed", "disabled", "error"], "default": "default", "$note": "Same state channel as Input-fields/Textarea — inherited, not re-specified." },
+    { "name": "open", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Behavioural/content-presence state, no token consequence (the s142-D1 class C9 shape)." },
+    { "name": "matchEmphasis", "type": "enum", "values": ["underline", "none"], "default": "underline", "$status": "PROPOSED #203, Dave's eye owed — how the matched run is marked. Underline was chosen because weight needs a raw font-weight declaration (TYPE-002 forbids it; there is no .t-cm-* emphasis hook) and colour alone is barred by 1.4.1 and by the red/yellow caution." }
+  ],
+  "variants": [
+    { "name": "boxed", "use": "Full-border field — the default, matching the boxed Input field." },
+    { "name": "underline", "use": "Bottom-stroke field — for forms already built on the underline style." }
+  ],
+  "tokens": {
+    "field-background": "form/background/default (transparent), hover form/background/hover",
+    "field-border": "form/border/default; focus-within form/border/active + a 4px inset bottom stroke; disabled form/border/disabled; error a 4px inset rag/error stroke (dark: full rag/error border, the Input-fields rule Dave set 2026-07-02)",
+    "text": "text/default; disabled text/disabled",
+    "icon": "icon/default; disabled icon/disabled",
+    "menu-surface": "background/default",
+    "menu-elevation": "light elevation/functional (0 0 16px shadow); dark elevation/border (grey outline — shadows are invisible on a near-black page)",
+    "menu-divider": "divider/border/section",
+    "option-highlight": "form/background/hover fill PLUS a 3px inset rule in form/border/active, so the active row is never colour-alone",
+    "focus": "focus/ring",
+    "shape": "border-radius/control (field, toggle) and border-radius/surface (floating menu) — the Dropdown split, per-element judgment under ADR-0010",
+    "hit-area": "target/min (44px) on the field row, the disclosure toggle and every option row"
+  },
+  "relationships": {
+    "livesInside": ["Form", "Filter bar", "Toolbar", "Dialog"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["type-ahead form field", "payee search", "currency picker"]
+  },
+  "accessibility": {
+    "roles": "input[role=combobox] + aria-autocomplete=\"list\" + aria-expanded + aria-controls; the popup is role=listbox with role=option children carrying aria-selected. The highlight is aria-activedescendant, so focus never leaves the input.",
+    "keyboard": "Down opens and highlights the first match; Up/Down move the highlight; Enter commits the highlighted option; Escape closes and keeps the typed text; Tab closes and leaves.",
+    "announcements": "A polite live region announces the number of matches after each keystroke, and the chosen value on commit. Without it the filtering is invisible to a screen-reader user.",
+    "states": "Disabled and error are exposed programmatically (disabled, aria-invalid + aria-describedby). Error is never carried by the red stroke alone — the message pairs a symbol with words and stays ink.",
+    "targetArea": "Field row, disclosure toggle and option rows are all 44px (target/min).",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.11", "2.1.1", "2.4.7", "2.5.8", "4.1.2", "4.1.3"]
+  },
+  "antiPatterns": [
+    "Accepting free text. If the user may type a value that is not in the list, that is a different contract (aria-autocomplete=\"both\") or it is Tags-input — do not quietly widen this one.",
+    "Marking the matched run with colour or weight alone. Colour fails 1.4.1 and red/yellow are problem hues here; weight would require a raw font declaration TYPE-002 forbids.",
+    "Moving DOM focus into the listbox. The input keeps focus; the highlight travels via aria-activedescendant, or the user cannot keep typing.",
+    "Filtering silently. Without the polite count announcement a screen-reader user cannot tell the list narrowed.",
+    "Using this where the option set is short and browsable — that is the gated Dropdown, and a text field there is friction, not help."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS — 19 declared vars resolve in both light and dark; 5 declared contrast pairs clear their thresholds in both modes (snippet gate rc=0).",
+    "$scope": "The gate reads the MONO base only. The Legacy/Console/Supercharge legs are NOT measured by it. They are shown, not measured, in reviews/REVIEW-203-combobox-four-themes-v1.html — Dave's eye is the instrument there.",
+    "$deprecated": "No deprecated tokens are bound. Every binding is a live form/*, text/*, icon/*, rag/*, elevation/*, divider/*, border-radius/* or target/* semantic.",
+    "$notGenerated": "knowledge/canon/canon.css carries NO .cn-combobox scope yet — gen_canon_components.py is Lane G's exclusive surface at #203 and no generator was run by this lane. The conductor's regeneration creates it."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Itinerary row 21, ITINERARY-2026-07-14-apollo-component-library.xlsx. Mine-from named in the brief: Ant / Untitled. No Figma node exists for this component."
+  },
+  "edges": {
+    "renderedBy": [{ "ref": "snippet:Combobox.reference.html" }],
+    "commonPattern": [{ "ref": "pattern:form-field-select" }, { "ref": "pattern:filter-control" }]
+  }
+}

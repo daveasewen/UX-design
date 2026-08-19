@@ -1,0 +1,160 @@
+{
+  "name": "Command palette",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "A modal, keyboard-first launcher for a whole application: one query field over a grouped result list, where a result may be a DESTINATION to go to or an ACTION to run. Opened by a shortcut, driven by arrow keys, committed by Enter, dismissed by Esc. Use it where the product has more destinations and actions than any menu can hold, and where power users are the ones paying the cost of hunting for them. Itinerary row 35 (P2, 'Power-user search').",
+  "$status": "PROPOSED #203, Dave's eye owed — new component, built through the gated-component route at #203 wave 3b lane I. Nothing about it is ruled.",
+  "props": [
+    {
+      "name": "query",
+      "type": "string",
+      "default": "",
+      "$note": "The current search text. Drives the result set; an empty query should show recents or a default set, which is NOT specified here — PROPOSED as out of scope until Dave rules on what an empty palette shows."
+    },
+    {
+      "name": "groups",
+      "type": "array",
+      "$note": "Ordered result groups, each with a label and a list of results. A group with no results is omitted, not shown empty."
+    },
+    {
+      "name": "activeId",
+      "type": "string",
+      "$note": "The id of the highlighted option. Mirrors to aria-activedescendant on the combobox and aria-selected on the option — one source of truth, two expressions."
+    },
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "emptyMessage",
+      "type": "string",
+      "$note": "Shown in a role=status region when the query matches nothing. Required: a silent blank is a defect, not a state."
+    }
+  ],
+  "variants": [
+    {
+      "name": "results",
+      "use": "the normal open state: a query, grouped results, one highlighted option"
+    },
+    {
+      "name": "empty",
+      "use": "the query matches nothing — a live-region message plus a recovery hint"
+    }
+  ],
+  "tokens": {
+    "page": "background/default — the application behind the palette",
+    "panel": "tertiary/background/default — the raised surface, matching Toast and Drawer (Popover binds background/default and is the odd one of that trio; this follows the majority, see the #203 Lane D finding)",
+    "scrim": "overlay/version1 (#00000080, both modes)",
+    "text": "text/default @ .t-cm-label / .t-cm-input",
+    "muted": "text/secondary @ .t-cm-caption",
+    "icon": "icon/default",
+    "rule": "divider/border/subsection — the field, group and footer separators",
+    "hover": "tertiary/background/hover — the hovered AND the active option ground",
+    "field-active": "form/border/active — the focus-within bottom stroke. INK, not form/border/default: see $finding",
+    "focus": "focus/ring",
+    "shadow": "elevation/functional / elev-border: elevation/border — the canon elevation recipe, shadow in light and a hairline in dark",
+    "radius": "border-radius/surface (resolves 0 in mono/legacy/supercharge; Console renders 20 via s199-D3 and that is Dave's ruling arriving correctly, not a drift)",
+    "activeBar": "text/default — the 3px INK bar on the active option. NOT brand red: in this navigation family red means CURRENT LOCATION, and a palette cursor is transient selection",
+    "$note": "Every value above resolves from the store; nothing is invented."
+  },
+  "relationships": {
+    "livesInside": [
+      "App shell (overlay layer)"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "global command launcher",
+      "keyboard-first navigation",
+      "action search"
+    ]
+  },
+  "accessibility": {
+    "dialog": "role=dialog + aria-modal=true + an accessible name. A real placement must trap focus, restore focus to the opener on close, and dismiss on Esc.",
+    "combobox": "The input is role=combobox with aria-autocomplete=list, aria-expanded, aria-controls pointing at the listbox, and aria-activedescendant naming the highlighted option. Focus never leaves the input — arrow keys move aria-activedescendant, they do not move DOM focus.",
+    "listbox": "role=listbox containing role=group sections (each aria-labelledby its own visible heading) and role=option rows. Exactly one option carries aria-selected=true.",
+    "emptyState": "role=status, so a screen-reader user hears that the query matched nothing.",
+    "resultCount": "A role=status live region announces the number of results as the query changes.",
+    "targetArea": "Every option is min-height 44px; the field is 48px.",
+    "colourIndependence": "The active option is carried by aria-selected + a 3px ink bar (a shape) + a surface change. Never by hue alone.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1 Use of Color",
+      "1.4.11",
+      "2.1.1 Keyboard",
+      "2.1.2 No Keyboard Trap",
+      "2.4.3 Focus Order",
+      "2.4.7 Focus Visible",
+      "2.5.8 Target Size (Minimum)",
+      "4.1.2",
+      "4.1.3 Status Messages"
+    ]
+  },
+  "antiPatterns": [
+    "Moving DOM focus into the result list — the query must stay editable while the highlight moves, which is what aria-activedescendant is for",
+    "Marking the active option by background alone — it measures 1.07:1 against the panel in mono light and vanishes for a low-vision or astigmatic reader",
+    "Showing a blank surface when nothing matches, instead of a live-region message with a recovery hint",
+    "position:fixed with no static affordance — the component then cannot appear in a screenshot, a showroom thumbnail or a review page (the #203 Popover finding)",
+    "Using role=menu (that is Dropdown) or role=tablist — this is a combobox over a listbox",
+    "Claiming a keyboard chord the host application has not agreed to"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json for the authored mono values (via _validate_snippets.py, rc=0) AND knowledge/canon/canon.css for the four-theme legs (computed outside the gate)",
+    "result": "PASS with one REBIND made during the build, and one theme-level finding surfaced.",
+    "fourThemeContrast": {
+      "text/default on tertiary/background/default": "mono 17.40 / 16.48 · legacy 12.63 / 16.48 · console 17.40 / 16.48 · supercharge 17.45 / 13.91 — all PASS 4.5",
+      "text/secondary on tertiary/background/default": "mono 17.40 / 16.48 · legacy 7.57 / 5.93 · console 17.40 / 16.48 · supercharge 17.45 / 13.91 — all PASS 4.5",
+      "icon/default on tertiary/background/default": "mono 17.40 / 16.48 · legacy 17.40 / 16.48 · console 17.40 / 16.48 · supercharge 17.45 / 13.91 — all PASS 3.0",
+      "form/border/active on tertiary/background/default": "mono 21.00 / 16.48 · legacy 21.00 / 16.48 · console 21.00 / 16.48 · supercharge 19.44 / 13.91 — all PASS 3.0",
+      "text/default on tertiary/background/hover": "mono 15.27 / 15.72 · legacy 11.09 / 15.72 · console 15.27 / 15.72 · supercharge 14.02 / 13.19 — all PASS 4.5"
+    },
+    "$rebind": "form/border/default -> form/border/active on the field's focus-within stroke. The first draft used form/border/default, which the MONO-only snippet gate passed at 3.95:1 light / 4.17:1 dark. Measured against the real canon.css it is 1.69:1 in SUPERCHARGE DARK (#524842 on #2A2621) — under the 3:1 non-text floor, on the field's only visible focus affordance. A green that cannot fail in the theme where it is false is exactly what the #174 receipt refused to write, so the binding moved rather than the declaration.",
+    "$finding": "THE FAILING TOKEN IS A THEME-LEVEL SEAM, NOT THIS COMPONENT'S. #524842 is Supercharge's form/border/default AND its elevation/border AND its divider/border/*; #203 Lane D independently measured the same value at 1.96:1 as the Supercharge-dark elevation hairline. One seam, found twice from two directions. Queued for knowledge/_DS-IMPROVEMENTS.md via the lane receipt; that file is fenced to workers, so it is proposed, not written.",
+    "undeclaredPairs": "The hover surface against the panel (1.07:1 mono light) is deliberately NOT declared: it is never a meaning carrier on its own. divider/border/subsection against the panel is 1.14:1 light and also undeclared — a decorative separator, not a boundary a user must perceive to operate the component (1.4.11 governs meaning-bearing boundaries)."
+  },
+  "provenance": {
+    "source": "code",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Command-palette.reference.html",
+    "$note": "Not derived from a Figma node — the itinerary's 'mine from' column names Untitled / Tailwind as references. Built from Apollo's own gated grammar instead: the Search-field chrome, the Modals dialog semantics, the List-items row rhythm.",
+    "$review": "reviews/REVIEW-203-command-palette-four-themes-v1.html — 4 themes x light/dark, the real gated markup through the generated canon.css (#203)",
+    "$slots": "result.icon: 18px library glyph identifying the destination or action type.; result.label: Single line, truncating. .t-cm-label.; result.meta: Right-aligned trailing hint: the section a destination lives in, or the keyboard shortcut of an action."
+  },
+  "behaviour": {
+    "open": "A shortcut opens it. THE CHORD IS NOT RULED — the specimen shows Ctrl+K, and the platform-correct pairing (Ctrl on Windows, Command on macOS) plus whether the product claims that chord at all is PROPOSED #203, Dave's.",
+    "keyboard": "Up/Down move the highlight and wrap; Enter commits the highlighted option; Esc closes and returns focus to the opener; Tab is not used to move within the list.",
+    "results": "Grouped, group order fixed, groups with no results omitted. Ranking is application business and is not specified here.",
+    "motion": "standard ease only (160ms cubic-bezier(.4,0,.2,1)); a prefers-reduced-motion block neutralises every transition."
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Command-palette.reference.html"
+      }
+    ],
+    "reuses": [
+      {
+        "ref": "component:search-field",
+        "$note": "the field chrome is composed from it, not re-drawn"
+      },
+      {
+        "ref": "component:modals",
+        "$note": "dialog semantics"
+      },
+      {
+        "ref": "component:list-items",
+        "$note": "row rhythm"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:global-command-launcher"
+      }
+    ]
+  },
+  "$distinctFrom": [
+    "component:dropdown — role=menu hung off a trigger, no query",
+    "component:navigations — OPEN OVERLAP: its meta declares a masthead search flyout doing part of this job. PROPOSED #203, Dave's — component promotion is on the DO-NOT-RULE list."
+  ]
+}

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skeleton loader - four themes x light/dark (#203, Lane F)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; align-items:start;}
+  .pane{min-width:0; overflow-x:auto; padding:24px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .prop{border-left:3px solid #6893D3; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  table.m{border-collapse:collapse; margin:16px 0; background:#FFF;}
+  table.m th, table.m td{border:1px solid #E1E1E1; padding:6px 10px; text-align:left;}
+  .sw{display:inline-block; width:22px; height:12px; border:1px solid #B7B7B7; vertical-align:middle; margin-right:6px;}
+  iframe.live{width:100%; height:560px; border:1px solid #E1E1E1; background:#FFF;}
+</style>
+</head>
+<body>
+
+
+  <h1 class="t-cm-heading">Skeleton loader - four themes x light/dark (#203, Lane F)</h1>
+  <div class="lede"><p class="t-ed-body"><strong>Read this first.</strong> The brief sent me to build this component from nothing, on the strength of the itinerary spreadsheet marking it <em>Status = Gap</em>. <strong>It is not a gap - it already exists, and has for some time.</strong> I verified that by hand before writing a line: the snippet is in the tree, the meta is in the tree, and for File upload and Stepper the meta’s own purpose field names its itinerary row and says it was built. So I did not rebuild anything. Rebuilding would have thrown away real work. What I did instead is the part that genuinely had never been done: <strong>put the component in front of you across all four themes, light and dark</strong>, and chase down the specific defect the brief named.</p><p class="t-ed-body">Itinerary row 72. Every pane below is the real component markup rendered through the generated <code>canon.css</code>, not a copy.</p></div>
+
+<div class="note"><p class="t-ed-body-small"><strong>Defect found, for your eye - not fixed here:</strong> this snippet is the only one of my three that <strong>does not pull <code>canon/type.css</code></strong> (gate <code>TYPE-001</code>). Its headings and captions fall back to a raw <code>font-size</code> (14px and 12px) instead of a type composite. On <em>this</em> page it looks right, because this page links <code>type.css</code> itself - open the snippet on its own and it will not. The fix is one line, but it means editing a file outside my fence, so it is queued for you rather than done.</p></div><div class="prop"><p class="t-ed-body-small"><strong>PROPOSED #203, your eye owed.</strong> The bones are deliberately low-contrast and carry <code>aria-hidden</code>, so the manifest declares <strong>no contrast pairs at all</strong>. That is a defensible reading of 1.4.11 - decorative placeholders convey no information - but it is the only one of my three with an empty list, which means <strong>no gate can ever fail on the bone colour</strong>. Worth a look at the Supercharge and Legacy dark panes especially: are the bones still readable as <em>structure</em> there, or have they sunk into the background?</p></div>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono . light</div>
+        <div class="cn-skeleton-loader">
+<div>
+    <button id="resolveDemo-mono-light" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-mono-light" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono . dark</div>
+        <div class="cn-skeleton-loader">
+<div>
+    <button id="resolveDemo-mono-dark" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-mono-dark" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy . light</div>
+        <div class="cn-skeleton-loader">
+<div>
+    <button id="resolveDemo-legacy-light" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-legacy-light" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy . dark</div>
+        <div class="cn-skeleton-loader">
+<div>
+    <button id="resolveDemo-legacy-dark" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-legacy-dark" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console . light</div>
+        <div class="cn-skeleton-loader">
+<div>
+    <button id="resolveDemo-console-light" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-console-light" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console . dark</div>
+        <div class="cn-skeleton-loader">
+<div>
+    <button id="resolveDemo-console-dark" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-console-dark" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge . light</div>
+        <div class="cn-skeleton-loader">
+<div>
+    <button id="resolveDemo-supercharge-light" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-supercharge-light" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge . dark</div>
+        <div class="cn-skeleton-loader">
+<div>
+    <button id="resolveDemo-supercharge-dark" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-supercharge-dark" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Responsive - narrow container</h2>
+    <p class="t-ed-body-small" style="max-width:900px">Bones are percentage-width, so they reflow rather than collapse. The thing to check is that the card variant keeps its footprint - reserving the right footprint is the entire point of a skeleton.</p>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono . light . narrow</div>
+        <div class="cn-skeleton-loader" style="max-width:440px">
+<div>
+    <button id="resolveDemo-narrowmono-light" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-narrowmono-light" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono . dark . narrow</div>
+        <div class="cn-skeleton-loader" style="max-width:440px">
+<div>
+    <button id="resolveDemo-narrowmono-dark" type="button">Simulate content arriving</button>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo-narrowmono-dark" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme">
+    <h2 class="t-cm-section-label">Live behaviour (the real snippet, Apollo Mono only)</h2>
+    <p class="t-ed-body-small" style="max-width:900px">The panes above are static. They are the component markup rendered through the generated <code>canon.css</code>, which is the only route that shows all four themes - a snippet’s own inline CSS hard-codes the Mono values. To actually <em>drive</em> the component, here is the real file in a frame. It is Mono-only, by construction.</p>
+    <iframe class="live" src="../knowledge/snippets/Skeleton-loader.reference.html" title="Skeleton loader - four themes x light/dark (#203, Lane F) - live"></iframe>
+  </section>
+</body>
+</html>

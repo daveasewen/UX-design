@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OTP / PIN secure entry — four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .lede p{margin:0 0 12px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ body{padding:16px;} .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  /* .cap and .stateLabel are DROPPED by gen_canon_components (harness chrome, DROP_FIRST),
+     so the review surface supplies them — on canon composites, never a raw font-size. */
+  /* leading-trim is ON, so a stacked label needs an EXPLICIT tokenised gap — line-height
+     no longer separates it from the specimen above (gated-component runbook, vertical rhythm). */
+  .pane .cap, .pane .stateLabel{opacity:.62; margin:24px 0 8px; display:block;}
+  .pane > .cn- > *:first-child, .pane .cap:first-child, .pane .stateLabel:first-child{margin-top:0;}
+  .pane .sec{opacity:.6; margin:20px 0 8px;}
+  .pane .gallery{max-width:none; grid-template-columns:1fr;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note--open{border-left-color:#1A1A1A;}
+  .note ul{margin:8px 0 0; padding-left:20px;}
+  .note li{margin:0 0 6px;}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">OTP / PIN secure entry</h1>
+  <div class="lede">
+    <p class="t-ed-body">Segmented code entry (itinerary row 19) — six-cell OTP and masked four-cell PIN. Border carries state, the RAG signal lives in the message, numerals are tabular figure composites.</p>
+    <p class="t-ed-body">Every pane below is the <strong>real gated snippet markup</strong>, copied verbatim and
+    rendered through the generated <code>canon.css</code> — not a redraw. Four Apollo themes, each light and dark.
+    Behaviour (typing, auto-advance, blur-normalise) is not wired here; it lives in the gated snippet and the
+    showroom. This surface is for your <em>eye</em> across themes.</p>
+    <div class="note">
+      <p class="t-ed-body"><strong>Premise correction, before anything else.</strong> The #203 brief and the
+      itinerary (dated 2026-07-14) both list this component as a <strong>P1 Gap</strong>. It is not.
+      It was built, gated and generated on <strong>2026-07-22</strong> (Phase-2 wave 1) and has a snippet, a meta,
+      a <code>.cn-</code> canon partial and a showroom page. The itinerary row is <strong>stale by five weeks</strong>.
+      Nothing was rebuilt here; what was missing was <strong>this</strong> — a four-theme surface for your eye.
+      Correcting the itinerary is <strong>yours</strong>, not a sub's.</p>
+    </div>
+    <div class="note note--open">
+      <p class="t-ed-body"><strong>Open — the OTP cell drops under the 44px minimum on the narrowest screen.</strong>
+      Measured in a real browser, not read off the CSS: at 1180px the cell renders <strong>50&times;58</strong> —
+      comfortably over. At 480px the <code>max-width:480px</code> rule shrinks it to <strong>42&times;50</strong>,
+      so it is <strong>2px under the ruled 44px minimum on the width</strong>, on the narrowest device, which is
+      exactly where a one-handed thumb enters an OTP. Height is fine; only the width is short. The Resend button
+      holds 44px at both widths.</p>
+      <p class="t-ed-body"><strong>PROPOSED #203, your eye owed:</strong> take the narrow cell to
+      <code>44&times;48</code> content (46&times;50 rendered), which clears the minimum and still fits six cells
+      plus the separator at 320px. Not changed here — this lane may not edit a gated snippet.</p>
+    </div>
+    <div class="note">
+      <p class="t-ed-body"><strong>What you are looking at is missing two dark-mode rules — and the screenshot is
+      how we found out.</strong> In the dark panes above, the error roundel renders <strong>red</strong>. In the
+      gated snippet it is ruled <strong>white shape with a black mark</strong> ("policy dark"), and the dark error
+      border is ruled to go full red. Neither rule reaches <code>canon.css</code>.</p>
+      <p class="t-ed-body">Cause, quoted: <code>gen_canon_components.py</code> drops any rule whose selector
+      <code>startswith("[data-theme")</code>. That is right for the harness variable blocks
+      (<code>[data-theme="light"]{--page:#FFF}</code>) and wrong for a component rule that merely happens to be
+      dark-scoped (<code>[data-theme="dark"] .se-msg .ic{color:#FFFFFF}</code>). The very next function in that
+      file already has commented machinery for keeping a leading root-ancestor at the front and scoping the
+      descendant after it — the drop test just fires first, so that machinery never sees these rules.</p>
+      <p class="t-ed-body"><strong>It is not this component.</strong> Probed across the library:
+      <strong>33 rules in 19 of 76 snippets</strong> are silently absent from <code>canon.css</code> the same way —
+      Notifications (4), Form-layout (3), Input-fields (3), the date/time pickers, Textarea, Stepper, four charts.
+      Every gate is green on all of it, because no gate compares the snippet to the partial generated from it.
+      <strong>PROPOSED #203 to the conductor</strong> for <code>_DS-IMPROVEMENTS.md</code>: discriminate the drop
+      (no descendant = var block, drop; has a descendant = scope it), plus a gate that parses the generated
+      partial in its own grammar. Neither is a sub's to make — this lane may not touch a shared generator.</p>
+    </div>
+
+  </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="ic-secure-key" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.8 8.6C5.242 8.6 5.6 8.242 5.6 7.8C5.6 7.358 5.242 7 4.8 7C4.358 7 4 7.358 4 7.8C4 8.242 4.358 8.6 4.8 8.6ZM4.8 15C5.242 15 5.6 14.642 5.6 14.2C5.6 13.758 5.242 13.4 4.8 13.4C4.358 13.4 4 13.758 4 14.2C4 14.642 4.358 15 4.8 15ZM4.8 11.8C5.242 11.8 5.6 11.442 5.6 11C5.6 10.558 5.242 10.2 4.8 10.2C4.358 10.2 4 10.558 4 11C4 11.442 4.358 11.8 4.8 11.8ZM9 8.6C9.442 8.6 9.8 8.242 9.8 7.8C9.8 7.358 9.442 7 9 7C8.558 7 8.2 7.358 8.2 7.8C8.2 8.242 8.558 8.6 9 8.6ZM9 15C9.442 15 9.8 14.642 9.8 14.2C9.8 13.758 9.442 13.4 9 13.4C8.558 13.4 8.2 13.758 8.2 14.2C8.2 14.642 8.558 15 9 15ZM9 11.8C9.442 11.8 9.8 11.442 9.8 11C9.8 10.558 9.442 10.2 9 10.2C8.558 10.2 8.2 10.558 8.2 11C8.2 11.442 8.558 11.8 9 11.8ZM13.2 8.6C13.642 8.6 14 8.242 14 7.8C14 7.358 13.642 7 13.2 7C12.758 7 12.4 7.358 12.4 7.8C12.4 8.242 12.758 8.6 13.2 8.6ZM13.2 15C13.642 15 14 14.642 14 14.2C14 13.758 13.642 13.4 13.2 13.4C12.758 13.4 12.4 13.758 12.4 14.2C12.4 14.642 12.758 15 13.2 15ZM13.2 11.8C13.642 11.8 14 11.442 14 11C14 10.558 13.642 10.2 13.2 10.2C12.758 10.2 12.4 10.558 12.4 11C12.4 11.442 12.758 11.8 13.2 11.8ZM17 1.5C17 0.675 16.325 0 15.5 0H2.5C1.675 0 1 0.675 1 1.5V16.5C1 17.325 1.675 18 2.5 18H15.5C16.325 18 17 17.325 17 16.5V1.5ZM15.8 16.5C15.8 16.663 15.663 16.8 15.5 16.8H2.5C2.337 16.8 2.2 16.663 2.2 16.5V5H15.8V16.5ZM15.8 3.8H2.2V1.5C2.2 1.337 2.337 1.2 2.5 1.2H15.5C15.663 1.2 15.8 1.337 15.8 1.5V3.8Z" fill="currentColor"/></symbol>
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+  </svg>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-secure-entry">
+<h2 class="sec">One-time passcode — live (6-digit, try 123456)</h2>
+  
+
+  <div class="se-group" id="otp--mono-light">
+    <span class="se-lblrow t-cm-label" id="otp-label--mono-light"><span class="ic-lead" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-secure-key"/></svg></span>Enter the 6-digit code</span>
+    <div class="se-cells" role="group" aria-labelledby="otp-label--mono-light" aria-describedby="otp-msg--mono-light">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6">
+      <span class="se-sep t-cm-section-label" aria-hidden="true">·</span>
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+    </div>
+    <div class="se-msg" id="otp-msg--mono-light" role="status" aria-live="polite"></div>
+    <div class="se-resendrow">
+      <button class="se-btn t-cm-button" id="resend--mono-light" type="button" disabled>Resend code</button>
+      <span class="se-wait t-ed-body-small" id="resend-wait--mono-light">in <span id="resend-count--mono-light">30</span>s</span>
+    </div>
+  </div>
+
+  <h2 class="sec">PIN — live (4-digit, masked, try 1234)</h2>
+  <div class="se-group" id="pin--mono-light">
+    <span class="se-lblrow t-cm-label" id="pin-label--mono-light">Enter your PIN</span>
+    <div class="se-cells" role="group" aria-labelledby="pin-label--mono-light" aria-describedby="pin-msg--mono-light">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4">
+    </div>
+    <div class="se-msg" id="pin-msg--mono-light" role="status" aria-live="polite"></div>
+  </div>
+
+  <h2 class="sec" style="margin-top:2.75rem;">States</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Empty</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty example"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"></div></div>
+    </div>
+    <div>
+      <p class="cap">Done — verified, muted border</p>
+      <div class="se-group is-done">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="4" readonly tabindex="-1" aria-label="Done example"><input class="se-cell t-cm-figure-3" value="8" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="1" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="9" readonly tabindex="-1" aria-label="Done"></div>
+        <div class="se-msg is-ok" data-carries="symbol label"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><p class="t-ed-body">Code verified.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Error — signal in the message</p>
+      <div class="se-group is-error">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error example"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"></div>
+        <div class="se-msg"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">That code is not right — check the latest message.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled example"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"></div></div>
+    </div>
+  </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-secure-entry">
+<h2 class="sec">One-time passcode — live (6-digit, try 123456)</h2>
+  
+
+  <div class="se-group" id="otp--mono-dark">
+    <span class="se-lblrow t-cm-label" id="otp-label--mono-dark"><span class="ic-lead" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-secure-key"/></svg></span>Enter the 6-digit code</span>
+    <div class="se-cells" role="group" aria-labelledby="otp-label--mono-dark" aria-describedby="otp-msg--mono-dark">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6">
+      <span class="se-sep t-cm-section-label" aria-hidden="true">·</span>
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+    </div>
+    <div class="se-msg" id="otp-msg--mono-dark" role="status" aria-live="polite"></div>
+    <div class="se-resendrow">
+      <button class="se-btn t-cm-button" id="resend--mono-dark" type="button" disabled>Resend code</button>
+      <span class="se-wait t-ed-body-small" id="resend-wait--mono-dark">in <span id="resend-count--mono-dark">30</span>s</span>
+    </div>
+  </div>
+
+  <h2 class="sec">PIN — live (4-digit, masked, try 1234)</h2>
+  <div class="se-group" id="pin--mono-dark">
+    <span class="se-lblrow t-cm-label" id="pin-label--mono-dark">Enter your PIN</span>
+    <div class="se-cells" role="group" aria-labelledby="pin-label--mono-dark" aria-describedby="pin-msg--mono-dark">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4">
+    </div>
+    <div class="se-msg" id="pin-msg--mono-dark" role="status" aria-live="polite"></div>
+  </div>
+
+  <h2 class="sec" style="margin-top:2.75rem;">States</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Empty</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty example"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"></div></div>
+    </div>
+    <div>
+      <p class="cap">Done — verified, muted border</p>
+      <div class="se-group is-done">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="4" readonly tabindex="-1" aria-label="Done example"><input class="se-cell t-cm-figure-3" value="8" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="1" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="9" readonly tabindex="-1" aria-label="Done"></div>
+        <div class="se-msg is-ok" data-carries="symbol label"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><p class="t-ed-body">Code verified.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Error — signal in the message</p>
+      <div class="se-group is-error">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error example"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"></div>
+        <div class="se-msg"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">That code is not right — check the latest message.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled example"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"></div></div>
+    </div>
+  </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-secure-entry">
+<h2 class="sec">One-time passcode — live (6-digit, try 123456)</h2>
+  
+
+  <div class="se-group" id="otp--legacy-light">
+    <span class="se-lblrow t-cm-label" id="otp-label--legacy-light"><span class="ic-lead" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-secure-key"/></svg></span>Enter the 6-digit code</span>
+    <div class="se-cells" role="group" aria-labelledby="otp-label--legacy-light" aria-describedby="otp-msg--legacy-light">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6">
+      <span class="se-sep t-cm-section-label" aria-hidden="true">·</span>
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+    </div>
+    <div class="se-msg" id="otp-msg--legacy-light" role="status" aria-live="polite"></div>
+    <div class="se-resendrow">
+      <button class="se-btn t-cm-button" id="resend--legacy-light" type="button" disabled>Resend code</button>
+      <span class="se-wait t-ed-body-small" id="resend-wait--legacy-light">in <span id="resend-count--legacy-light">30</span>s</span>
+    </div>
+  </div>
+
+  <h2 class="sec">PIN — live (4-digit, masked, try 1234)</h2>
+  <div class="se-group" id="pin--legacy-light">
+    <span class="se-lblrow t-cm-label" id="pin-label--legacy-light">Enter your PIN</span>
+    <div class="se-cells" role="group" aria-labelledby="pin-label--legacy-light" aria-describedby="pin-msg--legacy-light">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4">
+    </div>
+    <div class="se-msg" id="pin-msg--legacy-light" role="status" aria-live="polite"></div>
+  </div>
+
+  <h2 class="sec" style="margin-top:2.75rem;">States</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Empty</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty example"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"></div></div>
+    </div>
+    <div>
+      <p class="cap">Done — verified, muted border</p>
+      <div class="se-group is-done">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="4" readonly tabindex="-1" aria-label="Done example"><input class="se-cell t-cm-figure-3" value="8" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="1" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="9" readonly tabindex="-1" aria-label="Done"></div>
+        <div class="se-msg is-ok" data-carries="symbol label"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><p class="t-ed-body">Code verified.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Error — signal in the message</p>
+      <div class="se-group is-error">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error example"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"></div>
+        <div class="se-msg"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">That code is not right — check the latest message.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled example"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"></div></div>
+    </div>
+  </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-secure-entry">
+<h2 class="sec">One-time passcode — live (6-digit, try 123456)</h2>
+  
+
+  <div class="se-group" id="otp--legacy-dark">
+    <span class="se-lblrow t-cm-label" id="otp-label--legacy-dark"><span class="ic-lead" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-secure-key"/></svg></span>Enter the 6-digit code</span>
+    <div class="se-cells" role="group" aria-labelledby="otp-label--legacy-dark" aria-describedby="otp-msg--legacy-dark">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6">
+      <span class="se-sep t-cm-section-label" aria-hidden="true">·</span>
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+    </div>
+    <div class="se-msg" id="otp-msg--legacy-dark" role="status" aria-live="polite"></div>
+    <div class="se-resendrow">
+      <button class="se-btn t-cm-button" id="resend--legacy-dark" type="button" disabled>Resend code</button>
+      <span class="se-wait t-ed-body-small" id="resend-wait--legacy-dark">in <span id="resend-count--legacy-dark">30</span>s</span>
+    </div>
+  </div>
+
+  <h2 class="sec">PIN — live (4-digit, masked, try 1234)</h2>
+  <div class="se-group" id="pin--legacy-dark">
+    <span class="se-lblrow t-cm-label" id="pin-label--legacy-dark">Enter your PIN</span>
+    <div class="se-cells" role="group" aria-labelledby="pin-label--legacy-dark" aria-describedby="pin-msg--legacy-dark">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4">
+    </div>
+    <div class="se-msg" id="pin-msg--legacy-dark" role="status" aria-live="polite"></div>
+  </div>
+
+  <h2 class="sec" style="margin-top:2.75rem;">States</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Empty</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty example"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"></div></div>
+    </div>
+    <div>
+      <p class="cap">Done — verified, muted border</p>
+      <div class="se-group is-done">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="4" readonly tabindex="-1" aria-label="Done example"><input class="se-cell t-cm-figure-3" value="8" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="1" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="9" readonly tabindex="-1" aria-label="Done"></div>
+        <div class="se-msg is-ok" data-carries="symbol label"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><p class="t-ed-body">Code verified.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Error — signal in the message</p>
+      <div class="se-group is-error">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error example"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"></div>
+        <div class="se-msg"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">That code is not right — check the latest message.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled example"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"></div></div>
+    </div>
+  </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-secure-entry">
+<h2 class="sec">One-time passcode — live (6-digit, try 123456)</h2>
+  
+
+  <div class="se-group" id="otp--console-light">
+    <span class="se-lblrow t-cm-label" id="otp-label--console-light"><span class="ic-lead" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-secure-key"/></svg></span>Enter the 6-digit code</span>
+    <div class="se-cells" role="group" aria-labelledby="otp-label--console-light" aria-describedby="otp-msg--console-light">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6">
+      <span class="se-sep t-cm-section-label" aria-hidden="true">·</span>
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+    </div>
+    <div class="se-msg" id="otp-msg--console-light" role="status" aria-live="polite"></div>
+    <div class="se-resendrow">
+      <button class="se-btn t-cm-button" id="resend--console-light" type="button" disabled>Resend code</button>
+      <span class="se-wait t-ed-body-small" id="resend-wait--console-light">in <span id="resend-count--console-light">30</span>s</span>
+    </div>
+  </div>
+
+  <h2 class="sec">PIN — live (4-digit, masked, try 1234)</h2>
+  <div class="se-group" id="pin--console-light">
+    <span class="se-lblrow t-cm-label" id="pin-label--console-light">Enter your PIN</span>
+    <div class="se-cells" role="group" aria-labelledby="pin-label--console-light" aria-describedby="pin-msg--console-light">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4">
+    </div>
+    <div class="se-msg" id="pin-msg--console-light" role="status" aria-live="polite"></div>
+  </div>
+
+  <h2 class="sec" style="margin-top:2.75rem;">States</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Empty</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty example"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"></div></div>
+    </div>
+    <div>
+      <p class="cap">Done — verified, muted border</p>
+      <div class="se-group is-done">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="4" readonly tabindex="-1" aria-label="Done example"><input class="se-cell t-cm-figure-3" value="8" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="1" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="9" readonly tabindex="-1" aria-label="Done"></div>
+        <div class="se-msg is-ok" data-carries="symbol label"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><p class="t-ed-body">Code verified.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Error — signal in the message</p>
+      <div class="se-group is-error">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error example"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"></div>
+        <div class="se-msg"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">That code is not right — check the latest message.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled example"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"></div></div>
+    </div>
+  </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-secure-entry">
+<h2 class="sec">One-time passcode — live (6-digit, try 123456)</h2>
+  
+
+  <div class="se-group" id="otp--console-dark">
+    <span class="se-lblrow t-cm-label" id="otp-label--console-dark"><span class="ic-lead" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-secure-key"/></svg></span>Enter the 6-digit code</span>
+    <div class="se-cells" role="group" aria-labelledby="otp-label--console-dark" aria-describedby="otp-msg--console-dark">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6">
+      <span class="se-sep t-cm-section-label" aria-hidden="true">·</span>
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+    </div>
+    <div class="se-msg" id="otp-msg--console-dark" role="status" aria-live="polite"></div>
+    <div class="se-resendrow">
+      <button class="se-btn t-cm-button" id="resend--console-dark" type="button" disabled>Resend code</button>
+      <span class="se-wait t-ed-body-small" id="resend-wait--console-dark">in <span id="resend-count--console-dark">30</span>s</span>
+    </div>
+  </div>
+
+  <h2 class="sec">PIN — live (4-digit, masked, try 1234)</h2>
+  <div class="se-group" id="pin--console-dark">
+    <span class="se-lblrow t-cm-label" id="pin-label--console-dark">Enter your PIN</span>
+    <div class="se-cells" role="group" aria-labelledby="pin-label--console-dark" aria-describedby="pin-msg--console-dark">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4">
+    </div>
+    <div class="se-msg" id="pin-msg--console-dark" role="status" aria-live="polite"></div>
+  </div>
+
+  <h2 class="sec" style="margin-top:2.75rem;">States</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Empty</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty example"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"></div></div>
+    </div>
+    <div>
+      <p class="cap">Done — verified, muted border</p>
+      <div class="se-group is-done">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="4" readonly tabindex="-1" aria-label="Done example"><input class="se-cell t-cm-figure-3" value="8" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="1" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="9" readonly tabindex="-1" aria-label="Done"></div>
+        <div class="se-msg is-ok" data-carries="symbol label"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><p class="t-ed-body">Code verified.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Error — signal in the message</p>
+      <div class="se-group is-error">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error example"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"></div>
+        <div class="se-msg"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">That code is not right — check the latest message.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled example"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"></div></div>
+    </div>
+  </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-secure-entry">
+<h2 class="sec">One-time passcode — live (6-digit, try 123456)</h2>
+  
+
+  <div class="se-group" id="otp--supercharge-light">
+    <span class="se-lblrow t-cm-label" id="otp-label--supercharge-light"><span class="ic-lead" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-secure-key"/></svg></span>Enter the 6-digit code</span>
+    <div class="se-cells" role="group" aria-labelledby="otp-label--supercharge-light" aria-describedby="otp-msg--supercharge-light">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6">
+      <span class="se-sep t-cm-section-label" aria-hidden="true">·</span>
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+    </div>
+    <div class="se-msg" id="otp-msg--supercharge-light" role="status" aria-live="polite"></div>
+    <div class="se-resendrow">
+      <button class="se-btn t-cm-button" id="resend--supercharge-light" type="button" disabled>Resend code</button>
+      <span class="se-wait t-ed-body-small" id="resend-wait--supercharge-light">in <span id="resend-count--supercharge-light">30</span>s</span>
+    </div>
+  </div>
+
+  <h2 class="sec">PIN — live (4-digit, masked, try 1234)</h2>
+  <div class="se-group" id="pin--supercharge-light">
+    <span class="se-lblrow t-cm-label" id="pin-label--supercharge-light">Enter your PIN</span>
+    <div class="se-cells" role="group" aria-labelledby="pin-label--supercharge-light" aria-describedby="pin-msg--supercharge-light">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4">
+    </div>
+    <div class="se-msg" id="pin-msg--supercharge-light" role="status" aria-live="polite"></div>
+  </div>
+
+  <h2 class="sec" style="margin-top:2.75rem;">States</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Empty</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty example"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"></div></div>
+    </div>
+    <div>
+      <p class="cap">Done — verified, muted border</p>
+      <div class="se-group is-done">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="4" readonly tabindex="-1" aria-label="Done example"><input class="se-cell t-cm-figure-3" value="8" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="1" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="9" readonly tabindex="-1" aria-label="Done"></div>
+        <div class="se-msg is-ok" data-carries="symbol label"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><p class="t-ed-body">Code verified.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Error — signal in the message</p>
+      <div class="se-group is-error">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error example"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"></div>
+        <div class="se-msg"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">That code is not right — check the latest message.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled example"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"></div></div>
+    </div>
+  </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-secure-entry">
+<h2 class="sec">One-time passcode — live (6-digit, try 123456)</h2>
+  
+
+  <div class="se-group" id="otp--supercharge-dark">
+    <span class="se-lblrow t-cm-label" id="otp-label--supercharge-dark"><span class="ic-lead" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-secure-key"/></svg></span>Enter the 6-digit code</span>
+    <div class="se-cells" role="group" aria-labelledby="otp-label--supercharge-dark" aria-describedby="otp-msg--supercharge-dark">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6">
+      <span class="se-sep t-cm-section-label" aria-hidden="true">·</span>
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+      <input class="se-cell t-cm-figure-3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+    </div>
+    <div class="se-msg" id="otp-msg--supercharge-dark" role="status" aria-live="polite"></div>
+    <div class="se-resendrow">
+      <button class="se-btn t-cm-button" id="resend--supercharge-dark" type="button" disabled>Resend code</button>
+      <span class="se-wait t-ed-body-small" id="resend-wait--supercharge-dark">in <span id="resend-count--supercharge-dark">30</span>s</span>
+    </div>
+  </div>
+
+  <h2 class="sec">PIN — live (4-digit, masked, try 1234)</h2>
+  <div class="se-group" id="pin--supercharge-dark">
+    <span class="se-lblrow t-cm-label" id="pin-label--supercharge-dark">Enter your PIN</span>
+    <div class="se-cells" role="group" aria-labelledby="pin-label--supercharge-dark" aria-describedby="pin-msg--supercharge-dark">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4">
+      <input class="se-cell t-cm-figure-3" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4">
+    </div>
+    <div class="se-msg" id="pin-msg--supercharge-dark" role="status" aria-live="polite"></div>
+  </div>
+
+  <h2 class="sec" style="margin-top:2.75rem;">States</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Empty</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty example"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"><input class="se-cell t-cm-figure-3" readonly tabindex="-1" aria-label="Empty"></div></div>
+    </div>
+    <div>
+      <p class="cap">Done — verified, muted border</p>
+      <div class="se-group is-done">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="4" readonly tabindex="-1" aria-label="Done example"><input class="se-cell t-cm-figure-3" value="8" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="1" readonly tabindex="-1" aria-label="Done"><input class="se-cell t-cm-figure-3" value="9" readonly tabindex="-1" aria-label="Done"></div>
+        <div class="se-msg is-ok" data-carries="symbol label"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><p class="t-ed-body">Code verified.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Error — signal in the message</p>
+      <div class="se-group is-error">
+        <div class="se-cells"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error example"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"><input class="se-cell t-cm-figure-3" value="0" readonly tabindex="-1" aria-invalid="true" aria-label="Error"></div>
+        <div class="se-msg"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">That code is not right — check the latest message.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="se-group"><div class="se-cells"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled example"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"><input class="se-cell t-cm-figure-3" disabled aria-label="Disabled"></div></div>
+    </div>
+  </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

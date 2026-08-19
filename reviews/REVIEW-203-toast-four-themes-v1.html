@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toast / snackbar &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 24px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--background-default,#1A1A1A);}   /* the PAGE token: REVIEW-174 used --surface-digital-black, a different token, which misreports what the overlay floats on */
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .pane-sub{opacity:.65; margin:22px 0 8px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .band{border:1px solid #E1E1E1; background:#FFF; padding:16px 20px; margin:0 0 20px; max-width:900px;}
+  .band ul{margin:8px 0 0; padding-left:20px;}
+  .band li{margin:0 0 7px;}
+  .tag{display:inline-block; border:1px solid #1A1A1A; padding:1px 6px; margin-right:6px;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="to-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+    <symbol id="to-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+    <symbol id="to-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+    <symbol id="to-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="ic-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+    <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+    <symbol id="ic-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+    <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+  <h1 class="t-cm-heading">Toast / snackbar</h1>
+  <div class="lede">
+    <p class="t-ed-body">The transient member of the feedback family: it appears on an event, confirms it,
+    and leaves. Every pane below is the real gated markup rendered through the generated
+    <code>canon.css</code> &mdash; not a copy, not a redraw.</p>
+    <div class="note">
+      <p class="t-ed-body-small"><strong>Read this first &mdash; the brief's premise did not hold.</strong>
+      Wave&nbsp;3 was briefed from the itinerary of <strong>2026-07-14</strong>, which marks this component
+      <em>Gap</em>. It is not a gap: the gated snippet, the meta, the showroom page and the
+      <code>MIGRATED_SNIPPETS</code> entry all landed on <strong>2026-07-22</strong>, eight days after that
+      snapshot. Nothing was re-built here. This page is an <strong>audit surface</strong>: the existing
+      approved artefact, rendered through the real generated <code>canon.css</code> across all four themes,
+      so your eye can rule on what is actually there. Everything below is
+      <strong>PROPOSED #203, Dave's eye owed</strong> &mdash; nothing on this page is a ruling.</p>
+    </div>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">How Toast differs from its gated siblings</p>
+    <ul class="t-ed-body-small">
+      <li><span class="tag">vs Alert</span> Alert is the <strong>persistent, in-flow</strong> callout that stays
+        until answered. Toast is <strong>transient</strong>: it appears on an event, confirms, and leaves on a
+        6s timer (paused while you hover or focus it). Toast therefore has <strong>no error variant</strong> by
+        design &mdash; an error must persist, so errors route to Alert (<code>role="alert"</code>). Toast is
+        always <code>role="status"</code>, polite, never assertive.</li>
+      <li><span class="tag">vs Banner</span> Banner is page-level and sits in the document flow. Toast is
+        viewport-fixed, stacked bottom-left, and overlays.</li>
+      <li><span class="tag">vs Notifications</span> <strong>This one is not clean &mdash; see below.</strong></li>
+    </ul>
+  </div>
+  <div class="note">
+    <p class="t-ed-body-small"><strong>Finding &mdash; Apollo has two snackbars, with two different chromes.</strong>
+    The gated <em>Notifications</em> component already carries a <strong>Snackbar</strong> placement
+    (<code>Notifications.reference.html:190&ndash;193</code>): tinted ground plus elevation shadow,
+    warning / success / information, error omitted, <code>role="status"</code>. <em>Toast</em> is the same
+    object with the opposite chrome: an <strong>elevated neutral raised surface</strong>, no tint, the status
+    glyph sitting directly on it. Same job, same statuses, same ARIA, two visual answers. The third strip in
+    every pane above puts them side by side so you can rule by eye.
+    <br><strong>PROPOSED #203, Dave's eye owed:</strong> either Toast supersedes the Notifications Snackbar
+    placement and that placement retires, or the two are given a stated reason to differ. This is a
+    duplicate-surface question and a promotion question &mdash; both yours, not a sub's.</p>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">The rest of the audit &mdash; all PROPOSED, all yours</p>
+    <ul class="t-ed-body-small">
+      <li><strong>Dark-mode roundel &mdash; open since 2026-07-22, never answered.</strong> The snippet's own
+        manifest note says the dark coloured roundel on the elevated neutral ground was "flagged in the worker
+        receipt for confirmation": the tint-surface white-shape ruling targets <em>tinted</em> grounds, not
+        elevated neutral ones. It was flagged and then nothing happened. Look at the four dark panes.</li>
+      <li><strong>The stack sits bottom-<em>left</em></strong> (<code>left:24px; bottom:24px</code>). MD3 agrees;
+        Ant puts it top-right. Never ruled either way.</li>
+      <li><strong>44px hit area &mdash; checked by hand, passes.</strong> The action is a real 44px-tall button;
+        the dismiss &times; is a 24px visual with a 44&times;44 <code>::before</code> hit target. No gate
+        enforces this &mdash; it was measured in the source, not assumed.</li>
+      <li><strong>Type-composite debt: 3 violations</strong>, all in <em>demo chrome</em> (<code>body</code>
+        font-family, the demo <code>h2</code>'s <code>font-size:14px</code> and <code>font-weight:500</code>)
+        &mdash; none in the component itself. The gate already keeps a demo-chrome advisory bucket; these are
+        not in it.</li>
+      <li><strong>Colour is never the only carrier.</strong> Every status toast carries
+        <code>data-carries="symbol label"</code> &mdash; a glyph and a sentence. Correct for the problem hues.</li>
+    </ul>
+  </div>  <div class="note">
+    <p class="t-ed-body-small"><strong>Measured finding, all four themes &mdash; in Supercharge dark the only thing
+    holding this overlay off the page is a hairline at 1.96:1.</strong> These overlays are lifted by the
+    elevation recipe: a shadow in light, a 1px border in dark. In <strong>light</strong> the panel is
+    <em>exactly</em> the page colour in every theme (1.00:1) and the shadow does all the work &mdash; that is
+    the canon recipe and it reads fine. In <strong>dark</strong> the border takes over, and it is not equal
+    across themes: mono's hairline is <code>#808080</code> on <code>#1A1A1A</code> = <strong>4.41:1</strong>,
+    comfortable; Supercharge's is <code>#524842</code> on <code>#1A1A1A</code> = <strong>1.96:1</strong>,
+    <strong>under the 3:1 non-text floor</strong>. Compare the mono-dark and supercharge-dark panes below.
+    Pre-existing and theme-level, not this component's &mdash; but it is the component that shows it.
+    <strong>PROPOSED #203, Dave's eye owed.</strong></p>
+  </div>
+
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-toast">
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">With an action</div>
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">Notifications &middot; Snackbar placement &mdash; the same job, a different chrome</div>
+          <div class="cn-notifications">
+    <div class="note tint snack warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main">Message description.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-toast">
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">With an action</div>
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">Notifications &middot; Snackbar placement &mdash; the same job, a different chrome</div>
+          <div class="cn-notifications">
+    <div class="note tint snack warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main">Message description.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-toast">
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">With an action</div>
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">Notifications &middot; Snackbar placement &mdash; the same job, a different chrome</div>
+          <div class="cn-notifications">
+    <div class="note tint snack warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main">Message description.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-toast">
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">With an action</div>
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">Notifications &middot; Snackbar placement &mdash; the same job, a different chrome</div>
+          <div class="cn-notifications">
+    <div class="note tint snack warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main">Message description.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-toast">
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">With an action</div>
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">Notifications &middot; Snackbar placement &mdash; the same job, a different chrome</div>
+          <div class="cn-notifications">
+    <div class="note tint snack warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main">Message description.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-toast">
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">With an action</div>
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">Notifications &middot; Snackbar placement &mdash; the same job, a different chrome</div>
+          <div class="cn-notifications">
+    <div class="note tint snack warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main">Message description.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-toast">
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">With an action</div>
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">Notifications &middot; Snackbar placement &mdash; the same job, a different chrome</div>
+          <div class="cn-notifications">
+    <div class="note tint snack warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main">Message description.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-toast">
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">With an action</div>
+  <div class="spec">
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+          <div class="pane-sub t-cm-caption">Notifications &middot; Snackbar placement &mdash; the same job, a different chrome</div>
+          <div class="cn-notifications">
+    <div class="note tint snack warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main">Message description.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KPI tile — reference implementation (PROPOSED #203)</title>
+<!--
+  ⚠⚠ PROPOSED #203, 2026-08-19 (Wave 3b, Lane K). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. This file is a SPECIMEN for review, built through the
+  gated-component route so it is reviewable at the same fidelity as a gated snippet — but the
+  component it specimens is FLOATED, NOT RULED, and it must not be read as canon.
+
+  ★★ WHY "PROPOSED" IS LOAD-BEARING HERE — s182-D2 (#182) names this exact component and
+  explicitly declines to rule it. Dave, verbatim, quoted in the ruling: "might be a partially
+  built trend card with option, I haven't decided yet". The ruling's own words: "FLOATED, NOT
+  RULED: the trend-card component itself — never launder into a ruling." Row 55 of the
+  2026-07-14 itinerary ("KPI / trend tile — Metric + delta + spark") is therefore NOT an
+  ordinary gap a worker may close. It is Dave's open question, and this file is the drawn
+  proposal that lets him answer it by eye. Nothing here closes it.
+
+  HOW THIS DIFFERS FROM THE GATED Stat-card (the brief's explicit requirement) ————————————
+  Stat card (snippets/Stat-card.reference.html, GATED) is a PASSIVE ATOM: label · value · delta ·
+  period. It already carries full delta semantics — arrow + sign + wording, the R-D5 three-channel
+  treatment — so "metric + delta" is NOT the gap. Everything Stat card does, it keeps doing.
+  KPI tile is a MOLECULE that COMPOSES two already-approved artefacts and adds nothing drawn
+  from scratch:
+    (1) Stat card's anatomy, copied VERBATIM (label/value/delta/period markup + classes), and
+    (2) the Chart-sparkline atom at its INLINE scale, copied VERBATIM (.spark-inline, 200×48
+        viewBox @ 44px, stroke 2, endpoint dot r3, aria-hidden) inside a slot.
+  THE ONE REAL DIFFERENCE: Stat card states the CHANGE (a signed delta against one prior period);
+  KPI tile states the SHAPE of the change (twelve points of history). Choose Stat card when the
+  reader needs the number and whether it moved; choose KPI tile when the reader needs to see HOW
+  it moved. A KPI tile with no series is a Stat card and should be one — do not ship an empty spark.
+  The sparkline atom ANTICIPATED this composition: its own source calls .spark-inline "the KPI /
+  Stat-card scale" and carries .spark-kpi-slot as "a SPECIMEN-ONLY wrapper standing in for the
+  Stat-card tile". This file is that slot made real. Neither source file is touched.
+
+  ⛔⛔ THE LIVE TWO-RED QUESTION IS VISIBLE ON THIS TILE — DAVE'S, DELIBERATELY UNRESOLVED.
+  This tile paints TWO green/red seats side by side, in the same card, because its two parents
+  bind different seats and BOTH bindings were inherited unchanged, exactly as briefed:
+    · the DELTA ARROW takes rag/success #66CC8D / rag/error #F6604C — the FILL seat, inherited
+      byte-for-byte from the gated Stat-card manifest. On a white card that green measures
+      1.980:1 (measured #203 with the repo's own _contrast_utils.contrast_ratio).
+    · the SPARK STROKE takes rag/success-ink #137F3C / rag/error-ink #DA1A00 — the INK seat,
+      which s182-D3 RULES for this atom ("the rules for colours should just follow the red and
+      green ink colours for all themes"), and which s182-D3's own governs-list says "the future
+      trend-card component inherits ... when built". On a white card that green measures 5.090:1.
+  ⚠ MEASURED ACROSS ALL FOUR THEMES #203, WHICH CORRECTS A SMALLER CLAIM I FIRST WROTE HERE. My
+  first draft of this note said the two seats "converge in dark mode". THE RENDER SAYS OTHERWISE:
+  they converge in MONO DARK ONLY. The spark ink is theme-INVARIANT by ruling (s182-D3 measured at
+  #182: zero theme-level series overrides), while the arrow fill FORKS PER THEME — so the two seats
+  disagree in SEVEN OF EIGHT PANES. Driven in a real browser, computed values read off the DOM:
+
+    theme        mode   arrow (fill seat)   spark (ink seat)   agree?
+    mono         light  #66CC8D  1.98:1     #137F3C  5.09:1    differ   ❌ arrow under the 3:1 floor
+    mono         dark   #66CC8D  8.31:1     #66CC8D  8.31:1    AGREE
+    legacy       light  #00847F  4.56:1     #137F3C  5.09:1    differ
+    legacy       dark   #00847F  3.62:1     #66CC8D  8.31:1    differ
+    console      light  #5DAC7B  2.74:1     #137F3C  5.09:1    differ   ❌ arrow under the 3:1 floor
+    console      dark   #5DAC7B  6.01:1     #66CC8D  8.31:1    differ
+    supercharge  light  #5DAC7B  2.54:1     #137F3C  4.71:1    differ   ❌ arrow under the 3:1 floor
+    supercharge  dark   #5DAC7B  5.48:1     #66CC8D  7.57:1    differ
+
+  THREE of the four themes put the light-mode arrow UNDER the 3:1 non-text floor, not one. Lane E
+  measured the mono leg independently this same session; the per-theme spread is this lane's.
+  ⛔ NOT RESOLVED HERE, BY INSTRUCTION. Rebinding a ruled colour seat is Dave's; s151-D1 clause 2
+  ("text AND atoms alike") reads as though it already governs the arrow, but the arrow-only
+  fill-seat treatment may have been deliberate, and surface-never-swap binds. The current
+  bindings are INHERITED and FLAGGED. Whichever way it goes, Stat card and KPI tile must move
+  TOGETHER — a fix to one that leaves the other is how the seam got here.
+
+  OPTIONAL TABLE CTA — s182-D2 standing direction, enacted as an OPT-IN variant, PROPOSED.
+  s182-D2 governs "the future trend-card component: table CTA optional, icon-button form" and
+  Dave's reason, verbatim: "a sparkline shows a trend beside a headline figure, it is not an
+  analysis tool", so NO "View as table" label — the accessible name survives as aria-label only.
+  Built here as an opt-in .kpi-cta, 44×44 (the ruled min-hit-area, enforced by hand — no gate
+  reads the token), icon byte-matched from assets/icons/global-controls/view-grid.svg. The PANEL
+  it would open is NOT built: s116-D2's table molecule is a composition-level artefact and
+  inventing one here would be canon by improvisation. The button is a real, focusable affordance
+  with no destination — declared, not hidden.
+
+  TYPE: composites only, no raw font declarations in component scope — label .t-cm-caption ·
+  value .t-cm-figure-4 (32px display) / .t-cm-figure-3 (24px compact) · delta .t-cm-figure-6
+  (tabular) · period .t-cm-legal · spark caption .t-cm-chart-label (the DV-D08 rebind).
+  Section headings on this page are demo chrome (.demo-h) and carry a composite class, so this
+  file contributes 0 to the shrink-only type-composite ratchet.
+  SHAPE: square (radius 0, border-radius/surface) — the angular rule; no exemption applies.
+  MOTION: none. The spark is baked static; no draw animation, so JS-off and JS-on render alike
+  and no dv-behaviour partial is needed. This file is NOT registered in component-types.json
+  (a shared file, outside this lane's fence) and therefore takes no AUTO-BEHAVIOUR injection —
+  declared, not an omission.
+  RESPONSIVE: the board auto-fills 240px+; the spark carries NO width of its own (s184-D1 —
+  "responsive to its enclosure by default") and fills whatever the tile's slot gives it.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
+:is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: this snippet declares NO raw font-family on body — every text element carries a
+     .t-cm-* composite from canon/type.css, which is the mandatory route. The usual
+     `body{font-family:var(--font)}` boilerplate is exactly the declaration the shrink-only
+     ratchet counts, and it is redundant once every element is composed. Progress-bar
+     (the #174 walked example) is the precedent; Stat-card and Chart-sparkline both still
+     carry it and each contributes 3 to the debt. TYPE-002 contribution here: 0. */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{
+    --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --page:#FFFFFF; --focus:#305A85;
+    /* DELTA ARROW — the FILL seat, INHERITED VERBATIM from the gated Stat-card. 1.980:1 on this
+       surface. Dave's call, flagged in the header, NOT resolved here. */
+    --up:#66CC8D; --down:#F6604C;
+    /* SPARK STROKE — the INK seat, RULED for this atom by s182-D3 and inherited by the trend
+       card per that ruling's own governs-list. Background-keyed: this is the on-white leg. */
+    --spark-up:#137F3C;     /* rag/success-ink light — s155-D1 mirror (values by ref to s144-D1) */
+    --spark-down:#DA1A00;   /* rag/error-ink light — s151-D1 two-red law, red on white */
+    --spark-flat:#1A1A1A;   /* standing ink on light — s182-D3, Dave: "the default ink near-black" */
+    --grid-alpha:.10;
+    --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --page:#1A1A1A; --focus:#4587A7;
+    --up:#66CC8D; --down:#F6604C;
+    /* s182-D3 — the NON-WHITE leg of the same fork. Note the arrow and the stroke CONVERGE here
+       (#66CC8D / #F6604C both seats): the light-mode seam above is invisible in dark. */
+    --spark-up:#66CC8D;     /* rag/success-ink dark — s155-D1 / s144-D1 */
+    --spark-down:#F6604C;   /* rag/error-ink dark — s151-D1 "the light red everywhere else" */
+    --spark-flat:#FFFFFF;   /* Dave, s182-D3 verbatim: "white on dark" */
+    --grid-alpha:.16;
+    --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}   /* demo chrome — not the component */
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  .board{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px; max-width:800px;}
+
+  /* ---- the tile — Stat-card's Cards surface recipe, unchanged ---- */
+  .kpi-tile{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    padding:16px; display:flex; flex-direction:column; gap:8px; position:relative;}
+  .kpi-tile .lbl16{margin:0; opacity:var(--alpha-60);}
+
+  /* ---- the value — the Amount-display atom, verbatim via Stat-card ---- */
+  .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+
+  /* ---- the delta row — Stat-card verbatim. Arrow wears the FILL seat; text stays ink. ---- */
+  .delta{display:flex; align-items:center; gap:4px;}
+  .delta .arrow{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
+  .delta .arrow svg{width:16px; height:16px; display:block; fill:currentColor;}
+  .delta.up .arrow{color:var(--up);}
+  .delta.down .arrow{color:var(--down);}
+  .delta .per{opacity:var(--alpha-60); margin-left:4px;}
+
+  /* ---- THE ONE NEW PART: the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
+  .kpi-spark{margin-top:4px; width:100%;}
+  .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
+  .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+  .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
+    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+  .spark-inline .dv-end{fill:var(--spark-flat);}
+  .spark-inline[data-trend="up"] .dv-series{stroke:var(--spark-up);}
+  .spark-inline[data-trend="up"] .dv-end{fill:var(--spark-up);}
+  .spark-inline[data-trend="down"] .dv-series{stroke:var(--spark-down);}
+  .spark-inline[data-trend="down"] .dv-end{fill:var(--spark-down);}
+
+  /* ---- OPT-IN table CTA (s182-D2 standing direction) — icon-button form, no label ---- */
+  .kpi-cta{position:absolute; top:8px; right:8px; width:44px; height:44px; flex:none;
+    display:inline-flex; align-items:center; justify-content:center; padding:0;
+    background:transparent; border:0; border-radius:var(--border-radius-surface);
+    color:var(--text); opacity:var(--alpha-60); cursor:pointer; transition:opacity var(--ease);}
+  .kpi-cta svg{width:18px; height:18px; display:block; fill:currentColor;}
+  .kpi-cta:hover{opacity:var(--alpha-96);}
+  .kpi-cta:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
+  .kpi-tile.has-cta .lbl16{padding-right:40px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg + arrow-down.svg (via Stat-card) -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Display size — figure-4 value (32px) with the twelve-point spark</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale, copied verbatim from Chart-sparkline. PASSIVE and
+             aria-hidden by design (s184-D1: "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's
+             value and delta carry the meaning; the line is ambient. Trend is read from FIRST vs LAST
+             datum and DECLARED as data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: no arrow, "No change", full ink — Stat-card's flat rule, and the spark takes
+             the standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,39.0 55.9,32.0 73.5,33.5 91.2,28.0 108.8,29.5 126.5,22.0 144.1,24.5 161.7,17.0 179.4,14.5 197.0,9.0"/>
+          <circle class="dv-end" cx="197" cy="9.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,12.0 20.6,18.0 38.3,15.5 55.9,22.0 73.5,19.5 91.2,26.0 108.8,24.5 126.5,30.0 144.1,28.5 161.7,34.0 179.4,32.5 197.0,37.0"/>
+          <circle class="dv-end" cx="197" cy="37.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,25.0 20.6,22.0 38.3,26.5 55.9,23.0 73.5,27.0 91.2,24.0 108.8,21.5 126.5,26.0 144.1,23.5 161.7,26.5 179.4,24.0 197.0,25.0"/>
+          <circle class="dv-end" cx="197" cy="25.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Optional table affordance — icon-button form, no label (s182-D2 standing direction)</h2>
+  <div class="board">
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged arrow-seat question above. The two INK pairs ARE declared: they pass in both modes. -->
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "KPI tile",
+    "$status": "PROPOSED #203, Dave's eye owed — the trend-card component is FLOATED, NOT RULED (s182-D2). This manifest is a proposal, not a proof-of-done.",
+    "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default",
+              "--page": "background/default", "--focus": "focus/ring",
+              "--up": "rag/success", "--down": "rag/error",
+              "--spark-up": "rag/success-ink", "--spark-down": "rag/error-ink", "--spark-flat": "text/default",
+              "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default",     "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "rag/error",        "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "rag/error-ink",    "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "rag/success-ink",  "bg": "tertiary/background/default", "context": "ui" }
+    ],
+    "icons": { "arrow-up": "arrows-and-chevrons/arrow-up.svg", "arrow-down": "arrows-and-chevrons/arrow-down.svg", "view-grid": "global-controls/view-grid.svg" },
+    "requiredAria": ["role=\"group\"", "aria-label", "aria-hidden=\"true\""],
+    "$note": "PROPOSED #203 (Wave 3b Lane K). DIFFERENCE FROM THE GATED Stat-card: Stat card is a passive ATOM (label/value/delta/period) and already carries full delta semantics — arrow + sign + wording — so 'metric + delta' was never the gap. KPI tile is a MOLECULE composing Stat card's anatomy VERBATIM with the Chart-sparkline atom at its inline scale (.spark-inline, the scale that atom's own source already calls 'the KPI / Stat-card scale', with .spark-kpi-slot standing in for this tile). The one real difference: Stat card states the CHANGE, KPI tile states the SHAPE of the change. A KPI tile with no series should be a Stat card. ⛔ TWO SEATS, DELIBERATELY UNRESOLVED: the delta ARROW inherits Stat card's FILL seat (rag/success 1.980:1 on white, measured #203) while the SPARK inherits the INK seat that s182-D3 RULES for this atom and says the trend card inherits (rag/success-ink 5.090:1 on white). Both bindings inherited unchanged per the lane brief; the seam is visible on one tile in light mode and invisible in dark (both seats resolve to #66CC8D). Rebinding a ruled colour seat is Dave's — surface, never swap. Stat card and KPI tile must move together. OPTIONAL table CTA enacts s182-D2's standing direction (icon-button form, no label, aria-label only, 44x44 by hand); the table panel itself is composition-level and not invented here. Not registered in component-types.json (shared file, outside this lane's fence) so no AUTO-BEHAVIOUR partial is injected and the spark is baked static — declared."
+  }
+  </script>
+  </body>
+</html>

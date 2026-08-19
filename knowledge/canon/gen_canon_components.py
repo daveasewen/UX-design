@@ -71,9 +71,23 @@ def walk(css):
             j += 1
         yield ("rule", sel, css[br+1:j-1]); i = j
 
+# A GLOBAL-ROOT ancestor: :root / html (with any attribute tail), or a bare [data-*] state
+# on the root. Mirrors the pattern prefix_selector uses to keep such an ancestor at the FRONT.
+ROOT_ANCESTOR = re.compile(r'^((?::root|html)(?:\[[^\]]*\])*|\[[^\]]*\])\s+(.+)$')
+
 def is_harness(sel):
     first = sel.split(",")[0].strip()
-    if first in (":root",) or first.startswith("[data-theme"): return True
+    if first in (":root",): return True
+    # #203 Lane G — THE DARK-DROP REPAIR. A root-level ancestor followed by a DESCENDANT is a
+    # real component rule, NOT a harness var block: `[data-theme="dark"] .se-msg .ic{color:#FFF}`
+    # is a reviewed dark-mode decision. Judge such a selector by its DESCENDANT — prefix_selector
+    # already knows how to hold the ancestor at the front and scope what follows; the old test
+    # `first.startswith("[data-theme")` fired FIRST and so that machinery never saw these rules.
+    # Measured blast radius before the fix: 33 rules across 19 snippets, silently absent from
+    # canon.css with every gate green (Lane C receipt, 2026-08-19, finding 1).
+    m = ROOT_ANCESTOR.match(first)
+    if m: return is_harness(m.group(2))
+    if first.startswith("[data-theme"): return True   # BARE [data-theme=…]{--v:…} = harness vars
     base = re.split(r"[ >.:\[]", first.lstrip(".#"))[0]
     fs = first.split()[0] if first.split() else first
     for d in DROP_FIRST:

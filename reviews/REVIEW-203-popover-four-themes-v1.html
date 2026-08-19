@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Popover &mdash; four themes x light/dark (#203)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 24px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--background-default,#1A1A1A);}   /* the PAGE token: REVIEW-174 used --surface-digital-black, a different token, which misreports what the overlay floats on */
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .pane-sub{opacity:.65; margin:22px 0 8px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .band{border:1px solid #E1E1E1; background:#FFF; padding:16px 20px; margin:0 0 20px; max-width:900px;}
+  .band ul{margin:8px 0 0; padding-left:20px;}
+  .band li{margin:0 0 7px;}
+  .tag{display:inline-block; border:1px solid #1A1A1A; padding:1px 6px; margin-right:6px;}
+
+  /* REVIEW-SURFACE OVERRIDE - DECLARED, not canon.
+     .pop is position:fixed + opacity:0 and is only revealed by the snippet's placement JS.
+     Unlike Toast (.spec) and Drawer (.specimen) the Popover carries NO static-specimen
+     affordance, so it cannot appear in a review pane or a showroom still without this
+     local override. Proposed as a canon addition - see the finding on this page. */
+  .pane .cn-popover .pop{position:static; opacity:1; pointer-events:auto; margin:14px 0 0; max-width:320px;}
+  .pane .cn-popover .row{margin:0; display:block;}
+  .pane .cn-popover .popwrap{display:block; margin-bottom:30px;}
+  .pane .cn-popover .pop-trigger{font:inherit;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="po-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+  <h1 class="t-cm-heading">Popover</h1>
+  <div class="lede">
+    <p class="t-ed-body">Rich anchored content that opens on click &mdash; Tooltip's interactive sibling.
+    The panes below show the real gated markup rendered through the generated <code>canon.css</code>, held
+    open by a declared review-surface override: the component has no static specimen of its own, which is
+    itself a finding below.</p>
+    <div class="note">
+      <p class="t-ed-body-small"><strong>Read this first &mdash; the brief's premise did not hold.</strong>
+      Wave&nbsp;3 was briefed from the itinerary of <strong>2026-07-14</strong>, which marks this component
+      <em>Gap</em>. It is not a gap: the gated snippet, the meta, the showroom page and the
+      <code>MIGRATED_SNIPPETS</code> entry all landed on <strong>2026-07-22</strong>, eight days after that
+      snapshot. Nothing was re-built here. This page is an <strong>audit surface</strong>: the existing
+      approved artefact, rendered through the real generated <code>canon.css</code> across all four themes,
+      so your eye can rule on what is actually there. Everything below is
+      <strong>PROPOSED #203, Dave's eye owed</strong> &mdash; nothing on this page is a ruling.</p>
+    </div>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">How Popover differs from its gated siblings</p>
+    <ul class="t-ed-body-small">
+      <li><span class="tag">vs Tooltip</span> The distinction is <strong>clean, and enforced by the markup</strong>.
+        Tooltip opens on <strong>hover / focus</strong>, is <code>role="tooltip"</code>, is tied to its trigger
+        by <code>aria-describedby</code>, holds <strong>plain text only</strong>, and nothing inside it is
+        focusable. Popover opens on <strong>click</strong>, is <code>role="dialog"</code> with
+        <code>aria-labelledby</code>, its trigger carries <code>aria-expanded</code> /
+        <code>aria-controls</code> / <code>aria-haspopup="dialog"</code>, and it <strong>holds focusable
+        content</strong> &mdash; title, body, link, close. The test: if the user can act inside it, it is a
+        Popover; if it is a sentence of help, it is a Tooltip. They share only the placement mechanics &mdash;
+        flip above / below, clamp to the viewport, tail tracks the trigger.</li>
+      <li><span class="tag">vs Modals / Drawer</span> Popover is <strong>non-modal</strong>: no
+        <code>aria-modal</code>, no scrim, no focus trap. Tabbing out of it closes it, and the page stays live
+        throughout.</li>
+      <li><span class="tag">vs Toast</span> Popover is anchored and user-invoked; Toast is viewport-fixed and
+        system-invoked.</li>
+    </ul>
+  </div>
+  <div class="note">
+    <p class="t-ed-body-small"><strong>Finding &mdash; the Popover cannot be seen standing still.</strong>
+    Toast ships a <code>.spec</code> block and Drawer ships a <code>.specimen</code> class precisely so the
+    component can be shown in-flow, at rest, in a review pane. <strong>Popover ships neither.</strong>
+    <code>.pop</code> is <code>position:fixed</code> with <code>opacity:0</code>, revealed only by the
+    snippet's placement JavaScript &mdash; so it is invisible in any still: this review page, a showroom
+    thumbnail, a screenshot, a paste into Figma. The panes above are visible only because this page carries a
+    <strong>declared local override</strong> (see the <code>&lt;style&gt;</code> block, marked REVIEW-SURFACE
+    OVERRIDE). <strong>PROPOSED #203, Dave's eye owed:</strong> give Popover a static-specimen affordance
+    matching Drawer's <code>.specimen</code>.</p>
+  </div>
+  <div class="band">
+    <p class="t-ed-body em">The rest of the audit &mdash; all PROPOSED, all yours</p>
+    <ul class="t-ed-body-small">
+      <li><strong>The trigger button is unstyled demo chrome.</strong> <code>.pop-trigger</code> has no canon
+        rule at all, so it renders as the raw browser button above &mdash; grey and round-cornered in every
+        theme, and conspicuously wrong on the dark panes. It is not part of the component, but it <em>is</em>
+        the first thing anyone opening the snippet or the showroom page sees. Square corners are the default
+        rule; this one borrows the browser's.</li>
+      <li><strong>The tail is a rotated square</strong> (<code>::after</code>, 10px, 45&deg;) inheriting the
+        surface and the elevation border. In light the border is transparent and the shadow carries the lift;
+        in dark a grey hairline outlines it. Look closely at the tail on the dark panes &mdash; a rotated
+        bordered square is where a seam usually shows.</li>
+      <li><strong>Corners are square in three themes and 20px in Console &mdash; and that is correct.</strong>
+        Measured in the rendered panes: <code>--border-radius-surface</code> resolves to 0 in mono, legacy and
+        supercharge, and to <strong>20px in Console</strong>, light and dark. That is not a drift: you ruled it
+        at <code>s199-D3</code> off the radius tuner (console surface 12&nbsp;&rarr;&nbsp;20). Flagged only
+        because the square-corner default makes a rounded pane look like a defect at first glance &mdash; it
+        is your rounding, arriving correctly.</li>
+      <li><strong>44px hit area &mdash; checked by hand, passes.</strong> The close &times; is a 24px visual
+        with a 44&times;44 <code>::before</code>.</li>
+      <li><strong>Type-composite debt: 2 violations</strong> &mdash; <code>body</code> font-family (demo
+        chrome) and <code>.pop a { font-weight:500 }</code>. The second one <em>is</em> in the component: an
+        inline link's weight set raw instead of by a composite.</li>
+      <li><strong>Popover is painted the page's own colour &mdash; alone among the three.</strong> Its
+        <code>--surface</code> binds to <code>background/default</code>, the <em>page</em> token. Toast and
+        Drawer both bind to <code>tertiary/background/default</code>, the <em>raised-surface</em> token. The
+        consequence is measurable: in dark, a Toast lifts off the page by 1.06:1 (mono) and 1.16:1
+        (supercharge), while a Popover sits at <strong>exactly 1.00:1</strong> &mdash; the same colour as the
+        page &mdash; in all four themes, both modes. Everything separating it is the hairline, and in
+        Supercharge dark that hairline is the 1.96:1 one above. Deliberate, or an inconsistent binding across
+        three siblings that share one elevation recipe? Never ruled.</li>
+      <li><strong>Focus behaviour.</strong> On open, focus moves to the first focusable child &mdash; which is
+        the <em>link</em>, not the close button. Esc, outside click and re-toggling all close it and return
+        focus to the trigger. Correct, but that first-stop choice was never ruled.</li>
+    </ul>
+  </div>  <div class="note">
+    <p class="t-ed-body-small"><strong>Measured finding, all four themes &mdash; in Supercharge dark the only thing
+    holding this overlay off the page is a hairline at 1.96:1.</strong> These overlays are lifted by the
+    elevation recipe: a shadow in light, a 1px border in dark. In <strong>light</strong> the panel is
+    <em>exactly</em> the page colour in every theme (1.00:1) and the shadow does all the work &mdash; that is
+    the canon recipe and it reads fine. In <strong>dark</strong> the border takes over, and it is not equal
+    across themes: mono's hairline is <code>#808080</code> on <code>#1A1A1A</code> = <strong>4.41:1</strong>,
+    comfortable; Supercharge's is <code>#524842</code> on <code>#1A1A1A</code> = <strong>1.96:1</strong>,
+    <strong>under the 3:1 non-text floor</strong>. Compare the mono-dark and supercharge-dark panes below.
+    Pre-existing and theme-level, not this component's &mdash; but it is the component that shows it.
+    <strong>PROPOSED #203, Dave's eye owed.</strong></p>
+  </div>
+
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-popover">
+  <div class="row">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop1-mono-light">Why we ask for this</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt1-mono-light" id="pop1-mono-light">
+        <div class="pop-head"><p class="t-ed-body em" id="pt1-mono-light">Why we ask for this</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Your tax residency determines which reporting rules apply to the account. We only share what the regulation requires.</p>
+        <a href="#">Read the full policy</a>
+      </div>
+    </span>
+
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop2-mono-light">Fee breakdown</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt2-mono-light" id="pop2-mono-light">
+        <div class="pop-head"><p class="t-ed-body em" id="pt2-mono-light">Fee breakdown</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Transfer fee £2.00 plus a currency conversion margin of 0.4%. No fee is charged by the receiving bank on this route.</p>
+        <a href="#">Compare transfer options</a>
+      </div>
+    </span>
+  </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-popover">
+  <div class="row">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop1-mono-dark">Why we ask for this</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt1-mono-dark" id="pop1-mono-dark">
+        <div class="pop-head"><p class="t-ed-body em" id="pt1-mono-dark">Why we ask for this</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Your tax residency determines which reporting rules apply to the account. We only share what the regulation requires.</p>
+        <a href="#">Read the full policy</a>
+      </div>
+    </span>
+
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop2-mono-dark">Fee breakdown</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt2-mono-dark" id="pop2-mono-dark">
+        <div class="pop-head"><p class="t-ed-body em" id="pt2-mono-dark">Fee breakdown</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Transfer fee £2.00 plus a currency conversion margin of 0.4%. No fee is charged by the receiving bank on this route.</p>
+        <a href="#">Compare transfer options</a>
+      </div>
+    </span>
+  </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-popover">
+  <div class="row">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop1-legacy-light">Why we ask for this</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt1-legacy-light" id="pop1-legacy-light">
+        <div class="pop-head"><p class="t-ed-body em" id="pt1-legacy-light">Why we ask for this</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Your tax residency determines which reporting rules apply to the account. We only share what the regulation requires.</p>
+        <a href="#">Read the full policy</a>
+      </div>
+    </span>
+
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop2-legacy-light">Fee breakdown</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt2-legacy-light" id="pop2-legacy-light">
+        <div class="pop-head"><p class="t-ed-body em" id="pt2-legacy-light">Fee breakdown</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Transfer fee £2.00 plus a currency conversion margin of 0.4%. No fee is charged by the receiving bank on this route.</p>
+        <a href="#">Compare transfer options</a>
+      </div>
+    </span>
+  </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-popover">
+  <div class="row">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop1-legacy-dark">Why we ask for this</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt1-legacy-dark" id="pop1-legacy-dark">
+        <div class="pop-head"><p class="t-ed-body em" id="pt1-legacy-dark">Why we ask for this</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Your tax residency determines which reporting rules apply to the account. We only share what the regulation requires.</p>
+        <a href="#">Read the full policy</a>
+      </div>
+    </span>
+
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop2-legacy-dark">Fee breakdown</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt2-legacy-dark" id="pop2-legacy-dark">
+        <div class="pop-head"><p class="t-ed-body em" id="pt2-legacy-dark">Fee breakdown</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Transfer fee £2.00 plus a currency conversion margin of 0.4%. No fee is charged by the receiving bank on this route.</p>
+        <a href="#">Compare transfer options</a>
+      </div>
+    </span>
+  </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-popover">
+  <div class="row">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop1-console-light">Why we ask for this</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt1-console-light" id="pop1-console-light">
+        <div class="pop-head"><p class="t-ed-body em" id="pt1-console-light">Why we ask for this</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Your tax residency determines which reporting rules apply to the account. We only share what the regulation requires.</p>
+        <a href="#">Read the full policy</a>
+      </div>
+    </span>
+
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop2-console-light">Fee breakdown</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt2-console-light" id="pop2-console-light">
+        <div class="pop-head"><p class="t-ed-body em" id="pt2-console-light">Fee breakdown</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Transfer fee £2.00 plus a currency conversion margin of 0.4%. No fee is charged by the receiving bank on this route.</p>
+        <a href="#">Compare transfer options</a>
+      </div>
+    </span>
+  </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-popover">
+  <div class="row">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop1-console-dark">Why we ask for this</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt1-console-dark" id="pop1-console-dark">
+        <div class="pop-head"><p class="t-ed-body em" id="pt1-console-dark">Why we ask for this</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Your tax residency determines which reporting rules apply to the account. We only share what the regulation requires.</p>
+        <a href="#">Read the full policy</a>
+      </div>
+    </span>
+
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop2-console-dark">Fee breakdown</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt2-console-dark" id="pop2-console-dark">
+        <div class="pop-head"><p class="t-ed-body em" id="pt2-console-dark">Fee breakdown</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Transfer fee £2.00 plus a currency conversion margin of 0.4%. No fee is charged by the receiving bank on this route.</p>
+        <a href="#">Compare transfer options</a>
+      </div>
+    </span>
+  </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-popover">
+  <div class="row">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop1-supercharge-light">Why we ask for this</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt1-supercharge-light" id="pop1-supercharge-light">
+        <div class="pop-head"><p class="t-ed-body em" id="pt1-supercharge-light">Why we ask for this</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Your tax residency determines which reporting rules apply to the account. We only share what the regulation requires.</p>
+        <a href="#">Read the full policy</a>
+      </div>
+    </span>
+
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop2-supercharge-light">Fee breakdown</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt2-supercharge-light" id="pop2-supercharge-light">
+        <div class="pop-head"><p class="t-ed-body em" id="pt2-supercharge-light">Fee breakdown</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Transfer fee £2.00 plus a currency conversion margin of 0.4%. No fee is charged by the receiving bank on this route.</p>
+        <a href="#">Compare transfer options</a>
+      </div>
+    </span>
+  </div>
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-popover">
+  <div class="row">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop1-supercharge-dark">Why we ask for this</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt1-supercharge-dark" id="pop1-supercharge-dark">
+        <div class="pop-head"><p class="t-ed-body em" id="pt1-supercharge-dark">Why we ask for this</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Your tax residency determines which reporting rules apply to the account. We only share what the regulation requires.</p>
+        <a href="#">Read the full policy</a>
+      </div>
+    </span>
+
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop2-supercharge-dark">Fee breakdown</button>
+      <div class="pop pos-below" role="dialog" aria-labelledby="pt2-supercharge-dark" id="pop2-supercharge-dark">
+        <div class="pop-head"><p class="t-ed-body em" id="pt2-supercharge-dark">Fee breakdown</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Transfer fee £2.00 plus a currency conversion margin of 0.4%. No fee is charged by the receiving bank on this route.</p>
+        <a href="#">Compare transfer options</a>
+      </div>
+    </span>
+  </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
