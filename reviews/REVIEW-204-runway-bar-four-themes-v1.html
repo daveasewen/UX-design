@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coverage / runway bar</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; overflow-x:auto; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note-info{border-left-color:#305A85;}
+/* ---- the .cn-runway-bar scope: what gen_canon_components.py WOULD emit. Hand-mirrored here because the
+   generator surface is the BUILD-PM's serially. Every binding is DERIVED from the snippet's own
+   #token-manifest by a throwaway extractor, not typed by hand. CSS comments are stripped before
+   parsing (the #203 laneK finding). ---- */
+.cn-runway-bar{
+  --complete: var(--progress-complete);
+  --incomplete: var(--progress-incomplete);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --page: var(--background-default);
+  --border: var(--border-subtle);
+  --ok: var(--rag-success);
+  --ok-tint: var(--rag-success-tint);
+  --warn: var(--rag-warning);
+  --warn-tint: var(--rag-warning-tint);
+  /* --border-radius-indicator is the semantic name itself - inherited from the cascade, NOT shadowed */
+  --ease:140ms ease;
+}
+.cn-runway-bar{color:var(--text);}
+.cn-runway-bar, .cn-runway-bar *, .cn-runway-bar *::before, .cn-runway-bar *::after{box-sizing:border-box;}
+.cn-runway-bar :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+.cn-runway-bar .stateLabel{color:var(--muted); margin:1.75rem 0 .6rem;}
+.cn-runway-bar .stateLabel:first-of-type{margin-top:0;}
+.cn-runway-bar .specimens{display:flex; flex-direction:column; gap:40px;}
+.cn-runway-bar .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-runway-bar .rwy{display:flex; flex-direction:column; gap:8px; max-width:480px;}
+.cn-runway-bar .rwy-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+.cn-runway-bar .rwy-label{color:var(--muted);}
+.cn-runway-bar .rwy-verdict{color:var(--text);}
+.cn-runway-bar .amount{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.005em;}
+.cn-runway-bar .amount--display{letter-spacing:-.01em;}
+.cn-runway-bar .pb-track{position:relative; width:100%; height:4px; background:var(--incomplete);
+            border-radius:var(--border-radius-indicator); overflow:hidden;}
+.cn-runway-bar .pb-track .pb-fill{position:absolute; left:0; top:0; height:100%; width:0;
+            background:var(--complete); transition:width var(--ease);}
+.cn-runway-bar .rwy-lg .pb-track{height:8px;}
+.cn-runway-bar .rwy-legend{display:flex; gap:24px; flex-wrap:wrap;}
+.cn-runway-bar .rwy-key{display:inline-flex; align-items:center; gap:8px; color:var(--muted);}
+.cn-runway-bar .rwy-key .sw{width:12px; height:12px; flex:none; border-radius:var(--border-radius-indicator);}
+.cn-runway-bar .rwy-key .sw--committed{background:var(--complete);}
+.cn-runway-bar .rwy-key .sw--buffer{background:var(--incomplete); border:1px solid var(--border);}
+.cn-runway-bar .rwy-key .v{color:var(--text); font-variant-numeric:tabular-nums;}
+.cn-runway-bar .rwy-math{display:grid; grid-template-columns:1fr auto; gap:4px 16px; margin:0;}
+.cn-runway-bar .rwy-math dt{color:var(--muted);}
+.cn-runway-bar .rwy-math dd{margin:0; text-align:right; color:var(--text); font-variant-numeric:tabular-nums;}
+.cn-runway-bar .rwy-math .tot{border-top:1px solid var(--border); padding-top:8px;}
+.cn-runway-bar .chip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
+.cn-runway-bar .chip .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+.cn-runway-bar .chip.ok{background:var(--ok-tint);}
+.cn-runway-bar .chip.ok .dot{background:var(--ok);}
+.cn-runway-bar .chip.warn{background:var(--warn-tint);}
+.cn-runway-bar .chip.warn .dot{background:var(--warn);}
+.cn-runway-bar .pb-track .pb-fill{transition:none;}
+.cn-runway-bar *, .cn-runway-bar *::before, .cn-runway-bar *::after{transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important;}
+@media (prefers-reduced-motion: reduce){.cn-runway-bar *, .cn-runway-bar *::before, .cn-runway-bar *::after{transition-duration:.01ms !important; animation-duration:.01ms !important;animation-iteration-count:1 !important; scroll-behavior:auto !important;}}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">Coverage / runway bar</h1>
+  <div class="lede">
+<p class="t-ed-body">Itinerary row 94, <strong>PROPOSED #204 &mdash; and the first question is whether it should exist at all</strong>.</p>
+<div class="note"><p class="t-ed-body-small"><strong>This row originates in a test fixture, not a product need. Read that before you look at the drawing.</strong> The itinerary&rsquo;s own note says &ldquo;fitness tests invented this&rdquo;, and the chain is now proven rather than assumed. <code>knowledge/_COMPONENT-GAPS.md</code>, under the heading &ldquo;Token / system gaps (SME-Payments fitness tests, 2026-06-30) &mdash; exposed by the portfolio run: the canon was silent in exactly the places it had to invent&rdquo;, records verbatim: &ldquo;the waterfall / <strong>runway</strong> / proportional bars <strong>were invented</strong>&rdquo;. Four synthetic pages in <code>knowledge/_fitness-test/</code> hand-rolled a <code>.runway</code> section in raw hex. That invention was logged as a gap, the gap was promoted into <code>_COMPONENT-LIBRARY-TARGET.md</code> line 104, and the target table became the itinerary. A direct grep of <code>knowledge/_rulings.json</code> for runway / coverage / burn-rate returns <strong>zero</strong> hits naming this component. There <em>is</em> a real question underneath &mdash; &ldquo;does my money cover what is already scheduled, and until when?&rdquo; &mdash; but nobody has ruled that it should be a component. <strong>That is your first decision.</strong></p></div>
+<div class="note note-info"><p class="t-ed-body-small"><strong>The overlap adjudication: it is not a Chart-bullet, it is a Progress bar.</strong> The brief flagged Chart-bullet as the nearest gated grammar. Reading both metas in full says otherwise. Chart-bullet is, in its own words, &ldquo;a measure bar against a comparative <em>target marker</em> and qualitative <em>performance ranges</em>&rdquo; &mdash; an SVG figure at a fixed 580px with a real data table and a series fill. <strong>The tell: a Chart-bullet needs a target; a runway bar has no target, it has a horizon.</strong> Progress bar, meanwhile, already lists &ldquo;savings goal / limits meter&rdquo; in its own common patterns, and its third specimen is exactly this shape &mdash; a non-percentage determinate bar carrying its domain in <code>aria-valuetext</code>. <strong>So the bar below is Progress bar, copied byte-for-byte. This file draws no new bar.</strong> What is actually absent is the <em>readout</em>: the verdict with a date, the arithmetic that produces it, and the two-key legend. A runway bar without those is a Progress bar and should be one; a runway bar with a target is a Chart-bullet and should be one.</p></div>
+<div class="note"><p class="t-ed-body-small"><strong>&#9940; Look at the &ldquo;short&rdquo; specimen: there is no red. That is the most deliberate thing on this page.</strong> A cash-runway meter is precisely where a healthy/critical green-red binding gets invented, and I invented none. The bar is ink on track in <em>every</em> state, inherited from the gated Progress bar, whose meta gives the reason in your own terms: &ldquo;Progress is <strong>structure</strong>, not status (Dave 2026-07-21) &mdash; hence the ink pair rather than a RAG colour.&rdquo; Coverage is a quantity. The verdict is a separate object &mdash; a Status-indicator chip carrying a <strong>word and a date</strong> (&ldquo;Covered through 31 May&rdquo;, &ldquo;Short from 12 May&rdquo;). Which verdict maps to which chip is a semantic binding and it is <strong>yours</strong>. Strip every colour from this component and it still says everything it means.</p></div>
+<div class="note note-info"><p class="t-ed-body-small"><strong>One open ARIA question, with the search that failed to settle it.</strong> The bar carries <code>role=&quot;progressbar&quot;</code> because that is what the gated parent carries. <code>role=&quot;meter&quot;</code> is arguably more correct for a gauge that is not task progress. Probes: <code>grep -rn 'role=&quot;meter&quot;' knowledge/snippets/</code> &rarr; 2 hits, both of them the new file&rsquo;s own prose, i.e. zero in the 87 pre-existing snippets; <code>grep -icE '\bmeter\b' knowledge/_rulings.json</code> &rarr; 0. Nothing in the store rules it. <strong>Yours.</strong></p></div>
+<div class="note note-info"><p class="t-ed-body-small"><strong>One honest geometric limitation.</strong> In the &ldquo;short&rdquo; state the bar is pinned at 100% and <code>aria-valuenow</code> is clamped, because committed money <em>exceeds</em> the balance and a progressbar cannot express overflow. The true committed figure appears in the legend, the arithmetic and the <code>aria-valuetext</code>. A dedicated overflow treatment is a decision, not a defect &mdash; <strong>yours</strong>.</p></div>
+  </div>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-runway-bar">
+
+  <div class="specimens">
+
+    <!-- 1 · COVERED. Balance £122,450 · committed £49,702 (40.59%) · buffer £72,748.
+         The figures are the fitness test's own, carried across so the drawing is comparable
+         to the artefact that provoked the row. -->
+    <div>
+      <p class="stateLabel t-cm-legal">covered · the ordinary case · the bar is ink on track, and there is no green anywhere</p>
+      <div class="rwy" role="group" aria-labelledby="rwy1-label--mono-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy1-label--mono-light">Coverage</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 31 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>72,748.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy1-label--mono-light"
+             aria-valuenow="49702" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="49,702 pounds committed of a 122,450 pound balance, leaving a 72,748 pound buffer. Covered through 31 May.">
+          <div class="pb-fill" style="width:40.59%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£49,702</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£72,748</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£49,702</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£72,748</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 2 · TIGHT. Same anatomy, different numbers and a different WORD. The bar changes
+         length; it does NOT change colour. -->
+    <div>
+      <p class="stateLabel t-cm-legal">tight · buffer nearly gone · still ink on track — the word and the date changed, not the hue</p>
+      <div class="rwy" role="group" aria-labelledby="rwy2-label--mono-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy2-label--mono-light">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered to 24 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>14,694.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy2-label--mono-light"
+             aria-valuenow="107756" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="107,756 pounds committed of a 122,450 pound balance, leaving a 14,694 pound buffer. Covered to 24 May only.">
+          <div class="pb-fill" style="width:88.00%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£107,756</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£14,694</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£107,756</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£14,694</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 3 · SHORT. THE STATE EVERY OTHER DESIGN SYSTEM PAINTS RED. This one does not.
+         The bar is full because 100% of the balance is committed — that is the honest
+         geometry. The SHORTFALL is a separate signed figure in text, and the verdict word
+         carries the date the money runs out. Colour contributes nothing. -->
+    <div>
+      <p class="stateLabel t-cm-legal">short · no red was invented — the bar is full because the balance is fully committed; the shortfall is a figure and a date</p>
+      <div class="rwy" role="group" aria-labelledby="rwy3-label--mono-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy3-label--mono-light">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Short from 12 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>−</span><span>£</span><span>18,310.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Shortfall against everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy3-label--mono-light"
+             aria-valuenow="122450" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="140,760 pounds committed against a 122,450 pound balance. Short by 18,310 pounds from 12 May.">
+          <div class="pb-fill" style="width:100%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£140,760</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£0</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£140,760</dd>
+          <dt class="tot t-cm-legal">Shortfall</dt><dd class="tot t-cm-figure-6">−£18,310</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 4 · EMPHASIS, 8px rule — Progress-bar's .pb-lg size, unchanged. For a region where the
+         coverage IS the primary content rather than a supporting detail. -->
+    <div>
+      <p class="stateLabel t-cm-legal">emphasis · 8px rule (Progress-bar's own emphasis size, same token pair) · compact readout, no arithmetic block</p>
+      <div class="rwy rwy-lg" role="group" aria-labelledby="rwy4-label--mono-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy4-label--mono-light">Coverage · Business current account</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 30 June</span></span>
+        </div>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy4-label--mono-light"
+             aria-valuenow="31200" aria-valuemin="0" aria-valuemax="98000"
+             aria-valuetext="31,200 pounds committed of a 98,000 pound balance, leaving a 66,800 pound buffer. Covered through 30 June.">
+          <div class="pb-fill" style="width:31.84%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed <span class="v t-cm-figure-6">£31,200</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Buffer <span class="v t-cm-figure-6">£66,800</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. fill-on-track (progress/complete on progress/incomplete) clears
+       3:1 in ALL FOUR themes since s175-D1 — Mono/Console/Legacy 15.27 light / 9.15 dark,
+       Supercharge 14.02 / 10.46 — the figures Progress-bar's own meta records against
+       canon/canon.css. It is NOT declared as a gated contrastPair here for the same reason
+       Progress-bar declines to declare it: the snippet gate resolves against
+       tokens/semantic-colour.json, the MONO base only, and cannot see the other three legs.
+       Meaning never rests on that boundary anyway — every specimen carries the numbers in text,
+       a verdict word and aria-valuetext.
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with
+       the repo's own _contrast_utils.contrast_ratio) is likewise NOT
+       declared: the INHERITED Account-card / Status-indicator finding, flagged not resolved. -->
+  <script type="application/json" id="token-manifest--mono-light">
+  {
+    "component": "Coverage / runway bar",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed — AND THE PROVENANCE IS THE HEADLINE. Itinerary row 94 originates in a TEST FIXTURE, not a product need: knowledge/_COMPONENT-GAPS.md records 'the waterfall / runway / proportional bars WERE INVENTED' by the 2026-06-30 SME-Payments fitness tests because 'the canon was silent in exactly the places it had to invent'. That invention was logged as a gap, promoted into _COMPONENT-LIBRARY-TARGET.md line 104, and became the itinerary row. A direct grep of knowledge/_rulings.json for runway/coverage/burn-rate returns ZERO hits naming this component. WHETHER IT SHOULD EXIST AT ALL IS DAVE'S FIRST DECISION.",
+    "vars": {
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--border": "border/subtle",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "role=\"progressbar\"", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-valuetext", "aria-labelledby", "aria-hidden=\"true\""],
+    "reuses": ["Progress-bar (the bar itself, byte-for-byte: .pb-track/.pb-fill, 4px + 8px, progress/complete on progress/incomplete, role=progressbar + aria-valuetext)", "Amount-display (money-format primitive: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)", "Status-indicator via Account-card (RAG tint chip carrying the verdict WORD)"],
+    "knownFindings": [
+      "PROVENANCE: this row originates in a TEST FIXTURE. See $status. It is built PROPOSED and the provenance is the headline, not a footnote.",
+      "OVERLAP ADJUDICATED AGAINST THE METAS, NOT FROM MEMORY. It is NOT a Chart-bullet: Chart-bullet is 'a measure bar against a COMPARATIVE TARGET MARKER and QUALITATIVE PERFORMANCE RANGES', intent 'comparison', an SVG figure at a fixed 580px with a real dv-table (dv-005) and a data/series/1 fill. A runway bar has no target, no bands, no SVG, no data table and no dataviz series token. THE TELL: a Chart-bullet needs a TARGET; a runway bar has no target, it has a HORIZON. It IS a Progress-bar: Progress-bar's own commonPatterns already lists 'savings goal / limits meter', and its specimen 3 is exactly this shape - a non-percentage determinate bar carrying its domain in aria-valuetext. THE BAR IS COPIED BYTE-FOR-BYTE AND NOTHING NEW WAS DRAWN.",
+      "WHAT IS ACTUALLY NEW is the READOUT around the gated atom: the verdict-with-a-date, the balance-minus-committed arithmetic, and the two-key legend. That is the whole component.",
+      "NO GREEN/RED WAS INVENTED, AND THAT IS THE POINT. The bar is INK ON TRACK in every state including 'Short', inherited from Progress-bar, whose meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) - hence the ink pair rather than a RAG colour.' Coverage is a QUANTITY. The verdict is a separate Status-indicator chip carrying a WORD AND A DATE. Which verdict maps to which chip is a SEMANTIC binding and is DAVE'S - proposed, not ruled.",
+      "The chip DOT sits on the same rag FILL seat as the live Stat-card/Kpi-tile two-red seam measured at #203. INHERITED AND FLAGGED per the lane's DO-NOT-RULE list, never resolved here, and never load-bearing: every chip carries its word.",
+      "fill-on-track clears 3:1 in all four themes since s175-D1 (Mono/Console/Legacy 15.27 light / 9.15 dark; Supercharge 14.02 / 10.46 - Progress-bar's own recorded figures). NOT declared as a gated contrastPair, for Progress-bar's own stated reason: the snippet gate reads the MONO base only.",
+      "OPEN, WITH THE SEARCH THAT FAILED TO SETTLE IT (s202-D3): role=\"progressbar\" vs role=\"meter\". Probe: `grep -rn 'role=\"meter\"' knowledge/snippets/` -> 2 hits, BOTH this file's own prose, i.e. ZERO in the 87 pre-existing snippets; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` -> 0. Nothing in the store rules it. progressbar is used here because it is what the gated parent carries; meter is arguably more correct for a gauge that is not task progress. DAVE'S.",
+      "In the SHORT state the bar is pinned at 100% and aria-valuenow is clamped to the max, because committed EXCEEDS the balance and a progressbar cannot express overflow. The true committed figure (140,760) appears in the legend, the arithmetic and aria-valuetext. A dedicated overflow treatment is a DECISION, not a defect - Dave's.",
+      "Zero raw type declarations (Progress-bar's own pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "Passive throughout - no interactive target, so the 44px minimum hit area does not apply to this component. Stated so the absence is declared rather than assumed.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence). No dataviz geometry, no SVG, so no dv-behaviour partial is wanted - declared."
+    ],
+    "$differsFrom": {
+      "Chart-bullet": "Chart-bullet compares a MEASURE to a TARGET against qualitative BANDS, as an SVG figure with a real data table, intent 'comparison'. This has no target, no bands, no SVG and no table. A Chart-bullet needs a target; a runway bar has a horizon. A runway bar that grows a target IS a Chart-bullet and should be one.",
+      "Progress-bar": "The BAR is Progress-bar, copied byte-for-byte, and nothing was added at the bar level. What this adds is the readout: the verdict-with-a-date, the arithmetic that produces it, and the labelled legend. A runway readout without the verdict and the arithmetic IS a Progress bar and should be one.",
+      "Chart-donut / Chart-stacked-area": "Those are composition charts across MANY categories or across TIME. This is one balance split into exactly two parts at one instant, and it is a rule, not a chart."
+    }
+  }
+  </script>
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-runway-bar">
+
+  <div class="specimens">
+
+    <!-- 1 · COVERED. Balance £122,450 · committed £49,702 (40.59%) · buffer £72,748.
+         The figures are the fitness test's own, carried across so the drawing is comparable
+         to the artefact that provoked the row. -->
+    <div>
+      <p class="stateLabel t-cm-legal">covered · the ordinary case · the bar is ink on track, and there is no green anywhere</p>
+      <div class="rwy" role="group" aria-labelledby="rwy1-label--mono-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy1-label--mono-dark">Coverage</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 31 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>72,748.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy1-label--mono-dark"
+             aria-valuenow="49702" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="49,702 pounds committed of a 122,450 pound balance, leaving a 72,748 pound buffer. Covered through 31 May.">
+          <div class="pb-fill" style="width:40.59%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£49,702</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£72,748</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£49,702</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£72,748</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 2 · TIGHT. Same anatomy, different numbers and a different WORD. The bar changes
+         length; it does NOT change colour. -->
+    <div>
+      <p class="stateLabel t-cm-legal">tight · buffer nearly gone · still ink on track — the word and the date changed, not the hue</p>
+      <div class="rwy" role="group" aria-labelledby="rwy2-label--mono-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy2-label--mono-dark">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered to 24 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>14,694.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy2-label--mono-dark"
+             aria-valuenow="107756" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="107,756 pounds committed of a 122,450 pound balance, leaving a 14,694 pound buffer. Covered to 24 May only.">
+          <div class="pb-fill" style="width:88.00%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£107,756</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£14,694</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£107,756</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£14,694</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 3 · SHORT. THE STATE EVERY OTHER DESIGN SYSTEM PAINTS RED. This one does not.
+         The bar is full because 100% of the balance is committed — that is the honest
+         geometry. The SHORTFALL is a separate signed figure in text, and the verdict word
+         carries the date the money runs out. Colour contributes nothing. -->
+    <div>
+      <p class="stateLabel t-cm-legal">short · no red was invented — the bar is full because the balance is fully committed; the shortfall is a figure and a date</p>
+      <div class="rwy" role="group" aria-labelledby="rwy3-label--mono-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy3-label--mono-dark">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Short from 12 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>−</span><span>£</span><span>18,310.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Shortfall against everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy3-label--mono-dark"
+             aria-valuenow="122450" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="140,760 pounds committed against a 122,450 pound balance. Short by 18,310 pounds from 12 May.">
+          <div class="pb-fill" style="width:100%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£140,760</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£0</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£140,760</dd>
+          <dt class="tot t-cm-legal">Shortfall</dt><dd class="tot t-cm-figure-6">−£18,310</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 4 · EMPHASIS, 8px rule — Progress-bar's .pb-lg size, unchanged. For a region where the
+         coverage IS the primary content rather than a supporting detail. -->
+    <div>
+      <p class="stateLabel t-cm-legal">emphasis · 8px rule (Progress-bar's own emphasis size, same token pair) · compact readout, no arithmetic block</p>
+      <div class="rwy rwy-lg" role="group" aria-labelledby="rwy4-label--mono-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy4-label--mono-dark">Coverage · Business current account</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 30 June</span></span>
+        </div>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy4-label--mono-dark"
+             aria-valuenow="31200" aria-valuemin="0" aria-valuemax="98000"
+             aria-valuetext="31,200 pounds committed of a 98,000 pound balance, leaving a 66,800 pound buffer. Covered through 30 June.">
+          <div class="pb-fill" style="width:31.84%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed <span class="v t-cm-figure-6">£31,200</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Buffer <span class="v t-cm-figure-6">£66,800</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. fill-on-track (progress/complete on progress/incomplete) clears
+       3:1 in ALL FOUR themes since s175-D1 — Mono/Console/Legacy 15.27 light / 9.15 dark,
+       Supercharge 14.02 / 10.46 — the figures Progress-bar's own meta records against
+       canon/canon.css. It is NOT declared as a gated contrastPair here for the same reason
+       Progress-bar declines to declare it: the snippet gate resolves against
+       tokens/semantic-colour.json, the MONO base only, and cannot see the other three legs.
+       Meaning never rests on that boundary anyway — every specimen carries the numbers in text,
+       a verdict word and aria-valuetext.
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with
+       the repo's own _contrast_utils.contrast_ratio) is likewise NOT
+       declared: the INHERITED Account-card / Status-indicator finding, flagged not resolved. -->
+  <script type="application/json" id="token-manifest--mono-dark">
+  {
+    "component": "Coverage / runway bar",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed — AND THE PROVENANCE IS THE HEADLINE. Itinerary row 94 originates in a TEST FIXTURE, not a product need: knowledge/_COMPONENT-GAPS.md records 'the waterfall / runway / proportional bars WERE INVENTED' by the 2026-06-30 SME-Payments fitness tests because 'the canon was silent in exactly the places it had to invent'. That invention was logged as a gap, promoted into _COMPONENT-LIBRARY-TARGET.md line 104, and became the itinerary row. A direct grep of knowledge/_rulings.json for runway/coverage/burn-rate returns ZERO hits naming this component. WHETHER IT SHOULD EXIST AT ALL IS DAVE'S FIRST DECISION.",
+    "vars": {
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--border": "border/subtle",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "role=\"progressbar\"", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-valuetext", "aria-labelledby", "aria-hidden=\"true\""],
+    "reuses": ["Progress-bar (the bar itself, byte-for-byte: .pb-track/.pb-fill, 4px + 8px, progress/complete on progress/incomplete, role=progressbar + aria-valuetext)", "Amount-display (money-format primitive: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)", "Status-indicator via Account-card (RAG tint chip carrying the verdict WORD)"],
+    "knownFindings": [
+      "PROVENANCE: this row originates in a TEST FIXTURE. See $status. It is built PROPOSED and the provenance is the headline, not a footnote.",
+      "OVERLAP ADJUDICATED AGAINST THE METAS, NOT FROM MEMORY. It is NOT a Chart-bullet: Chart-bullet is 'a measure bar against a COMPARATIVE TARGET MARKER and QUALITATIVE PERFORMANCE RANGES', intent 'comparison', an SVG figure at a fixed 580px with a real dv-table (dv-005) and a data/series/1 fill. A runway bar has no target, no bands, no SVG, no data table and no dataviz series token. THE TELL: a Chart-bullet needs a TARGET; a runway bar has no target, it has a HORIZON. It IS a Progress-bar: Progress-bar's own commonPatterns already lists 'savings goal / limits meter', and its specimen 3 is exactly this shape - a non-percentage determinate bar carrying its domain in aria-valuetext. THE BAR IS COPIED BYTE-FOR-BYTE AND NOTHING NEW WAS DRAWN.",
+      "WHAT IS ACTUALLY NEW is the READOUT around the gated atom: the verdict-with-a-date, the balance-minus-committed arithmetic, and the two-key legend. That is the whole component.",
+      "NO GREEN/RED WAS INVENTED, AND THAT IS THE POINT. The bar is INK ON TRACK in every state including 'Short', inherited from Progress-bar, whose meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) - hence the ink pair rather than a RAG colour.' Coverage is a QUANTITY. The verdict is a separate Status-indicator chip carrying a WORD AND A DATE. Which verdict maps to which chip is a SEMANTIC binding and is DAVE'S - proposed, not ruled.",
+      "The chip DOT sits on the same rag FILL seat as the live Stat-card/Kpi-tile two-red seam measured at #203. INHERITED AND FLAGGED per the lane's DO-NOT-RULE list, never resolved here, and never load-bearing: every chip carries its word.",
+      "fill-on-track clears 3:1 in all four themes since s175-D1 (Mono/Console/Legacy 15.27 light / 9.15 dark; Supercharge 14.02 / 10.46 - Progress-bar's own recorded figures). NOT declared as a gated contrastPair, for Progress-bar's own stated reason: the snippet gate reads the MONO base only.",
+      "OPEN, WITH THE SEARCH THAT FAILED TO SETTLE IT (s202-D3): role=\"progressbar\" vs role=\"meter\". Probe: `grep -rn 'role=\"meter\"' knowledge/snippets/` -> 2 hits, BOTH this file's own prose, i.e. ZERO in the 87 pre-existing snippets; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` -> 0. Nothing in the store rules it. progressbar is used here because it is what the gated parent carries; meter is arguably more correct for a gauge that is not task progress. DAVE'S.",
+      "In the SHORT state the bar is pinned at 100% and aria-valuenow is clamped to the max, because committed EXCEEDS the balance and a progressbar cannot express overflow. The true committed figure (140,760) appears in the legend, the arithmetic and aria-valuetext. A dedicated overflow treatment is a DECISION, not a defect - Dave's.",
+      "Zero raw type declarations (Progress-bar's own pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "Passive throughout - no interactive target, so the 44px minimum hit area does not apply to this component. Stated so the absence is declared rather than assumed.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence). No dataviz geometry, no SVG, so no dv-behaviour partial is wanted - declared."
+    ],
+    "$differsFrom": {
+      "Chart-bullet": "Chart-bullet compares a MEASURE to a TARGET against qualitative BANDS, as an SVG figure with a real data table, intent 'comparison'. This has no target, no bands, no SVG and no table. A Chart-bullet needs a target; a runway bar has a horizon. A runway bar that grows a target IS a Chart-bullet and should be one.",
+      "Progress-bar": "The BAR is Progress-bar, copied byte-for-byte, and nothing was added at the bar level. What this adds is the readout: the verdict-with-a-date, the arithmetic that produces it, and the labelled legend. A runway readout without the verdict and the arithmetic IS a Progress bar and should be one.",
+      "Chart-donut / Chart-stacked-area": "Those are composition charts across MANY categories or across TIME. This is one balance split into exactly two parts at one instant, and it is a rule, not a chart."
+    }
+  }
+  </script>
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-runway-bar">
+
+  <div class="specimens">
+
+    <!-- 1 · COVERED. Balance £122,450 · committed £49,702 (40.59%) · buffer £72,748.
+         The figures are the fitness test's own, carried across so the drawing is comparable
+         to the artefact that provoked the row. -->
+    <div>
+      <p class="stateLabel t-cm-legal">covered · the ordinary case · the bar is ink on track, and there is no green anywhere</p>
+      <div class="rwy" role="group" aria-labelledby="rwy1-label--legacy-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy1-label--legacy-light">Coverage</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 31 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>72,748.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy1-label--legacy-light"
+             aria-valuenow="49702" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="49,702 pounds committed of a 122,450 pound balance, leaving a 72,748 pound buffer. Covered through 31 May.">
+          <div class="pb-fill" style="width:40.59%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£49,702</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£72,748</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£49,702</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£72,748</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 2 · TIGHT. Same anatomy, different numbers and a different WORD. The bar changes
+         length; it does NOT change colour. -->
+    <div>
+      <p class="stateLabel t-cm-legal">tight · buffer nearly gone · still ink on track — the word and the date changed, not the hue</p>
+      <div class="rwy" role="group" aria-labelledby="rwy2-label--legacy-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy2-label--legacy-light">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered to 24 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>14,694.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy2-label--legacy-light"
+             aria-valuenow="107756" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="107,756 pounds committed of a 122,450 pound balance, leaving a 14,694 pound buffer. Covered to 24 May only.">
+          <div class="pb-fill" style="width:88.00%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£107,756</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£14,694</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£107,756</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£14,694</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 3 · SHORT. THE STATE EVERY OTHER DESIGN SYSTEM PAINTS RED. This one does not.
+         The bar is full because 100% of the balance is committed — that is the honest
+         geometry. The SHORTFALL is a separate signed figure in text, and the verdict word
+         carries the date the money runs out. Colour contributes nothing. -->
+    <div>
+      <p class="stateLabel t-cm-legal">short · no red was invented — the bar is full because the balance is fully committed; the shortfall is a figure and a date</p>
+      <div class="rwy" role="group" aria-labelledby="rwy3-label--legacy-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy3-label--legacy-light">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Short from 12 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>−</span><span>£</span><span>18,310.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Shortfall against everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy3-label--legacy-light"
+             aria-valuenow="122450" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="140,760 pounds committed against a 122,450 pound balance. Short by 18,310 pounds from 12 May.">
+          <div class="pb-fill" style="width:100%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£140,760</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£0</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£140,760</dd>
+          <dt class="tot t-cm-legal">Shortfall</dt><dd class="tot t-cm-figure-6">−£18,310</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 4 · EMPHASIS, 8px rule — Progress-bar's .pb-lg size, unchanged. For a region where the
+         coverage IS the primary content rather than a supporting detail. -->
+    <div>
+      <p class="stateLabel t-cm-legal">emphasis · 8px rule (Progress-bar's own emphasis size, same token pair) · compact readout, no arithmetic block</p>
+      <div class="rwy rwy-lg" role="group" aria-labelledby="rwy4-label--legacy-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy4-label--legacy-light">Coverage · Business current account</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 30 June</span></span>
+        </div>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy4-label--legacy-light"
+             aria-valuenow="31200" aria-valuemin="0" aria-valuemax="98000"
+             aria-valuetext="31,200 pounds committed of a 98,000 pound balance, leaving a 66,800 pound buffer. Covered through 30 June.">
+          <div class="pb-fill" style="width:31.84%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed <span class="v t-cm-figure-6">£31,200</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Buffer <span class="v t-cm-figure-6">£66,800</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. fill-on-track (progress/complete on progress/incomplete) clears
+       3:1 in ALL FOUR themes since s175-D1 — Mono/Console/Legacy 15.27 light / 9.15 dark,
+       Supercharge 14.02 / 10.46 — the figures Progress-bar's own meta records against
+       canon/canon.css. It is NOT declared as a gated contrastPair here for the same reason
+       Progress-bar declines to declare it: the snippet gate resolves against
+       tokens/semantic-colour.json, the MONO base only, and cannot see the other three legs.
+       Meaning never rests on that boundary anyway — every specimen carries the numbers in text,
+       a verdict word and aria-valuetext.
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with
+       the repo's own _contrast_utils.contrast_ratio) is likewise NOT
+       declared: the INHERITED Account-card / Status-indicator finding, flagged not resolved. -->
+  <script type="application/json" id="token-manifest--legacy-light">
+  {
+    "component": "Coverage / runway bar",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed — AND THE PROVENANCE IS THE HEADLINE. Itinerary row 94 originates in a TEST FIXTURE, not a product need: knowledge/_COMPONENT-GAPS.md records 'the waterfall / runway / proportional bars WERE INVENTED' by the 2026-06-30 SME-Payments fitness tests because 'the canon was silent in exactly the places it had to invent'. That invention was logged as a gap, promoted into _COMPONENT-LIBRARY-TARGET.md line 104, and became the itinerary row. A direct grep of knowledge/_rulings.json for runway/coverage/burn-rate returns ZERO hits naming this component. WHETHER IT SHOULD EXIST AT ALL IS DAVE'S FIRST DECISION.",
+    "vars": {
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--border": "border/subtle",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "role=\"progressbar\"", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-valuetext", "aria-labelledby", "aria-hidden=\"true\""],
+    "reuses": ["Progress-bar (the bar itself, byte-for-byte: .pb-track/.pb-fill, 4px + 8px, progress/complete on progress/incomplete, role=progressbar + aria-valuetext)", "Amount-display (money-format primitive: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)", "Status-indicator via Account-card (RAG tint chip carrying the verdict WORD)"],
+    "knownFindings": [
+      "PROVENANCE: this row originates in a TEST FIXTURE. See $status. It is built PROPOSED and the provenance is the headline, not a footnote.",
+      "OVERLAP ADJUDICATED AGAINST THE METAS, NOT FROM MEMORY. It is NOT a Chart-bullet: Chart-bullet is 'a measure bar against a COMPARATIVE TARGET MARKER and QUALITATIVE PERFORMANCE RANGES', intent 'comparison', an SVG figure at a fixed 580px with a real dv-table (dv-005) and a data/series/1 fill. A runway bar has no target, no bands, no SVG, no data table and no dataviz series token. THE TELL: a Chart-bullet needs a TARGET; a runway bar has no target, it has a HORIZON. It IS a Progress-bar: Progress-bar's own commonPatterns already lists 'savings goal / limits meter', and its specimen 3 is exactly this shape - a non-percentage determinate bar carrying its domain in aria-valuetext. THE BAR IS COPIED BYTE-FOR-BYTE AND NOTHING NEW WAS DRAWN.",
+      "WHAT IS ACTUALLY NEW is the READOUT around the gated atom: the verdict-with-a-date, the balance-minus-committed arithmetic, and the two-key legend. That is the whole component.",
+      "NO GREEN/RED WAS INVENTED, AND THAT IS THE POINT. The bar is INK ON TRACK in every state including 'Short', inherited from Progress-bar, whose meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) - hence the ink pair rather than a RAG colour.' Coverage is a QUANTITY. The verdict is a separate Status-indicator chip carrying a WORD AND A DATE. Which verdict maps to which chip is a SEMANTIC binding and is DAVE'S - proposed, not ruled.",
+      "The chip DOT sits on the same rag FILL seat as the live Stat-card/Kpi-tile two-red seam measured at #203. INHERITED AND FLAGGED per the lane's DO-NOT-RULE list, never resolved here, and never load-bearing: every chip carries its word.",
+      "fill-on-track clears 3:1 in all four themes since s175-D1 (Mono/Console/Legacy 15.27 light / 9.15 dark; Supercharge 14.02 / 10.46 - Progress-bar's own recorded figures). NOT declared as a gated contrastPair, for Progress-bar's own stated reason: the snippet gate reads the MONO base only.",
+      "OPEN, WITH THE SEARCH THAT FAILED TO SETTLE IT (s202-D3): role=\"progressbar\" vs role=\"meter\". Probe: `grep -rn 'role=\"meter\"' knowledge/snippets/` -> 2 hits, BOTH this file's own prose, i.e. ZERO in the 87 pre-existing snippets; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` -> 0. Nothing in the store rules it. progressbar is used here because it is what the gated parent carries; meter is arguably more correct for a gauge that is not task progress. DAVE'S.",
+      "In the SHORT state the bar is pinned at 100% and aria-valuenow is clamped to the max, because committed EXCEEDS the balance and a progressbar cannot express overflow. The true committed figure (140,760) appears in the legend, the arithmetic and aria-valuetext. A dedicated overflow treatment is a DECISION, not a defect - Dave's.",
+      "Zero raw type declarations (Progress-bar's own pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "Passive throughout - no interactive target, so the 44px minimum hit area does not apply to this component. Stated so the absence is declared rather than assumed.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence). No dataviz geometry, no SVG, so no dv-behaviour partial is wanted - declared."
+    ],
+    "$differsFrom": {
+      "Chart-bullet": "Chart-bullet compares a MEASURE to a TARGET against qualitative BANDS, as an SVG figure with a real data table, intent 'comparison'. This has no target, no bands, no SVG and no table. A Chart-bullet needs a target; a runway bar has a horizon. A runway bar that grows a target IS a Chart-bullet and should be one.",
+      "Progress-bar": "The BAR is Progress-bar, copied byte-for-byte, and nothing was added at the bar level. What this adds is the readout: the verdict-with-a-date, the arithmetic that produces it, and the labelled legend. A runway readout without the verdict and the arithmetic IS a Progress bar and should be one.",
+      "Chart-donut / Chart-stacked-area": "Those are composition charts across MANY categories or across TIME. This is one balance split into exactly two parts at one instant, and it is a rule, not a chart."
+    }
+  }
+  </script>
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-runway-bar">
+
+  <div class="specimens">
+
+    <!-- 1 · COVERED. Balance £122,450 · committed £49,702 (40.59%) · buffer £72,748.
+         The figures are the fitness test's own, carried across so the drawing is comparable
+         to the artefact that provoked the row. -->
+    <div>
+      <p class="stateLabel t-cm-legal">covered · the ordinary case · the bar is ink on track, and there is no green anywhere</p>
+      <div class="rwy" role="group" aria-labelledby="rwy1-label--legacy-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy1-label--legacy-dark">Coverage</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 31 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>72,748.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy1-label--legacy-dark"
+             aria-valuenow="49702" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="49,702 pounds committed of a 122,450 pound balance, leaving a 72,748 pound buffer. Covered through 31 May.">
+          <div class="pb-fill" style="width:40.59%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£49,702</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£72,748</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£49,702</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£72,748</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 2 · TIGHT. Same anatomy, different numbers and a different WORD. The bar changes
+         length; it does NOT change colour. -->
+    <div>
+      <p class="stateLabel t-cm-legal">tight · buffer nearly gone · still ink on track — the word and the date changed, not the hue</p>
+      <div class="rwy" role="group" aria-labelledby="rwy2-label--legacy-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy2-label--legacy-dark">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered to 24 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>14,694.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy2-label--legacy-dark"
+             aria-valuenow="107756" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="107,756 pounds committed of a 122,450 pound balance, leaving a 14,694 pound buffer. Covered to 24 May only.">
+          <div class="pb-fill" style="width:88.00%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£107,756</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£14,694</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£107,756</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£14,694</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 3 · SHORT. THE STATE EVERY OTHER DESIGN SYSTEM PAINTS RED. This one does not.
+         The bar is full because 100% of the balance is committed — that is the honest
+         geometry. The SHORTFALL is a separate signed figure in text, and the verdict word
+         carries the date the money runs out. Colour contributes nothing. -->
+    <div>
+      <p class="stateLabel t-cm-legal">short · no red was invented — the bar is full because the balance is fully committed; the shortfall is a figure and a date</p>
+      <div class="rwy" role="group" aria-labelledby="rwy3-label--legacy-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy3-label--legacy-dark">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Short from 12 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>−</span><span>£</span><span>18,310.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Shortfall against everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy3-label--legacy-dark"
+             aria-valuenow="122450" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="140,760 pounds committed against a 122,450 pound balance. Short by 18,310 pounds from 12 May.">
+          <div class="pb-fill" style="width:100%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£140,760</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£0</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£140,760</dd>
+          <dt class="tot t-cm-legal">Shortfall</dt><dd class="tot t-cm-figure-6">−£18,310</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 4 · EMPHASIS, 8px rule — Progress-bar's .pb-lg size, unchanged. For a region where the
+         coverage IS the primary content rather than a supporting detail. -->
+    <div>
+      <p class="stateLabel t-cm-legal">emphasis · 8px rule (Progress-bar's own emphasis size, same token pair) · compact readout, no arithmetic block</p>
+      <div class="rwy rwy-lg" role="group" aria-labelledby="rwy4-label--legacy-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy4-label--legacy-dark">Coverage · Business current account</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 30 June</span></span>
+        </div>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy4-label--legacy-dark"
+             aria-valuenow="31200" aria-valuemin="0" aria-valuemax="98000"
+             aria-valuetext="31,200 pounds committed of a 98,000 pound balance, leaving a 66,800 pound buffer. Covered through 30 June.">
+          <div class="pb-fill" style="width:31.84%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed <span class="v t-cm-figure-6">£31,200</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Buffer <span class="v t-cm-figure-6">£66,800</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. fill-on-track (progress/complete on progress/incomplete) clears
+       3:1 in ALL FOUR themes since s175-D1 — Mono/Console/Legacy 15.27 light / 9.15 dark,
+       Supercharge 14.02 / 10.46 — the figures Progress-bar's own meta records against
+       canon/canon.css. It is NOT declared as a gated contrastPair here for the same reason
+       Progress-bar declines to declare it: the snippet gate resolves against
+       tokens/semantic-colour.json, the MONO base only, and cannot see the other three legs.
+       Meaning never rests on that boundary anyway — every specimen carries the numbers in text,
+       a verdict word and aria-valuetext.
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with
+       the repo's own _contrast_utils.contrast_ratio) is likewise NOT
+       declared: the INHERITED Account-card / Status-indicator finding, flagged not resolved. -->
+  <script type="application/json" id="token-manifest--legacy-dark">
+  {
+    "component": "Coverage / runway bar",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed — AND THE PROVENANCE IS THE HEADLINE. Itinerary row 94 originates in a TEST FIXTURE, not a product need: knowledge/_COMPONENT-GAPS.md records 'the waterfall / runway / proportional bars WERE INVENTED' by the 2026-06-30 SME-Payments fitness tests because 'the canon was silent in exactly the places it had to invent'. That invention was logged as a gap, promoted into _COMPONENT-LIBRARY-TARGET.md line 104, and became the itinerary row. A direct grep of knowledge/_rulings.json for runway/coverage/burn-rate returns ZERO hits naming this component. WHETHER IT SHOULD EXIST AT ALL IS DAVE'S FIRST DECISION.",
+    "vars": {
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--border": "border/subtle",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "role=\"progressbar\"", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-valuetext", "aria-labelledby", "aria-hidden=\"true\""],
+    "reuses": ["Progress-bar (the bar itself, byte-for-byte: .pb-track/.pb-fill, 4px + 8px, progress/complete on progress/incomplete, role=progressbar + aria-valuetext)", "Amount-display (money-format primitive: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)", "Status-indicator via Account-card (RAG tint chip carrying the verdict WORD)"],
+    "knownFindings": [
+      "PROVENANCE: this row originates in a TEST FIXTURE. See $status. It is built PROPOSED and the provenance is the headline, not a footnote.",
+      "OVERLAP ADJUDICATED AGAINST THE METAS, NOT FROM MEMORY. It is NOT a Chart-bullet: Chart-bullet is 'a measure bar against a COMPARATIVE TARGET MARKER and QUALITATIVE PERFORMANCE RANGES', intent 'comparison', an SVG figure at a fixed 580px with a real dv-table (dv-005) and a data/series/1 fill. A runway bar has no target, no bands, no SVG, no data table and no dataviz series token. THE TELL: a Chart-bullet needs a TARGET; a runway bar has no target, it has a HORIZON. It IS a Progress-bar: Progress-bar's own commonPatterns already lists 'savings goal / limits meter', and its specimen 3 is exactly this shape - a non-percentage determinate bar carrying its domain in aria-valuetext. THE BAR IS COPIED BYTE-FOR-BYTE AND NOTHING NEW WAS DRAWN.",
+      "WHAT IS ACTUALLY NEW is the READOUT around the gated atom: the verdict-with-a-date, the balance-minus-committed arithmetic, and the two-key legend. That is the whole component.",
+      "NO GREEN/RED WAS INVENTED, AND THAT IS THE POINT. The bar is INK ON TRACK in every state including 'Short', inherited from Progress-bar, whose meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) - hence the ink pair rather than a RAG colour.' Coverage is a QUANTITY. The verdict is a separate Status-indicator chip carrying a WORD AND A DATE. Which verdict maps to which chip is a SEMANTIC binding and is DAVE'S - proposed, not ruled.",
+      "The chip DOT sits on the same rag FILL seat as the live Stat-card/Kpi-tile two-red seam measured at #203. INHERITED AND FLAGGED per the lane's DO-NOT-RULE list, never resolved here, and never load-bearing: every chip carries its word.",
+      "fill-on-track clears 3:1 in all four themes since s175-D1 (Mono/Console/Legacy 15.27 light / 9.15 dark; Supercharge 14.02 / 10.46 - Progress-bar's own recorded figures). NOT declared as a gated contrastPair, for Progress-bar's own stated reason: the snippet gate reads the MONO base only.",
+      "OPEN, WITH THE SEARCH THAT FAILED TO SETTLE IT (s202-D3): role=\"progressbar\" vs role=\"meter\". Probe: `grep -rn 'role=\"meter\"' knowledge/snippets/` -> 2 hits, BOTH this file's own prose, i.e. ZERO in the 87 pre-existing snippets; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` -> 0. Nothing in the store rules it. progressbar is used here because it is what the gated parent carries; meter is arguably more correct for a gauge that is not task progress. DAVE'S.",
+      "In the SHORT state the bar is pinned at 100% and aria-valuenow is clamped to the max, because committed EXCEEDS the balance and a progressbar cannot express overflow. The true committed figure (140,760) appears in the legend, the arithmetic and aria-valuetext. A dedicated overflow treatment is a DECISION, not a defect - Dave's.",
+      "Zero raw type declarations (Progress-bar's own pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "Passive throughout - no interactive target, so the 44px minimum hit area does not apply to this component. Stated so the absence is declared rather than assumed.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence). No dataviz geometry, no SVG, so no dv-behaviour partial is wanted - declared."
+    ],
+    "$differsFrom": {
+      "Chart-bullet": "Chart-bullet compares a MEASURE to a TARGET against qualitative BANDS, as an SVG figure with a real data table, intent 'comparison'. This has no target, no bands, no SVG and no table. A Chart-bullet needs a target; a runway bar has a horizon. A runway bar that grows a target IS a Chart-bullet and should be one.",
+      "Progress-bar": "The BAR is Progress-bar, copied byte-for-byte, and nothing was added at the bar level. What this adds is the readout: the verdict-with-a-date, the arithmetic that produces it, and the labelled legend. A runway readout without the verdict and the arithmetic IS a Progress bar and should be one.",
+      "Chart-donut / Chart-stacked-area": "Those are composition charts across MANY categories or across TIME. This is one balance split into exactly two parts at one instant, and it is a rule, not a chart."
+    }
+  }
+  </script>
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-runway-bar">
+
+  <div class="specimens">
+
+    <!-- 1 · COVERED. Balance £122,450 · committed £49,702 (40.59%) · buffer £72,748.
+         The figures are the fitness test's own, carried across so the drawing is comparable
+         to the artefact that provoked the row. -->
+    <div>
+      <p class="stateLabel t-cm-legal">covered · the ordinary case · the bar is ink on track, and there is no green anywhere</p>
+      <div class="rwy" role="group" aria-labelledby="rwy1-label--console-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy1-label--console-light">Coverage</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 31 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>72,748.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy1-label--console-light"
+             aria-valuenow="49702" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="49,702 pounds committed of a 122,450 pound balance, leaving a 72,748 pound buffer. Covered through 31 May.">
+          <div class="pb-fill" style="width:40.59%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£49,702</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£72,748</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£49,702</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£72,748</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 2 · TIGHT. Same anatomy, different numbers and a different WORD. The bar changes
+         length; it does NOT change colour. -->
+    <div>
+      <p class="stateLabel t-cm-legal">tight · buffer nearly gone · still ink on track — the word and the date changed, not the hue</p>
+      <div class="rwy" role="group" aria-labelledby="rwy2-label--console-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy2-label--console-light">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered to 24 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>14,694.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy2-label--console-light"
+             aria-valuenow="107756" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="107,756 pounds committed of a 122,450 pound balance, leaving a 14,694 pound buffer. Covered to 24 May only.">
+          <div class="pb-fill" style="width:88.00%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£107,756</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£14,694</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£107,756</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£14,694</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 3 · SHORT. THE STATE EVERY OTHER DESIGN SYSTEM PAINTS RED. This one does not.
+         The bar is full because 100% of the balance is committed — that is the honest
+         geometry. The SHORTFALL is a separate signed figure in text, and the verdict word
+         carries the date the money runs out. Colour contributes nothing. -->
+    <div>
+      <p class="stateLabel t-cm-legal">short · no red was invented — the bar is full because the balance is fully committed; the shortfall is a figure and a date</p>
+      <div class="rwy" role="group" aria-labelledby="rwy3-label--console-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy3-label--console-light">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Short from 12 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>−</span><span>£</span><span>18,310.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Shortfall against everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy3-label--console-light"
+             aria-valuenow="122450" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="140,760 pounds committed against a 122,450 pound balance. Short by 18,310 pounds from 12 May.">
+          <div class="pb-fill" style="width:100%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£140,760</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£0</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£140,760</dd>
+          <dt class="tot t-cm-legal">Shortfall</dt><dd class="tot t-cm-figure-6">−£18,310</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 4 · EMPHASIS, 8px rule — Progress-bar's .pb-lg size, unchanged. For a region where the
+         coverage IS the primary content rather than a supporting detail. -->
+    <div>
+      <p class="stateLabel t-cm-legal">emphasis · 8px rule (Progress-bar's own emphasis size, same token pair) · compact readout, no arithmetic block</p>
+      <div class="rwy rwy-lg" role="group" aria-labelledby="rwy4-label--console-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy4-label--console-light">Coverage · Business current account</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 30 June</span></span>
+        </div>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy4-label--console-light"
+             aria-valuenow="31200" aria-valuemin="0" aria-valuemax="98000"
+             aria-valuetext="31,200 pounds committed of a 98,000 pound balance, leaving a 66,800 pound buffer. Covered through 30 June.">
+          <div class="pb-fill" style="width:31.84%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed <span class="v t-cm-figure-6">£31,200</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Buffer <span class="v t-cm-figure-6">£66,800</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. fill-on-track (progress/complete on progress/incomplete) clears
+       3:1 in ALL FOUR themes since s175-D1 — Mono/Console/Legacy 15.27 light / 9.15 dark,
+       Supercharge 14.02 / 10.46 — the figures Progress-bar's own meta records against
+       canon/canon.css. It is NOT declared as a gated contrastPair here for the same reason
+       Progress-bar declines to declare it: the snippet gate resolves against
+       tokens/semantic-colour.json, the MONO base only, and cannot see the other three legs.
+       Meaning never rests on that boundary anyway — every specimen carries the numbers in text,
+       a verdict word and aria-valuetext.
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with
+       the repo's own _contrast_utils.contrast_ratio) is likewise NOT
+       declared: the INHERITED Account-card / Status-indicator finding, flagged not resolved. -->
+  <script type="application/json" id="token-manifest--console-light">
+  {
+    "component": "Coverage / runway bar",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed — AND THE PROVENANCE IS THE HEADLINE. Itinerary row 94 originates in a TEST FIXTURE, not a product need: knowledge/_COMPONENT-GAPS.md records 'the waterfall / runway / proportional bars WERE INVENTED' by the 2026-06-30 SME-Payments fitness tests because 'the canon was silent in exactly the places it had to invent'. That invention was logged as a gap, promoted into _COMPONENT-LIBRARY-TARGET.md line 104, and became the itinerary row. A direct grep of knowledge/_rulings.json for runway/coverage/burn-rate returns ZERO hits naming this component. WHETHER IT SHOULD EXIST AT ALL IS DAVE'S FIRST DECISION.",
+    "vars": {
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--border": "border/subtle",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "role=\"progressbar\"", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-valuetext", "aria-labelledby", "aria-hidden=\"true\""],
+    "reuses": ["Progress-bar (the bar itself, byte-for-byte: .pb-track/.pb-fill, 4px + 8px, progress/complete on progress/incomplete, role=progressbar + aria-valuetext)", "Amount-display (money-format primitive: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)", "Status-indicator via Account-card (RAG tint chip carrying the verdict WORD)"],
+    "knownFindings": [
+      "PROVENANCE: this row originates in a TEST FIXTURE. See $status. It is built PROPOSED and the provenance is the headline, not a footnote.",
+      "OVERLAP ADJUDICATED AGAINST THE METAS, NOT FROM MEMORY. It is NOT a Chart-bullet: Chart-bullet is 'a measure bar against a COMPARATIVE TARGET MARKER and QUALITATIVE PERFORMANCE RANGES', intent 'comparison', an SVG figure at a fixed 580px with a real dv-table (dv-005) and a data/series/1 fill. A runway bar has no target, no bands, no SVG, no data table and no dataviz series token. THE TELL: a Chart-bullet needs a TARGET; a runway bar has no target, it has a HORIZON. It IS a Progress-bar: Progress-bar's own commonPatterns already lists 'savings goal / limits meter', and its specimen 3 is exactly this shape - a non-percentage determinate bar carrying its domain in aria-valuetext. THE BAR IS COPIED BYTE-FOR-BYTE AND NOTHING NEW WAS DRAWN.",
+      "WHAT IS ACTUALLY NEW is the READOUT around the gated atom: the verdict-with-a-date, the balance-minus-committed arithmetic, and the two-key legend. That is the whole component.",
+      "NO GREEN/RED WAS INVENTED, AND THAT IS THE POINT. The bar is INK ON TRACK in every state including 'Short', inherited from Progress-bar, whose meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) - hence the ink pair rather than a RAG colour.' Coverage is a QUANTITY. The verdict is a separate Status-indicator chip carrying a WORD AND A DATE. Which verdict maps to which chip is a SEMANTIC binding and is DAVE'S - proposed, not ruled.",
+      "The chip DOT sits on the same rag FILL seat as the live Stat-card/Kpi-tile two-red seam measured at #203. INHERITED AND FLAGGED per the lane's DO-NOT-RULE list, never resolved here, and never load-bearing: every chip carries its word.",
+      "fill-on-track clears 3:1 in all four themes since s175-D1 (Mono/Console/Legacy 15.27 light / 9.15 dark; Supercharge 14.02 / 10.46 - Progress-bar's own recorded figures). NOT declared as a gated contrastPair, for Progress-bar's own stated reason: the snippet gate reads the MONO base only.",
+      "OPEN, WITH THE SEARCH THAT FAILED TO SETTLE IT (s202-D3): role=\"progressbar\" vs role=\"meter\". Probe: `grep -rn 'role=\"meter\"' knowledge/snippets/` -> 2 hits, BOTH this file's own prose, i.e. ZERO in the 87 pre-existing snippets; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` -> 0. Nothing in the store rules it. progressbar is used here because it is what the gated parent carries; meter is arguably more correct for a gauge that is not task progress. DAVE'S.",
+      "In the SHORT state the bar is pinned at 100% and aria-valuenow is clamped to the max, because committed EXCEEDS the balance and a progressbar cannot express overflow. The true committed figure (140,760) appears in the legend, the arithmetic and aria-valuetext. A dedicated overflow treatment is a DECISION, not a defect - Dave's.",
+      "Zero raw type declarations (Progress-bar's own pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "Passive throughout - no interactive target, so the 44px minimum hit area does not apply to this component. Stated so the absence is declared rather than assumed.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence). No dataviz geometry, no SVG, so no dv-behaviour partial is wanted - declared."
+    ],
+    "$differsFrom": {
+      "Chart-bullet": "Chart-bullet compares a MEASURE to a TARGET against qualitative BANDS, as an SVG figure with a real data table, intent 'comparison'. This has no target, no bands, no SVG and no table. A Chart-bullet needs a target; a runway bar has a horizon. A runway bar that grows a target IS a Chart-bullet and should be one.",
+      "Progress-bar": "The BAR is Progress-bar, copied byte-for-byte, and nothing was added at the bar level. What this adds is the readout: the verdict-with-a-date, the arithmetic that produces it, and the labelled legend. A runway readout without the verdict and the arithmetic IS a Progress bar and should be one.",
+      "Chart-donut / Chart-stacked-area": "Those are composition charts across MANY categories or across TIME. This is one balance split into exactly two parts at one instant, and it is a rule, not a chart."
+    }
+  }
+  </script>
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-runway-bar">
+
+  <div class="specimens">
+
+    <!-- 1 · COVERED. Balance £122,450 · committed £49,702 (40.59%) · buffer £72,748.
+         The figures are the fitness test's own, carried across so the drawing is comparable
+         to the artefact that provoked the row. -->
+    <div>
+      <p class="stateLabel t-cm-legal">covered · the ordinary case · the bar is ink on track, and there is no green anywhere</p>
+      <div class="rwy" role="group" aria-labelledby="rwy1-label--console-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy1-label--console-dark">Coverage</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 31 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>72,748.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy1-label--console-dark"
+             aria-valuenow="49702" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="49,702 pounds committed of a 122,450 pound balance, leaving a 72,748 pound buffer. Covered through 31 May.">
+          <div class="pb-fill" style="width:40.59%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£49,702</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£72,748</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£49,702</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£72,748</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 2 · TIGHT. Same anatomy, different numbers and a different WORD. The bar changes
+         length; it does NOT change colour. -->
+    <div>
+      <p class="stateLabel t-cm-legal">tight · buffer nearly gone · still ink on track — the word and the date changed, not the hue</p>
+      <div class="rwy" role="group" aria-labelledby="rwy2-label--console-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy2-label--console-dark">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered to 24 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>14,694.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy2-label--console-dark"
+             aria-valuenow="107756" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="107,756 pounds committed of a 122,450 pound balance, leaving a 14,694 pound buffer. Covered to 24 May only.">
+          <div class="pb-fill" style="width:88.00%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£107,756</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£14,694</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£107,756</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£14,694</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 3 · SHORT. THE STATE EVERY OTHER DESIGN SYSTEM PAINTS RED. This one does not.
+         The bar is full because 100% of the balance is committed — that is the honest
+         geometry. The SHORTFALL is a separate signed figure in text, and the verdict word
+         carries the date the money runs out. Colour contributes nothing. -->
+    <div>
+      <p class="stateLabel t-cm-legal">short · no red was invented — the bar is full because the balance is fully committed; the shortfall is a figure and a date</p>
+      <div class="rwy" role="group" aria-labelledby="rwy3-label--console-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy3-label--console-dark">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Short from 12 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>−</span><span>£</span><span>18,310.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Shortfall against everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy3-label--console-dark"
+             aria-valuenow="122450" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="140,760 pounds committed against a 122,450 pound balance. Short by 18,310 pounds from 12 May.">
+          <div class="pb-fill" style="width:100%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£140,760</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£0</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£140,760</dd>
+          <dt class="tot t-cm-legal">Shortfall</dt><dd class="tot t-cm-figure-6">−£18,310</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 4 · EMPHASIS, 8px rule — Progress-bar's .pb-lg size, unchanged. For a region where the
+         coverage IS the primary content rather than a supporting detail. -->
+    <div>
+      <p class="stateLabel t-cm-legal">emphasis · 8px rule (Progress-bar's own emphasis size, same token pair) · compact readout, no arithmetic block</p>
+      <div class="rwy rwy-lg" role="group" aria-labelledby="rwy4-label--console-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy4-label--console-dark">Coverage · Business current account</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 30 June</span></span>
+        </div>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy4-label--console-dark"
+             aria-valuenow="31200" aria-valuemin="0" aria-valuemax="98000"
+             aria-valuetext="31,200 pounds committed of a 98,000 pound balance, leaving a 66,800 pound buffer. Covered through 30 June.">
+          <div class="pb-fill" style="width:31.84%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed <span class="v t-cm-figure-6">£31,200</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Buffer <span class="v t-cm-figure-6">£66,800</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. fill-on-track (progress/complete on progress/incomplete) clears
+       3:1 in ALL FOUR themes since s175-D1 — Mono/Console/Legacy 15.27 light / 9.15 dark,
+       Supercharge 14.02 / 10.46 — the figures Progress-bar's own meta records against
+       canon/canon.css. It is NOT declared as a gated contrastPair here for the same reason
+       Progress-bar declines to declare it: the snippet gate resolves against
+       tokens/semantic-colour.json, the MONO base only, and cannot see the other three legs.
+       Meaning never rests on that boundary anyway — every specimen carries the numbers in text,
+       a verdict word and aria-valuetext.
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with
+       the repo's own _contrast_utils.contrast_ratio) is likewise NOT
+       declared: the INHERITED Account-card / Status-indicator finding, flagged not resolved. -->
+  <script type="application/json" id="token-manifest--console-dark">
+  {
+    "component": "Coverage / runway bar",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed — AND THE PROVENANCE IS THE HEADLINE. Itinerary row 94 originates in a TEST FIXTURE, not a product need: knowledge/_COMPONENT-GAPS.md records 'the waterfall / runway / proportional bars WERE INVENTED' by the 2026-06-30 SME-Payments fitness tests because 'the canon was silent in exactly the places it had to invent'. That invention was logged as a gap, promoted into _COMPONENT-LIBRARY-TARGET.md line 104, and became the itinerary row. A direct grep of knowledge/_rulings.json for runway/coverage/burn-rate returns ZERO hits naming this component. WHETHER IT SHOULD EXIST AT ALL IS DAVE'S FIRST DECISION.",
+    "vars": {
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--border": "border/subtle",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "role=\"progressbar\"", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-valuetext", "aria-labelledby", "aria-hidden=\"true\""],
+    "reuses": ["Progress-bar (the bar itself, byte-for-byte: .pb-track/.pb-fill, 4px + 8px, progress/complete on progress/incomplete, role=progressbar + aria-valuetext)", "Amount-display (money-format primitive: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)", "Status-indicator via Account-card (RAG tint chip carrying the verdict WORD)"],
+    "knownFindings": [
+      "PROVENANCE: this row originates in a TEST FIXTURE. See $status. It is built PROPOSED and the provenance is the headline, not a footnote.",
+      "OVERLAP ADJUDICATED AGAINST THE METAS, NOT FROM MEMORY. It is NOT a Chart-bullet: Chart-bullet is 'a measure bar against a COMPARATIVE TARGET MARKER and QUALITATIVE PERFORMANCE RANGES', intent 'comparison', an SVG figure at a fixed 580px with a real dv-table (dv-005) and a data/series/1 fill. A runway bar has no target, no bands, no SVG, no data table and no dataviz series token. THE TELL: a Chart-bullet needs a TARGET; a runway bar has no target, it has a HORIZON. It IS a Progress-bar: Progress-bar's own commonPatterns already lists 'savings goal / limits meter', and its specimen 3 is exactly this shape - a non-percentage determinate bar carrying its domain in aria-valuetext. THE BAR IS COPIED BYTE-FOR-BYTE AND NOTHING NEW WAS DRAWN.",
+      "WHAT IS ACTUALLY NEW is the READOUT around the gated atom: the verdict-with-a-date, the balance-minus-committed arithmetic, and the two-key legend. That is the whole component.",
+      "NO GREEN/RED WAS INVENTED, AND THAT IS THE POINT. The bar is INK ON TRACK in every state including 'Short', inherited from Progress-bar, whose meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) - hence the ink pair rather than a RAG colour.' Coverage is a QUANTITY. The verdict is a separate Status-indicator chip carrying a WORD AND A DATE. Which verdict maps to which chip is a SEMANTIC binding and is DAVE'S - proposed, not ruled.",
+      "The chip DOT sits on the same rag FILL seat as the live Stat-card/Kpi-tile two-red seam measured at #203. INHERITED AND FLAGGED per the lane's DO-NOT-RULE list, never resolved here, and never load-bearing: every chip carries its word.",
+      "fill-on-track clears 3:1 in all four themes since s175-D1 (Mono/Console/Legacy 15.27 light / 9.15 dark; Supercharge 14.02 / 10.46 - Progress-bar's own recorded figures). NOT declared as a gated contrastPair, for Progress-bar's own stated reason: the snippet gate reads the MONO base only.",
+      "OPEN, WITH THE SEARCH THAT FAILED TO SETTLE IT (s202-D3): role=\"progressbar\" vs role=\"meter\". Probe: `grep -rn 'role=\"meter\"' knowledge/snippets/` -> 2 hits, BOTH this file's own prose, i.e. ZERO in the 87 pre-existing snippets; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` -> 0. Nothing in the store rules it. progressbar is used here because it is what the gated parent carries; meter is arguably more correct for a gauge that is not task progress. DAVE'S.",
+      "In the SHORT state the bar is pinned at 100% and aria-valuenow is clamped to the max, because committed EXCEEDS the balance and a progressbar cannot express overflow. The true committed figure (140,760) appears in the legend, the arithmetic and aria-valuetext. A dedicated overflow treatment is a DECISION, not a defect - Dave's.",
+      "Zero raw type declarations (Progress-bar's own pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "Passive throughout - no interactive target, so the 44px minimum hit area does not apply to this component. Stated so the absence is declared rather than assumed.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence). No dataviz geometry, no SVG, so no dv-behaviour partial is wanted - declared."
+    ],
+    "$differsFrom": {
+      "Chart-bullet": "Chart-bullet compares a MEASURE to a TARGET against qualitative BANDS, as an SVG figure with a real data table, intent 'comparison'. This has no target, no bands, no SVG and no table. A Chart-bullet needs a target; a runway bar has a horizon. A runway bar that grows a target IS a Chart-bullet and should be one.",
+      "Progress-bar": "The BAR is Progress-bar, copied byte-for-byte, and nothing was added at the bar level. What this adds is the readout: the verdict-with-a-date, the arithmetic that produces it, and the labelled legend. A runway readout without the verdict and the arithmetic IS a Progress bar and should be one.",
+      "Chart-donut / Chart-stacked-area": "Those are composition charts across MANY categories or across TIME. This is one balance split into exactly two parts at one instant, and it is a rule, not a chart."
+    }
+  }
+  </script>
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-runway-bar">
+
+  <div class="specimens">
+
+    <!-- 1 · COVERED. Balance £122,450 · committed £49,702 (40.59%) · buffer £72,748.
+         The figures are the fitness test's own, carried across so the drawing is comparable
+         to the artefact that provoked the row. -->
+    <div>
+      <p class="stateLabel t-cm-legal">covered · the ordinary case · the bar is ink on track, and there is no green anywhere</p>
+      <div class="rwy" role="group" aria-labelledby="rwy1-label--supercharge-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy1-label--supercharge-light">Coverage</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 31 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>72,748.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy1-label--supercharge-light"
+             aria-valuenow="49702" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="49,702 pounds committed of a 122,450 pound balance, leaving a 72,748 pound buffer. Covered through 31 May.">
+          <div class="pb-fill" style="width:40.59%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£49,702</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£72,748</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£49,702</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£72,748</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 2 · TIGHT. Same anatomy, different numbers and a different WORD. The bar changes
+         length; it does NOT change colour. -->
+    <div>
+      <p class="stateLabel t-cm-legal">tight · buffer nearly gone · still ink on track — the word and the date changed, not the hue</p>
+      <div class="rwy" role="group" aria-labelledby="rwy2-label--supercharge-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy2-label--supercharge-light">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered to 24 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>14,694.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy2-label--supercharge-light"
+             aria-valuenow="107756" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="107,756 pounds committed of a 122,450 pound balance, leaving a 14,694 pound buffer. Covered to 24 May only.">
+          <div class="pb-fill" style="width:88.00%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£107,756</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£14,694</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£107,756</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£14,694</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 3 · SHORT. THE STATE EVERY OTHER DESIGN SYSTEM PAINTS RED. This one does not.
+         The bar is full because 100% of the balance is committed — that is the honest
+         geometry. The SHORTFALL is a separate signed figure in text, and the verdict word
+         carries the date the money runs out. Colour contributes nothing. -->
+    <div>
+      <p class="stateLabel t-cm-legal">short · no red was invented — the bar is full because the balance is fully committed; the shortfall is a figure and a date</p>
+      <div class="rwy" role="group" aria-labelledby="rwy3-label--supercharge-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy3-label--supercharge-light">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Short from 12 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>−</span><span>£</span><span>18,310.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Shortfall against everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy3-label--supercharge-light"
+             aria-valuenow="122450" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="140,760 pounds committed against a 122,450 pound balance. Short by 18,310 pounds from 12 May.">
+          <div class="pb-fill" style="width:100%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£140,760</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£0</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£140,760</dd>
+          <dt class="tot t-cm-legal">Shortfall</dt><dd class="tot t-cm-figure-6">−£18,310</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 4 · EMPHASIS, 8px rule — Progress-bar's .pb-lg size, unchanged. For a region where the
+         coverage IS the primary content rather than a supporting detail. -->
+    <div>
+      <p class="stateLabel t-cm-legal">emphasis · 8px rule (Progress-bar's own emphasis size, same token pair) · compact readout, no arithmetic block</p>
+      <div class="rwy rwy-lg" role="group" aria-labelledby="rwy4-label--supercharge-light">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy4-label--supercharge-light">Coverage · Business current account</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 30 June</span></span>
+        </div>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy4-label--supercharge-light"
+             aria-valuenow="31200" aria-valuemin="0" aria-valuemax="98000"
+             aria-valuetext="31,200 pounds committed of a 98,000 pound balance, leaving a 66,800 pound buffer. Covered through 30 June.">
+          <div class="pb-fill" style="width:31.84%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed <span class="v t-cm-figure-6">£31,200</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Buffer <span class="v t-cm-figure-6">£66,800</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. fill-on-track (progress/complete on progress/incomplete) clears
+       3:1 in ALL FOUR themes since s175-D1 — Mono/Console/Legacy 15.27 light / 9.15 dark,
+       Supercharge 14.02 / 10.46 — the figures Progress-bar's own meta records against
+       canon/canon.css. It is NOT declared as a gated contrastPair here for the same reason
+       Progress-bar declines to declare it: the snippet gate resolves against
+       tokens/semantic-colour.json, the MONO base only, and cannot see the other three legs.
+       Meaning never rests on that boundary anyway — every specimen carries the numbers in text,
+       a verdict word and aria-valuetext.
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with
+       the repo's own _contrast_utils.contrast_ratio) is likewise NOT
+       declared: the INHERITED Account-card / Status-indicator finding, flagged not resolved. -->
+  <script type="application/json" id="token-manifest--supercharge-light">
+  {
+    "component": "Coverage / runway bar",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed — AND THE PROVENANCE IS THE HEADLINE. Itinerary row 94 originates in a TEST FIXTURE, not a product need: knowledge/_COMPONENT-GAPS.md records 'the waterfall / runway / proportional bars WERE INVENTED' by the 2026-06-30 SME-Payments fitness tests because 'the canon was silent in exactly the places it had to invent'. That invention was logged as a gap, promoted into _COMPONENT-LIBRARY-TARGET.md line 104, and became the itinerary row. A direct grep of knowledge/_rulings.json for runway/coverage/burn-rate returns ZERO hits naming this component. WHETHER IT SHOULD EXIST AT ALL IS DAVE'S FIRST DECISION.",
+    "vars": {
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--border": "border/subtle",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "role=\"progressbar\"", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-valuetext", "aria-labelledby", "aria-hidden=\"true\""],
+    "reuses": ["Progress-bar (the bar itself, byte-for-byte: .pb-track/.pb-fill, 4px + 8px, progress/complete on progress/incomplete, role=progressbar + aria-valuetext)", "Amount-display (money-format primitive: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)", "Status-indicator via Account-card (RAG tint chip carrying the verdict WORD)"],
+    "knownFindings": [
+      "PROVENANCE: this row originates in a TEST FIXTURE. See $status. It is built PROPOSED and the provenance is the headline, not a footnote.",
+      "OVERLAP ADJUDICATED AGAINST THE METAS, NOT FROM MEMORY. It is NOT a Chart-bullet: Chart-bullet is 'a measure bar against a COMPARATIVE TARGET MARKER and QUALITATIVE PERFORMANCE RANGES', intent 'comparison', an SVG figure at a fixed 580px with a real dv-table (dv-005) and a data/series/1 fill. A runway bar has no target, no bands, no SVG, no data table and no dataviz series token. THE TELL: a Chart-bullet needs a TARGET; a runway bar has no target, it has a HORIZON. It IS a Progress-bar: Progress-bar's own commonPatterns already lists 'savings goal / limits meter', and its specimen 3 is exactly this shape - a non-percentage determinate bar carrying its domain in aria-valuetext. THE BAR IS COPIED BYTE-FOR-BYTE AND NOTHING NEW WAS DRAWN.",
+      "WHAT IS ACTUALLY NEW is the READOUT around the gated atom: the verdict-with-a-date, the balance-minus-committed arithmetic, and the two-key legend. That is the whole component.",
+      "NO GREEN/RED WAS INVENTED, AND THAT IS THE POINT. The bar is INK ON TRACK in every state including 'Short', inherited from Progress-bar, whose meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) - hence the ink pair rather than a RAG colour.' Coverage is a QUANTITY. The verdict is a separate Status-indicator chip carrying a WORD AND A DATE. Which verdict maps to which chip is a SEMANTIC binding and is DAVE'S - proposed, not ruled.",
+      "The chip DOT sits on the same rag FILL seat as the live Stat-card/Kpi-tile two-red seam measured at #203. INHERITED AND FLAGGED per the lane's DO-NOT-RULE list, never resolved here, and never load-bearing: every chip carries its word.",
+      "fill-on-track clears 3:1 in all four themes since s175-D1 (Mono/Console/Legacy 15.27 light / 9.15 dark; Supercharge 14.02 / 10.46 - Progress-bar's own recorded figures). NOT declared as a gated contrastPair, for Progress-bar's own stated reason: the snippet gate reads the MONO base only.",
+      "OPEN, WITH THE SEARCH THAT FAILED TO SETTLE IT (s202-D3): role=\"progressbar\" vs role=\"meter\". Probe: `grep -rn 'role=\"meter\"' knowledge/snippets/` -> 2 hits, BOTH this file's own prose, i.e. ZERO in the 87 pre-existing snippets; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` -> 0. Nothing in the store rules it. progressbar is used here because it is what the gated parent carries; meter is arguably more correct for a gauge that is not task progress. DAVE'S.",
+      "In the SHORT state the bar is pinned at 100% and aria-valuenow is clamped to the max, because committed EXCEEDS the balance and a progressbar cannot express overflow. The true committed figure (140,760) appears in the legend, the arithmetic and aria-valuetext. A dedicated overflow treatment is a DECISION, not a defect - Dave's.",
+      "Zero raw type declarations (Progress-bar's own pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "Passive throughout - no interactive target, so the 44px minimum hit area does not apply to this component. Stated so the absence is declared rather than assumed.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence). No dataviz geometry, no SVG, so no dv-behaviour partial is wanted - declared."
+    ],
+    "$differsFrom": {
+      "Chart-bullet": "Chart-bullet compares a MEASURE to a TARGET against qualitative BANDS, as an SVG figure with a real data table, intent 'comparison'. This has no target, no bands, no SVG and no table. A Chart-bullet needs a target; a runway bar has a horizon. A runway bar that grows a target IS a Chart-bullet and should be one.",
+      "Progress-bar": "The BAR is Progress-bar, copied byte-for-byte, and nothing was added at the bar level. What this adds is the readout: the verdict-with-a-date, the arithmetic that produces it, and the labelled legend. A runway readout without the verdict and the arithmetic IS a Progress bar and should be one.",
+      "Chart-donut / Chart-stacked-area": "Those are composition charts across MANY categories or across TIME. This is one balance split into exactly two parts at one instant, and it is a rule, not a chart."
+    }
+  }
+  </script>
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-runway-bar">
+
+  <div class="specimens">
+
+    <!-- 1 · COVERED. Balance £122,450 · committed £49,702 (40.59%) · buffer £72,748.
+         The figures are the fitness test's own, carried across so the drawing is comparable
+         to the artefact that provoked the row. -->
+    <div>
+      <p class="stateLabel t-cm-legal">covered · the ordinary case · the bar is ink on track, and there is no green anywhere</p>
+      <div class="rwy" role="group" aria-labelledby="rwy1-label--supercharge-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy1-label--supercharge-dark">Coverage</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 31 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>72,748.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy1-label--supercharge-dark"
+             aria-valuenow="49702" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="49,702 pounds committed of a 122,450 pound balance, leaving a 72,748 pound buffer. Covered through 31 May.">
+          <div class="pb-fill" style="width:40.59%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£49,702</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£72,748</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£49,702</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£72,748</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 2 · TIGHT. Same anatomy, different numbers and a different WORD. The bar changes
+         length; it does NOT change colour. -->
+    <div>
+      <p class="stateLabel t-cm-legal">tight · buffer nearly gone · still ink on track — the word and the date changed, not the hue</p>
+      <div class="rwy" role="group" aria-labelledby="rwy2-label--supercharge-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy2-label--supercharge-dark">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered to 24 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>14,694.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Remaining buffer after everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy2-label--supercharge-dark"
+             aria-valuenow="107756" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="107,756 pounds committed of a 122,450 pound balance, leaving a 14,694 pound buffer. Covered to 24 May only.">
+          <div class="pb-fill" style="width:88.00%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£107,756</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£14,694</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£107,756</dd>
+          <dt class="tot t-cm-legal">Buffer</dt><dd class="tot t-cm-figure-6">£14,694</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 3 · SHORT. THE STATE EVERY OTHER DESIGN SYSTEM PAINTS RED. This one does not.
+         The bar is full because 100% of the balance is committed — that is the honest
+         geometry. The SHORTFALL is a separate signed figure in text, and the verdict word
+         carries the date the money runs out. Colour contributes nothing. -->
+    <div>
+      <p class="stateLabel t-cm-legal">short · no red was invented — the bar is full because the balance is fully committed; the shortfall is a figure and a date</p>
+      <div class="rwy" role="group" aria-labelledby="rwy3-label--supercharge-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy3-label--supercharge-dark">Coverage</span>
+          <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Short from 12 May</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>−</span><span>£</span><span>18,310.00</span></span>
+        <span class="rwy-verdict t-cm-caption">Shortfall against everything scheduled in May</span>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy3-label--supercharge-dark"
+             aria-valuenow="122450" aria-valuemin="0" aria-valuemax="122450"
+             aria-valuetext="140,760 pounds committed against a 122,450 pound balance. Short by 18,310 pounds from 12 May.">
+          <div class="pb-fill" style="width:100%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed in May <span class="v t-cm-figure-6">£140,760</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Remaining buffer <span class="v t-cm-figure-6">£0</span></span>
+        </div>
+        <dl class="rwy-math">
+          <dt class="t-cm-legal">Current balance</dt><dd class="t-cm-figure-6">£122,450</dd>
+          <dt class="t-cm-legal">Less scheduled in May</dt><dd class="t-cm-figure-6">−£140,760</dd>
+          <dt class="tot t-cm-legal">Shortfall</dt><dd class="tot t-cm-figure-6">−£18,310</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- 4 · EMPHASIS, 8px rule — Progress-bar's .pb-lg size, unchanged. For a region where the
+         coverage IS the primary content rather than a supporting detail. -->
+    <div>
+      <p class="stateLabel t-cm-legal">emphasis · 8px rule (Progress-bar's own emphasis size, same token pair) · compact readout, no arithmetic block</p>
+      <div class="rwy rwy-lg" role="group" aria-labelledby="rwy4-label--supercharge-dark">
+        <div class="rwy-head">
+          <span class="rwy-label t-cm-label" id="rwy4-label--supercharge-dark">Coverage · Business current account</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Covered through 30 June</span></span>
+        </div>
+        <div class="pb-track" role="progressbar" aria-labelledby="rwy4-label--supercharge-dark"
+             aria-valuenow="31200" aria-valuemin="0" aria-valuemax="98000"
+             aria-valuetext="31,200 pounds committed of a 98,000 pound balance, leaving a 66,800 pound buffer. Covered through 30 June.">
+          <div class="pb-fill" style="width:31.84%"></div>
+        </div>
+        <div class="rwy-legend">
+          <span class="rwy-key t-cm-legal"><span class="sw sw--committed" aria-hidden="true"></span>Committed <span class="v t-cm-figure-6">£31,200</span></span>
+          <span class="rwy-key t-cm-legal"><span class="sw sw--buffer" aria-hidden="true"></span>Buffer <span class="v t-cm-figure-6">£66,800</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. fill-on-track (progress/complete on progress/incomplete) clears
+       3:1 in ALL FOUR themes since s175-D1 — Mono/Console/Legacy 15.27 light / 9.15 dark,
+       Supercharge 14.02 / 10.46 — the figures Progress-bar's own meta records against
+       canon/canon.css. It is NOT declared as a gated contrastPair here for the same reason
+       Progress-bar declines to declare it: the snippet gate resolves against
+       tokens/semantic-colour.json, the MONO base only, and cannot see the other three legs.
+       Meaning never rests on that boundary anyway — every specimen carries the numbers in text,
+       a verdict word and aria-valuetext.
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with
+       the repo's own _contrast_utils.contrast_ratio) is likewise NOT
+       declared: the INHERITED Account-card / Status-indicator finding, flagged not resolved. -->
+  <script type="application/json" id="token-manifest--supercharge-dark">
+  {
+    "component": "Coverage / runway bar",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed — AND THE PROVENANCE IS THE HEADLINE. Itinerary row 94 originates in a TEST FIXTURE, not a product need: knowledge/_COMPONENT-GAPS.md records 'the waterfall / runway / proportional bars WERE INVENTED' by the 2026-06-30 SME-Payments fitness tests because 'the canon was silent in exactly the places it had to invent'. That invention was logged as a gap, promoted into _COMPONENT-LIBRARY-TARGET.md line 104, and became the itinerary row. A direct grep of knowledge/_rulings.json for runway/coverage/burn-rate returns ZERO hits naming this component. WHETHER IT SHOULD EXIST AT ALL IS DAVE'S FIRST DECISION.",
+    "vars": {
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--border": "border/subtle",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "role=\"progressbar\"", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-valuetext", "aria-labelledby", "aria-hidden=\"true\""],
+    "reuses": ["Progress-bar (the bar itself, byte-for-byte: .pb-track/.pb-fill, 4px + 8px, progress/complete on progress/incomplete, role=progressbar + aria-valuetext)", "Amount-display (money-format primitive: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)", "Status-indicator via Account-card (RAG tint chip carrying the verdict WORD)"],
+    "knownFindings": [
+      "PROVENANCE: this row originates in a TEST FIXTURE. See $status. It is built PROPOSED and the provenance is the headline, not a footnote.",
+      "OVERLAP ADJUDICATED AGAINST THE METAS, NOT FROM MEMORY. It is NOT a Chart-bullet: Chart-bullet is 'a measure bar against a COMPARATIVE TARGET MARKER and QUALITATIVE PERFORMANCE RANGES', intent 'comparison', an SVG figure at a fixed 580px with a real dv-table (dv-005) and a data/series/1 fill. A runway bar has no target, no bands, no SVG, no data table and no dataviz series token. THE TELL: a Chart-bullet needs a TARGET; a runway bar has no target, it has a HORIZON. It IS a Progress-bar: Progress-bar's own commonPatterns already lists 'savings goal / limits meter', and its specimen 3 is exactly this shape - a non-percentage determinate bar carrying its domain in aria-valuetext. THE BAR IS COPIED BYTE-FOR-BYTE AND NOTHING NEW WAS DRAWN.",
+      "WHAT IS ACTUALLY NEW is the READOUT around the gated atom: the verdict-with-a-date, the balance-minus-committed arithmetic, and the two-key legend. That is the whole component.",
+      "NO GREEN/RED WAS INVENTED, AND THAT IS THE POINT. The bar is INK ON TRACK in every state including 'Short', inherited from Progress-bar, whose meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) - hence the ink pair rather than a RAG colour.' Coverage is a QUANTITY. The verdict is a separate Status-indicator chip carrying a WORD AND A DATE. Which verdict maps to which chip is a SEMANTIC binding and is DAVE'S - proposed, not ruled.",
+      "The chip DOT sits on the same rag FILL seat as the live Stat-card/Kpi-tile two-red seam measured at #203. INHERITED AND FLAGGED per the lane's DO-NOT-RULE list, never resolved here, and never load-bearing: every chip carries its word.",
+      "fill-on-track clears 3:1 in all four themes since s175-D1 (Mono/Console/Legacy 15.27 light / 9.15 dark; Supercharge 14.02 / 10.46 - Progress-bar's own recorded figures). NOT declared as a gated contrastPair, for Progress-bar's own stated reason: the snippet gate reads the MONO base only.",
+      "OPEN, WITH THE SEARCH THAT FAILED TO SETTLE IT (s202-D3): role=\"progressbar\" vs role=\"meter\". Probe: `grep -rn 'role=\"meter\"' knowledge/snippets/` -> 2 hits, BOTH this file's own prose, i.e. ZERO in the 87 pre-existing snippets; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` -> 0. Nothing in the store rules it. progressbar is used here because it is what the gated parent carries; meter is arguably more correct for a gauge that is not task progress. DAVE'S.",
+      "In the SHORT state the bar is pinned at 100% and aria-valuenow is clamped to the max, because committed EXCEEDS the balance and a progressbar cannot express overflow. The true committed figure (140,760) appears in the legend, the arithmetic and aria-valuetext. A dedicated overflow treatment is a DECISION, not a defect - Dave's.",
+      "Zero raw type declarations (Progress-bar's own pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "Passive throughout - no interactive target, so the 44px minimum hit area does not apply to this component. Stated so the absence is declared rather than assumed.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence). No dataviz geometry, no SVG, so no dv-behaviour partial is wanted - declared."
+    ],
+    "$differsFrom": {
+      "Chart-bullet": "Chart-bullet compares a MEASURE to a TARGET against qualitative BANDS, as an SVG figure with a real data table, intent 'comparison'. This has no target, no bands, no SVG and no table. A Chart-bullet needs a target; a runway bar has a horizon. A runway bar that grows a target IS a Chart-bullet and should be one.",
+      "Progress-bar": "The BAR is Progress-bar, copied byte-for-byte, and nothing was added at the bar level. What this adds is the readout: the verdict-with-a-date, the arithmetic that produces it, and the labelled legend. A runway readout without the verdict and the arithmetic IS a Progress bar and should be one.",
+      "Chart-donut / Chart-stacked-area": "Those are composition charts across MANY categories or across TIME. This is one balance split into exactly two parts at one instant, and it is a rule, not a chart."
+    }
+  }
+  </script>
+  </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

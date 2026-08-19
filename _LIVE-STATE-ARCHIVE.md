@@ -1,5 +1,20 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-19 #204 (2d, at the #204 wrap) — via the mover
+## ⏱ PRIOR DELTA — 2026-08-18 (Tue from `date`) (**#201**, FABLE conductor + 1 OPUS work sub (plus this OPUS wrap sub), DELEGATED wrap, **FIVE RULINGS, DAVE'S — `s201-D1` · `s201-D2` · `s201-D3` · `s201-D4` · `s201-D5`**)
+
+**Landed (evidence per claim; ⛔ ZERO work commits before this wrap — every artefact below was UNCOMMITTED at wrap-open and lands in the wrap commit, whose sha is read back from `git log`. ★ PUSHED — Dave gave the push word this session, *"Yes — push at wrap"*.):**
+
+- ★★ **`s201-D1` RULED AND ENACTED — `xs`/`m`/`l` MINTED DIMENSION-FIRST FOR CONSOLE (xs 24/2/6 → 4 · m 44/4/10 → 6 · l 48/4/12 → 8), AND THE PADDING-FIRST `small`/`medium`/`large` SET RETIRED OFF DISK IN THE SAME MOTION** — `knowledge/tokens/themes/apollo-console.overrides.json`; the `s200-D4` mixed-grammar debt is **CLOSED**. ⬛ Dave floated *"a proposal for 5 dimensions in the future"* — FLOATED, nothing named.
+- ★★ **`s201-D2` + `s201-D3` RULED — 44 IS A HIT ZONE (interactive target, not visual height), AND THE HIT BOX IS `max(44, visual height)`, natural above the floor** (`l` keeps 48). The #200 read-back veto window is CLOSED.
+- ★★ **`s201-D4` RULED — the card padding formula `max(radius, 8)` snap-2 is RATIFIED**, promoted from `s200-D1` PROPOSED. ⛔ Still MINT-TIME, never live.
+- ★★ **`s201-D5` RULED — square-theme floor precedence `max(container − padding, 0)`, squares stay square. RULE ONLY: nothing minted for mono / legacy / supercharge.** Closes #200's residual ⑦.
+- ✅ **`reviews/SEGMENTED-SCALE-SPECIMEN-2026-08-18-v1.html` BUILT (one Opus sub) AND ★ APPROVED BY DAVE'S EYE** — all four scales, light + dark real palettes, 8/8 computed-style asserts, hit-zone overlay driven, checked 1240 + 480. ★ An eye-read caught a stacking defect the numbers passed (fixed, re-verified). ⇒ #200's residual ④ CONSUMED **for console**.
+- ⚠ **FINDING, DECLARED NOT FIXED: `gen_radius_derive.py --check` is rc=1 with 18 drifts** — the mint-time generator's sidecar `knowledge/_derive-radius-proposal.json` was not re-minted with `s201-D1`. ✅ `_validate_radius.py` and every other token gate re-run at this wrap are rc=0, strict 0.
+- ⚙ **GAUGE.** boot **56,375 real** (in band) · **FILL at wrap-open 120,637 real** — UNDER the ADVISORY stop line 150,929 by 30,292; 256,000 wall BINDS; 200,000 working line untouched. **subs 78,743 tokens (n=1, MEASURED)**. Effort band **M**. ⚙ QUOTA panel NOT relayed — DECLARED ABSENT.
+- ⛔ **NOT RUN / NOT TOUCHED:** `_build_all.py` (a partial run strands the tree ⇒ baked artefacts, `canon.css` included, stay stale; ★ the push at this wrap is EXPECTED to clear it in CI, recorded as expected, not done) · `knowledge/_rulings.json` (the conductor's five inscriptions are carried, never edited by the wrap sub) · the derive-proposal re-mint (an enactment, not a ritual move).
+
+
 ## Rolled 2026-08-19 #203 (2d, at the #203 wrap) — via the mover
 ## ⏱ PRIOR DELTA — 2026-08-18 (Tue from `date`) (**#200**, FABLE conductor + 5 OPUS subs (4 work subs · this wrap sub), DELEGATED wrap, **FOUR RULINGS, DAVE'S — `s200-D1` · `s200-D2` · `s200-D3` · `s200-D4`**)
 

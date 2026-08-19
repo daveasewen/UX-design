@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment card visual</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; overflow-x:auto; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note-info{border-left-color:#305A85;}
+/* ---- the .cn-payment-card-visual scope: what gen_canon_components.py WOULD emit. Hand-mirrored here because the
+   generator surface is the BUILD-PM's serially. Every binding is DERIVED from the snippet's own
+   #token-manifest by a throwaway extractor, not typed by hand. CSS comments are stripped before
+   parsing (the #203 laneK finding). ---- */
+.cn-payment-card-visual{
+  /* --alpha-48 is the semantic name itself - inherited from the cascade, NOT shadowed */
+  --surface: var(--tertiary-background-default);
+  --border: var(--border-subtle);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --page: var(--background-default);
+  --slot-border: var(--form-border-default);
+  --tag-border: var(--form-border-default);
+  --ok: var(--rag-success);
+  --ok-tint: var(--rag-success-tint);
+  --warn: var(--rag-warning);
+  --warn-tint: var(--rag-warning-tint);
+  --focus: var(--focus-ring);
+  --ter-label: var(--button-tertiary-label-default);
+  --ter-border: var(--button-tertiary-border-default);
+  --ter-hover: var(--button-tertiary-background-hover);
+  /* --border-radius-surface is the semantic name itself - inherited from the cascade, NOT shadowed */
+  /* --border-radius-indicator is the semantic name itself - inherited from the cascade, NOT shadowed */
+  /* --border-radius-control is the semantic name itself - inherited from the cascade, NOT shadowed */
+  --ease:140ms ease;
+}
+.cn-payment-card-visual{color:var(--text);}
+.cn-payment-card-visual, .cn-payment-card-visual *, .cn-payment-card-visual *::before, .cn-payment-card-visual *::after{box-sizing:border-box;}
+.cn-payment-card-visual :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+.cn-payment-card-visual .stateLabel{color:var(--muted); margin:1.75rem 0 .6rem;}
+.cn-payment-card-visual .stateLabel:first-of-type{margin-top:0;}
+.cn-payment-card-visual .rack{display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start;}
+.cn-payment-card-visual .unit{display:flex; flex-direction:column; gap:12px; align-items:flex-start;}
+.cn-payment-card-visual .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-payment-card-visual .pcv{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    
+    width:340px; aspect-ratio:1.586; padding:16px;
+    display:grid; grid-template-rows:auto 1fr auto auto; gap:8px;}
+.cn-payment-card-visual .pcv--compact{width:240px; padding:12px; gap:4px;}
+.cn-payment-card-visual .pcv-brandrow{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+.cn-payment-card-visual .pcv-instrument{display:flex; align-items:center; gap:12px;}
+.cn-payment-card-visual .pcv-pan{color:var(--text); font-variant-numeric:tabular-nums; display:block;}
+.cn-payment-card-visual .pcv-footrow{display:flex; align-items:flex-end; justify-content:space-between; gap:12px;}
+.cn-payment-card-visual .pcv-holder{display:flex; flex-direction:column; gap:4px; min-width:0;}
+.cn-payment-card-visual .pcv-holder .k{color:var(--muted);}
+.cn-payment-card-visual .pcv-holder .v{color:var(--text);}
+.cn-payment-card-visual .pcv-expiry{font-variant-numeric:tabular-nums;}
+.cn-payment-card-visual .pcv-slot{display:inline-flex; align-items:center; justify-content:center;
+    border:1px dashed var(--slot-border); border-radius:var(--border-radius-indicator);
+    color:var(--muted); text-align:center; padding:0 6px; white-space:nowrap;}
+.cn-payment-card-visual .pcv-slot[data-slot="issuer-mark"]{width:96px; height:28px;}
+.cn-payment-card-visual .pcv-slot[data-slot="network-mark"]{width:64px; height:40px;}
+.cn-payment-card-visual .pcv-slot[data-slot="chip"]{width:40px; height:30px;}
+.cn-payment-card-visual .pcv--compact .pcv-slot[data-slot="issuer-mark"]{width:76px; height:24px;}
+.cn-payment-card-visual .pcv--compact .pcv-slot[data-slot="network-mark"]{width:52px; height:32px;}
+.cn-payment-card-visual .pcv--compact .pcv-slot[data-slot="chip"]{width:32px; height:24px;}
+.cn-payment-card-visual .pcv-contactless{width:24px; height:24px; flex:none; color:var(--muted); display:block;}
+.cn-payment-card-visual .pcv-contactless svg{width:24px; height:24px; display:block; fill:currentColor;}
+.cn-payment-card-visual .tag{display:inline-flex; align-items:center; height:24px; padding:0 8px; border:1px solid var(--tag-border);
+    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
+.cn-payment-card-visual .chip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:var(--border-radius-indicator);
+    color:var(--text); white-space:nowrap;}
+.cn-payment-card-visual .chip .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+.cn-payment-card-visual .chip.ok{background:var(--ok-tint);}
+.cn-payment-card-visual .chip.ok .dot{background:var(--ok);}
+.cn-payment-card-visual .chip.warn{background:var(--warn-tint);}
+.cn-payment-card-visual .chip.warn .dot{background:var(--warn);}
+.cn-payment-card-visual .pcv-reveal{height:44px; min-width:96px; padding:0 20px; display:inline-flex; align-items:center;
+    justify-content:center; gap:8px; cursor:pointer;
+    background:transparent; color:var(--ter-label); border:1px solid var(--ter-border);
+    border-radius:var(--border-radius-control); transition:background var(--ease);}
+.cn-payment-card-visual .pcv-reveal:hover{background:var(--ter-hover);}
+.cn-payment-card-visual .pcv-reveal:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-payment-card-visual .pcv.is-unusable .pcv-pan, .cn-payment-card-visual .pcv.is-unusable .pcv-holder, .cn-payment-card-visual .pcv.is-unusable .pcv-instrument{opacity:var(--alpha-48);}
+.cn-payment-card-visual *, .cn-payment-card-visual *::before, .cn-payment-card-visual *::after{transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important;}
+@media (prefers-reduced-motion: reduce){.cn-payment-card-visual *, .cn-payment-card-visual *::before, .cn-payment-card-visual *::after{transition-duration:.01ms !important; animation-duration:.01ms !important;animation-iteration-count:1 !important; scroll-behavior:auto !important;}}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">Payment card visual</h1>
+  <div class="lede">
+<p class="t-ed-body">Itinerary row 93, <strong>PROPOSED #204 &mdash; your eye owed on all of it</strong>. Real snippet markup rendered through the canon theme cascade in all four themes, light and dark.</p>
+<div class="note"><p class="t-ed-body-small"><strong>Every brand surface on this card is deliberately EMPTY, and that is the headline.</strong> Card-network marks, issuer logotypes, the EMV chip contact pattern and any embossing are licensed artwork governed outside this design system &mdash; and <code>#86-D2</code> fences our own marks too: your words, &ldquo;the crescent is only a mark for apollo, we use it when we need designs to be anonymous / use the hsbc mark normally&rdquo;. So this file builds the <em>anatomy</em> and leaves the brand surfaces as dashed, labelled, declared placeholders. The probe: <code>ls knowledge/assets/icons/**/ | grep -iE &quot;chip|visa|mastercard|amex|network&quot;</code> returns nothing &mdash; no such glyph exists in the HSBC library, and drawing one would be an invented <em>brand</em> mark, which is worse than an invented icon.</p></div>
+<div class="note note-info"><p class="t-ed-body-small"><strong>The one glyph on the card is real.</strong> <code>assets/icons/media/contactless.svg</code>, byte-matched via a <code>&lt;symbol&gt;</code>. It is a functional indicator (this card taps), not a brand mark.</p></div>
+<div class="note note-info"><p class="t-ed-body-small"><strong>How it differs from the gated Account card, in one line.</strong> Account card&rsquo;s subject is <em>money</em> &mdash; label, masked number, balance, status. This card&rsquo;s subject is the <em>physical instrument</em>, and it carries no balance at all. Account card answers &ldquo;how much is in it?&rdquo;; this answers &ldquo;which piece of plastic is this, and is it usable right now?&rdquo;. A payment-card visual showing a balance is an Account card wearing a card shape. Everything shared &mdash; the shell, the <code>&middot;&middot;&middot;</code> masking idiom, the Tags atom, the RAG chip, the tertiary button &mdash; is copied from the approved artefacts and was not re-drawn.</p></div>
+<div class="note"><p class="t-ed-body-small"><strong>No dark or &ldquo;premium&rdquo; card face &mdash; because the token does not exist.</strong> <code>knowledge/_COMPONENT-GAPS.md</code> already logs it: &ldquo;Inverse / hero surface &mdash; no light-mode dark-band role &mdash; the portfolio invented charcoals (#0E1014&hellip;)&rdquo;. Painting a dark card face today would re-commit exactly that recorded defect, so the face binds <code>tertiary/background/default</code> like Account card. If you want the dark face, the answer is to mint the inverse-surface role first. <strong>Yours.</strong></p></div>
+<div class="note"><p class="t-ed-body-small"><strong>Geometry is a physical standard, not my taste.</strong> <code>aspect-ratio: 1.586</code> is ID-1 (ISO/IEC 7810, 85.60&times;53.98&nbsp;mm). Corners follow the angular rule &mdash; square in Mono and Legacy, 20px in Console via the cascade. Whether a card visual should <em>deviate</em> from the angular rule because real cards are rounded is <strong>yours</strong>; I flagged it rather than taking it.</p></div>
+<div class="note"><p class="t-ed-body-small"><strong>Inherited, not resolved:</strong> the chip dot binds <code>rag/success</code> / <code>rag/warning</code> as a fill (1.98:1 and 2.18:1 on white, measured today). That is the same seat as the live Stat-card / KPI-tile two-red question and it is on this lane&rsquo;s do-not-rule list. It is never load-bearing here &mdash; every chip carries its word (&ldquo;Active&rdquo;, &ldquo;Frozen by you&rdquo;, &ldquo;Expired 08/25&rdquo;), and the unusable states also drop opacity, a second non-colour channel.</p></div>
+  </div>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-payment-card-visual">
+
+  <!-- Sprite: the ONE glyph on this card. Byte-matched to assets/icons/media/contactless.svg. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="pcv-contactless--mono-light" viewBox="0 0 18 18"><path d="M8.15 4.83L7.3 5.68C8.16 6.52 8.7 7.7 8.7 8.99C8.7 10.28 8.16 11.46 7.3 12.3L8.15 13.15C9.23 12.09 9.89 10.62 9.89 8.99C9.89 7.36 9.22 5.89 8.15 4.83ZM12.64 8.99C12.64 6.6 11.66 4.44 10.09 2.88L9.24 3.73C10.6 5.07 11.44 6.93 11.44 8.99C11.44 11.05 10.6 12.91 9.24 14.25L10.09 15.1C11.66 13.54 12.64 11.38 12.64 8.99ZM6.2 6.77L5.35 7.62C5.71 7.97 5.94 8.45 5.94 8.99C5.94 9.53 5.71 10.01 5.35 10.36L6.2 11.21C6.78 10.65 7.14 9.86 7.14 8.99C7.14 8.12 6.78 7.34 6.2 6.77ZM9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <p class="stateLabel t-cm-legal">default · active card, number masked · brand slots declared and EMPTY</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv" role="group" aria-labelledby="pcv1-name--mono-light">
+        <span class="sr-only" id="pcv1-name--mono-light">Business debit card ending 4821, expires 08 29. Active. Contactless enabled. Card number hidden.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="false" aria-describedby="pcv1-name--mono-light">Show number</button>
+    </div>
+
+    <div class="unit">
+      <p class="stateLabel t-cm-legal" style="margin-top:0">revealed · specimen PAN only (ISO/IEC 7812 test range)</p>
+      <div class="pcv" role="group" aria-labelledby="pcv2-name--mono-light">
+        <span class="sr-only" id="pcv2-name--mono-light">Business debit card, number 4000 0000 0000 4821, expires 08 29. Active. Contactless enabled. Card number shown.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">4000 0000 0000 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="true" aria-describedby="pcv2-name--mono-light">Hide number</button>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">unusable states · the WORD is the carrier, never the hue (1.4.1) · face also drops opacity, a second non-colour channel</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv3-name--mono-light">
+        <span class="sr-only" id="pcv3-name--mono-light">Business credit card ending 1180, expires 03 30. Frozen by you. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business credit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 1180</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 03/30</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Frozen by you</span></span>
+    </div>
+
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv4-name--mono-light">
+        <span class="sr-only" id="pcv4-name--mono-light">Business debit card ending 9930. Expired 08 25. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 9930</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expired 08/25</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Expired 08/25</span></span>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">compact · 240px, for a wallet list or a picker row · same anatomy, same slots</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv pcv--compact" role="group" aria-labelledby="pcv5-name--mono-light">
+        <span class="sr-only" id="pcv5-name--mono-light">Business debit card ending 4821, expires 08 29. Active. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-6" aria-hidden="true">···4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="v t-cm-legal pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+    </div>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. The pairs below are declared because they hold in the mono base the
+       gate reads AND were re-measured off the DOM in all four themes at #204 (see the lane receipt).
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with the
+       repo's own _contrast_utils.contrast_ratio) is deliberately
+       NOT declared as a passing pair — that absence is the INHERITED Account-card finding and the
+       same class as the live Stat-card/Kpi-tile FILL-vs-INK seam. It is never load-bearing: every
+       chip carries its word. -->
+  <script type="application/json" id="token-manifest--mono-light">
+  {
+    "component": "Payment card visual",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed. Itinerary row 93. Fintech semantics are Dave's (Kpi-tile precedent). This manifest is a proposal, not a proof-of-done. Every BRAND surface is an empty declared slot: card-network marks, issuer logotypes and the EMV chip are licensed artwork governed outside this system, and #86-D2 fences our own marks (crescent = Apollo/anonymity only).",
+    "vars": {
+      "--alpha-48": "alpha/48",
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--slot-border": "form/border/default",
+      "--tag-border": "form/border/default",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--focus": "focus/ring",
+      "--ter-label": "button/tertiary/label/default",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-control": "border-radius/control"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "button/tertiary/label/default", "bg": "background/default", "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "contactless": "media/contactless.svg" },
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\"", "aria-pressed"],
+    "reuses": ["Account-card (shell, masked-number idiom, meta row)", "Tags (square chip)", "Status-indicator (RAG tint chip)", "Button (tertiary, 44px)"],
+    "knownFindings": [
+      "PROPOSED #204 — NOT GATED, NOT RULED. Fintech semantics are Dave's.",
+      "EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE \"chip|visa|mastercard|amex|network\"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.",
+      "THE ONE GLYPH IS REAL: assets/icons/media/contactless.svg, byte-matched via <symbol>. It is a functional indicator, not a brand mark.",
+      "Status dot is < 3:1 standalone (rag/success 1.98:1, rag/warning 2.18:1 on white, measured #204) so meaning is carried by the label text (1.4.1) — the SAME handled finding Account-card and Status-indicator already declare, INHERITED VERBATIM and NOT resolved here. It is the same class as the live Stat-card/Kpi-tile FILL-vs-INK two-red seam and is on this lane's DO-NOT-RULE list.",
+      "NO DARK / PREMIUM CARD FACE IS BUILT, and that is a token gap, not an oversight. knowledge/_COMPONENT-GAPS.md logs 'Inverse / hero surface - no light-mode dark-band role - the portfolio invented charcoals (#0E1014...)'. A dark card face today would re-commit that recorded defect. The card face therefore binds tertiary/background/default, exactly like Account-card. FINDING for Dave.",
+      "aspect-ratio 1.586 is ID-1 (ISO/IEC 7810, 85.60x53.98mm) - an external physical standard quoted so it is not read as a taste decision. Corners follow the angular rule (border-radius/surface, 0 in Mono, 20px in Console via the cascade). Whether a card visual should DEVIATE from the angular rule because real cards are rounded is DAVE'S - flagged, not taken.",
+      "No card BACK: magstripe + signature panel + CVV are secure-data surfaces (see Secure-entry) wrapped in licensed brand furniture. Deliberate absence.",
+      "The revealed PAN 4000 0000 0000 4821 is in the ISO/IEC 7812 test range. The reveal state is drawn so the pattern is reviewable; it is NOT an endorsement of showing a PAN in production UI.",
+      "44px minimum hit area MEASURED BY HAND at #204 on the reveal button in all four themes, both modes - NO GATE READS that token from a snippet.",
+      "Zero raw type declarations (Progress-bar's pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence), so no AUTO-BEHAVIOUR partial is injected and the reveal button's toggle is drawn as two static states rather than scripted - declared."
+    ],
+    "$differsFrom": {
+      "Account-card": "Account-card's subject is MONEY (label + masked number + BALANCE + status). This component's subject is the physical INSTRUMENT and it carries NO balance at all. Account-card answers 'how much is in it?'; this answers 'which piece of plastic is this, and is it usable right now?'. A payment-card visual showing a balance is an Account-card wearing a card shape and should be an Account-card.",
+      "Cards": "Cards is the generic content-surface family (a rectangle you put things in). This is a REPRESENTATION of a specific real-world object with a fixed ID-1 geometry and a fixed anatomy. Cards has no anatomy; this is nothing but anatomy.",
+      "Chart-bullet": "No relationship. Nothing on this card is a measure, a target or a quantity."
+    }
+  }
+  </script>
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-payment-card-visual">
+
+  <!-- Sprite: the ONE glyph on this card. Byte-matched to assets/icons/media/contactless.svg. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="pcv-contactless--mono-dark" viewBox="0 0 18 18"><path d="M8.15 4.83L7.3 5.68C8.16 6.52 8.7 7.7 8.7 8.99C8.7 10.28 8.16 11.46 7.3 12.3L8.15 13.15C9.23 12.09 9.89 10.62 9.89 8.99C9.89 7.36 9.22 5.89 8.15 4.83ZM12.64 8.99C12.64 6.6 11.66 4.44 10.09 2.88L9.24 3.73C10.6 5.07 11.44 6.93 11.44 8.99C11.44 11.05 10.6 12.91 9.24 14.25L10.09 15.1C11.66 13.54 12.64 11.38 12.64 8.99ZM6.2 6.77L5.35 7.62C5.71 7.97 5.94 8.45 5.94 8.99C5.94 9.53 5.71 10.01 5.35 10.36L6.2 11.21C6.78 10.65 7.14 9.86 7.14 8.99C7.14 8.12 6.78 7.34 6.2 6.77ZM9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <p class="stateLabel t-cm-legal">default · active card, number masked · brand slots declared and EMPTY</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv" role="group" aria-labelledby="pcv1-name--mono-dark">
+        <span class="sr-only" id="pcv1-name--mono-dark">Business debit card ending 4821, expires 08 29. Active. Contactless enabled. Card number hidden.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="false" aria-describedby="pcv1-name--mono-dark">Show number</button>
+    </div>
+
+    <div class="unit">
+      <p class="stateLabel t-cm-legal" style="margin-top:0">revealed · specimen PAN only (ISO/IEC 7812 test range)</p>
+      <div class="pcv" role="group" aria-labelledby="pcv2-name--mono-dark">
+        <span class="sr-only" id="pcv2-name--mono-dark">Business debit card, number 4000 0000 0000 4821, expires 08 29. Active. Contactless enabled. Card number shown.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">4000 0000 0000 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="true" aria-describedby="pcv2-name--mono-dark">Hide number</button>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">unusable states · the WORD is the carrier, never the hue (1.4.1) · face also drops opacity, a second non-colour channel</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv3-name--mono-dark">
+        <span class="sr-only" id="pcv3-name--mono-dark">Business credit card ending 1180, expires 03 30. Frozen by you. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business credit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 1180</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 03/30</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Frozen by you</span></span>
+    </div>
+
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv4-name--mono-dark">
+        <span class="sr-only" id="pcv4-name--mono-dark">Business debit card ending 9930. Expired 08 25. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 9930</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expired 08/25</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Expired 08/25</span></span>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">compact · 240px, for a wallet list or a picker row · same anatomy, same slots</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv pcv--compact" role="group" aria-labelledby="pcv5-name--mono-dark">
+        <span class="sr-only" id="pcv5-name--mono-dark">Business debit card ending 4821, expires 08 29. Active. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--mono-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-6" aria-hidden="true">···4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="v t-cm-legal pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+    </div>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. The pairs below are declared because they hold in the mono base the
+       gate reads AND were re-measured off the DOM in all four themes at #204 (see the lane receipt).
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with the
+       repo's own _contrast_utils.contrast_ratio) is deliberately
+       NOT declared as a passing pair — that absence is the INHERITED Account-card finding and the
+       same class as the live Stat-card/Kpi-tile FILL-vs-INK seam. It is never load-bearing: every
+       chip carries its word. -->
+  <script type="application/json" id="token-manifest--mono-dark">
+  {
+    "component": "Payment card visual",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed. Itinerary row 93. Fintech semantics are Dave's (Kpi-tile precedent). This manifest is a proposal, not a proof-of-done. Every BRAND surface is an empty declared slot: card-network marks, issuer logotypes and the EMV chip are licensed artwork governed outside this system, and #86-D2 fences our own marks (crescent = Apollo/anonymity only).",
+    "vars": {
+      "--alpha-48": "alpha/48",
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--slot-border": "form/border/default",
+      "--tag-border": "form/border/default",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--focus": "focus/ring",
+      "--ter-label": "button/tertiary/label/default",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-control": "border-radius/control"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "button/tertiary/label/default", "bg": "background/default", "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "contactless": "media/contactless.svg" },
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\"", "aria-pressed"],
+    "reuses": ["Account-card (shell, masked-number idiom, meta row)", "Tags (square chip)", "Status-indicator (RAG tint chip)", "Button (tertiary, 44px)"],
+    "knownFindings": [
+      "PROPOSED #204 — NOT GATED, NOT RULED. Fintech semantics are Dave's.",
+      "EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE \"chip|visa|mastercard|amex|network\"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.",
+      "THE ONE GLYPH IS REAL: assets/icons/media/contactless.svg, byte-matched via <symbol>. It is a functional indicator, not a brand mark.",
+      "Status dot is < 3:1 standalone (rag/success 1.98:1, rag/warning 2.18:1 on white, measured #204) so meaning is carried by the label text (1.4.1) — the SAME handled finding Account-card and Status-indicator already declare, INHERITED VERBATIM and NOT resolved here. It is the same class as the live Stat-card/Kpi-tile FILL-vs-INK two-red seam and is on this lane's DO-NOT-RULE list.",
+      "NO DARK / PREMIUM CARD FACE IS BUILT, and that is a token gap, not an oversight. knowledge/_COMPONENT-GAPS.md logs 'Inverse / hero surface - no light-mode dark-band role - the portfolio invented charcoals (#0E1014...)'. A dark card face today would re-commit that recorded defect. The card face therefore binds tertiary/background/default, exactly like Account-card. FINDING for Dave.",
+      "aspect-ratio 1.586 is ID-1 (ISO/IEC 7810, 85.60x53.98mm) - an external physical standard quoted so it is not read as a taste decision. Corners follow the angular rule (border-radius/surface, 0 in Mono, 20px in Console via the cascade). Whether a card visual should DEVIATE from the angular rule because real cards are rounded is DAVE'S - flagged, not taken.",
+      "No card BACK: magstripe + signature panel + CVV are secure-data surfaces (see Secure-entry) wrapped in licensed brand furniture. Deliberate absence.",
+      "The revealed PAN 4000 0000 0000 4821 is in the ISO/IEC 7812 test range. The reveal state is drawn so the pattern is reviewable; it is NOT an endorsement of showing a PAN in production UI.",
+      "44px minimum hit area MEASURED BY HAND at #204 on the reveal button in all four themes, both modes - NO GATE READS that token from a snippet.",
+      "Zero raw type declarations (Progress-bar's pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence), so no AUTO-BEHAVIOUR partial is injected and the reveal button's toggle is drawn as two static states rather than scripted - declared."
+    ],
+    "$differsFrom": {
+      "Account-card": "Account-card's subject is MONEY (label + masked number + BALANCE + status). This component's subject is the physical INSTRUMENT and it carries NO balance at all. Account-card answers 'how much is in it?'; this answers 'which piece of plastic is this, and is it usable right now?'. A payment-card visual showing a balance is an Account-card wearing a card shape and should be an Account-card.",
+      "Cards": "Cards is the generic content-surface family (a rectangle you put things in). This is a REPRESENTATION of a specific real-world object with a fixed ID-1 geometry and a fixed anatomy. Cards has no anatomy; this is nothing but anatomy.",
+      "Chart-bullet": "No relationship. Nothing on this card is a measure, a target or a quantity."
+    }
+  }
+  </script>
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-payment-card-visual">
+
+  <!-- Sprite: the ONE glyph on this card. Byte-matched to assets/icons/media/contactless.svg. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="pcv-contactless--legacy-light" viewBox="0 0 18 18"><path d="M8.15 4.83L7.3 5.68C8.16 6.52 8.7 7.7 8.7 8.99C8.7 10.28 8.16 11.46 7.3 12.3L8.15 13.15C9.23 12.09 9.89 10.62 9.89 8.99C9.89 7.36 9.22 5.89 8.15 4.83ZM12.64 8.99C12.64 6.6 11.66 4.44 10.09 2.88L9.24 3.73C10.6 5.07 11.44 6.93 11.44 8.99C11.44 11.05 10.6 12.91 9.24 14.25L10.09 15.1C11.66 13.54 12.64 11.38 12.64 8.99ZM6.2 6.77L5.35 7.62C5.71 7.97 5.94 8.45 5.94 8.99C5.94 9.53 5.71 10.01 5.35 10.36L6.2 11.21C6.78 10.65 7.14 9.86 7.14 8.99C7.14 8.12 6.78 7.34 6.2 6.77ZM9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <p class="stateLabel t-cm-legal">default · active card, number masked · brand slots declared and EMPTY</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv" role="group" aria-labelledby="pcv1-name--legacy-light">
+        <span class="sr-only" id="pcv1-name--legacy-light">Business debit card ending 4821, expires 08 29. Active. Contactless enabled. Card number hidden.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="false" aria-describedby="pcv1-name--legacy-light">Show number</button>
+    </div>
+
+    <div class="unit">
+      <p class="stateLabel t-cm-legal" style="margin-top:0">revealed · specimen PAN only (ISO/IEC 7812 test range)</p>
+      <div class="pcv" role="group" aria-labelledby="pcv2-name--legacy-light">
+        <span class="sr-only" id="pcv2-name--legacy-light">Business debit card, number 4000 0000 0000 4821, expires 08 29. Active. Contactless enabled. Card number shown.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">4000 0000 0000 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="true" aria-describedby="pcv2-name--legacy-light">Hide number</button>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">unusable states · the WORD is the carrier, never the hue (1.4.1) · face also drops opacity, a second non-colour channel</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv3-name--legacy-light">
+        <span class="sr-only" id="pcv3-name--legacy-light">Business credit card ending 1180, expires 03 30. Frozen by you. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business credit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 1180</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 03/30</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Frozen by you</span></span>
+    </div>
+
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv4-name--legacy-light">
+        <span class="sr-only" id="pcv4-name--legacy-light">Business debit card ending 9930. Expired 08 25. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 9930</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expired 08/25</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Expired 08/25</span></span>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">compact · 240px, for a wallet list or a picker row · same anatomy, same slots</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv pcv--compact" role="group" aria-labelledby="pcv5-name--legacy-light">
+        <span class="sr-only" id="pcv5-name--legacy-light">Business debit card ending 4821, expires 08 29. Active. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-6" aria-hidden="true">···4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="v t-cm-legal pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+    </div>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. The pairs below are declared because they hold in the mono base the
+       gate reads AND were re-measured off the DOM in all four themes at #204 (see the lane receipt).
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with the
+       repo's own _contrast_utils.contrast_ratio) is deliberately
+       NOT declared as a passing pair — that absence is the INHERITED Account-card finding and the
+       same class as the live Stat-card/Kpi-tile FILL-vs-INK seam. It is never load-bearing: every
+       chip carries its word. -->
+  <script type="application/json" id="token-manifest--legacy-light">
+  {
+    "component": "Payment card visual",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed. Itinerary row 93. Fintech semantics are Dave's (Kpi-tile precedent). This manifest is a proposal, not a proof-of-done. Every BRAND surface is an empty declared slot: card-network marks, issuer logotypes and the EMV chip are licensed artwork governed outside this system, and #86-D2 fences our own marks (crescent = Apollo/anonymity only).",
+    "vars": {
+      "--alpha-48": "alpha/48",
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--slot-border": "form/border/default",
+      "--tag-border": "form/border/default",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--focus": "focus/ring",
+      "--ter-label": "button/tertiary/label/default",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-control": "border-radius/control"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "button/tertiary/label/default", "bg": "background/default", "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "contactless": "media/contactless.svg" },
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\"", "aria-pressed"],
+    "reuses": ["Account-card (shell, masked-number idiom, meta row)", "Tags (square chip)", "Status-indicator (RAG tint chip)", "Button (tertiary, 44px)"],
+    "knownFindings": [
+      "PROPOSED #204 — NOT GATED, NOT RULED. Fintech semantics are Dave's.",
+      "EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE \"chip|visa|mastercard|amex|network\"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.",
+      "THE ONE GLYPH IS REAL: assets/icons/media/contactless.svg, byte-matched via <symbol>. It is a functional indicator, not a brand mark.",
+      "Status dot is < 3:1 standalone (rag/success 1.98:1, rag/warning 2.18:1 on white, measured #204) so meaning is carried by the label text (1.4.1) — the SAME handled finding Account-card and Status-indicator already declare, INHERITED VERBATIM and NOT resolved here. It is the same class as the live Stat-card/Kpi-tile FILL-vs-INK two-red seam and is on this lane's DO-NOT-RULE list.",
+      "NO DARK / PREMIUM CARD FACE IS BUILT, and that is a token gap, not an oversight. knowledge/_COMPONENT-GAPS.md logs 'Inverse / hero surface - no light-mode dark-band role - the portfolio invented charcoals (#0E1014...)'. A dark card face today would re-commit that recorded defect. The card face therefore binds tertiary/background/default, exactly like Account-card. FINDING for Dave.",
+      "aspect-ratio 1.586 is ID-1 (ISO/IEC 7810, 85.60x53.98mm) - an external physical standard quoted so it is not read as a taste decision. Corners follow the angular rule (border-radius/surface, 0 in Mono, 20px in Console via the cascade). Whether a card visual should DEVIATE from the angular rule because real cards are rounded is DAVE'S - flagged, not taken.",
+      "No card BACK: magstripe + signature panel + CVV are secure-data surfaces (see Secure-entry) wrapped in licensed brand furniture. Deliberate absence.",
+      "The revealed PAN 4000 0000 0000 4821 is in the ISO/IEC 7812 test range. The reveal state is drawn so the pattern is reviewable; it is NOT an endorsement of showing a PAN in production UI.",
+      "44px minimum hit area MEASURED BY HAND at #204 on the reveal button in all four themes, both modes - NO GATE READS that token from a snippet.",
+      "Zero raw type declarations (Progress-bar's pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence), so no AUTO-BEHAVIOUR partial is injected and the reveal button's toggle is drawn as two static states rather than scripted - declared."
+    ],
+    "$differsFrom": {
+      "Account-card": "Account-card's subject is MONEY (label + masked number + BALANCE + status). This component's subject is the physical INSTRUMENT and it carries NO balance at all. Account-card answers 'how much is in it?'; this answers 'which piece of plastic is this, and is it usable right now?'. A payment-card visual showing a balance is an Account-card wearing a card shape and should be an Account-card.",
+      "Cards": "Cards is the generic content-surface family (a rectangle you put things in). This is a REPRESENTATION of a specific real-world object with a fixed ID-1 geometry and a fixed anatomy. Cards has no anatomy; this is nothing but anatomy.",
+      "Chart-bullet": "No relationship. Nothing on this card is a measure, a target or a quantity."
+    }
+  }
+  </script>
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-payment-card-visual">
+
+  <!-- Sprite: the ONE glyph on this card. Byte-matched to assets/icons/media/contactless.svg. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="pcv-contactless--legacy-dark" viewBox="0 0 18 18"><path d="M8.15 4.83L7.3 5.68C8.16 6.52 8.7 7.7 8.7 8.99C8.7 10.28 8.16 11.46 7.3 12.3L8.15 13.15C9.23 12.09 9.89 10.62 9.89 8.99C9.89 7.36 9.22 5.89 8.15 4.83ZM12.64 8.99C12.64 6.6 11.66 4.44 10.09 2.88L9.24 3.73C10.6 5.07 11.44 6.93 11.44 8.99C11.44 11.05 10.6 12.91 9.24 14.25L10.09 15.1C11.66 13.54 12.64 11.38 12.64 8.99ZM6.2 6.77L5.35 7.62C5.71 7.97 5.94 8.45 5.94 8.99C5.94 9.53 5.71 10.01 5.35 10.36L6.2 11.21C6.78 10.65 7.14 9.86 7.14 8.99C7.14 8.12 6.78 7.34 6.2 6.77ZM9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <p class="stateLabel t-cm-legal">default · active card, number masked · brand slots declared and EMPTY</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv" role="group" aria-labelledby="pcv1-name--legacy-dark">
+        <span class="sr-only" id="pcv1-name--legacy-dark">Business debit card ending 4821, expires 08 29. Active. Contactless enabled. Card number hidden.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="false" aria-describedby="pcv1-name--legacy-dark">Show number</button>
+    </div>
+
+    <div class="unit">
+      <p class="stateLabel t-cm-legal" style="margin-top:0">revealed · specimen PAN only (ISO/IEC 7812 test range)</p>
+      <div class="pcv" role="group" aria-labelledby="pcv2-name--legacy-dark">
+        <span class="sr-only" id="pcv2-name--legacy-dark">Business debit card, number 4000 0000 0000 4821, expires 08 29. Active. Contactless enabled. Card number shown.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">4000 0000 0000 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="true" aria-describedby="pcv2-name--legacy-dark">Hide number</button>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">unusable states · the WORD is the carrier, never the hue (1.4.1) · face also drops opacity, a second non-colour channel</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv3-name--legacy-dark">
+        <span class="sr-only" id="pcv3-name--legacy-dark">Business credit card ending 1180, expires 03 30. Frozen by you. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business credit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 1180</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 03/30</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Frozen by you</span></span>
+    </div>
+
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv4-name--legacy-dark">
+        <span class="sr-only" id="pcv4-name--legacy-dark">Business debit card ending 9930. Expired 08 25. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 9930</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expired 08/25</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Expired 08/25</span></span>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">compact · 240px, for a wallet list or a picker row · same anatomy, same slots</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv pcv--compact" role="group" aria-labelledby="pcv5-name--legacy-dark">
+        <span class="sr-only" id="pcv5-name--legacy-dark">Business debit card ending 4821, expires 08 29. Active. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--legacy-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-6" aria-hidden="true">···4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="v t-cm-legal pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+    </div>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. The pairs below are declared because they hold in the mono base the
+       gate reads AND were re-measured off the DOM in all four themes at #204 (see the lane receipt).
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with the
+       repo's own _contrast_utils.contrast_ratio) is deliberately
+       NOT declared as a passing pair — that absence is the INHERITED Account-card finding and the
+       same class as the live Stat-card/Kpi-tile FILL-vs-INK seam. It is never load-bearing: every
+       chip carries its word. -->
+  <script type="application/json" id="token-manifest--legacy-dark">
+  {
+    "component": "Payment card visual",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed. Itinerary row 93. Fintech semantics are Dave's (Kpi-tile precedent). This manifest is a proposal, not a proof-of-done. Every BRAND surface is an empty declared slot: card-network marks, issuer logotypes and the EMV chip are licensed artwork governed outside this system, and #86-D2 fences our own marks (crescent = Apollo/anonymity only).",
+    "vars": {
+      "--alpha-48": "alpha/48",
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--slot-border": "form/border/default",
+      "--tag-border": "form/border/default",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--focus": "focus/ring",
+      "--ter-label": "button/tertiary/label/default",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-control": "border-radius/control"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "button/tertiary/label/default", "bg": "background/default", "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "contactless": "media/contactless.svg" },
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\"", "aria-pressed"],
+    "reuses": ["Account-card (shell, masked-number idiom, meta row)", "Tags (square chip)", "Status-indicator (RAG tint chip)", "Button (tertiary, 44px)"],
+    "knownFindings": [
+      "PROPOSED #204 — NOT GATED, NOT RULED. Fintech semantics are Dave's.",
+      "EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE \"chip|visa|mastercard|amex|network\"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.",
+      "THE ONE GLYPH IS REAL: assets/icons/media/contactless.svg, byte-matched via <symbol>. It is a functional indicator, not a brand mark.",
+      "Status dot is < 3:1 standalone (rag/success 1.98:1, rag/warning 2.18:1 on white, measured #204) so meaning is carried by the label text (1.4.1) — the SAME handled finding Account-card and Status-indicator already declare, INHERITED VERBATIM and NOT resolved here. It is the same class as the live Stat-card/Kpi-tile FILL-vs-INK two-red seam and is on this lane's DO-NOT-RULE list.",
+      "NO DARK / PREMIUM CARD FACE IS BUILT, and that is a token gap, not an oversight. knowledge/_COMPONENT-GAPS.md logs 'Inverse / hero surface - no light-mode dark-band role - the portfolio invented charcoals (#0E1014...)'. A dark card face today would re-commit that recorded defect. The card face therefore binds tertiary/background/default, exactly like Account-card. FINDING for Dave.",
+      "aspect-ratio 1.586 is ID-1 (ISO/IEC 7810, 85.60x53.98mm) - an external physical standard quoted so it is not read as a taste decision. Corners follow the angular rule (border-radius/surface, 0 in Mono, 20px in Console via the cascade). Whether a card visual should DEVIATE from the angular rule because real cards are rounded is DAVE'S - flagged, not taken.",
+      "No card BACK: magstripe + signature panel + CVV are secure-data surfaces (see Secure-entry) wrapped in licensed brand furniture. Deliberate absence.",
+      "The revealed PAN 4000 0000 0000 4821 is in the ISO/IEC 7812 test range. The reveal state is drawn so the pattern is reviewable; it is NOT an endorsement of showing a PAN in production UI.",
+      "44px minimum hit area MEASURED BY HAND at #204 on the reveal button in all four themes, both modes - NO GATE READS that token from a snippet.",
+      "Zero raw type declarations (Progress-bar's pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence), so no AUTO-BEHAVIOUR partial is injected and the reveal button's toggle is drawn as two static states rather than scripted - declared."
+    ],
+    "$differsFrom": {
+      "Account-card": "Account-card's subject is MONEY (label + masked number + BALANCE + status). This component's subject is the physical INSTRUMENT and it carries NO balance at all. Account-card answers 'how much is in it?'; this answers 'which piece of plastic is this, and is it usable right now?'. A payment-card visual showing a balance is an Account-card wearing a card shape and should be an Account-card.",
+      "Cards": "Cards is the generic content-surface family (a rectangle you put things in). This is a REPRESENTATION of a specific real-world object with a fixed ID-1 geometry and a fixed anatomy. Cards has no anatomy; this is nothing but anatomy.",
+      "Chart-bullet": "No relationship. Nothing on this card is a measure, a target or a quantity."
+    }
+  }
+  </script>
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-payment-card-visual">
+
+  <!-- Sprite: the ONE glyph on this card. Byte-matched to assets/icons/media/contactless.svg. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="pcv-contactless--console-light" viewBox="0 0 18 18"><path d="M8.15 4.83L7.3 5.68C8.16 6.52 8.7 7.7 8.7 8.99C8.7 10.28 8.16 11.46 7.3 12.3L8.15 13.15C9.23 12.09 9.89 10.62 9.89 8.99C9.89 7.36 9.22 5.89 8.15 4.83ZM12.64 8.99C12.64 6.6 11.66 4.44 10.09 2.88L9.24 3.73C10.6 5.07 11.44 6.93 11.44 8.99C11.44 11.05 10.6 12.91 9.24 14.25L10.09 15.1C11.66 13.54 12.64 11.38 12.64 8.99ZM6.2 6.77L5.35 7.62C5.71 7.97 5.94 8.45 5.94 8.99C5.94 9.53 5.71 10.01 5.35 10.36L6.2 11.21C6.78 10.65 7.14 9.86 7.14 8.99C7.14 8.12 6.78 7.34 6.2 6.77ZM9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <p class="stateLabel t-cm-legal">default · active card, number masked · brand slots declared and EMPTY</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv" role="group" aria-labelledby="pcv1-name--console-light">
+        <span class="sr-only" id="pcv1-name--console-light">Business debit card ending 4821, expires 08 29. Active. Contactless enabled. Card number hidden.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="false" aria-describedby="pcv1-name--console-light">Show number</button>
+    </div>
+
+    <div class="unit">
+      <p class="stateLabel t-cm-legal" style="margin-top:0">revealed · specimen PAN only (ISO/IEC 7812 test range)</p>
+      <div class="pcv" role="group" aria-labelledby="pcv2-name--console-light">
+        <span class="sr-only" id="pcv2-name--console-light">Business debit card, number 4000 0000 0000 4821, expires 08 29. Active. Contactless enabled. Card number shown.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">4000 0000 0000 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="true" aria-describedby="pcv2-name--console-light">Hide number</button>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">unusable states · the WORD is the carrier, never the hue (1.4.1) · face also drops opacity, a second non-colour channel</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv3-name--console-light">
+        <span class="sr-only" id="pcv3-name--console-light">Business credit card ending 1180, expires 03 30. Frozen by you. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business credit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 1180</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 03/30</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Frozen by you</span></span>
+    </div>
+
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv4-name--console-light">
+        <span class="sr-only" id="pcv4-name--console-light">Business debit card ending 9930. Expired 08 25. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 9930</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expired 08/25</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Expired 08/25</span></span>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">compact · 240px, for a wallet list or a picker row · same anatomy, same slots</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv pcv--compact" role="group" aria-labelledby="pcv5-name--console-light">
+        <span class="sr-only" id="pcv5-name--console-light">Business debit card ending 4821, expires 08 29. Active. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-6" aria-hidden="true">···4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="v t-cm-legal pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+    </div>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. The pairs below are declared because they hold in the mono base the
+       gate reads AND were re-measured off the DOM in all four themes at #204 (see the lane receipt).
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with the
+       repo's own _contrast_utils.contrast_ratio) is deliberately
+       NOT declared as a passing pair — that absence is the INHERITED Account-card finding and the
+       same class as the live Stat-card/Kpi-tile FILL-vs-INK seam. It is never load-bearing: every
+       chip carries its word. -->
+  <script type="application/json" id="token-manifest--console-light">
+  {
+    "component": "Payment card visual",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed. Itinerary row 93. Fintech semantics are Dave's (Kpi-tile precedent). This manifest is a proposal, not a proof-of-done. Every BRAND surface is an empty declared slot: card-network marks, issuer logotypes and the EMV chip are licensed artwork governed outside this system, and #86-D2 fences our own marks (crescent = Apollo/anonymity only).",
+    "vars": {
+      "--alpha-48": "alpha/48",
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--slot-border": "form/border/default",
+      "--tag-border": "form/border/default",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--focus": "focus/ring",
+      "--ter-label": "button/tertiary/label/default",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-control": "border-radius/control"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "button/tertiary/label/default", "bg": "background/default", "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "contactless": "media/contactless.svg" },
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\"", "aria-pressed"],
+    "reuses": ["Account-card (shell, masked-number idiom, meta row)", "Tags (square chip)", "Status-indicator (RAG tint chip)", "Button (tertiary, 44px)"],
+    "knownFindings": [
+      "PROPOSED #204 — NOT GATED, NOT RULED. Fintech semantics are Dave's.",
+      "EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE \"chip|visa|mastercard|amex|network\"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.",
+      "THE ONE GLYPH IS REAL: assets/icons/media/contactless.svg, byte-matched via <symbol>. It is a functional indicator, not a brand mark.",
+      "Status dot is < 3:1 standalone (rag/success 1.98:1, rag/warning 2.18:1 on white, measured #204) so meaning is carried by the label text (1.4.1) — the SAME handled finding Account-card and Status-indicator already declare, INHERITED VERBATIM and NOT resolved here. It is the same class as the live Stat-card/Kpi-tile FILL-vs-INK two-red seam and is on this lane's DO-NOT-RULE list.",
+      "NO DARK / PREMIUM CARD FACE IS BUILT, and that is a token gap, not an oversight. knowledge/_COMPONENT-GAPS.md logs 'Inverse / hero surface - no light-mode dark-band role - the portfolio invented charcoals (#0E1014...)'. A dark card face today would re-commit that recorded defect. The card face therefore binds tertiary/background/default, exactly like Account-card. FINDING for Dave.",
+      "aspect-ratio 1.586 is ID-1 (ISO/IEC 7810, 85.60x53.98mm) - an external physical standard quoted so it is not read as a taste decision. Corners follow the angular rule (border-radius/surface, 0 in Mono, 20px in Console via the cascade). Whether a card visual should DEVIATE from the angular rule because real cards are rounded is DAVE'S - flagged, not taken.",
+      "No card BACK: magstripe + signature panel + CVV are secure-data surfaces (see Secure-entry) wrapped in licensed brand furniture. Deliberate absence.",
+      "The revealed PAN 4000 0000 0000 4821 is in the ISO/IEC 7812 test range. The reveal state is drawn so the pattern is reviewable; it is NOT an endorsement of showing a PAN in production UI.",
+      "44px minimum hit area MEASURED BY HAND at #204 on the reveal button in all four themes, both modes - NO GATE READS that token from a snippet.",
+      "Zero raw type declarations (Progress-bar's pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence), so no AUTO-BEHAVIOUR partial is injected and the reveal button's toggle is drawn as two static states rather than scripted - declared."
+    ],
+    "$differsFrom": {
+      "Account-card": "Account-card's subject is MONEY (label + masked number + BALANCE + status). This component's subject is the physical INSTRUMENT and it carries NO balance at all. Account-card answers 'how much is in it?'; this answers 'which piece of plastic is this, and is it usable right now?'. A payment-card visual showing a balance is an Account-card wearing a card shape and should be an Account-card.",
+      "Cards": "Cards is the generic content-surface family (a rectangle you put things in). This is a REPRESENTATION of a specific real-world object with a fixed ID-1 geometry and a fixed anatomy. Cards has no anatomy; this is nothing but anatomy.",
+      "Chart-bullet": "No relationship. Nothing on this card is a measure, a target or a quantity."
+    }
+  }
+  </script>
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-payment-card-visual">
+
+  <!-- Sprite: the ONE glyph on this card. Byte-matched to assets/icons/media/contactless.svg. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="pcv-contactless--console-dark" viewBox="0 0 18 18"><path d="M8.15 4.83L7.3 5.68C8.16 6.52 8.7 7.7 8.7 8.99C8.7 10.28 8.16 11.46 7.3 12.3L8.15 13.15C9.23 12.09 9.89 10.62 9.89 8.99C9.89 7.36 9.22 5.89 8.15 4.83ZM12.64 8.99C12.64 6.6 11.66 4.44 10.09 2.88L9.24 3.73C10.6 5.07 11.44 6.93 11.44 8.99C11.44 11.05 10.6 12.91 9.24 14.25L10.09 15.1C11.66 13.54 12.64 11.38 12.64 8.99ZM6.2 6.77L5.35 7.62C5.71 7.97 5.94 8.45 5.94 8.99C5.94 9.53 5.71 10.01 5.35 10.36L6.2 11.21C6.78 10.65 7.14 9.86 7.14 8.99C7.14 8.12 6.78 7.34 6.2 6.77ZM9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <p class="stateLabel t-cm-legal">default · active card, number masked · brand slots declared and EMPTY</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv" role="group" aria-labelledby="pcv1-name--console-dark">
+        <span class="sr-only" id="pcv1-name--console-dark">Business debit card ending 4821, expires 08 29. Active. Contactless enabled. Card number hidden.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="false" aria-describedby="pcv1-name--console-dark">Show number</button>
+    </div>
+
+    <div class="unit">
+      <p class="stateLabel t-cm-legal" style="margin-top:0">revealed · specimen PAN only (ISO/IEC 7812 test range)</p>
+      <div class="pcv" role="group" aria-labelledby="pcv2-name--console-dark">
+        <span class="sr-only" id="pcv2-name--console-dark">Business debit card, number 4000 0000 0000 4821, expires 08 29. Active. Contactless enabled. Card number shown.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">4000 0000 0000 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="true" aria-describedby="pcv2-name--console-dark">Hide number</button>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">unusable states · the WORD is the carrier, never the hue (1.4.1) · face also drops opacity, a second non-colour channel</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv3-name--console-dark">
+        <span class="sr-only" id="pcv3-name--console-dark">Business credit card ending 1180, expires 03 30. Frozen by you. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business credit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 1180</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 03/30</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Frozen by you</span></span>
+    </div>
+
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv4-name--console-dark">
+        <span class="sr-only" id="pcv4-name--console-dark">Business debit card ending 9930. Expired 08 25. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 9930</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expired 08/25</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Expired 08/25</span></span>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">compact · 240px, for a wallet list or a picker row · same anatomy, same slots</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv pcv--compact" role="group" aria-labelledby="pcv5-name--console-dark">
+        <span class="sr-only" id="pcv5-name--console-dark">Business debit card ending 4821, expires 08 29. Active. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--console-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-6" aria-hidden="true">···4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="v t-cm-legal pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+    </div>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. The pairs below are declared because they hold in the mono base the
+       gate reads AND were re-measured off the DOM in all four themes at #204 (see the lane receipt).
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with the
+       repo's own _contrast_utils.contrast_ratio) is deliberately
+       NOT declared as a passing pair — that absence is the INHERITED Account-card finding and the
+       same class as the live Stat-card/Kpi-tile FILL-vs-INK seam. It is never load-bearing: every
+       chip carries its word. -->
+  <script type="application/json" id="token-manifest--console-dark">
+  {
+    "component": "Payment card visual",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed. Itinerary row 93. Fintech semantics are Dave's (Kpi-tile precedent). This manifest is a proposal, not a proof-of-done. Every BRAND surface is an empty declared slot: card-network marks, issuer logotypes and the EMV chip are licensed artwork governed outside this system, and #86-D2 fences our own marks (crescent = Apollo/anonymity only).",
+    "vars": {
+      "--alpha-48": "alpha/48",
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--slot-border": "form/border/default",
+      "--tag-border": "form/border/default",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--focus": "focus/ring",
+      "--ter-label": "button/tertiary/label/default",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-control": "border-radius/control"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "button/tertiary/label/default", "bg": "background/default", "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "contactless": "media/contactless.svg" },
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\"", "aria-pressed"],
+    "reuses": ["Account-card (shell, masked-number idiom, meta row)", "Tags (square chip)", "Status-indicator (RAG tint chip)", "Button (tertiary, 44px)"],
+    "knownFindings": [
+      "PROPOSED #204 — NOT GATED, NOT RULED. Fintech semantics are Dave's.",
+      "EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE \"chip|visa|mastercard|amex|network\"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.",
+      "THE ONE GLYPH IS REAL: assets/icons/media/contactless.svg, byte-matched via <symbol>. It is a functional indicator, not a brand mark.",
+      "Status dot is < 3:1 standalone (rag/success 1.98:1, rag/warning 2.18:1 on white, measured #204) so meaning is carried by the label text (1.4.1) — the SAME handled finding Account-card and Status-indicator already declare, INHERITED VERBATIM and NOT resolved here. It is the same class as the live Stat-card/Kpi-tile FILL-vs-INK two-red seam and is on this lane's DO-NOT-RULE list.",
+      "NO DARK / PREMIUM CARD FACE IS BUILT, and that is a token gap, not an oversight. knowledge/_COMPONENT-GAPS.md logs 'Inverse / hero surface - no light-mode dark-band role - the portfolio invented charcoals (#0E1014...)'. A dark card face today would re-commit that recorded defect. The card face therefore binds tertiary/background/default, exactly like Account-card. FINDING for Dave.",
+      "aspect-ratio 1.586 is ID-1 (ISO/IEC 7810, 85.60x53.98mm) - an external physical standard quoted so it is not read as a taste decision. Corners follow the angular rule (border-radius/surface, 0 in Mono, 20px in Console via the cascade). Whether a card visual should DEVIATE from the angular rule because real cards are rounded is DAVE'S - flagged, not taken.",
+      "No card BACK: magstripe + signature panel + CVV are secure-data surfaces (see Secure-entry) wrapped in licensed brand furniture. Deliberate absence.",
+      "The revealed PAN 4000 0000 0000 4821 is in the ISO/IEC 7812 test range. The reveal state is drawn so the pattern is reviewable; it is NOT an endorsement of showing a PAN in production UI.",
+      "44px minimum hit area MEASURED BY HAND at #204 on the reveal button in all four themes, both modes - NO GATE READS that token from a snippet.",
+      "Zero raw type declarations (Progress-bar's pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence), so no AUTO-BEHAVIOUR partial is injected and the reveal button's toggle is drawn as two static states rather than scripted - declared."
+    ],
+    "$differsFrom": {
+      "Account-card": "Account-card's subject is MONEY (label + masked number + BALANCE + status). This component's subject is the physical INSTRUMENT and it carries NO balance at all. Account-card answers 'how much is in it?'; this answers 'which piece of plastic is this, and is it usable right now?'. A payment-card visual showing a balance is an Account-card wearing a card shape and should be an Account-card.",
+      "Cards": "Cards is the generic content-surface family (a rectangle you put things in). This is a REPRESENTATION of a specific real-world object with a fixed ID-1 geometry and a fixed anatomy. Cards has no anatomy; this is nothing but anatomy.",
+      "Chart-bullet": "No relationship. Nothing on this card is a measure, a target or a quantity."
+    }
+  }
+  </script>
+  </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-payment-card-visual">
+
+  <!-- Sprite: the ONE glyph on this card. Byte-matched to assets/icons/media/contactless.svg. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="pcv-contactless--supercharge-light" viewBox="0 0 18 18"><path d="M8.15 4.83L7.3 5.68C8.16 6.52 8.7 7.7 8.7 8.99C8.7 10.28 8.16 11.46 7.3 12.3L8.15 13.15C9.23 12.09 9.89 10.62 9.89 8.99C9.89 7.36 9.22 5.89 8.15 4.83ZM12.64 8.99C12.64 6.6 11.66 4.44 10.09 2.88L9.24 3.73C10.6 5.07 11.44 6.93 11.44 8.99C11.44 11.05 10.6 12.91 9.24 14.25L10.09 15.1C11.66 13.54 12.64 11.38 12.64 8.99ZM6.2 6.77L5.35 7.62C5.71 7.97 5.94 8.45 5.94 8.99C5.94 9.53 5.71 10.01 5.35 10.36L6.2 11.21C6.78 10.65 7.14 9.86 7.14 8.99C7.14 8.12 6.78 7.34 6.2 6.77ZM9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <p class="stateLabel t-cm-legal">default · active card, number masked · brand slots declared and EMPTY</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv" role="group" aria-labelledby="pcv1-name--supercharge-light">
+        <span class="sr-only" id="pcv1-name--supercharge-light">Business debit card ending 4821, expires 08 29. Active. Contactless enabled. Card number hidden.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="false" aria-describedby="pcv1-name--supercharge-light">Show number</button>
+    </div>
+
+    <div class="unit">
+      <p class="stateLabel t-cm-legal" style="margin-top:0">revealed · specimen PAN only (ISO/IEC 7812 test range)</p>
+      <div class="pcv" role="group" aria-labelledby="pcv2-name--supercharge-light">
+        <span class="sr-only" id="pcv2-name--supercharge-light">Business debit card, number 4000 0000 0000 4821, expires 08 29. Active. Contactless enabled. Card number shown.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">4000 0000 0000 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="true" aria-describedby="pcv2-name--supercharge-light">Hide number</button>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">unusable states · the WORD is the carrier, never the hue (1.4.1) · face also drops opacity, a second non-colour channel</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv3-name--supercharge-light">
+        <span class="sr-only" id="pcv3-name--supercharge-light">Business credit card ending 1180, expires 03 30. Frozen by you. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business credit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 1180</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 03/30</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Frozen by you</span></span>
+    </div>
+
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv4-name--supercharge-light">
+        <span class="sr-only" id="pcv4-name--supercharge-light">Business debit card ending 9930. Expired 08 25. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 9930</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expired 08/25</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Expired 08/25</span></span>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">compact · 240px, for a wallet list or a picker row · same anatomy, same slots</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv pcv--compact" role="group" aria-labelledby="pcv5-name--supercharge-light">
+        <span class="sr-only" id="pcv5-name--supercharge-light">Business debit card ending 4821, expires 08 29. Active. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-light"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-6" aria-hidden="true">···4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="v t-cm-legal pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+    </div>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. The pairs below are declared because they hold in the mono base the
+       gate reads AND were re-measured off the DOM in all four themes at #204 (see the lane receipt).
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with the
+       repo's own _contrast_utils.contrast_ratio) is deliberately
+       NOT declared as a passing pair — that absence is the INHERITED Account-card finding and the
+       same class as the live Stat-card/Kpi-tile FILL-vs-INK seam. It is never load-bearing: every
+       chip carries its word. -->
+  <script type="application/json" id="token-manifest--supercharge-light">
+  {
+    "component": "Payment card visual",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed. Itinerary row 93. Fintech semantics are Dave's (Kpi-tile precedent). This manifest is a proposal, not a proof-of-done. Every BRAND surface is an empty declared slot: card-network marks, issuer logotypes and the EMV chip are licensed artwork governed outside this system, and #86-D2 fences our own marks (crescent = Apollo/anonymity only).",
+    "vars": {
+      "--alpha-48": "alpha/48",
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--slot-border": "form/border/default",
+      "--tag-border": "form/border/default",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--focus": "focus/ring",
+      "--ter-label": "button/tertiary/label/default",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-control": "border-radius/control"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "button/tertiary/label/default", "bg": "background/default", "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "contactless": "media/contactless.svg" },
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\"", "aria-pressed"],
+    "reuses": ["Account-card (shell, masked-number idiom, meta row)", "Tags (square chip)", "Status-indicator (RAG tint chip)", "Button (tertiary, 44px)"],
+    "knownFindings": [
+      "PROPOSED #204 — NOT GATED, NOT RULED. Fintech semantics are Dave's.",
+      "EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE \"chip|visa|mastercard|amex|network\"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.",
+      "THE ONE GLYPH IS REAL: assets/icons/media/contactless.svg, byte-matched via <symbol>. It is a functional indicator, not a brand mark.",
+      "Status dot is < 3:1 standalone (rag/success 1.98:1, rag/warning 2.18:1 on white, measured #204) so meaning is carried by the label text (1.4.1) — the SAME handled finding Account-card and Status-indicator already declare, INHERITED VERBATIM and NOT resolved here. It is the same class as the live Stat-card/Kpi-tile FILL-vs-INK two-red seam and is on this lane's DO-NOT-RULE list.",
+      "NO DARK / PREMIUM CARD FACE IS BUILT, and that is a token gap, not an oversight. knowledge/_COMPONENT-GAPS.md logs 'Inverse / hero surface - no light-mode dark-band role - the portfolio invented charcoals (#0E1014...)'. A dark card face today would re-commit that recorded defect. The card face therefore binds tertiary/background/default, exactly like Account-card. FINDING for Dave.",
+      "aspect-ratio 1.586 is ID-1 (ISO/IEC 7810, 85.60x53.98mm) - an external physical standard quoted so it is not read as a taste decision. Corners follow the angular rule (border-radius/surface, 0 in Mono, 20px in Console via the cascade). Whether a card visual should DEVIATE from the angular rule because real cards are rounded is DAVE'S - flagged, not taken.",
+      "No card BACK: magstripe + signature panel + CVV are secure-data surfaces (see Secure-entry) wrapped in licensed brand furniture. Deliberate absence.",
+      "The revealed PAN 4000 0000 0000 4821 is in the ISO/IEC 7812 test range. The reveal state is drawn so the pattern is reviewable; it is NOT an endorsement of showing a PAN in production UI.",
+      "44px minimum hit area MEASURED BY HAND at #204 on the reveal button in all four themes, both modes - NO GATE READS that token from a snippet.",
+      "Zero raw type declarations (Progress-bar's pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence), so no AUTO-BEHAVIOUR partial is injected and the reveal button's toggle is drawn as two static states rather than scripted - declared."
+    ],
+    "$differsFrom": {
+      "Account-card": "Account-card's subject is MONEY (label + masked number + BALANCE + status). This component's subject is the physical INSTRUMENT and it carries NO balance at all. Account-card answers 'how much is in it?'; this answers 'which piece of plastic is this, and is it usable right now?'. A payment-card visual showing a balance is an Account-card wearing a card shape and should be an Account-card.",
+      "Cards": "Cards is the generic content-surface family (a rectangle you put things in). This is a REPRESENTATION of a specific real-world object with a fixed ID-1 geometry and a fixed anatomy. Cards has no anatomy; this is nothing but anatomy.",
+      "Chart-bullet": "No relationship. Nothing on this card is a measure, a target or a quantity."
+    }
+  }
+  </script>
+  </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-payment-card-visual">
+
+  <!-- Sprite: the ONE glyph on this card. Byte-matched to assets/icons/media/contactless.svg. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="pcv-contactless--supercharge-dark" viewBox="0 0 18 18"><path d="M8.15 4.83L7.3 5.68C8.16 6.52 8.7 7.7 8.7 8.99C8.7 10.28 8.16 11.46 7.3 12.3L8.15 13.15C9.23 12.09 9.89 10.62 9.89 8.99C9.89 7.36 9.22 5.89 8.15 4.83ZM12.64 8.99C12.64 6.6 11.66 4.44 10.09 2.88L9.24 3.73C10.6 5.07 11.44 6.93 11.44 8.99C11.44 11.05 10.6 12.91 9.24 14.25L10.09 15.1C11.66 13.54 12.64 11.38 12.64 8.99ZM6.2 6.77L5.35 7.62C5.71 7.97 5.94 8.45 5.94 8.99C5.94 9.53 5.71 10.01 5.35 10.36L6.2 11.21C6.78 10.65 7.14 9.86 7.14 8.99C7.14 8.12 6.78 7.34 6.2 6.77ZM9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <p class="stateLabel t-cm-legal">default · active card, number masked · brand slots declared and EMPTY</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv" role="group" aria-labelledby="pcv1-name--supercharge-dark">
+        <span class="sr-only" id="pcv1-name--supercharge-dark">Business debit card ending 4821, expires 08 29. Active. Contactless enabled. Card number hidden.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="false" aria-describedby="pcv1-name--supercharge-dark">Show number</button>
+    </div>
+
+    <div class="unit">
+      <p class="stateLabel t-cm-legal" style="margin-top:0">revealed · specimen PAN only (ISO/IEC 7812 test range)</p>
+      <div class="pcv" role="group" aria-labelledby="pcv2-name--supercharge-dark">
+        <span class="sr-only" id="pcv2-name--supercharge-dark">Business debit card, number 4000 0000 0000 4821, expires 08 29. Active. Contactless enabled. Card number shown.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">4000 0000 0000 4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+      <button class="pcv-reveal t-cm-button" type="button" aria-pressed="true" aria-describedby="pcv2-name--supercharge-dark">Hide number</button>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">unusable states · the WORD is the carrier, never the hue (1.4.1) · face also drops opacity, a second non-colour channel</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv3-name--supercharge-dark">
+        <span class="sr-only" id="pcv3-name--supercharge-dark">Business credit card ending 1180, expires 03 30. Frozen by you. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business credit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 1180</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expires 03/30</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Frozen by you</span></span>
+    </div>
+
+    <div class="unit">
+      <div class="pcv is-unusable" role="group" aria-labelledby="pcv4-name--supercharge-dark">
+        <span class="sr-only" id="pcv4-name--supercharge-dark">Business debit card ending 9930. Expired 08 25. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+          <span class="tag t-cm-legal">Business debit</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-5" aria-hidden="true">···· ···· ···· 9930</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="k t-cm-legal">A&nbsp;J&nbsp;Sewen</span>
+            <span class="v t-cm-figure-6 pcv-expiry">Expired 08/25</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Expired 08/25</span></span>
+    </div>
+  </div>
+
+  <p class="stateLabel t-cm-legal">compact · 240px, for a wallet list or a picker row · same anatomy, same slots</p>
+  <div class="rack">
+    <div class="unit">
+      <div class="pcv pcv--compact" role="group" aria-labelledby="pcv5-name--supercharge-dark">
+        <span class="sr-only" id="pcv5-name--supercharge-dark">Business debit card ending 4821, expires 08 29. Active. Contactless enabled.</span>
+        <div class="pcv-brandrow">
+          <span class="pcv-slot t-cm-legal" data-slot="issuer-mark" aria-hidden="true">issuer</span>
+        </div>
+        <div class="pcv-instrument">
+          <span class="pcv-slot t-cm-legal" data-slot="chip" aria-hidden="true">chip</span>
+          <span class="pcv-contactless" aria-hidden="true"><svg><use href="#pcv-contactless--supercharge-dark"/></svg></span>
+        </div>
+        <span class="pcv-pan t-cm-figure-6" aria-hidden="true">···4821</span>
+        <div class="pcv-footrow">
+          <span class="pcv-holder">
+            <span class="v t-cm-legal pcv-expiry">Expires 08/29</span>
+          </span>
+          <span class="pcv-slot t-cm-legal" data-slot="network-mark" aria-hidden="true">network</span>
+        </div>
+      </div>
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Active</span></span>
+    </div>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. The pairs below are declared because they hold in the mono base the
+       gate reads AND were re-measured off the DOM in all four themes at #204 (see the lane receipt).
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with the
+       repo's own _contrast_utils.contrast_ratio) is deliberately
+       NOT declared as a passing pair — that absence is the INHERITED Account-card finding and the
+       same class as the live Stat-card/Kpi-tile FILL-vs-INK seam. It is never load-bearing: every
+       chip carries its word. -->
+  <script type="application/json" id="token-manifest--supercharge-dark">
+  {
+    "component": "Payment card visual",
+    "type": "molecule",
+    "$status": "PROPOSED #204, Dave's eye owed. Itinerary row 93. Fintech semantics are Dave's (Kpi-tile precedent). This manifest is a proposal, not a proof-of-done. Every BRAND surface is an empty declared slot: card-network marks, issuer logotypes and the EMV chip are licensed artwork governed outside this system, and #86-D2 fences our own marks (crescent = Apollo/anonymity only).",
+    "vars": {
+      "--alpha-48": "alpha/48",
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--slot-border": "form/border/default",
+      "--tag-border": "form/border/default",
+      "--ok": "rag/success",
+      "--ok-tint": "rag/success-tint",
+      "--warn": "rag/warning",
+      "--warn-tint": "rag/warning-tint",
+      "--focus": "focus/ring",
+      "--ter-label": "button/tertiary/label/default",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-control": "border-radius/control"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "button/tertiary/label/default", "bg": "background/default", "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "contactless": "media/contactless.svg" },
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\"", "aria-pressed"],
+    "reuses": ["Account-card (shell, masked-number idiom, meta row)", "Tags (square chip)", "Status-indicator (RAG tint chip)", "Button (tertiary, 44px)"],
+    "knownFindings": [
+      "PROPOSED #204 — NOT GATED, NOT RULED. Fintech semantics are Dave's.",
+      "EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE \"chip|visa|mastercard|amex|network\"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.",
+      "THE ONE GLYPH IS REAL: assets/icons/media/contactless.svg, byte-matched via <symbol>. It is a functional indicator, not a brand mark.",
+      "Status dot is < 3:1 standalone (rag/success 1.98:1, rag/warning 2.18:1 on white, measured #204) so meaning is carried by the label text (1.4.1) — the SAME handled finding Account-card and Status-indicator already declare, INHERITED VERBATIM and NOT resolved here. It is the same class as the live Stat-card/Kpi-tile FILL-vs-INK two-red seam and is on this lane's DO-NOT-RULE list.",
+      "NO DARK / PREMIUM CARD FACE IS BUILT, and that is a token gap, not an oversight. knowledge/_COMPONENT-GAPS.md logs 'Inverse / hero surface - no light-mode dark-band role - the portfolio invented charcoals (#0E1014...)'. A dark card face today would re-commit that recorded defect. The card face therefore binds tertiary/background/default, exactly like Account-card. FINDING for Dave.",
+      "aspect-ratio 1.586 is ID-1 (ISO/IEC 7810, 85.60x53.98mm) - an external physical standard quoted so it is not read as a taste decision. Corners follow the angular rule (border-radius/surface, 0 in Mono, 20px in Console via the cascade). Whether a card visual should DEVIATE from the angular rule because real cards are rounded is DAVE'S - flagged, not taken.",
+      "No card BACK: magstripe + signature panel + CVV are secure-data surfaces (see Secure-entry) wrapped in licensed brand furniture. Deliberate absence.",
+      "The revealed PAN 4000 0000 0000 4821 is in the ISO/IEC 7812 test range. The reveal state is drawn so the pattern is reviewable; it is NOT an endorsement of showing a PAN in production UI.",
+      "44px minimum hit area MEASURED BY HAND at #204 on the reveal button in all four themes, both modes - NO GATE READS that token from a snippet.",
+      "Zero raw type declarations (Progress-bar's pattern): no body font-family, no font-size anywhere. TYPE-002 contribution 0.",
+      "NOT registered in component-types.json (shared file, outside this lane's fence), so no AUTO-BEHAVIOUR partial is injected and the reveal button's toggle is drawn as two static states rather than scripted - declared."
+    ],
+    "$differsFrom": {
+      "Account-card": "Account-card's subject is MONEY (label + masked number + BALANCE + status). This component's subject is the physical INSTRUMENT and it carries NO balance at all. Account-card answers 'how much is in it?'; this answers 'which piece of plastic is this, and is it usable right now?'. A payment-card visual showing a balance is an Account-card wearing a card shape and should be an Account-card.",
+      "Cards": "Cards is the generic content-surface family (a rectangle you put things in). This is a REPRESENTATION of a specific real-world object with a fixed ID-1 geometry and a fixed anatomy. Cards has no anatomy; this is nothing but anatomy.",
+      "Chart-bullet": "No relationship. Nothing on this card is a measure, a target or a quantity."
+    }
+  }
+  </script>
+  </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

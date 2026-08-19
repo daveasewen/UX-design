@@ -1,0 +1,155 @@
+{
+  "name": "Document row",
+  "interactive": true,
+  "stateModel": "full",
+  "$stateModelNote": "REPAIRED #204 (fix sub, post-verifier): this key was authored as \"interactive\", which is not one of meta.schema.json's two enum values ['simple','full'] — the file failed the schema. The authored intent is preserved: the row is interactive (see \"interactive\": true above) and carries hover + focus-visible + active + aria-disabled/pending, i.e. MORE than the 'simple' leg's default+hover/pressed+focus. That is the schema's 'full' state model, which is also the documented default. Mechanical conformance repair only — no semantic was changed and nothing here is a ruling.",
+  "category": "molecule",
+  "$status": "⚠⚠ PROPOSED #204 (2026-08-19, Lane N) — NOT GATED, NOT PROMOTED, NOT RULED. Built through the gated-component route so it is reviewable at gated fidelity, but every fintech semantic in it is DAVE'S and is marked PROPOSED (the Kpi-tile #203 precedent). Nothing in this file is a ruling. Itinerary row 92, 'Statement / document row · Downloadable document row'.",
+  "purpose": "A row in a list of documents the bank has ISSUED to the customer and which they can open or download — statements, certificates, tax documents, contracts. Anatomy: leading file-type glyph + two-line body (document title | optional status, then period/issue date · format · size) + a trailing download control. The defining property is that it carries TWO independent actions per row (open the document; download the file), which is the structural reason it is not a variant of the gated List-items.",
+  "props": [
+    {
+      "name": "actions",
+      "type": "enum",
+      "values": ["two", "one"],
+      "default": "two",
+      "$note": "PROPOSED. 'two' = variant A: the row opens/previews the document (stretched link) and a sibling 44×44 button downloads it. 'one' = variant B: the whole row downloads, no preview. ⚠ Variant B IS structurally a List-items row and should be one — it is drawn in the specimen only so Dave can compare the two shapes. If he rules that the product needs only the single-action form, THIS COMPONENT SHOULD NOT EXIST and itinerary row 92 collapses into List-items. That is a live outcome, not a hedge."
+    },
+    {
+      "name": "docType",
+      "type": "enum",
+      "values": ["statement", "certificate", "tax", "contract", "generic"],
+      "default": "statement",
+      "$note": "⬛ PROPOSED — P1, DAVE'S. This vocabulary is my wording, chosen to read; no taxonomy has been ratified by anyone. It drives only the leading glyph (document-e-statement / document-pdf / document), all byte-matched from knowledge/assets/icons/, the same library File-upload draws on."
+    },
+    {
+      "name": "status",
+      "type": "enum",
+      "values": ["none", "new", "action-needed", "expired"],
+      "default": "none",
+      "$note": "⬛ PROPOSED — P4, DAVE'S. Whether a document row carries a status chip AT ALL is unruled. Shown in the specimen for 'New' (information) and 'Action needed' (warning), because an unread statement and a tax form awaiting signature are genuinely different objects. Equally arguable: documents have no status, only a date. When present the chip is the Status-indicator atom form B, copied VERBATIM from List-items — tint surface + RAG dot + NEUTRAL text label — and every status carries its WORD as well as its hue (1.4.1)."
+    },
+    {
+      "name": "availability",
+      "type": "enum",
+      "values": ["available", "pending"],
+      "default": "available",
+      "$note": "'pending' = a statement whose period has not closed. Renders aria-disabled on the row and a native disabled button, and — deliberately — states the REASON in the row's own meta line and in the button's accessible name ('Available from 1 Aug 2026'), so it is never focusable-and-silent."
+    },
+    {
+      "name": "density",
+      "type": "enum",
+      "values": ["roomy", "compact"],
+      "default": "roomy",
+      "$note": "⬛ PROPOSED — P6, DAVE'S. --row-h 76 / --row-pad 14 / --label-gap 12 inherited VERBATIM from List-items' roomy default. A statements archive is a long list and may want List-items' 64/10/8 compact leg as ITS default. Not ruled either way."
+    }
+  ],
+  "variants": [
+    { "name": "A — two actions", "use": "Default. Row opens/previews the document; trailing 44×44 icon-button downloads it. The form that justifies a separate component." },
+    { "name": "B — one action", "use": "Whole row downloads. ⚠ Structurally a List-items row; drawn for comparison only." },
+    { "name": "pending", "use": "Document not yet generated; row aria-disabled, reason stated in text." }
+  ],
+  "$howThisDiffersFromListItems": {
+    "$headline": "★ THE CENTRAL ADJUDICATION OF LANE N, RECORDED HERE BECAUSE A READER WILL OTHERWISE REACH FOR THE WRONG COMPONENT.",
+    "theStructuralDifference": "In List-items THE WHOLE ROW IS A <button> — `<li><button class=\"row\" type=\"button\">…`, verbatim from List-items.reference.html. That shape supports exactly ONE action per row. A downloadable document row has two actions that are not the same action: (a) open/preview the document, (b) download the file. An interactive control cannot be nested inside a <button>: it is invalid HTML (4.1.1), the inner control is unreachable by keyboard in several ATs, and the outer button's accessible name absorbs the inner one. So the two-action row CANNOT be added as a `type=\"document\"` value on List-items' existing `type` enum without changing List-items' own row ELEMENT for every other variant — and List-items is a gated, promoted, 9.0/9 artefact. This component therefore uses the ROW-WITH-NESTED-ACTION shape: a passive <li> holding a primary <a> whose ::after stretches to the full row, plus a SIBLING <button> raised above it on the z-axis. Two independent targets, both ≥44px, no nesting.",
+    "whatWasCopiedNotRedrawn": "The row shell (ul/li borders, surface, divider), the two-line body geometry (title|status / meta), the density tokens (--row-h / --row-pad / --label-gap), the hover trick where the leading disc flips to the default surface so it separates from the hover tint, and the Status-indicator form-B chip — ALL copied from List-items.reference.html. The 44×44 hit area and 18px glyph come from Icon-button. The file-type glyphs are byte-matched from knowledge/assets/icons/media/, the same library File-upload uses. List-items was NOT edited.",
+    "whatWasDeliberatelyNotCopied": "List-items' raw font declarations (`font:500 16px/1.35 var(--font)` etc). Its ANATOMY was copied; its type debt was not. This file declares no raw font in component scope and contributes 0 to the shrink-only ratchet.",
+    "theRoundToSquareChange": "List-items' leading visual is the round Avatar disc — the documented round exemption, which exists for PEOPLE. A file is not a person, so the leading slot here is the same 36px size but SQUARE (border-radius/indicator), which console forks to 4px through the cascade exactly as it does for List-items' own indicator atoms. No exemption is claimed.",
+    "whenToChooseWhich": "Choose List-items (transaction) when the row is a MONEY EVENT the reader may open — a payment, a transfer, a card purchase. Choose Document row when the row is a FILE the reader may open or take away. The tell: a document row has no amount and a transaction row has no file."
+  },
+  "$howThisDiffersFromFileUpload": {
+    "direction": "File-upload (GATED, itinerary row 18) is the INBOUND direction: files the user is giving the bank, mid-transfer, with a progress bar, a size-validation error state and a REMOVE (×) control. Its rows are ephemeral — they exist only during the interaction. Document row is the OUTBOUND direction: files the bank has already issued, complete, persistent, with a DOWNLOAD control, no progress and no removal.",
+    "theTell": "A File-upload row can FAIL ('This file is over 10MB'). A document row cannot — it already exists.",
+    "shared": "Both use the same byte-matched file-type glyph set from knowledge/assets/icons/media/. That is deliberate reuse, not overlap."
+  },
+  "tokens": {
+    "row-surface": "tertiary/background/default; hover tertiary/background/hover; disabled tertiary/background/disabled",
+    "text": "text/default (title) · text/secondary (meta line, at --alpha-72) · text/disabled",
+    "icon": "icon/default",
+    "divider": "divider/border/section",
+    "glyph-slot": "tertiary/background/hover (flips to tertiary/background/default on row hover, the List-items trick)",
+    "status": "rag/{success,warning,error,information} dots on rag/*-tint surfaces with a text/default LABEL — Status-indicator form B, copied verbatim",
+    "focus": "focus/ring",
+    "radius": "border-radius/indicator (glyph slot, status chip, download button) · border-radius/surface (list shell). Square in mono/legacy/supercharge; console forks the indicator to 4px through the cascade.",
+    "$noMoneyColour": "⛔ DELIBERATE ABSENCE, DECLARED. A ledger/statement row is exactly where a debit/credit +/− colour binding gets improvised. This component carries NO monetary value, so there was no seat to invent and none was invented. Where an amount is genuinely wanted on such a row (an 'amount due' on an invoice), the answer is the GATED Amount-display atom, whose meta ALREADY rules the treatment: the value is monochrome with a U+2212 MINUS for negatives, and the only coloured seats are sign=positive → rag/success-ink (s155-D1, s158-D2) and sign=negative → rag/error-ink (s158-D3), background-keyed #137F3C-on-white / #66CC8D-else for green and the s151-D1 two-red law for red, MONO ONLY. Copied from amount-display.meta.json; not extended by a single value."
+  },
+  "relationships": {
+    "livesInside": ["Documents", "Statements", "Account details", "Inbox / secure messages", "Tax centre"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["statements archive grouped by year", "downloadable tax documents list", "contract / agreement library"]
+  },
+  "accessibility": {
+    "semantics": "Real <ul>/<li> list semantics (1.3.1). Variant A's row is a PASSIVE container: the primary target is an <a> whose ::after stretches to the row bounds, and the download <button> is a SIBLING raised on z-index — so there are exactly two focusable targets per row, in DOM order, and neither is nested in the other (4.1.1).",
+    "targetArea": "≥44px on every interactive target, ENFORCED BY HAND — no gate reads the ruled token. Primary target = the stretched-link row at min-height 76px. Download button = 44×44. Measured across all four themes, both modes, at 1400px and 480px.",
+    "accessibleNames": "The download button carries the full context in its aria-label ('Download June 2026 statement, PDF, 1.2 megabytes'), because an icon-only control adjacent to a stretched link is otherwise announced as a bare 'Download' with no object. Units are SPELT OUT in the label ('1.2 megabytes') so a screen reader does not read 'MB' as letters.",
+    "colourIndependence": "Every status chip carries its WORD as well as its hue. The RAG dot is decorative and aria-hidden; the warning dot alone measures under 3:1 standalone (1.4.11), which is exactly why it never appears alone (1.4.1). Inherited from the Status-indicator atom, unchanged.",
+    "pendingState": "aria-disabled on the row + a native disabled button, and the REASON is in the visible meta line (aria-live=\"polite\") and in the button's accessible name. Never focusable-and-silent.",
+    "reflow": "Container-query reflow at 360px — the meta line wraps beneath the title (1.4.10), mirroring List-items' own reflow.",
+    "relatedSC": ["1.3.1 Info and Relationships", "1.4.1 Use of Color", "1.4.3 Contrast (Minimum)", "1.4.10 Reflow", "1.4.11 Non-text Contrast", "2.5.8 Target Size (Minimum)", "4.1.1 Parsing", "4.1.2 Name Role Value"]
+  },
+  "antiPatterns": [
+    "⛔ Nesting the download <button> inside a row-wide <button> or <a>. This is the single defect this component exists to prevent: it is invalid (4.1.1), the inner control is unreachable in several ATs, and the outer accessible name swallows the inner one. If you find yourself doing this, you wanted variant B.",
+    "⛔ Inventing a debit/credit or gain/loss COLOUR on a statement or ledger row. This component carries no amount by design. Where an amount is needed, compose the gated Amount-display atom and take its ruled treatment unchanged — monochrome value, U+2212 minus, rag/*-ink the only coloured seats, MONO ONLY.",
+    "Giving the download button an icon with no aria-label, or an aria-label of just 'Download'. Adjacent to a stretched link it must name the object and the format.",
+    "Using this component for files the user is UPLOADING — that is File-upload, which has progress, validation and removal that this row deliberately lacks.",
+    "Using this component for a money event the reader may open — that is the gated List-items transaction row.",
+    "Making the leading file glyph round. The round form is the Avatar exemption and it exists for people; a document is not a person.",
+    "Carrying status by the RAG dot alone. The label is the carrier; the warning dot is under 3:1 standalone.",
+    "Shipping a pending/unavailable row with no stated reason — an aria-disabled row that says nothing is a dead end for every reader, not just AT users."
+  ],
+  "$openQuestionsForDave": [
+    "P1 — DOCUMENT-TYPE VOCABULARY (statement / certificate / tax / contract / generic). My wording, unratified. Store search that failed to settle it: direct grep of knowledge/_rulings.json (203 entries) for `transaction|ledger|statement row|document row|line[- ]item|debit|credit` → 16 entries matched the word 'ledger' and ALL 16 use it in the record-keeping sense (a decisions ledger, a token-fork ledger, an exceptions ledger); ZERO concern a document or statement COMPONENT. Also `python3 knowledge/_memento_search.py` on 'document row' / 'statement row' / 'downloadable document'. Nothing found. UNRULED.",
+    "P2 — STATEMENT PERIODISATION. Built as title 'June 2026 statement' + meta '1 Jun – 30 Jun 2026'. Alternative: title '1–30 June 2026' with no separate period. Also unruled: whether the PERIOD or the ISSUE DATE is the one that shows. Same store search as P1; nothing found.",
+    "P3 — THE DOWNLOAD AFFORDANCE'S FORM. Built as a trailing 44×44 icon-button with no visible label. Alternatives: a text link ('Download PDF'), whole-row download (variant B), or an overflow menu when several formats exist. ⚠ s182-D2 is cited in the specimen as PRECEDENT for a label-less trailing affordance; it governs the trend card and NOT this component, so it is precedent, not authority.",
+    "P4 — WHETHER A DOCUMENT ROW CARRIES A STATUS CHIP AT ALL.",
+    "P5 — FILE META ORDER AND CONTENT ('PDF · 1.2MB'). Whether size shows at all is a product call.",
+    "P6 — DENSITY DEFAULT: roomy (inherited from List-items) vs compact for long archives.",
+    "P7 — ★ THE COMPONENT'S EXISTENCE. If only the single-action form is needed, this component should not exist and row 92 collapses into List-items, exactly as row 91 did."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "canon token store via _validate_snippets.py (86 snippets, 0 failures) and _validate_a11y.py (86 snippets, 0 failures)",
+    "result": "PASS. Every var declared in the manifest resolves to its canon token in light and dark. Type gate PASS filtered; repo-wide ratchet unchanged at 1,097 (0 added).",
+    "$inheritedFinding": "text/secondary on tertiary/background/hover in DARK measures 3.34:1 (< 4.5). This is INHERITED from List-items' own open $darkFinding, which calls it SYSTEMIC — it affects every interactive row with secondary text on a hover surface, not this component. Deliberately not invented around; list-items.meta.json remains its home.",
+    "$noFigmaNode": "No Figma node — this is a PROPOSED specimen, not a design import. It needs a design owner before any promotion from proposed to gated."
+  },
+  "build": {
+    "$status": "PROPOSED #204 — specimen only. NOT registered in component-types.json, NOT in _validate_radius.MIGRATED_SNIPPETS, NOT in CATEGORIES / gen_showroom.py, NOT in canon.css. All four are shared surfaces outside Lane N's fence; the review page hand-mirrors the .cn-document-row scope, deriving every binding from this component's own #token-manifest. Registration is a PROMOTION decision and therefore Dave's, not a merge chore.",
+    "reference": "knowledge/snippets/Document-row.reference.html",
+    "review": "reviews/REVIEW-204-document-row-four-themes-v1.html — 4 themes × light/dark, 8 panes, verified at 1400px and 480px",
+    "reusedPrimitives": [
+      "List-items (row shell, two-line body, density tokens, hover-glyph trick) — COPIED, source untouched",
+      "Status indicator (RAG tint chip, form B) — copied verbatim via List-items",
+      "Icon-button (44×44 hit area, 18px glyph, focus ring) — the download control's form",
+      "File-upload glyph set — byte-matched from knowledge/assets/icons/media/",
+      "Amount-display — NOT used; the absence is deliberate and declared (no amount on this row)"
+    ]
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Itinerary row 92 (reviews/ITINERARY-2026-07-14-*, 'Statement / document row — Downloadable document row'). Surfaced as a genuine gap by Lane N's step-0 probe at #204: no snippet and no meta under any of transaction / ledger / statement / document / download / line-item / entry / posting / receipt / invoice / attach. Its sibling row 91 (Transaction / ledger row) was probed the same way and found ALREADY BUILT AND PROMOTED as the gated List-items transaction row — see the Lane N receipt."
+  },
+  "edges": {
+    "renderedBy": [
+      { "ref": "snippet:Document-row.reference.html" }
+    ],
+    "hasPart": [
+      { "ref": "component:status-indicator", "$note": "Status indicator (form B tint chip). Authored at #204 under the edge key \"contains\", which meta.schema.json's `edges` does not define; re-keyed to the schema's own containment edge `hasPart` by the #204 fix sub. Same edge, same target, schema-legal key." },
+      { "ref": "component:icon-button", "$note": "Icon button (the download control's form). Authored at #204 under the edge key \"contains\"; re-keyed to `hasPart` (see the sibling $note)." }
+    ],
+    "usedInContext": [
+      { "ref": "context:statements", "$note": "Statements archive" },
+      { "ref": "context:documents", "$note": "Documents / tax centre" },
+      { "ref": "context:account-details", "$note": "Account details" }
+    ],
+    "commonPattern": [
+      { "ref": "pattern:statements-archive-grouped-by-year" },
+      { "ref": "pattern:downloadable-tax-documents-list" }
+    ],
+    "family": [
+      { "ref": "component:list-items", "$note": "The gated tappable list-row family. Document row is the two-action member List-items' all-row-is-a-button shape cannot express. Authored at #204 under the edge key \"siblingOf\", which meta.schema.json's `edges` does not define; re-keyed to the schema's own peer edge `family` by the #204 fix sub. Same edge, same target, schema-legal key." },
+      { "ref": "component:file-upload", "$note": "The INBOUND direction of the same file-row anatomy. Authored at #204 under the edge key \"siblingOf\"; re-keyed to `family` (see the sibling $note)." }
+    ]
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "name": "Coverage / runway bar",
+  "category": "molecule",
+  "purpose": "A READOUT that answers one question: does the money cover what is already scheduled, and until when? It states a verdict with a date, shows the arithmetic that produces it (balance − committed = buffer), and draws the split on a bar. ⚠ THE BAR IS A GATED Progress-bar, COPIED BYTE-FOR-BYTE — this component draws no new bar. What it adds is the verdict, the arithmetic and the legend. PROPOSED #204 (itinerary row 94, slug runway-bar) — NOT GATED, NOT RULED, AND ITS PROVENANCE IS A TEST FIXTURE (see provenance). Fintech semantics are Dave's (the Kpi-tile precedent, s182-D2).",
+  "intent": "composition",
+  "props": [
+    { "name": "balance", "type": "number", "$note": "The domain maximum — aria-valuemax." },
+    { "name": "committed", "type": "number", "$note": "The fill — aria-valuenow. ⚠ CLAMPED to balance in the SHORT state, because a progressbar cannot express overflow. The true figure appears in the legend, the arithmetic and aria-valuetext." },
+    { "name": "buffer", "type": "number", "$note": "Derived: balance − committed. Rendered through the Amount-display money-format primitive (symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)." },
+    { "name": "verdict", "type": "string", "$note": "★ THE POINT OF THE COMPONENT. A WORD AND A DATE — 'Covered through 31 May', 'Covered to 24 May', 'Short from 12 May'. Never a colour on its own." },
+    { "name": "verdictTone", "type": "enum", "values": ["ok", "warn"], "$note": "Renders the Status-indicator RAG-tint chip. ⛔ WHICH VERDICT MAPS TO WHICH TONE IS A SEMANTIC BINDING AND IS DAVE'S — proposed here, not ruled." },
+    { "name": "showMath", "type": "boolean", "default": true, "$note": "The balance/committed/buffer definition list. Turning it off makes this a Progress bar (see antiPatterns)." },
+    { "name": "size", "type": "enum", "values": ["default", "emphasis"], "default": "default", "$note": "4px and 8px rules — Progress-bar's own two sizes, same token pair, unchanged." }
+  ],
+  "variants": [
+    { "name": "covered", "use": "Buffer positive. Bar under the full track." },
+    { "name": "tight", "use": "Buffer nearly gone. Same anatomy, different numbers, different WORD — NOT a different colour." },
+    { "name": "short", "use": "Committed exceeds balance. Bar pinned at 100%, shortfall shown as a signed figure and a date. ⛔ NO RED — see tokens.$note." },
+    { "name": "emphasis", "use": "8px rule where the coverage is the primary content of its region. Progress-bar's .pb-lg size." }
+  ],
+  "tokens": {
+    "fill": "progress/complete — theme INK in all four themes since s175-D1 (Mono/Console #1A1A1A | #FFFFFF, Legacy #333333 | #FFFFFF, Supercharge #13110E | #F7F6F4)",
+    "track": "progress/incomplete — #F0F0F0 | #484848 in Mono/Console/Legacy; #DFDEDC | #413934 in Supercharge via the neutral→warm DNA rebind",
+    "label": "text/default @ .t-cm-label",
+    "figures": "text/default @ .t-cm-figure-4 (buffer, display size) / .t-cm-figure-6 (legend + arithmetic, tabular)",
+    "muted": "text/secondary @ .t-cm-legal and .t-cm-caption",
+    "border": "border/subtle — the buffer swatch outline and the arithmetic total rule",
+    "verdict": "rag/success + rag/success-tint | rag/warning + rag/warning-tint — the Status-indicator chip, copied byte-for-byte from Account-card",
+    "radius": "border-radius/indicator (resolves 0 in Mono — square, the angular rule; 4px in Console via the cascade)",
+    "$note": "⛔⛔ NO GREEN/RED WAS INVENTED FOR THE BAR, AND THAT IS THE POINT. A cash-runway meter is exactly where a healthy/critical binding gets improvised. The bar is INK ON TRACK in every state INCLUDING 'short', inherited unchanged from the gated Progress-bar, whose meta gives the reason in Dave's own terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) — hence the ink pair rather than a RAG colour.' Coverage is a QUANTITY. The VERDICT is a separate object carrying a word and a date. NO NEW TOKEN IS WANTED OR MINTED."
+  },
+  "motion": {
+    "entry": "The fill grows to its value — Progress-bar's transition, copied.",
+    "hover": "None. Passive.",
+    "reducedMotion": "Progress-bar's own clause copied: the fill still MOVES to its final position (the value must be reachable), it just arrives without an animated sweep. Global collapse also present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Fluid to a 480px max-width column; the bar is width:100% of its container. Legend and head wrap. Verified at 1400px and 480px.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Cash-flow / coverage dashboards", "Account overview", "Payment-run approval screens"],
+    "mustNotNeighbour": ["A Chart-bullet of the same figures (pick one — and if you have a TARGET, the Chart-bullet is the right one)", "A bare Progress bar of the same figures (the readout already contains one)"],
+    "commonPatterns": ["cash coverage for a scheduled payment run", "buffer after committed outgoings", "limits / allowance headroom"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "The readout is role=\"group\" + aria-labelledby. The bar is role=\"progressbar\" with aria-valuenow/valuemin/valuemax and a full aria-valuetext, copied from Progress-bar's non-percentage specimen.",
+    "valueText": "aria-valuetext carries the whole sentence including the VERDICT AND THE DATE, so AT hears the answer, not just a ratio.",
+    "openQuestion": "⚠ role=\"progressbar\" vs role=\"meter\" is OPEN and Dave's. progressbar is used because it is what the gated parent carries. THE SEARCH THAT FAILED TO SETTLE IT (s202-D3): `grep -rn 'role=\"meter\"' knowledge/snippets/` → 2 hits, BOTH of them the new snippet's own prose, i.e. ZERO in the 87 pre-existing snippets; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` → 0. Nothing in the store rules it either way.",
+    "notColourAlone": "Enforced THREE ways on every specimen: the verdict WORD (and date) in the chip, the full arithmetic in text at 17.4:1, and aria-valuetext on the bar. Strip every colour from this component and it still says everything it means (1.4.1).",
+    "passive": "interactive:false throughout. No focus indicator, nothing in the tab order — so the 44px minimum hit area does not apply. Stated so the absence is DECLARED rather than assumed.",
+    "math": "The arithmetic is a real <dl>, so the sum is in source order and readable by AT rather than being a visual arrangement.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "4.1.2 Name, Role, Value", "2.3.3 Animation from Interactions"]
+  },
+  "antiPatterns": [
+    "⛔ COLOURING THE BAR RED WHEN COVERAGE IS SHORT, or green when it is healthy. Progress is structure, not status (Dave 2026-07-21, carried in progress-bar.meta). Coverage is a quantity. The verdict word and the date are the carriers.",
+    "⛔ ADDING A TARGET MARKER. A bar with a target IS a Chart-bullet and should be one. This component has no target — it has a horizon.",
+    "⛔ ADDING QUALITATIVE BANDS behind the bar. Same reason: those are Chart-bullet's qualitative ranges.",
+    "Shipping the bar WITHOUT the verdict and the arithmetic. That is a Progress bar and should be one — the readout is the whole component.",
+    "Rendering the verdict as a colour with no word or date.",
+    "Using this for a MULTI-category composition (three or more segments). Two segments of one balance at one instant is a rule; more than that is Chart-donut or Chart-bar's stacked column.",
+    "Using this for coverage OVER TIME. That is Chart-stacked-area.",
+    "Letting aria-valuenow exceed aria-valuemax in the short state instead of clamping it and carrying the true figure in aria-valuetext.",
+    "Relying on the verdict chip's DOT. It is 1.98:1 / 2.18:1 standalone (measured #204) — the inherited Account-card / Status-indicator finding."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PROPOSED — gates run at #204 by the worker lane: _validate_snippets.py rc=0 (90 snippets, 0 failures), _validate_a11y.py rc=0 (90 snippets, 0 failures), _validate_type_composites.py filtered rc=0 and repo-wide 1097 violations UNCHANGED from the measured baseline (this file adds ZERO — it declares no raw font at all, following Progress-bar's zero-raw-type pattern). _validate_dataviz.py NOT APPLICABLE and declared: this component carries NO dataviz geometry, no SVG and no series token, which is itself part of the Chart-bullet adjudication. _validate_state_contrast.py NOT RUN and DECLARED OWED. Radius / icons / coverage and every generator --check are the BUILD-PM's serially. This is a PROPOSAL, not a proof-of-done.",
+    "$note": "fill-on-track (progress/complete on progress/incomplete) clears 3:1 in ALL FOUR themes since s175-D1 — Mono/Console/Legacy 15.27 light / 9.15 dark, Supercharge 14.02 / 10.46 — Progress-bar's own recorded figures against canon/canon.css. It is NOT declared as a gated contrastPair here, for Progress-bar's own stated reason: the snippet gate resolves against tokens/semantic-colour.json, the MONO base only, and cannot see the other three legs. Meaning never rests on that boundary anyway."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$sourceNarrative": "⚠ PROVENANCE NARRATIVE, MOVED HERE BY THE #204 FIX SUB. It was authored into `provenance.source`, which meta.schema.json constrains to an enum of five values, so the file failed the schema. Nothing is deleted: the paragraph is preserved verbatim below and `provenance.source` now carries the enum value the paragraph itself describes — \"gap-report\" (a candidate surfaced by a journey/gap report, not yet reconciled to a Figma node or code path). ⛔ NOT A SCHEMA DECISION: whether meta.schema.json should gain a typed `provenance.note` field is OPEN TO DAVE per the #204 verifier receipt (every meta.schema.json amendment in the store's history was Dave's — s140-D1, s165-D5). `$`-prefixed keys are already legal everywhere by the schema's own patternProperties, so this move needs no amendment. VERBATIM ORIGINAL FOLLOWS ⇒ ⚠⚠ THIS ROW ORIGINATES IN A TEST FIXTURE, NOT A PRODUCT NEED — stated as the headline, not a footnote. Itinerary row 94's own note says 'Cash-runway meter (fitness tests invented this)', and the origin chain is PROVEN, not assumed. (1) knowledge/_COMPONENT-GAPS.md, under 'Token / system gaps (SME-Payments fitness tests, 2026-06-30) — Exposed by the portfolio run: the canon was silent in exactly the places it had to invent', records verbatim: 'Data-viz palette + chart primitives | no chart components, no named data series — the waterfall / RUNWAY / proportional bars WERE INVENTED'. (2) `grep -rn \"runway\" knowledge/_fitness-test/*.html` returns four synthetic pages (sme-payments-portfolio, -balanced, -final, cold-A-inference) each hand-rolling a .runway section in raw hex and raw font shorthands — probe artefacts, not product artefacts. (3) That logged gap was promoted into knowledge/_COMPONENT-LIBRARY-TARGET.md line 104, the 'Fintech-specific' table, GAP · P2–P3. (4) The target table became the itinerary row. (5) `grep -inE \"runway|coverage|burn rate|payment-card|fintech|plastic\" knowledge/_rulings.json` returns ZERO hits naming this component ('coverage' appears only as GATE coverage). (6) The retrieval index is STALE this session (_capture_gate.py --selftest says so), so the ruling claim rests on the DIRECT GREP of _rulings.json, the store itself, not on _memento_search.py. ⇒ There IS a real user question underneath — 'does my money cover what is already scheduled, and until when?' — and the fitness test answered it with drawn evidence. But NOBODY HAS RULED THAT IT SHOULD BE A COMPONENT. That is Dave's first decision. Measured a TRUE GAP by reviews/ITINERARY-STATUS-2026-08-19-v1.json (#203 Lane H): drift AGREES, no artefact under any alias (re-probed #204 under runway/coverage/meter/gauge/burn/cash across knowledge/snippets/ and knowledge/components/ — all empty).",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Runway-bar.reference.html"
+  },
+  "$differsFrom": {
+    "Chart-bullet": "★ THE BRIEF'S FLAGGED NEIGHBOUR, AND THE ANSWER IS NO. Chart-bullet's own purpose line: 'a measure bar against a COMPARATIVE TARGET MARKER and QUALITATIVE PERFORMANCE RANGES', intent 'comparison', built as an SVG figure at a fixed 580px with a real <table class=\"dv-table\"> (dv-005), a data/series/1 measure fill and an ink target tick. A runway bar has NO target, NO bands, NO SVG, NO data table and NO dataviz series token. THE TELL: a Chart-bullet needs a TARGET; a runway bar has no target, it has a HORIZON — nothing is measured against a goal, the question is how far the money reaches. If you have a target, use Chart-bullet. This component must never grow one.",
+    "Progress-bar": "★ THIS IS THE REAL PARENT, and it is not close, it is exact. Progress-bar's own commonPatterns already lists 'savings goal / LIMITS METER', and its third specimen is a non-percentage determinate bar ('Savings goal · 1,450 of 2,000') carrying its domain in aria-valuetext. Committed money on a track of total balance is that same shape. THE BAR IS COPIED BYTE-FOR-BYTE — .pb-track/.pb-fill, 4px and 8px, progress/complete on progress/incomplete, role and aria — AND NOTHING NEW WAS DRAWN AT THE BAR LEVEL. What this adds is the READOUT: the verdict-with-a-date, the balance-minus-committed arithmetic, and the two-key legend. A runway readout without those IS a Progress bar and should be one.",
+    "Chart-donut / Chart-stacked-area": "Those are composition charts across MANY categories, or across TIME. This is ONE balance split into exactly TWO parts at ONE instant, and it is a rule, not a chart.",
+    "Kpi-tile / Stat-card": "Those state a metric and its CHANGE (or the shape of the change) against a prior period. This states a FORECAST — a horizon date — from a balance and a schedule. There is no delta and no arrow anywhere in this component, which is also why it does not touch the live two-red arrow seam."
+  },
+  "$decisionsForDave": [
+    "★ FIRST: should this component exist at all? It originates in a fitness-test fixture. Nothing in the store asked for it. Declining it is a completely legitimate answer and the itinerary row can be closed as 'not a component'.",
+    "If it does exist: is the shape right? Verdict + buffer figure + bar + legend + arithmetic — or is that too much for one component and the arithmetic belongs in a Summary?",
+    "★ The verdict vocabulary and its chip binding. 'Covered through 31 May' → success tint; 'Covered to 24 May' → warning tint; 'Short from 12 May' → warning tint. Should 'short' be the ERROR seat instead? That touches the two-red law and I deliberately did not take it.",
+    "role=\"progressbar\" vs role=\"meter\" — nothing in the store rules it (searches quoted in accessibility.openQuestion).",
+    "The SHORT state's clamped bar. Pinning at 100% is honest but silent about the overflow. Should there be a dedicated overflow treatment, and if so, what is it that is not a red bar?",
+    "The legend's buffer swatch takes a 1px border/subtle outline so the track colour is visible against the page in light mode. That is a specimen choice, not a rule.",
+    "Should the emphasis (8px) variant exist here, or should a consumer just compose Progress-bar's own emphasis size?"
+  ]
+}

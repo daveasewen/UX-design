@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Footer — reference implementation (PROPOSED #204)</title>
+<!--
+  ⚠⚠ PROPOSED #204, 2026-08-19 (Lane M). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. Itinerary row 81 ("Footer — Incl. doormat / mega-footer",
+  Layout & containers, P2) was verified genuinely absent first-hand: no snippet, no meta, and no
+  content match under doormat or mega-footer anywhere in knowledge/. The five prior "footer" hits in
+  the corpus are all a DIFFERENT footer — Drawer's footer actions, Modals' dialog footer,
+  Data-grid's pagination footer, Command-palette's hint bar, Action-bar. See the vocabulary note.
+
+  ★★ VOCABULARY COLLISION, DECLARED BEFORE ANYTHING ELSE (the s202-D3 class, where Dave rejected a
+  build because one word carried two meanings). In this repo "footer" ALREADY means two things:
+    (a) the LAYOUT FOOTER of a container — a dialog's action row, a drawer's action row, a data
+        grid's pagination strip. The gated ACTION-BAR describes itself, verbatim, as "A footer bar
+        that pins a screen/flow's actions".
+    (b) the SITE FOOTER — the contentinfo landmark at the end of a page carrying link groups,
+        legal text and a copyright line. THAT is what this component is, and it is what row 81's
+        "doormat / mega-footer" names.
+  They can appear on the SAME screen (an Action-bar pinned above a site Footer) and they are not
+  variants of one another. ⛔ IF THIS COMPONENT KEEPS THE NAME "Footer" IT INHERITS THE COLLISION;
+  renaming it is Dave's, not mine — see $decision-1. Nothing here renames anything.
+
+  ★ SPECIMENS COPY APPROVED ARTEFACTS. Every atom is lifted from a gated snippet, named so a
+  reviewer can diff it:
+    · the link atom (a.lnk — underline never colour alone, 3px offset, 1px→2px on hover AND
+      pressed as ONE combined state, focus = inset 0 -3px 0 var(--text) with no blue ring,
+      aria-current="page" marked by WEIGHT plus a persistent 2px underline) — Links.reference.html,
+      verbatim. Links' own source already calls its .related list "the footer / utility pattern",
+      and links.meta.json already declares context:footer with a Footer relationship — the graph
+      anticipated this component before it existed.
+    · the arrow link and its em-scaled tip glyph — Links.reference.html, verbatim.
+    · the back-to-top glyph — knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg, byte-matched.
+    · the section divider recipe (1px divider/border/section above the band) — the pattern
+      Sidebar-nav and Drawer both use for their header/footer rules.
+  Neither parent file was touched.
+
+  HOW THIS DIFFERS FROM ITS GATED NEIGHBOURS ————————————————————————————————————————
+  · vs LINKS. Links owns the link ATOM and even ships .related, "the footer / utility pattern" —
+    a wrapping list of related links. Footer is the REGION that arranges them: the landmark, the
+    grouping into named columns, the legal bar, the copyright line, the rule that separates the
+    page from its end matter. THE TELL: strip the landmark and the group headings from a Footer
+    and what is left is a .related list, and it should be one.
+  · vs ACTION-BAR. See the vocabulary note above. Action-bar pins the ACTIONS of a flow and is
+    part of the task; Footer is the end of the DOCUMENT and is part of the site. An Action-bar's
+    contents change per screen; a Footer's do not.
+  · vs HEADERS. The masthead sibling. A header carries wayfinding the reader is about to use; a
+    footer carries the links they went looking for and the text the regulator requires. A footer
+    never carries the primary navigation as its primary job — a doormat that duplicates the
+    masthead is a doormat that has stopped being read (an antiPattern in the meta).
+  · vs NAVIGATIONS / SIDEBAR-NAV. Those model STATE — current page, expansion, sections. A Footer
+    doormat is flat and stateless; the only state it carries is aria-current="page", inherited
+    from the Links atom unchanged.
+
+  ⚠ THE 44px DECISION IS VISIBLE AND IS DAVE'S. Every footer link here is a >= 44px target
+  (target/min, bound in the manifest so the drift gate reads the value), IN BOTH the wide and the
+  narrow layout — not only when stacked. That is stricter than the gated Links .related pattern,
+  which grows its targets only at <=420px. It makes a doormat measurably TALLER than the compact
+  typographic ideal, and that trade is a design decision, not a technicality: see $decision-2. No
+  gate reads the target token for hit area, so this was MEASURED in a real browser, not assumed.
+
+  TYPE: composites only, no raw font declarations in component scope — group headings
+  .t-cm-section-label · links .t-ed-body-small · emphasis .t-ed-body-small.em · legal + copyright
+  .t-cm-legal · demo headings .t-cm-caption (demo chrome). Ratchet contribution: 0.
+  ★★ AND THAT COST A REAL DIVERGENCE FROM THE PARENT, WHICH IS DECLARED RATHER THAN HIDDEN.
+  "Copy the approved artefact verbatim" and "add ZERO to the shrink-only type ratchet" CONFLICT
+  when the approved artefact is itself carrying debt. The gated Links atom writes
+  `font-weight:500` twice in its own CSS — on `a.arrow` and on `a.lnk[aria-current="page"]` — and
+  those are exactly the raw declarations TYPE-002 counts. Copying them verbatim DROVE the type
+  gate red on this file (measured: 2 violations). The emphasis therefore arrives here through
+  canon/type.css's own `.t-ed-body-small .em` modifier, applied in the MARKUP (the T-D14
+  markup-class route) — identical rendered weight, zero added debt. Links itself was NOT edited:
+  it is a gated shared artefact and its two declarations are the BUILD-PM's to retire.
+-->
+<!--
+  SHAPE: square — no radius anywhere except the control radius inherited by the link focus shape.
+  MOTION: text-decoration-thickness and transform on the arrow tip only, the Links durations.
+  COLOUR: no RAG value appears in this component at all. There is no status here to carry.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
+:is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family on body — every text element carries a canon composite class, which
+     is the mandatory route and the reason this file contributes 0 to the shrink-only ratchet. */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{
+    --page:#FFFFFF;         /* background/default */
+    --surface:#F0F0F0;      /* surface/subtle — the footer band, so the end matter reads as a band */
+    --divider:#E1E1E1;      /* divider/border/section — the rule between page and footer */
+    --subdivider:#F0F0F0;   /* divider/border/subsection — inside the footer, between mat and legal */
+    --text:#1A1A1A;         /* text/default */
+    --muted:#1A1A1A;        /* text/secondary */
+    --icon:#1A1A1A;         /* icon/default */
+    --focus:#305A85;        /* focus/ring */
+    --border-radius-control:0;
+    --target-min:44px;      /* target/min — the ruled minimum hit area, bound so the gate reads it */
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --surface:#1F1F1F;
+    --divider:#808080;
+    --subdivider:#808080;
+    --text:#FFFFFF;
+    --muted:#FFFFFF;
+    --icon:#FFFFFF;
+    --focus:#4587A7;
+    --border-radius-control:0;
+    --target-min:44px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem 0; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 2.25rem .7rem;}   /* demo chrome — not the component */
+  .demo-note{opacity:var(--alpha-60); margin:.6rem 2.25rem 0; max-width:60ch;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  /* ---- the region ---- */
+  .ft{background:var(--surface); color:var(--text); border-top:1px solid var(--divider);
+    container-type:inline-size;}
+  .ft-inner{max-width:1120px; margin:0 auto; padding:32px 16px;}   /* 16px = layout/app/margin */
+
+  /* ---- the doormat: named link groups ---- */
+  .ft-mat{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:24px 16px;}
+  .ft-group > h2{margin:0 0 4px; opacity:var(--alpha-60);}
+  .ft-group ul{list-style:none; margin:0; padding:0;}
+  /* EVERY footer link is a full 44px target, at EVERY width — see the header note; this is
+     stricter than the gated Links .related pattern and it is a declared design decision. */
+  .ft-group a{display:flex; align-items:center; min-height:var(--target-min); padding:0;}
+
+  /* ---- the link atom, copied verbatim from Links.reference.html ---- */
+  a.lnk{color:var(--text); text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; border-radius:var(--border-radius-control);
+    transition:text-decoration-thickness var(--ease);}
+  a.lnk:hover{text-decoration-thickness:2px;}
+  a.lnk:active{text-decoration-thickness:2px;}          /* pressed == hover (combined state) */
+  a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+  /* current page — WEIGHT plus a persistent thick underline, never colour alone (1.4.1).
+     ⚠ THE WEIGHT ARRIVES BY COMPOSITE, NOT BY DECLARATION. The gated Links atom writes
+     `font-weight:500` here in its own CSS, which is exactly the raw declaration the shrink-only
+     type ratchet counts (Links carries that debt today). This file adds ZERO to that debt: the
+     emphasis rides on canon/type.css's own `.t-ed-body-small .em` modifier, applied in the
+     MARKUP. Same rendered weight, no new violation — the T-D14 markup-class route. */
+  a.lnk[aria-current="page"]{text-decoration-thickness:2px;}
+  /* ARROW link — Links.reference.html, verbatim; the tip glyph is em-scaled so it tracks the type */
+  a.arrow{display:inline-flex; align-items:center; gap:4px; text-decoration:none; color:var(--text);
+    min-height:var(--target-min);}   /* weight via the .em composite modifier in markup, not here */
+  a.arrow .tip{display:inline-flex; color:var(--icon); transition:transform var(--ease);}
+  a.arrow .tip svg{width:.85em; height:.85em; display:block; fill:currentColor;}
+  a.arrow:hover .tip,a.arrow:active .tip{transform:translateY(-3px);}
+  a.arrow:hover .lbl,a.arrow:active .lbl{text-decoration:underline; text-underline-offset:3px;}
+  a.arrow:focus-visible{outline:none;}
+  a.arrow:focus-visible .lbl{box-shadow:inset 0 -3px 0 var(--text);}
+
+  /* ---- the brand / statement block that opens a mega-footer ---- */
+  .ft-brand{display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between;
+    gap:16px; padding-bottom:24px; margin-bottom:24px; border-bottom:1px solid var(--subdivider);}
+  .ft-brand p{margin:0; max-width:52ch; color:var(--muted); opacity:var(--alpha-84);}
+
+  /* ---- the legal bar ---- */
+  .ft-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;
+    padding-top:24px; margin-top:24px; border-top:1px solid var(--subdivider);}
+  .ft-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;
+    flex:1 1 auto;}
+  .ft-legal a{display:inline-flex; align-items:center; min-height:var(--target-min);}
+  .ft-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto;}
+
+  /* ---- the SLIM form: no doormat, legal bar only ---- */
+  .ft.slim .ft-inner{padding:8px 16px;}
+  .ft.slim .ft-legal{padding-top:0; margin-top:0; border-top:0;}
+
+  /* Narrow: the mat collapses to one column and the legal bar stacks. Targets are already 44px
+     at every width, so nothing has to grow here — that is the point of deciding it once. */
+  @container (max-width: 560px){
+    .ft-mat{grid-template-columns:1fr; gap:16px;}
+    .ft-legal{flex-direction:column; align-items:flex-start; gap:0;}
+    .ft-legal ul{flex-direction:column; gap:0;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg -->
+    <symbol id="ft-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Doormat / mega-footer — the full form</h2>
+  <footer class="ft" role="contentinfo" aria-label="Site footer">
+    <div class="ft-inner">
+
+      <div class="ft-brand">
+        <p class="t-ed-body-small">Apollo is the reference implementation of this design system. This footer is the specimen for the end matter of a page: the links a reader goes looking for, and the text a regulator requires.</p>
+        <a class="arrow" href="#top"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+      </div>
+
+      <div class="ft-mat">
+        <nav class="ft-group" aria-labelledby="ftg1">
+          <h2 class="t-cm-section-label" id="ftg1">Accounts</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Current accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Foreign currency accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg2">
+          <h2 class="t-cm-section-label" id="ftg2">Payments</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Make a payment</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Standing orders</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Direct debits</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">International transfers</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg3">
+          <h2 class="t-cm-section-label" id="ftg3">Support</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg4">
+          <h2 class="t-cm-section-label" id="ftg4">About</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small em" href="#" aria-current="page">Who we are</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">The current-page link in the About column is marked by weight and a persistent thick underline, never by colour — the Links atom's own aria-current treatment, unchanged.</p>
+
+  <h2 class="t-cm-caption demo-h">Slim footer — app chrome, where a doormat would be noise</h2>
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">Two forms, one component: the doormat is the end of a marketing or servicing page; the slim bar is the end of an authenticated application screen, where the reader came to do one thing and a four-column mat would be in the way. Which surfaces get which is a product decision and is not settled here.</p>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Footer",
+    "$status": "PROPOSED #204, Dave's eye owed — nothing here is a ruling. Itinerary row 81, verified absent first-hand.",
+    "vars": { "--page": "background/default", "--surface": "surface/subtle",
+              "--divider": "divider/border/section", "--subdivider": "divider/border/subsection",
+              "--text": "text/default", "--muted": "text/secondary", "--icon": "icon/default",
+              "--focus": "focus/ring", "--border-radius-control": "border-radius/control",
+              "--target-min": "target/min" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "surface/subtle", "context": "text" },
+      { "fg": "text/secondary", "bg": "surface/subtle", "context": "text" },
+      { "fg": "icon/default", "bg": "surface/subtle", "context": "icon" },
+      { "fg": "text/default", "bg": "background/default", "context": "text" }
+    ],
+    "icons": { "arrow-up": "arrows-and-chevrons/arrow-up.svg" },
+    "requiredAria": ["role=\"contentinfo\"", "aria-label", "aria-labelledby", "aria-current=\"page\""],
+    "$note": "PROPOSED #204 (Lane M). THE SITE FOOTER — the contentinfo landmark at the end of a page — NOT the layout footer of a container. ⛔ VOCABULARY COLLISION, DECLARED: 'footer' already means a dialog/drawer/data-grid action or pagination row in this repo, and the gated Action-bar describes itself verbatim as 'A footer bar that pins a screen/flow's actions'. The two can appear on one screen and are not variants; whether this component keeps the name is Dave's. Composes the gated Links atom verbatim (underline never colour alone, combined hover/pressed, inset focus underline, aria-current by weight plus persistent thick underline) — Links' own source already calls its .related list 'the footer / utility pattern' and links.meta.json already declares context:footer, so the graph anticipated this component. Differs from Links by being the REGION rather than the atom: landmark, named groups, legal bar, copyright, the rule that separates page from end matter. Two forms: doormat (mega-footer) and slim. ⚠ EVERY link is a >= 44px target at EVERY width, not only when stacked — stricter than the gated .related pattern, and it makes a doormat measurably taller. That trade is a design decision and is PROPOSED, not ruled. No RAG value appears anywhere in this component. Not registered in component-types.json (shared file, outside the lane fence)."
+  }
+  </script>
+  </body>
+</html>

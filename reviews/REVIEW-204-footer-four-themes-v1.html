@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Footer &mdash; four themes x light/dark (#204)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; overflow-x:auto; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note-info{border-left-color:#305A85;}
+/* ---- the .cn-footer scope. HAND-MIRRORED: gen_canon_components.py owns this surface and the
+   BUILD-PM owns regeneration this wave, so nothing was generated. Every binding below is derived
+   from the snippet's own #token-manifest and points at canon.css's OWN custom property, so the
+   four-theme cascade is canon.css's, not a re-typed copy of resolved values. ---- */
+.cn-footer{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --ease:140ms ease;
+  --page: var(--background-default);
+  --surface: var(--surface-subtle);
+  --divider: var(--divider-border-section);
+  --subdivider: var(--divider-border-subsection);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --icon: var(--icon-default);
+  --focus: var(--focus-ring);
+  /* inherited directly from canon.css (self-binding would be invalid): --border-radius-control, --target-min */
+  color:var(--text);
+}
+.cn-footer :is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+.cn-footer *{box-sizing:border-box;}
+.cn-footer .demo-h{opacity:var(--alpha-60); margin:1.75rem 2.25rem .7rem;}
+.cn-footer .demo-note{opacity:var(--alpha-60); margin:.6rem 2.25rem 0; max-width:60ch;}
+.cn-footer .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-footer .ft{background:var(--surface); color:var(--text); border-top:1px solid var(--divider);
+    container-type:inline-size;}
+.cn-footer .ft-inner{max-width:1120px; margin:0 auto; padding:32px 16px;}
+.cn-footer .ft-mat{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:24px 16px;}
+.cn-footer .ft-group > h2{margin:0 0 4px; opacity:var(--alpha-60);}
+.cn-footer .ft-group ul{list-style:none; margin:0; padding:0;}
+.cn-footer .ft-group a{display:flex; align-items:center; min-height:var(--target-min); padding:0;}
+.cn-footer a.lnk{color:var(--text); text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; border-radius:var(--border-radius-control);
+    transition:text-decoration-thickness var(--ease);}
+.cn-footer a.lnk:hover{text-decoration-thickness:2px;}
+.cn-footer a.lnk:active{text-decoration-thickness:2px;}
+.cn-footer a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+.cn-footer a.lnk[aria-current="page"]{text-decoration-thickness:2px;}
+.cn-footer a.arrow{display:inline-flex; align-items:center; gap:4px; text-decoration:none; color:var(--text);
+    min-height:var(--target-min);}
+.cn-footer a.arrow .tip{display:inline-flex; color:var(--icon); transition:transform var(--ease);}
+.cn-footer a.arrow .tip svg{width:.85em; height:.85em; display:block; fill:currentColor;}
+.cn-footer a.arrow:hover .tip, .cn-footer a.arrow:active .tip{transform:translateY(-3px);}
+.cn-footer a.arrow:hover .lbl, .cn-footer a.arrow:active .lbl{text-decoration:underline; text-underline-offset:3px;}
+.cn-footer a.arrow:focus-visible{outline:none;}
+.cn-footer a.arrow:focus-visible .lbl{box-shadow:inset 0 -3px 0 var(--text);}
+.cn-footer .ft-brand{display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between;
+    gap:16px; padding-bottom:24px; margin-bottom:24px; border-bottom:1px solid var(--subdivider);}
+.cn-footer .ft-brand p{margin:0; max-width:52ch; color:var(--muted); opacity:var(--alpha-84);}
+.cn-footer .ft-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;
+    padding-top:24px; margin-top:24px; border-top:1px solid var(--subdivider);}
+.cn-footer .ft-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;
+    flex:1 1 auto;}
+.cn-footer .ft-legal a{display:inline-flex; align-items:center; min-height:var(--target-min);}
+.cn-footer .ft-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto;}
+.cn-footer .ft.slim .ft-inner{padding:8px 16px;}
+.cn-footer .ft.slim .ft-legal{padding-top:0; margin-top:0; border-top:0;}
+@container (max-width: 560px){
+.cn-footer .ft-mat{grid-template-columns:1fr; gap:16px;}
+.cn-footer .ft-legal{flex-direction:column; align-items:flex-start; gap:0;}
+.cn-footer .ft-legal ul{flex-direction:column; gap:0;}
+}
+@media (prefers-reduced-motion: reduce){
+.cn-footer *, .cn-footer *::before, .cn-footer *::after{transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important;}
+}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">Footer</h1>
+  <div class="lede">
+<p class="t-ed-body">Itinerary row 81, <strong>PROPOSED #204 &mdash; your eye owed</strong>. Verified absent first-hand: no snippet, no meta, no content match under doormat or mega-footer, and no ruling in <code>_rulings.json</code>.</p>
+<div class="note"><p class="t-ed-body-small"><strong>&ldquo;Footer&rdquo; already means something else here, and that is the first thing to decide.</strong> In this repo a footer is a container&rsquo;s action row &mdash; Drawer&rsquo;s, Modals&rsquo;, Data-grid&rsquo;s pagination strip &mdash; and the gated Action-bar describes <em>itself</em>, in its own words, as &ldquo;a footer bar that pins a screen/flow&rsquo;s actions&rdquo;. This component is the other footer: the end matter of a document. The two can sit on one screen and are not variants. If it keeps this name it inherits the collision. Renaming is yours; nothing here renames anything.</p></div>
+<div class="note note-info"><p class="t-ed-body-small"><strong>The link atom is the gated one, unchanged.</strong> Underline never colour, hover and pressed as one combined state, the inset focus underline with no blue ring, and the current page marked by weight plus a persistent thick underline. Links&rsquo; own source already calls its related-links list &ldquo;the footer / utility pattern&rdquo;, and its meta already declares a Footer context &mdash; the graph anticipated this component before it existed.</p></div>
+<div class="note"><p class="t-ed-body-small"><strong>Your call &mdash; every link here is a 44px target at every width.</strong> The gated pattern only grows its targets when stacked; this decides it once, everywhere. The cost is visible: the doormat is taller than the compact typographic ideal a footer usually reaches for. Look at the four columns and tell me whether the height is worth the certainty.</p></div>
+<div class="note"><p class="t-ed-body-small"><strong>Also unruled:</strong> the band colour (it sits on the subtle surface so the end matter reads as a band &mdash; in Mono light that is a very quiet distinction); whether the doormat and the slim bar are one component or two; and what belongs in the legal row, which is regulatory and varies by market.</p></div>
+  </div>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-footer">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg -->
+    <symbol id="ft-up--mono-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Doormat / mega-footer — the full form</h2>
+  <footer class="ft" role="contentinfo" aria-label="Site footer">
+    <div class="ft-inner">
+
+      <div class="ft-brand">
+        <p class="t-ed-body-small">Apollo is the reference implementation of this design system. This footer is the specimen for the end matter of a page: the links a reader goes looking for, and the text a regulator requires.</p>
+        <a class="arrow" href="#top"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up--mono-light"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+      </div>
+
+      <div class="ft-mat">
+        <nav class="ft-group" aria-labelledby="ftg1--mono-light">
+          <h2 class="t-cm-section-label" id="ftg1--mono-light">Accounts</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Current accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Foreign currency accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg2--mono-light">
+          <h2 class="t-cm-section-label" id="ftg2--mono-light">Payments</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Make a payment</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Standing orders</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Direct debits</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">International transfers</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg3--mono-light">
+          <h2 class="t-cm-section-label" id="ftg3--mono-light">Support</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg4--mono-light">
+          <h2 class="t-cm-section-label" id="ftg4--mono-light">About</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small em" href="#" aria-current="page">Who we are</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">The current-page link in the About column is marked by weight and a persistent thick underline, never by colour — the Links atom's own aria-current treatment, unchanged.</p>
+
+  <h2 class="t-cm-caption demo-h">Slim footer — app chrome, where a doormat would be noise</h2>
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">Two forms, one component: the doormat is the end of a marketing or servicing page; the slim bar is the end of an authenticated application screen, where the reader came to do one thing and a four-column mat would be in the way. Which surfaces get which is a product decision and is not settled here.</p>
+
+  
+  
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-footer">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg -->
+    <symbol id="ft-up--mono-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Doormat / mega-footer — the full form</h2>
+  <footer class="ft" role="contentinfo" aria-label="Site footer">
+    <div class="ft-inner">
+
+      <div class="ft-brand">
+        <p class="t-ed-body-small">Apollo is the reference implementation of this design system. This footer is the specimen for the end matter of a page: the links a reader goes looking for, and the text a regulator requires.</p>
+        <a class="arrow" href="#top"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up--mono-dark"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+      </div>
+
+      <div class="ft-mat">
+        <nav class="ft-group" aria-labelledby="ftg1--mono-dark">
+          <h2 class="t-cm-section-label" id="ftg1--mono-dark">Accounts</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Current accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Foreign currency accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg2--mono-dark">
+          <h2 class="t-cm-section-label" id="ftg2--mono-dark">Payments</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Make a payment</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Standing orders</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Direct debits</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">International transfers</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg3--mono-dark">
+          <h2 class="t-cm-section-label" id="ftg3--mono-dark">Support</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg4--mono-dark">
+          <h2 class="t-cm-section-label" id="ftg4--mono-dark">About</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small em" href="#" aria-current="page">Who we are</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">The current-page link in the About column is marked by weight and a persistent thick underline, never by colour — the Links atom's own aria-current treatment, unchanged.</p>
+
+  <h2 class="t-cm-caption demo-h">Slim footer — app chrome, where a doormat would be noise</h2>
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">Two forms, one component: the doormat is the end of a marketing or servicing page; the slim bar is the end of an authenticated application screen, where the reader came to do one thing and a four-column mat would be in the way. Which surfaces get which is a product decision and is not settled here.</p>
+
+  
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-footer">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg -->
+    <symbol id="ft-up--legacy-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Doormat / mega-footer — the full form</h2>
+  <footer class="ft" role="contentinfo" aria-label="Site footer">
+    <div class="ft-inner">
+
+      <div class="ft-brand">
+        <p class="t-ed-body-small">Apollo is the reference implementation of this design system. This footer is the specimen for the end matter of a page: the links a reader goes looking for, and the text a regulator requires.</p>
+        <a class="arrow" href="#top"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up--legacy-light"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+      </div>
+
+      <div class="ft-mat">
+        <nav class="ft-group" aria-labelledby="ftg1--legacy-light">
+          <h2 class="t-cm-section-label" id="ftg1--legacy-light">Accounts</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Current accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Foreign currency accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg2--legacy-light">
+          <h2 class="t-cm-section-label" id="ftg2--legacy-light">Payments</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Make a payment</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Standing orders</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Direct debits</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">International transfers</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg3--legacy-light">
+          <h2 class="t-cm-section-label" id="ftg3--legacy-light">Support</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg4--legacy-light">
+          <h2 class="t-cm-section-label" id="ftg4--legacy-light">About</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small em" href="#" aria-current="page">Who we are</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">The current-page link in the About column is marked by weight and a persistent thick underline, never by colour — the Links atom's own aria-current treatment, unchanged.</p>
+
+  <h2 class="t-cm-caption demo-h">Slim footer — app chrome, where a doormat would be noise</h2>
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">Two forms, one component: the doormat is the end of a marketing or servicing page; the slim bar is the end of an authenticated application screen, where the reader came to do one thing and a four-column mat would be in the way. Which surfaces get which is a product decision and is not settled here.</p>
+
+  
+  
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-footer">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg -->
+    <symbol id="ft-up--legacy-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Doormat / mega-footer — the full form</h2>
+  <footer class="ft" role="contentinfo" aria-label="Site footer">
+    <div class="ft-inner">
+
+      <div class="ft-brand">
+        <p class="t-ed-body-small">Apollo is the reference implementation of this design system. This footer is the specimen for the end matter of a page: the links a reader goes looking for, and the text a regulator requires.</p>
+        <a class="arrow" href="#top"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up--legacy-dark"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+      </div>
+
+      <div class="ft-mat">
+        <nav class="ft-group" aria-labelledby="ftg1--legacy-dark">
+          <h2 class="t-cm-section-label" id="ftg1--legacy-dark">Accounts</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Current accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Foreign currency accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg2--legacy-dark">
+          <h2 class="t-cm-section-label" id="ftg2--legacy-dark">Payments</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Make a payment</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Standing orders</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Direct debits</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">International transfers</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg3--legacy-dark">
+          <h2 class="t-cm-section-label" id="ftg3--legacy-dark">Support</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg4--legacy-dark">
+          <h2 class="t-cm-section-label" id="ftg4--legacy-dark">About</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small em" href="#" aria-current="page">Who we are</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">The current-page link in the About column is marked by weight and a persistent thick underline, never by colour — the Links atom's own aria-current treatment, unchanged.</p>
+
+  <h2 class="t-cm-caption demo-h">Slim footer — app chrome, where a doormat would be noise</h2>
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">Two forms, one component: the doormat is the end of a marketing or servicing page; the slim bar is the end of an authenticated application screen, where the reader came to do one thing and a four-column mat would be in the way. Which surfaces get which is a product decision and is not settled here.</p>
+
+  
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-footer">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg -->
+    <symbol id="ft-up--console-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Doormat / mega-footer — the full form</h2>
+  <footer class="ft" role="contentinfo" aria-label="Site footer">
+    <div class="ft-inner">
+
+      <div class="ft-brand">
+        <p class="t-ed-body-small">Apollo is the reference implementation of this design system. This footer is the specimen for the end matter of a page: the links a reader goes looking for, and the text a regulator requires.</p>
+        <a class="arrow" href="#top"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up--console-light"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+      </div>
+
+      <div class="ft-mat">
+        <nav class="ft-group" aria-labelledby="ftg1--console-light">
+          <h2 class="t-cm-section-label" id="ftg1--console-light">Accounts</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Current accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Foreign currency accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg2--console-light">
+          <h2 class="t-cm-section-label" id="ftg2--console-light">Payments</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Make a payment</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Standing orders</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Direct debits</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">International transfers</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg3--console-light">
+          <h2 class="t-cm-section-label" id="ftg3--console-light">Support</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg4--console-light">
+          <h2 class="t-cm-section-label" id="ftg4--console-light">About</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small em" href="#" aria-current="page">Who we are</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">The current-page link in the About column is marked by weight and a persistent thick underline, never by colour — the Links atom's own aria-current treatment, unchanged.</p>
+
+  <h2 class="t-cm-caption demo-h">Slim footer — app chrome, where a doormat would be noise</h2>
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">Two forms, one component: the doormat is the end of a marketing or servicing page; the slim bar is the end of an authenticated application screen, where the reader came to do one thing and a four-column mat would be in the way. Which surfaces get which is a product decision and is not settled here.</p>
+
+  
+  
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-footer">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg -->
+    <symbol id="ft-up--console-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Doormat / mega-footer — the full form</h2>
+  <footer class="ft" role="contentinfo" aria-label="Site footer">
+    <div class="ft-inner">
+
+      <div class="ft-brand">
+        <p class="t-ed-body-small">Apollo is the reference implementation of this design system. This footer is the specimen for the end matter of a page: the links a reader goes looking for, and the text a regulator requires.</p>
+        <a class="arrow" href="#top"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up--console-dark"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+      </div>
+
+      <div class="ft-mat">
+        <nav class="ft-group" aria-labelledby="ftg1--console-dark">
+          <h2 class="t-cm-section-label" id="ftg1--console-dark">Accounts</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Current accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Foreign currency accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg2--console-dark">
+          <h2 class="t-cm-section-label" id="ftg2--console-dark">Payments</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Make a payment</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Standing orders</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Direct debits</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">International transfers</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg3--console-dark">
+          <h2 class="t-cm-section-label" id="ftg3--console-dark">Support</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg4--console-dark">
+          <h2 class="t-cm-section-label" id="ftg4--console-dark">About</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small em" href="#" aria-current="page">Who we are</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">The current-page link in the About column is marked by weight and a persistent thick underline, never by colour — the Links atom's own aria-current treatment, unchanged.</p>
+
+  <h2 class="t-cm-caption demo-h">Slim footer — app chrome, where a doormat would be noise</h2>
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">Two forms, one component: the doormat is the end of a marketing or servicing page; the slim bar is the end of an authenticated application screen, where the reader came to do one thing and a four-column mat would be in the way. Which surfaces get which is a product decision and is not settled here.</p>
+
+  
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-footer">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg -->
+    <symbol id="ft-up--supercharge-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Doormat / mega-footer — the full form</h2>
+  <footer class="ft" role="contentinfo" aria-label="Site footer">
+    <div class="ft-inner">
+
+      <div class="ft-brand">
+        <p class="t-ed-body-small">Apollo is the reference implementation of this design system. This footer is the specimen for the end matter of a page: the links a reader goes looking for, and the text a regulator requires.</p>
+        <a class="arrow" href="#top"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up--supercharge-light"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+      </div>
+
+      <div class="ft-mat">
+        <nav class="ft-group" aria-labelledby="ftg1--supercharge-light">
+          <h2 class="t-cm-section-label" id="ftg1--supercharge-light">Accounts</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Current accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Foreign currency accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg2--supercharge-light">
+          <h2 class="t-cm-section-label" id="ftg2--supercharge-light">Payments</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Make a payment</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Standing orders</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Direct debits</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">International transfers</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg3--supercharge-light">
+          <h2 class="t-cm-section-label" id="ftg3--supercharge-light">Support</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg4--supercharge-light">
+          <h2 class="t-cm-section-label" id="ftg4--supercharge-light">About</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small em" href="#" aria-current="page">Who we are</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">The current-page link in the About column is marked by weight and a persistent thick underline, never by colour — the Links atom's own aria-current treatment, unchanged.</p>
+
+  <h2 class="t-cm-caption demo-h">Slim footer — app chrome, where a doormat would be noise</h2>
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">Two forms, one component: the doormat is the end of a marketing or servicing page; the slim bar is the end of an authenticated application screen, where the reader came to do one thing and a four-column mat would be in the way. Which surfaces get which is a product decision and is not settled here.</p>
+
+  
+  
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-footer">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/arrows-and-chevrons/arrow-up.svg -->
+    <symbol id="ft-up--supercharge-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Doormat / mega-footer — the full form</h2>
+  <footer class="ft" role="contentinfo" aria-label="Site footer">
+    <div class="ft-inner">
+
+      <div class="ft-brand">
+        <p class="t-ed-body-small">Apollo is the reference implementation of this design system. This footer is the specimen for the end matter of a page: the links a reader goes looking for, and the text a regulator requires.</p>
+        <a class="arrow" href="#top"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up--supercharge-dark"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+      </div>
+
+      <div class="ft-mat">
+        <nav class="ft-group" aria-labelledby="ftg1--supercharge-dark">
+          <h2 class="t-cm-section-label" id="ftg1--supercharge-dark">Accounts</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Current accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Foreign currency accounts</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg2--supercharge-dark">
+          <h2 class="t-cm-section-label" id="ftg2--supercharge-dark">Payments</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Make a payment</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Standing orders</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Direct debits</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">International transfers</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg3--supercharge-dark">
+          <h2 class="t-cm-section-label" id="ftg3--supercharge-dark">Support</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+          </ul>
+        </nav>
+        <nav class="ft-group" aria-labelledby="ftg4--supercharge-dark">
+          <h2 class="t-cm-section-label" id="ftg4--supercharge-dark">About</h2>
+          <ul>
+            <li><a class="lnk t-ed-body-small em" href="#" aria-current="page">Who we are</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+            <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">The current-page link in the About column is marked by weight and a persistent thick underline, never by colour — the Links atom's own aria-current treatment, unchanged.</p>
+
+  <h2 class="t-cm-caption demo-h">Slim footer — app chrome, where a doormat would be noise</h2>
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; 2026 Apollo. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <p class="demo-note t-cm-legal">Two forms, one component: the doormat is the end of a marketing or servicing page; the slim bar is the end of an authenticated application screen, where the reader came to do one thing and a four-column mat would be in the way. Which surfaces get which is a product decision and is not settled here.</p>
+
+  
+  
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

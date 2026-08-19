@@ -1,8 +1,8 @@
 # A11y gate — _validate_a11y.py
 
-**85 snippet(s)** · **0 failure(s)** · **186 warning(s)** · **188 note(s)**
+**91 snippet(s)** · **0 failure(s)** · **186 warning(s)** · **218 note(s)**
 
-Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **517 control(s)** and **203 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
+Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **566 control(s)** and **203 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
 
 Gating: reduced-motion (2.3.3) · unknown ARIA role · CONTROL target under the 24px floor (2.5.8, aid-009). Reported: CONTROL 24–43 vs the 44 HSBC default (axs-003; `s114-D6` promotes this to blocking, ordered after this rebuild) · DATA MARK under 24 (`s116-D1`) · UNMEASURED boxes.
 
@@ -257,6 +257,14 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
 - 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
 
+## Document-row
+- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.drow-b` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.drow-b` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+
 ## Drawer
 - ⚪ note — `button#open` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
@@ -281,6 +289,32 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - 🟡 warn — `button.fu-remove` — ::before hit-expander 36x36 — under the 44 default
 - 🟡 warn — `button.fu-remove` — ::before hit-expander 36x36 — under the 44 default
 - 🟡 warn — `button.fu-remove` — ::before hit-expander 36x36 — under the 44 default
+
+## Footer
+- ⚪ note — `a.arrow` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.em.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 
 ## Headers
 - 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)

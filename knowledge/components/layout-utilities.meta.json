@@ -1,0 +1,224 @@
+{
+  "name": "Grid / stack utilities",
+  "category": "atom",
+  "$status": "PROPOSED #204, Dave's eye owed. Nothing in this file is a ruling. Built in Lane M of the s203-D2 PM-topology trial from itinerary row 82 ('Grid / stack utilities — Layout primitives', Layout & containers, P2), verified genuinely absent first-hand.",
+  "purpose": "Seven content-agnostic layout primitives — container, stack, row, grid, twelve-column, split and measure — that arrange arbitrary blocks in space and then get out of the way. They paint nothing, size no type, and announce nothing. The class prefix is .l-.",
+  "$notTheDataGrid": "⛔⛔ THIS IS NOT ROW 51's DATA-GRID, AND THE ITINERARY'S OWN WARNING ABOUT THAT IS CORRECT. The gated Data-grid is a DATA TABLE: rows that are records, columns that are fields, role=\"grid\", sorting, selection, pagination, a footer read-out. Everything here is SPACE. A layout grid has no data, no roles, no semantics and nothing to announce. THE TELL: a Data-grid's columns MEAN something (they are fields); a layout grid's columns mean NOTHING (they are gaps between things). This is the SECOND vocabulary collision Lane M found — see footer.meta.json for the first — and it is the s202-D3 class, where Dave rejected a build because one word carried two meanings and every assertion stayed green. The slug is layout-utilities and the prefix is .l- precisely so this does not claim the word 'grid' at the component level. NAMING IS DAVE'S.",
+  "$measuredGap": "★★ WHAT THE GAP ACTUALLY IS, MEASURED RATHER THAN ASSERTED. The recipe this component would own is already hand-written in THIRTEEN gated snippets, and they do not agree with each other. Probed #204: grep -rn \"repeat(auto-\\(fill\\|fit\\), *minmax\" knowledge/snippets/ → 13 files. minmax FLOOR: 180px (Footer, this lane) · 240px (Stat-card, Kpi-tile) · 300px (Time-picker, Form-layout, File-upload, Secure-entry, Textarea, Date-range-picker, Amount-input, Input-fields, Date-picker, Cards). GAP: 16px · 20px (Cards ×2) · '24px 32px' (the nine form-family snippets) · '24px 16px'. MAX-WIDTH: 760px (form family) · 800px (Stat-card, Kpi-tile) · none (Cards). KEYWORD: auto-fill in eleven, auto-fit in Cards twice — and that is a REAL behavioural difference, not a stylistic one: auto-fit collapses empty tracks and stretches the survivors, auto-fill keeps them. Two snippets behave differently from the other eleven and nothing in the repo records that as a decision. ⛔ THIS COMPONENT RECONCILES NONE OF THEM. Picking one floor, one gap and one keyword for the whole system is a ruling, and rulings are Dave's. The thirteen existing snippets were not touched.",
+  "$storeReachLimits": "⛔⛔ TWO THINGS THE TOKEN STORE CANNOT REACH FROM A SNIPPET, BOTH DECLARED, NEITHER GLOSSED. (1) THE SPACING SCALE IS UNREACHABLE BY THE SNIPPET GATE. tokens/spacing.json holds the whole gap ramp — gap/fixed/content/{xxsmall 2, xsmall 4, small 8, medium 12}, gap/fixed/subsection/{xsmall 24, small 32, medium 40, large 48}, gap/fixed/section/{xsmall 48 … xlarge 120}, padding/fixed/{small 12, medium 16, large 20, xlarge 24} — but _validate_snippets.resolve() loads semantic-colour, layout, motion, opacity and component-types ONLY. spacing.json is not in its namespace list, so declaring --l-gap-s: gap/fixed/content/small in the manifest fails with \"token not found in store\". THE ONE COMPONENT WHOSE ENTIRE SUBJECT IS SPACING IS THE ONE COMPONENT THAT CANNOT BIND ITS OWN VALUES THROUGH THE GATE. The steps are therefore literal values, each carrying its token path in a comment, and the manifest declares only what the gate can actually check. A gate fix is proposed to the BUILD-PM; nothing was patched here. (2) A BREAKPOINT TOKEN CAN NEVER BE BOUND IN CSS AT ALL — @media and @container conditions cannot consume custom properties. That is a CSS language fact, not a repo defect. breakpoint/s (480px), breakpoint/ms (760px) and breakpoint/m (960px) are written literally in the query conditions with their token paths in comments, and are deliberately NOT declared in the manifest: declaring a var the component does not consume would be a green assertion about nothing.",
+  "$primitiveDeliberatelyNotBuilt": "⛔ The classic name for the 'two items side by side until they run out of room, then stacked' primitive is a SWITCHER. In this repo 'switch' is RULED vocabulary — s202-D3, where it means THE THUMB of a toggle. Naming a layout utility 'switcher' would manufacture exactly the collision this component opens by warning about. The behaviour is covered by .l-grid with a high floor; if a dedicated primitive is wanted it needs a name that is not 'switch', and that name is Dave's. DECLARED, not silently omitted.",
+  "$differsFromNeighbours": {
+    "Data-grid": "See $notTheDataGrid. Data, not space.",
+    "Cards": "Cards owns the SURFACE — the box, its border, its padding, its content order — and hand-rolls a .row grid to sit several of them side by side. These utilities own the ARRANGEMENT and nothing else. THE TELL: a Card without a grid is still a Card; a grid without anything in it is nothing at all.",
+    "Form-layout": "The form-specific organism: label/field/help relationships, fieldset grouping, error placement. It hand-rolls the same 300px / '24px 32px' grid that nine of its siblings do. Form-layout is layout WITH SEMANTICS; this is layout with none.",
+    "Eyebrow": "Checked for overlap because the lane brief named it; there is none. Eyebrow is a kicker label above a heading, a <span>, with no layout role."
+  },
+  "props": [
+    {
+      "name": "gap",
+      "type": "enum",
+      "values": [
+        "xxs",
+        "xs",
+        "s",
+        "m",
+        "l",
+        "xl",
+        "xxl"
+      ],
+      "default": "m",
+      "$note": "Applied as data-gap on any of .l-stack / .l-row / .l-grid / .l-cols / .l-split. Steps map to tokens/spacing.json: xxs 2 (gap/fixed/content/xxsmall), xs 4 (xsmall), s 8 (small), m 12 (medium), l 24 (gap/fixed/subsection/xsmall), xl 32 (subsection/small), xxl 48 (subsection/large, which is also gap/fixed/section/xsmall — the two ramps meet there). ⛔ Written literally because the gate cannot resolve spacing tokens; see $storeReachLimits.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "wrap",
+      "type": "enum",
+      "values": [
+        "wrap",
+        "no"
+      ],
+      "default": "wrap",
+      "$note": ".l-row only. Wrapping is the default and not wrapping is opt-in: a row that refuses to wrap is a decision about what happens when it runs out of room, and a default should never make that decision silently.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "align / justify",
+      "type": "enum",
+      "values": [
+        "start",
+        "end",
+        "baseline",
+        "between"
+      ],
+      "default": "center (align) / start (justify)",
+      "$note": ".l-row only.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "fit",
+      "type": "enum",
+      "values": [
+        "fill",
+        "fit"
+      ],
+      "default": "fill",
+      "$note": ".l-grid only. auto-fill keeps empty tracks; auto-fit collapses them and stretches the survivors. The default is auto-fill because eleven of the thirteen hand-rolled copies use it. ⛔ NOT A RULING — see $measuredGap.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "--l-min",
+      "type": "length",
+      "default": "240px",
+      "$note": ".l-grid's track floor, set by the consumer. Wrapped in min(var(--l-min), 100%) so a wide floor cannot overflow a narrow container — which several of the thirteen hand-rolled copies do not do. The 240px default is Stat-card's and Kpi-tile's value, copied.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "--l-max",
+      "type": "length",
+      "default": "1120px",
+      "$note": ".l-container's maximum width. A specimen choice, not ruled; the store holds no page-width token.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "side",
+      "type": "enum",
+      "values": [
+        "end",
+        "start"
+      ],
+      "default": "end",
+      "$note": ".l-split only — which side the 280px rail sits on.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    }
+  ],
+  "variants": [
+    {
+      "name": "l-container",
+      "use": "the page's horizontal frame — max-width plus layout/app/margin as the inset"
+    },
+    {
+      "name": "l-stack",
+      "use": "the vertical primitive; one direction, one gap, and children are told not to add to the rhythm"
+    },
+    {
+      "name": "l-row",
+      "use": "the horizontal primitive; wraps by default"
+    },
+    {
+      "name": "l-grid",
+      "use": "the intrinsic responsive grid — the recipe thirteen gated snippets already hand-roll"
+    },
+    {
+      "name": "l-cols",
+      "use": "the explicit twelve-column grid; track count from layout/web/columns, column gap from layout/app/gutter"
+    },
+    {
+      "name": "l-split",
+      "use": "content plus a rail, collapsing on the CONTAINER rather than the viewport"
+    },
+    {
+      "name": "l-measure",
+      "use": "the reading-width primitive; 64ch, a specimen choice and not a ruled measure"
+    }
+  ],
+  "tokens": {
+    "margin": "layout/app/margin (16px) — .l-container's horizontal inset",
+    "gutter": "layout/app/gutter (16px) — .l-cols' column gap",
+    "columns": "layout/web/columns (12) — the track count. ⚠ NOT bound as a var: resolve() sends every layout/* path through px_number, so layout/web/columns would resolve to '12px' and a manifest binding would demand that literal in the CSS. The count is written as repeat(12, …) with the token path in a comment. Declared, not hidden.",
+    "target": "target/min (44px) — bound although no interactive target exists here, because a layout primitive is exactly where a future min-height rung would live and binding it now means the drift gate reads the value",
+    "radius": "border-radius/surface — demo chrome only; the primitives carry no radius",
+    "$demoChrome": "page background/default · surface tertiary/background/default · fill surface/subtle · border border/subtle · text text/default · focus focus/ring. ALL DEMO CHROME: the primitives themselves paint nothing.",
+    "$spacing": "⛔ UNREACHABLE FROM THE MANIFEST — see $storeReachLimits. The gap ramp's token paths are carried in CSS comments beside every literal value.",
+    "$breakpoints": "⛔ UNBINDABLE IN CSS AT ALL — see $storeReachLimits."
+  },
+  "relationships": {
+    "livesInside": [
+      "Template — any"
+    ],
+    "commonPatterns": [
+      "dashboard board",
+      "card grid",
+      "form column set",
+      "page frame",
+      "content plus rail"
+    ],
+    "mustNotNeighbour": []
+  },
+  "accessibility": {
+    "relatedSC": [
+      "1.3.2",
+      "1.4.10",
+      "1.4.12",
+      "2.5.8"
+    ],
+    "semantics": "NONE, deliberately. A layout primitive announces nothing and carries no role. Anything that needs a role — a list, a table, a navigation — is a different component and should be one. Putting role=\"grid\" on .l-cols would lie to assistive technology about what the columns mean.",
+    "readingOrder": "The primitives never reorder content visually away from the DOM order (1.3.2). No order, row-reverse, column-reverse or grid-area placement appears anywhere in this file, and that is a constraint on the primitives rather than an accident of the specimen.",
+    "reflow": "Verified at 1400px and 480px. .l-grid's min(var(--l-min), 100%) wrapper is what stops a 300px floor from forcing a horizontal scroll at 320px — the failure several of the hand-rolled copies can still produce.",
+    "targetSize": "No interactive target exists in this component; there is nothing to press. target/min is bound anyway so the drift gate reads the value."
+  },
+  "antiPatterns": [
+    "Never put a role on a layout primitive. If it needs a role it is not a layout primitive.",
+    "Never use .l-cols for tabular data. That is Data-grid or Table, and the columns there mean something.",
+    "Never let a child add its own vertical margin inside .l-stack. The stack owns the rhythm; two owners produce a rhythm neither of them chose.",
+    "Never set a .l-grid floor wider than the narrowest container it will live in without the min() wrapper — that is how a 300px floor produces a horizontal scrollbar at 320px.",
+    "Never reach for a viewport media query when the thing that ran out of room is the CONTAINER. .l-split shows the case: the same markup collapses inside a 420px frame on a 1400px screen.",
+    "Never name a layout primitive 'switcher'. 'switch' is ruled vocabulary in this system and means the thumb of a toggle (s202-D3).",
+    "REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #204, and the name, the ramp, the default floor and the auto-fill/auto-fit default are all open."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json + layout.json, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate rc=0, 0 failures repo-wide with this file present. Every declared var matches the store in BOTH modes. a11y gate rc=0. Type-composite gate rc=0 on this file; repo-wide 1097, unchanged — this file adds 0 to the shrink-only ratchet.",
+    "declaredAbsence": "The spacing ramp and the breakpoints are NOT declared in the manifest, and both absences are deliberate and explained in $storeReachLimits: the first because the gate's resolver cannot reach spacing.json, the second because CSS query conditions cannot consume custom properties at all. Declaring either would be a green assertion about nothing.",
+    "notRun": "_validate_state_contrast.py was NOT run: a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md and Lane M held no shared-file licence. Declared and owed to the BUILD-PM.",
+    "notRegistered": "Absent from knowledge/component-types.json (a shared file, outside the lane fence).",
+    "renderProof": "See the receipt at notes/_receipts/2026-08-19-204-wave-laneM-feedback-layout.md for the driven figures."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 82 (2026-07-14 sheet): 'Grid / stack utilities — Layout primitives', Layout & containers, P2, with the sheet's own explicit warning that this is NOT row 51's Data-grid. Confirmed a TRUE gap at #204 by filename greps under every plausible alias (grid, stack, layout, util, container, column, flex, spacing), a content grep over knowledge/snippets and knowledge/components (zero hits for grid utilit / stack utilit / layout-utilities / layout util / flexbox / spacing scale), and a direct grep of knowledge/_rulings.json (the store itself, not the retrieval index, which _capture_gate.py --selftest reports STALE). Built #204 Lane M. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it."
+  },
+  "interactive": false,
+  "stateModel": "simple",
+  "responsive": {
+    "l-grid": "intrinsic — no query at all; the track floor plus min(…, 100%) does the work",
+    "l-cols": "spans collapse to full width below breakpoint/ms (760px), a VIEWPORT query, because an explicit column grid is a page-level frame and a page-level frame answers to the page",
+    "l-split": "collapses below a 760px CONTAINER width, a container query, because a split inside a narrow panel should collapse on a wide screen and a viewport query cannot see that",
+    "$status": "PROPOSED #204, Dave's eye owed"
+  },
+  "dimensions": {
+    "containerMaxWidth": 1120,
+    "containerInset": 16,
+    "columns": 12,
+    "columnGap": 16,
+    "gridFloorDefault": 240,
+    "splitRail": 280,
+    "measure": "64ch",
+    "gapRamp": [
+      2,
+      4,
+      8,
+      12,
+      24,
+      32,
+      48
+    ],
+    "$note": "containerInset 16 is layout/app/margin, columnGap 16 is layout/app/gutter, columns 12 is layout/web/columns. gridFloorDefault 240 is Stat-card's and Kpi-tile's value, copied. containerMaxWidth 1120, splitRail 280 and measure 64ch are specimen choices and are not ruled. The gapRamp values are tokens/spacing.json's, written literally because the gate cannot resolve them."
+  },
+  "$decisionsForDave": [
+    "1 · THE NAME. 'Grid' already means the Data-grid in this repo. The slug here is layout-utilities and the prefix .l-, which avoids claiming the word — but that is an avoidance, not a decision. What should this be called?",
+    "2 · ONE FLOOR, ONE GAP, ONE KEYWORD. Thirteen gated snippets disagree today: floors of 180/240/300, gaps of 16 / 20 / '24 32' / '24 16', and auto-fill in eleven versus auto-fit in Cards twice. Ruling a single set is what turns this from a specimen into a primitive — and it is a ruling, so it is yours.",
+    "3 · SHOULD THE THIRTEEN MIGRATE? If they do, thirteen gated snippets change and every one needs re-gating. If they do not, this primitive is documentation rather than machinery.",
+    "4 · THE GAP RAMP'S SHAPE. Seven steps drawn from two token ramps that MEET at 48px (gap/fixed/subsection/large and gap/fixed/section/xsmall are the same number). Seven named steps, or fewer?",
+    "5 · CONTAINER QUERIES OR VIEWPORT QUERIES, AS A RULE. This file uses one for .l-split and the other for .l-cols and explains why each time. A system-level rule would remove the explaining.",
+    "6 · THE MISSING 'SWITCHER'. Deliberately not built because the obvious name collides with ruled vocabulary. Is the behaviour wanted, and if so under what name?",
+    "7 · IS 64ch THE MEASURE? It appears by hand in several snippets already. One number, ruled once, or a consumer choice?"
+  ],
+  "$copiedFrom": [
+    "Stat-card / Kpi-tile (the auto-fill minmax grid recipe, copied then parameterised)",
+    "Cards (the demo block surface recipe)"
+  ],
+  "$wouldAbsorb": "Thirteen gated snippets currently hand-roll .l-grid's recipe: Time-picker, Form-layout, File-upload, Stat-card, Secure-entry, Textarea, Date-range-picker, Cards (×2), Amount-input, Input-fields, Date-picker, Kpi-tile, Footer. ⛔ NONE of them was touched. Migrating them is a ruling plus a wave, not a lane's chore.",
+  "$categoryNote": "⚠ CATEGORY IS 'atom' BY SCHEMA CONSTRAINT, NOT BY CONVICTION. meta.schema.json's category enum is the atomic-design ladder — atom / molecule / organism / template / page — and it has no rung for a LAYOUT PRIMITIVE, which is not a thing on the page at all but the space between things. 'primitive' was written first and DROVE the schema red, verbatim: \"'primitive' is not one of ['atom','molecule','organism','template','page']\". meta.schema.json is a shared file outside Lane M's fence and was NOT edited; 'atom' is the nearest legal rung and the divergence is declared here rather than hidden. Whether the ladder should grow a primitive rung is a decision, and it is Dave's.",
+  "$stateModelNote": "'simple' by schema enum (only 'simple' and 'full' are legal). The real model is NONE: a layout primitive has no default, hover, focus or pressed state because there is nothing to press. The enum has no rung for a stateless primitive — the same shape as $categoryNote."
+}

@@ -44,6 +44,18 @@ STRICT_FILES = [
 # Phase-1 migration ratchet: rebinding a snippet's radius onto the token
 # (CSS + manifest + theme-block declarations) and adding it here is ONE change.
 MIGRATED_SNIPPETS = {
+    # #204 P2 wave (BUILD-PM-registered from lane M/N/P receipts). All six were measured
+    # at ZERO advisory hardcodes BEFORE registration (`_validate_radius.py` rc=0,
+    # "0 advisory file(s) pending migration"), so this is the completing half of the
+    # one-change rule above, not a new exemption. ⚠ Registration here is a GATE ratchet
+    # only — it is NOT promotion. All six ship PROPOSED and are unregistered in
+    # `gen_showroom.CATEGORIES` (they fall to the "More" bucket) pending Dave's ruling.
+    "Popconfirm.reference.html",
+    "Footer.reference.html",
+    "Layout-utilities.reference.html",
+    "Document-row.reference.html",
+    "Payment-card-visual.reference.html",
+    "Runway-bar.reference.html",
     # Wave 3b, #203 (conductor-registered from lane I/J/K receipts):
     "Command-palette.reference.html",
     "Sidebar-nav.reference.html",

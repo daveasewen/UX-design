@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid / stack utilities — reference implementation (PROPOSED #204)</title>
+<!--
+  ⚠⚠ PROPOSED #204, 2026-08-19 (Lane M). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. Itinerary row 82 ("Grid / stack utilities — Layout
+  primitives", Layout & containers, P2), verified genuinely absent first-hand: no snippet, no meta,
+  and no content match under grid utilities, stack utilities, layout-utilities, layout util,
+  flexbox or spacing scale anywhere in knowledge/.
+
+  ⛔⛔ THIS IS NOT ROW 51's DATA-GRID, AND THE WORD "GRID" IS DOING DOUBLE DUTY IN THIS REPO.
+  The itinerary's own status snapshot warns about this and the warning is correct. The gated
+  Data-grid is a DATA TABLE: rows that are records, columns that are fields, role="grid", sorting,
+  selection, pagination, a footer read-out. Everything in this file is SPACE. A layout grid has no
+  data, no roles, no semantics and nothing to announce — it arranges arbitrary blocks and then gets
+  out of the way. THE TELL: a Data-grid's columns MEAN something (they are fields); a layout grid's
+  columns mean NOTHING (they are gaps between things). This is the second vocabulary collision this
+  lane found — see the Footer specimen for "footer" — and it is the s202-D3 class, where Dave
+  rejected a build because one word carried two meanings and every assertion stayed green.
+  ⛔ NAMING IS DAVE'S. This file ships under the slug `layout-utilities` precisely so it does not
+  claim the word "grid" at the component level; the class prefix is `.l-`. Whether that is the
+  right name is $decision-1, not a ruling.
+
+  ★★ WHAT THE GAP ACTUALLY IS — MEASURED, NOT ASSERTED. The recipe this component would own is
+  already hand-written in THIRTEEN gated snippets, and they do not agree with each other. Probed
+  #204, `grep -rn "repeat(auto-\(fill\|fit\), *minmax" knowledge/snippets/`:
+    · minmax floor:  180px (Footer, this lane) · 240px (Stat-card, Kpi-tile) · 300px (ten others)
+    · gap:           16px · 20px (Cards ×2) · 24px 32px (the nine form-family snippets) · 24px 16px
+    · max-width:     760px (form family) · 800px (Stat-card, Kpi-tile) · none (Cards)
+    · keyword:       auto-fill (eleven) vs auto-fit (Cards ×2) — which is a REAL behavioural
+                     difference, not a stylistic one: auto-fit collapses empty tracks and stretches
+                     the survivors, auto-fill keeps them. Two snippets behave differently from the
+                     other eleven and nothing records that as a decision.
+  ⛔ THIS FILE DOES NOT RECONCILE THEM. Picking one floor, one gap and one keyword for the whole
+  system is a ruling, and rulings are Dave's. The specimen shows the primitive with its steps
+  exposed so he can rule by eye; the thirteen existing snippets are untouched. See $decision-2.
+
+  ★ SPECIMENS COPY APPROVED ARTEFACTS. The grid recipe below is the one already gated in
+  Stat-card / Kpi-tile (`repeat(auto-fill, minmax(240px, 1fr))`, 16px gap) — copied, then
+  PARAMETERISED rather than re-drawn. The 12-column track count comes from the token store
+  (layout/web/columns = 12). The container margin and gutter come from the store
+  (layout/app/margin, layout/app/gutter = 16px each). The demo blocks that make the layout visible
+  use Cards' surface recipe (surface, 1px border/subtle, border-radius/surface) and are DEMO
+  CHROME: the primitives themselves paint nothing at all.
+
+  ⛔⛔ TWO THINGS THE TOKEN STORE CANNOT REACH FROM HERE, BOTH DECLARED, NEITHER GLOSSED.
+  1 · THE SPACING SCALE IS UNREACHABLE BY THE SNIPPET GATE. tokens/spacing.json holds the whole
+      gap ramp — gap/fixed/content/{xxsmall 2, xsmall 4, small 8, medium 12},
+      gap/fixed/subsection/{xsmall 24 … large 48}, gap/fixed/section/{xsmall 48 … xlarge 120},
+      padding/fixed/{small 12, medium 16, large 20, xlarge 24}. But `_validate_snippets.resolve()`
+      loads semantic-colour, layout, motion, opacity and component-types ONLY — spacing.json is not
+      in its namespace list, so declaring `--l-gap-s: gap/fixed/content/small` in the manifest fails
+      with "token not found in store". THE ONE COMPONENT WHOSE ENTIRE SUBJECT IS SPACING IS THE ONE
+      COMPONENT THAT CANNOT BIND ITS OWN VALUES THROUGH THE GATE. The steps below are therefore
+      literal values, each carrying its token path in a comment, and the manifest declares only what
+      the gate can actually check. Proposed as a gate fix to the BUILD-PM; NOT patched here.
+  2 · A BREAKPOINT TOKEN CAN NEVER BE BOUND IN CSS AT ALL. `@media` and `@container` conditions
+      cannot consume custom properties — that is a CSS language fact, not a repo defect. So
+      breakpoint/s (480px), breakpoint/ms (760px) and breakpoint/m (960px) are written literally in
+      the query conditions with their token paths in comments, and are deliberately NOT declared in
+      the manifest: declaring a var the component does not actually consume would be a green
+      assertion about nothing.
+
+  ⛔ ONE PRIMITIVE WAS DELIBERATELY NOT BUILT, AND THE REASON IS A RULING. The classic name for the
+  "two items side by side until they run out of room, then stacked" primitive is a SWITCHER. In this
+  repo "switch" is RULED vocabulary — s202-D3, where it means THE THUMB of a toggle. Naming a layout
+  utility "switcher" would manufacture exactly the collision this file opens by warning about. The
+  behaviour is covered by `.l-grid` with a high floor; if a dedicated primitive is wanted it needs a
+  name that is not "switch", and that name is Dave's. Declared, not silently omitted.
+
+  HOW THIS DIFFERS FROM ITS GATED NEIGHBOURS ————————————————————————————————————————
+  · vs DATA-GRID — see the warning above. Data, not space.
+  · vs CARDS. Cards owns the SURFACE (the box, its border, its padding, its content order) and
+    hand-rolls a `.row` grid to sit several of them side by side. These utilities own the
+    ARRANGEMENT and nothing else. THE TELL: a Card without a grid is still a Card; a grid without
+    anything in it is nothing at all.
+  · vs FORM-LAYOUT. That is the form-specific organism — label/field/help relationships, fieldset
+    grouping, error placement. It hand-rolls the same 300px/24px 32px grid nine of its siblings do.
+    Form-layout is layout WITH SEMANTICS; this file is layout with none.
+  · vs EYEBROW. Unrelated on inspection: a kicker label above a heading, a <span>, no layout role.
+    Checked because the lane brief named it for overlap; there is none.
+
+  TYPE: composites only, no raw font declarations in component scope. The primitives declare NO
+  type at all — that is the point of a layout primitive. Every label on this page is demo chrome
+  carrying .t-cm-caption / .t-cm-legal / .t-ed-body-small. Ratchet contribution: 0.
+  COLOUR: the primitives paint nothing. Every colour below is demo chrome so the boxes are visible.
+  TARGETS: no interactive target exists in this component — there is nothing to press. The 44px
+  minimum is bound as target/min anyway, because a layout primitive is exactly where a future
+  min-height rung would live, and binding it now means the drift gate reads the value.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
+:is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family on body — every text element carries a canon composite class.
+     TYPE-002 contribution here: 0. */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{
+    --page:#FFFFFF;         /* background/default */
+    --surface:#FFFFFF;      /* tertiary/background/default — DEMO CHROME, so the blocks are visible */
+    --fill:#F0F0F0;         /* surface/subtle — DEMO CHROME, the block interior */
+    --border:#E1E1E1;       /* border/subtle — DEMO CHROME */
+    --text:#1A1A1A;         /* text/default */
+    --focus:#305A85;        /* focus/ring */
+    --border-radius-surface:0;
+    --target-min:44px;      /* target/min */
+    --l-margin:16px;        /* layout/app/margin — the container's horizontal inset */
+    --l-gutter:16px;        /* layout/app/gutter — the 12-column grid's column gap */
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --surface:#1F1F1F;
+    --fill:#1F1F1F;
+    --border:#808080;
+    --text:#FFFFFF;
+    --focus:#4587A7;
+    --border-radius-surface:0;
+    --target-min:44px;
+    --l-margin:16px;
+    --l-gutter:16px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}   /* demo chrome — not the component */
+  .demo-note{opacity:var(--alpha-60); margin:.5rem 0 1.5rem; max-width:64ch;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  /* ============================================================================================
+     THE PRIMITIVES. Nothing below paints, sizes type, or announces anything. They are space only.
+     The gap ramp is written literally because tokens/spacing.json is outside the snippet gate's
+     resolver (see the header note); every step carries its token path so the intent is auditable
+     by a human even where the machine cannot check it.
+     ============================================================================================ */
+
+  /* --- the gap ramp, one place --- */
+  .l-stack, .l-row, .l-grid, .l-cols, .l-split{
+    --l-gap-xxs:2px;    /* gap/fixed/content/xxsmall */
+    --l-gap-xs:4px;     /* gap/fixed/content/xsmall  */
+    --l-gap-s:8px;      /* gap/fixed/content/small   */
+    --l-gap-m:12px;     /* gap/fixed/content/medium  */
+    --l-gap-l:24px;     /* gap/fixed/subsection/xsmall */
+    --l-gap-xl:32px;    /* gap/fixed/subsection/small  */
+    --l-gap-xxl:48px;   /* gap/fixed/subsection/large / gap/fixed/section/xsmall — the two meet here */
+    --l-gap:var(--l-gap-m);
+  }
+  .l-stack[data-gap="xxs"],.l-row[data-gap="xxs"],.l-grid[data-gap="xxs"],.l-cols[data-gap="xxs"],.l-split[data-gap="xxs"]{--l-gap:var(--l-gap-xxs);}
+  .l-stack[data-gap="xs"], .l-row[data-gap="xs"], .l-grid[data-gap="xs"], .l-cols[data-gap="xs"], .l-split[data-gap="xs"] {--l-gap:var(--l-gap-xs);}
+  .l-stack[data-gap="s"],  .l-row[data-gap="s"],  .l-grid[data-gap="s"],  .l-cols[data-gap="s"],  .l-split[data-gap="s"]  {--l-gap:var(--l-gap-s);}
+  .l-stack[data-gap="m"],  .l-row[data-gap="m"],  .l-grid[data-gap="m"],  .l-cols[data-gap="m"],  .l-split[data-gap="m"]  {--l-gap:var(--l-gap-m);}
+  .l-stack[data-gap="l"],  .l-row[data-gap="l"],  .l-grid[data-gap="l"],  .l-cols[data-gap="l"],  .l-split[data-gap="l"]  {--l-gap:var(--l-gap-l);}
+  .l-stack[data-gap="xl"], .l-row[data-gap="xl"], .l-grid[data-gap="xl"], .l-cols[data-gap="xl"], .l-split[data-gap="xl"] {--l-gap:var(--l-gap-xl);}
+  .l-stack[data-gap="xxl"],.l-row[data-gap="xxl"],.l-grid[data-gap="xxl"],.l-cols[data-gap="xxl"],.l-split[data-gap="xxl"]{--l-gap:var(--l-gap-xxl);}
+
+  /* --- 1 · CONTAINER: the page's horizontal frame. Margin from layout/app/margin. --- */
+  .l-container{ --l-max:1120px; width:100%; max-width:var(--l-max); margin-inline:auto;
+    padding-inline:var(--l-margin); }
+
+  /* --- 2 · STACK: the vertical primitive. One direction, one gap, no exceptions. --- */
+  .l-stack{ display:flex; flex-direction:column; gap:var(--l-gap); }
+  .l-stack > *{ margin-block:0; }   /* the stack owns the rhythm; children may not add to it */
+
+  /* --- 3 · ROW: the horizontal primitive. Wraps by default — a row that cannot wrap is a
+         decision, and it is opt-in (data-wrap="no"), never the default. --- */
+  .l-row{ display:flex; flex-direction:row; flex-wrap:wrap; gap:var(--l-gap); align-items:center; }
+  .l-row[data-wrap="no"]{ flex-wrap:nowrap; min-width:0; }
+  .l-row[data-align="start"]{ align-items:flex-start; }
+  .l-row[data-align="end"]{ align-items:flex-end; }
+  .l-row[data-align="baseline"]{ align-items:baseline; }
+  .l-row[data-justify="between"]{ justify-content:space-between; }
+  .l-row[data-justify="end"]{ justify-content:flex-end; }
+
+  /* --- 4 · GRID: the intrinsic responsive grid. THIS IS THE RECIPE THIRTEEN GATED SNIPPETS
+         HAND-ROLL. Copied from Stat-card / Kpi-tile and parameterised. auto-fill is the default
+         because eleven of the thirteen use it; auto-fit is opt-in and its difference is real. --- */
+  .l-grid{ display:grid; --l-min:240px;
+    grid-template-columns:repeat(auto-fill, minmax(min(var(--l-min), 100%), 1fr));
+    gap:var(--l-gap); }
+  .l-grid[data-fit="fit"]{ grid-template-columns:repeat(auto-fit, minmax(min(var(--l-min), 100%), 1fr)); }
+
+  /* --- 5 · COLS: the explicit 12-column grid. Track count = layout/web/columns (12).
+         Column gap = layout/app/gutter. Spans collapse to full width below breakpoint/ms. --- */
+  .l-cols{ display:grid; grid-template-columns:repeat(12, minmax(0, 1fr));
+    column-gap:var(--l-gutter); row-gap:var(--l-gap); }
+  .l-span-1{grid-column:span 1;}   .l-span-2{grid-column:span 2;}
+  .l-span-3{grid-column:span 3;}   .l-span-4{grid-column:span 4;}
+  .l-span-5{grid-column:span 5;}   .l-span-6{grid-column:span 6;}
+  .l-span-7{grid-column:span 7;}   .l-span-8{grid-column:span 8;}
+  .l-span-9{grid-column:span 9;}   .l-span-10{grid-column:span 10;}
+  .l-span-11{grid-column:span 11;} .l-span-12{grid-column:span 12;}
+
+  /* --- 6 · SPLIT: content plus a side rail, collapsing to one column when the CONTAINER runs
+         out of room. Container query, not viewport — a split inside a narrow panel should
+         collapse even on a wide screen, which a media query cannot see. --- */
+  .l-split{ display:grid; gap:var(--l-gap); grid-template-columns:minmax(0, 1fr) 280px;
+    container-type:inline-size; }
+  .l-split[data-side="start"]{ grid-template-columns:280px minmax(0, 1fr); }
+
+  /* --- 7 · MEASURE: the reading-width primitive. Nothing else in the system owns this. --- */
+  .l-measure{ max-width:64ch; }
+
+  /* Below breakpoint/ms (760px) the explicit 12-column spans go full width, and the split
+     collapses. Literal values: a CSS query condition cannot consume a custom property, so the
+     breakpoint token cannot be bound here — declared in the header, not hidden. */
+  @media (max-width: 760px){        /* breakpoint/ms */
+    .l-cols > [class*="l-span-"]{ grid-column:span 12; }
+  }
+  @container (max-width: 760px){    /* breakpoint/ms, measured against the CONTAINER */
+    .l-split{ grid-template-columns:minmax(0, 1fr); }
+    .l-split[data-side="start"]{ grid-template-columns:minmax(0, 1fr); }
+  }
+
+  /* ---- DEMO CHROME below this line. Not the component. ---- */
+  .l-demo{ background:var(--fill); border:1px solid var(--border);
+    border-radius:var(--border-radius-surface); padding:12px; min-height:var(--target-min);
+    display:flex; align-items:center; justify-content:center; }
+  .l-demo.tall{ min-height:88px; }
+  .frame{ border:1px dashed var(--border); padding:12px; }
+  .frame.narrow{ max-width:420px; }
+  :focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <h2 class="t-cm-caption demo-h">Stack — the vertical primitive, shown at four steps of the ramp</h2>
+  <div class="l-row" data-gap="l" data-align="start">
+    <div class="l-stack" data-gap="xs" style="flex:1 1 160px;">
+      <span class="t-cm-legal">gap xs · 4px</span>
+      <div class="l-demo t-cm-legal">One</div>
+      <div class="l-demo t-cm-legal">Two</div>
+      <div class="l-demo t-cm-legal">Three</div>
+    </div>
+    <div class="l-stack" data-gap="s" style="flex:1 1 160px;">
+      <span class="t-cm-legal">gap s · 8px</span>
+      <div class="l-demo t-cm-legal">One</div>
+      <div class="l-demo t-cm-legal">Two</div>
+      <div class="l-demo t-cm-legal">Three</div>
+    </div>
+    <div class="l-stack" data-gap="m" style="flex:1 1 160px;">
+      <span class="t-cm-legal">gap m · 12px</span>
+      <div class="l-demo t-cm-legal">One</div>
+      <div class="l-demo t-cm-legal">Two</div>
+      <div class="l-demo t-cm-legal">Three</div>
+    </div>
+    <div class="l-stack" data-gap="l" style="flex:1 1 160px;">
+      <span class="t-cm-legal">gap l · 24px</span>
+      <div class="l-demo t-cm-legal">One</div>
+      <div class="l-demo t-cm-legal">Two</div>
+      <div class="l-demo t-cm-legal">Three</div>
+    </div>
+  </div>
+  <p class="demo-note t-ed-body-small">A stack owns the vertical rhythm and its children are told not to add to it. Every value on this row is a step of the spacing ramp in tokens/spacing.json — written literally, because that store is outside the snippet gate's resolver. The comment beside each step names its token path so a human can audit what a machine currently cannot.</p>
+
+  <h2 class="t-cm-caption demo-h">Row — horizontal, wrapping by default</h2>
+  <div class="frame">
+    <div class="l-row" data-gap="s">
+      <div class="l-demo t-cm-legal">Alpha</div>
+      <div class="l-demo t-cm-legal">Beta</div>
+      <div class="l-demo t-cm-legal">Gamma</div>
+      <div class="l-demo t-cm-legal">Delta</div>
+      <div class="l-demo t-cm-legal">Epsilon</div>
+      <div class="l-demo t-cm-legal">Zeta</div>
+    </div>
+  </div>
+  <p class="demo-note t-ed-body-small">Wrapping is the default and not wrapping is opt-in. A row that refuses to wrap is a decision about what happens when it runs out of room, and a default should never make that decision silently.</p>
+
+  <h2 class="t-cm-caption demo-h">Grid — the intrinsic responsive grid, floor 240px</h2>
+  <div class="l-grid" data-gap="s" style="--l-min:240px;">
+    <div class="l-demo tall t-cm-legal">240px floor</div>
+    <div class="l-demo tall t-cm-legal">240px floor</div>
+    <div class="l-demo tall t-cm-legal">240px floor</div>
+    <div class="l-demo tall t-cm-legal">240px floor</div>
+    <div class="l-demo tall t-cm-legal">240px floor</div>
+  </div>
+  <p class="demo-note t-ed-body-small">This is the recipe thirteen gated snippets already write by hand, with four different floors, four different gaps and two different keywords between them. Nothing here reconciles them — that is a ruling, and it is yours. The floor is a variable so a consumer sets it once, and the min() wrapper stops a wide floor overflowing a narrow container, which several of the hand-rolled copies do not do.</p>
+
+  <h2 class="t-cm-caption demo-h">Twelve columns — the explicit grid, tracks from layout/web/columns</h2>
+  <div class="l-cols" data-gap="s">
+    <div class="l-demo l-span-12 t-cm-legal">span 12</div>
+    <div class="l-demo l-span-6 t-cm-legal">span 6</div>
+    <div class="l-demo l-span-6 t-cm-legal">span 6</div>
+    <div class="l-demo l-span-4 t-cm-legal">span 4</div>
+    <div class="l-demo l-span-4 t-cm-legal">span 4</div>
+    <div class="l-demo l-span-4 t-cm-legal">span 4</div>
+    <div class="l-demo l-span-3 t-cm-legal">span 3</div>
+    <div class="l-demo l-span-3 t-cm-legal">span 3</div>
+    <div class="l-demo l-span-3 t-cm-legal">span 3</div>
+    <div class="l-demo l-span-3 t-cm-legal">span 3</div>
+    <div class="l-demo l-span-8 t-cm-legal">span 8</div>
+    <div class="l-demo l-span-4 t-cm-legal">span 4</div>
+  </div>
+  <p class="demo-note t-ed-body-small">Twelve tracks, the count held in layout/web/columns; the column gap is layout/app/gutter. Below breakpoint/ms every span goes full width. That collapse is a viewport query rather than a container query, and the reason is honest rather than clever: an explicit column grid is a page-level frame, and a page-level frame answers to the page.</p>
+
+  <h2 class="t-cm-caption demo-h">Split — content plus a rail, collapsing on the CONTAINER not the viewport</h2>
+  <div class="l-split" data-gap="l">
+    <div class="l-demo tall t-cm-legal">Content</div>
+    <div class="l-demo tall t-cm-legal">Rail · 280px</div>
+  </div>
+  <div class="frame narrow" style="margin-top:16px;">
+    <div class="l-split" data-gap="l">
+      <div class="l-demo tall t-cm-legal">Content</div>
+      <div class="l-demo tall t-cm-legal">Rail · 280px</div>
+    </div>
+  </div>
+  <p class="demo-note t-ed-body-small">The same markup twice. The second one sits in a 420px frame and has already collapsed, on a screen that is nowhere near narrow. A viewport query cannot see that; a container query can. This is the case that decides which kind of query a primitive should use, and it is why the split uses one and the twelve-column grid does not.</p>
+
+  <h2 class="t-cm-caption demo-h">Measure — the reading-width primitive</h2>
+  <div class="l-measure">
+    <p class="t-ed-body-small">Sixty-four characters is the measure this primitive sets, and nothing else in the system owns that number. It appears by hand in several snippets as a max-width on a paragraph, which is the same class of duplication the grid recipe shows: a value that is really a decision, written out again each time it is needed. The number itself is not ruled and is not ruled here.</p>
+  </div>
+  <p class="demo-note t-cm-legal">64ch is a specimen choice, not a ruled measure.</p>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Grid / stack utilities",
+    "$status": "PROPOSED #204, Dave's eye owed — nothing here is a ruling. Itinerary row 82, verified absent first-hand.",
+    "vars": { "--page": "background/default", "--surface": "tertiary/background/default",
+              "--fill": "surface/subtle", "--border": "border/subtle", "--text": "text/default",
+              "--focus": "focus/ring", "--border-radius-surface": "border-radius/surface",
+              "--target-min": "target/min", "--l-margin": "layout/app/margin",
+              "--l-gutter": "layout/app/gutter" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "surface/subtle", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" }
+    ],
+    "icons": {},
+    "requiredAria": [],
+    "$note": "PROPOSED #204 (Lane M). LAYOUT PRIMITIVES — space only. ⛔ NOT the gated Data-grid: that is a data table (records, fields, role=grid, sorting, selection); these are seven content-agnostic arrangement utilities with no data, no roles and nothing to announce. THE TELL: a Data-grid's columns mean something, a layout grid's columns mean nothing. Second vocabulary collision this lane found (see Footer for 'footer'), the s202-D3 class; the slug is layout-utilities and the prefix is .l- precisely so this does not claim the word 'grid', and naming is Dave's. MEASURED GAP: the auto-fill/minmax recipe is already hand-written in THIRTEEN gated snippets with four different floors (180/240/300), four different gaps (16 / 20 / 24 32 / 24 16), two max-widths (760/800) and TWO DIFFERENT KEYWORDS — auto-fill in eleven, auto-fit in Cards twice, which is a real behavioural difference nobody recorded as a decision. ⛔ THIS FILE RECONCILES NONE OF THEM; picking one is a ruling. ⛔ TWO STORE-REACH LIMITS, DECLARED: (1) tokens/spacing.json is OUTSIDE _validate_snippets.resolve()'s namespace list (semantic-colour, layout, motion, opacity, component-types only), so the one component whose whole subject is spacing cannot bind its own gap ramp through the manifest — the steps are literal with token paths in comments, and a gate fix is proposed to the BUILD-PM, not patched here; (2) @media/@container conditions cannot consume custom properties at all, so breakpoint tokens are literal by CSS language and are deliberately NOT declared, because declaring an unconsumed var is a green assertion about nothing. ONE PRIMITIVE DELIBERATELY NOT BUILT: the classic 'switcher' name collides with s202-D3's ruled meaning of switch (the thumb), so it is omitted and declared rather than renamed on my own authority. No interactive target exists here; target/min is bound anyway so the drift gate reads the value. Not registered in component-types.json (shared file, outside the lane fence)."
+  }
+  </script>
+  </body>
+</html>

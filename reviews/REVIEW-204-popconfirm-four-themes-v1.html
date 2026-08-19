@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Popconfirm &mdash; four themes x light/dark (#204)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  body{margin:0; padding:32px; background:#FAFAFA; color:#1A1A1A;}
+  .lede{max-width:900px; margin:0 0 32px;}
+  .theme{margin:0 0 40px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  .pane{padding:24px; overflow-x:auto; border:1px solid #E1E1E1; background:var(--background-default,#FFF); color:var(--text-default,#1A1A1A);}
+  .pane[data-theme="dark"]{background:var(--surface-digital-black,#1A1A1A);}
+  .pane-cap{opacity:.65; margin-bottom:16px;}
+  .note{border-left:3px solid #DA1A00; padding:8px 0 8px 12px; margin:16px 0; max-width:900px;}
+  .note-info{border-left-color:#305A85;}
+/* ---- the .cn-popconfirm scope. HAND-MIRRORED: gen_canon_components.py owns this surface and the
+   BUILD-PM owns regeneration this wave, so nothing was generated. Every binding below is derived
+   from the snippet's own #token-manifest and points at canon.css's OWN custom property, so the
+   four-theme cascade is canon.css's, not a re-typed copy of resolved values. ---- */
+.cn-popconfirm{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --ease:150ms ease;
+  --surface: var(--background-default);
+  --pop-border: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --page: var(--background-default);
+  --focus: var(--focus-ring);
+  --pri: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --on-pri: var(--button-primary-label-default);
+  --ghost-hover: var(--tertiary-background-hover);
+  --danger-ink: var(--rag-error-ink);
+  /* inherited directly from canon.css (self-binding would be invalid): --border-radius-surface, --border-radius-control, --target-min */
+  color:var(--text);
+}
+.cn-popconfirm :is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+.cn-popconfirm *{box-sizing:border-box;}
+.cn-popconfirm .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+.cn-popconfirm .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:56ch;}
+.cn-popconfirm .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-popconfirm .pc-anchor{position:relative; display:inline-flex;}
+.cn-popconfirm .pc-trigger{min-height:var(--target-min); min-width:96px; padding:0 16px; display:inline-flex;
+    align-items:center; justify-content:center; gap:8px; background:transparent; color:var(--text);
+    border:1px solid var(--text); border-radius:var(--border-radius-control); cursor:pointer;
+    transition:background var(--ease);}
+.cn-popconfirm .pc-trigger:hover{background:var(--ghost-hover);}
+.cn-popconfirm .pc-trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-popconfirm .pc-trigger svg{width:16px; height:16px; display:block; fill:currentColor; flex:none;}
+.cn-popconfirm .pc-trigger.icon-only{min-width:var(--target-min); width:var(--target-min); height:var(--target-min);
+    padding:0; border:0;}
+.cn-popconfirm .pc{--tail-x:24px; position:absolute; z-index:50; top:calc(100% + 12px); left:0;
+    width:max-content; max-width:min(320px, calc(100vw - 32px));
+    background:var(--surface); color:var(--text); border:1px solid var(--pop-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow); padding:16px;
+    text-align:left; opacity:0; pointer-events:none; transition:opacity var(--ease);}
+.cn-popconfirm .pc.is-open{opacity:1; pointer-events:auto;}
+.cn-popconfirm .pc::after{content:""; position:absolute; left:var(--tail-x); width:10px; height:10px;
+    background:var(--surface); border:1px solid var(--pop-border);
+    bottom:100%; transform:translate(-50%,50%) rotate(45deg); border-bottom:0; border-right:0;}
+.cn-popconfirm .pc.align-end{left:auto; right:0;}
+.cn-popconfirm .pc.align-end::after{left:auto; right:calc(var(--tail-x) - 5px);}
+.cn-popconfirm .pc-head{display:flex; align-items:flex-start; gap:8px; margin-bottom:8px;}
+.cn-popconfirm .pc-glyph{flex:none; width:18px; height:18px; display:inline-flex; margin-top:1px;}
+.cn-popconfirm .pc-glyph svg{width:18px; height:18px; display:block; fill:currentColor;}
+.cn-popconfirm .pc-q{margin:0; flex:1 1 auto;}
+.cn-popconfirm .pc-body{margin:0 0 12px; color:var(--muted); opacity:var(--alpha-84);}
+.cn-popconfirm .pc.danger .pc-glyph{color:var(--danger-ink);}
+.cn-popconfirm .pc-actions{display:flex; gap:8px; justify-content:flex-end;}
+.cn-popconfirm .pc .btn{min-height:var(--target-min); min-width:96px; padding:8px 20px; border:0; text-align:center;
+    border-radius:var(--border-radius-control); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center;
+    transition:background var(--ease), filter 90ms cubic-bezier(0,0,.58,1);}
+.cn-popconfirm .pc .btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-popconfirm .pc .btn:active{filter:brightness(.9);}
+.cn-popconfirm .pc .btn.primary{background:var(--pri); color:var(--on-pri);}
+.cn-popconfirm .pc .btn.primary:hover{background:var(--pri-hover);}
+.cn-popconfirm .pc .btn.ghost{background:transparent; color:var(--text);}
+.cn-popconfirm .pc .btn.ghost:hover{background:var(--ghost-hover);}
+.cn-popconfirm .row-demo{width:var(--demo-width, 460px); max-width:100%;
+    border:1px solid var(--pop-border, transparent);}
+.cn-popconfirm .payee-row{display:flex; align-items:center; gap:12px; padding:8px 0;}
+.cn-popconfirm .payee-row .who{flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; text-box-edge:text text;}
+@media (max-width:480px){
+.cn-popconfirm .pc{max-width:calc(100vw - 40px);}
+.cn-popconfirm .pc-actions{flex-direction:column-reverse;}
+.cn-popconfirm .pc .btn{width:100%;}
+}
+@media (prefers-reduced-motion: reduce){
+.cn-popconfirm *, .cn-popconfirm *::before, .cn-popconfirm *::after{transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important;}
+.cn-popconfirm .pc .btn:active{filter:none !important;}
+}
+</style>
+</head>
+<body>
+  <h1 class="t-cm-heading">Popconfirm</h1>
+  <div class="lede">
+<p class="t-ed-body">Itinerary row 75, <strong>PROPOSED #204 &mdash; your eye owed</strong>. Verified absent first-hand: no snippet, no meta and no content match under popconfirm, confirm-in-place or inline confirm anywhere in the corpus, and no ruling in <code>_rulings.json</code>.</p>
+<div class="note note-info"><p class="t-ed-body-small"><strong>A Popover answers; a Popconfirm asks.</strong> It borrows Popover&rsquo;s bubble chrome byte-for-byte and Confirmation&rsquo;s button pair byte-for-byte, and refuses Popover&rsquo;s close &times; &mdash; because here <em>dismissal is the cancel</em>, and a &times; beside a Cancel button offers one outcome under two labels. It is not a Modal either: no scrim, no trap, and the row you are about to change stays visible behind it. That is what &ldquo;confirm in place&rdquo; means.</p></div>
+<div class="note"><p class="t-ed-body-small"><strong>Your call &mdash; there is no destructive button in this system.</strong> Probed: the token store has no <code>button/danger</code>, <code>button/destructive</code> or <code>button/critical</code> seat at all. So the destructive variant does not invent one. It carries its weight with the warning glyph in the error <em>ink</em> (the two-red law&rsquo;s own values), the verb repeated in the confirm label, and the question itself. Squint at any pane: the meaning should survive the hue completely. Whether a danger seat should exist is yours, and it touches two firm rulings.</p></div>
+<div class="note"><p class="t-ed-body-small"><strong>Your call &mdash; and one thing a green gate is not telling you.</strong> The right role for a confirm-in-place is <code>alertdialog</code>. Built that way, the a11y gate went red: its role vocabulary carries &ldquo;alert&rdquo; and &ldquo;dialog&rdquo; but not their compound. That gate is a shared file this lane may not edit, so the snippet fell back to <code>dialog</code> and the one-line fix is proposed to the build lead. The gate is green because it is measuring <code>dialog</code>, not because it approves of it.</p></div>
+<div class="note"><p class="t-ed-body-small"><strong>Also unruled:</strong> whether a destructive confirm should trap focus (this one does not, inheriting Popover&rsquo;s non-modal reading); which actions may use the pattern at all &mdash; nothing here licenses it for moving money; whether cancel sits left of confirm; and whether &ldquo;Popconfirm&rdquo; is the word this system would choose.</p></div>
+  </div>
+  <section class="theme" data-apollo-theme="mono">
+    <h2 class="t-cm-section-label">Apollo Mono</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; light</div>
+        <div class="cn-popconfirm">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/status-icons/warning-line.svg -->
+    <symbol id="pc-warning--mono-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/delete.svg -->
+    <symbol id="pc-delete--mono-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <div style="min-height:300px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1--mono-light">Remove payee</button>
+      <div class="pc is-open" id="pc1--mono-light" role="dialog" aria-labelledby="pcq1--mono-light" aria-describedby="pcb1--mono-light">
+        <div class="pc-head">
+          <p class="pc-q t-cm-ctl-16" id="pcq1--mono-light">Remove Alder Consulting from your payees?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb1--mono-light">You can add them again later. Payments already scheduled to this payee are not affected.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove payee</button>
+        </div>
+      </div>
+    </span>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <div style="min-height:330px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2--mono-light">Delete standing order</button>
+      <div class="pc danger is-open" id="pc2--mono-light" role="dialog" aria-labelledby="pcq2--mono-light" aria-describedby="pcb2--mono-light" data-carries="symbol label">
+        <div class="pc-head">
+          <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--mono-light"/></svg></span>
+          <p class="pc-q t-cm-ctl-16" id="pcq2--mono-light">Delete the standing order to Kestrel Property?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb2--mono-light">This cannot be undone. The next payment, due 1 September, will not be sent.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Keep it</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Delete standing order</button>
+        </div>
+      </div>
+    </span>
+  </div>
+  <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+
+  <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <div class="row-demo" style="min-height:300px;">
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc3--mono-light" aria-label="Remove Meridian Supplies">
+          <svg aria-hidden="true"><use href="#pc-delete--mono-light"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc3--mono-light" role="dialog" aria-labelledby="pcq3--mono-light" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--mono-light"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq3--mono-light">Remove Meridian Supplies?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Kestrel Property · sort code 20-45-01</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc4--mono-light" aria-label="Remove Kestrel Property">
+          <svg aria-hidden="true"><use href="#pc-delete--mono-light"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc4--mono-light" role="dialog" aria-labelledby="pcq4--mono-light" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--mono-light"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq4--mono-light">Remove Kestrel Property?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+  </div>
+
+  <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The
+       only RAG value this component paints is rag/error-ink on the bubble surface — the INK seat,
+       which is a measured pair and IS declared (5.090 light / 5.550 dark, computed with the repo's
+       own _contrast_utils.contrast_ratio at #204). The non-colour carrier is declared in markup as
+       data-carries="symbol label" so the rendering gate can check it against real DOM. -->
+  
+  
+  
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Mono &middot; dark</div>
+        <div class="cn-popconfirm">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/status-icons/warning-line.svg -->
+    <symbol id="pc-warning--mono-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/delete.svg -->
+    <symbol id="pc-delete--mono-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <div style="min-height:300px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1--mono-dark">Remove payee</button>
+      <div class="pc is-open" id="pc1--mono-dark" role="dialog" aria-labelledby="pcq1--mono-dark" aria-describedby="pcb1--mono-dark">
+        <div class="pc-head">
+          <p class="pc-q t-cm-ctl-16" id="pcq1--mono-dark">Remove Alder Consulting from your payees?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb1--mono-dark">You can add them again later. Payments already scheduled to this payee are not affected.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove payee</button>
+        </div>
+      </div>
+    </span>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <div style="min-height:330px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2--mono-dark">Delete standing order</button>
+      <div class="pc danger is-open" id="pc2--mono-dark" role="dialog" aria-labelledby="pcq2--mono-dark" aria-describedby="pcb2--mono-dark" data-carries="symbol label">
+        <div class="pc-head">
+          <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--mono-dark"/></svg></span>
+          <p class="pc-q t-cm-ctl-16" id="pcq2--mono-dark">Delete the standing order to Kestrel Property?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb2--mono-dark">This cannot be undone. The next payment, due 1 September, will not be sent.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Keep it</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Delete standing order</button>
+        </div>
+      </div>
+    </span>
+  </div>
+  <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+
+  <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <div class="row-demo" style="min-height:300px;">
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc3--mono-dark" aria-label="Remove Meridian Supplies">
+          <svg aria-hidden="true"><use href="#pc-delete--mono-dark"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc3--mono-dark" role="dialog" aria-labelledby="pcq3--mono-dark" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--mono-dark"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq3--mono-dark">Remove Meridian Supplies?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Kestrel Property · sort code 20-45-01</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc4--mono-dark" aria-label="Remove Kestrel Property">
+          <svg aria-hidden="true"><use href="#pc-delete--mono-dark"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc4--mono-dark" role="dialog" aria-labelledby="pcq4--mono-dark" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--mono-dark"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq4--mono-dark">Remove Kestrel Property?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+  </div>
+
+  <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The
+       only RAG value this component paints is rag/error-ink on the bubble surface — the INK seat,
+       which is a measured pair and IS declared (5.090 light / 5.550 dark, computed with the repo's
+       own _contrast_utils.contrast_ratio at #204). The non-colour carrier is declared in markup as
+       data-carries="symbol label" so the rendering gate can check it against real DOM. -->
+  
+  
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="legacy">
+    <h2 class="t-cm-section-label">Apollo Legacy</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; light</div>
+        <div class="cn-popconfirm">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/status-icons/warning-line.svg -->
+    <symbol id="pc-warning--legacy-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/delete.svg -->
+    <symbol id="pc-delete--legacy-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <div style="min-height:300px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1--legacy-light">Remove payee</button>
+      <div class="pc is-open" id="pc1--legacy-light" role="dialog" aria-labelledby="pcq1--legacy-light" aria-describedby="pcb1--legacy-light">
+        <div class="pc-head">
+          <p class="pc-q t-cm-ctl-16" id="pcq1--legacy-light">Remove Alder Consulting from your payees?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb1--legacy-light">You can add them again later. Payments already scheduled to this payee are not affected.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove payee</button>
+        </div>
+      </div>
+    </span>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <div style="min-height:330px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2--legacy-light">Delete standing order</button>
+      <div class="pc danger is-open" id="pc2--legacy-light" role="dialog" aria-labelledby="pcq2--legacy-light" aria-describedby="pcb2--legacy-light" data-carries="symbol label">
+        <div class="pc-head">
+          <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--legacy-light"/></svg></span>
+          <p class="pc-q t-cm-ctl-16" id="pcq2--legacy-light">Delete the standing order to Kestrel Property?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb2--legacy-light">This cannot be undone. The next payment, due 1 September, will not be sent.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Keep it</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Delete standing order</button>
+        </div>
+      </div>
+    </span>
+  </div>
+  <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+
+  <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <div class="row-demo" style="min-height:300px;">
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc3--legacy-light" aria-label="Remove Meridian Supplies">
+          <svg aria-hidden="true"><use href="#pc-delete--legacy-light"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc3--legacy-light" role="dialog" aria-labelledby="pcq3--legacy-light" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--legacy-light"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq3--legacy-light">Remove Meridian Supplies?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Kestrel Property · sort code 20-45-01</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc4--legacy-light" aria-label="Remove Kestrel Property">
+          <svg aria-hidden="true"><use href="#pc-delete--legacy-light"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc4--legacy-light" role="dialog" aria-labelledby="pcq4--legacy-light" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--legacy-light"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq4--legacy-light">Remove Kestrel Property?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+  </div>
+
+  <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The
+       only RAG value this component paints is rag/error-ink on the bubble surface — the INK seat,
+       which is a measured pair and IS declared (5.090 light / 5.550 dark, computed with the repo's
+       own _contrast_utils.contrast_ratio at #204). The non-colour carrier is declared in markup as
+       data-carries="symbol label" so the rendering gate can check it against real DOM. -->
+  
+  
+  
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Legacy &middot; dark</div>
+        <div class="cn-popconfirm">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/status-icons/warning-line.svg -->
+    <symbol id="pc-warning--legacy-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/delete.svg -->
+    <symbol id="pc-delete--legacy-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <div style="min-height:300px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1--legacy-dark">Remove payee</button>
+      <div class="pc is-open" id="pc1--legacy-dark" role="dialog" aria-labelledby="pcq1--legacy-dark" aria-describedby="pcb1--legacy-dark">
+        <div class="pc-head">
+          <p class="pc-q t-cm-ctl-16" id="pcq1--legacy-dark">Remove Alder Consulting from your payees?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb1--legacy-dark">You can add them again later. Payments already scheduled to this payee are not affected.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove payee</button>
+        </div>
+      </div>
+    </span>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <div style="min-height:330px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2--legacy-dark">Delete standing order</button>
+      <div class="pc danger is-open" id="pc2--legacy-dark" role="dialog" aria-labelledby="pcq2--legacy-dark" aria-describedby="pcb2--legacy-dark" data-carries="symbol label">
+        <div class="pc-head">
+          <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--legacy-dark"/></svg></span>
+          <p class="pc-q t-cm-ctl-16" id="pcq2--legacy-dark">Delete the standing order to Kestrel Property?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb2--legacy-dark">This cannot be undone. The next payment, due 1 September, will not be sent.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Keep it</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Delete standing order</button>
+        </div>
+      </div>
+    </span>
+  </div>
+  <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+
+  <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <div class="row-demo" style="min-height:300px;">
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc3--legacy-dark" aria-label="Remove Meridian Supplies">
+          <svg aria-hidden="true"><use href="#pc-delete--legacy-dark"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc3--legacy-dark" role="dialog" aria-labelledby="pcq3--legacy-dark" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--legacy-dark"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq3--legacy-dark">Remove Meridian Supplies?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Kestrel Property · sort code 20-45-01</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc4--legacy-dark" aria-label="Remove Kestrel Property">
+          <svg aria-hidden="true"><use href="#pc-delete--legacy-dark"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc4--legacy-dark" role="dialog" aria-labelledby="pcq4--legacy-dark" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--legacy-dark"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq4--legacy-dark">Remove Kestrel Property?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+  </div>
+
+  <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The
+       only RAG value this component paints is rag/error-ink on the bubble surface — the INK seat,
+       which is a measured pair and IS declared (5.090 light / 5.550 dark, computed with the repo's
+       own _contrast_utils.contrast_ratio at #204). The non-colour carrier is declared in markup as
+       data-carries="symbol label" so the rendering gate can check it against real DOM. -->
+  
+  
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="console">
+    <h2 class="t-cm-section-label">Apollo Console</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; light</div>
+        <div class="cn-popconfirm">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/status-icons/warning-line.svg -->
+    <symbol id="pc-warning--console-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/delete.svg -->
+    <symbol id="pc-delete--console-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <div style="min-height:300px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1--console-light">Remove payee</button>
+      <div class="pc is-open" id="pc1--console-light" role="dialog" aria-labelledby="pcq1--console-light" aria-describedby="pcb1--console-light">
+        <div class="pc-head">
+          <p class="pc-q t-cm-ctl-16" id="pcq1--console-light">Remove Alder Consulting from your payees?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb1--console-light">You can add them again later. Payments already scheduled to this payee are not affected.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove payee</button>
+        </div>
+      </div>
+    </span>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <div style="min-height:330px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2--console-light">Delete standing order</button>
+      <div class="pc danger is-open" id="pc2--console-light" role="dialog" aria-labelledby="pcq2--console-light" aria-describedby="pcb2--console-light" data-carries="symbol label">
+        <div class="pc-head">
+          <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--console-light"/></svg></span>
+          <p class="pc-q t-cm-ctl-16" id="pcq2--console-light">Delete the standing order to Kestrel Property?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb2--console-light">This cannot be undone. The next payment, due 1 September, will not be sent.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Keep it</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Delete standing order</button>
+        </div>
+      </div>
+    </span>
+  </div>
+  <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+
+  <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <div class="row-demo" style="min-height:300px;">
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc3--console-light" aria-label="Remove Meridian Supplies">
+          <svg aria-hidden="true"><use href="#pc-delete--console-light"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc3--console-light" role="dialog" aria-labelledby="pcq3--console-light" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--console-light"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq3--console-light">Remove Meridian Supplies?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Kestrel Property · sort code 20-45-01</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc4--console-light" aria-label="Remove Kestrel Property">
+          <svg aria-hidden="true"><use href="#pc-delete--console-light"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc4--console-light" role="dialog" aria-labelledby="pcq4--console-light" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--console-light"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq4--console-light">Remove Kestrel Property?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+  </div>
+
+  <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The
+       only RAG value this component paints is rag/error-ink on the bubble surface — the INK seat,
+       which is a measured pair and IS declared (5.090 light / 5.550 dark, computed with the repo's
+       own _contrast_utils.contrast_ratio at #204). The non-colour carrier is declared in markup as
+       data-carries="symbol label" so the rendering gate can check it against real DOM. -->
+  
+  
+  
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Console &middot; dark</div>
+        <div class="cn-popconfirm">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/status-icons/warning-line.svg -->
+    <symbol id="pc-warning--console-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/delete.svg -->
+    <symbol id="pc-delete--console-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <div style="min-height:300px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1--console-dark">Remove payee</button>
+      <div class="pc is-open" id="pc1--console-dark" role="dialog" aria-labelledby="pcq1--console-dark" aria-describedby="pcb1--console-dark">
+        <div class="pc-head">
+          <p class="pc-q t-cm-ctl-16" id="pcq1--console-dark">Remove Alder Consulting from your payees?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb1--console-dark">You can add them again later. Payments already scheduled to this payee are not affected.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove payee</button>
+        </div>
+      </div>
+    </span>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <div style="min-height:330px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2--console-dark">Delete standing order</button>
+      <div class="pc danger is-open" id="pc2--console-dark" role="dialog" aria-labelledby="pcq2--console-dark" aria-describedby="pcb2--console-dark" data-carries="symbol label">
+        <div class="pc-head">
+          <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--console-dark"/></svg></span>
+          <p class="pc-q t-cm-ctl-16" id="pcq2--console-dark">Delete the standing order to Kestrel Property?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb2--console-dark">This cannot be undone. The next payment, due 1 September, will not be sent.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Keep it</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Delete standing order</button>
+        </div>
+      </div>
+    </span>
+  </div>
+  <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+
+  <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <div class="row-demo" style="min-height:300px;">
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc3--console-dark" aria-label="Remove Meridian Supplies">
+          <svg aria-hidden="true"><use href="#pc-delete--console-dark"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc3--console-dark" role="dialog" aria-labelledby="pcq3--console-dark" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--console-dark"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq3--console-dark">Remove Meridian Supplies?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Kestrel Property · sort code 20-45-01</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc4--console-dark" aria-label="Remove Kestrel Property">
+          <svg aria-hidden="true"><use href="#pc-delete--console-dark"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc4--console-dark" role="dialog" aria-labelledby="pcq4--console-dark" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--console-dark"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq4--console-dark">Remove Kestrel Property?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+  </div>
+
+  <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The
+       only RAG value this component paints is rag/error-ink on the bubble surface — the INK seat,
+       which is a measured pair and IS declared (5.090 light / 5.550 dark, computed with the repo's
+       own _contrast_utils.contrast_ratio at #204). The non-colour carrier is declared in markup as
+       data-carries="symbol label" so the rendering gate can check it against real DOM. -->
+  
+  
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="theme" data-apollo-theme="supercharge">
+    <h2 class="t-cm-section-label">Apollo Supercharge</h2>
+    <div class="grid">
+      <div class="pane" data-theme="light">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; light</div>
+        <div class="cn-popconfirm">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/status-icons/warning-line.svg -->
+    <symbol id="pc-warning--supercharge-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/delete.svg -->
+    <symbol id="pc-delete--supercharge-light" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <div style="min-height:300px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1--supercharge-light">Remove payee</button>
+      <div class="pc is-open" id="pc1--supercharge-light" role="dialog" aria-labelledby="pcq1--supercharge-light" aria-describedby="pcb1--supercharge-light">
+        <div class="pc-head">
+          <p class="pc-q t-cm-ctl-16" id="pcq1--supercharge-light">Remove Alder Consulting from your payees?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb1--supercharge-light">You can add them again later. Payments already scheduled to this payee are not affected.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove payee</button>
+        </div>
+      </div>
+    </span>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <div style="min-height:330px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2--supercharge-light">Delete standing order</button>
+      <div class="pc danger is-open" id="pc2--supercharge-light" role="dialog" aria-labelledby="pcq2--supercharge-light" aria-describedby="pcb2--supercharge-light" data-carries="symbol label">
+        <div class="pc-head">
+          <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--supercharge-light"/></svg></span>
+          <p class="pc-q t-cm-ctl-16" id="pcq2--supercharge-light">Delete the standing order to Kestrel Property?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb2--supercharge-light">This cannot be undone. The next payment, due 1 September, will not be sent.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Keep it</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Delete standing order</button>
+        </div>
+      </div>
+    </span>
+  </div>
+  <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+
+  <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <div class="row-demo" style="min-height:300px;">
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc3--supercharge-light" aria-label="Remove Meridian Supplies">
+          <svg aria-hidden="true"><use href="#pc-delete--supercharge-light"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc3--supercharge-light" role="dialog" aria-labelledby="pcq3--supercharge-light" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--supercharge-light"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq3--supercharge-light">Remove Meridian Supplies?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Kestrel Property · sort code 20-45-01</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc4--supercharge-light" aria-label="Remove Kestrel Property">
+          <svg aria-hidden="true"><use href="#pc-delete--supercharge-light"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc4--supercharge-light" role="dialog" aria-labelledby="pcq4--supercharge-light" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--supercharge-light"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq4--supercharge-light">Remove Kestrel Property?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+  </div>
+
+  <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The
+       only RAG value this component paints is rag/error-ink on the bubble surface — the INK seat,
+       which is a measured pair and IS declared (5.090 light / 5.550 dark, computed with the repo's
+       own _contrast_utils.contrast_ratio at #204). The non-colour carrier is declared in markup as
+       data-carries="symbol label" so the rendering gate can check it against real DOM. -->
+  
+  
+  
+        </div>
+      </div>
+      <div class="pane" data-theme="dark">
+        <div class="pane-cap t-cm-caption">Apollo Supercharge &middot; dark</div>
+        <div class="cn-popconfirm">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/status-icons/warning-line.svg -->
+    <symbol id="pc-warning--supercharge-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/delete.svg -->
+    <symbol id="pc-delete--supercharge-dark" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <div style="min-height:300px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1--supercharge-dark">Remove payee</button>
+      <div class="pc is-open" id="pc1--supercharge-dark" role="dialog" aria-labelledby="pcq1--supercharge-dark" aria-describedby="pcb1--supercharge-dark">
+        <div class="pc-head">
+          <p class="pc-q t-cm-ctl-16" id="pcq1--supercharge-dark">Remove Alder Consulting from your payees?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb1--supercharge-dark">You can add them again later. Payments already scheduled to this payee are not affected.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove payee</button>
+        </div>
+      </div>
+    </span>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <div style="min-height:330px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2--supercharge-dark">Delete standing order</button>
+      <div class="pc danger is-open" id="pc2--supercharge-dark" role="dialog" aria-labelledby="pcq2--supercharge-dark" aria-describedby="pcb2--supercharge-dark" data-carries="symbol label">
+        <div class="pc-head">
+          <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--supercharge-dark"/></svg></span>
+          <p class="pc-q t-cm-ctl-16" id="pcq2--supercharge-dark">Delete the standing order to Kestrel Property?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb2--supercharge-dark">This cannot be undone. The next payment, due 1 September, will not be sent.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Keep it</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Delete standing order</button>
+        </div>
+      </div>
+    </span>
+  </div>
+  <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+
+  <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <div class="row-demo" style="min-height:300px;">
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc3--supercharge-dark" aria-label="Remove Meridian Supplies">
+          <svg aria-hidden="true"><use href="#pc-delete--supercharge-dark"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc3--supercharge-dark" role="dialog" aria-labelledby="pcq3--supercharge-dark" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--supercharge-dark"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq3--supercharge-dark">Remove Meridian Supplies?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Kestrel Property · sort code 20-45-01</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc4--supercharge-dark" aria-label="Remove Kestrel Property">
+          <svg aria-hidden="true"><use href="#pc-delete--supercharge-dark"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc4--supercharge-dark" role="dialog" aria-labelledby="pcq4--supercharge-dark" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning--supercharge-dark"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq4--supercharge-dark">Remove Kestrel Property?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+  </div>
+
+  <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The
+       only RAG value this component paints is rag/error-ink on the bubble surface — the INK seat,
+       which is a measured pair and IS declared (5.090 light / 5.550 dark, computed with the repo's
+       own _contrast_utils.contrast_ratio at #204). The non-colour carrier is declared in markup as
+       data-carries="symbol label" so the rendering gate can check it against real DOM. -->
+  
+  
+  
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

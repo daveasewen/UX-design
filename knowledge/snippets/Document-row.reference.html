@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document row — reference implementation (PROPOSED #204)</title>
+<!--
+  ⚠⚠ PROPOSED #204, 2026-08-19 (Lane N). NOT GATED, NOT PROMOTED, NOT RULED.
+  Built through the gated-component route so it is reviewable at gated fidelity, but every
+  fintech semantic below is DAVE'S and is marked PROPOSED. Nothing here is a ruling.
+  (Kpi-tile #203 is the precedent for a PROPOSED specimen shipped this way.)
+
+  ITINERARY ROW 92 — "Statement / document row · Downloadable document row."
+
+  ★★ WHY THIS ROW IS A REAL GAP AND ITS SIBLING (ROW 91) IS NOT ————————————————————
+  Lane N was asked to adjudicate whether the gated List-items already covers these rows.
+  For row 91 (Transaction / ledger row) IT DOES, decisively — see the receipt
+  notes/_receipts/2026-08-19-204-wave-laneN-fintech-rows.md. list-items.meta.json's own
+  build.$status reads, verbatim: "PROMOTED 2026-06-22 (Dave) — TRANSACTION row brought to the
+  Tabs-bar standard", build.scope reads "Transaction row only (the ★ payments-journey row)",
+  and List-items.reference.html's <title> is literally "List items — Transaction row
+  (reference implementation, gated)". Row 91 was BUILT AND PROMOTED BY DAVE two months ago.
+  No transaction row was built by this lane. Row 92 is different, and the difference is
+  STRUCTURAL, not stylistic — see below.
+
+  ⛔⛔ THE ONE STRUCTURAL REASON THIS CANNOT BE A List-items VARIANT ————————————————
+  In List-items, THE WHOLE ROW IS A <button> (`<li><button class="row" type="button">…`).
+  That shape supports exactly ONE action per row: "open this".
+  A downloadable document row has TWO actions that are not the same action:
+      (a) open / preview the document   — the row
+      (b) download the file             — a discrete trailing control
+  You cannot nest an interactive control inside a <button>. It is invalid HTML (4.1.1), the
+  inner control is unreachable by keyboard in several ATs, and the accessible name of the
+  outer button absorbs the inner one. So the two-action document row CANNOT be expressed as
+  a `type="document"` value on List-items' existing `type` enum without changing List-items'
+  own row element for every other variant — which is a gated, promoted, 9.0/9 artefact.
+  This file therefore uses the ROW-WITH-NESTED-ACTION shape: a passive <li> containing a
+  primary <a> whose ::after stretches to the full row (the "stretched link"), and a SIBLING
+  <button> raised above it on the z-axis. Two independent targets, both ≥44px, no nesting.
+
+  ★ AND THE HONEST CONVERSE, STATED PLAINLY: the SINGLE-ACTION form of this row — where the
+  whole row simply downloads and there is no preview — IS structurally a List-items row and
+  should be one. It is built below as variant B purely so Dave can see both and rule which
+  form the product actually needs. If he rules single-action only, THIS COMPONENT SHOULD NOT
+  EXIST and row 92 collapses into List-items too. That is a live outcome, not a hedge.
+
+  HOW THIS DIFFERS FROM ITS OTHER NEAREST GATED NEIGHBOUR, File-upload ————————————
+  File-upload (GATED, itinerary row 18) also renders a list of file rows with a glyph, a name,
+  a size and a trailing control. It is the INBOUND direction: files the user is giving the bank,
+  mid-transfer, with a progress bar, a validation error state and a REMOVE (×) control. Its rows
+  are ephemeral — they exist only during the upload interaction and disappear on submit.
+  This row is the OUTBOUND direction: files the bank is giving the user, already complete,
+  persistent, with a DOWNLOAD control and no progress and no removal. The tell: a File-upload
+  row can FAIL ("This file is over 10MB"); a document row cannot — it already exists.
+  The file-type glyphs here are BYTE-MATCHED from the same library File-upload draws on
+  (assets/icons/media/document-pdf.svg, document-e-statement.svg, document.svg) and the
+  download glyph from assets/icons/global-controls/download.svg.
+
+  ⛔ NO MONEY COLOUR IS INVENTED HERE, DELIBERATELY ————————————————————————————————
+  A ledger row is exactly where a +/− colour binding gets improvised. This component carries
+  NO monetary value at all — a statement row names a document, not an amount — so there was
+  no seat to invent and none was invented. Where an amount is genuinely wanted on such a row
+  (an "amount due" on an invoice, say), the answer is the GATED Amount-display atom, whose
+  meta already rules the treatment: sign is monochrome U+2212 text, and the ONE coloured seat
+  is `sign=positive` → rag/success-ink under s155-D1/s158-D2, with rag/error-ink the symmetric
+  negative seat under s158-D3, MONO ONLY. That is the approved treatment, it is copied from
+  amount-display.meta.json, and this file does not extend it by a single value.
+  The only colour in this component is the STATUS chip, which is the Status-indicator atom
+  form B, copied verbatim from List-items (tint surface + RAG dot + NEUTRAL text label), and
+  every status carries its WORD as well as its hue (1.4.1).
+
+  ⬛⬛ PROPOSED — DAVE'S, ALL OF IT. NONE OF THIS IS RULED: ————————————————————————
+    P1  DOCUMENT-TYPE VOCABULARY. "Statement · Certificate · Tax document · Contract" is my
+        wording, chosen to read; it is not a taxonomy anyone has ratified.
+    P2  STATEMENT PERIODISATION. Rendered as "1 Jun – 30 Jun 2026" (explicit endpoints, en
+        dash) on line 2, with the human title "June 2026 statement" on line 1. The alternative
+        — title "1–30 June 2026", no separate period — is equally buildable. Also unruled:
+        whether the period or the issue date is the one that shows.
+    P3  THE DOWNLOAD AFFORDANCE'S FORM. Built as a trailing 44×44 icon-button with no visible
+        label (accessible name via aria-label). Alternatives Dave may prefer: a text link
+        ("Download PDF"), a whole-row download (variant B), or an overflow menu when there is
+        more than one format. The icon-only form follows the Icon-button atom and s182-D2's
+        precedent for label-less trailing affordances, but s182-D2 governs the trend card, NOT
+        this component — it is cited as precedent, not as authority.
+    P4  WHETHER A DOCUMENT ROW CARRIES A STATUS CHIP AT ALL. Shown here for "New" and for
+        "Action needed", because an unread statement and a tax form that needs signing are
+        different objects. Equally arguable: documents have no status, only a date.
+    P5  FILE META ORDER AND CONTENT: "PDF · 1.2MB". Whether size shows at all is a product
+        call (it matters on mobile data, it is noise on desktop).
+    P6  DENSITY. --row-h 76px inherited verbatim from List-items' roomy default; a statements
+        archive is a long list and may want the 64px compact leg.
+
+  TYPE: composites only. This file declares NO raw font-family/size/weight in component scope —
+  every text element carries a .t-cm-* composite from canon/type.css. Title .t-cm-label ·
+  meta .t-cm-caption · status .t-cm-legal · group heading .t-cm-section-label. Section headings
+  on this page are demo chrome (.demo-h) and also carry a composite, so this file contributes
+  ZERO to the shrink-only type-composite ratchet (Kpi-tile #203 is the walked precedent).
+  ⚠ NOTE THE DIVERGENCE FROM THE PARENT, DECLARED: List-items itself still carries raw
+  `font:500 16px/1.35 var(--font)` declarations. I copied its ANATOMY, not its type debt.
+  SHAPE: square (radius 0 via border-radius/surface + /indicator) — the angular rule; console
+  forks the indicator to 4px through the cascade, as it does for List-items. No exemption
+  claimed; nothing here is round except the 8px status dot, which List-items already rules so.
+  MOTION: none beyond the inherited 140ms surface ease.
+  HIT AREA: ≥44px on every interactive target, ENFORCED BY HAND AND MEASURED — no gate reads
+  the ruled 44px token. Primary target = the stretched-link row (min-height 76). Download
+  button = 44×44. Measured across all four themes, both modes, at 1400px and 480px; figures
+  in the receipt.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Copied from the List-items skeleton. */
+:is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --ease:140ms ease;
+    --row-h:76px; --row-pad:14px; --label-gap:12px; }   /* density — copied verbatim from List-items (roomy default) */
+  [data-theme="light"]{
+    --surface:#FFFFFF; --hover:#F0F0F0; --disabled-surface:#E1E1E1;
+    --text:#1A1A1A; --muted:#1A1A1A; --disabled-text:#E1E1E1;
+    --icon:#1A1A1A; --divider:#E1E1E1; --reverse:#FFFFFF;
+    --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --info:#78A7E8;
+    --success-tint:#D4F1DF; --warning-tint:#F6E6C0; --error-tint:#FDD9D4; --info-tint:#DFEAF9;
+    --glyph-bg:#F0F0F0; --focus:#305A85; --page:#FFFFFF;
+    --border-radius-indicator:0; --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --surface:#1F1F1F; --hover:#232323; --disabled-surface:#484848;
+    --text:#FFFFFF; --muted:#FFFFFF; --disabled-text:#808080;
+    --icon:#FFFFFF; --divider:#808080; --reverse:#FFFFFF;
+    --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --info:#78A7E8;
+    --success-tint:#32533F; --warning-tint:#614C1C; --error-tint:#60302A; --info-tint:#38475C;
+    --glyph-bg:#232323; --focus:#4587A7; --page:#1A1A1A;
+    --border-radius-indicator:0; --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}      /* demo chrome — not the component */
+  .demo-h:first-of-type{margin-top:0;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+  .wrap{width:var(--demo-width, 520px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
+
+  /* ---- the list shell — copied from List-items ul.list, with ONE addition, declared ----
+     ⬛ PROPOSED ADDITION (Dave's eye owed): List-items' own ul.list declares NO radius and its
+     manifest does not carry --border-radius-surface, so its shell is square in every theme —
+     including console, where canon.css gives every OTHER component scope that declares the var
+     a 20px surface radius (the s199-D3 console radii). Copying List-items faithfully would have
+     left this shell square while the cards beside it are round. I have bound the shell to
+     border-radius/surface so it follows the THEME's rule rather than inheriting a neighbour's
+     omission, and overflow:hidden so the first/last rows clip to the corner.
+     ⚠ This is the ONE place I departed from the parent's literal CSS on a visual matter. It is
+     flagged in the meta and on the review page; if Dave prefers the square shell, delete these
+     two declarations and drop --border-radius-surface from the manifest. */
+  ul.doclist{list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--divider);
+    border-radius:var(--border-radius-surface); overflow:hidden;}
+  ul.doclist li + li{border-top:1px solid var(--divider);}
+
+  /* ---- the row. PASSIVE container (this is the structural difference from List-items,
+         whose row IS the button). Two independent targets live inside it. ---- */
+  .drow{position:relative; display:flex; align-items:center; gap:16px; width:100%;
+    min-height:var(--row-h,76px); padding:var(--row-pad,14px) 16px; color:var(--text);
+    transition:background var(--ease);}
+  .drow:hover{background:var(--hover);}
+  .drow:hover .dr-glyph{background:var(--surface);}   /* same trick as List-items' avatar on hover */
+
+  /* ---- leading file-type glyph. Same 36px slot as List-items' avatar, but SQUARE:
+         the avatar's round form is the documented people exemption and a file is not a person. ---- */
+  .dr-glyph{flex:none; width:36px; height:36px; border-radius:var(--border-radius-indicator);
+    background:var(--glyph-bg); color:var(--icon);
+    display:inline-flex; align-items:center; justify-content:center;}
+  .dr-glyph svg{width:18px; height:18px; display:block; fill:currentColor;}
+
+  /* ---- two-line body — line 1: title | status, line 2: meta. Copied from List-items. ---- */
+  .dr-body{flex:1; min-width:0; display:flex; flex-direction:column; gap:var(--label-gap,12px);}
+  .dr-line{display:flex; align-items:center; gap:12px; min-width:0;}
+  .dr-title{flex:1; min-width:0; color:var(--text); text-decoration:none;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-box-edge:text text;}
+  .dr-meta{flex:1; min-width:0; color:var(--muted); opacity:var(--alpha-72);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-box-edge:text text;}
+
+  /* THE STRETCHED LINK — the primary target is the whole row, but the ELEMENT is only the
+     title, so the trailing download <button> is a SIBLING and not a descendant. This is the
+     shape that makes two actions legal in one row. */
+  .dr-title::after{content:""; position:absolute; inset:0; z-index:0;}
+  .dr-title:focus-visible{outline:none;}
+  .dr-title:focus-visible::after{outline:2px solid var(--focus); outline-offset:-2px;}
+  .dr-title:hover{text-decoration:underline;}
+
+  /* ---- status chip = Status-indicator atom, form B. Copied VERBATIM from List-items:
+         tint surface + RAG dot + NEUTRAL text label. Label carries the meaning (1.4.1);
+         the dot is decorative and aria-hidden. ---- */
+  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;
+    position:relative; z-index:1;}
+  .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+  .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
+  .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
+  .status.err{background:var(--error-tint);}    .status.err .dot{background:var(--error);}
+  .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
+
+  /* ---- the download control. Icon-button atom form: 44×44 hit area, 18px glyph.
+         z-index raises it ABOVE the stretched link so it is independently clickable. ---- */
+  .dr-dl{flex:none; position:relative; z-index:1; width:44px; height:44px; padding:0;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:transparent; border:0; border-radius:var(--border-radius-indicator);
+    color:var(--icon); opacity:var(--alpha-72); cursor:pointer; transition:opacity var(--ease);}
+  .dr-dl svg{width:18px; height:18px; display:block; fill:currentColor;}
+  .dr-dl:hover{opacity:var(--alpha-96);}
+  .dr-dl:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
+
+  /* ---- disabled row (a document still being generated) ----
+     ⚠ THE GLYPH COLOUR HERE IS COPIED FROM List-items AND IS DELIBERATE, NOT AN OVERSIGHT.
+     List-items' disabled avatar is `background:var(--disabled-surface); color:var(--reverse)`
+     — WHITE initials on the disabled surface. My first draft used --disabled-text instead,
+     and in LIGHT that is #E1E1E1 on #E1E1E1: the glyph rendered COMPLETELY INVISIBLE. Caught
+     only by looking at the render; every gate was green over it (disabled content is exempt
+     from 1.4.3, so no contrast gate fires). Corrected to the parent's --reverse.
+     ⬛ BUT THE PARENT'S OWN TREATMENT IS ITSELF VERY LOW CONTRAST — #FFFFFF on #E1E1E1 is
+     1.42:1 in light. That is List-items' promoted, Dave-approved behaviour and I have NOT
+     changed it; it is surfaced as a finding, not swapped. (grey-tint-check: surface, never
+     auto-swap.) The row's meaning does not depend on the glyph — the reason is in text. */
+  .drow.is-disabled{background:transparent; color:var(--disabled-text);}
+  .drow.is-disabled .dr-meta, .drow.is-disabled .dr-title{color:var(--disabled-text); opacity:1;}
+  .drow.is-disabled .dr-glyph{background:var(--disabled-surface); color:var(--reverse);}
+  .drow.is-disabled .dr-dl{color:var(--disabled-text); opacity:1; cursor:not-allowed;}
+
+  /* ---- VARIANT B: single-action row. Whole row downloads; no preview, no nested control.
+         Structurally this IS a List-items row and is drawn only so Dave can compare. ---- */
+  .drow-b{display:flex; align-items:center; gap:16px; width:100%; min-height:var(--row-h,76px);
+    padding:var(--row-pad,14px) 16px; background:transparent; border:0; text-align:left;
+    color:var(--text); cursor:pointer; text-decoration:none; transition:background var(--ease);}
+  .drow-b:hover{background:var(--hover);}
+  .drow-b:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .drow-b .dr-dl-static{flex:none; width:24px; height:24px; display:inline-flex;
+    align-items:center; justify-content:center; color:var(--icon); opacity:var(--alpha-72);}
+  .drow-b .dr-dl-static svg{width:18px; height:18px; display:block; fill:currentColor;}
+
+  /* ---- date group heading (a statements archive is grouped by year) ---- */
+  .dr-group{margin:0 0 8px; color:var(--muted); opacity:var(--alpha-72);}
+
+  /* ---- responsive: below 360c the meta drops under the title (WCAG 1.4.10),
+         mirroring List-items' own container-query reflow ---- */
+  @container (max-width: 360px){
+    .dr-line{flex-wrap:wrap; gap:8px;}
+    .dr-title{flex:1 1 100%;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <!-- byte-matched from knowledge/assets/icons/ — media/document-e-statement.svg,
+         media/document-pdf.svg, media/document.svg, global-controls/download.svg -->
+    <symbol id="dr-statement" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9891 0H0.789062V18H16.7891V3.8L12.9891 0ZM12.9891 1.697L15.0921 3.8H12.9891V1.697ZM15.5891 16.8H1.98906V1.2H11.7891V5H15.5891V16.8ZM10.1291 8.994L6.78906 6.49V10.666L7.71706 10.202L9.11806 13L10.6021 12.257L9.20106 9.458L10.1291 8.994Z" fill="currentColor"/></symbol>
+    <symbol id="dr-pdf" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.69006 9.378H3.37306V10.176H3.64006C4.18706 10.176 4.26106 9.967 4.26106 9.763C4.26106 9.489 4.09506 9.378 3.69006 9.378ZM12.9891 0H2.78906V5.8H3.98906V1.2H11.7891V5H15.5891V16.8H3.98906V15.2H2.78906V18H16.7891V3.8L12.9891 0ZM12.9891 3.8V1.697L15.0921 3.8H12.9891ZM12.7891 13.99V7.01C12.7891 7.004 12.7851 7 12.7791 7H0.799062C0.793062 7 0.789062 7.004 0.789062 7.01V13.99C0.789062 13.995 0.793062 14 0.799062 14H12.7791C12.7851 14 12.7891 13.995 12.7891 13.99ZM4.54906 10.77L4.54806 10.771C4.37706 10.84 4.14306 10.877 3.89006 10.877H3.37306V12.15H2.46106V8.676H3.77606C4.09806 8.676 4.43606 8.692 4.72006 8.883C5.02206 9.088 5.18106 9.404 5.18106 9.795C5.18206 10.239 4.94506 10.604 4.54906 10.77ZM6.60206 12.151H5.47406V8.676H6.71206C7.98706 8.676 8.63406 9.255 8.63406 10.398C8.63306 11.952 7.54806 12.151 6.60206 12.151ZM11.3691 9.383H9.90606V10.058H11.2831V10.76H9.90606V12.152H9.00706V8.676H11.3691V9.383ZM6.64806 9.378H6.38506V11.449H6.62006C7.37906 11.449 7.70306 11.137 7.70306 10.406C7.70306 9.675 7.39806 9.378 6.64806 9.378Z" fill="currentColor"/></symbol>
+    <symbol id="dr-doc" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9891 0H0.789062V18H16.7891V3.8L12.9891 0ZM15.0921 3.8H12.9891V1.697L15.0921 3.8ZM15.5891 16.8H1.98906V1.2H11.7891V5H15.5891V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="dr-download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <!-- ===== A. VARIANT A (default) — two actions per row: open the document, or download it ===== -->
+  <h2 class="t-cm-caption demo-h">Variant A — two actions per row (open = the row · download = the trailing button). PROPOSED</h2>
+  <div class="wrap">
+    <h3 class="dr-group t-cm-section-label">2026</h3>
+    <ul class="doclist">
+      <li class="drow">
+        <span class="dr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dr-statement"/></svg></span>
+        <span class="dr-body">
+          <span class="dr-line">
+            <a class="dr-title t-cm-label" href="#doc-jun">June 2026 statement</a>
+            <span class="status inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">New</span></span>
+          </span>
+          <span class="dr-line"><span class="dr-meta t-cm-caption">1 Jun – 30 Jun 2026 &middot; PDF &middot; 1.2MB</span></span>
+        </span>
+        <button type="button" class="dr-dl" aria-label="Download June 2026 statement, PDF, 1.2 megabytes">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dr-download"/></svg>
+        </button>
+      </li>
+      <li class="drow">
+        <span class="dr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dr-statement"/></svg></span>
+        <span class="dr-body">
+          <span class="dr-line">
+            <a class="dr-title t-cm-label" href="#doc-may">May 2026 statement</a>
+          </span>
+          <span class="dr-line"><span class="dr-meta t-cm-caption">1 May – 31 May 2026 &middot; PDF &middot; 1.1MB</span></span>
+        </span>
+        <button type="button" class="dr-dl" aria-label="Download May 2026 statement, PDF, 1.1 megabytes">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dr-download"/></svg>
+        </button>
+      </li>
+      <li class="drow">
+        <span class="dr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dr-pdf"/></svg></span>
+        <span class="dr-body">
+          <span class="dr-line">
+            <a class="dr-title t-cm-label" href="#doc-tax">Tax certificate 2025/26</a>
+            <span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Action needed</span></span>
+          </span>
+          <span class="dr-line"><span class="dr-meta t-cm-caption">Issued 6 Apr 2026 &middot; PDF &middot; 840KB</span></span>
+        </span>
+        <button type="button" class="dr-dl" aria-label="Download Tax certificate 2025 to 26, PDF, 840 kilobytes">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dr-download"/></svg>
+        </button>
+      </li>
+      <li class="drow">
+        <span class="dr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dr-doc"/></svg></span>
+        <span class="dr-body">
+          <span class="dr-line">
+            <a class="dr-title t-cm-label" href="#doc-long">Mortgage annual review and interest summary — a long document title that should truncate cleanly</a>
+          </span>
+          <span class="dr-line"><span class="dr-meta t-cm-caption">Issued 2 Mar 2026 &middot; PDF &middot; 3.4MB</span></span>
+        </span>
+        <button type="button" class="dr-dl" aria-label="Download Mortgage annual review and interest summary, PDF, 3.4 megabytes">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dr-download"/></svg>
+        </button>
+      </li>
+      <li class="drow is-disabled" aria-disabled="true">
+        <span class="dr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dr-statement"/></svg></span>
+        <span class="dr-body">
+          <span class="dr-line">
+            <span class="dr-title t-cm-label">July 2026 statement</span>
+          </span>
+          <span class="dr-line"><span class="dr-meta t-cm-caption" aria-live="polite">Available from 1 Aug 2026</span></span>
+        </span>
+        <button type="button" class="dr-dl" disabled aria-label="July 2026 statement is not yet available to download">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dr-download"/></svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ===== B. VARIANT B — single action. Structurally a List-items row; drawn for comparison ===== -->
+  <h2 class="t-cm-caption demo-h">Variant B — one action per row (the whole row downloads). ⚠ This form IS a List-items row and should be one. PROPOSED</h2>
+  <div class="wrap">
+    <ul class="doclist">
+      <li><a class="drow-b" href="#dl-jun" download>
+        <span class="dr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dr-statement"/></svg></span>
+        <span class="dr-body">
+          <span class="dr-line"><span class="dr-title t-cm-label">June 2026 statement</span></span>
+          <span class="dr-line"><span class="dr-meta t-cm-caption">1 Jun – 30 Jun 2026 &middot; PDF &middot; 1.2MB</span></span>
+        </span>
+        <span class="dr-dl-static" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dr-download"/></svg></span>
+      </a></li>
+      <li><a class="drow-b" href="#dl-may" download>
+        <span class="dr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dr-statement"/></svg></span>
+        <span class="dr-body">
+          <span class="dr-line"><span class="dr-title t-cm-label">May 2026 statement</span></span>
+          <span class="dr-line"><span class="dr-meta t-cm-caption">1 May – 31 May 2026 &middot; PDF &middot; 1.1MB</span></span>
+        </span>
+        <span class="dr-dl-static" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dr-download"/></svg></span>
+      </a></li>
+    </ul>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Document row",
+    "type": "molecule",
+    "status": "PROPOSED #204 — NOT gated, NOT promoted, NOT ruled. Fintech semantics are Dave's.",
+    "vars": {
+      "--surface": "tertiary/background/default",
+      "--hover": "tertiary/background/hover",
+      "--disabled-surface": "tertiary/background/disabled",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--reverse": "text/reverse",
+      "--disabled-text": "text/disabled",
+      "--icon": "icon/default",
+      "--divider": "divider/border/section",
+      "--success": "rag/success",
+      "--warning": "rag/warning",
+      "--error": "rag/error",
+      "--info": "rag/information",
+      "--success-tint": "rag/success-tint",
+      "--warning-tint": "rag/warning-tint",
+      "--error-tint": "rag/error-tint",
+      "--info-tint": "rag/information-tint",
+      "--glyph-bg": "tertiary/background/hover",
+      "--focus": "focus/ring",
+      "--page": "background/default",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-surface": "border-radius/surface"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/error-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/information-tint", "context": "text" }
+    ],
+    "requiredAria": ["<ul", "<li", "<button", "aria-label", "aria-hidden", "aria-live", "aria-disabled"],
+    "reuses": [
+      "List-items (row shell, two-line body, density tokens, hover-glyph trick) — copied, not edited",
+      "Status indicator (RAG tint chip, form B) — copied verbatim via List-items",
+      "Icon-button (44x44 hit area, 18px glyph, focus ring) — the download control's form",
+      "File-upload (file-type glyphs, byte-matched from assets/icons/media/)",
+      "Amount-display (NOT used here — this row carries no monetary value; cited so the absence is deliberate, not an oversight)"
+    ],
+    "knownFindings": [
+      "STRUCTURAL: this cannot be a List-items `type` value. List-items' row IS a <button>; a two-action document row needs a passive row with a stretched-link primary and a SIBLING download button, because nesting an interactive control inside a <button> is invalid (4.1.1) and swallows the inner accessible name.",
+      "The SINGLE-ACTION form (variant B) IS structurally a List-items row. If Dave rules that the product only needs the single-action form, this component should not exist and row 92 collapses into List-items — a live outcome, stated in the header.",
+      "NO money colour was invented. This row carries no amount, so there was no +/- seat to bind. Where an amount is wanted, the gated Amount-display atom already rules the treatment (monochrome U+2212; rag/success-ink / rag/error-ink the only coloured seats, MONO ONLY, s155-D1 / s158-D2 / s158-D3).",
+      "Status chip = Status-indicator form B copied verbatim from List-items: neutral label on RAG tint (AA on every tint), meaning carried by the LABEL because the warning dot alone is < 3:1 standalone (1.4.11 / 1.4.1).",
+      "44px min-hit-area enforced BY HAND — no gate reads the ruled token. Primary target = the stretched-link row (min-height 76). Download button = 44x44. Measured per theme, both modes, at 1400 and 480.",
+      "TYPE: contributes 0 to the shrink-only ratchet. No raw font declarations in component scope, unlike the parent List-items, which still carries them — its ANATOMY was copied, its type debt was not.",
+      "text/secondary on tertiary/background/hover in dark measures 3.34:1 (< 4.5) — INHERITED from List-items' own open $darkFinding, which calls it SYSTEMIC across every interactive row with secondary text on a hover surface. Not invented around here; the meta finding is the home.",
+      "The disabled row uses aria-disabled + a native disabled button. It is NOT focusable-and-silent: the reason ('Available from 1 Aug 2026') is in the row's own meta line and in the button's accessible name.",
+      "⚠ DEFECT FOUND BY LOOKING AT THE RENDER, INVISIBLE TO EVERY GATE (#204): my first draft coloured the disabled row's glyph --disabled-text, which in LIGHT is #E1E1E1 on a #E1E1E1 disabled surface — the glyph rendered COMPLETELY INVISIBLE. No gate fires because disabled content is exempt from 1.4.3. Corrected to the parent List-items' own treatment (--reverse, white). ⬛ The PARENT'S treatment is itself only 1.42:1 in light (#FFFFFF on #E1E1E1). That is List-items' promoted, Dave-approved behaviour; it is SURFACED here, not swapped."
+    ]
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+{
+  "name": "Popconfirm",
+  "category": "molecule",
+  "$status": "PROPOSED #204, Dave's eye owed. Nothing in this file is a ruling. Built in Lane M of the s203-D2 PM-topology trial from itinerary row 75 ('Popconfirm — Inline confirm-in-place', Feedback & status, P2), verified genuinely absent first-hand before a line was written.",
+  "purpose": "An anchored confirm-in-place: a small bubble that opens beside the object being acted on, asks one question, and offers exactly two exits — cancel and confirm. Use it when a single action needs a check but not an interruption, and the reader benefits from still seeing the thing they are about to change. A Popover ANSWERS; a Popconfirm ASKS.",
+  "$differsFromNeighbours": {
+    "Popover": "The closest neighbour, and the one whose bubble chrome this copies verbatim (surface, elevation border, functional shadow, the 45°-rotated tail square and its per-side border suppression). Popover is INFORMATIONAL and non-modal: arbitrary content, a close ×, and dismissing it means nothing. A Popconfirm has exactly two exits and DISMISSAL IS THE CANCEL, which is why it carries no close × — a × beside a Cancel button offers one outcome under two labels. THE TELL: if dismissing the thing has no consequence, it is a Popover.",
+    "Modals": "A modal is interruptive — scrim, focus trap, the page stops. A Popconfirm is anchored to the object and the page keeps working around it; that is the itinerary's own wording, 'inline confirm-in-place'. Which actions may use which is a PRODUCT decision and is Dave's (see decisionsForDave 1). Nothing here licenses a Popconfirm for an irreversible money movement.",
+    "Confirmation": "The end-of-flow success screen REPORTS an outcome after the fact; this asks BEFORE. Opposite ends of the same event. They share only the button pair, which is copied from it verbatim.",
+    "Tooltip": "Hover/focus annotation, plain text, nothing to act on."
+  },
+  "props": [
+    {
+      "name": "tone",
+      "type": "enum",
+      "values": [
+        "default",
+        "danger"
+      ],
+      "default": "default",
+      "binds": {
+        "danger": "rag/error-ink"
+      },
+      "$note": "danger adds the warning glyph in the ink seat. ⛔ THE STORE HAS NO DESTRUCTIVE BUTTON SEAT — probed #204, there is no button/danger/*, button/destructive/* or button/critical/* in tokens/semantic-colour.json — and this component invents none. Weight is carried by the glyph (rag/error-ink, s151-D1's own two-red values, MONO ONLY), by the VERB in the confirm label, and by the question. Colour is the third channel, never the first.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "trigger",
+      "type": "enum",
+      "values": [
+        "text",
+        "icon-only"
+      ],
+      "default": "text",
+      "$note": "The icon-only form is 44×44 exactly — the ruled minimum, enforced by hand because no gate reads the target token for hit area. Its accessible name names the OBJECT ('Remove Meridian Supplies'), not the mechanism.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "align",
+      "type": "enum",
+      "values": [
+        "start",
+        "end"
+      ],
+      "default": "start",
+      "$note": "Which edge of the anchor the bubble hangs from. A stand-in for real space-aware placement, which is NOT re-drawn here — see the placement residual.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "body",
+      "type": "boolean",
+      "default": true,
+      "$note": "The consequence sentence beneath the question. Optional: a low-stakes confirm in a dense row can be question-plus-actions only, and the third specimen shows that form.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    }
+  ],
+  "variants": [
+    {
+      "name": "default",
+      "use": "a reversible action that still deserves a check — removing a payee, discarding a draft"
+    },
+    {
+      "name": "danger",
+      "use": "an action with a consequence the reader should read before confirming; the glyph takes the error ink and the confirm label repeats the verb"
+    },
+    {
+      "name": "icon-in-row",
+      "use": "a 44×44 icon trigger inside a list row, confirming beside the row rather than over it"
+    }
+  ],
+  "tokens": {
+    "surface": "background/default",
+    "border": "elevation/border — transparent in light, the grey outline in dark; Popover's own elevation recipe",
+    "shadow": "elevation/functional",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "page": "background/default",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface (bubble) and border-radius/control (buttons) — 0, square; no exemption applies",
+    "target": "target/min (44px) — bound in the manifest so the drift gate reads the value, then MEASURED in a real browser because no gate reads it for hit area",
+    "actions": {
+      "primary-bg": "button/primary/background/default",
+      "primary-bg-hover": "button/primary/background/hover",
+      "primary-label": "button/primary/label/default",
+      "ghost-hover": "tertiary/background/hover"
+    },
+    "danger": {
+      "glyph": "rag/error-ink — #DA1A00 on white, #F6604C elsewhere (s151-D1, the two-red law, MONO ONLY). Measured on this surface #204 with the repo's own _contrast_utils.contrast_ratio: 5.090 light, 5.550 dark."
+    }
+  },
+  "$finding-no-destructive-seat": "⛔ THE TOKEN STORE HAS NO DESTRUCTIVE BUTTON SEAT. Probed #204: grep -inE 'danger|destructive|critical' over knowledge/tokens/semantic-colour.json returns NOTHING. Every button seat in the store is primary / secondary / tertiary / quaternary. A destructive confirm is the canonical place a design system reaches for a danger button, and this system does not have one — so the specimen does not invent one, and the destructive variant carries its weight through the glyph, the verb and the question instead. WHETHER ONE SHOULD EXIST IS DAVE'S AND IS NOT SETTLED HERE. It interacts directly with s151-D1 (the two-red law) and s149-D1 (the mono error ink camp, #1A1A1A on #F6604C), both of which are FIRM and neither of which is touched: nothing in this component paints text on an error fill, so the ink camp does not arise.",
+  "$finding-role-vocabulary": "⛔ THE ROLE SHIPPED IS role=\"dialog\", AND THAT IS A GATE CONSTRAINT, NOT A DESIGN CHOICE. role=\"alertdialog\" is the semantically right role for a confirm-in-place and the component was built that way first. It drove _validate_a11y.py RED, verbatim: 'CTRL vocabulary: unknown ARIA role(s) [\"alertdialog\"] — this gate cannot classify them as interactive or structural'. The gate's vocabulary in knowledge/_a11y_target.py already carries BOTH 'alert' and 'dialog' in NON_INTERACTIVE_ROLES and is simply missing their compound. That file is a shared gate outside Lane M's fence and was NOT edited; the snippet fell back to role=\"dialog\" (the gated Popover's own role) so the tree stays green, and the one-line vocabulary addition is proposed to the BUILD-PM. A green gate here is measuring role=\"dialog\", not endorsing it.",
+  "relationships": {
+    "livesInside": [
+      "Template — list or table screen",
+      "Lock-up — payee row",
+      "Data-grid row actions"
+    ],
+    "commonPatterns": [
+      "remove an item from a list",
+      "discard an unsaved draft",
+      "revoke an access grant"
+    ],
+    "mustNotNeighbour": []
+  },
+  "accessibility": {
+    "relatedSC": [
+      "1.4.1",
+      "1.4.3",
+      "1.4.11",
+      "2.1.2",
+      "2.4.3",
+      "2.4.7",
+      "2.5.8",
+      "3.2.1",
+      "4.1.2"
+    ],
+    "role": "The bubble is role=\"dialog\" with aria-labelledby on the question and aria-describedby on the consequence sentence. The trigger carries aria-haspopup=\"dialog\", aria-expanded and aria-controls. See $finding-role-vocabulary: alertdialog is the intended role and is blocked on a gate vocabulary gap.",
+    "focus": "Focus moves to the CONFIRM button on open — the affirmative is the reason the bubble exists, and the cancel is reachable by one Shift+Tab and by Escape. Focus returns to the trigger on every close. Tab is NOT trapped: leaving the bubble closes it, which is Popover's non-modal reading, inherited. ⚠ WHETHER A DESTRUCTIVE CONFIRM SHOULD TRAP IS AN OPEN QUESTION — see decisionsForDave 3.",
+    "dismissal": "Escape cancels, an outside click cancels, re-activating the trigger cancels. Dismissal and cancel are the same outcome by design, which is why there is no close ×.",
+    "colourIsNeverAlone": "The danger glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, the confirm button repeats the verb. data-carries=\"symbol label\" is declared in markup so the rendering gate can check the carrier against real DOM. Dave is astigmatic and red is a problem hue — nothing here leans on it.",
+    "targetSize": "Every interactive target is >= 44px (target/min), MEASURED in a real browser at 1400px and 480px across all four themes. No gate reads the target token for hit area."
+  },
+  "antiPatterns": [
+    "Never give a Popconfirm a close ×. Dismissal here IS the cancel; a × offers the same outcome under a second label and teaches the reader that one of the two is something else.",
+    "Never label the confirm button 'OK' or 'Yes'. It repeats the verb of the action — 'Remove payee', 'Delete standing order' — so a reader who has stopped reading the question still knows what they are agreeing to.",
+    "Never use a Popconfirm where the reader cannot see what will change. If the object is off-screen, the anchor has stopped doing its job and the pattern should be a Modal.",
+    "Never carry the destructive meaning in colour alone. There is no danger button seat in this system; the word does the work.",
+    "Never nest a Popconfirm inside another overlay that already traps focus — the two dismissal models fight and Escape becomes ambiguous.",
+    "REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #204 and the role, the placement mechanism, the focus model and the permitted action class are all open."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json + layout.json, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate rc=0, 0 failures repo-wide with this file present. Every declared var matches the store in BOTH modes. a11y gate rc=0. Type-composite gate rc=0 on this file; repo-wide 1097, unchanged — this file adds 0 to the shrink-only ratchet.",
+    "declaredAbsence": "No rag-on-neutral FILL pair is declared. The only RAG value painted is rag/error-ink on background/default — the INK seat — and it IS declared and measured (5.090 light, 5.550 dark). The non-colour carrier is declared in markup as data-carries=\"symbol label\" per s151-D2 / s160-D2, so the rendering gate can check it against real DOM.",
+    "notRun": "_validate_state_contrast.py was NOT run: a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md and Lane M held no shared-file licence. Declared and owed to the BUILD-PM, not glossed.",
+    "notRegistered": "Absent from knowledge/component-types.json (a shared file, outside the lane fence), so no press-physics AUTO-PARTIAL is injected and the pressables carry colour-only states — the same declared state the gated Popover shipped in.",
+    "renderProof": "See the receipt at notes/_receipts/2026-08-19-204-wave-laneM-feedback-layout.md for the driven figures."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 81/75 (2026-07-14 sheet), row 75: 'Popconfirm — Inline confirm-in-place', Feedback & status, P2. Confirmed a TRUE gap at #204 by filename greps under every plausible alias, a content grep over knowledge/snippets and knowledge/components, and a direct grep of knowledge/_rulings.json (the store itself, not the retrieval index, which _capture_gate.py --selftest reports STALE). Built #204 Lane M from two gated parents (Popover, Confirmation), both untouched. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it."
+  },
+  "interactive": true,
+  "stateModel": "full",
+  "responsive": {
+    "bubble": "max-width min(320px, 100vw - 32px) so it can never overflow a narrow viewport",
+    "actions": "the pair stacks column-reverse and goes full width at <=480px (breakpoint/s) — Confirmation's own narrow behaviour, inherited",
+    "$status": "PROPOSED #204, Dave's eye owed"
+  },
+  "dimensions": {
+    "padding": 16,
+    "gap": 8,
+    "tailSize": 10,
+    "glyph": 18,
+    "buttonHeight": 44,
+    "buttonMinWidth": 96,
+    "iconTrigger": 44,
+    "$note": "buttonHeight 44 and buttonMinWidth 96 are Confirmation's Button atom, unchanged. tailSize 10 is Popover's tail, unchanged. iconTrigger 44 is the ruled min-hit-area."
+  },
+  "$decisionsForDave": [
+    "1 · WHICH ACTIONS MAY USE A POPCONFIRM AT ALL. Fintech semantics are yours. A confirm-in-place is right for removing a payee; it is probably wrong for sending money. Where is the line, and should the component's meta name it as a hard rule rather than guidance?",
+    "2 · SHOULD A DESTRUCTIVE BUTTON SEAT EXIST? The store has none (probed, see $finding-no-destructive-seat). This specimen works without one. Adding one touches s151-D1 and s149-D1, both FIRM, and is not something a worker may propose into existence.",
+    "3 · DOES A DESTRUCTIVE CONFIRM TRAP FOCUS? This inherits Popover's non-modal reading: no trap, leaving closes. The alternative reading is that a decision the page is waiting on should hold focus until it is made. One is not obviously right.",
+    "4 · role=\"alertdialog\" or role=\"dialog\"? See $finding-role-vocabulary. The gate cannot currently express the former.",
+    "5 · PLACEMENT. Popover owns a real space-aware placer; this anchors in flow so the open state renders statically. Should Popconfirm reuse Popover's placer (one mechanism, two components) or keep a simpler anchored form?",
+    "6 · WHICH SIDE THE CONFIRM SITS ON. Cancel-then-confirm, left to right, is the specimen's order and it follows Confirmation's stacking. It is not ruled.",
+    "7 · IS 'Popconfirm' THE NAME? It is the itinerary's word and a common one in other systems. It is not obviously the word this system would choose."
+  ],
+  "$copiedFrom": [
+    "Popover (bubble chrome, dismiss + return-focus behaviour)",
+    "Confirmation (the .btn primary/ghost action pair)",
+    "Links (nothing — no link appears in this component)"
+  ],
+  "$stateModelNote": "'full' by schema enum (only 'simple' and 'full' are legal). The real model is open/closed with return-focus: Escape, outside click and re-activating the trigger all cancel, and focus returns to the trigger on every close."
+}

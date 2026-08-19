@@ -60,3 +60,13 @@ tokens fast, so the PANEL IS READ AT THE OPENER before sizing the wave, every ti
 5. Anything a PM digest LOST that Fable later needed (the lossy-hop tally, honest).
 
 ⛔ The trial rules nothing permanent. Dave rules keep/kill/adjust on the numbers.
+
+---
+
+## ADDENDUM (#204, by addition): the trial RAN, the shape is ADOPTED with four amendments
+
+Ruled `s204-D1` (Dave, #204). The four amendments (incremental claim table · fix loop inside
+the build-PM's mandate · run-before-cite · verifier render lane) and the five-item
+mechanisation programme are homed at `notes/_briefs/2026-08-19-204-mechanisation-programme-v1.md`
+— ONE home, this is a pointer (ADR-0017). Trial numbers to Dave at the #204 wrap; the
+topology's PERMANENCE verdict remains his on those numbers per `s203-D2`.

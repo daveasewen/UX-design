@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Popconfirm — reference implementation (PROPOSED #204)</title>
+<!--
+  ⚠⚠ PROPOSED #204, 2026-08-19 (Lane M). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. This file is a SPECIMEN for review, built through the
+  gated-component route so it is reviewable at the same fidelity as a gated snippet. Nothing in it
+  is a ruling. Itinerary row 75 ("Popconfirm — Inline confirm-in-place", Feedback & status, P2)
+  was verified genuinely absent first-hand before a line was written: no snippet, no meta, and no
+  content match under popconfirm / confirm-in-place / inline confirm anywhere in knowledge/.
+
+  ★ SPECIMENS COPY APPROVED ARTEFACTS, THEY DO NOT RE-DRAW THEM. Every atom below is lifted from a
+  gated snippet and named here so a reviewer can diff it:
+    · the bubble chrome (surface, elevation border, functional shadow, tail geometry, the tail's
+      45°-rotated square and its border-suppression per side) — Popover.reference.html, verbatim.
+    · the action pair (.btn / .btn.primary / .btn.ghost, 44px height, 96px min-width, control
+      radius, brightness press) — Confirmation.reference.html, verbatim.
+    · the dismiss/return-focus behaviour (Esc, outside click, toggle, focusout) — Popover, verbatim.
+    · the warning glyph — knowledge/assets/icons/status-icons/warning-line.svg, byte-matched.
+    · the delete glyph on the icon-trigger form — global-controls/delete.svg, byte-matched.
+  Neither parent file was touched.
+
+  HOW THIS DIFFERS FROM ITS FOUR GATED NEIGHBOURS ————————————————————————————————————
+  · vs POPOVER (the closest, and the one it borrows its chrome from). A Popover ANSWERS; a
+    Popconfirm ASKS. Popover is an informational non-modal dialog holding arbitrary content and a
+    close ×, and dismissing it means nothing. A Popconfirm has exactly TWO exits — cancel and
+    confirm — and DISMISSAL IS THE CANCEL, which is why it carries no close ×: a × beside a Cancel
+    button offers the same outcome twice under two different labels. THE TELL: if dismissing the
+    thing has no consequence, it is a Popover.
+  · vs MODALS. A modal is interruptive: scrim, focus trap, the page stops. A Popconfirm is
+    ANCHORED to the object being acted on and the page keeps working around it — that is exactly
+    the itinerary's wording, "inline confirm-in-place". The reader never loses sight of the row
+    they are about to delete. ⛔ WHICH ACTIONS MAY USE WHICH IS A PRODUCT DECISION AND IS DAVE'S:
+    see $decision-1. Nothing here licenses a Popconfirm for an irreversible money movement.
+  · vs CONFIRMATION (the end-of-flow success screen). That component REPORTS an outcome after the
+    fact; this one asks BEFORE. They sit at opposite ends of the same event and share only the
+    button pair, which is copied from it.
+  · vs TOOLTIP. Hover/focus annotation, plain text, nothing to act on.
+
+  ⛔ THE ROLE SHIPPED HERE IS role="dialog", AND THAT IS A GATE CONSTRAINT, NOT A DESIGN CHOICE.
+  The semantically right role for a confirm-in-place is role="alertdialog" — it interrupts to
+  require a decision, which is exactly what ARIA defines that role for. It was built that way
+  first and DROVE _validate_a11y.py RED, verbatim: "CTRL vocabulary: unknown ARIA role(s)
+  ['alertdialog'] — this gate cannot classify them as interactive or structural". The gate's
+  vocabulary in knowledge/_a11y_target.py already carries BOTH "alert" and "dialog" in
+  NON_INTERACTIVE_ROLES and is simply missing their compound. That file is a shared gate outside
+  this lane's fence, so it was NOT edited; the snippet fell back to role="dialog" (the gated
+  Popover's own role) so the tree stays green, and the one-line vocabulary addition is proposed
+  to the BUILD-PM in the receipt. ⚠ THE ROLE IS THEREFORE AN OPEN QUESTION, NOT A SETTLED ONE —
+  see $decision-2. A green gate here is measuring role="dialog", not endorsing it.
+
+  ⬛ PLACEMENT IS DECLARED, NOT RE-DRAWN. Popover owns the SPACE-AWARE placer (fixed positioning,
+  flip above/below, viewport clamp, tail tracking) and it is a gated mechanism. This specimen
+  anchors the bubble in flow (position:absolute inside a position:relative anchor) so that the
+  OPEN state is renderable statically — every review pane can show the thing open, which a
+  JS-placed overlay cannot. A production Popconfirm should REUSE Popover's placer rather than
+  grow a second one; that is a proposal in the receipt, not a ruling, and the limitation is
+  stated here rather than hidden.
+
+  ⛔ THE STORE HAS NO DESTRUCTIVE BUTTON SEAT — see $finding-no-danger-button. There is no
+  button/danger/*, button/destructive/* or button/critical/* anywhere in tokens/semantic-colour.json
+  (probed #204). So the destructive variant does NOT invent one. It carries its weight three ways
+  that already exist: the warning glyph in rag/error-ink (the s151-D1 two-red law's own values,
+  #DA1A00 on white / #F6604C elsewhere, MONO ONLY), the WORD in the confirm button's label
+  ("Delete payee", never "OK"), and the question itself. Colour never travels alone — the glyph is
+  aria-hidden and every meaning it carries is also written down. data-carries="symbol label".
+
+  TYPE: composites only, no raw font declarations in component scope — trigger + actions
+  .t-cm-button · question .t-cm-ctl-16 · body .t-ed-body-small · fine print .t-cm-legal ·
+  demo headings .t-cm-caption (demo chrome). Contribution to the shrink-only ratchet: 0.
+  SHAPE: square — border-radius/surface for the bubble, border-radius/control for the buttons.
+  No exemption applies; the angular rule stands.
+  MOTION: opacity only, 150ms, the Popover ease. No press physics: this file is NOT registered in
+  component-types.json (a shared file, outside this lane's fence) so no AUTO-PARTIAL is injected
+  and the pressables carry colour-only states — the same declared state Popover shipped in.
+  TARGETS: every interactive target is >= the ruled 44px minimum (target/min, bound in the
+  manifest so the drift gate reads it) and was MEASURED in a real browser, not assumed.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
+:is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: this snippet declares NO raw font-family on body — every text element carries a
+     .t-cm- or .t-ed- composite from canon/type.css, which is the mandatory route. The usual
+     `body{font-family:var(--font)}` boilerplate is exactly the declaration the shrink-only
+     ratchet counts. Progress-bar (#174) is the walked precedent; Kpi-tile (#203) the recent one.
+     TYPE-002 contribution here: 0. */
+  :root{ --ease:150ms ease; }
+  [data-theme="light"]{
+    --surface:#FFFFFF;      /* background/default — Popover's bubble surface, verbatim */
+    --pop-border:#FFFFFF00; /* elevation/border — transparent in light; the shadow does the lifting */
+    --shadow:#00000033;     /* elevation/functional */
+    --text:#1A1A1A;         /* text/default */
+    --muted:#1A1A1A;        /* text/secondary */
+    --page:#FFFFFF;         /* background/default */
+    --focus:#305A85;        /* focus/ring */
+    --pri:#1A1A1A;          /* button/primary/background/default — Confirmation's pair, verbatim */
+    --pri-hover:#636363;    /* button/primary/background/hover */
+    --on-pri:#FFFFFF;       /* button/primary/label/default */
+    --ghost-hover:#F0F0F0;  /* tertiary/background/hover */
+    --danger-ink:#DA1A00;   /* rag/error-ink — s151-D1 two-red law, the ON-WHITE leg */
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --target-min:44px;      /* target/min — the ruled minimum hit area, bound so the gate reads it */
+  }
+  [data-theme="dark"]{
+    --surface:#1A1A1A;
+    --pop-border:#808080;   /* elevation/border — the grey OUTLINE that replaces the shadow in dark */
+    --shadow:#000000D9;
+    --text:#FFFFFF;
+    --muted:#FFFFFF;
+    --page:#1A1A1A;
+    --focus:#4587A7;
+    --pri:#FAFAFA;
+    --pri-hover:#B2B2B2;
+    --on-pri:#333333;
+    --ghost-hover:#232323;
+    --danger-ink:#F6604C;   /* rag/error-ink — s151-D1, "the light red everywhere else" */
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --target-min:44px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}   /* demo chrome — not the component */
+  .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:56ch;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  /* ---- the anchor: the popconfirm is positioned against the OBJECT being acted on ---- */
+  .pc-anchor{position:relative; display:inline-flex;}
+
+  /* ---- the trigger. Two forms: a text button, and an icon button in a row. ---- */
+  .pc-trigger{min-height:var(--target-min); min-width:96px; padding:0 16px; display:inline-flex;
+    align-items:center; justify-content:center; gap:8px; background:transparent; color:var(--text);
+    border:1px solid var(--text); border-radius:var(--border-radius-control); cursor:pointer;
+    transition:background var(--ease);}
+  .pc-trigger:hover{background:var(--ghost-hover);}
+  .pc-trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .pc-trigger svg{width:16px; height:16px; display:block; fill:currentColor; flex:none;}
+  /* icon-only form — 44x44, the ruled minimum, enforced by hand because no gate reads the token */
+  .pc-trigger.icon-only{min-width:var(--target-min); width:var(--target-min); height:var(--target-min);
+    padding:0; border:0;}
+
+  /* ---- the bubble. Popover's chrome, verbatim; anchored in flow rather than fixed (declared). ---- */
+  .pc{--tail-x:24px; position:absolute; z-index:50; top:calc(100% + 12px); left:0;
+    width:max-content; max-width:min(320px, calc(100vw - 32px));
+    background:var(--surface); color:var(--text); border:1px solid var(--pop-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow); padding:16px;
+    text-align:left; opacity:0; pointer-events:none; transition:opacity var(--ease);}
+  .pc.is-open{opacity:1; pointer-events:auto;}
+  .pc::after{content:""; position:absolute; left:var(--tail-x); width:10px; height:10px;
+    background:var(--surface); border:1px solid var(--pop-border);
+    bottom:100%; transform:translate(-50%,50%) rotate(45deg); border-bottom:0; border-right:0;}
+  /* right-anchored form, for a trigger near the end of a row */
+  .pc.align-end{left:auto; right:0;}
+  .pc.align-end::after{left:auto; right:calc(var(--tail-x) - 5px);}
+
+  .pc-head{display:flex; align-items:flex-start; gap:8px; margin-bottom:8px;}
+  .pc-glyph{flex:none; width:18px; height:18px; display:inline-flex; margin-top:1px;}
+  .pc-glyph svg{width:18px; height:18px; display:block; fill:currentColor;}
+  .pc-q{margin:0; flex:1 1 auto;}
+  .pc-body{margin:0 0 12px; color:var(--muted); opacity:var(--alpha-84);}
+  /* DANGER variant — the glyph takes the ink seat. The WORD does the work; the hue is a second
+     channel, never the only one. s149-D1's mono error ink camp is untouched: nothing here paints
+     text on an error fill, so the #1A1A1A-on-#F6604C camp does not arise. */
+  .pc.danger .pc-glyph{color:var(--danger-ink);}
+
+  /* ---- the action pair — Confirmation's Button atom, verbatim ---- */
+  .pc-actions{display:flex; gap:8px; justify-content:flex-end;}
+  /* ⚠ min-height, NOT a fixed height. Confirmation's atom writes height:44px, which is correct for
+     its own one-word labels; a Popconfirm's confirm label REPEATS THE VERB ("Delete standing
+     order") and a fixed 44px box crops it the moment it wraps. Caught by looking at the render,
+     not by any gate. min-height keeps the ruled 44px floor and lets a two-line label breathe —
+     a declared divergence from the parent, for a reason the parent never had to face. */
+  .pc .btn{min-height:var(--target-min); min-width:96px; padding:8px 20px; border:0; text-align:center;
+    border-radius:var(--border-radius-control); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center;
+    transition:background var(--ease), filter 90ms cubic-bezier(0,0,.58,1);}
+  .pc .btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .pc .btn:active{filter:brightness(.9);}
+  .pc .btn.primary{background:var(--pri); color:var(--on-pri);}
+  .pc .btn.primary:hover{background:var(--pri-hover);}
+  .pc .btn.ghost{background:transparent; color:var(--text);}
+  .pc .btn.ghost:hover{background:var(--ghost-hover);}
+
+  /* ---- a list row, so the "in place" claim is visible rather than described ---- */
+  .row-demo{width:var(--demo-width, 460px); max-width:100%;
+    border:1px solid var(--pop-border, transparent);}
+  .payee-row{display:flex; align-items:center; gap:12px; padding:8px 0;}
+  /* text-box-edge:text — the leading-trim rule above sets `cap alphabetic`, which combined with
+     overflow:hidden CLIPS DESCENDERS ("Meridian Supplies" lost the tail of its p). Same defect
+     class Lane K hit at #203 and the same fix. Caught only by looking at the render. */
+  .payee-row .who{flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; text-box-edge:text text;}
+
+  @media (max-width:480px){
+    .pc{max-width:calc(100vw - 40px);}
+    .pc-actions{flex-direction:column-reverse;}
+    .pc .btn{width:100%;}   /* full-width stacked pair — Confirmation's own narrow behaviour */
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .pc .btn:active{filter:none !important;}
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- byte-matched: knowledge/assets/icons/status-icons/warning-line.svg -->
+    <symbol id="pc-warning" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/delete.svg -->
+    <symbol id="pc-delete" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <div style="min-height:300px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1">Remove payee</button>
+      <div class="pc is-open" id="pc1" role="dialog" aria-labelledby="pcq1" aria-describedby="pcb1">
+        <div class="pc-head">
+          <p class="pc-q t-cm-ctl-16" id="pcq1">Remove Alder Consulting from your payees?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb1">You can add them again later. Payments already scheduled to this payee are not affected.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove payee</button>
+        </div>
+      </div>
+    </span>
+  </div>
+
+  <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <div style="min-height:330px;">
+    <span class="pc-anchor">
+      <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2">Delete standing order</button>
+      <div class="pc danger is-open" id="pc2" role="dialog" aria-labelledby="pcq2" aria-describedby="pcb2" data-carries="symbol label">
+        <div class="pc-head">
+          <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning"/></svg></span>
+          <p class="pc-q t-cm-ctl-16" id="pcq2">Delete the standing order to Kestrel Property?</p>
+        </div>
+        <p class="pc-body t-ed-body-small" id="pcb2">This cannot be undone. The next payment, due 1 September, will not be sent.</p>
+        <div class="pc-actions">
+          <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Keep it</button>
+          <button type="button" class="btn primary t-cm-button" data-pc="confirm">Delete standing order</button>
+        </div>
+      </div>
+    </span>
+  </div>
+  <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+
+  <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <div class="row-demo" style="min-height:300px;">
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc3" aria-label="Remove Meridian Supplies">
+          <svg aria-hidden="true"><use href="#pc-delete"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc3" role="dialog" aria-labelledby="pcq3" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq3">Remove Meridian Supplies?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div class="payee-row">
+      <span class="who t-cm-ctl-14">Kestrel Property · sort code 20-45-01</span>
+      <span class="pc-anchor">
+        <button type="button" class="pc-trigger icon-only" aria-haspopup="dialog" aria-expanded="false" aria-controls="pc4" aria-label="Remove Kestrel Property">
+          <svg aria-hidden="true"><use href="#pc-delete"/></svg>
+        </button>
+        <div class="pc danger align-end" id="pc4" role="dialog" aria-labelledby="pcq4" data-carries="symbol label">
+          <div class="pc-head">
+            <span class="pc-glyph" aria-hidden="true"><svg><use href="#pc-warning"/></svg></span>
+            <p class="pc-q t-cm-ctl-16" id="pcq4">Remove Kestrel Property?</p>
+          </div>
+          <div class="pc-actions">
+            <button type="button" class="btn ghost t-cm-button" data-pc="cancel">Cancel</button>
+            <button type="button" class="btn primary t-cm-button" data-pc="confirm">Remove</button>
+          </div>
+        </div>
+      </span>
+    </div>
+    <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+  </div>
+
+  <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The
+       only RAG value this component paints is rag/error-ink on the bubble surface — the INK seat,
+       which is a measured pair and IS declared (5.090 light / 5.550 dark, computed with the repo's
+       own _contrast_utils.contrast_ratio at #204). The non-colour carrier is declared in markup as
+       data-carries="symbol label" so the rendering gate can check it against real DOM. -->
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Popconfirm",
+    "$status": "PROPOSED #204, Dave's eye owed — nothing here is a ruling. Itinerary row 75, verified absent first-hand.",
+    "vars": { "--surface": "background/default", "--pop-border": "elevation/border", "--shadow": "elevation/functional",
+              "--text": "text/default", "--muted": "text/secondary", "--page": "background/default",
+              "--focus": "focus/ring", "--pri": "button/primary/background/default",
+              "--pri-hover": "button/primary/background/hover", "--on-pri": "button/primary/label/default",
+              "--ghost-hover": "tertiary/background/hover", "--danger-ink": "rag/error-ink",
+              "--border-radius-surface": "border-radius/surface", "--border-radius-control": "border-radius/control",
+              "--target-min": "target/min" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "button/primary/label/default", "bg": "button/primary/background/default", "context": "text" },
+      { "fg": "button/primary/label/default", "bg": "button/primary/background/hover", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
+      { "fg": "rag/error-ink", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "warning": "status-icons/warning-line.svg", "delete": "global-controls/delete.svg" },
+    "requiredAria": ["role=\"dialog\"", "aria-labelledby", "aria-describedby", "aria-expanded", "aria-controls", "aria-haspopup", "aria-label"],
+    "$note": "PROPOSED #204 (Lane M). A Popconfirm ASKS; a Popover ANSWERS. It borrows Popover's bubble chrome verbatim and Confirmation's button pair verbatim, and refuses Popover's close × because dismissal here IS the cancel — a × beside a Cancel button offers one outcome under two labels. ⛔ ROLE: this ships role=\"dialog\" as a GATE CONSTRAINT, not a design choice. role=\"alertdialog\" is the semantically right role for a confirm-in-place, was built first, and drove _validate_a11y.py RED — its vocabulary in _a11y_target.py carries both 'alert' and 'dialog' in NON_INTERACTIVE_ROLES and is missing their compound. That gate is a shared file outside this lane's fence and was NOT edited; the one-line addition is proposed to the BUILD-PM. The role is an OPEN question, and a green gate is measuring dialog, not endorsing it. It is NOT a Modal: no scrim, no focus trap, the page stays live and the object being acted on stays visible behind it — 'confirm in place'. WHICH ACTIONS MAY USE IT IS DAVE'S: nothing here licenses a Popconfirm for an irreversible money movement. ⛔ THE STORE HAS NO DESTRUCTIVE BUTTON SEAT (probed #204: no button/danger/*, button/destructive/*, button/critical/* in semantic-colour.json), so the destructive variant invents none — it carries weight via the rag/error-ink glyph (s151-D1's own two-red values, MONO ONLY), the verb in the confirm label, and the question. Placement: Popover owns the space-aware placer and it is NOT re-drawn here; this bubble anchors in flow so the open state renders statically. Not registered in component-types.json (shared file, outside the lane fence), so no press-physics partial is injected and the pressables carry colour-only states — Popover's own declared state."
+  }
+  </script>
+  <script>
+    /* Dismiss + focus behaviour copied from Popover.reference.html and adapted: the trigger
+       toggles, Escape cancels, an outside click cancels, focus moves in on open and returns to
+       the trigger on close. Tab is NOT trapped (non-modal, Popover's reading). The two action
+       buttons close: 'cancel' and 'confirm' differ in what a real product would then DO, which
+       is composition-level and is deliberately not invented here — both simply close and return
+       focus, and that is declared rather than faked. */
+    let openAnchor = null;
+    function closePc(a){
+      if(!a) return;
+      const trg=a.querySelector('.pc-trigger'), pc=a.querySelector('.pc');
+      pc.classList.remove('is-open'); trg.setAttribute('aria-expanded','false');
+      if(openAnchor===a) openAnchor=null;
+    }
+    document.querySelectorAll('.pc-anchor').forEach(a=>{
+      const trg=a.querySelector('.pc-trigger'), pc=a.querySelector('.pc');
+      trg.addEventListener('click', ()=>{
+        const isOpen=pc.classList.contains('is-open');
+        closePc(openAnchor);
+        if(!isOpen){
+          pc.classList.add('is-open'); trg.setAttribute('aria-expanded','true'); openAnchor=a;
+          const f=pc.querySelector('.btn.primary'); if(f) f.focus();
+        } else { trg.focus(); }
+      });
+      pc.querySelectorAll('[data-pc]').forEach(b=>{
+        b.addEventListener('click', ()=>{ closePc(a); trg.focus(); });
+      });
+      pc.addEventListener('focusout', e=>{ if(!a.contains(e.relatedTarget)) closePc(a); });
+    });
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape' && openAnchor){ const t=openAnchor.querySelector('.pc-trigger'); closePc(openAnchor); t.focus(); }
+    });
+    document.addEventListener('click', e=>{ if(openAnchor && !openAnchor.contains(e.target)) closePc(openAnchor); });
+  </script>
+  </body>
+</html>

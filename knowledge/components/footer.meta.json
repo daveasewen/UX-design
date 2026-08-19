@@ -1,0 +1,162 @@
+{
+  "name": "Footer",
+  "category": "organism",
+  "$status": "PROPOSED #204, Dave's eye owed. Nothing in this file is a ruling. Built in Lane M of the s203-D2 PM-topology trial from itinerary row 81 ('Footer — Incl. doormat / mega-footer', Layout & containers, P2), verified genuinely absent first-hand.",
+  "purpose": "The SITE FOOTER: the contentinfo landmark at the end of a page, carrying the link groups a reader goes looking for, the legal links a regulator requires, and the copyright line. Two forms — a doormat (mega-footer) for pages a reader browses, and a slim legal bar for authenticated application screens where a four-column mat would be in the way.",
+  "$vocabularyCollision": "★★ DECLARED BEFORE ANYTHING ELSE, because this is the s202-D3 class — the class where Dave rejected a build because one word carried two meanings and every assertion stayed green. In this repo 'footer' ALREADY means the LAYOUT FOOTER of a container: Drawer's footer actions, Modals' dialog footer, Data-grid's pagination footer, Command-palette's hint bar. The gated ACTION-BAR describes itself, verbatim, as 'A footer bar that pins a screen/flow's actions'. This component is the OTHER footer — the document's end matter. The two can appear on the same screen (an Action-bar pinned above a site Footer) and they are not variants of one another. ⛔ IF THIS COMPONENT KEEPS THE NAME 'Footer' IT INHERITS THE COLLISION. Renaming is Dave's; nothing here renames anything.",
+  "$differsFromNeighbours": {
+    "Links": "Links owns the link ATOM and already ships .related, which its own source calls 'the footer / utility pattern' — a wrapping list of related links. Footer is the REGION that arranges them: the landmark, the named columns, the legal bar, the copyright, the rule that separates the page from its end matter. THE TELL: strip the landmark and the group headings from a Footer and what is left is a .related list, and it should be one. links.meta.json already declares context:footer with a Footer relationship — the component graph anticipated this component before it existed.",
+    "Action-bar": "See $vocabularyCollision. Action-bar pins the ACTIONS of a flow and belongs to the task; its contents change per screen. Footer is the end of the DOCUMENT and belongs to the site; its contents do not change per screen.",
+    "Headers": "The masthead sibling. A header carries wayfinding a reader is about to use; a footer carries the links they went looking for and the text the regulator requires. A doormat that simply duplicates the masthead is a doormat that has stopped being read.",
+    "Navigations / Sidebar-nav": "Those model STATE — current page, expansion, sections, disclosure. A doormat is flat and stateless; the only state it carries is aria-current=\"page\", inherited from the Links atom unchanged."
+  },
+  "props": [
+    {
+      "name": "form",
+      "type": "enum",
+      "values": [
+        "doormat",
+        "slim"
+      ],
+      "default": "doormat",
+      "$note": "doormat = brand statement + back-to-top + named link columns + legal bar. slim = legal bar and copyright only. Which surfaces get which is a product decision and is NOT settled here.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "groups",
+      "type": "array",
+      "default": [],
+      "$note": "Each group is a <nav> with aria-labelledby pointing at its own heading, so a screen-reader user gets four named navigation landmarks rather than one anonymous list of forty links. The specimen shows four groups; the auto-fit track floor is 180px.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    },
+    {
+      "name": "backToTop",
+      "type": "boolean",
+      "default": true,
+      "$note": "The arrow link from the gated Links atom, rotated to point up, glyph byte-matched from arrows-and-chevrons/arrow-up.svg. 44px tall.",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    }
+  ],
+  "variants": [
+    {
+      "name": "doormat",
+      "use": "the end of a marketing or servicing page — the reader may still be looking for something"
+    },
+    {
+      "name": "slim",
+      "use": "the end of an authenticated application screen — the reader came to do one thing and is finishing it"
+    }
+  ],
+  "slots": {
+    "brand": {
+      "accepts": {
+        "capability": [
+          "statement"
+        ]
+      },
+      "required": false,
+      "use": "the short statement or brand line that opens a mega-footer, beside the back-to-top link",
+      "$status": "PROPOSED #204, Dave's eye owed"
+    }
+  },
+  "tokens": {
+    "page": "background/default",
+    "surface": "surface/subtle — the footer band, so the end matter reads as a band rather than as more page",
+    "divider": "divider/border/section — the 1px rule between the page and the footer",
+    "subdivider": "divider/border/subsection — inside the footer, between the brand block, the mat and the legal bar",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "icon": "icon/default",
+    "focus": "focus/ring",
+    "radius": "border-radius/control — the link focus shape only; there is no other radius in this component",
+    "target": "target/min (44px)",
+    "$rag": "NONE. No RAG value appears anywhere in this component — there is no status here to carry."
+  },
+  "$finding-44px-cost": "⚠ EVERY footer link is a >= 44px target at EVERY width, not only when stacked. That is STRICTER than the gated Links .related pattern, which grows its targets only at <=420px, and it is a visible design cost: a four-column doormat with four links per column becomes measurably taller than the compact typographic ideal a footer usually aims for. The trade is a design decision, not a technicality — see $decisionsForDave 2. No gate reads the target token for hit area, so this was MEASURED in a real browser rather than assumed.",
+  "$finding-type-debt-conflict": "★★ 'COPY THE APPROVED ARTEFACT VERBATIM' AND 'ADD ZERO TO THE SHRINK-ONLY TYPE RATCHET' CONFLICT WHEN THE APPROVED ARTEFACT IS ITSELF IN DEBT. The gated Links atom writes font-weight:500 twice in its own CSS — on a.arrow and on a.lnk[aria-current=\"page\"] — and those are exactly the raw declarations TYPE-002 counts. Copying them verbatim DROVE _validate_type_composites.py red on this file (measured #204: 2 violations). The emphasis therefore arrives here through canon/type.css's own .t-ed-body-small .em modifier, applied in the MARKUP (the T-D14 markup-class route): identical rendered weight, zero added debt. Links itself was NOT edited — it is a gated shared artefact and its two declarations are the BUILD-PM's to retire. THE DIVERGENCE FROM THE PARENT IS DECLARED, NOT HIDDEN.",
+  "relationships": {
+    "livesInside": [
+      "Template — page",
+      "Template — authenticated app shell"
+    ],
+    "commonPatterns": [
+      "site end matter",
+      "legal bar",
+      "utility navigation"
+    ],
+    "mustNotNeighbour": []
+  },
+  "accessibility": {
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "1.4.10",
+      "2.4.1",
+      "2.4.4",
+      "2.4.7",
+      "2.4.8",
+      "2.5.8"
+    ],
+    "landmark": "<footer role=\"contentinfo\"> with an aria-label naming which footer it is ('Site footer' / 'Legal footer'), so a page carrying both a doormat and a slim bar does not present two anonymous contentinfo landmarks.",
+    "grouping": "Each link column is a <nav> with aria-labelledby pointing at its own visible heading. Forty links in one anonymous list is not navigable; four named landmarks are.",
+    "currentPage": "aria-current=\"page\" marked by WEIGHT plus a persistent 2px underline — never colour alone. Inherited from the Links atom; the weight arrives by composite modifier rather than by raw declaration (see $finding-type-debt-conflict).",
+    "linkText": "Every link names its destination. No 'click here', no 'more', no 'read more' — the aca-004 class the snippet gate blocks.",
+    "targetSize": "Every link is a >= 44px target at every width. MEASURED, not assumed; no gate reads the target token for hit area.",
+    "colourIsNeverAlone": "Links are distinguished by an underline, not by colour. No RAG value appears in this component at all."
+  },
+  "antiPatterns": [
+    "Never let a doormat duplicate the masthead navigation. A footer that repeats the header is a footer that has stopped being read.",
+    "Never put the primary task's actions in a site Footer. That is an Action-bar, and the two are different components that share a word.",
+    "Never ship an anonymous <footer> with no aria-label on a page that also has a container footer — a screen-reader user then has two contentinfo regions and no way to tell them apart.",
+    "Never let a link column exceed what a reader will scan. If a group needs more than about six links it is two groups, or it is a page.",
+    "Never carry legal text as an image or a PDF-only link with no text alternative in the bar itself.",
+    "REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #204, and the name, the 44px trade and the band colour are all open."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "knowledge/tokens/semantic-colour.json + layout.json, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate rc=0, 0 failures repo-wide with this file present. Every declared var matches the store in BOTH modes. a11y gate rc=0. Type-composite gate rc=0 on this file after the .em rebind; repo-wide 1097, unchanged — this file adds 0 to the shrink-only ratchet.",
+    "declaredAbsence": "No RAG pair is declared because no RAG value is painted. The declared pairs are the four neutral ones: text/default and text/secondary on surface/subtle, icon/default on surface/subtle (held to 4.5 by icon-015), and text/default on background/default.",
+    "notRun": "_validate_state_contrast.py was NOT run: a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md and Lane M held no shared-file licence. Declared and owed to the BUILD-PM.",
+    "notRegistered": "Absent from knowledge/component-types.json (a shared file, outside the lane fence).",
+    "renderProof": "See the receipt at notes/_receipts/2026-08-19-204-wave-laneM-feedback-layout.md for the driven figures."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 81 (2026-07-14 sheet): 'Footer — Incl. doormat / mega-footer', Layout & containers, P2. Confirmed a TRUE gap at #204 by filename greps under every plausible alias, a content grep over knowledge/snippets and knowledge/components (whose five 'footer' hits are all the OTHER footer — Drawer, Modals, Data-grid, Command-palette, Action-bar), and a direct grep of knowledge/_rulings.json (the store itself, not the retrieval index, which _capture_gate.py --selftest reports STALE). Built #204 Lane M from one gated parent (Links), untouched. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it."
+  },
+  "interactive": true,
+  "stateModel": "simple",
+  "responsive": {
+    "mat": "auto-fit grid, minmax(180px, 1fr), collapsing to one column below a 560px CONTAINER width — a container query, so a footer inside a narrow panel collapses on a wide screen",
+    "legal": "the legal list stacks below the same container width; the copyright line moves beneath it",
+    "targets": "nothing has to grow at narrow widths because everything is already 44px at every width — that is the point of deciding it once",
+    "$status": "PROPOSED #204, Dave's eye owed"
+  },
+  "dimensions": {
+    "innerMaxWidth": 1120,
+    "innerPaddingX": 16,
+    "innerPaddingY": 32,
+    "matMinTrack": 180,
+    "matGap": [
+      24,
+      16
+    ],
+    "linkMinHeight": 44,
+    "$note": "innerPaddingX 16 is layout/app/margin. linkMinHeight 44 is target/min. innerMaxWidth 1120, matMinTrack 180 and the 32px vertical padding are specimen choices, not ruled."
+  },
+  "$decisionsForDave": [
+    "1 · THE NAME. 'Footer' already means a container's action row in this repo, and the gated Action-bar uses the word about itself. Site-footer? End-matter? Doormat? Renaming is yours, and this file deliberately does not do it.",
+    "2 · THE 44px TRADE. Every footer link here is a 44px target at every width, which makes a doormat noticeably taller than the compact ideal. Accept the height, or grow targets only when stacked as the gated Links .related pattern does?",
+    "3 · THE BAND COLOUR. The footer sits on surface/subtle so it reads as a band. In Mono light that is #F0F0F0 against a #FFFFFF page — a quiet distinction. Should it be a band at all, or should the section rule carry the whole separation?",
+    "4 · TWO FORMS OR TWO COMPONENTS? The doormat and the slim bar share a landmark, a legal row and a link atom, and share nothing else. One component with a form prop, or two components?",
+    "5 · WHAT BELONGS IN THE LEGAL BAR. Privacy, terms, cookies and accessibility are the specimen's four. That list is regulatory, it varies by market, and it is not mine to fix.",
+    "6 · BACK-TO-TOP. Present by default here. On a short page it is noise; on a long one it is the most-used link in the footer. Default on, default off, or a consumer decision?"
+  ],
+  "$copiedFrom": [
+    "Links (the a.lnk inline link atom and the a.arrow CTA link, both verbatim)",
+    "Sidebar-nav / Drawer (the 1px section-divider recipe)"
+  ],
+  "$relationshipsNote": "May legitimately appear on the same screen as an Action-bar. They are not variants; see $vocabularyCollision."
+}

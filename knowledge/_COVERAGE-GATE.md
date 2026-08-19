@@ -1,5 +1,5 @@
 # Coverage / consistency gate — _validate_coverage.py
 
-**85 real component meta(s)** · **85 snippet manifest(s)** · **0 failure(s)**
+**91 real component meta(s)** · **91 snippet manifest(s)** · **0 failure(s)**
 
-_All 85 real components are gated and names match. No orphans._
+_All 91 real components are gated and names match. No orphans._

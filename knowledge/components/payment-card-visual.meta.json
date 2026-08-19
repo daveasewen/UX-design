@@ -1,0 +1,100 @@
+{
+  "name": "Payment card visual",
+  "category": "molecule",
+  "purpose": "A passive representation of a PHYSICAL PAYMENT INSTRUMENT — the card face, at ID-1 proportions, showing which piece of plastic this is and whether it is usable right now. Product name, masked number, cardholder, expiry, a contactless indicator, and a status chip carrying a word. It carries NO balance, deliberately. PROPOSED #204 (itinerary row 93, slug payment-card-visual) — NOT GATED, NOT RULED. Fintech semantics are Dave's (the Kpi-tile precedent, s182-D2).",
+  "intent": "identity",
+  "props": [
+    { "name": "productName", "type": "string", "$note": "Rendered in the Tags atom (square outline), copied from Tags.reference via Account-card. E.g. 'Business debit'." },
+    { "name": "maskedNumber", "type": "string", "$note": "DEFAULT STATE. Uses Account-card's own ··· masking idiom, copied verbatim — no new mask glyph was introduced." },
+    { "name": "revealed", "type": "boolean", "default": false, "$note": "Shows the full PAN. The specimen uses 4000 0000 0000 4821, the ISO/IEC 7812 test range. Drawing the state is NOT an endorsement of showing a PAN in production UI." },
+    { "name": "cardholder", "type": "string" },
+    { "name": "expiry", "type": "string", "$note": "MM/YY, tabular figures." },
+    { "name": "contactless", "type": "boolean", "default": true, "$note": "Renders the REAL library glyph assets/icons/media/contactless.svg, byte-matched via <symbol>. A functional indicator, not a brand mark." },
+    { "name": "status", "type": "enum", "values": ["active", "frozen", "expired"], "default": "active", "$note": "Rendered as a Status-indicator RAG-tint chip ALWAYS CARRYING ITS WORD. Which status maps to which chip tint is a SEMANTIC binding and is DAVE'S — proposed, not ruled." },
+    { "name": "size", "type": "enum", "values": ["default", "compact"], "default": "default", "$note": "340px and 240px wide; aspect-ratio is fixed at 1.586 in both." },
+    { "name": "issuerMark", "type": "slot", "$note": "⛔ DECLARED, EMPTY, PROPOSED PLACEHOLDER. Not drawn — see antiPatterns and knownFindings." },
+    { "name": "networkMark", "type": "slot", "$note": "⛔ DECLARED, EMPTY, PROPOSED PLACEHOLDER. Card-network artwork is licensed and governed outside this system." },
+    { "name": "chip", "type": "slot", "$note": "⛔ DECLARED, EMPTY, PROPOSED PLACEHOLDER. No EMV chip glyph exists in the HSBC library (probe quoted below) and authoring one inline would be an invented icon." }
+  ],
+  "variants": [
+    { "name": "default", "use": "A single card in a card-management view, 340px." },
+    { "name": "compact", "use": "A wallet list or a card picker row, 240px." },
+    { "name": "revealed", "use": "The number-shown state, behind an explicit 44px control." },
+    { "name": "unusable", "use": "Frozen or expired. The chip word is the carrier; the face also drops to alpha/48, a second non-colour channel." }
+  ],
+  "tokens": {
+    "surface": "tertiary/background/default — #FFFFFF | #1F1F1F. The SAME surface Account-card binds, copied. See the inverse-surface finding for why there is no dark card face.",
+    "border": "border/subtle — #E1E1E1 | #808080",
+    "text": "text/default @ .t-cm-figure-5 (PAN) / .t-cm-figure-6 (expiry) / .t-cm-legal (holder, slot labels, chip)",
+    "muted": "text/secondary — the contactless glyph and the placeholder slot labels",
+    "slotBorder": "form/border/default #808080 — 3.95:1 on white, 4.17:1 on the dark surface (measured #204), so the dashed placeholder outline is itself a legible non-text mark",
+    "status": "rag/success + rag/success-tint | rag/warning + rag/warning-tint — copied byte-for-byte from Account-card",
+    "control": "button/tertiary/{label,border,background-hover}/default @ .t-cm-button, 44px tall — Button.reference's tertiary tier, copied verbatim",
+    "focus": "focus/ring — #305A85 | #4587A7, 2px outline, offset 2",
+    "radius": "border-radius/surface (card shell) + border-radius/indicator (tag, chip, slots) + border-radius/control (button). 0 in Mono and Legacy; Console forks surface to 20px through the cascade.",
+    "opacity": "alpha/48 on the unusable face",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. Every value here already exists and is already bound by a gated component."
+  },
+  "motion": {
+    "entry": "None. Passive.",
+    "hover": "Only on the reveal control — the tertiary button's background tint. No scale physics copied: the card face itself is not a control.",
+    "reducedMotion": "Global prefers-reduced-motion collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Fixed width per size (340 / 240) with aspect-ratio 1.586 = ID-1 (ISO/IEC 7810, 85.60×53.98 mm). Cards wrap in a flex rack rather than scaling; the PHYSICAL proportion must not distort. Verified at 1400px and 480px.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Card management views", "Wallet / card picker", "Account overview", "Confirmation screens for card actions"],
+    "mustNotNeighbour": ["An Account-card for the SAME product shown as a card face (two components claiming to be the same object)"],
+    "commonPatterns": ["card management", "freeze / unfreeze a card", "card picker", "activation flow"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "role=\"group\" + aria-labelledby, copied from Account-card, so AT announces the card as one unit.",
+    "name": "The card's own descriptive line ('Business debit card, ending 4821') is the labelled element. In the revealed state that element holds the PAN, so the accessible name and the on-screen value are the same object.",
+    "placeholders": "⛔ The three brand placeholder slots are aria-hidden=\"true\". They are scaffolding for the reviewer's eye, not content, and must never be announced.",
+    "contactless": "The glyph is aria-hidden; a visually-hidden 'Contactless enabled' span carries the meaning in text.",
+    "notColourAlone": "Every status carries its WORD in the chip ('Active', 'Frozen by you', 'Expired 08/25'). The unusable states additionally drop to alpha/48 — a second non-colour channel. No state on this card is signalled by hue alone (1.4.1).",
+    "hitArea": "The reveal button is 44px tall by the Button token. MEASURED BY HAND at #204 in all four themes, both modes — NO GATE READS the 44px minimum-hit-area token from a snippet.",
+    "keyboard": "The reveal button is a real <button> with aria-pressed. The card face is passive and is NOT in the tab order.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "4.1.2 Name, Role, Value", "2.5.5 Target Size"]
+  },
+  "antiPatterns": [
+    "⛔ DRAWING A CARD-NETWORK MARK, AN ISSUER LOGOTYPE, AN EMV CHIP PATTERN OR ANY EMBOSSING. That artwork is licensed and governed outside this design system, and #86-D2 fences our own marks too ('the crescent is only a mark for apollo … use the hsbc mark normally'). Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE \"chip|visa|mastercard|amex|network\"` → EMPTY. The slots exist to be FILLED with real assets, never to be improvised.",
+    "Showing a BALANCE on the card face. That is Account-card's job; a payment-card visual with a balance is an Account-card wearing a card shape.",
+    "Showing the full PAN by default. The masked form is the default; revealing is an explicit user act behind a 44px control.",
+    "Building a card BACK (magstripe, signature panel, CVV) here — those are secure-data surfaces (see Secure-entry) wrapped in licensed brand furniture.",
+    "Inventing a dark or 'premium' card face by hardcoding a charcoal. The inverse/hero surface role DOES NOT EXIST yet and _COMPONENT-GAPS.md already records that the fitness-test portfolio invented #0E1014 for exactly this reason. Mint the role first.",
+    "Adding a gradient, a shadow or a metallic treatment — the brand stays flat and angular.",
+    "Making the card face itself clickable. If the card is a target, wrap it in the approved interactive row (List-items) rather than growing a click handler on a passive object.",
+    "Relying on the status DOT to convey state. The dot is 1.98:1 / 2.18:1 standalone (measured #204); the word is the carrier."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-19",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PROPOSED — gates run at #204 by the worker lane: _validate_snippets.py rc=0 (90 snippets, 0 failures), _validate_a11y.py rc=0 (90 snippets, 0 failures), _validate_type_composites.py filtered rc=0 and repo-wide 1097 violations UNCHANGED from the measured baseline (this file adds ZERO — it declares no raw font at all). _validate_state_contrast.py NOT RUN and DECLARED OWED (a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md). _validate_radius.py, _validate_icons.py, _validate_coverage.py and every generator --check are the BUILD-PM's serially. This is a PROPOSAL, not a proof-of-done.",
+    "$note": "PROPOSED #204, worker Lane P. Not registered in component-types.json (shared file, outside the lane's fence). Not in _validate_radius.MIGRATED_SNIPPETS. Not in CATEGORIES / gen_showroom.py. No .cn-payment-card-visual scope exists in canon.css — the review page hand-mirrors it, deriving every binding from the snippet's own #token-manifest."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$sourceNarrative": "⚠ PROVENANCE NARRATIVE, MOVED HERE BY THE #204 FIX SUB. It was authored into `provenance.source`, which meta.schema.json constrains to an enum of five values, so the file failed the schema. Nothing is deleted: the paragraph is preserved verbatim below and `provenance.source` now carries the enum value the paragraph itself describes — \"gap-report\" (a candidate surfaced by a journey/gap report, not yet reconciled to a Figma node or code path). ⛔ NOT A SCHEMA DECISION: whether meta.schema.json should gain a typed `provenance.note` field is OPEN TO DAVE per the #204 verifier receipt (every meta.schema.json amendment in the store's history was Dave's — s140-D1, s165-D5). `$`-prefixed keys are already legal everywhere by the schema's own patternProperties, so this move needs no amendment. VERBATIM ORIGINAL FOLLOWS ⇒ itinerary row 93 (reviews/ITINERARY-2026-07-14-apollo-component-library.xlsx) via knowledge/_COMPONENT-LIBRARY-TARGET.md line 104, 'Fintech-specific' table, GAP · P2–P3. Measured a TRUE GAP by reviews/ITINERARY-STATUS-2026-08-19-v1.json (#203 Lane H): drift AGREES, all five signal probes negative, no plausible store alias. Independently re-probed at #204: filename greps under card/payment/credit/debit/plastic/face across knowledge/snippets/ and knowledge/components/ return only Account-card, Cards and Stat-card; a content grep for payment-card / card-face / cardholder / contactless / embossed returns one prose mention inside Cards.reference.html ('a contactless debit card') and nothing else; grep of knowledge/_rulings.json for payment-card / card face / plastic / contactless returns ZERO hits naming this component.",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Payment-card-visual.reference.html"
+  },
+  "$differsFrom": {
+    "Account-card": "Account-card's subject is MONEY (label + masked number + BALANCE + status chip). This component's subject is the physical INSTRUMENT and carries no balance at all. Account-card answers 'how much is in it?'; this answers 'which piece of plastic is this, and is it usable right now?'. Every shared atom — shell, ··· masking idiom, Tags atom, RAG chip — is COPIED from Account-card and was not re-drawn.",
+    "Cards": "Cards is the generic content-surface family: a rectangle you put arbitrary things in, with no anatomy. This is a representation of a specific real-world object with a fixed ID-1 geometry and a fixed anatomy. Cards has no anatomy; this is nothing but anatomy.",
+    "Chart-bullet": "No relationship whatsoever. Nothing on this card is a measure, a target or a quantity. Named here only because the itinerary places rows 93 and 94 adjacent and a reader may carry row 94's chart neighbourhood across."
+  },
+  "$decisionsForDave": [
+    "Should this component exist at all in this form? Fintech semantics are yours.",
+    "The three brand placeholder slots: right shape, right positions, right count? And is a dashed labelled placeholder the right way to say 'a licensed asset belongs here'?",
+    "Corners. The card follows the angular rule (square in Mono/Legacy, 20px in Console). Real cards are rounded. Should a payment-card visual be a documented EXEMPTION from the angular rule, like Avatar and Badge?",
+    "The dark / premium card face. It needs the inverse/hero surface role that _COMPONENT-GAPS.md records as missing. Mint it, or accept a light-only card face?",
+    "The status vocabulary and its chip binding: active → success tint, frozen → warning tint, expired → warning tint. Should 'expired' be the error seat instead? That touches the two-red law and is deliberately not taken here.",
+    "The reveal control: text button ('Show number') rather than an icon, because no eye/reveal glyph exists in the library. Correct call, or is a new glyph owed to _ICON-GAPS.md?",
+    "Should the revealed-PAN state ship at all, or should the component stop at masked?"
+  ]
+}
