@@ -1,90 +1,29 @@
 {
   "name": "Progress bar",
-  "interactive": false,
-  "category": "atom",
-  "purpose": "A DETERMINATE completion display: it shows how much of a known-length task is done, as a proportion of a known total. Linear (a horizontal rule that fills) and circular (a ring that sweeps). Use it whenever the remaining work is measurable — uploads, downloads, multi-part transfers, goal progress, completeness scores. When the remaining work is NOT measurable, use Loading indicator instead; this component has no indeterminate state by design.",
-  "props": [
-    { "name": "shape", "type": "enum", "values": ["linear", "circular"], "default": "linear", "$note": "Linear for inline/full-width progress in a flow; circular for a compact badge-like completeness score." },
-    { "name": "size", "type": "enum", "values": ["default", "emphasis"], "default": "default", "$note": "Linear only: 4px rule (default) or 8px (emphasis). Circular is a single 96px specimen; further rungs need a ruling, not an invention." },
-    { "name": "value", "type": "number", "default": 0, "$note": "Current progress, on the min..max scale. Drives both the visual fill and aria-valuenow." },
-    { "name": "min", "type": "number", "default": 0 },
-    { "name": "max", "type": "number", "default": 100 },
-    { "name": "label", "type": "string", "$note": "The accessible name. Required — a bar with no name announces only a number." },
-    { "name": "valueText", "type": "string", "$note": "Human-readable value for AT (aria-valuetext). Required whenever the scale is not a plain percentage — e.g. '1,450 pounds of 2,000 pounds saved'." },
-    { "name": "showValue", "type": "boolean", "default": true, "$note": "Renders the numeric value as visible text. Default TRUE and it is load-bearing, not decoration — see the contrast $finding: the numeric text is the meaning-carrier regardless of the fill/track ratio, and it was the only carrier in the two themes where that pair failed 3:1 before s175-D1." }
-  ],
-  "variants": [
-    { "name": "linear", "use": "inline or full-width progress inside a form, list row or card" },
-    { "name": "circular", "use": "a compact completeness score where a full-width rule would not fit" },
-    { "name": "emphasis", "use": "an 8px linear rule where the progress is the primary content of its region rather than a supporting detail" }
-  ],
-  "tokens": {
-    "fill": "progress/complete — theme INK in all four themes since s175-D1: Mono/Console #1A1A1A | #FFFFFF, Legacy #333333 | #FFFFFF (#176, WORKING: Legacy now DECLARES its own ink pair instead of falling through to the base. The fall-through class — a theme that means a value must declare it — had Legacy silently painting the MONO digital-black #1A1A1A when its own body ink is Grey 8 #333333, col25-011. Light is a CHANGE; dark #FFFFFF is unchanged and declared anyway, which is the point of the class), Supercharge #13110E | #F7F6F4 (via the warm DNA tier, NOT the Mono literal). WAS before s175-D1: Legacy #DB0011 both modes, Supercharge #B92F1E | #CC4333 — those reds MOVED to step/complete, which the discrete-step indicators bind",
-    "track": "progress/incomplete — #F0F0F0 | #484848 in Mono/Console/Legacy; #DFDEDC | #413934 in Supercharge (via the color/neutral -> color/warm DNA rebind, NOT an explicit override)",
-    "label": "text/default @ t-cm-label",
-    "value": "text/secondary @ t-cm-figure-6 (tabular-nums)",
-    "caption": "text/secondary @ t-cm-caption",
-    "page": "background/default",
-    "radius": "border-radius/indicator (resolves 0 — square corners, angular rule)",
-    "$note": "Progress is STRUCTURE, not status (Dave 2026-07-21) — hence the ink pair rather than a RAG colour. s175-D1 extended that to ALL FOUR themes for this continuous-quantity bar: Legacy and Supercharge no longer keep red fills here, their reds moved to step/complete for the discrete-step indicators. Colour on the step components is Legacy-DEFINITE and UNDECIDED for Mono/Console/Supercharge — Dave's."
-  },
-  "dimensions": {
-    "linearTrackHeight": "4px default, 8px emphasis",
-    "circularDiameter": "96px",
-    "circularStrokeWidth": "8px",
-    "stackGap": "8px (gap/fixed/content) between label row and track — explicit because leading-trim is ON",
-    "headGap": "12px between the label and the value in the head row"
-  },
-  "motion": {
-    "fill": "width (linear) / stroke-dashoffset (circular) transition at the standard ease, 140ms",
-    "reducedMotion": "prefers-reduced-motion: reduce removes the transition. The fill still MOVES to its final position — the value must remain reachable; only the animated sweep is dropped (2.3.3 / 2.2.2)."
-  },
-  "responsive": {
-    "linear": "The track is width:100% inside a max-width:420px column in the specimen; in use it takes its container's width. No breakpoint of its own.",
-    "circular": "Fixed 96px; it does not reflow. Place it in a wrapping row rather than expecting it to shrink."
+  "category": "molecule",
+  "purpose": "THE PROGRESS READING OF THE ONE METER MOLECULE. Use this when the value is a task underway and a full bar means DONE — uploads, downloads, multi-part transfers, savings goals, completeness scores. The geometry, the tokens, the states and the full spec live ONCE, in meter.meta.json; this record exists so 'Progress bar' stays a findable, selectable identity in the catalogue with its own category, per s210-D5.",
+  "aliasOf": {
+    "component": "component:meter",
+    "reading": "progress",
+    "why": "A progress meter measures a task you WANT to complete: full is success. That is the meaning half of the split Dave named at #210 — 'they are the same molecule but they are categorised and might actually be different items when selecting them from the store'. Same molecule, different reading."
   },
   "relationships": {
     "livesInside": ["Card", "List items", "Form layout", "File upload", "Dialog", "Stat card", "Account card"],
     "mustNotNeighbour": ["Loading indicator (showing both for the same task is contradictory — one claims the duration is known, the other that it is not)"],
     "commonPatterns": ["file upload progress", "multi-part transfer progress", "savings goal / limits meter", "profile completeness score"]
   },
-  "accessibility": {
-    "role": "role=progressbar with aria-valuenow, aria-valuemin and aria-valuemax on the element that represents the bar",
-    "name": "An accessible name is REQUIRED — aria-labelledby pointing at the visible label, or aria-label where there is no visible label",
-    "valueText": "aria-valuetext whenever the scale is not a plain percentage, so AT announces '1,450 pounds of 2,000' rather than a bare number",
-    "circularNaming": "On the circular form the role sits on the VISIBLE numeric caption and the svg is aria-hidden — the accessible name and the on-screen value are then the same object, and there is no duplicate announcement",
-    "notColourAlone": "The numeric value is rendered as text on every specimen. This is what satisfies 1.4.1 independently of the fill/track ratio — it was load-bearing when that pair failed 3:1 in two themes before s175-D1, and it stays because progress must not rest on a boundary (see $finding)",
-    "motion": "Animated fill respects prefers-reduced-motion; the final value is still reached",
-    "passive": "interactive:false — no keyboard interaction and no focus indicator by design. A progress bar reports, it does not accept input",
-    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "2.3.3 Animation from Interactions", "4.1.2 Name, Role, Value", "4.1.3 Status Messages"]
-  },
-  "antiPatterns": [
-    "Using this for work of unknown duration — that is Loading indicator. There is deliberately no indeterminate variant here (s173-D1)",
-    "Relying on the fill/track boundary alone to convey progress. The pair clears 3:1 in all four themes since s175-D1 (it did NOT in Legacy dark or Supercharge dark before it), but the numeric value is still what carries the meaning — always render it",
-    "Omitting the accessible name, which leaves AT announcing a percentage with no subject",
-    "Using aria-valuenow on a non-percentage scale without aria-valuetext, so AT reads '1450' with no units",
-    "Putting role=progressbar on a decorative svg as well as on its caption — the value is then announced twice",
-    "Adding a focus indicator or tabindex: a determinate progress bar is passive and must not sit in the tab order",
-    "Animating the fill without a prefers-reduced-motion block (fails the a11y gate)",
-    "REVIEW (inferred): rounding the track corners — border-radius/indicator resolves to 0 and the angular rule applies"
-  ],
-  "tokenValidation": {
-    "date": "2026-08-14",
-    "against": "tokens/semantic-colour.json + tokens/layout.json + canon/canon.css four-theme cascade at HEAD be1e0a7",
-    "result": "PASS with one recorded FINDING. All six declared vars resolve cleanly in the mono base, light and dark. Three contrastPairs declared, each verified to hold in ALL FOUR themes rather than in the mono base alone.",
-    "$finding": "FILL-ON-TRACK NOW CLEARS 3:1 IN ALL FOUR THEMES, re-measured against canon/canon.css at HEAD b51b622 after s175-D1. progress/complete on progress/incomplete measures Mono 15.27 light / 9.15 dark PASS, Console identical PASS, Legacy 15.27 / 9.15 PASS, Supercharge 14.02 / 10.46 PASS. WAS before s175-D1: Legacy 4.58 light PASS / 1.75 dark FAIL, Supercharge 4.48 light PASS / 2.38 dark FAIL — those measured receipts were true of the red fills, which s175-D1 MOVED to step/complete rather than deleted. THE FAILURE THEREFORE REMAINS ON THE STEP COMPONENTS (Progress-tracker, Stepper), which bind step/complete: that is still queued to _DS-IMPROVEMENTS.md and is Dave's, not answered here. The pair is still NOT declared as a gated contrastPair — the snippet gate reads the mono base only (see $gateScope), so declaring it would still be a single-theme green. Meaning is carried by the numeric value in text plus aria-valuetext regardless.",
-    "$addressFinding": "progress/incomplete carries NO explicit entry in any theme override file, yet resolves DIFFERENTLY in Supercharge (#DFDEDC / #413934) because its $alias targets color/neutral/13 and color/neutral/6 and Supercharge rebinds color/neutral onto color/warm. First-hand confirmation of the P-address class (#108): a token NAME is not an ADDRESS.",
-    "$gateScope": "knowledge/_validate_snippets.py resolve() reads tokens/semantic-colour.json only — the MONO base. It CANNOT observe the Legacy or Supercharge leg of any declared pair. The four-theme figures here were computed against canon/canon.css, outside the gate. Recorded so that a future reader does not mistake this gate's green for a four-theme green.",
-    "depricateUsage": { "tokens": [], "note": "None — progress/complete and progress/incomplete are live semantic tokens, not deprecated bindings." },
-    "ignored": "Spacing values (8px/12px/24px/32px gaps) follow the existing snippet convention of literal scale values; the manifest tracks colour, radius and motion bindings only."
-  },
   "provenance": {
     "source": "gap-report",
     "figma_node": "",
-    "code_path": "knowledge/snippets/Progress-bar.reference.html",
-    "$note": "Built #174 as the first component through the scaffold route (s173-D1, Dave). No Figma node bound — this is a verified gap fill, not a Figma reconciliation. A design owner binds figma_node later."
+    "code_path": "knowledge/snippets/Meter.reference.html",
+    "$note": "Built #174 as the first component through the scaffold route (s173-D1, Dave). No Figma node bound — this is a verified gap fill, not a Figma reconciliation. A design owner binds figma_node later. ⚠ code_path RE-POINTED at the Meter reference at #210 per s210-D5: the implementation of this reading now lives in Meter.reference.html. The original file knowledge/snippets/Progress-bar.reference.html is STILL PRESENT and BYTE-UNTOUCHED by this pass — its retirement is named by the memo's Option C but its mechanism and destination are not, so it was left in place for the conductor (see $snippetDisposition)."
   },
-  "$observedDuplication": "role=progressbar is currently improvised in THREE snippets — Progress-tracker.reference.html:172, File-upload.reference.html:291 and :404, and Stepper.reference.html:261. That is OBSERVED duplication, which is what ADR-0013's component-type tier exists for. A `progress-family` is therefore ARGUABLE — but arguable is not ruled, so nothing was minted here and component-types.json was not touched. Queued as a proposal for Dave.",
+  "$aliasRecord": "ENACTED PER s210-D5 (#210, Dave verbatim: 'C looks good to me, all works'). This file WAS the full Progress-bar spec — 12,350 bytes of props, tokens, dimensions, motion, responsive, accessibility, antiPatterns and tokenValidation, including the s175-D1 four-theme ink finding and its $gateScope / $addressFinding notes. Every one of those facts is reproduced in knowledge/components/meter.meta.json, which is now the ONE home for the spec (ADR-0017 write-once). Nothing was deleted from the repo: the prior bytes of this file are in git history at the #210 pre-fold commit, and the full prose survives in meter.meta.json. THE STRUCTURAL POINT OF OPTION C, in the memo's words: 'No duplicated spec prose exists to drift, because the aliases hold no spec.'",
+  "$sizeFence": "⛔ THIS RECORD MAY NOT GROW A SPEC. meta.schema.json's alias seat (added #210 for s210-D5) BANS props, variants, tokens, antiPatterns, accessibility, tokenValidation, dimensions, motion, responsive, slots, subComponents, behaviour, usage, build, graphicIndicator and codeBindings on any meta carrying `aliasOf`, and caps the record at 14 top-level keys. That is the memo's own condition of Option C — 'If the aliases are allowed to grow spec prose over time, C decays into B and inherits B's drift. If you pick C, the aliases need a size fence, not just a convention.' probe_meta_schema.py --check is the consumer that enforces it.",
+  "$relationshipsRetained": "⚠ DELIBERATE AND DECLARED, NOT AN OVERSIGHT. `relationships` and `edges` are kept BYTE-IDENTICAL to the pre-fold file because they are KG WIRING, not spec: gen_kg_edges.py derives `edges` and the two node registries (_nodes-pattern.json / _nodes-context.json) from them, and dropping them here would have silently dropped this component's entries from those generated registries' `sources` lists — a regen this lane is not the owner of. They duplicate no geometry, no token and no rule. Whether an alias should carry graph wiring at all is a real question and is the conductor's/Dave's, not settled here.",
+  "$statusBeforeTheFold": "Progress-bar was GATED and PROMOTED. Demoting a promoted component to an alias is a STATUS MOVE and the memo says in terms that only Dave may make it: 'C cannot be executed by a worker on this memo.' He made it — s210-D5, Option C picked in chat #210. This file is enacted on that authority and on nothing else.",
+  "$snippetDisposition": "⬛ OPEN, NOT IMPROVISED. The memo's §4 table says Progress-bar.reference.html 'Retires' under every option including C, but names NO destination and NO mechanism (delete / move to _retired/ / leave with a marker). The file is therefore LEFT IN PLACE and byte-untouched by this pass, and the disposition is reported to the conductor. Consequence, declared: while the file exists, gen_kg_edges.py keeps deriving `edges.renderedBy -> snippet:Progress-bar.reference.html` for this record from the stem match; when the snippet does retire, that edge disappears on the next regen and this note should go with it.",
+  "$aliasPlacement": "⬛ NOT PLACED. gen_showroom.py CATEGORIES has no meter bucket and this slug is not in CAT_OF, so the page still falls through to the uncategorised 'More' tail — as do meter, limits-meter and runway-bar. The memo names this explicitly as a call it does not make: 'where they go (Feedback and status? a new bucket?) is a call this memo does not make.' Placement is promotion, promotion is Dave's, and no registry was touched by this pass.",
   "edges": {
     "renderedBy": [
       {

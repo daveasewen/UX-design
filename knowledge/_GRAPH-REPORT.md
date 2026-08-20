@@ -10,19 +10,19 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 82 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
-| `background/default` | 52 | Accordion, Account selector, Amount display, Anchor nav, Avatar group, Bar chart… |
+| `text/default` | 80 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
+| `background/default` | 50 | Accordion, Account selector, Amount display, Anchor nav, Avatar group, Bar chart… |
 | `icon/default` | 35 | Accordion, Avatar, Avatar group, Button, Cards, Combobox… |
 | `tertiary/background/default` | 29 | Account card, Action bar, Anchor nav, Button, Cards, Command palette… |
-| `border/subtle` | 26 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
 | `elevation/functional` | 26 | Account selector, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Combo chart, Combobox… |
+| `border/subtle` | 25 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
 | `tertiary/background/hover` | 25 | Accordion, Anchor nav, Avatar, Avatar group, Button, Cards… |
 | `border-radius/surface` | 24 | Alert, Anchor nav, Banner, Combo chart, Combobox, Command palette… |
 | `focus/ring` | 23 | Anchor nav, Avatar group, Combobox, Command palette, Document row, Footer… |
-| `rag/success` | 23 | Account card, Amount input, Bar chart, Button, Confirmation, Coverage / runway bar… |
-| `text/secondary` | 22 | Account card, Amount display, Anchor nav, Cards, Command palette, Confirmation… |
+| `rag/success` | 22 | Account card, Amount input, Bar chart, Button, Confirmation, Coverage / runway bar… |
 | `form/border/default` | 21 | Account card, Account selector, Combobox, Command palette, Data grid, Dropdown… |
 | `rag/error` | 21 | Amount input, Bar chart, Combobox, Date picker, Date-range picker, Dropdown… |
+| `text/secondary` | 20 | Account card, Amount display, Anchor nav, Cards, Command palette, Confirmation… |
 | `elevation/border` | 19 | Account selector, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Combo chart, Combobox… |
 | `text/reverse` | 18 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
 
@@ -30,13 +30,13 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Group | Components |
 |---|---|
-| `text/` | 86 |
-| `background/` | 52 |
+| `text/` | 84 |
+| `background/` | 50 |
 | `tertiary/` | 41 |
-| `border-radius/` | 39 |
 | `icon/` | 37 |
-| `rag/` | 36 |
-| `border/` | 29 |
+| `border-radius/` | 37 |
+| `rag/` | 35 |
+| `border/` | 28 |
 | `form/` | 27 |
 | `elevation/` | 26 |
 | `focus/` | 23 |
@@ -49,18 +49,18 @@ Change one of these and the listed number of components is affected. Use before 
 | `padding/` | 7 |
 | `color/` | 7 |
 | `overlay/` | 6 |
-| `progress/` | 6 |
 | `scale/` | 5 |
 | `scrollbar/` | 4 |
+| `progress/` | 4 |
 | `blur/` | 3 |
 | `button/` | 3 |
 | `layout/` | 3 |
-| `step/` | 3 |
 | `image/` | 2 |
 | `border-width/` | 2 |
 | `table/` | 2 |
 | `surface/` | 2 |
 | `alpha/` | 2 |
+| `step/` | 2 |
 | `timer/` | 1 |
 | `gap/` | 1 |
 | `tabs/` | 1 |

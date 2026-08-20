@@ -3,7 +3,40 @@
   "title": "component_meta",
   "description": "One node in the component graph. The machine-readable layer that lets agents use the component without guessing. Edges are expressed via `relationships`. Reconciled 2026-06-18 to the authored canon: load-bearing fields (name/category/purpose/props/tokens/relationships/accessibility/antiPatterns/tokenValidation/provenance) are required and typed; `accessibility` is an open map of guidance strings (relatedSC is the typed array exception); `tokens` values may be a string or a nested object; `tokenValidation` is an open audit log; `$`-prefixed annotation keys are allowed anywhere.",
   "type": "object",
-  "required": ["name", "category", "purpose", "props", "tokens", "relationships", "accessibility", "antiPatterns", "tokenValidation", "provenance"],
+  "required": ["name", "category", "purpose", "provenance"],
+  "allOf": [
+    {
+      "$comment": "s210-D5 (Dave, #210, Option C of notes/_briefs/2026-08-20-210-meter-categorical-split-impacts-v1.md): THE ALIAS SEAT. A meta carrying `aliasOf` is a thin CATEGORY ALIAS — a selectable catalogue identity whose spec lives in another meta. It is required to be thin, and that is the SIZE FENCE the memo made a condition of Option C ('If the aliases are allowed to grow spec prose over time, C decays into B and inherits B's drift'). The alternative the memo priced — two more declared exemptions beside EXAMPLE-button.meta.json — was rejected in the memo's own words: 'an exemption list that grows is how a gate stops meaning anything'. Every other meta keeps the full required list exactly as before.",
+      "if": { "required": ["aliasOf"] },
+      "then": {
+        "required": ["name", "category", "purpose", "aliasOf", "provenance"],
+        "maxProperties": 14,
+        "not": {
+          "anyOf": [
+            { "required": ["props"] },
+            { "required": ["variants"] },
+            { "required": ["tokens"] },
+            { "required": ["antiPatterns"] },
+            { "required": ["accessibility"] },
+            { "required": ["tokenValidation"] },
+            { "required": ["dimensions"] },
+            { "required": ["motion"] },
+            { "required": ["responsive"] },
+            { "required": ["slots"] },
+            { "required": ["subComponents"] },
+            { "required": ["behaviour"] },
+            { "required": ["usage"] },
+            { "required": ["build"] },
+            { "required": ["graphicIndicator"] },
+            { "required": ["codeBindings"] }
+          ]
+        }
+      },
+      "else": {
+        "required": ["name", "category", "purpose", "props", "tokens", "relationships", "accessibility", "antiPatterns", "tokenValidation", "provenance"]
+      }
+    }
+  ],
   "definitions": {
     "tokenBinding": {
       "description": "a token binding: either a prose string naming the bound token(s), or a nested group of bindings",
@@ -56,6 +89,18 @@
   },
   "properties": {
     "name": { "type": "string" },
+    "aliasOf": {
+      "description": "s210-D5 — the ALIAS SEAT. Present ONLY on a thin category alias: this meta is a selectable catalogue identity for one READING of another component, and holds no spec of its own. `component` is the node-id of the meta that owns the spec; `reading` is the category identity a selecting human or model is meant to understand (Dave, #210: 'the user, AI or User must understand the difference, even if it's only categorical'); `why` is the one sentence that says when you want this reading. Presence of this key switches the required-field set and applies the size fence (see the allOf at the head of this schema).",
+      "type": "object",
+      "required": ["component", "reading", "why"],
+      "additionalProperties": false,
+      "patternProperties": { "^\\$": {} },
+      "properties": {
+        "component": { "type": "string", "pattern": "^component:.+$" },
+        "reading": { "type": "string" },
+        "why": { "type": "string" }
+      }
+    },
     "category": { "enum": ["atom", "molecule", "organism", "template", "page"] },
     "purpose": { "type": "string", "description": "what it is for, in English the agent can reason about" },
     "intent": { "description": "ADDRESS into knowledge/chart-intents.json — the analytical question this chart answers (comparison | change-over-time | distribution | relationship | composition). A word, or a list where the purpose genuinely spans two. OPTIONAL: charts carry it, other components do not. Resolver: knowledge/_validate_intent_resolve.py — an unknown word refuses. Values live ONCE in the store (ADR-0017); never redefine them here.", "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" }, "minItems": 1 }] },
