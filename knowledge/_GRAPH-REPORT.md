@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 91 components · 1033 tokens defined · 119 tokens referenced by components · compliance: 35 rules x 91 components (35 SCs).
+**Totals:** 100 components · 1033 tokens defined · 121 tokens referenced by components · compliance: 35 rules x 91 components (35 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,48 +10,48 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 75 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
-| `background/default` | 49 | Accordion, Account selector, Amount display, Anchor nav, Avatar group, Bar chart… |
-| `icon/default` | 33 | Accordion, Avatar, Avatar group, Button, Cards, Combobox… |
+| `text/default` | 81 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
+| `background/default` | 51 | Accordion, Account selector, Amount display, Anchor nav, Avatar group, Bar chart… |
+| `icon/default` | 35 | Accordion, Avatar, Avatar group, Button, Cards, Combobox… |
+| `tertiary/background/default` | 29 | Account card, Action bar, Anchor nav, Button, Cards, Command palette… |
 | `elevation/functional` | 26 | Account selector, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Combo chart, Combobox… |
-| `tertiary/background/default` | 25 | Account card, Action bar, Anchor nav, Button, Cards, Command palette… |
-| `border-radius/surface` | 22 | Alert, Anchor nav, Banner, Combo chart, Combobox, Command palette… |
-| `tertiary/background/hover` | 22 | Accordion, Anchor nav, Avatar, Avatar group, Button, Cards… |
-| `border/subtle` | 21 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
+| `border/subtle` | 25 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
+| `tertiary/background/hover` | 25 | Accordion, Anchor nav, Avatar, Avatar group, Button, Cards… |
+| `border-radius/surface` | 24 | Alert, Anchor nav, Banner, Combo chart, Combobox, Command palette… |
+| `focus/ring` | 23 | Anchor nav, Avatar group, Combobox, Command palette, Document row, Footer… |
+| `rag/success` | 22 | Account card, Amount input, Bar chart, Button, Confirmation, Coverage / runway bar… |
+| `form/border/default` | 21 | Account card, Account selector, Combobox, Command palette, Data grid, Dropdown… |
 | `rag/error` | 21 | Amount input, Bar chart, Combobox, Date picker, Date-range picker, Dropdown… |
+| `text/secondary` | 21 | Account card, Amount display, Anchor nav, Cards, Command palette, Confirmation… |
 | `elevation/border` | 19 | Account selector, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Combo chart, Combobox… |
-| `rag/success` | 19 | Account card, Amount input, Bar chart, Button, Confirmation, Coverage / runway bar… |
-| `focus/ring` | 18 | Anchor nav, Avatar group, Combobox, Command palette, Document row, Footer… |
-| `form/border/default` | 18 | Account card, Account selector, Combobox, Command palette, Data grid, Dropdown… |
 | `text/reverse` | 18 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
-| `text/secondary` | 18 | Account card, Amount display, Anchor nav, Cards, Command palette, Confirmation… |
 
 ## Token-group reach (components using each group)
 
 | Group | Components |
 |---|---|
-| `text/` | 79 |
-| `background/` | 49 |
-| `tertiary/` | 37 |
-| `icon/` | 35 |
-| `border-radius/` | 35 |
-| `rag/` | 32 |
+| `text/` | 85 |
+| `background/` | 51 |
+| `tertiary/` | 41 |
+| `border-radius/` | 38 |
+| `icon/` | 37 |
+| `rag/` | 35 |
+| `border/` | 28 |
+| `form/` | 27 |
 | `elevation/` | 26 |
-| `border/` | 24 |
-| `form/` | 24 |
-| `divider/` | 18 |
-| `focus/` | 18 |
+| `focus/` | 23 |
+| `divider/` | 21 |
 | `data/` | 15 |
 | `typography/` | 13 |
 | `primary/` | 11 |
-| `secondary/` | 9 |
+| `secondary/` | 10 |
+| `target/` | 8 |
 | `padding/` | 7 |
 | `color/` | 7 |
-| `target/` | 7 |
 | `overlay/` | 6 |
+| `progress/` | 5 |
 | `scale/` | 4 |
-| `progress/` | 4 |
-| `scrollbar/` | 3 |
+| `scrollbar/` | 4 |
 | `blur/` | 3 |
 | `button/` | 3 |
 | `layout/` | 3 |
@@ -60,9 +60,9 @@ Change one of these and the listed number of components is affected. Use before 
 | `border-width/` | 2 |
 | `table/` | 2 |
 | `surface/` | 2 |
+| `alpha/` | 2 |
 | `timer/` | 1 |
 | `gap/` | 1 |
-| `alpha/` | 1 |
 | `tabs/` | 1 |
 
 ## Deprecated tokens still bound (migration worklist)
@@ -93,7 +93,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-914 of 1033 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+912 of 1033 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
@@ -106,7 +106,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `surface/` | 35 |
 | `gap/` | 27 |
 | `tabs/` | 26 |
-| `alpha/` | 23 |
+| `alpha/` | 21 |
 | `primary/` | 19 |
 | `secondary/` | 19 |
 | `tertiary/` | 18 |
