@@ -1,0 +1,189 @@
+{
+  "name": "App shell — top / stacked nav",
+  "category": "template",
+  "$layer": "2 Shell",
+  "$layerKeyIsDollarPrefixed": "⚠ THE BRIEF PROPOSED A PLAIN `layer` KEY AND IT WOULD FAIL P-1. knowledge/components/meta.schema.json sets additionalProperties:false with patternProperties {'^\\$': {}}, and `layer` is not in its property list — so an unprefixed `layer` key is a schema violation that probe_meta_schema.py catches on the next run. The `$` prefix is the legal form for an annotation the schema has not adopted. If Layer 2 becomes a first-class idea in this repo, the schema should GAIN a real `layer` property (and probably a `shell` value in the `category` enum) — that is a schema change and schema changes are Dave's.",
+  "$categoryChoice": "`template` is the closest LEGAL value in the schema's enum (atom · molecule · organism · template · page). A shell is not literally a template — a template fills a shell — but there is no `shell` value and inventing one would fail the gate. DECLARED as a compromise, not presented as correct. PROPOSED #210.",
+  "purpose": "The page frame for an application whose primary navigation lives across the top: a masthead band carrying the brand, the primary destinations and the utility actions, optionally a second band when the nav outgrows one row, optionally a third band of section nav, then the wayfinding trail, then the content region, then the end matter. It is the thing content lives inside — itinerary row 99's sibling and row 97's own notes cell, 'Frame content lives in.'",
+  "$status": "PROPOSED #210, 2026-08-20 (Wave 5, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. Nothing in this file is a ruling. No registry, CATEGORIES, MIGRATED_SNIPPETS, component-types.json, canon.css, _rulings.json or git operation was touched — this lane created NEW FILES ONLY.",
+  "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. Every visible atom traces to an existing reference file and is named in $copiedFrom with a diff-proof in the receipt. The only new CSS in the snippet is the .sh-* frame: it positions parts, it styles none of them.",
+  "props": [
+    {
+      "name": "form",
+      "type": "enum",
+      "values": ["inline", "stacked"],
+      "default": "inline",
+      "$note": "inline = the primary nav sits in the masthead row beside the brand (Navigations' own arrangement, unchanged; one 64px band of chrome). stacked = the masthead carries brand + utility only and the primary nav drops to its own 56px band beneath, with an optional 48px section tier under that. Stacking buys horizontal room for a nav that outgrew one row and spends vertical room the content never gets back. WHICH IS THE PRODUCT'S DEFAULT IS $decision-1.",
+      "$status": "PROPOSED #210"
+    },
+    {
+      "name": "sectionTier",
+      "type": "boolean",
+      "default": false,
+      "$note": "the third band — in-section destinations. Horizontally scrollable rather than wrapping, so a long section list never silently becomes two rows of chrome.",
+      "$status": "PROPOSED #210"
+    }
+  ],
+  "variants": [
+    { "name": "inline", "use": "a product with five or fewer primary destinations and a brand short enough to share the row" },
+    { "name": "stacked", "use": "a product whose primary nav does not fit beside the brand, or one that needs a section tier under it" }
+  ],
+  "slots": {
+    "brand": {
+      "accepts": { "capability": ["brand-mark"] },
+      "required": true,
+      "use": "the masthead identity. ⚠ CURRENTLY A STAND-IN — see $finding-brand-mark.",
+      "$status": "PROPOSED #210, Dave's eye owed"
+    },
+    "primaryNav": { "accepts": { "capability": ["navigation"] }, "required": true, "use": "the top-level destinations, one marked aria-current=\"page\"", "$status": "PROPOSED #210" },
+    "utilityActions": { "accepts": { "capability": ["icon-button"] }, "required": false, "use": "search, profile, notifications — 44x44 icon buttons in the masthead's trailing group", "$status": "PROPOSED #210" },
+    "trail": { "accepts": { "capability": ["breadcrumbs"] }, "required": false, "use": "the ancestor path above the page title", "$status": "PROPOSED #210" },
+    "content": { "accepts": { "capability": ["anything"] }, "required": true, "use": "the page. Rendered here as neutral placeholder furniture, deliberately not as content — see $finding-skeleton-divergence.", "$status": "PROPOSED #210" },
+    "endMatter": { "accepts": { "capability": ["footer"] }, "required": false, "use": "Footer in its slim form; the doormat form fits the same slot", "$status": "PROPOSED #210" }
+  },
+  "tokens": {
+    "page": "background/default",
+    "surface": "tertiary/background/default — the chrome bands, so the frame reads as chrome and not as more page",
+    "band": "surface/subtle — the section tier and the end matter",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "icon": "icon/default",
+    "rule": "divider/border/section — between bands",
+    "subRule": "divider/border/subsection — inside a band",
+    "hover": "tertiary/background/hover",
+    "pressed": "form/background/pressed",
+    "indicator": "primary/border/default — the current-nav mark, Navigations' own approved bar",
+    "bone": "tertiary/background/hover — the placeholder furniture",
+    "overlay": "overlay/version1 — the off-canvas scrim, Drawer's own value",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface · border-radius/control · border-radius/indicator",
+    "target": "target/min (44px)",
+    "$rag": "NONE. No RAG value is painted anywhere in this component. A shell has no status to carry. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are untouched."
+  },
+  "$copiedFrom": [
+    "Navigations.reference.html — the masthead geometry (64px row, flex, 28px gap, 32px side padding, bottom section rule), the nav link (64px tall, 12px side padding), the current-item inset 3px red bar, and the 44x44 action buttons. Structure verbatim; type re-keyed, see $finding-type-divergence.",
+    "Breadcrumbs.reference.html — the trail: nav landmark + ol + the '/' text separator + a.crumb with a 3px underline offset thickening 1px→2px on hover + the inset-underline focus shape + aria-current on the last crumb. Structure verbatim; type re-keyed.",
+    "Footer.reference.html — the slim legal bar, the a.lnk link atom (which Footer itself copied verbatim from Links), the 44px link targets at every width, and the copyright line. Verbatim; Footer is already composite-clean so nothing was re-keyed.",
+    "Skeleton-loader.reference.html — the bone shape kit geometry (.line 16px, .body 24px, .media 160px, .control 44x120) and the --bone token. Shimmer and announcement NOT copied, see $finding-skeleton-divergence.",
+    "Drawer.reference.html — the off-canvas mechanics: scrim at overlay/version1, sheet on transform:translateX, background inert + aria-hidden, Esc closes, focus returns to the trigger, 44x44 close. Mirrored to the left edge because a navigation sheet opens from the side its trigger lives on.",
+    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical."
+  ],
+  "$finding-type-divergence": "★★ 'COPY THE APPROVED ARTEFACT VERBATIM' AND 'ADD ZERO TO THE SHRINK-ONLY TYPE RATCHET' CONFLICT WHEN THE APPROVED ARTEFACT IS ITSELF IN DEBT — the Footer #204 finding repeating, class-identical. Navigations writes `font-weight:500` and `font-size:20px` on .logo; Breadcrumbs writes `font:400 14px/1.5 var(--font)` on `nav ol` and `font-weight:500` on `[aria-current=\"page\"]`. Those are exactly the declarations TYPE-002 counts, so copying them verbatim would have driven the type gate red on this file. The GEOMETRY is copied and the TYPE arrives through canon/type.css composites applied in the markup (the T-D14 route). Rendered weight is the same; added debt is zero. Neither parent was edited — they are shared gated artefacts and their raw declarations are the build-PM's to retire.",
+  "$finding-skeleton-divergence": "★★ A SEMANTIC DIVERGENCE, NOT A STYLING ONE, AND TWO APPROVED ARTEFACTS DISAGREED. Skeleton-loader's bones carry role=\"status\" + aria-busy=\"true\" + a visually-hidden 'Loading content' + a 1.4s shimmer, because a skeleton IS a loading announcement. A shell specimen is not loading — it is a frame with the content deliberately left out so the frame can be judged. Copying the loader verbatim would make every shell specimen announce a load that never completes: a false statement to a screen reader, forever, on every page. The SHAPE KIT is copied and the ANNOUNCEMENT is not; the content region is aria-hidden placeholder furniture, which is exactly what the GATED Sidebar-nav does with its own `.sn-canvas span` bars. The gated artefact won. ⚠ One region in App-shell-multi-column keeps the real, announcing loader so the genuine composition is demonstrated somewhere. See $decisionsForDave 6.",
+  "$finding-brand-mark": "⚠ THE BRAND MARK IS A STAND-IN AND THE GAP IS REAL, NOT INVENTED. Itinerary row 86 ('Brand mark / logo', P1) carries the notes cell 'Official asset; needed for shells/auth screens' and the derived verdict ASSET-ONLY: 12 official SVGs exist under knowledge/assets/logos/ (masterbrand, masterbrand-identifier, hexagon; light/dark × colour/mono) and NO component binds them. Probe, run: `grep -rl 'assets/logos' knowledge/snippets/` → ZERO of the 108 pre-existing snippets. So this shell uses the only approved masthead brand in the corpus — Navigations' text wordmark on primary/border/default — and NAMES the gap rather than embedding an asset with no precedent and no meta. ⛔ The Apollo crescent is an anonymity mark only (Dave's #86 ruling) and appears nowhere in this file.",
+  "$finding-breakpoints-unruled": "⚠ 900cqi AND 600cqi ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS. Probed: no breakpoint scale exists in knowledge/tokens/layout.json. A shell is the artefact that most needs one, and three shells built in one wave will silently disagree with each other unless a scale is minted. See $decisionsForDave 4.",
+  "relationships": {
+    "livesInside": ["nothing — this IS the outermost frame"],
+    "commonPatterns": ["marketing and servicing pages", "a product with few enough primary destinations to sit in one row", "any surface that also needs a site footer"],
+    "mustNotNeighbour": []
+  },
+  "$consumes": ["Navigations", "Breadcrumbs", "Footer", "Skeleton-loader", "Drawer"],
+  "$relationshipsNote": "May legitimately contain an Action-bar (a container's action row) as well as the site Footer — the two 'footer' meanings Footer's own $vocabularyCollision names. They are not variants. ⚠ NOTE THE SCHEMA CONSTRAINT, FOUND BY DRIVING P-1 AND NOT BY READING: `relationships` sets additionalProperties:false with NO `^\\$` patternProperties and permits only livesInside · mustNotNeighbour · commonPatterns · triggeredBy. A `consumes` key or even a `$note` INSIDE relationships is a schema violation; the legal home is a top-level `$consumes`, which is the convention the schema's own `edges` description already names.",
+  "accessibility": {
+    "relatedSC": ["1.3.1", "1.4.3", "2.1.1", "2.1.2", "2.4.1", "2.4.3", "2.4.4", "2.4.7", "2.4.8", "2.5.8", "4.1.2"],
+    "landmarks": "One <header> (masthead), <nav aria-label=\"Primary\"> for the destinations, <nav aria-label=\"Breadcrumb\"> for the trail, <main> for the content, <footer role=\"contentinfo\" aria-label> for the end matter. Every nav landmark is named, because a page carrying three of them is otherwise three anonymous 'navigation' entries in a landmark list.",
+    "bypassBlock": "A skip link is the FIRST focusable element, visible only on focus, targeting <main>. SC 2.4.1. Without it a keyboard user tabs through the whole masthead on every page.",
+    "currentPage": "aria-current=\"page\" on the current destination AND a 3px inset bar (a SHAPE, present or absent) AND a surface change. Colour is the third carrier and never the only one — Navigations' own treatment, unchanged.",
+    "disclosure": "The menu button carries aria-expanded + aria-controls; the sheet is role=\"dialog\" aria-modal=\"true\" with an aria-label. Opening it makes every sibling inert AND aria-hidden; Esc closes; focus returns to the trigger.",
+    "targetSize": "Every interactive element is >= 44px (target/min): masthead actions, the menu button, sheet links, the close control, footer legal links and the skip link. MEASURED in a real browser — no gate reads target/min for hit area.",
+    "colourIsNeverAlone": "Links are underlined, not coloured. The current destination is marked by shape and surface as well as hue. No RAG value appears at all.",
+    "reducedMotion": "prefers-reduced-motion: reduce collapses every transition to 0.01ms; the sheet still opens, it simply snaps."
+  },
+  "responsive": {
+    "mechanism": "CONTAINER queries on the shell (container-type:inline-size), never viewport queries. s210-D3: the width is the container's, so a shell dropped into a narrow panel collapses on the panel and not on the window. The third specimen in the snippet is a 392px CONTAINER at a wide viewport, and it collapses — that is the proof.",
+    "full": ">= 900cqi — the nav is in the masthead row (inline) or on its own band (stacked); the section tier is visible; the content is two columns.",
+    "compact": "600–899cqi — the primary nav LEAVES the row and becomes a disclosure behind a 44x44 menu button; the stacked band folds away with the nav it carried; the section tier stays and scrolls horizontally; the content becomes one column; side padding drops 32 → 16.",
+    "phone": "< 600cqi — the menu button opens the off-canvas sheet; the breadcrumb keeps its LAST ancestor plus the current page; the footer legal list stacks; the title lockup stacks.",
+    "$trailDecision": "THE TRAIL DROPS ANCESTORS, IT DOES NOT ELLIPSE THEM. A '…' form was drawn and rejected: a trail whose parent is hidden behind a disclosure is a trail that has stopped doing its job on the one device where going back matters most. PROPOSED #210.",
+    "$status": "PROPOSED #210, Dave's eye owed"
+  },
+  "dimensions": {
+    "mastheadHeight": 64,
+    "navBandHeight": 56,
+    "sectionTierHeight": 48,
+    "sidePaddingWide": 32,
+    "sidePaddingCompact": 16,
+    "sheetWidth": 296,
+    "targetMin": 44,
+    "$note": "mastheadHeight 64 and the 12px nav-link padding are Navigations'. sidePaddingCompact 16 is layout/app/margin. targetMin 44 is target/min. navBandHeight 56 is Headers' in-app header height. sectionTierHeight 48 and sheetWidth 296 are specimen choices on the 4px grid."
+  },
+  "antiPatterns": [
+    "Never stack the nav onto a second band just because there is room. A band of chrome is vertical space the content never gets back, and on a laptop that is the fold.",
+    "Never let the section tier wrap to two rows. It scrolls horizontally instead — two rows of section nav is a nav that has outgrown the pattern.",
+    "Never replace the breadcrumb trail with an ellipsis at phone width. Keep the last ancestor: the trail exists to get back, and getting back is what a phone user does most.",
+    "Never let the off-canvas sheet carry a different set of destinations from the row it replaced. A nav that changes contents when it changes shape is teaching two maps of one building.",
+    "Never omit the skip link because the masthead 'is short'. It is short on the specimen and long in the product.",
+    "Never paint status colour into the frame. A shell has nothing to be red about."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/*.json via the snippet's own #token-manifest, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate 0 failures with this file present; grid gate PASS; a11y gate 0 failures; descender-clip PASS; type-composite contribution 0 (the file is named zero times in the gate output); probe P-1 meta-schema 0 findings. gen_snippet_tokens.py --check reports '0 value(s) would change', which proves every hex in the theme blocks is the store's value and not a typed one.",
+    "declaredAbsence": "No RAG pair is declared because no RAG value is painted. The declared pairs are the seven neutral ones. The current-nav red bar is deliberately NOT declared as a contrastPair — Sidebar-nav's meta measured the same red at 3.89 light / 2.73 dark on tertiary/background/hover in Supercharge, a FAIL, so declaring it would be a green that cannot fail in the theme where it is false. The SHAPE carrier does the work instead. That figure is CARRIED from Sidebar-nav, not re-measured at #210.",
+    "notRun": "_validate_state_contrast.py was NOT run: a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md, which is outside this lane's fence. Same declaration Lane M made at #204 and Lane A at #209. OWED.",
+    "failing": "⛔ _validate_binds_resolve.py check D FAILS for this file: no .cn-app-shell-top-nav block exists in canon/canon.css. Theme cascade projection is therefore silently OFF, and only the light and dark legs authored in the snippet have been seen. Console, Legacy and Supercharge are UNPROVEN. The canon block is a shared generated file and is the conductor's.",
+    "notRegistered": "Absent from knowledge/component-types.json, CATEGORIES, gen_showroom.py and _validate_radius.MIGRATED_SNIPPETS — all shared files outside this lane's fence.",
+    "renderProof": "See notes/_receipts/2026-08-20-210-wave5-laneA-app-shells.md for the driven figures, at three container widths in both modes."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 97, 'App shell — top / stacked nav', Shells (Layer 2), P2, notes cell 'Frame content lives in.' Derived class NO-ARTEFACT-CLASS in reviews/ITINERARY-STATUS-2026-08-19-v1.json: no shell artefact form exists in the store, so the absence was measured as one structural gap rather than as component gaps. This file adopts the brief's PROPOSED convention — a Layer-2 row ships in the same grammar as the library so every existing gate watches it for free — and that convention is Dave's to keep or re-home."
+  },
+  "interactive": true,
+  "stateModel": "simple",
+  "$decisionsForDave": [
+    "1 · WHICH FORM IS THE PRODUCT'S DEFAULT — inline or stacked? Both are drawn so the trade is visible rather than described: stacked buys horizontal room and spends a whole 56px band of vertical. Not settled by construction.",
+    "2 · THE BRAND MARK. Twelve official SVGs exist and nothing binds them; zero of 108 pre-existing snippets reference knowledge/assets/logos/. Should a brand-mark COMPONENT be built (row 86 is P1 and currently ASSET-ONLY), or do shells embed the asset directly? Until one of those is answered every shell carries a text stand-in.",
+    "3 · IS `template` THE RIGHT CATEGORY FOR A SHELL? The schema enum has no `shell` value and additionalProperties is false, so `template` was chosen as the closest legal word and `$layer` carries the real answer. Widening the schema is a schema change and is yours.",
+    "4 · THE BREAKPOINT SCALE. 900cqi and 600cqi here, 1040/720 in the side-nav shell, 1200/840 in the multi-column shell — three shells built in one wave, three sets of numbers, none of them ruled. knowledge/tokens/layout.json has no breakpoint scale. This is the single most consequential open item in the three files.",
+    "5 · THE TRAIL AT PHONE WIDTH. Drawn dropping ancestors and keeping the last one. The alternatives are an ellipsis disclosure or a single 'Back to <parent>' link. Not settled.",
+    "6 · THE PLACEHOLDER CONVENTION. Static aria-hidden bones for a frame, the real announcing Skeleton-loader only where something is genuinely loading. Two approved artefacts disagreed (Skeleton-loader announces, Sidebar-nav's canvas does not) and the gated one won. Confirm or overturn.",
+    "7 · DOES A SHELL BELONG IN knowledge/snippets/ AT ALL? The brief proposed it so the existing gates watch these files for free, and that has already paid — the descender-clip gate caught a real defect in the multi-column shell during this build. But a shell is a page, not a component, and the showroom, the KG and component-types.json all assume components. Yours."
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:App-shell-top-nav.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:nothing-this-is-the-outermost-frame",
+        "$note": "nothing — this IS the outermost frame"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:marketing-and-servicing-pages"
+      },
+      {
+        "ref": "pattern:a-product-with-few-enough-primary-destinations-to-sit-in-one-row"
+      },
+      {
+        "ref": "pattern:any-surface-that-also-needs-a-site-footer"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:navigations",
+        "$note": "Navigations"
+      },
+      {
+        "ref": "component:breadcrumbs",
+        "$note": "Breadcrumbs"
+      },
+      {
+        "ref": "component:footer",
+        "$note": "Footer"
+      },
+      {
+        "ref": "component:skeleton-loader",
+        "$note": "Skeleton-loader"
+      },
+      {
+        "ref": "component:drawer",
+        "$note": "Drawer"
+      }
+    ]
+  }
+}

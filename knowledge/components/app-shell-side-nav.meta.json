@@ -1,0 +1,187 @@
+{
+  "name": "App shell — side nav",
+  "category": "template",
+  "$layer": "2 Shell",
+  "$layerKeyIsDollarPrefixed": "⚠ THE BRIEF PROPOSED A PLAIN `layer` KEY AND IT WOULD FAIL P-1. meta.schema.json sets additionalProperties:false with patternProperties {'^\\$': {}} and has no `layer` property, so an unprefixed key is a schema violation the probe catches. The `$` prefix is the legal form. If Layer 2 becomes first-class the schema should GAIN a real `layer` property and probably a `shell` value in the `category` enum — a schema change, and schema changes are Dave's.",
+  "$categoryChoice": "`template` is the closest LEGAL value in the enum (atom · molecule · organism · template · page). A shell is not a template — a template fills a shell — but there is no `shell` value and inventing one fails the gate. DECLARED as a compromise, not as correct.",
+  "purpose": "The desktop application frame: a persistent vertical navigation column beside a content region, under a compact app bar. Itinerary row 98's own notes cell is 'Desktop app frame.' The column is Sidebar-nav, unmodified; what this artefact adds is the RULE by which the column expands, collapses to a rail, or leaves the layout for a drawer.",
+  "$status": "PROPOSED #210, 2026-08-20 (Wave 5, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. No registry, CATEGORIES, MIGRATED_SNIPPETS, component-types.json, canon.css, _rulings.json or git operation was touched — NEW FILES ONLY.",
+  "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. Every visible atom traces to an existing reference file, named in $copiedFrom with a diff-proof in the receipt. The only new CSS is the .sh-* frame plus three declared rail additions.",
+  "$whatThisAddsThatSidebarNavCannotHave": "★★★ Sidebar-nav ships expanded and rail as TWO SEPARATE STATIC SPECIMENS side by side, with a toggle button that has no script attached. That is correct for a component: a component owns its states. What a component cannot own is the rule that DECIDES which state you get, because that rule is a property of the frame and depends on how much room the frame has. This artefact is that rule. It is the entire reason a shell is a separate thing from the nav inside it, and it is the answer to 'why is this not just Sidebar-nav again'.",
+  "props": [
+    {
+      "name": "nav",
+      "type": "enum",
+      "values": ["auto", "expanded", "rail"],
+      "default": "auto",
+      "$note": "auto = the container query decides. expanded / rail = the user's toggle has spoken and overrides the query's default, but only inside the band where both states are legal (>= 720cqi). Below that band there is no rail to be in and the query wins outright. THAT THREE-WAY PRECEDENCE IS A REAL DESIGN DECISION — see $decisionsForDave 2.",
+      "$status": "PROPOSED #210"
+    }
+  ],
+  "variants": [
+    { "name": "expanded", "use": "a wide desktop window — 248px of labelled destinations" },
+    { "name": "rail", "use": "a narrower window, or a user who wants the room — 64px, glyphs only, every accessible name preserved" },
+    { "name": "off-canvas", "use": "phone width — the column leaves the layout and becomes the drawer, carrying the same destinations" }
+  ],
+  "slots": {
+    "brand": { "accepts": { "capability": ["brand-mark"] }, "required": true, "use": "the app bar identity. ⚠ CURRENTLY A STAND-IN — see $finding-brand-mark.", "$status": "PROPOSED #210, Dave's eye owed" },
+    "sideNav": { "accepts": { "capability": ["navigation"] }, "required": true, "use": "the persistent column — Sidebar-nav, unmodified", "$status": "PROPOSED #210" },
+    "utilityActions": { "accepts": { "capability": ["icon-button"] }, "required": false, "use": "search, profile — 44x44 icon buttons in the app bar's trailing group", "$status": "PROPOSED #210" },
+    "trail": { "accepts": { "capability": ["breadcrumbs"] }, "required": false, "use": "the ancestor path above the page title", "$status": "PROPOSED #210" },
+    "content": { "accepts": { "capability": ["anything"] }, "required": true, "use": "the page. Rendered here as neutral placeholder furniture — see App-shell-top-nav's $finding-skeleton-divergence, which states the reasoning once for all three shells.", "$status": "PROPOSED #210" }
+  },
+  "tokens": {
+    "page": "background/default",
+    "panel": "tertiary/background/default — the app bar and the nav column, so the chrome reads as chrome",
+    "band": "surface/subtle",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "icon": "icon/default",
+    "rule": "divider/border/section",
+    "subRule": "divider/border/subsection",
+    "hover": "tertiary/background/hover",
+    "pressed": "form/background/pressed",
+    "indicator": "primary/border/default — the current-location bar, Sidebar-nav's own approved mark",
+    "bone": "tertiary/background/hover",
+    "overlay": "overlay/version1 — the drawer scrim, Drawer's own value",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface · border-radius/control · border-radius/indicator",
+    "target": "target/min (44px)",
+    "$rag": "NONE. No RAG value is painted anywhere. Two-red law (s151-D1) and the mono error ink camp (s149-D1) untouched."
+  },
+  "$copiedFrom": [
+    "Sidebar-nav.reference.html — the ENTIRE .sn-* rule set and markup shape, VERBATIM: the 248px column, the 56px head with its 44x44 collapse toggle, the 44px links with 18px leading glyphs, the group labels, the collapsible group with its rotating chevron, the 48px sub-item indent, the footer group, the .is-rail clip-path collapse that hides labels without removing accessible names, and the three current-location carriers (aria-current + a 3px leading SHAPE bar + a surface change, colour third).",
+    "Navigations.reference.html — the masthead flex geometry and the 44x44 action buttons, narrowed to Headers' 56px in-app height. Structure verbatim; the brand type re-keyed to a composite.",
+    "Breadcrumbs.reference.html — the trail atom, verbatim structure (slash separator form); type re-keyed.",
+    "Headers.reference.html — the 56px content-header height for an in-app bar.",
+    "Skeleton-loader.reference.html — the bone shape kit geometry and the --bone token; shimmer and announcement not copied.",
+    "Drawer.reference.html — the off-canvas mechanics (scrim at overlay/version1, translateX sheet, background inert + aria-hidden, Esc, focus return), mirrored to the left edge.",
+    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical."
+  ],
+  "$finding-three-rail-additions": "★ THREE RAIL RULES ARE NEW, AND THEY ARE ADDITIONS TO Sidebar-nav's SET RATHER THAN EDITS OF IT: `.is-rail .sn-group-toggle{justify-content:center; padding:0}`, `.is-rail .sn-group-toggle .sc{display:none}`, `.is-rail .sn-sub{display:none}`. Probe, run: `grep -c 'is-rail .sn-group-toggle' knowledge/snippets/Sidebar-nav.reference.html` → 0. The reason the parent never needed them is visible in the parent: its RAIL specimen contains no collapsible group at all — only its EXPANDED specimen does — so its rail rules never had to say what happens to a group toggle or its sub-list. A rail whose group toggle still reserved room for a chevron, and whose sub-list still rendered at a 48px indent inside a 64px column, would be a rail with a hole in it. ⬛ THIS IS ARGUABLY A GAP IN THE GATED PARENT. This lane did not edit it — Sidebar-nav is a shared artefact — and names it here instead.",
+  "$finding-overlap-not-adjudicated": "⚠ THE Sidebar-nav-vs-Navigations OVERLAP IS OPEN AND IS NOT ADJUDICATED HERE. Sidebar-nav's own source records it as Dave's question, raised #203, unresolved: whether Sidebar-nav stands alone or is absorbed as a `type` of Navigations. This shell CONSUMES BOTH — a horizontal bar across the top and a vertical column at the side — which is the arrangement nearly every desktop application uses. That is a DEMONSTRATION of the arrangement, not a verdict on the naming. If Dave folds one into the other, this composition is unchanged; only the two names it cites collapse into one.",
+  "$finding-brand-mark": "⚠ THE BRAND MARK IS A STAND-IN AND THE GAP IS REAL. Itinerary row 86 (P1) is derived ASSET-ONLY: 12 official SVGs under knowledge/assets/logos/ and NO component binds them. Probe, run: `grep -rl 'assets/logos' knowledge/snippets/` → ZERO of the 108 pre-existing snippets. Navigations' text wordmark stands in and the gap is NAMED rather than papered over. ⛔ The Apollo crescent is an anonymity mark only (Dave's #86 ruling) and appears nowhere.",
+  "$finding-breakpoints-unruled": "⚠ 1040cqi AND 720cqi ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS. Probed: no breakpoint scale exists in knowledge/tokens/layout.json. The three shells built in this one wave carry three different pairs of numbers (900/600, 1040/720, 1200/840) and none is ruled. See $decisionsForDave 4.",
+  "$finding-drawer-carries-the-same-nav": "THE DRAWER CARRIES THE SAME NAVIGATION, NOT A REDUCED ONE. The sheet's content is the `.sn` column unmodified. A navigation that changes its own contents when it changes shape is teaching the user two maps of one building — and the map they learn on the desktop is the one they will try to use on the phone.",
+  "relationships": {
+    "livesInside": ["nothing — this IS the outermost frame"],
+    "commonPatterns": ["desktop application frames", "a product with more destinations than a masthead row can hold", "any product with grouped or nested navigation"],
+    "mustNotNeighbour": []
+  },
+  "$consumes": ["Sidebar-nav", "Navigations", "Headers", "Breadcrumbs", "Skeleton-loader", "Drawer"],
+  "$relationshipsNote": "⚠ SCHEMA CONSTRAINT, FOUND BY DRIVING P-1 AND NOT BY READING: `relationships` sets additionalProperties:false with NO `^\\$` patternProperties and permits only livesInside · mustNotNeighbour · commonPatterns · triggeredBy. A `consumes` key, or even a `$note`, INSIDE relationships is a schema violation; the legal home is a top-level `$consumes`.",
+  "accessibility": {
+    "relatedSC": ["1.3.1", "1.4.3", "2.1.1", "2.1.2", "2.4.1", "2.4.3", "2.4.4", "2.4.7", "2.4.8", "2.5.8", "4.1.2"],
+    "landmarks": "<header> for the app bar, <nav aria-label=\"Main\"> for the column, <nav aria-label=\"Breadcrumb\"> for the trail, <main> for the content. Every nav landmark is named — a page with three anonymous 'navigation' entries in a landmark list is a page with none.",
+    "bypassBlock": "A skip link is the FIRST focusable element, visible only on focus, targeting <main>. SC 2.4.1. Without it a keyboard user tabs the app bar AND the entire nav column on every page — which is the specific reason this pattern needs one more than a top-nav shell does.",
+    "railNamesSurviveCollapse": "In the rail the label is visually hidden by clip-path, not removed, so each link keeps a text-derived accessible name and no aria-label has to restate it. Sidebar-nav's own decision, inherited unchanged. ⚠ Sidebar-nav also records the open consequence: a rail item has no VISIBLE name, so a hovering mouse user gets nothing. Composing a Tooltip onto rail items is the obvious answer and is deliberately NOT built here, for the same reason Sidebar-nav did not build it — it would be inventing a composition rule. CARRIED OPEN.",
+    "currentPage": "aria-current=\"page\" AND a 3px leading bar (a SHAPE, present or absent) AND a surface change to tertiary/background/hover. Colour is third and never alone, because Dave is astigmatic and red is a problem hue.",
+    "disclosure": "The nav toggle carries aria-expanded + aria-controls and updates its own accessible name and the column's aria-label when it flips. The menu button carries aria-expanded + aria-controls; the sheet is role=\"dialog\" aria-modal=\"true\" with an aria-label; opening it makes siblings inert AND aria-hidden; Esc closes; focus returns to the trigger.",
+    "targetSize": "Every interactive element is >= 44px (target/min), IN THE RAIL AS WELL AS EXPANDED — the rail item is 64x44. MEASURED in a real browser; no gate reads target/min for hit area.",
+    "colourIsNeverAlone": "No RAG value appears. The current location carries shape and surface as well as hue.",
+    "reducedMotion": "prefers-reduced-motion: reduce collapses every transition, including the column's width animation and the sheet's slide, to 0.01ms."
+  },
+  "responsive": {
+    "mechanism": "CONTAINER queries on the shell (container-type:inline-size), never viewport queries. s210-D3: the width is the container's. The third specimen is a 392px CONTAINER at a wide viewport and it goes off-canvas — that is the proof.",
+    "expanded": ">= 1040cqi — the 248px column with labels, groups and sub-items.",
+    "rail": "720–1039cqi — Sidebar-nav's own .is-rail state, applied by the query rather than by the user: 64px, glyphs only, labels clip-path hidden, group toggles centred and their sub-lists withdrawn.",
+    "offCanvas": "< 720cqi — the column leaves the layout entirely (display:none) and the drawer becomes available behind the app bar's 44x44 menu button, carrying the same destinations.",
+    "precedence": "The query sets the DEFAULT; the user's toggle OVERRIDES it inside the band where both states are legal (data-nav=\"expanded\"|\"rail\" beats data-nav=\"auto\"); the narrowest band wins outright because below 720cqi there is no rail to be in. PROPOSED #210 — see $decisionsForDave 2.",
+    "$status": "PROPOSED #210, Dave's eye owed"
+  },
+  "dimensions": {
+    "columnExpanded": 248,
+    "columnRail": 64,
+    "appBarHeight": 56,
+    "navHeadHeight": 56,
+    "linkMinHeight": 44,
+    "subItemIndent": 48,
+    "sheetWidth": 296,
+    "targetMin": 44,
+    "$note": "columnExpanded 248, columnRail 64, navHeadHeight 56, linkMinHeight 44 and subItemIndent 48 are all Sidebar-nav's, unchanged. appBarHeight 56 is Headers'. targetMin 44 is target/min. sheetWidth 296 is a specimen choice on the 4px grid."
+  },
+  "antiPatterns": [
+    "Never let the drawer carry a different set of destinations from the column it replaced.",
+    "Never remove a label to make a rail — hide it. A removed label takes the accessible name with it and the link becomes an anonymous glyph.",
+    "Never let the container query silently overrule a user who has just pressed the toggle. Inside the band where both states are legal, the person wins.",
+    "Never omit the skip link. This is the pattern where the bypass block matters most: without it every page starts with the app bar and the whole nav column.",
+    "Never mark the current location with colour alone. The bar is a shape first and a hue third.",
+    "Never paint status colour into the frame. A shell has nothing to be red about."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/*.json via the snippet's own #token-manifest, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate 0 failures with this file present; grid gate PASS; a11y gate 0 failures; descender-clip PASS; type-composite contribution 0 (the file is named zero times in the gate output); probe P-1 meta-schema 0 findings. gen_snippet_tokens.py --check reports '0 value(s) would change', which proves every hex in the theme blocks is the store's value and not a typed one.",
+    "declaredAbsence": "No RAG pair declared because no RAG value is painted. The current-location red bar is deliberately NOT declared as a contrastPair, for the reason Sidebar-nav's own meta gives.",
+    "carriedNotMeasured": "⚠ CARRIED, NOT RE-MEASURED AT #210: Sidebar-nav's meta records primary/border/default on tertiary/background/hover at mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, and SUPERCHARGE 3.89 light / 2.73 dark — a FAIL in Supercharge. Those figures are Sidebar-nav's, quoted. Nothing was re-measured here. They apply unchanged because it is the same bar on the same surface.",
+    "notRun": "_validate_state_contrast.py was NOT run: a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md, outside this lane's fence. Same declaration Lane M made at #204 and Lane A at #209. OWED.",
+    "failing": "⛔ _validate_binds_resolve.py check D FAILS: no .cn-app-shell-side-nav block in canon/canon.css, so theme cascade projection is silently OFF and only the light and dark legs authored in the snippet have been seen. Console, Legacy and Supercharge are UNPROVEN. Shared generated file — the conductor's.",
+    "notRegistered": "Absent from knowledge/component-types.json, CATEGORIES, gen_showroom.py and _validate_radius.MIGRATED_SNIPPETS — shared files outside this lane's fence.",
+    "renderProof": "See notes/_receipts/2026-08-20-210-wave5-laneA-app-shells.md for the driven figures at three container widths in both modes."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 98, 'App shell — side nav', Shells (Layer 2), P2, notes cell 'Desktop app frame.' Derived class NO-ARTEFACT-CLASS in reviews/ITINERARY-STATUS-2026-08-19-v1.json. Ships in the library grammar on the #210 brief's PROPOSED convention, so every existing gate watches it for free."
+  },
+  "interactive": true,
+  "stateModel": "simple",
+  "$decisionsForDave": [
+    "1 · IS THIS ARTEFACT DISTINCT ENOUGH FROM Sidebar-nav TO EXIST? The honest answer is stated on the file's own face: it adds the RULE that picks a state, which a component cannot own. If you disagree, the live outcome is that Sidebar-nav gains a `responsive` section and this file is deleted — nothing registers it, so deleting costs nothing.",
+    "2 · THE THREE-WAY PRECEDENCE. Container query sets the default, the user's toggle overrides inside the band where both states are legal, the narrowest band wins outright. Drawn, not settled. The alternative is that the user's choice persists all the way down and the phone simply shows a rail.",
+    "3 · THE THREE NEW RAIL RULES. A rail containing a collapsible group is a case Sidebar-nav's own rail specimen never had, so its rail rules are silent on it. Should those three rules go back into the GATED parent — where they arguably belong — or stay here as shell composition? This lane could not touch a gated file to find out.",
+    "4 · THE BREAKPOINT SCALE. 1040cqi and 720cqi here; 900/600 in the top-nav shell; 1200/840 in the multi-column shell. Three shells, three sets of numbers, none of them ruled, no scale in knowledge/tokens/layout.json. The most consequential open item across the three files.",
+    "5 · THE RAIL TOOLTIP, CARRIED OPEN FROM #203. A rail item has no visible name. Sidebar-nav named composing a Tooltip as the obvious answer and did not build it. This shell inherits both the gap and the restraint.",
+    "6 · THE Sidebar-nav / Navigations NAMING, CARRIED OPEN FROM #203. This shell consumes both. Whatever you rule, the composition is unaffected.",
+    "7 · THE BRAND MARK. Twelve official SVGs exist and nothing binds them; row 86 is P1 and ASSET-ONLY. Component, or direct embed? Until one is answered every shell carries a text stand-in."
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:App-shell-side-nav.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:nothing-this-is-the-outermost-frame",
+        "$note": "nothing — this IS the outermost frame"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:desktop-application-frames"
+      },
+      {
+        "ref": "pattern:a-product-with-more-destinations-than-a-masthead-row-can-hold"
+      },
+      {
+        "ref": "pattern:any-product-with-grouped-or-nested-navigation"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:sidebar-nav",
+        "$note": "Sidebar-nav"
+      },
+      {
+        "ref": "component:navigations",
+        "$note": "Navigations"
+      },
+      {
+        "ref": "component:headers",
+        "$note": "Headers"
+      },
+      {
+        "ref": "component:breadcrumbs",
+        "$note": "Breadcrumbs"
+      },
+      {
+        "ref": "component:skeleton-loader",
+        "$note": "Skeleton-loader"
+      },
+      {
+        "ref": "component:drawer",
+        "$note": "Drawer"
+      }
+    ]
+  }
+}

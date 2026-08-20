@@ -72,9 +72,9 @@
 
 ## ✓ ASSERT-009 — environment
 
-**Claim:** The component-spec KG is 109 files at knowledge/components/*.meta.json (the directory holds 113 entries - the other four are meta.schema.json, _ACCESSIBILITY-CONFORMANCE.md, _nodes-context.json and _nodes-pattern.json; the 92 includes the EXAMPLE template meta), and NOTHING in the build re-checks their token claims.
+**Claim:** The component-spec KG is 120 files at knowledge/components/*.meta.json (the directory holds 124 entries - the other four are meta.schema.json, _ACCESSIBILITY-CONFORMANCE.md, _nodes-context.json and _nodes-pattern.json; the 92 includes the EXAMPLE template meta), and NOTHING in the build re-checks their token claims.
 
-- check: `count=109 (want eq 109) in root=repo`
+- check: `count=120 (want eq 120) in root=repo`
 - consequence: If the count flips, every #131 record that names the corpus size is stale - _LIVE-STATE.md OPEN, GOOD-MORNING.md's banner, the ledger and the dossier all repeat it. Re-count, then correct all four in one pass.
 - clears when: Dave rules the component-spec-KG remedy (index / parse-gate / checklist line) and the chosen mechanism, not this assertion, becomes what re-checks the metas.
 - asserted in: `_LIVE-STATE.md`, `notes/_MEMENTO-DECISIONS.md`, `_DECISION-HISTORY/2026-08-08-131-the-legacy-rag-fills-and-the-design-kg-nothing-checks.md`, `knowledge/README.md`

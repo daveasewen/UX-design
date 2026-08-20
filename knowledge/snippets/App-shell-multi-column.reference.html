@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App shell — multi-column (reference implementation, PROPOSED #210)</title>
+<!--
+  ⚠⚠ PROPOSED #210, 2026-08-20 (Wave 5, Lane A). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. Itinerary row 99 ("App shell — multi-column",
+  Shells (Layer 2), P2, notes cell "List + detail frame."). Derived class NO-ARTEFACT-CLASS.
+
+  ★★ COMPOSE, NEVER RE-DRAW. Borrowed, and named so a reviewer can diff it:
+    · THE NAV RAIL — Sidebar-nav.reference.html, VERBATIM, in its own `.is-rail` state.
+    · THE LIST ROW — Sidebar-nav.reference.html's `.sn-link` atom, VERBATIM, INCLUDING its
+      three current-location carriers. ⚠ THIS IS THE FILE'S LARGEST JUDGMENT: see below.
+    · THE APP BAR — Navigations.reference.html's masthead geometry at the 56px in-app height
+      Headers.reference.html uses; Navigations' 44x44 action buttons unchanged.
+    · THE LOADING REGION IN THE DETAIL PANE — Skeleton-loader.reference.html, VERBATIM AND
+      COMPLETE: the shimmer, `role="status"`, `aria-busy="true"`, the visually-hidden "Loading
+      content", the reduced-motion static fallback, and the resolve behaviour.
+    · THE STATIC BONES elsewhere — Skeleton-loader's shape kit geometry only, without the
+      announcement. The reasoning is stated in full in App-shell-top-nav.reference.html and is
+      not repeated here; the short form is that a frame with the content left out is not loading.
+    · THE BACK CONTROL in the narrow detail header — Headers.reference.html's content-header
+      back button, verbatim (the chevron-left glyph at 20px in a 44px target).
+  ⛔ NO PARENT FILE WAS EDITED.
+
+  ★★★ THE LIST ROW IS Sidebar-nav's LINK, AND THAT IS AN ARGUMENT, NOT A CONVENIENCE.
+  A master list needs to show WHICH RECORD THE DETAIL PANE IS SHOWING. The library does not
+  have that. Probe, run:
+      grep -c 'aria-current\|aria-selected' knowledge/snippets/List-items.reference.html   ->  0
+  List-items — the library's list-row component, gated and promoted — models default, hover,
+  pressed, disabled and processing, and models NO selected or current state at all. Its rows are
+  `<button>`s that take you somewhere; nothing in it says "and you are looking at this one".
+  The one gated atom in the corpus that DOES model "you are here" with three independent
+  carriers — `aria-current` for AT, a 3px leading BAR that is a SHAPE present or absent, and a
+  surface change, with colour only third because Dave is astigmatic — is Sidebar-nav's `.sn-link`.
+  A master list's current row IS "you are here". So the atom is borrowed whole.
+  ⚠ ONE DECLARED WIDENING, WHICH IS AN ADDITION AND NOT AN EDIT: Sidebar-nav's selector is
+  `.sn-link[aria-current="page"]`; a row inside a list is `aria-current="true"`, not `"page"`,
+  because the pane is not a document. This file adds `.sn-link[aria-current]` with the SAME
+  declarations. Sidebar-nav is untouched.
+  ⬛ THE LIVE ALTERNATIVE, stated so it can be chosen instead: give List-items a selected state
+  and use it here, or make the list a real `role="listbox"` with `aria-selected`. Both are
+  legitimate and both are Dave's. See $decision-1. If he picks either, this shell changes one
+  atom and nothing else.
+
+  THE RESPONSIVE COLLAPSE — three columns down to one, and the one-column case is where every
+  list/detail frame is actually decided. Container queries throughout (`s210-D3`):
+    · >= 1200cqi — THREE panes: 64px rail · 360px list · detail takes the rest.
+    · 840–1199cqi — TWO panes: the rail leaves for the app bar's menu button; list + detail.
+    · < 840cqi  — ONE pane. `data-pane="list"` or `data-pane="detail"` on the shell decides
+      which. Choosing a row moves to detail; the detail header grows a back control that
+      returns to the list. ⛔ THE PANES ARE NOT HIDDEN WITH display:none AND THAT IS
+      DELIBERATE — the inactive pane is `inert` + `aria-hidden`, so it is out of the tab order
+      and out of the accessibility tree TOGETHER, which `display:none` would also do but
+      `visibility` alone would not. Getting this wrong is the classic list/detail defect: a
+      screen-reader user tabs into a pane that is not on screen.
+  ⚠ 1200 AND 840 ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS. No breakpoint scale exists in
+  knowledge/tokens/layout.json — probed, absent.
+
+  ⚠ THE LIST PANE HAS NO FILTER OR SORT BAR AND THAT IS A SCOPE LINE, NOT AN OVERSIGHT.
+  Itinerary row 120 (filter / toolbar bar) is a SEPARATE Layer-2 member being built in the same
+  wave by another lane. A shell that invented its own toolbar would collide with it. The list
+  header carries a title and a count and stops.
+
+  ★★ TYPE: composites only, no raw font declarations in component scope. Ratchet contribution: 0.
+  COLOUR: no RAG value is painted anywhere. The only red is primary/border/default on the
+  current-location bar, which is Sidebar-nav's own approved mark, in both the rail and the list.
+  Two-red law (s151-D1) and the mono error ink camp (s149-D1) untouched.
+  SHAPE: square (border-radius/* resolve 0 in Mono; themes flex via canon.css).
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. BYTE-IDENTICAL to Command-palette.reference.html line 36. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family, font-size or font-weight anywhere in component scope — every text
+     element carries a .t-cm-* / .t-ed-* composite from canon/type.css. Ratchet contribution: 0. */
+  :root{ --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF;
+    --panel:#FFFFFF;
+    --band:#F0F0F0;
+    --text:#1A1A1A;
+    --muted:#1A1A1A;
+    --icon:#1A1A1A;
+    --rule:#E1E1E1;
+    --sub-rule:#F0F0F0;
+    --hover:#F0F0F0;
+    --pressed:#CECECE;
+    --indicator:#DB0011;
+    --bone:#F0F0F0;
+    --focus:#305A85;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --panel:#1F1F1F;
+    --band:#1F1F1F;
+    --text:#FFFFFF;
+    --muted:#FFFFFF;
+    --icon:#FFFFFF;
+    --rule:#808080;
+    --sub-rule:#808080;
+    --hover:#232323;
+    --pressed:#484848;
+    --indicator:#DB0011;
+    --bone:#232323;
+    --focus:#4587A7;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:32px 24px; background:var(--page); color:var(--text);
+       -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted); opacity:var(--alpha-60); margin:0 0 8px;}
+  .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+
+  /* ============================================================================================
+     THE SHELL FRAME — the only new CSS in this file. It positions parts; it styles none of them.
+     ============================================================================================ */
+  .sh{position:relative; display:flex; flex-direction:column; height:640px;
+      container-type:inline-size; container-name:shell;
+      background:var(--page); color:var(--text);
+      border:1px solid var(--rule); border-radius:var(--border-radius-surface); overflow:hidden;}
+  .sh.is-narrow{width:392px;}
+
+  .sh-skip{position:absolute; top:8px; left:8px; z-index:8; display:inline-flex; align-items:center;
+    min-height:var(--target-min); padding:0 16px; background:var(--panel); color:var(--text);
+    border:1px solid var(--rule); border-radius:var(--border-radius-control);
+    text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+    transform:translateY(-200%); transition:transform var(--ease);}
+  .sh-skip:focus-visible{transform:translateY(0); outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ---- app bar: Navigations' masthead at Headers' 56px in-app height ---- */
+  .sh-appbar{display:flex; align-items:center; gap:16px; min-height:56px; padding:0 8px 0 16px;
+    background:var(--panel); border-bottom:1px solid var(--rule); flex:none;}
+  .sh-logo{color:var(--indicator); flex:none; margin-right:auto;}
+  .sh-actions{display:flex; gap:8px; flex:none;}
+  .sh-actions button, .sh-icon{width:var(--target-min); height:var(--target-min); border:0;
+    background:transparent; color:var(--icon); cursor:pointer; display:inline-flex;
+    align-items:center; justify-content:center; border-radius:var(--border-radius-control);}
+  .sh-actions button:hover, .sh-icon:hover{background:var(--hover);}
+  .sh-actions button:active, .sh-icon:active{background:var(--pressed);}
+  .sh-actions button:focus-visible, .sh-icon:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-actions svg, .sh-icon svg{width:20px; height:20px; fill:currentColor;}
+  .sh-menu{display:none;}
+
+  /* ---- the columns ---- */
+  .sh-cols{flex:1; display:flex; min-height:0;}
+
+  .sh-list{flex:none; width:360px; min-width:0; display:flex; flex-direction:column;
+    background:var(--panel); border-right:1px solid var(--rule);}
+  .sh-list-head{flex:none; display:flex; align-items:baseline; gap:8px; min-height:56px;
+    padding:0 16px; border-bottom:1px solid var(--sub-rule);}
+  .sh-list-head h2{margin:0;}
+  .sh-count{color:var(--muted); opacity:var(--alpha-60);}
+  .sh-list-body{flex:1; overflow-y:auto; padding:8px 0;}
+  .sh-list-body ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
+
+  .sh-detail{flex:1; min-width:0; display:flex; flex-direction:column; background:var(--page);}
+  .sh-detail-head{flex:none; display:flex; align-items:center; gap:8px; min-height:56px;
+    padding:0 8px 0 24px; border-bottom:1px solid var(--sub-rule);}
+  /* ds-005: a truncating label needs a descender-safe edge, and the override must out-specify
+     the leading-trim rule. h1 is NOT in the trim :is() list (headings are excluded), so the
+     two-part selector below is already stronger than anything trimming it — the computed edge
+     was MEASURED in a real browser, not assumed. */
+  .sh-detail-head h1{margin:0; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; text-box-edge:text text;}
+  .sh-back{display:none;}
+  .sh-detail-body{flex:1; overflow-y:auto; padding:24px; display:flex; flex-direction:column; gap:24px;}
+  .sh-panel{border:1px solid var(--rule); border-radius:var(--border-radius-surface); padding:16px;
+    display:flex; flex-direction:column; gap:12px;}
+  .sh-pair{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;}
+
+  /* ---- bone shape kit: geometry copied from Skeleton-loader; announcement NOT copied ---- */
+  .bone{display:block; background:var(--bone); border-radius:var(--border-radius-indicator);}
+  .bone.line{height:16px;}
+  .bone.body{height:24px;}
+  .bone.media{height:160px;}
+  .bone.control{height:44px; width:120px;}
+
+  /* ---- the LOADING region: Skeleton-loader VERBATIM, shimmer and all ---- */
+  .skwrap{display:flex; flex-direction:column; gap:8px;}
+  .skwrap .bone{
+    background-image:linear-gradient(90deg, var(--bone) 0%, color-mix(in srgb, var(--bone) 50%, var(--page)) 50%, var(--bone) 100%);
+    background-size:200% 100%; background-position:200% 0; animation:shimmer 1.4s linear infinite;}
+  @keyframes shimmer{ to{ background-position:-200% 0; } }
+  .sk-resolve{display:inline-flex; align-items:center; min-height:var(--target-min); padding:0 16px;
+    border:1px solid var(--rule); background:transparent; color:var(--text); cursor:pointer;
+    border-radius:var(--border-radius-control); align-self:flex-start;}
+  .sk-resolve:hover{background:var(--hover);}
+  .sk-resolve:active{background:var(--pressed);}
+  .sk-resolve:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ============================================================================================
+     THE NAV RAIL AND THE LIST ROW — every rule below is Sidebar-nav.reference.html, VERBATIM,
+     except the ONE declared widening marked below.
+     ============================================================================================ */
+  .sn{flex:none; width:248px; display:flex; flex-direction:column; background:var(--panel);
+      border-right:1px solid var(--rule); transition:width var(--ease);}
+  .sn.is-rail{width:64px;}
+  .sn-head{display:flex; align-items:center; gap:8px; min-height:56px; padding:0 8px 0 16px;
+           border-bottom:1px solid var(--sub-rule);}
+  .sn-brand{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            text-box-edge:text text; color:var(--text);}
+  .sn.is-rail .sn-head{padding:0 12px; justify-content:center;}
+  .sn-body{flex:1; overflow-y:auto; padding:8px 0; display:flex; flex-direction:column; gap:8px;}
+  .sn-group{display:flex; flex-direction:column; gap:2px;}
+  .sn ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
+  .sn-link{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 16px;
+           color:var(--text); text-decoration:none; position:relative;
+           transition:background var(--ease);}
+  .sn-link .si{flex:none; display:inline-flex; width:18px; height:18px; color:var(--icon);}
+  .sn-link .si svg{width:18px; height:18px; fill:currentColor;}
+  .sn-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            text-box-edge:text text;}
+  .sn-link:hover{background:var(--hover);}
+  .sn-link:active{background:var(--pressed);}
+  .sn-link:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  /* CURRENT LOCATION — aria-current for AT + a 3px leading bar (a SHAPE, present or absent)
+     + a surface change. Colour is the third carrier, never the only one. */
+  .sn-link[aria-current="page"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+  /* ⚠ THE ONE DECLARED WIDENING — an ADDITION, not an edit of the parent. A row inside a list is
+     aria-current="true", not "page", because the pane is not a document. Same declarations. */
+  .sn-link[aria-current]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+  .sn.is-rail .sn-brand{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
+  .sn.is-rail .sn-label{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
+  .sn.is-rail .sn-link{justify-content:center; padding:0; width:64px; min-height:44px;}
+  .sn.is-rail .sn-group + .sn-group{padding-top:8px;}
+  .sn-foot{border-top:1px solid var(--sub-rule); padding:8px 0;}
+
+  /* ⚠⚠ ds-005 IS LIVE, AND IT WAS RE-MEASURED HERE RATHER THAN CITED. The leading-trim rule at
+     the top of this file is `:is(button,a,label,span,…):not(:has(svg))`, and the borrowed
+     `.sn-label{text-box-edge:text text}` is a SINGLE-class override. Driven in a real browser:
+     the computed text-box-edge came back `cap alphabetic`, not `text text`, and every label
+     carrying a descender clipped 4.00px below its box (box 11.56px, text 21px, overflow:hidden).
+     ⛔ THE FIGURES ARE BYTE-IDENTICAL IN THE GATED Sidebar-nav.reference.html — same 11.56 /
+     21 / 4.00 — so this is INHERITED, not introduced, and the parent still carries it.
+     ⛔ AND `_validate_descender_clip.py` IS GREEN OVER BOTH, because it reads the DECLARATION
+     and not the computed value. A gate that cannot see the thing it is named after.
+     The two-class form below out-specifies the trim. Measured after: clipBelow 0.00. */
+  .sn .sn-label, .sn .sn-brand{text-box-edge:text text;}
+  /* the LIST rows are not inside a .sn element, so they need their own two-class override —
+     caught by re-measuring after the first fix rather than by assuming it had landed. */
+  .sh-list-body .sn-label, .sh-list-body .sn-sub-label{text-box-edge:text text;}
+
+
+  /* a list row carries two lines, so it is taller than a nav row — the ONLY geometry change,
+     and it is additive: min-height grows, nothing else moves. */
+  .sh-list-body .sn-link{min-height:64px; align-items:flex-start; padding-top:12px; padding-bottom:12px;}
+  .sh-list-body .sn-stack{flex:1; min-width:0; display:flex; flex-direction:column; gap:4px;}
+  .sh-list-body .sn-sub-label{color:var(--muted); opacity:var(--alpha-60); overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text;}
+
+  /* ============================================================================================
+     THE COLLAPSE — CONTAINER queries.
+     ============================================================================================ */
+  @container shell (max-width: 1199px){
+    .sh-cols > .sn{display:none;}
+    .sh-menu{display:inline-flex;}
+    .sh-list{width:320px;}
+  }
+  @container shell (max-width: 839px){
+    .sh-list{width:100%; border-right:0;}
+    .sh[data-pane="list"] .sh-detail{display:none;}
+    .sh[data-pane="detail"] .sh-list{display:none;}
+    .sh-back{display:inline-flex;}
+    .sh-detail-head{padding:0 8px;}
+    .sh-detail-body{padding:16px;}
+  }
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .skwrap .bone{ animation:none; background-image:none; }   /* static bones — shape alone reads as loading (2.3.3) */
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="ic-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 5H1.5C0.675 5 0 5.675 0 6.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V6.5C18 5.675 17.325 5 16.5 5ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V6.5C1.2 6.337 1.337 6.2 1.5 6.2H16.5C16.663 6.2 16.8 6.337 16.8 6.5V16.5ZM3 12H5V10H3V12ZM14.8 2.6H3.2C2.537 2.6 2 3.137 2 3.8H16C16 3.137 15.463 2.6 14.8 2.6ZM12.8 0H5.2C4.537 0 4 0.537 4 1.2H14C14 0.537 13.463 0 12.8 0Z" fill="currentColor"/></symbol>
+    <symbol id="ic-transfer" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.003 7.18915H11.997V5.98497H15.003V7.18915ZM6.05701 8.62698L5.09401 9.58853H8.748V10.7837H5.06701L6.05701 11.7632H4.36501L2.79002 10.1996L4.36501 8.62698H6.05701ZM7.551 12.2216L9.126 13.7942L7.551 15.3309H5.85901L6.84901 14.3783H3.17702V13.1561H6.82201L5.85901 12.1946L7.551 12.2216ZM6.00301 7.18915C4.05227 7.18188 2.2899 8.35058 1.54002 10.1487C0.790141 11.9469 1.20094 14.0191 2.58033 15.3964C3.95972 16.7738 6.03509 17.1839 7.83595 16.4352C9.63682 15.6864 10.8073 13.9267 10.8 11.9789C10.7901 9.3377 8.64821 7.199 6.00301 7.18915ZM6.00301 5.99395C8.43708 5.99033 10.6332 7.45254 11.5655 9.6976C12.4978 11.9427 11.9823 14.5275 10.2599 16.2448C8.53746 17.9621 5.94795 18.4728 3.70091 17.5386C1.45386 16.6043 -0.00725782 14.4093 2.71165e-05 11.9789C2.34e-05 8.66709 2.6862 5.98094 6.00301 5.97598V5.99395ZM18 1.49175V10.4782C17.9986 10.6786 17.9589 10.8768 17.883 11.0623C17.6403 11.6097 17.0966 11.9623 16.497 11.9609H13.212C13.2075 11.5663 13.1714 11.1726 13.104 10.7837H16.497C16.664 10.779 16.7983 10.6449 16.803 10.4782V4.18768H4.20301V5.02342C3.78991 5.13033 3.3865 5.27161 2.99702 5.44578V1.49175C3.00197 0.666427 3.67343 -1.47967e-05 4.50001 2.46473e-10H16.497C17.3236 -1.47967e-05 17.995 0.666427 18 1.49175ZM16.497 1.1952H4.50001C4.42125 1.1952 4.3457 1.22644 4.29 1.28205C4.23431 1.33767 4.20301 1.4131 4.20301 1.49175V2.99248H16.803V1.49175C16.7981 1.32652 16.6625 1.19512 16.497 1.1952Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chart" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0V7H18C18 3.134 14.866 0 11 0ZM12.2 1.325C14.437 1.797 16.203 3.563 16.675 5.8H12.2V1.325ZM9 2H8C3.582 2 0 5.582 0 10C0 14.418 3.582 18 8 18C12.418 18 16 14.418 16 10V9H9V2ZM1.2 10C1.2 6.318 4.143 3.317 7.8 3.21V9.551L2.885 14.466C1.839 13.27 1.2 11.71 1.2 10ZM8 16.8C6.392 16.8 4.914 16.236 3.749 15.299L8 11.049L12.251 15.299C11.086 16.236 9.608 16.8 8 16.8ZM14.79 10.2C14.742 11.831 14.12 13.317 13.115 14.466L8.849 10.2H14.79Z" fill="currentColor"/></symbol>
+    <symbol id="ic-settings" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.376 6.992C16.208 6.374 15.96 5.774 15.634 5.206L16.319 3.592L14.408 1.68L12.794 2.365C12.225 2.04 11.626 1.791 11.007 1.623L10.352 0H7.648L6.992 1.624C6.374 1.791 5.774 2.04 5.206 2.365L3.592 1.68L1.68 3.592L2.365 5.206C2.04 5.774 1.791 6.374 1.624 6.992L0 7.648V10.351L1.624 11.007C1.791 11.626 2.04 12.225 2.366 12.794L1.68 14.408L3.592 16.32L5.206 15.635C5.775 15.961 6.374 16.209 6.993 16.377L7.648 18H10.351L11.007 16.377C11.625 16.209 12.225 15.961 12.794 15.635L14.408 16.32L16.32 14.408L15.635 12.794C15.961 12.225 16.209 11.626 16.377 11.007L18 10.352V7.648L16.376 6.992ZM15.374 10.118L15.218 10.694C15.077 11.214 14.867 11.72 14.593 12.198L14.298 12.715L14.53 13.263L14.899 14.132L14.132 14.899L12.716 14.297L12.199 14.593C11.721 14.866 11.215 15.077 10.694 15.218L10.119 15.374L9.542 16.8H8.458L7.882 15.375L7.306 15.219C6.785 15.078 6.28 14.867 5.802 14.594L5.285 14.298L4.736 14.53L3.868 14.899L3.101 14.132L3.703 12.716L3.407 12.199C3.134 11.721 2.923 11.215 2.782 10.694L2.626 10.119L1.2 9.542V8.458L2.625 7.882L2.781 7.307C2.922 6.786 3.133 6.28 3.406 5.802L3.702 5.285L3.47 4.737L3.101 3.868L3.868 3.101L5.285 3.703L5.802 3.407C6.28 3.134 6.786 2.924 7.307 2.782L7.882 2.626L8.458 1.2H9.543L10.119 2.625L10.694 2.781C11.215 2.922 11.721 3.133 12.199 3.406L12.716 3.702L14.133 3.1L14.9 3.867L14.297 5.285L14.593 5.802C14.866 6.279 15.076 6.785 15.218 7.306L15.374 7.881L15.927 8.104L16.8 8.458V9.542L15.374 10.118ZM9 4.8C7.878 4.8 6.823 5.237 6.03 6.03C5.237 6.823 4.8 7.878 4.8 9C4.8 10.122 5.237 11.177 6.03 11.97C6.823 12.763 7.878 13.2 9 13.2C10.122 13.2 11.176 12.763 11.97 11.97C12.764 11.177 13.2 10.122 13.2 9C13.2 7.878 12.763 6.823 11.97 6.03C11.177 5.237 10.122 4.8 9 4.8ZM11.121 11.121C10.536 11.707 9.768 12 9 12C8.232 12 7.464 11.707 6.878 11.121C5.707 9.95 5.707 8.05 6.878 6.879C7.464 6.293 8.232 6 9 6C9.768 6 10.536 6.293 11.121 6.879C12.293 8.05 12.293 9.95 11.121 11.121Z" fill="currentColor"/></symbol>
+    <symbol id="ic-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+    <symbol id="ic-more" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3C9.828 3 10.5 2.328 10.5 1.5C10.5 0.672 9.828 0 9 0C8.171 0 7.5 0.672 7.5 1.5C7.5 2.328 8.171 3 9 3ZM9 15C8.171 15 7.5 15.672 7.5 16.5C7.5 17.328 8.171 18 9 18C9.828 18 10.5 17.328 10.5 16.5C10.5 15.672 9.828 15 9 15ZM9 7.5C8.171 7.5 7.5 8.172 7.5 9C7.5 9.828 8.171 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="specimens">
+
+    <!-- ============================================================ 1 · THREE PANES -->
+    <div>
+      <p class="spec-note t-cm-caption">Three panes — 64px rail, 360px list, detail takes the rest. The rail is Sidebar-nav's own collapsed state; the list rows are Sidebar-nav's link atom, carrying the same three current-location carriers.</p>
+
+      <div class="sh" data-pane="detail" id="shell-three">
+        <a class="sh-skip t-cm-button" href="#detail-three">Skip to the detail pane</a>
+
+        <header class="sh-appbar">
+          <button class="sh-icon sh-menu" type="button" aria-label="Open main menu"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg></button>
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <div class="sh-actions">
+            <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+          </div>
+        </header>
+
+        <div class="sh-cols">
+
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head"><span class="sn-brand t-cm-label">Business banking</span></div>
+            <div class="sn-body">
+              <div class="sn-group">
+                <ul>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="sn-foot">
+              <ul>
+                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+              </ul>
+            </div>
+          </nav>
+
+          <section class="sh-list" aria-labelledby="list-three-h">
+            <div class="sh-list-head">
+              <h2 class="t-ed-heading-4" id="list-three-h">Accounts</h2>
+              <span class="sh-count t-cm-caption">4 accounts</span>
+            </div>
+            <div class="sh-list-body">
+              <ul>
+                <li><a class="sn-link" href="#" aria-current="true" data-pick="shell-three"><span class="sn-stack"><span class="sn-label t-cm-label">Business current account</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1173</span></span></a></li>
+                <li><a class="sn-link" href="#" data-pick="shell-three"><span class="sn-stack"><span class="sn-label t-cm-label">Business savings</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1181</span></span></a></li>
+                <li><a class="sn-link" href="#" data-pick="shell-three"><span class="sn-stack"><span class="sn-label t-cm-label">Client money account</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1204</span></span></a></li>
+                <li><a class="sn-link" href="#" data-pick="shell-three"><span class="sn-stack"><span class="sn-label t-cm-label">Foreign currency account</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1219</span></span></a></li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="sh-detail" id="detail-three" aria-labelledby="detail-three-h">
+            <div class="sh-detail-head">
+              <button class="sh-icon sh-back" type="button" aria-label="Back to the account list" data-back="shell-three"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+              <h1 class="t-ed-heading-3" id="detail-three-h">Business current account</h1>
+              <button class="sh-icon" type="button" aria-label="More options for this account"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-more"/></svg></button>
+            </div>
+            <div class="sh-detail-body">
+              <div class="sh-pair" aria-hidden="true">
+                <div class="sh-panel"><span class="bone body" style="width:48%"></span><span class="bone line"></span><span class="bone line" style="width:70%"></span></div>
+                <div class="sh-panel"><span class="bone body" style="width:56%"></span><span class="bone line"></span><span class="bone line" style="width:62%"></span></div>
+              </div>
+
+              <div class="sh-panel">
+                <h2 class="t-ed-heading-4">Recent activity</h2>
+                <div class="skwrap" id="sk-three" role="status" aria-busy="true">
+                  <span class="visually-hidden">Loading content</span>
+                  <span class="bone body" style="width:40%" aria-hidden="true"></span>
+                  <span class="bone line" aria-hidden="true"></span>
+                  <span class="bone line" aria-hidden="true"></span>
+                  <span class="bone line" style="width:65%" aria-hidden="true"></span>
+                </div>
+                <button class="sk-resolve t-cm-button" type="button" data-resolve="sk-three">Simulate the activity arriving</button>
+                <p class="spec-note t-cm-caption">This one region is the real Skeleton-loader, complete — shimmer, role="status", aria-busy, the visually-hidden announcement, and the reduced-motion static fallback. Everything else in this file is static placeholder furniture and says so.</p>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ 2 · ONE PANE — THE LIST -->
+    <div>
+      <p class="spec-note t-cm-caption">A 392px container showing the list. The detail pane is not merely off screen — it is removed from the layout, so nothing can tab into a pane the user cannot see.</p>
+
+      <div class="sh is-narrow" data-pane="list" id="shell-list">
+        <a class="sh-skip t-cm-button" href="#list-narrow">Skip to the account list</a>
+
+        <header class="sh-appbar">
+          <button class="sh-icon sh-menu" type="button" aria-label="Open main menu"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg></button>
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <div class="sh-actions">
+            <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+          </div>
+        </header>
+
+        <div class="sh-cols">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head"><span class="sn-brand t-cm-label">Business banking</span></div>
+            <div class="sn-body"><div class="sn-group"><ul>
+              <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+            </ul></div></div>
+          </nav>
+
+          <section class="sh-list" id="list-narrow" aria-labelledby="list-narrow-h">
+            <div class="sh-list-head">
+              <h2 class="t-ed-heading-4" id="list-narrow-h">Accounts</h2>
+              <span class="sh-count t-cm-caption">4 accounts</span>
+            </div>
+            <div class="sh-list-body">
+              <ul>
+                <li><a class="sn-link" href="#" aria-current="true" data-pick="shell-list"><span class="sn-stack"><span class="sn-label t-cm-label">Business current account</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1173</span></span></a></li>
+                <li><a class="sn-link" href="#" data-pick="shell-list"><span class="sn-stack"><span class="sn-label t-cm-label">Business savings</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1181</span></span></a></li>
+                <li><a class="sn-link" href="#" data-pick="shell-list"><span class="sn-stack"><span class="sn-label t-cm-label">Client money account</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1204</span></span></a></li>
+                <li><a class="sn-link" href="#" data-pick="shell-list"><span class="sn-stack"><span class="sn-label t-cm-label">Foreign currency account</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1219</span></span></a></li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="sh-detail" aria-labelledby="detail-list-h">
+            <div class="sh-detail-head">
+              <button class="sh-icon sh-back" type="button" aria-label="Back to the account list" data-back="shell-list"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+              <h1 class="t-ed-heading-3" id="detail-list-h">Business current account</h1>
+            </div>
+            <div class="sh-detail-body">
+              <div class="sh-panel" aria-hidden="true"><span class="bone body" style="width:52%"></span><span class="bone line"></span><span class="bone media"></span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ 3 · ONE PANE — THE DETAIL -->
+    <div>
+      <p class="spec-note t-cm-caption">The same shell after a row is chosen: the detail pane holds the width and grows a back control. The list is now the pane that has left the layout.</p>
+
+      <div class="sh is-narrow" data-pane="detail" id="shell-detail">
+        <a class="sh-skip t-cm-button" href="#detail-narrow">Skip to the account detail</a>
+
+        <header class="sh-appbar">
+          <button class="sh-icon sh-menu" type="button" aria-label="Open main menu"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg></button>
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <div class="sh-actions">
+            <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+          </div>
+        </header>
+
+        <div class="sh-cols">
+          <nav class="sn is-rail" aria-label="Main, collapsed">
+            <div class="sn-head"><span class="sn-brand t-cm-label">Business banking</span></div>
+            <div class="sn-body"><div class="sn-group"><ul>
+              <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+            </ul></div></div>
+          </nav>
+
+          <section class="sh-list" aria-labelledby="list-detail-h">
+            <div class="sh-list-head">
+              <h2 class="t-ed-heading-4" id="list-detail-h">Accounts</h2>
+              <span class="sh-count t-cm-caption">4 accounts</span>
+            </div>
+            <div class="sh-list-body">
+              <ul>
+                <li><a class="sn-link" href="#" aria-current="true" data-pick="shell-detail"><span class="sn-stack"><span class="sn-label t-cm-label">Business current account</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1173</span></span></a></li>
+                <li><a class="sn-link" href="#" data-pick="shell-detail"><span class="sn-stack"><span class="sn-label t-cm-label">Business savings</span><span class="sn-sub-label t-ed-body-small">Sort code 40-11-60 · 8842 1181</span></span></a></li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="sh-detail" id="detail-narrow" aria-labelledby="detail-narrow-h">
+            <div class="sh-detail-head">
+              <button class="sh-icon sh-back" type="button" aria-label="Back to the account list" data-back="shell-detail"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+              <h1 class="t-ed-heading-3" id="detail-narrow-h">Business current account</h1>
+              <button class="sh-icon" type="button" aria-label="More options for this account"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-more"/></svg></button>
+            </div>
+            <div class="sh-detail-body">
+              <div class="sh-pair" aria-hidden="true">
+                <div class="sh-panel"><span class="bone body" style="width:56%"></span><span class="bone line"></span><span class="bone line" style="width:68%"></span></div>
+              </div>
+              <div class="sh-panel">
+                <h2 class="t-ed-heading-4">Recent activity</h2>
+                <div class="skwrap" id="sk-detail" role="status" aria-busy="true">
+                  <span class="visually-hidden">Loading content</span>
+                  <span class="bone body" style="width:44%" aria-hidden="true"></span>
+                  <span class="bone line" aria-hidden="true"></span>
+                  <span class="bone line" style="width:72%" aria-hidden="true"></span>
+                </div>
+                <button class="sk-resolve t-cm-button" type="button" data-resolve="sk-detail">Simulate the activity arriving</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "App shell — multi-column",
+    "vars": {
+      "--page": "background/default",
+      "--panel": "tertiary/background/default",
+      "--band": "surface/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--icon": "icon/default",
+      "--rule": "divider/border/section",
+      "--sub-rule": "divider/border/subsection",
+      "--hover": "tertiary/background/hover",
+      "--pressed": "form/background/pressed",
+      "--indicator": "primary/border/default",
+      "--bone": "tertiary/background/hover",
+      "--focus": "focus/ring",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-control": "border-radius/control",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--target-min": "target/min"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/hover", "context": "ui" }
+    ],
+    "icons": {
+      "menu": "global-controls/menu.svg",
+      "search": "global-controls/search.svg",
+      "chevron-left": "arrows-and-chevrons/chevron-left.svg",
+      "menu-more-vertical": "global-controls/menu-more-vertical.svg"
+    },
+    "knownFindings": [
+      "THE LIBRARY HAS NO SELECTED LIST ROW, AND THAT IS THIS FILE'S FINDING. Probe, run: grep -c 'aria-current\\|aria-selected' knowledge/snippets/List-items.reference.html -> 0. List-items is gated and promoted and models default, hover, pressed, disabled and processing; it models no selected or current state. A list/detail frame cannot exist without one. The atom borrowed instead is Sidebar-nav's .sn-link, which is the one gated atom in the corpus that carries 'you are here' on THREE independent channels - aria-current for AT, a 3px leading bar that is a SHAPE present or absent, and a surface change, colour only third. PROPOSED #210: keep it, or give List-items a selected state, or make the list a real role=listbox with aria-selected. Dave's.",
+      "ONE DECLARED SELECTOR WIDENING, AN ADDITION AND NOT AN EDIT: Sidebar-nav writes .sn-link[aria-current=\"page\"]; a row inside a list is aria-current=\"true\" because a pane is not a document. This file adds .sn-link[aria-current] with the SAME declarations. Sidebar-nav was not touched. Probe: grep -c 'sn-link\\[aria-current\\]' knowledge/snippets/Sidebar-nav.reference.html -> 0.",
+      "ONE DECLARED GEOMETRY ADDITION: a list row carries two lines, so .sh-list-body .sn-link grows min-height 44 -> 64 with 12px vertical padding, and gains a .sn-stack column plus a .sn-sub-label secondary line. Additive only - no borrowed declaration is overridden, and the row is still >= 44px.",
+      "THE INACTIVE PANE IS REMOVED FROM THE LAYOUT, NOT MERELY MOVED OFF SCREEN. At < 840cqi the pane that is not current is display:none, so it is out of the tab order and out of the accessibility tree together. The classic list/detail defect is a pane that is visually gone but still focusable; a screen-reader or keyboard user then lands in content nobody can see.",
+      "THE ONE REAL LOADING REGION IS Skeleton-loader VERBATIM AND COMPLETE - shimmer, role=status, aria-busy, the visually-hidden 'Loading content', the reduced-motion static fallback and the resolve behaviour. Every other bone in the three shells is static placeholder furniture carrying aria-hidden and no announcement, because a frame with the content deliberately left out is not loading. The reasoning is stated once, in App-shell-top-nav.reference.html.",
+      "NO FILTER OR TOOLBAR BAR IN THE LIST PANE, AND THAT IS A SCOPE LINE. Itinerary row 120 (filter / toolbar bar) is a separate Layer-2 member built by another lane in this same wave. A shell that invented its own toolbar would collide with it. The list header carries a title and a count and stops.",
+      "BREAKPOINTS ARE SPECIMEN CHOICES. 1200cqi and 840cqi are this file's; no breakpoint scale exists in knowledge/tokens/layout.json (probed, absent).",
+      "THE BRAND MARK IS A STAND-IN. Row 86 is ASSET-ONLY: 12 official SVGs under knowledge/assets/logos/ and no component binds them (grep -rl 'assets/logos' knowledge/snippets/ -> 0 of the 108 pre-existing snippets). Navigations' text wordmark stands in and the gap is NAMED. The Apollo crescent is an anonymity mark only (Dave #86) and appears nowhere.",
+      "44px MIN HIT AREA enforced by hand - no gate reads target/min for hit area. Rail links, list rows, app-bar actions, the back control, the more-options control, the resolve button and the skip link are all >= 44px. MEASURED in a real browser; figures in the receipt.",
+      "NO RAG VALUE IS PAINTED ANYWHERE. The only red is primary/border/default on the current-location bar - Sidebar-nav's own approved mark - and it appears in both the rail and the list. Two-red law (s151-D1) and mono error ink camp (s149-D1) untouched.",
+      "CARRIED, NOT RE-MEASURED: Sidebar-nav's meta records the red current-location bar at 3.89 light / 2.73 dark on tertiary/background/hover in SUPERCHARGE, a FAIL, which is why the bar is never declared as a contrastPair and why the SHAPE carrier does the work. That figure is Sidebar-nav's, quoted, not re-measured at #210. It now applies on TWO surfaces in this file rather than one.",
+      "No .cn-app-shell-multi-column block exists in canon/canon.css yet, so theme cascade projection is OFF for this file - only the light/dark legs authored here have been seen. Console, Legacy and Supercharge are UNPROVEN. DECLARED, and the conductor's to project."
+    ],
+    "requiredAria": ["<nav", "aria-label", "aria-current", "aria-labelledby", "aria-busy", "role=\"status\"", "aria-hidden=\"true\"", "<h1"]
+  }
+  </script>
+
+  <script>
+    // Choosing a row: move the current mark, and at narrow widths move to the detail pane.
+    document.querySelectorAll('[data-pick]').forEach(function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        var shell = document.getElementById(a.getAttribute('data-pick'));
+        shell.querySelectorAll('.sh-list-body .sn-link').forEach(function(x){ x.removeAttribute('aria-current'); });
+        a.setAttribute('aria-current','true');
+        var name = a.querySelector('.sn-label').textContent;
+        var h1 = shell.querySelector('.sh-detail-head h1');
+        if(h1){ h1.textContent = name; }
+        shell.setAttribute('data-pane','detail');
+      });
+    });
+
+    // Back: return to the list pane and put focus on the row that was current.
+    document.querySelectorAll('[data-back]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var shell = document.getElementById(btn.getAttribute('data-back'));
+        shell.setAttribute('data-pane','list');
+        var cur = shell.querySelector('.sh-list-body .sn-link[aria-current]');
+        if(cur){ cur.focus(); }
+      });
+    });
+
+    // Resolve — Skeleton-loader's own behaviour, verbatim: aria-busy flips false, the
+    // announcement is removed, the bones swap for content in the footprint they reserved.
+    document.querySelectorAll('[data-resolve]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var region = document.getElementById(btn.getAttribute('data-resolve'));
+        region.setAttribute('aria-busy','false');
+        var sr = region.querySelector('.visually-hidden');
+        if(sr){ sr.remove(); }
+        region.innerHTML = '<p class="t-ed-body" style="margin:0">Content has arrived in the footprint the bones reserved. Nothing on the page moved.</p>';
+        btn.disabled = true;
+      });
+    });
+  </script>
+</body>
+</html>

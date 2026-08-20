@@ -1,0 +1,164 @@
+{
+  "name": "Template - create / edit form",
+  "category": "template",
+  "purpose": "The page a person fills in to CREATE a new record, and the same page re-entered to EDIT an existing one. It is an organism-of-organisms: an app bar, a page-head lock-up, a form column beside a guidance aside, and an action bar that stays reachable. It contributes page-scale LAYOUT and nothing else - every control inside it is a gated component, borrowed.",
+  "$provenance-note": "NEW at #210 (wave 5, lane C) against the Layer-2 P2 fan-out brief - itinerary row 107. PROPOSED, NOT RULED. Layer-2 rows have no ruled artefact form; this file ships in the library's grammar on the brief's PROPOSED convention (s182-D2, the Kpi-tile precedent). No registration was performed: no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json membership, no canon.css block, no _rulings.json line, no git operation. Deleting this pair costs nothing because nothing points at it.",
+  "$layer": "2 Template",
+  "$layer-note": "The brief PROPOSED the meta key `layer`. meta.schema.json is additionalProperties:false with patternProperties '^\\\\$' only, so a bare `layer` key FAILS probe P-1 (probe_meta_schema.py). `$layer` is the legal form and is what is used here. This is a CORRECTION to the brief's proposed artefact-class convention, reported to the conductor, not a silent rename.",
+  "interactive": true,
+  "stateModel": "full",
+  "props": [
+    {
+      "name": "mode",
+      "type": "enum",
+      "values": [
+        "create",
+        "edit"
+      ],
+      "default": "create",
+      "$note": "CREATE starts empty and its action bar is Cancel + Save. EDIT arrives prefilled, gains an unsaved-changes strip on first edit, gains a destructive action pushed to the far edge, and may lock fields whose change is a different journey. Both are drawn in the snippet."
+    },
+    {
+      "name": "guidance",
+      "type": "boolean",
+      "default": true,
+      "$note": "Whether the guidance aside is present. When absent the form column takes the full width; when present it is 320px and moves BELOW the form at container <=880px."
+    },
+    {
+      "name": "destructiveAction",
+      "type": "boolean",
+      "default": false,
+      "$note": "EDIT only. Rendered with .fl-spacer so it sits at the opposite edge from Save and is never adjacent to it."
+    },
+    {
+      "name": "stickyActions",
+      "type": "boolean",
+      "default": true,
+      "$note": "The action bar is position:sticky against the nearest SCROLLPORT. On a real page that is the page. See the antiPattern about reference pages."
+    }
+  ],
+  "variants": [
+    {
+      "name": "create",
+      "use": "A new record. Empty fields, no destructive action, no dirty state."
+    },
+    {
+      "name": "edit",
+      "use": "An existing record. Prefilled, dirty-state strip, destructive action, optionally locked fields."
+    }
+  ],
+  "tokens": {
+    "page": "background/default",
+    "asidePlate": "tertiary/background/default",
+    "asideEdge": "border/subtle",
+    "rules": "divider/border/section (app bar + action bar) and divider/border/subsection (inside the aside)",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "disabled": "text/disabled",
+    "field": "the whole form/* set - background/default, background/hover, border/default, border/active, border/disabled",
+    "error": "rag/error + rag/error-tint, bound ONLY through the borrowed Form-layout regions",
+    "success": "rag/success, bound ONLY through the borrowed Form-layout message region",
+    "buttons": "the full button/primary/* and button/quaternary/* Mono ladder",
+    "shape": "border-radius/control (fields + buttons) and border-radius/surface (the aside plate)",
+    "motion": "component-type/button-family/press-travel + press-darken (B-D7, theme-dialable)",
+    "$mono": "MONO ONLY. No colour value is invented anywhere in this template. The two-red law (s151-D1) and the mono error-ink camp (s149-D1) are untouched; the only RAG in the file arrives inside borrowed Form-layout regions and keeps their exact bindings.",
+    "$noNewWidths": "s210-D3 discipline: the template declares viewport-level layout (a 320px aside track and a 2-column grid). No molecule inside it receives a new fixed width - the form column keeps Form-layout's own max-width:420px."
+  },
+  "relationships": {
+    "livesInside": [
+      "App shell (top nav)",
+      "App shell (side nav)",
+      "Modal or drawer, when the record is small"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "add a payee",
+      "edit a payee",
+      "open a new product",
+      "update your details"
+    ]
+  },
+  "$composes": "Form-layout (field groups, error summary, action bar - class names KEPT so a diff proves the borrow), Headers (the .content-header app bar), Cards (the aside's 1px border/subtle plate on a tertiary surface), Summary (the aside's dl rhythm), Button (the injected AUTO-PARTIAL press-physics block).",
+  "accessibility": {
+    "roles": "No invented roles. The app bar is a <header>, the page body a <main>, the guidance panel an <aside> with aria-labelledby, the form-level error box role=\"alert\" with tabindex=-1 so focus can land on it.",
+    "keyboard": "Tab order follows source order: app bar, page head, form fields, guidance aside, action bar. Every error-summary entry is a real link that moves focus to its field. The (?) help control is a real <button> with an accessible name.",
+    "announcements": "Each field message is an aria-live=polite region. The unsaved-changes strip announces once, on the first real change, via a visually-hidden live region - not on every keystroke.",
+    "states": "aria-invalid is set and cleared per field; disabled fields carry the real disabled attribute so AT reports them, and the reason sits in the field's help text rather than only in the visual dimming.",
+    "targets": "Every action-bar button is 44px tall. The (?) help control is 18px with the canon aid-009 ::before hit expander to 44.",
+    "$colourIsNeverAlone": "The error channel is border + a 4px stroke + a roundel + ink message text (1.4.1). The unsaved-changes strip is ink on a hover-wash with the word 'Unsaved' carrying the meaning - deliberately NOT the warning seat.",
+    "$knownDelta": "Form-layout bumps an errored or completed input to font-weight:500. That bump is ABSENT here because the canon type ramp has no 16/500 INPUT composite and a raw font-weight declaration would breach the shrink-only type ratchet. The error channel is unharmed but the WEIGHT cue is gone. Named for Dave, not smoothed over.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.10",
+      "1.4.11",
+      "2.4.3",
+      "2.4.6",
+      "2.5.8",
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "4.1.2",
+      "4.1.3"
+    ]
+  },
+  "antiPatterns": [
+    "Re-drawing a field. Every input in this template is Form-layout's boxed-field anatomy with its class names intact. If the field language needs to change, change it in Input-fields and let Form-layout follow - never fork it here.",
+    "Putting the destructive action next to Save. It is placed with .fl-spacer at the opposite edge on purpose.",
+    "Treating a locked field as merely dimmed. A field the user may not change must say WHY in its help text; dimming alone is a dead end (the #209 cancelled-mandate lesson: disabled ink is exempt from 1.4.3 and can become unreadable).",
+    "Assuming position:sticky sticks to the template. It sticks to the nearest SCROLLPORT. MEASURED at #210 on a reference page holding two templates: the bar painted over its own live fields (bar 1594-1671 across a form running 1562-2027). If a template is not the page, give it a scrollport.",
+    "Growing the guidance aside into a second form. It is read-only guidance; a control in there competes with the form for the same decision.",
+    "REVIEW Adding a RAG hue to the unsaved-changes strip. It is currently ink-only. Whether an unsaved state is a WARNING is Dave's call and touches the two-red law."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS - every declared var resolves in both light and dark and every declared contrast pair clears its threshold in both modes (run at #210, wave 5, lane C).",
+    "$scope": "MONO base only. Console, Legacy and Supercharge were NOT rendered by this lane and are UNPROVEN for this template. The four-theme cascade needs the canon.css projection below first.",
+    "$notGenerated": "canon.css carries NO .cn-template-create-edit scope, so _validate_binds_resolve.py check D FAILS for this file. DECLARED, not hidden - the projection is the conductor's.",
+    "$deprecated": "No deprecated tokens bound."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Wave-5 Layer-2 P2 fan-out (notes/_briefs/2026-08-20-210-wave5-layer2-p2-fanout-brief-v1.md), lane C, itinerary row 107. No Figma node."
+  },
+  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Rendered headless Chromium from file:// with the real HSBC face (canvas-width assertion against two controls per _RUNBOOK-render-verify.md), light AND dark, at 1180 / 760 / 420px, screenshots LOOKED AT. Zero horizontal overflow at every width. Collapse MEASURED, not eyeballed: .tpl-cols computed grid-template-columns read '714px 320px' -> '646px' -> '322px', and .fl-actions flex-direction read row -> row -> column-reverse. TWO DEFECTS WERE FOUND BY LOOKING AND MEASURING, both with every gate green: (1) the aside's dt->dd gap measured 0.0px - a text collision, the [[W-67]] trim class - repaired to 4px and re-measured; (2) the sticky action bar overlaid its own live form on the reference page - repaired with a scrolling demo frame and re-measured flush to the frame's bottom edge.",
+  "$edges-note": "EVERY node-id here was CHECKED AGAINST THE LIVE REGISTRIES BEFORE IT WAS WRITTEN, not invented. The first draft minted new ids (context:payments, context:account-management, context:authentication, pattern:log-on, pattern:register, pattern:set-up-a-payment, ...) and 6 of 8 patterns plus 3 of 4 contexts DID NOT EXIST - which would have made this lane the author of a vocabulary nobody ruled. They were replaced with the nearest existing node in knowledge/components/_nodes-context.json and _nodes-pattern.json. Zero NEW context or pattern nodes are introduced by these three metas. _validate_kg.py still FAILS because the metas themselves are new and gen_kg_edges.py must be re-run - that is a generated, shared file and is the conductor's.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Template-create-edit.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:app-shell-top-nav",
+        "$note": "App shell (top nav)"
+      },
+      {
+        "ref": "context:app-shell-side-nav",
+        "$note": "App shell (side nav)"
+      },
+      {
+        "ref": "context:modal-or-drawer-when-the-record-is-small",
+        "$note": "Modal or drawer, when the record is small"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:add-a-payee"
+      },
+      {
+        "ref": "pattern:edit-a-payee"
+      },
+      {
+        "ref": "pattern:open-a-new-product"
+      },
+      {
+        "ref": "pattern:update-your-details"
+      }
+    ]
+  }
+}

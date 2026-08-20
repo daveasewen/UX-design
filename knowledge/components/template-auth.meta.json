@@ -1,0 +1,173 @@
+{
+  "name": "Template - auth (log on / register / OTP)",
+  "category": "template",
+  "purpose": "The unauthenticated entry pages: log on, register, and one-time passcode. A quiet brand column beside a single narrow form column, collapsing to one column. It contributes page-scale layout and the brand placement; every control inside it is a gated component, borrowed.",
+  "$provenance-note": "NEW at #210 (wave 5, lane C) against the Layer-2 P2 fan-out brief - itinerary row 112. PROPOSED, NOT RULED. No registration was performed: no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json membership, no canon.css block, no _rulings.json line, no git operation.",
+  "$layer": "2 Template",
+  "$layer-note": "The brief PROPOSED the meta key `layer`. meta.schema.json is additionalProperties:false with patternProperties '^\\\\$' only, so a bare `layer` key FAILS probe P-1 (probe_meta_schema.py). `$layer` is the legal form.",
+  "$specimen-fence": "⛔ THIS TEMPLATE AUTHENTICATES NOTHING AND MUST NEVER BE READ AS A SECURITY DESIGN. No credential is checked, no OTP is verified, no session is created, no value is stored or transmitted, there is no network call of any kind. Every consequential handler writes to an aria-live region and returns. The only client-side logic is FORMAT validation borrowed from Form-layout (is the field empty; does the string contain an @; is it 12 characters) - never an identity or secret check. No copy in the file asserts encryption, protection, monitoring or any other security property; where a real product puts an assurance line, this file deliberately puts nothing.",
+  "interactive": true,
+  "stateModel": "full",
+  "props": [
+    {
+      "name": "screen",
+      "type": "enum",
+      "values": [
+        "logon",
+        "register",
+        "otp"
+      ],
+      "default": "logon",
+      "$note": "All three are drawn in the snippet, each in its own frame, so they can be compared side by side."
+    },
+    {
+      "name": "brandColumn",
+      "type": "boolean",
+      "default": true,
+      "$note": "The quiet column carrying the official mark. Collapses ABOVE the form at container <=880px; source order is already correct so no reordering is needed."
+    },
+    {
+      "name": "revealPassword",
+      "type": "boolean",
+      "default": true,
+      "$note": "A TEXT toggle, not a glyph - the library has no visibility icon (see accessibility.$noVisibilityGlyph). Its label states the NEXT action and aria-pressed states the CURRENT one."
+    }
+  ],
+  "variants": [
+    {
+      "name": "logon",
+      "use": "Username + password, with a reveal toggle, a create-account route and a help route."
+    },
+    {
+      "name": "register",
+      "use": "Name + email + new password, with the password requirements stated BEFORE the field and kept visible."
+    },
+    {
+      "name": "otp",
+      "use": "Secure-entry's gated code cells with the resend countdown, placed in the auth frame."
+    }
+  ],
+  "tokens": {
+    "page": "background/default",
+    "brandPlate": "tertiary/background/default",
+    "rule": "divider/border/section",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "disabled": "text/disabled",
+    "field": "the form/* set, via the borrowed Form-layout and Secure-entry regions",
+    "error": "rag/error + rag/error-tint, ONLY inside borrowed regions",
+    "success": "rag/success, ONLY inside the borrowed Secure-entry message region",
+    "buttons": "button/primary/* and button/quaternary/* - the Mono ladder",
+    "shape": "border-radius/control",
+    "motion": "component-type/button-family/press-travel + press-darken",
+    "$mono": "MONO ONLY. No colour value is invented. The two-red law (s151-D1) and the mono error-ink camp (s149-D1) are untouched.",
+    "$brandMarkIsNotTokened": "The mark is an ASSET REFERENCE, not a colour binding. It is never recoloured, tinted or filtered; the light and dark official files are swapped by display, so nothing in the token layer touches it."
+  },
+  "relationships": {
+    "livesInside": [
+      "The unauthenticated app entry - it has no shell above it by definition"
+    ],
+    "mustNotNeighbour": [
+      "An authenticated app shell - a nav a person cannot use yet is a false affordance"
+    ],
+    "commonPatterns": [
+      "log on",
+      "register",
+      "step-up verification",
+      "device enrolment"
+    ]
+  },
+  "$composes": "Form-layout (field groups, error summary, the Mono action ladder - class names KEPT), Secure-entry (the OTP cells with auto-advance, backspace, paste-distribute and the resend countdown), Button (the injected AUTO-PARTIAL press-physics block, with the `.full` rule for full-width controls).",
+  "accessibility": {
+    "roles": "No invented roles. The error box is role=alert with tabindex=-1; the OTP cells are a role=group named by their label; the OTP message is role=status.",
+    "keyboard": "Every control is a real focusable element. The reveal toggle returns focus to its field so typing continues uninterrupted. OTP cells auto-advance on input and step back on backspace from an empty cell.",
+    "announcements": "Per-field aria-live=polite messages; a visually-hidden live region per panel carries the placeholder outcomes so a screen-reader user learns that the specimen did nothing rather than being left in silence.",
+    "states": "aria-invalid per field; aria-pressed on the reveal toggle; the Continue button's disabled state tracks code completeness only.",
+    "targets": "Every primary/secondary button is 44px tall and full width. The reveal toggle and every inline text link have a REAL 44px box, not an invisible expander (the #210 wizard lesson).",
+    "autocomplete": "1.3.5 Identify Input Purpose, checked in a real browser: username, current-password, name, email, new-password, one-time-code. Every credential field also carries autocapitalize=none, autocorrect=off and spellcheck=false so a password manager and a soft keyboard both behave.",
+    "$noVisibilityGlyph": "MEASURED GAP, not an omission. Probe run at build: `ls knowledge/assets/icons/*/ | grep -iE \"eye|visib|hide|show|reveal|password\"` returns masthead-hide.svg and masthead-show.svg (arrows-and-rules - a MASTHEAD collapse control) and security-password.svg (a keyboard-with-dots). None of them means 'reveal what I typed'. The reveal control is therefore a TEXT toggle, which needs no glyph and announces its own state. An _ICON-GAPS.md entry may be owed; that file is the conductor's (the #209 Q14 precedent).",
+    "$noPasswordField": "Input-fields.reference.html contains no type=\"password\" field of any kind - the only masked inputs in the whole snippet corpus are Secure-entry's PIN cells. The password field here is the gated boxed-field anatomy with type=\"password\": composed, not drawn, and PROPOSED.",
+    "$colourIsNeverAlone": "The error channel is border + 4px stroke + roundel + ink message text. The password requirements are plain ink list items, not a live tick/cross meter - a meter would need a RAG vocabulary this lane has no mandate to mint.",
+    "relatedSC": [
+      "1.1.1",
+      "1.3.1",
+      "1.3.5",
+      "1.4.1",
+      "1.4.10",
+      "1.4.11",
+      "2.4.3",
+      "2.4.6",
+      "2.5.8",
+      "3.3.1",
+      "3.3.2",
+      "4.1.2",
+      "4.1.3"
+    ]
+  },
+  "antiPatterns": [
+    "⛔ Placing the Apollo crescent, or any drawn approximation of the HSBC mark, on an auth screen. Reference the official asset file or show no mark at all.",
+    "⛔ Adding real credential or OTP logic to this specimen, or copying it into anything that authenticates. It exists to show layout and states.",
+    "⛔ Writing security assurance copy ('your data is protected', 'we monitor every log on'). This template deliberately makes no security claim; a claim in a design specimen becomes a claim in a product.",
+    "Inventing an eye icon for the reveal toggle because the library has none. Use words.",
+    "Omitting or guessing autocomplete. A wrong autocomplete token is worse than none: it teaches a password manager to fill the wrong field.",
+    "Telling a person which of username or password was wrong. This specimen's messages are format messages ('Enter your username'), never outcome messages.",
+    "REVIEW Filling the brand column with invented imagery. It is deliberately quiet: the mark and one neutral line. Brand imagery is not this lane's to create."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS - every declared var resolves in both light and dark and every declared contrast pair clears its threshold in both modes (run at #210, wave 5, lane C).",
+    "$scope": "MONO base only. Console, Legacy and Supercharge were NOT rendered by this lane and are UNPROVEN for this template.",
+    "$notGenerated": "canon.css carries NO .cn-template-auth scope, so _validate_binds_resolve.py check D FAILS for this file. DECLARED, not hidden - the projection is the conductor's.",
+    "$deprecated": "No deprecated tokens bound."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Wave-5 Layer-2 P2 fan-out brief, lane C, itinerary row 112. No Figma node."
+  },
+  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Headless Chromium from file://, real HSBC face (canvas-width assertion against two controls), light AND dark at 1180 / 760 / 420px, screenshots LOOKED AT, zero horizontal overflow and zero failed network requests at every width. Driven: submitting log on empty BLOCKED with two summary entries; the reveal toggle flipped type password->text with aria-pressed false->true and the label Show->Hide; register rejected 'nope' as an email and a 5-character password with the borrowed messages; six OTP digits enabled Continue and produced the completeness message that states on its own face that the code is not checked. ⛔ ONE DEFECT WAS FOUND ONLY BY MEASURING, WITH EVERY GATE GREEN AND THE 420px SCREENSHOT LOOKING PLAUSIBLE: the two-panel grid NEVER COLLAPSED. `container-type` had been declared on .auth itself, and an element is a query container for its DESCENDANTS, never for itself, so the @container rule that collapses .auth could not fire. Computed grid-template-columns read '565px 565px' / '355px 355px' / '185px 185px' at 1180 / 760 / 420 - the whole log-on form crushed into 185px on a phone. Repaired by moving the container to an .auth-shell wrapper; re-measured '565px 565px' / '710px' / '370px', and the OTP cells now take Secure-entry's own 40x48 at 420.",
+  "$brandMark": {
+    "$fence": "Dave #86: the Apollo crescent is an ANONYMITY mark ONLY and must NEVER be placed as a product brand. This template contains no crescent and creates no brand asset.",
+    "asset": "knowledge/assets/logos/masterbrand-light-mono.svg and masterbrand-dark-mono.svg",
+    "$provenance": "Exported from the Foundations > Logos Figma page by knowledge/assets/logos/_export-logos.py. Referenced as FILES via <img>; no logo path data is inlined anywhere and no recolouring is applied.",
+    "$idiom": "FIRST src-BEARING <img> IN ANY GATED SNIPPET, and the probe form is load-bearing: `grep -l '<img' knowledge/snippets/*.reference.html` returns TWO files and is a FALSE probe - Image-block's hit is the string `<img alt=\"...\">` inside its header COMMENT. The true probe is `grep -l '<img[^>]*src=' knowledge/snippets/*.reference.html`, which returns this file alone (6 hits here, 0 in Image-block). Inlining the logo was REJECTED on a measurement: _validate_icons.py byte-matches inline paths against assets/icons/ ONLY, and the logos live in assets/logos/, so an inlined mark would land as UNKNOWN - indistinguishable from an invented one. Whether the library ADOPTS the <img> idiom is the conductor's / Dave's call, not this lane's.",
+    "$rendered": "Both files were LOADED in a real browser and measured: naturalWidth>0 for all six <img> elements, exactly one visible per theme, 160x43 CSS px, alt=\"HSBC\", zero failed requests.",
+    "$schema-note": "Homed under a $-prefixed key because meta.schema.json is additionalProperties:false with patternProperties '^\\\\$' only. A bare `brandMark` key FAILED probe P-1 at first write (\"'brandMark' does not match any of the regexes: '^\\\\$'\") and this is the correction, recorded not hidden. Same class as the brief's proposed `layer` key."
+  },
+  "$edges-note": "EVERY node-id here was CHECKED AGAINST THE LIVE REGISTRIES BEFORE IT WAS WRITTEN, not invented. The first draft minted new ids (context:payments, context:account-management, context:authentication, pattern:log-on, pattern:register, pattern:set-up-a-payment, ...) and 6 of 8 patterns plus 3 of 4 contexts DID NOT EXIST - which would have made this lane the author of a vocabulary nobody ruled. They were replaced with the nearest existing node in knowledge/components/_nodes-context.json and _nodes-pattern.json. Zero NEW context or pattern nodes are introduced by these three metas. _validate_kg.py still FAILS because the metas themselves are new and gen_kg_edges.py must be re-run - that is a generated, shared file and is the conductor's.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Template-auth.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:the-unauthenticated-app-entry-it-has-no-shell-above-it-by-definition",
+        "$note": "The unauthenticated app entry - it has no shell above it by definition"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:log-on"
+      },
+      {
+        "ref": "pattern:register"
+      },
+      {
+        "ref": "pattern:step-up-verification"
+      },
+      {
+        "ref": "pattern:device-enrolment"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "An authenticated app shell - a nav a person cannot use yet is a false affordance"
+      }
+    ]
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "name": "Template - multi-step wizard",
+  "category": "template",
+  "purpose": "The page that walks a person through one task in ordered steps and ends with a receipt: progress indicator, one step visible at a time, a gated Next, a review step, and a confirmation. It contributes PAGE SCALE, real form steps, a review step and an end state - the step MECHANISM itself is Stepper's and is borrowed whole.",
+  "$provenance-note": "NEW at #210 (wave 5, lane C) against the Layer-2 P2 fan-out brief - itinerary row 109. PROPOSED, NOT RULED. No registration was performed: no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json membership, no canon.css block, no _rulings.json line, no git operation. Deleting this pair costs nothing because nothing points at it.",
+  "$existence-question": "READ THIS BEFORE KEEPING THE FILE. Stepper.reference.html is ALREADY an interactive wizard: step panels, validation-gated Next, back-navigation on completed dots, focus management, sr-live announcer. Row 109 is a missing PAGE, not a missing mechanism. What this template adds over Stepper is exactly four things: page scale (app bar + page head + frame); REAL form steps (Stepper's panels are demo prose that says so on its own face); a REVIEW step (Summary's dl with per-row Change links that jump back to the owning step - Stepper has none); and an END STATE (the Confirmation organism - Stepper's last Next writes a string to a live region and stops). ⬛ LIVE OUTCOME: if Dave rules that a wizard template is just Stepper with content poured in, DELETE this pair and mark row 109 Duplicate against component:stepper. That call is his.",
+  "$layer": "2 Template",
+  "$layer-note": "The brief PROPOSED the meta key `layer`. meta.schema.json is additionalProperties:false with patternProperties '^\\\\$' only, so a bare `layer` key FAILS probe P-1 (probe_meta_schema.py). `$layer` is the legal form and is what is used here. A CORRECTION to the brief's proposed artefact-class convention, reported.",
+  "interactive": true,
+  "stateModel": "full",
+  "props": [
+    {
+      "name": "steps",
+      "type": "array<{name,title}>",
+      "$note": "Drives the dots, the collapsed 'Step N of M' head, the track fill, the panels and the announcer from ONE source. The specimen carries four."
+    },
+    {
+      "name": "current",
+      "type": "number",
+      "default": 1,
+      "$note": "1-based. Advancing is gated by the current step's rules; going BACK never is."
+    },
+    {
+      "name": "reviewStep",
+      "type": "boolean",
+      "default": true,
+      "$note": "Renders Summary's dl with a Change control per row. Each Change carries the step index that owns the value."
+    },
+    {
+      "name": "endState",
+      "type": "enum",
+      "values": [
+        "confirmation",
+        "none"
+      ],
+      "default": "confirmation",
+      "$note": "When 'confirmation', the wizard's own action bar RETIRES on the last step and Confirmation's own actions take over - two competing action bars would otherwise stack."
+    }
+  ],
+  "variants": [
+    {
+      "name": "dots",
+      "use": "Container wider than 640px: the labelled dots stepper, with completed dots as real back-navigation buttons."
+    },
+    {
+      "name": "collapsed",
+      "use": "Container 640px or narrower: Progress-tracker's 1784-86051 form - 'Step N of M' plus a continuous 4px track."
+    }
+  ],
+  "tokens": {
+    "page": "background/default",
+    "surface": "tertiary/background/default",
+    "rules": "divider/border/section (app bar, action bar) and divider/border/subsection (review rows)",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "steps": "step/complete + step/on-complete + progress/incomplete - the #176 chain, inherited from Stepper/Progress-tracker unchanged",
+    "field": "the form/* set, via the borrowed Form-layout regions",
+    "error": "rag/error + rag/error-tint, ONLY inside borrowed Form-layout regions",
+    "success": "rag/success, on the borrowed Confirmation glyph",
+    "buttons": "button/primary/* and button/quaternary/* - the Mono ladder",
+    "shape": "border-radius/control + border-radius/indicator",
+    "motion": "component-type/button-family/press-travel + press-darken",
+    "$mono": "MONO ONLY. No colour value is invented. Every RAG binding arrives inside a borrowed region with its original address.",
+    "$driftAllow": "--success dark = #FFFFFF is CARRIED VERBATIM from Confirmation.reference.html's own driftAllow (RAG roundel policy, Dave 2026-07-02 eve), not a new decision by this lane."
+  },
+  "relationships": {
+    "livesInside": [
+      "App shell (top nav)",
+      "App shell (side nav)",
+      "A full-screen task takeover"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "set up a payment",
+      "open an account",
+      "complete a KYC journey",
+      "move money between accounts"
+    ]
+  },
+  "$composes": "Stepper (step visuals + flow shape, class names KEPT), Progress-tracker (the visuals Stepper itself consumed - change them THERE), Form-layout (field groups + error summary), Summary (the review dl), Confirmation (the end state, including its entrance sequence and reduced-motion suppression), Headers (app bar), Button (press-physics partial).",
+  "accessibility": {
+    "roles": "role=progressbar on the collapsed track with aria-valuemin/max/now/text; each step panel is a <section> with an aria-label naming its number and title; the confirmation is role=group + aria-labelledby.",
+    "keyboard": "Back and Next are real buttons. Completed dots become real <button>s with an accessible name that says which step they return to and that it is completed. Every review row's Change is a real button. Nothing is reachable only by pointer.",
+    "announcements": "A persistent visually-hidden aria-live region announces 'Step N of M: <name>' on every move, so the change is heard whichever form (dots or track) is rendered. Focus moves to the new step's heading.",
+    "states": "aria-current=\"step\" on the current dot; aria-invalid set and cleared per field; Next is gated, not disabled, so the reason for not advancing is stated rather than silently withheld (3.3.1).",
+    "targets": "Back/Next are 44px. The review Change controls have a REAL 44px box, not an invisible expander - see the antiPattern.",
+    "$colourIsNeverAlone": "Progress is carried by the step LABELS and 'Step N of M', never by the green fill. That is Dave's own #176 ruling, inherited: 'the label and the symbol must carry the contrast not the decoration.'",
+    "$declaredAbsence": "step/complete on background/default (and its inverse) are NOT in contrastPairs. MEASURED 1.98:1 in Mono light. Inherited from the roundel system by Dave's #176 word, not a regression introduced here. The GATED legs - the tick on the fill, and the step label on the page - ARE listed.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.10",
+      "1.4.11",
+      "2.3.3",
+      "2.4.3",
+      "2.4.6",
+      "2.5.8",
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "4.1.2",
+      "4.1.3"
+    ]
+  },
+  "antiPatterns": [
+    "Re-drawing the step visuals. They belong to Progress-tracker; Stepper already consumes them and this template consumes Stepper's. Three copies now exist and that duplication is receipt-flagged, not endorsed.",
+    "Disabling Next instead of gating it. A disabled Next tells a person nothing about what is missing. Next stays enabled and states the error (3.3.1).",
+    "Letting the wizard's action bar and the Confirmation's actions both render on the last step. The wizard's bar retires; two stacked primaries is a decision the person did not ask for.",
+    "Using an invisible ::before hit expander on tightly-stacked rows. MEASURED at #210 on the review list: a 10.1px control with a 44px invisible expander on a 36.6px row pitch OVERLAPPED its neighbours by ~7px. Every gate passed - the a11y target check sees a 44px expander and cannot see that two of them intersect. Give the control a REAL 44px box and let the row pitch grow.",
+    "Making a review row's value a link. The Change control is the affordance; a linked value gives two targets for one action.",
+    "REVIEW Treating this template as evidence that Confirmation is settled. Confirmation is a CANDIDATE (its meta carries 'REVIEW: no Figma node yet'). Borrowing it does not promote it."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS - every declared var resolves in both light and dark and every declared contrast pair clears its threshold in both modes (run at #210, wave 5, lane C).",
+    "$scope": "MONO base only. Console, Legacy and Supercharge were NOT rendered by this lane and are UNPROVEN for this template.",
+    "$notGenerated": "canon.css carries NO .cn-template-wizard scope, so _validate_binds_resolve.py check D FAILS for this file. DECLARED, not hidden - the projection is the conductor's.",
+    "$deprecated": "No deprecated tokens bound."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Wave-5 Layer-2 P2 fan-out brief, lane C, itinerary row 109. No Figma node."
+  },
+  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Headless Chromium from file://, real HSBC face (canvas-width assertion against two controls), light AND dark at 1180 / 760 / 420px, screenshots LOOKED AT, zero horizontal overflow at every width. THE FLOW WAS ACTUALLY WALKED, not asserted: Next with nothing chosen BLOCKED and opened the summary with aria-invalid=true; choosing a payee advanced and moved focus to the step heading; a non-numeric amount BLOCKED with the borrowed message; the review step populated from the live fields (Jane Smith / GBP 250.00 / RENT-AUG / 2026-08-21); a Change link returned to step 2; the Next label became 'Confirm and send' at the review step; the last step showed the Confirmation and the wizard's own bar retired. Collapse MEASURED: the dots' computed display and the action bar's flex-direction flipped at 420px. ONE DEFECT FOUND BY MEASURING (the overlapping hit expanders above) and repaired; after the repair, 15 of 15 hit-test points landed on the intended control.",
+  "$edges-note": "EVERY node-id here was CHECKED AGAINST THE LIVE REGISTRIES BEFORE IT WAS WRITTEN, not invented. The first draft minted new ids (context:payments, context:account-management, context:authentication, pattern:log-on, pattern:register, pattern:set-up-a-payment, ...) and 6 of 8 patterns plus 3 of 4 contexts DID NOT EXIST - which would have made this lane the author of a vocabulary nobody ruled. They were replaced with the nearest existing node in knowledge/components/_nodes-context.json and _nodes-pattern.json. Zero NEW context or pattern nodes are introduced by these three metas. _validate_kg.py still FAILS because the metas themselves are new and gen_kg_edges.py must be re-run - that is a generated, shared file and is the conductor's.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Template-wizard.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:app-shell-top-nav",
+        "$note": "App shell (top nav)"
+      },
+      {
+        "ref": "context:app-shell-side-nav",
+        "$note": "App shell (side nav)"
+      },
+      {
+        "ref": "context:a-full-screen-task-takeover",
+        "$note": "A full-screen task takeover"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:set-up-a-payment"
+      },
+      {
+        "ref": "pattern:open-an-account"
+      },
+      {
+        "ref": "pattern:complete-a-kyc-journey"
+      },
+      {
+        "ref": "pattern:move-money-between-accounts"
+      }
+    ]
+  }
+}

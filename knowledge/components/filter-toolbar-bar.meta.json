@@ -1,0 +1,83 @@
+{
+  "name": "Filter-toolbar-bar",
+  "category": "organism",
+  "$layer": "2 Lock-up",
+  "purpose": "The control bar that sits above a table or list: a search field, 0-2 filter dropdowns, a view/sort switch, and an optional row of dismissible applied-filter chips. Composed ENTIRELY from existing gated atoms (Search-field, Dropdown, Segmented-control, Tags) — no new visual vocabulary, only arrangement. Itinerary row 120 (Layer 2, class NO-ARTEFACT-CLASS at mint; PROPOSED here, not ruled).",
+  "props": [
+    { "name": "density", "type": "enum", "values": ["full", "compact"], "default": "full",
+      "$note": "Structural variance (a different assembly, not a scaled param) — routes to the VARIANTS axis, the same reading Tags' own `type` prop carries (s142-D1 class C6). Full = search + N dropdowns + view switch + chip row (arrangement A). Compact = underline search + sm segmented control only, for sitting directly above a table/list (arrangement B, the itinerary row's own stated context)." },
+    { "name": "filterCount", "type": "number", "default": "2", "$note": "0-N Dropdown instances. The organism does not draw a new dropdown style." },
+    { "name": "appliedFilters", "type": "array", "$note": "0-N dismissible Tags, each removable via the atom's own × control; the organism supplies none of the dismiss mechanics itself." }
+  ],
+  "variants": [
+    { "name": "full", "use": "Search + filter dropdowns + a Segmented-control view switch, with an applied-filters chip row underneath." },
+    { "name": "compact", "use": "A dense bar directly above a Table/List-items region — underline search + a small segmented control (sort/view), no chip row." }
+  ],
+  "tokens": {
+    "search": "form/border/* + form/background/hover via Search-field.reference.html (boxed variant), unmodified",
+    "filters": "the full dropdown/menu/listbox token set via Dropdown.reference.html (boxed variant), unmodified",
+    "view": "tertiary/background/* + secondary/background/default via Segmented-control.reference.html, unmodified — PROMOTED off View-options (Dave, 2026-07-24), so this organism consumes Segmented-control, not the superseded file",
+    "chips": "form/border/default + the applied-filters container-query collapse via Tags.reference.html, unmodified",
+    "$note": "Every token above resolves through the ATOM's own manifest; this organism binds nothing new. The bar's own CSS (`.ftb-*`) is flex arrangement only."
+  },
+  "responsive": {
+    "$status": "PROPOSED at #210 wave-5 (not ruled) — reflow verified in a real browser at 3 widths.",
+    "rule": "Wide: one row (search grows, filters share space, view switch pinned right). Container <=680px: search claims the full row width, filters + view switch wrap beneath it. Container <=400px (WCAG 1.4.10 reachable to 320px): every control stacks full-width, including the segmented control's own buttons (flex:1). The applied-filter chip row collapses to one-chip-per-row at <=360px via Tags' OWN unmodified container query.",
+    "$note": "s210-D3 discipline: the bar declares no width of its own; the container gives it one."
+  },
+  "relationships": {
+    "livesInside": ["Page (above a Table or List-items region)", "Dashboard template", "List/index template"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["search + filter + view-switch toolbar", "compact sort bar above a table"]
+  },
+  "accessibility": {
+    "relatedSC": ["1.4.10 Reflow", "2.5.8 Target Size (Minimum)", "4.1.2 Name, Role, Value", "1.4.1 Use of Color"],
+    "structure": "Search-field keeps its own type=\"search\"/aria-label; Dropdown keeps its own role=\"combobox\"/listbox/option triad; Segmented-control keeps its own role=\"group\"+aria-pressed; Tags keeps its own aria-label per dismiss button — all unmodified from the source atom.",
+    "focus": "Every borrowed atom keeps its OWN :focus-visible ring — the organism adds no new focusable element and no new focus style."
+  },
+  "antiPatterns": [
+    "Re-drawing the search field, dropdown, segmented control or chip CSS instead of composing the existing atom — the #202 defect this brief names explicitly",
+    "Consuming View-options instead of Segmented-control for the view switch — View-options was superseded 2026-07-24",
+    "Giving the bar a fixed width — s210-D3 reserves that for the container",
+    "Selecting a filter state by colour alone — Dropdown's aria-selected + Segmented-control's aria-pressed already carry the non-colour signal"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "the four source atoms' own token manifests (Search-field/Dropdown/Segmented-control/Tags), re-declared verbatim by name here — no custom property was renamed; every value cross-checked collision-free at build time (declared in the snippet's own file banner)",
+    "result": "PASS — `_validate_snippets.py` reports 0 findings for Filter-toolbar-bar.reference.html; see the #210 wave-5 Lane D receipt for the exact command."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Filter-toolbar-bar.reference.html"
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Filter-toolbar-bar.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:page-above-a-table-or-list-items-region",
+        "$note": "Page (above a Table or List-items region)"
+      },
+      {
+        "ref": "context:dashboard-template",
+        "$note": "Dashboard template"
+      },
+      {
+        "ref": "context:list-index-template",
+        "$note": "List/index template"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:search-filter-view-switch-toolbar"
+      },
+      {
+        "ref": "pattern:compact-sort-bar-above-a-table"
+      }
+    ]
+  }
+}

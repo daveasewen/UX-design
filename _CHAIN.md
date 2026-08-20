@@ -89,11 +89,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **95 items · 63 live · 31 Dave's · 32 mine · 76 carry a stated close condition · **19 UNCONDITIONED**.**
+> **100 items · 68 live · 36 Dave's · 32 mine · 81 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (31) — 26 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (36) — 31 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -120,6 +120,11 @@
 > - `W-72` **wave-4 lane A - calendar + tree BUILT PROPOSED-NOT-RULED - Daves eye owed (19 open questions, 3 defects in GATED components)** — *closes when:* Dave has ruled on the lane-A questions (chiefly Q1 does Date-picker consume Calendar, Q9 the tree selection mark, Q17 the descender-clip gate class) and the conductor has actioned or parked the three findings in already-gated files (Date-picker's today+selected ring, Sidebar-nav's clipped labels, the _a11y_target.py role vocabulary)
 > - `W-73` **wave-4 lane B - cascader + splitter + qr-code BUILT PROPOSED-NOT-RULED - Dave's eye owed (19 open questions)** — *closes when:* Dave has ruled the 19 questions in section 4 of the receipt - in particular Q-CS-1 (do Tree and Cascader both exist), Q-SP-1 (is aria-valuenow a percentage or pixels) and Q-QR-1 (what a QR code does in dark mode, where the theme-following variant was MEASURED not to decode) - and the conductor has actioned or parked the section 6 handoff, of which item 5 (the repo-wide ds-005 specificity class, six defeated overrides in five gated snippets) is the one that affects files outside this lane.
 > - `W-74` **wave-4 heavy 7 BUILT PROPOSED-NOT-RULED (calendar tree cascader splitter qr-code carousel image-block) - Daves eye + ~47 named questions owed** — *closes when:* Dave rules per component promote/rework/delete across the seven, having seen the three lane receipts 2026-08-20-210-wave4-lane{A,B,C}-*.md and their decisionsForDave lists (19+19+9); the cross-lane ds-005 trim-specificity decision and the dark-mode QR polarity call are answered with or before this row
+> - `W-75` **#210 wave-5 lane D lock-ups (Page-header-lockup + Filter-toolbar-bar) BUILT PROPOSED-NOT-RULED — Daves eye owed** — *closes when:* Dave rules the two lock-ups (promotion/rework/rejection) and the receipt is consumed by that sitting
+> - `W-76` **#210 wave-5 lane C: three Layer-2 form templates BUILT PROPOSED-NOT-RULED (create/edit, wizard, auth) - Daves eye owed, 14 named questions incl. two existence questions** — *closes when:* Dave rules on the 14 questions in the lane-C receipt - above all Q1 (does Template-wizard exist, or is row 109 a Duplicate of component:stepper), Q2 (is $layer the right artefact-class key, or does meta.schema.json need widening) and Q3 (the six type-composite weight deltas - widen the ramp or accept lighter Layer-2 state emphasis)
+> - `W-77` **wave-5 lane B - three page TEMPLATES BUILT PROPOSED-NOT-RULED (dashboard, list/index, detail) - Daves eye owed (18 named questions, 3 defects in GATED components)** — *closes when:* Dave rules per template promote/rework/delete across the three, having seen notes/_receipts/2026-08-20-210-wave5-laneB-templates.md and its 18 $decisionsForDave; and separately answers the two that are not per-template - Q4 (table or list for row 105, whichever he picks deletes the other half of Template-list-index.reference.html) and Q1/Q2/Q3 (the Layer-2 artefact class, the missing `composes` edge in meta.schema.json, and the `$layer` field). The three GATED-component defect reports in section 11 item 5 (Layout-utilities' non-collapsing split, Timeline's and Document-row's losing descender override) are handoff items and close with their own repairs, not with this row.
+> - `W-78` **wave-5 lane A - THREE APP SHELLS BUILT PROPOSED-NOT-RULED (rows 97/98/99 top-stacked nav, side nav, multi-column) - Daves eye + 16 named questions owed** — *closes when:* Dave rules per shell promote/rework/delete across the three, having seen notes/_receipts/2026-08-20-210-wave5-laneA-app-shells.md and its 16 decisionsForDave; the breakpoint-scale question (three shells, three unruled pairs 900/600, 1040/720, 1200/840) and the Layer-2 artefact-class convention (do shells live in knowledge/snippets/) are answered with or before this row
+> - `W-79` **wave-5 Layer-2 ELEVEN organisms BUILT PROPOSED (3 shells + 6 templates + 2 lock-ups) - Daves eye + ~48 questions owed; artefact-class convention PROPOSED** — *closes when:* Dave rules per organism promote/rework/delete across the eleven (receipts wave5-lane{A,B,C,D}) AND rules the Layer-2 artefact-class convention (reference-snippet grammar, PROPOSED at the brief) AND answers the structural ones: breakpoint scale (no ruled pairs in layout.json), wizard-vs-Stepper existence (row 109 possible Duplicate), the 400-to-500 weight pair gap the composites cannot express, table-vs-list for row 105
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -133,7 +138,7 @@
 
 ---
 
-*(Chain ends. **33,852 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **35,038 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 90,796 real and stays whole for retrieval; you have paid for
-37% of it, and that is the intended figure, not a shortfall.)*
+39% of it, and that is the intended figure, not a shortfall.)*

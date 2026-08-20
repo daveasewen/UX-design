@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Template — dashboard (Layer 2, PROPOSED #210 — not gated, not ruled)</title>
+<!--
+  ⛔⛔ PROPOSED, NOT RULED, NOT GATED, NOT REGISTERED. ⛔⛔
+  Built #210 (2026-08-20) under the WAVE-5 Layer-2 fan-out brief
+  `notes/_briefs/2026-08-20-210-wave5-layer2-p2-fanout-brief-v1.md`, LANE B, itinerary row 104
+  ("Template — dashboard", Layer 2 Template, P2, notes: "Composes from stat/chart/grid bases.").
+  Nothing here is in CATEGORIES, MIGRATED_SNIPPETS, component-types.json, canon.css or
+  `_rulings.json`. Every fintech/domain semantic below is PROPOSED (`s182-D2`, the Kpi-tile
+  precedent) and is DAVE'S. The receipt names every open question:
+  `notes/_receipts/2026-08-20-210-wave5-laneB-templates.md`.
+
+  ★★★ THE CARDINAL RULE OF LAYER 2 — COMPOSE, NEVER RE-DRAW.
+  A template is an ORGANISM assembled from components that already exist. The Meter precedent
+  (#210, `s210-D1`) is the model: zero new CSS is the ideal, a COMPOSITION class is legal, a
+  re-drawn atom is the #202 defect. Every visible atom on this page traces to a source file and
+  every borrowed region is diff-proven in the receipt's claim table.
+
+  WHERE EVERY REGION CAME FROM — the borrow ledger (each is diff-proven, see receipt §2):
+    · the leading-trim block          → Command-palette.reference.html line 36, BYTE-IDENTICAL (328 chars)
+    · the AUTO-TOKENS alpha ramp      → Meter.reference.html generated block, BYTE-IDENTICAL
+    · `.l-container/.l-stack/.l-row/.l-grid/.l-split/.l-measure` + the gap ramp
+                                      → Layout-utilities.reference.html, declaration-identical
+    · `.kpi-tile/.amt/.delta/.kpi-spark/.spark-inline/.kpi-cta` + the up/down/spark tokens
+                                      → Kpi-tile.reference.html, declaration-identical
+    · `.stat-card` surface recipe     → Stat-card.reference.html (via Kpi-tile — the SAME recipe)
+    · `.summary/.summary__row/__k/__v` → Summary.reference.html, declaration-identical
+    · `figure.dv/.dv-head/.dv-title/.dv-stage/.dv-chart-area/.dv-svg/.dv-grid/.dv-axis/.dv-label`
+      + the whole column SVG          → Chart-bar.reference.html, the §"Column — categorical,
+                                        single series" specimen, SVG MARKUP BYTE-IDENTICAL but for
+                                        the `dv-fit` class (a JS-engine handle) and the two HIDDEN
+                                        sort views. ⚠ The H-BAR specimen was composed FIRST and
+                                        REJECTED BY LOOKING: without Chart-bar's fit engine its
+                                        left-hand category labels clip to "oceries" / "nsport" /
+                                        "ousing". Both facts are in the receipt.
+    · `.dg/.dg-head/.dg-count/.dg-toolbar/.dgsearch/.fbar/.fchip/.dg-scroll/table/th/td/.sort/
+       .cbx/.dg-foot/.dg-range/.dg-pp/.pbtn/.dg-empty/.clearbtn/.bone`
+                                      → Data-grid.reference.html, declaration-identical
+    · `.btn` + the press-physics partial → Button.reference.html, declaration-identical
+    · `.crumb/.sep/nav ol` breadcrumbs → Breadcrumbs.reference.html, declaration-identical
+    · `.content-header/.display`      → Headers.reference.html — STRUCTURE borrowed, its raw
+                                        `font:` declarations REPLACED by `.t-ed-*` composites.
+                                        ⚠ THE ONE DELIBERATE DEVIATION, see TYPE below.
+    · `.seg/.seg .ind/.seg button`    → View-options.reference.html, declaration-identical
+    · `.status` RAG chip              → Status-indicator.reference.html form B (via Document-row)
+    · every glyph                     → byte-matched from `knowledge/assets/icons/`, via the
+                                        component that already carries it (never re-drawn)
+
+  ⛔ TYPE — THE ONE DELIBERATE DEVIATION FROM "VERBATIM", DECLARED RATHER THAN SMUGGLED.
+  `Headers`, `Summary`, `Breadcrumbs`, `Pagination`, `Tags`, `Data-grid`, `Stat-card` and
+  `Button` all carry RAW `font:` / `font-family` declarations on disk — they predate the
+  type-composite mandate and each contributes to the 1,097 TYPE-002 debt the shrink-only ratchet
+  measures. THE BRIEF FORBIDS GROWING THAT DEBT. So this file borrows those regions' GEOMETRY and
+  COLOUR declaration-for-declaration and drops their raw font declarations, binding type through
+  `.t-cm-*` / `.t-ed-*` classes in the MARKUP instead (the Meter / Progress-bar / Kpi-tile /
+  Layout-utilities route). THIS FILE DECLARES NO font-family, font-size, font-weight or px
+  line-height ANYWHERE. TYPE-002 contribution: 0. The debt does not grow.
+  ⚠ Consequence, stated so it can be refused: a borrowed region here can be VISUALLY different
+  from its parent wherever the parent's raw declaration disagreed with the composite it "should"
+  have had. Every such case was rendered and looked at; the ones that moved are in the receipt.
+
+  ⛔ COLOUR — NO COLOUR IS INVENTED. Every hex below is copied from a source snippet's own theme
+  block. The two-red law (`s151-D1`) and the mono error ink camp (`s149-D1`) are UNTOUCHED — no
+  red or green is bound to any monetary figure anywhere on this page (the #209 Lane A restraint,
+  carried). The only RAG on the page is a Status-indicator chip, which ALWAYS carries its word.
+  The delta arrow's `--up`/`--down` fill seat is Stat-card's own, inherited via Kpi-tile, and is
+  flagged there as Dave's call — it is NOT resolved here.
+
+  ⛔ WIDTH (`s210-D3` discipline). A TEMPLATE is the one artefact class that is ALLOWED to declare
+  layout width, because it IS the container. `.tpl-page{--l-max:1120px}` and the two `.l-split`
+  rail widths are the PAGE's. NO molecule inside this file is given a new fixed width, and where
+  a source component ships a demo width (`.dg{width:var(--demo-width,760px)}`), that width is
+  OVERRIDDEN TO 100% by a composition rule so the page owns it — never edited at the source.
+
+  ⛔ WHAT THIS TEMPLATE IS NOT. It is the CONTENT REGION of a page, not the app frame. The
+  navigation shell (top nav / side nav / multi-column) is itinerary rows 97/98/99 and is being
+  built as a separate artefact class in the same wave. The relationship between a shell and a
+  template is PROPOSED, not adjudicated: a shell wraps a template; a template assumes it is
+  inside a `<main>` and starts at the page header lock-up.
+
+  ⬛ THREE THINGS THIS FILE DELIBERATELY DOES NOT DO, each a question for Dave (receipt §4):
+    1. It ships NO application JavaScript. Data-grid's sort/filter/paginate engine, Chart-bar's
+       fit/legend engine and Tabs' indicator engine are all live in their own reference files;
+       re-hosting them here would fork them. The grid, chart and switcher are drawn in a REAL
+       resting state and the interactive behaviour is DECLARED AS THE SOURCE COMPONENT'S. The
+       only script on this page is the theme/width harness, which is demo chrome.
+    2. It draws ONE dashboard, not a matrix of dashboards. Density, tile count and rail contents
+       are props in the meta, not variants on the page.
+    3. It does not invent a "dashboard" token, class prefix or category. Everything is `.tpl-*`
+       for composition-only rules, and there are eleven of them.
+-->
+<!-- TYPE-001 · canon type composites. MUST come BEFORE the component <style>/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+ below. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. BYTE-IDENTICAL to Command-palette line 36. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* ============================================================================================
+     THEME BLOCKS. Every value is copied from the source snippet named beside it. Where two
+     sources declare the same role with the same hex (they do, throughout), the value is stated
+     once. NOTHING HERE IS NEW.
+     ============================================================================================ */
+  :root{
+    --ease:140ms ease;                                  /* Kpi-tile / Summary / Document-row */
+    --move:220ms cubic-bezier(.4,0,.2,1);               /* View-options / Tabs */
+    --spring:300ms cubic-bezier(.5,1.6,.4,1);           /* Button / Data-grid */
+    --press:90ms cubic-bezier(0,0,.58,1);               /* Button / Data-grid */
+    --phys-size:120;                                    /* Button — text-button characteristic size */
+    --cell-py:10px; --cell-px:12px;                     /* Data-grid — Table's gated cell padding */
+  }
+  [data-theme="light"]{
+    /* surfaces + ink — Kpi-tile / Stat-card / Data-grid / Document-row (identical in all four) */
+    --page:#FFFFFF; --surface:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A;
+    --border:#E1E1E1; --divider:#E1E1E1; --hover:#F0F0F0; --focus:#305A85;
+    --header:#F0F0F0; --cell:#FFFFFF; --fborder:#808080; --bar:#000000; --selbg:#F0F0F0;
+    --checked:#000000; --onchk:#FFFFFF; --disabled:#E1E1E1;
+    --pressedbg:#626262; --onpressed:#FFFFFF; --currentbd:#000000; --bone:#F0F0F0;
+    --glyph-bg:#F0F0F0;                                 /* Document-row leading-glyph slot */
+    /* buttons — Button.reference.html */
+    --pri-default:#1A1A1A; --pri-label:#FFFFFF; --pri-hover:#636363;
+    --ter-border:#1A1A1A; --ter-label:#1A1A1A; --ter-hover:#F0F0F0;
+    --quat-label:#1A1A1A; --quat-hover:#F0F0F0;
+    /* segmented switcher — View-options.reference.html */
+    --sel:#000000; --on-sel:#FFFFFF;
+    /* KPI delta arrow FILL seat — Stat-card via Kpi-tile. DAVE'S, flagged at source, not resolved here. */
+    --up:#66CC8D; --down:#F6604C;
+    /* sparkline INK seat — s182-D3, background-keyed; this is the on-white leg (Kpi-tile) */
+    --spark-up:#137F3C; --spark-down:#DA1A00; --spark-flat:#1A1A1A;
+    /* RAG chip — Status-indicator form B, via Document-row */
+    --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --info:#78A7E8;
+    --success-tint:#D4F1DF; --warning-tint:#F6E6C0; --error-tint:#FDD9D4; --info-tint:#DFEAF9;
+    /* dataviz — Chart-bar.reference.html */
+    --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    /* ⛔⛔ `--data-series-1` IS DECLARED HERE BECAUSE ITS ABSENCE WAS RENDERED AND SEEN.
+       The first composition of this page borrowed the column specimen's markup (which fills every
+       rect with `var(--data-series-1)`) but carried only `--data-series-3` in the theme blocks —
+       a leftover from the h-bar specimen it replaced. `fill:var(--undefined)` DOES NOT fall back
+       to the previous value: it falls back to the SVG initial value, BLACK, IN SILENCE. Every
+       bar rendered solid black on both the white and the near-black page, and GRID, TYPE,
+       SNIPPETS, A11Y and DESCENDER were ALL GREEN over it. This is exactly the class the memory
+       hook [[dangling-dataviz-var-renders-silent-black]] records (#184, mutation-proven, "13
+       gates blind"), reproduced here at composition time — a template inherits a var contract
+       from every component it composes, and NOTHING CHECKS THAT IT CARRIED THEM ALL.
+       ⬛ THE GENERAL REPAIR — a var-resolution gate that parses the artefact in the browser's own
+       grammar — is already the priced candidate in `_DS-IMPROVEMENTS.md`. This lane adds a SECOND
+       live catch to its evidence, and did not build the gate. */
+    --data-series-1:#766682; --data-series-3:#577C78; --data-axis:#626262; --axis-alpha:1;
+    --data-grid:#E1E1E1; --grid-alpha:1;
+    /* ⚠ COLLISION FOUND AT COMPOSITION TIME, AND RENAMED RATHER THAN RECONCILED.
+       Kpi-tile's sparkline baseline reads `stroke-opacity:var(--grid-alpha)` where its own light
+       block sets `--grid-alpha:.10`; Chart-bar's `.dv-grid` reads THE SAME NAME where its light
+       block sets `1`. Two components, one unbound local name, opposite values — put them on one
+       page and one of them silently wins. This is the exact class the store's `W-59` names ("the
+       5 ledgered local-var collisions ... rename to component-local names"). The chart keeps the
+       bound name (`--grid-alpha` = data/grid/alpha); the spark's is renamed to
+       `--spark-base-alpha`, which is component-local and binds nothing. ⬛ A SIXTH MEMBER FOR
+       W-59's ledger, reported not patched at source — Kpi-tile is not this lane's to edit. */
+    --spark-base-alpha:.10;
+    /* shape — semantic radius tiers (ADR-0010). Mono/Legacy square; console forks via canon.css. */
+    --border-radius-surface:0; --border-radius-control:0; --border-radius-indicator:0;
+    --press-travel:2; --press-darken:0.94;              /* Button B-D7 press physics */
+    --target-min:44px;                                  /* Layout-utilities — target/min */
+    --l-margin:16px; --l-gutter:16px;                   /* Layout-utilities — layout/app/margin+gutter */
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --surface:#1F1F1F; --text:#FFFFFF; --icon:#FFFFFF;
+    --border:#808080; --divider:#808080; --hover:#232323; --focus:#4587A7;
+    --header:#1F1F1F; --cell:#1A1A1A; --fborder:#808080; --bar:#FFFFFF; --selbg:#232323;
+    --checked:#FFFFFF; --onchk:#333333; --disabled:#808080;
+    --pressedbg:#1A1A1A; --onpressed:#FFFFFF; --currentbd:#808080; --bone:#232323;
+    --glyph-bg:#232323;
+    --pri-default:#FAFAFA; --pri-label:#333333; --pri-hover:#B2B2B2;
+    --ter-border:#FFFFFF; --ter-label:#FFFFFF; --ter-hover:#232323;
+    --quat-label:#FFFFFF; --quat-hover:#232323;
+    --sel:#FFFFFF; --on-sel:#333333;
+    --up:#66CC8D; --down:#F6604C;
+    --spark-up:#66CC8D; --spark-down:#F6604C; --spark-flat:#FFFFFF;
+    --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --info:#78A7E8;
+    --success-tint:#32533F; --warning-tint:#614C1C; --error-tint:#60302A; --info-tint:#38475C;
+    --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    /* see the light block — the dangling-var catch */
+    --data-series-1:#766682; --data-series-3:#577C78; --data-axis:#9D9D9D; --axis-alpha:1;
+    --data-grid:#484848; --grid-alpha:1;
+    --spark-base-alpha:.16;   /* see the light block — W-59 collision rename */
+    --border-radius-surface:0; --border-radius-control:0; --border-radius-indicator:0;
+    --press-travel:2; --press-darken:0.94;
+    --target-min:44px;
+    --l-margin:16px; --l-gutter:16px;
+  }
+
+  *{box-sizing:border-box;}
+  /* NO font-family on body — every text element carries a canon composite. TYPE-002: 0. */
+  body{margin:0; padding:0; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+  .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+
+  /* ============================================================================================
+     LAYOUT PRIMITIVES — Layout-utilities.reference.html, declaration-for-declaration.
+     ⛔ This is the block that makes a template legal: the page's structure is a GATED COMPONENT's
+     structure, not a hand-rolled grid. Thirteen snippets hand-roll the auto-fill recipe;
+     Layout-utilities exists so a fourteenth does not.
+     ============================================================================================ */
+  .l-stack, .l-row, .l-grid, .l-split{
+    --l-gap-xxs:2px; --l-gap-xs:4px; --l-gap-s:8px; --l-gap-m:12px;
+    --l-gap-l:24px; --l-gap-xl:32px; --l-gap-xxl:48px;
+    --l-gap:var(--l-gap-m);
+  }
+  .l-stack[data-gap="s"], .l-row[data-gap="s"], .l-grid[data-gap="s"], .l-split[data-gap="s"]{--l-gap:var(--l-gap-s);}
+  .l-stack[data-gap="l"], .l-row[data-gap="l"], .l-grid[data-gap="l"], .l-split[data-gap="l"]{--l-gap:var(--l-gap-l);}
+  .l-stack[data-gap="xl"],.l-row[data-gap="xl"],.l-grid[data-gap="xl"],.l-split[data-gap="xl"]{--l-gap:var(--l-gap-xl);}
+  .l-stack[data-gap="xxl"],.l-row[data-gap="xxl"],.l-grid[data-gap="xxl"],.l-split[data-gap="xxl"]{--l-gap:var(--l-gap-xxl);}
+  .l-container{ --l-max:1120px; width:100%; max-width:var(--l-max); margin-inline:auto;
+    padding-inline:var(--l-margin); }
+  .l-stack{ display:flex; flex-direction:column; gap:var(--l-gap); }
+  .l-stack > *{ margin-block:0; }
+  .l-row{ display:flex; flex-direction:row; flex-wrap:wrap; gap:var(--l-gap); align-items:center; }
+  .l-row[data-align="baseline"]{ align-items:baseline; }
+  .l-row[data-justify="between"]{ justify-content:space-between; }
+  .l-row[data-justify="end"]{ justify-content:flex-end; }
+  .l-grid{ display:grid; --l-min:240px;
+    grid-template-columns:repeat(auto-fill, minmax(min(var(--l-min), 100%), 1fr));
+    gap:var(--l-gap); }
+  .l-split{ display:grid; gap:var(--l-gap); grid-template-columns:minmax(0, 1fr) 280px;
+    container-type:inline-size; }
+  .l-measure{ max-width:64ch; }
+  @container (max-width: 760px){          /* breakpoint/ms, measured against the CONTAINER */
+    .l-split{ grid-template-columns:minmax(0, 1fr); }
+  }
+  /* ⛔⛔ COMPOSITION RULE 12 — AND IT EXISTS BECAUSE DRIVING THE PAGE FOUND A DEFECT IN A GATED
+     COMPONENT. `.l-split` above is Layout-utilities', copied faithfully, INCLUDING its
+     `container-type:inline-size`. That declaration makes the split a query container FOR ITS
+     DESCENDANTS. It does NOT make the split queryable by itself: a `@container` rule resolves
+     against an element's nearest ANCESTOR container, and an element is never its own. So the
+     rule above can never match, and the split NEVER COLLAPSES.
+     MEASURED, both in this template and in the gated parent, at #210:
+       · Layout-utilities.reference.html @ 1400px viewport — the demo split inside its own
+         `.frame.narrow` (394px wide) computes `grid-template-columns: 90px 280px`. Its caption
+         says "has already collapsed". IT HAS NOT: the rail keeps its full 280px and the content
+         column is squeezed to 90px.
+       · Layout-utilities.reference.html @ 420px viewport — the top-level split computes
+         `44px 280px`. A 44-pixel content column.
+       · This template before the fix @ 420px — the chart stage measured clientWidth 26px and the
+         analysis paragraph measured clientWidth 26px. The page was unreadable on a phone and
+         every gate was green over it.
+       · MUTATION CONTROL (so the probe can fail): setting `container-type:inline-size` on the
+         PARENT of a split and re-reading gives `394px` — one column. The rule is correct; its
+         container was missing.
+     THE FIX IS A COMPOSITION RULE AND IT DOES NOT TOUCH THE PARENT. Layout-utilities is gated and
+     is not this lane's to edit; the repair there is reported, not applied.
+     ⬛ THE REAL REPAIR IS DAVE'S and it is one of two: give `.l-split` a HOST (this rule), or move
+     `container-type` off `.l-split` onto a wrapper inside the primitive itself. */
+  .tpl-split-host{ container-type:inline-size; }
+  /* COMPOSITION RULE 13 — also found by looking. A CSS grid stretches its items to the row
+     height, so the chart panel grew to match the rail's two stacked cards and rendered with ~230px
+     of empty card below the chart. `align-items:start` lets each column be its own height. This is
+     a RELATIONSHIP between two panels, which is what a composition rule is for. */
+  .tpl-split-host > .l-split{ align-items:start; }
+
+  /* ============================================================================================
+     PAGE HEADER LOCK-UP.
+     Breadcrumbs.reference.html (`nav ol`, `.crumb`, `.sep`, `[aria-current="page"]`) +
+     Headers.reference.html `.display` + Button.reference.html `.btn` +
+     View-options.reference.html `.seg`. Assembled, not re-drawn.
+     ============================================================================================ */
+  nav.tpl-crumbs ol{list-style:none; display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0; padding:0;}
+  nav.tpl-crumbs li{display:inline-flex; align-items:center; gap:8px;}
+  .sep{color:var(--text); opacity:var(--alpha-52); display:inline-flex; align-items:center;}
+  .sep .chev{width:11px; height:11px; display:block; fill:currentColor;}
+  a.crumb{color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  a.crumb:hover{text-decoration-thickness:2px;}
+  a.crumb:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -2px 0 var(--text);}
+  /* ⚠ Breadcrumbs' own rule here is `{font-weight:500; opacity:var(--alpha-84)}`. The WEIGHT half
+     is a raw font declaration and the TYPE gate catches it — correctly. It is NOT re-declared:
+     the current crumb carries `.t-cm-ctl-14` (14px/500) in the markup instead of the siblings'
+     `.t-cm-caption` (14px/400), which is the same 14/500 through the canon ramp. Same pixels,
+     zero TYPE-002 contribution. The opacity half is copied unchanged. */
+  nav.tpl-crumbs [aria-current="page"]{opacity:var(--alpha-84);}
+  /* Headers `.display`: the h1 + subtitle pair. GEOMETRY copied; its `font:400 32px/1.1` and
+     `font:400 16px/1.5` are NOT copied — `.t-ed-heading-2` (28/36) and `.t-ed-body` (16/24) carry
+     the type from the canon ramp instead. 32px is on the ramp too (`.t-cm-heading`) but it is a
+     SINGLE-LINE component composite and a page title wraps, so the deciding rule (wrapping ⇒
+     Editorial) sends it to heading-2. ⬛ THE SIZE STEP DOWN, 32 → 28, IS VISIBLE AND IS DAVE'S. */
+  .tpl-display h1{margin:0; letter-spacing:-.01em;}
+  .tpl-display p{margin:8px 0 0; opacity:var(--alpha-80);}
+
+  /* ---- Button — declaration-identical to Button.reference.html, minus its raw font ---- */
+  .btn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control);
+    cursor:pointer; justify-content:center; gap:8px;
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+  .btn:focus-visible{outline:2px solid var(--ter-label); outline-offset:2px;}
+  /* ===== PARTIAL press-physics (button-family — Button.reference.html is the source of truth) ===== */
+  .btn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  .btn.full:hover{transform:none;}
+  .btn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  @media (prefers-reduced-motion: reduce){ .btn:hover,.btn:active{ transform:none !important; filter:none !important; } }
+  /* ===== PARTIAL press-physics END ===== */
+  .btn.primary{background:var(--pri-default); color:var(--pri-label);}
+  .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) 68%, var(--page));}
+  .btn.tertiary{background:transparent; color:var(--ter-label); border:1px solid var(--ter-border);}
+  .btn.tertiary:hover{background:var(--ter-hover);}
+  .btn.quaternary{background:transparent; color:var(--quat-label);}
+  .btn.quaternary:hover{background:var(--quat-hover);}
+  .btn svg{width:16px; height:16px; fill:currentColor; flex:none;}
+
+  /* ---- the period switcher — View-options `.seg`, declaration-identical.
+     ⚠ `.seg button` is a type.css blast radius (it is appended to `.t-cm-caption` AND to
+     `.t-cm-slot`), so joining this class is how the switcher gets its type and its 20px slot
+     WITHOUT a declaration here. That is the intended route, not a coincidence. ---- */
+  .seg{position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
+  .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
+    transition:left var(--move), width var(--move);}
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px;
+    border:0; background:transparent; color:var(--text); cursor:pointer; transition:color var(--move);}
+  .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
+  .seg button[aria-pressed="true"]{color:var(--on-sel);}
+  .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
+  .seg svg{width:16px; height:16px; fill:currentColor;}
+  @media (prefers-reduced-motion: reduce){ .seg .ind{ transition:none !important; } }
+
+  /* ============================================================================================
+     KPI TILES — Kpi-tile.reference.html, declaration-for-declaration.
+     ============================================================================================ */
+  .kpi-tile{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    padding:16px; display:flex; flex-direction:column; gap:8px; position:relative;}
+  .kpi-tile .lbl16{margin:0; opacity:var(--alpha-60);}
+  .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+  .delta{display:flex; align-items:center; gap:4px;}
+  .delta .arrow{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
+  .delta .arrow svg{width:16px; height:16px; display:block; fill:currentColor;}
+  .delta.up .arrow{color:var(--up);}
+  .delta.down .arrow{color:var(--down);}
+  .delta .per{opacity:var(--alpha-60); margin-left:4px;}
+  .kpi-spark{margin-top:4px; width:100%;}
+  .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
+  .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--spark-base-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+  .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
+    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+  .spark-inline .dv-end{fill:var(--spark-flat);}
+  .spark-inline[data-trend="up"] .dv-series{stroke:var(--spark-up);}
+  .spark-inline[data-trend="up"] .dv-end{fill:var(--spark-up);}
+  .spark-inline[data-trend="down"] .dv-series{stroke:var(--spark-down);}
+  .spark-inline[data-trend="down"] .dv-end{fill:var(--spark-down);}
+  .kpi-cta{position:absolute; top:8px; right:8px; width:44px; height:44px; flex:none;
+    display:inline-flex; align-items:center; justify-content:center; padding:0;
+    background:transparent; border:0; border-radius:var(--border-radius-surface);
+    color:var(--text); opacity:var(--alpha-60); cursor:pointer; transition:opacity var(--ease);}
+  .kpi-cta svg{width:18px; height:18px; display:block; fill:currentColor;}
+  .kpi-cta:hover{opacity:var(--alpha-96);}
+  .kpi-cta:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
+  .kpi-tile.has-cta .lbl16{padding-right:40px;}
+
+  /* ---- the card surface — Stat-card's recipe (the SAME three declarations Kpi-tile uses).
+     A panel on this page is a Stat-card that happens to hold a chart or a list. ---- */
+  .stat-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    padding:16px; display:flex; flex-direction:column; gap:8px;}
+
+  /* ============================================================================================
+     SUMMARY — Summary.reference.html, declaration-for-declaration minus its two raw `font:`
+     declarations (`.summary__k` 400 16/1.4 and `.summary__v` 500 16/1.4). Type now arrives from
+     `.t-cm-label` (16/400) and `.t-cm-label` + the `.em` weight channel is NOT used, so the
+     value row's 500 WEIGHT IS LOST. ⬛ DECLARED, VISIBLE, AND DAVE'S: the alternative was to
+     re-declare font-weight here and grow the TYPE-002 debt by one. The receipt shows both.
+     ⛔ Summary's `max-width:420px` is NOT copied — `s210-D3`: the container dictates the width.
+     ============================================================================================ */
+  .summary{ display:flex; flex-direction:column; margin:0; }
+  .summary__row{ display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid var(--divider); }
+  .summary__row:last-child{ border-bottom:0; }
+  .summary__k{ color:var(--text); opacity:var(--alpha-60); margin:0; }
+  .summary__v{ color:var(--text); font-variant-numeric:tabular-nums; text-align:right; margin:0; }
+
+  /* ---- RAG status chip — Status-indicator form B, via Document-row. The chip ALWAYS carries
+     its word; the dot is decorative and aria-hidden (1.4.1). `.status` is a type.css blast
+     radius (12/400 + slot) so it needs no type declaration here. ---- */
+  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
+  .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+  .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
+  .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
+  .status.err{background:var(--error-tint);}    .status.err .dot{background:var(--error);}
+  .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
+
+  /* ============================================================================================
+     THE CHART — Chart-bar.reference.html, declaration-for-declaration.
+     ⚠ THE CHART IS NOT MADE FLUID, AND THAT IS THE POINT. Chart-bar's own answer to a narrow
+     container is `.dv-stage{overflow-x:auto}` around a fixed 580px canvas — the class NEVER
+     becomes `width:100%` without its fit ENGINE, which is JavaScript this file does not host.
+     Setting `width:100%` on the SVG here would stretch the viewBox and scale the text and the
+     strokes with the pane, which is the banned physics `_RUNBOOK-render-verify.md` records Dave
+     catching in his own browser. So the chart SCROLLS. Declared, not smoothed.
+     ============================================================================================ */
+  figure.dv{margin:0; position:relative;}
+  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+  .dv-title{margin:0;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}
+  .dv-chart-area{width:580px;}
+  .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+  .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
+  rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+  rect.dv-series:hover{filter:brightness(1.12);}
+  [data-theme="dark"] rect.dv-series:hover{filter:brightness(1.22);}
+  .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  /* ============================================================================================
+     THE GRID — Data-grid.reference.html, declaration-for-declaration.
+     ⛔ Data-grid's `.dg{width:var(--demo-width,760px)}` is the ONE declaration changed, and it is
+     changed HERE, in the template, not at the source: on a page the grid is as wide as its
+     column. That is exactly the `s210-D3` shape — the container dictates the width.
+     ============================================================================================ */
+  .dg{width:100%; max-width:100%;}
+  .dg-head{display:flex; align-items:baseline; gap:12px; margin-bottom:12px;}
+  .dg-count{opacity:var(--alpha-60); margin-left:auto;}
+  .dg-toolbar{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  /* ===== FIELD-CHROME-COPY (Search-field boxed + Input-fields active recipe, via Data-grid) ===== */
+  .dgsearch{position:relative; display:flex; align-items:center; height:48px; flex:1 1 240px; max-width:360px;
+    border:1px solid var(--fborder); border-radius:var(--border-radius-control); padding:0 8px;
+    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);}
+  .dgsearch .mag{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
+    color:var(--icon); margin:0 12px 0 2px;}
+  .dgsearch .mag svg{width:20px; height:20px; fill:currentColor;}
+  .dgsearch input{flex:1; min-width:0; height:100%; border:0; background:transparent; color:var(--text); outline:none;}
+  .dgsearch input::placeholder{color:var(--text); opacity:var(--alpha-48);}
+  .dgsearch input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
+  .dgsearch:hover{background:var(--hover);}
+  .dgsearch:focus-within{border-color:var(--bar); box-shadow:inset 0 -4px 0 0 var(--bar); background:var(--page);}
+  /* ===== FIELD-CHROME-COPY END ===== */
+  .dgs-clear{flex:none; width:24px; height:24px; border:0; background:transparent; color:var(--icon); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center;}
+  .dgs-clear svg{width:12px; height:12px; fill:currentColor;}
+  .dgs-clear:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .dgsearch input:placeholder-shown ~ .dgs-clear{display:none;}
+  .fbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .fchip{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em;
+    border:1px solid var(--fborder); border-radius:var(--border-radius-control); background:transparent; color:var(--text);
+    max-width:100%; white-space:nowrap;}
+  .fchip .x{position:relative; display:inline-flex; width:24px; height:24px; padding:0; border:0; background:transparent;
+    color:var(--icon); cursor:pointer; align-items:center; justify-content:center; flex:0 0 auto;
+    transition:color var(--ease), transform var(--spring);}
+  .fchip .x svg{width:12px; height:12px; fill:currentColor;}
+  .fchip .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .dg-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:var(--border-radius-surface);}
+  .dg table{border-collapse:collapse; width:100%; min-width:640px; background:var(--cell);}
+  .dg th,.dg td{padding:var(--cell-py) var(--cell-px); border:1px solid var(--border); text-align:left; vertical-align:middle;
+    color:var(--text);}
+  .dg thead th{background:var(--header); position:sticky; top:0; z-index:2; padding:0;}
+  .dg td.num{text-align:right;}
+  .sort{display:flex; width:100%; min-height:44px; align-items:center; gap:8px; padding:var(--cell-py) var(--cell-px);
+    border:0; background:transparent; color:var(--text); cursor:pointer; text-align:left;
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+  .sort:hover{background:var(--hover);}
+  .sort:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sort .ic{display:none; flex:none; width:16px; height:16px; margin-left:auto;}
+  .sort .ic svg{width:16px; height:16px; display:block; fill:currentColor;}
+  .dg th[aria-sort="none"] .ic-none{display:inline-flex;}
+  .dg th[aria-sort="ascending"] .ic-asc{display:inline-flex;}
+  .dg th[aria-sort="descending"] .ic-desc{display:inline-flex;}
+  .dg tbody tr{transition:background var(--ease);}
+  .dg tbody tr:hover td{background:var(--hover);}
+  .dg-foot{display:flex; gap:12px 16px; align-items:center; flex-wrap:wrap; margin-top:12px;}
+  .dg-range{opacity:var(--alpha-60);}
+  .dg-pp{display:flex; gap:8px; align-items:center; margin-left:auto;}
+  nav.dgpg ul{list-style:none; display:flex; gap:4px; align-items:center; margin:0; padding:0;}
+  .pbtn{min-width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; padding:0 8px;
+    color:var(--text); cursor:pointer; border:1px solid transparent; border-radius:var(--border-radius-control); background:transparent;
+    --phys-size:44;
+    transition:background var(--ease), color var(--ease), transform var(--spring), filter var(--press);}
+  .pbtn:not([disabled]):hover{background:var(--hover);}
+  .pbtn:not([disabled]):active{background:var(--pressedbg); color:var(--onpressed);}
+  .pbtn:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .pbtn[aria-current="page"]{border-color:var(--currentbd);}
+  .pbtn[disabled]{color:var(--disabled); cursor:not-allowed;}
+  .pbtn svg{width:16px; height:16px; fill:currentColor;}
+
+  /* ============================================================================================
+     THE ELEVEN COMPOSITION RULES. This is the whole of the "new CSS" in this file, and each one
+     is a RELATIONSHIP between components — never an atom's appearance. If a twelfth appears,
+     something is being re-drawn.
+     ============================================================================================ */
+  .tpl-page{ --l-max:1120px; padding-block:32px 48px; }              /* 1 · the page's own frame */
+  .tpl-header{ border-bottom:1px solid var(--divider); padding-bottom:24px; }  /* 2 · lock-up rule */
+  .tpl-actions{ margin-left:auto; }                                   /* 3 · actions to the far end */
+  .tpl-section > .tpl-section-head{ margin-bottom:12px; }             /* 4 · section label rhythm */
+  .tpl-panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px; }  /* 5 */
+  .tpl-panel-body{ flex:1; min-width:0; }                             /* 6 · panels stretch equally */
+  .tpl-rail{ display:flex; flex-direction:column; gap:24px; min-width:0; }     /* 7 · the side rail */
+  .tpl-kpis{ --l-min:240px; }                                         /* 8 · the KPI board's min track */
+  .tpl-panel{ padding:24px; }                                         /* 9 · a panel is roomier than a tile */
+  .tpl-link{ color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; }  /* 10 */
+  .tpl-link:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }                                        /* 11 */
+
+  /* ---- DEMO CHROME below this line. NOT the template. Delete it and the page still works. ---- */
+  .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
+    border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
+  .demo-bar button{height:32px; padding:0 12px; border:1px solid var(--fborder); background:transparent;
+    color:var(--text); cursor:pointer;}
+  .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <!-- Every glyph BYTE-MATCHED from knowledge/assets/icons/ via the component that carries it.
+         chevron-right (Breadcrumbs) · arrow-up/arrow-down + view-grid (Kpi-tile) ·
+         sort/chevron-up/chevron-down/chevron-left/search/close (Data-grid) ·
+         download (Document-row) · view-list (View-options) -->
+    <symbol id="ic-chevron" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+    <symbol id="ic-list" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol>
+    <symbol id="dg-sort" viewBox="0 0 18 18"><path d="M1.5 7.5L9 0L16.5 7.5H1.5Z" fill="currentColor"/><path d="M16.5 10.5L9 18L1.5 10.5H16.5Z" fill="currentColor"/></symbol>
+    <symbol id="dg-cup" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 13.848L9 5.84998L17 13.848V12.152L9 4.15198L1 12.152V13.848Z" fill="currentColor"/></symbol>
+    <symbol id="dg-cdown" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol>
+    <symbol id="dg-cleft" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+    <symbol id="dg-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="dg-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="dr-download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <!-- ⚑ DEMO CHROME — the theme + width harness. NOT part of the template. -->
+  <div class="demo-bar">
+    <span class="t-cm-legal">Reference harness — not part of the template</span>
+    <button type="button" id="themeBtn" class="t-cm-legal">Toggle light / dark</button>
+    <span class="t-cm-legal" id="wOut" aria-live="polite"></span>
+  </div>
+
+  <main class="tpl-page l-container" id="tplMain">
+    <div class="l-stack" data-gap="xxl">
+
+      <!-- ============================================================================
+           1 · PAGE HEADER LOCK-UP — Breadcrumbs + Headers `.display` + Buttons + `.seg`
+           ============================================================================ -->
+      <header class="tpl-header l-stack" data-gap="l">
+        <nav class="tpl-crumbs" aria-label="Breadcrumb">
+          <ol class="t-cm-caption">
+            <li><a class="crumb" href="#">Home</a></li>
+            <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><a class="crumb" href="#">Business banking</a></li>
+            <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><span class="t-cm-ctl-14" aria-current="page">Overview</span></li>
+          </ol>
+        </nav>
+
+        <div class="l-row" data-align="end" data-gap="l">
+          <div class="tpl-display l-measure">
+            <h1 class="t-ed-heading-2">Account overview</h1>
+            <p class="t-ed-body">Business current account &middot; 40-12-06 &middot; ending 8841. Figures shown to 20 August 2026, 14:32.</p>
+          </div>
+          <div class="tpl-actions l-row" data-gap="m">
+            <button type="button" class="btn tertiary">Download statement<svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dr-download"/></svg></button>
+            <button type="button" class="btn primary">Make a payment</button>
+          </div>
+        </div>
+
+        <div class="l-row" data-justify="between" data-gap="m">
+          <div class="seg" role="group" aria-label="Reporting period">
+            <span class="ind" aria-hidden="true"></span>
+            <button type="button" aria-pressed="false">7 days</button>
+            <button type="button" aria-pressed="true">30 days</button>
+            <button type="button" aria-pressed="false">12 months</button>
+          </div>
+          <span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">All feeds up to date</span></span>
+        </div>
+      </header>
+
+      <!-- ============================================================================
+           2 · THE KPI BOARD — four Kpi-tiles in a Layout-utilities `.l-grid`
+           ⬛ PROPOSED, ALL OF IT: which four figures a business overview leads with is a
+           product decision, not a layout one. Four is drawn because the auto-fill grid
+           reflows 4 → 2 → 1 and that is the collapse worth proving.
+           ============================================================================ -->
+      <section class="tpl-section" aria-labelledby="kpis-h">
+        <h2 id="kpis-h" class="tpl-section-head t-cm-section-label">This month</h2>
+        <div class="l-grid tpl-kpis" data-gap="l">
+
+          <div class="kpi-tile has-cta" role="group" aria-label="Closing balance">
+            <p class="lbl16 t-cm-caption">Closing balance</p>
+            <span class="amt t-cm-figure-4"><span>&pound;</span><span>184,205.10</span></span>
+            <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+4.8% up</span><span class="per t-cm-legal">vs July</span></span>
+            <div class="kpi-spark">
+              <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+                <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+              </svg>
+            </div>
+            <button type="button" class="kpi-cta" aria-label="View closing balance as a table"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#kpi-table"/></svg></button>
+          </div>
+
+          <div class="kpi-tile" role="group" aria-label="Money out">
+            <p class="lbl16 t-cm-caption">Money out</p>
+            <span class="amt t-cm-figure-4"><span>&pound;</span><span>62,410.00</span></span>
+            <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">&minus;3.1% down</span><span class="per t-cm-legal">vs July</span></span>
+            <div class="kpi-spark">
+              <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+                <circle class="dv-end" cx="197" cy="38.5" r="3"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="kpi-tile" role="group" aria-label="Awaiting approval">
+            <p class="lbl16 t-cm-caption">Awaiting approval</p>
+            <span class="amt t-cm-figure-4"><span>&pound;</span><span>9,840.55</span></span>
+            <span class="delta"><span class="t-cm-figure-6">6 payments</span><span class="per t-cm-legal">2 to approve</span></span>
+            <div class="kpi-spark">
+              <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+                <circle class="dv-end" cx="197" cy="24.0" r="3"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="kpi-tile" role="group" aria-label="Available overdraft">
+            <p class="lbl16 t-cm-caption">Available overdraft</p>
+            <span class="amt t-cm-figure-4"><span>&pound;</span><span>25,000.00</span></span>
+            <span class="delta"><span class="t-cm-figure-6">None used</span><span class="per t-cm-legal">Limit reviewed 4 Aug</span></span>
+            <div class="kpi-spark">
+              <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                <polyline class="dv-series" points="3.0,23.0 20.6,23.0 38.3,23.0 55.9,23.0 73.5,23.0 91.2,23.0 108.8,23.0 126.5,23.0 144.1,23.0 161.7,23.0 179.4,23.0 197.0,23.0"/>
+                <circle class="dv-end" cx="197" cy="23.0" r="3"/>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================================
+           3 · SPLIT — chart panel + side rail. Layout-utilities `.l-split`, whose
+           container query collapses it to one column at 760 CONTAINER px.
+           ============================================================================ -->
+      <section class="tpl-split-host" aria-label="Spending analysis">
+      <div class="l-split" data-gap="xl">
+
+        <div class="stat-card tpl-panel tpl-panel-body">
+          <figure class="dv" data-dv-type="column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="tpl-cb-h">
+            <figcaption id="tpl-cb-h" class="sr-only">Spend by category this month, pounds</figcaption>
+            <div class="dv-head">
+              <h3 class="dv-title t-cm-section-label">Where the money went</h3>
+              <span class="t-cm-caption" style="opacity:.6">30 days to 20 Aug</span>
+            </div>
+            <div class="dv-stage"><div class="dv-chart-area">
+            <svg class="dv-svg" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Spend by category. Groceries 420, Transport 180, Housing 950, Leisure 260, Utilities 210, Savings 300, pounds.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">250</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">500</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">750</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">1000</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <g data-dv-view="orig">
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="65.1" y="139.3" width="48.7" height="90.7" data-fx="0.0366" data-fw="0.0933" tabindex="0" role="img" aria-label="Groceries: 420" data-tip="Groceries: 420"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-1)" x="152.1" y="191.1" width="48.7" height="38.9" data-fx="0.2033" data-fw="0.0933" tabindex="0" role="img" aria-label="Transport: 180" data-tip="Transport: 180"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-1)" x="239.1" y="24.8" width="48.7" height="205.2" data-fx="0.3699" data-fw="0.0933" tabindex="0" role="img" aria-label="Housing: 950" data-tip="Housing: 950"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-1)" x="326.1" y="173.8" width="48.7" height="56.2" data-fx="0.5366" data-fw="0.0933" tabindex="0" role="img" aria-label="Leisure: 260" data-tip="Leisure: 260"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-1)" x="413.1" y="184.6" width="48.7" height="45.4" data-fx="0.7033" data-fw="0.0933" tabindex="0" role="img" aria-label="Utilities: 210" data-tip="Utilities: 210"></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-1)" x="500.1" y="165.2" width="48.7" height="64.8" data-fx="0.8699" data-fw="0.0933" tabindex="0" role="img" aria-label="Savings: 300" data-tip="Savings: 300"></rect>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="89.4" y="246" text-anchor="middle" data-fx="0.0832">Groceries</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="176.4" y="246" text-anchor="middle" data-fx="0.2499">Transport</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="263.4" y="246" text-anchor="middle" data-fx="0.4166">Housing</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="350.5" y="246" text-anchor="middle" data-fx="0.5832">Leisure</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="437.5" y="246" text-anchor="middle" data-fx="0.7499">Utilities</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="524.5" y="246" text-anchor="middle" data-fx="0.9166">Savings</text>
+        </g>
+      </svg>
+            </div></div>
+          </figure>
+          <p class="t-ed-body-small l-measure" style="margin:12px 0 0; opacity:.72">
+            Housing is 41% of the month's outgoings — the largest single category, and the one
+            that has grown fastest since May.
+          </p>
+        </div>
+
+        <aside class="tpl-rail" aria-label="Account summary">
+          <div class="stat-card tpl-panel">
+            <div class="tpl-panel-head">
+              <h3 class="t-cm-section-label">Balances</h3>
+            </div>
+            <dl class="summary">
+              <div class="summary__row"><dt class="summary__k t-cm-label">Current account</dt><dd class="summary__v t-cm-figure-5">&pound;184,205.10</dd></div>
+              <div class="summary__row"><dt class="summary__k t-cm-label">Deposit account</dt><dd class="summary__v t-cm-figure-5">&pound;310,000.00</dd></div>
+              <div class="summary__row"><dt class="summary__k t-cm-label">Foreign currency</dt><dd class="summary__v t-cm-figure-5">&euro;42,180.00</dd></div>
+              <div class="summary__row"><dt class="summary__k t-cm-label">Card balance</dt><dd class="summary__v t-cm-figure-5">&pound;3,204.80</dd></div>
+            </dl>
+          </div>
+
+          <div class="stat-card tpl-panel">
+            <div class="tpl-panel-head">
+              <h3 class="t-cm-section-label">Needs attention</h3>
+              <a class="tpl-link t-cm-caption" href="#">View all</a>
+            </div>
+            <div class="l-stack" data-gap="m">
+              <div class="l-row" data-gap="s" data-justify="between">
+                <span class="t-cm-label">Supplier payment run</span>
+                <span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Approval due</span></span>
+              </div>
+              <div class="l-row" data-gap="s" data-justify="between">
+                <span class="t-cm-label">Direct debit &mdash; Northgate</span>
+                <span class="status err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Failed</span></span>
+              </div>
+              <div class="l-row" data-gap="s" data-justify="between">
+                <span class="t-cm-label">Company details review</span>
+                <span class="status inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Due 30 Sep</span></span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+      </section>
+
+      <!-- ============================================================================
+           4 · THE GRID — Data-grid composed at page width, drawn in a real resting
+           state. ⛔ NO ENGINE: sorting, filtering and paging are Data-grid's behaviour
+           and stay in Data-grid. The chips, the sort affordances and the pager are drawn
+           in the state they occupy after "Type: payment" and "Last 30 days" were applied.
+           ============================================================================ -->
+      <section class="tpl-section" aria-labelledby="dg-h">
+        <div class="dg">
+          <div class="dg-head">
+            <span class="t-cm-section-label" id="dg-h">Recent transactions</span>
+            <span class="dg-count t-cm-caption">24 results</span>
+          </div>
+
+          <div class="dg-toolbar">
+            <div class="dgsearch">
+              <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-search"/></svg></span>
+              <input type="search" class="t-cm-input" aria-label="Filter transactions" placeholder="Filter transactions — press enter to apply">
+              <button class="dgs-clear" type="button" aria-label="Clear filter text"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-close"/></svg></button>
+            </div>
+            <div class="seg" role="group" aria-label="View as">
+              <span class="ind" aria-hidden="true"></span>
+              <button type="button" aria-pressed="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-list"/></svg>Table</button>
+              <button type="button" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#kpi-table"/></svg>Cards</button>
+            </div>
+          </div>
+
+          <div class="fbar" role="list" aria-label="Applied filters">
+            <span class="fchip t-cm-caption" role="listitem">Type: payment<button class="x" type="button" aria-label="Remove filter Type: payment"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-close"/></svg></button></span>
+            <span class="fchip t-cm-caption" role="listitem">Last 30 days<button class="x" type="button" aria-label="Remove filter Last 30 days"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-close"/></svg></button></span>
+          </div>
+
+          <div class="dg-scroll">
+            <table aria-labelledby="dg-h">
+              <thead>
+                <tr>
+                  <th scope="col" aria-sort="descending" data-key="date"><button class="sort t-cm-button" type="button">Date
+                    <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
+                    <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
+                    <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
+                  <th scope="col" aria-sort="none" data-key="payee"><button class="sort t-cm-button" type="button">Payee
+                    <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
+                    <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
+                    <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
+                  <th scope="col" aria-sort="none" data-key="ref"><button class="sort t-cm-button" type="button">Reference
+                    <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
+                    <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
+                    <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
+                  <th scope="col" aria-sort="none" data-key="status"><button class="sort t-cm-button" type="button">Status
+                    <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
+                    <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
+                    <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
+                  <th scope="col" aria-sort="none" data-key="amount" class="num"><button class="sort t-cm-button" type="button">Amount
+                    <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
+                    <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
+                    <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="t-cm-label">20 Aug 2026</span></td><td><span class="t-cm-label">Meridian Supplies Ltd</span></td><td><span class="t-cm-label">INV-2026-0871</span></td>
+                  <td><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Completed</span></span></td>
+                  <td class="num"><span class="t-cm-figure-5">&minus;&pound;12,400.00</span></td></tr>
+                <tr><td><span class="t-cm-label">20 Aug 2026</span></td><td><span class="t-cm-label">Alder Consulting</span></td><td><span class="t-cm-label">FP-88412</span></td>
+                  <td><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Completed</span></span></td>
+                  <td class="num"><span class="t-cm-figure-5">+&pound;3,800.00</span></td></tr>
+                <tr><td><span class="t-cm-label">19 Aug 2026</span></td><td><span class="t-cm-label">Kestrel Property Management</span></td><td><span class="t-cm-label">SO-0042</span></td>
+                  <td><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Pending</span></span></td>
+                  <td class="num"><span class="t-cm-figure-5">&minus;&pound;2,100.00</span></td></tr>
+                <tr><td><span class="t-cm-label">18 Aug 2026</span></td><td><span class="t-cm-label">Northgate Fuel</span></td><td><span class="t-cm-label">DD-1174</span></td>
+                  <td><span class="status err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Failed</span></span></td>
+                  <td class="num"><span class="t-cm-figure-5">&minus;&pound;64.20</span></td></tr>
+                <tr><td><span class="t-cm-label">18 Aug 2026</span></td><td><span class="t-cm-label">HMRC &mdash; PAYE</span></td><td><span class="t-cm-label">PAYE-2608</span></td>
+                  <td><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Completed</span></span></td>
+                  <td class="num"><span class="t-cm-figure-5">&minus;&pound;18,942.16</span></td></tr>
+                <tr><td><span class="t-cm-label">17 Aug 2026</span></td><td><span class="t-cm-label">Bristol Fabrication Co</span></td><td><span class="t-cm-label">INV-2026-0864</span></td>
+                  <td><span class="status inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Reversed</span></span></td>
+                  <td class="num"><span class="t-cm-figure-5">+&pound;940.00</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="dg-foot">
+            <span class="dg-range t-cm-caption">1&ndash;6 of 24</span>
+            <div class="dg-pp">
+              <nav class="dgpg" aria-label="Transaction pages">
+                <ul>
+                  <li><button class="pbtn" type="button" aria-label="Previous page" disabled><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-cleft"/></svg></button></li>
+                  <li><button class="pbtn t-cm-label" type="button" aria-current="page" aria-label="Page 1, current page">1</button></li>
+                  <li><button class="pbtn t-cm-label" type="button">2</button></li>
+                  <li><button class="pbtn t-cm-label" type="button">3</button></li>
+                  <li><button class="pbtn t-cm-label" type="button">4</button></li>
+                  <li><button class="pbtn" type="button" aria-label="Next page"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron"/></svg></button></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script type="application/json" id="token-manifest">
+  {
+      "component": "Template dashboard",
+      "type": "template",
+      "layer": "2 Template",
+      "vars": {
+            "--page": "background/default",
+            "--surface": "tertiary/background/default",
+            "--text": "text/default",
+            "--icon": "icon/default",
+            "--border": "border/subtle",
+            "--divider": "divider/border/section",
+            "--hover": "form/background/hover",
+            "--focus": "focus/ring",
+            "--header": "table/header/background",
+            "--cell": "background/default",
+            "--fborder": "form/border/default",
+            "--bar": "form/border/active",
+            "--selbg": "form/background/hover",
+            "--checked": "secondary/background/default",
+            "--onchk": "text/on-inverse",
+            "--disabled": "text/disabled",
+            "--pressedbg": "tertiary/background/pressed",
+            "--onpressed": "text/reverse",
+            "--currentbd": "tertiary/border/default",
+            "--bone": "tertiary/background/hover",
+            "--glyph-bg": "tertiary/background/hover",
+            "--pri-default": "button/primary/background/default",
+            "--pri-label": "button/primary/label/default",
+            "--pri-hover": "button/primary/background/hover",
+            "--ter-border": "button/tertiary/border/default",
+            "--ter-label": "button/tertiary/label/default",
+            "--ter-hover": "button/tertiary/background/hover",
+            "--quat-label": "button/quaternary/label/default",
+            "--quat-hover": "button/quaternary/background/hover",
+            "--sel": "secondary/background/default",
+            "--on-sel": "text/on-inverse",
+            "--up": "rag/success",
+            "--down": "rag/error",
+            "--spark-up": "rag/success-ink",
+            "--spark-down": "rag/error-ink",
+            "--spark-flat": "text/default",
+            "--success": "rag/success",
+            "--warning": "rag/warning",
+            "--error": "rag/error",
+            "--info": "rag/information",
+            "--success-tint": "rag/success-tint",
+            "--warning-tint": "rag/warning-tint",
+            "--error-tint": "rag/error-tint",
+            "--info-tint": "rag/information-tint",
+            "--ink": "text/default",
+            "--baseline": "border/action-strong",
+            "--line": "border/subtle",
+            "--data-series-3": "data/series/3",
+            "--data-axis": "data/axis/color",
+            "--data-grid": "data/grid/color",
+            "--target-min": "target/min",
+            "--axis-alpha": "data/axis/alpha",
+            "--grid-alpha": "data/grid/alpha",
+            "--press-travel": "component-type/button-family/press-travel",
+            "--press-darken": "component-type/button-family/press-darken",
+            "--l-margin": "layout/app/margin",
+            "--l-gutter": "layout/app/gutter",
+            "--border-radius-surface": "border-radius/surface",
+            "--border-radius-control": "border-radius/control",
+            "--border-radius-indicator": "border-radius/indicator",
+            "--data-series-1": "data/series/1"
+      },
+      "contrastPairs": [
+            {
+                  "fg": "text/default",
+                  "bg": "background/default",
+                  "context": "text"
+            },
+            {
+                  "fg": "text/default",
+                  "bg": "tertiary/background/default",
+                  "context": "text"
+            },
+            {
+                  "fg": "button/primary/label/default",
+                  "bg": "button/primary/background/default",
+                  "context": "text"
+            },
+            {
+                  "fg": "text/on-inverse",
+                  "bg": "secondary/background/default",
+                  "context": "text"
+            },
+            {
+                  "fg": "text/default",
+                  "bg": "rag/success-tint",
+                  "context": "text"
+            },
+            {
+                  "fg": "text/default",
+                  "bg": "rag/warning-tint",
+                  "context": "text"
+            },
+            {
+                  "fg": "text/default",
+                  "bg": "rag/error-tint",
+                  "context": "text"
+            },
+            {
+                  "fg": "text/default",
+                  "bg": "rag/information-tint",
+                  "context": "text"
+            },
+            {
+                  "fg": "form/border/default",
+                  "bg": "background/default",
+                  "context": "ui"
+            },
+            {
+                  "fg": "icon/default",
+                  "bg": "background/default",
+                  "context": "ui"
+            }
+      ],
+      "icons": {
+            "chevron-right": "arrows-and-chevrons/chevron-right.svg",
+            "chevron-left": "arrows-and-chevrons/chevron-left.svg",
+            "chevron-up": "arrows-and-chevrons/chevron-up.svg",
+            "chevron-down": "arrows-and-chevrons/chevron-down.svg",
+            "arrow-up": "arrows-and-chevrons/arrow-up.svg",
+            "arrow-down": "arrows-and-chevrons/arrow-down.svg",
+            "view-grid": "global-controls/view-grid.svg",
+            "view-list": "global-controls/view-list.svg",
+            "search": "global-controls/search.svg",
+            "close": "global-controls/close.svg",
+            "download": "global-controls/download.svg"
+      },
+      "requiredAria": [
+            "<nav",
+            "<main",
+            "aria-label",
+            "aria-labelledby",
+            "aria-current",
+            "aria-pressed",
+            "aria-sort",
+            "<h1"
+      ]
+}
+  </script>
+
+  <script>
+    /* ⚑ DEMO CHROME ONLY — theme toggle + the segmented indicator's initial position.
+       The indicator measurement is View-options' own script, copied verbatim in shape: widths
+       depend on font metrics and trim, so it MUST be measured after layout, not authored. */
+    document.getElementById('themeBtn').addEventListener('click', function(){
+      var b = document.body;
+      b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
+    });
+    function moveInd(seg){
+      var ind = seg.querySelector('.ind'), a = seg.querySelector('button[aria-pressed="true"]');
+      if (!ind || !a) return;
+      ind.style.left = a.offsetLeft + 'px'; ind.style.width = a.offsetWidth + 'px';
+    }
+    function wireSeg(seg){
+      seg.querySelectorAll('button').forEach(function(b){
+        b.addEventListener('click', function(){
+          seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+          moveInd(seg);
+        });
+      });
+      moveInd(seg);
+    }
+    document.querySelectorAll('.seg').forEach(wireSeg);
+    function reportWidth(){
+      document.getElementById('wOut').textContent =
+        'viewport ' + window.innerWidth + 'px · main ' + Math.round(document.getElementById('tplMain').getBoundingClientRect().width) + 'px';
+      document.querySelectorAll('.seg').forEach(moveInd);
+    }
+    addEventListener('resize', reportWidth);
+    reportWidth();
+  </script>
+</body>
+</html>

@@ -24,6 +24,15 @@
 ## Anchor-nav.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## App-shell-multi-column.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## App-shell-side-nav.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## App-shell-top-nav.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Avatar-group.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
@@ -145,6 +154,9 @@
 ## File-upload.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## Filter-toolbar-bar.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Footer.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
@@ -212,6 +224,9 @@
 - 🟡 Notifications.reference.html: ALLOWED drift --warn-t (dark) = #221701 (token rag/warning-tint = #614C1C) — LEGACY REFERENCE (R-D19 / _STYLE-PROVENANCE §A-AUTH): Notifications is kept as an Apollo LEGACY reference — no active Mono notification canon exists yet. Its RAG values are legitimate Legacy hexes (error #A8000B/#DB0011, amber #FFBB33, navy #305A85/#4587A7 + their Legacy tints), NOT drift from the Mono roles they nominally bind. R-D20 rebased those bare roles onto Mono, so every RAG var now reads as drift here; waived because the ruling is 'do not convert — retag to the Legacy theme' (a future build). (Prior note retained: global solid banners kept the deeper light accents in dark for white-text contrast; blue/400 dangling-alias fixed; remaining gap = no dedicated dark rag-SURFACE token — see dark-rag-token-gaps.)
 - 🟡 Notifications.reference.html: ALLOWED drift --info-t (light) = #EBEFF4 (token rag/information-tint = #DFEAF9) — LEGACY REFERENCE (R-D19 / _STYLE-PROVENANCE §A-AUTH): Notifications is kept as an Apollo LEGACY reference — no active Mono notification canon exists yet. Its RAG values are legitimate Legacy hexes (error #A8000B/#DB0011, amber #FFBB33, navy #305A85/#4587A7 + their Legacy tints), NOT drift from the Mono roles they nominally bind. R-D20 rebased those bare roles onto Mono, so every RAG var now reads as drift here; waived because the ruling is 'do not convert — retag to the Legacy theme' (a future build). (Prior note retained: global solid banners kept the deeper light accents in dark for white-text contrast; blue/400 dangling-alias fixed; remaining gap = no dedicated dark rag-SURFACE token — see dark-rag-token-gaps.)
 - 🟡 Notifications.reference.html: ALLOWED drift --info-t (dark) = #000D1B (token rag/information-tint = #38475C) — LEGACY REFERENCE (R-D19 / _STYLE-PROVENANCE §A-AUTH): Notifications is kept as an Apollo LEGACY reference — no active Mono notification canon exists yet. Its RAG values are legitimate Legacy hexes (error #A8000B/#DB0011, amber #FFBB33, navy #305A85/#4587A7 + their Legacy tints), NOT drift from the Mono roles they nominally bind. R-D20 rebased those bare roles onto Mono, so every RAG var now reads as drift here; waived because the ruling is 'do not convert — retag to the Legacy theme' (a future build). (Prior note retained: global solid banners kept the deeper light accents in dark for white-text contrast; blue/400 dangling-alias fixed; remaining gap = no dedicated dark rag-SURFACE token — see dark-rag-token-gaps.)
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Page-header-lockup.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Pagination.reference.html — ✅ PASS
@@ -305,6 +320,25 @@
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Tags.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Template-auth.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Template-create-edit.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Template-dashboard.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Template-detail.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Template-list-index.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Template-wizard.reference.html — ✅ PASS
+- 🟡 Template-wizard.reference.html: ALLOWED drift --success (dark) = #FFFFFF (token rag/success = #66CC8D) — CARRIED VERBATIM WITH THE BORROWED .confirm REGION, not a new decision: Confirmation.reference.html declares the same driftAllow. RAG ROUNDEL POLICY (Dave 2026-07-02 eve) — dark roundels are WHITE with a BLACK mark; the glyph's tick is a page-cutout, so white shape + black page = 21:1. Light keeps rag/success.
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Textarea.reference.html — ✅ PASS

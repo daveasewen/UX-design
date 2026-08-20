@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App shell — top / stacked nav (reference implementation, PROPOSED #210)</title>
+<!--
+  ⚠⚠ PROPOSED #210, 2026-08-20 (Wave 5, Lane A). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. Itinerary row 97 ("App shell — top / stacked nav",
+  Shells (Layer 2), P2, notes cell "Frame content lives in."). Derived class NO-ARTEFACT-CLASS:
+  no shell artefact form exists in the store, so this ships in the SAME grammar as the component
+  library (snippet + meta) on the brief's PROPOSED convention. That convention is Dave's to keep
+  or re-home; nothing here registers itself anywhere.
+
+  ★★ THIS IS AN ORGANISM, NOT A DRAWING. THE CARDINAL RULE OF LAYER 2 IS COMPOSE, NEVER RE-DRAW.
+  Every visible atom below is lifted from a gated/proposed reference file and named so a reviewer
+  can diff it. The composition CSS (the `.sh-*` frame classes) is the only new CSS in the file —
+  it lays parts out, it never re-styles them.
+
+    · THE MASTHEAD ROW — Navigations.reference.html, verbatim geometry: 64px row,
+      `display:flex; align-items:center; gap:28px; padding:0 2rem`, bottom 1px
+      divider/border/section rule, `nav.main a` 64px tall with 12px side padding, current item
+      marked `box-shadow: inset 0 -3px 0` in primary red, 44x44 action buttons.
+    · THE BRAND WORDMARK — Navigations.reference.html's `<span class="logo" aria-label="HSBC">`,
+      structure verbatim. ⚠ ITS TYPE IS RE-KEYED, see THE TYPE DIVERGENCE below, and ⚠ SEE
+      $decision-2: the OFFICIAL masterbrand assets exist and NOTHING binds them.
+    · THE BREADCRUMB TRAIL — Breadcrumbs.reference.html, verbatim: `<nav aria-label="Breadcrumb">`
+      + `<ol>` + the "/" text separator + `a.crumb` underline-at-3px-offset thickening to 2px on
+      hover + the inset-underline focus shape + `aria-current="page"` on the last crumb.
+    · THE SITE FOOTER — Footer.reference.html in its `slim` form, verbatim: the legal bar, the
+      copyright line, the `a.lnk` link atom (which Footer itself copied verbatim from Links).
+    · THE CONTENT BONES — Skeleton-loader.reference.html's shape kit, verbatim geometry
+      (`.line` 16px, `.body` 24px, `.media` 160px, `.control` 44x120, `--bone` =
+      tertiary/background/hover). ⚠ THE SHIMMER AND THE role="status" ARE DELIBERATELY NOT
+      COPIED — see THE SKELETON DIVERGENCE below.
+    · THE OFF-CANVAS NAV AT PHONE WIDTH — Drawer.reference.html, verbatim mechanics: scrim at
+      overlay/version1, sheet on `transform:translateX()`, `page.inert` + `aria-hidden` on the
+      background, Esc closes, focus returns to the trigger, 44x44 close.
+  ⛔ NO PARENT FILE WAS EDITED. Not one.
+
+  WHAT "TOP / STACKED" MEANS HERE — the row's own two words, drawn as two forms of one shell:
+    · form="inline"  — the primary nav sits in the masthead row, beside the brand. This is
+      Navigations' own arrangement, unchanged. One 64px band of chrome.
+    · form="stacked" — the masthead row carries brand + utility actions only, and the primary
+      nav drops to a SECOND 56px band beneath it, with an optional third band of section nav.
+      Stacking buys horizontal room for a nav that outgrew one row; it costs vertical room the
+      content will never get back. ⚠ WHICH ONE IS THE PRODUCT'S DEFAULT IS $decision-1.
+
+  THE RESPONSIVE COLLAPSE, which is the thing a shell exists to be judged on. Container queries,
+  never viewport queries (`s210-D3`: the width is the container's — a shell dropped into a narrow
+  panel must collapse on the panel's width, not on the window's):
+    · >= 900cqi  — full: nav visible in the row (inline) or its own band (stacked).
+    · 600–899cqi — the primary nav LEAVES the row and becomes a disclosure behind a menu button;
+      the section band, if present, becomes horizontally scrollable rather than wrapping.
+    · < 600cqi   — phone: the menu button opens the Drawer off-canvas sheet; the breadcrumb trail
+      collapses to its LAST ANCESTOR plus the current page (the "…" form is NOT used — a truncated
+      trail that hides the parent is a trail that has stopped working); the footer legal list
+      stacks.
+  ⚠ 900 AND 600 ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS. No breakpoint scale exists in
+  knowledge/tokens/layout.json — probed, absent. See $decision-4.
+
+  ★★ THE TYPE DIVERGENCE, DECLARED RATHER THAN HIDDEN — the Footer #204 finding repeating.
+  "Copy the approved artefact verbatim" and "add ZERO to the shrink-only type ratchet" CONFLICT
+  when the approved artefact is itself carrying debt. Navigations writes `font-weight:500;
+  font-size:20px` on `.logo`, and Breadcrumbs writes `font:400 14px/1.5 var(--font)` on `nav ol`
+  plus `font-weight:500` on `[aria-current="page"]` — those are exactly the raw declarations
+  TYPE-002 counts. Copying them verbatim would have driven the type gate red on this file. The
+  GEOMETRY is copied; the TYPE arrives through canon/type.css composites applied in the MARKUP
+  (the T-D14 markup-class route Footer used). Rendered weight is the same, added debt is zero.
+  ⛔ Navigations and Breadcrumbs were NOT edited: they are shared artefacts and their raw
+  declarations are the build-PM's to retire, not a worker lane's.
+
+  ★★ THE SKELETON DIVERGENCE, AND IT IS A SEMANTIC ONE, NOT A STYLING ONE.
+  Skeleton-loader's bones carry `role="status"` + `aria-busy="true"` + a visually-hidden "Loading
+  content" + a 1.4s shimmer, because a skeleton IS a loading announcement. A SHELL specimen is
+  not loading — it is a frame with the content deliberately left out so the frame can be judged.
+  Copying the loader verbatim would make every shell specimen announce a load that never
+  completes: a false statement to a screen reader, on every page, forever. So the SHAPE KIT is
+  copied (classes, heights, the `--bone` token) and the ANNOUNCEMENT is not: the content region
+  is `aria-hidden="true"` placeholder furniture, which is exactly what the GATED Sidebar-nav
+  already does with its own `.sn-canvas span` bars. Two approved artefacts disagreed and the
+  gated one won. ⚠ ONE region in App-shell-multi-column keeps the real, announcing loader, so
+  the genuine composition is demonstrated somewhere. See $decision-6.
+
+  COLOUR: no RAG value is painted anywhere in this file. A shell has no status to carry. The
+  two-red law and the mono error ink camp are untouched — the only red is
+  primary/border/default on the current-nav indicator, which is Navigations' own approved mark.
+  SHAPE: square throughout (border-radius/* resolve 0 in Mono; themes flex through canon.css).
+  MOTION: the Drawer's spring on the sheet, the Navigations ease on hover. Reduced-motion honoured.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. BYTE-IDENTICAL to Command-palette.reference.html line 36. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family, font-size or font-weight anywhere in component scope — every text
+     element carries a .t-cm-* / .t-ed-* composite from canon/type.css. Ratchet contribution: 0. */
+  :root{ --ease:140ms ease; --spring:240ms cubic-bezier(.2,.8,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF;
+    --surface:#FFFFFF;
+    --band:#F0F0F0;
+    --text:#1A1A1A;
+    --muted:#1A1A1A;
+    --icon:#1A1A1A;
+    --rule:#E1E1E1;
+    --sub-rule:#F0F0F0;
+    --hover:#F0F0F0;
+    --pressed:#CECECE;
+    --indicator:#DB0011;
+    --bone:#F0F0F0;
+    --overlay:#00000080;
+    --focus:#305A85;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --surface:#1F1F1F;
+    --band:#1F1F1F;
+    --text:#FFFFFF;
+    --muted:#FFFFFF;
+    --icon:#FFFFFF;
+    --rule:#808080;
+    --sub-rule:#808080;
+    --hover:#232323;
+    --pressed:#484848;
+    --indicator:#DB0011;
+    --bone:#232323;
+    --overlay:#00000080;
+    --focus:#4587A7;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:32px 24px; background:var(--page); color:var(--text);
+       -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted); opacity:var(--alpha-60); margin:0 0 8px;}
+  .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+
+  /* ============================================================================================
+     THE SHELL FRAME — the only new CSS in this file. It positions parts; it styles none of them.
+     ============================================================================================ */
+  .sh{position:relative; display:flex; flex-direction:column; min-height:560px;
+      container-type:inline-size; container-name:shell;
+      background:var(--page); color:var(--text);
+      border:1px solid var(--rule); border-radius:var(--border-radius-surface); overflow:hidden;}
+  .sh.is-narrow{width:392px; min-height:640px;}   /* a deliberately narrow CONTAINER, so the collapse is visible in one still */
+
+  /* skip link — WCAG 2.4.1 bypass block. Visible only on focus. */
+  .sh-skip{position:absolute; top:8px; left:8px; z-index:8; display:inline-flex; align-items:center;
+    min-height:var(--target-min); padding:0 16px; background:var(--surface); color:var(--text);
+    border:1px solid var(--rule); border-radius:var(--border-radius-control);
+    text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+    transform:translateY(-200%); transition:transform var(--ease);}
+  .sh-skip:focus-visible{transform:translateY(0); outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ---- masthead row — geometry copied from Navigations.reference.html ---- */
+  .sh-masthead{display:flex; align-items:center; gap:28px; min-height:64px; padding:0 32px;
+    background:var(--surface); border-bottom:1px solid var(--rule); flex:none;}
+  .sh-logo{color:var(--indicator); flex:none;}
+  .sh-nav{display:flex; gap:4px; margin-right:auto;}
+  .sh-nav a{padding:0 12px; min-height:64px; display:inline-flex; align-items:center;
+    color:var(--text); text-decoration:none;}
+  .sh-nav a:hover{background:var(--hover);}
+  .sh-nav a:active{background:var(--pressed);}
+  .sh-nav a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--indicator);}
+  .sh-nav a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-actions{display:flex; gap:8px; flex:none;}
+  .sh-actions button{width:var(--target-min); height:var(--target-min); border:0; background:transparent;
+    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-control);}
+  .sh-actions button:hover{background:var(--hover);}
+  .sh-actions button:active{background:var(--pressed);}
+  .sh-actions button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-actions svg{width:20px; height:20px; fill:currentColor;}
+
+  /* The menu button lives in the masthead and is HIDDEN until the nav leaves the row.
+     ⚠ TWO-CLASS FORM, AND IT IS NOT DECORATION. Driven at #210: written as a single class,
+     `.sh-menu{display:none}` was silently overridden by `.sh-close{display:inline-flex}` — same
+     specificity (0,1,0), declared later in the file, and the button carries BOTH classes. The
+     hamburger then rendered beside a fully visible primary nav at every width. Measured
+     getComputedStyle(...).display was "flex" at 1400px. This is the ds-005 class generalised:
+     when a shared atom class and a state class collide, the state must out-specify. */
+  .sh .sh-menu{display:none;}
+
+  /* ---- the STACKED band — form="stacked" only ---- */
+  .sh-navband{display:none; align-items:center; gap:4px; min-height:56px; padding:0 32px;
+    background:var(--surface); border-bottom:1px solid var(--rule); flex:none;}
+  .sh[data-form="stacked"] .sh-navband{display:flex;}
+  .sh[data-form="stacked"] .sh-masthead .sh-nav{display:none;}
+  .sh-navband .sh-nav{display:flex; margin-right:auto;}
+  .sh-navband .sh-nav a{min-height:56px;}
+
+  /* ---- the SECTION band (third tier, optional) ---- */
+  .sh-section{display:flex; align-items:center; gap:4px; min-height:48px; padding:0 32px;
+    background:var(--band); border-bottom:1px solid var(--sub-rule); flex:none;
+    overflow-x:auto; overscroll-behavior-x:contain;}
+  .sh-section a{flex:none; display:inline-flex; align-items:center; min-height:48px; padding:0 12px;
+    color:var(--text); text-decoration:none;}
+  .sh-section a:hover{background:var(--hover);}
+  .sh-section a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--indicator);}
+  .sh-section a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+
+  /* ---- breadcrumb strip — atom copied from Breadcrumbs.reference.html ---- */
+  .sh-crumbs{padding:16px 32px 0; flex:none;}
+  .sh-crumbs ol{list-style:none; display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0; padding:0;}
+  .sh-crumbs li{display:inline-flex; align-items:center; gap:8px; min-height:var(--target-min);}
+  .sh-crumbs .sep{color:var(--text); opacity:var(--alpha-52); display:inline-flex; align-items:center;}
+  /* ⚠ A DECLARED ADDITION TO THE BORROWED ATOM, FOUND BY MEASURING AND NOT BY READING.
+     Breadcrumbs.reference.html has NO hit-area rule: driven in a real browser its crumb links
+     measure 39.4 x 10.1 px — under the repo's own 44px target/min AND under WCAG 2.5.8's 24px
+     floor — and every gate is green over it, because no gate reads target/min for hit area.
+     The trail is where a phone user taps to go back, so the shell grows it. This is the Footer
+     #204 decision repeating: Footer made every one of its links a 44px target at every width and
+     declared the vertical cost. ⛔ Breadcrumbs itself was NOT edited — it is a gated artefact.
+     Whether the parent should grow its own targets is Dave's. */
+  .sh-crumbs a.crumb, .sh-crumbs [aria-current="page"]{display:inline-flex; align-items:center;
+    min-height:var(--target-min);}
+  .sh-crumbs a.crumb{color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .sh-crumbs a.crumb:hover{text-decoration-thickness:2px;}
+  .sh-crumbs a.crumb:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -2px 0 var(--text);}
+  .sh-crumbs [aria-current="page"]{opacity:var(--alpha-84);}
+  .sh-crumb-drop{display:none;}   /* the ancestors that leave the trail at phone width */
+
+  /* ---- the content region ---- */
+  .sh-main{flex:1; padding:24px 32px 32px; display:flex; flex-direction:column; gap:24px;}
+  .sh-title{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .sh-title h1{margin:0;}
+  .sh-cols{display:grid; grid-template-columns:2fr 1fr; gap:24px; align-items:start;}
+  .sh-panel{border:1px solid var(--rule); border-radius:var(--border-radius-surface); padding:16px;
+    display:flex; flex-direction:column; gap:12px;}
+
+  /* bone shape kit — geometry copied from Skeleton-loader.reference.html; shimmer + role NOT copied */
+  .bone{display:block; background:var(--bone); border-radius:var(--border-radius-indicator);}
+  .bone.line{height:16px;}
+  .bone.body{height:24px;}
+  .bone.media{height:160px;}
+  .bone.control{height:44px; width:120px;}
+
+  /* ---- footer — the slim form, copied from Footer.reference.html ---- */
+  .sh-foot{background:var(--band); border-top:1px solid var(--rule); flex:none; padding:8px 32px;}
+  .sh-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;}
+  .sh-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;}
+  /* ⚠⚠ THIS ONE LINE IS A REAL DEFECT REPAIR, FOUND BY LOOKING AT A RENDER AND THEN MEASURED.
+     Footer's legal link is `display:inline-flex; min-height:44px` — correct in Footer, where the
+     link is not the sole child of a column flex item. Placed here inside a COLUMN flex <ul>, the
+     <li> is a block-level flex item whose height comes from its LINE BOX, and an inline-flex
+     child's min-height does not grow a line box. Measured at a 392px container: <li> height
+     10.5px containing a 44px <a>, so the two legal links and the copyright line rendered ON TOP
+     OF ONE ANOTHER — link tops at y=2025.5 and y=2036, 10.5px apart, inside a 33px .sh-legal.
+     ⛔ EVERY GATE WAS GREEN OVER THAT. Making the <li> a flex container lets the 44px min-height
+     of its child actually size it. The borrowed atom is untouched; the container is fixed. */
+  .sh-legal li{display:flex;}
+  .sh-legal a.lnk{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .sh-legal a.lnk:hover{text-decoration-thickness:2px;}
+  .sh-legal a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+  .sh-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto; color:var(--muted);}
+
+  /* ============================================================================================
+     OFF-CANVAS NAV — mechanics copied from Drawer.reference.html, mirrored to the LEFT edge
+     because a navigation sheet opens from the side its trigger lives on.
+     ============================================================================================ */
+  .sh-scrim{position:absolute; inset:0; z-index:6; background:var(--overlay); opacity:0;
+    visibility:hidden; transition:opacity var(--spring), visibility var(--spring);}
+  .sh-scrim.open{opacity:1; visibility:visible;}
+  .sh-sheet{position:absolute; top:0; left:0; bottom:0; z-index:7; width:296px; max-width:88%;
+    background:var(--surface); border-right:1px solid var(--rule);
+    display:flex; flex-direction:column; transform:translateX(-100%); visibility:hidden;
+    transition:transform var(--spring), visibility var(--spring);}
+  .sh-sheet.open{transform:translateX(0); visibility:visible;}
+  .sh-sheet-head{display:flex; align-items:center; justify-content:space-between; gap:8px;
+    min-height:64px; padding:0 8px 0 24px; border-bottom:1px solid var(--sub-rule); flex:none;}
+  .sh-sheet-body{flex:1; overflow-y:auto; padding:8px 0;}
+  .sh-sheet-body ul{list-style:none; margin:0; padding:0;}
+  .sh-sheet-body a{display:flex; align-items:center; min-height:var(--target-min); padding:0 24px;
+    color:var(--text); text-decoration:none;}
+  .sh-sheet-body a:hover{background:var(--hover);}
+  .sh-sheet-body a:active{background:var(--pressed);}
+  .sh-sheet-body a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-sheet-body a[aria-current="page"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+  .sh-close{width:var(--target-min); height:var(--target-min); border:0; background:transparent;
+    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-control);}
+  .sh-close:hover{background:var(--hover);}
+  .sh-close:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-close svg{width:16px; height:16px; fill:currentColor;}
+
+  /* ============================================================================================
+     THE COLLAPSE — CONTAINER queries, so a shell inside a narrow panel collapses on the PANEL.
+     ============================================================================================ */
+  @container shell (max-width: 899px){
+    .sh-masthead{gap:16px; padding:0 16px;}
+    .sh-navband, .sh[data-form="stacked"] .sh-navband{display:none;}   /* the second tier folds away with the nav it carried */
+    .sh-masthead .sh-nav, .sh-navband .sh-nav{display:none;}
+    .sh .sh-menu{display:inline-flex;}
+    .sh-logo{margin-right:auto;}
+    .sh-section{padding:0 16px;}
+    .sh-crumbs{padding:16px 16px 0;}
+    .sh-main{padding:16px; gap:16px;}
+    .sh-cols{grid-template-columns:1fr;}
+    .sh-foot{padding:8px 16px;}
+  }
+  @container shell (max-width: 599px){
+    .sh-crumb-drop{display:none;}
+    .sh-crumbs li.is-droppable{display:none;}   /* keep the LAST ancestor + the current page, never a "…" */
+    /* ⚠ AND THE ORPHAN SEPARATOR GOES WITH THEM. Found by LOOKING at the render: each separator
+       lives inside the li it precedes, so dropping the ancestors left the trail opening with a
+       bare "/ Current account". Measured: the third li rendered visible WITH its .sep visible.
+       A leading slash is a trail that says there is something above it and then does not say
+       what. This hides the separator of the first li that survives the drop. */
+    .sh-crumbs li.is-droppable + li:not(.is-droppable) .sep{display:none;}
+    /* ⚠ nowrap IS THE FIX, NOT COSMETICS. Found by LOOKING: with flex-wrap:wrap inherited from
+       the wide layout, turning these into COLUMNS made the items wrap into parallel columns
+       inside a bounded box — the two legal links and the copyright line rendered on top of one
+       another, 10.5px apart, measured. A wrapping column is not a stack. */
+    .sh-legal{flex-direction:column; flex-wrap:nowrap; align-items:flex-start; gap:0;}
+    .sh-legal ul{flex-direction:column; flex-wrap:nowrap; gap:0;}
+    .sh-title{align-items:flex-start; flex-direction:column;}
+  }
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol>
+    <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="ic-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="specimens">
+
+    <!-- ============================================================ 1 · INLINE FORM, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">Form: inline — one 64px band of chrome, the primary nav beside the brand. Navigations' own arrangement, unchanged.</p>
+
+      <div class="sh" data-form="inline" id="shell-inline">
+        <a class="sh-skip t-cm-button" href="#main-inline">Skip to main content</a>
+
+        <header class="sh-masthead">
+          <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-inline" aria-label="Open main menu" data-menu="shell-inline">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
+          </button>
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <nav class="sh-nav" aria-label="Primary">
+            <a class="t-cm-button" href="#" aria-current="page">Accounts</a>
+            <a class="t-cm-button" href="#">Payments</a>
+            <a class="t-cm-button" href="#">Cards</a>
+            <a class="t-cm-button" href="#">Insights</a>
+            <a class="t-cm-button" href="#">Support</a>
+          </nav>
+          <div class="sh-actions">
+            <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+            <button type="button" aria-label="Your profile"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></button>
+          </div>
+        </header>
+
+        <nav class="sh-crumbs" aria-label="Breadcrumb">
+          <ol>
+            <li class="is-droppable"><a class="crumb t-ed-body-small" href="#">Home</a></li>
+            <li class="is-droppable"><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Accounts</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Current account</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><span class="t-ed-body-small em" aria-current="page">Statements</span></li>
+          </ol>
+        </nav>
+
+        <main class="sh-main" id="main-inline">
+          <div class="sh-title">
+            <h1 class="t-ed-heading-2">Statements</h1>
+            <span class="bone control" aria-hidden="true"></span>
+          </div>
+
+          <div class="sh-cols" aria-hidden="true">
+            <div class="sh-panel">
+              <span class="bone body" style="width:38%"></span>
+              <span class="bone media"></span>
+              <span class="bone line"></span>
+              <span class="bone line" style="width:72%"></span>
+            </div>
+            <div class="sh-panel">
+              <span class="bone body" style="width:56%"></span>
+              <span class="bone line"></span>
+              <span class="bone line" style="width:64%"></span>
+              <span class="bone line" style="width:80%"></span>
+            </div>
+          </div>
+          <p class="spec-note t-cm-caption">The content region is deliberately empty furniture, not a loading state — see the skeleton-divergence note in this file's source comment.</p>
+        </main>
+
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Cookie settings</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+          </div>
+        </footer>
+
+        <div class="sh-scrim" data-scrim="shell-inline"></div>
+        <div class="sh-sheet" id="sheet-inline" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+          <div class="sh-sheet-head">
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-inline">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            </button>
+          </div>
+          <nav class="sh-sheet-body" aria-label="Primary, in menu">
+            <ul>
+              <li><a class="t-cm-button" href="#" aria-current="page">Accounts</a></li>
+              <li><a class="t-cm-button" href="#">Payments</a></li>
+              <li><a class="t-cm-button" href="#">Cards</a></li>
+              <li><a class="t-cm-button" href="#">Insights</a></li>
+              <li><a class="t-cm-button" href="#">Support</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ 2 · STACKED FORM, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">Form: stacked — brand and utility in the top band, the primary nav on its own 56px row, a scrollable 48px section tier beneath it. Three bands of chrome before any content.</p>
+
+      <div class="sh" data-form="stacked" id="shell-stacked">
+        <a class="sh-skip t-cm-button" href="#main-stacked">Skip to main content</a>
+
+        <header class="sh-masthead">
+          <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-stacked" aria-label="Open main menu" data-menu="shell-stacked">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
+          </button>
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <nav class="sh-nav" aria-label="Primary">
+            <a class="t-cm-button" href="#" aria-current="page">Accounts</a>
+            <a class="t-cm-button" href="#">Payments</a>
+            <a class="t-cm-button" href="#">Cards</a>
+            <a class="t-cm-button" href="#">Insights</a>
+            <a class="t-cm-button" href="#">Support</a>
+          </nav>
+          <div class="sh-actions" style="margin-left:auto">
+            <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+            <button type="button" aria-label="Your profile"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></button>
+          </div>
+        </header>
+
+        <div class="sh-navband">
+          <nav class="sh-nav" aria-label="Primary">
+            <a class="t-cm-button" href="#" aria-current="page">Accounts</a>
+            <a class="t-cm-button" href="#">Payments</a>
+            <a class="t-cm-button" href="#">Cards</a>
+            <a class="t-cm-button" href="#">Insights</a>
+            <a class="t-cm-button" href="#">Support</a>
+          </nav>
+        </div>
+
+        <nav class="sh-section" aria-label="Section">
+          <a class="t-cm-button" href="#" aria-current="page">Balances</a>
+          <a class="t-cm-button" href="#">Statements</a>
+          <a class="t-cm-button" href="#">Standing orders</a>
+          <a class="t-cm-button" href="#">Direct Debits</a>
+          <a class="t-cm-button" href="#">Account details</a>
+        </nav>
+
+        <nav class="sh-crumbs" aria-label="Breadcrumb">
+          <ol>
+            <li class="is-droppable"><a class="crumb t-ed-body-small" href="#">Home</a></li>
+            <li class="is-droppable"><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Accounts</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Current account</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><span class="t-ed-body-small em" aria-current="page">Balances</span></li>
+          </ol>
+        </nav>
+
+        <main class="sh-main" id="main-stacked">
+          <div class="sh-title">
+            <h1 class="t-ed-heading-2">Balances</h1>
+            <span class="bone control" aria-hidden="true"></span>
+          </div>
+          <div class="sh-cols" aria-hidden="true">
+            <div class="sh-panel">
+              <span class="bone body" style="width:44%"></span>
+              <span class="bone line"></span>
+              <span class="bone line" style="width:68%"></span>
+              <span class="bone media"></span>
+            </div>
+            <div class="sh-panel">
+              <span class="bone body" style="width:50%"></span>
+              <span class="bone line"></span>
+              <span class="bone line" style="width:76%"></span>
+            </div>
+          </div>
+        </main>
+
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+          </div>
+        </footer>
+
+        <div class="sh-scrim" data-scrim="shell-stacked"></div>
+        <div class="sh-sheet" id="sheet-stacked" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+          <div class="sh-sheet-head">
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-stacked">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            </button>
+          </div>
+          <nav class="sh-sheet-body" aria-label="Primary, in menu">
+            <ul>
+              <li><a class="t-cm-button" href="#" aria-current="page">Accounts</a></li>
+              <li><a class="t-cm-button" href="#">Payments</a></li>
+              <li><a class="t-cm-button" href="#">Cards</a></li>
+              <li><a class="t-cm-button" href="#">Insights</a></li>
+              <li><a class="t-cm-button" href="#">Support</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ 3 · THE COLLAPSE, IN ONE STILL -->
+    <div>
+      <p class="spec-note t-cm-caption">The same shell in a 392px container — the nav has left the row for a menu button, the trail keeps its last ancestor rather than showing an ellipsis, the legal list stacks. Nothing here is a viewport query.</p>
+
+      <div class="sh is-narrow" data-form="inline" id="shell-narrow">
+        <a class="sh-skip t-cm-button" href="#main-narrow">Skip to main content</a>
+
+        <header class="sh-masthead">
+          <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-narrow" aria-label="Open main menu" data-menu="shell-narrow">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
+          </button>
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <nav class="sh-nav" aria-label="Primary">
+            <a class="t-cm-button" href="#" aria-current="page">Accounts</a>
+            <a class="t-cm-button" href="#">Payments</a>
+            <a class="t-cm-button" href="#">Cards</a>
+            <a class="t-cm-button" href="#">Insights</a>
+            <a class="t-cm-button" href="#">Support</a>
+          </nav>
+          <div class="sh-actions">
+            <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+          </div>
+        </header>
+
+        <nav class="sh-crumbs" aria-label="Breadcrumb">
+          <ol>
+            <li class="is-droppable"><a class="crumb t-ed-body-small" href="#">Home</a></li>
+            <li class="is-droppable"><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Accounts</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Current account</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><span class="t-ed-body-small em" aria-current="page">Statements</span></li>
+          </ol>
+        </nav>
+
+        <main class="sh-main" id="main-narrow">
+          <div class="sh-title"><h1 class="t-ed-heading-2">Statements</h1></div>
+          <div class="sh-cols" aria-hidden="true">
+            <div class="sh-panel">
+              <span class="bone body" style="width:52%"></span>
+              <span class="bone line"></span>
+              <span class="bone line" style="width:70%"></span>
+              <span class="bone media"></span>
+            </div>
+          </div>
+        </main>
+
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026.</p>
+          </div>
+        </footer>
+
+        <div class="sh-scrim" data-scrim="shell-narrow"></div>
+        <div class="sh-sheet" id="sheet-narrow" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+          <div class="sh-sheet-head">
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-narrow">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            </button>
+          </div>
+          <nav class="sh-sheet-body" aria-label="Primary, in menu">
+            <ul>
+              <li><a class="t-cm-button" href="#" aria-current="page">Accounts</a></li>
+              <li><a class="t-cm-button" href="#">Payments</a></li>
+              <li><a class="t-cm-button" href="#">Cards</a></li>
+              <li><a class="t-cm-button" href="#">Insights</a></li>
+              <li><a class="t-cm-button" href="#">Support</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "App shell — top / stacked nav",
+    "vars": {
+      "--page": "background/default",
+      "--surface": "tertiary/background/default",
+      "--band": "surface/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--icon": "icon/default",
+      "--rule": "divider/border/section",
+      "--sub-rule": "divider/border/subsection",
+      "--hover": "tertiary/background/hover",
+      "--pressed": "form/background/pressed",
+      "--indicator": "primary/border/default",
+      "--bone": "tertiary/background/hover",
+      "--overlay": "overlay/version1",
+      "--focus": "focus/ring",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-control": "border-radius/control",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--target-min": "target/min"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "surface/subtle", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/hover", "context": "ui" }
+    ],
+    "icons": {
+      "menu": "global-controls/menu.svg",
+      "close": "global-controls/close.svg",
+      "search": "global-controls/search.svg"
+    },
+    "knownFindings": [
+      "COMPOSED, NOT DRAWN. Masthead geometry + the current-item inset red bar + the 44x44 action buttons are Navigations.reference.html verbatim. The breadcrumb atom is Breadcrumbs.reference.html verbatim (slash separator, 3px underline offset thickening to 2px, inset-underline focus). The slim legal bar and the a.lnk atom are Footer.reference.html verbatim. The bone shape kit is Skeleton-loader.reference.html verbatim. The off-canvas scrim/sheet/inert mechanics are Drawer.reference.html verbatim, mirrored to the left edge. NO PARENT FILE WAS EDITED.",
+      "THE TYPE DIVERGENCE, DECLARED. Navigations writes font-weight:500 + font-size:20px on .logo; Breadcrumbs writes font:400 14px/1.5 on nav ol and font-weight:500 on [aria-current]. Those are the raw declarations TYPE-002 counts, so copying them verbatim would drive the type gate red on this file. Geometry is copied; type arrives through canon/type.css composites applied in the MARKUP (the T-D14 route, the Footer #204 precedent). Ratchet contribution: 0. Neither parent was edited - their raw declarations are the build-PM's to retire.",
+      "THE SKELETON DIVERGENCE, AND IT IS SEMANTIC. Skeleton-loader's bones carry role=status + aria-busy=true + a visually-hidden 'Loading content', because a skeleton IS a loading announcement. A shell specimen is not loading. Copying the loader verbatim would make every shell announce a load that never completes. The SHAPE KIT is copied; the ANNOUNCEMENT is not - the content region is aria-hidden placeholder furniture, exactly what the GATED Sidebar-nav does with its own .sn-canvas bars. Two approved artefacts disagreed and the gated one won. PROPOSED #210, Dave's eye owed.",
+      "THE BRAND MARK IS A STAND-IN AND THE GAP IS REAL. Itinerary row 86 says 'Official asset; needed for shells/auth screens' and its derived verdict is ASSET-ONLY: 12 SVGs exist under knowledge/assets/logos/ (masterbrand, masterbrand-identifier, hexagon; light/dark x colour/mono) and NO component binds them. Probe, run: grep -rl 'assets/logos' knowledge/snippets/ -> ZERO of 108 snippets. So this shell uses the only approved masthead brand in the corpus - Navigations' text wordmark on primary/border/default - and NAMES the gap rather than embedding an asset with no precedent. The Apollo crescent is an anonymity mark only (Dave #86) and appears nowhere.",
+      "BREAKPOINTS ARE SPECIMEN CHOICES, NOT RULED VALUES. 900cqi and 600cqi are this file's, chosen so the collapse is legible. Probe, run: python3 -c \"import json;d=json.load(open('knowledge/tokens/layout.json'));print([k for k in json.dumps(d).split('\\\"') if 'breakpoint' in k.lower()])\" -> no breakpoint scale exists in the store. A shell that ships needs one and it is Dave's.",
+      "CONTAINER QUERIES, NEVER VIEWPORT QUERIES (s210-D3). The width is the container's: a shell dropped into a narrow panel must collapse on the panel. The third specimen is a 392px CONTAINER at a 1180px viewport and it collapses - that is the proof, and it is why the two forms above can sit on the same page as the narrow one.",
+      "THE TRAIL DROPS ANCESTORS, IT DOES NOT ELLIPSE THEM. At <600cqi the breadcrumb keeps the LAST ancestor plus the current page. A '...' form was rejected: a trail whose parent is hidden behind a disclosure is a trail that has stopped doing its job on the one device where going back matters most. PROPOSED #210.",
+      "44px MIN HIT AREA enforced by hand - no gate reads target/min for hit area. Every masthead action button, menu button, sheet link, close button, footer legal link and skip link is >= 44px. MEASURED in a real browser, not assumed; figures in the receipt.",
+      "NO RAG VALUE IS PAINTED ANYWHERE. A shell has no status to carry. The only red is primary/border/default on the current-nav indicator, which is Navigations' own approved mark. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are untouched.",
+      "The snippet gate resolves tokens against tokens/semantic-colour.json - the MONO base only - so it cannot see the Legacy/Console/Supercharge legs. No .cn-app-shell-top-nav block exists in canon/canon.css yet, so theme cascade projection is OFF for this file and only the light/dark legs authored here have been seen. DECLARED, and the conductor's to project."
+    ],
+    "requiredAria": ["<nav", "aria-label", "aria-current=\"page\"", "aria-expanded", "aria-controls", "role=\"dialog\"", "aria-modal", "role=\"contentinfo\"", "<main", "<h1"]
+  }
+  </script>
+
+  <script>
+    // Off-canvas nav — mechanics copied from Drawer.reference.html: scrim + sheet, background
+    // inert, Esc closes, focus returns to the trigger. Mirrored to the left edge.
+    document.querySelectorAll('[data-menu]').forEach(function(btn){
+      var id = btn.getAttribute('data-menu');
+      var shell = document.getElementById(id);
+      var sheet = document.getElementById(btn.getAttribute('aria-controls'));
+      var scrim = shell.querySelector('[data-scrim="' + id + '"]');
+      var closeBtn = shell.querySelector('[data-close="' + id + '"]');
+      var inertTargets = Array.prototype.filter.call(shell.children, function(c){
+        return c !== sheet && c !== scrim;
+      });
+      // ⚠⚠ THE ORDER OF THESE STEPS IS THE WHOLE BUG, AND BOTH HALVES OF IT WERE FOUND BY
+      // DRIVING, NOT BY READING. #210, measured: opening the sheet left document.activeElement
+      // on <body> — the dialog had no keyboard entry point — while the Tab ORDER was perfectly
+      // correct, which is exactly why no gate and no screenshot could see it.
+      //   (a) `visibility` IS TRANSITIONED on .sh-sheet, so it is still computed `hidden` for
+      //       TWO MORE FRAMES after .open lands, and focus() on a hidden element is a silent
+      //       no-op. Measured time series on this file: t0 hidden · rAF1 hidden · rAF2 VISIBLE.
+      //       A forced reflow (void offsetWidth) does NOT help — the before-change style is
+      //       still hidden. This is the [[settle-the-transition-before-you-read]] class, in its
+      //       WRITE form: you must also settle the transition before you ACT on it.
+      //   (b) Making the background `inert` BLURS whatever holds focus — the trigger the user
+      //       just pressed — and that blur lands asynchronously, wiping an earlier focus().
+      // Hence: 1 show the sheet · 2 wait two frames · 3 move focus IN · 4 only then set inert.
+      function open(){
+        btn.setAttribute('aria-expanded','true');
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){
+          scrim.classList.add('open'); sheet.classList.add('open');
+          requestAnimationFrame(function(){ requestAnimationFrame(function(){
+            var first = sheet.querySelector('a,button');
+            if(first){ first.focus(); }
+            if(document.activeElement !== first){ sheet.focus(); }   // fallback: the sheet itself
+            inertTargets.forEach(function(t){ t.inert = true; t.setAttribute('aria-hidden','true'); });
+          }); });
+        }); });
+      }
+      function close(){
+        btn.setAttribute('aria-expanded','false');
+        scrim.classList.remove('open'); sheet.classList.remove('open');
+        inertTargets.forEach(function(t){ t.inert = false; t.removeAttribute('aria-hidden'); });
+        btn.focus();
+      }
+      btn.addEventListener('click', open);
+      closeBtn.addEventListener('click', close);
+      scrim.addEventListener('click', close);
+      // ⚠ THE ESCAPE LISTENER IS ON THE DOCUMENT, NOT ON THE SHELL. Driven at #210: a listener
+      // bound to the shell only fires if focus is INSIDE the shell, and any moment where focus
+      // has not yet entered the sheet is a moment where Escape does nothing. A modal's Escape
+      // must work from wherever focus happens to be.
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && sheet.classList.contains('open')){ close(); }
+      });
+    });
+  </script>
+</body>
+</html>

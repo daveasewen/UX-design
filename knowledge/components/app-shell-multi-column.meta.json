@@ -1,0 +1,188 @@
+{
+  "name": "App shell — multi-column",
+  "category": "template",
+  "$layer": "2 Shell",
+  "$layerKeyIsDollarPrefixed": "⚠ THE BRIEF PROPOSED A PLAIN `layer` KEY AND IT WOULD FAIL P-1. meta.schema.json sets additionalProperties:false with patternProperties {'^\\$': {}} and has no `layer` property. The `$` prefix is the legal form. Widening the schema (a real `layer` property, and probably a `shell` value in the `category` enum) is a schema change and schema changes are Dave's.",
+  "$categoryChoice": "`template` is the closest LEGAL value in the enum. There is no `shell` value and inventing one fails the gate. DECLARED as a compromise, not as correct.",
+  "purpose": "The list-and-detail frame: a navigation rail, a master list of records, and a detail pane showing the one record the list is currently pointing at — collapsing to a single pane on a phone, where choosing a row replaces the list with the detail and a back control returns. Itinerary row 99's own notes cell is 'List + detail frame.'",
+  "$status": "PROPOSED #210, 2026-08-20 (Wave 5, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. No registry, CATEGORIES, MIGRATED_SNIPPETS, component-types.json, canon.css, _rulings.json or git operation was touched — NEW FILES ONLY.",
+  "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. Every visible atom traces to an existing reference file, named in $copiedFrom with a diff-proof in the receipt.",
+  "$finding-no-selected-list-row": "★★★ THE LIBRARY HAS NO SELECTED LIST ROW, AND THAT IS THIS FILE'S LARGEST FINDING. Probe, run: `grep -c 'aria-current\\|aria-selected' knowledge/snippets/List-items.reference.html` → **0**. List-items is the library's list-row component — gated, promoted, prototypeGrade 9.0/9 — and it models default, hover, pressed, disabled and processing. It models NO selected and NO current state at all. Its rows are `<button>`s that take you somewhere; nothing in it can say 'and you are looking at THIS one'. A list/detail frame cannot exist without that state: showing which record the detail pane is displaying is the entire mechanic of the pattern. ⬛ WHAT WAS DONE INSTEAD, stated so it can be refused: the row is Sidebar-nav's `.sn-link`, which is the ONE gated atom in the corpus that carries 'you are here' on three independent channels — aria-current for AT, a 3px leading bar that is a SHAPE present or absent, and a surface change, with colour only third because Dave is astigmatic and red is a problem hue. A master list's current row IS 'you are here'. ⬛ THE LIVE ALTERNATIVES: give List-items a selected state and use it here, or make the list a real role=\"listbox\" with aria-selected. Both are legitimate and both are Dave's. If he picks either, this shell changes one atom and nothing else.",
+  "$finding-declared-selector-widening": "⚠ ONE DECLARED WIDENING, AN ADDITION AND NOT AN EDIT. Sidebar-nav's selector is `.sn-link[aria-current=\"page\"]`; a row inside a list is `aria-current=\"true\"`, not `\"page\"`, because a pane is not a document. This file adds `.sn-link[aria-current]` with the SAME declarations. Probe, run: `grep -c 'sn-link\\[aria-current\\]' knowledge/snippets/Sidebar-nav.reference.html` → 0 — the parent does not carry it, and the parent was not edited to make it carry it.",
+  "$finding-declared-geometry-addition": "⚠ ONE DECLARED GEOMETRY ADDITION, ADDITIVE ONLY. A list row carries two lines where a nav row carries one, so `.sh-list-body .sn-link` grows min-height 44 → 64 with 12px vertical padding, and gains a `.sn-stack` column plus a `.sn-sub-label` secondary line. No borrowed declaration is overridden and the row remains >= 44px. Every other .sn-* rule is Sidebar-nav's, untouched.",
+  "props": [
+    {
+      "name": "pane",
+      "type": "enum",
+      "values": ["list", "detail"],
+      "default": "list",
+      "$note": "which pane is current. Ignored above 840cqi, where both are on screen at once. Below it, this is the whole navigation model of the frame.",
+      "$status": "PROPOSED #210"
+    },
+    {
+      "name": "railed",
+      "type": "boolean",
+      "default": true,
+      "$note": "whether the nav rail is present as a third column. It is a rail rather than an expanded column by construction — three columns is already the widest thing this frame can be, and a 248px column would take the room the list needs.",
+      "$status": "PROPOSED #210"
+    }
+  ],
+  "variants": [
+    { "name": "three-pane", "use": "a wide desktop window — rail, list and detail all visible" },
+    { "name": "two-pane", "use": "a narrower window — the rail folds to the app bar's menu button, list and detail stay" },
+    { "name": "single-pane", "use": "phone width — one pane at a time, with a back control in the detail header" }
+  ],
+  "slots": {
+    "rail": { "accepts": { "capability": ["navigation"] }, "required": false, "use": "Sidebar-nav in its own .is-rail state", "$status": "PROPOSED #210" },
+    "listHeader": { "accepts": { "capability": ["heading", "count"] }, "required": true, "use": "what the list is and how many rows it has. ⚠ NO FILTER OR TOOLBAR — see $finding-no-toolbar.", "$status": "PROPOSED #210" },
+    "listRows": { "accepts": { "capability": ["selectable-row"] }, "required": true, "use": "the master list. ⚠ THE LIBRARY HAS NO SUCH ATOM — see $finding-no-selected-list-row.", "$status": "PROPOSED #210, Dave's eye owed" },
+    "detailHeader": { "accepts": { "capability": ["heading", "icon-button"] }, "required": true, "use": "the record's name, a back control at narrow widths, and record-level actions", "$status": "PROPOSED #210" },
+    "detail": { "accepts": { "capability": ["anything"] }, "required": true, "use": "the record. One region here is the real Skeleton-loader; the rest is placeholder furniture.", "$status": "PROPOSED #210" }
+  },
+  "tokens": {
+    "page": "background/default — the detail pane, so the record reads as the page and the list reads as chrome",
+    "panel": "tertiary/background/default — the app bar, the rail and the list pane",
+    "band": "surface/subtle",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "icon": "icon/default",
+    "rule": "divider/border/section — between panes",
+    "subRule": "divider/border/subsection — inside a pane",
+    "hover": "tertiary/background/hover",
+    "pressed": "form/background/pressed",
+    "indicator": "primary/border/default — the current-location bar, on BOTH the rail and the list row",
+    "bone": "tertiary/background/hover",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface · border-radius/control · border-radius/indicator",
+    "target": "target/min (44px)",
+    "$rag": "NONE. No RAG value is painted anywhere. Two-red law (s151-D1) and the mono error ink camp (s149-D1) untouched."
+  },
+  "$copiedFrom": [
+    "Sidebar-nav.reference.html — the .is-rail nav column verbatim, AND the .sn-link atom verbatim as the list row, including its three current-location carriers. One declared selector widening and one declared additive geometry change, both named above.",
+    "Navigations.reference.html — the masthead flex geometry and the 44x44 action buttons, at Headers' 56px in-app height.",
+    "Headers.reference.html — the content-header back button (chevron-left at 20px in a 44px target) and the 56px in-app header height.",
+    "Skeleton-loader.reference.html — VERBATIM AND COMPLETE for the one genuinely-loading region in the detail pane: the shimmer keyframes, role=\"status\", aria-busy, the visually-hidden 'Loading content', the reduced-motion static fallback and the resolve behaviour. Shape kit only (no announcement) everywhere else.",
+    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical."
+  ],
+  "$finding-inactive-pane-is-removed": "★★ THE INACTIVE PANE IS REMOVED FROM THE LAYOUT, NOT MERELY MOVED OFF SCREEN. Below 840cqi the pane that is not current is `display:none`, so it leaves the tab order AND the accessibility tree together. The classic list/detail defect is a pane that is visually gone — translated away, or opacity 0 — but still focusable: a keyboard or screen-reader user then tabs into content nobody can see, and there is no way out of it. Stated here because it is invisible in a screenshot and is exactly the kind of thing a green gate cannot see.",
+  "$finding-no-toolbar": "⚠ THE LIST PANE HAS NO FILTER OR SORT BAR, AND THAT IS A SCOPE LINE RATHER THAN AN OVERSIGHT. Itinerary row 120 (filter / toolbar bar) is a separate Layer-2 member being built in the SAME wave by another lane. A shell that invented its own toolbar would collide with it on arrival. The list header carries a title and a count and stops. Composing row 120's artefact into this slot is the follow-up, and it is the conductor's to sequence.",
+  "$finding-two-skeleton-registers": "THE FILE DELIBERATELY CARRIES BOTH SKELETON REGISTERS SO THE DIFFERENCE IS VISIBLE. One region in the detail pane is the real Skeleton-loader, complete with its announcement, because a record's activity genuinely does arrive later. Everything else is static aria-hidden furniture, because a frame with the content left out is not loading. App-shell-top-nav.reference.html states the reasoning in full for all three shells; this file is where the genuine composition is actually demonstrated.",
+  "$finding-brand-mark": "⚠ THE BRAND MARK IS A STAND-IN. Row 86 (P1) is derived ASSET-ONLY: 12 official SVGs under knowledge/assets/logos/, no component binds them, and `grep -rl 'assets/logos' knowledge/snippets/` returns ZERO of the 108 pre-existing snippets. Navigations' text wordmark stands in and the gap is NAMED. ⛔ The Apollo crescent is an anonymity mark only (Dave's #86 ruling) and appears nowhere.",
+  "$finding-breakpoints-unruled": "⚠ 1200cqi AND 840cqi ARE SPECIMEN CHOICES. No breakpoint scale exists in knowledge/tokens/layout.json (probed, absent). Three shells in one wave carry three different pairs (900/600, 1040/720, 1200/840).",
+  "relationships": {
+    "livesInside": ["nothing — this IS the outermost frame"],
+    "commonPatterns": ["statement and record browsing", "message and case queues", "any product where the user picks one of many and studies it", "settings with a category list"],
+    "mustNotNeighbour": []
+  },
+  "$consumes": ["Sidebar-nav", "Navigations", "Headers", "Skeleton-loader"],
+  "$relationshipsNote": "⚠ SCHEMA CONSTRAINT, FOUND BY DRIVING P-1 AND NOT BY READING: `relationships` sets additionalProperties:false with NO `^\\$` patternProperties and permits only livesInside · mustNotNeighbour · commonPatterns · triggeredBy. A `consumes` key, or even a `$note`, INSIDE relationships is a schema violation; the legal home is a top-level `$consumes`. ⚠ List-items is deliberately NOT in $consumes, and that absence is the point — see $finding-no-selected-list-row.",
+  "accessibility": {
+    "relatedSC": ["1.3.1", "1.4.3", "2.1.1", "2.4.1", "2.4.3", "2.4.4", "2.4.7", "2.4.8", "2.5.8", "4.1.2", "4.1.3"],
+    "landmarks": "<header> for the app bar, <nav aria-label=\"Main, collapsed\"> for the rail, a <section aria-labelledby> for each pane pointing at that pane's own visible heading. Two anonymous regions side by side are two regions a screen-reader user cannot tell apart.",
+    "bypassBlock": "A skip link is the FIRST focusable element, visible only on focus. It targets the pane the user actually came for, which at three panes is the detail and at one pane is whichever is current.",
+    "currentRow": "aria-current=\"true\" on the current list row AND a 3px leading bar (a SHAPE) AND a surface change. Colour is third and never alone. `\"true\"` rather than `\"page\"` because a pane is not a document.",
+    "paneRemoval": "Below 840cqi the non-current pane is display:none — out of the tab order and out of the accessibility tree together. See $finding-inactive-pane-is-removed.",
+    "focusOnReturn": "The back control returns focus to the row that was current, not to the top of the list. Returning to the top loses the user's place in a long list every time they look at a record.",
+    "loadingRegion": "The one genuinely-loading region is role=\"status\" + aria-busy=\"true\" with a visually-hidden 'Loading content'; every bone inside it is aria-hidden. When the content arrives aria-busy flips false and the announcement is removed — Skeleton-loader's own behaviour, unchanged. SC 4.1.3.",
+    "targetSize": "Every interactive element is >= 44px (target/min): rail links, list rows (64px), app-bar actions, the back control, the more-options control, the resolve button and the skip link. MEASURED in a real browser.",
+    "reducedMotion": "prefers-reduced-motion: reduce collapses every transition to 0.01ms AND removes the shimmer, leaving static bones — Skeleton-loader's own 2.3.3 fallback, inherited unchanged."
+  },
+  "responsive": {
+    "mechanism": "CONTAINER queries on the shell (container-type:inline-size), never viewport queries. s210-D3: the width is the container's. Two of the three specimens are 392px CONTAINERS at a wide viewport and both collapse to one pane — that is the proof.",
+    "threePane": ">= 1200cqi — 64px rail, 360px list, detail takes the rest.",
+    "twoPane": "840–1199cqi — the rail leaves for the app bar's menu button; the list narrows 360 → 320; the detail keeps the remainder.",
+    "singlePane": "< 840cqi — the list takes the full width and one pane is shown at a time, chosen by data-pane. Choosing a row moves to detail and retitles the detail header; the detail header grows a back control that returns to the list and restores focus to the row that was current.",
+    "$status": "PROPOSED #210, Dave's eye owed"
+  },
+  "dimensions": {
+    "railWidth": 64,
+    "listWidthWide": 360,
+    "listWidthCompact": 320,
+    "appBarHeight": 56,
+    "paneHeaderHeight": 56,
+    "listRowMinHeight": 64,
+    "targetMin": 44,
+    "$note": "railWidth 64 and the underlying 44px link are Sidebar-nav's. appBarHeight and paneHeaderHeight 56 are Headers'. targetMin 44 is target/min. listWidthWide 360, listWidthCompact 320 and listRowMinHeight 64 are specimen choices on the 4px grid; listRowMinHeight 64 is the declared additive change to the borrowed row."
+  },
+  "antiPatterns": [
+    "Never hide the inactive pane with visibility or a transform. It must leave the tab order and the accessibility tree, or a keyboard user will end up inside a pane that is not on screen.",
+    "Never return focus to the top of the list when the user comes back from a record. They lose their place every single time.",
+    "Never mark the current row with colour alone. It is a shape first and a hue third.",
+    "Never let the detail pane keep the previous record's title while the new one loads. Retitle first, then load — otherwise the heading is lying about what is underneath it.",
+    "Never grow the rail to a full column in this frame. Three panes is already the widest this can be, and the room would come out of the list.",
+    "Never invent a filter bar in the list header. Row 120 owns that artefact.",
+    "Never paint status colour into the frame. A shell has nothing to be red about."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/*.json via the snippet's own #token-manifest, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate 0 failures with this file present; grid gate PASS; a11y gate 0 failures; descender-clip PASS AFTER A REAL CATCH (see $finding-descender-catch); type-composite contribution 0; probe P-1 meta-schema 0 findings. gen_snippet_tokens.py --check reports '0 value(s) would change'.",
+    "declaredAbsence": "No RAG pair declared because no RAG value is painted. The current-location red bar is deliberately NOT declared as a contrastPair, for the reason Sidebar-nav's own meta gives.",
+    "carriedNotMeasured": "⚠ CARRIED, NOT RE-MEASURED AT #210: Sidebar-nav's meta records primary/border/default on tertiary/background/hover at 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 / 2.73 in SUPERCHARGE — a FAIL. Quoted, not re-measured. ⚠ AND IT NOW APPLIES ON TWO SURFACES IN THIS FILE RATHER THAN ONE, because the bar marks both the rail's current destination and the list's current row.",
+    "notRun": "_validate_state_contrast.py was NOT run: a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md, outside this lane's fence. OWED.",
+    "failing": "⛔ _validate_binds_resolve.py check D FAILS: no .cn-app-shell-multi-column block in canon/canon.css, so theme cascade projection is silently OFF and only the light and dark legs authored in the snippet have been seen. Console, Legacy and Supercharge are UNPROVEN. Shared generated file — the conductor's.",
+    "notRegistered": "Absent from knowledge/component-types.json, CATEGORIES, gen_showroom.py and _validate_radius.MIGRATED_SNIPPETS — shared files outside this lane's fence.",
+    "renderProof": "See notes/_receipts/2026-08-20-210-wave5-laneA-app-shells.md for the driven figures at three container widths in both modes."
+  },
+  "$finding-descender-catch": "★ THE GATE CAUGHT A REAL DEFECT IN THIS FILE, AND IT IS WORTH RECORDING BECAUSE IT ANSWERS $decisionsForDave 7 IN App-shell-top-nav. `_validate_descender_clip.py` flagged `.sh-detail-head h1` — the truncating record title in the detail header — as a truncating label with no descender-safe override, which would clip the tail of a g, y, p or q in a record name at narrow widths. The repair is `text-box-edge:text text` on the two-part selector, and the computed edge was checked in a real browser rather than assumed (ds-005: trim specificity beats single-class overrides). NOTE WHAT THIS PROVES: shipping a page-scale shell inside knowledge/snippets/ meant an existing component gate read it and found something a screenshot would not have shown. That is the whole argument for the brief's proposed convention, and it earned itself in one build.",
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 99, 'App shell — multi-column', Shells (Layer 2), P2, notes cell 'List + detail frame.' Derived class NO-ARTEFACT-CLASS in reviews/ITINERARY-STATUS-2026-08-19-v1.json. Ships in the library grammar on the #210 brief's PROPOSED convention."
+  },
+  "interactive": true,
+  "stateModel": "simple",
+  "$decisionsForDave": [
+    "1 · ⛔ THE SELECTED LIST ROW — THE BIGGEST ONE. List-items models no selected state (probe returns 0) so the row here is Sidebar-nav's nav link. Three live outcomes: keep the borrow, give List-items a selected state, or make the list a role=\"listbox\" with aria-selected. Whichever you pick, this shell changes one atom.",
+    "2 · aria-current=\"true\" OR aria-selected? A master list is arguably a listbox — but a listbox's options are values, and these are destinations that change what the detail pane is showing. Drawn as aria-current=\"true\". Not settled.",
+    "3 · WHAT SHOWS IN THE DETAIL PANE BEFORE A ROW IS CHOSEN? Drawn with the first row already current, which is the desktop convention and quietly assumes a default. The alternative is an Empty-state — the gated component exists — saying 'choose an account'. Not settled, and it matters more than it looks: pre-selecting a row means the frame has made a choice on the user's behalf.",
+    "4 · DOES CHOOSING A ROW CHANGE THE URL? Drawn as a pane swap with no history entry, so the browser back button leaves the shell entirely rather than returning to the list. On a phone that is very likely wrong. A routing decision, and yours.",
+    "5 · THE BREAKPOINT SCALE. 1200cqi and 840cqi here; 900/600 and 1040/720 in the sibling shells; nothing ruled and no scale in knowledge/tokens/layout.json.",
+    "6 · THE LIST HEADER'S SCOPE. Title and count only, because row 120 owns the filter/toolbar bar. Confirm that the shell should never carry its own.",
+    "7 · THE TWO SKELETON REGISTERS. Static aria-hidden furniture for a frame, the real announcing loader only where something genuinely loads. Confirm or overturn — it is the same call as $decisionsForDave 6 in App-shell-top-nav and should be answered once for all three shells."
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:App-shell-multi-column.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:nothing-this-is-the-outermost-frame",
+        "$note": "nothing — this IS the outermost frame"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:statement-and-record-browsing"
+      },
+      {
+        "ref": "pattern:message-and-case-queues"
+      },
+      {
+        "ref": "pattern:any-product-where-the-user-picks-one-of-many-and-studies-it"
+      },
+      {
+        "ref": "pattern:settings-with-a-category-list"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:sidebar-nav",
+        "$note": "Sidebar-nav"
+      },
+      {
+        "ref": "component:navigations",
+        "$note": "Navigations"
+      },
+      {
+        "ref": "component:headers",
+        "$note": "Headers"
+      },
+      {
+        "ref": "component:skeleton-loader",
+        "$note": "Skeleton-loader"
+      }
+    ]
+  }
+}
