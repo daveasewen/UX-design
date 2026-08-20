@@ -1164,6 +1164,19 @@
       "closes_when": "Dave confirms warn as final or flips to block",
       "condition": "stated",
       "closed_by": "s163-D1 (Dave, #163) - flipped to block; audit wired blocking, hits cleared by declaration, homonym fixed in regex"
+    },
+    {
+      "id": "W-61",
+      "project": "apollo",
+      "title": "Dave's eye on leading-trim applied to text-bearing inputs (#209) — keep the inert vocabulary, or revert",
+      "home": "reviews/REVIEW-209-input-trim-before-after-v1.html",
+      "links": [],
+      "state": "open",
+      "owner": "dave",
+      "opened": 209,
+      "body": "Dave ruled live (#209) that the leading-trim idiom should apply to inputs such as searches and multi-select. All 54 leading-trim blocks in knowledge/snippets/*.reference.html gained the text-bearing input vocabulary (7 typed inputs + input:not([type]) + textarea; checkbox/radio/range/colour/file excluded), canon.css regenerated (91 components) and its hand-tier .canon base rule carries the same vocabulary, 91 showroom pages regenerated. MEASURED CONSEQUENCE: the declaration computes on <input> (none -> trim-both, 18 inputs across 4 components) but Chromium 151 does NOT enact trim inside a form control — isolation probe at line-height:2 gives span 32.00->11.56px and button 32.00->11.02px against input 32.00->32.00px and textarea 32.00->32.00px. Full-page pixel diff is 0 for Search-field, Command-palette, Data-grid; 2,378 sub-pixels on Input-fields, max ink-centre shift 0.75 CSS px, no box height change anywhere. Multi-select, Tags-input and Combobox carry no trim block at all (11 input-bearing snippets are in that state) so they were untouched.",
+      "closes_when": "Dave's eye accepts the trimmed inputs on reviews/REVIEW-209-input-trim-before-after-v1.html and he rules KEEP (inert-but-forward-compatible vocabulary) or REVERT (and whether the 11 trim-block-less input snippets should get the idiom at all)",
+      "condition": "stated"
     }
   ]
 }

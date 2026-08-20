@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review 209 — leading-trim applied to text-bearing inputs (before | after)</title>
+<style>
+  :root{--ink:#1A1A1A; --page:#FAFAFA; --line:#E1E1E1; --mid:#808080; --warn:#DA1A00;}
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+       background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  header{padding:24px 28px; background:#FFFFFF; border-bottom:1px solid var(--line);}
+  h1{font-size:20px; font-weight:500; margin:0 0 6px;}
+  .sub{font-size:13px; color:var(--mid); margin:0;}
+  main{padding:24px 28px 64px; max-width:1500px;}
+  section{margin:0 0 40px;}
+  h2{font-size:15px; font-weight:500; margin:32px 0 8px; padding-top:16px; border-top:1px solid var(--line);}
+  h3{font-size:13px; font-weight:500; margin:20px 0 8px;}
+  p{font-size:13px; line-height:1.55; max-width:76ch; margin:0 0 12px;}
+  .call{background:#FFFFFF; border:1px solid var(--line); border-left:3px solid var(--ink); padding:14px 16px; margin:0 0 16px; max-width:96ch;}
+  .call.red{border-left-color:var(--warn);}
+  .call p:last-child{margin-bottom:0;}
+  table{border-collapse:collapse; font-size:12.5px; background:#FFFFFF; margin:0 0 16px;}
+  th,td{border:1px solid var(--line); padding:6px 10px; text-align:left; vertical-align:top;}
+  th{font-weight:500; background:#F4F4F4;}
+  td.n{font-variant-numeric:tabular-nums; text-align:right;}
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:0 0 8px;}
+  .pane{background:#FFFFFF; border:1px solid var(--line);}
+  .pane .cap{font-size:12px; padding:6px 10px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; gap:12px;}
+  .pane .cap b{font-weight:500;}
+  .pane .cap span{color:var(--mid); font-variant-numeric:tabular-nums;}
+  iframe{display:block; border:0; width:100%; background:#FFFFFF;}
+  .dark .pane{background:#1A1A1A; border-color:#3A3A3A;}
+  .dark .pane .cap{color:#FFFFFF; border-bottom-color:#3A3A3A;}
+  .dark .pane .cap span{color:#B0B0B0;}
+  .dark iframe{background:#1A1A1A;}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; background:#F0F0F0; padding:1px 4px;}
+  .tag{display:inline-block; font-size:11px; padding:2px 7px; border:1px solid var(--line); background:#FFFFFF; margin-right:6px;}
+  .tag.zero{border-color:var(--mid); color:var(--mid);}
+  .tag.moved{border-color:var(--warn); color:var(--warn);}
+</style>
+</head>
+<body>
+<header>
+  <h1>Review 209 — leading-trim applied to text-bearing inputs</h1>
+  <p class="sub">Dave&rsquo;s ruling (live, session 209): the line-height trim &ldquo;should be applied to inputs such as searches and multiselect&rdquo;.
+     Every pane below is a REAL artefact in an iframe — left = the snippet as it stood at <code>HEAD</code>, right = the snippet after the sweep. Nothing re-drawn.</p>
+</header>
+<main>
+
+<section>
+<div class="call red">
+  <p><b>The headline, before you look at anything else.</b> The vocabulary is now authored on the inputs and the browser
+  <i>accepts</i> it — <code>getComputedStyle(input).text-box-trim</code> returns <code>trim-both</code> where it returned <code>none</code>.
+  But Chromium <b>does not act on it inside a form control</b>. Across the four affected components the biggest measured movement of any
+  input&rsquo;s text was <b>0.75 CSS px</b>, and no input&rsquo;s box changed height at all. Three of the five components you named
+  (Multi-select, Tags-input, Combobox) do not carry a leading-trim block in their snippet at all, so they were not touched and did not move.</p>
+  <p>The isolation probe at the bottom of this page proves the mechanism rather than asserting it: at <code>line-height:2</code> a
+  <code>&lt;span&gt;</code> collapses 32.00&nbsp;px &rarr; 11.56&nbsp;px and a <code>&lt;button&gt;</code> 32.00&nbsp;px &rarr; 11.02&nbsp;px,
+  while an <code>&lt;input&gt;</code> and a <code>&lt;textarea&gt;</code> both stay at 32.00&nbsp;px with the same declaration.</p>
+  <p><b>Your call:</b> keep the inert vocabulary (harmless today, self-enacting the day Chromium ships trim inside form controls — which
+  would move every field in the library without a review), or revert the sweep and enact the intent a different way (explicit line-height /
+  padding on the field, which is a design decision, not a CSS capability).</p>
+</div>
+</section>
+
+<section>
+<h2>What changed in the source</h2>
+<p>54 leading-trim blocks across <code>knowledge/snippets/*.reference.html</code> — every block in the library — gained nine entries in the
+<code>:is(&hellip;)</code> vocabulary: the seven text-bearing input types, <code>input:not([type])</code>, and <code>textarea</code>.
+Checkboxes, radios, ranges, colour and file inputs are deliberately excluded. The <code>:not(:has(svg))</code> guard is untouched.
+<code>canon.css</code> was regenerated from the snippets (91 components), and its hand-tier <code>.canon</code> base trim rule
+carries the identical vocabulary so canon consumers match the snippets. 91 showroom pages regenerated.</p>
+<table>
+<tr><th>Component</th><th>inputs with trim computed<br>before &rarr; after</th><th>full-page pixel diff<br>(1180&times;auto @2&times;)</th><th>input box height</th><th>max text shift</th></tr>
+<tr><td>Search-field</td><td class="n">0 &rarr; 2</td><td class="n">0</td><td>46.00 / 47.00 px — unchanged</td><td class="n">0.00 px</td></tr>
+<tr><td>Command-palette</td><td class="n">0 &rarr; 2</td><td class="n">0</td><td>unchanged</td><td class="n">0.00 px</td></tr>
+<tr><td>Data-grid</td><td class="n">0 &rarr; 1</td><td class="n">0</td><td>unchanged</td><td class="n">0.00 px</td></tr>
+<tr><td>Input-fields</td><td class="n">0 &rarr; 13</td><td class="n">2,378</td><td>24.00 / 52.00 px — unchanged</td><td class="n">0.75 px</td></tr>
+<tr><td>Multi-select</td><td class="n">0 &rarr; 0</td><td class="n">0</td><td>unchanged</td><td class="n">0.00 px</td></tr>
+<tr><td>Tags-input</td><td class="n">0 &rarr; 0</td><td class="n">0</td><td>unchanged</td><td class="n">0.00 px</td></tr>
+<tr><td>Combobox</td><td class="n">0 &rarr; 0</td><td class="n">0</td><td>unchanged</td><td class="n">0.00 px</td></tr>
+</table>
+<p>Input-fields is the only component with any pixel movement at all: 2,378 changed sub-pixels on a 2,360&times;3,204 device-pixel page.
+Per input, ink-centre deltas were 0.00&nbsp;px on 9 of 13 fields, &minus;0.75&nbsp;px on two, &minus;0.25&nbsp;px on one, +0.50&nbsp;px on one.
+That is antialiasing-scale, not a leading trim.</p>
+</section>
+
+<section>
+<h2>Search-field <span class="tag zero">0.00 px shift</span></h2>
+<h3>Light</h3>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD — no input in the trim vocabulary</span></div>
+    <iframe src="_assets/review-209-input-trim/before/Search-field-light.html" height="420" title="Search-field before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>2 inputs compute trim-both</span></div>
+    <iframe src="_assets/review-209-input-trim/after/Search-field-light.html" height="420" title="Search-field after, light"></iframe></div>
+</div>
+<h3>Dark</h3>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD</span></div>
+    <iframe src="_assets/review-209-input-trim/before/Search-field-dark.html" height="420" title="Search-field before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>trim authored</span></div>
+    <iframe src="_assets/review-209-input-trim/after/Search-field-dark.html" height="420" title="Search-field after, dark"></iframe></div>
+</div>
+</section>
+
+<section>
+<h2>Command-palette <span class="tag zero">0.00 px shift</span></h2>
+<h3>Light</h3>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD</span></div>
+    <iframe src="_assets/review-209-input-trim/before/Command-palette-light.html" height="700" title="Command-palette before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>2 inputs compute trim-both</span></div>
+    <iframe src="_assets/review-209-input-trim/after/Command-palette-light.html" height="700" title="Command-palette after, light"></iframe></div>
+</div>
+<h3>Dark</h3>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD</span></div>
+    <iframe src="_assets/review-209-input-trim/before/Command-palette-dark.html" height="700" title="Command-palette before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>trim authored</span></div>
+    <iframe src="_assets/review-209-input-trim/after/Command-palette-dark.html" height="700" title="Command-palette after, dark"></iframe></div>
+</div>
+</section>
+
+<section>
+<h2>Input-fields <span class="tag moved">up to 0.75 px on 4 of 13 fields</span></h2>
+<p>This is the one place anything moved. Look at the field text against the box edges — if you cannot see a difference, that is the finding.</p>
+<h3>Light</h3>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD</span></div>
+    <iframe src="_assets/review-209-input-trim/before/Input-fields-light.html" height="1200" title="Input-fields before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>13 inputs compute trim-both</span></div>
+    <iframe src="_assets/review-209-input-trim/after/Input-fields-light.html" height="1200" title="Input-fields after, light"></iframe></div>
+</div>
+<h3>Dark</h3>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD</span></div>
+    <iframe src="_assets/review-209-input-trim/before/Input-fields-dark.html" height="1200" title="Input-fields before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>trim authored</span></div>
+    <iframe src="_assets/review-209-input-trim/after/Input-fields-dark.html" height="1200" title="Input-fields after, dark"></iframe></div>
+</div>
+</section>
+
+<section>
+<h2>Data-grid <span class="tag zero">0.00 px shift</span></h2>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD</span></div>
+    <iframe src="_assets/review-209-input-trim/before/Data-grid-light.html" height="700" title="Data-grid before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>1 input computes trim-both</span></div>
+    <iframe src="_assets/review-209-input-trim/after/Data-grid-light.html" height="700" title="Data-grid after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD</span></div>
+    <iframe src="_assets/review-209-input-trim/before/Data-grid-dark.html" height="700" title="Data-grid before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>trim authored</span></div>
+    <iframe src="_assets/review-209-input-trim/after/Data-grid-dark.html" height="700" title="Data-grid after, dark"></iframe></div>
+</div>
+</section>
+
+<section>
+<h2>Multi-select — untouched, and why <span class="tag zero">no trim block in the snippet</span></h2>
+<p>Multi-select, Tags-input and Combobox carry <b>no leading-trim block at all</b> — the idiom was never authored into them, so the sweep
+had nothing to extend. Eleven input-bearing snippets are in this state (Amount-input, Combobox, Date-picker, Date-range-picker, Form-layout,
+Multi-select, Secure-entry, Stepper, Tags-input, Textarea, Time-picker). Giving them a trim block would also trim every label, span and
+button in those components — a far larger visual change than the one you ruled — so that is a decision for you, not a sweep.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD</span></div>
+    <iframe src="_assets/review-209-input-trim/before/Multi-select-light.html" height="760" title="Multi-select before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>byte-identical — 0 pixels changed</span></div>
+    <iframe src="_assets/review-209-input-trim/after/Multi-select-light.html" height="760" title="Multi-select after, light"></iframe></div>
+</div>
+</section>
+
+<section>
+<h2>Isolation probe — the mechanism, driven live</h2>
+<p>Four pairs, identical CSS except the trim declaration, at <code>line-height:2</code>. The yellow field is the element&rsquo;s own box;
+the number on the right is its measured height in this browser, right now.</p>
+<div class="pane" style="max-width:640px">
+  <iframe src="_assets/review-209-input-trim/probe-isolation.html" height="360" title="Isolation probe"></iframe>
+</div>
+<p>Reference measurement from the render harness (Chromium 151.0.7922.34, headless shell, this repo&rsquo;s HSBC face):
+span 32.00 &rarr; 11.56 px, button 32.00 &rarr; 11.02 px, input 32.00 &rarr; 32.00 px, textarea 32.00 &rarr; 32.00 px.</p>
+</section>
+
+<section>
+<h2>What closes this review</h2>
+<p>Your eye on the pairs above, and one ruling: <b>keep</b> the input vocabulary as authored (inert now, self-enacting later), or
+<b>revert</b> it and treat input text alignment as an explicit design decision. Everything is reversible in one sweep either way.</p>
+</section>
+
+</main>
+</body>
+</html>

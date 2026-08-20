@@ -1,0 +1,34 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Isolation probe — does text-box-trim move an input?</title>
+<style>
+ body{font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;margin:0;padding:20px;background:#FFFFFF;color:#1A1A1A;}
+ h2{font-size:13px;font-weight:500;margin:0 0 10px;}
+ p{font-size:12px;margin:0 0 14px;max-width:640px;color:#1A1A1A;}
+ .row{display:grid;grid-template-columns:120px 320px 90px;gap:10px;align-items:center;margin-bottom:8px;}
+ .k{font-size:12px;}
+ .box{font-size:16px;line-height:2;border:0;padding:0;margin:0;display:block;width:300px;background:#F0E4B0;}
+ .trim{text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+ .m{font-size:12px;font-variant-numeric:tabular-nums;}
+</style></head><body>
+<h2>Isolation probe — line-height:2 (32px slot), yellow shows the BOX</h2>
+<p>If the trim is ENACTED the yellow box collapses to the cap-to-baseline height. Measured live in this page.</p>
+<div id="rows"></div>
+<script>
+ const specs=[["input (no trim)","input",false],["input + trim","input",true],
+  ["textarea (no trim)","textarea",false],["textarea + trim","textarea",true],
+  ["span (no trim)","span",false],["span + trim","span",true],
+  ["button (no trim)","button",false],["button + trim","button",true]];
+ const host=document.getElementById('rows');
+ specs.forEach(([label,tag,trim])=>{
+   const r=document.createElement('div'); r.className='row';
+   const k=document.createElement('div'); k.className='k'; k.textContent=label;
+   const el=document.createElement(tag); el.className='box'+(trim?' trim':'');
+   if(tag==='input') el.value='Hxpg'; else el.textContent='Hxpg';
+   if(tag==='textarea'){el.rows=1;}
+   const m=document.createElement('div'); m.className='m';
+   r.append(k,el,m); host.appendChild(r);
+   m.textContent=el.getBoundingClientRect().height.toFixed(2)+' px';
+   setTimeout(()=>{m.textContent=el.getBoundingClientRect().height.toFixed(2)+' px';},50);
+ });
+</script>
+</body></html>
