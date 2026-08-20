@@ -1,0 +1,201 @@
+{
+  "name": "Meter",
+  "category": "molecule",
+  "purpose": "A SINGLE COMPONENT FOR A VALUE ON A TRACK BETWEEN A MINIMUM AND A MAXIMUM. Progress-bar and Limits-meter roll up into it: progress becomes one SEMANTIC VARIANT of a meter rather than the identity of the component. PROPOSED #210 on Dave's own instruction — NOT GATED, NOT PROMOTED, NOT RULED, AND NO FOLD IS ENACTED.",
+  "$daveVerbatim": "The authority for this component is Dave's own words at #210, carried verbatim and not paraphrased: \"if these are the base components we just have progress variants, also I would like the option of the bigger titles that are in the progress bar. Again what we have is a set of meter variants embedded in an organism, in this case a daily transfer limit lock-up.\" The grammar is his molecule -> organism model: a base Meter molecule, a set of variants of which progress is one, and organism specimens that embed those variants — the daily-transfer-limit lock-up being the one he named.",
+  "$foldNotEnacted": "⛔ READ BEFORE ANYTHING ELSE. THIS PROPOSAL FOLDS NOTHING. knowledge/snippets/Progress-bar.reference.html, knowledge/components/progress-bar.meta.json, knowledge/snippets/Limits-meter.reference.html and knowledge/components/limits-meter.meta.json are BYTE-UNTOUCHED by #210 — verified by sha256 before and after. Nothing is deleted, nothing retires, nothing is re-registered and no showroom, CATEGORIES, MIGRATED_SNIPPETS, component-types.json or canon.css entry was touched. Progress-bar is GATED and PROMOTED; that status is Dave's to move. THE FOLD IS A LATER, SEPARATE ACT that begins only if he accepts this spec, and what retires is question Q5 below, unanswered here.",
+  "props": [
+    { "name": "shape", "type": "enum", "values": ["linear", "dial"], "default": "linear", "$note": "Linear for inline/full-width meters; dial for a compact circular readout. Both are Progress-bar's, copied — the dial is its 96px ring with an 8px stroke and the role on the visible numeric caption." },
+    { "name": "size", "type": "enum", "values": ["default", "emphasis"], "default": "default", "$note": "Linear only: 4px track (default) or 8px (emphasis). Progress-bar's own two sizes and its same token pair, which Limits-meter already inherited. Nothing new. The dial is a single 96px specimen; further rungs need a ruling, not an invention." },
+    { "name": "titleSize", "type": "enum", "values": ["default", "large"], "default": "default", "$note": "⬛ PROPOSED, NOT RULED (Q2) — AND THE DEFAULT SHOWN HERE IS A PLACEHOLDER, NOT A RECOMMENDATION. This is the option Dave asked for in so many words: 'the option of the bigger titles that are in the progress bar'. 'default' = t-cm-legal, 12px, text/secondary — the row-name treatment the Limits-meter stack uses. 'large' = t-cm-label, 16px, text/default — Progress-bar's own title treatment. The SIZE is carried by the composite class in the markup (type is bound by composite, never by a raw declaration); the .meter--title-lg modifier carries only the colour difference the two parents already disagree about. Both are drawn on the same meter in §B6 of the reference so the pair is compared by eye." },
+    { "name": "semantics", "type": "enum", "values": ["progress", "allowance"], "default": "progress", "$note": "⬛ PROPOSED, NOT RULED (Q6). These paint NOTHING different, deliberately. The geometry is identical and the meaning is inverted: a full progress meter is SUCCESS, a full allowance meter is a BLOCKED PAYMENT. The variant exists so the meaning is authored rather than inferred. Whether the difference should ever be visible, and what these should be CALLED, is Dave's." },
+    { "name": "value", "type": "number", "default": 0, "$note": "Current value on the min..max scale. Drives both the visual fill and aria-valuenow." },
+    { "name": "min", "type": "number", "default": 0 },
+    { "name": "max", "type": "number", "default": 100, "$note": "Under 'allowance' semantics this is the CEILING, not a target. ⛔ A target is a goal you are trying to reach; a cap is a boundary you are not allowed to cross. A meter that grows a target IS a Chart-bullet." },
+    { "name": "label", "type": "string", "$note": "The accessible name. Required — a meter with no name announces only a number." },
+    { "name": "valueText", "type": "string", "$note": "Human-readable value for AT (aria-valuetext). Required whenever the scale is not a plain percentage — '1,450 pounds of 2,000 pounds saved', '3,200 pounds used of a 5,000 pound daily transfer limit'." },
+    { "name": "showValue", "type": "boolean", "default": true, "$note": "Renders the numeric value as visible text. Default TRUE and load-bearing, not decoration: it is what carries meaning independently of the fill/track boundary (1.4.1). Progress-bar's own reasoning, inherited." }
+  ],
+  "variants": [
+    { "name": "linear", "use": "The base: a 4px rule that fills. Progress-bar specimen 1, copied." },
+    { "name": "emphasis", "use": "An 8px rule where the meter is the primary content of its region. Progress-bar's .pb-lg / Limits-meter's .lim-lg, same token pair." },
+    { "name": "non-percentage scale", "use": "A domain scale carried in aria-valuetext — the 'Savings goal · 1,450 of 2,000' bar. Progress-bar specimen 3, copied. ★ This is the specimen the whole overlap argument turns on: geometrically it is already a limits meter, and progress-bar.meta.json's commonPatterns names 'savings goal / limits meter' by name." },
+    { "name": "dial", "use": "The circular form — a compact completeness score where a full-width rule would not fit. Progress-bar specimen 4, copied." },
+    { "name": "allowance", "use": "The limits reading: how much of a cap is used, with a compact two-key readout. Limits-meter specimen 5, copied. Same geometry as emphasis; the difference is entirely one of meaning." },
+    { "name": "title-size", "use": "The two title treatments drawn on the same meter, side by side — the option Dave asked for. Which is the default is his (Q2)." }
+  ],
+  "$organisms": [
+    { "name": "daily-transfer-limit lock-up", "use": "DAVE'S OWN EXAMPLE. A title, a verdict chip, a display figure, ONE meter molecule, a legend and — at the ceiling — a consequence sentence. Drawn in §C1 (within limit) and §C2 (at limit). Limits-meter specimens 1 and 3, copied. ⛔ The lock-up is NOT a meter; the meter is the part inside it that has a value." },
+    { "name": "payment-limits set", "use": "THREE meter molecules in one organism under ONE group label — per payment, per day, per month, no chips. Drawn in §C3. Limits-meter specimen 4, copied. This is the clearest reading of 'a set of meter variants embedded in an organism'." },
+    { "name": "savings-goal card", "use": "⬛ DELIBERATELY NOT DRAWN (Q4). The savings-goal BAR is present as a variant in §B3 exactly as Progress-bar draws it; wrapping it in a card lock-up would be an INVENTION, and inventing organisms is how #202's three hand-rolled pages got their three defects. Which organisms the component ships with is Dave's." }
+  ],
+  "tokens": {
+    "fill": "progress/complete — the filled part. THEME INK in all four themes since s175-D1, exactly as both parents bind it.",
+    "track": "progress/incomplete — the remaining part",
+    "text": "text/default — figures, the large title option, the consequence line",
+    "muted": "text/secondary — the default title, labels, legend keys, captions",
+    "page": "background/default",
+    "border": "border/subtle — the outline on the 'left' legend swatch, so an empty swatch is still a visible mark",
+    "status": "rag/success + rag/success-tint | rag/warning + rag/warning-tint — the ORGANISM's verdict chip only, copied byte-for-byte from Limits-meter via Runway-bar and Account-card. ⛔ NO RAG VALUE TOUCHES A TRACK OR A FILL IN ANY VARIANT OR ANY STATE.",
+    "radius": "border-radius/indicator — 0; the angular rule, console forks through the cascade. Nothing is round except the 8px chip dot and the dial, which is round because it is a ring.",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED AND NO NEW COLOUR VALUE IS AUTHORED. Every hex in the reference is copied from Progress-bar or Limits-meter. See $noRedInvented."
+  },
+  "$noRedInvented": "⛔ THE LAW THIS COMPONENT INHERITS AND DOES NOT TOUCH. A meter at 100% is where a critical red gets improvised, and none is. The fill is INK ON TRACK in every variant and every state, including the at-limit organism, inherited from the gated Progress-bar whose meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) — hence the ink pair rather than a RAG colour.' A task half-done and an allowance half-spent are both QUANTITIES. The VERDICT is a separate object belonging to the ORGANISM — a Status-indicator RAG-tint chip carrying a WORD and a reset time — and which verdict maps to which tint is a SEMANTIC binding that is DAVE'S, proposed not ruled. The error/critical seat is NOT taken even at the ceiling: that touches the two-red law (s151-D1) and the mono error ink camp (s149-D1), neither of which this file goes near.",
+  "motion": {
+    "entry": "The fill's width transition (linear) and the ring's stroke-dashoffset transition (dial), over the inherited 140ms ease.",
+    "hover": "None. Passive.",
+    "reducedMotion": "The fill still MOVES to its final position — the value must be reachable — it just arrives without an animated sweep (2.3.3 / 2.2.2). Both parents' behaviour, copied, plus the global collapse Limits-meter carries.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "max-width 480px on the meter, the lock-up and the stack; heads and legends wrap. ⚠ THE TWO PARENTS DISAGREE HERE — Progress-bar's column is max-width:420px, Limits-meter's is 480px — and a unified base can only carry one. Drawn at 480 (Q7); the 420 reading is not dismissed, just not chosen. The dial is a fixed 96px and does not reflow. No breakpoint switch and no container query.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Card", "List items", "Form layout", "File upload", "Dialog", "Stat card", "Account card", "Payment limits screens", "Account settings", "Card management"],
+    "mustNotNeighbour": ["Loading indicator for the same task (one claims the duration is known, the other that it is not)", "A Chart-bullet showing the same value against a target (a limit is not a target)", "A second meter restating the same number in the opposite direction"],
+    "commonPatterns": ["file upload progress", "multi-part transfer progress", "savings goal / limits meter", "profile completeness score", "payment limits", "daily transfer allowance", "card spending cap", "limit increase request"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "role=\"progressbar\" on every track and on the dial's visible numeric caption, with aria-valuenow / valuemin / valuemax and a domain-carrying aria-valuetext; role=\"group\" + aria-labelledby around each organism; role=\"status\" on the at-limit consequence sentence. All mirrored from the two parents.",
+    "openRoleQuestion": "⚠ UNRULED, MIRRORED, NOT DECIDED HERE (Q3). role=\"progressbar\" vs role=\"meter\". The search that fails to settle it was RE-RUN at #210 rather than cited (s202-D3): `grep -rln 'role=\"meter\"' knowledge/snippets/` → THREE files (Limits-meter, Runway-bar and Meter) and EVERY hit in all three is PROSE not markup, i.e. ZERO snippets use the role; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` → 0. Nothing in the store rules it either way. progressbar is used because BOTH parents carry it and inheriting beats improvising. ⚠ THE QUESTION IS SHARPER NOW, NOT SOFTER — the component is literally called Meter. DAVE'S; if he rules 'meter', THREE files change together.",
+    "circularNaming": "On the dial the role sits on the VISIBLE numeric caption and the svg is aria-hidden, so the accessible name and the on-screen value are the same object and nothing is announced twice. Progress-bar's own choice, copied.",
+    "notColourAlone": "Every meter renders its value as text and carries aria-valuetext; every organism additionally carries a verdict WORD in its chip and, at the ceiling, a consequence sentence. Remove all colour and the component still says everything it means (1.4.1).",
+    "hitArea": "PASSIVE — the component contains no interactive target, so the 44px minimum has no seat here. Declared rather than assumed.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "2.2.2 Pause, Stop, Hide", "2.3.3 Animation from Interactions", "4.1.2 Name, Role, Value", "4.1.3 Status Messages"]
+  },
+  "antiPatterns": [
+    "⛔ PAINTING THE FILL RED AT THE CEILING. Ink on track in every variant and every state. See $noRedInvented.",
+    "⛔ GROWING A TARGET MARKER OR QUALITATIVE BANDS. With a target this IS a Chart-bullet and should be one.",
+    "⛔ TREATING THIS PROPOSAL AS A FOLD. Nothing is folded, nothing retires and neither parent file was touched. See $foldNotEnacted.",
+    "Using this for work of unknown duration — that is Loading indicator. There is deliberately no indeterminate variant, inherited from Progress-bar's scope fence (s173-D1).",
+    "Omitting the accessible name, which leaves AT announcing a number with no subject.",
+    "Using aria-valuenow on a non-percentage scale without aria-valuetext.",
+    "Putting role=progressbar on the decorative svg as well as on its caption — the value is then announced twice.",
+    "Adding a focus indicator or tabindex: a meter reports, it does not accept input.",
+    "Relying on the chip DOT to convey a verdict. The dot is 1.98:1 / 2.18:1 standalone (measured #204); the word is the carrier.",
+    "Painting a delta or an arrow on this component. The two delta conventions question is OPEN AND DAVE'S and nothing here may settle it by construction."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PROPOSED — gates run at #210 on the whole tree with the file present. _validate_grid.py: GRID GATE PASS, 117 file(s). _validate_snippets.py: 101 snippet(s), 0 failure(s). _validate_a11y.py: 101 snippet(s), 0 failure(s). _validate_descender_clip.py: PASS, 117 file(s). _validate_type_composites.py: 1097 violation(s), IDENTICAL to the before-count — this file contributes ZERO and the debt did not grow. probe_meta_schema.py --check: 0 finding(s). _validate_binds_resolve.py: every manifest var resolves; check D (canon block presence) FAILS for this snippet only because no .cn-meter block exists in canon.css — EXPECTED for a new unregistered snippet, the Lane A precedent (its claim 12), DECLARED not hidden.",
+    "$note": "PROPOSED #210. NOT registered in component-types.json, CATEGORIES, gen_showroom.py, _validate_radius.MIGRATED_SNIPPETS or canon.css — all shared files, all outside this lane's fence. No `intent` field is authored (W-58 is parked). ⚠ The four-theme fill-on-track contrast figures quoted in the snippet are CARRIED from Progress-bar's and Limits-meter's declarations and were NOT re-measured at #210."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$sourceCaveat": "⚠ THE `source` VALUE ABOVE IS A SCHEMA-FORCED APPROXIMATION, DECLARED RATHER THAN SMOOTHED. The real source is DAVE'S OWN INSTRUCTION at #210 (see $daveVerbatim), and probe_meta_schema.py's enum has no seat for that — it admits only figma / code / both / gap-report / proforma-promotion. `gap-report` is used because both parents carry it and this component descends from the same itinerary lineage (Progress-bar #174, Limits-meter itinerary row 96). ⬛ Whether the enum should gain an instruction-shaped value is a real question and is NOT this file's to rule.",
+    "$sourceNarrative": "Dave's unification instruction at #210, given after looking at reviews/REVIEW-210-existence-side-by-side-v1.html (store row W-64, the Progress-bar vs Limits-meter existence question). His words are carried verbatim in $daveVerbatim and in the reference file's own head comment. The two parents were built at #174 (Progress-bar, gated and promoted) and #209 Wave 3 Lane A (Limits-meter, PROPOSED — receipt notes/_receipts/2026-08-20-209-wave3-laneA-fintech-rows.md, store rows W-62 / W-63). The overlap this unification answers was named by the store itself before either of them: progress-bar.meta.json relationships.commonPatterns reads, verbatim, ['file upload progress', 'multi-part transfer progress', 'savings goal / limits meter', 'profile completeness score'].",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Meter.reference.html"
+  },
+  "$differsFrom": {
+    "Progress-bar": "PROPOSED PARENT-OF. Progress-bar's entire surface is reproduced here as VARIANTS — linear 4px, emphasis 8px, non-percentage scale, dial — copied declaration-for-declaration and markup-for-markup. Nothing of it is lost and nothing of it is changed. What moves is the FRAMING: under this proposal 'progress' is a semantic variant of a meter rather than the identity of the component, which is Dave's own sentence, 'we just have progress variants'. ⛔ Progress-bar remains GATED, PROMOTED and BYTE-UNTOUCHED until he rules.",
+    "Limits-meter": "PROPOSED PARENT-OF. Its readout becomes the ORGANISM section — the daily-transfer-limit lock-up and the payment-limits set, both composed of meter molecules — plus the 'allowance' semantic variant and the compact two-key readout. Its own head comment already argued that a bare limits meter IS a progress bar and should be one; this proposal is the constructive form of that argument. ⛔ Limits-meter remains BYTE-UNTOUCHED until he rules.",
+    "Chart-bullet": "Unchanged from the Limits-meter adjudication: a TARGET is a goal you are trying to reach, a LIMIT is a ceiling you are not allowed to cross. No target marker, no qualitative bands, no SVG figure, no dv-table, no dataviz series token. A meter that grows a target IS a Chart-bullet.",
+    "Runway-bar": "NOT MERGED AND NOT ASSUMED — deliberately out of scope. Runway asks 'does my money cover what is scheduled, and until when?' (max = my balance, horizon = a date discovered); an allowance meter asks 'how much am I allowed to move, and when does it come back?' (max = a cap, horizon = a repeating reset). Whether Runway-bar is a third semantic variant of this same meter is a REAL question, and it is not put here: this file's scope is the two components Dave named.",
+    "Loading-indicator": "Loading-indicator owns work of UNKNOWN duration. This component is DETERMINATE ONLY, inheriting Progress-bar's scope fence (s173-D1, Dave): there is deliberately no indeterminate variant, because that state overlaps Loading-indicator and its ownership is UNRULED."
+  },
+  "$decisionsForDave": [
+    "⛔ FIRST: is the unification right at all? Accept this spec, rework it, or drop it and leave the two components separate. Dropping costs nothing — nothing registers this file.",
+    "The title-size default. Small row-name (t-cm-legal, 12px, secondary) or Progress-bar's larger title (t-cm-label, 16px, ink)? You asked for the OPTION; which way round it defaults is not a worker's call. Both are drawn on the same meter in §B6.",
+    "role=\"progressbar\" or role=\"meter\"? Still unruled after three components have now raised it. If you rule 'meter', Limits-meter, Runway-bar and Meter change together.",
+    "Which organism specimens does the component ship with? The daily-transfer-limit lock-up and the payment-limits set are drawn; the savings-goal card deliberately is not, because drawing it would be inventing an organism.",
+    "What retires at fold time — do both parents fold into this, does Progress-bar stay gated as the atom beneath it, or does Limits-meter alone fold? Nothing has been acted on.",
+    "The semantic variant vocabulary: are 'progress' and 'allowance' the right names, and should the difference ever be VISIBLE rather than only authored?",
+    "The base max-width: the two parents disagree, 420px vs 480px. Drawn at 480.",
+    "Carried forward from Limits-meter and still open: the 'Per payment' row renders as an empty track reading '£0 of £10,000 used' and always will. Should it be a meter at all, or a plain stated rule?"
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Meter.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:cards",
+        "$note": "Card"
+      },
+      {
+        "ref": "component:list-items",
+        "$note": "List items"
+      },
+      {
+        "ref": "component:form-layout",
+        "$note": "Form layout"
+      },
+      {
+        "ref": "component:file-upload",
+        "$note": "File upload"
+      },
+      {
+        "ref": "component:stat-card",
+        "$note": "Stat card"
+      },
+      {
+        "ref": "component:account-card",
+        "$note": "Account card"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:dialog",
+        "$note": "Dialog"
+      },
+      {
+        "ref": "context:payment-limits-screens",
+        "$note": "Payment limits screens"
+      },
+      {
+        "ref": "context:account-settings",
+        "$note": "Account settings"
+      },
+      {
+        "ref": "context:card-management",
+        "$note": "Card management"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:file-upload-progress"
+      },
+      {
+        "ref": "pattern:multi-part-transfer-progress"
+      },
+      {
+        "ref": "pattern:savings-goal-limits-meter"
+      },
+      {
+        "ref": "pattern:profile-completeness-score"
+      },
+      {
+        "ref": "pattern:payment-limits"
+      },
+      {
+        "ref": "pattern:daily-transfer-allowance"
+      },
+      {
+        "ref": "pattern:card-spending-cap"
+      },
+      {
+        "ref": "pattern:limit-increase-request"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "Loading indicator for the same task (one claims the duration is known, the other that it is not)"
+      },
+      {
+        "ref": null,
+        "$note": "A Chart-bullet showing the same value against a target (a limit is not a target)"
+      },
+      {
+        "ref": null,
+        "$note": "A second meter restating the same number in the opposite direction"
+      }
+    ]
+  }
+}

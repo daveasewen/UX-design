@@ -172,6 +172,9 @@
 ## Loading-indicator.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## Meter.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Modal-lightbox.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 

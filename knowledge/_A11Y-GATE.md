@@ -1,6 +1,6 @@
 # A11y gate — _validate_a11y.py
 
-**100 snippet(s)** · **0 failure(s)** · **186 warning(s)** · **237 note(s)**
+**101 snippet(s)** · **0 failure(s)** · **186 warning(s)** · **237 note(s)**
 
 Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **609 control(s)** and **203 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
 
