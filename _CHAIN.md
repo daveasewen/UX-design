@@ -89,7 +89,7 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **84 items · 58 live · 26 Dave's · 32 mine · 65 carry a stated close condition · **19 UNCONDITIONED**.**
+> **88 items · 58 live · 26 Dave's · 32 mine · 69 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
@@ -112,9 +112,9 @@
 > - `W-41` **#203 delegated-wrap brief (DO-NOT-RULE list + session facts for the Opus wrap sub)** — *closes when:* the #203 wrap commit is pushed by the conductor under s203-D1 AND the CI read-back is relayed to Dave in chat - both limbs, per the ruling's own words
 > - `W-51` **#207 addendum: Dave's critique of the #206 record (promotion vocabulary open; candidature homed)** — *closes when:* Dave rules the twice-caught vocabulary question (does a mined historical occasion count as a 'catch' toward s204-D1's bar?) AND rules promote/wait/park on the three candidates; the candidature record in knowledge/_DS-IMPROVEMENTS.md then carries the outcome
 > - `W-53` **#207 W-46 three scoped proposals (items 3/4/5) — returning to Dave** — *closes when:* Dave rules build/park per item on the three scoped proposals; W-46 closes on the same event
-> - `W-60` **Dave's eye on the 29 4px-grid snaps (#209) — the review page is the surface** — *closes when:* Dave has looked at reviews/REVIEW-209-grid-snap-before-after-v1.html in light and dark and either accepts the snapped values or names the ones he wants re-cut
-> - `W-61` **Dave's eye on leading-trim applied to text-bearing inputs (#209) — keep the inert vocabulary, or revert** — *closes when:* Dave's eye accepts BOTH halves on reviews/REVIEW-209-input-trim-before-after-v1.html: (a) the inert input vocabulary stays as authored, now watched by probe P-6 — or is reverted; and (b) the 11 newly-trimmed snippets read right with their labels tighter and their forms up to 37px shorter — or any one of them has its block removed
 > - `W-63` **wave-3 NINE components BUILT PROPOSED-NOT-RULED - Daves eye owed (incl. two existence questions)** — *closes when:* Dave rules per component: promote / rework / delete; existence questions answered first
+> - `W-64` **Dave's eye on the two #209 EXISTENCE questions - the side-by-side review page is the surface** — *closes when:* Dave has looked at reviews/REVIEW-210-existence-side-by-side-v1.html in light AND dark and answered BOTH existence questions - (1) is the product's statement a LIST or a LEDGER, i.e. does transaction-row exist or does row 91 become Duplicate pointing at List-items; and (2) does limits-meter stay as its own component, fold into Progress-bar, or merge into Runway-bar. W-63's per-component design rulings then follow; this row closes on the two existence answers alone.
+> - `W-66` **two #210 spacing fixes PROPOSED - Time-picker label descender clearance (4px->8px) and Data-grid state switcher margin (0->28px)** — *closes when:* Dave's eye accepts the two fixes on reviews/REVIEW-210-spacing-fixes-v1.html - or moves either value; and he rules whether the two CLASSES (the Input-fields family's identical 4px lblrow, and Table/Segmented-control's identical 0px flush switcher) are swept or left
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -128,7 +128,7 @@
 
 ---
 
-*(Chain ends. **32,754 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **32,856 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 90,796 real and stays whole for retrieval; you have paid for
 36% of it, and that is the intended figure, not a shortfall.)*

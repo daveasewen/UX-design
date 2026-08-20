@@ -122,7 +122,11 @@
 
   /* ---------- field group — Input-fields anatomy (lock-step; change it THERE) ---------- */
   .tp{max-width:420px; position:relative;}
-  .tp-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+  /* 4px → 8px (#210, PROPOSED): with the #209 leading-trim block the label box ends at the
+     ALPHABETIC BASELINE, so the "Payment time" y-descender (3.00px measured) eats the old 4px
+     margin and left 1.00px optical clearance to the field border. 8px restores the pre-trim
+     optics (5.00px measured); on-grid; matches Secure-entry's .se-lblrow{margin:0 0 8px}. */
+  .tp-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 8px;}
   .tp-lblrow label{color:var(--text);}
   .tp-help{color:var(--text); margin:0 0 8px;}
   .tp-box{display:flex; align-items:center; gap:16px; padding:8px 16px;

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review 210 — the two spacing fixes (before | after, measured)</title>
+<style>
+  :root{--ink:#1A1A1A; --page:#FAFAFA; --line:#E1E1E1; --mid:#808080; --warn:#DA1A00;}
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+       background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  header{padding:24px 28px; background:#FFFFFF; border-bottom:1px solid var(--line);}
+  h1{font-size:20px; font-weight:500; margin:0 0 6px;}
+  .sub{font-size:13px; color:var(--mid); margin:0; max-width:110ch;}
+  main{padding:24px 28px 64px; max-width:1500px;}
+  section{margin:0 0 40px;}
+  h2{font-size:15px; font-weight:500; margin:32px 0 8px; padding-top:16px; border-top:1px solid var(--line);}
+  h3{font-size:13px; font-weight:500; margin:20px 0 8px;}
+  p{font-size:13px; line-height:1.55; max-width:96ch; margin:0 0 12px;}
+  .call{background:#FFFFFF; border:1px solid var(--line); border-left:3px solid var(--ink); padding:14px 16px; margin:0 0 16px; max-width:110ch;}
+  .call.red{border-left-color:var(--warn);}
+  .call p:last-child{margin-bottom:0;}
+  table{border-collapse:collapse; font-size:12.5px; background:#FFFFFF; margin:0 0 16px;}
+  th,td{border:1px solid var(--line); padding:6px 10px; text-align:left; vertical-align:top;}
+  th{font-weight:500; background:#F4F4F4;}
+  td.n{font-variant-numeric:tabular-nums; text-align:right;}
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:0 0 16px;}
+  .pane{background:#FFFFFF; border:1px solid var(--line);}
+  .pane .cap{font-size:12px; padding:6px 10px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; gap:12px;}
+  .pane .cap b{font-weight:500;}
+  .pane .cap span{color:var(--mid); font-variant-numeric:tabular-nums;}
+  .pane img{display:block; width:100%; height:auto;}
+  .dark .pane{background:#1A1A1A; border-color:#3A3A3A;}
+  .dark .pane .cap{color:#FFFFFF; border-bottom-color:#3A3A3A;}
+  .dark .pane .cap span{color:#B0B0B0;}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; background:#F0F0F0; padding:1px 4px;}
+  .tag{display:inline-block; font-size:11px; padding:2px 7px; border:1px solid var(--line); background:#FFFFFF; margin-right:6px;}
+  .tag.prop{border-color:var(--warn); color:var(--warn);}
+  .tag.zero{border-color:var(--mid); color:var(--mid);}
+  a{color:inherit;}
+  ul{font-size:13px; line-height:1.55; max-width:96ch;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Review 210 — the two spacing fixes you named on the #209 trim page</h1>
+  <p class="sub">Two screenshots, two fixes. Every image below is a <b>real render of the real snippet file</b> in headless Chromium
+  with the HSBC face (asserted against two controls) — nothing re-drawn, no specimen hand-rolled.
+  Light and dark, both fixes. <b>Both values are PROPOSED for your eye</b>, both are on the 4px grid, and
+  <b>both are taken from an existing sibling snippet, not invented.</b> ⛔ No colour value was touched: the two-red law
+  (<code>#DA1A00</code> / <code>#F6604C</code>) and the mono error ink camp are exactly as they were.</p>
+</header>
+<main>
+
+<section>
+<div class="call red">
+  <p><b>Read this first — what was actually wrong, measured.</b></p>
+  <p><b>1 · Time-picker.</b> The gap under the red stroke was <b>never the defect</b>: it measures <b>8.00&nbsp;px</b> box-bottom
+  to message-box, <b>12.00&nbsp;px</b> to the warning triangle, and the message is <b>not clipped</b> (the error card's bottom edge and
+  the message's bottom edge are the same line, overflow <b>0.00&nbsp;px</b>). That 8&nbsp;px is the whole Input-fields family value
+  (Date-picker, Amount-input, Textarea, Combobox, Secure-entry, Input-fields all use <code>margin:8px 0 0</code>), so I did not move it.
+  <b>What was wrong is the other side of the field.</b> The #209 leading-trim block ends a <code>&lt;label&gt;</code>'s box at the
+  <b>alphabetic baseline</b>, so the <b>y-descender of "Payment time" hangs outside the box</b> and eats the 4&nbsp;px margin —
+  measured optical clearance between the descender and the field's top border: <b>1.00&nbsp;px</b>. That is the "flush" in your screenshot,
+  and the heavy red stroke below made the imbalance obvious (1&nbsp;px above the field, 12&nbsp;px below it).</p>
+  <p><b>2 · Data-grid.</b> The Live/Loading/Empty switcher measures <b>0.00&nbsp;px</b> to the "Transactions" section label —
+  literally touching. Confirmed by measurement, not by eye.</p>
+  <p>⚠ <b>The trim block was NOT removed</b> — you ruled "Keep + canary" and probe <b>P-6</b> watches it. Both fixes are spacing
+  <i>around</i> it.</p>
+</div>
+</section>
+
+<!-- ============================ FIX 1 ============================ -->
+<section>
+<h2>Fix 1 — Time-picker, the "Payment time" label sat 1&nbsp;px off the field</h2>
+<p><span class="tag prop">PROPOSED</span> <code>knowledge/snippets/Time-picker.reference.html</code> ·
+<code>.tp-lblrow{margin:0 0 <b>4px</b>}</code> → <code>margin:0 0 <b>8px</b>}</code> · one declaration, spacing only.</p>
+
+<h3>Where 8px comes from (sibling precedent, not a new value)</h3>
+<p><code>Secure-entry.reference.html</code> line 128 already carries <code>.se-lblrow{... margin:0 0 8px;}</code> in the same
+Input-fields family. 8&nbsp;px also restores the <i>pre-#209</i> optics: before the trim block the label's line box was 16.00&nbsp;px tall
+and the descender sat inside it, giving ~5.44&nbsp;px optical clearance; 8&nbsp;px gives <b>5.00&nbsp;px</b>.</p>
+
+<h3>The numbers (headless Chromium, <code>goto file://</code>, transitions settled, HSBC face asserted)</h3>
+<table>
+<tr><th>Measurement (error variant, "Error — ink message, red stroke")</th><th>BEFORE</th><th>AFTER</th><th>Reading</th></tr>
+<tr><td>label box bottom → field top border</td><td class="n">4.00 px</td><td class="n">8.00 px</td><td>the changed declaration</td></tr>
+<tr><td><b>optical clearance: y-descender → field top border</b></td><td class="n"><b>1.00 px</b></td><td class="n"><b>5.00 px</b></td><td>the actual defect and its repair</td></tr>
+<tr><td>measured descender of "Payment time" @16px</td><td class="n">3.00 px</td><td class="n">3.00 px</td><td>canvas <code>actualBoundingBoxDescent</code></td></tr>
+<tr><td>label box height (trim block active)</td><td class="n">11.56 px</td><td class="n">11.56 px</td><td>trim UNTOUCHED — 16.00 px without it</td></tr>
+<tr><td>field bottom (red stroke) → error message box</td><td class="n">8.00 px</td><td class="n">8.00 px</td><td><span class="tag zero">unchanged</span> family value</td></tr>
+<tr><td>field bottom → warning triangle glyph</td><td class="n">12.00 px</td><td class="n">12.00 px</td><td><span class="tag zero">unchanged</span></td></tr>
+<tr><td>message bottom vs card bottom (clip test)</td><td class="n">0.00 px</td><td class="n">0.00 px</td><td><b>not clipped</b>, before or after</td></tr>
+<tr><td>field group height</td><td class="n">89.56 px</td><td class="n">93.56 px</td><td>+4.00 px, on grid</td></tr>
+</table>
+
+<h3>Light</h3>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>descender clearance 1.00 px</span></div><img src="_assets/review-210-spacing/tp-before-light.png" alt="Time-picker error variant before the fix, light theme"></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>descender clearance 5.00 px</span></div><img src="_assets/review-210-spacing/tp-after-light.png" alt="Time-picker error variant after the fix, light theme"></div>
+</div>
+<h3>Dark</h3>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>descender clearance 1.00 px</span></div><img src="_assets/review-210-spacing/tp-before-dark.png" alt="Time-picker error variant before the fix, dark theme"></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>descender clearance 5.00 px</span></div><img src="_assets/review-210-spacing/tp-after-dark.png" alt="Time-picker error variant after the fix, dark theme"></div>
+</div>
+<p>Open the live file: <a href="../knowledge/snippets/Time-picker.reference.html"><code>knowledge/snippets/Time-picker.reference.html</code></a></p>
+</section>
+
+<!-- ============================ FIX 2 ============================ -->
+<section>
+<h2>Fix 2 — Data-grid, the state switcher was touching "Transactions"</h2>
+<p><span class="tag prop">PROPOSED</span> <code>knowledge/snippets/Data-grid.reference.html</code> ·
+<code>.dgseg{ ... }</code> gains <code>margin:0 0 <b>28px</b>}</code> · one declaration, spacing only.</p>
+
+<h3>Where 28px comes from (surveyed, not invented)</h3>
+<p>I measured the same relationship — <i>a demo control row directly above a section heading</i> — across the whole snippet library.
+Three snippets carry it, and all three measure the same number:</p>
+<table>
+<tr><th>Snippet</th><th>Control row</th><th>What follows</th><th>Measured gap</th><th>Source declaration</th></tr>
+<tr><td>Split-button</td><td><code>.row</code> (2 buttons)</td><td><code>h2.t-cm-section-label</code></td><td class="n">28.00 px</td><td><code>h2{margin:1.75rem 0 .6rem}</code></td></tr>
+<tr><td>Button</td><td><code>.row</code> (5 buttons)</td><td><code>.spec-h</code></td><td class="n">28.00 px</td><td>1.75rem</td></tr>
+<tr><td>Toast</td><td>trigger row (2 buttons)</td><td><code>h2</code></td><td class="n">28.00 px</td><td><code>h2{margin:1.75rem 0 .7rem}</code></td></tr>
+<tr><td><b>Data-grid</b> (before)</td><td><code>.dgseg</code> (3 buttons)</td><td><code>#dgTitle</code> section label</td><td class="n"><b>0.00 px</b></td><td>— none —</td></tr>
+</table>
+<p>28&nbsp;px = 1.75&nbsp;rem = 7 × 4, on the grid. Split-button is the exact match: control row → <code>t-cm-section-label</code>,
+which is the same element Data-grid uses for "Transactions".</p>
+
+<h3>The numbers</h3>
+<table>
+<tr><th>Measurement</th><th>BEFORE</th><th>AFTER</th><th>Reading</th></tr>
+<tr><td>switcher bottom → "Transactions" label top (light)</td><td class="n">0.00 px</td><td class="n">28.00 px</td><td>the fix</td></tr>
+<tr><td>switcher bottom → "Transactions" label top (dark)</td><td class="n">0.00 px</td><td class="n">28.00 px</td><td>same in both themes</td></tr>
+<tr><td>switcher bottom → <code>.dg</code> component top</td><td class="n">0.00 px</td><td class="n">28.00 px</td><td>the component block moves as one</td></tr>
+<tr><td><code>.dgseg</code> computed <code>margin-bottom</code></td><td class="n">0px</td><td class="n">28px</td><td>margin applies through the atomic inline box — verified by render, not assumed</td></tr>
+<tr><td>Data-grid internal rhythm (head / toolbar / foot)</td><td class="n">12 px</td><td class="n">12 px</td><td><span class="tag zero">untouched</span> — the chrome now reads as chrome</td></tr>
+</table>
+
+<h3>Light</h3>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>gap 0.00 px</span></div><img src="_assets/review-210-spacing/dg-before-light.png" alt="Data-grid switcher before the fix, light theme"></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>gap 28.00 px</span></div><img src="_assets/review-210-spacing/dg-after-light.png" alt="Data-grid switcher after the fix, light theme"></div>
+</div>
+<h3>Dark</h3>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>gap 0.00 px</span></div><img src="_assets/review-210-spacing/dg-before-dark.png" alt="Data-grid switcher before the fix, dark theme"></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>gap 28.00 px</span></div><img src="_assets/review-210-spacing/dg-after-dark.png" alt="Data-grid switcher after the fix, dark theme"></div>
+</div>
+<p>Open the live file: <a href="../knowledge/snippets/Data-grid.reference.html"><code>knowledge/snippets/Data-grid.reference.html</code></a></p>
+</section>
+
+<!-- ============================ CLASS ============================ -->
+<section>
+<h2>⚠ Both defects are CLASSES, and I fixed only the two you named</h2>
+<div class="call red">
+  <p><b>Class A — the collapsed label gap reaches the whole Input-fields family.</b> The comment at the top of that CSS block says
+  <i>"field group — Input-fields anatomy (lock-step; change it THERE)"</i>. Every one of these carries the identical
+  <code>margin:0 0 4px</code> and therefore the identical 1&nbsp;px descender clearance wherever a label with a descender abuts a field:
+  <b>Date-picker, Date-range-picker, Amount-input, Textarea, Combobox, Time-picker</b> (fixed here) and their relatives.
+  Date-picker's error card is <b>anatomically identical</b> to the one you screenshotted, down to the same inset red stroke.
+  <b>Fixing Time-picker alone puts it out of lock-step with its family.</b> Sweeping is a decision, not a chore — it is yours.</p>
+  <p><b>Class B — the flush switcher is not unique to Data-grid.</b> <code>Table.reference.html</code> has the same
+  <code>.seg</code> → <code>.wrap</code> relationship and measures <b>0.00&nbsp;px</b> too;
+  <code>Segmented-control.reference.html</code> measures <b>0.00&nbsp;px</b> from its <code>.seg md</code> to the following
+  <code>.section-head-row</code>. Reported, not swept.</p>
+</div>
+</section>
+
+<!-- ============================ GATES ============================ -->
+<section>
+<h2>Gates, verbatim, after the change</h2>
+<table>
+<tr><th>Gate</th><th>Output</th><th>rc</th></tr>
+<tr><td><code>knowledge/_validate_grid.py</code></td><td>GRID GATE PASS — all layout dimensions on the 4px grid (116 file(s)).</td><td class="n">0</td></tr>
+<tr><td><code>knowledge/_validate_snippets.py</code></td><td>snippet gate: 100 snippet(s), 0 failure(s)</td><td class="n">0</td></tr>
+<tr><td><code>knowledge/_validate_a11y.py</code></td><td>a11y gate: 100 snippet(s), 0 failure(s), 186 warning(s), 237 note(s) · 609 controls + 203 marks measured · 107 mark(s) below 24</td><td class="n">0</td></tr>
+<tr><td><code>knowledge/_validate_descender_clip.py</code> <i>(run because it is the gate nearest this class)</i></td><td>DESCENDER-CLIP GATE PASS — every truncating label is descender-safe (116 file(s)).</td><td class="n">0</td></tr>
+</table>
+<p><b>A green gate is not a green claim.</b> None of these four gates could see either defect: the grid gate only checks that values are
+multiples of 4 (0&nbsp;px and 4&nbsp;px both pass), and the descender-clip gate only fires on labels that <i>truncate</i>
+(<code>text-overflow:ellipsis</code>), which these do not. Both defects were found by <b>looking at rendered pixels and measuring them</b>.</p>
+</section>
+
+<!-- ============================ DECLARED ============================ -->
+<section>
+<h2>Declared — what is unproven or not done</h2>
+<ul>
+  <li><b>Nothing here is ruled.</b> Both values are PROPOSED and are yours to accept, move or reject.</li>
+  <li><b>No colour, no token, no canon.css.</b> <code>knowledge/canon/canon.css</code> was <b>not</b> regenerated — if these snippets feed
+  the canon components build, a regeneration is owed before the values reach any consumer. <b>Not done, declared.</b></li>
+  <li><b>Not committed and not pushed.</b> CI has not seen this file or either edit.</li>
+  <li>The evidence images are PNG renders of the real snippet files, not iframes: the BEFORE state no longer exists on disk, so it could
+  only be carried as a render. The AFTER state is linked live above so you can open the real file.</li>
+  <li>Measured at viewport width <b>1180</b> only. The narrow (<code>max-width:480</code>) leg of Time-picker's gallery and Data-grid's
+  container collapses were <b>not</b> re-measured. Declared.</li>
+  <li>The Time-picker fix moves <b>all four</b> gallery variants and the live field, not only the error card — the label→help gap goes
+  4&nbsp;px → 8&nbsp;px in the Live and Disabled variants. Visible on the live file; call it if you dislike it.</li>
+</ul>
+</section>
+
+</main>
+</body>
+</html>
