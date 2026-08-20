@@ -1,16 +1,17 @@
 # Type-binding blast-radius gate — guards canon/type.css
 
-Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (90 files).
+Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (105 files).
 
 | radius | kind | selector | status |
 |---:|---|---|---|
-| 12 | class | `.btn` | PASS |
+| 13 | class | `.btn` | PASS |
+| 9 | class | `.stateLabel` | PASS |
 | 8 | scoped-element | `.seg button` | PASS |
-| 7 | class | `.stateLabel` | PASS |
+| 6 | class | `.chip` | PASS |
 | 5 | class | `.spec-h` | PASS |
 | 5 | scoped-element | `.seg.sm button` | PASS |
-| 4 | class | `.chip` | PASS |
 | 3 | class | `.label` | PASS |
+| 3 | class | `.status` | PASS |
 | 3 | scoped-element | `.search input` | PASS |
 | 2 | class | `.avatar` | PASS |
 | 1 | class | `.action-bar .btn` | PASS |
@@ -22,7 +23,6 @@ Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_
 | 1 | class | `.pg .ctrl` | PASS |
 | 1 | class | `.qbtn` | PASS |
 | 1 | class | `.sim` | PASS |
-| 1 | class | `.status` | PASS |
 | 1 | class | `.tabbar .tabbar__item` | PASS |
 | 1 | class | `.time` | PASS |
 | 1 | scoped-element | `.nav button` | PASS |
@@ -35,10 +35,6 @@ Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_
 ## Findings
 
 - ✓ every appended selector is registered and within its acknowledged blast radius.
-
-## Housekeeping (non-gating)
-
-- shrunk: `.seg button` no longer matches ['Tab-bar.reference.html'] (safe; tidy the registry with --update).
 
 ---
 Guard-rail for the T-D9 binding mechanism (T-D12 §5). Waived entries are DEBT to burn down (namespace them) — priority `h2` (25 files) in the non-/1 batch. This gate does NOT reopen T-D9.
