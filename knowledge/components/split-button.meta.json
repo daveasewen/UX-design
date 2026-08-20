@@ -1,0 +1,122 @@
+{
+  "name": "Split button",
+  "category": "molecule",
+  "purpose": "A two-target action control: a MAIN action button that fires immediately, glued to a CARET trigger that opens a menu of alternative/related actions. PROPOSED #209 (itinerary row 6, slug split-button) — NOT GATED, NOT RULED. A Button + Dropdown composition, per the wave-3 brief: the main/caret pair reuses Button.reference's tokens verbatim, and the flyout reuses Dropdown.reference's `.menu` shell verbatim, with role=\"menu\"/\"menuitem\" replacing role=\"listbox\"/\"option\" because a split-button menu triggers ACTIONS, not a value selection.",
+  "props": [
+    { "name": "label", "type": "string", "$note": "Visible text on the MAIN action button, e.g. 'Send payment'." },
+    { "name": "tier", "type": "enum", "values": ["primary", "tertiary"], "default": "primary", "$note": "Mirrors two of Button's four emphasis tiers. Secondary/quaternary were not authored into this specimen — unproposed, not excluded; see antiPatterns/decisionsForDave." },
+    { "name": "items", "type": "array", "$note": "Menu entries, each { label } for now — no icon slot authored (see decisionsForDave)." },
+    { "name": "open", "type": "boolean", "default": false, "$note": "Controls the flyout's aria-expanded/data-open state." },
+    { "name": "disabled", "type": "boolean", "default": false, "$note": "Disables BOTH halves in lock-step — a split button cannot be half-disabled." }
+  ],
+  "variants": [
+    { "name": "primary", "use": "The main action IS the primary action of its context (e.g. 'Send payment' with 'Schedule for later' as an alternative)." },
+    { "name": "tertiary", "use": "A lower-emphasis split action (e.g. 'Export' with format alternatives) that should not compete with a page's real primary button." }
+  ],
+  "tokens": {
+    "main": "button.primary.{background,label}.* / button.tertiary.{label,border,background-hover}.* — copied byte-for-byte from Button.reference's own tiers",
+    "caret": "same tier tokens as the main half; the divider between them is color-mix(in srgb, <tier label token> alpha.24, <tier background token>) on the primary tier, or the tier's own border token on tertiary — NO NEW HEX MINTED",
+    "menu": "background.default (surface) / elevation.border (dark outline) / elevation.functional (light shadow) / form.background.hover (item hover) / divider.border.section — copied byte-for-byte from Dropdown.reference's `.menu`/`.opt` shell",
+    "focus": "focus.ring",
+    "radius": "border-radius.control (both button halves) + border-radius.surface (the flyout panel)",
+    "motion": "component-type.button-family.press-travel / press-darken — the same B-D7 pixel-true partial as Button and Icon-button",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED (payment-card-visual's tokens.$note standard, copied). Every value already exists and is already bound by a gated component."
+  },
+  "motion": {
+    "hover": "Scale-physics grow, identical to Button (B-D7 pixel-true, --phys-size 120).",
+    "press": "Scale-physics recede + darken, identical to Button.",
+    "menuOpen": "opacity + translateY(-6px)->none over --ease, copied from Dropdown.reference's `.menu` open transition.",
+    "reducedMotion": "Transforms/filters disabled under prefers-reduced-motion; the menu's opacity fade is retained (not a scale/translate hazard).",
+    "tokens": ["component-type.button-family.press-travel", "component-type.button-family.press-darken"]
+  },
+  "responsive": {
+    "rule": "Intrinsically fixed-width (label-driven main + 44px caret); does not itself reflow. In an action-bar (Button's responsive unit), a split button behaves as one atomic item — it does not split its two halves onto separate rows.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Toolbar", "Page header", "Table (bulk row actions)", "Form footer / action bar"],
+    "mustNotNeighbour": ["A second split button with an overlapping/ambiguous main action in the same toolbar"],
+    "commonPatterns": ["primary action + alternative actions (send now / schedule / save as template)", "export with format choice", "bulk row action with a default + alternatives"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "The main half is a plain <button>. The caret half is a SEPARATE <button> carrying aria-haspopup=\"menu\" + aria-expanded, aria-controls pointing at the flyout, and its own aria-label (e.g. 'More payment actions') because it has no visible text.",
+    "menu": "The flyout is role=\"menu\" with role=\"menuitem\" children — the WAI-ARIA APG 'menu button' pattern, deliberately NOT role=\"listbox\"/\"option\" (Dropdown's pattern), because menu items are actions, not a selectable value.",
+    "keyboard": "Caret: Enter/Space/ArrowDown opens and focuses the first item. Within the menu: ArrowUp/ArrowDown cycle, Escape closes and returns focus to the caret. Click-away closes. Main button: Enter/Space fires immediately and does not open the menu (see decisionsForDave on whether ArrowDown on the main button should also open it).",
+    "focus": "Each half has its OWN visible focus-visible ring (focus.ring); the outline gets z-index:1 so it is not clipped by the sibling button's adjoining edge.",
+    "target": "Main >=44px tall, label-driven width; caret exactly 44x44 (2.5.8).",
+    "relatedSC": ["2.1.1 Keyboard", "2.4.7 Focus Visible", "4.1.2 Name, Role, Value", "1.4.11 Non-text Contrast", "2.5.8 Target Size (Minimum)"]
+  },
+  "antiPatterns": [
+    "Making the caret and main action share ONE <button> / one click handler — they are two independently operable controls with two accessible names.",
+    "Using role=\"listbox\"/\"option\" for the flyout (that is Dropdown's value-selection semantics, not this component's action semantics).",
+    "Disabling only one half of the pair — disabled must apply to both in lock-step.",
+    "Putting the PRIMARY action inside the menu and a lesser action as the main button (inverts the hierarchy the control exists to express).",
+    "REVIEW (inferred): stacking two split buttons with overlapping menu items in the same toolbar (ambiguous which 'main' applies)."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PROPOSED — worker lane render-verify only (light+dark, headless Chromium, 0 console errors). _validate_snippets.py / _validate_a11y.py / _validate_type_composites.py / _validate_grid.py / _validate_radius.py NOT RUN by this lane (conductor's serial set, per the wave-3 brief). This is a PROPOSAL, not a proof-of-done.",
+    "$note": "Not registered in component-types.json (shared file, outside this lane's fence). Not in _validate_radius.MIGRATED_SNIPPETS. No .cn-split-button scope exists in canon.css."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Split-button.reference.html"
+  },
+  "$differsFrom": {
+    "Button": "Button is a single-target control — one action, one accessible name. Split button is TWO independently operable controls sharing one visual boundary.",
+    "Dropdown": "Dropdown SELECTS a value from a closed set (role=\"combobox\"/\"listbox\"/\"option\", aria-selected persists). Split button's caret opens a menu of ACTIONS (role=\"menu\"/\"menuitem\", no selected state — choosing an item performs it and closes the menu, it does not change what the main button says)."
+  },
+  "$decisionsForDave": [
+    "Should ArrowDown on the MAIN button also open the menu (a common APG variant), or should only the caret open it (as built)?",
+    "Should a menu item optionally carry a leading icon (some Table row-action menus do)? Unproposed here, flagged only.",
+    "Only primary + tertiary tiers were specimen'd. Should secondary/quaternary split buttons exist, or is split-button reserved for higher-emphasis actions only?",
+    "The primary-tier divider hairline reads faint by design (alpha.24 over the fill) — is that the right visibility, or should it bind a stronger existing token?"
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Split-button.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:table",
+        "$note": "Table (bulk row actions)"
+      },
+      {
+        "ref": "component:action-bar",
+        "$note": "Form footer / action bar"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:toolbar",
+        "$note": "Toolbar"
+      },
+      {
+        "ref": "context:page-header",
+        "$note": "Page header"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:primary-action-alternative-actions-send-now-schedule-save-as-template"
+      },
+      {
+        "ref": "pattern:export-with-format-choice"
+      },
+      {
+        "ref": "pattern:bulk-row-action-with-a-default-alternatives"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "A second split button with an overlapping/ambiguous main action in the same toolbar"
+      }
+    ]
+  }
+}

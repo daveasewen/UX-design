@@ -1,0 +1,113 @@
+{
+  "name": "Transfer list",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "Moves items between two labelled lists — 'Available' and 'Selected' — via checkboxes and move controls. Itinerary row 27 (P3, 'Move-between lists'), explicitly mapped to NOT be row 40's List-items ('⚠ NOT row 40's List-items (fuzzy matches on \"list\")'). Use where a user must build a subset FROM a larger set (assign accounts to a payee group, pick recipients for a standing instruction) and seeing both the chosen and unchosen sets at once matters more than a compact multi-select dropdown.",
+  "$status": "PROPOSED #209, Dave's eye owed — new component, built through the gated-component route at #209 wave 3 lane B. Nothing about it is ruled.",
+  "$composesFrom": "Two gated idioms, copied rather than re-drawn, per THE JOB's own instruction (List-items + Selection-controls idioms): (1) List-items supplies the row shell — the 44px+ row, the divider-between-items rhythm, the hover surface, the truncating single-line label with text-box-edge:text text so descenders aren't clipped. (2) Selection-controls supplies every checkbox verbatim, INCLUDING the panel-header 'select all' reusing the INDETERMINATE state exactly as Selection-controls' own 'Select all (indeterminate)' specimen does (same input.indeterminate JS toggle, same tick/mixed-dash SVG paths, same tokens). The ONE piece with no single-source precedent is the move-controls column and the cross-panel DOM move + role=\"status\" announcement — authored for this component specifically (see behaviour).",
+  "props": [
+    { "name": "availableItems", "type": "array", "$note": "Items shown in the left/'Available' panel. Each item is a checkable row (id + label)." },
+    { "name": "selectedItems", "type": "array", "$note": "Items shown in the right/'Selected' panel — the outcome of the control." },
+    { "name": "availableLabel", "type": "string", "default": "Available" },
+    { "name": "selectedLabel", "type": "string", "default": "Selected" },
+    { "name": "checkedIds", "type": "array", "$note": "The currently ticked rows in EITHER panel — drives which items 'Move selected' acts on and which header checkbox shows checked/indeterminate/unchecked." }
+  ],
+  "variants": [
+    { "name": "default", "use": "Two panels side by side with a four-button move column between them (single/all, both directions)." }
+  ],
+  "tokens": {
+    "panel": "tertiary/background/default surface, form/border/default panel border",
+    "row": "tertiary/background/hover on row hover — copied from List-items' own .row:hover treatment",
+    "divider": "divider/border/section — between rows and under each panel header, copied from List-items",
+    "checkbox": "form/border/default (unchecked border) / secondary/background/default (checked fill) / text/on-inverse (tick glyph) — copied byte-for-byte from Selection-controls' checkbox",
+    "moveButton": "form/border/default border, icon/default glyph, tertiary/background/hover on hover, icon/disabled + border when the button has nothing to act on (empty panel or nothing checked)",
+    "label": "text/default @ .t-cm-label (panel header) / .t-cm-caption (item count) / .t-cm-input (row label)",
+    "focus": "focus/ring",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. Every value already exists and is already bound by List-items or Selection-controls."
+  },
+  "motion": {
+    "entry": "None. Passive at rest.",
+    "reducedMotion": "Global prefers-reduced-motion collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Two panels + a move column in a flex row; below 480px (container query) the layout stacks to a single column with the move controls turned into a horizontal row between the panels. Verified at 1000px and inside a narrow container.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Payee-group / recipient management", "Standing-instruction account selection", "Permission / access-list assignment"],
+    "mustNotNeighbour": ["List-items used bare as a fake transfer list by pairing two independent List-items instances with no shared move mechanism — that reproduces this component's look without its behaviour"],
+    "commonPatterns": ["dual-list transfer", "move-between-panels selection"]
+  },
+  "accessibility": {
+    "checkbox": "Native <input type=\"checkbox\"> per row plus one per panel header, exactly as Selection-controls' own checkbox and indeterminate 'select all' idiom — no custom keydown was authored for selection itself.",
+    "moveButtons": "Four real <button>s, natively focusable and Enter/Space-activatable. Each carries a visually-hidden text description ('Move selected to Selected' / 'Move all to Available' etc.) via aria-describedby so meaning never rests on the chevron glyph alone (1.4.1) — the glyph is aria-hidden.",
+    "liveRegion": "Each panel owns its own role=\"status\" (visually hidden) that announces '<n> item(s) moved to <panel>' after a move — authored specifically for this component; there is no List-items or Selection-controls precedent for announcing a cross-panel DOM move (4.1.3).",
+    "focusManagement": "NOT YET HANDLED after a move: focus currently stays on the move button, which is legal (the button did not disappear) but a screen-reader user gets no cue that their checked rows physically relocated beyond the status announcement. Flagged, not silently accepted — see $decisionsForDave.",
+    "emptyPanel": "An empty panel renders a text row ('No items') rather than a blank surface, and its header checkbox auto-disables (mirrors the 'no blank surface' rule List-items' processing/empty states already model).",
+    "colourIndependence": "Row/panel state never relies on colour alone — checked state is a filled glyph + a fill colour together (Selection-controls' own two-channel answer), and every count is a visible number, not a dot or bar.",
+    "relatedSC": ["4.1.2 Name Role Value", "2.1.1 Keyboard", "1.4.1 Use of Color", "2.5.8 Target Size (Minimum)", "4.1.3 Status Messages", "1.3.1 Info and Relationships"]
+  },
+  "antiPatterns": [
+    "Moving DOM nodes without leaving each panel's header checkbox recomputed — a stale 'select all' state (checked when the panel is now empty, or vice versa) would silently lie to the next user action",
+    "A move button that stays enabled with nothing to act on (e.g. 'Move selected' enabled when nothing is checked) — this build disables each button against its own precondition",
+    "Relying on the chevron direction alone to convey which panel receives the moved items — every button also carries a text description",
+    "Building this as a single custom two-column widget with synthetic rows instead of composing List-items' row shell + Selection-controls' checkbox — that would re-draw idioms THE JOB explicitly said to copy"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via #token-manifest (mono values only)",
+    "result": "PROPOSED — worker lane B build, #209. No gate has been run by this worker (conductor's serial set runs _validate_snippets.py / _validate_a11y.py / _validate_type_composites.py / _validate_radius.py / _validate_icons.py / _validate_coverage.py). This is a proposal, not a proof-of-done.",
+    "$note": "The four chevron glyphs are byte-matched paths from knowledge/assets/icons/arrows-and-chevrons/{chevron-right,chevron-left,chevron-double-right,chevron-double-left}.svg, referenced via <symbol>/<use> with an explicit fill=\"currentColor\" on every <path> — the same <use>-shadow-tree fix Rating's meta records was caught and applied here too (a real render surfaced it: icons rendered solid black in both themes until the fill attribute was added, because a `svg path` CSS selector cannot reach into a <use> instance's shadow content)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Transfer-list.reference.html",
+    "$note": "Itinerary row 27 (reviews/ITINERARY-STATUS-2026-08-19-v1.json), measured a TRUE GAP: all five signal probes negative on transfer-list, drift AGREES. Explicitly NOT row 40/List-items per the itinerary's own fuzzy-match warning."
+  },
+  "$differsFrom": {
+    "List-items": "List-items rows are either informational or single-action (tap the whole row to navigate/act). This component's rows are CHECKABLE and the row itself does nothing on click — selection state, not navigation, is the point. The row SHELL is copied; the interaction model is not.",
+    "Selection-controls (Checkbox)": "Selection-controls documents the checkbox atom in isolation, one field at a time. This component is the first place in the library where a checkbox's checked state is consumed by something OTHER than its own label — a cross-panel move — which is why the move mechanism had to be authored rather than found."
+  },
+  "$decisionsForDave": [
+    "After a move, should focus follow the moved item's new position in the destination panel, move to the panel heading, or stay on the move button (as built)? Dave's call — this is a genuine UX/AT trade-off, not a mechanical one.",
+    "Should there be a maximum item count per panel before it needs its own internal scroll/search (the max-height:280px overflow:auto on each <ul> is a placeholder cap, not a ruled one)?",
+    "Is drag-and-drop between panels wanted alongside the checkbox+button mechanism, or is checkbox+button the whole interaction surface by design (as built, itinerary note says only 'move-between-lists')?"
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Transfer-list.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:payee-group-recipient-management",
+        "$note": "Payee-group / recipient management"
+      },
+      {
+        "ref": "context:standing-instruction-account-selection",
+        "$note": "Standing-instruction account selection"
+      },
+      {
+        "ref": "context:permission-access-list-assignment",
+        "$note": "Permission / access-list assignment"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:dual-list-transfer"
+      },
+      {
+        "ref": "pattern:move-between-panels-selection"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "List-items used bare as a fake transfer list by pairing two independent List-items instances with no shared move mechanism — that reproduces this component's look without its behaviour"
+      }
+    ]
+  }
+}

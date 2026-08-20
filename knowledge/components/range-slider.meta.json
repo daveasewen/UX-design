@@ -1,0 +1,108 @@
+{
+  "name": "Range slider",
+  "interactive": true,
+  "category": "molecule",
+  "purpose": "Lets a user select a MIN/MAX pair along a bounded numerical scale using two independent handles — e.g. 'Price range: £200–£800'. Itinerary row 24 (P3, 'Dual-handle'), explicitly mapped to NOT be the gated single-thumb Slider (Slider.reference.html), which this component ACCRETES from rather than re-draws.",
+  "$status": "PROPOSED #209, Dave's eye owed — new component, built through the gated-component route at #209 wave 3 lane B. Nothing about it is ruled.",
+  "$accretesFrom": "knowledge/snippets/Slider.reference.html (gated). Copied verbatim: the linear-gradient track-fill technique driven by a CSS custom property, the 20px/2px-border thumb geometry, the focus-ring-on-thumb treatment, the 'value also shown as text, never colour/position alone' answer to 1.4.1, and the reduced-motion collapse. The ONLY authored addition is the SECOND handle and its consequences (see behaviour.$authored below) — there is no single-handle precedent for a two-input clamp or z-index handoff.",
+  "props": [
+    { "name": "min", "type": "number", "default": 0 },
+    { "name": "max", "type": "number", "default": 1000 },
+    { "name": "step", "type": "number", "default": 50 },
+    { "name": "valueLow", "type": "number", "$note": "The low handle's current value. Clamped so it can never exceed valueHigh (authored JS, see behaviour)." },
+    { "name": "valueHigh", "type": "number", "$note": "The high handle's current value. Clamped so it can never fall below valueLow." },
+    { "name": "unit", "type": "string", "$note": "Prefix/suffix for the displayed value pair, e.g. '£'. Specimen shows GBP; not itself a currency-formatting component." },
+    { "name": "disabled", "type": "boolean", "default": false, "$note": "NOT DRAWN as a specimen this pass — the gated Slider has no disabled specimen either; carried as a declared gap, not invented here to avoid drifting ahead of its own precedent." }
+  ],
+  "variants": [
+    { "name": "default", "use": "Two handles, a filled band between them, min/max value pair shown as text." }
+  ],
+  "tokens": {
+    "track-filled": "scrollbar/foreground — the filled BAND between the two handles, copied from Slider's single-stop gradient technique, extended to a two-stop band",
+    "track-unfilled": "scrollbar/background — the two OUTER segments (below the low handle, above the high handle)",
+    "handle": "tertiary/background/default + form/border/default border — REBOUND from Slider's own background/default + border/subtle for the same reason Slider's meta already records (invisible-in-dark finding, see $differsFrom)",
+    "value-label": "text/default @ .t-cm-label (field label) / .t-cm-figure-6 (the £lo–£hi value pair, tabular figures)",
+    "focus": "focus/ring — 2px outline, offset 2, on whichever thumb has DOM focus",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. Every value already exists and is already bound by the gated Slider or List-items' amount figure."
+  },
+  "motion": {
+    "entry": "None. Passive at rest.",
+    "reducedMotion": "Global prefers-reduced-motion collapse present, copied from Slider.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "The field is max-width:360px and the rail is width:100% inside it — reflows naturally in a form column down to narrow viewports; no breakpoint-specific behaviour was needed or added.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Form", "Filter panel", "Search / results filtering"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["price range filter", "date range filter (numeric epoch)", "min/max numeric bound"]
+  },
+  "accessibility": {
+    "role": "Two real <input type=\"range\"> elements, each with its own aria-labelledby (sharing the field's one visible label) and a live aria-valuetext ('£200, minimum' / '£800, maximum') so AT never has to infer which handle is which from position alone.",
+    "keyboard": "Native — Arrow keys/Home/End/PageUp/PageDown operate whichever handle has focus, exactly as the gated Slider's single handle does. No custom keydown handler was authored; the browser's own range-input keyboard model is reused twice.",
+    "valueText": "aria-valuetext is recomputed on every input event for BOTH handles (the low handle's text also changes near the clamp boundary), and the visible value pair mirrors it as plain text — never colour or handle position alone (1.4.1), the same answer the gated Slider gives.",
+    "targetArea": "Handle hit target min 44px even though the visual thumb is 20px — copied from Slider's own antiPattern guard.",
+    "clamp": "The low handle cannot be dragged/keyed past the high handle and vice versa (authored JS). The clamp is silent (no error message) — DECIDED here as a UX default, not settled: should crossing produce a message, or is silent clamping sufficient? See $decisionsForDave.",
+    "relatedSC": ["4.1.2 Name Role Value", "2.1.1 Keyboard", "1.4.1 Use of Color", "2.5.8 Target Size (Minimum)", "2.5.7 Dragging Movements", "4.1.3 Status Messages"]
+  },
+  "antiPatterns": [
+    "Handle hit target smaller than 44px (carried from Slider)",
+    "No keyboard operation for either handle (carried from Slider)",
+    "Letting the low handle's DOM z-index get permanently trapped under the high handle at a shared value — the is-top class swap on pointerdown exists specifically to prevent this",
+    "Synthesising a single custom control with two drawn thumbs instead of two real range inputs — the two-native-inputs technique is what earns the keyboard model honestly, at the cost of the clamp needing to be authored"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via #token-manifest (mono values only — REBIND SOURCE, see $note)",
+    "result": "PROPOSED — worker lane B build, #209. No gate has been run by this worker (conductor's serial set runs _validate_snippets.py / _validate_a11y.py / _validate_type_composites.py / _validate_radius.py / _validate_icons.py / _validate_coverage.py). This is a proposal, not a proof-of-done.",
+    "$note": "Every var name and mono value was copied byte-for-byte from Slider.reference.html except --handle/--handle-bd, which this component instead points at tertiary/background/default + form/border/default (Slider's OWN meta already records background/default+border/subtle as invisible in dark — this snippet starts from the already-fixed pair rather than re-introducing the bug). Four-theme legs NOT independently re-measured this pass (declared, not run — see receipt)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Range-slider.reference.html",
+    "$note": "Itinerary row 24 (reviews/ITINERARY-STATUS-2026-08-19-v1.json), measured a TRUE GAP: all five signal probes negative on range-slider, drift AGREES. Explicitly NOT row 12/Slider — the itinerary's own 'why' field flags the fuzzy-match risk."
+  },
+  "$differsFrom": {
+    "Slider": "Slider is single OR double per its own 'type' enum/variant — but its double variant is documented as two handles on ONE input's worth of markup in the Figma source (see slider.meta.json variants.double), not built out as a live gated snippet. This component is the ACTUAL two-native-input implementation the itinerary's row 24 asks for, sharing every visual/token idiom with Slider but adding the real dual-handle mechanics (clamp, two aria-valuetext channels, z-index handoff) that a Figma variant name alone does not supply."
+  },
+  "$decisionsForDave": [
+    "Should crossing the clamp boundary produce a message (e.g. a brief inline note) or stay a silent clamp, as built?",
+    "Slider's own meta records a DEPRECATED tick-marker token finding — should Range slider inherit tick markers at all, or stay bare (as built)?",
+    "Is £/GBP the right specimen currency, or should the canonical specimen be currency-neutral (a plain numeric range) with money shown only in a usage example?"
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Range-slider.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:form",
+        "$note": "Form"
+      },
+      {
+        "ref": "context:filter-panel",
+        "$note": "Filter panel"
+      },
+      {
+        "ref": "context:search-results-filtering",
+        "$note": "Search / results filtering"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:price-range-filter"
+      },
+      {
+        "ref": "pattern:date-range-filter-numeric-epoch"
+      },
+      {
+        "ref": "pattern:min-max-numeric-bound"
+      }
+    ]
+  }
+}

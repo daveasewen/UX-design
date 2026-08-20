@@ -1,0 +1,104 @@
+{
+  "name": "Rating",
+  "interactive": true,
+  "category": "molecule",
+  "purpose": "Lets a user express or view a star-based score. Itinerary row 25 (P3, 'Star / score input'). Two variants: an INPUT (a real fieldset of native radios) for the user to SET a rating, and a passive READ-ONLY DISPLAY for showing an aggregate score (e.g. '4.3 out of 5' on a product/review card) — the itinerary's own name spans both senses ('input') and the read-only case has no other gated home.",
+  "$status": "PROPOSED #209, Dave's eye owed — new component, built through the gated-component route at #209 wave 3 lane B. Nothing about it is ruled.",
+  "props": [
+    { "name": "value", "type": "number", "default": 0, "$note": "1–5 whole stars in the input variant (native radiogroup, one value per star). The read-only display specimen shows a FRACTIONAL value (4.3) via a clip-path overlay — half/third-star granularity in the INPUT itself was not built; see $decisionsForDave." },
+    { "name": "max", "type": "number", "default": 5 },
+    { "name": "readOnly", "type": "boolean", "default": false, "$note": "true selects the passive display variant (role=\"img\", the number in the accessible name, no interactive radios)." },
+    { "name": "disabled", "type": "boolean", "default": false },
+    { "name": "reviewCount", "type": "number", "$note": "Read-only variant only — the '(212 reviews)' trailing caption. Optional; the star value and number stand alone without it." }
+  ],
+  "variants": [
+    { "name": "input", "use": "A real fieldset of 5 native radio buttons the user can set — 'Rate this product'." },
+    { "name": "readOnly", "use": "A passive aggregate score, e.g. on a product or review card." }
+  ],
+  "tokens": {
+    "star-filled": "text/default — the same ink checkbox/radio already use, NOT an invented gold/amber (see $decisionsForDave)",
+    "star-empty": "form/border/default — the same outline token Selection-controls' checkbox border binds",
+    "label": "text/default @ .t-cm-label (fieldset legend) / .t-cm-caption (the '3 out of 5' live value text) / .t-cm-figure-6 (the read-only numeric score) / .t-cm-caption (review count)",
+    "focus": "focus/ring",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. Every value already exists and is already bound by Selection-controls' checkbox/radio."
+  },
+  "motion": {
+    "entry": "None. Passive at rest.",
+    "hover": "Filled colour previews on hover before commit (:hover ~ label, CSS-only), reduced-motion collapses only the colour transition, not the state.",
+    "reducedMotion": "Global prefers-reduced-motion collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Inline-flex star row; wraps naturally inside any container width down to a single star's own 32px hit target. No breakpoint-specific behaviour needed.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Product / order review flow", "Product card (read-only aggregate)", "Feedback form"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["star rating input", "aggregate review score display"]
+  },
+  "accessibility": {
+    "role": "Input variant: a real <fieldset>/<legend> containing role=\"radiogroup\" (implicit, via 5 grouped native <input type=\"radio\">) — the SAME native-keyboard idiom Selection-controls already earns honestly for grouped Radio ('native checkbox/radio/switch have NO JS keyboard model by design'), copied rather than hand-rolled. Read-only variant: role=\"img\" with the full sentence ('Rated 4.3 out of 5') as its accessible name; the star row itself is aria-hidden.",
+    "keyboard": "Native radio keyboard model (Arrow keys move selection, Tab enters/exits the group) — zero custom JS keydown, same as Selection-controls' plain Radio (not its chip radiogroup, which needed custom roving-tabindex because chips are <button>s; native <input type=radio> does not).",
+    "liveValue": "An aria-live=\"polite\" caption ('3 out of 5') updates on change so a screen-reader user hears the committed value, not just 'radio button 3 of 5, checked'.",
+    "colourIndependence": "The filled/empty distinction is never the only carrier: the input variant always shows the live text value; the read-only variant's accessible name carries the number directly, independent of the visual clip. 1.4.1 is satisfied by TEXT, not by star count alone.",
+    "targetArea": "Each star's label is a 32px box (24px glyph inside), short of the 44px floor — DECLARED, not silent: five 44px targets in a row would force 220px minimum width, which the itinerary's inline-with-label placements (product cards, review rows) do not have room for. Flagged as a NAMED open question, not resolved by shrinking the floor silently.",
+    "relatedSC": ["4.1.2 Name Role Value", "2.1.1 Keyboard", "1.4.1 Use of Color", "4.1.3 Status Messages", "2.5.8 Target Size (Minimum)"]
+  },
+  "antiPatterns": [
+    "Building the star fill with a custom keydown handler instead of native radio inputs — no honest AT signal is gained by doing so, and Selection-controls' own reasoning for staying native applies unchanged",
+    "Conveying the rating by colour or star-fill alone with no text value nearby (1.4.1)",
+    "Inventing a half-star glyph for the INPUT variant instead of either committing to a coarser step or building a proper half-star hit-target model — this pass deliberately stopped at whole stars for the input and left fractional values to the read-only display only",
+    "Reusing this component's read-only variant as a review WRITE form disguised as a display — the input variant exists precisely so an input never masquerades as role=\"img\""
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via #token-manifest (mono values only)",
+    "result": "PROPOSED — worker lane B build, #209. No gate has been run by this worker (conductor's serial set runs _validate_snippets.py / _validate_a11y.py / _validate_type_composites.py / _validate_radius.py / _validate_icons.py / _validate_coverage.py). This is a proposal, not a proof-of-done.",
+    "$note": "The star glyph path is byte-matched from knowledge/assets/icons/global-controls/favourite-star.svg (a real library asset, not invented), referenced via <symbol>/<use> with an explicit fill=\"currentColor\" on the <path> so the CSS `color` property (not `fill`) controls the empty/filled/hover states — <use> shadow-tree content does not match ordinary `svg path` descendant selectors from outside, which was caught and fixed by an actual render (see receipt)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Rating.reference.html",
+    "$note": "Itinerary row 25 (reviews/ITINERARY-STATUS-2026-08-19-v1.json), measured a TRUE GAP: all five signal probes negative, no plausible store alias, drift AGREES."
+  },
+  "$differsFrom": {
+    "Selection-controls (Radio)": "Radio selects ONE option from a labelled set of alternatives with equal semantic weight; Rating's five radios are not alternatives — they are an ORDINAL scale where selecting '3' implies stars 1–2 are also 'included'. The visual fill expresses that ordinality; a plain Radio group never does.",
+    "Chips (single-selection, Selection-controls)": "The chip radiogroup is custom (role=radiogroup on <button>s with hand-rolled roving Arrow/Home/End) because chips are not native form controls. Rating's radiogroup uses REAL <input type=radio>, so no custom keydown was needed — a simpler case, not a re-implementation of the chip pattern."
+  },
+  "$decisionsForDave": [
+    "Should the filled star use a warm/gold tint (a new token) rather than mono ink? The store has no such seat today and 'no token minting' is on this wave's DO-NOT-RULE list, so mono ink was used deliberately, not by oversight.",
+    "Is a whole-star-only input acceptable, or is half-star precision needed? If so, the hit-target/keyboard model needs a fresh design (this pass did not attempt it).",
+    "The 32px (not 44px) per-star target: accept for compact/inline placements, or should Rating carry a distinct 'roomy' variant with true 44px targets for a standalone rating page?"
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Rating.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:product-order-review-flow",
+        "$note": "Product / order review flow"
+      },
+      {
+        "ref": "context:product-card-read-only-aggregate",
+        "$note": "Product card (read-only aggregate)"
+      },
+      {
+        "ref": "context:feedback-form",
+        "$note": "Feedback form"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:star-rating-input"
+      },
+      {
+        "ref": "pattern:aggregate-review-score-display"
+      }
+    ]
+  }
+}

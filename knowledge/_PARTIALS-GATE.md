@@ -7,7 +7,7 @@ generated AUTO-PARTIAL block. STRICT = registry members on their mapped control 
 
 ## ✅ STRICT clean — no member re-implements a registered partial
 
-## ⚠ CENSUS — press-physics outside the registry (32 rule(s))
+## ⚠ CENSUS — press-physics outside the registry (37 rule(s))
 
 *Candidates for future group membership (accrete from OBSERVED duplication —
 ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
@@ -17,6 +17,7 @@ ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
 - `Cards` → `a.arrow:hover .tip`
 - `Cards` → `a.linkcard:hover .ttl .tip`
 - `Cards` → `.card.media h3 a.headline:hover .tip`
+- `Footer` → `a.arrow:hover .tip,a.arrow:active .tip`
 - `Input-fields` → `.help-btn:active`
 - `Input-fields` → `.box .tail-btn:hover`
 - `Input-fields` → `.box .tail-btn:active`
@@ -36,8 +37,12 @@ ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
 - `Selection-controls` → `input:active + label .switch`
 - `Selection-controls` → `.chip:hover`
 - `Selection-controls` → `.chip:active`
+- `Split-button` → `.sb-main:hover,.sb-caret:hover`
+- `Split-button` → `.sb-main:active,.sb-caret:active`
 - `Status-indicator` → `.sim:active`
 - `Table` → `.seg button:active`
+- `Tags-input` → `.chp .x:hover`
+- `Tags-input` → `.chp .x:active`
 - `Tags` → `.tag.link:hover`
 - `Tags` → `.tag.link:active`
 - `Tags` → `.tag .x:hover`

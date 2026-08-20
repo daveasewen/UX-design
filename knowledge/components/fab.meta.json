@@ -1,0 +1,102 @@
+{
+  "name": "FAB",
+  "category": "atom",
+  "purpose": "A floating, high-emphasis icon-only action fixed to a mobile viewport (typically 'add' / 'compose' / the one decisive action of a screen). PROPOSED #209 (itinerary row 7, slug fab) — NOT GATED, NOT RULED. An Icon-button idiom, per the wave-3 brief: PRIMARY tier tokens, B-D7 press-physics and the glyph-presence discipline are all copied verbatim from Icon-button.reference; what is NEW is the larger 56px target, the drop shadow (a floating control needs a depth cue Icon-button never needed, since Icon-button never floats above content), and a fixed mobile placement.",
+  "props": [
+    { "name": "glyph", "type": "string", "binds": ["button.primary.icon.default", "text.on-disabled"], "$note": "Icon id from the assets/icons sprite; drives the accessible name unless aria-label overrides. Specimen uses global-controls/add.svg." },
+    { "name": "label", "type": "string", "$note": "REQUIRED accessible name (aria-label). Icon-only, same 4.1.2/2.4.4 requirement as Icon-button." },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "focus", "disabled"], "default": "default" }
+  ],
+  "variants": [
+    { "name": "primary", "use": "The ONLY tier specimen'd. A FAB is by definition the single most decisive action available on a mobile screen — Icon-button's secondary/tertiary/quaternary tiers exist for lesser emphasis, which a FAB by convention never is. Whether a non-primary FAB should exist at all is named in decisionsForDave, not built." }
+  ],
+  "tokens": {
+    "target-size": "⚠ 56x56 — a PROPOSED RAW CONSTANT, NOT a store token (icon-scale.json tops out at icon.large=36px glyph; layout.json's target/min ladder tops out at 44px). Flagged in the snippet header and here; minting a fab/size token is Dave's call.",
+    "glyph-size": "24px = icon-scale.medium (the one token-bound dimension on this control)",
+    "primary": { "glyph": "button.primary.icon.default", "glyph-disabled": "text.on-disabled", "background-default": "button.primary.background.default", "background-hover": "button.primary.background.hover", "background-pressed": "button.primary.background.pressed", "background-disabled": "button.primary.background.disabled", "$note": "Copied byte-for-byte from Icon-button.reference's primary tier — Mono monochrome, no red; hover renders as 0.70 opacity over the page." },
+    "elevation": "elevation.functional (box-shadow) — the ONE token Icon-button never needed, because Icon-button never floats above page content.",
+    "radius": "border-radius.control — flat/angular (B-D7), same as Icon-button. ⚠ Whether a FAB should DEVIATE from the angular rule (most systems that ship a FAB make it circular) is Dave's, flagged not taken — same class of question as Payment-card-visual's corner finding.",
+    "placement": "24px bottom/right offset (6 x 4px grid) — a raw constant, not a token (no z-index/offset token exists for floating chrome in the store).",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED from the store's live rungs. --target and the 24px placement offset are the only non-token values, both declared raw constants, never silently invented as token names."
+  },
+  "motion": {
+    "hover": "scale(1 + press-travel/56) — B-D7 pixel-true, size-scoped to the 56px target exactly as Icon-button scopes to 44px.",
+    "press": "scale(1 - press-travel/56) + brightness(press-darken).",
+    "reducedMotion": "Transforms/brightness disabled under prefers-reduced-motion; the static colour states convey everything.",
+    "tokens": ["component-type.button-family.press-travel", "component-type.button-family.press-darken"]
+  },
+  "responsive": {
+    "rule": "Fixed viewport placement (bottom-right, 24px offset) on mobile; does not reflow with its container the way Button's action-bar does. Whether a FAB should reposition or hide on very small viewports / when a keyboard is open is unspecified — see decisionsForDave.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Mobile app shell (Layer 2)", "Page (fixed overlay, not a layout child)"],
+    "mustNotNeighbour": ["Back to top (both are fixed bottom-right floating controls; collision unresolved, see decisionsForDave)"],
+    "commonPatterns": ["single decisive mobile action (add / compose / new)"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "button",
+    "name": "MANDATORY accessible name via aria-label — icon-only, no visible label (4.1.2 / 2.4.4), identical requirement to Icon-button.",
+    "keyboard": "Reachable in tab order; Enter/Space activate. Because it floats fixed to the viewport, its position in DOM/tab order relative to page content is a UX-writing decision not resolved here (typically placed last in source order).",
+    "focus": "Visible focus outline (text.default), never removed without replacement.",
+    "target": "56x56 (exceeds the 44px floor deliberately — floating controls conventionally get a larger target since there is no neighbouring control to collide with).",
+    "nonText": "Glyph >=3:1 against its background (1.4.11); disabled glyph stays a visible ghost via text.on-disabled (B-D4), contrast-exempt but never invisible.",
+    "relatedSC": ["2.1.1 Keyboard", "2.4.7 Focus Visible", "1.4.11 Non-text Contrast", "2.5.8 Target Size (Minimum)", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "Icon-only with no accessible name.",
+    "A disabled (or any-state) glyph bound to a token equal to its own surface (glyph-presence gate, inherited from Icon-button).",
+    "Placing more than one FAB on the same screen (dilutes 'the one decisive action').",
+    "Hard-coding the 56px target or the 24px offset as though they were resolved store tokens — they are DECLARED raw constants pending Dave's mint-or-accept call.",
+    "REVIEW (inferred): using a FAB where the action already has an obvious home in the page header / toolbar (a FAB should be reserved for contexts where no such chrome exists, e.g. a full-bleed list)."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PROPOSED — worker lane render-verify only (light+dark, headless Chromium, 0 console errors). _validate_snippets.py / _validate_a11y.py / _validate_type_composites.py / _validate_grid.py / _validate_radius.py NOT RUN by this lane (conductor's serial set, per the wave-3 brief). This is a PROPOSAL, not a proof-of-done.",
+    "$note": "Not registered in component-types.json (shared file, outside this lane's fence). Not in _validate_radius.MIGRATED_SNIPPETS. No .cn-fab scope exists in canon.css. The 56px target is a DECLARED GAP against the token store, not a silent invention — see tokens.target-size."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Fab.reference.html"
+  },
+  "$differsFrom": {
+    "Icon-button": "Same tokens, same tier discipline, same press-physics MODEL — but FAB floats fixed above page content (needs elevation.functional, a shadow Icon-button never binds), is larger (56 vs 44), and is placement-constrained (mobile viewport corner) rather than living inline in a toolbar/input/table row."
+  },
+  "$decisionsForDave": [
+    "Should the FAB deviate from the angular corner rule and render circular, the way most systems that ship a FAB do? Flagged, not taken.",
+    "Should a fab/size (56px) and a floating-chrome offset (24px) token be minted, or is 56/24 acceptable as house-standard raw constants forever?",
+    "FAB vs Back-to-top collision: both are fixed bottom-right. When a screen could show both, which wins the corner, or do they stack?",
+    "Is a non-primary-tier FAB ever legitimate, or is 'FAB = the one decisive primary action' a hard rule?"
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Fab.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:mobile-app-shell-layer-2",
+        "$note": "Mobile app shell (Layer 2)"
+      },
+      {
+        "ref": "context:page-fixed-overlay-not-a-layout-child",
+        "$note": "Page (fixed overlay, not a layout child)"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:single-decisive-mobile-action-add-compose-new"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "Back to top (both are fixed bottom-right floating controls; collision unresolved, see decisionsForDave)"
+      }
+    ]
+  }
+}

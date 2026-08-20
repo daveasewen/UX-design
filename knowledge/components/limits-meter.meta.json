@@ -1,0 +1,145 @@
+{
+  "name": "Limits meter",
+  "category": "molecule",
+  "purpose": "A READOUT OF AN ALLOWANCE AGAINST A CAP: how much of a payment, daily or monthly limit has been used, how much is left, when the allowance comes back, and — at the ceiling — what the user can no longer do. PROPOSED #209 (itinerary row 96, slug limits-meter, P3) — NOT GATED, NOT RULED. Fintech semantics are Dave's (the Kpi-tile precedent, s182-D2).",
+  "$existenceQuestion": "⛔ READ FIRST, BECAUSE THE STRONGEST EVIDENCE FOUND IS EVIDENCE AGAINST THIS COMPONENT. progress-bar.meta.json relationships.commonPatterns reads VERBATIM: ['file upload progress', 'multi-part transfer progress', 'savings goal / limits meter', 'profile completeness score']. THE GATED PROGRESS-BAR ALREADY CLAIMS THIS PATTERN BY NAME, and its specimen 3 is a non-percentage determinate bar carrying its domain in aria-valuetext, which is geometrically a limits meter. The bar in this component is Progress-bar's, COPIED BYTE-FOR-BYTE; no bar geometry was drawn. What is arguably new is the READOUT: the cap, the reset horizon, the at-limit consequence and the stack. THREE LIVE OUTCOMES, ALL DAVE'S: keep it; merge it into Runway-bar as a parameterised 'allowance' mode; or delete it and use Progress-bar with a domain aria-valuetext. Deleting this pair of files costs nothing, because nothing registers them.",
+  "props": [
+    { "name": "used", "type": "number", "$note": "The consumed part of the allowance. Bound to aria-valuenow." },
+    { "name": "cap", "type": "number", "$note": "The CEILING — bound to aria-valuemax. ⛔ Not a target: a target is a goal you are trying to reach, a cap is a boundary you are not allowed to cross. A limits meter that grows a target IS a Chart-bullet." },
+    { "name": "fillDirection", "type": "enum", "values": ["used", "remaining"], "default": "used", "$note": "PROPOSED, NOT RULED (Q2). Drawn as USED — the bar fills as you spend, like every progress bar. The inverse, REMAINING (the bar empties, like a fuel gauge), is the other honest reading of a 'meter' and is what 'how much do I have left' actually asks. Dave's." },
+    { "name": "resetHorizon", "type": "string", "$note": "PROPOSED, NOT RULED (Q5). 'Resets at midnight' / 'Resets 1 July'. Whether it belongs in the chip, in the caption, or in both is unruled — the reference draws it BOTH ways on different specimens so both are visible." },
+    { "name": "verdict", "type": "enum", "values": ["within-limit", "approaching", "at-limit"], "default": "within-limit", "$note": "PROPOSED, NOT RULED (Q3). Rendered as a Status-indicator RAG-tint chip ALWAYS CARRYING ITS WORD. ⛔ 'at-limit' sits on the WARNING seat, not the error seat, even at 100% — deliberate restraint, NOT a considered ruling: the error seat touches the two-red law (s151-D1) and is Dave's." },
+    { "name": "consequence", "type": "string", "$note": "PROPOSED, NOT RULED (Q7). The at-limit sentence ('You cannot make another transfer from this account until midnight'), role=\"status\". Drawn stating it, because a number the user cannot act on is not an answer." },
+    { "name": "layout", "type": "enum", "values": ["single", "stack"], "default": "single", "$note": "PROPOSED, NOT RULED (Q6). Real limits come in SETS — per payment, per day, per month — and the set is the honest anatomy. The stack carries ONE role=\"group\" label rather than three." },
+    { "name": "size", "type": "enum", "values": ["default", "emphasis"], "default": "default", "$note": "4px and 8px track heights — Progress-bar's own two sizes and its same token pair. Nothing new." }
+  ],
+  "variants": [
+    { "name": "within-limit", "use": "The ordinary case. Ink on track, a success-tint chip carrying the reset time." },
+    { "name": "approaching", "use": "Nearly spent. The bar is longer and the WORD changed; the hue of the bar did not." },
+    { "name": "at-limit", "use": "The allowance is fully used. The bar is full because that is the honest geometry, and the consequence is a sentence. NO RED." },
+    { "name": "stack", "use": "Per payment · per day · per month under one group label, no chips." },
+    { "name": "emphasis", "use": "Progress-bar's 8px rule, for a region where the limit is the primary content." }
+  ],
+  "tokens": {
+    "fill": "progress/complete — the used part. THEME INK in all four themes since s175-D1, exactly as Progress-bar binds it.",
+    "track": "progress/incomplete — the remaining part",
+    "text": "text/default — every figure and the consequence line",
+    "muted": "text/secondary — labels, legend keys, the caption",
+    "page": "background/default",
+    "border": "border/subtle — the outline on the 'left' legend swatch, so an empty swatch is still a visible mark",
+    "status": "rag/success + rag/success-tint | rag/warning + rag/warning-tint — the verdict chip, copied byte-for-byte from Runway-bar via Account-card",
+    "radius": "border-radius/indicator — 0 in Mono and Legacy; Console forks through the cascade. Nothing is round except the 8px chip dot.",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. Every value here already exists and is already bound by a gated component. ⛔ AND NO RAG COLOUR TOUCHES THE BAR IN ANY STATE — see $noRedInvented."
+  },
+  "$noRedInvented": "⛔ THE MOST IMPORTANT LINE IN THIS FILE. 'You have hit your daily limit' is where a critical red gets improvised. NONE IS. The bar is INK ON TRACK in every state including at-limit, inherited from the gated Progress-bar, whose own meta gives the reason in Dave's terms: 'Progress is STRUCTURE, not status (Dave 2026-07-21) — hence the ink pair rather than a RAG colour.' An amount used is a QUANTITY, so it takes the same treatment. The VERDICT is a separate object — a Status-indicator RAG-tint chip carrying a WORD and the reset time. Which verdict maps to which tint is a SEMANTIC binding and is DAVE'S, proposed not ruled, and the error seat is not taken even at 100%.",
+  "motion": {
+    "entry": "The fill's width transition only, over the inherited 140ms ease.",
+    "hover": "None. Passive.",
+    "reducedMotion": "The fill still MOVES to its final position — the value must be reachable — it just arrives without an animated sweep (2.3.3 / 2.2.2). Progress-bar's own behaviour, copied, plus the global collapse.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "max-width 480px on the readout and on the stack; the head and the legend both wrap. No breakpoint switch and no container query — there is nothing to reflow. Verified in a real browser at 1400px, light and dark.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Payment limits screens", "Transfer / payment flows (before the amount is entered)", "Account settings", "Card management"],
+    "mustNotNeighbour": ["A Chart-bullet showing the same allowance against a target (a limit is not a target)", "A second bar restating the same number in a different direction"],
+    "commonPatterns": ["payment limits", "daily transfer allowance", "card spending cap", "limit increase request"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "role=\"group\" + aria-labelledby around each readout and around the stack; role=\"progressbar\" on each bar with aria-valuenow / valuemin / valuemax and a domain-carrying aria-valuetext. Copied from Progress-bar via Runway-bar.",
+    "openRoleQuestion": "⚠ INHERITED FROM Runway-bar #204 AND CARRIED FORWARD UNCHANGED, NOT RE-DECIDED: role=\"progressbar\" vs role=\"meter\". The search that fails to settle it was RE-RUN at #209 rather than cited (s202-D3): `grep -rln 'role=\"meter\"' knowledge/snippets/` → two files, this one and Runway-bar, and every hit in both is PROSE not markup, i.e. ZERO of the 91 snippets uses the role; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` → 0. Nothing in the store rules it. progressbar is used because the gated parent carries it; meter is arguably more correct for a gauge that is not task progress — and this component is literally called a meter. DAVE'S; if he rules 'meter', both files change together.",
+    "consequence": "The at-limit sentence is role=\"status\" (polite): the limit was already reached, the user is reading, not being interrupted.",
+    "notColourAlone": "Three channels on every specimen: the verdict WORD in the chip, the arithmetic in text, and aria-valuetext on the bar. Remove all colour and the component still says everything it means (1.4.1).",
+    "hitArea": "PASSIVE — the component contains no interactive target, so the 44px minimum has no seat here. Declared rather than assumed (Runway-bar's precedent).",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "2.2.2 Pause, Stop, Hide", "2.3.3 Animation from Interactions", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "⛔ PAINTING THE BAR RED AT THE LIMIT. The bar is ink on track in every state. See $noRedInvented.",
+    "⛔ GROWING A TARGET MARKER OR QUALITATIVE BANDS. A limit is a ceiling, not a goal. With a target this IS a Chart-bullet and should be one.",
+    "⛔ DROPPING THE CAP, THE RESET AND THE CONSEQUENCE AND KEEPING THE BAR. Without them this IS a Progress bar and should be one — Progress-bar's own meta already claims the pattern by name.",
+    "Restating the same allowance twice in opposite directions (used AND remaining as two bars). Pick a direction — that choice is Q2, Dave's.",
+    "Relying on the chip DOT to convey the verdict. The dot is 1.98:1 / 2.18:1 standalone (measured #204); the word is the carrier.",
+    "Painting a delta or an arrow on this component. The two delta conventions question is OPEN AND DAVE'S and nothing here may settle it by construction."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PROPOSED — gates run at #209 by this worker lane, on the whole tree, with the file present: _validate_grid.py rc=0 for this file (the 4 off-grid failures in that run are Lane B/C files, named in the receipt); _validate_a11y.py 0 failures across 100 snippets; _validate_snippets.py reports NOTHING against this file; _validate_descender_clip.py PASS across 116 files; _validate_binds_resolve.py resolves every manifest var and FAILS check D for this file only because no .cn-limits-meter block exists in canon.css yet (the conductor's serial step). _validate_type_composites.py repo total 1097, UNCHANGED — this file adds ZERO. ⚠ The four-theme fill-on-track contrast figures quoted in the snippet are CARRIED from Runway-bar's declaration and were NOT re-measured at #209.",
+    "$note": "PROPOSED #209, worker Lane A. NOT registered in component-types.json, CATEGORIES, gen_showroom.py or _validate_radius.MIGRATED_SNIPPETS, and no .cn-limits-meter scope exists in canon.css — all shared files, all outside this lane's fence. No `intent` field is authored (W-58 is parked; the vocabulary is a closed set and this is not a chart)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$sourceNarrative": "Itinerary row 96 ('Spend/transfer limit gauge.') via knowledge/_COMPONENT-LIBRARY-TARGET.md line 104, the Fintech-specific table, GAP · P2–P3. reviews/ITINERARY-STATUS-2026-08-19-v1.json records drift 'AGREES', all five slug probes negative, and names Chart-bullet as the related component ('Chart-bullet is a measure-vs-target gauge'). ⛔ THAT RELATION IS WRONG AND THE ADJUDICATION SAYS SO: a limit is a ceiling, not a target; the real parent is Progress-bar, whose own meta already lists 'savings goal / limits meter' in commonPatterns. Re-probed at #209 against the store itself: no snippet, meta, showroom page, MIGRATED_SNIPPETS entry or canon scope exists under this slug, and a direct grep of knowledge/_rulings.json for limit / allowance / cap / meter returns ZERO entries naming this component — UNRULED.",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Limits-meter.reference.html"
+  },
+  "$differsFrom": {
+    "Progress-bar": "The BAR is Progress-bar, copied byte-for-byte; nothing was added at the bar level. THE TELL: progress is something you WANT to complete; a limit is something you must NOT complete. Identical geometry, inverted meaning — a full progress bar is success, a full limits meter is a BLOCKED PAYMENT. That inversion is the entire argument for a distinct component and it is an argument about MEANING, which is why it is Dave's to accept or reject.",
+    "Chart-bullet": "Chart-bullet compares a MEASURE to a TARGET against qualitative BANDS, as an SVG figure with a real dv-table, intent 'comparison'. This has no target, no bands, no SVG, no table and no dataviz series token. A target is a goal to reach; a limit is a ceiling not to cross.",
+    "Runway-bar": "The near-sibling, PROPOSED #204. Runway asks 'does my money cover what is scheduled, and until when?' — its maximum is my own BALANCE and its horizon is a date I DISCOVER. This asks 'how much am I ALLOWED to move, and when does the allowance come back?' — its maximum is a CAP set by the bank and its horizon is a repeating RESET known in advance. Runway's ceiling is a fact about my money; a limit's ceiling is a rule about my permission. Drawn to Runway-bar's own anatomy DELIBERATELY, so the two files already rhyme if Dave merges them.",
+    "Account-card": "Account-card states a balance. This states a permission. They are often on the same screen and must not be confused."
+  },
+  "$decisionsForDave": [
+    "⛔ FIRST: should this exist at all? Progress-bar's meta already claims 'savings goal / limits meter' by name, and Runway-bar is a near-sibling. Keep / merge into Runway-bar / delete.",
+    "Does the bar fill with what is USED (as drawn) or empty with what REMAINS, like a fuel gauge?",
+    "The verdict vocabulary and its chip binding — and specifically whether 'at limit' belongs on the ERROR seat. Deliberately not taken; it touches the two-red law.",
+    "Does a healthy limit show a chip at all? Drawn both ways.",
+    "Where does the reset live — the chip, the caption, or both? Drawn both ways.",
+    "Is the component the SET of limits (per payment / per day / per month) or one bar a page repeats?",
+    "Should the meter state the at-limit consequence in a sentence, or only the number?",
+    "The 'Per payment' row renders as an empty track reading '£0 of £10,000 used' and always will — a per-payment cap never accumulates. Should it be a bar at all, or a plain stated rule?",
+    "role=\"progressbar\" or role=\"meter\"? Inherited from Runway-bar #204, still unruled; if you rule it, both components change together."
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Limits-meter.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:payment-limits-screens",
+        "$note": "Payment limits screens"
+      },
+      {
+        "ref": "context:transfer-payment-flows-before-the-amount-is-entered",
+        "$note": "Transfer / payment flows (before the amount is entered)"
+      },
+      {
+        "ref": "context:account-settings",
+        "$note": "Account settings"
+      },
+      {
+        "ref": "context:card-management",
+        "$note": "Card management"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:payment-limits"
+      },
+      {
+        "ref": "pattern:daily-transfer-allowance"
+      },
+      {
+        "ref": "pattern:card-spending-cap"
+      },
+      {
+        "ref": "pattern:limit-increase-request"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "A Chart-bullet showing the same allowance against a target (a limit is not a target)"
+      },
+      {
+        "ref": null,
+        "$note": "A second bar restating the same number in a different direction"
+      }
+    ]
+  }
+}

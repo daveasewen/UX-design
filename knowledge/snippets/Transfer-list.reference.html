@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transfer list — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Transfer list / dual list (gated). Itinerary row 27, P3
+     ("Move-between lists" — ⚠ NOT row 40's List-items, the itinerary's own fuzzy-match warning).
+     COMPOSES two gated idioms rather than inventing a third:
+       • List-items — the row rhythm (44px+ row, divider between items, hover/pressed surface,
+         truncating single-line label) is List-items' own row shell, copied.
+       • Selection-controls — every checkbox (including the panel-header "select all", which
+         reuses the INDETERMINATE state verbatim: same input.indeterminate JS toggle, same tick/
+         mixed-dash SVG, same tokens) is Selection-controls' checkbox, copied, not re-drawn.
+     THE ONE NEW PIECE, with no single-source precedent: the MOVE CONTROLS between the two panels.
+     Built as four real 44px <button>s carrying the real library chevron glyphs
+     (arrows-and-chevrons/chevron-right.svg, chevron-double-right.svg, and their -left mirrors,
+     byte-matched paths) — "move checked" (single chevron) and "move all" (double chevron), one
+     pair per direction. Each button also carries a visible word ("Move selected" / "Move all") in
+     a visually-hidden span so meaning never rests on the arrow glyph alone (1.4.1).
+     KEYBOARD MODEL: native checkbox semantics inside each panel (no custom keydown — the same
+     "earn it honestly, natively" reasoning Selection-controls states for checkbox/radio/switch);
+     the move buttons are real <button>s, natively focusable and Enter/Space-activatable. Moving
+     items announces a count via a role="status" region per panel (4.1.3) — there is no source
+     component to copy this from, since neither List-items nor Selection-controls moves DOM
+     between two live regions; authored for this component specifically. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family/size/weight anywhere — every text element carries a .t-cm-*
+     composite from canon/type.css (Progress-bar precedent, #174). */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{
+    --surface:#FFFFFF; --hover:#F0F0F0; --pressed:#626262; --text:#1A1A1A; --muted:#1A1A1A;
+    --reverse:#FFFFFF; --divider:#E1E1E1; --panel-border:#808080; --focus:#305A85; --page:#FFFFFF;
+    --icon:#1A1A1A; --icon-disabled:#E1E1E1; --tl-btn-border:#808080; --btn-bg-hover:#F0F0F0;
+    --ctrl-border:#808080; --ctrl-border-active:#000000; --checked:#000000; --glyph:#FFFFFF;
+    --border-radius-control:0; --border-radius-indicator:0;
+  }
+  [data-theme="dark"]{
+    --surface:#1F1F1F; --hover:#232323; --pressed:#1A1A1A; --text:#FFFFFF; --muted:#FFFFFF;
+    --reverse:#FFFFFF; --divider:#808080; --panel-border:#808080; --focus:#4587A7; --page:#1A1A1A;
+    --icon:#FFFFFF; --icon-disabled:#808080; --tl-btn-border:#808080; --btn-bg-hover:#232323;
+    --ctrl-border:#808080; --ctrl-border-active:#FFFFFF; --checked:#FFFFFF; --glyph:#333333;
+    --border-radius-control:0; --border-radius-indicator:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .tl{display:flex; align-items:stretch; gap:16px; width:var(--demo-width, 640px); max-width:100%; container-type:inline-size;}
+  .panel{flex:1; min-width:0; border:1px solid var(--panel-border); background:var(--surface); display:flex; flex-direction:column;}
+  .panel .head{display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--divider);}
+  .panel .count{margin-left:auto; color:var(--muted);}
+  .panel ul{list-style:none; margin:0; padding:0; max-height:280px; overflow:auto;}
+  .panel li + li{border-top:1px solid var(--divider);}
+  .row{display:flex; align-items:center; gap:12px; min-height:44px; padding:12px 16px;  /* conductor #209 snap 10->12 (tie up, ruled policy) */ transition:background var(--ease);}
+  .row:hover{background:var(--hover);}
+  .row .label{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-box-edge:text text;}
+  .empty{padding:24px 16px; color:var(--muted); text-align:center;}
+
+  /* ---- checkbox, copied verbatim from Selection-controls.reference.html ---- */
+  .panel input[type=checkbox]{position:absolute; opacity:0; width:0; height:0;}
+  .row label.chk{cursor:pointer; display:inline-flex; align-items:center; gap:12px; min-height:44px; flex:1; min-width:0;}
+  .box{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); border-radius:var(--border-radius-control); background:transparent;
+    display:flex; align-items:center; justify-content:center; transition:background var(--ease), border-color var(--ease);}
+  .box svg{width:14px; height:14px;}
+  .box path{stroke:var(--glyph); stroke-width:2.4; fill:none;}
+  .box .tick{stroke-dasharray:22; stroke-dashoffset:22; transition:stroke-dashoffset var(--ease);}
+  .box .mixed{stroke-dashoffset:22; transition:stroke-dashoffset var(--ease);}
+  label:hover .box{border-color:var(--ctrl-border-active);}
+  input:checked + label .box,input:indeterminate + label .box{background:var(--checked); border-color:var(--checked);}
+  input:checked + label .box .tick{stroke-dashoffset:0;}
+  input:indeterminate + label .box .mixed{stroke-dashoffset:0;}
+  input:focus-visible + label .box{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ---- move controls: the one piece with no single-source precedent ---- */
+  .moves{display:flex; flex-direction:column; justify-content:center; gap:8px;}
+  .move-btn{width:44px; height:44px; flex:none; border:1px solid var(--tl-btn-border); background:transparent; color:var(--icon);
+    border-radius:var(--border-radius-control); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background var(--ease);}
+  .move-btn svg{width:18px; height:18px;}
+  .move-btn:hover:not(:disabled){background:var(--btn-bg-hover);}
+  .move-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .move-btn:disabled{color:var(--icon-disabled); border-color:var(--icon-disabled); cursor:not-allowed;}
+  .visually-hidden{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  @container (max-width: 480px){
+    .tl{flex-direction:column;}
+    .moves{flex-direction:row; justify-content:center;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-chev-r" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></path></symbol>
+    <symbol id="ic-chev-l" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></path></symbol>
+    <symbol id="ic-chev-rr" viewBox="0 0 18 18"><path d="M0.695312 1L8.69331 9L0.695312 17H2.39131L10.3913 9L2.39131 1H0.695312Z" fill="currentColor"/></path></symbol>
+    <symbol id="ic-chev-ll" viewBox="0 0 18 18"><path d="M9 1H10.696L2.698 9L10.696 17H9L1 9L9 1Z" fill="currentColor"/></path></symbol>
+  </svg>
+
+  <div class="tl" id="tl1">
+    <div class="panel" id="panel-avail">
+      <div class="head">
+        <input type="checkbox" id="avail-all"><label class="chk" for="avail-all"><span class="box"><svg data-bespoke="checkbox tick, copied from Selection-controls" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span><span class="t-cm-label">Available</span></label>
+        <span class="count t-cm-caption" id="avail-count">4 items</span>
+      </div>
+      <ul id="avail-list" role="group" aria-labelledby="avail-all">
+        <li><div class="row"><input type="checkbox" id="a-1"><label class="chk" for="a-1"><span class="box"><svg data-bespoke="checkbox tick, copied from Selection-controls" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span><span class="label t-cm-input">Sterling current account</span></label></div></li>
+        <li><div class="row"><input type="checkbox" id="a-2"><label class="chk" for="a-2"><span class="box"><svg data-bespoke="checkbox tick, copied from Selection-controls" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span><span class="label t-cm-input">Business savings</span></label></div></li>
+        <li><div class="row"><input type="checkbox" id="a-3"><label class="chk" for="a-3"><span class="box"><svg data-bespoke="checkbox tick, copied from Selection-controls" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span><span class="label t-cm-input">USD holding account</span></label></div></li>
+        <li><div class="row"><input type="checkbox" id="a-4"><label class="chk" for="a-4"><span class="box"><svg data-bespoke="checkbox tick, copied from Selection-controls" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span><span class="label t-cm-input">ISA — cash</span></label></div></li>
+      </ul>
+      <p class="visually-hidden" role="status" id="avail-status"></p>
+    </div>
+
+    <div class="moves">
+      <button type="button" class="move-btn" id="mv-right" aria-describedby="mv-right-lbl"><svg aria-hidden="true"><use href="#ic-chev-r"/></svg><span class="visually-hidden" id="mv-right-lbl">Move selected to Selected</span></button>
+      <button type="button" class="move-btn" id="mv-right-all" aria-describedby="mv-right-all-lbl"><svg aria-hidden="true"><use href="#ic-chev-rr"/></svg><span class="visually-hidden" id="mv-right-all-lbl">Move all to Selected</span></button>
+      <button type="button" class="move-btn" id="mv-left" aria-describedby="mv-left-lbl"><svg aria-hidden="true"><use href="#ic-chev-l"/></svg><span class="visually-hidden" id="mv-left-lbl">Move selected to Available</span></button>
+      <button type="button" class="move-btn" id="mv-left-all" aria-describedby="mv-left-all-lbl"><svg aria-hidden="true"><use href="#ic-chev-ll"/></svg><span class="visually-hidden" id="mv-left-all-lbl">Move all to Available</span></button>
+    </div>
+
+    <div class="panel" id="panel-selected">
+      <div class="head">
+        <input type="checkbox" id="sel-all" disabled><label class="chk" for="sel-all"><span class="box"><svg data-bespoke="checkbox tick, copied from Selection-controls" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span><span class="t-cm-label">Selected</span></label>
+        <span class="count t-cm-caption" id="sel-count">1 item</span>
+      </div>
+      <ul id="sel-list" role="group" aria-labelledby="sel-all">
+        <li><div class="row"><input type="checkbox" id="s-1"><label class="chk" for="s-1"><span class="box"><svg data-bespoke="checkbox tick, copied from Selection-controls" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span><span class="label t-cm-input">Joint account</span></label></div></li>
+      </ul>
+      <p class="visually-hidden" role="status" id="sel-status"></p>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Transfer list",
+    "vars": {
+      "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--pressed": "tertiary/background/pressed",
+      "--text": "text/default", "--muted": "text/secondary", "--reverse": "text/reverse",
+      "--divider": "divider/border/section", "--panel-border": "form/border/default", "--focus": "focus/ring", "--page": "background/default",
+      "--icon": "icon/default", "--icon-disabled": "icon/disabled", "--tl-btn-border": "form/border/default", "--btn-bg-hover": "tertiary/background/hover",
+      "--ctrl-border": "form/border/default", "--ctrl-border-active": "form/border/active", "--checked": "secondary/background/default", "--glyph": "text/on-inverse",
+      "--border-radius-control": "border-radius/control", "--border-radius-indicator": "border-radius/indicator"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "ui" }
+    ],
+    "requiredAria": ["type=\"checkbox\"", "role=\"group\"", "role=\"status\"", "aria-labelledby", "aria-describedby"]
+  }
+  </script>
+  <script>
+    (function(){
+      const availList = document.getElementById('avail-list'), selList = document.getElementById('sel-list');
+      const availAll = document.getElementById('avail-all'), selAll = document.getElementById('sel-all');
+      const availCount = document.getElementById('avail-count'), selCount = document.getElementById('sel-count');
+      const availStatus = document.getElementById('avail-status'), selStatus = document.getElementById('sel-status');
+
+      function itemCount(ul){ return ul.querySelectorAll('li').length; }
+      function checkedItems(ul){ return Array.from(ul.querySelectorAll('input[type=checkbox]:checked')); }
+      function pluraliseCount(n){ return n + (n === 1 ? ' item' : ' items'); }
+
+      function refreshHeader(ul, headAll, countEl){
+        const boxes = Array.from(ul.querySelectorAll('input[type=checkbox]'));
+        const n = boxes.length, checked = boxes.filter(b => b.checked).length;
+        countEl.textContent = pluraliseCount(n);
+        headAll.disabled = n === 0;
+        if (n === 0){ headAll.checked = false; headAll.indeterminate = false; }
+        else if (checked === 0){ headAll.checked = false; headAll.indeterminate = false; }
+        else if (checked === n){ headAll.checked = true; headAll.indeterminate = false; }
+        else { headAll.checked = false; headAll.indeterminate = true; }
+        if (n === 0 && !ul.querySelector('.empty')){
+          const li = document.createElement('li'); li.innerHTML = '<div class="empty t-cm-caption">No items</div>'; ul.appendChild(li);
+        } else if (n > 0) {
+          const e = ul.querySelector('.empty'); if (e) e.closest('li').remove();
+        }
+      }
+      function refreshAll(){ refreshHeader(availList, availAll, availCount); refreshHeader(selList, selAll, selCount); }
+
+      function moveItems(items, fromUl, toUl, toName, statusEl){
+        if (items.length === 0) return;
+        items.forEach(input => {
+          const li = input.closest('li');
+          input.checked = false;
+          toUl.appendChild(li);
+        });
+        statusEl.textContent = items.length + (items.length === 1 ? ' item moved to ' : ' items moved to ') + toName;
+        refreshAll();
+      }
+
+      document.getElementById('mv-right').addEventListener('click', () => moveItems(checkedItems(availList), availList, selList, 'Selected', selStatus));
+      document.getElementById('mv-right-all').addEventListener('click', () => moveItems(Array.from(availList.querySelectorAll('input[type=checkbox]')), availList, selList, 'Selected', selStatus));
+      document.getElementById('mv-left').addEventListener('click', () => moveItems(checkedItems(selList), selList, availList, 'Available', availStatus));
+      document.getElementById('mv-left-all').addEventListener('click', () => moveItems(Array.from(selList.querySelectorAll('input[type=checkbox]')), selList, availList, 'Available', availStatus));
+
+      availAll.addEventListener('change', () => { Array.from(availList.querySelectorAll('input[type=checkbox]')).forEach(b => b.checked = availAll.checked); refreshAll(); });
+      selAll.addEventListener('change', () => { Array.from(selList.querySelectorAll('input[type=checkbox]')).forEach(b => b.checked = selAll.checked); refreshAll(); });
+      availList.addEventListener('change', refreshAll);
+      selList.addEventListener('change', refreshAll);
+
+      refreshAll();
+    })();
+  </script>
+</body>
+</html>

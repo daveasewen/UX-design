@@ -1,0 +1,148 @@
+{
+  "name": "Standing-order / mandate row",
+  "category": "molecule",
+  "purpose": "A RECURRING PAYMENT INSTRUCTION THAT HAS NOT HAPPENED YET: who is paid, how much, on what rhythm, when next, and what state the instruction is in. Two actions per row — open the mandate, or manage it. PROPOSED #209 (itinerary row 95, slug standing-order-mandate-row, P3) — NOT GATED, NOT RULED. Fintech semantics are Dave's (the Kpi-tile precedent, s182-D2).",
+  "props": [
+    { "name": "payee", "type": "string", "$note": "The row's subject. It must never be the element that gives way when chips crowd the line — see antiPatterns and knownFindings." },
+    { "name": "mandateType", "type": "enum", "values": ["standing-order", "direct-debit"], "default": "standing-order", "$note": "⛔ NOT COSMETIC. A standing order is the customer's own instruction (fixed amount, fixed rhythm, the customer controls it); a Direct Debit is a mandate granted to a PAYEE who pulls a VARIABLE amount under the Direct Debit Guarantee. Legally and operationally different objects. Rendered as a Tags atom (square outline chip) IN TEXT — never by hue, never by an icon alone. Whether they should be ONE component or TWO is DAVE'S (P3); drawing them in one list does not settle it." },
+    { "name": "amount", "type": "string", "$note": "MONOCHROME, always. Amount-display's format via Runway-bar: symbol before the amount with no space (copy-025), tabular lining figures, U+2212 for the minus. No coloured monetary seat is bound anywhere in this component." },
+    { "name": "amountIsVariable", "type": "boolean", "default": false, "$note": "PROPOSED, NOT RULED (P2). A variable Direct Debit shows the LAST taken figure and says 'Amount varies' in the rhythm line, rather than presenting a stale number as if it were the next one. Which figure a variable mandate should show is Dave's." },
+    { "name": "rhythm", "type": "string", "$note": "PROPOSED, NOT RULED (P2). 'Monthly on the 1st' / 'Weekly on Fridays' / 'Monthly, around the 14th'. Alternatives: a bare next date, a countdown ('in 11 days'), or a rhythm carrying its end ('until 20 August 2026', drawn on one specimen)." },
+    { "name": "nextDate", "type": "string", "$note": "The row's date is in the FUTURE and is a PROMISE — that is the tell against the gated transaction row, whose date is in the past and is a fact." },
+    { "name": "status", "type": "enum", "values": ["active", "paused", "failed", "ending-soon", "cancelled"], "default": "active", "$note": "PROPOSED, NOT RULED (P4). Rendered as a Status-indicator RAG-tint chip ALWAYS CARRYING ITS WORD; 'active' draws NO chip, because a list of twelve green chips is noise. ⛔ 'failed' sits on the WARNING seat, not the error seat — deliberate restraint, NOT a considered ruling: the error seat touches the two-red law (s151-D1) and is Dave's." },
+    { "name": "consequence", "type": "string", "$note": "A plain text line under the body on the failed row ('Not enough money on 12 June. We will try again on 19 June.'), role=\"status\". The consequence is TEXT, never a hue." },
+    { "name": "manageAction", "type": "slot", "$note": "PROPOSED, NOT RULED (P5). Drawn as a trailing 44×44 icon-button carrying the byte-matched global-controls/menu-more-horizontal.svg glyph with an accessible name. Alternatives Dave may prefer: a text button ('Manage'), no control at all with the actions on the detail page, or a real Dropdown menu." }
+  ],
+  "variants": [
+    { "name": "standing-order", "use": "Fixed amount, fixed rhythm, the customer's own instruction. Shows sort code and account ending." },
+    { "name": "direct-debit", "use": "The payee pulls. Shows the service-user reference, and 'Amount varies' where the next figure is unknown." },
+    { "name": "paused", "use": "Still yours, still returns. The row is NOT dimmed — a paused mandate is live information." },
+    { "name": "failed", "use": "The last payment did not go through. A WORD on the warning seat plus a plain consequence line. No red." },
+    { "name": "ending-soon", "use": "A mandate with an end condition: '2 payments left', 'until 20 August 2026'." },
+    { "name": "cancelled", "use": "History. FULLY LEGIBLE, with a 'Cancelled' chip; only the control is disabled. See the $renderFinding — the dimmed version was drawn and could not be read." }
+  ],
+  "tokens": {
+    "surface": "tertiary/background/default — the list shell and rows",
+    "hover": "tertiary/background/hover — row hover; the leading glyph flips to the surface so it separates from the tint (List-items' trick)",
+    "text": "text/default — payee, amount",
+    "muted": "text/secondary — the rhythm line, the 'next' line, the type tag",
+    "icon": "icon/default — the leading glyph and the manage control",
+    "divider": "divider/border/section — the rules between rows",
+    "border": "border/subtle — the Tags chip outline",
+    "status": "rag/warning + rag/warning-tint (paused, failed) | rag/information + rag/information-tint (ending soon, cancelled) | rag/success + rag/success-tint (declared, unused — 'active' draws no chip)",
+    "focus": "focus/ring — 2px outline, offset -2, on the stretched link and the manage button",
+    "opacity": "alpha/72 on secondary text and the resting control; alpha/48 on the cancelled row's glyph; alpha/40 on the disabled control",
+    "radius": "border-radius/surface (the list shell) + border-radius/indicator (tag, chip, control). 0 in Mono and Legacy; Console forks surface through the cascade.",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. Every value here already exists and is already bound by a gated component. ⛔ NO COLOURED MONETARY SEAT IS BOUND: every amount is text/default."
+  },
+  "$renderFinding": "⚠⚠ TWO DEFECTS WERE FOUND BY LOOKING AT THE RENDER AT #209, AND EVERY GATE WAS GREEN OVER BOTH. (1) THE CANCELLED ROW: the draft copied Document-row's DISABLED treatment — text/disabled on every text element, which in LIGHT is #E1E1E1 on #FFFFFF, 1.42:1 — and the whole row, payee included, was an unreadable ghost. No gate fires because disabled content is exempt from 1.4.3 (the same class Document-row caught at #204 on its GLYPH; here it had swallowed the TEXT). THE FIX IS A CATEGORY CORRECTION, NOT A COLOUR TWEAK: a cancelled mandate is not disabled content, it is HISTORY — you must still be able to read who you were paying and when you stopped. The row is now ordinary ink with a 'Cancelled' chip, and only the CONTROL is disabled. Whether it should be dimmed at all is P9, Dave's. (2) THE CRUSHED PAYEE: with the title line as a non-wrapping flex row, the tag and status chips were flex:none and the payee was the only shrinkable item, so rows carrying both chips crushed the name to 'Bristol …' and 'Kestrel Ass…'. Measured before/after in a real browser at 560px: payee element widths 66–175px BEFORE, 204–227px AFTER. The line now wraps and the payee claims a 160px basis.",
+  "motion": {
+    "entry": "None.",
+    "hover": "Row background to tertiary/background/hover, and the control's opacity to alpha/96, over the inherited 140ms ease.",
+    "reducedMotion": "Global prefers-reduced-motion collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Container-query reflow at 360c: the row wraps, the payee takes a full line and the money block drops beneath it (WCAG 1.4.10) — List-items' and Document-row's own behaviour. Verified in a real browser at 1400px and at a 340px container.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Standing orders and Direct Debits list", "Account detail", "Payment management", "Subscription review flows"],
+    "mustNotNeighbour": ["A List-items transaction row for the SAME payment shown as if it had already happened"],
+    "commonPatterns": ["manage recurring payments", "pause or cancel a mandate", "subscription audit", "failed payment recovery"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "A <ul> of PASSIVE <li> rows, each holding a stretched-link primary (<a> whose ::after covers the row) and a SIBLING <button>. Document-row's shape, copied: nesting an interactive control inside a <button> is invalid (4.1.1), unreachable in several ATs, and swallows the inner accessible name.",
+    "name": "The list carries aria-label. Each manage button carries a full accessible name naming the payee and the state ('Manage the standing order to Bristol Trade Supplies, last payment failed').",
+    "twoTargets": "DRIVEN IN A REAL BROWSER at #209, not asserted: document.elementFromPoint at each row's centre returns the stretched <a>; at each button's centre it returns the button's own content; every button box measures 44×44; Tab order alternates link → button per row (14 focusables across 8 drawn rows, the cancelled row's button being natively disabled).",
+    "failureNote": "role=\"status\" (polite), not role=\"alert\": the failure already happened and the row is being read, not interrupted.",
+    "notColourAlone": "Every state carries its WORD in the chip and its consequence in text. The mandate TYPE is a word, never a hue. Remove all colour and the component still says everything it means (1.4.1).",
+    "hitArea": "≥44px on every interactive target, ENFORCED BY HAND AND MEASURED — no gate reads the ruled 44px token from a snippet. Primary target = the stretched-link row (min-height 76, measured 79 with padding). Manage button = 44×44 measured.",
+    "relatedSC": ["1.3.1 Info and Relationships", "1.4.1 Use of Color", "1.4.10 Reflow", "2.4.7 Focus Visible", "2.5.5 Target Size", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "⛔ FLATTENING STANDING ORDER AND DIRECT DEBIT INTO ONE UNDIFFERENTIATED 'RECURRING PAYMENT'. They are different objects with different control and different legal protection. The row says which one IN TEXT.",
+    "⛔ NESTING THE MANAGE CONTROL INSIDE A WHOLE-ROW BUTTON. Invalid HTML (4.1.1); the inner control becomes unreachable and its accessible name is absorbed. Use the stretched-link + sibling-button shape.",
+    "⛔ PAINTING A FAILED PAYMENT RED. The error seat touches the two-red law (s151-D1) and is Dave's. The word and the consequence line carry it here.",
+    "⛔ DIMMING A CANCELLED MANDATE INTO ILLEGIBILITY. It is history you may still need to read. See $renderFinding.",
+    "Showing a stale figure as if it were the next payment on a variable Direct Debit. Say 'Amount varies'.",
+    "Letting a status chip crush the payee name. The payee is the subject; the line wraps instead.",
+    "Relying on the status DOT to convey state. The dot is 1.98:1 / 2.18:1 standalone (measured #204); the word is the carrier.",
+    "Colouring the amount. No monetary colour seat is bound in this component."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PROPOSED — gates run at #209 by this worker lane, on the whole tree, with the file present: _validate_grid.py rc=0 for this file (the 4 off-grid failures in that run are Lane B/C files, named in the receipt); _validate_a11y.py 0 failures across 100 snippets; _validate_snippets.py reports NOTHING against this file (it reported one ALL-CAPS run against an earlier draft, repaired); _validate_descender_clip.py PASS across 116 files; _validate_binds_resolve.py resolves every manifest var and FAILS check D for this file only because no .cn-standing-order-mandate-row block exists in canon.css yet (the conductor's serial step). _validate_type_composites.py repo total 1097, UNCHANGED — this file adds ZERO.",
+    "$note": "PROPOSED #209, worker Lane A. NOT registered in component-types.json, CATEGORIES, gen_showroom.py or _validate_radius.MIGRATED_SNIPPETS, and no .cn-standing-order-mandate-row scope exists in canon.css — all shared files, all outside this lane's fence."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$sourceNarrative": "Itinerary row 95 via knowledge/_COMPONENT-LIBRARY-TARGET.md line 104, the Fintech-specific table, GAP · P2–P3. reviews/ITINERARY-STATUS-2026-08-19-v1.json records drift 'AGREES', all five slug probes negative, no plausible store alias. Re-probed at #209 against the store itself: no snippet, meta, showroom page, MIGRATED_SNIPPETS entry or canon scope exists under this slug; and a direct grep of knowledge/_rulings.json for standing order / direct debit / mandate / recurring returns ZERO entries naming this component — UNRULED. ⚠ Unlike row 91, this row carries no prior adjudication: #204 Lane N stopped at rows 91 and 92 and never reached it.",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Standing-order-mandate-row.reference.html"
+  },
+  "$differsFrom": {
+    "List-items (type=transaction)": "GATED, PROMOTED, 9.0/9. A transaction is a payment that HAS HAPPENED: one date, one amount, a settled balance effect. A mandate is an instruction that HAS NOT HAPPENED: a rhythm, a future date, an end condition, and a state you can change. THE TELL: you cannot pause a transaction. A mandate row carrying only a payee and an amount IS a List-items row and should be one.",
+    "Document-row": "Same ROW SHAPE, copied wholesale (passive li + stretched link + sibling button + list shell + the disabled-glyph lesson). Different subject: a document is an object you can only read; a mandate is an instruction you can alter.",
+    "Transaction-row (the ledger, same lane #209)": "That component states what the balance became. This one states what is going to happen and when. Neither carries the other's discriminator.",
+    "Timeline / Countdown-timer": "Those render time itself. This renders a payment whose next occurrence happens to be a date."
+  },
+  "$decisionsForDave": [
+    "The mandate-type vocabulary: 'Standing order' / 'Direct Debit' — the real UK terms — or 'Recurring payment' / 'Subscription'?",
+    "One component or two for standing order vs Direct Debit?",
+    "Does 'Last payment failed' belong on the ERROR seat rather than the warning seat? Deliberately not taken — it touches the two-red law.",
+    "For a variable Direct Debit: show the last taken figure (as drawn), the next estimate, or no figure?",
+    "Does an ACTIVE mandate carry a chip at all? Drawn silent.",
+    "The trailing control: icon-only (as drawn), a text 'Manage' button, a Dropdown menu, or nothing?",
+    "Does the payee's account detail belong on the row or only on the detail page?",
+    "Should a CANCELLED row be dimmed? It is not dimmed here because the dimmed version was drawn, rendered, and could not be read.",
+    "The leading glyph: no recurring-payment glyph exists in the library (probe in knownFindings). Is an icon-gap entry owed, or should the slot hold a payee avatar instead?"
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Standing-order-mandate-row.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:standing-orders-and-direct-debits-list",
+        "$note": "Standing orders and Direct Debits list"
+      },
+      {
+        "ref": "context:account-detail",
+        "$note": "Account detail"
+      },
+      {
+        "ref": "context:payment-management",
+        "$note": "Payment management"
+      },
+      {
+        "ref": "context:subscription-review-flows",
+        "$note": "Subscription review flows"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:manage-recurring-payments"
+      },
+      {
+        "ref": "pattern:pause-or-cancel-a-mandate"
+      },
+      {
+        "ref": "pattern:subscription-audit"
+      },
+      {
+        "ref": "pattern:failed-payment-recovery"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "A List-items transaction row for the SAME payment shown as if it had already happened"
+      }
+    ]
+  }
+}

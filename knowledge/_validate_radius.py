@@ -57,6 +57,19 @@ MIGRATED_SNIPPETS = {
     "Payment-card-visual.reference.html",
     "Runway-bar.reference.html",
     # Wave 3b, #203 (conductor-registered from lane I/J/K receipts):
+    # Wave 3, #209 (conductor-registered from lane A/B/C receipts, measured 0 strict /
+    # 0 advisory tree-wide BEFORE registration; Rating + Split-button rebound by the
+    # conductor in the same change — the one-change rule). Gate ratchet only, NOT
+    # promotion; all nine unregistered in gen_showroom.CATEGORIES pending Dave.
+    "Transaction-row.reference.html",
+    "Standing-order-mandate-row.reference.html",
+    "Limits-meter.reference.html",
+    "Range-slider.reference.html",
+    "Rating.reference.html",
+    "Transfer-list.reference.html",
+    "Split-button.reference.html",
+    "Fab.reference.html",
+    "Back-to-top.reference.html",
     "Command-palette.reference.html",
     "Sidebar-nav.reference.html",
     "Anchor-nav.reference.html",

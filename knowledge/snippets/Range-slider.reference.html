@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Range slider — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Range slider (gated). Itinerary row 24, P3 ("Dual-handle"). ACCRETES
+     FROM THE GATED Slider (knowledge/snippets/Slider.reference.html) — every idiom below is copied
+     from it, never re-drawn: the same track-fill technique (linear-gradient stop driven by a CSS
+     var), the same thumb geometry (20px circle, 2px border), the same focus-ring-on-thumb
+     treatment, the same "value also shown as text" answer to 1.4.1. What is ADDED for the second
+     handle:
+       • TWO overlaid native <input type=range>, transparent tracks, both thumbs independently
+         focusable/draggable — the standard accessible dual-handle technique (two real form
+         controls, not one control with synthetic thumbs).
+       • pointer-events management: each input's own thumb is clickable via ::-webkit-slider-thumb
+         pointer-events:auto with the *track* pointer-events:none on both, so a click anywhere on
+         the rail always reaches whichever input is stacked on top; z-index swaps to the
+         nearer handle on input so the min/max thumbs never trap each other at the extremes
+         (documented finding below — same class of problem the gated Slider does not have,
+         because it only has one handle).
+       • A min/max CLAMP in JS so the low handle cannot cross the high handle (and vice-versa) —
+         the two inputs share no DOM relationship, so the clamp has to be authored; this is the
+         one piece of behaviour that has no single-handle precedent to copy.
+     NOTE/finding, carried from Slider verbatim: the faint handle border + filled-track contrast
+     are ~<3:1 in places — perceptibility leans on handle position + the numeric value pair shown
+     as text, never colour alone (1.4.1). -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family/size/weight anywhere — every text element carries a .t-cm-*
+     composite from canon/type.css (Progress-bar precedent, #174), copied via Command-palette. */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{ --filled:#808080; --unfilled:#F0F0F0; --handle:#FFFFFF; --handle-bd:#808080; --text:#1A1A1A; --muted:#1A1A1A; --focus:#305A85; --page:#FFFFFF; --border-radius-indicator:0; }
+  [data-theme="dark"]{ --filled:#FFFFFF; --unfilled:#1F1F1F; --handle:#1F1F1F; --handle-bd:#808080; --text:#FFFFFF; --muted:#FFFFFF; --focus:#4587A7; --page:#1A1A1A; --border-radius-indicator:0; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .field{max-width:360px; margin-bottom:2.5rem;}
+  .field .row-label{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+  .field .vals{display:flex; gap:8px; align-items:baseline;}  /* conductor #209 snap 6->8 (ruled policy) */
+
+  /* ---- the rail: two overlaid inputs share this box; a static background gradient shows the
+     FILLED band between the two handles (copied technique: Slider's linear-gradient-on-var,
+     extended from one stop to a two-stop band). ---- */
+  .rail{position:relative; height:24px; --lo:20%; --hi:80%;}  /* conductor #209: defaults declared in CSS so the composition gate resolves them; JS setProperty overrides live (the fallback-only form read as unresolved) */
+  .rail .track-bg{position:absolute; left:0; right:0; top:50%; translate:0 -50%; height:4px; /* conductor #209: was top:10px (off-grid) — true centring in the 24px rail, no literal */ border-radius:var(--border-radius-indicator);
+    background:linear-gradient(90deg, var(--unfilled) 0%, var(--unfilled) var(--lo,20%), var(--filled) var(--lo,20%), var(--filled) var(--hi,80%), var(--unfilled) var(--hi,80%), var(--unfilled) 100%);
+    pointer-events:none;}
+
+  input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:24px; background:transparent; cursor:pointer;
+    position:absolute; left:0; top:0; margin:0; pointer-events:none;}   /* track ignores pointer; thumb re-enables it below */
+  input[type=range]::-webkit-slider-runnable-track{height:4px; background:transparent;}
+  input[type=range]::-moz-range-track{height:4px; background:transparent;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:20px; height:20px; margin-top:-8px; border-radius:50%; background:var(--handle); border:2px solid var(--handle-bd); pointer-events:auto; position:relative;}
+  input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; background:var(--handle); border:2px solid var(--handle-bd); pointer-events:auto;}
+  input[type=range]:focus-visible{outline:none;}
+  input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid var(--focus); outline-offset:2px;}
+  input[type=range]:focus-visible::-moz-range-thumb{outline:2px solid var(--focus); outline-offset:2px;}
+  /* the ACTIVE handle (last one the user touched) sits on top, so it never gets trapped under its
+     neighbour at a shared value — the one behaviour with no single-handle precedent to copy. */
+  input[type=range].is-top{z-index:2;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <div class="field">
+    <div class="row-label">
+      <label class="t-cm-label" id="rs1-label">Price range</label>
+      <span class="vals t-cm-figure-6" aria-hidden="true"><span id="rs1-lo-val">£200</span>&nbsp;–&nbsp;<span id="rs1-hi-val">£800</span></span>
+    </div>
+    <div class="rail" id="rs1">
+      <div class="track-bg" aria-hidden="true"></div>
+      <input type="range" id="rs1-lo" min="0" max="1000" step="50" value="200"
+        aria-labelledby="rs1-label" aria-valuetext="£200, minimum">
+      <input type="range" id="rs1-hi" min="0" max="1000" step="50" value="800"
+        aria-labelledby="rs1-label" aria-valuetext="£800, maximum">
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Range slider",
+    "vars": { "--filled": "scrollbar/foreground", "--unfilled": "scrollbar/background", "--handle": "tertiary/background/default", "--handle-bd": "form/border/default", "--text": "text/default", "--muted": "text/secondary", "--focus": "focus/ring", "--page": "background/default", "--border-radius-indicator": "border-radius/indicator" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" }
+    ],
+    "requiredAria": ["type=\"range\"", "aria-labelledby", "aria-valuetext"]
+  }
+  </script>
+  <script>
+    (function(){
+      const rail = document.getElementById('rs1');
+      const lo = document.getElementById('rs1-lo'), hi = document.getElementById('rs1-hi');
+      const loVal = document.getElementById('rs1-lo-val'), hiVal = document.getElementById('rs1-hi-val');
+      const min = Number(lo.min), max = Number(lo.max);
+
+      function paint(){
+        // clamp: the low handle may not pass the high handle and vice-versa (no DOM relationship
+        // links the two inputs, so this has no single-handle precedent — authored, not copied).
+        if (Number(lo.value) > Number(hi.value)) lo.value = hi.value;
+        if (Number(hi.value) < Number(lo.value)) hi.value = lo.value;
+        const loPct = ((Number(lo.value) - min) / (max - min)) * 100;
+        const hiPct = ((Number(hi.value) - min) / (max - min)) * 100;
+        rail.style.setProperty('--lo', loPct + '%');
+        rail.style.setProperty('--hi', hiPct + '%');
+        loVal.textContent = '£' + lo.value;
+        hiVal.textContent = '£' + hi.value;
+        lo.setAttribute('aria-valuetext', '£' + lo.value + ', minimum');
+        hi.setAttribute('aria-valuetext', '£' + hi.value + ', maximum');
+      }
+      [lo, hi].forEach(input => {
+        input.addEventListener('input', () => { paint(); });
+        input.addEventListener('pointerdown', () => {
+          lo.classList.toggle('is-top', input === lo);
+          hi.classList.toggle('is-top', input === hi);
+        });
+      });
+      paint();
+    })();
+  </script>
+</body>
+</html>

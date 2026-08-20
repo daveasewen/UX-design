@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rating — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Rating (gated). Itinerary row 25, P3 ("Star / score input").
+     Two variants:
+       (A) INPUT — a real fieldset of 5 native radio inputs (star1..star5), the SAME native-
+           keyboard idiom Selection-controls already earns honestly for its grouped Radio ("native
+           checkbox/radio/switch have NO JS keyboard model by design — the browser handles
+           arrows"), copied verbatim rather than hand-rolling a custom keydown handler. The classic
+           CSS star-fill technique (DOM in reverse 5..1, ~ general-sibling selector) drives the
+           visual fill from :checked/:hover with zero JS.
+       (B) READ-ONLY DISPLAY — a passive aggregate rating (e.g. "4.3 out of 5" on a product card),
+           built as role="img" with the number in the accessible name, plus a CLIP-PATH overlay of
+           a filled star row over an empty one so a fractional value (4.3) can render without
+           inventing a "star-and-a-third" glyph.
+     GLYPH: the REAL library asset knowledge/assets/icons/global-controls/favourite-star.svg, path
+     byte-matched inline (same "real glyph, not invented" discipline as Payment-card-visual's
+     contactless icon and Selection-controls' own chip star comment, which notes the library glyph
+     is fill-only — exactly the fill Rating wants).
+     COLOUR, a NAMED question (not settled): conventional star ratings use a gold/amber hue; this
+     token store has no such seat, and 1.4.1/two-red-law discipline plus "no token minting" (DO-
+     NOT-RULE) rule out inventing one. The filled star here binds text/default (ink), the empty
+     star binds form/border/default (outline) — the same mono contrast the checkbox/radio glyphs
+     already use, so the value is legible without a colour anyone would have to invent. Whether a
+     warm "rating/star" token is wanted is Dave's to rule (see $decisionsForDave in the meta). -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family/size/weight anywhere — every text element carries a .t-cm-*
+     composite from canon/type.css (Progress-bar precedent, #174). */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{ --star-filled:#1A1A1A; --star-empty:#808080; --text:#1A1A1A; --muted:#1A1A1A; --focus:#305A85; --page:#FFFFFF; --border-radius-control:0; }
+  [data-theme="dark"]{ --star-filled:#FFFFFF; --star-empty:#808080; --text:#FFFFFF; --muted:#FFFFFF; --focus:#4587A7; --page:#1A1A1A; --border-radius-control:0; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .block{margin-bottom:2.5rem; max-width:420px;}
+  fieldset{border:0; margin:0 0 8px; padding:0;}
+  legend{padding:0; margin-bottom:12px;}
+
+  /* ---- (A) input: 5 native radios, DOM in reverse 5..1 so the ~ sibling selector can fill
+     "this star and every one before it in reading order" purely in CSS ---- */
+  .stars{display:inline-flex; flex-direction:row-reverse; gap:4px;}
+  .stars input{position:absolute; opacity:0; width:0; height:0;}
+  .stars label{cursor:pointer; display:inline-flex; width:32px; height:32px; align-items:center; justify-content:center; border-radius:var(--border-radius-control);}  /* conductor #209: hardcoded 2px violated the ADR-0010 flex slot (and mono angularity); rebound to border-radius/control per the Icon-button precedent */
+  .stars label svg{width:24px; height:24px; flex:none; color:var(--star-empty); transition:color var(--ease);}
+  .stars input:checked ~ label svg,
+  .stars label:hover svg,
+  .stars label:hover ~ label svg{color:var(--star-filled);}
+  .stars input:focus-visible + label{outline:2px solid var(--focus); outline-offset:2px;}
+  .stars input:disabled + label{cursor:not-allowed;}
+  .stars input:disabled ~ label svg{opacity:.5;}
+  .valueText{margin-top:8px; color:var(--muted);}
+
+  /* ---- (B) read-only display: filled row clipped to a percentage over an empty row, so 4.3/5
+     renders without a half/third-star glyph. Decorative; the accessible name carries the number. ---- */
+  .display{display:inline-flex; align-items:center; gap:12px;}  /* conductor #209 snap 10->12 (tie up, ruled policy) */
+  .display .starsRow{position:relative; display:inline-flex; width:120px; height:24px;}
+  .display .starsRow .row{position:absolute; inset:0; display:flex; gap:4px;}
+  .display .starsRow .row svg{width:20px; height:20px;}
+  .display .starsRow .empty svg{color:var(--star-empty);}
+  .display .starsRow .filled{overflow:hidden;}
+  .display .starsRow .filled svg{color:var(--star-filled);}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <!-- symbol defs — the real library favourite-star.svg path, byte-matched, defined once -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-star" viewBox="0 0 18 18">
+      <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M9 4.24501L10.31 8.11911H14.414L11.117 10.586L12.346 14.47L9 12.1054L5.654 14.47L6.883 10.586L3.587 8.11911H7.69L9 4.24501ZM9 0.5L6.827 6.92739H0L5.485 11.0319L3.438 17.5L9 13.5683L14.562 17.5L12.515 11.0319L18 6.92739H11.173L9 0.5Z"/>
+    </symbol>
+  </svg>
+
+  <div class="block">
+    <fieldset id="r1">
+      <legend class="t-cm-label">Rate this product</legend>
+      <div class="stars" role="radiogroup" aria-label="Star rating, 1 to 5">
+        <input type="radio" name="rate1" id="r1-5" value="5"><label for="r1-5" aria-label="5 stars"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+        <input type="radio" name="rate1" id="r1-4" value="4"><label for="r1-4" aria-label="4 stars"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+        <input type="radio" name="rate1" id="r1-3" value="3" checked><label for="r1-3" aria-label="3 stars"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+        <input type="radio" name="rate1" id="r1-2" value="2"><label for="r1-2" aria-label="2 stars"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+        <input type="radio" name="rate1" id="r1-1" value="1"><label for="r1-1" aria-label="1 star"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+      </div>
+      <p class="valueText t-cm-caption" id="r1-value" aria-live="polite">3 out of 5</p>
+    </fieldset>
+  </div>
+
+  <div class="block">
+    <fieldset id="r2">
+      <legend class="t-cm-label">Rate this product (disabled)</legend>
+      <div class="stars" role="radiogroup" aria-label="Star rating, 1 to 5">
+        <input type="radio" name="rate2" id="r2-5" value="5" disabled><label for="r2-5" aria-label="5 stars"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+        <input type="radio" name="rate2" id="r2-4" value="4" disabled><label for="r2-4" aria-label="4 stars"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+        <input type="radio" name="rate2" id="r2-3" value="3" disabled checked><label for="r2-3" aria-label="3 stars"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+        <input type="radio" name="rate2" id="r2-2" value="2" disabled><label for="r2-2" aria-label="2 stars"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+        <input type="radio" name="rate2" id="r2-1" value="1" disabled><label for="r2-1" aria-label="1 star"><svg aria-hidden="true"><use href="#ic-star"/></svg></label>
+      </div>
+      <p class="valueText t-cm-caption">3 out of 5 (disabled)</p>
+    </fieldset>
+  </div>
+
+  <div class="block">
+    <p class="t-cm-label" style="margin:0 0 8px;">Read-only display (aggregate)</p>
+    <div class="display" role="img" aria-label="Rated 4.3 out of 5">
+      <span class="starsRow" aria-hidden="true">
+        <span class="row empty"><svg><use href="#ic-star"/></svg><svg><use href="#ic-star"/></svg><svg><use href="#ic-star"/></svg><svg><use href="#ic-star"/></svg><svg><use href="#ic-star"/></svg></span>
+        <span class="row filled" style="width:86%;"><svg><use href="#ic-star"/></svg><svg><use href="#ic-star"/></svg><svg><use href="#ic-star"/></svg><svg><use href="#ic-star"/></svg><svg><use href="#ic-star"/></svg></span>
+      </span>
+      <span class="t-cm-figure-6" aria-hidden="true">4.3</span>
+      <span class="t-cm-caption" aria-hidden="true">(212 reviews)</span>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Rating",
+    "vars": { "--border-radius-control": "border-radius/control", "--star-filled": "text/default", "--star-empty": "form/border/default", "--text": "text/default", "--muted": "text/secondary", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["type=\"radio\"", "role=\"radiogroup\"", "aria-label", "role=\"img\"", "aria-live"]
+  }
+  </script>
+  <script>
+    (function(){
+      const group = document.getElementById('r1');
+      const out = document.getElementById('r1-value');
+      group.addEventListener('change', e => {
+        if (e.target.name !== 'rate1') return;
+        out.textContent = e.target.value + ' out of 5';
+      });
+    })();
+  </script>
+</body>
+</html>

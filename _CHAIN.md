@@ -92,11 +92,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **82 items · 56 live · 25 Dave's · 31 mine · 63 carry a stated close condition · **19 UNCONDITIONED**.**
+> **84 items · 58 live · 26 Dave's · 32 mine · 65 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (25) — 20 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (26) — 21 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -117,20 +117,21 @@
 > - `W-53` **#207 W-46 three scoped proposals (items 3/4/5) — returning to Dave** — *closes when:* Dave rules build/park per item on the three scoped proposals; W-46 closes on the same event
 > - `W-60` **Dave's eye on the 29 4px-grid snaps (#209) — the review page is the surface** — *closes when:* Dave has looked at reviews/REVIEW-209-grid-snap-before-after-v1.html in light and dark and either accepts the snapped values or names the ones he wants re-cut
 > - `W-61` **Dave's eye on leading-trim applied to text-bearing inputs (#209) — keep the inert vocabulary, or revert** — *closes when:* Dave's eye accepts BOTH halves on reviews/REVIEW-209-input-trim-before-after-v1.html: (a) the inert input vocabulary stays as authored, now watched by probe P-6 — or is reverted; and (b) the 11 newly-trimmed snippets read right with their labels tighter and their forms up to 37px shorter — or any one of them has its block removed
+> - `W-63` **wave-3 NINE components BUILT PROPOSED-NOT-RULED - Daves eye owed (incl. two existence questions)** — *closes when:* Dave rules per component: promote / rework / delete; existence questions answered first
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-15` **LEDGER § ★ #59** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-16` **UNHOMED PAIR, copied up at the #78 2c EXIT CHECK** — *closes when:* ⛔ **none stated — cannot close until you name one**
 >
-> **MINE (31), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59`
+> **MINE (32), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **29,692 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **29,784 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 84,211 real and stays whole for retrieval; you have paid for
 35% of it, and that is the intended figure, not a shortfall.)*

@@ -1,0 +1,141 @@
+{
+  "name": "Transaction / ledger row",
+  "category": "molecule",
+  "purpose": "A STATEMENT LINE IN A LEDGER: an ordered sequence of settled and pending entries with a RUNNING BALANCE, column headers, day grouping and a closing total. Its question is 'what was the balance after this?', which is a relationship between rows and therefore a table. PROPOSED #209 (itinerary row 91, slug transaction-row, P2) — NOT GATED, NOT RULED. Fintech semantics are Dave's (the Kpi-tile precedent, s182-D2).",
+  "$adjudication": "⛔ READ THIS BEFORE ANYTHING ELSE, BECAUSE A PRIOR LANE STOPPED ON THIS ROW. #204 Lane N ruled itinerary row 91 a DUPLICATE and built nothing (notes/_receipts/2026-08-19-204-wave-laneN-fintech-rows.md: 'Row 91 … IS A DUPLICATE. It is not a gap … I built no transaction row.'). Its evidence is real and was RE-PROBED at #209, not trusted: list-items.meta.json build.$status = 'PROMOTED 2026-06-22 (Dave) — TRANSACTION row brought to the Tabs-bar standard'; build.scope = 'Transaction row only (the ★ payments-journey row)'; build.prototypeGrade = '9.0/9 (2026-06-22)'; List-items.reference.html <title> = 'List items — Transaction row (reference implementation, gated)'. THE TAPPABLE TRANSACTION ROW IS GATED AND PROMOTED AND IS NOT RE-DRAWN ANYWHERE IN THIS COMPONENT. The #209 brief re-listed row 91 as a build because the itinerary re-probe reads by SLUG, which is the exact mechanism defect Lane N named. This lane did not resolve that by building what Lane N stopped: it built the one form the adjudication does not cover — the LEDGER, with a running balance. ⬛ IF DAVE RULES THAT THE PRODUCT'S STATEMENT IS A LIST AND NOT A LEDGER, THIS COMPONENT SHOULD NOT EXIST and row 91 collapses into List-items exactly as Lane N said. That is a live outcome; deleting this pair of files costs nothing, because nothing registers them.",
+  "props": [
+    { "name": "entries", "type": "array", "$note": "Ordered, newest first. Each entry: payee, reference line, one money value, and the balance AFTER it. Order is meaning here — a running balance cannot be reordered client-side without becoming false." },
+    { "name": "moneyColumns", "type": "enum", "values": ["two", "signed"], "default": "two", "$note": "PROPOSED, NOT RULED (P1). 'two' = separate Money out / Money in columns, the UK statement convention, which carries the sign STRUCTURALLY. 'signed' = one Amount column carrying a U+2212. Both forms are DRAWN in the reference so Dave chooses by eye rather than from prose. Whichever he picks, the figure is monochrome." },
+    { "name": "runningBalance", "type": "boolean", "default": true, "$note": "PROPOSED, NOT RULED (P3). This is the DISCRIMINATOR: with it false, the component IS a List-items transaction list and should be one. A pending entry shows an em dash, not a number, because the balance does not exist until it settles." },
+    { "name": "groupBy", "type": "enum", "values": ["day", "none"], "default": "day", "$note": "PROPOSED, NOT RULED (P5). Rendered as <th scope=\"rowgroup\"> day headings. The alternative is a date column on every row — denser, equally buildable." },
+    { "name": "status", "type": "enum", "values": ["settled", "pending", "reversed"], "default": "settled", "$note": "PROPOSED, NOT RULED (P4). Rendered as a Status-indicator RAG-tint chip ALWAYS CARRYING ITS WORD; 'settled' draws no chip at all, because 400 green chips on a statement is noise. Which status maps to which chip tint is a SEMANTIC binding and is DAVE'S." },
+    { "name": "referenceLine", "type": "string", "$note": "PROPOSED, NOT RULED (P6). 'Card ending 4821 · Faster Payment'. Whether the method, the reference, the merchant category or none of them belongs on line 2 is unruled. It is the first thing to drop below 400c." },
+    { "name": "closingBalance", "type": "string", "$note": "Rendered in a real <tfoot> so assistive technology announces it as a total rather than as another row." }
+  ],
+  "variants": [
+    { "name": "two-column", "use": "The default. Money out / Money in / Balance — the sign is carried by the COLUMN, a non-colour channel a signed column does not have." },
+    { "name": "signed", "use": "One Amount column with a U+2212, and the running balance moved onto the reference line. What a phone width wants." },
+    { "name": "pending", "use": "An entry that has not settled: a Pending chip and an em dash where the balance will be." },
+    { "name": "reversed", "use": "A refund or reversal: the money returns in the Money in column and the chip says so." }
+  ],
+  "tokens": {
+    "surface": "tertiary/background/default — the table body",
+    "hover": "tertiary/background/hover — row hover, the day-group band and the tfoot band",
+    "text": "text/default — every figure, every payee, and the closing balance",
+    "muted": "text/secondary — column heads, day headings, the reference line",
+    "divider": "divider/border/section — the 1px rules between rows and under the heads",
+    "border": "border/subtle — the tfoot's top rule",
+    "status": "rag/warning + rag/warning-tint (pending) | rag/information + rag/information-tint (reversed) | rag/success + rag/success-tint (declared, unused by the drawn specimens)",
+    "focus": "focus/ring — the scroll region's focus outline",
+    "radius": "border-radius/surface (the table shell) + border-radius/indicator (the chip). 0 in Mono and Legacy; Console forks surface through the cascade.",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. Every value here already exists and is already bound by a gated component. ⛔ AND NO MONETARY COLOUR TOKEN IS BOUND AT ALL — see $moneyColour."
+  },
+  "$moneyColour": "⛔ THE MOST IMPORTANT LINE IN THIS FILE. A debit/credit ledger is the single most likely place in this system for a red/green money binding to get improvised. NONE IS. Every figure in every column is text/default, monochrome; the sign is carried by U+2212 and by the COLUMN the figure sits in. The system DOES own coloured monetary seats — Amount-display's sign=positive → rag.success-ink and sign=negative → rag.error-ink, MONO ONLY (s155-D1 / s158-D2 / s158-D3) — and they are DELIBERATELY NOT BOUND HERE. Whether a ledger credit is that seat is a SEMANTIC binding and is DAVE'S (question Q1 in the receipt). Binding it would have been ruling on his behalf.",
+  "motion": {
+    "entry": "None. Passive.",
+    "hover": "Row background to tertiary/background/hover over the inherited 140ms ease.",
+    "reducedMotion": "Global prefers-reduced-motion collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Container-query at 400c: cell padding tightens to 12px and the reference line drops before the payee does (P6). The two money FORMS are two tables, not a breakpoint switch — see knownFindings, that was a corrected defect. The table sits in a labelled role=\"region\" with tabindex=\"0\" so a genuinely narrow viewport can still reach the right-hand columns from the keyboard (2.1.1).",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Statement views", "Account detail", "Export / download statement flows", "Reconciliation views"],
+    "mustNotNeighbour": ["A List-items transaction list showing the SAME entries (two components claiming to be the same statement)"],
+    "commonPatterns": ["statement", "reconciliation", "running balance", "day-grouped history"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "A real <table> with <caption>, scoped column heads, <th scope=\"rowgroup\"> day headings and a <tfoot> total. The relation between a row's amount and the row above it is what the table encodes and what a list of buttons cannot (1.3.1).",
+    "name": "The caption names the account and the period. The scroll region carries its own aria-label.",
+    "scrollRegion": "The table sits in role=\"region\" tabindex=\"0\" — THE ONLY FOCUSABLE THING IN THE COMPONENT — because a horizontally scrollable region must be keyboard reachable (2.1.1) and must show focus (2.4.7). Added after _validate_snippets.py caught 'no :focus-visible rule'.",
+    "pendingBalance": "The em dash where a pending balance would be carries an aria-label ('No balance yet, this payment has not settled') so it is not announced as a bare dash.",
+    "notColourAlone": "No meaning anywhere rests on hue. Status carries its WORD in the chip; the sign carries a U+2212 and its column. Remove all colour and the component still says everything it means (1.4.1).",
+    "hitArea": "The component contains NO CONTROL, so the 44px minimum has no seat here. Declared rather than assumed. The one focusable element is the scroll region, which is not a control.",
+    "keyboard": "Tab reaches the scroll region and arrow keys scroll it. No row is individually focusable — a 400-line statement must not be 400 tab stops.",
+    "relatedSC": ["1.3.1 Info and Relationships", "1.4.1 Use of Color", "1.4.10 Reflow", "2.1.1 Keyboard", "2.4.7 Focus Visible", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "⛔ MAKING EACH LEDGER ROW INDIVIDUALLY TAPPABLE. That is a List-items transaction row wearing a table: it exists, it is gated, it is Dave-promoted at 9.0/9, and this component must not duplicate it. If the product needs tappable rows, use List-items type=\"transaction\".",
+    "⛔ DROPPING THE RUNNING BALANCE AND KEEPING THE TABLE. Without the running balance there is no cross-row relation, and the component IS a List-items list. The balance is the whole justification.",
+    "⛔ COLOURING THE MONEY. Red debits and green credits are the reflex and they are not this system's rule. See $moneyColour: the coloured seats exist, are MONO ONLY, and their use on a ledger is unruled and Dave's.",
+    "Relying on the status DOT to convey state. The dot is 1.98:1 / 2.18:1 standalone (measured #204); the word is the carrier.",
+    "Letting the payee be the element that gives way. A status chip must never crush the merchant name to 'Brist…' — the line wraps and the name claims a basis instead (a defect found by looking at the render at #209).",
+    "Re-sorting the rows client-side while showing a running balance. The balance is only true in one order."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PROPOSED — gates run at #209 by this worker lane, on the whole tree, with the file present: _validate_grid.py rc=0 for this file (the 4 off-grid failures in that run are Lane B/C files, named in the receipt); _validate_a11y.py 0 failures across 100 snippets; _validate_snippets.py reports NOTHING against this file (it reported 4 items against an earlier draft — 3 ALL-CAPS runs and a missing :focus-visible rule — all repaired); _validate_descender_clip.py PASS across 116 files; _validate_binds_resolve.py resolves every manifest var and FAILS check D for this file only because no .cn-transaction-row block exists in canon.css yet (the conductor's serial step; 9 of the wave's snippets share that state). _validate_type_composites.py repo total 1097, UNCHANGED — this file adds ZERO, declaring no raw font at all.",
+    "$note": "PROPOSED #209, worker Lane A. NOT registered in component-types.json, CATEGORIES, gen_showroom.py or _validate_radius.MIGRATED_SNIPPETS, and no .cn-transaction-row scope exists in canon.css — all shared files, all outside this lane's fence."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$sourceNarrative": "Itinerary row 91 via knowledge/_COMPONENT-LIBRARY-TARGET.md's Fintech-specific table. reviews/ITINERARY-STATUS-2026-08-19-v1.json records it as itinerary_status 'Partial', derived 'GAP', drift 'OVERSTATED', with all five slug probes negative — and #204 Lane N proved that reading WRONG IN THE OPPOSITE DIRECTION: the store holds a complete promoted 9.0/9 build under a different slug (list-items, type='transaction'), which a slug probe cannot see. This component is therefore NOT the artefact the itinerary row asked for; it is the residue that survives Lane N's adjudication. See $adjudication.",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Transaction-row.reference.html"
+  },
+  "$differsFrom": {
+    "List-items (type=transaction)": "GATED, PROMOTED, 9.0/9. Its row IS a <button>: one target, one action, independent rows, no column headers and no cross-row relation. It answers 'what was this payment?'. This answers 'what was the balance after it?' — which only exists because of the rows above. Drop the running balance and this component collapses into it.",
+    "Table": "Table is the generic data-grid family with no domain. This is a table with exactly one anatomy — money out, money in, balance — and one rule: order is meaning.",
+    "Document-row": "Same lane, different subject: that row hands the user a FILE, this row states an AMOUNT and a BALANCE. Document-row's two-action shape is not used here, because a ledger line has no discrete second action.",
+    "Amount-display": "The atom whose money FORMAT this composes (symbol before, no space, tabular lining, U+2212). ⚠ amount-display.meta.json's relationships.livesInside already carries 'Transaction / ledger row (gap)' — #204 Lane N's finding 3 explains it: the GATED transaction row contradicts copy-025 and does not compose the atom. This file composes it correctly. IT DOES NOT REPAIR THE GATED ROW; that repair is owed in List-items and is named in the receipt."
+  },
+  "$decisionsForDave": [
+    "⛔ FIRST: should this exist at all, given #204 ruled row 91 a duplicate? The ledger form is the only part of row 91 that List-items does not hold. If the product's statement is a list, delete this.",
+    "Two money columns or one signed column? Both are drawn.",
+    "Do ledger CREDITS take the ruled green seat (rag.success-ink, MONO ONLY), or stay monochrome as drawn? Deliberately not taken.",
+    "Does a pending row show an em dash where the balance will be, or nothing, or a projected figure?",
+    "Is the day-group heading right, or does every row carry its own date column?",
+    "The status vocabulary — Pending / Reversed, and settled rows silent. Right set?",
+    "What belongs on the reference line, if anything?",
+    "Should a ledger line be openable (a receipt view)? That makes the row interactive and re-opens the List-items question."
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Transaction-row.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:statement-views",
+        "$note": "Statement views"
+      },
+      {
+        "ref": "context:account-detail",
+        "$note": "Account detail"
+      },
+      {
+        "ref": "context:export-download-statement-flows",
+        "$note": "Export / download statement flows"
+      },
+      {
+        "ref": "context:reconciliation-views",
+        "$note": "Reconciliation views"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:statement"
+      },
+      {
+        "ref": "pattern:reconciliation"
+      },
+      {
+        "ref": "pattern:running-balance"
+      },
+      {
+        "ref": "pattern:day-grouped-history"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "A List-items transaction list showing the SAME entries (two components claiming to be the same statement)"
+      }
+    ]
+  }
+}

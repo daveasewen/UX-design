@@ -1,0 +1,115 @@
+{
+  "name": "Back to top",
+  "category": "atom",
+  "purpose": "A page-chrome utility that appears once the reader has scrolled past a threshold and returns them to the top of the scrollable region on activation. PROPOSED #209 (itinerary row 38, slug back-to-top) — NOT GATED, NOT RULED. An Icon-button idiom, per the wave-3 brief: SECONDARY tier tokens (deliberately not primary — this is chrome, never the primary action of a view), 44x44 target and B-D7 press-physics copied verbatim from Icon-button.reference.",
+  "props": [
+    { "name": "glyph", "type": "string", "binds": ["button.secondary.label.default", "text.on-disabled"], "$note": "Icon id from the assets/icons sprite. Specimen uses arrows-and-chevrons/arrow-up.svg." },
+    { "name": "label", "type": "string", "default": "Back to top", "$note": "REQUIRED accessible name (aria-label)." },
+    { "name": "scrollTarget", "type": "string", "$note": "aria-controls id of the scrollable region this control acts on — the whole page, or a scoped scrollable panel." },
+    { "name": "threshold", "type": "number", "$note": "⛔ UNSPECIFIED store-wide. The scroll distance (px or viewport-heights) past which the control fades in is a UX-writing / Dave call, not resolved here. The demo uses an arbitrary 200px scrollTop for illustration only." },
+    { "name": "visible", "type": "boolean", "default": false, "$note": "Drives the is-hidden/is-visible fade; true once past `threshold`." }
+  ],
+  "variants": [
+    { "name": "secondary", "use": "The only tier specimen'd — a solid-but-not-primary control, consistent with 'never the primary action of the view'. Whether a tertiary/quaternary (lower-visibility) back-to-top should also exist is named in decisionsForDave." }
+  ],
+  "tokens": {
+    "target-size": "44x44 (2.5.8) — the Icon-button floor, unscaled (unlike FAB, which reaches for 56px).",
+    "glyph-size": "20px, Icon-button's own glyph size.",
+    "secondary": { "glyph": "button.secondary.label.default", "glyph-disabled": "text.on-disabled", "background-default": "button.secondary.background.default", "background-hover": "button.secondary.background.hover", "background-pressed": "button.secondary.background.pressed", "background-disabled": "button.secondary.background.disabled", "$note": "Copied byte-for-byte from Icon-button.reference's secondary tier." },
+    "elevation": "elevation.functional (box-shadow) — a smaller shadow than FAB's, since this control never claims a screen's single decisive action; still needed because it floats above scrolled content.",
+    "radius": "border-radius.control — flat/angular (B-D7), same as Icon-button. No corner-deviation question raised here (see Fab.meta for that discussion) — back-to-top is page chrome, not a mobile action-affordance convention.",
+    "placement": "24px bottom/right offset (6 x 4px grid), mirrors FAB — a raw constant, not a token.",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. --target/--glyph and the 24px placement offset are the only non-token values; the appearance threshold (`threshold` prop) has NO value proposed at all, flagged as an open UX question rather than a filled-in default."
+  },
+  "motion": {
+    "hover": "scale(1 + press-travel/44) — B-D7 pixel-true, identical geometry to Icon-button (unscaled, unlike FAB).",
+    "press": "scale(1 - press-travel/44) + brightness(press-darken).",
+    "appear": "opacity fade only (no scale/translate) when crossing the scroll threshold — chosen because a moving target near the reader's likely next click is a worse motion hazard than a static fade-in.",
+    "reducedMotion": "Hover/press transforms disabled under prefers-reduced-motion. The appearance opacity fade is RETAINED (a fade is not itself a motion-sickness trigger the way scale/translate/parallax are) — the click-to-scroll action itself is instant `scrollTo` in the demo, not smooth-scroll-forced (a live implementation should also honour prefers-reduced-motion on the scroll behavior, which the demo's `behavior:'smooth'` does not currently branch on — DECLARED, not fixed).",
+    "tokens": ["component-type.button-family.press-travel", "component-type.button-family.press-darken"]
+  },
+  "responsive": {
+    "rule": "Fixed viewport (or scoped-container) placement, bottom-right, 24px offset. Does not reflow — a single always-same-size control regardless of container width.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Page (fixed overlay, not a layout child)", "Long-form content pages", "Scrollable panel/table regions"],
+    "mustNotNeighbour": ["FAB (both are fixed bottom-right floating controls; collision unresolved, see decisionsForDave)"],
+    "commonPatterns": ["long-page navigation utility", "scoped scrollable-region 'jump to top'"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "button",
+    "name": "MANDATORY accessible name via aria-label ('Back to top' default) — icon-only (4.1.2 / 2.4.4).",
+    "controls": "aria-controls names the scrollable region the button acts on (the whole document or a scoped panel) so AT users understand what 'top' refers to when more than one scrollable region exists on the page.",
+    "keyboard": "Reachable in tab order only once visible (a hidden-but-focusable control is a keyboard trap of a different kind — the demo removes it from the flow via opacity + pointer-events:none while hidden, NOT display:none, so it stays discoverable via CSS transition but is inert until shown; whether it should also be visually revealed on :focus regardless of scroll position (so keyboard users are never stuck below a hidden control) is named in decisionsForDave, not resolved).",
+    "focus": "Visible focus outline (text.default), never removed without replacement.",
+    "target": "44x44 minimum (2.5.5/2.5.8).",
+    "relatedSC": ["2.1.1 Keyboard", "2.4.7 Focus Visible", "1.4.11 Non-text Contrast", "2.5.8 Target Size (Minimum)", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "Icon-only with no accessible name.",
+    "A disabled/hidden-state glyph bound to a token equal to its own surface (glyph-presence gate, inherited from Icon-button).",
+    "display:none while hidden, leaving keyboard-focus users with no way to reach it below the threshold and no way to know it exists above the threshold — the reference uses opacity+pointer-events instead, flagged as the safer default, not proven exhaustively.",
+    "Binding the control's scroll target ambiguously when a page has more than one scrollable region (must set aria-controls explicitly).",
+    "REVIEW (inferred): shipping WITHOUT ever naming a scroll threshold value, leaving every consuming team to invent its own (the meta deliberately does not propose one either — see decisionsForDave)."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PROPOSED — worker lane render-verify only (light+dark, headless Chromium, 0 console errors; the live scroll-threshold demo was driven in the static screenshot only, not interactively scrolled by an automated probe — see receipt UNPROVEN list). _validate_snippets.py / _validate_a11y.py / _validate_type_composites.py / _validate_grid.py / _validate_radius.py NOT RUN by this lane (conductor's serial set, per the wave-3 brief). This is a PROPOSAL, not a proof-of-done.",
+    "$note": "Not registered in component-types.json (shared file, outside this lane's fence). Not in _validate_radius.MIGRATED_SNIPPETS. No .cn-back-to-top scope exists in canon.css."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Back-to-top.reference.html"
+  },
+  "$differsFrom": {
+    "Icon-button": "Same tokens/tier discipline/press-physics MODEL as the secondary tier — but Back-to-top floats fixed above scrolled content (needs elevation.functional), has a SHOW/HIDE lifecycle driven by scroll position (Icon-button is always simply present), and its click action is a scroll command, not an arbitrary page action.",
+    "Fab": "Both float fixed bottom-right and share the collision question, but FAB is the PRIMARY tier / the one decisive mobile action; Back-to-top is SECONDARY-tier page chrome that can coexist with (or be superseded by) whatever the primary action of the screen is."
+  },
+  "$decisionsForDave": [
+    "The scroll-distance threshold that triggers appearance is entirely unspecified — a fixed px value, a viewport-height multiple, or something else?",
+    "Should the control become focus-reachable/visible whenever it receives programmatic focus, even below the scroll threshold, so keyboard users are never stuck?",
+    "FAB vs Back-to-top collision: both are fixed bottom-right. Should Back-to-top always defer (move up/left) when a FAB is present on the same screen?",
+    "Should a lower-emphasis (tertiary/quaternary) tier exist for less content-heavy pages, or is SECONDARY the single canonical tier?"
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Back-to-top.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:table",
+        "$note": "Scrollable panel/table regions"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:page-fixed-overlay-not-a-layout-child",
+        "$note": "Page (fixed overlay, not a layout child)"
+      },
+      {
+        "ref": "context:long-form-content-pages",
+        "$note": "Long-form content pages"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:long-page-navigation-utility"
+      },
+      {
+        "ref": "pattern:scoped-scrollable-region-jump-to-top"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "FAB (both are fixed bottom-right floating controls; collision unresolved, see decisionsForDave)"
+      }
+    ]
+  }
+}

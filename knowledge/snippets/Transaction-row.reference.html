@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transaction / ledger row — reference implementation (PROPOSED #209)</title>
+<!--
+  ⚠⚠ PROPOSED #209, 2026-08-20 (Wave 3, Lane A). NOT GATED, NOT PROMOTED, NOT RULED.
+  Itinerary row 91 ("Transaction / ledger row · Statement/ledger line item.", slug
+  transaction-row, P2 — the last remaining P2 in the itinerary). Fintech semantics are DAVE'S
+  (the Kpi-tile precedent, s182-D2). Nothing in this file is a ruling.
+
+  ★★★ READ THIS BEFORE THE DRAWING — THE #204 ADJUDICATION THAT THIS FILE MUST ANSWER TO ★★★
+  Lane N at #204 was asked whether row 91 was already covered and answered, in its own receipt
+  (notes/_receipts/2026-08-19-204-wave-laneN-fintech-rows.md, headline):
+      "Row 91 'Transaction / ledger row' IS A DUPLICATE. It is not a gap … I built no
+       transaction row."
+  Its evidence is REAL and I re-probed every line of it rather than trusting the summary:
+    · `list-items.meta.json` build.$status, verbatim: "PROMOTED 2026-06-22 (Dave) — TRANSACTION
+      row brought to the Tabs-bar standard … Build green."
+    · same file, build.scope: "Transaction row only (the ★ payments-journey row)."
+    · same file, build.prototypeGrade: "9.0/9 (2026-06-22)".
+    · `List-items.reference.html` <title>: "List items — Transaction row (reference
+      implementation, gated)".
+  ⛔ SO THE TAPPABLE TRANSACTION ROW IS BUILT, GATED AND DAVE-PROMOTED, AND IT IS NOT RE-DRAWN
+  ANYWHERE IN THIS FILE. Re-drawing it is exactly the mistake Lane N avoided, and this file
+  does not make it. There is no "variant B" showing a tappable row here, deliberately: Document
+  row drew its converse variant because that shape did not exist; this one does exist, gated,
+  and drawing it again would be the duplicate.
+
+  ★★★ THEN WHY DOES THIS FILE EXIST AT ALL? THE STRUCTURAL CLAIM, STATED SO IT CAN BE REFUSED.
+  The #209 brief re-lists row 91 as a build. The itinerary's own re-probe still reads GAP
+  because it probes BY SLUG, and Lane N named that as the mechanism defect ("Any derived-status
+  instrument that probes by slug cannot see a component that lives as a VARIANT of another").
+  I did not resolve that contradiction by building the thing Lane N stopped. I built the ONE
+  form of row 91 that its adjudication does NOT cover, and I have said so on the face:
+
+      THE TAPPABLE TRANSACTION ROW (a list of independent payments, each one a target,
+      "what was this payment?")            ⇒ List-items type="transaction". EXISTS. GATED.
+      THE LEDGER LINE (a statement: an ORDERED sequence with a RUNNING BALANCE,
+      "what was the balance after it?")     ⇒ absent. This file.
+
+  ★ THE TELL, and it is a structural one, not a stylistic preference:
+    A running balance is not a property of a transaction. It is a property of a transaction's
+    POSITION IN A SEQUENCE. £40 out means nothing on its own; "£40 out, £1,204.18 left" only
+    exists because of every row above it. That relationship is what a <table> encodes and what
+    a <ul> of independent <button> rows cannot — and List-items' row IS a <button>
+    (`<li><button class="row">…`), so it can neither carry column headers nor state that
+    column 5 of row 3 relates to column 5 of row 2. Turning a statement into buttons also makes
+    every line of a 400-line statement a tab stop.
+    A ledger without a running balance IS a List-items transaction list and should be one.
+    A ledger row that is individually tappable is a List-items row wearing a table.
+    Both are antiPatterns, named in the meta.
+
+  ★ AND THE HONEST CONVERSE, STATED PLAINLY, BECAUSE IT IS A LIVE OUTCOME:
+    If Dave rules that the product's statement view is a LIST and not a LEDGER — no running
+    balance, no columns — then this component should not exist and row 91 collapses into
+    List-items exactly as Lane N said it did. Deleting this pair of files is a one-line
+    outcome and costs nothing; the conductor has not registered it anywhere.
+
+  ⛔⛔ NO MONEY COLOUR IS INVENTED HERE, AND THIS IS THE FILE WHERE IT WOULD HAVE BEEN.
+  A debit/credit ledger is the single most likely place in this system for a red/green money
+  binding to get improvised. NONE IS. Every amount in every column is text/default, monochrome,
+  with the sign carried by U+2212 and by the COLUMN the figure sits in (Money out / Money in),
+  which is a second, non-colour channel that a single signed column does not have.
+  The system DOES own a coloured monetary seat — Amount-display's `sign=positive` →
+  rag.success-ink and `sign=negative` → rag.error-ink (s155-D1 / s158-D2 / s158-D3), MONO ONLY.
+  ⬛ WHETHER A LEDGER CREDIT IS THAT SEAT IS A SEMANTIC BINDING AND IS DAVE'S. It is question
+  Q1 in the meta and it is NOT taken here. Copying the seat in would have been ruling on his
+  behalf; the amounts are monochrome until he says otherwise.
+
+  ★ THE MONEY FORMAT IS Amount-display's, COPIED — AND THAT REPAIRS A NAMED FINDING.
+  Lane N's finding 3 records that the GATED transaction row "contradicts copy-025 and does not
+  compose Amount-display" (amount-display.meta.json's own relationships.livesInside carries
+  "Transaction / ledger row (gap)" for precisely this reason). This file composes the money
+  primitive correctly — symbol BEFORE the amount with no space (copy-025), tabular lining
+  figures, U+2212 for the minus — copied verbatim from Runway-bar's .amount, which copied it
+  from Amount-display. ⛔ IT DOES NOT REPAIR List-items: that file is gated, promoted and not
+  this lane's to edit. The repair is DEMONSTRATED here, owed there, and named in the receipt.
+
+  ⬛⬛ PROPOSED — DAVE'S, ALL OF IT. NONE OF THIS IS RULED: ————————————————————————
+    P1  TWO MONEY COLUMNS ("Money out" / "Money in") vs ONE SIGNED COLUMN ("Amount", −£40.00).
+        Two columns is drawn as the default because it is the UK bank-statement convention and
+        because it carries the sign structurally rather than typographically. The one-column
+        form is equally buildable and is what a mobile width wants — it is drawn as the
+        narrow reflow, so both are on the page for Dave's eye.
+    P2  WHETHER CREDITS TAKE THE RULED GREEN SEAT. See above. Monochrome as drawn.
+    P3  THE RUNNING-BALANCE COLUMN'S PRESENCE AND ITS LABEL. "Balance" as drawn. Also unruled:
+        whether a pending row shows a balance at all (drawn as an em dash, because the balance
+        does not yet exist), and whether the balance column shows on mobile.
+    P4  THE STATUS VOCABULARY: "Pending" / "Reversed" / (settled = no chip). Whether a settled
+        row carries a chip at all is a product call; drawn silent, because 400 green chips on a
+        statement is noise.
+    P5  DATE GROUPING. Rows are grouped by day under a <th scope="rowgroup"> day heading.
+        The alternative — a date column on every row — is equally buildable and denser.
+    P6  THE REFERENCE LINE ("Card ending 4821 · Faster Payment"). Whether the method, the
+        reference, the merchant category or none of them belongs on line 2 is unruled.
+    P7  DENSITY. 48px minimum row height as drawn (a passive table row, not a 44px target).
+        A statement is a long list and may want tighter.
+
+  TYPE: composites only. This file declares NO raw font-family/size/weight in component scope —
+  every text element carries a .t-cm-* composite from canon/type.css. TYPE-002 contribution: 0.
+  ⚠ THE DIVERGENCE FROM THE NEAREST PARENT, DECLARED: List-items itself still carries raw
+  `font:500 16px/1.35 var(--font)` declarations. Its ANATOMY is cited; its type debt is not
+  copied (the Document-row #204 precedent, same words).
+  SHAPE: square (radius 0 via border-radius/surface + /indicator) — the angular rule; console
+  forks through the cascade. Nothing here is round except the 8px status dot, which
+  Status-indicator already rules so.
+  MOTION: none beyond the inherited 140ms surface ease.
+  HIT AREA: THE COMPONENT IS PASSIVE — a statement is read, not operated — so it contains NO
+  CONTROL and the 44px minimum-hit-area rule has no seat here. STATED so the absence is declared
+  rather than assumed (the Runway-bar #204 precedent). ⚠ CORRECTION TO MY OWN FIRST DRAFT,
+  BY ADDITION: there IS exactly one focusable element, and it is not a control — the table sits
+  in a labelled `role="region"` with `tabindex="0"`, because a region that scrolls horizontally
+  must be reachable from the keyboard or its right-hand columns cannot be read without a mouse
+  (2.1.1), and it carries a focus ring (2.4.7). The first draft had neither, and the snippet
+  gate caught the missing focus rule. ⬛ If Dave rules that a ledger line must open a receipt,
+  THAT target is a DECISION, not an omission: it makes the row interactive and re-opens the
+  List-items question above.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --ease:140ms ease; --txr-row-h:48px; }
+  [data-theme="light"]{
+    --surface:#FFFFFF; --hover:#F0F0F0; --page:#FFFFFF;
+    --text:#1A1A1A; --muted:#1A1A1A;
+    --divider:#E1E1E1; --border:#E1E1E1; --focus:#305A85;
+    --success:#66CC8D; --warning:#E0A61F; --info:#78A7E8;
+    --success-tint:#D4F1DF; --warning-tint:#F6E6C0; --info-tint:#DFEAF9;
+    --border-radius-indicator:0; --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --surface:#1F1F1F; --hover:#232323; --page:#1A1A1A;
+    --text:#FFFFFF; --muted:#FFFFFF;
+    --divider:#808080; --border:#808080; --focus:#4587A7;
+    --success:#66CC8D; --warning:#E0A61F; --info:#78A7E8;
+    --success-tint:#32533F; --warning-tint:#614C1C; --info-tint:#38475C;
+    --border-radius-indicator:0; --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .stateLabel{color:var(--muted); margin:1.75rem 0 .6rem;}   /* demo chrome — not the component */
+  .stateLabel:first-of-type{margin-top:0;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+  .wrap{width:var(--demo-width, 720px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
+
+  /* ---- THE SCROLL REGION. A statement is wider than a phone, and a region that scrolls must
+     be reachable from the keyboard or its right-hand columns are unreadable without a mouse
+     (2.1.1). So the table sits in a labelled role="region" with tabindex="0" — THE ONLY
+     FOCUSABLE THING IN THIS COMPONENT — and it shows a focus ring when it takes focus (2.4.7).
+     ⬛ This is a real target, so the 44px note in the header applies to nothing else: the
+     region is not a control, it is a scroll container. ---- */
+  .ldg-scroll{overflow-x:auto; border-radius:var(--border-radius-surface);}
+  .ldg-scroll:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ============================================================
+     THE LEDGER. A real <table>, because a running balance is a
+     relationship between rows and only a table can say so (1.3.1).
+     ============================================================ */
+  /* ⛔⛔ table-layout:fixed IS LOad-BEARING, AND I ONLY LEARNED THAT BY LOOKING (#209).
+     With the browser default (auto layout) a table cell EXPANDS to its content, so
+     white-space:nowrap + overflow:hidden on the payee does nothing: the long merchant
+     descriptor stretched the description column past the container, and the scroll region
+     clipped every money column and the running balance OFF THE RIGHT-HAND EDGE. The wide
+     specimen rendered with a single visible column — "Description" — and no figures at all.
+     THE ENTIRE POINT OF THE COMPONENT WAS INVISIBLE AND EVERY GATE WAS GREEN OVER IT
+     (grid, a11y, snippets, binds-resolve, descender-clip all passed on that draft).
+     Fixed layout + declared column widths makes the ellipsis real and keeps the figures on
+     screen; the scroll region below stays for genuinely narrow viewports. */
+  .ldg{width:100%; table-layout:fixed; border-collapse:collapse; background:var(--surface);
+    border:1px solid var(--divider); border-radius:var(--border-radius-surface);
+    overflow:hidden; color:var(--text);}
+  .ldg caption{text-align:left; color:var(--muted); opacity:var(--alpha-72); padding:0 0 8px;}
+
+  /* column heads — the only place the column MEANING is stated, so they are never visually
+     hidden (a "Money in" figure with no head is an unlabelled number) */
+  .ldg thead th{text-align:left; color:var(--muted); opacity:var(--alpha-72);
+    padding:12px 16px; border-bottom:1px solid var(--divider); white-space:nowrap;}
+  .ldg th.num, .ldg td.num{text-align:right; font-variant-numeric:tabular-nums;}
+  /* declared column widths — the description column takes what is left */
+  .ldg .c-out, .ldg .c-in, .ldg .c-amt{width:120px;}
+  .ldg .c-bal{width:140px;}
+
+  /* the day group head — a rowgroup header, so AT reads "3 June 2026" as the scope of the
+     rows beneath it rather than as a stray cell */
+  .ldg tbody th[scope="rowgroup"]{text-align:left; color:var(--muted); opacity:var(--alpha-72);
+    padding:12px 16px; background:var(--hover); border-bottom:1px solid var(--divider);}
+
+  .ldg tbody tr + tr td, .ldg tbody tr + tr th{border-top:1px solid var(--divider);}
+  .ldg tbody td{padding:12px 16px; min-height:var(--txr-row-h); vertical-align:top;}
+  .ldg tbody tr:hover td{background:var(--hover);}
+
+  /* the description cell — line 1 the payee, line 2 the reference/method */
+  .ldg-desc{display:flex; flex-direction:column; gap:4px; min-width:0;}
+  /* ⚠ the payee LINE WRAPS and the name claims a basis, so a status chip can never crush the
+     merchant to "Brist…" — the same defect the mandate row hit at #209, same repair. */
+  .ldg-payee{display:flex; align-items:center; gap:8px; min-width:0; flex-wrap:wrap;}
+  .ldg-name{flex:1 1 140px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-box-edge:text text;}
+  .ldg-ref{color:var(--muted); opacity:var(--alpha-72); min-width:0; overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text;}
+
+  /* ---- the money primitive. Amount-display, copied verbatim via Runway-bar:
+     symbol BEFORE the amount with no space (copy-025), tabular lining figures, U+2212 minus.
+     ⛔ MONOCHROME. There is no colour rule in this component at all — see the header. ---- */
+  .amount{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums;}
+  .amount--muted{color:var(--muted); opacity:var(--alpha-72);}   /* the em-dash placeholder only */
+
+  /* ---- status chip = Status-indicator atom form B, copied verbatim from List-items:
+     tint surface + RAG dot + NEUTRAL text label. The LABEL carries the meaning (1.4.1);
+     the dot is decorative and aria-hidden. ---- */
+  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
+  .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+  .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
+  .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
+  .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
+
+  /* the closing-balance foot — a real <tfoot>, so the total is announced as a total */
+  .ldg tfoot td, .ldg tfoot th{padding:12px 16px; border-top:1px solid var(--border);
+    background:var(--hover); color:var(--text);}
+  .ldg tfoot th{text-align:left;}
+
+  /* ⛔ WHAT THIS FILE NO LONGER DOES, AND WHY IT IS WORTH RECORDING (#209).
+     The first draft carried BOTH money forms in ONE table and switched between them with
+     display:none on the unwanted columns inside a container query. In a table-layout:fixed
+     table a display:none cell still reserved its column slot, so the visible columns stopped
+     ~130px short of the table box and the bands did not reach the edge. The two forms are now
+     TWO TABLES — which is also the more honest drawing, because P1 asks Dave to CHOOSE one,
+     not to watch one become the other at a breakpoint.
+     Below 400c the reference line drops before the payee does (P6). */
+  @container (max-width: 400px){
+    .ldg thead th, .ldg tbody td, .ldg tbody th[scope="rowgroup"], .ldg tfoot td, .ldg tfoot th{padding:12px;}
+    .ldg-ref{display:none;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <!-- ===== A. THE LEDGER, TWO-COLUMN MONEY FORM (P1 default) ===== -->
+  <p class="stateLabel t-cm-legal">ledger · the default · two money columns, a running balance, and not one colour on a single figure</p>
+  <div class="wrap">
+    <div class="ldg-scroll" tabindex="0" role="region" aria-label="Statement, 1 to 3 June 2026 — scrollable">
+    <table class="ldg">
+      <caption class="t-cm-caption">Business current account &middot; 1&ndash;3 June 2026</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="t-cm-legal">Description</th>
+          <th scope="col" class="t-cm-legal num c-out">Money out</th>
+          <th scope="col" class="t-cm-legal num c-in">Money in</th>
+          <th scope="col" class="t-cm-legal num c-bal">Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th scope="rowgroup" colspan="4" class="t-cm-section-label">Tuesday 3 June 2026</th></tr>
+        <tr>
+          <td>
+            <span class="ldg-desc">
+              <span class="ldg-payee">
+                <span class="ldg-name t-cm-label">Bristol Trade Supplies</span>
+                <span class="status warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Pending</span></span>
+              </span>
+              <span class="ldg-ref t-cm-caption">Card ending 4821 &middot; Faster Payment</span>
+            </span>
+          </td>
+          <td class="num c-out"><span class="amount t-cm-figure-6"><span>&minus;</span><span>&pound;</span><span>412.60</span></span></td>
+          <td class="num c-in"></td>
+          <td class="num c-bal"><span class="amount amount--muted t-cm-figure-6" aria-label="No balance yet, this payment has not settled">&mdash;</span></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="ldg-desc">
+              <span class="ldg-payee"><span class="ldg-name t-cm-label">Harbourside Ltd</span></span>
+              <span class="ldg-ref t-cm-caption">INV-20416 &middot; Faster Payment</span>
+            </span>
+          </td>
+          <td class="num c-out"></td>
+          <td class="num c-in"><span class="amount t-cm-figure-6"><span>&pound;</span><span>2,480.00</span></span></td>
+          <td class="num c-bal"><span class="amount t-cm-figure-6"><span>&pound;</span><span>14,902.18</span></span></td>
+        </tr>
+
+        <tr><th scope="rowgroup" colspan="4" class="t-cm-section-label">Monday 2 June 2026</th></tr>
+        <tr>
+          <td>
+            <span class="ldg-desc">
+              <span class="ldg-payee"><span class="ldg-name t-cm-label">HMRC</span></span>
+              <span class="ldg-ref t-cm-caption">Quarterly return &middot; Direct Debit &middot; 8412 6690 04</span>
+            </span>
+          </td>
+          <td class="num c-out"><span class="amount t-cm-figure-6"><span>&minus;</span><span>&pound;</span><span>6,204.00</span></span></td>
+          <td class="num c-in"></td>
+          <td class="num c-bal"><span class="amount t-cm-figure-6"><span>&pound;</span><span>12,422.18</span></span></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="ldg-desc">
+              <span class="ldg-payee">
+                <span class="ldg-name t-cm-label">Wren &amp; Fell Ironmongers &mdash; a long merchant descriptor that should truncate cleanly rather than wrap the row</span>
+                <span class="status inf"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Reversed</span></span>
+              </span>
+              <span class="ldg-ref t-cm-caption">Card ending 4821 &middot; refunded 2 Jun</span>
+            </span>
+          </td>
+          <td class="num c-out"></td>
+          <td class="num c-in"><span class="amount t-cm-figure-6"><span>&pound;</span><span>86.40</span></span></td>
+          <td class="num c-bal"><span class="amount t-cm-figure-6"><span>&pound;</span><span>18,626.18</span></span></td>
+        </tr>
+
+        <tr><th scope="rowgroup" colspan="4" class="t-cm-section-label">Sunday 1 June 2026</th></tr>
+        <tr>
+          <td>
+            <span class="ldg-desc">
+              <span class="ldg-payee"><span class="ldg-name t-cm-label">Opening balance</span></span>
+              <span class="ldg-ref t-cm-caption">Brought forward from May</span>
+            </span>
+          </td>
+          <td class="num c-out"></td>
+          <td class="num c-in"></td>
+          <td class="num c-bal"><span class="amount t-cm-figure-6"><span>&pound;</span><span>18,539.78</span></span></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th scope="row" class="t-cm-label">Closing balance, 3 June 2026</th>
+          <td class="num c-out"></td>
+          <td class="num c-in"></td>
+          <td class="num c-bal"><span class="amount t-cm-figure-5"><span>&pound;</span><span>14,902.18</span></span></td>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+  </div>
+
+  <!-- ===== B. THE ONE-SIGNED-COLUMN FORM (P1's alternative), at a phone width ===== -->
+  <p class="stateLabel t-cm-legal">one signed column · P1's alternative, drawn at 400px · the sign is carried by the U+2212 instead of by the column, and the running balance moves onto line 2</p>
+  <div class="wrap" style="--demo-width:400px">
+    <div class="ldg-scroll" tabindex="0" role="region" aria-label="Statement, 1 to 3 June 2026, single-column form — scrollable">
+    <table class="ldg ldg--signed">
+      <caption class="t-cm-caption">Business current account &middot; 1&ndash;3 June 2026</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="t-cm-legal">Description</th>
+          <th scope="col" class="t-cm-legal num c-amt">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th scope="rowgroup" colspan="2" class="t-cm-section-label">Tuesday 3 June 2026</th></tr>
+        <tr>
+          <td>
+            <span class="ldg-desc">
+              <span class="ldg-payee">
+                <span class="ldg-name t-cm-label">Bristol Trade Supplies</span>
+                <span class="status warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Pending</span></span>
+              </span>
+              <span class="ldg-ref t-cm-caption">Card ending 4821 &middot; balance pending</span>
+            </span>
+          </td>
+          <td class="num c-amt"><span class="amount t-cm-figure-6"><span>&minus;</span><span>&pound;</span><span>412.60</span></span></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="ldg-desc">
+              <span class="ldg-payee"><span class="ldg-name t-cm-label">Harbourside Ltd</span></span>
+              <span class="ldg-ref t-cm-caption">INV-20416 &middot; balance &pound;14,902.18</span>
+            </span>
+          </td>
+          <td class="num c-amt"><span class="amount t-cm-figure-6"><span>&pound;</span><span>2,480.00</span></span></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="ldg-desc">
+              <span class="ldg-payee"><span class="ldg-name t-cm-label">HMRC</span></span>
+              <span class="ldg-ref t-cm-caption">Quarterly return &middot; balance &pound;12,422.18</span>
+            </span>
+          </td>
+          <td class="num c-amt"><span class="amount t-cm-figure-6"><span>&minus;</span><span>&pound;</span><span>6,204.00</span></span></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th scope="row" class="t-cm-label">Closing balance</th>
+          <td class="num c-amt"><span class="amount t-cm-figure-5"><span>&pound;</span><span>14,902.18</span></span></td>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. Every figure in this component is text/default on
+       tertiary/background/default or on tertiary/background/hover — no monetary value sits on
+       a tint and no monetary value carries a hue, so there is no money-colour pair to declare.
+       The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on white — measured #204 with
+       the repo's own _contrast_utils.contrast_ratio) is NOT declared as a gated pair: it is the
+       INHERITED Status-indicator / List-items finding, flagged and never load-bearing, because
+       every chip carries its word.
+       ⚠ text/secondary on tertiary/background/hover in dark measures 3.34:1 (< 4.5) — the
+       INHERITED List-items $darkFinding, which that meta calls SYSTEMIC across every row with
+       secondary text on a hover surface. It bites the .ldg-ref line and the rowgroup heads on
+       hover here. Not invented around; the List-items meta finding is its home. -->
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Transaction / ledger row",
+    "type": "molecule",
+    "status": "PROPOSED #209 — NOT gated, NOT promoted, NOT ruled. Fintech semantics are Dave's (s182-D2).",
+    "$adjudication": "⛔ READ FIRST. #204 Lane N ruled itinerary row 91 a DUPLICATE of the gated, Dave-promoted List-items type='transaction' (9.0/9, promoted 2026-06-22) and built no transaction row. That adjudication is CORRECT for the TAPPABLE row, and the tappable row is NOT re-drawn in this file. This file builds only the form Lane N's adjudication does not cover: the LEDGER LINE — an ordered statement with a RUNNING BALANCE, which is a relationship between rows and therefore a <table>, not a <ul> of <button>s. If Dave rules the product's statement is a list and not a ledger, THIS COMPONENT SHOULD NOT EXIST and row 91 collapses into List-items exactly as Lane N said. That is a live outcome, not a hedge.",
+    "vars": {
+      "--surface": "tertiary/background/default",
+      "--hover": "tertiary/background/hover",
+      "--page": "background/default",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--divider": "divider/border/section",
+      "--border": "border/subtle",
+      "--focus": "focus/ring",
+      "--success": "rag/success",
+      "--warning": "rag/warning",
+      "--info": "rag/information",
+      "--success-tint": "rag/success-tint",
+      "--warning-tint": "rag/warning-tint",
+      "--info-tint": "rag/information-tint",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-surface": "border-radius/surface"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/information-tint", "context": "text" }
+    ],
+    "requiredAria": ["<table", "<caption", "<thead", "<tfoot", "role=\"region\"", "tabindex=\"0\"", "scope=\"col\"", "scope=\"row\"", "scope=\"rowgroup\"", "aria-label", "aria-hidden=\"true\""],
+    "reuses": [
+      "List-items (the transaction ANATOMY — payee, reference line, status chip — cited and copied; its ROW SHAPE is deliberately NOT copied, see $adjudication)",
+      "Amount-display via Runway-bar (money format: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)",
+      "Status-indicator (RAG tint chip, form B) — copied verbatim via List-items",
+      "Table (the ledger grid: caption, scoped column heads, rowgroup heads, tfoot total)"
+    ],
+    "knownFindings": [
+      "STRUCTURAL, and it is the reason this file exists: a RUNNING BALANCE is a property of a row's POSITION IN A SEQUENCE, not of a transaction. Only a <table> can encode that relation (1.3.1). List-items' row IS a <button>, which can carry neither column headers nor a cross-row relation, and which makes every line of a 400-line statement a tab stop.",
+      "NO MONEY COLOUR WAS INVENTED, in the one component most likely to invent it. Every figure is monochrome text/default; the sign is carried by U+2212 AND by the column it sits in (Money out / Money in) — a second non-colour channel a single signed column does not have. The system's coloured monetary seats (rag.success-ink / rag.error-ink, MONO ONLY, s155-D1 / s158-D2 / s158-D3) exist and are deliberately NOT bound here: whether a ledger credit is that seat is DAVE'S (question Q1).",
+      "THE MONEY FORMAT REPAIR IS DEMONSTRATED, NOT APPLIED TO THE PARENT. #204 Lane N finding 3 records that the GATED transaction row contradicts copy-025 and does not compose Amount-display (amount-display.meta.json carries 'Transaction / ledger row (gap)' in relationships.livesInside for that reason). This file composes it correctly. List-items is gated and promoted and was NOT edited — the repair is owed there and is named in the receipt.",
+      "PASSIVE COMPONENT: it contains NO CONTROL, so the 44px minimum hit area has no seat here. Declared rather than assumed. ⚠ CORRECTED BY ADDITION during the build: there IS one focusable element and it is not a control — the table sits in a labelled role=\"region\" with tabindex=\"0\" and a focus ring, because a horizontally scrollable region must be keyboard-reachable (2.1.1 / 2.4.7). The first draft had neither and _validate_snippets.py caught the missing focus rule (probeable: `python3 knowledge/_validate_snippets.py 2>&1 | grep Transaction-row` → 'no :focus-visible rule (2.4.7)' BEFORE, empty AFTER). If Dave rules a ledger line must open a receipt, THAT is a DECISION that makes the row interactive and re-opens the List-items question.",
+      "A PENDING ROW SHOWS NO BALANCE — an em dash with an aria-label, because the running balance does not exist until the payment settles. Drawn that way; whether it is right is P3, Dave's.",
+      "Status chip = Status-indicator form B copied verbatim: neutral label on RAG tint, meaning carried by the LABEL because the warning dot alone is < 3:1 standalone (1.4.11 / 1.4.1).",
+      "TYPE: contributes 0 to the shrink-only ratchet. No raw font declarations in component scope, unlike List-items, which still carries them — its anatomy is cited, its type debt is not.",
+      "INHERITED: text/secondary on tertiary/background/hover in dark measures 3.34:1 (< 4.5) — List-items' own open $darkFinding, which calls it SYSTEMIC across every interactive row with secondary text on a hover surface. It bites the reference line and the rowgroup heads on hover here. Not invented around; the List-items meta is the home.",
+      "The narrow reflow is NOT a second markup: the same table collapses the two money columns into one signed column below 560c, and the balance column drops first. That makes P1 and P3 visible on one page for Dave's eye instead of asserted in prose.",
+      "NOT registered in component-types.json, CATEGORIES, MIGRATED_SNIPPETS or canon.css (shared files, the conductor's serial set). ⛔ _validate_binds_resolve.py check D (canon block presence) WILL FAIL for this snippet until a .cn-transaction-row block is projected. Declared, not hidden."
+    ]
+  }
+  </script>
+</body>
+</html>

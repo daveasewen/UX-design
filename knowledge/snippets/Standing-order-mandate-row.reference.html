@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Standing-order / mandate row — reference implementation (PROPOSED #209)</title>
+<!--
+  ⚠⚠ PROPOSED #209, 2026-08-20 (Wave 3, Lane A). NOT GATED, NOT PROMOTED, NOT RULED.
+  Itinerary row 95 ("Standing-order / mandate row · Recurring-payment row.", slug
+  standing-order-mandate-row, P3). Fintech semantics are DAVE'S (the Kpi-tile precedent,
+  s182-D2). Nothing in this file is a ruling.
+
+  ★★ WHERE THE DRAWING COMES FROM — COPIED, NOT RE-DRAWN ————————————————————————————
+  The row SHAPE is Document-row's (#204, Lane N), copied and not re-invented: a PASSIVE <li>
+  containing a primary <a> whose ::after stretches to the full row (the "stretched link"), plus
+  a SIBLING <button> raised on the z-axis. Document-row's own header states why that shape
+  exists and the reason applies here unchanged: you cannot nest an interactive control inside a
+  <button> (invalid HTML 4.1.1; the inner control is unreachable in several ATs and the outer
+  accessible name absorbs the inner one), and this row has TWO actions that are not the same
+  action:
+      (a) open the mandate  — the row
+      (b) manage it (pause / amend / cancel) — a discrete trailing control
+  The two-line body, the density tokens, the hover-glyph trick, the leading 36px glyph slot and
+  the status chip are List-items' via Document-row. The money format is Amount-display's via
+  Runway-bar. NOTHING NEW IS DRAWN AT THE ATOM LEVEL — what is new is the ANATOMY: an
+  instruction that has not happened yet, with a rhythm and a next date.
+
+  ★★★ THE OVERLAP ADJUDICATION, DONE AGAINST THE METAS AND NOT FROM MEMORY ★★★
+    vs List-items type="transaction" (GATED, promoted 9.0/9) — a transaction is a payment that
+      HAS HAPPENED: one date, one amount, a settled balance effect. A mandate is an INSTRUCTION
+      THAT HAS NOT HAPPENED: it has a rhythm ("Monthly on the 1st"), a NEXT date in the future,
+      an end condition, and a state you can change (pause it, and no money moves). ★ THE TELL:
+      a transaction row's date is in the PAST and is a fact; a mandate row's date is in the
+      FUTURE and is a promise. You cannot pause a transaction.
+    vs Document-row (PROPOSED #204) — same row SHAPE, different subject: a document is an object
+      you can only read; a mandate is an instruction you can alter. Shape copied, subject not.
+    vs Timeline / Countdown-timer (GATED) — those render time itself. This renders a payment
+      whose next occurrence happens to be a date.
+    ⇒ A mandate row that carries only a payee and an amount IS a List-items row and should be
+      one. The rhythm, the next date and the alterable state are the whole component.
+
+  ★★ STANDING ORDER ≠ DIRECT DEBIT, AND THE COMPONENT MUST NOT FLATTEN THEM ————————
+  This is the one piece of domain that is not a style preference. A STANDING ORDER is the
+  customer's own instruction: fixed amount, fixed rhythm, the customer controls it. A DIRECT
+  DEBIT is a mandate the customer grants a PAYEE, who then pulls a VARIABLE amount, under the
+  Direct Debit Guarantee. They are legally and operationally different objects and the row says
+  which one it is IN TEXT, in a Tags atom (square outline chip), never by hue and never by an
+  icon alone. ⬛ Whether they should be one component or two is question Q3 in the meta —
+  DAVE'S, not settled here by the fact that I drew them in one list.
+
+  ⛔⛔ NO MONEY COLOUR AND NO RED FAILURE STATE IS INVENTED ————————————————————————
+  Every amount is text/default, monochrome, symbol-before-amount with no space (copy-025),
+  tabular lining figures, U+2212 for the minus — Amount-display's format, copied. A recurring
+  payment that FAILED is precisely where an error-red row gets improvised; none is. The failed
+  row carries a Status-indicator RAG-tint chip with the WORD ("Last payment failed") and a plain
+  text line saying what happened and when. Which state maps to which chip tint is a SEMANTIC
+  binding and is DAVE'S — proposed, not ruled, and the error seat is deliberately NOT taken
+  (that would touch the two-red law, s151-D1, which is not this lane's to touch).
+
+  COLOUR NEVER ALONE — every state carries its WORD in the chip and its consequence in text.
+  Remove all colour from this component and it still says everything it means.
+
+  ⬛⬛ PROPOSED — DAVE'S, ALL OF IT. NONE OF THIS IS RULED: ————————————————————————
+    P1  THE MANDATE-TYPE VOCABULARY: "Standing order" / "Direct Debit". Real UK terms, but
+        whether the product uses them, or "Recurring payment" / "Subscription", is unruled.
+    P2  THE RHYTHM STRING: "Monthly on the 1st &middot; next 1 July". Alternatives: a bare next
+        date, a countdown ("in 11 days"), or a rhythm with an end ("until 1 Dec 2026", drawn on
+        one specimen). Also unruled: whether the NEXT amount or the LAST amount is the figure —
+        for a Direct Debit they differ, and the row shows the next where known and says
+        "Amount varies" where not.
+    P3  ONE COMPONENT OR TWO for standing order vs Direct Debit. See above.
+    P4  THE STATUS VOCABULARY AND ITS CHIP BINDING: active → no chip (drawn silent, because a
+        list of twelve green chips is noise), paused → warning tint, last-payment-failed →
+        warning tint, ending-soon → information tint. ⛔ "Failed" on the WARNING seat rather
+        than the error seat is deliberate restraint, NOT a considered ruling — the error seat
+        is Dave's and touches the two-red law.
+    P5  THE TRAILING CONTROL'S FORM. A 44×44 icon-button (the overflow "more" glyph) with an
+        accessible name. Alternatives: a text button ("Manage"), a whole-row link with the
+        actions on the detail page, or a real Dropdown menu. The icon-only form follows the
+        Icon-button atom and the Document-row precedent for label-less trailing affordances.
+    P6  WHETHER THE PAYEE'S ACCOUNT DETAIL ("Sort 40-12-08 · Account ending 3391") belongs on
+        the row or only on the mandate detail page. Drawn on the row for standing orders and
+        replaced by the service-user reference for Direct Debits.
+    P7  DENSITY. --row-h 76px inherited verbatim from List-items' roomy default via Document-row.
+    P9  THE CANCELLED ROW'S TREATMENT. Drawn FULLY LEGIBLE with a "Cancelled" chip and only the
+        control disabled, because the dimmed version was drawn, rendered and could not be read
+        (1.42:1 in light). Whether a cancelled mandate should be dimmed at all — and if so at
+        what ink — is Dave's. See the CSS comment; the correction is a category correction, not
+        a colour tweak.
+    P8  THE LEADING GLYPH. A generic document/mandate glyph is used, byte-matched from the
+        library. ⚠ NO recurring/repeat/mandate glyph exists in knowledge/assets/icons — probe in
+        the meta. An avatar or a payee initial is an equally arguable leading slot and is what
+        List-items uses for a person.
+
+  TYPE: composites only. This file declares NO raw font-family/size/weight in component scope —
+  every text element carries a .t-cm-* composite from canon/type.css. TYPE-002 contribution: 0.
+  SHAPE: square (radius 0 via border-radius/surface + /indicator) — the angular rule; console
+  forks through the cascade. Nothing is round except the 8px status dot.
+  MOTION: none beyond the inherited 140ms surface ease.
+  HIT AREA: ≥44px on every interactive target, ENFORCED BY HAND — no gate reads the ruled 44px
+  token from a snippet. Primary target = the stretched-link row (min-height 76). Manage button
+  = 44×44. The disabled (cancelled) row's control is a native disabled button.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --ease:140ms ease;
+    --row-h:76px; --som-row-pad:16px; --label-gap:12px; }   /* density — List-items' roomy default via Document-row */
+  [data-theme="light"]{
+    --surface:#FFFFFF; --hover:#F0F0F0;
+    --text:#1A1A1A; --muted:#1A1A1A;
+    --icon:#1A1A1A; --divider:#E1E1E1; --border:#E1E1E1;
+    --success:#66CC8D; --warning:#E0A61F; --info:#78A7E8;
+    --success-tint:#D4F1DF; --warning-tint:#F6E6C0; --info-tint:#DFEAF9;
+    --glyph-bg:#F0F0F0; --focus:#305A85; --page:#FFFFFF;
+    --border-radius-indicator:0; --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --surface:#1F1F1F; --hover:#232323;
+    --text:#FFFFFF; --muted:#FFFFFF;
+    --icon:#FFFFFF; --divider:#808080; --border:#808080;
+    --success:#66CC8D; --warning:#E0A61F; --info:#78A7E8;
+    --success-tint:#32533F; --warning-tint:#614C1C; --info-tint:#38475C;
+    --glyph-bg:#232323; --focus:#4587A7; --page:#1A1A1A;
+    --border-radius-indicator:0; --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}      /* demo chrome — not the component */
+  .demo-h:first-of-type{margin-top:0;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+  .wrap{width:var(--demo-width, 560px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
+
+  /* ---- the list shell — Document-row's ul.doclist, copied including its declared departure
+     from List-items (bound to border-radius/surface so the shell follows the THEME's rule
+     rather than inheriting List-items' omission; overflow:hidden clips the end rows). That
+     departure is Document-row's, flagged there, and is carried here rather than re-decided. */
+  ul.mdlist{list-style:none; margin:0; padding:0; background:var(--surface);
+    border:1px solid var(--divider); border-radius:var(--border-radius-surface); overflow:hidden;}
+  ul.mdlist li + li{border-top:1px solid var(--divider);}
+
+  /* ---- the row. PASSIVE container; two independent targets live inside it. ---- */
+  .mrow{position:relative; display:flex; align-items:center; gap:16px; width:100%;
+    min-height:var(--row-h,76px); padding:var(--som-row-pad,16px); color:var(--text);
+    transition:background var(--ease);}
+  .mrow:hover{background:var(--hover);}
+  .mrow:hover .mr-glyph{background:var(--surface);}   /* List-items' hover-glyph trick */
+
+  /* ---- leading glyph slot. Same 36px slot as List-items' avatar, but SQUARE: the avatar's
+     round form is the documented people exemption and a mandate is not a person. ---- */
+  .mr-glyph{flex:none; width:36px; height:36px; border-radius:var(--border-radius-indicator);
+    background:var(--glyph-bg); color:var(--icon);
+    display:inline-flex; align-items:center; justify-content:center;}
+  .mr-glyph svg{width:18px; height:18px; display:block; fill:currentColor;}
+
+  /* ---- two-line body — line 1: payee | type tag | status, line 2: rhythm + next date ---- */
+  .mr-body{flex:1; min-width:0; display:flex; flex-direction:column; gap:var(--label-gap,12px);}
+  /* ⚠ FIX FOUND BY LOOKING AT THE RENDER, NOT BY A GATE (#209): with the line as a
+     non-wrapping flex row, the tag + status chips are flex:none and the PAYEE was the only
+     shrinkable item, so a row carrying both chips crushed the name to "Bristol …" and
+     "Kestrel Ass…". The payee is the row's subject and must not be the thing that gives way.
+     The line now WRAPS and the payee claims a 160px basis, so the chips drop to a second line
+     before the name truncates. Every gate was green over the crushed name. */
+  .mr-line{display:flex; align-items:center; gap:12px; min-width:0; flex-wrap:wrap;}
+  .mr-payee{flex:1 1 160px; min-width:0; color:var(--text); text-decoration:none;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-box-edge:text text;}
+  .mr-meta{flex:1; min-width:0; color:var(--muted); opacity:var(--alpha-72);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-box-edge:text text;}
+
+  /* THE STRETCHED LINK — Document-row's, copied. Primary target is the whole row, but the
+     ELEMENT is only the payee name, so the trailing <button> is a SIBLING, not a descendant. */
+  .mr-payee::after{content:""; position:absolute; inset:0; z-index:0;}
+  .mr-payee:focus-visible{outline:none;}
+  .mr-payee:focus-visible::after{outline:2px solid var(--focus); outline-offset:-2px;}
+  .mr-payee:hover{text-decoration:underline;}
+
+  /* ---- the mandate-type tag = Tags atom, square outline chip, copied via Account-card.
+     It carries the STANDING ORDER / DIRECT DEBIT distinction IN TEXT. ---- */
+  .tag{flex:none; display:inline-flex; align-items:center; height:24px; padding:0 8px;
+    border:1px solid var(--border); border-radius:var(--border-radius-indicator);
+    color:var(--muted); white-space:nowrap; position:relative; z-index:1;}
+
+  /* ---- status chip = Status-indicator atom form B, copied verbatim from List-items:
+     tint surface + RAG dot + NEUTRAL text label. The LABEL carries the meaning (1.4.1). ---- */
+  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;
+    position:relative; z-index:1;}
+  .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+  .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
+  .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
+  .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
+
+  /* ---- the money block — Amount-display's format, copied via Runway-bar. MONOCHROME.
+     Right-aligned above the rhythm's own trailing note; tabular so a column of them lines up. */
+  .mr-money{flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:4px;
+    position:relative; z-index:1; pointer-events:none;}   /* passive text over the stretched link */
+  .amount{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums;}
+  .mr-when{color:var(--muted); opacity:var(--alpha-72); white-space:nowrap;}
+
+  /* ---- the manage control. Icon-button atom form: 44×44 hit area, 18px glyph.
+     z-index raises it ABOVE the stretched link so it is independently clickable. ---- */
+  .mr-manage{flex:none; position:relative; z-index:1; width:44px; height:44px; padding:0;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:transparent; border:0; border-radius:var(--border-radius-indicator);
+    color:var(--icon); opacity:var(--alpha-72); cursor:pointer; transition:opacity var(--ease);}
+  .mr-manage svg{width:18px; height:18px; display:block; fill:currentColor;}
+  .mr-manage:hover{opacity:var(--alpha-96);}
+  .mr-manage:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
+
+  /* ---- cancelled row ----
+     ⛔⛔ CORRECTED AFTER LOOKING AT THE RENDER (#209) — AND THE CORRECTION IS THE FINDING.
+     My first draft copied Document-row's DISABLED row treatment onto the cancelled mandate:
+     --disabled-text on every text element. In LIGHT that is #E1E1E1 on #FFFFFF — 1.42:1 — and
+     the whole row, payee included, rendered as a ghost you cannot read. No gate fires, because
+     disabled content is exempt from 1.4.3 (the exact class Document-row caught at #204 on its
+     GLYPH; here it had swallowed the TEXT as well).
+     THE REPAIR IS NOT A COLOUR TWEAK, IT IS A CATEGORY CORRECTION: a cancelled mandate is not
+     disabled content, it is HISTORY. You must still be able to read who you were paying and
+     when you stopped — that is often the whole reason you opened the screen. So the ROW STAYS
+     FULLY LEGIBLE at the ordinary ink, the state is carried by a WORD in the chip, and the only
+     thing that is actually disabled is the CONTROL, because there is nothing left to manage.
+     ⬛ Whether a cancelled row should instead be dimmed is Dave's (P9). It is NOT dimmed here
+     because the dimmed version was drawn, looked at, and could not be read. */
+  .mrow.is-cancelled .mr-glyph{background:var(--glyph-bg); color:var(--icon); opacity:var(--alpha-48);}
+  .mrow.is-cancelled .mr-manage{color:var(--icon); opacity:var(--alpha-40); cursor:not-allowed;}
+
+  /* ---- the failure note. A plain text line, not a colour. Sits under the two-line body so
+     the consequence is readable even with every hue removed. ---- */
+  .mr-note{color:var(--text); margin:0;}
+
+  /* ---- responsive: below 360c the money block drops beneath the payee (WCAG 1.4.10),
+     mirroring List-items' and Document-row's own container-query reflow ---- */
+  @container (max-width: 360px){
+    .mrow{flex-wrap:wrap;}
+    .mr-line{flex-wrap:wrap; gap:8px;}
+    .mr-payee{flex:1 1 100%;}
+    .mr-money{align-items:flex-start; flex:1 1 100%;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <!-- BYTE-MATCHED from knowledge/assets/icons/ — media/document.svg (the mandate glyph) and
+         global-controls/menu-more-horizontal.svg (the manage control). Both paths were read off
+         disk and pasted; neither was drawn.
+         ⚠ NO RECURRING-PAYMENT GLYPH EXISTS. Probe, run and quoted:
+         `ls knowledge/assets/icons/*/ | grep -iE "recur|repeat|refresh|cycle|rotate|mandate"`
+         → refresh.svg · refresh-active.svg · rotate-left.svg · rotate-right.svg — four RELOAD
+         glyphs, none of which means "this payment repeats". The generic document glyph stands
+         in and P8 names the substitution. -->
+    <symbol id="mr-mandate" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9891 0H0.789062V18H16.7891V3.8L12.9891 0ZM15.0921 3.8H12.9891V1.697L15.0921 3.8ZM15.5891 16.8H1.98906V1.2H11.7891V5H15.5891V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="mr-more" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 7.5C0.672 7.5 0 8.172 0 9C0 9.828 0.672 10.5 1.5 10.5C2.328 10.5 3 9.829 3 9C3 8.171 2.328 7.5 1.5 7.5ZM16.5 7.5C15.672 7.5 15 8.172 15 9C15 9.828 15.672 10.5 16.5 10.5C17.328 10.5 18 9.829 18 9C18 8.171 17.328 7.5 16.5 7.5ZM9 7.5C8.172 7.5 7.5 8.172 7.5 9C7.5 9.828 8.172 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <!-- ===== A. THE MANDATE LIST — standing orders and Direct Debits in one list ===== -->
+  <h2 class="t-cm-caption demo-h">Mandate list — the default. Two actions per row (open = the row · manage = the trailing button). PROPOSED</h2>
+  <div class="wrap">
+    <ul class="mdlist" aria-label="Standing orders and Direct Debits">
+
+      <!-- 1 · ACTIVE STANDING ORDER. No chip: a list of twelve green chips is noise (P4). -->
+      <li class="mrow">
+        <span class="mr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#mr-mandate"/></svg></span>
+        <span class="mr-body">
+          <span class="mr-line">
+            <a class="mr-payee t-cm-label" href="#mandate-rent">Wrenfield Property Ltd</a>
+            <span class="tag t-cm-legal">Standing order</span>
+          </span>
+          <span class="mr-line"><span class="mr-meta t-cm-caption">Monthly on the 1st &middot; Sort 40-12-08 &middot; Account ending 3391</span></span>
+        </span>
+        <span class="mr-money">
+          <span class="amount t-cm-figure-6"><span>£</span><span>2,150.00</span></span>
+          <span class="mr-when t-cm-legal">Next 1 July</span>
+        </span>
+        <button type="button" class="mr-manage" aria-label="Manage the standing order to Wrenfield Property Ltd, 2,150 pounds monthly">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
+        </button>
+      </li>
+
+      <!-- 2 · ACTIVE DIRECT DEBIT, VARIABLE AMOUNT. The amount is not known in advance and the
+           row says so IN TEXT rather than showing a stale figure (P2). -->
+      <li class="mrow">
+        <span class="mr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#mr-mandate"/></svg></span>
+        <span class="mr-body">
+          <span class="mr-line">
+            <a class="mr-payee t-cm-label" href="#mandate-energy">Severn Energy Business</a>
+            <span class="tag t-cm-legal">Direct Debit</span>
+          </span>
+          <span class="mr-line"><span class="mr-meta t-cm-caption">Monthly, around the 14th &middot; Ref 8412669004 &middot; Amount varies</span></span>
+        </span>
+        <span class="mr-money">
+          <span class="amount t-cm-figure-6"><span>£</span><span>486.20</span></span>
+          <span class="mr-when t-cm-legal">Last taken 14 June</span>
+        </span>
+        <button type="button" class="mr-manage" aria-label="Manage the Direct Debit to Severn Energy Business, amount varies">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
+        </button>
+      </li>
+
+      <!-- 3 · PAUSED. The word carries it; the row is not greyed, because a paused mandate is
+           still yours and still returns. -->
+      <li class="mrow">
+        <span class="mr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#mr-mandate"/></svg></span>
+        <span class="mr-body">
+          <span class="mr-line">
+            <a class="mr-payee t-cm-label" href="#mandate-gym">Harbour Fitness</a>
+            <span class="tag t-cm-legal">Direct Debit</span>
+            <span class="status warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Paused</span></span>
+          </span>
+          <span class="mr-line"><span class="mr-meta t-cm-caption">Monthly on the 5th &middot; paused by you on 2 June &middot; resumes 5 August</span></span>
+        </span>
+        <span class="mr-money">
+          <span class="amount t-cm-figure-6"><span>£</span><span>44.00</span></span>
+          <span class="mr-when t-cm-legal">No payment due</span>
+        </span>
+        <button type="button" class="mr-manage" aria-label="Manage the paused Direct Debit to Harbour Fitness, 44 pounds monthly">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
+        </button>
+      </li>
+
+      <!-- 4 · LAST PAYMENT FAILED. ⛔ NO RED. The chip carries the WORD on the warning seat and
+           the consequence is a plain text line (P4). The error seat is Dave's. -->
+      <li class="mrow">
+        <span class="mr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#mr-mandate"/></svg></span>
+        <span class="mr-body">
+          <span class="mr-line">
+            <a class="mr-payee t-cm-label" href="#mandate-supplier">Bristol Trade Supplies</a>
+            <span class="tag t-cm-legal">Standing order</span>
+            <span class="status warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Last payment failed</span></span>
+          </span>
+          <span class="mr-line"><span class="mr-meta t-cm-caption">Weekly on Fridays &middot; Sort 60-04-11 &middot; Account ending 7724</span></span>
+          <p class="mr-note t-cm-caption" role="status">Not enough money on 12 June. We will try again on 19 June.</p>
+        </span>
+        <span class="mr-money">
+          <span class="amount t-cm-figure-6"><span>£</span><span>780.00</span></span>
+          <span class="mr-when t-cm-legal">Retry 19 June</span>
+        </span>
+        <button type="button" class="mr-manage" aria-label="Manage the standing order to Bristol Trade Supplies, last payment failed">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
+        </button>
+      </li>
+
+      <!-- 5 · ENDING SOON — a mandate with an end condition (P2). -->
+      <li class="mrow">
+        <span class="mr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#mr-mandate"/></svg></span>
+        <span class="mr-body">
+          <span class="mr-line">
+            <a class="mr-payee t-cm-label" href="#mandate-loan">Kestrel Asset Finance — equipment loan agreement 44-20916</a>
+            <span class="tag t-cm-legal">Standing order</span>
+            <span class="status inf"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">2 payments left</span></span>
+          </span>
+          <span class="mr-line"><span class="mr-meta t-cm-caption">Monthly on the 20th &middot; until 20 August 2026</span></span>
+        </span>
+        <span class="mr-money">
+          <span class="amount t-cm-figure-6"><span>£</span><span>1,204.55</span></span>
+          <span class="mr-when t-cm-legal">Next 20 July</span>
+        </span>
+        <button type="button" class="mr-manage" aria-label="Manage the standing order to Kestrel Asset Finance, 2 payments left">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
+        </button>
+      </li>
+
+      <!-- 6 · CANCELLED. Non-interactive; the reason is in text and in the button's name. -->
+      <li class="mrow is-cancelled" aria-disabled="true">
+        <span class="mr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#mr-mandate"/></svg></span>
+        <span class="mr-body">
+          <span class="mr-line">
+            <span class="mr-payee t-cm-label">Longmoor Insurance</span>
+            <span class="tag t-cm-legal">Direct Debit</span>
+            <span class="status inf"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Cancelled</span></span>
+          </span>
+          <span class="mr-line"><span class="mr-meta t-cm-caption">Cancelled by you on 30 May 2026 &middot; no further payments</span></span>
+        </span>
+        <span class="mr-money">
+          <span class="amount t-cm-figure-6"><span>£</span><span>62.40</span></span>
+          <span class="mr-when t-cm-legal">Ended</span>
+        </span>
+        <button type="button" class="mr-manage" disabled aria-label="The Direct Debit to Longmoor Insurance was cancelled on 30 May 2026 and cannot be managed">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
+        </button>
+      </li>
+
+    </ul>
+  </div>
+
+  <!-- ===== B. NARROW — the same markup at 340px. The money block drops beneath the payee ===== -->
+  <h2 class="t-cm-caption demo-h">Narrow — the same markup at 340px (container-query reflow, WCAG 1.4.10)</h2>
+  <div class="wrap" style="--demo-width:340px">
+    <ul class="mdlist" aria-label="Standing orders and Direct Debits, narrow">
+      <li class="mrow">
+        <span class="mr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#mr-mandate"/></svg></span>
+        <span class="mr-body">
+          <span class="mr-line">
+            <a class="mr-payee t-cm-label" href="#mandate-rent-n">Wrenfield Property Ltd</a>
+            <span class="tag t-cm-legal">Standing order</span>
+          </span>
+          <span class="mr-line"><span class="mr-meta t-cm-caption">Monthly on the 1st</span></span>
+        </span>
+        <span class="mr-money">
+          <span class="amount t-cm-figure-6"><span>£</span><span>2,150.00</span></span>
+          <span class="mr-when t-cm-legal">Next 1 July</span>
+        </span>
+        <button type="button" class="mr-manage" aria-label="Manage the standing order to Wrenfield Property Ltd">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
+        </button>
+      </li>
+      <li class="mrow">
+        <span class="mr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#mr-mandate"/></svg></span>
+        <span class="mr-body">
+          <span class="mr-line">
+            <a class="mr-payee t-cm-label" href="#mandate-gym-n">Harbour Fitness</a>
+            <span class="status warn"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Paused</span></span>
+          </span>
+          <span class="mr-line"><span class="mr-meta t-cm-caption">Monthly on the 5th &middot; resumes 5 August</span></span>
+        </span>
+        <span class="mr-money">
+          <span class="amount t-cm-figure-6"><span>£</span><span>44.00</span></span>
+          <span class="mr-when t-cm-legal">No payment due</span>
+        </span>
+        <button type="button" class="mr-manage" aria-label="Manage the paused Direct Debit to Harbour Fitness">
+          <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ⚠ CONTRAST DECLARATION. The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on
+       white — measured #204 with the repo's own _contrast_utils.contrast_ratio) is NOT declared
+       as a gated pair: it is the INHERITED Status-indicator / List-items / Account-card finding,
+       flagged and never load-bearing, because every chip carries its word.
+       ⚠ text/secondary on tertiary/background/hover in dark measures 3.34:1 (< 4.5) — the
+       INHERITED List-items $darkFinding, SYSTEMIC across every interactive row with secondary
+       text on a hover surface. It bites the rhythm line and the "next" line on hover here.
+       ⛔ THE CANCELLED ROW CARRIES NO LOW-CONTRAST TEXT AT ALL, and that is a CHANGE made after
+       looking at the render. The draft copied Document-row's disabled treatment (--disabled-text
+       = #E1E1E1 on #FFFFFF, 1.42:1) onto every text element in the row and it was unreadable.
+       A cancelled mandate is HISTORY, not disabled content: the text is now ordinary ink, the
+       state is a chip WORD, and only the CONTROL is disabled (its glyph carries alpha/40 and
+       cursor:not-allowed, which is a non-text affordance, not a text-contrast seat). -->
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Standing-order / mandate row",
+    "type": "molecule",
+    "status": "PROPOSED #209 — NOT gated, NOT promoted, NOT ruled. Fintech semantics are Dave's (s182-D2).",
+    "vars": {
+      "--surface": "tertiary/background/default",
+      "--hover": "tertiary/background/hover",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--icon": "icon/default",
+      "--divider": "divider/border/section",
+      "--border": "border/subtle",
+      "--success": "rag/success",
+      "--warning": "rag/warning",
+      "--info": "rag/information",
+      "--success-tint": "rag/success-tint",
+      "--warning-tint": "rag/warning-tint",
+      "--info-tint": "rag/information-tint",
+      "--glyph-bg": "tertiary/background/hover",
+      "--focus": "focus/ring",
+      "--page": "background/default",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--border-radius-surface": "border-radius/surface"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
+      { "fg": "text/default", "bg": "rag/information-tint", "context": "text" }
+    ],
+    "requiredAria": ["<ul", "<li", "<button", "aria-label", "aria-hidden", "aria-disabled", "role=\"status\""],
+    "reuses": [
+      "Document-row (the two-action ROW SHAPE: passive li + stretched-link primary + sibling button; the list shell and its declared radius departure; the disabled-glyph correction) — copied, not edited",
+      "List-items (row shell, two-line body, density tokens, hover-glyph trick) — copied via Document-row",
+      "Status indicator (RAG tint chip, form B) — copied verbatim via List-items",
+      "Tags (square outline chip) — the mandate-type tag, copied via Account-card",
+      "Icon-button (44x44 hit area, 18px glyph, focus ring) — the manage control's form",
+      "Amount-display via Runway-bar (money format: symbol before, no space, tabular lining, U+2212 minus, MONOCHROME)"
+    ],
+    "knownFindings": [
+      "STANDING ORDER AND DIRECT DEBIT ARE DIFFERENT OBJECTS and the row says which IN TEXT, in a Tags chip — never by hue, never by an icon alone. A standing order is the customer's own fixed instruction; a Direct Debit is a mandate granted to a PAYEE who pulls a VARIABLE amount under the Direct Debit Guarantee. Whether they are ONE component or TWO is DAVE'S (P3), and drawing them in one list does not settle it.",
+      "THE TELL vs the gated List-items transaction row: a transaction's date is in the PAST and is a fact; a mandate's date is in the FUTURE and is a promise. You cannot pause a transaction. A mandate row carrying only a payee and an amount IS a List-items row and should be one — the rhythm, the next date and the alterable state are the whole component.",
+      "NO MONEY COLOUR AND NO RED FAILURE STATE WAS INVENTED. Every amount is monochrome text/default in Amount-display's format. The failed row carries the WORD on the WARNING seat plus a plain text consequence line; the error seat touches the two-red law (s151-D1) and is DAVE'S. That restraint is a declared choice, not a considered ruling.",
+      "The VARIABLE-amount Direct Debit shows the LAST taken figure and says 'Amount varies' in the rhythm line, rather than presenting a stale number as if it were the next one. Which figure a variable mandate should show is P2, Dave's.",
+      "44px min-hit-area enforced BY HAND — no gate reads the ruled token from a snippet. Primary target = the stretched-link row (min-height 76). Manage button = 44x44. The cancelled row's control is a native disabled button whose accessible name carries the reason.",
+      "⚠ NO RECURRING-PAYMENT GLYPH EXISTS IN THE LIBRARY. Probe run and quoted: `ls knowledge/assets/icons/*/ | grep -iE \"recur|repeat|refresh|cycle|rotate|mandate\"` → refresh.svg, refresh-active.svg, rotate-left.svg, rotate-right.svg — four RELOAD glyphs, none of which means 'this payment repeats'. The generic media/document.svg glyph stands in (byte-matched off disk) and P8 names the substitution. An icon-gap entry may be owed to _ICON-GAPS.md — the conductor's file, not this lane's. Both glyphs used here are byte-matched: media/document.svg and global-controls/menu-more-horizontal.svg.",
+      "The failure note is role=\"status\" (polite), not role=\"alert\": the failure already happened and the row is being read, not interrupted.",
+      "TYPE: contributes 0 to the shrink-only ratchet. No raw font declarations in component scope.",
+      "INHERITED: text/secondary on tertiary/background/hover in dark measures 3.34:1 (< 4.5) — List-items' own open $darkFinding, SYSTEMIC across every interactive row with secondary text on a hover surface. Not invented around; the List-items meta is the home.",
+      "⚠ DEFECT FOUND BY LOOKING AT THE RENDER, INVISIBLE TO EVERY GATE (#209), AND THE FIX IS A CATEGORY CORRECTION. My first draft copied Document-row's DISABLED row treatment onto the cancelled mandate — --disabled-text on every text element, which in LIGHT is #E1E1E1 on #FFFFFF (1.42:1): the whole row, payee included, rendered as an unreadable ghost. No gate fires because disabled content is exempt from 1.4.3 (the same class Document-row caught at #204 on its GLYPH; here it had swallowed the TEXT too). The repair is not a colour tweak: A CANCELLED MANDATE IS NOT DISABLED CONTENT, IT IS HISTORY — you must still be able to read who you were paying and when you stopped. The row now stays fully legible at ordinary ink, the state is carried by a 'Cancelled' chip WORD, and only the CONTROL is disabled because there is nothing left to manage. Whether a cancelled row should be dimmed at all is P9, Dave's — it is not dimmed here because the dimmed version was drawn, rendered, and could not be read.",
+      "⚠ SECOND DEFECT FOUND BY LOOKING, ALSO GATE-INVISIBLE (#209): with the title line as a non-wrapping flex row, the tag and status chips are flex:none and the PAYEE was the only shrinkable item — a row carrying both chips crushed the name to 'Bristol …' and 'Kestrel Ass…'. The payee is the row's subject and must never be the thing that gives way. The line now wraps and the payee claims a 160px basis, so the chips drop to a second line before the name truncates. Probeable: render Standing-order-mandate-row.reference.html at 560px and read row 4's payee — 'Bristol Trade Supplies' entire, not 'Bristol …'.",
+      "NOT registered in component-types.json, CATEGORIES, MIGRATED_SNIPPETS or canon.css (shared files, the conductor's serial set). ⛔ _validate_binds_resolve.py check D (canon block presence) WILL FAIL for this snippet until a .cn-standing-order-mandate-row block is projected. Declared, not hidden."
+    ]
+  }
+  </script>
+</body>
+</html>
