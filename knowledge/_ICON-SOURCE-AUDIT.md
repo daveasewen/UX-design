@@ -2,7 +2,7 @@
 
 *GATE (build-failing as of 2026-06-24). Each inline `<svg>` path is matched to the library. **library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke="reason">`, a deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither (possibly invented → use the library SVG, or mark it `data-bespoke`). Shape-only icons (`<circle>`/`<rect>`/`<ellipse>`/`<polygon>` with no `<path>`, e.g. a 3-dot kebab) are now flagged too.*
 
-**17 UNKNOWN path(s)** across 119 snippet(s) (89 verified-bespoke). Library glyphs indexed: 746.
+**0 UNKNOWN path(s)** across 119 snippet(s) (95 verified-bespoke). Library glyphs indexed: 746.
 
 | # | Snippet | paths | library | bespoke | UNKNOWN | declares | status |
 |---|---------|------:|--------:|--------:|--------:|:--------:|--------|
@@ -26,7 +26,7 @@
 | 18 | Button | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 19 | Calendar | 6 | 6 | 0 | 0 | yes | ✅ verified |
 | 20 | Cards | 6 | 6 | 0 | 0 | — | ✅ verified |
-| 21 | Carousel | 9 | 2 | 0 | 7 | — | ⚠ 7 UNKNOWN |
+| 21 | Carousel | 2 | 2 | 0 | 0 | — | ✅ verified |
 | 22 | Cascader | 2 | 1 | 1 | 0 | yes | ✅ verified · 1 bespoke |
 | 23 | Chart-bar | 15 | 15 | 0 | 0 | — | ✅ verified |
 | 24 | Chart-boxplot | 3 | 3 | 0 | 0 | — | ✅ verified |
@@ -57,13 +57,13 @@
 | 49 | Eyebrow | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 50 | Fab | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 51 | File-upload | 8 | 8 | 0 | 0 | yes | ✅ verified |
-| 52 | Filter-toolbar-bar | 9 | 3 | 0 | 6 | — | ⚠ 6 UNKNOWN |
+| 52 | Filter-toolbar-bar | 9 | 3 | 6 | 0 | — | ✅ verified · 6 bespoke |
 | 53 | Footer | 1 | 1 | 0 | 0 | yes | ✅ verified |
 | 54 | Form-layout | 5 | 5 | 0 | 0 | yes | ✅ verified |
 | 55 | Headers | 2 | 2 | 0 | 0 | yes | ✅ verified |
 | 56 | Hero | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 57 | Icon-button | 5 | 5 | 0 | 0 | — | ✅ verified |
-| 58 | Image-block | 5 | 1 | 0 | 4 | — | ⚠ 4 UNKNOWN |
+| 58 | Image-block | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 59 | Input-fields | 6 | 6 | 0 | 0 | yes | ✅ verified |
 | 60 | Kpi-tile | 3 | 3 | 0 | 0 | yes | ✅ verified |
 | 61 | Layout-utilities | 0 | 0 | 0 | 0 | — | — no inline svg paths |
@@ -128,26 +128,4 @@
 
 ## UNKNOWN detail
 
-### Carousel — 7 UNKNOWN of 9 path(s)
-- `d="(shape-only icon: <svg class="ph" viewBox="0 0 400 220" preserveAspect…"`
-- `d="(shape-only icon: <svg class="ph" viewBox="0 0 400 220" preserveAspect…"`
-- `d="(shape-only icon: <svg class="ph" viewBox="0 0 400 220" preserveAspect…"`
-- `d="(shape-only icon: <svg class="ph" viewBox="0 0 300 220" preserveAspect…"`
-- `d="(shape-only icon: <svg class="ph" viewBox="0 0 300 220" preserveAspect…"`
-- `d="(shape-only icon: <svg class="ph" viewBox="0 0 300 220" preserveAspect…"`
-- `d="(shape-only icon: <svg class="ph" viewBox="0 0 300 220" preserveAspect…"`
-
-### Filter-toolbar-bar — 6 UNKNOWN of 9 path(s)
-- `d="M3.5 9.5 L7.5 13.5 L14.5 5"`
-- `d="M3.5 9.5 L7.5 13.5 L14.5 5"`
-- `d="M3.5 9.5 L7.5 13.5 L14.5 5"`
-- `d="M3.5 9.5 L7.5 13.5 L14.5 5"`
-- `d="M3.5 9.5 L7.5 13.5 L14.5 5"`
-- `d="M3.5 9.5 L7.5 13.5 L14.5 5"`
-
-### Image-block — 4 UNKNOWN of 5 path(s)
-- `d="(shape-only icon: <svg> carries role="img" + a descriptive aria-label …"`
-- `d="(shape-only icon: <svg viewBox="0 0 400 300" preserveAspectRatio="none…"`
-- `d="(shape-only icon: <svg viewBox="0 0 300 300" preserveAspectRatio="none…"`
-- `d="(shape-only icon: <svg viewBox="0 0 300 400" preserveAspectRatio="none…"`
-
+*(none — every inline path is library-matched or marked bespoke)*
