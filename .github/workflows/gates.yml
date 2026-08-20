@@ -224,9 +224,30 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install playwright + chromium (root available — no lib farm needed)
+      # #209 — THREE MECHANICAL REPAIRS HERE, each keyed to a MEASURED line in a real job log.
+      # 1. `jsonschema` — P-1 (meta vs meta.schema.json) imports it. The `gates` job installs it;
+      #    this job never did, so P-1 printed "⛔ NOT-IN-THIS-ENVIRONMENT: `jsonschema` is not
+      #    importable" and exited 1 with findings=UNKNOWN on every render run (run 32299967572,
+      #    job 96220028255). The registry then exited 1 for a reason that was purely a missing
+      #    package — the #64 disease (locally present, CI absent) in a job that was added later.
+      # 2. `pillow` — P-3's PIXEL leg. `_sample()` returns None without PIL, and `check()`'s
+      #    control guard correctly treats "no control could be sampled" as a finding. So fixing
+      #    the chromium lookup ALONE would have swapped a refusal for a FALSE RED: the probe
+      #    would render, find suspects, and report a pixel verdict it never measured. Installed
+      #    here so the leg the probe is NAMED for can actually run.
+      # 3. `timeout-minutes: 10` on THIS step. On 9d552dd (run 32297337019, job 96211608007) the
+      #    job died as "exceeded the maximum execution time of 30m0s". The 30m were NOT spent on
+      #    chromium: the log stops at 20:14:09 inside `--with-deps`' apt refresh
+      #    ("Get:5 https://archive.ubuntu.com/ubuntu noble-security InRelease") and prints
+      #    nothing until "The operation was canceled" at 20:43:29 — a 29-minute stall on an
+      #    Ubuntu mirror, upstream of this repo. A step budget makes that failure NAME ITSELF in
+      #    10m instead of eating the job's whole 30m and reporting only a timeout.
+      #    ⚠ NOT FIXED, DECLARED: the stall itself is an upstream flake. The healthy path costs
+      #    ~1m54s (20:42:28→20:44:22 on f490e1d), so 10m is >5x headroom, not a tight fit.
+      - name: Install playwright + chromium + probe deps (root available — no lib farm needed)
+        timeout-minutes: 10
         run: |
-          pip install playwright
+          pip install playwright jsonschema pillow
           playwright install --with-deps chromium
 
       - name: State-contrast selftest — every arm, mutation controls included (BLOCKING)
@@ -248,6 +269,17 @@ jobs:
       # to a BLOCKING gate is DAVE'S (derivation governance, and the registry's own docstring).
       # ⚠ #208 also fixed the exit that made this legible: a run in which EVERY probe REFUSED
       # used to exit 0 and read as green. It now exits 77 with the marked line.
+      # ⚠ #209 PREMISE CORRECTION, MEASURED — this step was briefed to me as "failing the render
+      # job". IT IS NOT AND NEVER WAS. `continue-on-error: true` already holds: the Actions API
+      # reports job `render` conclusion=**success** on BOTH 805e258 (run 32298102073) and
+      # f490e1d (run 32299967572), with this step's own log ending
+      # "##[error]Process completed with exit code 1". The red on those two commits is the
+      # `gates` job's "Knowledge build" step (state-snap, ⬛ DAVE'S), in the other job entirely.
+      # ⇒ NOTHING was changed here at #209. The advisory mechanism was already correct; what was
+      # broken was the step's exit code, repaired at its source (the two probe deps + the
+      # chromium lookup above) rather than masked with a second layer of suppression.
+      # ⛔ Do not "harden" this with `--survey` (rc=0 always): that would also swallow the 77
+      # COULD-NOT-ASK exit, which is the only signal that says the classes were never asked.
       - name: Probe registry — every historically-found defect class, re-driven (W-45, advisory)
         continue-on-error: true
         run: python3 knowledge/_probe_registry/_registry.py --run

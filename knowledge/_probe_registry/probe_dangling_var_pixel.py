@@ -33,6 +33,15 @@ is picked up if it returns; recorded here because an unmatched pattern is not an
 [[unmatched-grep-is-not-an-absence]] and the static gate's stale glob entry is a live finding
 for the conductor, not something this lane may edit.
 
+⛔ #209 UPDATE TO THE PARAGRAPH BELOW — "UNPROVEN in CI" was true for the wrong reason. The
+render job DOES install chromium; this probe simply looked for the pre-CFT leaf path and
+refused in the one job that had a browser (see `_browser_env` for the measured log line). The
+lookup is now ROOTS × LAYOUTS + playwright's own `executable_path`. ⚠ THE PIXEL LEG ALSO NEEDS
+**Pillow** — without it `_sample()` returns None for every element, the control-guard in
+`check()` fires, and the probe reports a FINDING it did not measure. `pillow` is therefore
+installed alongside playwright in `.github/workflows/gates.yml`'s render job; a run without it
+is a FALSE RED, not a pass, and that is the mirror defect this fix was one step away from.
+
 ⛔ ENVIRONMENT SPLIT, DECLARED (#173): this probe needs Chromium + Playwright per
 `knowledge/_RUNBOOK-render-verify.md`. It runs in the SANDBOX today. It is **UNPROVEN in CI** —
 `s204-D1` item 5 owns the CI pixel leg, not this lane. When the browser is absent the probe
@@ -107,26 +116,72 @@ JS = r"""
 """
 
 
+# ⛔ #209 — THE LOOKUP WAS ONE LAYOUT WIDE, AND CI USES THE OTHER ONE. MEASURED, not inferred,
+# from the render job's own log on f490e1d (run 32299967572, job 96220028255):
+#   "Chrome Headless Shell 151.0.7922.34 (playwright chromium-headless-shell v1234) downloaded
+#    to /home/runner/.cache/ms-playwright/chromium_headless_shell-1234"
+# — the ROOT and the versioned DIRECTORY matched what this probe looked for; the LEAF did not.
+# Playwright >= 1.49 ships Chrome-for-Testing, whose payload unpacks as
+# `chrome-headless-shell-linux64/chrome-headless-shell`, where the pre-CFT builds this probe was
+# written against (and the sandbox lib-farm still stages, per `_RUNBOOK-render-verify.md`) put
+# `chrome-linux/headless_shell`. One hardcoded leaf ⇒ the probe REFUSED in the ONE job that had
+# actually installed a browser, i.e. [[gate-cannot-pass-in-one-environment]] in its purest form:
+# the class was remembered and never asked, exactly what W-45 exists to stop.
+# ⇒ ROOTS × LAYOUTS, so the environment split lives in data and neither environment is special.
+# ⇒ AND A LAST RESORT THAT CANNOT ROT: playwright's OWN `chromium.executable_path`. If the globs
+#   miss but the driver can name a binary that exists, we use playwright's resolution instead of
+#   ours — a future re-layout upstream then costs nothing here. It is a FALLBACK, not the first
+#   ask, because it spawns the node driver (~1s) and the sandbox's staged path is cheaper.
+# ⛔ The refusal itself is UNCHANGED in code and vocabulary (77 + `COULD-NOT-ASK:`, #193): this
+# widens WHERE we look, never WHETHER we are allowed to say we could not look.
+_LAYOUTS = ("chromium_headless_shell-*/chrome-headless-shell-linux64/chrome-headless-shell",
+            "chromium_headless_shell-*/chrome-linux/headless_shell",
+            "chromium-*/chrome-linux64/chrome",
+            "chromium-*/chrome-linux/chrome")
+
+
+def _browser_roots():
+    """The directories a playwright browser bundle can live in, in preference order."""
+    roots = []
+    env = os.environ.get("PLAYWRIGHT_BROWSERS_PATH", "").strip()
+    if env:                                   # honoured FIRST — the runbook's sandbox route
+        roots.append(env)
+    roots.append(os.path.expanduser("~/.cache/ms-playwright"))   # playwright's default, incl. CI
+    roots += sorted(globmod.glob("/var/tmp/pw-browsers-*"))      # the lib-farm convention
+    return roots
+
+
 def _browser_env():
     """Return (launcher_kwargs, refusal). A missing browser is a DECLARED refusal."""
     try:
-        from playwright.sync_api import sync_playwright  # noqa: F401
+        from playwright.sync_api import sync_playwright
     except ImportError:
         return None, ("NOT-IN-THIS-ENVIRONMENT: playwright is not importable. Stage it per "
                       "knowledge/_RUNBOOK-render-verify.md (PYTHONPATH=/var/tmp/pylibs). "
                       "REFUSED — not a pass.")
-    pats = [os.path.join(os.environ.get("PLAYWRIGHT_BROWSERS_PATH", ""),
-                         "chromium_headless_shell-*/chrome-linux/headless_shell"),
-            os.path.expanduser("~/.cache/ms-playwright/chromium_headless_shell-*/"
-                               "chrome-linux/headless_shell"),
-            "/var/tmp/pw-browsers-*/chromium_headless_shell-*/chrome-linux/headless_shell"]
-    for pat in pats:
-        hits = sorted(globmod.glob(pat)) if pat.strip("/") else []
-        if hits:
-            return {"executable_path": hits[0]}, None
-    return None, ("NOT-IN-THIS-ENVIRONMENT: no chromium headless_shell found (looked in "
-                  "PLAYWRIGHT_BROWSERS_PATH, ~/.cache/ms-playwright, /var/tmp/pw-browsers-*). "
-                  "REFUSED — not a pass.")
+    roots = _browser_roots()
+    # ROOT is the OUTER loop, deliberately: an operator who set PLAYWRIGHT_BROWSERS_PATH has
+    # said WHERE, and that outranks our preference for one layout over another. Driven at #209
+    # by an arm that plants a legacy bundle in PLAYWRIGHT_BROWSERS_PATH and a CFT bundle in
+    # ~/.cache — with the loops nested the other way the env var lost, which is a silent
+    # override of an explicit instruction.
+    for root in roots:
+        for layout in _LAYOUTS:
+            hits = sorted(globmod.glob(os.path.join(root, layout)))
+            if hits:
+                return {"executable_path": hits[0]}, None
+    # LAST RESORT — ask playwright where ITS chromium is, rather than trusting our globs.
+    try:
+        with sync_playwright() as p:
+            own = p.chromium.executable_path
+        if own and os.path.exists(own):
+            return {}, None          # no executable_path ⇒ playwright resolves it itself
+    except Exception as e:            # a driver that cannot even answer is part of the refusal
+        own = "unavailable (%s: %s)" % (type(e).__name__, str(e)[:80])
+    return None, ("NOT-IN-THIS-ENVIRONMENT: no chromium binary found. Looked for %d layout(s) "
+                  "%s under root(s) %s, and playwright's own executable_path was %s. "
+                  "REFUSED — not a pass."
+                  % (len(_LAYOUTS), list(_LAYOUTS), roots, own or "empty"))
 
 
 def _sample(png_bytes, x, y, w, h):
