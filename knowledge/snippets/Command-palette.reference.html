@@ -65,8 +65,11 @@
       max-height:calc(100% - 80px); overflow:hidden;}
 
   /* ---- the query field: the Search-field chrome, composed, not re-drawn ---- */
-  .cp-field{display:flex; align-items:center; gap:12px; height:48px; padding:0 12px;
+  .cp-field{display:flex; align-items:center; gap:12px; height:48px; flex:none; padding:0 12px;
             border-bottom:1px solid var(--rule);}
+  /* flex:none added #209 — Dave's eye caught the field rendering 43.9px (populated) vs 33.8px
+     (empty): .cp is a max-height flex column and the field was SHRINKABLE, so its declared 48px
+     lost to whatever height the results list took. MEASURED before/after in a real render. */
   .cp-field .mag{flex:none; display:inline-flex; width:20px; height:20px; color:var(--icon);}
   .cp-field .mag svg{width:20px; height:20px; fill:currentColor;}
   .cp-field input{flex:1; min-width:0; height:100%; border:0; background:transparent;
