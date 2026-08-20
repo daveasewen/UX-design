@@ -722,6 +722,12 @@ ROUTE_ROWS = [
     # aborted every full build before step 1, so the full build cannot have run since. The
     # wiring-seam class again: registered but unroutable. Added #119, declared in the chain.
     ("a11y target-measurement selftest (s114-D5)", ABORT, None),
+    # #209: route row landed in the SAME edit as its STEPS entry — the (a)-class omission
+    # this very list documents twice (#139, #164) and which run 32342067185 reproduced
+    # anyway because the first edit carried the step WITHOUT the route. ADVISORY per the
+    # instrument's own declared tier; rc=77 HARNESS UNAVAILABLE is a declared refusal upstream.
+    ("hit-area gate — 44px minimum, rendered geometry (ADVISORY, built #203, wired #209)",
+     ADVISORY, None),
     ("wiring gate — no orphaned validators (#118 seam)", GATE,
      "\n❌ wiring gate failed (exit {code}) — a _validate_*.py is on disk with no STEPS entry and no named exemption; wire it or exempt it BY NAME (knowledge/_validate_wiring.py)"),
     ("wiring gate selftest — 4 bites", ABORT, None),
