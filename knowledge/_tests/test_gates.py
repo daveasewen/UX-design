@@ -229,10 +229,17 @@ def mut_reduced_motion(k):
 
 def mut_target_floor(k):
     """aid-009 promotion (Dave ruling 2026-07-03): a <24px control box must bite.
-    Injects a style block declaring a 20x20 `.x` control (CTRL-matching selector,
-    no ::before expander) into the first snippet."""
-    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</head>" in h and ".x2{" not in h)
-    write(p, html.replace("</head>", "<style>.x2, .x{width:20px;height:20px;}</style></head>", 1))
+    #209 REPAIR — the blind-harness class, 4th recurrence ([16] at #208 was the 3rd):
+    the old form injected ONLY a style block for `.x`, and no element in the corpus
+    carries that class, so the plant planted nothing and the gate's green was honest.
+    The gate classifies controls by tag/role (CTRL vocabulary) and then reads declared
+    CSS — so the plant must be a REAL control element the style shrinks. Verified to
+    bite (exit 1, marker 2.5.8) and the pristine control case still passes."""
+    p, html, man = first_snippet_with_manifest(
+        k, lambda m, h: "</head>" in h and "</body>" in h and ".x2{" not in h)
+    html = html.replace("</head>", "<style>.x2, .x{width:20px;height:20px;}</style></head>", 1)
+    html = html.replace("</body>", '<button class="x" aria-label="planted sub-24 control">x</button></body>', 1)
+    write(p, html)
 
 
 def mut_allcaps_css(k):
