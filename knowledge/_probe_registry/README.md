@@ -18,6 +18,9 @@ Built #206. Home of the live facts about the registry; the programme scope lives
 | `probe_dangling_var_pixel.py` | P-3 · dangling var → silent black, **from pixels** (#184 `s184-D3`). |
 | `probe_premise_store.py` | P-4 · premise-vs-store diff (#203 lane H, #204 G-c). |
 | `probe_stale_figure.py` | P-5 · carried figure vs live measurement (#173, #203). |
+| `probe_input_trim_enactment.py` | P-6 · **canary**: the day a browser enacts `text-box-trim` inside form controls (#209 baseline). Its green is an INVERSION — findings=0 means nothing has changed. |
+| `probe_container_self_query.py` | P-7 · a `@container` rule aimed at its own container — the rule can never fire (#210 ×3). |
+| `probe_dangling_var_text.py` | P-8 · `var(--x)` with `--x` declared nowhere reachable, from TEXT (#184, #210). The sandbox tier of P-3's class. |
 
 ## How to run it
 
@@ -50,8 +53,13 @@ Skip it deliberately with `--skip-env sandbox-render`; the skip is printed, neve
   `_DS-IMPROVEMENTS.md` untouched.
 - **A green registry run proves THE PROBES RAN, not that the tree is clean.** Every row carries
   a `blind` field for exactly this reason, and the runner prints that sentence on every run.
-- **Environment split (#173):** P-1/P-2/P-4/P-5 are pure python and run anywhere python does.
-  P-3 is `sandbox-render` and is **UNPROVEN IN CI** — `s204-D1` item 5 owns the CI pixel leg.
+- **Environment split (#173):** P-1/P-2/P-4/P-5/P-7/P-8 are pure python and run anywhere python
+  does. P-3 and P-6 are `sandbox-render` and are **UNPROVEN IN CI** — `s204-D1` item 5 owns the
+  CI pixel leg.
+- **P-7 and P-8 are NOT green on the current tree, and that is deliberate** (#210). They were
+  registered ADVISORY with their live findings standing and **nothing repaired** — P-7 6 findings
+  + 3 WARN, P-8 58 findings in 9 files. Repair, and promotion of either to a blocking gate, is
+  **Dave's**.
 
 ## Adding a probe
 
