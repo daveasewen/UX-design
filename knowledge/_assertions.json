@@ -1,205 +1,205 @@
 {
-  "$comment": [
-    "ASSERTION REGISTRY — environment claims that can rot, each with a machine-checkable predicate.",
-    "",
-    "WHY THIS EXISTS. Dave, 2026-07-18: 'how do we fix this permanently?' — after a memory file",
-    "asserted 'the sandbox has NO Univers font' for sixteen months while the licensed fonts sat in",
-    "the repo. The claim was TRUE when written and silently became false. Nothing caught it because",
-    "it lived in prose, in a place no gate could read, and because nothing re-tests claims.",
-    "",
-    "THE INSIGHT. That claim was mechanically checkable the whole time — os.path.exists(). It did not",
-    "rot for want of thinking; it rotted because a checkable claim was stored as unverifiable prose.",
-    "So: every environment claim that CAN be reduced to a predicate MUST carry one, and the predicate",
-    "gets re-evaluated on every build. Judgement and rulings do not belong here — they are not the",
-    "kind of thing that goes stale by itself. Facts about the world are.",
-    "",
-    "WHAT MAKES THIS DIFFERENT FROM _validate_standing_instructions.py. That gate is REFERENTIAL —",
-    "is everything reachable from the spine. This one is VERACIOUS — is what we say still true.",
-    "A doc can be perfectly reachable and perfectly wrong.",
-    "",
-    "THE KEY FIELD IS 'asserted_in'. When a predicate flips, the gate names every document that now",
-    "contains a false statement. That is what was missing on 07-18: the 'no Univers' claim sat in at",
-    "least five places and nothing connected them, so correcting one left four wrong.",
-    "",
-    "MEMORY ENTRIES CAN BE LISTED as 'memory:<slug>'. The gate cannot READ them (memory lives outside",
-    "the repo, invisible to the shell), but it CAN name them in the failure so the human knows what to",
-    "go and fix. That converts an invisible dependency into a visible instruction.",
-    "",
-    "EVERY PREDICATE DECLARES ITS ROOT, EXPLICITLY. 'root' is a NAMED root, never a path:",
-    "  repo   the git repo — what every predicate used to ASSUME.",
-    "  mount  the sandbox mount, the repo's '<session>/mnt' ancestor. This is what lets an",
-    "         assertion say 'reachable in the mount', which a repo-only root cannot express.",
-    "It is REQUIRED, not defaulted: an assumed root is how a mount claim silently becomes a repo",
-    "claim. An unknown or unresolvable root fails LOUD and NAMED — it never falls back to the repo.",
-    "",
-    "PREDICATE VERBS — deliberately tiny, no eval, no arbitrary code:",
-    "  path_exists   {root, glob}            at least one match",
-    "  path_absent   {root, glob}            zero matches",
-    "  glob_count    {root, glob, op, n}     op in eq|gte|lte",
-    "  file_contains {root, path, needle}",
-    "  file_lacks    {root, path, needle}",
-    "",
-    "'recheck_days' on a BLOCKER: a blocker stops work, and therefore stops the work that would",
-    "disprove it — the highest-rot-risk claim in the system. Past its window the gate warns even",
-    "while the predicate still holds, so somebody re-tests it deliberately."
-  ],
-  "assertions": [
-    {
-      "id": "ASSERT-001",
-      "kind": "blocker",
-      "claim": "No Latin Univers WEBFONT pack is present. Only the five SCRIPT companions have webfonts.",
-      "predicate": {
-        "verb": "path_absent",
-        "root": "repo",
-        "glob": "knowledge/assets/fonts/**/*[Ll]atin*.woff*"
-      },
-      "consequence": "Shareable real-face material is blocked by ASSET DELIVERY, not permission — there is nothing to embed. Licence side is renewal-pending; Dave assesses the gap as procedural and low-risk (ruled 2026-07-18, do not re-litigate). REFRAMED from 'blocker' the same week: within-HSBC distribution is CLOSED, ruled 'leave'.",
-      "clears_when": "The Latin webfont files (WOFF + WOFF2) physically land in knowledge/assets/fonts/. Watch for Ultralight in the pack — a sixth weight below Thin = a TYPE RULING, not an asset drop.",
-      "asserted_in": [
-        "knowledge/_proforma/_TYPE-DECISIONS.md",
-        "_LIVE-STATE.md",
-        "GOOD-MORNING.md",
-        "memory:univers-webfont-blocker"
-      ],
-      "recheck_days": 30,
-      "last_verified": "2026-08-19",
-      "provenance": "Verified 2026-07-18 by enumerating knowledge/assets/fonts/: five script webfont packs, ten woff/woff2 each, zero Latin. RE-TESTED #208 2026-08-19 (the gate had WARNED 'last verified 32d ago, window is 30d' — a blocker past its recheck window is re-tested DELIBERATELY, never inherited). Method = the registered predicate plus the same first-hand enumeration as 2026-07-18, both run in-sandbox: (a) `python3 knowledge/_validate_assertions.py` -> `[OK] ASSERT-001 blocker 0 matches in root=repo`, whole gate rc=0; (b) `ls knowledge/assets/fonts/` -> the same five script packs (Helvetica Armenian, M Ying Hei SC, M Ying Hei TC, Tazugane Japanese, Univers Arabic) plus `_desktop`; (c) `find knowledge/assets/fonts -iname '*.woff*' | wc -l` -> 50, i.e. five packs x ten files, unchanged; (d) `find knowledge/assets/fonts -iname '*latin*'` -> Latin faces exist ONLY under `_desktop/TTF/` (HSBC_MtUnivers_Latin-*.ttf), which is the DESKTOP licence class the 2026-07-18 note already warns must not be mistaken for the webfont pack. STILL TRUE, unchanged in kind since registration; the claim is re-based in DATE only, not in substance. NOT RULED HERE: `clears_when` watches for an Ultralight WEIGHT in the WEBFONT pack - ULt/ULtIt are present in the DESKTOP TTFs and always were, which is not the trigger and is not treated as one."
-    },
-    {
-      "id": "ASSERT-002",
-      "kind": "environment",
-      "claim": "The licensed Latin Univers DESKTOP set IS present and readable (TTF + OTF).",
-      "predicate": {
-        "verb": "path_exists",
-        "root": "repo",
-        "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
-      },
-      "consequence": "Real-face rendering and metric measurement are available in-sandbox. Any doc still claiming 'the sandbox has no Univers' is STALE.",
-      "asserted_in": [
-        "knowledge/_proforma/_TYPE-DECISIONS.md",
-        "memory:sandbox-html-rendering",
-        "memory:univers-measured-facts"
-      ],
-      "last_verified": "2026-07-18",
-      "provenance": "The exact claim that rotted for 16 months in the opposite direction. Files dated 2024-03-25; the 'no Univers' note post-dates them. This assertion exists so the inverse can never rot silently again."
-    },
-    {
-      "id": "ASSERT-004",
-      "kind": "regression",
-      "claim": "No text-transform:uppercase survives in the pro-forma surface (type26-019, BLOCKING).",
-      "predicate": {
-        "verb": "file_lacks",
-        "root": "repo",
-        "path": "knowledge/_proforma/Tranche-3-interactive.html",
-        "needle": "text-transform:uppercase"
-      },
-      "consequence": "The gate in _validate_proforma.py is the primary enforcement; this is a belt-and-braces canary on the file that carried two of the five breaches.",
-      "asserted_in": [
-        "knowledge/_validate_proforma.py",
-        "memory:gate-glob-scope-rule"
-      ],
-      "last_verified": "2026-07-18",
-      "provenance": "Closed 2026-07-18. The rule was blocking since 07-02 but its gate globbed snippets/ only."
-    },
-    {
-      "id": "ASSERT-005",
-      "kind": "environment",
-      "claim": "Licensed font binaries are gitignored and must never be committed.",
-      "predicate": {
-        "verb": "file_contains",
-        "root": "repo",
-        "path": ".gitignore",
-        "needle": "knowledge/assets/fonts/"
-      },
-      "consequence": "Keeps font binaries out of future commits. NOTE the 2026-07-18 reframe: the four files already embedding base64 woff2 at 24accd0 are CLOSED, ruled 'leave' (private repo, HSBC-only recipients) — no git rm, no BFG. And WebfontUserGuide-2024.pdf is generic Monotype guidance, NOT an entitlement record; the entitlement sits with brand/procurement, unseen.",
-      "asserted_in": [
-        ".gitignore",
-        "knowledge/_proforma/_TYPE-DECISIONS.md",
-        "memory:univers-webfont-blocker"
-      ],
-      "last_verified": "2026-07-18",
-      "provenance": "Four files committed at 24accd0 still embed base64 Univers; repo is private, so exposure is low but non-zero. Dave's call on remediation."
-    },
-    {
-      "id": "ASSERT-006",
-      "claim": "The HSBC Latin Univers DESKTOP TTFs are present and installable for real-font sandbox rendering. Renders are NOT layout-only.",
-      "why": "A memory file asserted 'the sandbox has NO Univers font — renders verify layout, not brand type' for sixteen months. It was true when written. On 2026-07-18 I repeated it THREE times in one session before Dave asked 'can't you use the desktop fonts in assets?'. ASSERT-002 already recorded the desktop set as present and already named this memory in asserted_in — but the gate only fires when a predicate FLIPS, so a document known to be wrong RIGHT NOW was never chased. This assertion states the OPERATIONAL conclusion, not just the file's existence, so the claim that actually rotted is the one under test.",
-      "kind": "environment",
-      "predicate": {
-        "verb": "path_exists",
-        "root": "repo",
-        "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
-      },
-      "asserted_in": [
-        "GOOD-MORNING.md",
-        "memory:sandbox-html-rendering",
-        "knowledge/_RUNBOOK-capture-ritual.md"
-      ],
-      "note": "Recipe: mkdir -p ~/.fonts && cp knowledge/assets/fonts/_desktop/TTF/*.ttf ~/.fonts/ && fc-cache -f ; CSS family 'HSBC_MtUnivers_Latin'. ALWAYS the HSBC cut, never stock Univers Next Pro (both are in _desktop/; Dave's ruling 2026-07-18). DESKTOP licence renders, it does not ship — ASSERT-001 (no Latin WEBFONT) is untouched by this.",
-      "last_verified": "2026-07-18"
-    },
-    {
-      "id": "ASSERT-007",
-      "kind": "blocker",
-      "claim": "MEMORY.md is REACHABLE ON DISK in the sandbox mount at .auto-memory/MEMORY.md — bash can read it, and any number in it can be obtained at ZERO fill.",
-      "why": "Sessions #109, #111 and #112 each paid 8–9K of fill reading memory INTO CONTEXT to get a figure that `grep` produces for nothing, because nothing in the repo said the file was on disk. Three sessions, same cost, independently. This is a blocker in the exact sense the registry means: the belief 'memory is outside the shell, unreachable' stopped the cheap work that would have disproved it. It could not be expressed before this assertion because predicates assumed the repo root, and this file is outside the repo but inside the mount.",
-      "predicate": {
-        "verb": "path_exists",
-        "root": "mount",
-        "glob": ".auto-memory/MEMORY.md"
-      },
-      "consequence": "Any session pricing a 'reproduce it to measure it' lane must CHECK DISK FIRST: `ls`/`grep` under <mount>/.auto-memory/ costs zero fill; reading the file into context costs 8–9K. Note the dir is HIDDEN — a plain `ls` of the mount does not show it.",
-      "clears_when": "The mount layout changes and .auto-memory/ is no longer reachable from the shell — at which point the zero-fill route is genuinely gone and every doc telling a session to check disk first is wrong.",
-      "asserted_in": [
-        "memory:memory-md-is-in-the-mount",
-        "_LIVE-STATE.md"
-      ],
-      "recheck_days": 30,
-      "last_verified": "2026-08-06",
-      "provenance": "Verified 2026-08-06 in-sandbox: /sessions/<session>/mnt/.auto-memory/ lists MEMORY.md and MEMORY-ARCHIVE.md alongside the per-entry .md files. RESIDUAL, declared UNPROVEN: off-sandbox (e.g. a checkout with no '<session>/mnt' ancestor) the root is UNRESOLVED and this assertion reports ROOT UNRESOLVED and FAILS rather than passing quietly — deliberate, per 'UNKNOWN is never defaulted'. Not exercised outside the sandbox."
-    },
-    {
-      "id": "ASSERT-008",
-      "kind": "environment",
-      "claim": "The GENERATED Memento schematic v2 is on disk at reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html.",
-      "why": "v1's tombstone (added #127) tells every reader 'read figures there, never here' and links to v2 by relative href. That pointer is a claim, and a pointer that goes stale is the exact class v1 exists to illustrate — a claim that was true when written with nothing re-checking it. Registering it means the tombstone's redirect is re-tested on every build instead of being trusted.",
-      "predicate": {
-        "verb": "path_exists",
-        "root": "repo",
-        "glob": "reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html"
-      },
-      "consequence": "If this flips, v1's tombstone points at nothing and its 'read figures at v2' instruction sends the reader back to the stale figures it was written to fence off. Regenerate via `python3 knowledge/_gen_schematic.py`, or re-point the tombstone.",
-      "clears_when": "The schematic is re-versioned (a -v3 supersedes v2) AND v1's tombstone plus every doc named below is re-pointed in the same pass.",
-      "asserted_in": [
-        "reviews/MEMENTO-SCHEMATIC-2026-07-26-v1.html",
-        "knowledge/_REVIEW-SIGNOFF.md",
-        "_LIVE-STATE.md",
-        "GOOD-MORNING.md"
-      ],
-      "last_verified": "2026-08-07",
-      "provenance": "Registered at the #127 wrap, ritual step 3 ('if you wrote a checkable claim about the environment, register it'). Verified in-sandbox 2026-08-07: the file is present and is the artefact _gen_schematic.py --check compares against."
-    },
-    {
-      "id": "ASSERT-009",
-      "kind": "environment",
-      "claim": "The component-spec KG is 101 files at knowledge/components/*.meta.json (the directory holds 105 entries - the other four are meta.schema.json, _ACCESSIBILITY-CONFORMANCE.md, _nodes-context.json and _nodes-pattern.json; the 92 includes the EXAMPLE template meta), and NOTHING in the build re-checks their token claims.",
-      "why": "#131 enacted s131-D1 across spine, snippet consumption and generated canon, and knowledge/components/banner.meta.json stayed stale through all of it - the metas are in no memento index and are named by no enactment checklist. Dave's own question surfaced it, not a gate. Registering the COUNT means the corpus size stops being folklore: if a 79th file appears, or the count drops, the claim in the record is re-tested instead of trusted. The 'nothing re-checks it' half is NOT machine-checkable here and is deliberately carried in the claim text as prose, so the day a parse-gate is built this assertion reads visibly false and gets re-written. MEASURED AT THE #131 WRAP AND IT CORRECTED THE SESSION'S OWN FIGURE: the wrap brief and the first draft of every #131 record said '78 files'. The count is 76 metas; 78 is the directory's ENTRY count, and one further meta.json lives outside knowledge/components (77 repo-wide). The wrong figure was written into four records before this predicate refused it - which is the entire argument for registering counts instead of repeating them.",
-      "predicate": {
-        "verb": "glob_count",
-        "root": "repo",
-        "glob": "knowledge/components/*.meta.json",
-        "n": 101
-      },
-      "consequence": "If the count flips, every #131 record that names the corpus size is stale - _LIVE-STATE.md OPEN, GOOD-MORNING.md's banner, the ledger and the dossier all repeat it. Re-count, then correct all four in one pass.",
-      "clears_when": "Dave rules the component-spec-KG remedy (index / parse-gate / checklist line) and the chosen mechanism, not this assertion, becomes what re-checks the metas.",
-      "asserted_in": [
-        "_LIVE-STATE.md",
-        "notes/_MEMENTO-DECISIONS.md",
-        "_DECISION-HISTORY/2026-08-08-131-the-legacy-rag-fills-and-the-design-kg-nothing-checks.md",
-        "knowledge/README.md"
-      ],
-      "last_verified": "2026-08-20",
-      "provenance": "Registered at the #131 wrap, ritual step 3 ('if you wrote a checkable claim about the environment, register it'). Counted in-sandbox 2026-08-08. Re-measured #193 2026-08-17: 77th meta is progress-bar.meta.json, added at commit 76b024c (#174); count flipped four sessions before any gate run reached this assertion — the first CI chained build (#193) is what caught it. Re-based #205 2026-08-19 (Dave: 'do it'): 77 → 92 measured in-sandbox (ls | wc -l), the growth being #196-#204's component waves incl. the six s204-D1 P2 components; caught by a chore sub's _build_all attempt ABORTing at the veracity gate — the assertion did its job again. Dir entries 81 → 96; same four non-meta files. The old repo-wide-77 framing is retired from the claim: repo-wide *.meta.json is now 176 (snippet metas included), a different population the predicate never measured. Re-verified #207 2026-08-19 (Dave's addendum, ASSERT-009-class precedent invoked by him): live count 92 confirmed in-sandbox; knowledge/README.md:13's typed '(38 metas)' — the P-5 live catch at #206 — corrected to point at this assertion instead of repeating a figure, and README.md added to asserted_in. HOME REPOINTED #208 2026-08-19 (record-hygiene lane, nothing deleted from the history above): GOOD-MORNING.md was REMOVED from asserted_in after a first-hand check — `grep -n '92' GOOD-MORNING.md` returns the figure at ONE line only, line 27, and that line is the #207 session-report entry ABOUT the README repair ('knowledge/README.md:13 38 -> 92 against ASSERT-009'), not a live statement of the corpus size; GM's own banner no longer carries the count. GM is a ROLLING file, so a pointer into it ages out by construction (s177-D1: no evidence pointers into rolling files) and would have named an innocent document at the next flip. The live homes that DO carry the figure, each verified by grep this session: _LIVE-STATE.md:85/597/598 - notes/_MEMENTO-DECISIONS.md:5620/5628 - _DECISION-HISTORY/2026-08-08-131-...:92/109 - knowledge/README.md:13. The `consequence` field's prose still names GOOD-MORNING.md's banner as a #131-era fan-out and is left standing as HISTORY, deliberately: it records where the figure used to live. Re-based #209 2026-08-20 (BY ADDITION; the growth is Dave's own fired wave — his live word 'Fire as divvied' landed 9 wave-3 components at commit 0e7cf8a): 92 -> 101 measured in-sandbox (ls knowledge/components/*.meta.json | wc -l = 101). Dir entries 96 -> 105, same four non-meta files. knowledge/README.md:13 updated in the SAME commit to carry 101 and keep pointing at this assertion (the #207 pattern)."
-    }
-  ]
+ "$comment": [
+  "ASSERTION REGISTRY — environment claims that can rot, each with a machine-checkable predicate.",
+  "",
+  "WHY THIS EXISTS. Dave, 2026-07-18: 'how do we fix this permanently?' — after a memory file",
+  "asserted 'the sandbox has NO Univers font' for sixteen months while the licensed fonts sat in",
+  "the repo. The claim was TRUE when written and silently became false. Nothing caught it because",
+  "it lived in prose, in a place no gate could read, and because nothing re-tests claims.",
+  "",
+  "THE INSIGHT. That claim was mechanically checkable the whole time — os.path.exists(). It did not",
+  "rot for want of thinking; it rotted because a checkable claim was stored as unverifiable prose.",
+  "So: every environment claim that CAN be reduced to a predicate MUST carry one, and the predicate",
+  "gets re-evaluated on every build. Judgement and rulings do not belong here — they are not the",
+  "kind of thing that goes stale by itself. Facts about the world are.",
+  "",
+  "WHAT MAKES THIS DIFFERENT FROM _validate_standing_instructions.py. That gate is REFERENTIAL —",
+  "is everything reachable from the spine. This one is VERACIOUS — is what we say still true.",
+  "A doc can be perfectly reachable and perfectly wrong.",
+  "",
+  "THE KEY FIELD IS 'asserted_in'. When a predicate flips, the gate names every document that now",
+  "contains a false statement. That is what was missing on 07-18: the 'no Univers' claim sat in at",
+  "least five places and nothing connected them, so correcting one left four wrong.",
+  "",
+  "MEMORY ENTRIES CAN BE LISTED as 'memory:<slug>'. The gate cannot READ them (memory lives outside",
+  "the repo, invisible to the shell), but it CAN name them in the failure so the human knows what to",
+  "go and fix. That converts an invisible dependency into a visible instruction.",
+  "",
+  "EVERY PREDICATE DECLARES ITS ROOT, EXPLICITLY. 'root' is a NAMED root, never a path:",
+  "  repo   the git repo — what every predicate used to ASSUME.",
+  "  mount  the sandbox mount, the repo's '<session>/mnt' ancestor. This is what lets an",
+  "         assertion say 'reachable in the mount', which a repo-only root cannot express.",
+  "It is REQUIRED, not defaulted: an assumed root is how a mount claim silently becomes a repo",
+  "claim. An unknown or unresolvable root fails LOUD and NAMED — it never falls back to the repo.",
+  "",
+  "PREDICATE VERBS — deliberately tiny, no eval, no arbitrary code:",
+  "  path_exists   {root, glob}            at least one match",
+  "  path_absent   {root, glob}            zero matches",
+  "  glob_count    {root, glob, op, n}     op in eq|gte|lte",
+  "  file_contains {root, path, needle}",
+  "  file_lacks    {root, path, needle}",
+  "",
+  "'recheck_days' on a BLOCKER: a blocker stops work, and therefore stops the work that would",
+  "disprove it — the highest-rot-risk claim in the system. Past its window the gate warns even",
+  "while the predicate still holds, so somebody re-tests it deliberately."
+ ],
+ "assertions": [
+  {
+   "id": "ASSERT-001",
+   "kind": "blocker",
+   "claim": "No Latin Univers WEBFONT pack is present. Only the five SCRIPT companions have webfonts.",
+   "predicate": {
+    "verb": "path_absent",
+    "root": "repo",
+    "glob": "knowledge/assets/fonts/**/*[Ll]atin*.woff*"
+   },
+   "consequence": "Shareable real-face material is blocked by ASSET DELIVERY, not permission — there is nothing to embed. Licence side is renewal-pending; Dave assesses the gap as procedural and low-risk (ruled 2026-07-18, do not re-litigate). REFRAMED from 'blocker' the same week: within-HSBC distribution is CLOSED, ruled 'leave'.",
+   "clears_when": "The Latin webfont files (WOFF + WOFF2) physically land in knowledge/assets/fonts/. Watch for Ultralight in the pack — a sixth weight below Thin = a TYPE RULING, not an asset drop.",
+   "asserted_in": [
+    "knowledge/_proforma/_TYPE-DECISIONS.md",
+    "_LIVE-STATE.md",
+    "GOOD-MORNING.md",
+    "memory:univers-webfont-blocker"
+   ],
+   "recheck_days": 30,
+   "last_verified": "2026-08-19",
+   "provenance": "Verified 2026-07-18 by enumerating knowledge/assets/fonts/: five script webfont packs, ten woff/woff2 each, zero Latin. RE-TESTED #208 2026-08-19 (the gate had WARNED 'last verified 32d ago, window is 30d' — a blocker past its recheck window is re-tested DELIBERATELY, never inherited). Method = the registered predicate plus the same first-hand enumeration as 2026-07-18, both run in-sandbox: (a) `python3 knowledge/_validate_assertions.py` -> `[OK] ASSERT-001 blocker 0 matches in root=repo`, whole gate rc=0; (b) `ls knowledge/assets/fonts/` -> the same five script packs (Helvetica Armenian, M Ying Hei SC, M Ying Hei TC, Tazugane Japanese, Univers Arabic) plus `_desktop`; (c) `find knowledge/assets/fonts -iname '*.woff*' | wc -l` -> 50, i.e. five packs x ten files, unchanged; (d) `find knowledge/assets/fonts -iname '*latin*'` -> Latin faces exist ONLY under `_desktop/TTF/` (HSBC_MtUnivers_Latin-*.ttf), which is the DESKTOP licence class the 2026-07-18 note already warns must not be mistaken for the webfont pack. STILL TRUE, unchanged in kind since registration; the claim is re-based in DATE only, not in substance. NOT RULED HERE: `clears_when` watches for an Ultralight WEIGHT in the WEBFONT pack - ULt/ULtIt are present in the DESKTOP TTFs and always were, which is not the trigger and is not treated as one."
+  },
+  {
+   "id": "ASSERT-002",
+   "kind": "environment",
+   "claim": "The licensed Latin Univers DESKTOP set IS present and readable (TTF + OTF).",
+   "predicate": {
+    "verb": "path_exists",
+    "root": "repo",
+    "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
+   },
+   "consequence": "Real-face rendering and metric measurement are available in-sandbox. Any doc still claiming 'the sandbox has no Univers' is STALE.",
+   "asserted_in": [
+    "knowledge/_proforma/_TYPE-DECISIONS.md",
+    "memory:sandbox-html-rendering",
+    "memory:univers-measured-facts"
+   ],
+   "last_verified": "2026-07-18",
+   "provenance": "The exact claim that rotted for 16 months in the opposite direction. Files dated 2024-03-25; the 'no Univers' note post-dates them. This assertion exists so the inverse can never rot silently again."
+  },
+  {
+   "id": "ASSERT-004",
+   "kind": "regression",
+   "claim": "No text-transform:uppercase survives in the pro-forma surface (type26-019, BLOCKING).",
+   "predicate": {
+    "verb": "file_lacks",
+    "root": "repo",
+    "path": "knowledge/_proforma/Tranche-3-interactive.html",
+    "needle": "text-transform:uppercase"
+   },
+   "consequence": "The gate in _validate_proforma.py is the primary enforcement; this is a belt-and-braces canary on the file that carried two of the five breaches.",
+   "asserted_in": [
+    "knowledge/_validate_proforma.py",
+    "memory:gate-glob-scope-rule"
+   ],
+   "last_verified": "2026-07-18",
+   "provenance": "Closed 2026-07-18. The rule was blocking since 07-02 but its gate globbed snippets/ only."
+  },
+  {
+   "id": "ASSERT-005",
+   "kind": "environment",
+   "claim": "Licensed font binaries are gitignored and must never be committed.",
+   "predicate": {
+    "verb": "file_contains",
+    "root": "repo",
+    "path": ".gitignore",
+    "needle": "knowledge/assets/fonts/"
+   },
+   "consequence": "Keeps font binaries out of future commits. NOTE the 2026-07-18 reframe: the four files already embedding base64 woff2 at 24accd0 are CLOSED, ruled 'leave' (private repo, HSBC-only recipients) — no git rm, no BFG. And WebfontUserGuide-2024.pdf is generic Monotype guidance, NOT an entitlement record; the entitlement sits with brand/procurement, unseen.",
+   "asserted_in": [
+    ".gitignore",
+    "knowledge/_proforma/_TYPE-DECISIONS.md",
+    "memory:univers-webfont-blocker"
+   ],
+   "last_verified": "2026-07-18",
+   "provenance": "Four files committed at 24accd0 still embed base64 Univers; repo is private, so exposure is low but non-zero. Dave's call on remediation."
+  },
+  {
+   "id": "ASSERT-006",
+   "claim": "The HSBC Latin Univers DESKTOP TTFs are present and installable for real-font sandbox rendering. Renders are NOT layout-only.",
+   "why": "A memory file asserted 'the sandbox has NO Univers font — renders verify layout, not brand type' for sixteen months. It was true when written. On 2026-07-18 I repeated it THREE times in one session before Dave asked 'can't you use the desktop fonts in assets?'. ASSERT-002 already recorded the desktop set as present and already named this memory in asserted_in — but the gate only fires when a predicate FLIPS, so a document known to be wrong RIGHT NOW was never chased. This assertion states the OPERATIONAL conclusion, not just the file's existence, so the claim that actually rotted is the one under test.",
+   "kind": "environment",
+   "predicate": {
+    "verb": "path_exists",
+    "root": "repo",
+    "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
+   },
+   "asserted_in": [
+    "GOOD-MORNING.md",
+    "memory:sandbox-html-rendering",
+    "knowledge/_RUNBOOK-capture-ritual.md"
+   ],
+   "note": "Recipe: mkdir -p ~/.fonts && cp knowledge/assets/fonts/_desktop/TTF/*.ttf ~/.fonts/ && fc-cache -f ; CSS family 'HSBC_MtUnivers_Latin'. ALWAYS the HSBC cut, never stock Univers Next Pro (both are in _desktop/; Dave's ruling 2026-07-18). DESKTOP licence renders, it does not ship — ASSERT-001 (no Latin WEBFONT) is untouched by this.",
+   "last_verified": "2026-07-18"
+  },
+  {
+   "id": "ASSERT-007",
+   "kind": "blocker",
+   "claim": "MEMORY.md is REACHABLE ON DISK in the sandbox mount at .auto-memory/MEMORY.md — bash can read it, and any number in it can be obtained at ZERO fill.",
+   "why": "Sessions #109, #111 and #112 each paid 8–9K of fill reading memory INTO CONTEXT to get a figure that `grep` produces for nothing, because nothing in the repo said the file was on disk. Three sessions, same cost, independently. This is a blocker in the exact sense the registry means: the belief 'memory is outside the shell, unreachable' stopped the cheap work that would have disproved it. It could not be expressed before this assertion because predicates assumed the repo root, and this file is outside the repo but inside the mount.",
+   "predicate": {
+    "verb": "path_exists",
+    "root": "mount",
+    "glob": ".auto-memory/MEMORY.md"
+   },
+   "consequence": "Any session pricing a 'reproduce it to measure it' lane must CHECK DISK FIRST: `ls`/`grep` under <mount>/.auto-memory/ costs zero fill; reading the file into context costs 8–9K. Note the dir is HIDDEN — a plain `ls` of the mount does not show it.",
+   "clears_when": "The mount layout changes and .auto-memory/ is no longer reachable from the shell — at which point the zero-fill route is genuinely gone and every doc telling a session to check disk first is wrong.",
+   "asserted_in": [
+    "memory:memory-md-is-in-the-mount",
+    "_LIVE-STATE.md"
+   ],
+   "recheck_days": 30,
+   "last_verified": "2026-08-06",
+   "provenance": "Verified 2026-08-06 in-sandbox: /sessions/<session>/mnt/.auto-memory/ lists MEMORY.md and MEMORY-ARCHIVE.md alongside the per-entry .md files. RESIDUAL, declared UNPROVEN: off-sandbox (e.g. a checkout with no '<session>/mnt' ancestor) the root is UNRESOLVED and this assertion reports ROOT UNRESOLVED and FAILS rather than passing quietly — deliberate, per 'UNKNOWN is never defaulted'. Not exercised outside the sandbox."
+  },
+  {
+   "id": "ASSERT-008",
+   "kind": "environment",
+   "claim": "The GENERATED Memento schematic v2 is on disk at reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html.",
+   "why": "v1's tombstone (added #127) tells every reader 'read figures there, never here' and links to v2 by relative href. That pointer is a claim, and a pointer that goes stale is the exact class v1 exists to illustrate — a claim that was true when written with nothing re-checking it. Registering it means the tombstone's redirect is re-tested on every build instead of being trusted.",
+   "predicate": {
+    "verb": "path_exists",
+    "root": "repo",
+    "glob": "reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html"
+   },
+   "consequence": "If this flips, v1's tombstone points at nothing and its 'read figures at v2' instruction sends the reader back to the stale figures it was written to fence off. Regenerate via `python3 knowledge/_gen_schematic.py`, or re-point the tombstone.",
+   "clears_when": "The schematic is re-versioned (a -v3 supersedes v2) AND v1's tombstone plus every doc named below is re-pointed in the same pass.",
+   "asserted_in": [
+    "reviews/MEMENTO-SCHEMATIC-2026-07-26-v1.html",
+    "knowledge/_REVIEW-SIGNOFF.md",
+    "_LIVE-STATE.md",
+    "GOOD-MORNING.md"
+   ],
+   "last_verified": "2026-08-07",
+   "provenance": "Registered at the #127 wrap, ritual step 3 ('if you wrote a checkable claim about the environment, register it'). Verified in-sandbox 2026-08-07: the file is present and is the artefact _gen_schematic.py --check compares against."
+  },
+  {
+   "id": "ASSERT-009",
+   "kind": "environment",
+   "claim": "The component-spec KG is 102 files at knowledge/components/*.meta.json (the directory holds 106 entries - the other four are meta.schema.json, _ACCESSIBILITY-CONFORMANCE.md, _nodes-context.json and _nodes-pattern.json; the 92 includes the EXAMPLE template meta), and NOTHING in the build re-checks their token claims.",
+   "why": "#131 enacted s131-D1 across spine, snippet consumption and generated canon, and knowledge/components/banner.meta.json stayed stale through all of it - the metas are in no memento index and are named by no enactment checklist. Dave's own question surfaced it, not a gate. Registering the COUNT means the corpus size stops being folklore: if a 79th file appears, or the count drops, the claim in the record is re-tested instead of trusted. The 'nothing re-checks it' half is NOT machine-checkable here and is deliberately carried in the claim text as prose, so the day a parse-gate is built this assertion reads visibly false and gets re-written. MEASURED AT THE #131 WRAP AND IT CORRECTED THE SESSION'S OWN FIGURE: the wrap brief and the first draft of every #131 record said '78 files'. The count is 76 metas; 78 is the directory's ENTRY count, and one further meta.json lives outside knowledge/components (77 repo-wide). The wrong figure was written into four records before this predicate refused it - which is the entire argument for registering counts instead of repeating them.",
+   "predicate": {
+    "verb": "glob_count",
+    "root": "repo",
+    "glob": "knowledge/components/*.meta.json",
+    "n": 102
+   },
+   "consequence": "If the count flips, every #131 record that names the corpus size is stale - _LIVE-STATE.md OPEN, GOOD-MORNING.md's banner, the ledger and the dossier all repeat it. Re-count, then correct all four in one pass.",
+   "clears_when": "Dave rules the component-spec-KG remedy (index / parse-gate / checklist line) and the chosen mechanism, not this assertion, becomes what re-checks the metas.",
+   "asserted_in": [
+    "_LIVE-STATE.md",
+    "notes/_MEMENTO-DECISIONS.md",
+    "_DECISION-HISTORY/2026-08-08-131-the-legacy-rag-fills-and-the-design-kg-nothing-checks.md",
+    "knowledge/README.md"
+   ],
+   "last_verified": "2026-08-20",
+   "provenance": "Registered at the #131 wrap, ritual step 3 ('if you wrote a checkable claim about the environment, register it'). Counted in-sandbox 2026-08-08. Re-measured #193 2026-08-17: 77th meta is progress-bar.meta.json, added at commit 76b024c (#174); count flipped four sessions before any gate run reached this assertion — the first CI chained build (#193) is what caught it. Re-based #205 2026-08-19 (Dave: 'do it'): 77 → 92 measured in-sandbox (ls | wc -l), the growth being #196-#204's component waves incl. the six s204-D1 P2 components; caught by a chore sub's _build_all attempt ABORTing at the veracity gate — the assertion did its job again. Dir entries 81 → 96; same four non-meta files. The old repo-wide-77 framing is retired from the claim: repo-wide *.meta.json is now 176 (snippet metas included), a different population the predicate never measured. Re-verified #207 2026-08-19 (Dave's addendum, ASSERT-009-class precedent invoked by him): live count 92 confirmed in-sandbox; knowledge/README.md:13's typed '(38 metas)' — the P-5 live catch at #206 — corrected to point at this assertion instead of repeating a figure, and README.md added to asserted_in. HOME REPOINTED #208 2026-08-19 (record-hygiene lane, nothing deleted from the history above): GOOD-MORNING.md was REMOVED from asserted_in after a first-hand check — `grep -n '92' GOOD-MORNING.md` returns the figure at ONE line only, line 27, and that line is the #207 session-report entry ABOUT the README repair ('knowledge/README.md:13 38 -> 92 against ASSERT-009'), not a live statement of the corpus size; GM's own banner no longer carries the count. GM is a ROLLING file, so a pointer into it ages out by construction (s177-D1: no evidence pointers into rolling files) and would have named an innocent document at the next flip. The live homes that DO carry the figure, each verified by grep this session: _LIVE-STATE.md:85/597/598 - notes/_MEMENTO-DECISIONS.md:5620/5628 - _DECISION-HISTORY/2026-08-08-131-...:92/109 - knowledge/README.md:13. The `consequence` field's prose still names GOOD-MORNING.md's banner as a #131-era fan-out and is left standing as HISTORY, deliberately: it records where the figure used to live. Re-based #209 2026-08-20 (BY ADDITION; the growth is Dave's own fired wave — his live word 'Fire as divvied' landed 9 wave-3 components at commit 0e7cf8a): 92 -> 101 measured in-sandbox (ls knowledge/components/*.meta.json | wc -l = 101). Dir entries 96 -> 105, same four non-meta files. knowledge/README.md:13 updated in the SAME commit to carry 101 and keep pointing at this assertion (the #207 pattern). Re-based #210 2026-08-20 (BY ADDITION; the growth is Dave's own ruled unification — s210-D1 'keep as one meter' minted meter.meta.json as the one Meter spec, s210-D5 folded the parents to category aliases WITHOUT removing their meta files): 101 -> 102 measured in-sandbox (ls knowledge/components/*.meta.json | wc -l = 102). Dir entries 105 -> 106, same four non-meta files. knowledge/README.md:13 updated in the SAME commit (the #207 pattern). NOTE the direction of the next flip: when the two alias metas eventually retire WITH their snippets (W-70/fold completion), this count DROPS to 100 and this assertion will refuse again — that refusal will be correct and is expected."
+  }
+ ]
 }
