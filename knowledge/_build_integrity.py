@@ -31,9 +31,14 @@ GUIDE = os.path.join(ROOT, "guidelines")
 
 # known WCAG 2.2 SCs we maintain rules for (mirror of build_compliance_kg.py M keys, + a few common AAs)
 KNOWN_SC = {
- "1.1.1","1.2.2","1.2.5","1.3.1","1.3.2","1.3.5","1.4.1","1.4.3","1.4.4","1.4.10","1.4.11","1.4.13",
+ "1.1.1","1.2.2","1.2.5","1.3.1","1.3.2","1.3.5","1.4.1","1.4.3","1.4.4","1.4.10","1.4.11","1.4.12","1.4.13",
  "2.1.1","2.1.2","2.2.1","2.2.2","2.3.3","2.4.1","2.4.3","2.4.4","2.4.5","2.4.6","2.4.7","2.4.8",
- "2.4.11","2.5.7","2.5.8","3.3.1","3.3.2","4.1.2","4.1.3"}
+ "2.4.11","2.5.5","2.5.7","2.5.8","3.2.1","3.3.1","3.3.2","4.1.1","4.1.2","4.1.3"}
+# #209: 1.4.12 / 2.5.5 / 3.2.1 / 4.1.1 added with their M-table rows in
+# knowledge/compliance/_build_compliance_kg.py (SAME commit — the two tables move together).
+# They were cited by #203/#204-era metas (Document row, Grid/stack, Payment card visual,
+# Popconfirm) and the KG had warned on them since; the integrity gate rightly treats an
+# uncited SC as an error. ⚠ 4.1.1 is REMOVED in WCAG 2.2 — versions capped at 2.1 there.
 SCRE = re.compile(r"^(\d+\.\d+\.\d+)")
 
 errors, warnings, info = [], [], []
