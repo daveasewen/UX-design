@@ -7230,7 +7230,10 @@
 .cn-data-grid :is(button, .cn-data-grid a, .cn-data-grid label, .cn-data-grid span, .cn-data-grid small, .cn-data-grid strong, .cn-data-grid em, .cn-data-grid b, .cn-data-grid i, .cn-data-grid th, .cn-data-grid td, .cn-data-grid dt, .cn-data-grid dd, .cn-data-grid li, .cn-data-grid figcaption, .cn-data-grid legend, .cn-data-grid caption, .cn-data-grid summary, .cn-data-grid output, .cn-data-grid time, .cn-data-grid input[type=text], .cn-data-grid input[type=search], .cn-data-grid input[type=email], .cn-data-grid input[type=tel], .cn-data-grid input[type=url], .cn-data-grid input[type=password], .cn-data-grid input[type=number], .cn-data-grid input:not([type]), .cn-data-grid textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* ---- demo controls (harness chrome, not the component) ---- */
 /* namespaced .dgseg — .seg is a type.css-bound blast radius this file must not join (gate-caught) */
-.cn-data-grid .dgseg{display:inline-flex; border:1px solid var(--fborder);}
+/* margin-bottom 28px (#210, PROPOSED): the switcher sat FLUSH on the "Transactions" section
+     label (0.00px measured). 28px = 1.75rem, the repo's demo-chrome-above-a-section-label value
+     (Button, Split-button, Toast all measure 28px for the same relationship); on-grid. */
+.cn-data-grid .dgseg{display:inline-flex; border:1px solid var(--fborder); margin:0 0 28px;}
 .cn-data-grid .dgseg button{font:inherit; padding:8px 12px; border:0; border-left:1px solid var(--fborder);
     background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
 .cn-data-grid .dgseg button:first-child{border-left:0;}
@@ -9156,6 +9159,176 @@
      it just arrives without an animated sweep. Copied from Progress-bar. */
 @media(prefers-reduced-motion:reduce){
     .pb-track .pb-fill{transition:none;}
+  }
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Meter  (from snippets/Meter.reference.html)
+   Aria: role="group", role="progressbar", role="status", aria-valuenow, aria-valuemin, aria-valuemax, aria-valuetext, aria-labelledby, aria-label, aria-hidden="true"
+   Reuses: Progress-bar (the track, the fill, the 4px + 8px heights, the dial/ring, the four specimens' markup, the reduced-motion behaviour — declaration-for-declaration; only the selector prefix moved), Limits-meter (the readout anatomy, the legend, the stack, the caption, the theme blocks, the AUTO-TOKENS ramp, and the daily-transfer-limit lock-up markup itself), Amount-display via Limits-meter (money format: symbol before, no space, tabular lining, MONOCHROME), Status-indicator via Account-card and Limits-meter (RAG tint chip carrying the verdict WORD — part of the ORGANISM, never of the meter), Command-palette line 36 (the leading-trim block, byte-identical)
+   Finding: THE UNIFICATION IS DAVE'S OWN INSTRUCTION, carried verbatim in $daveVerbatim, and it is still a PROPOSAL: accept, rework or drop (Q1). Dropping costs nothing — nothing registers this file.
+   Finding: NOTHING BAR-SHAPED OR RING-SHAPED WAS RE-DRAWN. Every variant that reproduces an existing form is copied from its source file declaration-for-declaration and diff-checked against it. #202's lesson: three hand-rolled specimen pages invented three defects.
+   Finding: THE TITLE-SIZE OPTION IS THE ONE NEW VISUAL AFFORDANCE, and it is drawn BOTH WAYS in §B6 rather than defaulted in prose. Default = t-cm-legal 12px on text/secondary (the Limits-meter stack's row-name); large = t-cm-label 16px on text/default (Progress-bar's own title). WHICH IS THE DEFAULT IS DAVE'S (Q2). The size is carried by the composite class in the markup, never by a raw font declaration.
+   Finding: ⛔ NO RAG COLOUR TOUCHES A METER IN ANY VARIANT OR ANY STATE, including at the ceiling. The fill is ink on track, inherited from the gated Progress-bar: 'Progress is STRUCTURE, not status (Dave 2026-07-21) — hence the ink pair rather than a RAG colour.' The verdict chip belongs to the ORGANISM and carries a WORD. NO NEW COLOUR VALUE IS AUTHORED ANYWHERE IN THIS FILE — every hex is copied. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are UNTOUCHED, and the error/critical seat is not taken.
+   Finding: OPEN AND CARRIED FORWARD UNCHANGED, WITH THE SEARCH THAT FAILS TO SETTLE IT RE-RUN AT #210 (s202-D3): role="progressbar" vs role="meter". `grep -rln 'role="meter"' knowledge/snippets/` → THREE files (Limits-meter, Runway-bar and this one) and EVERY hit in all three is PROSE not markup, i.e. ZERO snippets use the role; `grep -icE 'meter' knowledge/_rulings.json` → 0. progressbar is mirrored from BOTH parents because inheriting beats improvising. ⚠ The question is SHARPER now, not softer — the component is literally called Meter — and it is still DAVE'S. If he rules 'meter', THREE files change together.
+   Finding: THE SEMANTIC VARIANTS (.meter--progress / .meter--allowance) PAINT NOTHING, deliberately. Identical geometry, inverted meaning: a full progress meter is success, a full allowance meter is a blocked payment. Whether that difference should ever be visible, and what the variants should be called, is Q6, Dave's.
+   Finding: THE TWO PARENTS DISAGREE ON THE BASE MAX-WIDTH — Progress-bar 420px, Limits-meter 480px — and a unified base can only carry one. Drawn at 480; the 420 reading is not dismissed, just not chosen (Q7).
+   Finding: ⚠ CARRIED FORWARD FROM Limits-meter Q8, UNRESOLVED AND STILL VISIBLE: the 'Per payment' row in §C3 is an EMPTY track reading '£0 of £10,000 used' and always will be, because a per-payment cap is a ceiling PER EVENT that never accumulates. Left drawn so it can be seen rather than read about.
+   Finding: THE SAVINGS-GOAL CARD IS DELIBERATELY NOT DRAWN. The savings-goal BAR is present as variant B3, exactly as Progress-bar draws it; wrapping it in a card lock-up would be an INVENTION, and which organisms the component ships with is Q4, Dave's.
+   Finding: COLOUR NEVER ALONE: every meter shows its value as text and carries aria-valuetext; every organism additionally carries a verdict word and, at the ceiling, a consequence sentence.
+   Finding: PASSIVE COMPONENT: no interactive target, so the 44px minimum hit area has no seat here. Declared rather than assumed.
+   Finding: ⚠ THE FOUR-THEME fill-on-track CONTRAST FIGURES ARE CARRIED from Progress-bar's and Limits-meter's declarations and were NOT re-measured at #210. Declared as carried, never as proven this session.
+   Finding: NOT registered in component-types.json, CATEGORIES, MIGRATED_SNIPPETS, gen_showroom.py or canon.css — all shared files, all outside this lane's fence (the Lane A precedent). ⛔ _validate_binds_resolve.py check D (canon block presence) WILL FAIL for this snippet until a .cn-meter block is projected. Declared, not hidden.
+   Scope: .cn-meter   ============================================================ */
+.cn-meter{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --ease: 140ms ease;
+  --complete: var(--progress-complete);
+  --incomplete: var(--progress-incomplete);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --page: var(--background-default);
+  --border: var(--border-subtle);
+  --ok: var(--rag-success);
+  --ok-tint: var(--rag-success-tint);
+  --warn: var(--rag-warning);
+  --warn-tint: var(--rag-warning-tint);
+}
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+.cn-meter :is(button, .cn-meter a, .cn-meter label, .cn-meter span, .cn-meter small, .cn-meter strong, .cn-meter em, .cn-meter b, .cn-meter i, .cn-meter th, .cn-meter td, .cn-meter dt, .cn-meter dd, .cn-meter li, .cn-meter figcaption, .cn-meter legend, .cn-meter caption, .cn-meter summary, .cn-meter output, .cn-meter time, .cn-meter input[type=text], .cn-meter input[type=search], .cn-meter input[type=email], .cn-meter input[type=tel], .cn-meter input[type=url], .cn-meter input[type=password], .cn-meter input[type=number], .cn-meter input:not([type]), .cn-meter textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* NOTE: this snippet declares NO raw font-family, font-size or font-weight anywhere — every
+     text element carries a .t-cm-* composite from canon/type.css (the Progress-bar precedent,
+     #174, inherited via Limits-meter). TYPE-002 contribution: 0. */
+/* demo chrome — not the component */
+.cn-meter .specimens{display:flex; flex-direction:column; gap:40px;}
+.cn-meter .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+/* demo chrome — the three tiers of the grammar, so the page reads in Dave's own model */
+.cn-meter .tier{color:var(--text); margin:0 0 4px; border-top:1px solid var(--border); padding-top:16px;}
+.cn-meter .tier-note{color:var(--muted); opacity:var(--alpha-72); margin:0 0 8px; max-width:640px;}
+/* ============================================================================
+     THE METER — THE BASE MOLECULE.
+     Everything bar-shaped and ring-shaped below is Progress-bar.reference.html's
+     geometry, copied declaration-for-declaration under a unified class name.
+     The readout anatomy is Limits-meter.reference.html's, likewise copied.
+     NOTHING IN THIS BLOCK WAS DRAWN FROM SCRATCH.
+     ============================================================================ */
+.cn-meter .meter{display:flex; flex-direction:column; gap:8px; max-width:480px;}
+/* gap/fixed/content 8 */
+.cn-meter .meter-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+/* THE TITLE-SIZE OPTION (Dave, #210: "the option of the bigger titles that are in the progress
+     bar"). The SIZE is carried by the composite class in the markup — t-cm-legal (12px, the
+     Limits-meter stack's row-name) by default, t-cm-label (16px, Progress-bar's own title) on the
+     large option — because type is bound by composite, never by a raw declaration. The MODIFIER
+     below carries only the colour difference the two parents already disagree about: Limits-meter
+     names its rows in text/secondary, Progress-bar names its bars in text/default.
+     ⬛ WHICH IS THE DEFAULT IS DAVE'S (Q2). Both are drawn in §B6. */
+.cn-meter .meter-label{color:var(--muted);}
+.cn-meter .meter--title-lg .meter-label{color:var(--text);}
+.cn-meter .meter-value{color:var(--muted); font-variant-numeric:tabular-nums;}
+.cn-meter .meter-note{color:var(--muted);}
+.cn-meter .meter-caption{color:var(--muted); opacity:var(--alpha-72); margin:0;}
+.cn-meter .meter-verdict{color:var(--text);}
+/* ---- LINEAR. Progress-bar's .pb-track / .pb-fill, declaration-for-declaration. ---- */
+.cn-meter .meter-track{position:relative; width:100%; height:4px; background:var(--incomplete);
+            border-radius:var(--border-radius-indicator); overflow:hidden;}
+.cn-meter .meter-track .meter-fill{position:absolute; left:0; top:0; height:100%; width:0;
+            background:var(--complete); transition:width var(--ease);}
+/* emphasis size — same token pair, thicker rule (Progress-bar's .pb-lg, Limits-meter's .lim-lg) */
+.cn-meter .meter--emphasis .meter-track{height:8px;}
+/* ---- DIAL (circular). Progress-bar's .pb-ring*, declaration-for-declaration. ---- */
+.cn-meter .meter-dial{display:inline-grid; place-items:center; width:96px; height:96px;}
+.cn-meter .meter-dial > svg{grid-area:1/1; width:96px; height:96px; transform:rotate(-90deg);}
+.cn-meter .meter-dial .meter-dial-cap{grid-area:1/1; text-align:center;}
+.cn-meter .meter-dial circle{fill:none; stroke-width:8;}
+.cn-meter .meter-dial .meter-dial-track{stroke:var(--incomplete);}
+.cn-meter .meter-dial .meter-dial-fill{stroke:var(--complete); stroke-dasharray:264.5; stroke-dashoffset:264.5;
+                         transition:stroke-dashoffset var(--ease);}
+/* ---- SEMANTIC VARIANTS (Q6). These paint NOTHING. They exist so the meaning is authored
+     rather than inferred: a full .meter--progress is SUCCESS, a full .meter--allowance is a
+     BLOCKED PAYMENT. Identical geometry, inverted meaning. Whether the difference should ever be
+     visible, and what these should be CALLED, is Dave's — so no declaration is attached. ---- */
+.cn-meter .meter--progress{}
+.cn-meter .meter--allowance{}
+/* ---- the money figure — Amount-display's primitive via Limits-meter: currency symbol BEFORE
+     the amount with no space (copy-025), tabular lining figures. MONOCHROME by design. ---- */
+.cn-meter .amount{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.005em;}
+.cn-meter .amount--display{letter-spacing:-.01em;}
+/* ---- legend — two keys, one per SEGMENT of the same meter. The swatch colours are the
+     meter's own two tokens and nothing else. Limits-meter's .lim-legend. ---- */
+.cn-meter .meter-legend{display:flex; gap:24px; flex-wrap:wrap;}
+.cn-meter .meter-key{display:inline-flex; align-items:center; gap:8px; color:var(--muted);}
+.cn-meter .meter-key .sw{width:12px; height:12px; flex:none; border-radius:var(--border-radius-indicator);}
+.cn-meter .meter-key .sw--used{background:var(--complete);}
+.cn-meter .meter-key .sw--left{background:var(--incomplete); border:1px solid var(--border);}
+.cn-meter .meter-key .v{color:var(--text); font-variant-numeric:tabular-nums;}
+/* ============================================================================
+     THE ORGANISM — "a set of meter variants embedded in an organism, in this case
+     a daily transfer limit lock-up" (Dave, #210). The lock-up is NOT a meter; it
+     is a composition of meters plus a verdict, a figure and a consequence.
+     All of it is Limits-meter's, copied.
+     ============================================================================ */
+.cn-meter .lockup{display:flex; flex-direction:column; gap:8px; max-width:480px;}
+.cn-meter .lockup-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+.cn-meter .lockup-title{color:var(--muted);}
+.cn-meter .lockup-note{color:var(--text); margin:0;}
+/* the consequence line — plain text, never a colour */
+.cn-meter .lockup-stack{display:flex; flex-direction:column; gap:20px; max-width:480px;}
+.cn-meter .lockup-row{display:flex; flex-direction:column; gap:8px;}
+.cn-meter .lockup-row-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
+.cn-meter .lockup-row-fig{color:var(--text); font-variant-numeric:tabular-nums;}
+/* ---- reused Status-indicator chip (RAG tint; from Status-indicator.reference, via
+     Account-card, Runway-bar and Limits-meter). The verdict WORD is inside the chip, always.
+     ⛔ THE CHIP IS PART OF THE ORGANISM, NOT OF THE METER — no RAG value touches a track or a
+     fill in any variant or any state. ---- */
+.cn-meter .chip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
+.cn-meter .chip .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+.cn-meter .chip.ok{background:var(--ok-tint);}
+.cn-meter .chip.ok .dot{background:var(--ok);}
+.cn-meter .chip.warn{background:var(--warn-tint);}
+.cn-meter .chip.warn .dot{background:var(--warn);}
+/* the title-size comparison strip (§B6) — demo chrome, so the two options sit side by side.
+     ⚠ .pairnote is DEMO CHROME with its own margin, not the component's .meter-caption: found by
+     LOOKING at the first render, where the borrowed margin:0 left the annotation flush against
+     the title it annotates. The borrowed rule was not edited to fix a demo problem. */
+.cn-meter .pairnote{color:var(--muted); opacity:var(--alpha-72); margin:0 0 8px;}
+.cn-meter .pair{display:flex; gap:40px; flex-wrap:wrap;}
+.cn-meter .pair > div{flex:1 1 320px; min-width:280px;}
+.cn-meter .row{display:flex; align-items:center; gap:24px; flex-wrap:wrap;}
+/* 2.3.3 / 2.2.2 — the fill still MOVES to its final position (the value must be reachable),
+     it just arrives without an animated sweep. Copied from Progress-bar. */
+@media(prefers-reduced-motion:reduce){
+    .meter-track .meter-fill, .meter-dial .meter-dial-fill{transition:none;}
   }
 @media (prefers-reduced-motion: reduce){
 
@@ -11317,7 +11490,11 @@
 .cn-time-picker .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 /* ---------- field group — Input-fields anatomy (lock-step; change it THERE) ---------- */
 .cn-time-picker .tp{max-width:420px; position:relative;}
-.cn-time-picker .tp-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+/* 4px → 8px (#210, PROPOSED): with the #209 leading-trim block the label box ends at the
+     ALPHABETIC BASELINE, so the "Payment time" y-descender (3.00px measured) eats the old 4px
+     margin and left 1.00px optical clearance to the field border. 8px restores the pre-trim
+     optics (5.00px measured); on-grid; matches Secure-entry's .se-lblrow{margin:0 0 8px}. */
+.cn-time-picker .tp-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 8px;}
 .cn-time-picker .tp-lblrow label{color:var(--text);}
 .cn-time-picker .tp-help{color:var(--text); margin:0 0 8px;}
 .cn-time-picker .tp-box{display:flex; align-items:center; gap:16px; padding:8px 16px;
@@ -12676,6 +12853,27 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-loading-indicator{
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-meter{
+  --border: #D7D8D6;
+  --complete: #333333;
+  --muted: #545454;
+  --ok: #00847F;
+  --ok-tint: #E5F2F2;
+  --text: #333333;
+  --warn: #FFBB33;
+  --warn-tint: #FFF8EA;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-meter,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-meter{
+  --border: #404040;
+  --complete: #FFFFFF;
+  --muted: #9B9B9B;
+  --ok: #00847F;
+  --ok-tint: #001615;
+  --text: #FFFFFF;
+  --warn: #FFBB33;
+  --warn-tint: #221701;
+}
 [data-apollo-theme="legacy"] .cn-modal-lightbox{
   --media2: #E1E1E1;
   --press-darken: 1;
@@ -13824,6 +14022,21 @@
   --success-tint: #355441;
   --warning: #D5990B;
   --warning-tint: #654D14;
+}
+[data-apollo-theme="console"] .cn-meter{
+  --border-radius-indicator: 4px;
+  --ok: #5DAC7B;
+  --ok-tint: #D2E8DA;
+  --warn: #D5990B;
+  --warn-tint: #F2DEB1;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-meter,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-meter{
+  --border-radius-indicator: 4px;
+  --ok: #5DAC7B;
+  --ok-tint: #355441;
+  --warn: #D5990B;
+  --warn-tint: #654D14;
 }
 [data-apollo-theme="console"] .cn-modal-lightbox{
   --border-radius-control: 8px;
@@ -15825,6 +16038,31 @@
   --page: #1A1A1A;
   --spinner: #F7F6F4;
   --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-meter{
+  --border: #CDC8C6;
+  --complete: #13110E;
+  --incomplete: #DFDEDC;
+  --muted: #13110E;
+  --ok: #5DAC7B;
+  --ok-tint: #DCEDE3;
+  --page: #F7F6F4;
+  --text: #13110E;
+  --warn: #D5990B;
+  --warn-tint: #F6E5CC;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-meter,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-meter{
+  --border: #524842;
+  --complete: #F7F6F4;
+  --incomplete: #413934;
+  --muted: #F7F6F4;
+  --ok: #5DAC7B;
+  --ok-tint: #12291D;
+  --page: #1A1A1A;
+  --text: #F7F6F4;
+  --warn: #D5990B;
+  --warn-tint: #3C2C13;
 }
 [data-apollo-theme="supercharge"] .cn-modal-lightbox{
   --elev-bd: #FFFFFF00;
