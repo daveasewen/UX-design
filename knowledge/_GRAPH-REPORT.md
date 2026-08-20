@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 100 components · 1033 tokens defined · 121 tokens referenced by components · compliance: 35 rules x 91 components (35 SCs).
+**Totals:** 101 components · 1033 tokens defined · 121 tokens referenced by components · compliance: 35 rules x 91 components (35 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,19 +10,19 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 81 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
-| `background/default` | 51 | Accordion, Account selector, Amount display, Anchor nav, Avatar group, Bar chart… |
+| `text/default` | 82 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
+| `background/default` | 52 | Accordion, Account selector, Amount display, Anchor nav, Avatar group, Bar chart… |
 | `icon/default` | 35 | Accordion, Avatar, Avatar group, Button, Cards, Combobox… |
 | `tertiary/background/default` | 29 | Account card, Action bar, Anchor nav, Button, Cards, Command palette… |
+| `border/subtle` | 26 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
 | `elevation/functional` | 26 | Account selector, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Combo chart, Combobox… |
-| `border/subtle` | 25 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
 | `tertiary/background/hover` | 25 | Accordion, Anchor nav, Avatar, Avatar group, Button, Cards… |
 | `border-radius/surface` | 24 | Alert, Anchor nav, Banner, Combo chart, Combobox, Command palette… |
 | `focus/ring` | 23 | Anchor nav, Avatar group, Combobox, Command palette, Document row, Footer… |
-| `rag/success` | 22 | Account card, Amount input, Bar chart, Button, Confirmation, Coverage / runway bar… |
+| `rag/success` | 23 | Account card, Amount input, Bar chart, Button, Confirmation, Coverage / runway bar… |
+| `text/secondary` | 22 | Account card, Amount display, Anchor nav, Cards, Command palette, Confirmation… |
 | `form/border/default` | 21 | Account card, Account selector, Combobox, Command palette, Data grid, Dropdown… |
 | `rag/error` | 21 | Amount input, Bar chart, Combobox, Date picker, Date-range picker, Dropdown… |
-| `text/secondary` | 21 | Account card, Amount display, Anchor nav, Cards, Command palette, Confirmation… |
 | `elevation/border` | 19 | Account selector, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Combo chart, Combobox… |
 | `text/reverse` | 18 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
 
@@ -30,13 +30,13 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Group | Components |
 |---|---|
-| `text/` | 85 |
-| `background/` | 51 |
+| `text/` | 86 |
+| `background/` | 52 |
 | `tertiary/` | 41 |
-| `border-radius/` | 38 |
+| `border-radius/` | 39 |
 | `icon/` | 37 |
-| `rag/` | 35 |
-| `border/` | 28 |
+| `rag/` | 36 |
+| `border/` | 29 |
 | `form/` | 27 |
 | `elevation/` | 26 |
 | `focus/` | 23 |
@@ -49,8 +49,8 @@ Change one of these and the listed number of components is affected. Use before 
 | `padding/` | 7 |
 | `color/` | 7 |
 | `overlay/` | 6 |
-| `progress/` | 5 |
-| `scale/` | 4 |
+| `progress/` | 6 |
+| `scale/` | 5 |
 | `scrollbar/` | 4 |
 | `blur/` | 3 |
 | `button/` | 3 |
