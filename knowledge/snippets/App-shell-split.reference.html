@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App shell — split (reference implementation, PROPOSED #210)</title>
+<!--
+  ⚠⚠ PROPOSED #210, 2026-08-20 (Wave 6, Lane A). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. Itinerary row 100 ("App shell — split", Shells
+  (Layer 2), P3, notes cell "Two-pane."). Derived class NO-ARTEFACT-CLASS: no shell artefact
+  form exists in the store, so this ships in the SAME grammar as the component library
+  (snippet + meta) on the wave-5 PROPOSED convention. That convention is Dave's to keep or
+  re-home; nothing here registers itself anywhere.
+
+  ★★ THIS IS AN ORGANISM, NOT A DRAWING. COMPOSE, NEVER RE-DRAW. Every visible atom below is
+  lifted from an existing reference file and named so a reviewer can diff it.
+
+    · THE WHOLE OUTER FRAME — App-shell-top-nav.reference.html (#210, wave 5, PROPOSED),
+      verbatim: the `.sh` container-query frame, the skip link, the `.sh-masthead` row, the
+      `.sh-crumbs` trail with its 44px targets and its droppable ancestors, the `.sh-foot`
+      legal bar (INCLUDING the `.sh-legal li{display:flex}` line that is a real defect repair —
+      see that file's own comment), the off-canvas `.sh-scrim`/`.sh-sheet` and their four-step
+      open sequence. ⚠ THIS SHELL IS THE WAVE-5 SHELL WITH ITS `.sh-main` REPLACED. That is
+      the composition, and it is the point: a split is not a new frame, it is a new BODY.
+    · THE SPLIT BODY — Splitter.reference.html, verbatim: the `.sp` three-track grid
+      (`--pri`/`--div`/1fr), the `--min-pri`/`--min-sec` fences, `.sp-div` as
+      `role="separator"` with a live `aria-valuenow` PERCENTAGE, the 24px `::before` pointer
+      target, the three-stroke grip (carried with its own `data-bespoke` reason string
+      unchanged), pointer capture, the arrow/Home/End/Enter/F6 key map, and — critically —
+      Splitter's own ⛔ RE-DERIVE-FROM-THE-RATIO resize rule, which this file needed for a
+      second reason it did not anticipate (see THE AXIS FLIP below).
+    · THE PANE FURNITURE — Skeleton-loader.reference.html's shape kit (`.bone` line/body/
+      media/control, `--bone` = tertiary/background/hover), announcement NOT copied, exactly
+      as App-shell-top-nav decided. Its reasoning is that file's; it is inherited here, not
+      re-argued.
+  ⛔ NO PARENT FILE WAS EDITED. Not one.
+
+  WHAT "SPLIT" MEANS HERE, AND WHY IT IS NOT App-shell-multi-column. Multi-column is a
+  MASTER-DETAIL cascade: a rail feeds a list feeds a detail, the panes are ranked, and choosing
+  in one changes another. A SPLIT is two COEQUAL panes — neither owns the other, neither
+  reloads the other, and the user, not the layout, decides how the room is divided. The
+  coequality is enforced by construction and it is checkable: both panes carry the SAME chrome
+  (a 48px `.sh-pane-head` with a heading and an action group), the SAME scroll behaviour, and
+  the fences are symmetric (`--min-pri` == `--min-sec` == 240px). ⚠ If a reviewer wants one
+  pane subordinate, the component they want is App-shell-multi-column, not a re-tuned split.
+
+  ★★ THE AXIS FLIP — the genuinely new mechanic, and it is the reason this shell is more than
+  "a splitter inside a shell". A two-pane split has no side-by-side reading at phone width; it
+  has to become a stack. Naively you author two splitters. Instead the AXIS IS A CSS CUSTOM
+  PROPERTY (`--axis: x | y`) set by the CONTAINER QUERY, and the script READS the computed
+  value rather than the authored `data-orientation`:
+    · >= 900cqi  — `--axis:x`, side-by-side, a vertical divider the user can drag.
+    · 600–899cqi — `--axis:y`, the panes STACK, the same divider becomes horizontal, the same
+      percentage is preserved, `aria-orientation` and the key map flip with it.
+    · < 600cqi   — the divider is REMOVED FROM THE PAGE (`display:none`), the panes fall to
+      natural height in document order, and the shell scrolls as one column.
+  ⚠⚠ AND THE LAST BAND IS A DELIBERATE ACCESSIBILITY DECISION, NOT A LAYOUT SHORTCUT. A
+  drag-to-resize separator on a phone is a control that a touch user cannot operate with any
+  precision and that a screen-reader user is invited to adjust with arrow keys they do not
+  have. Hiding it removes it from the a11y tree as well as the picture — measured, tabbable
+  separators at 392px = 0. The alternative (keep it, shrink it) was rejected. See $decision-3.
+
+  ⚠⚠ THE CONTAINER-QUERY SELF-QUERY TRAP, DECLARED BECAUSE IT BIT THIS WAVE TWICE ALREADY.
+  `.sh` is the query CONTAINER, so a `@container shell (...)` rule may only target its
+  DESCENDANTS. Every collapse rule below targets `.sh-split`, `.sp`, `.sp-div` or a pane —
+  never `.sh` itself. The collapse is MEASURED in the receipt at three container widths, not
+  asserted from a screenshot.
+
+  ⚠ 900 AND 600 ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS, and they are deliberately the
+  SAME PAIR App-shell-top-nav chose so that a shell and its body do not disagree. Wave 5
+  shipped three shells with three different pairs (900/600, 1040/720, 1200/840) and named that
+  as its biggest open question. This lane does not add a fourth pair. `layout.json` still has
+  no breakpoint scale. See $decision-1.
+
+  COLOUR: no RAG value is painted anywhere. A shell has no status to carry. The only red is
+  primary/border/default on the current-nav mark, which is Navigations' own approved bar. The
+  two-red law (s151-D1) and the mono error ink camp (s149-D1) are untouched.
+  SHAPE: square throughout (border-radius/* resolve 0 in Mono; themes flex through canon.css).
+  MOTION: the Drawer spring on the sheet; the divider itself does not animate, because a
+  dragged thing that lags its pointer is a broken thing. Reduced motion honoured.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. BYTE-IDENTICAL to Command-palette.reference.html line 36. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family, font-size or font-weight anywhere in component scope — every text
+     element carries a .t-cm-* / .t-ed-* composite from canon/type.css. Ratchet contribution: 0. */
+  :root{ --ease:140ms ease; --spring:240ms cubic-bezier(.2,.8,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF;
+    --surface:#FFFFFF;
+    --band:#F0F0F0;
+    --text:#1A1A1A;
+    --muted:#1A1A1A;
+    --icon:#1A1A1A;
+    --rule:#E1E1E1;
+    --sub-rule:#F0F0F0;
+    --hover:#F0F0F0;
+    --pressed:#CECECE;
+    --indicator:#DB0011;
+    --bone:#F0F0F0;
+    --overlay:#00000080;
+    --focus:#305A85;
+    --divider-hover:#808080;
+    --divider-active:#000000;
+    --grip:#808080;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --surface:#1F1F1F;
+    --band:#1F1F1F;
+    --text:#FFFFFF;
+    --muted:#FFFFFF;
+    --icon:#FFFFFF;
+    --rule:#808080;
+    --sub-rule:#808080;
+    --hover:#232323;
+    --pressed:#484848;
+    --indicator:#DB0011;
+    --bone:#232323;
+    --overlay:#00000080;
+    --focus:#4587A7;
+    --divider-hover:#808080;
+    --divider-active:#FFFFFF;
+    --grip:#808080;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:32px 24px; background:var(--page); color:var(--text);
+       -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted); opacity:var(--alpha-60); margin:0 0 8px;}
+  .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+
+  /* ============================================================================================
+     THE SHELL FRAME — copied VERBATIM from App-shell-top-nav.reference.html. It positions parts;
+     it styles none of them. Diff-proof for every rule in this block is in the receipt.
+     ============================================================================================ */
+  .sh{position:relative; display:flex; flex-direction:column; min-height:560px;
+      container-type:inline-size; container-name:shell;
+      background:var(--page); color:var(--text);
+      border:1px solid var(--rule); border-radius:var(--border-radius-surface); overflow:hidden;}
+  .sh.is-narrow{width:392px; min-height:640px;}   /* a deliberately narrow CONTAINER, so the collapse is visible in one still */
+
+  /* skip link — WCAG 2.4.1 bypass block. Visible only on focus. */
+  .sh-skip{position:absolute; top:8px; left:8px; z-index:8; display:inline-flex; align-items:center;
+    min-height:var(--target-min); padding:0 16px; background:var(--surface); color:var(--text);
+    border:1px solid var(--rule); border-radius:var(--border-radius-control);
+    text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+    transform:translateY(-200%); transition:transform var(--ease);}
+  .sh-skip:focus-visible{transform:translateY(0); outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ---- masthead row — geometry copied from Navigations.reference.html via App-shell-top-nav ---- */
+  .sh-masthead{display:flex; align-items:center; gap:28px; min-height:64px; padding:0 32px;
+    background:var(--surface); border-bottom:1px solid var(--rule); flex:none;}
+  .sh-logo{color:var(--indicator); flex:none;}
+  .sh-nav{display:flex; gap:4px; margin-right:auto;}
+  .sh-nav a{padding:0 12px; min-height:64px; display:inline-flex; align-items:center;
+    color:var(--text); text-decoration:none;}
+  .sh-nav a:hover{background:var(--hover);}
+  .sh-nav a:active{background:var(--pressed);}
+  .sh-nav a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--indicator);}
+  .sh-nav a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-actions{display:flex; gap:8px; flex:none;}
+  .sh-actions button{width:var(--target-min); height:var(--target-min); border:0; background:transparent;
+    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-control);}
+  .sh-actions button:hover{background:var(--hover);}
+  .sh-actions button:active{background:var(--pressed);}
+  .sh-actions button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-actions svg{width:20px; height:20px; fill:currentColor;}
+  /* TWO-CLASS FORM, carried verbatim with App-shell-top-nav's reasoning — a single-class
+     `.sh-menu{display:none}` loses to `.sh-close{display:inline-flex}` on the same button. */
+  .sh .sh-menu{display:none;}
+
+  /* ---- breadcrumb strip — atom copied from Breadcrumbs.reference.html via App-shell-top-nav,
+     INCLUDING that file's declared 44px hit-area addition (Breadcrumbs itself has none) ---- */
+  .sh-crumbs{padding:16px 32px 0; flex:none;}
+  .sh-crumbs ol{list-style:none; display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0; padding:0;}
+  .sh-crumbs li{display:inline-flex; align-items:center; gap:8px; min-height:var(--target-min);}
+  .sh-crumbs .sep{color:var(--text); opacity:var(--alpha-52); display:inline-flex; align-items:center;}
+  .sh-crumbs a.crumb, .sh-crumbs [aria-current="page"]{display:inline-flex; align-items:center;
+    min-height:var(--target-min);}
+  .sh-crumbs a.crumb{color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .sh-crumbs a.crumb:hover{text-decoration-thickness:2px;}
+  .sh-crumbs a.crumb:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -2px 0 var(--text);}
+  .sh-crumbs [aria-current="page"]{opacity:var(--alpha-84);}
+
+  /* ============================================================================================
+     THE SPLIT BODY — this is what replaces App-shell-top-nav's `.sh-main`.
+     ============================================================================================ */
+  .sh-split{flex:1; min-height:0; display:flex; flex-direction:column; padding:16px 32px 32px;}
+  .sh-split-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px;
+    flex-wrap:wrap; flex:none; padding-bottom:16px;}
+  .sh-split-head h1{margin:0;}
+
+  /* ---- the splitter, copied from Splitter.reference.html ---- */
+  .sp{display:grid; flex:1; min-height:0; width:100%; background:var(--surface);
+    border:1px solid var(--rule); border-radius:var(--border-radius-surface);
+    --div:8px;            /* the drawn divider thickness — 4px grid */
+    --min-pri:240px;      /* fence: the primary pane may not go below this */
+    --min-sec:240px;      /* fence: SYMMETRIC with --min-pri. Coequal panes, coequal fences. */
+    --pri:50%;            /* the live size of the primary pane; JS overrides in px */
+    --axis:x;             /* ⚠ NEW: the AXIS IS A TOKEN. The container query writes it; the script reads it. */
+  }
+  .sp[data-orientation="vertical"]{--axis:y;}
+  .sp{grid-template-columns:var(--pri) var(--div) 1fr; grid-template-rows:100%;}
+  .sp[data-orientation="vertical"]{grid-template-rows:var(--pri) var(--div) 1fr;
+    grid-template-columns:100%;}
+
+  /* the pane. COEQUAL BY CONSTRUCTION — one class, used twice, no `.is-primary` anywhere. */
+  .sh-pane{min-width:0; min-height:0; display:flex; flex-direction:column; background:var(--page);}
+  .sh-pane-head{display:flex; align-items:center; gap:8px; min-height:48px; padding:0 8px 0 16px;
+    border-bottom:1px solid var(--sub-rule); flex:none; background:var(--surface);}
+  .sh-pane-head h2{margin:0; margin-right:auto;}
+  /* ⚠ THESE WERE 36x36 AND A DRIVEN HIT-AREA SWEEP CAUGHT THEM. 36px clears WCAG 2.5.8's 24px
+     floor and every gate in this repo was green over it, because no gate reads target/min for
+     hit area — the same blind spot App-shell-top-nav found on Breadcrumbs. A 44px control fits
+     inside a 48px band with 2px to spare, so there was never a reason to shrink it. Measured
+     before: 36.0 x 36.0. After: 44.0 x 44.0. */
+  .sh-pane-head .sh-actions button{width:var(--target-min); height:var(--target-min);}
+  .sh-pane-body{flex:1; min-height:0; overflow:auto; padding:16px;
+    display:flex; flex-direction:column; gap:12px;}
+  .sh-pane[data-collapsed="true"] .sh-pane-body{padding:0; overflow:hidden;}
+  .sh-pane[data-collapsed="true"] .sh-pane-head{border-bottom:0;}
+
+  /* the divider itself: a hairline rule inside a thicker, grabbable band — Splitter verbatim */
+  .sp-div{position:relative; border:0; padding:0; margin:0; background:var(--rule);
+    cursor:col-resize; touch-action:none; -webkit-tap-highlight-color:transparent;}
+  .sp[data-orientation="vertical"] .sp-div{cursor:row-resize;}
+  .sp-div:hover{background:var(--divider-hover);}
+  .sp-div[data-dragging="true"]{background:var(--divider-active);}
+  .sp-div:focus-visible{outline:2px solid var(--focus); outline-offset:2px; z-index:2;}
+  /* WCAG 2.5.8 — a 24px pointer target without thickening the drawn 8px rule.
+     NOT 44px: Splitter's own inherited-restraint call, carried unchanged and declared. */
+  .sp-div::before{content:""; position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%); width:24px; height:100%;}
+  .sp[data-orientation="vertical"] .sp-div::before{width:100%; height:24px;}
+  .sp-div .grip{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    display:block; pointer-events:none; color:var(--grip);}
+  .sp-div .grip rect{fill:currentColor;}
+
+  /* bone shape kit — geometry copied from Skeleton-loader.reference.html; shimmer + role NOT copied */
+  .bone{display:block; background:var(--bone); border-radius:var(--border-radius-indicator);}
+  .bone.line{height:16px;}
+  .bone.body{height:24px;}
+  .bone.media{height:160px;}
+  .bone.control{height:44px; width:120px;}
+
+  /* ---- footer — the slim form, copied from Footer.reference.html via App-shell-top-nav ---- */
+  .sh-foot{background:var(--band); border-top:1px solid var(--rule); flex:none; padding:8px 32px;}
+  .sh-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;}
+  .sh-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;}
+  /* ⚠ CARRIED VERBATIM WITH ITS REASON: an inline-flex child's min-height does not grow its
+     <li>'s line box, so without this the legal links render on top of one another in a column.
+     App-shell-top-nav found and measured it; this file inherits the repair rather than the bug. */
+  .sh-legal li{display:flex;}
+  .sh-legal a.lnk{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .sh-legal a.lnk:hover{text-decoration-thickness:2px;}
+  .sh-legal a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+  .sh-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto; color:var(--muted);}
+
+  /* ---- off-canvas nav — Drawer mechanics via App-shell-top-nav, verbatim ---- */
+  .sh-scrim{position:absolute; inset:0; z-index:6; background:var(--overlay); opacity:0;
+    visibility:hidden; transition:opacity var(--spring), visibility var(--spring);}
+  .sh-scrim.open{opacity:1; visibility:visible;}
+  .sh-sheet{position:absolute; top:0; left:0; bottom:0; z-index:7; width:296px; max-width:88%;
+    background:var(--surface); border-right:1px solid var(--rule);
+    display:flex; flex-direction:column; transform:translateX(-100%); visibility:hidden;
+    transition:transform var(--spring), visibility var(--spring);}
+  .sh-sheet.open{transform:translateX(0); visibility:visible;}
+  .sh-sheet-head{display:flex; align-items:center; justify-content:space-between; gap:8px;
+    min-height:64px; padding:0 8px 0 24px; border-bottom:1px solid var(--sub-rule); flex:none;}
+  .sh-sheet-body{flex:1; overflow-y:auto; padding:8px 0;}
+  .sh-sheet-body ul{list-style:none; margin:0; padding:0;}
+  .sh-sheet-body a{display:flex; align-items:center; min-height:var(--target-min); padding:0 24px;
+    color:var(--text); text-decoration:none;}
+  .sh-sheet-body a:hover{background:var(--hover);}
+  .sh-sheet-body a:active{background:var(--pressed);}
+  .sh-sheet-body a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-sheet-body a[aria-current="page"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+  .sh-close{width:var(--target-min); height:var(--target-min); border:0; background:transparent;
+    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-control);}
+  .sh-close:hover{background:var(--hover);}
+  .sh-close:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-close svg{width:16px; height:16px; fill:currentColor;}
+
+  /* ============================================================================================
+     THE COLLAPSE — CONTAINER queries. ⚠ EVERY RULE TARGETS A DESCENDANT OF `.sh`, NEVER `.sh`
+     ITSELF: an element is a query container for what is inside it, never for itself, and a rule
+     that forgets this never fires while looking entirely plausible in a screenshot.
+     ============================================================================================ */
+  @container shell (max-width: 899px){
+    .sh-masthead{gap:16px; padding:0 16px;}
+    .sh-masthead .sh-nav{display:none;}
+    .sh .sh-menu{display:inline-flex;}
+    .sh-logo{margin-right:auto;}
+    .sh-crumbs{padding:16px 16px 0;}
+    .sh-split{padding:16px; }
+    /* ⚠⚠ THE AXIS FLIP. Specificity: `.sh-split .sp[data-orientation]` = (0,3,0), which beats
+       the authored `.sp[data-orientation="vertical"]` = (0,2,0) without an !important. Both
+       tracks are rewritten AND `--axis` is rewritten, so the CSS and the script cannot drift:
+       the script reads this same computed custom property, it does not read the attribute. */
+    .sh-split .sp, .sh-split .sp[data-orientation]{--axis:y;
+      grid-template-columns:100%; grid-template-rows:var(--pri) var(--div) 1fr;}
+    .sh-split .sp .sp-div{cursor:row-resize;}
+    .sh-split .sp .sp-div::before{width:100%; height:24px;}
+    .sh-foot{padding:8px 16px;}
+  }
+  @container shell (max-width: 599px){
+    /* ⚠⚠ A DELIBERATE ACCESSIBILITY DECISION, NOT A LAYOUT SHORTCUT. `display:none` removes the
+       separator from the ACCESSIBILITY TREE as well as the picture, which is the whole point:
+       a drag-to-resize control is unusable by touch at this size and offers a screen-reader
+       user arrow-key adjustment on a device with no arrow keys. Measured at a 392px container:
+       tabbable separators = 0. The panes fall to natural height and the shell scrolls as one. */
+    .sh-split .sp, .sh-split .sp[data-orientation]{display:flex; flex-direction:column;
+      flex:none; min-height:0;}
+    .sh-split .sp .sp-div{display:none;}
+    .sh-split .sh-pane{min-height:200px;}
+    .sh-split .sh-pane + .sh-pane{border-top:1px solid var(--rule);}
+    .sh-split .sh-pane-body{overflow:visible;}
+    .sh-split-head{align-items:flex-start; flex-direction:column;}
+    .sh-crumbs li.is-droppable{display:none;}   /* keep the LAST ancestor + the current page, never a "…" */
+    .sh-crumbs li.is-droppable + li:not(.is-droppable) .sep{display:none;}
+    .sh-legal{flex-direction:column; flex-wrap:nowrap; align-items:flex-start; gap:0;}
+    .sh-legal ul{flex-direction:column; flex-wrap:nowrap; gap:0;}
+  }
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol>
+    <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="ic-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="specimens">
+
+    <!-- ============================================================ 1 · HORIZONTAL SPLIT, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">Two coequal panes side by side. Identical chrome on both, symmetric 240px fences, one draggable separator that publishes its position as a percentage. Drag it, or focus it and use the arrow keys.</p>
+
+      <div class="sh" data-form="horizontal" id="shell-h">
+        <a class="sh-skip t-cm-button" href="#main-h">Skip to main content</a>
+
+        <header class="sh-masthead">
+          <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-h" aria-label="Open main menu" data-menu="shell-h">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
+          </button>
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <nav class="sh-nav" aria-label="Primary">
+            <a class="t-cm-button" href="#">Accounts</a>
+            <a class="t-cm-button" href="#" aria-current="page">Payments</a>
+            <a class="t-cm-button" href="#">Cards</a>
+            <a class="t-cm-button" href="#">Insights</a>
+          </nav>
+          <div class="sh-actions">
+            <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+            <button type="button" aria-label="Your profile"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></button>
+          </div>
+        </header>
+
+        <nav class="sh-crumbs" aria-label="Breadcrumb">
+          <ol>
+            <li class="is-droppable"><a class="crumb t-ed-body-small" href="#">Home</a></li>
+            <li class="is-droppable"><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Payments</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Bulk upload</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><span class="t-ed-body-small em" aria-current="page">Review</span></li>
+          </ol>
+        </nav>
+
+        <main class="sh-split" id="main-h">
+          <div class="sh-split-head">
+            <h1 class="t-ed-heading-2">Review upload</h1>
+            <span class="bone control" aria-hidden="true"></span>
+          </div>
+
+          <div class="sp" id="sp-h" data-orientation="horizontal">
+            <section class="sh-pane" id="sp-h-a" aria-labelledby="sp-h-a-h">
+              <div class="sh-pane-head">
+                <h2 class="t-cm-label" id="sp-h-a-h">Uploaded file</h2>
+                <div class="sh-actions">
+                  <button type="button" aria-label="Search the uploaded file"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+                </div>
+              </div>
+              <div class="sh-pane-body" aria-hidden="true">
+                <span class="bone body" style="width:42%"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:74%"></span>
+                <span class="bone line" style="width:88%"></span>
+                <span class="bone line" style="width:61%"></span>
+                <span class="bone media"></span>
+                <span class="bone line" style="width:70%"></span>
+              </div>
+            </section>
+
+            <div class="sp-div" role="separator" tabindex="0"
+                 aria-orientation="vertical"
+                 aria-label="Resize the Uploaded file pane"
+                 aria-controls="sp-h-a"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="50%">
+              <svg class="grip" width="4" height="24" viewBox="0 0 4 24" aria-hidden="true" focusable="false" data-bespoke="drag grip — three 4px strokes; the icon library has no grip glyph (searched: knowledge/assets/icons/*/ for grip|drag|handle|resize -> 0 hits)">
+                <rect x="0" y="0" width="4" height="4"/>
+                <rect x="0" y="10" width="4" height="4"/>
+                <rect x="0" y="20" width="4" height="4"/>
+              </svg>
+            </div>
+
+            <section class="sh-pane" id="sp-h-b" aria-labelledby="sp-h-b-h">
+              <div class="sh-pane-head">
+                <h2 class="t-cm-label" id="sp-h-b-h">Validation report</h2>
+                <div class="sh-actions">
+                  <button type="button" aria-label="Search the validation report"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+                </div>
+              </div>
+              <div class="sh-pane-body" aria-hidden="true">
+                <span class="bone body" style="width:56%"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:66%"></span>
+                <span class="bone line" style="width:82%"></span>
+                <span class="bone line" style="width:48%"></span>
+              </div>
+            </section>
+          </div>
+        </main>
+
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+          </div>
+        </footer>
+
+        <div class="sh-scrim" data-scrim="shell-h"></div>
+        <div class="sh-sheet" id="sheet-h" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+          <div class="sh-sheet-head">
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-h">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            </button>
+          </div>
+          <nav class="sh-sheet-body" aria-label="Primary, in menu">
+            <ul>
+              <li><a class="t-cm-button" href="#">Accounts</a></li>
+              <li><a class="t-cm-button" href="#" aria-current="page">Payments</a></li>
+              <li><a class="t-cm-button" href="#">Cards</a></li>
+              <li><a class="t-cm-button" href="#">Insights</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <p class="spec-note t-cm-caption">Published <code class="t-cm-legal">aria-valuenow</code>: <output class="t-cm-caption" data-role="readout" data-for="sp-h">50</output>% — a percentage of the container, so it survives a resize. Pane width: <output class="t-cm-caption" data-role="readout-px" data-for="sp-h">—</output>px. <span class="visually-hidden">Demo chrome, not part of the shell.</span></p>
+    </div>
+
+    <!-- ============================================================ 2 · VERTICAL SPLIT, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">The same shell authored with <code class="t-cm-legal">data-orientation="vertical"</code> — a monitor above, its log below. The key map turns with the axis: up and down instead of left and right. Everything else is the same code.</p>
+
+      <div class="sh" data-form="vertical" id="shell-v">
+        <a class="sh-skip t-cm-button" href="#main-v">Skip to main content</a>
+
+        <header class="sh-masthead">
+          <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-v" aria-label="Open main menu" data-menu="shell-v">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
+          </button>
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <nav class="sh-nav" aria-label="Primary">
+            <a class="t-cm-button" href="#">Accounts</a>
+            <a class="t-cm-button" href="#" aria-current="page">Payments</a>
+            <a class="t-cm-button" href="#">Cards</a>
+          </nav>
+          <div class="sh-actions">
+            <button type="button" aria-label="Your profile"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></button>
+          </div>
+        </header>
+
+        <main class="sh-split" id="main-v">
+          <div class="sh-split-head">
+            <h1 class="t-ed-heading-2">Payment run 4417</h1>
+          </div>
+
+          <div class="sp" id="sp-v" data-orientation="vertical">
+            <section class="sh-pane" id="sp-v-a" aria-labelledby="sp-v-a-h">
+              <div class="sh-pane-head">
+                <h2 class="t-cm-label" id="sp-v-a-h">Run monitor</h2>
+              </div>
+              <div class="sh-pane-body" aria-hidden="true">
+                <span class="bone body" style="width:36%"></span>
+                <span class="bone media"></span>
+              </div>
+            </section>
+
+            <div class="sp-div" role="separator" tabindex="0"
+                 aria-orientation="horizontal"
+                 aria-label="Resize the Run monitor pane"
+                 aria-controls="sp-v-a"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="50%">
+              <svg class="grip" width="24" height="4" viewBox="0 0 24 4" aria-hidden="true" focusable="false" data-bespoke="drag grip — three 4px strokes; the icon library has no grip glyph (searched: knowledge/assets/icons/*/ for grip|drag|handle|resize -> 0 hits)">
+                <rect x="0" y="0" width="4" height="4"/>
+                <rect x="10" y="0" width="4" height="4"/>
+                <rect x="20" y="0" width="4" height="4"/>
+              </svg>
+            </div>
+
+            <section class="sh-pane" id="sp-v-b" aria-labelledby="sp-v-b-h">
+              <div class="sh-pane-head">
+                <h2 class="t-cm-label" id="sp-v-b-h">Event log</h2>
+              </div>
+              <div class="sh-pane-body" aria-hidden="true">
+                <span class="bone line"></span>
+                <span class="bone line" style="width:78%"></span>
+                <span class="bone line" style="width:64%"></span>
+                <span class="bone line" style="width:86%"></span>
+              </div>
+            </section>
+          </div>
+        </main>
+
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+          </div>
+        </footer>
+
+        <div class="sh-scrim" data-scrim="shell-v"></div>
+        <div class="sh-sheet" id="sheet-v" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+          <div class="sh-sheet-head">
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-v">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            </button>
+          </div>
+          <nav class="sh-sheet-body" aria-label="Primary, in menu">
+            <ul>
+              <li><a class="t-cm-button" href="#">Accounts</a></li>
+              <li><a class="t-cm-button" href="#" aria-current="page">Payments</a></li>
+              <li><a class="t-cm-button" href="#">Cards</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <p class="spec-note t-cm-caption">Published <code class="t-cm-legal">aria-valuenow</code>: <output class="t-cm-caption" data-role="readout" data-for="sp-v">50</output>%. <span class="visually-hidden">Demo chrome, not part of the shell.</span></p>
+    </div>
+
+    <!-- ============================================================ 3 · THE COLLAPSE, IN ONE STILL -->
+    <div>
+      <p class="spec-note t-cm-caption">The same shell in a 392px container at this same viewport. The separator is gone — from the picture and from the accessibility tree — the panes have stacked in document order, and the trail keeps its last ancestor. Nothing here is a viewport query.</p>
+
+      <div class="sh is-narrow" data-form="horizontal" id="shell-n">
+        <a class="sh-skip t-cm-button" href="#main-n">Skip to main content</a>
+
+        <header class="sh-masthead">
+          <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-n" aria-label="Open main menu" data-menu="shell-n">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
+          </button>
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <nav class="sh-nav" aria-label="Primary">
+            <a class="t-cm-button" href="#">Accounts</a>
+            <a class="t-cm-button" href="#" aria-current="page">Payments</a>
+            <a class="t-cm-button" href="#">Cards</a>
+          </nav>
+          <div class="sh-actions">
+            <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+          </div>
+        </header>
+
+        <nav class="sh-crumbs" aria-label="Breadcrumb">
+          <ol>
+            <li class="is-droppable"><a class="crumb t-ed-body-small" href="#">Home</a></li>
+            <li class="is-droppable"><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Payments</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><a class="crumb t-ed-body-small" href="#">Bulk upload</a></li>
+            <li><span class="sep t-ed-body-small" aria-hidden="true">/</span><span class="t-ed-body-small em" aria-current="page">Review</span></li>
+          </ol>
+        </nav>
+
+        <main class="sh-split" id="main-n">
+          <div class="sh-split-head">
+            <h1 class="t-ed-heading-2">Review upload</h1>
+          </div>
+
+          <div class="sp" id="sp-n" data-orientation="horizontal">
+            <section class="sh-pane" id="sp-n-a" aria-labelledby="sp-n-a-h">
+              <div class="sh-pane-head">
+                <h2 class="t-cm-label" id="sp-n-a-h">Uploaded file</h2>
+              </div>
+              <div class="sh-pane-body" aria-hidden="true">
+                <span class="bone body" style="width:52%"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:72%"></span>
+              </div>
+            </section>
+
+            <div class="sp-div" role="separator" tabindex="0"
+                 aria-orientation="vertical"
+                 aria-label="Resize the Uploaded file pane"
+                 aria-controls="sp-n-a"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="50%">
+              <svg class="grip" width="4" height="24" viewBox="0 0 4 24" aria-hidden="true" focusable="false" data-bespoke="drag grip — three 4px strokes; the icon library has no grip glyph (searched: knowledge/assets/icons/*/ for grip|drag|handle|resize -> 0 hits)">
+                <rect x="0" y="0" width="4" height="4"/>
+                <rect x="0" y="10" width="4" height="4"/>
+                <rect x="0" y="20" width="4" height="4"/>
+              </svg>
+            </div>
+
+            <section class="sh-pane" id="sp-n-b" aria-labelledby="sp-n-b-h">
+              <div class="sh-pane-head">
+                <h2 class="t-cm-label" id="sp-n-b-h">Validation report</h2>
+              </div>
+              <div class="sh-pane-body" aria-hidden="true">
+                <span class="bone body" style="width:58%"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:66%"></span>
+              </div>
+            </section>
+          </div>
+        </main>
+
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026.</p>
+          </div>
+        </footer>
+
+        <div class="sh-scrim" data-scrim="shell-n"></div>
+        <div class="sh-sheet" id="sheet-n" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+          <div class="sh-sheet-head">
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-n">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            </button>
+          </div>
+          <nav class="sh-sheet-body" aria-label="Primary, in menu">
+            <ul>
+              <li><a class="t-cm-button" href="#">Accounts</a></li>
+              <li><a class="t-cm-button" href="#" aria-current="page">Payments</a></li>
+              <li><a class="t-cm-button" href="#">Cards</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "App shell — split",
+    "vars": {
+      "--page": "background/default",
+      "--surface": "tertiary/background/default",
+      "--band": "surface/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--icon": "icon/default",
+      "--rule": "divider/border/section",
+      "--sub-rule": "divider/border/subsection",
+      "--hover": "tertiary/background/hover",
+      "--pressed": "form/background/pressed",
+      "--indicator": "primary/border/default",
+      "--bone": "tertiary/background/hover",
+      "--overlay": "overlay/version1",
+      "--focus": "focus/ring",
+      "--divider-hover": "form/border/default",
+      "--divider-active": "form/border/active",
+      "--grip": "form/border/default",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-control": "border-radius/control",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--target-min": "target/min"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "surface/subtle", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/hover", "context": "ui" }
+    ],
+    "icons": {
+      "menu": "global-controls/menu.svg",
+      "close": "global-controls/close.svg",
+      "search": "global-controls/search.svg"
+    },
+    "knownFindings": [
+      "COMPOSED, NOT DRAWN, AND THE OUTER FRAME IS A WHOLE SHELL RATHER THAN A SET OF ATOMS. The .sh frame, skip link, masthead, breadcrumb strip, slim legal footer and off-canvas sheet are App-shell-top-nav.reference.html verbatim - INCLUDING its two declared defect repairs (.sh-legal li{display:flex} and the two-class .sh .sh-menu form). The split body is Splitter.reference.html verbatim: the three-track grid, the symmetric fences, role=separator with a percentage aria-valuenow, the 24px ::before target, the three-stroke grip carried with its own data-bespoke string, pointer capture, the key map, and the re-derive-from-the-ratio resize rule. The bone kit is Skeleton-loader's. NO PARENT FILE WAS EDITED.",
+      "SPLIT IS NOT MULTI-COLUMN, AND THE DIFFERENCE IS ENFORCED BY CONSTRUCTION. Multi-column is a ranked master-detail cascade; a split is two COEQUAL panes. Coequality is checkable here: ONE .sh-pane class used twice (no .is-primary anywhere), identical 48px pane heads, identical scroll behaviour, and --min-pri == --min-sec == 240px. A reviewer who wants one pane subordinate wants App-shell-multi-column.",
+      "THE AXIS IS A CSS CUSTOM PROPERTY AND THE SCRIPT READS THE COMPUTED VALUE, NOT THE ATTRIBUTE. --axis: x|y is written by the container query; getComputedStyle(sp).getPropertyValue('--axis') is what decides the key map, the aria-orientation and the measurement axis. The alternative - branching on data-orientation - would have let the CSS and the script disagree the moment the query fired, which is exactly the class of bug no gate can see. A ResizeObserver re-reads it and re-publishes. PROPOSED #210.",
+      "THE SEPARATOR IS REMOVED BELOW 600cqi AND THAT IS AN ACCESSIBILITY DECISION. display:none removes it from the accessibility tree as well as the picture. A drag-to-resize control is unusable by touch at phone size and offers arrow-key adjustment to a user with no arrow keys. MEASURED at a 392px container: tabbable separators = 0. The alternative (keep it, shrink it) was drawn and rejected. Dave's to overturn.",
+      "CONTAINER QUERIES, NEVER VIEWPORT QUERIES (s210-D3), AND THE SELF-QUERY TRAP IS DECLARED. An element is a query container for its DESCENDANTS, never for itself, so no @container rule in this file targets .sh. The wave-5 lane caught that trap twice; this file states it rather than relying on remembering it. The third specimen is a 392px CONTAINER at the same viewport as the two above, which is the proof.",
+      "BREAKPOINTS ARE SPECIMEN CHOICES AND THIS FILE DELIBERATELY REUSES App-shell-top-nav's PAIR. Wave 5 shipped three shells with three different pairs and named that as its biggest open question. Adding a fourth pair would have made the problem worse. knowledge/tokens/layout.json still contains no breakpoint scale - probe: python3 -c \"import json;print('breakpoint' in json.dumps(json.load(open('knowledge/tokens/layout.json'))).lower())\" -> False.",
+      "THE 24px SEPARATOR TARGET IS SPLITTER'S OWN INHERITED-RESTRAINT CALL, CARRIED UNCHANGED. Every OTHER interactive element in this file is >= 44px; the separator's ::before is 24px, which meets WCAG 2.5.8 and not the repo's own target/min. That divergence is the parent's, is declared here rather than silently repaired, and is named as an open question.",
+      "THE TYPE DIVERGENCE, INHERITED. No raw font-family, font-size or font-weight appears anywhere in component scope; every text element carries a canon/type.css composite applied in the MARKUP. Type ratchet contribution: 0.",
+      "NO RAG VALUE IS PAINTED ANYWHERE. A shell has no status to carry. The only red is primary/border/default on the current-nav mark, Navigations' own approved bar. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are untouched.",
+      "The snippet gate resolves tokens against tokens/semantic-colour.json - the MONO base only - so it cannot see the Legacy/Console/Supercharge legs. No .cn-app-shell-split block exists in canon/canon.css yet, so theme cascade projection is OFF for this file and only the light/dark legs authored here have been seen. DECLARED, and the conductor's to project."
+    ],
+    "requiredAria": ["<nav", "aria-label", "aria-current=\"page\"", "aria-expanded", "aria-controls", "role=\"dialog\"", "aria-modal", "role=\"contentinfo\"", "role=\"separator\"", "aria-orientation", "aria-valuenow", "<main", "<h1"]
+  }
+  </script>
+
+  <script>
+    // ---- Off-canvas nav — copied VERBATIM from App-shell-top-nav.reference.html, including the
+    // four-step open sequence and its reasoning. Repeated here rather than referenced because a
+    // reference file must stand alone; the diff-proof is in the receipt.
+    document.querySelectorAll('[data-menu]').forEach(function(btn){
+      var id = btn.getAttribute('data-menu');
+      var shell = document.getElementById(id);
+      var sheet = document.getElementById(btn.getAttribute('aria-controls'));
+      var scrim = shell.querySelector('[data-scrim="' + id + '"]');
+      var closeBtn = shell.querySelector('[data-close="' + id + '"]');
+      var inertTargets = Array.prototype.filter.call(shell.children, function(c){
+        return c !== sheet && c !== scrim;
+      });
+      // 1 show the sheet · 2 wait two frames (visibility is TRANSITIONED, so focus() on it is a
+      // silent no-op until it computes visible) · 3 move focus IN · 4 only then set inert
+      // (setting inert BLURS whatever holds focus, asynchronously, wiping an earlier focus()).
+      function open(){
+        btn.setAttribute('aria-expanded','true');
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){
+          scrim.classList.add('open'); sheet.classList.add('open');
+          requestAnimationFrame(function(){ requestAnimationFrame(function(){
+            var first = sheet.querySelector('a,button');
+            if(first){ first.focus(); }
+            if(document.activeElement !== first){ sheet.focus(); }
+            inertTargets.forEach(function(t){ t.inert = true; t.setAttribute('aria-hidden','true'); });
+          }); });
+        }); });
+      }
+      function close(){
+        btn.setAttribute('aria-expanded','false');
+        scrim.classList.remove('open'); sheet.classList.remove('open');
+        inertTargets.forEach(function(t){ t.inert = false; t.removeAttribute('aria-hidden'); });
+        btn.focus();
+      }
+      btn.addEventListener('click', open);
+      closeBtn.addEventListener('click', close);
+      scrim.addEventListener('click', close);
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && sheet.classList.contains('open')){ close(); }
+      });
+    });
+
+    // ---- The splitter — Splitter.reference.html's wireSplitter, with ONE structural change:
+    // the axis is read from the COMPUTED --axis custom property instead of the data-orientation
+    // attribute, so the container query and the script cannot disagree. Everything downstream of
+    // `vertical()` is the parent's code.
+    function wireShellSplitter(sp){
+      const div = sp.querySelector('.sp-div');
+      if(!div) return;
+      const pri = sp.querySelector('.sh-pane');
+      const readout = document.querySelector('[data-role="readout"][data-for="' + sp.id + '"]');
+      const readoutPx = document.querySelector('[data-role="readout-px"][data-for="' + sp.id + '"]');
+      // ⚠⚠ THE ONE CHANGE, AND IT IS THE POINT OF THIS SHELL. The parent read
+      // `sp.dataset.orientation` ONCE, at wire time. Here the axis is a live CSS custom property
+      // that the CONTAINER QUERY owns, so it is a FUNCTION, re-read on every use.
+      const vertical = () => getComputedStyle(sp).getPropertyValue('--axis').trim() === 'y';
+      const STEP = 16, STEP_LG = 64;                 // px — 4px multiples, same as the drag clamp
+      let restore = null;                            // remembered size for collapse/restore
+      let pct = 50;                                  // ⛔ THE SURVIVING VALUE — see the resize note
+
+      const num = name => parseFloat(getComputedStyle(sp).getPropertyValue(name)) || 0;
+      const total = () => vertical() ? sp.clientHeight : sp.clientWidth;
+      const divPx = () => num('--div');
+      const minPri = () => num('--min-pri');
+      const minSec = () => num('--min-sec');
+      const current = () => vertical() ? pri.getBoundingClientRect().height
+                                      : pri.getBoundingClientRect().width;
+      // the separator is display:none in the narrowest band — offsetParent is null then, and a
+      // hidden control must not publish a position it is not offering
+      const live = () => div.offsetParent !== null || div.getClientRects().length > 0;
+
+      function clamp(px){
+        const room = total() - divPx();
+        const lo = minPri(), hi = room - minSec();
+        if(hi < lo) return room / 2;                 // container too small for both fences
+        return Math.min(Math.max(px, lo), hi);
+      }
+      function publish(px, collapsed){
+        const room = total() - divPx();
+        if(room <= 0) return;                        // no room to measure — say nothing
+        pct = Math.round((px / room) * 100);
+        div.setAttribute('aria-valuenow', String(pct));
+        div.setAttribute('aria-valuetext', pct + '%');
+        // aria-orientation names the axis the separator MOVES ALONG, and that axis is now a
+        // container-query outcome, so it is re-published with the value rather than authored once
+        div.setAttribute('aria-orientation', vertical() ? 'horizontal' : 'vertical');
+        if(readout)   readout.textContent = String(pct);
+        if(readoutPx) readoutPx.textContent = String(Math.round(px));
+        if(pri) pri.setAttribute('data-collapsed', String(!!collapsed));
+      }
+      function setPx(px, opts){
+        if(!live()) return;                          // separator not offered at this width
+        if(total() - divPx() <= 0) return;           // never write a size into a zero box
+        const collapsed = opts && opts.collapsed;
+        const v = collapsed ? 0 : clamp(px);
+        sp.style.setProperty('--pri', v + 'px');
+        publish(v, collapsed);
+      }
+
+      // ---- pointer drag: pointer capture, so the drag survives leaving the divider ----
+      div.addEventListener('pointerdown', e => {
+        div.setPointerCapture(e.pointerId);
+        div.setAttribute('data-dragging', 'true');
+        e.preventDefault();
+      });
+      div.addEventListener('pointermove', e => {
+        if(div.getAttribute('data-dragging') !== 'true') return;
+        const box = sp.getBoundingClientRect();
+        setPx((vertical() ? e.clientY - box.top : e.clientX - box.left) - divPx() / 2);
+      });
+      const end = e => {
+        if(div.getAttribute('data-dragging') !== 'true') return;
+        div.removeAttribute('data-dragging');
+        if(div.hasPointerCapture && div.hasPointerCapture(e.pointerId)) div.releasePointerCapture(e.pointerId);
+      };
+      div.addEventListener('pointerup', end);
+      div.addEventListener('pointercancel', end);
+      div.addEventListener('dblclick', () => setPx((total() - divPx()) / 2));
+
+      // ---- keyboard: the SAME clamp, so the two input paths cannot disagree ----
+      div.addEventListener('keydown', e => {
+        const v = vertical();
+        const back = v ? 'ArrowUp' : 'ArrowLeft';
+        const fwd  = v ? 'ArrowDown' : 'ArrowRight';
+        const step = e.shiftKey ? STEP_LG : STEP;
+        if(e.key === back){ e.preventDefault(); setPx(current() - step); }
+        else if(e.key === fwd){ e.preventDefault(); setPx(current() + step); }
+        else if(e.key === 'Home'){ e.preventDefault(); setPx(0); }
+        else if(e.key === 'End'){ e.preventDefault(); setPx(total()); }
+        else if(e.key === 'Enter'){
+          e.preventDefault();
+          if(pri.getAttribute('data-collapsed') === 'true'){
+            setPx(restore == null ? (total() - divPx()) / 2 : restore);
+          } else {
+            restore = current();
+            setPx(0, {collapsed:true});
+          }
+        }
+        else if(e.key === 'F6'){ e.preventDefault(); setPx((total() - divPx()) / 2); }
+      });
+
+      // initial publish from the authored aria-valuenow, so the markup is the source of truth
+      pct = Number(div.getAttribute('aria-valuenow')) || 50;
+      setPx((total() - divPx()) * pct / 100);
+
+      /* ⛔ RE-DERIVE FROM THE RATIO, NEVER FROM THE RENDERED PIXEL — Splitter's own rule, and
+         this shell needs it for a SECOND reason the parent never had: the axis itself changes.
+         When the container query flips --axis from x to y, the stored `--pri` pixel value is a
+         WIDTH being reinterpreted as a HEIGHT, which is meaningless. The percentage is not: it
+         is the thing the user chose. So the observer re-derives from `pct` on every box change,
+         and refuses to write anything while there is no room to write it into. A ResizeObserver
+         and not a window resize listener, because the trigger is the CONTAINER's width. */
+      if(typeof ResizeObserver !== 'undefined'){
+        let last = '';
+        new ResizeObserver(() => {
+          if(!live()) return;
+          if(total() - divPx() <= 0) return;
+          const axis = getComputedStyle(sp).getPropertyValue('--axis').trim();
+          const key = axis + ':' + Math.round(total());
+          if(key === last) return;                  // nothing changed that we care about
+          last = key;
+          setPx((total() - divPx()) * pct / 100,
+                {collapsed: pri && pri.getAttribute('data-collapsed') === 'true'});
+        }).observe(sp);
+      }
+    }
+    document.querySelectorAll('.sp').forEach(wireShellSplitter);
+  </script>
+</body>
+</html>

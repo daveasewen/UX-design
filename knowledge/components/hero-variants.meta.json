@@ -1,0 +1,95 @@
+{
+  "name": "Hero-variants",
+  "category": "organism",
+  "$layer": "2 Lock-up",
+  "purpose": "Composes/extends the gated Hero baseline into four arrangements (baseline, media, stat-led, CTA-led) without adjudicating whether they become sub-variants of one Hero organism or stay separate. Every headline/intro/CTA/arrow-link markup traces to Hero.reference.html unchanged; the media, stat-led and CTA-led forms add borrowed atoms (Layout-utilities l-split, Stat-card, Button) around it. Itinerary row 118 (Layer 2, NO-ARTEFACT-CLASS at mint; PROPOSED here, not ruled). Do-not-rule: 'Hero component EXISTS — variants compose/extend it, relationship PROPOSED, no adjudication.'",
+  "props": [
+    { "name": "arrangement", "type": "enum", "values": ["baseline", "media", "stat-led", "cta-led"], "default": "baseline",
+      "$note": "Four arrangement variants, VARIANTS-axis prop (s142-D1 class C6). baseline reproduces Hero.reference.html verbatim; media adds a two-column image split; stat-led replaces the CTA row with a Stat-card board; cta-led promotes the single .cta to a primary+tertiary Button pair." },
+    { "name": "showImage", "type": "boolean", "default": "false", "$note": "media arrangement only." },
+    { "name": "statCount", "type": "number", "default": "3", "$note": "stat-led arrangement only; the reference draws 3." }
+  ],
+  "variants": [
+    { "name": "baseline", "use": "The gated Hero, unchanged — headline + intro + primary CTA + arrow link on a plain surface." },
+    { "name": "media", "use": "A landing/marketing page with a supporting photo; text stays OFF the image (Hero's own flagged scrim question stays open, not resolved by this file)." },
+    { "name": "stat-led", "use": "A dashboard-style landing that leads with headline numbers instead of (or alongside) a single CTA." },
+    { "name": "cta-led", "use": "A hero offering a primary AND a secondary path (e.g. 'Open an account' + 'Compare accounts') rather than one button plus an arrow-link." }
+  ],
+  "tokens": {
+    "headline": "Hero's own raw font shorthand on h1/.intro/.cta, reproduced verbatim — this file does not touch Hero's own type scope",
+    "split": "Layout-utilities .l-split grid + container-query collapse, unmodified",
+    "stat-board": "Stat-card's .stat-card/.amt/.delta markup + rag/success/rag/error, unmodified",
+    "cta-pair": "button/primary/* + button/tertiary/* via Button.reference.html, unmodified",
+    "$note": "Every token above resolves through the ATOM's own manifest; this organism binds nothing new beyond arrangement CSS."
+  },
+  "responsive": {
+    "$status": "PROPOSED at #210 wave-6 (not ruled) — reflow verified in a real browser at 3 widths.",
+    "rule": "media: the two-column split is a CONTAINER QUERY on the wrapping .hv-media element (distinct from the elements it collapses — the hero block and the image — WAVE-5 LESSON 3), single column below 640px container, image promoted above the text. stat-led: the tile board auto-fills 180px+. cta-led: the button row wraps like Hero's own .cta-row already does.",
+    "$note": "s210-D3 discipline: no fixed page width is declared anywhere in this file."
+  },
+  "relationships": {
+    "livesInside": ["Landing pages", "Marketing pages", "Dashboard/overview page tops"],
+    "mustNotNeighbour": ["Page-header-lockup in the same slot (a Hero is a marketing banner, not the app's page-header region)"],
+    "commonPatterns": ["marketing banner with photo", "dashboard hero with headline stats", "landing hero with primary + secondary CTA"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "relatedSC": ["1.3.1 Info and Relationships", "1.4.10 Reflow", "2.4.6 Headings and Labels", "1.1.1 Non-text Content"],
+    "structure": "Every arrangement keeps Hero's own single <h1> per page instance; the media arrangement's placeholder image carries role=\"img\" + aria-label (no decorative image is left unlabelled); the stat-led board's tiles keep their own role=\"group\"+aria-label per Stat-card's contract.",
+    "focus": "Every borrowed atom (cta button, arrow-link, Button tiers) keeps its OWN :focus-visible ring — the organism adds no new focusable element and no new focus style."
+  },
+  "antiPatterns": [
+    "Re-drawing the headline/intro/CTA CSS instead of reproducing Hero's own markup verbatim",
+    "Inventing a text-over-image scrim treatment — Hero's own header explicitly declines to derive one from tokens; the media arrangement here sidesteps the question rather than answering it",
+    "More than one <h1> on the page by nesting two hero arrangements",
+    "A third action (arrow-link) alongside the cta-led two-button pair — undrawn territory, not built here"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "Hero/Layout-utilities/Stat-card/Button's own token manifests, re-declared verbatim by name here",
+    "result": "PASS — `_validate_snippets.py` reports 0 findings for Hero-variants.reference.html; see the #210 wave-6 Lane C receipt for the exact command."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Hero-variants.reference.html"
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Hero-variants.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:landing-pages",
+        "$note": "Landing pages"
+      },
+      {
+        "ref": "context:marketing-pages",
+        "$note": "Marketing pages"
+      },
+      {
+        "ref": "context:dashboard-overview-page-tops",
+        "$note": "Dashboard/overview page tops"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:marketing-banner-with-photo"
+      },
+      {
+        "ref": "pattern:dashboard-hero-with-headline-stats"
+      },
+      {
+        "ref": "pattern:landing-hero-with-primary-secondary-cta"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "Page-header-lockup in the same slot (a Hero is a marketing banner, not the app's page-header region)"
+      }
+    ]
+  }
+}

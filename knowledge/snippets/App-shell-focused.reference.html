@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App shell — focused / full-page (reference implementation, PROPOSED #210)</title>
+<!--
+  ⚠⚠ PROPOSED #210, 2026-08-20 (Wave 6, Lane A). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. Itinerary row 101 ("App shell — focused /
+  full-page", Shells (Layer 2), P3, notes cell "Auth / wizard frame."). Derived class
+  NO-ARTEFACT-CLASS — ships in the wave-5 PROPOSED snippet+meta grammar; registers nothing.
+
+  ★★ COMPOSE, NEVER RE-DRAW. Named so a reviewer can diff every region:
+    · THE FRAME — App-shell-top-nav.reference.html (#210, wave 5, PROPOSED): the `.sh`
+      container-query box, the skip link, the `.sh-foot` slim legal bar INCLUDING its
+      `.sh-legal li{display:flex}` defect repair, the 44x44 action-button geometry.
+    · THE MASTHEAD — Navigations.reference.html geometry, DELIBERATELY CUT DOWN: 56px (the
+      in-app header height Headers.reference.html uses) instead of 64px, and stripped of the
+      primary nav, the utility group and the breadcrumb. What is REMOVED is the component.
+    · THE PROGRESS BAND — Progress-bar.reference.html verbatim: `.pb-track` 4px on
+      progress/incomplete, `.pb-fill` on progress/complete, `role="progressbar"` with
+      aria-valuenow/min/max and an aria-valuetext that reads as a sentence, and the
+      reduced-motion suppression of the fill transition.
+    · THE CONTENT FURNITURE — Skeleton-loader.reference.html's shape kit (announcement NOT
+      copied — App-shell-top-nav's reasoning, inherited, not re-argued).
+  ⛔ NO PARENT FILE WAS EDITED. Not one.
+
+  ★★ WHAT A FOCUSED SHELL IS, AND IT IS DEFINED BY SUBTRACTION. Every other shell in this
+  library is a frame that OFFERS things: destinations, a trail, a rail, a mat. This one is a
+  frame that WITHHOLDS them. A person signing in, or four screens into a payment, has one job,
+  and every additional exit is an invitation to abandon it half-finished. So there is no
+  primary nav, no breadcrumb, no utility group, no search — one identity, one deliberate way
+  out, and the task. ⚠ THAT MAKES "WHAT THE ONE WAY OUT DOES" THE CENTRAL DESIGN QUESTION OF
+  THE COMPONENT, and it is NOT answered here: see $decision-1.
+
+  TWO FORMS, and the difference is a band, not a layout:
+    · form="auth"  — a 420px column, no progress band. Sign in, register, one-time passcode.
+      The task is short enough that "how far through am I" is not a question anyone asks.
+    · form="task"  — a 720px column with a progress band under the masthead. Multi-step: a
+      payment, an application, an onboarding flow.
+
+  ⚠⚠ THE PROGRESS COLLISION, AND IT IS A REAL COMPOSITION CONFLICT BETWEEN TWO ARTEFACTS.
+  This shell publishes ONE accessible progress statement (`role="progressbar"` +
+  `aria-valuetext="Step 2 of 4, Recipient"`). Template-wizard.reference.html (#210, wave 5,
+  PROPOSED) publishes its OWN named step rail. Host one inside the other and a screen-reader
+  user is told where they are TWICE, in two different vocabularies, which is worse than being
+  told once badly. ⇒ THE RULE THIS FILE PROPOSES: one progress statement per screen. Either
+  the shell carries the band and the hosted template's rail is decorative
+  (`aria-hidden="true"`), or the template carries the rail and the shell is used in
+  `form="auth"`. Drawn here as the FIRST option because the frame outlives the step list.
+  ⛔ THIS IS PROPOSED, NOT RULED, and it is the kind of thing that has to be settled once for
+  the whole library rather than per-file. See $decision-2.
+
+  THE RESPONSIVE COLLAPSE. Container queries, never viewport queries (`s210-D3`):
+    · >= 900cqi  — the column sits at its max-width with 48px of air above it; the card is
+      bordered; the exit control shows its label.
+    · 600–899cqi — the air shrinks to 32px, side padding to 24px. Nothing else moves.
+    · < 600cqi   — ⚠ THE CARD LOSES ITS BORDER AND GOES FULL-BLEED. A bordered card inset
+      inside a phone screen spends 32px of the only reading width there is on a rule that
+      separates the content from nothing. Measured, not asserted: at a 392px container the
+      card's border-width computes 0 and its content box equals the shell's inner width. The
+      exit control drops its visible label and keeps its accessible name (measured: the label
+      box goes to 1x1 and the accessible name is unchanged).
+  ⚠ 900 AND 600 ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS, and they are the SAME PAIR
+  App-shell-top-nav and App-shell-split use, deliberately. `layout.json` has no breakpoint
+  scale. See $decision-4.
+
+  ⚠ THE CONTAINER-QUERY SELF-QUERY TRAP: `.sh` is the query container, so no `@container`
+  rule below targets `.sh` itself — only its descendants. Caught twice in wave 5; stated here
+  rather than remembered. The collapse is MEASURED at three container widths in the receipt.
+
+  COLOUR: ⛔ NOT ONE RED PIXEL, and that is stronger than the sibling shells can claim. They
+  carry primary/border/default on a current-nav mark; this shell has no nav, so it has no
+  indicator token at all. Progress is progress/complete on progress/incomplete — the
+  monochrome pair. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are not
+  merely untouched here, they are unreachable.
+  SHAPE: square throughout. MOTION: the progress fill's 140ms ease, suppressed under
+  reduced-motion exactly as Progress-bar suppresses it.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. BYTE-IDENTICAL to Command-palette.reference.html line 36. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family, font-size or font-weight anywhere in component scope — every text
+     element carries a .t-cm-* / .t-ed-* composite from canon/type.css. Ratchet contribution: 0. */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{
+    --page:#FFFFFF;
+    --surface:#FFFFFF;
+    --band:#F0F0F0;
+    --text:#1A1A1A;
+    --muted:#1A1A1A;
+    --icon:#1A1A1A;
+    --rule:#E1E1E1;
+    --sub-rule:#F0F0F0;
+    --hover:#F0F0F0;
+    --pressed:#CECECE;
+    --bone:#F0F0F0;
+    --focus:#305A85;
+    --complete:#1A1A1A;
+    --incomplete:#F0F0F0;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --surface:#1F1F1F;
+    --band:#1F1F1F;
+    --text:#FFFFFF;
+    --muted:#FFFFFF;
+    --icon:#FFFFFF;
+    --rule:#808080;
+    --sub-rule:#808080;
+    --hover:#232323;
+    --pressed:#484848;
+    --bone:#232323;
+    --focus:#4587A7;
+    --complete:#FFFFFF;
+    --incomplete:#484848;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:32px 24px; background:var(--page); color:var(--text);
+       -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted); opacity:var(--alpha-60); margin:0 0 8px;}
+  .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+
+  /* ============================================================================================
+     THE SHELL FRAME — the `.sh` box copied from App-shell-top-nav.reference.html.
+     ============================================================================================ */
+  .sh{position:relative; display:flex; flex-direction:column; min-height:560px;
+      container-type:inline-size; container-name:shell;
+      background:var(--page); color:var(--text);
+      border:1px solid var(--rule); border-radius:var(--border-radius-surface); overflow:hidden;}
+  .sh.is-narrow{width:392px; min-height:640px;}   /* a deliberately narrow CONTAINER, so the collapse is visible in one still */
+
+  /* skip link — WCAG 2.4.1 bypass block. ⚠ KEPT EVEN THOUGH THE CHROME IS TINY: the masthead is
+     still a block repeated across every screen of the flow, and a skip link costs nothing when
+     it is invisible until focused. Declared as a judgment, not as boilerplate. */
+  .sh-skip{position:absolute; top:8px; left:8px; z-index:8; display:inline-flex; align-items:center;
+    min-height:var(--target-min); padding:0 16px; background:var(--surface); color:var(--text);
+    border:1px solid var(--rule); border-radius:var(--border-radius-control);
+    text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+    transform:translateY(-200%); transition:transform var(--ease);}
+  .sh-skip:focus-visible{transform:translateY(0); outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ---- the cut-down masthead: 56px (Headers' in-app height), identity + ONE exit ---- */
+  .sh-masthead{display:flex; align-items:center; gap:16px; min-height:56px; padding:0 32px;
+    background:var(--surface); border-bottom:1px solid var(--rule); flex:none;}
+  .sh-logo{color:var(--text); flex:none; margin-right:auto;}
+  /* ⚠ THE BRAND IS INK HERE, NOT primary/border/default. In a masthead full of navigation the
+     red wordmark is the anchor; on a sign-in screen with nothing else on the band it becomes the
+     loudest thing on a page whose only job is a form. Declared as a divergence from
+     Navigations/App-shell-top-nav, and it is $decision-3 — Dave's, not settled. */
+
+  /* the ONE way out. A labelled control, not a bare glyph: see the header note. */
+  .sh-exit{display:inline-flex; align-items:center; gap:8px; min-height:var(--target-min);
+    padding:0 12px; border:0; background:transparent; color:var(--text); cursor:pointer;
+    border-radius:var(--border-radius-control); flex:none;}
+  .sh-exit:hover{background:var(--hover);}
+  .sh-exit:active{background:var(--pressed);}
+  .sh-exit:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-exit svg{width:16px; height:16px; fill:currentColor; flex:none;}
+  .sh-exit .lbl{white-space:nowrap;}
+
+  /* ---- the progress band — Progress-bar.reference.html atoms, full-bleed across the frame ---- */
+  .sh-progress{flex:none; background:var(--surface); border-bottom:1px solid var(--sub-rule);
+    padding:12px 32px;}
+  .sh-progress .pb{display:flex; flex-direction:column; gap:8px;}   /* gap/fixed/content 8 */
+  .sh-progress .pb-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
+  .sh-progress .pb-label{color:var(--text);}
+  .sh-progress .pb-value{color:var(--muted); opacity:var(--alpha-72);}
+  .sh-progress .pb-track{position:relative; width:100%; height:4px; background:var(--incomplete);
+    border-radius:var(--border-radius-indicator); overflow:hidden;}
+  .sh-progress .pb-track .pb-fill{position:absolute; left:0; top:0; height:100%; width:0;
+    background:var(--complete); transition:width var(--ease);}
+
+  /* ---- the task column ---- */
+  .sh-main{flex:1; display:flex; justify-content:center; padding:48px 32px;}
+  .sh-col{width:100%; max-width:420px; display:flex; flex-direction:column; gap:24px;}
+  .sh[data-form="task"] .sh-col{max-width:720px;}
+  .sh-col h1{margin:0;}
+  .sh-lede{margin:0; color:var(--muted); opacity:var(--alpha-72); max-width:60ch;}
+
+  /* the card. ⚠ ITS BORDER IS THE THING THE NARROWEST BAND REMOVES — see the collapse. */
+  .sh-card{border:1px solid var(--rule); border-radius:var(--border-radius-surface);
+    background:var(--surface); padding:24px; display:flex; flex-direction:column; gap:16px;}
+
+  /* bone shape kit — geometry copied from Skeleton-loader.reference.html; shimmer + role NOT copied */
+  .bone{display:block; background:var(--bone); border-radius:var(--border-radius-indicator);}
+  .bone.line{height:16px;}
+  .bone.body{height:24px;}
+  .bone.media{height:160px;}
+  .bone.control{height:44px; width:120px;}
+
+  .sh-actions-row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+
+  /* ---- footer — the slim form, copied from Footer.reference.html via App-shell-top-nav ---- */
+  .sh-foot{background:var(--band); border-top:1px solid var(--rule); flex:none; padding:8px 32px;}
+  .sh-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;}
+  .sh-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;}
+  /* ⚠ CARRIED VERBATIM WITH ITS REASON — an inline-flex child's min-height does not grow its
+     <li>'s line box, so without this the legal links stack on top of one another in a column. */
+  .sh-legal li{display:flex;}
+  .sh-legal a.lnk{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .sh-legal a.lnk:hover{text-decoration-thickness:2px;}
+  .sh-legal a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+  .sh-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto; color:var(--muted);}
+
+  /* ============================================================================================
+     THE COLLAPSE — CONTAINER queries. ⚠ EVERY RULE TARGETS A DESCENDANT OF `.sh`, NEVER `.sh`.
+     ============================================================================================ */
+  @container shell (max-width: 899px){
+    .sh-masthead{padding:0 24px;}
+    .sh-progress{padding:12px 24px;}
+    .sh-main{padding:32px 24px;}
+    .sh-foot{padding:8px 24px;}
+  }
+  @container shell (max-width: 599px){
+    .sh-masthead{padding:0 16px;}
+    .sh-progress{padding:12px 16px;}
+    /* ⚠⚠ FULL BLEED. The column padding goes to zero and the card's border goes with it. On a
+       392px container the inset card was spending 32px of the only reading width there is on a
+       rule that separates the form from nothing. TWO-CLASS SELECTORS (0,2,0) so this cannot lose
+       a cascade race to the single-class declaration above — the same specificity discipline
+       ds-005 and App-shell-top-nav's `.sh .sh-menu` both turn on. */
+    .sh-main.sh-main{padding:24px 0 32px;}
+    .sh-col .sh-card{border-width:0; padding:0 16px;}
+    .sh-col > h1, .sh-col > .sh-lede{padding:0 16px;}
+    /* the exit control keeps its ACCESSIBLE NAME and loses its VISIBLE label — hidden, not
+       removed. Sidebar-nav's rail technique, applied to a single control. */
+    .sh-exit .lbl{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+      clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+    .sh-exit{width:var(--target-min); padding:0; justify-content:center;}
+    .sh-legal{flex-direction:column; flex-wrap:nowrap; align-items:flex-start; gap:0;}
+    .sh-legal ul{flex-direction:column; flex-wrap:nowrap; gap:0;}
+    .sh-foot{padding:8px 16px;}
+  }
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users).
+     ⚠ Progress-bar suppresses its FILL transition by name as well as by the blanket rule, and
+     that specific suppression is copied rather than assumed to be covered. */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .sh-progress .pb-track .pb-fill{transition:none;}
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="specimens">
+
+    <!-- ============================================================ 1 · AUTH FORM, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">Form: auth — a 420px column, no progress band, one way out. Everything a shell normally offers has been removed on purpose.</p>
+
+      <div class="sh" data-form="auth" id="shell-auth">
+        <a class="sh-skip t-cm-button" href="#main-auth">Skip to main content</a>
+
+        <header class="sh-masthead">
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <button class="sh-exit" type="button" aria-label="Leave sign in and return to the public site">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            <span class="lbl t-cm-button">Exit</span>
+          </button>
+        </header>
+
+        <main class="sh-main" id="main-auth">
+          <div class="sh-col">
+            <h1 class="t-ed-heading-2">Sign in</h1>
+            <p class="sh-lede t-ed-body-small">Placeholder supporting text. The words a bank puts here are a content decision and are not invented by this reference.</p>
+            <div class="sh-card" aria-hidden="true">
+              <span class="bone line" style="width:34%"></span>
+              <span class="bone control" style="width:100%"></span>
+              <span class="bone line" style="width:28%"></span>
+              <span class="bone control" style="width:100%"></span>
+              <span class="bone line" style="width:44%"></span>
+            </div>
+            <div class="sh-actions-row" aria-hidden="true">
+              <span class="bone control"></span>
+              <span class="bone line" style="width:120px"></span>
+            </div>
+          </div>
+        </main>
+
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ============================================================ 2 · TASK FORM, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">Form: task — a 720px column with the progress band under the masthead. The band is the screen's ONE progress statement; a hosted wizard's own step rail must not repeat it.</p>
+
+      <div class="sh" data-form="task" id="shell-task">
+        <a class="sh-skip t-cm-button" href="#main-task">Skip to main content</a>
+
+        <header class="sh-masthead">
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <button class="sh-exit" type="button" aria-label="Save this payment and return to Accounts">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+            <span class="lbl t-cm-button">Save and exit</span>
+          </button>
+        </header>
+
+        <div class="sh-progress">
+          <div class="pb">
+            <div class="pb-head">
+              <span class="pb-label t-cm-label" id="prog-task-label">Make a payment</span>
+              <span class="pb-value t-cm-figure-6">Step 2 of 4</span>
+            </div>
+            <div class="pb-track" role="progressbar" aria-labelledby="prog-task-label"
+                 aria-valuenow="2" aria-valuemin="0" aria-valuemax="4" aria-valuetext="Step 2 of 4, Recipient">
+              <div class="pb-fill" style="width:50%"></div>
+            </div>
+          </div>
+        </div>
+
+        <main class="sh-main" id="main-task">
+          <div class="sh-col">
+            <h1 class="t-ed-heading-2">Recipient</h1>
+            <p class="sh-lede t-ed-body-small">Placeholder supporting text. Neutral by design — this reference does not invent product copy.</p>
+            <div class="sh-card" aria-hidden="true">
+              <span class="bone body" style="width:38%"></span>
+              <span class="bone line"></span>
+              <span class="bone control" style="width:100%"></span>
+              <span class="bone line" style="width:52%"></span>
+              <span class="bone control" style="width:100%"></span>
+              <span class="bone media"></span>
+            </div>
+            <div class="sh-actions-row" aria-hidden="true">
+              <span class="bone control"></span>
+              <span class="bone control" style="width:88px"></span>
+            </div>
+          </div>
+        </main>
+
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ============================================================ 3 · THE COLLAPSE, IN ONE STILL -->
+    <div>
+      <p class="spec-note t-cm-caption">The same task shell in a 392px container at this same viewport. The card has lost its border and gone full-bleed, and the exit control has kept its accessible name while losing its visible label. Nothing here is a viewport query.</p>
+
+      <div class="sh is-narrow" data-form="task" id="shell-narrow">
+        <a class="sh-skip t-cm-button" href="#main-narrow">Skip to main content</a>
+
+        <header class="sh-masthead">
+          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <button class="sh-exit" type="button" aria-label="Save this payment and return to Accounts">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+            <span class="lbl t-cm-button">Save and exit</span>
+          </button>
+        </header>
+
+        <div class="sh-progress">
+          <div class="pb">
+            <div class="pb-head">
+              <span class="pb-label t-cm-label" id="prog-narrow-label">Make a payment</span>
+              <span class="pb-value t-cm-figure-6">Step 2 of 4</span>
+            </div>
+            <div class="pb-track" role="progressbar" aria-labelledby="prog-narrow-label"
+                 aria-valuenow="2" aria-valuemin="0" aria-valuemax="4" aria-valuetext="Step 2 of 4, Recipient">
+              <div class="pb-fill" style="width:50%"></div>
+            </div>
+          </div>
+        </div>
+
+        <main class="sh-main" id="main-narrow">
+          <div class="sh-col">
+            <h1 class="t-ed-heading-2">Recipient</h1>
+            <p class="sh-lede t-ed-body-small">Placeholder supporting text.</p>
+            <div class="sh-card" aria-hidden="true">
+              <span class="bone body" style="width:46%"></span>
+              <span class="bone control" style="width:100%"></span>
+              <span class="bone line" style="width:60%"></span>
+              <span class="bone control" style="width:100%"></span>
+            </div>
+          </div>
+        </main>
+
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026.</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "App shell — focused / full-page",
+    "vars": {
+      "--page": "background/default",
+      "--surface": "tertiary/background/default",
+      "--band": "surface/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--icon": "icon/default",
+      "--rule": "divider/border/section",
+      "--sub-rule": "divider/border/subsection",
+      "--hover": "tertiary/background/hover",
+      "--pressed": "form/background/pressed",
+      "--bone": "tertiary/background/hover",
+      "--focus": "focus/ring",
+      "--complete": "progress/complete",
+      "--incomplete": "progress/incomplete",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-control": "border-radius/control",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--target-min": "target/min"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "surface/subtle", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
+      { "fg": "progress/complete", "bg": "progress/incomplete", "context": "ui" }
+    ],
+    "icons": {
+      "close": "global-controls/close.svg",
+      "chevron-left": "arrows-and-chevrons/chevron-left.svg"
+    },
+    "knownFindings": [
+      "COMPOSED, NOT DRAWN. The .sh container-query frame, the skip link, the 44px action geometry and the slim legal bar (INCLUDING its .sh-legal li{display:flex} defect repair) are App-shell-top-nav.reference.html verbatim. The masthead is Navigations' geometry cut to the 56px in-app height Headers uses. The progress band is Progress-bar.reference.html verbatim - .pb-track/.pb-fill, the 4px height, progress/complete on progress/incomplete, role=progressbar with valuenow/min/max/valuetext, and its named reduced-motion suppression of the fill transition. The bone kit is Skeleton-loader's. NO PARENT FILE WAS EDITED.",
+      "A FOCUSED SHELL IS DEFINED BY SUBTRACTION AND THAT IS THE WHOLE COMPONENT. No primary nav, no breadcrumb, no utility group, no search - one identity, one deliberate exit, and the task. Every other shell in the library is a frame that OFFERS; this one WITHHOLDS. It follows that WHAT THE ONE EXIT DOES is the central design question, and it is NOT answered here.",
+      "THE PROGRESS COLLISION IS A REAL CONFLICT BETWEEN TWO ARTEFACTS, NOT A STYLE PREFERENCE. This shell publishes one role=progressbar with aria-valuetext='Step 2 of 4, Recipient'. Template-wizard.reference.html (#210, wave 5) publishes its own named step rail. Hosted together, a screen-reader user is told where they are twice in two vocabularies. PROPOSED RULE: one progress statement per screen - either the shell carries the band and the hosted rail is aria-hidden, or the template carries the rail and the shell is used in form=auth. Drawn as the first option. Dave's to settle once for the library.",
+      "THE CARD GOES FULL-BLEED BELOW 600cqi, AND IT IS MEASURED, NOT ASSERTED. At a 392px container the card's computed border-width is 0 and its content box equals the shell's inner width. An inset bordered card on a phone spends 32px of the only reading width there is on a rule that separates the form from nothing. The rule uses TWO-CLASS selectors (.sh-main.sh-main, .sh-col .sh-card) so it cannot lose a cascade race - the same specificity discipline ds-005 turns on.",
+      "THE BRAND IS INK HERE, NOT primary/border/default, AND IT IS A DECLARED DIVERGENCE. In a masthead full of navigation the red wordmark is the anchor. On a sign-in screen with nothing else on the band it becomes the loudest thing on a page whose only job is a form. Navigations and App-shell-top-nav both paint it red. Dave's to overturn.",
+      "NOT ONE RED PIXEL, AND THAT IS STRONGER THAN THE SIBLING SHELLS CAN CLAIM. They carry primary/border/default on a current-nav mark. This shell has no nav, so it declares no indicator token at all. Progress is the monochrome progress/complete-on-progress/incomplete pair. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are not merely untouched here - they are unreachable.",
+      "CONTAINER QUERIES, NEVER VIEWPORT QUERIES (s210-D3), AND THE SELF-QUERY TRAP IS DECLARED. No @container rule targets .sh; every one targets a descendant. The third specimen is a 392px CONTAINER at the same viewport as the two above, which is the proof.",
+      "THE SKIP LINK IS KEPT AS A JUDGMENT, NOT AS BOILERPLATE. SC 2.4.1 is about blocks repeated across pages; a 56px band with two controls is arguably marginal. It is kept because the masthead does repeat on every screen of a flow and an invisible-until-focused link costs nothing. Stated so a reviewer can disagree with the reasoning rather than with an omission.",
+      "BREAKPOINTS ARE SPECIMEN CHOICES AND THIS FILE REUSES App-shell-top-nav's PAIR DELIBERATELY. knowledge/tokens/layout.json still contains no breakpoint scale - probe: python3 -c \"import json;print('breakpoint' in json.dumps(json.load(open('knowledge/tokens/layout.json'))).lower())\" -> False.",
+      "The snippet gate resolves tokens against tokens/semantic-colour.json - the MONO base only - so it cannot see the Legacy/Console/Supercharge legs. No .cn-app-shell-focused block exists in canon/canon.css yet, so theme cascade projection is OFF for this file and only the light/dark legs authored here have been seen. DECLARED, and the conductor's to project."
+    ],
+    "requiredAria": ["aria-label", "role=\"progressbar\"", "aria-valuenow", "aria-valuetext", "aria-labelledby", "role=\"contentinfo\"", "<main", "<h1"]
+  }
+  </script>
+
+</body>
+</html>

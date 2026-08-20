@@ -1,29 +1,29 @@
 # Type-binding blast-radius gate — guards canon/type.css
 
-Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (133 files).
+Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (149 files).
 
 | radius | kind | selector | status |
 |---:|---|---|---|
-| 17 | class | `.btn` | PASS |
+| 25 | class | `.btn` | PASS |
+| 13 | scoped-element | `.seg button` | PASS |
 | 12 | class | `.stateLabel` | PASS |
-| 11 | scoped-element | `.seg button` | PASS |
-| 8 | class | `.chip` | PASS |
-| 8 | class | `.status` | PASS |
-| 6 | scoped-element | `.seg.sm button` | PASS |
+| 11 | class | `.status` | PASS |
+| 9 | class | `.chip` | PASS |
+| 7 | scoped-element | `.seg.sm button` | PASS |
 | 5 | class | `.spec-h` | PASS |
 | 4 | class | `.label` | PASS |
 | 4 | scoped-element | `.search input` | PASS |
+| 3 | class | `.badge` | PASS |
+| 3 | class | `.confirm .btn` | PASS |
+| 3 | class | `.eyebrow` | PASS |
+| 3 | scoped-element | `.seg.md button` | PASS |
 | 2 | class | `.avatar` | PASS |
-| 2 | class | `.badge` | PASS |
-| 2 | class | `.eyebrow` | PASS |
+| 2 | class | `.hero .cta` | PASS |
 | 2 | class | `.pg .ctrl` | PASS |
+| 2 | class | `.qbtn` | PASS |
 | 2 | scoped-element | `.pg a` | PASS |
-| 2 | scoped-element | `.seg.md button` | PASS |
 | 1 | class | `.action-bar .btn` | PASS |
-| 1 | class | `.confirm .btn` | PASS |
-| 1 | class | `.hero .cta` | PASS |
 | 1 | class | `.loader` | PASS |
-| 1 | class | `.qbtn` | PASS |
 | 1 | class | `.sim` | PASS |
 | 1 | class | `.tabbar .tabbar__item` | PASS |
 | 1 | class | `.time` | PASS |

@@ -1,0 +1,293 @@
+{
+  "name": "App shell — focused / full-page",
+  "category": "template",
+  "$layer": "2 Shell",
+  "$layerKeyIsDollarPrefixed": "⚠ A PLAIN `layer` KEY FAILS P-1 (meta.schema.json sets additionalProperties:false with a ^$ patternProperties escape and no `layer` property). `$layer` is the only legal form, and nothing custom may go inside `relationships`, which permits four keys and has no escape.",
+  "$categoryChoice": "`template` is the closest LEGAL enum value (atom · molecule · organism · template · page). There is no `shell` value and inventing one fails the gate. DECLARED AS A COMPROMISE.",
+  "purpose": "The page frame for one job and nothing else: signing in, entering a passcode, or working through a multi-step task. It is the only shell in the library defined by what it REMOVES — no primary navigation, no breadcrumb, no utility group, no search. One identity, one deliberate way out, and the task.",
+  "$status": "PROPOSED #210, 2026-08-20 (Wave 6, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. Itinerary row 101, P3, notes cell 'Auth / wizard frame.' Registered nowhere.",
+  "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. Every region is named in $copiedFrom. NO PARENT FILE WAS EDITED.",
+  "props": [
+    {
+      "name": "form",
+      "type": "enum",
+      "values": [
+        "auth",
+        "task"
+      ],
+      "default": "auth",
+      "$note": "auth = a 420px column with no progress band; the task is short enough that 'how far through am I' is not a question anyone asks. task = a 720px column with the progress band under the masthead. The difference is a BAND, not a layout.",
+      "$status": "PROPOSED #210"
+    }
+  ],
+  "variants": [
+    {
+      "name": "auth",
+      "use": "sign in, register, one-time passcode, password reset"
+    },
+    {
+      "name": "task",
+      "use": "a payment, an application, an onboarding flow — anything with steps"
+    }
+  ],
+  "slots": {
+    "brand": {
+      "accepts": {
+        "capability": [
+          "brand-mark"
+        ]
+      },
+      "required": true,
+      "use": "the masthead identity. ⚠ A TEXT STAND-IN, and painted in INK rather than primary red — see $finding-brand-is-ink.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "No library component meets this contract yet — the brand-mark gap (itinerary row 86, ASSET-ONLY) is real and this slot currently takes a text stand-in."
+    },
+    "exit": {
+      "accepts": {
+        "capability": [
+          "single-exit-control"
+        ],
+        "tier": [
+          "atom"
+        ]
+      },
+      "required": true,
+      "use": "the ONE way out. A labelled control whose accessible name says what leaving does.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Button · Icon-button. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "progress": {
+      "accepts": {
+        "capability": [
+          "progress-statement"
+        ],
+        "tier": [
+          "molecule"
+        ]
+      },
+      "required": false,
+      "use": "form=task only. The screen's SINGLE accessible progress statement — see $finding-progress-collision.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Progress-bar. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "task": {
+      "accepts": {
+        "capability": [
+          "form-content"
+        ],
+        "tier": [
+          "molecule",
+          "organism"
+        ]
+      },
+      "required": true,
+      "use": "the job. Rendered here as neutral placeholder furniture, deliberately not as content.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Form-layout · Input-fields · Secure-entry · Selection-controls · Amount-input. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "endMatter": {
+      "accepts": {
+        "capability": [
+          "end-matter"
+        ],
+        "tier": [
+          "organism"
+        ]
+      },
+      "required": false,
+      "use": "Footer in its slim form. A doormat here would be a list of ways to abandon the task.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Footer. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    }
+  },
+  "tokens": {
+    "page": "background/default",
+    "surface": "tertiary/background/default — the masthead, the progress band and the card",
+    "band": "surface/subtle — the end matter",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "icon": "icon/default",
+    "rule": "divider/border/section",
+    "subRule": "divider/border/subsection",
+    "hover": "tertiary/background/hover",
+    "pressed": "form/background/pressed",
+    "bone": "tertiary/background/hover — the placeholder furniture",
+    "focus": "focus/ring",
+    "complete": "progress/complete — Progress-bar's own",
+    "incomplete": "progress/incomplete — Progress-bar's own",
+    "radius": "border-radius/surface · border-radius/control · border-radius/indicator",
+    "target": "target/min (44px)",
+    "$rag": "NONE, AND THIS SHELL CAN CLAIM IT MORE STRONGLY THAN ITS SIBLINGS. They carry primary/border/default on a current-nav mark; this shell has no nav, so it declares NO indicator token at all. DRIVEN: a sweep of every computed colour, background, border and shadow in the document returns redPaintCount = 0. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are not merely untouched here — they are unreachable.",
+    "$provenance": "`python3 knowledge/gen_snippet_tokens.py --check` reports 0 value(s) would change across 4696 manifest bindings — no hex here was hand-typed."
+  },
+  "$copiedFrom": [
+    "App-shell-top-nav.reference.html — the `.sh` container-query box, `.sh-skip`, the 44x44 action geometry, and `.sh-foot`/`.sh-legal` INCLUDING the `.sh-legal li{display:flex}` line that is a measured defect repair.",
+    "Navigations.reference.html — masthead geometry, DELIBERATELY CUT DOWN to 56px and stripped of the nav, the utility group and the trail. What is removed is the component.",
+    "Headers.reference.html — the 56px in-app header height.",
+    "Progress-bar.reference.html — `.pb`/`.pb-head`/`.pb-label`/`.pb-value`/`.pb-track`/`.pb-fill` verbatim: the 4px track on progress/incomplete, the fill on progress/complete, role=progressbar with valuenow/min/max/valuetext, and the NAMED reduced-motion suppression of the fill transition (copied rather than assumed covered by the blanket rule).",
+    "Skeleton-loader.reference.html — the bone shape kit. The shimmer and the role=status are NOT copied.",
+    "Sidebar-nav.reference.html — the clip-path visually-hidden label technique, applied to the exit control's label at phone width.",
+    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical."
+  ],
+  "$finding-defined-by-subtraction": "★★ A FOCUSED SHELL IS DEFINED BY SUBTRACTION AND THAT IS THE WHOLE COMPONENT. Every other shell in this library OFFERS things — destinations, a trail, a rail, a mat. This one WITHHOLDS them, because a person four screens into a payment does not need another exit. It follows that WHAT THE ONE EXIT DOES is the central design question of the component, and it is deliberately not answered here.",
+  "$finding-progress-collision": "★★ A REAL COMPOSITION CONFLICT BETWEEN TWO ARTEFACTS, NOT A STYLE PREFERENCE. This shell publishes ONE role=progressbar with aria-valuetext 'Step 2 of 4, Recipient'. Template-wizard.reference.html (#210, wave 5, PROPOSED) publishes its OWN named step rail. Hosted together, a screen-reader user is told where they are twice, in two vocabularies, which is worse than being told once badly. ⇒ PROPOSED RULE: ONE PROGRESS STATEMENT PER SCREEN. Either the shell carries the band and the hosted template's rail is decorative (aria-hidden), or the template carries the rail and the shell is used in form=auth. Drawn as the first option because the frame outlives the step list. MEASURED: shell-auth 0 progressbars / 0 aria-current=step; shell-task 1 / 0. This has to be settled once for the library, not per file.",
+  "$finding-full-bleed-measured": "THE CARD LOSES ITS BORDER AND GOES FULL-BLEED BELOW 600cqi, AND IT IS MEASURED, NOT ASSERTED. An inset bordered card on a phone spends 32px of the only reading width there is on a rule that separates the form from nothing. MEASURED: at a 1352px container the card's computed border-top-width is 1px and padding 24px; at a 512px container and again at a 392px container it is 0px with padding '0px 16px', and the card's own width (390.0) EQUALS the shell's inner width (390.0). The rule uses TWO-CLASS selectors (`.sh-main.sh-main`, `.sh-col .sh-card`) so it cannot lose a cascade race — the same specificity discipline ds-005 turns on.",
+  "$finding-exit-label-hidden-not-removed": "AT PHONE WIDTH THE EXIT CONTROL KEEPS ITS ACCESSIBLE NAME AND LOSES ITS VISIBLE LABEL. MEASURED: 150.8 x 44.0 with a 102.8 x 11.6 label box at 1352cqi, becoming 44.0 x 44.0 with a 1 x 1 label box at 392cqi, and the accessible name 'Save this payment and return to Accounts' is byte-identical in both. Hidden, never removed — Sidebar-nav's rail technique applied to a single control.",
+  "$finding-brand-is-ink": "⚠ THE BRAND IS INK HERE, NOT primary/border/default, AND IT IS A DECLARED DIVERGENCE FROM Navigations AND App-shell-top-nav. In a masthead full of navigation the red wordmark is the anchor that tells you where you are. On a sign-in screen with nothing else on the band it becomes the loudest thing on a page whose only job is a form. MEASURED: logo computes rgb(26,26,26) light / rgb(255,255,255) dark. Dave's to overturn.",
+  "$finding-skip-link-is-a-judgment": "THE SKIP LINK IS KEPT AS A JUDGMENT, NOT AS BOILERPLATE. SC 2.4.1 is about blocks repeated across pages, and a 56px band with two controls is arguably marginal. It is kept because the masthead does repeat on every screen of a flow and an invisible-until-focused link costs nothing. Stated so a reviewer can disagree with the reasoning rather than with an omission.",
+  "$finding-type-divergence": "No raw font-family, font-size or font-weight appears anywhere in component scope. Probe: `python3 knowledge/_validate_type_composites.py | grep -c App-shell-focused` -> 0, total exactly 1097. Ratchet contribution: 0.",
+  "$finding-breakpoints-unruled": "⚠ 900cqi AND 600cqi ARE SPECIMEN CHOICES, and this file reuses App-shell-top-nav's pair deliberately rather than adding a fourth to wave 5's spread. Probe: python3 -c \"import json;print('breakpoint' in json.dumps(json.load(open('knowledge/tokens/layout.json'))).lower())\" -> False.",
+  "relationships": {
+    "livesInside": [
+      "nothing — this IS the outermost frame"
+    ],
+    "commonPatterns": [
+      "authentication",
+      "multi-step application",
+      "onboarding",
+      "a task that must not be abandoned by accident"
+    ],
+    "mustNotNeighbour": []
+  },
+  "$consumes": [
+    "App-shell-top-nav",
+    "Progress-bar",
+    "Skeleton-loader",
+    "Navigations",
+    "Headers",
+    "Footer",
+    "Sidebar-nav"
+  ],
+  "$relationshipsNote": "Template-auth and Template-wizard are the two templates this shell exists to HOST. ⚠ Hosting Template-wizard raises $finding-progress-collision; hosting Template-auth does not. An Action-bar is the natural home for the task's own primary action and is not the site footer.",
+  "accessibility": {
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.1",
+      "2.4.3",
+      "2.4.7",
+      "2.5.8",
+      "2.3.3",
+      "4.1.2"
+    ],
+    "landmarks": "One <header>, <main>, <footer role=\"contentinfo\">. ⚠ THERE IS NO <nav> LANDMARK AND THAT IS THE POINT — a focused shell has no navigation to name.",
+    "progress": "role=\"progressbar\" with aria-labelledby, aria-valuenow/min/max and an aria-valuetext that reads as a sentence ('Step 2 of 4, Recipient') rather than a bare number. One per screen — see $finding-progress-collision.",
+    "bypassBlock": "A skip link is the first focusable element, visible only on focus, targeting <main>. Kept as a judgment; see $finding-skip-link-is-a-judgment.",
+    "exitControl": "The one way out is a <button> with an aria-label that says what leaving DOES, not merely that it leaves. Its visible label is hidden at phone width; its accessible name never changes.",
+    "targetSize": "Every interactive element measures >= 44px. Driven sweep returns an empty list at every width and both themes.",
+    "colourIsNeverAlone": "Nothing in this shell carries meaning by hue. There is no red at all (redPaintCount = 0), and progress is a monochrome fill against a monochrome track — the SHAPE of the fill is the signal.",
+    "reducedMotion": "prefers-reduced-motion: reduce collapses every transition to 0.01ms, and Progress-bar's own named suppression of the fill transition is copied rather than assumed covered."
+  },
+  "responsive": {
+    "mechanism": "CONTAINER queries on the shell (container-type:inline-size, container-name:shell), never viewport queries. s210-D3. Every rule targets a DESCENDANT of .sh — an element is a query container for what is inside it, never for itself.",
+    "full": ">= 900cqi — the column sits at its max-width (420 for auth, 720 for task) with 48px of air above it; the card is bordered; the exit control shows its label.",
+    "compact": "600–899cqi — the air shrinks to 32px and the side padding to 24px. Nothing else moves. MEASURED at 852: card border still 1px, main padding '32px 24px'.",
+    "phone": "< 600cqi — the card loses its border and goes full-bleed, and the exit control drops its visible label while keeping its accessible name. MEASURED at 512 and at a 392px container inside a 1400px viewport.",
+    "$proof": "The third specimen is a 392px CONTAINER at the same viewport as the two wide ones and it is fully collapsed while they are not.",
+    "$status": "PROPOSED #210, Dave's eye owed"
+  },
+  "dimensions": {
+    "mastheadHeight": 56,
+    "progressBandPadding": 12,
+    "trackHeight": 4,
+    "authColumnMax": 420,
+    "taskColumnMax": 720,
+    "airAboveWide": 48,
+    "airAboveCompact": 32,
+    "targetMin": 44,
+    "$note": "mastheadHeight 56 is Headers' in-app band, not Navigations' 64 — a frame with no navigation in it does not need the taller row. trackHeight 4 is Progress-bar's default. 420 and 720 are this file's and are named as specimen choices, not ruled measures."
+  },
+  "antiPatterns": [
+    "Never put the primary navigation back in. The moment a focused shell offers five destinations it has become App-shell-top-nav and the user has five new ways to abandon the task.",
+    "Never make the exit a bare glyph on a multi-step task. A ✕ with no name discards work silently, and the user cannot tell whether it saves.",
+    "Never carry two progress statements on one screen. Pick the shell's band or the template's step rail — see $finding-progress-collision.",
+    "Never put a doormat footer here. A mega-footer at the end of a sign-in form is a list of ways to leave.",
+    "Never keep a bordered card at phone width. It costs reading width and separates the form from nothing.",
+    "Never use form=task for a single-screen job. A progress bar reading 'step 1 of 1' is an insult to the reader."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/*.json via the snippet's own #token-manifest, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate 135 snippet(s) 0 failure(s); grid gate PASS (151 files); a11y gate 0 failures; descender-clip gate PASS; type gate contribution 0 with the total at exactly 1097; P-1 findings=0; icon-source 0 UNKNOWN; gen_snippet_tokens --check reports 0 values would change.",
+    "declaredAbsence": "No RAG pair is declared because no RAG value exists in this file to declare. The progress pair (progress/complete on progress/incomplete) is declared as a ui pair.",
+    "notRun": "_validate_state_contrast.py NOT run — a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md, outside this lane's fence. OWED. _validate_kg.py not run — the conductor's.",
+    "failing": "⛔ _validate_binds_resolve.py check D FAILS: no .cn-app-shell-focused block in canon/canon.css, so theme-cascade projection is OFF and Console, Legacy and Supercharge are UNPROVEN. 16 files fail check D; 4 are this lane's, 12 are sibling lanes'.",
+    "notRegistered": "Absent from component-types.json, CATEGORIES, gen_showroom.py and _validate_radius.MIGRATED_SNIPPETS — shared files, outside a worker lane's fence.",
+    "renderProof": "See notes/_receipts/2026-08-20-210-wave6-laneA-p3-shells.md."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 101, 'App shell — focused / full-page', Shells (Layer 2), P3, notes cell 'Auth / wizard frame.' Derived verdict NO-ARTEFACT-CLASS. Built #210 wave 6 lane A."
+  },
+  "interactive": false,
+  "stateModel": "simple",
+  "$decisionsForDave": [
+    "1 · ⛔ WHAT DOES THE ONE EXIT DO? This is the central question of the component and it is deliberately unanswered. Does 'Save and exit' save a draft? Does 'Exit' on a half-finished payment discard it silently? Does it need a Popconfirm or a Modal? The library has both. Until this is ruled, the exit control is a labelled button with a descriptive accessible name and no confirmed behaviour.",
+    "2 · ⛔ ONE PROGRESS STATEMENT PER SCREEN — confirm or overturn, once, for the whole library. Drawn as: the shell owns the numeric band, a hosted wizard's step rail is decorative. The alternative is the opposite assignment. Either is defensible; having both is not.",
+    "3 · THE BRAND IN INK RATHER THAN RED. Navigations and App-shell-top-nav paint the wordmark primary/border/default. This shell paints it text/default because there is nothing else on the band for it to compete with. Confirm or overturn.",
+    "4 · THE BREAKPOINT SCALE — carried, wave-wide, unruled.",
+    "5 · THE BRAND MARK. 12 official SVGs sit in knowledge/assets/logos/ and nothing binds them; zero of the pre-existing snippets reference them; row 86's derived verdict is ASSET-ONLY. An auth screen is the single most likely place a real masterbrand lock-up belongs. Carried from wave 5, unresolved.",
+    "6 · THE TWO COLUMN WIDTHS — 420 for auth and 720 for task. Specimen choices. Is there a measure scale, or should these be tokens?",
+    "7 · DOES A SHELL BELONG IN knowledge/snippets/ AT ALL? Carried from wave 5 unchanged.",
+    "8 · SHOULD THE FOCUSED SHELL OFFER A 'HELP' AFFORDANCE? Drawn without one, deliberately — but a person stuck on a passcode screen with no navigation and no help has nowhere to go but away."
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:App-shell-focused.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:nothing-this-is-the-outermost-frame",
+        "$note": "nothing — this IS the outermost frame"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:authentication"
+      },
+      {
+        "ref": "pattern:multi-step-application"
+      },
+      {
+        "ref": "pattern:onboarding"
+      },
+      {
+        "ref": "pattern:a-task-that-must-not-be-abandoned-by-accident"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:app-shell-top-nav",
+        "$note": "App-shell-top-nav"
+      },
+      {
+        "ref": "component:progress-bar",
+        "$note": "Progress-bar"
+      },
+      {
+        "ref": "component:skeleton-loader",
+        "$note": "Skeleton-loader"
+      },
+      {
+        "ref": "component:navigations",
+        "$note": "Navigations"
+      },
+      {
+        "ref": "component:headers",
+        "$note": "Headers"
+      },
+      {
+        "ref": "component:footer",
+        "$note": "Footer"
+      },
+      {
+        "ref": "component:sidebar-nav",
+        "$note": "Sidebar-nav"
+      }
+    ]
+  }
+}

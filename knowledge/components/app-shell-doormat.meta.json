@@ -1,0 +1,276 @@
+{
+  "name": "App shell — doormat (mega-footer) nav",
+  "category": "template",
+  "$layer": "2 Shell",
+  "$layerKeyIsDollarPrefixed": "⚠ A PLAIN `layer` KEY FAILS P-1 (meta.schema.json sets additionalProperties:false with a ^$ patternProperties escape and no `layer` property). `$layer` is the only legal form, and nothing custom may go inside `relationships`.",
+  "$categoryChoice": "`template` is the closest LEGAL enum value. There is no `shell` value and inventing one fails the gate. DECLARED AS A COMPROMISE.",
+  "purpose": "The page frame for a marketing or servicing site with more destinations than a masthead can hold. Its proposition is an argument about WHERE NAVIGATION LIVES: four destinations in a sticky masthead, everything else in a mega-footer at the bottom, so the top of the page stays legible and the bottom of the page does real work.",
+  "$status": "PROPOSED #210, 2026-08-20 (Wave 6, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. Itinerary row 102, P3, notes cell 'Marketing frame.' Registered nowhere.",
+  "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. Every region is named in $copiedFrom. NO PARENT FILE WAS EDITED.",
+  "props": [
+    {
+      "name": "form",
+      "type": "enum",
+      "values": [
+        "full",
+        "short"
+      ],
+      "default": "full",
+      "$note": "full = a statement block plus four named groups plus the legal bar. short = three groups and no statement block, for a servicing site whose end matter carries less. ⚠ The mat's own reflow is IDENTICAL in both because it is intrinsic (auto-fit/minmax), not a rule.",
+      "$status": "PROPOSED #210"
+    }
+  ],
+  "variants": [
+    {
+      "name": "full",
+      "use": "a marketing site: a statement, four groups, and the legal bar a regulator requires"
+    },
+    {
+      "name": "short",
+      "use": "a servicing site whose end matter is a courtesy rather than a second navigation"
+    }
+  ],
+  "slots": {
+    "brand": {
+      "accepts": {
+        "capability": [
+          "brand-mark"
+        ]
+      },
+      "required": true,
+      "use": "the masthead identity. ⚠ A TEXT STAND-IN — the brand-mark gap is real and named.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "No library component meets this contract yet — the brand-mark gap (itinerary row 86, ASSET-ONLY) is real and this slot currently takes a text stand-in."
+    },
+    "primaryNav": {
+      "accepts": {
+        "capability": [
+          "site-navigation"
+        ],
+        "tier": [
+          "organism"
+        ]
+      },
+      "required": true,
+      "use": "AT MOST FOUR top-level destinations. The cap is the shell's argument, not a limitation.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Navigations. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "content": {
+      "accepts": {
+        "capability": [
+          "page-content"
+        ],
+        "tier": [
+          "molecule",
+          "organism",
+          "template"
+        ]
+      },
+      "required": true,
+      "use": "the page. Rendered here as neutral placeholder furniture.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Hero · Cards · Feature-grid-lockup · Stats-band-lockup · CTA-lockup. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "doormat": {
+      "accepts": {
+        "capability": [
+          "end-matter",
+          "secondary-navigation"
+        ],
+        "tier": [
+          "organism"
+        ]
+      },
+      "required": true,
+      "use": "Footer in its FULL form. This is the shell's secondary navigation and it must not duplicate the masthead.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Footer. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    }
+  },
+  "tokens": {
+    "page": "background/default",
+    "surface": "tertiary/background/default — the sticky masthead",
+    "band": "surface/subtle — the doormat region",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "icon": "icon/default",
+    "rule": "divider/border/section",
+    "subRule": "divider/border/subsection — inside the doormat, between the statement, the mat and the legal bar",
+    "hover": "tertiary/background/hover",
+    "pressed": "form/background/pressed",
+    "indicator": "primary/border/default — the current-nav mark, Navigations' own approved bar",
+    "bone": "tertiary/background/hover",
+    "overlay": "overlay/version1 — the off-canvas scrim",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface · border-radius/control · border-radius/indicator",
+    "target": "target/min (44px)",
+    "$rag": "NONE. The only red is primary/border/default on the current-nav mark. Two-red law (s151-D1) and the mono error ink camp (s149-D1) untouched.",
+    "$provenance": "`python3 knowledge/gen_snippet_tokens.py --check` reports 0 value(s) would change across 4696 manifest bindings."
+  },
+  "$copiedFrom": [
+    "App-shell-top-nav.reference.html — the `.sh` container-query box, `.sh-skip`, `.sh-masthead` with its 64px nav links and inset red current bar, the 44x44 `.sh-actions`, the two-class `.sh .sh-menu` form, and the `.sh-scrim`/`.sh-sheet` off-canvas mechanics with their four-step open sequence and document-level Escape listener.",
+    "Footer.reference.html — THE DOORMAT, its full (non-slim) form verbatim: `.ft-inner` 1120px measure, `.ft-brand` statement block, `.ft-mat` repeat(auto-fit, minmax(180px,1fr)), the named <nav aria-labelledby> groups, the 44px-at-every-width link rule, the `a.lnk` atom Footer itself took from Links, the `a.arrow` back-to-top with its em-scaled tip and 3px lift, `.ft-legal`, and Footer's OWN @container (max-width:560px) stacking rule.",
+    "Back-to-top.reference.html — the `.btt-stage`/`.btt-content` internally-scrollable frame shape, and its scroll handler acting on a named region rather than the window. Demo chrome in the parent; here it is the shell's own scrollport, which is what makes position:sticky mean anything.",
+    "Links.reference.html (via Footer) — the a.lnk and a.arrow atoms.",
+    "Navigations.reference.html (via App-shell-top-nav) — masthead geometry.",
+    "Skeleton-loader.reference.html — the bone shape kit. Shimmer and role=status NOT copied.",
+    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical."
+  ],
+  "$finding-non-duplication-is-measured": "★★ NON-DUPLICATION IS MEASURED, NOT PROMISED, AND THE RULE IS FOOTER'S OWN. footer.meta.json's antiPattern says verbatim that 'a doormat that duplicates the masthead is a doormat that has stopped being read'. This shell makes that a checkable property: MEASURED, the intersection of the masthead's 4 link texts (Personal · Business · Private · Global) and the mat's 16 link texts is EMPTY. Four destinations up top, everything else at the bottom.",
+  "$finding-sticky-anchor-occlusion": "★★★ THE STICKY MASTHEAD CREATES A DEFECT NOTHING IN THIS LIBRARY GUARDED AGAINST, AND THE FIX IS ONE TOKENISED PROPERTY. An in-page anchor jump scrolls its target to the top of the scrollport; a sticky header is drawn over the top of the scrollport; the reader lands on a heading they cannot see. Nothing throws, and a static screenshot of an un-jumped page looks perfect. `scroll-margin-top: calc(var(--masthead-h) + 4px)` on every anchor target fixes it, and --masthead-h is the SAME custom property the sticky offset reads, so the two cannot drift. MEASURED WITH A MUTATION CONTROL: as authored, scroll-margin-top 68px, target top 68.0 against masthead bottom 65.0, gap +3.0, targetClearsMasthead TRUE. With the property removed, target top 0.0, gap −65.0, targetClearsMasthead FALSE. ⚠ AND THE `+ 4px` IS NOT DECORATION: the bare `var(--masthead-h)` form measured ONE PIXEL SHORT when driven (64.0 against 65.0). The grid step buys the clearance a heading wants under a band AND absorbs the sub-pixel. The fix was only visible because the probe carried an EXPECTED VALUE rather than a picture.",
+  "$finding-mat-has-no-breakpoint": "THE MAT HAS NO BREAKPOINT AND THAT IS DELIBERATE. repeat(auto-fit, minmax(180px,1fr)) is Footer's line and it re-flows intrinsically. MEASURED: '260px 260px 260px 260px 0px' at a 1352px container (one row, four groups), '192.5px x4' at 852 (one row), '478px' at 512 (four rows, one column). Adding a container query that duplicated this would create two sources of truth that will one day disagree. The 560px rule that DOES exist is Footer's own and governs only the legal bar's stacking.",
+  "$finding-nested-container-context": "A SECOND, NESTED CONTAINER CONTEXT IS DECLARED RATHER THAN LEFT TO BE DISCOVERED. `.sh` is container-name:shell; `.sh-doormat` declares its own container-type:inline-size so Footer's UNNAMED @container (max-width:560px) resolves against the doormat's width rather than the window's. The 560 figure is Footer's, the 900/600 pair is this file's, and they are deliberately DIFFERENT NUMBERS because they have different owners. PROVEN at a 392px container inside a 1400px viewport: mat 1 column, legal bar flex-direction column, masthead nav display none, menu button display flex.",
+  "$finding-footer-legal-needed-the-repair": "FOOTER'S LEGAL BAR NEEDED App-shell-top-nav's MEASURED REPAIR. `.ft-legal li{display:flex}` is added here for exactly the reason the wave-5 lane found it: once the bar becomes a column, an inline-flex child's min-height cannot grow its <li>'s line box and the links render on top of one another. Footer never hits this at full page width; inside a 392px shell it does. MEASURED at a 512px container: legal link tops 44px apart inside 44px <li> boxes — no overlap. The borrowed atom is untouched; the container is fixed.",
+  "$finding-back-to-top-moves-focus": "THE BACK-TO-TOP LINK MOVES THE VIEW AND THE FOCUS TOGETHER. A control that scrolls the picture and leaves the keyboard at the bottom of the page has moved one user and stranded another. MEASURED: from scrollTop 625 with focus on BODY, activation lands focus on the H1 ('Personal banking'). The tabindex=-1 is applied AT ACTIVATION and is not authored, so the heading never appears in the tab order for a reader who did not ask to go there. ⚠ The control remains a real <a href='#sec-top'>, so it works with the script disabled; the script only upgrades the jump to a smooth one.",
+  "$finding-type-divergence": "No raw font-family, font-size or font-weight in component scope. Probe: `python3 knowledge/_validate_type_composites.py | grep -c App-shell-doormat` -> 0, total exactly 1097. Ratchet contribution: 0.",
+  "$finding-breakpoints-unruled": "⚠ 900cqi AND 600cqi ARE SPECIMEN CHOICES; this file reuses App-shell-top-nav's pair deliberately. Probe: python3 -c \"import json;print('breakpoint' in json.dumps(json.load(open('knowledge/tokens/layout.json'))).lower())\" -> False.",
+  "relationships": {
+    "livesInside": [
+      "nothing — this IS the outermost frame"
+    ],
+    "commonPatterns": [
+      "marketing and product pages",
+      "public servicing sites",
+      "any long page whose navigation outgrew its masthead"
+    ],
+    "mustNotNeighbour": []
+  },
+  "$consumes": [
+    "App-shell-top-nav",
+    "Footer",
+    "Back-to-top",
+    "Links",
+    "Navigations",
+    "Skeleton-loader",
+    "Drawer"
+  ],
+  "$relationshipsNote": "Footer here is the REGION, in its full doormat form, and it is load-bearing navigation rather than end matter. That is a stronger claim than Footer's own meta makes for itself and it is PROPOSED, not ruled. The 'footer' vocabulary collision Footer declares (a dialog's action row is also called a footer) applies unchanged.",
+  "accessibility": {
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.1",
+      "2.4.3",
+      "2.4.7",
+      "2.5.8",
+      "2.3.3",
+      "4.1.2"
+    ],
+    "landmarks": "One <header>, <nav aria-label=\"Primary\">, <main>, <footer role=\"contentinfo\" aria-label=\"Site footer\">, and one <nav aria-labelledby> per mat group so a screen reader can list the groups by name rather than meeting sixteen undifferentiated links.",
+    "stickyHeader": "The masthead is position:sticky against the shell's own scrollport. Every in-page anchor target carries scroll-margin-top so a jump never lands behind it — see $finding-sticky-anchor-occlusion.",
+    "bypassBlock": "A skip link is the first focusable element, visible only on focus, targeting <main>. Especially load-bearing here: the mat is sixteen links a keyboard user would otherwise walk past.",
+    "targetSize": "Every interactive element measures >= 44px at EVERY width — Footer's own declared decision, stricter than the gated Links .related pattern, and it makes a doormat measurably taller. Driven sweep returns an empty list at every width and both themes.",
+    "colourIsNeverAlone": "Links are underlined, not coloured. The current destination is marked by shape and surface as well as hue; the mat's current link carries weight plus a persistent 2px underline.",
+    "reducedMotion": "prefers-reduced-motion: reduce collapses every transition to 0.01ms AND names scroll-behavior explicitly — a smooth scroll is motion the reader did not ask for, and it is the one thing in this file that moves a whole page."
+  },
+  "responsive": {
+    "mechanism": "CONTAINER queries. s210-D3. Two nested contexts, both declared: `.sh` (named `shell`) for the frame, `.sh-doormat` (unnamed) so Footer's own 560px rule resolves against the mat. Every rule targets a DESCENDANT of its container, never the container itself.",
+    "full": ">= 900cqi — four destinations in the sticky row; the mat auto-fits to four columns inside a 1120px measure.",
+    "compact": "600–899cqi — the destinations leave the row for a 44x44 menu button; the mat still auto-fits to four columns at 852, with NO QUERY OF ITS OWN.",
+    "phone": "< 600cqi — the menu button opens the off-canvas sheet; the mat falls to one column intrinsically; the legal bar stacks under Footer's own 560px rule.",
+    "$proof": "The third specimen is a 392px CONTAINER at a 1400px viewport: mat 1 column, legal bar column, nav display none, menu display flex — while the two wide specimens on the same page are unchanged.",
+    "$status": "PROPOSED #210, Dave's eye owed"
+  },
+  "dimensions": {
+    "mastheadHeight": 64,
+    "mastheadMeasured": 65,
+    "scrollMarginTop": 68,
+    "doormatMeasure": 1120,
+    "matMinColumn": 180,
+    "matGap": "24px 16px",
+    "footerBreakpoint": 560,
+    "targetMin": 44,
+    "$note": "mastheadHeight 64 is the AUTHORED min-height and --masthead-h; mastheadMeasured 65 is what a real browser reported for the band including its rule, which is exactly why scrollMarginTop is 68 (64 + one 4px grid step) and not 64. doormatMeasure 1120 and matMinColumn 180 are Footer's. footerBreakpoint 560 is Footer's, not this file's."
+  },
+  "antiPatterns": [
+    "Never repeat the masthead's destinations in the mat. Footer's own meta says it: a doormat that duplicates the masthead is a doormat that has stopped being read.",
+    "Never make a sticky header without giving anchor targets a scroll-margin. The jump will land the reader behind the band and nothing will look wrong until someone tries it.",
+    "Never let the sticky offset and the scroll-margin be two separate numbers. They will drift the first time somebody changes the band's height.",
+    "Never put a mega-footer on an authenticated task screen. That is App-shell-focused's territory, and a list of ways to leave is not what a person mid-payment needs.",
+    "Never give the mat a breakpoint. auto-fit/minmax already re-flows it, and a duplicated rule is a rule that will one day contradict the behaviour it duplicates.",
+    "Never let a back-to-top control move the view without moving the focus."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/*.json via the snippet's own #token-manifest",
+    "result": "PASS — snippet gate 135 snippet(s) 0 failure(s); grid gate PASS (151 files); a11y gate 0 failures; descender-clip gate PASS; type gate contribution 0 with the total at exactly 1097; P-1 findings=0; icon-source 0 UNKNOWN; gen_snippet_tokens --check reports 0 values would change.",
+    "declaredAbsence": "No RAG pair is declared because no RAG value is painted. Eight neutral pairs are declared, including three against surface/subtle because the doormat is the one large region in this lane that sits on that surface.",
+    "notRun": "_validate_state_contrast.py NOT run — outside this lane's fence. OWED. _validate_kg.py not run — the conductor's.",
+    "failing": "⛔ _validate_binds_resolve.py check D FAILS: no .cn-app-shell-doormat block in canon/canon.css; Console, Legacy and Supercharge are UNPROVEN. 16 files fail check D; 4 are this lane's.",
+    "notRegistered": "Absent from component-types.json, CATEGORIES, gen_showroom.py and _validate_radius.MIGRATED_SNIPPETS.",
+    "renderProof": "See notes/_receipts/2026-08-20-210-wave6-laneA-p3-shells.md, including the scroll-margin mutation control and a still taken AFTER a real anchor jump."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 102, 'App shell — doormat (mega-footer) nav', Shells (Layer 2), P3, notes cell 'Marketing frame.' Derived verdict NO-ARTEFACT-CLASS. Built #210 wave 6 lane A."
+  },
+  "interactive": true,
+  "stateModel": "simple",
+  "$decisionsForDave": [
+    "1 · ⛔ IS THE MASTHEAD CAP OF FOUR THE RULE, OR THIS SPECIMEN'S CHOICE? The whole shell rests on it. Four is drawn because four short words fit a 1120px measure beside a brand and an action with room to spare — but the number is not measured from anything, and a product with five business lines will want to know.",
+    "2 · ⛔ SHOULD scroll-margin-top BECOME A LIBRARY-WIDE RULE? Every sticky region in this repo has the same defect latent in it, and nothing gates it. The natural shape is a gate that fails any position:sticky ancestor whose in-page anchor targets carry no scroll-margin. That is a proposal, not a build.",
+    "3 · SHOULD THE MASTHEAD BE STICKY AT ALL? Drawn sticky because a marketing page is long. The cost is 65px of every screen, permanently, and it is the reason $finding-sticky-anchor-occlusion exists.",
+    "4 · THE BRAND MARK. 12 official SVGs, nothing binds them, row 86 is P1 and ASSET-ONLY. Carried from wave 5, unresolved.",
+    "5 · THE BREAKPOINT SCALE — carried, wave-wide, unruled. ⚠ This file makes the case sharper than its siblings: it now carries TWO thresholds from two different owners (900/600 mine, 560 Footer's), and neither is ruled.",
+    "6 · IS THE DOORMAT NAVIGATION OR END MATTER? This shell says navigation, which is a stronger claim than Footer's own meta makes. If it is navigation, it arguably wants a <nav> landmark around the whole mat rather than one per group.",
+    "7 · WHAT ARE THE FOUR MASTHEAD DESTINATIONS CALLED? Drawn as Personal / Business / Private / Global — placeholder domain prose, PROPOSED under s182-D2, not a semantic this lane may mint.",
+    "8 · DOES A SHELL BELONG IN knowledge/snippets/ AT ALL? Carried from wave 5 unchanged."
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:App-shell-doormat.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:nothing-this-is-the-outermost-frame",
+        "$note": "nothing — this IS the outermost frame"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:marketing-and-product-pages"
+      },
+      {
+        "ref": "pattern:public-servicing-sites"
+      },
+      {
+        "ref": "pattern:any-long-page-whose-navigation-outgrew-its-masthead"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:app-shell-top-nav",
+        "$note": "App-shell-top-nav"
+      },
+      {
+        "ref": "component:footer",
+        "$note": "Footer"
+      },
+      {
+        "ref": "component:back-to-top",
+        "$note": "Back-to-top"
+      },
+      {
+        "ref": "component:links",
+        "$note": "Links"
+      },
+      {
+        "ref": "component:navigations",
+        "$note": "Navigations"
+      },
+      {
+        "ref": "component:skeleton-loader",
+        "$note": "Skeleton-loader"
+      },
+      {
+        "ref": "component:drawer",
+        "$note": "Drawer"
+      }
+    ]
+  }
+}

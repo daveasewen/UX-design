@@ -1,0 +1,86 @@
+{
+  "name": "Feature-grid-lockup",
+  "category": "organism",
+  "$layer": "2 Lock-up",
+  "purpose": "A marketing feature grid: N cells of icon + title + body, arranged 2/3/4-up. Composed from the gated Cards atom's Action-card icon/title/body geometry (its per-cell action-button row deliberately omitted — a feature-grid cell states a benefit, it does not carry its own call to action) plus 4 byte-matched library icons. Wave-6 itinerary row 123 (Layer 2, class NO-ARTEFACT-CLASS at mint; PROPOSED here, not ruled).",
+  "props": [
+    { "name": "density", "type": "enum", "values": ["up-2", "up-3", "up-4"], "default": "up-3",
+      "$note": "Three arrangement variants drawn in the reference: A 2-up, B 3-up, C 4-up. Structural variance (cell count and minimum track width), a VARIANTS-axis prop." },
+    { "name": "cells", "type": "array", "$note": "Each cell is an icon + a t-cm-button title + a t-ed-body-small body line. The specimen shows 2-4 cells per density; nothing in the grid caps the count beyond what the density's own minmax track implies." }
+  ],
+  "variants": [
+    { "name": "up-2", "use": "A focused pair of benefits — the widest cell, for when only two things matter." },
+    { "name": "up-3", "use": "The most common marketing density — three benefits, still legible at a glance." },
+    { "name": "up-4", "use": "A dense capability list — the narrowest cell, for a longer feature set." }
+  ],
+  "tokens": {
+    "cell": "tertiary/background/default + border/subtle + border-radius/surface, via Cards.reference.html's `.card` base, unmodified",
+    "icon": "icon/default, via Cards.reference.html's Action-card icon slot, unmodified",
+    "title": "borrowed from canon/type.css .t-cm-button composite (16px/500) — the EXACT match to Cards' own raw h3 declaration, never re-declared raw here",
+    "body": "borrowed from canon/type.css .t-ed-body-small composite (14px/400) — the EXACT match to Cards' own raw p declaration, never re-declared raw here",
+    "$note": "Every token above resolves through the ATOM's own manifest or the type-composite ramp; this organism binds nothing new. The lock-up's own CSS (`.fgl-*`) is grid arrangement only — no colour, no type-size, no radius declaration of its own."
+  },
+  "$icons": {
+    "security-secure": "global-controls/security-secure.svg",
+    "device-mobile": "media/device-mobile.svg",
+    "data-chart": "products-and-services/data-chart.svg",
+    "world-trader": "products-and-services/world-trader.svg",
+    "$note": "All 4 byte-matched from the icon library (lesson 4) — verified against `_ICON-SOURCE-AUDIT.md`: Feature-grid-lockup 4/4 verified, 0 bespoke, 0 unknown."
+  },
+  "responsive": {
+    "$status": "PROPOSED at #210 wave-6 (not ruled) — reflow verified in a real browser at 3 widths.",
+    "rule": "Each density's own auto-fit minmax track (300/240/200px) reflows the column count as the container narrows. A second, explicit rule collapses ALL densities to one column under a 480px container — the floor beneath the auto-fit floor, so a 2-up grid in a genuinely narrow panel never sits at an awkward two-column squeeze before it gives up and stacks.",
+    "$note": "s210-D3 discipline: the lock-up declares no width of its own; the container gives it one. ★ CONTAINER-QUERY SELF-QUERY TRAP AVOIDED (wave-5 lesson 3): `.fgl-outer` (the ancestor) carries `container-type:inline-size`; the `@container` rule targets `.fgl-grid`, its DESCENDANT, never the container itself."
+  },
+  "relationships": {
+    "livesInside": ["Template — page", "CTA-lockup (as a preceding feature section)"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["marketing feature grid", "capability list"]
+  },
+  "accessibility": {
+    "relatedSC": ["1.4.10 Reflow", "1.1.1 Non-text Content"],
+    "structure": "Each cell is an <article> with a single heading; icons are aria-hidden decorative marks alongside a text title, never the only signal of what the cell is about.",
+    "colourIsNeverAlone": "No RAG value appears anywhere in this component."
+  },
+  "antiPatterns": [
+    "Re-drawing the card CSS instead of composing the existing Cards atom",
+    "Giving the lock-up a fixed width — s210-D3 reserves that for the container",
+    "Adding a per-cell button — that re-introduces Cards' Action-card `.actions` row, which this lock-up deliberately omits; a per-cell CTA is CTA-lockup's job, not this one's",
+    "Putting the container-query rule on the same element it collapses — the wave-5 self-query trap; the ancestor (`.fgl-outer`) must be the container, never `.fgl-grid` itself"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "Cards.reference.html's own token manifest for the `.card` base + icon slot, re-declared verbatim by name here",
+    "result": "PASS — `_validate_snippets.py` reports 0 findings for Feature-grid-lockup.reference.html; see the #210 wave-6 Lane D receipt for the exact command."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Feature-grid-lockup.reference.html"
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Feature-grid-lockup.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:template-page",
+        "$note": "Template — page"
+      },
+      {
+        "ref": "context:cta-lockup-as-a-preceding-feature-section",
+        "$note": "CTA-lockup (as a preceding feature section)"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:marketing-feature-grid"
+      },
+      {
+        "ref": "pattern:capability-list"
+      }
+    ]
+  }
+}

@@ -89,11 +89,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **100 items · 68 live · 36 Dave's · 32 mine · 81 carry a stated close condition · **19 UNCONDITIONED**.**
+> **105 items · 73 live · 41 Dave's · 32 mine · 86 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (36) — 31 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (41) — 36 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -125,6 +125,11 @@
 > - `W-77` **wave-5 lane B - three page TEMPLATES BUILT PROPOSED-NOT-RULED (dashboard, list/index, detail) - Daves eye owed (18 named questions, 3 defects in GATED components)** — *closes when:* Dave rules per template promote/rework/delete across the three, having seen notes/_receipts/2026-08-20-210-wave5-laneB-templates.md and its 18 $decisionsForDave; and separately answers the two that are not per-template - Q4 (table or list for row 105, whichever he picks deletes the other half of Template-list-index.reference.html) and Q1/Q2/Q3 (the Layer-2 artefact class, the missing `composes` edge in meta.schema.json, and the `$layer` field). The three GATED-component defect reports in section 11 item 5 (Layout-utilities' non-collapsing split, Timeline's and Document-row's losing descender override) are handoff items and close with their own repairs, not with this row.
 > - `W-78` **wave-5 lane A - THREE APP SHELLS BUILT PROPOSED-NOT-RULED (rows 97/98/99 top-stacked nav, side nav, multi-column) - Daves eye + 16 named questions owed** — *closes when:* Dave rules per shell promote/rework/delete across the three, having seen notes/_receipts/2026-08-20-210-wave5-laneA-app-shells.md and its 16 decisionsForDave; the breakpoint-scale question (three shells, three unruled pairs 900/600, 1040/720, 1200/840) and the Layer-2 artefact-class convention (do shells live in knowledge/snippets/) are answered with or before this row
 > - `W-79` **wave-5 Layer-2 ELEVEN organisms BUILT PROPOSED (3 shells + 6 templates + 2 lock-ups) - Daves eye + ~48 questions owed; artefact-class convention PROPOSED** — *closes when:* Dave rules per organism promote/rework/delete across the eleven (receipts wave5-lane{A,B,C,D}) AND rules the Layer-2 artefact-class convention (reference-snippet grammar, PROPOSED at the brief) AND answers the structural ones: breakpoint scale (no ruled pairs in layout.json), wizard-vs-Stepper existence (row 109 possible Duplicate), the 400-to-500 weight pair gap the composites cannot express, table-vs-list for row 105
+> - `W-80` **#210 wave-6 lane D lock-ups (Footer-doormat-lockup + CTA-lockup + Feature-grid-lockup) BUILT PROPOSED-NOT-RULED — Daves eye owed** — *closes when:* Dave rules the three lock-ups (promotion/rework/rejection) and the receipt is consumed by that sitting
+> - `W-81` **#210 wave-6 lane C lock-ups (Section-heading-lockup + Card-header-lockup + Hero-variants + Stats-band-lockup) BUILT PROPOSED-NOT-RULED — Daves eye owed** — *closes when:* Dave rules the four lock-ups (promotion/rework/rejection) and the receipt is consumed by that sitting
+> - `W-82` **#210 wave-6 lane B - FIVE Layer-2 P3 templates BUILT PROPOSED-NOT-RULED (settings, empty, error 404/500, report, confirmation) - Daves eye owed, 16 named questions, 6 defects found by driving** — *closes when:* Dave has looked at the five pages and ruled the 16 questions in section 7 of the receipt - in particular Q1 (should an error page carry RAG colour at all), Q2 (should a pending confirmation get a roundel of its own) and Q7 (what a template does about a byte-lifted charts demo data) - and has said whether the five pairs are kept, in which case the conductors serial set in section 11 is owed.
+> - `W-83` **wave-6 lane A - FOUR P3 app shells BUILT PROPOSED-NOT-RULED (rows 100/101/102/103 split, focused/full-page, doormat, nav rail) - Daves eye + 32 named questions owed** — *closes when:* Dave rules promote/rework/delete on each of the four shells (receipt notes/_receipts/2026-08-20-210-wave6-laneA-p3-shells.md) AND answers the four structural ones this lane raised: (a) ONE PROGRESS STATEMENT PER SCREEN - shell band vs hosted wizard step rail, ruled once for the library; (b) the TWO-CONTRACT FLYOUT RULE - a name-repeating flyout is decorative/aria-hidden, a destination-carrying flyout is a disclosure/announced - which also answers the #203 rail-tooltip question; (c) the phone-bar SHORT-NAME convention or a cap-at-four with a More disclosure (measured: four short names fit a 390px bar with zero truncation, five long ones truncate to 62px boxes); (d) whether scroll-margin-top against sticky regions becomes a library-wide rule or a gate. Carried unruled and NOT closed by this lane: the breakpoint scale, and whether a shell belongs in knowledge/snippets at all.
+> - `W-84` **wave-6 Layer-2 SIXTEEN P3 organisms BUILT PROPOSED (4 shells + 5 templates + 7 lock-ups) - Daves eye + ~33 questions owed; row 124 variant-matrices DEFERRED to Dave** — *closes when:* Dave rules per organism promote/rework/delete across the sixteen (receipts wave6-lane{A,B,C,D}) AND rules row 124 in-or-out (variant matrices - review artefact not component, excluded from the wave on that reading); the lane-A structural four (progress-statement-per-screen, flyout two-contract rule, phone-bar short-name convention, scroll-margin-vs-sticky gate) and lane-B gate candidates ride with it
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -138,7 +143,7 @@
 
 ---
 
-*(Chain ends. **35,038 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **36,257 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 90,796 real and stays whole for retrieval; you have paid for
-39% of it, and that is the intended figure, not a shortfall.)*
+40% of it, and that is the intended figure, not a shortfall.)*

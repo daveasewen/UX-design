@@ -1,0 +1,285 @@
+{
+  "name": "App shell — split",
+  "category": "template",
+  "$layer": "2 Shell",
+  "$layerKeyIsDollarPrefixed": "⚠ A PLAIN `layer` KEY FAILS P-1. knowledge/components/meta.schema.json sets additionalProperties:false with patternProperties {\"^\\\\$\": {}} and has no `layer` property, so `$layer` is the only legal form. Wave 5 found this by DRIVING the probe, not by reading; carried here rather than re-discovered. Same rule for every other custom key in this file — and note that `relationships` permits exactly four keys and has NO ^$ escape, so nothing custom may go inside it. The legal home for a consumes list is the top-level `$consumes`.",
+  "$categoryChoice": "`template` is the closest LEGAL value in the schema's enum (atom · molecule · organism · template · page). There is no `shell` value and inventing one fails the gate. DECLARED AS A COMPROMISE, not presented as correct — see $decisionsForDave.",
+  "purpose": "The page frame for a task that needs two things on screen at once, with neither subordinate to the other: a payment file beside its validation report, a document beside its history, a monitor above its log. The user, not the layout, decides how the room is divided, and the division is published as a percentage so it survives a resize and an axis change.",
+  "$status": "PROPOSED #210, 2026-08-20 (Wave 6, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. Itinerary row 100, P3, notes cell 'Two-pane.' Registered nowhere.",
+  "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. The outer frame is a WHOLE SHELL (App-shell-top-nav) rather than a set of atoms, and the body is Splitter. Every region is named in $copiedFrom so a reviewer can diff it. NO PARENT FILE WAS EDITED.",
+  "props": [
+    {
+      "name": "orientation",
+      "type": "enum",
+      "values": [
+        "horizontal",
+        "vertical"
+      ],
+      "default": "horizontal",
+      "$note": "The AUTHORED axis. ⚠ It is a starting value, not a binding one: the container query rewrites the live axis through the `--axis` custom property and the script reads that, so a shell authored `horizontal` becomes `vertical` below 900cqi and the key map, the aria-orientation and the measurement axis all turn with it.",
+      "$status": "PROPOSED #210"
+    }
+  ],
+  "variants": [
+    {
+      "name": "horizontal",
+      "use": "two peer workspaces read side by side — a list of rows and the report about them"
+    },
+    {
+      "name": "vertical",
+      "use": "a live surface above its trail — a run monitor over its event log, where the lower pane grows and the upper one does not"
+    }
+  ],
+  "slots": {
+    "chrome": {
+      "accepts": {
+        "capability": [
+          "site-navigation",
+          "ancestor-trail"
+        ],
+        "tier": [
+          "organism"
+        ]
+      },
+      "required": true,
+      "use": "masthead + trail, inherited whole from App-shell-top-nav",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Navigations · Breadcrumbs. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "paneA": {
+      "accepts": {
+        "capability": [
+          "tabular-data",
+          "record-list"
+        ],
+        "tier": [
+          "organism"
+        ]
+      },
+      "required": true,
+      "use": "one of two COEQUAL panes. Rendered here as neutral placeholder furniture.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Table · Data-grid · List-items · Document-row. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "paneB": {
+      "accepts": {
+        "capability": [
+          "tabular-data",
+          "record-list",
+          "summary"
+        ],
+        "tier": [
+          "organism"
+        ]
+      },
+      "required": true,
+      "use": "the other coequal pane. Same class, same chrome, same fence — that is what coequal means here.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Table · Data-grid · List-items · Summary. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "endMatter": {
+      "accepts": {
+        "capability": [
+          "end-matter"
+        ],
+        "tier": [
+          "organism"
+        ]
+      },
+      "required": false,
+      "use": "Footer in its slim form",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Footer. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    }
+  },
+  "tokens": {
+    "page": "background/default",
+    "surface": "tertiary/background/default — the chrome bands and the pane heads",
+    "band": "surface/subtle — the end matter",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "icon": "icon/default",
+    "rule": "divider/border/section — between bands, and the divider's resting colour",
+    "subRule": "divider/border/subsection — inside a band",
+    "hover": "tertiary/background/hover",
+    "pressed": "form/background/pressed",
+    "indicator": "primary/border/default — the current-nav mark, Navigations' own approved bar",
+    "bone": "tertiary/background/hover — the placeholder furniture",
+    "overlay": "overlay/version1 — the off-canvas scrim, Drawer's own value",
+    "dividerHover": "form/border/default — Splitter's own",
+    "dividerActive": "form/border/active — Splitter's own, the dragging state",
+    "grip": "form/border/default — Splitter's own",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface · border-radius/control · border-radius/indicator",
+    "target": "target/min (44px)",
+    "$rag": "NONE. No RAG value is painted anywhere. A shell has no status to carry. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are untouched; the only red is primary/border/default on the current-nav mark.",
+    "$provenance": "`python3 knowledge/gen_snippet_tokens.py --check` reports 0 value(s) would change across 4696 manifest bindings — stronger than 'the gate passes': the generator that projects tokens into theme blocks would change nothing, so no hex here was hand-typed."
+  },
+  "$copiedFrom": [
+    "App-shell-top-nav.reference.html — THE ENTIRE OUTER FRAME: the `.sh` container-query box, `.sh-skip`, `.sh-masthead` and its 64px nav links with the inset red current bar, the 44x44 `.sh-actions` buttons, the two-class `.sh .sh-menu` form, `.sh-crumbs` with its declared 44px hit-area addition, `.sh-foot`/`.sh-legal` INCLUDING the `.sh-legal li{display:flex}` line that is a measured defect repair, and the `.sh-scrim`/`.sh-sheet` off-canvas mechanics with their four-step open sequence and document-level Escape listener.",
+    "Splitter.reference.html — THE BODY: the `.sp` three-track grid (--pri/--div/1fr), the --min-pri/--min-sec fences, `.sp-div` as role=separator with a PERCENTAGE aria-valuenow, the 24px ::before pointer target, the three-stroke grip carried with its own data-bespoke reason string unchanged, pointer capture, the arrow/Home/End/Enter/F6 key map, and the re-derive-from-the-ratio resize rule.",
+    "Skeleton-loader.reference.html — the bone shape kit (.line 16 / .body 24 / .media 160 / .control 44x120, --bone = tertiary/background/hover). The shimmer and the role=status are NOT copied.",
+    "Navigations.reference.html (via App-shell-top-nav) — masthead geometry and the current-item mark.",
+    "Breadcrumbs.reference.html (via App-shell-top-nav) — the trail atom.",
+    "Footer.reference.html (via App-shell-top-nav) — the slim legal bar and the a.lnk atom.",
+    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical."
+  ],
+  "$finding-axis-is-a-token": "★★ THE AXIS IS A CSS CUSTOM PROPERTY AND THE SCRIPT READS THE COMPUTED VALUE, NOT THE ATTRIBUTE. `--axis: x|y` is written by the container query; getComputedStyle(sp).getPropertyValue('--axis') decides the key map, the published aria-orientation and the measurement axis. Splitter's own script read `sp.dataset.orientation` ONCE at wire time, which is correct for a component that never changes axis and wrong for a shell that does. Branching on the attribute would let the CSS and the script disagree the instant the query fired — the class of bug no gate can see. A ResizeObserver re-reads it and re-publishes. MEASURED across three container widths: 1352 -> axis x, tracks '638px 8px 638px', aria-orientation vertical · 852 -> axis y, tracks turned, aria-orientation horizontal · 512 -> display flex, divider display:none, tabbable separators 0.",
+  "$finding-coequality-is-constructed": "SPLIT IS NOT MULTI-COLUMN AND THE DIFFERENCE IS ENFORCED, NOT ASSERTED. Multi-column is a ranked master-detail cascade; a split is two peers. Coequality is checkable and was checked: ONE `.sh-pane` class used twice (`.is-primary` count in the document = 0), pane head heights [48, 48], and --min-pri == --min-sec == 240px. A reviewer who wants one pane subordinate wants App-shell-multi-column.",
+  "$finding-separator-removed-on-phones": "THE SEPARATOR IS REMOVED BELOW 600cqi AND THAT IS AN ACCESSIBILITY DECISION, NOT A LAYOUT SHORTCUT. `display:none` takes it out of the accessibility tree as well as the picture. A drag-to-resize control is unusable by touch at phone size and offers arrow-key adjustment to a user with no arrow keys. MEASURED at a 392px container: tabbable separators = 0. The alternative (keep it, shrink it) was drawn and rejected. ⚠ A consequence, declared: a hidden separator publishes nothing, so its authored aria-orientation attribute goes stale — harmless, because a display:none element is not in the tree, but it is a stale attribute and it is named rather than tidied.",
+  "$finding-hit-area-caught-by-driving": "⚠ A REAL DEFECT, FOUND BY A DRIVEN HIT-AREA SWEEP AND BY NOTHING ELSE. The pane-head action buttons were authored 36x36 to sit inside a 48px band. 36px clears WCAG 2.5.8's 24px floor and EVERY GATE IN THIS REPO WAS GREEN OVER IT, because no gate reads target/min for hit area — the same blind spot App-shell-top-nav found on Breadcrumbs. A 44px control fits a 48px band with 2px to spare, so there was never a reason to shrink it. Measured before 36.0 x 36.0, after 44.0 x 44.0, and the post-repair sweep names only the two separators.",
+  "$finding-separator-target-inherited": "THE 24px SEPARATOR TARGET IS SPLITTER'S OWN INHERITED-RESTRAINT CALL, CARRIED UNCHANGED AND DECLARED. Every other interactive element in this file measures >= 44px. The separator's ::before is 24px, which meets WCAG 2.5.8 and not the repo's own target/min. That divergence belongs to the parent; it is not repaired here and it is named as an open question.",
+  "$finding-type-divergence": "No raw font-family, font-size or font-weight appears anywhere in component scope; every text element carries a canon/type.css composite applied in the MARKUP (the T-D14 route). Probe: `python3 knowledge/_validate_type_composites.py | grep -c App-shell-split` -> 0, with the total reading exactly 1097. Ratchet contribution: 0.",
+  "$finding-breakpoints-unruled": "⚠ 900cqi AND 600cqi ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS, and this file DELIBERATELY REUSES App-shell-top-nav's pair rather than choosing a fourth. Wave 5 shipped three shells with three different pairs (900/600, 1040/720, 1200/840) and named that as its biggest open question; adding to the spread would have made it worse. Probe: python3 -c \"import json;print('breakpoint' in json.dumps(json.load(open('knowledge/tokens/layout.json'))).lower())\" -> False.",
+  "relationships": {
+    "livesInside": [
+      "nothing — this IS the outermost frame"
+    ],
+    "commonPatterns": [
+      "review and reconcile screens",
+      "authoring beside preview",
+      "a live surface above its log"
+    ],
+    "mustNotNeighbour": []
+  },
+  "$consumes": [
+    "App-shell-top-nav",
+    "Splitter",
+    "Skeleton-loader",
+    "Navigations",
+    "Breadcrumbs",
+    "Footer",
+    "Drawer"
+  ],
+  "$relationshipsNote": "May legitimately contain an Action-bar inside either pane — a pane's own action row is not the site footer, and the two can appear together. The 'footer' vocabulary collision Footer's meta declares applies here unchanged.",
+  "accessibility": {
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.1.2",
+      "2.4.1",
+      "2.4.3",
+      "2.4.7",
+      "2.5.8",
+      "2.3.3",
+      "4.1.2"
+    ],
+    "landmarks": "One <header>, <nav aria-label=\"Primary\">, <nav aria-label=\"Breadcrumb\">, <main>, <footer role=\"contentinfo\">. Each pane is a <section aria-labelledby> pointing at its own <h2>.",
+    "separator": "role=\"separator\" with tabindex=0, aria-controls naming the pane it sizes, aria-valuemin/max/now and an aria-valuetext that reads as a percentage. The published value is a PERCENTAGE of the container, so it survives a resize; aria-orientation is re-published whenever the container query turns the axis.",
+    "keyboard": "Arrow keys step 16px (64px with Shift) along the live axis; Home and End run to the fences; Enter collapses and restores; F6 recentres. MEASURED: 50 -> 55 after four ArrowRight; Home lands on 19, not 0, because the 240px fence wins — which is the proof the two input paths share one clamp.",
+    "bypassBlock": "A skip link is the first focusable element, visible only on focus, targeting <main>. SC 2.4.1.",
+    "disclosure": "The menu button carries aria-expanded + aria-controls; the sheet is role=dialog aria-modal with the background inert. MEASURED at 420px: closed {tabbableOutside 10} -> open {focusInSheet true, active 'Close main menu', tabbableOutside 0} -> Escape {active 'Open main menu', tabbableOutside 10}.",
+    "targetSize": "Every interactive element measures >= 44px EXCEPT the separator, whose ::before is 24px — Splitter's declared inherited-restraint call, carried and named. Driven sweep after repair returns only the two separators.",
+    "colourIsNeverAlone": "Links are underlined, not coloured. The current destination is marked by shape and surface as well as hue. The separator carries a grip SHAPE as well as a contrast change.",
+    "reducedMotion": "prefers-reduced-motion: reduce collapses every transition to 0.01ms. The divider itself is deliberately not animated at any setting — a dragged thing that lags its pointer is a broken thing."
+  },
+  "responsive": {
+    "mechanism": "CONTAINER queries on the shell (container-type:inline-size, container-name:shell), never viewport queries. s210-D3. ⚠ Every rule targets a DESCENDANT of .sh; an element is a query container for what is inside it and never for itself, and a rule that forgets this never fires while looking entirely plausible in a screenshot.",
+    "full": ">= 900cqi — side by side, a vertical divider the user can drag. MEASURED at a 1352px container: tracks '638px 8px 638px', separator tabbable.",
+    "compact": "600–899cqi — the panes STACK, the same divider becomes horizontal, the same percentage is preserved, aria-orientation and the key map turn with it. MEASURED at 852: axis y, tracks turned, aria-orientation 'horizontal'.",
+    "phone": "< 600cqi — the divider is removed from the page and from the a11y tree, the panes fall to natural height in document order, and the shell scrolls as one column. MEASURED at 512 and at a 392px container inside a 1400px viewport: display flex, divider display:none, tabbable separators 0.",
+    "$proof": "The third specimen is a 392px CONTAINER at the same viewport as the two wide ones and it is fully collapsed while they are not. That is the container-not-viewport proof, in one still.",
+    "$status": "PROPOSED #210, Dave's eye owed"
+  },
+  "dimensions": {
+    "mastheadHeight": 64,
+    "paneHeadHeight": 48,
+    "dividerThickness": 8,
+    "dividerPointerTarget": 24,
+    "paneMinimum": 240,
+    "sidePaddingWide": 32,
+    "sidePaddingCompact": 16,
+    "sheetWidth": 296,
+    "targetMin": 44,
+    "$note": "mastheadHeight 64 is Navigations'. dividerThickness 8 and the 24px pointer target are Splitter's. paneMinimum 240 is this file's and it is SYMMETRIC on purpose — Splitter ships 160/160; a pane carrying a table needs more, and both panes get the same more."
+  },
+  "antiPatterns": [
+    "Never use a split where one pane drives the other. That is App-shell-multi-column, and it has a rail, a list and a detail for a reason.",
+    "Never give the two panes different chrome. The moment one has a toolbar the other lacks, the user reads it as the important one and the component has become something else.",
+    "Never make the fences asymmetric. An asymmetric fence is a ranking expressed in pixels.",
+    "Never publish the divider's position in pixels. Pixels do not survive a resize, an axis change, a hidden tab panel or a print stylesheet — the percentage is the thing the user chose.",
+    "Never keep a drag-to-resize separator at phone width. It cannot be operated by touch with any precision and it offers arrow keys to a device that has none.",
+    "Never put a third pane in. A split is two."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/*.json via the snippet's own #token-manifest, resolved through _validate_snippets.resolve()",
+    "result": "PASS — snippet gate 135 snippet(s) 0 failure(s); grid gate PASS (151 files); a11y gate 0 failures; descender-clip gate PASS; type gate contribution 0 with the total at exactly 1097; P-1 findings=0; icon-source 0 UNKNOWN; gen_snippet_tokens --check reports 0 values would change.",
+    "declaredAbsence": "No RAG pair is declared because no RAG value is painted. The declared pairs are the seven neutral ones.",
+    "notRun": "_validate_state_contrast.py was NOT run: a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md, which is outside this lane's fence. OWED. _validate_kg.py was not run either — the conductor's.",
+    "failing": "⛔ _validate_binds_resolve.py check D FAILS for this file: no .cn-app-shell-split block exists in canon/canon.css, so theme-cascade projection is silently OFF and only the light and dark legs authored in the snippet have been seen. Console, Legacy and Supercharge are UNPROVEN. 16 files fail check D in total; 4 are this lane's and 12 are sibling lanes'. The canon block is the conductor's.",
+    "notRegistered": "Absent from knowledge/component-types.json, CATEGORIES, gen_showroom.py and _validate_radius.MIGRATED_SNIPPETS — all shared files, outside a worker lane's fence.",
+    "renderProof": "See notes/_receipts/2026-08-20-210-wave6-laneA-p3-shells.md for the driven figures at three container widths, both themes, with the mutation controls."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 100, 'App shell — split', Shells (Layer 2), P3, notes cell 'Two-pane.' Derived verdict NO-ARTEFACT-CLASS (reviews/ITINERARY-STATUS-2026-08-19-v1.json). Built #210 wave 6 lane A."
+  },
+  "interactive": true,
+  "stateModel": "simple",
+  "$decisionsForDave": [
+    "1 · THE BREAKPOINT SCALE, and it is the wave's biggest open item rather than this file's. layout.json has no breakpoint scale. This lane's four shells all reuse App-shell-top-nav's 900/600 pair rather than adding to wave 5's three-way spread — but reusing an unruled number is not the same as having one.",
+    "2 · DOES A SHELL BELONG IN knowledge/snippets/ AT ALL? Carried from wave 5 unchanged. The evidence for is that the existing gates watch these files for free and caught two real defects in this lane. The evidence against is that the showroom, the KG and component-types.json all assume components.",
+    "3 · THE SEPARATOR AT PHONE WIDTH. Drawn as removed entirely — from the picture and from the accessibility tree. The alternatives are: keep it and shrink it; keep it and make it keyboard-only; replace it with a preset 50/50 – 70/30 control. Removal is PROPOSED, not ruled.",
+    "4 · SHOULD SPLITTER ITSELF GROW 44px ON ITS SEPARATOR? Its ::before is 24px by an inherited-restraint argument. Every other control this repo ships is 44. A worker lane could not touch a gated file to find out.",
+    "5 · SHOULD THE AXIS-AS-A-CUSTOM-PROPERTY PATTERN GO BACK INTO Splitter? It is strictly more general than reading the attribute once, and any splitter that ever meets a container query needs it.",
+    "6 · WHAT ARE THE TWO PANES CALLED? Drawn as 'Uploaded file' / 'Validation report' and 'Run monitor' / 'Event log'. Every one is placeholder domain prose, PROPOSED under s182-D2, and none is a semantic this lane is entitled to mint.",
+    "7 · SHOULD THE SPLIT REMEMBER ITS POSITION between visits? The percentage is the right unit to persist, but persistence is a product decision and nothing here writes storage."
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:App-shell-split.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:nothing-this-is-the-outermost-frame",
+        "$note": "nothing — this IS the outermost frame"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:review-and-reconcile-screens"
+      },
+      {
+        "ref": "pattern:authoring-beside-preview"
+      },
+      {
+        "ref": "pattern:a-live-surface-above-its-log"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:app-shell-top-nav",
+        "$note": "App-shell-top-nav"
+      },
+      {
+        "ref": "component:splitter",
+        "$note": "Splitter"
+      },
+      {
+        "ref": "component:skeleton-loader",
+        "$note": "Skeleton-loader"
+      },
+      {
+        "ref": "component:navigations",
+        "$note": "Navigations"
+      },
+      {
+        "ref": "component:breadcrumbs",
+        "$note": "Breadcrumbs"
+      },
+      {
+        "ref": "component:footer",
+        "$note": "Footer"
+      },
+      {
+        "ref": "component:drawer",
+        "$note": "Drawer"
+      }
+    ]
+  }
+}

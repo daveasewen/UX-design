@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App shell — doormat (mega-footer) nav (reference implementation, PROPOSED #210)</title>
+<!--
+  ⚠⚠ PROPOSED #210, 2026-08-20 (Wave 6, Lane A). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. Itinerary row 102 ("App shell — doormat
+  (mega-footer) nav", Shells (Layer 2), P3, notes cell "Marketing frame."). Derived class
+  NO-ARTEFACT-CLASS — ships in the wave-5 PROPOSED snippet+meta grammar; registers nothing.
+
+  ★★ COMPOSE, NEVER RE-DRAW. Named so a reviewer can diff every region:
+    · THE FRAME AND ITS MASTHEAD — App-shell-top-nav.reference.html (#210, wave 5, PROPOSED),
+      verbatim: the `.sh` container-query box, the skip link, the `.sh-masthead` row and its
+      64px nav links with the inset red current mark, the 44x44 action buttons, the two-class
+      `.sh .sh-menu` form, the off-canvas `.sh-scrim`/`.sh-sheet` with its four-step open
+      sequence and document-level Escape listener.
+    · THE DOORMAT — Footer.reference.html, its FULL (non-slim) form, verbatim: `.ft-inner`
+      1120px measure, `.ft-brand` statement block, `.ft-mat`
+      `repeat(auto-fit, minmax(180px,1fr))`, the named `<nav aria-labelledby>` groups, the
+      44px-at-every-width link rule, the `a.lnk` atom Footer itself took from Links, the
+      `a.arrow` back-to-top link with its em-scaled tip, the `.ft-legal` bar, and Footer's own
+      `@container (max-width:560px)` stacking rule.
+    · THE SCROLLING STAGE — Back-to-top.reference.html's `.btt-stage`/`.btt-content` shape:
+      an internally-scrollable frame so a sticky masthead and a back-to-top control can be
+      REVIEWED without scrolling the whole page. Demo chrome in the parent; here it is the
+      shell's own scroll container, which is what makes `position:sticky` meaningful at all.
+    · THE CONTENT FURNITURE — Skeleton-loader.reference.html's shape kit, announcement NOT
+      copied (App-shell-top-nav's reasoning, inherited).
+  ⛔ NO PARENT FILE WAS EDITED. Not one.
+
+  ★★ WHAT A DOORMAT SHELL IS FOR, AND IT IS AN ARGUMENT ABOUT WHERE NAVIGATION LIVES. A
+  marketing or servicing site has more destinations than a masthead can hold. The doormat
+  shell's proposition is: put FOUR in the masthead and everything else in the mat, so the top
+  of the page stays legible and the bottom of the page does real work.
+  ⚠⚠ AND FOOTER'S OWN META ALREADY RULES ON THE FAILURE MODE — verbatim: "a doormat that
+  duplicates the masthead is a doormat that has stopped being read". This shell therefore
+  makes non-duplication a MEASURABLE property, not an intention: the intersection of the
+  masthead's link texts and the mat's link texts is EMPTY, and that is probed in the receipt
+  rather than promised here.
+
+  ⚠⚠ THE STICKY MASTHEAD AND THE DEFECT IT CREATES, WHICH IS THE REAL FINDING IN THIS FILE.
+  A marketing page is long, so the masthead is `position:sticky; top:0`. That is easy. What is
+  NOT easy, and what nothing in this library guarded against before this file, is that
+  **an in-page anchor jump lands its target UNDERNEATH a sticky header**. The browser scrolls
+  the target to the top of the scrollport; the header is drawn over the top of the scrollport;
+  the heading the reader asked for is invisible. Nothing is thrown, nothing looks wrong in a
+  static screenshot, and no gate in this repo can see it.
+  ⇒ THE FIX IS ONE PROPERTY AND IT IS TOKENISED TO THE HEADER'S OWN HEIGHT:
+  `scroll-margin-top: calc(var(--masthead-h) + 4px)` on every in-page anchor target. MEASURED
+  in the receipt: after activating an in-page link, the target's top edge is BELOW the
+  masthead's bottom edge — with a mutation control showing the same probe FAILING when the
+  property is removed. ⚠ The `+ 4px` is not decoration: the bare `var(--masthead-h)` form
+  measured ONE PIXEL SHORT when driven, and the grid step both buys the clearance a heading
+  wants under a band and absorbs the sub-pixel.
+  This is the [[instrument-without-a-consumer]] discipline: the fence was crossed
+  before it was declared.
+
+  THE RESPONSIVE COLLAPSE. Container queries, never viewport queries (`s210-D3`):
+    · >= 900cqi  — the four masthead destinations sit in the row; the mat auto-fits to four
+      columns at 1120px of measure.
+    · 600–899cqi — the destinations leave the row for a 44x44 menu button; the mat auto-fits
+      to two columns WITH NO QUERY OF ITS OWN (that is `auto-fit`/`minmax`, Footer's line,
+      and it is why the mat needs no breakpoint).
+    · < 600cqi   — the menu button opens the off-canvas sheet; the mat is one column; the
+      legal bar stacks under Footer's OWN `@container (max-width:560px)` rule, which fires
+      because `.sh-doormat` declares `container-type:inline-size` and is therefore the nearest
+      container to it. ⚠ THAT IS A SECOND, NESTED CONTAINER CONTEXT and it is declared: the
+      560 figure is Footer's, not this file's, and the two thresholds are deliberately NOT
+      the same number because they belong to different owners.
+  ⚠ 900 AND 600 ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS — the same pair
+  App-shell-top-nav, App-shell-split and App-shell-focused use. `layout.json` has no
+  breakpoint scale. See $decision-5.
+
+  ⚠ THE CONTAINER-QUERY SELF-QUERY TRAP: `.sh` is the query container, so no `@container
+  shell` rule below targets `.sh` itself — only descendants. Same for `.sh-doormat` and the
+  borrowed 560 rule. Caught twice in wave 5; MEASURED here, not remembered.
+
+  COLOUR: no RAG value anywhere. The only red is primary/border/default on the current-nav
+  mark, Navigations' own approved bar. Two-red law (`s151-D1`) and the mono error ink camp
+  (`s149-D1`) untouched. SHAPE: square throughout. MOTION: the Drawer spring on the sheet,
+  the arrow tip's 3px lift on hover (Links/Footer's own), smooth scroll on back-to-top —
+  all suppressed under reduced motion.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. BYTE-IDENTICAL to Command-palette.reference.html line 36. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family, font-size or font-weight anywhere in component scope — every text
+     element carries a .t-cm-* / .t-ed-* composite from canon/type.css. Ratchet contribution: 0. */
+  :root{ --ease:140ms ease; --spring:240ms cubic-bezier(.2,.8,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF;
+    --surface:#FFFFFF;
+    --band:#F0F0F0;
+    --text:#1A1A1A;
+    --muted:#1A1A1A;
+    --icon:#1A1A1A;
+    --rule:#E1E1E1;
+    --sub-rule:#F0F0F0;
+    --hover:#F0F0F0;
+    --pressed:#CECECE;
+    --indicator:#DB0011;
+    --bone:#F0F0F0;
+    --overlay:#00000080;
+    --focus:#305A85;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --surface:#1F1F1F;
+    --band:#1F1F1F;
+    --text:#FFFFFF;
+    --muted:#FFFFFF;
+    --icon:#FFFFFF;
+    --rule:#808080;
+    --sub-rule:#808080;
+    --hover:#232323;
+    --pressed:#484848;
+    --indicator:#DB0011;
+    --bone:#232323;
+    --overlay:#00000080;
+    --focus:#4587A7;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:32px 24px; background:var(--page); color:var(--text);
+       -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted); opacity:var(--alpha-60); margin:0 0 8px;}
+  .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+
+  /* ============================================================================================
+     THE SHELL FRAME — the `.sh` box copied from App-shell-top-nav.reference.html, with ONE
+     structural addition: an internal scroll container, so `position:sticky` has a scrollport.
+     ============================================================================================ */
+  .sh{position:relative; display:flex; flex-direction:column; height:640px;
+      container-type:inline-size; container-name:shell;
+      background:var(--page); color:var(--text);
+      border:1px solid var(--rule); border-radius:var(--border-radius-surface); overflow:hidden;
+      --masthead-h:64px;}   /* ⚠ ONE source of truth: the sticky offset and scroll-margin both read it */
+  .sh.is-narrow{width:392px;}   /* a deliberately narrow CONTAINER, so the collapse is visible in one still */
+
+  /* THE SCROLLPORT — Back-to-top's `.btt-stage`/`.btt-content` shape. `position:sticky` is
+     relative to the nearest SCROLLING ancestor, so without this the masthead would stick to the
+     page's own scroll and the specimen would prove nothing. */
+  .sh-scroll{flex:1; min-height:0; overflow-y:auto; scroll-behavior:smooth;}
+
+  /* skip link — WCAG 2.4.1 bypass block. Visible only on focus. */
+  .sh-skip{position:absolute; top:8px; left:8px; z-index:9; display:inline-flex; align-items:center;
+    min-height:var(--target-min); padding:0 16px; background:var(--surface); color:var(--text);
+    border:1px solid var(--rule); border-radius:var(--border-radius-control);
+    text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+    transform:translateY(-200%); transition:transform var(--ease);}
+  .sh-skip:focus-visible{transform:translateY(0); outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ---- masthead row — geometry copied from Navigations via App-shell-top-nav, now STICKY ---- */
+  .sh-masthead{position:sticky; top:0; z-index:5;
+    display:flex; align-items:center; gap:28px; min-height:var(--masthead-h); padding:0 32px;
+    background:var(--surface); border-bottom:1px solid var(--rule); flex:none;}
+  .sh-logo{color:var(--indicator); flex:none;}
+  .sh-nav{display:flex; gap:4px; margin-right:auto;}
+  .sh-nav a{padding:0 12px; min-height:var(--masthead-h); display:inline-flex; align-items:center;
+    color:var(--text); text-decoration:none;}
+  .sh-nav a:hover{background:var(--hover);}
+  .sh-nav a:active{background:var(--pressed);}
+  .sh-nav a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--indicator);}
+  .sh-nav a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-actions{display:flex; gap:8px; flex:none;}
+  .sh-actions button{width:var(--target-min); height:var(--target-min); border:0; background:transparent;
+    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-control);}
+  .sh-actions button:hover{background:var(--hover);}
+  .sh-actions button:active{background:var(--pressed);}
+  .sh-actions button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-actions svg{width:20px; height:20px; fill:currentColor;}
+  /* TWO-CLASS FORM, carried verbatim with App-shell-top-nav's reasoning. */
+  .sh .sh-menu{display:none;}
+
+  /* ---- the page body ---- */
+  .sh-main{padding:32px; display:flex; flex-direction:column; gap:32px;}
+  .sh-main h1{margin:0;}
+  .sh-sec{display:flex; flex-direction:column; gap:12px;}
+  .sh-sec h2{margin:0;}
+  /* ⚠⚠ THE ONE PROPERTY THAT KEEPS AN IN-PAGE JUMP OUT FROM UNDER THE STICKY MASTHEAD.
+     Without it the browser puts the target at the top of the scrollport and the masthead is
+     drawn over the top of the scrollport, so the reader lands on a heading they cannot see.
+     Tokenised to the header's own height so the two cannot drift apart. MEASURED, with a
+     mutation control, in the receipt.
+     ⚠⚠ AND IT IS `+ 4px`, NOT A BARE `var(--masthead-h)`, BECAUSE THE MUTATION CONTROL CAUGHT
+     THE BARE FORM ONE PIXEL SHORT. Driven at #210: with `scroll-margin-top:64px` the target
+     landed at 64.0 against a masthead bottom edge of 65.0 — `targetClearsMasthead: false`, by
+     1px. A heading flush against the underside of a sticky band is the wrong answer anyway, so
+     the remedy is the 4px grid step rather than a hunt for the missing pixel: it buys the
+     clearance AND absorbs the sub-pixel. ⇒ ★ THE FIX WAS ONLY VISIBLE BECAUSE THE PROBE
+     CARRIED AN EXPECTED VALUE (`targetTop >= mastheadBottom`) rather than a screenshot. */
+  .sh-sec, .sh-main h1{scroll-margin-top:calc(var(--masthead-h) + 4px);}
+  .sh-jump{display:flex; flex-wrap:wrap; gap:0 24px; list-style:none; margin:0; padding:0;}
+  .sh-jump li{display:flex;}
+  .sh-jump a{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .sh-jump a:hover{text-decoration-thickness:2px;}
+  .sh-jump a:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+
+  /* bone shape kit — geometry copied from Skeleton-loader.reference.html; shimmer + role NOT copied */
+  .bone{display:block; background:var(--bone); border-radius:var(--border-radius-indicator);}
+  .bone.line{height:16px;}
+  .bone.body{height:24px;}
+  .bone.media{height:160px;}
+  .bone.control{height:44px; width:120px;}
+
+  /* ============================================================================================
+     THE DOORMAT — Footer.reference.html's full form, verbatim, given its own container context
+     so the parent's OWN 560px rule fires against the doormat's width and not the window's.
+     ============================================================================================ */
+  .sh-doormat{background:var(--band); color:var(--text); border-top:1px solid var(--rule);
+    container-type:inline-size;}
+  .ft-inner{max-width:1120px; margin:0 auto; padding:32px 16px;}   /* 16px = layout/app/margin */
+  .ft-mat{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:24px 16px;}
+  .ft-group > h2{margin:0 0 4px; opacity:var(--alpha-60);}
+  .ft-group ul{list-style:none; margin:0; padding:0;}
+  /* EVERY footer link is a full 44px target, at EVERY width — Footer's own declared decision,
+     stricter than the gated Links .related pattern, and it makes a doormat measurably taller. */
+  .ft-group a{display:flex; align-items:center; min-height:var(--target-min); padding:0;}
+
+  /* ---- the link atom, copied verbatim from Links.reference.html via Footer ---- */
+  a.lnk{color:var(--text); text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; border-radius:var(--border-radius-control);
+    transition:text-decoration-thickness var(--ease);}
+  a.lnk:hover{text-decoration-thickness:2px;}
+  a.lnk:active{text-decoration-thickness:2px;}          /* pressed == hover (combined state) */
+  a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+  /* current page — WEIGHT plus a persistent thick underline, never colour alone (1.4.1). The
+     weight arrives by the `.em` composite modifier in MARKUP, not by a declaration here. */
+  a.lnk[aria-current="page"]{text-decoration-thickness:2px;}
+  /* ARROW link — Links.reference.html via Footer, verbatim; the tip is em-scaled so it tracks type */
+  a.arrow{display:inline-flex; align-items:center; gap:4px; text-decoration:none; color:var(--text);
+    min-height:var(--target-min);}
+  a.arrow .tip{display:inline-flex; color:var(--icon); transition:transform var(--ease);}
+  a.arrow .tip svg{width:.85em; height:.85em; display:block; fill:currentColor;}
+  a.arrow:hover .tip,a.arrow:active .tip{transform:translateY(-3px);}
+  a.arrow:hover .lbl,a.arrow:active .lbl{text-decoration:underline; text-underline-offset:3px;}
+  a.arrow:focus-visible{outline:none;}
+  a.arrow:focus-visible .lbl{box-shadow:inset 0 -3px 0 var(--text);}
+
+  .ft-brand{display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between;
+    gap:16px; padding-bottom:24px; margin-bottom:24px; border-bottom:1px solid var(--sub-rule);}
+  .ft-brand p{margin:0; max-width:52ch; color:var(--muted); opacity:var(--alpha-84);}
+
+  .ft-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;
+    padding-top:24px; margin-top:24px; border-top:1px solid var(--sub-rule);}
+  .ft-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;
+    flex:1 1 auto;}
+  /* ⚠ App-shell-top-nav's measured repair, applied to Footer's OWN legal bar for the same
+     reason: once the bar becomes a column, an inline-flex child's min-height cannot grow its
+     <li>'s line box and the links render on top of one another. Footer never hits this because
+     its own stacked rule keeps the <li> in flow at full page width; inside a 392px shell it
+     does hit it. */
+  .ft-legal li{display:flex;}
+  .ft-legal a{display:inline-flex; align-items:center; min-height:var(--target-min);}
+  .ft-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto;}
+
+  /* Footer's OWN narrow rule, copied verbatim. ⚠ 560 IS FOOTER'S NUMBER, NOT THIS FILE'S, and
+     it resolves against `.sh-doormat` because that is the nearest container. Declared. */
+  @container (max-width: 560px){
+    .ft-mat{grid-template-columns:1fr; gap:16px;}
+    .ft-legal{flex-direction:column; align-items:flex-start; gap:0;}
+    .ft-legal ul{flex-direction:column; gap:0;}
+  }
+
+  /* ---- off-canvas nav — Drawer mechanics via App-shell-top-nav, verbatim ---- */
+  .sh-scrim{position:absolute; inset:0; z-index:6; background:var(--overlay); opacity:0;
+    visibility:hidden; transition:opacity var(--spring), visibility var(--spring);}
+  .sh-scrim.open{opacity:1; visibility:visible;}
+  .sh-sheet{position:absolute; top:0; left:0; bottom:0; z-index:7; width:296px; max-width:88%;
+    background:var(--surface); border-right:1px solid var(--rule);
+    display:flex; flex-direction:column; transform:translateX(-100%); visibility:hidden;
+    transition:transform var(--spring), visibility var(--spring);}
+  .sh-sheet.open{transform:translateX(0); visibility:visible;}
+  .sh-sheet-head{display:flex; align-items:center; justify-content:space-between; gap:8px;
+    min-height:64px; padding:0 8px 0 24px; border-bottom:1px solid var(--sub-rule); flex:none;}
+  .sh-sheet-body{flex:1; overflow-y:auto; padding:8px 0;}
+  .sh-sheet-body ul{list-style:none; margin:0; padding:0;}
+  .sh-sheet-body a{display:flex; align-items:center; min-height:var(--target-min); padding:0 24px;
+    color:var(--text); text-decoration:none;}
+  .sh-sheet-body a:hover{background:var(--hover);}
+  .sh-sheet-body a:active{background:var(--pressed);}
+  .sh-sheet-body a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-sheet-body a[aria-current="page"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+  .sh-close{width:var(--target-min); height:var(--target-min); border:0; background:transparent;
+    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-control);}
+  .sh-close:hover{background:var(--hover);}
+  .sh-close:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-close svg{width:16px; height:16px; fill:currentColor;}
+
+  /* ============================================================================================
+     THE COLLAPSE — CONTAINER queries. ⚠ EVERY RULE TARGETS A DESCENDANT OF `.sh`, NEVER `.sh`.
+     ⚠ AND THE MAT IS ABSENT FROM BOTH BANDS ON PURPOSE: `auto-fit`/`minmax(180px,1fr)` is
+     Footer's line and it re-flows 4 -> 2 -> 1 with no query at all. A breakpoint that
+     duplicates an intrinsic behaviour is a breakpoint that will one day contradict it.
+     ============================================================================================ */
+  @container shell (max-width: 899px){
+    .sh-masthead{gap:16px; padding:0 16px;}
+    .sh-masthead .sh-nav{display:none;}
+    .sh .sh-menu{display:inline-flex;}
+    .sh-logo{margin-right:auto;}
+    .sh-main{padding:24px 16px;}
+    .ft-inner{padding:24px 16px;}
+  }
+  @container shell (max-width: 599px){
+    .sh-main{gap:24px;}
+    .sh-jump{flex-direction:column; gap:0;}
+  }
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users).
+     ⚠ `scroll-behavior:smooth` on the scrollport is named as well as covered by the blanket
+     rule: a smooth scroll is motion the user did not ask for, and it is the one thing in this
+     file that moves a whole page. */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .sh-scroll{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol>
+    <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="ft-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="specimens">
+
+    <!-- ============================================================ 1 · FULL DOORMAT, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">Four destinations in the sticky masthead; everything else in the mat at the bottom. Scroll the frame — the masthead pins, and the in-page links land their headings clear of it rather than underneath it.</p>
+
+      <div class="sh" data-form="full" id="shell-full">
+        <a class="sh-skip t-cm-button" href="#main-full">Skip to main content</a>
+
+        <div class="sh-scroll" id="scroll-full">
+          <header class="sh-masthead">
+            <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-full" aria-label="Open main menu" data-menu="shell-full">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
+            </button>
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <nav class="sh-nav" aria-label="Primary">
+              <a class="t-cm-button" href="#" aria-current="page">Personal</a>
+              <a class="t-cm-button" href="#">Business</a>
+              <a class="t-cm-button" href="#">Private</a>
+              <a class="t-cm-button" href="#">Global</a>
+            </nav>
+            <div class="sh-actions">
+              <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+            </div>
+          </header>
+
+          <main class="sh-main" id="main-full">
+            <h1 class="t-ed-heading-2" id="sec-top">Personal banking</h1>
+            <ul class="sh-jump" aria-label="On this page">
+              <li><a class="t-ed-body-small" href="#sec-accounts">Accounts</a></li>
+              <li><a class="t-ed-body-small" href="#sec-borrowing">Borrowing</a></li>
+              <li><a class="t-ed-body-small" href="#sec-protect">Protection</a></li>
+            </ul>
+
+            <section class="sh-sec" id="sec-accounts" aria-labelledby="sec-accounts-h">
+              <h2 class="t-ed-heading-3" id="sec-accounts-h">Accounts</h2>
+              <div aria-hidden="true" style="display:flex; flex-direction:column; gap:12px">
+                <span class="bone media"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:74%"></span>
+                <span class="bone line" style="width:62%"></span>
+              </div>
+            </section>
+
+            <section class="sh-sec" id="sec-borrowing" aria-labelledby="sec-borrowing-h">
+              <h2 class="t-ed-heading-3" id="sec-borrowing-h">Borrowing</h2>
+              <div aria-hidden="true" style="display:flex; flex-direction:column; gap:12px">
+                <span class="bone media"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:68%"></span>
+              </div>
+            </section>
+
+            <section class="sh-sec" id="sec-protect" aria-labelledby="sec-protect-h">
+              <h2 class="t-ed-heading-3" id="sec-protect-h">Protection</h2>
+              <div aria-hidden="true" style="display:flex; flex-direction:column; gap:12px">
+                <span class="bone media"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:80%"></span>
+              </div>
+            </section>
+          </main>
+
+          <footer class="sh-doormat" role="contentinfo" aria-label="Site footer">
+            <div class="ft-inner">
+
+              <div class="ft-brand">
+                <p class="t-ed-body-small">Placeholder statement text. This reference does not invent product or regulatory copy; the words a bank puts here are a content decision.</p>
+                <a class="arrow" href="#sec-top" data-totop="scroll-full"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ft-up"/></svg></span><span class="lbl t-ed-body-small em">Back to top</span></a>
+              </div>
+
+              <div class="ft-mat">
+                <nav class="ft-group" aria-labelledby="dm1">
+                  <h2 class="t-cm-section-label" id="dm1">Current accounts</h2>
+                  <ul>
+                    <li><a class="lnk t-ed-body-small" href="#">Compare current accounts</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Overdrafts</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Student accounts</a></li>
+                  </ul>
+                </nav>
+                <nav class="ft-group" aria-labelledby="dm2">
+                  <h2 class="t-cm-section-label" id="dm2">Saving and investing</h2>
+                  <ul>
+                    <li><a class="lnk t-ed-body-small" href="#">Savings accounts</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Cash ISAs</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Ready-made investments</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Pensions</a></li>
+                  </ul>
+                </nav>
+                <nav class="ft-group" aria-labelledby="dm3">
+                  <h2 class="t-cm-section-label" id="dm3">Help and support</h2>
+                  <ul>
+                    <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Branch and ATM finder</a></li>
+                  </ul>
+                </nav>
+                <nav class="ft-group" aria-labelledby="dm4">
+                  <h2 class="t-cm-section-label" id="dm4">About us</h2>
+                  <ul>
+                    <li><a class="lnk t-ed-body-small" href="#">Who we are</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Newsroom</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+                  </ul>
+                </nav>
+              </div>
+
+              <div class="ft-legal">
+                <ul>
+                  <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+                  <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+                  <li><a class="lnk t-cm-legal" href="#">Cookie preferences</a></li>
+                  <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+                </ul>
+                <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+              </div>
+
+            </div>
+          </footer>
+        </div>
+
+        <div class="sh-scrim" data-scrim="shell-full"></div>
+        <div class="sh-sheet" id="sheet-full" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+          <div class="sh-sheet-head">
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-full">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            </button>
+          </div>
+          <nav class="sh-sheet-body" aria-label="Primary, in menu">
+            <ul>
+              <li><a class="t-cm-button" href="#" aria-current="page">Personal</a></li>
+              <li><a class="t-cm-button" href="#">Business</a></li>
+              <li><a class="t-cm-button" href="#">Private</a></li>
+              <li><a class="t-cm-button" href="#">Global</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ 2 · SHORT MAT, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">Form: short — three groups and no statement block, for a servicing site whose end matter carries less. The same component; the mat's <code class="t-cm-legal">auto-fit</code> re-flows to three columns with no rule changing.</p>
+
+      <div class="sh" data-form="short" id="shell-short">
+        <a class="sh-skip t-cm-button" href="#main-short">Skip to main content</a>
+
+        <div class="sh-scroll" id="scroll-short">
+          <header class="sh-masthead">
+            <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-short" aria-label="Open main menu" data-menu="shell-short">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
+            </button>
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <nav class="sh-nav" aria-label="Primary">
+              <a class="t-cm-button" href="#" aria-current="page">Personal</a>
+              <a class="t-cm-button" href="#">Business</a>
+              <a class="t-cm-button" href="#">Private</a>
+            </nav>
+            <div class="sh-actions">
+              <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+            </div>
+          </header>
+
+          <main class="sh-main" id="main-short">
+            <h1 class="t-ed-heading-2" id="sec-top-short">Everyday banking</h1>
+            <section class="sh-sec" aria-labelledby="short-h">
+              <h2 class="t-ed-heading-3" id="short-h">Overview</h2>
+              <div aria-hidden="true" style="display:flex; flex-direction:column; gap:12px">
+                <span class="bone media"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:70%"></span>
+              </div>
+            </section>
+          </main>
+
+          <footer class="sh-doormat" role="contentinfo" aria-label="Site footer">
+            <div class="ft-inner">
+              <div class="ft-mat">
+                <nav class="ft-group" aria-labelledby="sm1">
+                  <h2 class="t-cm-section-label" id="sm1">Current accounts</h2>
+                  <ul>
+                    <li><a class="lnk t-ed-body-small" href="#">Compare current accounts</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Overdrafts</a></li>
+                  </ul>
+                </nav>
+                <nav class="ft-group" aria-labelledby="sm2">
+                  <h2 class="t-cm-section-label" id="sm2">Help and support</h2>
+                  <ul>
+                    <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Fraud and security</a></li>
+                  </ul>
+                </nav>
+                <nav class="ft-group" aria-labelledby="sm3">
+                  <h2 class="t-cm-section-label" id="sm3">About us</h2>
+                  <ul>
+                    <li><a class="lnk t-ed-body-small" href="#">Who we are</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Careers</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Sustainability</a></li>
+                  </ul>
+                </nav>
+              </div>
+
+              <div class="ft-legal">
+                <ul>
+                  <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+                  <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+                  <li><a class="lnk t-cm-legal" href="#">Accessibility statement</a></li>
+                </ul>
+                <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+
+        <div class="sh-scrim" data-scrim="shell-short"></div>
+        <div class="sh-sheet" id="sheet-short" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+          <div class="sh-sheet-head">
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-short">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            </button>
+          </div>
+          <nav class="sh-sheet-body" aria-label="Primary, in menu">
+            <ul>
+              <li><a class="t-cm-button" href="#" aria-current="page">Personal</a></li>
+              <li><a class="t-cm-button" href="#">Business</a></li>
+              <li><a class="t-cm-button" href="#">Private</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ 3 · THE COLLAPSE, IN ONE STILL -->
+    <div>
+      <p class="spec-note t-cm-caption">The same shell in a 392px container at this same viewport. The destinations have left the row for a menu button, the mat is one column, and the legal bar has stacked under Footer's own 560px rule — which fires against the doormat's width, not the window's. Nothing here is a viewport query.</p>
+
+      <div class="sh is-narrow" data-form="full" id="shell-narrow">
+        <a class="sh-skip t-cm-button" href="#main-narrow">Skip to main content</a>
+
+        <div class="sh-scroll" id="scroll-narrow">
+          <header class="sh-masthead">
+            <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-narrow" aria-label="Open main menu" data-menu="shell-narrow">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
+            </button>
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <nav class="sh-nav" aria-label="Primary">
+              <a class="t-cm-button" href="#" aria-current="page">Personal</a>
+              <a class="t-cm-button" href="#">Business</a>
+              <a class="t-cm-button" href="#">Private</a>
+              <a class="t-cm-button" href="#">Global</a>
+            </nav>
+            <div class="sh-actions">
+              <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+            </div>
+          </header>
+
+          <main class="sh-main" id="main-narrow">
+            <h1 class="t-ed-heading-2" id="sec-top-narrow">Personal banking</h1>
+            <section class="sh-sec" aria-labelledby="narrow-h">
+              <h2 class="t-ed-heading-3" id="narrow-h">Accounts</h2>
+              <div aria-hidden="true" style="display:flex; flex-direction:column; gap:12px">
+                <span class="bone media"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:72%"></span>
+              </div>
+            </section>
+          </main>
+
+          <footer class="sh-doormat" role="contentinfo" aria-label="Site footer">
+            <div class="ft-inner">
+              <div class="ft-mat">
+                <nav class="ft-group" aria-labelledby="nm1">
+                  <h2 class="t-cm-section-label" id="nm1">Current accounts</h2>
+                  <ul>
+                    <li><a class="lnk t-ed-body-small" href="#">Compare current accounts</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Switch to us</a></li>
+                  </ul>
+                </nav>
+                <nav class="ft-group" aria-labelledby="nm2">
+                  <h2 class="t-cm-section-label" id="nm2">Help and support</h2>
+                  <ul>
+                    <li><a class="lnk t-ed-body-small" href="#">Contact us</a></li>
+                    <li><a class="lnk t-ed-body-small" href="#">Report a lost card</a></li>
+                  </ul>
+                </nav>
+              </div>
+
+              <div class="ft-legal">
+                <ul>
+                  <li><a class="lnk t-cm-legal" href="#">Privacy notice</a></li>
+                  <li><a class="lnk t-cm-legal" href="#">Terms and conditions</a></li>
+                </ul>
+                <p class="copy t-cm-legal">© HSBC Group 2026.</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+
+        <div class="sh-scrim" data-scrim="shell-narrow"></div>
+        <div class="sh-sheet" id="sheet-narrow" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+          <div class="sh-sheet-head">
+            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-narrow">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
+            </button>
+          </div>
+          <nav class="sh-sheet-body" aria-label="Primary, in menu">
+            <ul>
+              <li><a class="t-cm-button" href="#" aria-current="page">Personal</a></li>
+              <li><a class="t-cm-button" href="#">Business</a></li>
+              <li><a class="t-cm-button" href="#">Private</a></li>
+              <li><a class="t-cm-button" href="#">Global</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "App shell — doormat (mega-footer) nav",
+    "vars": {
+      "--page": "background/default",
+      "--surface": "tertiary/background/default",
+      "--band": "surface/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--icon": "icon/default",
+      "--rule": "divider/border/section",
+      "--sub-rule": "divider/border/subsection",
+      "--hover": "tertiary/background/hover",
+      "--pressed": "form/background/pressed",
+      "--indicator": "primary/border/default",
+      "--bone": "tertiary/background/hover",
+      "--overlay": "overlay/version1",
+      "--focus": "focus/ring",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-control": "border-radius/control",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--target-min": "target/min"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "surface/subtle", "context": "text" },
+      { "fg": "text/secondary", "bg": "surface/subtle", "context": "text" },
+      { "fg": "icon/default", "bg": "surface/subtle", "context": "ui" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" }
+    ],
+    "icons": {
+      "menu": "global-controls/menu.svg",
+      "close": "global-controls/close.svg",
+      "search": "global-controls/search.svg",
+      "arrow-up": "arrows-and-chevrons/arrow-up.svg"
+    },
+    "knownFindings": [
+      "COMPOSED, NOT DRAWN. The .sh frame, skip link, sticky-capable masthead with its inset red current mark, the 44x44 actions, the two-class .sh .sh-menu form and the off-canvas sheet with its four-step open sequence are App-shell-top-nav.reference.html verbatim. The doormat is Footer.reference.html's FULL form verbatim - .ft-inner 1120px measure, .ft-brand, .ft-mat auto-fit/minmax(180px,1fr), the named nav groups, the 44px-at-every-width link rule, the a.lnk atom Footer took from Links, the a.arrow back-to-top with its em-scaled tip, the .ft-legal bar and Footer's own @container (max-width:560px) rule. The scrolling stage is Back-to-top's .btt-stage/.btt-content shape. NO PARENT FILE WAS EDITED.",
+      "NON-DUPLICATION IS MEASURED, NOT PROMISED, AND THE RULE IS FOOTER'S OWN. footer.meta.json's antiPattern says verbatim that a doormat duplicating the masthead is a doormat that has stopped being read. Probe, re-runnable: the intersection of the masthead's four link texts and the mat's sixteen link texts is EMPTY. Four destinations up top, everything else at the bottom - that is the shell's whole proposition and it is checkable.",
+      "THE STICKY MASTHEAD CREATES A DEFECT NOTHING IN THIS LIBRARY GUARDED AGAINST, AND THE FIX IS ONE TOKENISED PROPERTY. An in-page anchor jump scrolls its target to the top of the scrollport; a sticky header is drawn over the top of the scrollport; the reader lands on a heading they cannot see. Nothing throws, and a static screenshot looks correct. scroll-margin-top:calc(var(--masthead-h) + 4px) on every anchor target fixes it, and --masthead-h is the same custom property the sticky offset reads, so the two cannot drift. MEASURED with a MUTATION CONTROL in the receipt: with the property the target clears the masthead, with it removed the same probe fails. The +4px is not decoration - the bare var(--masthead-h) form measured ONE PIXEL SHORT when driven (target top 64.0 against masthead bottom 65.0), and the 4px grid step both buys a heading the clearance it wants under a band and absorbs the sub-pixel.",
+      "THE MAT HAS NO BREAKPOINT AND THAT IS DELIBERATE. repeat(auto-fit, minmax(180px,1fr)) is Footer's line and it re-flows 4 -> 3 -> 2 -> 1 intrinsically. Adding a container query that duplicated it would create two sources of truth that will one day disagree. The 560px rule that DOES exist is Footer's own and governs only the legal bar's stacking.",
+      "A SECOND, NESTED CONTAINER CONTEXT IS DECLARED. .sh is container-name:shell; .sh-doormat declares its own container-type:inline-size so Footer's unnamed @container (max-width:560px) resolves against the DOORMAT's width rather than the window's. The 560 figure is Footer's, the 900/600 pair is this file's, and they are deliberately different numbers because they have different owners.",
+      "FOOTER'S LEGAL BAR NEEDED App-shell-top-nav's MEASURED REPAIR. .ft-legal li{display:flex} is added here for the same reason the wave-5 lane found it: once the bar becomes a column, an inline-flex child's min-height cannot grow its <li>'s line box and the links render on top of one another. Footer never hits this at full page width; inside a 392px shell it does. The borrowed atom is untouched; the container is fixed.",
+      "CONTAINER QUERIES, NEVER VIEWPORT QUERIES (s210-D3), AND THE SELF-QUERY TRAP IS DECLARED. No @container shell rule targets .sh, and no 560px rule targets .sh-doormat. The third specimen is a 392px CONTAINER at the same viewport as the two above, which is the proof.",
+      "BREAKPOINTS ARE SPECIMEN CHOICES AND THIS FILE REUSES App-shell-top-nav's PAIR DELIBERATELY. knowledge/tokens/layout.json still contains no breakpoint scale - probe: python3 -c \"import json;print('breakpoint' in json.dumps(json.load(open('knowledge/tokens/layout.json'))).lower())\" -> False.",
+      "NO RAG VALUE IS PAINTED ANYWHERE. The only red is primary/border/default on the current-nav mark, Navigations' own approved bar. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are untouched.",
+      "The snippet gate resolves tokens against tokens/semantic-colour.json - the MONO base only - so it cannot see the Legacy/Console/Supercharge legs. No .cn-app-shell-doormat block exists in canon/canon.css yet, so theme cascade projection is OFF for this file and only the light/dark legs authored here have been seen. DECLARED, and the conductor's to project."
+    ],
+    "requiredAria": ["<nav", "aria-label", "aria-labelledby", "aria-current=\"page\"", "aria-expanded", "aria-controls", "role=\"dialog\"", "aria-modal", "role=\"contentinfo\"", "<main", "<h1"]
+  }
+  </script>
+
+  <script>
+    // ---- Off-canvas nav — copied VERBATIM from App-shell-top-nav.reference.html.
+    // ⚠ ONE DIFFERENCE, AND IT IS STRUCTURAL: the inert targets are the SCROLL CONTAINER's
+    // children, not the shell's, because this shell puts a scrollport between the two. Filtering
+    // shell.children here would have inerted nothing that the reader can actually reach.
+    document.querySelectorAll('[data-menu]').forEach(function(btn){
+      var id = btn.getAttribute('data-menu');
+      var shell = document.getElementById(id);
+      var sheet = document.getElementById(btn.getAttribute('aria-controls'));
+      var scrim = shell.querySelector('[data-scrim="' + id + '"]');
+      var closeBtn = shell.querySelector('[data-close="' + id + '"]');
+      var inertTargets = Array.prototype.filter.call(shell.children, function(c){
+        return c !== sheet && c !== scrim;
+      });
+      // 1 show the sheet · 2 wait two frames (visibility is TRANSITIONED, so focus() on it is a
+      // silent no-op until it computes visible) · 3 move focus IN · 4 only then set inert
+      // (setting inert BLURS whatever holds focus, asynchronously, wiping an earlier focus()).
+      function open(){
+        btn.setAttribute('aria-expanded','true');
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){
+          scrim.classList.add('open'); sheet.classList.add('open');
+          requestAnimationFrame(function(){ requestAnimationFrame(function(){
+            var first = sheet.querySelector('a,button');
+            if(first){ first.focus(); }
+            if(document.activeElement !== first){ sheet.focus(); }
+            inertTargets.forEach(function(t){ t.inert = true; t.setAttribute('aria-hidden','true'); });
+          }); });
+        }); });
+      }
+      function close(){
+        btn.setAttribute('aria-expanded','false');
+        scrim.classList.remove('open'); sheet.classList.remove('open');
+        inertTargets.forEach(function(t){ t.inert = false; t.removeAttribute('aria-hidden'); });
+        btn.focus();
+      }
+      btn.addEventListener('click', open);
+      closeBtn.addEventListener('click', close);
+      scrim.addEventListener('click', close);
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && sheet.classList.contains('open')){ close(); }
+      });
+    });
+
+    // ---- Back to top — Back-to-top.reference.html's handler, acting on the SHELL's scrollport
+    // rather than the window. `aria-controls` names the region it acts on in that file; here the
+    // relationship is carried by data-totop because the control is a LINK to a real fragment, so
+    // it still works with the script disabled — the script only upgrades the jump to a smooth one.
+    document.querySelectorAll('[data-totop]').forEach(function(a){
+      var port = document.getElementById(a.getAttribute('data-totop'));
+      if(!port) return;
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        port.scrollTo({ top:0, behavior:'smooth' });
+        var h1 = port.querySelector('h1');
+        if(h1){ h1.setAttribute('tabindex','-1'); h1.focus({preventScroll:true}); }
+        // ⚠ FOCUS MOVES WITH THE VIEW. A back-to-top that scrolls the picture and leaves the
+        // keyboard at the bottom of the page has moved one user and stranded another. The
+        // tabindex is applied at activation and not authored, so the heading never appears in
+        // the tab order for a user who did not ask to go there.
+      });
+    });
+  </script>
+</body>
+</html>

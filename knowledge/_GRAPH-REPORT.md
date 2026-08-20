@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 119 components · 1033 tokens defined · 131 tokens referenced by components · compliance: 35 rules x 91 components (35 SCs).
+**Totals:** 135 components · 1033 tokens defined · 131 tokens referenced by components · compliance: 35 rules x 91 components (35 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,61 +10,61 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 96 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
-| `background/default` | 63 | Accordion, Account selector, Amount display, Anchor nav, App shell — multi-column, App shell — side nav… |
-| `icon/default` | 41 | Accordion, App shell — multi-column, App shell — side nav, App shell — top / stacked nav, Avatar, Avatar group… |
-| `tertiary/background/default` | 40 | Account card, Action bar, Anchor nav, App shell — multi-column, App shell — side nav, App shell — top / stacked nav… |
-| `border-radius/surface` | 35 | Alert, Anchor nav, App shell — multi-column, App shell — side nav, App shell — top / stacked nav, Banner… |
-| `focus/ring` | 35 | Anchor nav, App shell — multi-column, App shell — side nav, App shell — top / stacked nav, Avatar group, Calendar… |
-| `border/subtle` | 33 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
-| `tertiary/background/hover` | 31 | Accordion, Anchor nav, App shell — multi-column, App shell — side nav, App shell — top / stacked nav, Avatar… |
-| `text/secondary` | 30 | Account card, Amount display, Anchor nav, App shell — multi-column, App shell — side nav, App shell — top / stacked nav… |
-| `divider/border/section` | 27 | Anchor nav, App shell — multi-column, App shell — side nav, App shell — top / stacked nav, Cascader, Combobox… |
-| `elevation/functional` | 27 | Account selector, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Cascader, Combo chart… |
-| `form/border/default` | 27 | Account card, Account selector, Cascader, Combobox, Command palette, Data grid… |
-| `rag/success` | 27 | Account card, Amount input, Bar chart, Button, Confirmation, Coverage / runway bar… |
-| `border-radius/control` | 26 | Amount input, App shell — multi-column, App shell — side nav, App shell — top / stacked nav, Calendar, Cascader… |
-| `rag/error` | 26 | Amount input, Bar chart, Combobox, Date picker, Date-range picker, Dropdown… |
+| `text/default` | 106 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
+| `background/default` | 73 | Accordion, Account selector, Amount display, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page… |
+| `tertiary/background/default` | 50 | Account card, Action bar, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column… |
+| `icon/default` | 46 | Accordion, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
+| `border-radius/surface` | 43 | Alert, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail… |
+| `focus/ring` | 39 | Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
+| `text/secondary` | 38 | Account card, Amount display, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column… |
+| `border/subtle` | 37 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
+| `tertiary/background/hover` | 35 | Accordion, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail… |
+| `divider/border/section` | 34 | Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
+| `border-radius/control` | 33 | Amount input, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
+| `elevation/functional` | 29 | Account selector, App shell — nav rail, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Card-header-lockup… |
+| `form/border/default` | 29 | Account card, Account selector, App shell — split, Cascader, Combobox, Command palette… |
+| `rag/success` | 29 | Account card, Amount input, Bar chart, Button, Card-header-lockup, Confirmation… |
+| `rag/error` | 27 | Amount input, Bar chart, Combobox, Date picker, Date-range picker, Dropdown… |
 
 ## Token-group reach (components using each group)
 
 | Group | Components |
 |---|---|
-| `text/` | 100 |
-| `background/` | 63 |
-| `tertiary/` | 53 |
-| `border-radius/` | 52 |
-| `icon/` | 43 |
-| `rag/` | 42 |
-| `form/` | 38 |
-| `border/` | 36 |
-| `focus/` | 35 |
-| `divider/` | 32 |
-| `elevation/` | 27 |
-| `data/` | 16 |
-| `target/` | 16 |
-| `primary/` | 14 |
+| `text/` | 111 |
+| `background/` | 73 |
+| `tertiary/` | 63 |
+| `border-radius/` | 61 |
+| `icon/` | 48 |
+| `rag/` | 47 |
+| `form/` | 43 |
+| `border/` | 40 |
+| `divider/` | 40 |
+| `focus/` | 39 |
+| `elevation/` | 29 |
+| `primary/` | 20 |
+| `target/` | 20 |
+| `data/` | 17 |
 | `typography/` | 13 |
-| `secondary/` | 12 |
-| `overlay/` | 8 |
+| `secondary/` | 13 |
+| `surface/` | 12 |
+| `overlay/` | 10 |
 | `padding/` | 7 |
-| `surface/` | 7 |
 | `color/` | 7 |
+| `progress/` | 6 |
 | `layout/` | 6 |
+| `alpha/` | 6 |
 | `scale/` | 5 |
-| `progress/` | 5 |
-| `table/` | 4 |
+| `table/` | 5 |
 | `scrollbar/` | 4 |
 | `blur/` | 3 |
 | `button/` | 3 |
-| `alpha/` | 3 |
 | `step/` | 3 |
 | `image/` | 2 |
 | `border-width/` | 2 |
+| `badge/` | 2 |
 | `tabs/` | 2 |
 | `timer/` | 1 |
 | `gap/` | 1 |
-| `badge/` | 1 |
 
 ## Deprecated tokens still bound (migration worklist)
 

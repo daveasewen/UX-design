@@ -1,0 +1,317 @@
+{
+  "name": "App shell — nav rail",
+  "category": "template",
+  "$layer": "2 Shell",
+  "$layerKeyIsDollarPrefixed": "⚠ A PLAIN `layer` KEY FAILS P-1 (meta.schema.json sets additionalProperties:false with a ^$ patternProperties escape and no `layer` property). `$layer` is the only legal form, and nothing custom may go inside `relationships`.",
+  "$categoryChoice": "`template` is the closest LEGAL enum value. There is no `shell` value and inventing one fails the gate. DECLARED AS A COMPROMISE.",
+  "purpose": "The page frame for a dense application that cannot spare 248px to a sidebar. A permanent 64px icon rail carries the navigation, and a flyout carries the names the icons cannot. It is not App-shell-side-nav's collapsed state — there is no expand toggle, and that absence is the component.",
+  "$status": "PROPOSED #210, 2026-08-20 (Wave 6, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. Itinerary row 103, P3. Registered nowhere.",
+  "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. Every region is named in $copiedFrom. NO PARENT FILE WAS EDITED.",
+  "props": [
+    {
+      "name": "flyout",
+      "type": "enum",
+      "values": [
+        "label",
+        "menu"
+      ],
+      "default": "label",
+      "$note": "⚠⚠ NOT A COSMETIC VARIANT. The two forms have DIFFERENT ACCESSIBILITY CONTRACTS and identical pixels — see $finding-two-contracts. label: the panel repeats a name the link already carries, so it is aria-hidden and the item stays a link. menu: the panel carries destinations, so it is announced and the item becomes a <button> with aria-expanded + aria-controls.",
+      "$status": "PROPOSED #210"
+    }
+  ],
+  "variants": [
+    {
+      "name": "label",
+      "use": "a flat rail of five or six destinations, where the only missing information is the name"
+    },
+    {
+      "name": "menu",
+      "use": "a rail whose items have children — the flyout is where the second level lives, and the rail never grows to hold it"
+    }
+  ],
+  "slots": {
+    "brand": {
+      "accepts": {
+        "capability": [
+          "brand-mark"
+        ]
+      },
+      "required": false,
+      "use": "a single-glyph identity in the 56px rail head. ⚠ A TEXT STAND-IN and, at 64px, the hardest place in the library to put a real masterbrand.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "No library component meets this contract yet — the brand-mark gap (itinerary row 86, ASSET-ONLY) is real and this slot currently takes a text stand-in."
+    },
+    "rail": {
+      "accepts": {
+        "capability": [
+          "site-navigation"
+        ],
+        "tier": [
+          "organism"
+        ]
+      },
+      "required": true,
+      "use": "the navigation, permanently. Icons at 18px in 64x44 targets, names carried in clip-path labels.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Sidebar-nav. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "flyout": {
+      "accepts": {
+        "capability": [
+          "overlay-panel"
+        ],
+        "tier": [
+          "molecule"
+        ]
+      },
+      "required": true,
+      "use": "the name, or the children. Panel skin is Popover's; the contract depends on which — see $finding-two-contracts.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Popover · Tooltip. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "header": {
+      "accepts": {
+        "capability": [
+          "page-heading"
+        ],
+        "tier": [
+          "molecule",
+          "organism"
+        ]
+      },
+      "required": true,
+      "use": "the 56px in-app band the content column opens with",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Headers · Page-header-lockup. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "content": {
+      "accepts": {
+        "capability": [
+          "page-content"
+        ],
+        "tier": [
+          "molecule",
+          "organism",
+          "template"
+        ]
+      },
+      "required": true,
+      "use": "the page. Rendered here as neutral placeholder furniture.",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Cards · Data-grid · Table · Kpi-tile. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    },
+    "endMatter": {
+      "accepts": {
+        "capability": [
+          "end-matter"
+        ],
+        "tier": [
+          "organism"
+        ]
+      },
+      "required": false,
+      "use": "Footer in its slim form",
+      "$status": "PROPOSED #210",
+      "$acceptsInPractice": "The components in the library that meet this contract today: Footer. ⚠ NAMED IN A $-KEY, NOT IN `accepts`: s140-D1 permits accepts BY TIER OR CAPABILITY ONLY and sets additionalProperties:false, so a child list has nowhere legal to go. Found by driving P-1."
+    }
+  },
+  "tokens": {
+    "page": "background/default",
+    "panel": "background/default — the flyout, Popover's own surface",
+    "surface": "tertiary/background/default — the rail and the content header",
+    "band": "surface/subtle — the end matter",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "icon": "icon/default",
+    "rule": "divider/border/section",
+    "subRule": "divider/border/subsection — between rail groups",
+    "popBorder": "elevation/border — Popover's own; TRANSPARENT in light, a visible grey in dark",
+    "shadow": "elevation/functional — Popover's own 0 0 16px",
+    "hover": "tertiary/background/hover",
+    "pressed": "form/background/pressed",
+    "indicator": "primary/border/default — the current-location mark, Sidebar-nav's own approved bar",
+    "bone": "tertiary/background/hover",
+    "focus": "focus/ring",
+    "radius": "border-radius/surface · border-radius/control · border-radius/indicator",
+    "target": "target/min (44px)",
+    "$rag": "NONE. The only red is primary/border/default on the current-location mark. Two-red law (s151-D1) and the mono error ink camp (s149-D1) untouched.",
+    "$provenance": "`python3 knowledge/gen_snippet_tokens.py --check` reports 0 value(s) would change across 4696 manifest bindings."
+  },
+  "$copiedFrom": [
+    "Sidebar-nav.reference.html — THE RAIL: `.sn-body`/`.sn-group`/`.sn-link`/`.si`/`.sn-label`/`.sn-foot` in their `.is-rail` form, with the rail-only declarations FOLDED into the base rules because there is no expanded state to toggle to — the 64px width, the 64x44 centred link, the clip-path label, the three current-location carriers (aria-current + inset 3px 0 0 in primary red + a surface change), the hover/pressed/focus shapes, and the six icon symbols byte-for-byte. Its EXPANDED `.sn-label` rule (min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text) is borrowed verbatim for the phone band.",
+    "App-shell-top-nav.reference.html — the `.sh` container-query box, `.sh-skip`, the 44x44 action geometry, and `.sh-foot`/`.sh-legal` INCLUDING the `.sh-legal li{display:flex}` measured defect repair.",
+    "Headers.reference.html (via App-shell-side-nav) — the 56px in-app header band.",
+    "Popover.reference.html — THE FLYOUT PANEL SKIN: background/default on elevation/border with box-shadow 0 0 16px on elevation/functional, and the opacity-transitioned pointer-events gate.",
+    "Skeleton-loader.reference.html — the bone shape kit. Shimmer and role=status NOT copied.",
+    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical."
+  ],
+  "$finding-no-expand-toggle": "★★ WHAT MAKES THIS NOT App-shell-side-nav IS ONE SENTENCE: THERE IS NO EXPAND TOGGLE. Side-nav's rail is a STATE the user chose and can undo; here the rail IS the navigation, permanently, and the room it saves is the point. That promotes the question the rail has owed since #203 — a rail item has no visible name — from a footnote to this component's central problem. The flyout is the proposed answer.",
+  "$finding-two-contracts": "★★★ THE TWO FLYOUT FORMS HAVE DIFFERENT ACCESSIBILITY CONTRACTS AND IDENTICAL PIXELS, AND GETTING IT BACKWARDS LOOKS PERFECT. A LABEL flyout repeats a name the link already carries in Sidebar-nav's clip-path `.sn-label`, so it is aria-hidden=true — a visual affordance only; announced, it makes a screen reader stutter the name twice and nothing looks wrong. A MENU flyout carries destinations, so it is NOT hidden, the rail item stops being a link and becomes a <button> with aria-expanded + aria-controls (a control that opens something is a button), and the panel is a <nav> with its own accessible name. MEASURED: 6 of 6 label flyouts aria-hidden=true with the link's name intact; labelFlyoutsAnnounced = 0. ⇒ PROPOSED RULE: a flyout that only repeats a name is decorative and must be hidden; a flyout that offers destinations is a disclosure and must be announced.",
+  "$finding-sc-1413-and-the-hoverable-clause": "★★★ SC 1.4.13 (CONTENT ON HOVER OR FOCUS) CANNOT BE SATISFIED BY A CSS-ONLY HOVER, AND THIS FILE FAILED ITS OWN CLAIM ONCE BEFORE PASSING IT. All three clauses, built and driven: DISMISSIBLE — Escape hides the panel WITHOUT moving the pointer, via a `data-fly-dismissed` state on the shell whose specificity (0,4,0) beats the hover rule's (0,3,0); measured, with the pointer parked on the icon, visibility goes 'visible' -> 'hidden' and the state reads 'true'. HOVERABLE — the panel sits at left:100% and MEASURED it overlaps the rail edge by 1px, so no dead space is crossed; ⚠⚠ AND THE FIRST DRAFT STILL FAILED THIS CLAUSE, because it carried `pointer-events:none` on the shown panel with the comment 'a name is not a target'. Plausible, tidy, and wrong: a panel that is not a hit target lets the pointer pass THROUGH it, `.sn-item:hover` stops matching, and the panel vanishes exactly as the user reaches for it. Measured with the pointer at the panel's own centre: 'hidden' before, 'visible' after adding pointer-events:auto. PERSISTENT — nothing times the panel out; it goes on pointer-leave, focus-leave or dismissal, never on a timer. ⇒ ★ A COMMENT JUSTIFYING A DECISION IS NOT EVIDENCE FOR IT.",
+  "$finding-menu-not-on-hover": "MENU FLYOUTS ARE DELIBERATELY NOT ON HOVER, AND THAT IS DRIVEN RATHER THAN ASSERTED. A panel of destinations that opens because a pointer passed over it opens by accident, and one that closes on pointer-leave takes its destinations away mid-reach. MEASURED: hovering a menu item leaves aria-expanded 'false' and the panel hidden; a click opens it and moves focus into it; opening a sibling closes it; Escape closes it and returns focus to the button that opened it ('Money'); a click outside the rail closes it. Label flyouts ARE on hover, because a name costs nothing to show and nothing to lose.",
+  "$finding-self-query-trap-pushed-a-workaround": "★★★ THE CONTAINER-QUERY SELF-QUERY TRAP BIT THIS FILE, AND NOT IN THE USUAL WAY. `.sh` is the query container, so no @container rule may target it. The phone band needs the frame's MAIN AXIS turned from row to column — a property of the PARENT. The first draft worked round that with `order` on the children, which only re-orders along the axis the parent already has. MEASURED at a 392px container: railTop 1245 == bodyTop 1245, `railIsBelowBody: false`, and the rail sitting BESIDE the content at 283px wide. Entirely plausible in a thumbnail. ⇒ THE FIX IS STRUCTURAL: `.sh` is the CONTAINER and `.sh-inner` is the FLEX PARENT, two elements, and the phone band turns `.sh-inner`'s axis in one ordinary line. After: railTop 1792 > bodyTop 1249, railIsBelowBody TRUE, rail 390px wide. ★ The trap does not only swallow rules that never fire — it pushes you into a workaround that quietly does something else.",
+  "$finding-bottom-bar-overflow-the-numbers-missed": "★★★ A REAL DEFECT THAT EVERY NUMBER IN THIS FILE WAS GREEN OVER, FOUND BY LOOKING AT THE PICTURE. The first phone-band label rule read `overflow:visible; text-align:center` and nothing else, so five names — one of them 'Payments and transfers' — were laid side by side in a 370px bar with no truncation and no minimum. They touched each other and the last two ran off the end. DOCUMENT OVERFLOW MEASURED ZERO, because `.sh{overflow:hidden}` quietly ate the excess. ⇒ ★★ THE OVERFLOW PROBE HAD THE WRONG SUBJECT: it asked the document a question about a 370px bar. A rail-scoped probe was then written and it names the fault directly: before, `itemsPastRightEdge: 2` and 120px of scroll overflow; after, 0 and 0. TWO repairs were needed, not one: Sidebar-nav's own expanded-label rule (ellipsis + text-box-edge:text text) AND `display:contents` on the two intermediate group boxes, because a group holding one item was claiming as much room as a group holding three.",
+  "$finding-truncation-is-a-mitigation": "⚠ AND TRUNCATION IS A MITIGATION, NOT AN ANSWER — DECLARED. With the repair in place, 4 of the 5 labels in the wide specimen's phone band still truncate at a 62px box ('Overview' -> 'Overv…'). The narrow specimen, which carries FOUR items with SHORT names, fits with ZERO truncation. That is the empirical rule this lane can offer: four short names fit a phone bar, five long ones do not. The real answers are a SHORT-NAME convention (the library has none) or a cap of four with a More disclosure — which is Tab-bar's own answer. Named as $decision-3, not settled.",
+  "$finding-tab-bar-not-composed": "THIS IS THE Tab-bar ARRANGEMENT AND Tab-bar IS DELIBERATELY NOT COMPOSED. Tab-bar.reference.html carries a dual line/fill glyph system (ic-home + ic-home-a) that this rail's icons do not have, and re-drawing half of it would be exactly what the cardinal rule forbids. Whether the phone form should BE Tab-bar is named as an open question rather than answered by construction.",
+  "$finding-no-middle-band": "THERE IS NO 900–600 BAND AND THAT IS THE ARGUMENT FOR A RAIL. A 64px rail has nothing to give back between 900 and 600, so the only rules in that band are content padding. MEASURED: rail width 64 and flex-direction column at BOTH 1352 and 852. A shell that costs the same at 700px as at 1400px never has to make a decision in between; an empty breakpoint would be a rule pretending to do work.",
+  "$finding-display-contents-risk": "⚠ DECLARED RISK, NOT SMOOTHED. `display:contents` on the phone band's `<ul>` has a history of dropping list semantics in older assistive technology. The `<li>`s keep their parent in the accessibility tree in current engines, and NO SCREEN READER WAS RUN against this file. Named so it can be overturned cheaply if Dave's testing says otherwise.",
+  "$finding-type-divergence": "No raw font-family, font-size or font-weight in component scope. Probe: `python3 knowledge/_validate_type_composites.py | grep -c App-shell-nav-rail` -> 0, total exactly 1097. Ratchet contribution: 0.",
+  "relationships": {
+    "livesInside": [
+      "nothing — this IS the outermost frame"
+    ],
+    "commonPatterns": [
+      "dense back-office applications",
+      "tools where the canvas is the product",
+      "any product whose navigation is stable and short"
+    ],
+    "mustNotNeighbour": []
+  },
+  "$consumes": [
+    "Sidebar-nav",
+    "App-shell-top-nav",
+    "Popover",
+    "Headers",
+    "App-shell-side-nav",
+    "Skeleton-loader",
+    "Footer"
+  ],
+  "$relationshipsNote": "The Sidebar-nav / Navigations overlap carried open from #203 applies here too: this shell consumes Sidebar-nav's atoms and nothing of Navigations. Tab-bar is NAMED as the phone form's precedent and is not consumed — see $finding-tab-bar-not-composed.",
+  "accessibility": {
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "1.4.13",
+      "2.1.1",
+      "2.1.2",
+      "2.4.1",
+      "2.4.3",
+      "2.4.7",
+      "2.5.8",
+      "2.3.3",
+      "4.1.2"
+    ],
+    "landmarks": "One <nav aria-label=\"Main\"> for the rail, one <header>, <main>, <footer role=\"contentinfo\">. Each MENU flyout is its own <nav> with an accessible name matching the item that opens it.",
+    "hoverOrFocusContent": "SC 1.4.13, all three clauses, built and measured — see $finding-sc-1413-and-the-hoverable-clause. This is the first component in the library that has had to satisfy it.",
+    "railNames": "Every rail item carries its full name in a clip-path visually-hidden span — HIDDEN, NEVER REMOVED. That is what makes a label flyout decorative rather than necessary, and it is why the label flyout can be aria-hidden without cost.",
+    "disclosure": "MENU items are <button aria-expanded aria-controls>. Escape closes and returns focus to the opener; opening a sibling closes the first; a click outside the rail closes any open panel.",
+    "bypassBlock": "A skip link is the first focusable element. ⚠ ESPECIALLY LOAD-BEARING HERE: a keyboard user meets up to nine rail controls before any content.",
+    "targetSize": "Every interactive element measures >= 44px (rail items are 64x44 wide, 56px tall in the phone band). Driven sweep returns an empty list at every width and both themes.",
+    "colourIsNeverAlone": "The current location carries three channels — aria-current, an inset 3px bar (a SHAPE, present or absent) and a surface change. MEASURED: the bar rotates from 'inset 3px 0' on the vertical rail to 'inset 0 3px' on the phone bar, staying a shape in both.",
+    "reducedMotion": "prefers-reduced-motion: reduce collapses every transition to 0.01ms. The flyout still appears, it simply does not fade."
+  },
+  "responsive": {
+    "mechanism": "CONTAINER queries. s210-D3. ⚠ AND THE ROLES ARE SPLIT ON PURPOSE: `.sh` is the query container, `.sh-inner` is the flex parent. See $finding-self-query-trap-pushed-a-workaround for why that is structural and not tidiness.",
+    "full": ">= 900cqi — rail at the leading edge, flyouts opening to the right. MEASURED at 1352: rail 64px, column, label box 1x1, flyout available.",
+    "compact": "600–899cqi — UNCHANGED except content padding. MEASURED at 852: rail 64px, column, label box 1x1. See $finding-no-middle-band.",
+    "phone": "< 600cqi — the rail moves to the bottom as a full-width bar, the names come back VISIBLE (truncating), and LABEL flyouts are suppressed entirely because there is no hover on a phone and the name is now on screen. MENU flyouts survive and open UPWARD, full width. MEASURED at 512 and at a 392px container inside a 1400px viewport: railIsBelowBody true, rail 390px, flex-direction row, label box 69.5x21 with clip-path none, label flyout display none, current mark 'inset 0 3px'.",
+    "$proof": "The third specimen is a 392px CONTAINER at a 1400px viewport, fully collapsed while the two wide specimens on the same page are not.",
+    "$status": "PROPOSED #210, Dave's eye owed"
+  },
+  "dimensions": {
+    "railWidth": 64,
+    "railItemHeight": 44,
+    "railHeadHeight": 56,
+    "phoneBarItemHeight": 56,
+    "iconSize": 18,
+    "headerHeight": 56,
+    "flyoutMaxWidth": 280,
+    "flyoutOverlapPx": 1,
+    "targetMin": 44,
+    "$note": "railWidth 64, railItemHeight 44 and iconSize 18 are Sidebar-nav's. headerHeight 56 is Headers'. flyoutOverlapPx 1 is MEASURED, not authored — `left:100%` against a 1px border lands the panel one pixel over the rail edge, which is what guarantees the pointer never crosses dead space."
+  },
+  "antiPatterns": [
+    "Never give a label flyout an accessible name. The link already has one, and announcing it twice is a stutter no gate will catch.",
+    "Never leave a menu flyout aria-hidden. It carries destinations; hiding it removes them from the only users who cannot see the icons.",
+    "Never open a menu flyout on hover. It opens by accident and it closes mid-reach.",
+    "Never make a hover-revealed panel pointer-events:none. It is not a target, the pointer passes through it, and it disappears exactly when the user reaches for it — SC 1.4.13's hoverable clause, failed.",
+    "Never build a hover flyout without a dismiss route. A :hover rule cannot be dismissed and SC 1.4.13 requires that it can.",
+    "Never add an expand toggle. That component exists and it is App-shell-side-nav.",
+    "Never put more than five destinations in the phone bar, and never put a long name in one. Four short names fit; five long ones truncate to nonsense.",
+    "Never make the query container the flex parent. The main axis belongs to the parent and a container query may not touch it."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/*.json via the snippet's own #token-manifest",
+    "result": "PASS — snippet gate 135 snippet(s) 0 failure(s); grid gate PASS (151 files, after catching an off-grid 6px padding in this file); a11y gate 0 failures; descender-clip gate PASS; type gate contribution 0 with the total at exactly 1097; P-1 findings=0; icon-source 0 UNKNOWN; gen_snippet_tokens --check reports 0 values would change.",
+    "declaredAbsence": "No RAG pair is declared because no RAG value is painted. The declared pairs are the seven neutral ones.",
+    "notRun": "_validate_state_contrast.py NOT run — outside this lane's fence. OWED. _validate_kg.py not run — the conductor's. NO SCREEN READER WAS RUN, which matters more here than in the sibling shells because this file's central claims are about announcement.",
+    "failing": "⛔ _validate_binds_resolve.py check D FAILS: no .cn-app-shell-nav-rail block in canon/canon.css; Console, Legacy and Supercharge are UNPROVEN. 16 files fail check D; 4 are this lane's.",
+    "notRegistered": "Absent from component-types.json, CATEGORIES, gen_showroom.py and _validate_radius.MIGRATED_SNIPPETS.",
+    "renderProof": "See notes/_receipts/2026-08-20-210-wave6-laneA-p3-shells.md, including the SC 1.4.13 six-state sequence and a still with a menu flyout open."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 103, 'App shell — nav rail', Shells (Layer 2), P3. Derived verdict NO-ARTEFACT-CLASS. Built #210 wave 6 lane A. Answers the rail-tooltip question carried open from #203."
+  },
+  "interactive": true,
+  "stateModel": "full",
+  "$decisionsForDave": [
+    "1 · ⛔ THE TWO-CONTRACT RULE — a flyout that repeats a name is decorative and hidden; a flyout that offers destinations is a disclosure and announced. This is the file's central proposal and it should be ruled once for the library, not per component. Confirm or overturn.",
+    "2 · ⛔ THIS ANSWERS THE #203 RAIL-TOOLTIP QUESTION, AND IT MAY NOT BE THE ANSWER YOU WANT. The alternatives are: a real Tooltip component on each rail item; no flyout and permanently visible micro-labels under the icons; or accepting that a rail is for experts who learn the icons. The flyout is drawn because it costs nothing until asked for.",
+    "3 · ⛔ THE PHONE BAR NEEDS A SHORT-NAME CONVENTION OR A CAP. Measured: four short names fit a 390px bar with no truncation; five names including 'Payments and transfers' truncate to 62px boxes and read as nonsense. The library has no short-name convention. Options: mint one; cap the bar at four with a More disclosure (Tab-bar's own answer); or make the phone form BE Tab-bar.",
+    "4 · SHOULD THE PHONE FORM BE Tab-bar? It is Tab-bar's arrangement. Tab-bar was NOT composed because it carries a dual line/fill glyph system this rail's icons do not have, and half-drawing it would break the cardinal rule.",
+    "5 · THE BREAKPOINT SCALE — carried, wave-wide, unruled.",
+    "6 · SHOULD THE FOLDED `.is-rail` RULES GO BACK INTO Sidebar-nav as a permanent variant? This shell folds them into its base rules because it has no expanded state. The parent might want the same shape declared once.",
+    "7 · `display:contents` ON THE PHONE BAND'S LISTS — accepted here with a declared AT risk and no screen-reader test. Worth a real device before this ships.",
+    "8 · THE BRAND AT 64px. Drawn as a single 'H' glyph in primary red. 12 official SVGs exist and nothing binds them; a 64px rail head is the hardest place in the library to put a masterbrand lock-up, and it is where the question bites hardest.",
+    "9 · DOES A SHELL BELONG IN knowledge/snippets/ AT ALL? Carried from wave 5 unchanged.",
+    "10 · WHAT ARE THE RAIL'S DESTINATIONS CALLED? Overview / Accounts / Payments and transfers / Cards / Spending / Settings, and the menu groups Money and Insight — all placeholder domain prose, PROPOSED under s182-D2."
+  ],
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:App-shell-nav-rail.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:nothing-this-is-the-outermost-frame",
+        "$note": "nothing — this IS the outermost frame"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:dense-back-office-applications"
+      },
+      {
+        "ref": "pattern:tools-where-the-canvas-is-the-product"
+      },
+      {
+        "ref": "pattern:any-product-whose-navigation-is-stable-and-short"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:sidebar-nav",
+        "$note": "Sidebar-nav"
+      },
+      {
+        "ref": "component:app-shell-top-nav",
+        "$note": "App-shell-top-nav"
+      },
+      {
+        "ref": "component:popover",
+        "$note": "Popover"
+      },
+      {
+        "ref": "component:headers",
+        "$note": "Headers"
+      },
+      {
+        "ref": "component:app-shell-side-nav",
+        "$note": "App-shell-side-nav"
+      },
+      {
+        "ref": "component:skeleton-loader",
+        "$note": "Skeleton-loader"
+      },
+      {
+        "ref": "component:footer",
+        "$note": "Footer"
+      }
+    ]
+  }
+}

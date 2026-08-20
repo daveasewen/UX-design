@@ -1,0 +1,96 @@
+{
+  "name": "Section-heading-lockup",
+  "category": "organism",
+  "$layer": "2 Lock-up",
+  "purpose": "The repeatable in-page heading that sits above one section of content (a board, a table, a panel) — as distinct from Page-header-lockup's page-level <h1>. Composed ENTIRELY from Layout-utilities (l-row/l-stack), Eyebrow, Cards' arrow-link atom, Badge and Button — no new visual vocabulary, only arrangement. Itinerary row 116 (Layer 2, NO-ARTEFACT-CLASS at mint; PROPOSED here, not ruled).",
+  "props": [
+    { "name": "arrangement", "type": "enum", "values": ["label", "label-action", "eyebrow-badge-actions"], "default": "label",
+      "$note": "Three arrangement variants drawn in the reference: A bare label (the Template-dashboard shape), B label + trailing arrow-link action, C eyebrow + heading + count badge + a two-button action group. Structural variance, a VARIANTS-axis prop (same class-C6 reading as Tags' `type` prop, s142-D1)." },
+    { "name": "showEyebrow", "type": "boolean", "default": "false" },
+    { "name": "showBadge", "type": "boolean", "default": "false" },
+    { "name": "actions", "type": "slot", "values": ["none", "one-link", "two-buttons"], "default": "none" }
+  ],
+  "variants": [
+    { "name": "label", "use": "Bare section label above a board or panel — the default, most sections need nothing more." },
+    { "name": "label-action", "use": "A section whose full contents live elsewhere (e.g. 'Recent activity' + a View all link)." },
+    { "name": "eyebrow-badge-actions", "use": "A section that also needs to show a live count (e.g. pending approvals) and offer filter/export actions." }
+  ],
+  "tokens": {
+    "heading": "canon/type.css .t-cm-section-label (20/500) or .t-ed-heading-4 (20/28/300) composite — never a raw declaration",
+    "eyebrow": "text/secondary via Eyebrow.reference.html, unmodified",
+    "action-link": "text/default + primary/background/default (tip) via Cards.reference.html's a.arrow, unmodified",
+    "actions": "button/{tertiary,quaternary}/* via Button.reference.html, unmodified",
+    "badge": "badge/background + rag/text/on-light via Badge.reference.html's standalone form",
+    "$note": "Every token above resolves through the ATOM's own manifest; this organism binds nothing new. The lock-up's own CSS (`.l-row`/`.l-stack`, borrowed from Layout-utilities) is flex arrangement only."
+  },
+  "responsive": {
+    "$status": "PROPOSED at #210 wave-6 (not ruled) — reflow verified in a real browser at 3 widths.",
+    "rule": "The Layout-utilities l-row primitive wraps by default (flex-wrap:wrap); this lock-up declares no container-type or width of its own — the action group and eyebrow fall onto their own line when the PAGE (or an ancestor) narrows, exactly as demonstrated at 320px in the reference.",
+    "$note": "s210-D3 discipline: the lock-up declares no width of its own; the enclosing page or container gives it one."
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Template-dashboard-style sections", "Any content region needing a labelled header"],
+    "mustNotNeighbour": ["Page-header-lockup in the same slot (one is the page <h1>, the other an in-page <h2>/<h3> — never both naming the same region)"],
+    "commonPatterns": ["'This month' KPI section header", "'Recent activity' + View all", "'Pending approvals' + count badge + filter/export"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "relatedSC": ["2.4.6 Headings and Labels", "2.4.7 Focus Visible", "1.4.10 Reflow", "1.3.1 Info and Relationships"],
+    "structure": "The heading is an <h2> (or <h3> if nested under another section) — never the page's sole <h1>; heading order is the consuming page's responsibility.",
+    "focus": "Every borrowed atom (arrow-link, button, badge) keeps its OWN :focus-visible ring — the organism adds no new focusable element and no new focus style."
+  },
+  "antiPatterns": [
+    "Re-drawing the heading, eyebrow, arrow-link or button CSS instead of composing the existing atom",
+    "Giving the lock-up a fixed width or its own container-type — the enclosing page/container owns that",
+    "Using this lock-up for the page's own <h1> — that is Page-header-lockup's job",
+    "More than one action group per heading row — pick label-action OR eyebrow-badge-actions, not both"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "the four source atoms' own token manifests (Layout-utilities/Eyebrow/Cards/Badge/Button), re-declared verbatim by name here",
+    "result": "PASS — `_validate_snippets.py` reports 0 findings for Section-heading-lockup.reference.html; see the #210 wave-6 Lane C receipt for the exact command."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Section-heading-lockup.reference.html"
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Section-heading-lockup.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:dashboards",
+        "$note": "Dashboards"
+      },
+      {
+        "ref": "context:template-dashboard-style-sections",
+        "$note": "Template-dashboard-style sections"
+      },
+      {
+        "ref": "context:any-content-region-needing-a-labelled-header",
+        "$note": "Any content region needing a labelled header"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:this-month-kpi-section-header"
+      },
+      {
+        "ref": "pattern:recent-activity-view-all"
+      },
+      {
+        "ref": "pattern:pending-approvals-count-badge-filter-export"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "Page-header-lockup in the same slot (one is the page <h1>, the other an in-page <h2>/<h3> — never both naming the same region)"
+      }
+    ]
+  }
+}

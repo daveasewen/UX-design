@@ -1,0 +1,144 @@
+{
+  "name": "Template - confirmation",
+  "category": "template",
+  "purpose": "The page at the end of an instruction, in two states. Confirmation is a 380px column that ENDS a flow; a confirmation PAGE has to be the RECEIPT as well, so the ORDER changes and that order is the template's whole contribution: message column, then the FACTS, then the actions, then what happens next. Actions come after the facts because a person cannot decide what to do until they have read what was done.",
+  "$provenance-note": "NEW at #210 (wave 6, lane B) against the Layer-2 P3 fan-out brief - itinerary row 114. PROPOSED, NOT RULED. Layer-2 rows have no ruled artefact form; this file ships in the library's grammar on the brief's PROPOSED convention (s182-D2, the Kpi-tile precedent). No registration was performed: no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json membership, no canon.css block, no _rulings.json line, no gen_kg_edges.py run, no git operation. Deleting this pair costs nothing because nothing points at it.",
+  "$layer": "2 Template",
+  "$layer-note": "The wave-5 and wave-6 briefs PROPOSED the meta key `layer`. meta.schema.json is additionalProperties:false with patternProperties '^\\\\$' only, so a bare `layer` key FAILS probe P-1 (probe_meta_schema.py). `$layer` is the legal form and is what is used here - the correction #210 wave-5 lane C reported, carried forward, not re-discovered. A `$`-prefixed key is an ANNOTATION by the schema's own grammar: if Layer-2 membership is meant to be queryable structure it wants a real enum property and a schema amendment. Still open, still Dave's.",
+  "interactive": false,
+  "props": [
+    {
+      "name": "variant",
+      "type": "enum",
+      "values": [
+        "success",
+        "pending"
+      ],
+      "default": "success",
+      "$note": "SUCCESS keeps Confirmation's rag/success roundel and its entrance animation. PENDING takes NO success device - see antiPatterns."
+    },
+    {
+      "name": "nextSteps",
+      "type": "boolean",
+      "default": true,
+      "$note": "An ORDERED list, because the steps are ordered and a bulleted list would say they are not."
+    }
+  ],
+  "variants": [
+    {
+      "name": "success",
+      "use": "The instruction is complete and irreversible from here. Roundel, entrance animation, a receipt Summary with an emphasised total, two equal actions, three next steps."
+    },
+    {
+      "name": "pending",
+      "use": "Accepted but NOT finished. No roundel, no green, no entrance pop: a decorative glyph at alpha/40 and a Status-indicator chip carrying the meaning in a word, plus the expiry stated plainly."
+    }
+  ],
+  "tokens": {
+    "page": "background/default",
+    "surface": "tertiary/background/default (receipt + next-steps panels)",
+    "text": "text/default",
+    "muted": "text/secondary (Confirmation's message line)",
+    "success": "rag/success - the SUCCESS variant's roundel only, carried WITH its driftAllow and its reason",
+    "chip": "rag/warning + rag/warning-tint, via Status-indicator form B - the PENDING variant's word",
+    "divider": "divider/border/subsection, via Summary's row rule",
+    "buttons": "the button/primary/*, button/tertiary/* and button/quaternary/* Mono ladder",
+    "$roundelPolicy": "--success in DARK is #FFFFFF and that is NOT drift: it is Confirmation's own RAG ROUNDEL POLICY (Dave, 2026-07-02 eve). The tick is a page-cutout, so a white shape gives a black tick at 21:1, where rag/success #00847F with a black cutout measured 2.77 and failed the >=4.5 mark leg. The driftAllow entry and its reason travel together, because a policy that travels without its reason becomes a bug.",
+    "$noColouredMoney": "⛔ No monetary figure on either page is coloured. rag/success-ink and rag/error-ink are MONO ONLY (s155-D1 / s158-D2 / s158-D3).",
+    "$mono": "MONO ONLY. No colour value is invented anywhere in this template. Every hex in both theme blocks appears in the theme block of a source component. The two-red law (s151-D1) and the mono error-ink camp (s149-D1) are untouched.",
+    "$noNewWidths": "s210-D3 discipline: the template asserts page-scale layout only. No molecule inside it receives a new fixed width."
+  },
+  "relationships": {
+    "livesInside": [
+      "App shell (top nav)",
+      "App shell (side nav)",
+      "The end of a payment or transfer flow"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "payment sent confirmation",
+      "in flow success confirmation",
+      "review summary",
+      "request submitted"
+    ]
+  },
+  "$composes": "Confirmation (.confirm, .success, .confirm__title / __msg / __actions and the entrance animation - its raw font declarations dropped and its own .confirm .btn ladder NOT carried, because this page uses the Button ATOM), Summary (the receipt rows and the emphasised total row), Status-indicator (the pending chip, form B via Document-row), Empty-state (.empty .glyph, re-selected as .glyph, for the pending anchor), Stat-card (every panel surface), Button (every action, with its injected press-physics partial), Layout-utilities (.l-container).",
+  "accessibility": {
+    "roles": "No invented roles. Each specimen is a <main> whose message column is role=\"group\" with aria-labelledby on the <h1>; each receipt is a real <dl> labelled by its panel heading; each next-steps list is an <ol>.",
+    "keyboard": "Tab order follows source order: primary action, secondary action. Two stops per page, which is the whole page.",
+    "announcements": "The pending chip is role=\"status\". The success page announces nothing beyond its heading - the person arrived here, so the state is the destination.",
+    "states": "None beyond the two variants.",
+    "targets": "MEASURED at 1400px: 220x44, 232x44, 304x44, 197x44. Every action clears 44px in both directions.",
+    "$colourIsNeverAlone": "The success roundel is aria-hidden and the HEADING carries the success (1.4.1). The pending chip carries its word and its dot is aria-hidden. The pending state also states its consequence in prose ('Nothing has left the account yet') rather than relying on the chip alone.",
+    "$candidateSource": "⚠ Confirmation.reference.html is itself a CANDIDATE, not gated: its meta's provenance says 'REVIEW: no Figma node yet'. Borrowing it into a template does NOT promote it, and this file must not be cited as evidence that it is settled.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.3.3",
+      "2.4.3",
+      "2.4.6",
+      "2.4.7",
+      "4.1.3"
+    ]
+  },
+  "antiPatterns": [
+    "Giving the PENDING variant a success device. Confirmation's roundel is built for a TICK: the mark is a page-cutout and the whole dark policy exists so that cutout stays legible. There is no ruled roundel for 'accepted but not finished', and minting one would be a decision inside the RAG policy's own neighbourhood.",
+    "Putting the actions before the facts. A person cannot decide what to do until they have read what was done.",
+    "Holding Confirmation's 380px at page scale. It broke 'Payment waiting for approval' after the word 'for'. The CONTAINER widens the column to 460px and asserts nothing about any molecule (s210-D3).",
+    "Animating the pending entrance. The pop is a success device.",
+    "Colouring the money. rag/*-ink is MONO ONLY and binding it here would rule on Dave's behalf.",
+    "Claiming irreversibility the product cannot honour. The success page says 'It cannot be recalled from here', which is a statement about THIS SURFACE and not about the payment scheme."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS - every declared var resolves in both light and dark and every declared contrast pair clears its threshold in both modes (run at #210, wave 6, lane B).",
+    "$scope": "MONO base only. Console, Legacy and Supercharge were NOT rendered by this lane and are UNPROVEN for this template. The four-theme cascade needs the canon.css projection below first, and [[four-themes-flexibility-is-the-requirement]] says test PER THEME - that test has NOT been run and is not claimed.",
+    "$notGenerated": "canon.css carries NO .cn-template-confirmation scope, so _validate_binds_resolve.py check D FAILS for this file. DECLARED, not hidden - the projection is the conductor's and is a precondition of any four-theme claim.",
+    "$deprecated": "No deprecated tokens bound."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Wave-6 Layer-2 P3 fan-out (notes/_briefs/2026-08-20-210-wave6-layer2-p3-fanout-brief-v1.md), lane B, itinerary row 114. No Figma node."
+  },
+  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Headless Chromium from file:// with the real HSBC cut (canvas-width assertion against TWO controls: target 346.88, both aliases 346.88, DejaVu 375.39, nonexistent face 301.07), light AND dark, at 1400 / 820 / 420 CSS px, screenshots LOOKED AT - including the dark render, where the roundel policy was confirmed working by eye: a WHITE roundel with a BLACK tick. Zero horizontal page overflow in all 6 runs. Collapse MEASURED: .confirm__actions flex-direction read row -> row -> column. TWO FINDINGS: the same invisible --muted dangle the sibling error template hit (Confirmation's .confirm__msg reads color:var(--muted); undeclared, the declaration is invalid at computed-value time and the text INHERITS text/default, which in Mono is the same hex as text/secondary - so nothing visual could ever have shown it), now declared and re-measured to zero; and the 380px column, widened to 460px after LOOKING at the dark render.",
+  "$edges-note": "EVERY node-id here was CHECKED AGAINST THE LIVE REGISTRIES BEFORE IT WAS WRITTEN. knowledge/components/_nodes-context.json and _nodes-pattern.json were read and every ref below already exists in them: this lane mints ZERO new context or pattern node-ids, which is the #210 wave-5 lane C discipline carried forward (that lane's first draft invented 6 of 8 patterns and 3 of 4 contexts). _validate_kg.py still FAILS because the metas themselves are new and gen_kg_edges.py must be re-run - a generated, shared file, and the conductor's.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Template-confirmation.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:app-shell-top-nav",
+        "$note": "App shell (top nav)"
+      },
+      {
+        "ref": "context:app-shell-side-nav",
+        "$note": "App shell (side nav)"
+      },
+      {
+        "ref": "context:the-end-of-a-payment-or-transfer-flow",
+        "$note": "The end of a payment or transfer flow"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:payment-sent-confirmation"
+      },
+      {
+        "ref": "pattern:in-flow-success-confirmation"
+      },
+      {
+        "ref": "pattern:review-summary"
+      },
+      {
+        "ref": "pattern:request-submitted"
+      }
+    ]
+  }
+}

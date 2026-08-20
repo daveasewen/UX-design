@@ -1,0 +1,95 @@
+{
+  "name": "Stats-band-lockup",
+  "category": "organism",
+  "$layer": "2 Lock-up",
+  "purpose": "A labelled, responsive row of stat tiles — the section-heading + auto-fill board shape Template-dashboard.reference.html already hand-rolls for its own KPI section, drawn here as its own reusable lock-up. Composed ENTIRELY from Layout-utilities, Stat-card, Kpi-tile and Cards' arrow-link — no new molecules (per this brief's own do-not-rule instruction). Itinerary row 119 (Layer 2, NO-ARTEFACT-CLASS at mint; PROPOSED here, not ruled).",
+  "props": [
+    { "name": "arrangement", "type": "enum", "values": ["heading-only", "heading-kpi", "heading-action"], "default": "heading-only",
+      "$note": "Three arrangement variants: A heading + 3-tile Stat-card board, B heading + 4-tile Kpi-tile board with sparklines, C heading + trailing View-all action + 4-tile Stat-card board. VARIANTS-axis prop (s142-D1 class C6)." },
+    { "name": "tileType", "type": "enum", "values": ["stat-card", "kpi-tile"], "default": "stat-card" },
+    { "name": "showAction", "type": "boolean", "default": "false" },
+    { "name": "minTileWidth", "type": "number", "default": "240", "$note": "180 in the dense Kpi-tile arrangement, 240 for Stat-card — matches each tile's own gated .board recipe." }
+  ],
+  "variants": [
+    { "name": "heading-only", "use": "Section heading + a 3-tile Stat-card board — the default, matching Template-dashboard's own KPI section." },
+    { "name": "heading-kpi", "use": "Section heading + a 4-tile Kpi-tile board with sparklines — a dense band that shows trend shape, not just the number." },
+    { "name": "heading-action", "use": "Section heading + a trailing 'View all' link + a wider board — for a band that is a preview of a longer list elsewhere." }
+  ],
+  "tokens": {
+    "heading": "canon/type.css .t-cm-section-label composite, the same idiom Template-dashboard uses",
+    "action-link": "text/default + primary/background/default (tip) via Cards.reference.html's a.arrow, unmodified",
+    "board": "Layout-utilities .l-grid (repeat(auto-fill, minmax(min(240px,100%),1fr))), the recipe Stat-card/Kpi-tile's own .board already hand-rolls",
+    "tiles": "Stat-card / Kpi-tile markup, tokens and manifest, fully unmodified — including Kpi-tile's own declared two-seat colour question, inherited not resolved",
+    "$note": "Every token above resolves through the ATOM's own manifest; this organism binds nothing new beyond the .sb-head arrangement row."
+  },
+  "responsive": {
+    "$status": "PROPOSED at #210 wave-6 (not ruled) — auto-fill collapse (4→2→1 columns) verified in a real browser at 3 widths, driven not merely asserted.",
+    "rule": "The board is Layout-utilities' own .l-grid, unmodified — no container-type of its own (WAVE-5 LESSON 3: it measures the enclosing page/container, exactly as Stat-card/Kpi-tile's own demo pages do). The `.sb-head` row wraps the heading above the trailing action at narrow widths via ordinary flex-wrap.",
+    "$note": "s210-D3 discipline: the band declares no width of its own."
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Account overview pages", "Template-dashboard-style pages"],
+    "mustNotNeighbour": ["A chart making the identical claim in the same view (Stat-card's own antiPattern, inherited)"],
+    "commonPatterns": ["'This month' KPI section", "operations counters band", "account summary preview band with a View-all link"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "relatedSC": ["2.4.6 Headings and Labels", "1.3.1 Info and Relationships", "1.4.11 Non-text Contrast", "1.4.1 Use of Color"],
+    "structure": "A <section aria-labelledby> landmark names the whole band from its own <h2>; each tile keeps its own role=\"group\"+aria-label per Stat-card/Kpi-tile's contract, unmodified.",
+    "focus": "The trailing arrow-link (arrangement C) keeps Cards' own :focus-visible box-shadow treatment; tiles are passive (no focusable content) exactly as their source atoms declare."
+  },
+  "antiPatterns": [
+    "Re-drawing the section heading, grid or tile CSS instead of composing the existing atom",
+    "A new molecule where Stat-card or Kpi-tile already covers the need (explicit do-not-rule for this row)",
+    "Resolving Kpi-tile's inherited fill-seat/ink-seat colour question locally — that binding is Dave's, not this lock-up's",
+    "A container-type declared on .l-grid itself instead of leaving the page/container to measure it"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "Layout-utilities/Stat-card/Kpi-tile/Cards' own token manifests, re-declared verbatim by name here",
+    "result": "PASS — `_validate_snippets.py` reports 0 findings for Stats-band-lockup.reference.html; see the #210 wave-6 Lane C receipt for the exact command."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Stats-band-lockup.reference.html"
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Stats-band-lockup.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:dashboards",
+        "$note": "Dashboards"
+      },
+      {
+        "ref": "context:account-overview-pages",
+        "$note": "Account overview pages"
+      },
+      {
+        "ref": "context:template-dashboard-style-pages",
+        "$note": "Template-dashboard-style pages"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:this-month-kpi-section"
+      },
+      {
+        "ref": "pattern:operations-counters-band"
+      },
+      {
+        "ref": "pattern:account-summary-preview-band-with-a-view-all-link"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "A chart making the identical claim in the same view (Stat-card's own antiPattern, inherited)"
+      }
+    ]
+  }
+}

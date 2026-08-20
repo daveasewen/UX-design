@@ -1,0 +1,88 @@
+{
+  "name": "CTA-lockup",
+  "category": "organism",
+  "$layer": "2 Lock-up",
+  "purpose": "A call-to-action band: a heading, a supporting line, and a Button pair (secondary + primary), arranged for either a full-bleed marketing band (centred) or a narrower in-page band (title left, actions right). Composed ENTIRELY from the gated Button atom plus canon type composites — no new visual vocabulary, only arrangement. Wave-6 itinerary row 122 (Layer 2, class NO-ARTEFACT-CLASS at mint; PROPOSED here, not ruled).",
+  "props": [
+    { "name": "arrangement", "type": "enum", "values": ["centered", "split"], "default": "centered",
+      "$note": "Two arrangement variants drawn in the reference: A centred (full-bleed marketing band, everything centred), B split (title block left, action pair right, for a narrower in-page band). Structural variance, a VARIANTS-axis prop, same class as Page-header-lockup's own `arrangement` prop." },
+    { "name": "heading", "type": "string", "$note": "Plain, informational — no invented urgency copy (brief DO-NOT-RULE: mono discipline, no manufactured scarcity)." },
+    { "name": "support", "type": "string", "$note": "One supporting line, max-width 56ch." },
+    { "name": "actions", "type": "slot", "values": ["one", "two"], "default": "two",
+      "$note": "1-2 Button instances. The organism does not draw a new button style; the specimen shows secondary+primary, but any tier combination is valid." }
+  ],
+  "variants": [
+    { "name": "centered", "use": "A full-bleed marketing band — a page section whose whole job is the call to action." },
+    { "name": "split", "use": "A narrower in-page band — a call to action that sits between other content, e.g. at the end of an article or a feature grid." }
+  ],
+  "tokens": {
+    "heading": "borrowed from canon/type.css .t-ed-heading-3 composite (24px/300, .em 400) — never a raw declaration",
+    "support": "borrowed from canon/type.css .t-ed-body composite (16px/400) — never a raw declaration",
+    "band": "surface/subtle — the same token Footer's own band uses, so a CTA band and a footer band read as the same family of neutral section",
+    "actions": "button/{primary,secondary}/* via Button.reference.html, unmodified",
+    "$note": "Every token above resolves through the ATOM's own manifest or the type-composite ramp; this organism binds nothing new beyond `--band`, itself an alias of an existing token. The lock-up's own CSS (`.ctal-*`) is flex arrangement only."
+  },
+  "responsive": {
+    "$status": "PROPOSED at #210 wave-6 (not ruled) — reflow verified in a real browser at 3 widths.",
+    "rule": "Wide: split form shows title left / actions right, one row; centred form is already centred at every width. Container <=560px (container-query, WCAG 1.4.10 reachable to 320px): the split form collapses to the centred stacked form, and the button pair goes full-width stacked in BOTH arrangements — the same 560px threshold Page-header-lockup uses for its own action row.",
+    "$note": "s210-D3 discipline: the lock-up declares no width of its own; the container gives it one."
+  },
+  "relationships": {
+    "livesInside": ["Template — page", "Feature-grid-lockup (as a closing band)", "Template — dashboard"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["marketing band with a single action pair", "in-page call to action"]
+  },
+  "accessibility": {
+    "relatedSC": ["2.4.6 Headings and Labels", "2.4.7 Focus Visible", "1.4.10 Reflow"],
+    "structure": "The heading is a single semantic heading level per instance; the organism does not assert which level (h1/h2) — that depends on the page it sits in.",
+    "focus": "Both buttons keep Button's OWN :focus-visible ring — the organism adds no new focusable element and no new focus style.",
+    "colourIsNeverAlone": "No RAG value appears anywhere in this component — mono discipline (brief DO-NOT-RULE)."
+  },
+  "antiPatterns": [
+    "Re-drawing the button CSS instead of composing the existing Button atom",
+    "Giving the lock-up a fixed width — s210-D3 reserves that for the container",
+    "Inventing urgency copy — a countdown, an exclamation mark, manufactured scarcity — the brief's DO-NOT-RULE names this explicitly",
+    "Adding a third button — the organism draws exactly one action pair; a row needing more belongs to a different pattern"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "Button.reference.html's own token manifest, re-declared verbatim by name here (excluding its `.bar-wrap`/`.actionbar` demo-chrome `--surface`, unused — this lock-up has no action-bar demo)",
+    "result": "PASS — `_validate_snippets.py` reports 0 findings for CTA-lockup.reference.html; see the #210 wave-6 Lane D receipt for the exact command."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/CTA-lockup.reference.html"
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:CTA-lockup.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:feature-grid-lockup",
+        "$note": "Feature-grid-lockup (as a closing band)"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:template-page",
+        "$note": "Template — page"
+      },
+      {
+        "ref": "context:template-dashboard",
+        "$note": "Template — dashboard"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:marketing-band-with-a-single-action-pair"
+      },
+      {
+        "ref": "pattern:in-page-call-to-action"
+      }
+    ]
+  }
+}

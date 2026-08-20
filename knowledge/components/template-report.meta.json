@@ -1,0 +1,136 @@
+{
+  "name": "Template - report",
+  "category": "template",
+  "purpose": "A report page: a provenance-bearing report header, a stats band, charts, and the table that makes the charts auditable. A dashboard answers 'how are things right now'; a report is a CLAIM ABOUT A PERIOD, made at a MOMENT, from a stated SOURCE, and it has to be checkable. That difference is the template's whole contribution and it shows up in three places a dashboard has no need for: the provenance row, the table carrying the same figures the charts draw, and the footnote block.",
+  "$provenance-note": "NEW at #210 (wave 6, lane B) against the Layer-2 P3 fan-out brief - itinerary row 113. PROPOSED, NOT RULED. Layer-2 rows have no ruled artefact form; this file ships in the library's grammar on the brief's PROPOSED convention (s182-D2, the Kpi-tile precedent). No registration was performed: no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json membership, no canon.css block, no _rulings.json line, no gen_kg_edges.py run, no git operation. Deleting this pair costs nothing because nothing points at it.",
+  "$layer": "2 Template",
+  "$layer-note": "The wave-5 and wave-6 briefs PROPOSED the meta key `layer`. meta.schema.json is additionalProperties:false with patternProperties '^\\\\$' only, so a bare `layer` key FAILS probe P-1 (probe_meta_schema.py). `$layer` is the legal form and is what is used here - the correction #210 wave-5 lane C reported, carried forward, not re-discovered. A `$`-prefixed key is an ANNOTATION by the schema's own grammar: if Layer-2 membership is meant to be queryable structure it wants a real enum property and a schema amendment. Still open, still Dave's.",
+  "interactive": false,
+  "props": [
+    {
+      "name": "period",
+      "type": "string",
+      "default": "Last quarter",
+      "$note": "The segmented switcher is drawn with three periods. The PERIOD COVERED, the PREPARED timestamp, the SOURCE and the CURRENCY are all mandatory in the provenance row - a report that cannot say where its numbers came from is decoration."
+    },
+    {
+      "name": "statTiles",
+      "type": "number",
+      "default": 5,
+      "$note": "Five, so the auto-fill grid has a reflow worth measuring rather than one worth asserting: MEASURED 4 -> 3 -> 1 tracks at 1400 / 820 / 420."
+    },
+    {
+      "name": "charts",
+      "type": "number",
+      "default": 2,
+      "$note": "ONE PER ROW, and that is arithmetic not taste - see antiPatterns."
+    }
+  ],
+  "variants": [
+    {
+      "name": "quarterly",
+      "use": "The one drawn. Any period works; the provenance row is what changes."
+    }
+  ],
+  "tokens": {
+    "page": "background/default",
+    "surface": "tertiary/background/default (every panel and tile)",
+    "rules": "divider/border/section (header, provenance row, notes) and border/subtle (tile + table borders)",
+    "table": "table/header/background + background/default cells, via Data-grid",
+    "dataviz": "data/series/1, data/axis/color + alpha, data/grid/color + alpha, and - for Chart-line's hidden baked views only - data target chrome",
+    "spark": "rag/success-ink and rag/error-ink, background-keyed per s182-D3, inherited through Kpi-tile",
+    "chip": "the rag/*-tint set, via Status-indicator form B",
+    "buttons": "the button/tertiary/* and button/quaternary/* Mono ladder",
+    "$noColouredMoney": "⛔ NO MONETARY FIGURE ON THIS PAGE IS COLOURED. rag/success-ink and rag/error-ink are MONO ONLY (s155-D1 / s158-D2 / s158-D3); binding them to money on a page template would be ruling on Dave's behalf. The only RAG is the settlement chip, which always carries its word.",
+    "$mono": "MONO ONLY. No colour value is invented anywhere in this template. Every hex in both theme blocks appears in the theme block of a source component. The two-red law (s151-D1) and the mono error-ink camp (s149-D1) are untouched.",
+    "$noNewWidths": "s210-D3 discipline: the template asserts page-scale layout only. No molecule inside it receives a new fixed width."
+  },
+  "relationships": {
+    "livesInside": [
+      "App shell (top nav)",
+      "App shell (side nav)"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "trend board",
+      "dashboard summary band",
+      "numeric table with right aligned cells",
+      "export with format choice"
+    ]
+  },
+  "$composes": "Breadcrumbs + Headers (the page-header lock-up), Button (print / export, with its injected press-physics partial), View-options .seg (the period switcher), Kpi-tile + Stat-card (the five-tile stats band and every panel surface), Chart-bar (the column specimen, geometry BYTE-LIFTED), Chart-line (the twelve-month line specimen, BYTE-LIFTED including its two hidden baked views), Data-grid (the table, its sort headers and its scroll frame), Summary (the quarter total including its emphasised total row), Status-indicator (the settlement chips), Layout-utilities (.l-container / .l-stack / .l-row / .l-grid).",
+  "accessibility": {
+    "roles": "No invented roles. <main> with an <h1>; the provenance row is a real <dl>; each chart is a <figure> with a <figcaption> and role=\"group\"; the table is a real <table> with scope=\"col\" headers and aria-sort.",
+    "keyboard": "Tab order follows source order: breadcrumb, page actions, period switcher, then each sortable column header, then nothing - the page is a document.",
+    "announcements": "None. A report is a document, not a stream.",
+    "states": "aria-pressed on the period switcher; aria-sort on every sortable column.",
+    "targets": "MEASURED at 1400px: buttons 100x44 and 116x44; every sort header 44px tall (237x44, 171x44, 188x44, 166x44, 268x44). Period segments are 40px tall - View-options' shipped geometry, inherited and reported, not quietly enlarged.",
+    "$colourIsNeverAlone": "Every settlement chip carries its word; its dot is aria-hidden. Every chart's meaning is available in the table below it and in each figure's accessible name.",
+    "$chartAccessibleNames": "Each bar and each line marker carries a role=\"img\" with a value in its accessible name, and each chart's <svg> carries a full sentence naming every category and value.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.10",
+      "1.4.11",
+      "2.4.3",
+      "2.4.6",
+      "2.4.7",
+      "4.1.2"
+    ]
+  },
+  "antiPatterns": [
+    "Putting two fixed-canvas charts side by side. MEASURED: two panels need 2 x (580 + 48) + 32 = 1288px of container and this page's frame caps at 1120px, so the two-column draft made BOTH charts scroll horizontally at full desktop width with every gate green. One chart per row, stated as arithmetic.",
+    "Making a chart fluid by setting width:100% on its SVG. That stretches the viewBox and scales the text and strokes with the pane - the banned physics _RUNBOOK-render-verify.md records Dave catching in his own browser. A chart's answer to a narrow container is its own .dv-stage{overflow-x:auto}.",
+    "Byte-lifting a chart specimen and keeping its DEMO DATA. Lifted verbatim, this page drew 'Groceries, Transport, Housing' directly above a table of settlement routes. Geometry is the source's; category labels are DOMAIN CONTENT and were never the chart component's to own.",
+    "Substituting longer category labels than the source's. The specimen's label positions were generated for the source's strings and do not move: full trading names produced five overlapping label pairs, the worst by 13.0px. Comparable lengths, and RE-MEASURE.",
+    "Carrying a chart specimen without every var its markup reads. Chart-line's specimen holds two HIDDEN baked views (a ghost series and a target line) which consume data-target chrome AND depend on .dv-off being carried; without .dv-off both paint over the chart, and a dangling var() in an SVG paint property falls back to BLACK, in silence.",
+    "Publishing a report without its provenance. Period covered, prepared-at, source and currency are not decoration; without them the numbers cannot be checked."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS - every declared var resolves in both light and dark and every declared contrast pair clears its threshold in both modes (run at #210, wave 6, lane B).",
+    "$scope": "MONO base only. Console, Legacy and Supercharge were NOT rendered by this lane and are UNPROVEN for this template. The four-theme cascade needs the canon.css projection below first, and [[four-themes-flexibility-is-the-requirement]] says test PER THEME - that test has NOT been run and is not claimed.",
+    "$notGenerated": "canon.css carries NO .cn-template-report scope, so _validate_binds_resolve.py check D FAILS for this file. DECLARED, not hidden - the projection is the conductor's and is a precondition of any four-theme claim.",
+    "$deprecated": "No deprecated tokens bound."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Wave-6 Layer-2 P3 fan-out (notes/_briefs/2026-08-20-210-wave6-layer2-p3-fanout-brief-v1.md), lane B, itinerary row 113. No Figma node."
+  },
+  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Headless Chromium from file:// with the real HSBC cut (canvas-width assertion against TWO controls: target 346.88, both aliases 346.88, DejaVu 375.39, nonexistent face 301.07), light AND dark, at 1400 / 820 / 420 CSS px, screenshots LOOKED AT. Zero horizontal page overflow in all 6 runs. Zero dangling CSS vars in all 6 runs and the probe is MUTATION-CONTROLLED BOTH WAYS: injecting fill:var(--data-series-NOPE) flipped the probe to ['--data-series-NOPE'] and reproduced the silent black (rgb(118,102,130) -> rgb(0,0,0)). The .dv-off rule is mutation-controlled too: defeating it makes both hidden baked views paint. COLLAPSE MEASURED: .l-grid stats band read 4 -> 3 -> 1 tracks; the provenance row read 4 -> 3 -> 2. Wide fixed-canvas regions scroll INSIDE themselves rather than the page: at 1400 and 820 both chart stages report scrolls:false, at 420 both report scrollWidth 580 / clientWidth 338 -> scrolls:true and the table 640 / 336. TWO DEFECTS FOUND BY LOOKING, both with every gate green: the two-up chart layout that made both charts scroll at desktop width, and the byte-lifted chart that contradicted its own table.",
+  "$edges-note": "EVERY node-id here was CHECKED AGAINST THE LIVE REGISTRIES BEFORE IT WAS WRITTEN. knowledge/components/_nodes-context.json and _nodes-pattern.json were read and every ref below already exists in them: this lane mints ZERO new context or pattern node-ids, which is the #210 wave-5 lane C discipline carried forward (that lane's first draft invented 6 of 8 patterns and 3 of 4 contexts). _validate_kg.py still FAILS because the metas themselves are new and gen_kg_edges.py must be re-run - a generated, shared file, and the conductor's.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Template-report.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:app-shell-top-nav",
+        "$note": "App shell (top nav)"
+      },
+      {
+        "ref": "context:app-shell-side-nav",
+        "$note": "App shell (side nav)"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:trend-board"
+      },
+      {
+        "ref": "pattern:dashboard-summary-band"
+      },
+      {
+        "ref": "pattern:numeric-table-with-right-aligned-cells"
+      },
+      {
+        "ref": "pattern:export-with-format-choice"
+      }
+    ]
+  }
+}

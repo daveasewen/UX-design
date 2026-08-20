@@ -1,0 +1,94 @@
+{
+  "name": "Card-header-lockup",
+  "category": "organism",
+  "$layer": "2 Lock-up",
+  "purpose": "The header zone of a Cards surface — title, an optional meta line, and either inline ghost actions or a single overflow trigger that opens an actions menu — kept separate from Cards' four full card types because a header zone recurs inside many different card bodies. Composed ENTIRELY from Cards, Icon-button, Status-indicator and Dropdown's floating-panel CSS (with a declared ARIA deviation from listbox to menu). Itinerary row 117 (Layer 2, NO-ARTEFACT-CLASS at mint; PROPOSED here, not ruled).",
+  "props": [
+    { "name": "arrangement", "type": "enum", "values": ["plain", "inline-actions", "status-overflow"], "default": "plain",
+      "$note": "Three arrangement variants: A title+meta only, B title+meta+two inline ghost actions (Cards' .qbtn), C title+meta+status chip+overflow menu. VARIANTS-axis prop (s142-D1 class C6)." },
+    { "name": "showMeta", "type": "boolean", "default": "true" },
+    { "name": "showStatus", "type": "boolean", "default": "false" },
+    { "name": "actions", "type": "slot", "values": ["none", "two-inline", "overflow-menu"], "default": "none" }
+  ],
+  "variants": [
+    { "name": "plain", "use": "A static card header with no interactive affordance — read-only summary cards." },
+    { "name": "inline-actions", "use": "Two lightweight actions always visible (e.g. Edit / Pause on a standing order)." },
+    { "name": "status-overflow", "use": "A verification/status chip plus a menu of less-frequent actions behind one overflow trigger — keeps the header from crowding as the action list grows." }
+  ],
+  "tokens": {
+    "surface": "tertiary/background/default + border/subtle + border-radius/surface (the Cards recipe, unmodified)",
+    "title": "canon/type.css .t-cm-ctl-16 composite",
+    "meta": "text/secondary via .t-cm-caption",
+    "inline-actions": "Cards' .qbtn undecorated-button recipe, unmodified",
+    "overflow-trigger": "button/quaternary/* via Icon-button.reference.html, 44×44, unmodified",
+    "status-chip": "rag/success-tint + rag/success via Status-indicator.reference.html's tint-chip form B, unmodified",
+    "menu-panel": "background/default + elevation/border + elevation/functional via Dropdown.reference.html's .menu/.opt positioning CSS, ARIA role changed from listbox to menu (declared deviation, see the snippet's own header)",
+    "$note": "Every token above resolves through the ATOM's own manifest; this organism binds nothing new."
+  },
+  "responsive": {
+    "$status": "PROPOSED at #210 wave-6 (not ruled) — reflow verified in a real browser at 3 widths.",
+    "rule": "The header row is a CONTAINER QUERY on the `.card` surface itself (container-type:inline-size), collapsing the title/meta above the actions row below a 280px container — the query element (.card) and the measured element (.ch-actions) are DIFFERENT elements, avoiding the self-query trap.",
+    "$note": "s210-D3 discipline: the card's own width comes from its consuming grid/board, not from this file."
+  },
+  "relationships": {
+    "livesInside": ["Cards (any of the four gated types, as the header zone)", "Stat panels", "Settings cards"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["account/payee summary card header", "standing-order card with edit/pause", "verified-payee card with an overflow menu"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "relatedSC": ["2.4.6 Headings and Labels", "2.4.7 Focus Visible", "4.1.2 Name, Role, Value", "1.4.10 Reflow"],
+    "structure": "Title is an <h3> (a card is a subsection of its page, never the page's own heading level); the overflow trigger carries aria-haspopup=\"menu\" + aria-expanded + aria-controls; the panel carries role=\"menu\" with role=\"menuitem\" buttons (declared deviation from Dropdown's role=\"listbox\"/role=\"option\", see the snippet header).",
+    "focus": "The overflow trigger keeps Icon-button's own :focus-visible ring; menu items keep Dropdown's own :focus-visible ring, unmodified; focus returns to the trigger on menu close (Escape or item activation)."
+  },
+  "antiPatterns": [
+    "Re-drawing the card surface, the icon-button or the menu panel instead of composing the existing atom",
+    "Reusing Dropdown's role=\"listbox\"/aria-selected for an ACTIONS menu (this is a selection widget's ARIA on a non-selection widget — the declared deviation exists precisely to avoid this)",
+    "More than one overflow trigger per card header",
+    "A container-type declared on the wrong element (the query MUST live on .card, not on .ch-actions itself — WAVE-5 LESSON 3)"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "the source atoms' own token manifests (Cards/Icon-button/Status-indicator/Dropdown), re-declared verbatim by name here",
+    "result": "PASS — `_validate_snippets.py` reports 0 findings for Card-header-lockup.reference.html; see the #210 wave-6 Lane C receipt for the exact command."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Card-header-lockup.reference.html"
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Card-header-lockup.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:cards",
+        "$note": "Settings cards"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:cards-any-of-the-four-gated-types-as-the-header-zone",
+        "$note": "Cards (any of the four gated types, as the header zone)"
+      },
+      {
+        "ref": "context:stat-panels",
+        "$note": "Stat panels"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:account-payee-summary-card-header"
+      },
+      {
+        "ref": "pattern:standing-order-card-with-edit-pause"
+      },
+      {
+        "ref": "pattern:verified-payee-card-with-an-overflow-menu"
+      }
+    ]
+  }
+}

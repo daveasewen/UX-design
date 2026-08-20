@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App shell — nav rail (reference implementation, PROPOSED #210)</title>
+<!--
+  ⚠⚠ PROPOSED #210, 2026-08-20 (Wave 6, Lane A). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. Itinerary row 103 ("App shell — nav rail", Shells
+  (Layer 2), P3). Derived class NO-ARTEFACT-CLASS — ships in the wave-5 PROPOSED snippet+meta
+  grammar; registers nothing.
+
+  ★★ COMPOSE, NEVER RE-DRAW. Named so a reviewer can diff every region:
+    · THE RAIL — Sidebar-nav.reference.html's `.sn`/`.sn-body`/`.sn-group`/`.sn-link`/`.si`/
+      `.sn-label`/`.sn-foot` atoms in their `.is-rail` form, verbatim: the 64px width, the
+      64x44 centred link, the clip-path visually-hidden label, the three current-location
+      carriers (`aria-current` + `inset 3px 0 0` in primary red + a surface change), the
+      hover/pressed/focus shapes, and the six icon symbols byte-for-byte.
+    · THE FRAME — App-shell-top-nav.reference.html (#210, wave 5, PROPOSED): the `.sh`
+      container-query box, the skip link, the slim `.sh-foot` legal bar INCLUDING its
+      `.sh-legal li{display:flex}` defect repair, the 44x44 action geometry.
+    · THE IN-APP HEADER — Headers.reference.html's 56px band, via App-shell-side-nav.
+    · THE FLYOUT PANEL SKIN — Popover.reference.html verbatim: background/default on
+      elevation/border with `box-shadow: 0 0 16px` on elevation/functional, and the
+      opacity-transitioned `pointer-events` gate.
+    · THE CONTENT FURNITURE — Skeleton-loader.reference.html's shape kit, announcement NOT
+      copied (App-shell-top-nav's reasoning, inherited).
+  ⛔ NO PARENT FILE WAS EDITED. Not one.
+
+  ★★ WHAT MAKES THIS NOT App-shell-side-nav, AND IT IS ONE SENTENCE: THERE IS NO EXPAND
+  TOGGLE. App-shell-side-nav's rail is a STATE — the user collapsed it and can uncollapse it.
+  Here the rail is the NAVIGATION, permanently, and the room it saves is the whole point. That
+  raises the question the rail has always owed, carried open since #203: a rail item has no
+  visible name. This file's answer is the FLYOUT, and the flyout is the component.
+
+  ★★★ TWO FLYOUT FORMS, AND THEY ARE NOT COSMETIC VARIANTS — THEY HAVE DIFFERENT
+  ACCESSIBILITY CONTRACTS, AND GETTING THAT WRONG IS THE EASIEST MISTAKE IN THE FILE.
+    · flyout="label" — the panel shows the item's NAME and nothing else. The rail link ALREADY
+      carries that name, in Sidebar-nav's own clip-path `.sn-label`. So the panel is
+      `aria-hidden="true"`: it is a VISUAL affordance for a sighted mouse user, and announcing
+      it would tell a screen-reader user the name twice. ⚠ Drawn the other way round it looks
+      identical and reads as a stutter.
+    · flyout="menu" — the panel is a real disclosure carrying CHILD destinations. It is NOT
+      aria-hidden. The rail item stops being a link and becomes a `<button>` with
+      `aria-expanded` + `aria-controls`, because a control that opens something is a button,
+      and the panel is a `<nav>` with its own accessible name.
+  ⇒ THE RULE THIS FILE PROPOSES: a flyout that only repeats a name is decorative and must be
+  hidden; a flyout that offers destinations is a disclosure and must be announced. Same
+  pixels, opposite markup. PROPOSED — see $decision-1.
+
+  ⚠⚠ SC 1.4.13 (CONTENT ON HOVER OR FOCUS) IS THE GATE NOBODY IN THIS REPO HAS HAD TO PASS
+  BEFORE, AND A CSS-ONLY HOVER FLYOUT CANNOT PASS IT. Three requirements, all three built and
+  all three MEASURED in the receipt:
+    · DISMISSIBLE — Escape hides the flyout WITHOUT moving the pointer. A `:hover` rule has no
+      way to be dismissed, so the shell carries a `data-fly-dismissed` state that out-specifies
+      the hover rule (0,4,0 vs 0,3,0) and is cleared when the pointer leaves the rail.
+    · HOVERABLE — the panel sits at `left:100%` with NO GAP (measured: it overlaps the rail
+      edge by 1px), so a pointer travelling from icon to panel never crosses dead space; AND
+      it is `pointer-events:auto` while shown. ⚠⚠ THE SECOND HALF WAS MISSING IN THE FIRST
+      DRAFT AND IT FAILED THIS CLAUSE OUTRIGHT: a `pointer-events:none` panel is not a hit
+      target, so the pointer passes through it, `.sn-item:hover` stops matching, and the panel
+      disappears exactly when the user reaches for it. Measured "hidden" with the pointer at
+      the panel's own centre. Found by DRIVING; invisible to every gate and every screenshot.
+    · PERSISTENT — nothing times the panel out. It goes when the pointer leaves, when focus
+      leaves, or when the user dismisses it. Never on a timer.
+
+  THE RESPONSIVE COLLAPSE. Container queries, never viewport queries (`s210-D3`):
+    · >= 900cqi  — rail at the left edge, flyouts open to the right.
+    · 600–899cqi — unchanged. ⚠ AND THAT IS THE ARGUMENT FOR A RAIL: it is already 64px, so
+      there is nothing to collapse. A shell that costs the same at 700px as at 1400px is a
+      shell that never has to make a decision in between.
+    · < 600cqi   — ⚠⚠ THE RAIL MOVES TO THE BOTTOM AND THE LABELS COME BACK VISIBLE, and the
+      LABEL flyouts are suppressed entirely. Hover does not exist on a phone, so a flyout that
+      only opens on hover is a name most touch users would never see; the honest move is to
+      stop hiding the name in the first place. MENU flyouts survive, rendered as a full-width
+      panel ABOVE the bar, because they carry destinations rather than a name.
+      ⛔ THIS IS THE Tab-bar ARRANGEMENT AND Tab-bar EXISTS AS A COMPONENT. It is NOT composed
+      here — Tab-bar carries a dual line/fill glyph system this rail's icons do not have, and
+      re-drawing half of it would be exactly the thing the cardinal rule forbids. Whether the
+      phone form should BE Tab-bar is $decision-4 and it is Dave's.
+  ⚠ 900 AND 600 ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS — the same pair the three sibling
+  wave-6 shells use. `layout.json` has no breakpoint scale. See $decision-5.
+
+  ⚠⚠ THE CONTAINER-QUERY SELF-QUERY TRAP BIT THIS FILE FOR REAL, AND NOT IN THE USUAL WAY.
+  `.sh` is the query container, so no `@container` rule may target it. The phone band needs the
+  frame's MAIN AXIS to turn from row to column — a property of the PARENT. The first draft
+  worked round that with `order` on the children, which re-orders along the axis it already
+  has: measured at a 392px container, the rail sat BESIDE the content at 283px wide and
+  `railIsBelowBody: false`. Plausible in a thumbnail, wrong in every other way. ⇒ THE FIX IS
+  STRUCTURAL: `.sh` is the CONTAINER and `.sh-inner` is the FLEX PARENT, two elements, and the
+  phone band turns `.sh-inner`'s axis in one ordinary line. ★ The trap does not only swallow
+  rules that never fire — it pushes you into a workaround that quietly does something else.
+
+  COLOUR: no RAG value anywhere. The only red is primary/border/default on the current-location
+  mark, which is Sidebar-nav's own approved bar. Two-red law (`s151-D1`) and the mono error ink
+  camp (`s149-D1`) untouched. SHAPE: square throughout. MOTION: Popover's opacity fade on the
+  panel; nothing else moves. Reduced motion honoured.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. BYTE-IDENTICAL to Command-palette.reference.html line 36. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family, font-size or font-weight anywhere in component scope — every text
+     element carries a .t-cm-* / .t-ed-* composite from canon/type.css. Ratchet contribution: 0. */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{
+    --page:#FFFFFF;
+    --panel:#FFFFFF;
+    --surface:#FFFFFF;
+    --band:#F0F0F0;
+    --text:#1A1A1A;
+    --muted:#1A1A1A;
+    --icon:#1A1A1A;
+    --rule:#E1E1E1;
+    --sub-rule:#F0F0F0;
+    --pop-border:#FFFFFF00;
+    --shadow:#00000033;
+    --hover:#F0F0F0;
+    --pressed:#CECECE;
+    --indicator:#DB0011;
+    --bone:#F0F0F0;
+    --focus:#305A85;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --panel:#1A1A1A;
+    --surface:#1F1F1F;
+    --band:#1F1F1F;
+    --text:#FFFFFF;
+    --muted:#FFFFFF;
+    --icon:#FFFFFF;
+    --rule:#808080;
+    --sub-rule:#808080;
+    --pop-border:#808080;
+    --shadow:#000000D9;
+    --hover:#232323;
+    --pressed:#484848;
+    --indicator:#DB0011;
+    --bone:#232323;
+    --focus:#4587A7;
+    --border-radius-surface:0;
+    --border-radius-control:0;
+    --border-radius-indicator:0;
+    --target-min:44px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:32px 24px; background:var(--page); color:var(--text);
+       -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted); opacity:var(--alpha-60); margin:0 0 8px;}
+  .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+
+  /* ============================================================================================
+     THE SHELL FRAME — the `.sh` box copied from App-shell-top-nav.reference.html, laid out as a
+     ROW because the rail is a column at the leading edge.
+     ============================================================================================ */
+  /* ⚠⚠ `.sh` IS THE QUERY CONTAINER AND `.sh-inner` IS THE FLEX PARENT, AND THOSE HAVE TO BE
+     TWO DIFFERENT ELEMENTS. THIS FILE LEARNED THAT THE HARD WAY AND THE LESSON IS THE WAVE-5
+     ONE, ARRIVING THROUGH A DOOR NOBODY WATCHED. The first draft made `.sh` the flex row and
+     tried to send the rail to the bottom at phone width with `order:2` on its children. Order
+     re-orders along the parent's MAIN AXIS, so moving the rail below the content needs
+     `flex-direction:column` ON THE PARENT — and the parent is the container, which a
+     `@container` rule may never target. MEASURED before the fix at a 392px container:
+     railTop 1245, bodyTop 1245, `railIsBelowBody: false`, rail 283px WIDE and sitting beside
+     the content. It looked like a plausible phone layout in a thumbnail. ⇒ ★ THE SELF-QUERY
+     TRAP DOES NOT ONLY SWALLOW RULES THAT NEVER FIRE; IT ALSO PUSHES YOU INTO A WORKAROUND
+     THAT SILENTLY DOES SOMETHING ELSE. Splitting the roles costs one element and makes the
+     phone band a one-line, ordinary rule. */
+  .sh{position:relative; display:block; container-type:inline-size; container-name:shell;
+      background:var(--page); color:var(--text);
+      border:1px solid var(--rule); border-radius:var(--border-radius-surface); overflow:hidden;}
+  .sh-inner{display:flex; flex-direction:row; min-height:520px;}
+  .sh.is-narrow{width:392px;}   /* a deliberately narrow CONTAINER, so the collapse is visible in one still */
+  .sh.is-narrow .sh-inner{min-height:600px;}
+
+  /* skip link — WCAG 2.4.1 bypass block. ⚠ ESPECIALLY LOAD-BEARING HERE: the rail is the
+     repeated block, and a keyboard user meets nine rail controls before any content. */
+  .sh-skip{position:absolute; top:8px; left:8px; z-index:9; display:inline-flex; align-items:center;
+    min-height:var(--target-min); padding:0 16px; background:var(--surface); color:var(--text);
+    border:1px solid var(--rule); border-radius:var(--border-radius-control);
+    text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+    transform:translateY(-200%); transition:transform var(--ease);}
+  .sh-skip:focus-visible{transform:translateY(0); outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ============================================================================================
+     THE RAIL — Sidebar-nav's `.sn` atoms in `.is-rail` form, COMPACTED: the width, the head and
+     the label-hiding are folded into the base rules because there is no expanded state to
+     toggle to. ⚠ THAT FOLD IS THE ONLY CHANGE — every declaration below traces to a
+     Sidebar-nav rule, and the diff is named in the receipt.
+     ============================================================================================ */
+  .sh-rail{flex:none; width:64px; display:flex; flex-direction:column;
+    background:var(--surface); border-right:1px solid var(--rule); overflow:visible;}
+  .sh-rail-head{display:flex; align-items:center; justify-content:center; min-height:56px;
+    padding:0 12px; border-bottom:1px solid var(--sub-rule); flex:none;}
+  .sh-rail-brand{color:var(--indicator);}
+  .sn-body{flex:1; overflow-y:visible; padding:8px 0; display:flex; flex-direction:column; gap:8px;}
+  .sn-group{display:flex; flex-direction:column; gap:2px;}
+  .sn-group + .sn-group{border-top:1px solid var(--sub-rule); padding-top:8px;}
+  .sn-group ul{list-style:none; margin:0; padding:0;}
+  .sn-item{position:relative;}   /* the flyout's positioning context — the ONE genuinely new rule */
+  .sn-link{display:flex; align-items:center; justify-content:center; gap:12px;
+    min-height:44px; width:64px; padding:0; border:0; background:transparent;
+    color:var(--text); text-decoration:none; cursor:pointer;}
+  .sn-link .si{flex:none; display:inline-flex; width:18px; height:18px; color:var(--icon);}
+  .sn-link .si svg{width:18px; height:18px; fill:currentColor;}
+  /* Sidebar-nav's `.is-rail` label treatment, folded in: hidden, NEVER removed — the link keeps
+     its accessible name and that is what makes the flyout decorative rather than necessary. */
+  .sn-label{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+  .sn-link:hover{background:var(--hover);}
+  .sn-link:active{background:var(--pressed);}
+  .sn-link:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  /* the three current-location carriers — Sidebar-nav's, unchanged: an ATTRIBUTE, a SHAPE and a
+     SURFACE, so the mark never depends on hue alone (1.4.1) */
+  .sn-link[aria-current="page"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+  .sn-foot{border-top:1px solid var(--sub-rule); padding:8px 0;}
+  .sn-foot ul{list-style:none; margin:0; padding:0;}
+
+  /* ============================================================================================
+     THE FLYOUT — panel skin copied VERBATIM from Popover.reference.html.
+     ⚠ NO GAP between the rail edge and the panel (`left:100%`): SC 1.4.13's HOVERABLE clause
+     means a pointer travelling from icon to panel must never cross dead space.
+     ============================================================================================ */
+  .sh-fly{position:absolute; left:100%; top:0; z-index:20; width:max-content; max-width:280px;
+    background:var(--panel); color:var(--text); border:1px solid var(--pop-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow);
+    opacity:0; visibility:hidden; pointer-events:none; transition:opacity var(--ease);}
+  .sh-fly-label{display:flex; align-items:center; min-height:44px; padding:0 16px;}
+  .sh-fly-menu{padding:8px 0;}
+  .sh-fly-menu > h2{margin:0; padding:8px 16px 4px; opacity:var(--alpha-60);}
+  .sh-fly-menu ul{list-style:none; margin:0; padding:0;}
+  .sh-fly-menu a{display:flex; align-items:center; min-height:var(--target-min); padding:0 16px;
+    color:var(--text); text-decoration:none; white-space:nowrap;}
+  .sh-fly-menu a:hover{background:var(--hover);}
+  .sh-fly-menu a:active{background:var(--pressed);}
+  .sh-fly-menu a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+
+  /* LABEL flyouts: hover or focus, and `:focus-within` so a keyboard user gets the same panel
+     a mouse user gets. Specificity (0,3,0). */
+  /* ⚠⚠ `pointer-events:auto` IS LOAD-BEARING AND ITS ABSENCE WAS A REAL SC 1.4.13 FAILURE.
+     This file first carried a rule reading `.sn-item:hover > .sh-fly-label{pointer-events:none}`
+     with the comment "a name is not a target" — plausible, tidy, and it broke the HOVERABLE
+     clause of the very success criterion the flyout exists to satisfy. With the panel not a hit
+     target the pointer passes THROUGH it to the content behind, `.sn-item:hover` stops matching,
+     and the panel vanishes the moment the user moves onto it. DRIVEN AT #210, measured with the
+     pointer parked at the panel's centre: visibility "hidden". After this line: "visible".
+     ⇒ ★ A COMMENT JUSTIFYING A DECISION IS NOT EVIDENCE FOR IT. */
+  .sn-item:hover > .sh-fly-label,
+  .sn-item:focus-within > .sh-fly-label{opacity:1; visibility:visible; pointer-events:auto;}
+  /* ⚠⚠ THE DISMISSIBLE CLAUSE OF SC 1.4.13, AND IT IS WHY THIS COULD NOT BE CSS-ONLY. A
+     `:hover` rule cannot be dismissed — the only way out is to move the pointer, which is
+     exactly what the clause forbids requiring. This state is set by the Escape key and cleared
+     when the pointer leaves the rail. Specificity (0,4,0) so it beats the rule above without
+     an !important. */
+  .sh[data-fly-dismissed="true"] .sn-item .sh-fly-label{opacity:0; visibility:hidden;}
+
+  /* MENU flyouts: an explicit disclosure, so they answer to `aria-expanded` and nothing else.
+     ⛔ DELIBERATELY NOT ON :hover. A panel of destinations that opens because a pointer passed
+     over it is a panel that opens by accident; and one that closes on pointer-leave takes its
+     destinations away mid-reach. A disclosure is opened and closed on purpose. */
+  .sn-link[aria-expanded="true"] + .sh-fly-menu{opacity:1; visibility:visible; pointer-events:auto;}
+  .sn-link[aria-expanded="true"]{background:var(--hover);}
+
+  /* ---- the content column ---- */
+  .sh-body{flex:1; min-width:0; display:flex; flex-direction:column;}
+  .sh-head{display:flex; align-items:center; gap:16px; min-height:56px; padding:0 24px;
+    background:var(--surface); border-bottom:1px solid var(--rule); flex:none;}
+  .sh-head h1{margin:0; margin-right:auto;}
+  .sh-actions{display:flex; gap:8px; flex:none;}
+  .sh-actions button{width:var(--target-min); height:var(--target-min); border:0; background:transparent;
+    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-control);}
+  .sh-actions button:hover{background:var(--hover);}
+  .sh-actions button:active{background:var(--pressed);}
+  .sh-actions button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sh-actions svg{width:20px; height:20px; fill:currentColor;}
+  .sh-main{flex:1; min-height:0; overflow:auto; padding:24px; display:flex; flex-direction:column; gap:24px;}
+  .sh-cols{display:grid; grid-template-columns:2fr 1fr; gap:24px; align-items:start;}
+  .sh-panel{border:1px solid var(--rule); border-radius:var(--border-radius-surface); padding:16px;
+    display:flex; flex-direction:column; gap:12px;}
+
+  /* bone shape kit — geometry copied from Skeleton-loader.reference.html; shimmer + role NOT copied */
+  .bone{display:block; background:var(--bone); border-radius:var(--border-radius-indicator);}
+  .bone.line{height:16px;}
+  .bone.body{height:24px;}
+  .bone.media{height:160px;}
+  .bone.control{height:44px; width:120px;}
+
+  /* ---- footer — the slim form, copied from Footer.reference.html via App-shell-top-nav ---- */
+  .sh-foot{background:var(--band); border-top:1px solid var(--rule); flex:none; padding:8px 24px;}
+  .sh-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;}
+  .sh-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;}
+  /* ⚠ CARRIED VERBATIM WITH ITS REASON — an inline-flex child's min-height does not grow its
+     <li>'s line box, so without this the legal links stack on top of one another in a column. */
+  .sh-legal li{display:flex;}
+  .sh-legal a.lnk{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .sh-legal a.lnk:hover{text-decoration-thickness:2px;}
+  .sh-legal a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+  .sh-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto; color:var(--muted);}
+
+  /* ============================================================================================
+     THE COLLAPSE — CONTAINER queries. ⚠ EVERY RULE TARGETS A DESCENDANT OF `.sh`, NEVER `.sh`.
+     ⚠ THERE IS NO 900px BAND HERE AND THAT IS THE POINT: a 64px rail has nothing to give back
+     between 900 and 600. An empty breakpoint would be a rule pretending to do work.
+     ============================================================================================ */
+  @container shell (max-width: 899px){
+    .sh-head{padding:0 16px;}
+    .sh-main{padding:16px; gap:16px;}
+    .sh-cols{grid-template-columns:1fr;}
+    .sh-foot{padding:8px 16px;}
+  }
+  @container shell (max-width: 599px){
+    /* ⚠⚠ THE RAIL BECOMES A BOTTOM BAR AND THE NAMES COME BACK. `.sh-inner` is a DESCENDANT of
+       the query container, so turning its main axis here is legal — which is the whole reason
+       `.sh-inner` exists. One line does what `order` could not. */
+    .sh-inner{flex-direction:column;}
+    .sh-inner > .sh-rail{order:2; width:auto; flex-direction:row; border-right:0;
+      border-top:1px solid var(--rule);}
+    .sh-inner > .sh-body{order:1; min-height:0;}
+    .sh-rail .sh-rail-head{display:none;}   /* the brand already sits in the content header */
+    .sh-rail .sn-body{flex-direction:row; padding:0; gap:0; flex:1; min-width:0;}
+    /* ⚠⚠ `display:contents` ON THE GROUPS, AND IT IS A CORRECTION TO A DRAFT THAT MEASURED
+       WRONG. The rail's items live three levels deep (.sn-body > .sn-group > ul > li), and the
+       draft gave every LEVEL `flex:1`. A group holding one item then claimed exactly as much
+       room as a group holding three, so the five destinations could not share the bar evenly:
+       MEASURED at a 370px bar, `itemsPastRightEdge: 2` and 120px of scroll overflow — while
+       DOCUMENT overflow read 0, because `.sh{overflow:hidden}` was eating it.
+       Taking the two intermediate boxes out of the layout makes every `.sn-item` a direct flex
+       item of one row, so `flex:1 1 0` finally means what it says. The grouping is a VISUAL
+       device for a vertical rail; a five-item bottom bar has nothing to group.
+       ⚠ DECLARED RISK: `display:contents` on a `<ul>` has a history of dropping list semantics
+       in older AT. The `<li>`s keep their parent in the accessibility tree in current engines,
+       and this was NOT tested in a screen reader. Named, not smoothed. */
+    .sh-rail .sn-group, .sh-rail .sn-group ul{display:contents;}
+    .sh-rail .sn-item{flex:1 1 0; min-width:0;}
+    .sh-rail .sn-foot{display:none;}   /* Settings lives in the content header's action group at this size */
+    .sh-rail .sn-link{flex-direction:column; gap:4px; width:100%; min-width:0;
+      min-height:56px; padding:4px;}   /* 4px, not 6 — the grid gate caught the 6 */
+    /* ⚠⚠ THE LABEL COMES BACK VISIBLE, AND THE FIRST DRAFT OF THIS RULE SHIPPED A DEFECT THAT
+       EVERY NUMBER IN THIS FILE WAS GREEN OVER. It read `overflow:visible; text-align:center`
+       and nothing else, so five names — one of them "Payments and transfers" — were laid side
+       by side in a 390px bar with no truncation and no minimum: they touched each other and
+       the last one ran off the end. Document overflow measured ZERO, because `.sh` is
+       `overflow:hidden` and quietly ATE the excess. ⇒ ★★ THE OVERFLOW PROBE HAD THE WRONG
+       SUBJECT: it asked the document a question about a 390px bar. FOUND BY LOOKING AT THE
+       PICTURE, which is the fourth check for exactly this reason.
+       The remedy is Sidebar-nav's OWN expanded-label rule, copied verbatim — `min-width:0;
+       overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text`
+       (that last declaration is why the descender gate stays green over a truncating label,
+       and it is a TWO-CLASS selector at (0,2,0) so it beats the ds-005 trim block). */
+    .sh-rail .sn-label{position:static; width:auto; height:auto; margin:0; clip-path:none;
+      flex:none; min-width:0; max-width:100%; overflow:hidden; text-overflow:ellipsis;
+      white-space:nowrap; text-box-edge:text text; text-align:center;}
+    .sh-rail .sn-link[aria-current="page"]{box-shadow:inset 0 3px 0 var(--indicator);}
+    /* ⛔ LABEL FLYOUTS ARE GONE. There is no hover on a phone and the name is now visible, so a
+       label flyout could only ever duplicate what is already on screen. */
+    .sh-rail .sh-fly-label{display:none;}
+    /* MENU flyouts survive — they carry destinations, not a name — and open UPWARD, full width. */
+    .sh-rail .sh-fly-menu{left:0; right:0; top:auto; bottom:100%; max-width:none; width:auto;}
+    .sh-legal{flex-direction:column; flex-wrap:nowrap; align-items:flex-start; gap:0;}
+    .sh-legal ul{flex-direction:column; flex-wrap:nowrap; gap:0;}
+  }
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <!-- icon symbols, byte-for-byte from Sidebar-nav.reference.html (which took them from the
+       library); the search glyph is App-shell-top-nav's, itself byte-matched to
+       assets/icons/global-controls/search.svg -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="ic-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 5H1.5C0.675 5 0 5.675 0 6.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V6.5C18 5.675 17.325 5 16.5 5ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V6.5C1.2 6.337 1.337 6.2 1.5 6.2H16.5C16.663 6.2 16.8 6.337 16.8 6.5V16.5ZM3 12H5V10H3V12ZM14.8 2.6H3.2C2.537 2.6 2 3.137 2 3.8H16C16 3.137 15.463 2.6 14.8 2.6ZM12.8 0H5.2C4.537 0 4 0.537 4 1.2H14C14 0.537 13.463 0 12.8 0Z" fill="currentColor"/></symbol>
+    <symbol id="ic-card" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 6H1.5C0.675 6 0 6.675 0 7.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V7.5C18 6.675 17.325 6 16.5 6ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V10.2H16.8V16.5ZM16.8 9H1.2V7.5C1.2 7.337 1.337 7.2 1.5 7.2H16.5C16.663 7.2 16.8 7.337 16.8 7.5V9ZM15 12H12V13.2H15V12ZM13.05 1.221C13.085 1.207 13.122 1.2 13.159 1.2C13.262 1.2 13.389 1.258 13.441 1.387L14.82 4.8H16.114L14.553 0.938C14.318 0.355 13.753 0 13.159 0C12.973 0 12.784 0.035 12.601 0.109L0.988 4.8H4.192L13.05 1.221Z" fill="currentColor"/></symbol>
+    <symbol id="ic-transfer" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.003 7.18915H11.997V5.98497H15.003V7.18915ZM6.05701 8.62698L5.09401 9.58853H8.748V10.7837H5.06701L6.05701 11.7632H4.36501L2.79002 10.1996L4.36501 8.62698H6.05701ZM7.551 12.2216L9.126 13.7942L7.551 15.3309H5.85901L6.84901 14.3783H3.17702V13.1561H6.82201L5.85901 12.1946L7.551 12.2216ZM6.00301 7.18915C4.05227 7.18188 2.2899 8.35058 1.54002 10.1487C0.790141 11.9469 1.20094 14.0191 2.58033 15.3964C3.95972 16.7738 6.03509 17.1839 7.83595 16.4352C9.63682 15.6864 10.8073 13.9267 10.8 11.9789C10.7901 9.3377 8.64821 7.199 6.00301 7.18915ZM6.00301 5.99395C8.43708 5.99033 10.6332 7.45254 11.5655 9.6976C12.4978 11.9427 11.9823 14.5275 10.2599 16.2448C8.53746 17.9621 5.94795 18.4728 3.70091 17.5386C1.45386 16.6043 -0.00725782 14.4093 2.71165e-05 11.9789C2.34e-05 8.66709 2.6862 5.98094 6.00301 5.97598V5.99395ZM18 1.49175V10.4782C17.9986 10.6786 17.9589 10.8768 17.883 11.0623C17.6403 11.6097 17.0966 11.9623 16.497 11.9609H13.212C13.2075 11.5663 13.1714 11.1726 13.104 10.7837H16.497C16.664 10.779 16.7983 10.6449 16.803 10.4782V4.18768H4.20301V5.02342C3.78991 5.13033 3.3865 5.27161 2.99702 5.44578V1.49175C3.00197 0.666427 3.67343 -1.47967e-05 4.50001 2.46473e-10H16.497C17.3236 -1.47967e-05 17.995 0.666427 18 1.49175ZM16.497 1.1952H4.50001C4.42125 1.1952 4.3457 1.22644 4.29 1.28205C4.23431 1.33767 4.20301 1.4131 4.20301 1.49175V2.99248H16.803V1.49175C16.7981 1.32652 16.6625 1.19512 16.497 1.1952Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chart" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0V7H18C18 3.134 14.866 0 11 0ZM12.2 1.325C14.437 1.797 16.203 3.563 16.675 5.8H12.2V1.325ZM9 2H8C3.582 2 0 5.582 0 10C0 14.418 3.582 18 8 18C12.418 18 16 14.418 16 10V9H9V2ZM1.2 10C1.2 6.318 4.143 3.317 7.8 3.21V9.551L2.885 14.466C1.839 13.27 1.2 11.71 1.2 10ZM8 16.8C6.392 16.8 4.914 16.236 3.749 15.299L8 11.049L12.251 15.299C11.086 16.236 9.608 16.8 8 16.8ZM14.79 10.2C14.742 11.831 14.12 13.317 13.115 14.466L8.849 10.2H14.79Z" fill="currentColor"/></symbol>
+    <symbol id="ic-settings" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.376 6.992C16.208 6.374 15.96 5.774 15.634 5.206L16.319 3.592L14.408 1.68L12.794 2.365C12.225 2.04 11.626 1.791 11.007 1.623L10.352 0H7.648L6.992 1.624C6.374 1.791 5.774 2.04 5.206 2.365L3.592 1.68L1.68 3.592L2.365 5.206C2.04 5.774 1.791 6.374 1.624 6.992L0 7.648V10.351L1.624 11.007C1.791 11.626 2.04 12.225 2.366 12.794L1.68 14.408L3.592 16.32L5.206 15.635C5.775 15.961 6.374 16.209 6.993 16.377L7.648 18H10.351L11.007 16.377C11.625 16.209 12.225 15.961 12.794 15.635L14.408 16.32L16.32 14.408L15.635 12.794C15.961 12.225 16.209 11.626 16.377 11.007L18 10.352V7.648L16.376 6.992ZM15.374 10.118L15.218 10.694C15.077 11.214 14.867 11.72 14.593 12.198L14.298 12.715L14.53 13.263L14.899 14.132L14.132 14.899L12.716 14.297L12.199 14.593C11.721 14.866 11.215 15.077 10.694 15.218L10.119 15.374L9.542 16.8H8.458L7.882 15.375L7.306 15.219C6.785 15.078 6.28 14.867 5.802 14.594L5.285 14.298L4.736 14.53L3.868 14.899L3.101 14.132L3.703 12.716L3.407 12.199C3.134 11.721 2.923 11.215 2.782 10.694L2.626 10.119L1.2 9.542V8.458L2.625 7.882L2.781 7.307C2.922 6.786 3.133 6.28 3.406 5.802L3.702 5.285L3.47 4.737L3.101 3.868L3.868 3.101L5.285 3.703L5.802 3.407C6.28 3.134 6.786 2.924 7.307 2.782L7.882 2.626L8.458 1.2H9.543L10.119 2.625L10.694 2.781C11.215 2.922 11.721 3.133 12.199 3.406L12.716 3.702L14.133 3.1L14.9 3.867L14.297 5.285L14.593 5.802C14.866 6.279 15.076 6.785 15.218 7.306L15.374 7.881L15.927 8.104L16.8 8.458V9.542L15.374 10.118ZM9 4.8C7.878 4.8 6.823 5.237 6.03 6.03C5.237 6.823 4.8 7.878 4.8 9C4.8 10.122 5.237 11.177 6.03 11.97C6.823 12.763 7.878 13.2 9 13.2C10.122 13.2 11.176 12.763 11.97 11.97C12.764 11.177 13.2 10.122 13.2 9C13.2 7.878 12.763 6.823 11.97 6.03C11.177 5.237 10.122 4.8 9 4.8ZM11.121 11.121C10.536 11.707 9.768 12 9 12C8.232 12 7.464 11.707 6.878 11.121C5.707 9.95 5.707 8.05 6.878 6.879C7.464 6.293 8.232 6 9 6C9.768 6 10.536 6.293 11.121 6.879C12.293 8.05 12.293 9.95 11.121 11.121Z" fill="currentColor"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="specimens">
+
+    <!-- ============================================================ 1 · LABEL FLYOUTS, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">Flyout: label — hover or focus any rail item and its name appears beside it. The panel is <code class="t-cm-legal">aria-hidden</code>, because the link already carries that name. Press Escape while it is showing: it goes, without moving the pointer. That is SC 1.4.13's dismissible clause, and a CSS-only hover cannot satisfy it.</p>
+
+      <div class="sh" data-flyout="label" id="shell-label">
+        <a class="sh-skip t-cm-button" href="#main-label">Skip to main content</a>
+
+        <div class="sh-inner">
+
+        <nav class="sh-rail" aria-label="Main">
+          <div class="sh-rail-head">
+            <span class="sh-rail-brand t-ed-heading-4" aria-label="HSBC">H</span>
+          </div>
+          <div class="sn-body">
+            <div class="sn-group">
+              <ul>
+                <li class="sn-item">
+                  <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Overview</span>
+                </li>
+              </ul>
+            </div>
+            <div class="sn-group">
+              <ul>
+                <li class="sn-item">
+                  <a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Accounts</span>
+                </li>
+                <li class="sn-item">
+                  <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Payments and transfers</span>
+                </li>
+                <li class="sn-item">
+                  <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Cards</span>
+                </li>
+              </ul>
+            </div>
+            <div class="sn-group">
+              <ul>
+                <li class="sn-item">
+                  <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Spending</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="sn-foot">
+            <ul>
+              <li class="sn-item">
+                <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a>
+                <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Settings</span>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="sh-body">
+          <header class="sh-head">
+            <h1 class="t-ed-heading-3">Accounts</h1>
+            <div class="sh-actions">
+              <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+            </div>
+          </header>
+
+          <main class="sh-main" id="main-label">
+            <div class="sh-cols" aria-hidden="true">
+              <div class="sh-panel">
+                <span class="bone body" style="width:38%"></span>
+                <span class="bone media"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:72%"></span>
+              </div>
+              <div class="sh-panel">
+                <span class="bone body" style="width:56%"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:64%"></span>
+              </div>
+            </div>
+            <p class="spec-note t-cm-caption">The content region is deliberately empty furniture, not a loading state — App-shell-top-nav's skeleton-divergence decision, inherited.</p>
+          </main>
+
+          <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+            <div class="sh-legal">
+              <ul>
+                <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+                <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+                <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+              </ul>
+              <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+            </div>
+          </footer>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ 2 · MENU FLYOUTS, WIDE -->
+    <div>
+      <p class="spec-note t-cm-caption">Flyout: menu — the rail item is a button that opens a panel of destinations. Not on hover, on purpose: a panel of links that opens because a pointer passed over it is a panel that opens by accident. Escape closes it and returns focus to the button that opened it.</p>
+
+      <div class="sh" data-flyout="menu" id="shell-menu">
+        <a class="sh-skip t-cm-button" href="#main-menu">Skip to main content</a>
+
+        <div class="sh-inner">
+
+        <nav class="sh-rail" aria-label="Main">
+          <div class="sh-rail-head">
+            <span class="sh-rail-brand t-ed-heading-4" aria-label="HSBC">H</span>
+          </div>
+          <div class="sn-body">
+            <div class="sn-group">
+              <ul>
+                <li class="sn-item">
+                  <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Overview</span>
+                </li>
+              </ul>
+            </div>
+            <div class="sn-group">
+              <ul>
+                <li class="sn-item">
+                  <button class="sn-link" type="button" aria-expanded="false" aria-controls="fly-money" data-fly="shell-menu">
+                    <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Money</span>
+                  </button>
+                  <nav class="sh-fly sh-fly-menu" id="fly-money" aria-label="Money">
+                    <h2 class="t-cm-section-label">Money</h2>
+                    <ul>
+                      <li><a class="t-cm-label" href="#" aria-current="page">Accounts</a></li>
+                      <li><a class="t-cm-label" href="#">Payments and transfers</a></li>
+                      <li><a class="t-cm-label" href="#">Standing orders</a></li>
+                      <li><a class="t-cm-label" href="#">Cards</a></li>
+                    </ul>
+                  </nav>
+                </li>
+                <li class="sn-item">
+                  <button class="sn-link" type="button" aria-expanded="false" aria-controls="fly-insight" data-fly="shell-menu">
+                    <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Insight</span>
+                  </button>
+                  <nav class="sh-fly sh-fly-menu" id="fly-insight" aria-label="Insight">
+                    <h2 class="t-cm-section-label">Insight</h2>
+                    <ul>
+                      <li><a class="t-cm-label" href="#">Spending</a></li>
+                      <li><a class="t-cm-label" href="#">Cash flow</a></li>
+                      <li><a class="t-cm-label" href="#">Reports</a></li>
+                    </ul>
+                  </nav>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="sn-foot">
+            <ul>
+              <li class="sn-item">
+                <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a>
+                <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Settings</span>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="sh-body">
+          <header class="sh-head">
+            <h1 class="t-ed-heading-3">Accounts</h1>
+            <div class="sh-actions">
+              <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+            </div>
+          </header>
+
+          <main class="sh-main" id="main-menu">
+            <div class="sh-cols" aria-hidden="true">
+              <div class="sh-panel">
+                <span class="bone body" style="width:44%"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:68%"></span>
+                <span class="bone media"></span>
+              </div>
+              <div class="sh-panel">
+                <span class="bone body" style="width:50%"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:76%"></span>
+              </div>
+            </div>
+          </main>
+
+          <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+            <div class="sh-legal">
+              <ul>
+                <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+                <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+              </ul>
+              <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+            </div>
+          </footer>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ 3 · THE COLLAPSE, IN ONE STILL -->
+    <div>
+      <p class="spec-note t-cm-caption">The same shell in a 392px container at this same viewport. The rail has moved to the bottom, the names are visible again, and the label flyouts are gone — there is no hover to open them and nothing left for them to say. Nothing here is a viewport query.</p>
+
+      <div class="sh is-narrow" data-flyout="label" id="shell-narrow">
+        <a class="sh-skip t-cm-button" href="#main-narrow">Skip to main content</a>
+
+        <div class="sh-inner">
+
+        <nav class="sh-rail" aria-label="Main">
+          <div class="sh-rail-head">
+            <span class="sh-rail-brand t-ed-heading-4" aria-label="HSBC">H</span>
+          </div>
+          <div class="sn-body">
+            <div class="sn-group">
+              <ul>
+                <li class="sn-item">
+                  <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Overview</span>
+                </li>
+                <li class="sn-item">
+                  <a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Accounts</span>
+                </li>
+                <li class="sn-item">
+                  <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Payments</span>
+                </li>
+                <li class="sn-item">
+                  <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a>
+                  <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Spending</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="sn-foot">
+            <ul>
+              <li class="sn-item">
+                <a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a>
+                <span class="sh-fly sh-fly-label t-cm-label" aria-hidden="true">Settings</span>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="sh-body">
+          <header class="sh-head">
+            <h1 class="t-ed-heading-3">Accounts</h1>
+            <div class="sh-actions">
+              <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+            </div>
+          </header>
+
+          <main class="sh-main" id="main-narrow">
+            <div class="sh-cols" aria-hidden="true">
+              <div class="sh-panel">
+                <span class="bone body" style="width:52%"></span>
+                <span class="bone line"></span>
+                <span class="bone line" style="width:70%"></span>
+                <span class="bone media"></span>
+              </div>
+            </div>
+          </main>
+
+          <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+            <div class="sh-legal">
+              <ul>
+                <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+                <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+              </ul>
+              <p class="copy t-cm-legal">© HSBC Group 2026.</p>
+            </div>
+          </footer>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "App shell — nav rail",
+    "vars": {
+      "--page": "background/default",
+      "--panel": "background/default",
+      "--surface": "tertiary/background/default",
+      "--band": "surface/subtle",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--icon": "icon/default",
+      "--rule": "divider/border/section",
+      "--sub-rule": "divider/border/subsection",
+      "--pop-border": "elevation/border",
+      "--shadow": "elevation/functional",
+      "--hover": "tertiary/background/hover",
+      "--pressed": "form/background/pressed",
+      "--indicator": "primary/border/default",
+      "--bone": "tertiary/background/hover",
+      "--focus": "focus/ring",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-control": "border-radius/control",
+      "--border-radius-indicator": "border-radius/indicator",
+      "--target-min": "target/min"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "surface/subtle", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/hover", "context": "ui" }
+    ],
+    "knownFindings": [
+      "COMPOSED, NOT DRAWN. The rail is Sidebar-nav.reference.html's .sn atoms in their .is-rail form, verbatim, with the rail-only declarations FOLDED into the base rules because there is no expanded state to toggle to: the 64px width, the 64x44 centred link, the clip-path label, the three current-location carriers (aria-current + inset 3px 0 0 in primary red + a surface change), the hover/pressed/focus shapes, and the six icon symbols byte-for-byte. The .sh frame, skip link, 44x44 actions and slim legal bar (with its .sh-legal li{display:flex} defect repair) are App-shell-top-nav's. The 56px in-app header is Headers' via App-shell-side-nav. The flyout PANEL SKIN is Popover.reference.html verbatim - background/default on elevation/border with box-shadow 0 0 16px on elevation/functional. NO PARENT FILE WAS EDITED.",
+      "WHAT MAKES THIS NOT App-shell-side-nav IS ONE SENTENCE: THERE IS NO EXPAND TOGGLE. Side-nav's rail is a STATE the user chose and can undo. Here the rail IS the navigation, permanently. That makes the #203 open question - a rail item has no visible name - this component's central problem rather than a footnote, and the flyout is the proposed answer.",
+      "THE TWO FLYOUT FORMS HAVE DIFFERENT ACCESSIBILITY CONTRACTS AND THAT IS THE FINDING. A LABEL flyout repeats a name the link already carries in its clip-path .sn-label, so it is aria-hidden=true - a visual affordance only. A MENU flyout carries destinations, so it is NOT hidden, the rail item becomes a <button> with aria-expanded + aria-controls, and the panel is a <nav> with its own accessible name. Same pixels, opposite markup. Drawn the wrong way round, a label flyout makes a screen reader stutter the name twice and nothing looks wrong. PROPOSED #210.",
+      "SC 1.4.13 (CONTENT ON HOVER OR FOCUS) CANNOT BE SATISFIED BY A CSS-ONLY HOVER, AND ALL THREE CLAUSES ARE BUILT AND MEASURED. DISMISSIBLE: Escape hides the flyout without moving the pointer, via a data-fly-dismissed state on the shell whose specificity (0,4,0) beats the hover rule's (0,3,0) - the same two-class discipline ds-005 turns on. HOVERABLE: the panel sits at left:100% with NO GAP, so a pointer travelling icon-to-panel never crosses dead space. PERSISTENT: nothing times it out; it goes on pointer-leave, focus-leave or dismissal, never on a timer.",
+      "MENU FLYOUTS ARE DELIBERATELY NOT ON HOVER. A panel of destinations that opens because a pointer passed over it opens by accident, and one that closes on pointer-leave takes its destinations away mid-reach. A disclosure is opened and closed on purpose. Label flyouts are on hover because a name costs nothing to show and nothing to lose.",
+      "THERE IS NO 900-899 BAND AND THAT IS THE ARGUMENT FOR A RAIL. A 64px rail has nothing to give back between 900 and 600, so the only rules in that band are content padding. A shell that costs the same at 700px as at 1400px never has to make a decision in between. An empty breakpoint would be a rule pretending to do work.",
+      "BELOW 600cqi THE RAIL BECOMES A BOTTOM BAR, THE NAMES COME BACK VISIBLE AND LABEL FLYOUTS ARE SUPPRESSED. There is no hover on a phone, so a name only reachable by hover is a name most touch users never see; the honest move is to stop hiding it. MENU flyouts survive and open UPWARD, full width, because they carry destinations rather than a name. The label rule UNSETS Sidebar-nav's clip-path form rather than re-declaring a layout, so the two cannot disagree. MEASURED at a 392px container in the receipt.",
+      "THIS IS THE Tab-bar ARRANGEMENT AND Tab-bar IS NOT COMPOSED. Tab-bar.reference.html carries a dual line/fill glyph system (ic-home + ic-home-a) that this rail's icons do not have, and re-drawing half of it would be exactly what the cardinal rule forbids. Whether the phone form should BE Tab-bar is named as an open question rather than answered by construction.",
+      "CONTAINER QUERIES, NEVER VIEWPORT QUERIES (s210-D3), AND THE SELF-QUERY TRAP IS DECLARED. No @container rule targets .sh; the phone band re-orders .sh's two CHILDREN instead, which is what keeps the rearrangement legal inside its own container query. The third specimen is a 392px CONTAINER at the same viewport as the two above.",
+      "NO RAG VALUE IS PAINTED ANYWHERE. The only red is primary/border/default on the current-location mark, Sidebar-nav's own approved bar. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are untouched.",
+      "The snippet gate resolves tokens against tokens/semantic-colour.json - the MONO base only - so it cannot see the Legacy/Console/Supercharge legs. No .cn-app-shell-nav-rail block exists in canon/canon.css yet, so theme cascade projection is OFF for this file and only the light/dark legs authored here have been seen. DECLARED, and the conductor's to project."
+    ],
+    "requiredAria": ["<nav", "aria-label", "aria-current=\"page\"", "aria-expanded", "aria-controls", "aria-hidden", "role=\"contentinfo\"", "<main", "<h1"]
+  }
+  </script>
+
+  <script>
+    // ============================================================================================
+    // THE FLYOUT. Three behaviours, and every one of them exists because SC 1.4.13 asks for it.
+    // ============================================================================================
+    document.querySelectorAll('.sh').forEach(function(shell){
+      var rail = shell.querySelector('.sh-rail');
+      if(!rail) return;
+
+      // ---- MENU flyouts: an explicit disclosure ----
+      var menuBtns = rail.querySelectorAll('.sn-link[aria-expanded]');
+      function closeAllMenus(except){
+        menuBtns.forEach(function(b){
+          if(b !== except) b.setAttribute('aria-expanded','false');
+        });
+      }
+      menuBtns.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var open = btn.getAttribute('aria-expanded') === 'true';
+          closeAllMenus(btn);
+          btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+        });
+      });
+
+      // ---- DISMISSIBLE (SC 1.4.13). Escape hides whatever is showing WITHOUT moving the
+      // pointer. A :hover rule has no way to be dismissed, which is why this state exists at
+      // all — it is not a nicety, it is the only route to conformance.
+      document.addEventListener('keydown', function(e){
+        if(e.key !== 'Escape') return;
+        var openBtn = rail.querySelector('.sn-link[aria-expanded="true"]');
+        if(openBtn){
+          openBtn.setAttribute('aria-expanded','false');
+          openBtn.focus();          // focus returns to the control that opened it
+          return;                   // one Escape, one thing closed
+        }
+        shell.setAttribute('data-fly-dismissed','true');
+      });
+
+      // the dismissal is cleared the moment the pointer leaves the rail, so the NEXT hover
+      // shows a flyout again. Without this, one Escape would silence the rail for the session.
+      rail.addEventListener('pointerleave', function(){
+        shell.removeAttribute('data-fly-dismissed');
+      });
+      // ...and on focus leaving the rail, for the keyboard route
+      rail.addEventListener('focusout', function(e){
+        if(!rail.contains(e.relatedTarget)){
+          shell.removeAttribute('data-fly-dismissed');
+          closeAllMenus(null);
+        }
+      });
+
+      // clicking anywhere outside the rail closes an open menu — a disclosure that survives a
+      // click elsewhere is a disclosure that is in the way
+      document.addEventListener('click', function(e){
+        if(!rail.contains(e.target)) closeAllMenus(null);
+      });
+    });
+  </script>
+</body>
+</html>
