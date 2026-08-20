@@ -270,6 +270,13 @@ STEPS = [
     # each unwired for a DIFFERENT reason. Building is gated; wiring wasn't. This gate
     # asserts every _validate_*.py is in this list or exempt BY NAME with a reason.
     # 4 bites mutation-tested at #119 (both directions + stale/dangling exemption).
+    # WIRED #209: the wiring gate named it ORPHAN once the state-snap fix let CI's build reach
+    # this depth (the un-masking chain: [52] green → wiring gate fires). Built #203 as the 44px
+    # minimum-hit-area consumer; browser-bound, so in a plain environment it exits 77
+    # COULD-NOT-ASK (legal form granted #209) and the build continues DECLARED; where a browser
+    # is staged it measures rendered geometry for real. ADVISORY per its own tier — no --strict.
+    ("hit-area gate — 44px minimum, rendered geometry (ADVISORY, built #203, wired #209)",
+     "_validate_hit_area.py", ["--all"]),
     ("wiring gate — no orphaned validators (#118 seam)", "_validate_wiring.py"),
     ("wiring gate selftest — 4 bites", "_validate_wiring.py", ["--selftest"]),
     # WIRED #119: pure oversight orphan from #118's table — green at both drives, zero risk.

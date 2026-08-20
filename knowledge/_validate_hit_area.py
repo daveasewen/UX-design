@@ -584,5 +584,13 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except RuntimeError as e:               # harness failure: loud, named, never a green
+        # #209: HARNESS UNAVAILABLE gets the ruled legal form — rc=77 COULD-NOT-ASK, the
+        # environment-refusal vocabulary (s172-era convention; P-3 got the same form at #208,
+        # [[honest-refusal-needs-a-legal-form]]). _build_all reads 77 as a DECLARED refusal
+        # and continues; a real harness CRASH (browser present but broken) stays rc=2 — a
+        # crash is not a refusal and must not wear one ([[a-crash-is-not-a-fail]] inverse).
+        if "HARNESS UNAVAILABLE" in str(e):
+            print("COULD-NOT-ASK: %s" % e, file=sys.stderr)
+            sys.exit(77)
         print("✖ %s" % e, file=sys.stderr)
         sys.exit(2)
