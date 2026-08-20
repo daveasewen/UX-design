@@ -3,11 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Meter — unified reference implementation (PROPOSED #210)</title>
+<title>Meter — unified reference implementation (ACCEPTED #210, s210-D1)</title>
 <!--
-  ⚠⚠ PROPOSED #210, 2026-08-20. NOT GATED, NOT PROMOTED, NOT RULED, AND NOTHING IS FOLDED YET.
-  This file is a PROPOSAL for a single METER component that Progress-bar and Limits-meter would
-  roll up into. ⛔ IT ENACTS NO FOLD. `knowledge/snippets/Progress-bar.reference.html`,
+  ★★ ACCEPTED #210, 2026-08-20 — `s210-D1`. Dave ruled Q1, verbatim: "keep as one meter".
+  Progress-bar and Limits-meter ARE one Meter molecule; the unification is no longer a proposal.
+  FOUR RULINGS ARE ENACTED IN THIS FILE — `s210-D1` (the unification), `s210-D2` (default title =
+  SMALL, the large title is the opt-in modifier), `s210-D3` (no fixed width on the molecule — the
+  container dictates it) and `s210-D4` (the per-payment empty-track row is dropped from the §C3
+  organism). Q4 is answered too: all three organisms ship (§C1/C2, §C3, §C4).
+  ⚠⚠ STILL NOT GATED, NOT PROMOTED, AND NOTHING IS FOLDED. The fold's MECHANICS — what the two
+  parents' catalogue entries become — await the impacts memo Dave asked for
+  (`notes/_briefs/2026-08-20-210-meter-categorical-split-impacts-v1.md`, store row W-69), because
+  his Q3/Q5/Q6 answer is ONE direction with a declared unknown: "im not sure of the impacts and
+  benefits". ⛔ IT ENACTS NO FOLD. `knowledge/snippets/Progress-bar.reference.html`,
   `knowledge/components/progress-bar.meta.json`, `knowledge/snippets/Limits-meter.reference.html`
   and `knowledge/components/limits-meter.meta.json` are BYTE-UNTOUCHED by this session. Nothing
   retires, nothing is deleted and nothing is re-registered until Dave's eye rules on this spec.
@@ -25,13 +33,20 @@
                         SEMANTIC variants, of which PROGRESS IS JUST ONE. "we just have progress
                         variants" is the sentence this file is built on: progress is not the
                         parent of the meter, it is a reading of it.
-    · TITLE SIZE      — the option he asked for. Default is the small row-name treatment the
-                        Limits-meter stack uses (`t-cm-legal`, 12px, secondary); the LARGE option
-                        is Progress-bar's own title treatment (`t-cm-label`, 16px, default ink).
-                        ⬛ WHICH ONE IS THE DEFAULT IS HIS — both are drawn, side by side, in §B6.
+    · TITLE SIZE      — ✅ RULED `s210-D2`, Dave: "default small". The DEFAULT is the small
+                        row-name treatment the Limits-meter stack uses (`t-cm-legal`, 12px,
+                        secondary) and it needs NO class. The LARGE title — Progress-bar's own
+                        treatment (`t-cm-label`, 16px, default ink) — is the EXPLICIT OPT-IN
+                        modifier `.meter--title-lg`. §B6 keeps the pair drawn as the receipt.
+    · WIDTH           — ✅ RULED `s210-D3`, Dave: "They should be responsive teh container
+                        dictates teh width". The molecule declares NO max-width. §A2 draws the
+                        same meter in 320 / 640 / 1180 demo containers to show it.
     · ORGANISM        — "a set of meter variants embedded in an organism, in this case a daily
-                        transfer limit lock-up." §C draws that lock-up as COMPOSED METER
-                        MOLECULES, using exactly the markup Limits-meter already draws.
+                        transfer limit lock-up." §C draws THREE (Dave, Q4: "I think we have all
+                        three, just be careful, dont hand roll, use the atoms") as COMPOSED METER
+                        MOLECULES: the daily-transfer-limit lock-up (§C1/§C2), the payment-limits
+                        set (§C3, per-payment row dropped per `s210-D4`) and the savings-goal
+                        lock-up (§C4, composed from classes already in this file, zero new CSS).
 
   ⛔⛔ NOTHING HERE WAS RE-DRAWN — EVERY VARIANT THAT REPRODUCES AN EXISTING FORM IS COPIED ⛔⛔
   #202's lesson is the reason: three hand-rolled specimen pages invented three defects. So:
@@ -73,36 +88,39 @@
   `grep -icE '\bmeter\b' knowledge/_rulings.json` → 0. Nothing in the store rules it either way.
   ⬛ If Dave rules "meter", THREE files change together, not two.
 
-  ⬛⬛ OPEN TO DAVE — NONE OF THIS IS DECIDED: ————————————————————————————————
-    Q1  IS THE UNIFICATION RIGHT AT ALL? Accept this spec, rework it, or drop it and leave the
-        two components separate. Dropping costs nothing: nothing registers this file.
-    Q2  THE TITLE-SIZE DEFAULT. Small row-name (`t-cm-legal`) or Progress-bar's larger title
-        (`t-cm-label`)? Both are drawn in §B6 on the same meter so the pair can be compared by
-        eye rather than argued in prose. He asked for the OPTION; which way round it defaults is
-        not something this file may decide.
-    Q3  `role="progressbar"` or `role="meter"`. Carried forward unchanged. See above.
-    Q4  WHICH ORGANISM SPECIMENS THE COMPONENT SHIPS WITH. §C draws the daily-transfer-limit
-        lock-up (his example) and the payment-limits stack, both from Limits-meter. The
-        SAVINGS-GOAL CARD is deliberately NOT drawn — a card lock-up around the savings-goal bar
-        would be an INVENTION, and inventing organisms is how #202's defects got in. The
-        savings-goal BAR itself is present as a variant in §B3, exactly as Progress-bar draws it.
-    Q5  WHAT RETIRES AT FOLD TIME. If this is accepted, someone must name what happens to
-        `Progress-bar.reference.html` + `progress-bar.meta.json` and `Limits-meter.reference.html`
-        + `limits-meter.meta.json`: do both retire into this one, does Progress-bar stay gated as
-        the atom with Meter as the molecule above it, or does Limits-meter alone fold? ⛔ THIS
-        FILE DOES NOT ANSWER IT AND DID NOT ACT ON IT. Progress-bar is GATED and PROMOTED; that
-        is a status only Dave moves.
-    Q6  THE SEMANTIC VARIANT VOCABULARY. Drawn as `.meter--progress` and `.meter--allowance`,
-        which are MEANING markers and — deliberately — paint NOTHING different. The geometry is
-        identical and the meaning is inverted (a full progress meter is success; a full allowance
-        meter is a blocked payment). Whether that difference should be visible at all, and what
-        the variants should be CALLED, is his.
-    Q7  THE BASE MAX-WIDTH. Progress-bar's column is `max-width:420px`, Limits-meter's is `480px`.
-        They disagree, and a unified base can only have one. Drawn at 480 (the newer of the two,
-        and the one the organism needs); the 420 reading is not dismissed, just not chosen here.
-    Q8  ⚠ CARRIED FORWARD FROM Limits-meter Q8, STILL OPEN AND STILL VISIBLE ON THIS PAGE: the
-        "Per payment" row in the stack renders as an EMPTY track reading "£0 of £10,000 used" and
-        always will, because a per-payment cap never accumulates. Left drawn so he can see it.
+  THE EIGHT QUESTIONS, AS DAVE LEFT THEM AT #210 — FIVE CLOSED, THREE OPEN: ————————————————
+    Q1  ✅ RULED `s210-D1` — "keep as one meter". The unification is ACCEPTED. Progress-bar and
+        Limits-meter are variants of one Meter molecule. The fold's MECHANICS are NOT ruled by
+        this; they await the impacts memo (see the header).
+    Q2  ✅ RULED `s210-D2` — "default small". ENACTED HERE: the base meter carries `t-cm-legal`
+        12px / text-secondary and NO modifier class; the larger Progress-bar title is the opt-in
+        `.meter--title-lg` + `t-cm-label`. §B6 keeps both drawn as the receipt for the ruling.
+    Q3  ⬛ OPEN — `role="progressbar"` or `role="meter"`. Part of Dave's ONE UNFIRM DIRECTION with
+        Q5 and Q6: he wants the two readings to be DISTINGUISHABLE ("even if it's only
+        categorical") but declared "im not sure of the impacts and benefits". The ARIA leg is
+        priced in the impacts memo. ⛔ NOT RULED HERE; `role="progressbar"` still stands,
+        mirrored from both parents.
+    Q4  ✅ ANSWERED — Dave: "I think we have all three, just be careful, dont hand roll, use the
+        atoms." ENACTED: §C carries the daily-transfer-limit lock-up (§C1/§C2), the payment-limits
+        set (§C3) and the savings-goal lock-up (§C4). §C4 is COMPOSED from classes this file
+        already defines — no new CSS rule, no invented card chrome. #202's lesson holds.
+    Q5  ⬛ OPEN — WHAT RETIRES AT FOLD TIME. Travels with Q3/Q6 in the impacts memo, which prices
+        it per catalogue-split option. ⛔ NOTHING IS ACTED ON. `Progress-bar.reference.html`,
+        `progress-bar.meta.json`, `Limits-meter.reference.html` and `limits-meter.meta.json` are
+        BYTE-UNTOUCHED. Progress-bar is GATED and PROMOTED; that status is only Dave's to move.
+    Q6  ⬛ OPEN — THE SEMANTIC VARIANT VOCABULARY. `.meter--progress` / `.meter--allowance` are
+        MEANING markers and still paint NOTHING. Dave's direction, verbatim: "Generic role meter,
+        unless there is benefit in having two, so they are the same molecule but they are
+        categorised and might actually be different items when selecting them from the store."
+        The catalogue-split options are priced in the memo. NOT RULED HERE.
+    Q7  ✅ RULED `s210-D3` — "They should be responsive teh container dictates teh width". ENACTED:
+        `max-width` is GONE from `.meter` and from `.lockup`/`.lockup-stack`. Every width still
+        visible on this page belongs to a `.demo-*` class in the DEMO CHROME block, and §A2 draws
+        the same meter in 320 / 640 / 1180 containers so the ruling can be seen, not read about.
+    Q8  ✅ RULED `s210-D4` — "Per payment seems redundant in this context". ENACTED: the row is
+        REMOVED from the §C3 organism and its rule restated as a sentence in that organism's
+        caption. ⛔ SCOPE: an EMPTY METER IS STILL A LEGAL STATE — drawn at §B7 on the bare
+        molecule precisely so the drop cannot be misread as retiring the state.
     ⛔ NO DELTA, NO ARROW, NO SERIES is painted anywhere in this file, deliberately. The two
        delta conventions question is OPEN AND DAVE'S and nothing here settles it by construction.
 
@@ -185,7 +203,12 @@
      The readout anatomy is Limits-meter.reference.html's, likewise copied.
      NOTHING IN THIS BLOCK WAS DRAWN FROM SCRATCH.
      ============================================================================ */
-  .meter{display:flex; flex-direction:column; gap:8px; max-width:480px;}   /* gap/fixed/content 8 */
+  /* ⚑ s210-D3 ENACTED (#210, Dave: "They should be responsive teh container dictates teh width").
+     THE MOLECULE DECLARES NO WIDTH OF ITS OWN. There was a `max-width:480px` on this rule until
+     #210 and it is GONE — the meter is 100% of whatever box it is put in, at every viewport, and
+     the containing organism or page layout owns the width. Any width visible on this page is the
+     SPECIMEN'S DEMO CHROME (`.demo-col`, `.demo-w-*` below), never the component's. */
+  .meter{display:flex; flex-direction:column; gap:8px;}   /* gap/fixed/content 8 · NO max-width (s210-D3) */
 
   .meter-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;}
   /* THE TITLE-SIZE OPTION (Dave, #210: "the option of the bigger titles that are in the progress
@@ -194,7 +217,8 @@
      large option — because type is bound by composite, never by a raw declaration. The MODIFIER
      below carries only the colour difference the two parents already disagree about: Limits-meter
      names its rows in text/secondary, Progress-bar names its bars in text/default.
-     ⬛ WHICH IS THE DEFAULT IS DAVE'S (Q2). Both are drawn in §B6. */
+     ✅ RULED `s210-D2` (#210, Dave: "default small"). THE BASE RULE BELOW IS THE DEFAULT and the
+     `.meter--title-lg` rule is the OPT-IN. Both are still drawn in §B6, now as the receipt. */
   .meter-label{color:var(--muted);}
   .meter--title-lg .meter-label{color:var(--text);}
   .meter-value{color:var(--muted); font-variant-numeric:tabular-nums;}
@@ -247,11 +271,14 @@
      is a composition of meters plus a verdict, a figure and a consequence.
      All of it is Limits-meter's, copied.
      ============================================================================ */
-  .lockup{display:flex; flex-direction:column; gap:8px; max-width:480px;}
+  /* ⚑ s210-D3, applied through the organism too: the lock-up carried the same `max-width:480px`
+     and it is GONE from the component's CSS. The organism is fluid; the PAGE constrains it, and
+     it does so through the demo-chrome class `.demo-col` in the markup where you can see it. */
+  .lockup{display:flex; flex-direction:column; gap:8px;}
   .lockup-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;}
   .lockup-title{color:var(--muted);}
   .lockup-note{color:var(--text); margin:0;}   /* the consequence line — plain text, never a colour */
-  .lockup-stack{display:flex; flex-direction:column; gap:20px; max-width:480px;}
+  .lockup-stack{display:flex; flex-direction:column; gap:20px;}
   .lockup-row{display:flex; flex-direction:column; gap:8px;}
   .lockup-row-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
   .lockup-row-fig{color:var(--text); font-variant-numeric:tabular-nums;}
@@ -271,6 +298,18 @@
      LOOKING at the first render, where the borrowed margin:0 left the annotation flush against
      the title it annotates. The borrowed rule was not edited to fix a demo problem. */
   .pairnote{color:var(--muted); opacity:var(--alpha-72); margin:0 0 8px;}
+
+  /* ⚑⚑ DEMO CHROME — THESE ARE NOT THE COMPONENT. ⚑⚑
+     s210-D3 took every width off the meter and off the lock-up. These four classes are the
+     SPECIMEN PAGE'S OWN containers, and they exist only so a reader can see that the meter
+     takes the width it is given. Delete every one of them and the component still works; it
+     just becomes as wide as the page. They are never referenced by any .meter-* rule. */
+  .demo-col{max-width:480px;}                       /* demo chrome: a plausible page column */
+  .demo-w-320{width:320px; max-width:100%;}         /* demo chrome: narrow container */
+  .demo-w-640{width:640px; max-width:100%;}         /* demo chrome: medium container */
+  .demo-w-1180{width:1180px; max-width:100%;}       /* demo chrome: wide container */
+  .demo-frame{border:1px dashed var(--border); padding:12px;}  /* demo chrome: shows the box edge */
+  .demo-stack{display:flex; flex-direction:column; gap:24px;}  /* demo chrome */
   .pair{display:flex; gap:40px; flex-wrap:wrap;}
   .pair > div{flex:1 1 320px; min-width:280px;}
   .row{display:flex; align-items:center; gap:24px; flex-wrap:wrap;}
@@ -296,7 +335,7 @@
     <div>
       <p class="tier t-cm-section-label">A · the base meter — the molecule</p>
       <p class="tier-note t-cm-caption">A value on a track between a minimum and a maximum, with a label, a visible readout and an accessible value. Ink on track. Everything below §A is a VARIANT of this one thing, and progress is one of them — not the parent of it.</p>
-      <p class="stateLabel t-cm-legal">base · default 4px track · default (small) title · no semantics claimed</p>
+      <p class="stateLabel t-cm-legal">A1 · base · default 4px track · default title = small (t-cm-legal, 12px, text/secondary) — ruled s210-D2 · no semantics claimed · no width of its own — ruled s210-D3</p>
       <div class="meter">
         <div class="meter-head">
           <span class="meter-label t-cm-legal" id="m0-label">Meter</span>
@@ -305,6 +344,51 @@
         <div class="meter-track" role="progressbar" aria-labelledby="m0-label"
              aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent">
           <div class="meter-fill" style="width:62%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A2 · s210-D3 MADE VISIBLE. The SAME meter markup, byte-for-byte identical to A1 but for
+         the label, dropped into three DEMO-CHROME containers of different widths. The component
+         carries no width; each copy is exactly as wide as its box. The dashed rule is the box. -->
+    <div>
+      <p class="stateLabel t-cm-legal">A2 · the container dictates the width (s210-D3) · one meter, three containers · 320 / 640 / 1180 · the dashed rule is demo chrome showing the container edge</p>
+      <div class="demo-stack">
+        <div class="demo-frame demo-w-320">
+          <div class="meter">
+            <div class="meter-head">
+              <span class="meter-label t-cm-legal" id="a2a-label">In a 320px container</span>
+              <span class="meter-value t-cm-figure-6">62%</span>
+            </div>
+            <div class="meter-track" role="progressbar" aria-labelledby="a2a-label"
+                 aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent">
+              <div class="meter-fill" style="width:62%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-frame demo-w-640">
+          <div class="meter">
+            <div class="meter-head">
+              <span class="meter-label t-cm-legal" id="a2b-label">In a 640px container</span>
+              <span class="meter-value t-cm-figure-6">62%</span>
+            </div>
+            <div class="meter-track" role="progressbar" aria-labelledby="a2b-label"
+                 aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent">
+              <div class="meter-fill" style="width:62%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-frame demo-w-1180">
+          <div class="meter">
+            <div class="meter-head">
+              <span class="meter-label t-cm-legal" id="a2c-label">In a 1180px container</span>
+              <span class="meter-value t-cm-figure-6">62%</span>
+            </div>
+            <div class="meter-track" role="progressbar" aria-labelledby="a2c-label"
+                 aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-valuetext="62 percent">
+              <div class="meter-fill" style="width:62%"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -406,15 +490,16 @@
       </div>
     </div>
 
-    <!-- B6 · THE TITLE-SIZE OPTION — THE NEW THING DAVE ASKED FOR.
-         The SAME meter, the same value, the same track, drawn twice: once with the small row-name
-         title the Limits-meter stack uses, once with Progress-bar's larger title.
-         ⬛ WHICH ONE IS THE DEFAULT IS HIS (Q2). Neither is recommended here. -->
+    <!-- B6 · THE TITLE-SIZE OPTION — RULED s210-D2 (#210, Dave: "default small").
+         The SAME meter, the same value, the same track, drawn twice. The LEFT is the base meter:
+         no modifier class, small row-name title. The RIGHT carries `.meter--title-lg` — an EXPLICIT
+         OPT-IN modifier, which is what Progress-bar's larger title now is. ⛔ The question is
+         CLOSED; the pair stays drawn as the RECEIPT for the ruling, not as a choice. -->
     <div>
-      <p class="stateLabel t-cm-legal">B6 · the title-size option · the same meter twice · "the option of the bigger titles that are in the progress bar" (Dave, #210) · which one is the default is Dave's</p>
+      <p class="stateLabel t-cm-legal">B6 · the title-size option · ruled s210-D2, "default small" (Dave, #210) · left = the default, no modifier · right = the opt-in .meter--title-lg</p>
       <div class="pair">
         <div>
-          <p class="pairnote t-cm-legal">default title — t-cm-legal, 12px, text/secondary (the Limits-meter stack's row-name treatment)</p>
+          <p class="pairnote t-cm-legal">the default (ruled s210-D2) — no modifier class · t-cm-legal, 12px, text/secondary (the Limits-meter stack's row-name treatment)</p>
           <div class="meter meter--allowance">
             <div class="meter-head">
               <span class="meter-label t-cm-legal" id="m6a-label">Per day</span>
@@ -428,7 +513,7 @@
           </div>
         </div>
         <div>
-          <p class="pairnote t-cm-legal">large title — t-cm-label, 16px, text/default (Progress-bar's own title treatment)</p>
+          <p class="pairnote t-cm-legal">the option (opt-in) — .meter--title-lg · t-cm-label, 16px, text/default (Progress-bar's own title treatment, now an explicit modifier)</p>
           <div class="meter meter--allowance meter--title-lg">
             <div class="meter-head">
               <span class="meter-label t-cm-label" id="m6b-label">Per day</span>
@@ -444,17 +529,39 @@
       </div>
     </div>
 
+    <!-- B7 · THE EMPTY STATE — value at the minimum, 0% fill.
+         ⚑ WHY THIS SPECIMEN EXISTS AND WHERE IT CAME FROM. s210-D4 dropped the "Per payment"
+         empty track from the §C3 ORGANISM, and its own words fence the scope: "it does not rule
+         the empty-track state out of the Meter vocabulary (an empty meter remains a legal state)."
+         So the state moves OUT of the lock-up and is drawn HERE, once, on the bare molecule, so
+         that dropping the row cannot be misread as retiring the state. Nothing new is authored:
+         this is the §A1 markup with value 0. -->
+    <div>
+      <p class="stateLabel t-cm-legal">B7 · the empty state · value at the minimum · 0% fill · kept deliberately (s210-D4 scopes the drop to the §C3 organism only — an empty meter is still a legal state)</p>
+      <div class="meter meter--progress">
+        <div class="meter-head">
+          <span class="meter-label t-cm-legal" id="m7-label">Statement download</span>
+          <span class="meter-value t-cm-figure-6">0%</span>
+        </div>
+        <div class="meter-track" role="progressbar" aria-labelledby="m7-label"
+             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-valuetext="0 percent complete — not started">
+          <div class="meter-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ================================================================
          §C · THE ORGANISM
          ================================================================ -->
     <div>
-      <p class="tier t-cm-section-label">C · the organism — the daily transfer limit lock-up</p>
-      <p class="tier-note t-cm-caption">"Again what we have is a set of meter variants embedded in an organism, in this case a daily transfer limit lock-up" (Dave, #210). The lock-up is NOT a meter: it is a composition — a title, a verdict chip, a display figure, one or more meter molecules, a legend and, at the ceiling, a consequence sentence. Every part below is Limits-meter's own markup, copied; only the class prefix moved.</p>
+      <p class="tier t-cm-section-label">C · the organisms — all three</p>
+      <p class="tier-note t-cm-caption">"Again what we have is a set of meter variants embedded in an organism, in this case a daily transfer limit lock-up" (Dave, #210). The lock-up is NOT a meter: it is a composition — a title, a verdict chip, a display figure, one or more meter molecules, a legend and, at the ceiling, a consequence sentence. THREE organisms ship, on Dave's Q4 answer ("I think we have all three, just be careful, dont hand roll, use the atoms"): the daily-transfer-limit lock-up (C1 within limit, C2 at limit), the payment-limits set (C3), and the savings-goal lock-up (C4). C1–C3 are Limits-meter's own markup, copied; only the class prefix moved. C4 is COMPOSED from the classes C1 and B3 already use — no new CSS rule was authored for it and no card chrome was invented.</p>
     </div>
 
     <!-- C1 · the lock-up, within limit — Limits-meter specimen 1, copied -->
     <div>
-      <p class="stateLabel t-cm-legal">C1 · daily transfer limit lock-up · within limit · ONE meter molecule inside · the meter is ink on track, and there is no green on it</p>
+      <p class="stateLabel t-cm-legal">C1 · daily transfer limit lock-up · within limit · ONE meter molecule inside · the meter is ink on track, and there is no green on it · the 480px column is demo chrome (.demo-col), not the component (s210-D3)</p>
+      <div class="demo-col">
       <div class="lockup" role="group" aria-labelledby="c1-label">
         <div class="lockup-head">
           <span class="lockup-title t-cm-label" id="c1-label">Daily transfer limit</span>
@@ -474,6 +581,7 @@
           <span class="meter-key t-cm-legal"><span class="sw sw--left" aria-hidden="true"></span>Left today <span class="v t-cm-figure-6">£1,800</span></span>
         </div>
       </div>
+      </div>
     </div>
 
     <!-- C2 · the same lock-up AT LIMIT — Limits-meter specimen 3, copied.
@@ -481,7 +589,8 @@
          because the allowance is spent — that is the honest geometry — and the CONSEQUENCE is a
          sentence, not a hue. The chip is the organism's, never the meter's. -->
     <div>
-      <p class="stateLabel t-cm-legal">C2 · the same lock-up · at limit · no red was invented — the meter is full because the allowance is spent; the consequence is a sentence and a reset time</p>
+      <p class="stateLabel t-cm-legal">C2 · the same lock-up · at limit · no red was invented — the meter is full because the allowance is spent; the consequence is a sentence and a reset time · 480px column is demo chrome (s210-D3)</p>
+      <div class="demo-col">
       <div class="lockup" role="group" aria-labelledby="c2-label">
         <div class="lockup-head">
           <span class="lockup-title t-cm-label" id="c2-label">Daily transfer limit</span>
@@ -502,30 +611,26 @@
         </div>
         <p class="lockup-note t-cm-caption" role="status">You cannot make another transfer from this account until midnight. To send more today, ask us to review your limit.</p>
       </div>
+      </div>
     </div>
 
-    <!-- C3 · the SET — three meter molecules in one organism. Limits-meter specimen 4, copied.
-         ONE group label, three meters, no chips. This is the clearest reading of Dave's sentence:
-         "a set of meter variants embedded in an organism". -->
+    <!-- C3 · the SET — meter molecules in one organism. Limits-meter specimen 4, copied.
+         ONE group label, no chips. This is the clearest reading of Dave's sentence:
+         "a set of meter variants embedded in an organism".
+         ⚑ s210-D4 ENACTED (#210, Dave: "Per payment seems redundant in this context"). The
+         "Per payment" row — an EMPTY track reading "£0 of £10,000 used" that never accumulates,
+         because a per-payment cap is a ceiling PER EVENT — IS REMOVED FROM THIS ORGANISM. The set
+         is now TWO accumulating allowances (per day, per month), which is what a stack of meters
+         is for. ⛔ SCOPE, in the ruling's own words: this "does not rule the empty-track state out
+         of the Meter vocabulary (an empty meter remains a legal state)" — the state is drawn on
+         the bare molecule at §B7 above. The per-payment RULE itself is not lost either: it is a
+         stated rule, not a quantity, and is carried as a sentence in the caption below. -->
     <div>
-      <p class="stateLabel t-cm-legal">C3 · the payment-limits lock-up · THREE meter molecules in one organism · per payment · per day · per month · ONE group label, no chips</p>
+      <p class="stateLabel t-cm-legal">C3 · the payment-limits lock-up · two meter molecules in one organism · per day · per month · ONE group label, no chips · the per-payment empty track is dropped (s210-D4) and restated as a sentence · 480px column is demo chrome (s210-D3)</p>
+      <div class="demo-col">
       <div class="lockup-stack" role="group" aria-labelledby="c3-label">
         <p class="lockup-title t-cm-label" id="c3-label" style="margin:0">Your payment limits · Business current account</p>
-        <p class="meter-caption t-cm-caption">Daily and monthly allowances reset at midnight and on the 1st.</p>
-
-        <div class="lockup-row">
-          <div class="lockup-row-head">
-            <span class="meter-label t-cm-legal" id="c3a">Per payment</span>
-            <span class="lockup-row-fig t-cm-figure-6">£0 of £10,000 used</span>
-          </div>
-          <div class="meter meter--allowance">
-            <div class="meter-track" role="progressbar" aria-labelledby="c3a"
-                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="10000"
-                 aria-valuetext="No single payment may be more than 10,000 pounds.">
-              <div class="meter-fill" style="width:0%"></div>
-            </div>
-          </div>
-        </div>
+        <p class="meter-caption t-cm-caption">No single payment may be more than £10,000. Daily and monthly allowances reset at midnight and on the 1st.</p>
 
         <div class="lockup-row">
           <div class="lockup-row-head">
@@ -555,6 +660,49 @@
           </div>
         </div>
       </div>
+      </div>
+    </div>
+
+    <!-- C4 · THE SAVINGS-GOAL LOCK-UP — the third organism.
+         ⚑ ADDED AT #210 on Dave's Q4 answer, verbatim: "I think we have all three, just be
+         careful, dont hand roll, use the atoms." So NOTHING here is hand-rolled and NO NEW CSS
+         RULE WAS AUTHORED FOR IT. Every class below already exists in this file and is used
+         exactly as §C1 uses it:
+           .lockup / .lockup-head / .lockup-title  → §C1, the daily-transfer-limit lock-up
+           .chip.ok / .dot                          → §C1, Status-indicator via Limits-meter
+           .amount.amount--display                  → §C1, Amount-display via Limits-meter
+           .meter-verdict                           → §C1
+           .meter + .meter-track + .meter-fill      → §B3, the "Savings goal" bar, values unchanged
+           .meter-legend / .meter-key / .sw         → §C1
+         ⛔ IT IS CALLED A CARD BUT IT DRAWS NO CARD CHROME. No border, no surface, no padding and
+         no radius is invented for it: a Card is a SEPARATE component that would wrap this lock-up,
+         and drawing card chrome here would be the #202 invention this file exists to avoid.
+         ⚑ SEMANTICS: `.meter--progress`, not allowance. A savings goal is a TARGET you are trying
+         to reach — the one place in this file where a full meter is SUCCESS. Nothing paints
+         differently (Q6 is still open); the marker is authored, not inferred. -->
+    <div>
+      <p class="stateLabel t-cm-legal">C4 · the savings-goal lock-up · the third organism (Dave, #210: "I think we have all three") · composed only from atoms already in this file — zero new CSS · progress semantics: a full meter here is success · 480px column is demo chrome (s210-D3)</p>
+      <div class="demo-col">
+      <div class="lockup" role="group" aria-labelledby="c4-label">
+        <div class="lockup-head">
+          <span class="lockup-title t-cm-label" id="c4-label">Savings goal · Holiday</span>
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">On track</span></span>
+        </div>
+        <span class="amount amount--display t-cm-figure-4"><span>£</span><span>1,450.00</span></span>
+        <span class="meter-verdict t-cm-caption">Saved so far</span>
+        <div class="meter meter--progress">
+          <div class="meter-track" role="progressbar" aria-labelledby="c4-label"
+               aria-valuenow="1450" aria-valuemin="0" aria-valuemax="2000"
+               aria-valuetext="1,450 pounds saved of a 2,000 pound goal, 550 pounds to go.">
+            <div class="meter-fill" style="width:72.5%"></div>
+          </div>
+        </div>
+        <div class="meter-legend">
+          <span class="meter-key t-cm-legal"><span class="sw sw--used" aria-hidden="true"></span>Saved <span class="v t-cm-figure-6">£1,450</span></span>
+          <span class="meter-key t-cm-legal"><span class="sw sw--left" aria-hidden="true"></span>To go <span class="v t-cm-figure-6">£550</span></span>
+        </div>
+      </div>
+      </div>
     </div>
 
   </div>
@@ -576,7 +724,7 @@
   {
     "component": "Meter",
     "type": "molecule",
-    "status": "PROPOSED #210 — NOT gated, NOT promoted, NOT ruled, and NO FOLD IS ENACTED. Progress-bar and Limits-meter are byte-untouched.",
+    "status": "ACCEPTED #210 (s210-D1, Dave: 'keep as one meter') — still NOT gated, NOT promoted, and NO FOLD IS ENACTED. Four rulings enacted in this file: s210-D1 unification, s210-D2 default title SMALL with the large title as the opt-in modifier, s210-D3 no fixed width on the molecule, s210-D4 per-payment empty row dropped from the C3 organism. Q4 answered: all three organisms ship. Q3/Q5/Q6 remain OPEN pending notes/_briefs/2026-08-20-210-meter-categorical-split-impacts-v1.md (store row W-69). Progress-bar and Limits-meter are byte-untouched.",
     "$daveVerbatim": "if these are the base components we just have progress variants, also I would like the option of the bigger titles that are in the progress bar. Again what we have is a set of meter variants embedded in an organism, in this case a daily transfer limit lock-up.",
     "$foldNotEnacted": "⛔ THIS FILE ENACTS NOTHING. knowledge/snippets/Progress-bar.reference.html, knowledge/components/progress-bar.meta.json, knowledge/snippets/Limits-meter.reference.html and knowledge/components/limits-meter.meta.json are BYTE-UNTOUCHED. Progress-bar is GATED and PROMOTED — that status is Dave's to move, not a worker's. What retires at fold time is OPEN QUESTION Q5 and is unanswered here.",
     "vars": {
@@ -608,19 +756,21 @@
       "Command-palette line 36 (the leading-trim block, byte-identical)"
     ],
     "knownFindings": [
-      "THE UNIFICATION IS DAVE'S OWN INSTRUCTION, carried verbatim in $daveVerbatim, and it is still a PROPOSAL: accept, rework or drop (Q1). Dropping costs nothing — nothing registers this file.",
+      "THE UNIFICATION IS ACCEPTED — s210-D1 (Dave, #210, verbatim: 'keep as one meter'). Q1 is CLOSED. What is NOT closed is the fold's MECHANICS: what the parents' catalogue entries become travels with Q3/Q5/Q6 in the impacts memo, because Dave declared 'im not sure of the impacts and benefits'.",
+      "s210-D2 ENACTED: the DEFAULT title is SMALL (t-cm-legal 12px, text/secondary) and carries NO modifier class; the larger Progress-bar title is the EXPLICIT OPT-IN .meter--title-lg with t-cm-label. This was already the CSS default before #210 — measured, not assumed: the pre-#210 .meter-label rule bound text/secondary and section A drew t-cm-legal — so the ENACTMENT is that the default is now RULED and named rather than a declared placeholder, and every specimen and every line of prose that called it undecided was corrected. Section B1/B2/B3/B5 still carry .meter--title-lg because they are Progress-bar's own specimens, where the large title is now legibly an OPT-IN rather than the base.",
+      "s210-D3 ENACTED: max-width is REMOVED from .meter (was 480px) and from .lockup and .lockup-stack (both 480px). The molecule and the organism declare NO width. Every width still visible on the page is a .demo-col / .demo-w-* / .demo-frame class in the DEMO CHROME block, commented as such and referenced by no .meter-* rule. Section A2 draws the same meter markup in 320 / 640 / 1180 demo containers.",
+      "s210-D4 ENACTED: the 'Per payment' row is REMOVED from the section C3 payment-limits organism — one .lockup-row, its head, its figure and its 0% meter, gone. The rule it carried is not lost: it is restated as a sentence in that organism's caption ('No single payment may be more than £10,000'), because a per-event ceiling is a stated RULE, not an accumulating quantity. ⛔ SCOPE HELD: an empty meter is still a LEGAL STATE and is drawn at section B7 on the bare molecule, added at #210 precisely so the drop cannot be misread as retiring the state.",
+      "Q4 ANSWERED (Dave, #210: 'I think we have all three, just be careful, dont hand roll, use the atoms'). THREE organisms now ship: the daily-transfer-limit lock-up (C1 within limit, C2 at limit), the payment-limits set (C3) and the savings-goal lock-up (C4, NEW). ⛔ C4 AUTHORS ZERO NEW CSS. Every class it uses already existed in this file and is used exactly as C1 and B3 use it — .lockup, .lockup-head, .lockup-title, .chip.ok, .amount.amount--display, .meter-verdict, .meter, .meter-track, .meter-fill, .meter-legend, .meter-key, .sw. It is called a card but draws NO card chrome: no border, no surface, no radius, no padding is invented, because a Card is a separate component that would wrap this lock-up and inventing it here is exactly the #202 defect.",
       "NOTHING BAR-SHAPED OR RING-SHAPED WAS RE-DRAWN. Every variant that reproduces an existing form is copied from its source file declaration-for-declaration and diff-checked against it. #202's lesson: three hand-rolled specimen pages invented three defects.",
-      "THE TITLE-SIZE OPTION IS THE ONE NEW VISUAL AFFORDANCE, and it is drawn BOTH WAYS in §B6 rather than defaulted in prose. Default = t-cm-legal 12px on text/secondary (the Limits-meter stack's row-name); large = t-cm-label 16px on text/default (Progress-bar's own title). WHICH IS THE DEFAULT IS DAVE'S (Q2). The size is carried by the composite class in the markup, never by a raw font declaration.",
+      "THE TITLE-SIZE OPTION IS THE ONE NEW VISUAL AFFORDANCE and is drawn BOTH WAYS in §B6 — now as the RECEIPT for s210-D2, not as a choice. Default = t-cm-legal 12px on text/secondary (the Limits-meter stack's row-name); the option = t-cm-label 16px on text/default (Progress-bar's own title) behind .meter--title-lg. The size is carried by the composite class in the markup, never by a raw font declaration. ⚠ DECLARED, NOT SMOOTHED, AND UNCHANGED BY THE RULING: the modifier's COLOUR leg is a no-op inside this snippet — text/secondary and text/default both resolve to #1A1A1A light / #FFFFFF dark in the local theme block copied from Limits-meter — so the option reads as a SIZE difference only, 12px vs 16px.",
       "⛔ NO RAG COLOUR TOUCHES A METER IN ANY VARIANT OR ANY STATE, including at the ceiling. The fill is ink on track, inherited from the gated Progress-bar: 'Progress is STRUCTURE, not status (Dave 2026-07-21) — hence the ink pair rather than a RAG colour.' The verdict chip belongs to the ORGANISM and carries a WORD. NO NEW COLOUR VALUE IS AUTHORED ANYWHERE IN THIS FILE — every hex is copied. The two-red law (s151-D1) and the mono error ink camp (s149-D1) are UNTOUCHED, and the error/critical seat is not taken.",
       "OPEN AND CARRIED FORWARD UNCHANGED, WITH THE SEARCH THAT FAILS TO SETTLE IT RE-RUN AT #210 (s202-D3): role=\"progressbar\" vs role=\"meter\". `grep -rln 'role=\"meter\"' knowledge/snippets/` → THREE files (Limits-meter, Runway-bar and this one) and EVERY hit in all three is PROSE not markup, i.e. ZERO snippets use the role; `grep -icE '\\bmeter\\b' knowledge/_rulings.json` → 0. progressbar is mirrored from BOTH parents because inheriting beats improvising. ⚠ The question is SHARPER now, not softer — the component is literally called Meter — and it is still DAVE'S. If he rules 'meter', THREE files change together.",
       "THE SEMANTIC VARIANTS (.meter--progress / .meter--allowance) PAINT NOTHING, deliberately. Identical geometry, inverted meaning: a full progress meter is success, a full allowance meter is a blocked payment. Whether that difference should ever be visible, and what the variants should be called, is Q6, Dave's.",
-      "THE TWO PARENTS DISAGREE ON THE BASE MAX-WIDTH — Progress-bar 420px, Limits-meter 480px — and a unified base can only carry one. Drawn at 480; the 420 reading is not dismissed, just not chosen (Q7).",
-      "⚠ CARRIED FORWARD FROM Limits-meter Q8, UNRESOLVED AND STILL VISIBLE: the 'Per payment' row in §C3 is an EMPTY track reading '£0 of £10,000 used' and always will be, because a per-payment cap is a ceiling PER EVENT that never accumulates. Left drawn so it can be seen rather than read about.",
-      "THE SAVINGS-GOAL CARD IS DELIBERATELY NOT DRAWN. The savings-goal BAR is present as variant B3, exactly as Progress-bar draws it; wrapping it in a card lock-up would be an INVENTION, and which organisms the component ships with is Q4, Dave's.",
+      "THE TWO PARENTS' MAX-WIDTH DISAGREEMENT (Progress-bar 420px, Limits-meter 480px) IS MOOT — Q7 was not answered with a number. Dave ruled the question away: s210-D3, 'They should be responsive teh container dictates teh width'. NEITHER figure is carried into the component.",
       "COLOUR NEVER ALONE: every meter shows its value as text and carries aria-valuetext; every organism additionally carries a verdict word and, at the ceiling, a consequence sentence.",
       "PASSIVE COMPONENT: no interactive target, so the 44px minimum hit area has no seat here. Declared rather than assumed.",
       "⚠ THE FOUR-THEME fill-on-track CONTRAST FIGURES ARE CARRIED from Progress-bar's and Limits-meter's declarations and were NOT re-measured at #210. Declared as carried, never as proven this session.",
-      "NOT registered in component-types.json, CATEGORIES, MIGRATED_SNIPPETS, gen_showroom.py or canon.css — all shared files, all outside this lane's fence (the Lane A precedent). ⛔ _validate_binds_resolve.py check D (canon block presence) WILL FAIL for this snippet until a .cn-meter block is projected. Declared, not hidden."
+      "⚠ RE-MEASURED #210 AT THE ENACTMENT PASS — THE #210-BUILD DECLARATION ABOVE HAS AGED AND IS CORRECTED HERE RATHER THAN LEFT TO ROT. At build time this file declared 'check D WILL FAIL until a .cn-meter block is projected'. It no longer fails: the conductor's serial step has PROJECTED a .cn-meter block into canon/canon.css and GENERATED showroom/meter.html, and _validate_binds_resolve.py now reports 101/101 canon blocks, 0 failures. STILL NOT registered, measured this pass: component-types.json (no meter entry), gen_showroom.py CATEGORIES (no meter slug — meter, progress-bar, limits-meter and runway-bar all fall through to the uncategorised 'More' bucket) and _validate_radius.MIGRATED_SNIPPETS (no Meter.reference.html). All shared files, all outside this lane's fence. ⛔ REGEN DEBT DECLARED, NOT HIDDEN: the canon block and the showroom page were projected from the PRE-ENACTMENT bytes of this snippet. The s210-D1..D4 enactment changed this file's CSS (max-width removed from .meter/.lockup/.lockup-stack, .demo-* chrome classes added) and its markup (§A2, §B7 and §C4 added, the §C3 per-payment row removed), so BOTH need regenerating by the conductor. That is a serial, shared-file step and was deliberately not run here."
     ],
     "$differsFrom": {
       "Progress-bar": "PROPOSED PARENT-OF: Progress-bar's whole surface is reproduced here as VARIANTS (linear 4px, emphasis 8px, non-percentage scale, dial). Nothing of it is lost and nothing of it is changed. Under this proposal 'progress' becomes a SEMANTIC VARIANT of a meter rather than the component's identity — which is Dave's sentence, 'we just have progress variants'. ⛔ Progress-bar remains GATED, PROMOTED and BYTE-UNTOUCHED until he rules.",

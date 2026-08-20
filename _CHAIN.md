@@ -89,11 +89,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **89 items · 59 live · 27 Dave's · 32 mine · 70 carry a stated close condition · **19 UNCONDITIONED**.**
+> **90 items · 60 live · 28 Dave's · 32 mine · 71 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (27) — 22 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (28) — 23 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -116,6 +116,7 @@
 > - `W-64` **Dave's eye on the two #209 EXISTENCE questions - the side-by-side review page is the surface** — *closes when:* Dave has looked at reviews/REVIEW-210-existence-side-by-side-v1.html in light AND dark and answered BOTH existence questions - (1) is the product's statement a LIST or a LEDGER, i.e. does transaction-row exist or does row 91 become Duplicate pointing at List-items; and (2) does limits-meter stay as its own component, fold into Progress-bar, or merge into Runway-bar. W-63's per-component design rulings then follow; this row closes on the two existence answers alone.
 > - `W-66` **two #210 spacing fixes PROPOSED - Time-picker label descender clearance (4px->8px) and Data-grid state switcher margin (0->28px)** — *closes when:* Dave's eye accepts the two fixes on reviews/REVIEW-210-spacing-fixes-v1.html - or moves either value; and he rules whether the two CLASSES (the Input-fields family's identical 4px lblrow, and Table/Segmented-control's identical 0px flush switcher) are swept or left
 > - `W-68` **Dave rules the unified METER spec - Progress-bar + Limits-meter rolled up into one component (PROPOSED, no fold enacted)** — *closes when:* Dave has looked at reviews/REVIEW-210-meter-unification-v1.html in light AND dark and RULED the unified Meter spec - accept / rework / drop - AND, if he accepts, NAMED WHAT FOLDS: what happens to Progress-bar.reference.html + progress-bar.meta.json (currently GATED and PROMOTED) and to Limits-meter.reference.html + limits-meter.meta.json. Until then nothing retires and the four parent files stay byte-untouched. The eight open questions on the page (Q1 unification / Q2 title-size default / Q3 role=progressbar vs role=meter / Q4 which organism specimens / Q5 what retires at fold time / Q6 the semantic variant vocabulary / Q7 base max-width 420 vs 480 / Q8 the per-payment empty track) are his; this row closes on the spec ruling and the fold list, and the residual questions he defers travel with the fold.
+> - `W-69` **Dave picks the METER catalogue shape - the impacts memo he asked for (Q3/Q5/Q6 firm together on his word)** — *closes when:* Dave has read notes/_briefs/2026-08-20-210-meter-categorical-split-impacts-v1.md and PICKED a catalogue shape - (A) ONE meta whose variants carry category fields, (B) TWO metas (progress-meter / allowance-meter) pointing at one snippet, (C) the parents' metas retained as thin category aliases referencing meter - or NAMED HIS OWN fourth shape; AND the Q3/Q5/Q6 trio then firms on that pick: Q3 the ARIA role (role=progressbar kept, or split to role=meter, which changes Limits-meter, Runway-bar and Meter together), Q5 what retires at fold time, Q6 the semantic variant vocabulary. Until he picks, NOTHING FOLDS: the four parent files stay byte-untouched, Progress-bar stays GATED and PROMOTED, and no registry, CATEGORIES, component-types.json, MIGRATED_SNIPPETS or canon.css entry is written. This row closes on the PICK plus the trio, not on any build.
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -129,7 +130,7 @@
 
 ---
 
-*(Chain ends. **33,237 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **33,657 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 90,796 real and stays whole for retrieval; you have paid for
 37% of it, and that is the intended figure, not a shortfall.)*
