@@ -106,13 +106,29 @@ def check_token(path, stored, alpha, fades, over, ramp, ramp_name, theme_key):
 
 
 # ---------------------------------------------------------------- repo assembly
+# MINTED named steps on the same ramp prefix are LEGAL snap targets (s198-D2, Dave, #198:
+# "MINT TWO NEW PRIMITIVES … gate must return green"; renamed hover-light/hover-dark s199-D2).
+# The token note at color/mono/hover-* says "kept EXACT rather than ramp-snapped … minted as a
+# named step so the everything-aliases-a-primitive contract holds". This gate rejecting them was
+# the #209 CI red at build step [52] — a gate-vocabulary defect (the ruling had been enacted in
+# _validate_token_tiers.py but never here; the gate-glob-scope class). Scope is deliberately
+# ONLY the two ruled names — not raise-* or any future sibling — a new mint must be ruled in.
+_MINTED_STEPS = ("hover-light", "hover-dark")
+
 def _ramp_hexes(ramp_field):
-    """'color/mono/1-15' -> ordered step hexes from the primitive store."""
+    """'color/mono/1-15' -> ordered step hexes from the primitive store,
+    plus the s198-D2/s199-D2 minted named steps of the same prefix when present."""
     m = re.fullmatch(r"(.+)/(\d+)-(\d+)", ramp_field)
     if not m:
         raise SystemExit(f"state-snap: unparseable neutralRamp '{ramp_field}'")
     prefix, lo, hi = m.group(1), int(m.group(2)), int(m.group(3))
-    return [str(base_value(f"{prefix}/{i}", "light")) for i in range(lo, hi + 1)]
+    hexes = [str(base_value(f"{prefix}/{i}", "light")) for i in range(lo, hi + 1)]
+    for name in _MINTED_STEPS:
+        try:
+            hexes.append(str(base_value(f"{prefix}/{name}", "light")))
+        except Exception:
+            pass    # a ramp without that mint simply doesn't gain the step — never a guess
+    return hexes
 
 def _opacity_tokens(store):
     out = []
@@ -208,6 +224,18 @@ def selftest():
                     {"light": "#F7F6F4", "dark": "#13110E"}, warm, "warm/1-5", "sc-fix")
     if len([f for f in r if "NOT a step" in f]) != 2:
         fails.append("warm-ramp membership must bite on both modes")
+    # bite 5 (s198-D2 enactment, #209): minted named steps are legal; scope stays two names.
+    live = _ramp_hexes("color/mono/1-15")
+    if "#636363" not in {h.upper() for h in live} or "#B2B2B2" not in {h.upper() for h in live}:
+        fails.append("minted hover-light/hover-dark must be legal snap targets (s198-D2/s199-D2)")
+    if len(live) != 17:
+        fails.append(f"legal set must be 15 ramp + 2 minted = 17, got {len(live)} — "
+                     "a wider set is an unruled widening, a narrower one re-breaks s198-D2")
+    r = check_token("t/x", {"light": "#636363", "dark": "#B2B2B2"}, 0.68,
+                    {"light": "#1A1A1A", "dark": "#FFFFFF"},
+                    {"light": "#FFFFFF", "dark": "#1A1A1A"}, live, "color/mono/1-15", "fix")
+    if any("NOT a step" in f for f in r):
+        fails.append("stored minted hover values must PASS membership after s198-D2 enactment")
     # bite 4: text-state AA — the exact SC-dark catch (Dave 2026-07-22: inactive ≠ disabled).
     r = check_text_state_aa("t/tabs-like", {"light": "#493F39", "dark": "#806E65"},
                             {"light": "#F7F6F4", "dark": "#13110E"}, "sc-fix")
