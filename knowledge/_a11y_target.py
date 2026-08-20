@@ -70,6 +70,12 @@ VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link",
 INTERACTIVE_ROLES = {
     "button", "checkbox", "combobox", "link", "menuitem", "option", "radio",
     "slider", "switch", "tab", "textbox",
+    # #210: treeitem — the first role=tree corpus member (Tree, wave 4). A
+    # treeitem is focusable and selectable (the menuitem/option class); the
+    # gate had simply never been taught the word (the #209 hover-light
+    # precedent: a legal value the vocabulary predated — teach the gate,
+    # never re-shape the artefact). Declared in the wave-4 Lane A receipt.
+    "treeitem",
 }
 NON_INTERACTIVE_ROLES = {
     "alert", "dialog", "grid", "group", "img", "list", "listbox", "listitem",
@@ -78,6 +84,11 @@ NON_INTERACTIVE_ROLES = {
     "row", "cell", "columnheader", "rowheader", "note", "figure", "document",
     "banner", "main", "navigation", "complementary", "contentinfo", "search",
     "form", "heading", "term", "definition", "toolbar", "marquee", "log",
+    # #210: tree/rowgroup/gridcell — containers and static cells named by the
+    # wave-4 Lane A receipt (Tree, Calendar). Static gridcell/rowgroup are not
+    # controls; a control INSIDE one is measured as itself. Same teach-the-word
+    # repair as treeitem above.
+    "tree", "rowgroup", "gridcell",
 }
 # Native tags that ARE controls regardless of role. This is EXACTLY the ruled
 # control set (2026-07-25 brief, rule text): "a control is any `button`,

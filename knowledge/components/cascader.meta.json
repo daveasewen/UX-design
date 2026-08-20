@@ -1,0 +1,169 @@
+{
+  "name": "Cascader",
+  "category": "molecule",
+  "purpose": "Choose ONE PATH through a hierarchy, one level per column. The trigger shows the committed path; the panel shows each level beside the last, so the shape of the data is visible while the choice is being made. Use it where the answer is a location in a tree — a holding location, a category and sub-category, an org unit — and where showing the whole tree at once would be more than the question needs.",
+  "$provenance-note": "NEW at #210 (wave 4, lane B) against the wave-4 heavy-7 fan-out brief. Verified absent first-hand at build: `ls knowledge/snippets/ | grep -i cascad` -> 0; `ls knowledge/components/ | grep -i cascad` -> 0; `grep -rl cascad knowledge/snippets/` -> 0. Composed from the gated Dropdown field + menu grammar and the gated Multi-select chevron sprite; nothing re-drawn.",
+  "interactive": true,
+  "stateModel": "full",
+  "props": [
+    {
+      "name": "layout",
+      "type": "enum",
+      "values": [
+        "columns",
+        "stacked"
+      ],
+      "default": "columns",
+      "$status": "PROPOSED #210, Dave's eye owed. Both are built and they are the SAME code. `columns` shows every level at once; `stacked` shows one at a time with a back row. `columns` also becomes `stacked` automatically below a 420px CONTAINER width, so the prop is a way to force the narrow shape at any width."
+    },
+    {
+      "name": "levels",
+      "type": "number",
+      "default": 3,
+      "$note": "The reference draws three (region / nation / city). Nothing in the CSS or the JS is bound to three; the column row takes as many <ul class=\"cs-col\"> as it is given."
+    },
+    {
+      "name": "selectable",
+      "type": "enum",
+      "values": [
+        "leaf-only",
+        "any-node"
+      ],
+      "default": "leaf-only",
+      "$status": "UNRULED — this is a real product question, not an implementation detail. Drawn as leaf-only: choosing a branch opens it, choosing a leaf commits and closes. `any-node` needs a second affordance (a commit control, or a modifier key) so that opening and choosing stay distinguishable, and that affordance is not drawn."
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "default",
+        "hover",
+        "focus",
+        "open",
+        "committed",
+        "disabled"
+      ],
+      "default": "default",
+      "$note": "Same state channel as the gated Dropdown/Multi-select field — inherited, not re-specified. NO ERROR STATE IS DRAWN: the error grammar for this field would be Input-fields', unchanged, and drawing it here would be a fourth copy of it."
+    }
+  ],
+  "variants": [
+    {
+      "name": "columns",
+      "use": "Every level visible at once. The hierarchy's shape is legible before anything is chosen; the panel is as wide as the levels need."
+    },
+    {
+      "name": "stacked",
+      "use": "One level at a time with a back row, for a container too narrow for side-by-side columns. Reached by the .stacked class or automatically at a 420px container width."
+    }
+  ],
+  "tokens": {
+    "field-background": "form/background/default (transparent), hover form/background/hover",
+    "field-border": "form/border/default; open form/border/active + a 4px inset bottom stroke; disabled form/border/disabled",
+    "panel-surface": "background/default",
+    "panel-elevation": "light elevation/functional; dark elevation/border (grey outline)",
+    "column-divider": "divider/border/section — a 1px rule between columns",
+    "option-highlight": "form/background/hover fill PLUS a 3px inset rule in form/border/active — never colour-alone",
+    "option-selected": "form/background/hover fill plus the neutral tick glyph on leaves and the branch chevron on parents — a SHAPE channel, so selection is never carried by fill alone",
+    "text": "text/default; disabled text/disabled",
+    "icon": "icon/default; disabled icon/disabled",
+    "focus": "focus/ring",
+    "shape": "border-radius/control (field), border-radius/surface (floating panel)",
+    "hit-area": "target/min (44px) on the field, every option row and the back row"
+  },
+  "relationships": {
+    "livesInside": [
+      "Form",
+      "Filter bar",
+      "Dialog",
+      "Toolbar"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "hierarchical location picker",
+      "category and sub-category picker",
+      "organisation unit picker"
+    ]
+  },
+  "$relatedComponents": "PROPOSED, NOT ADJUDICATED (the lane fence). Tree (wave 4, lane A) discloses a hierarchy in place and can hold many branches open; Cascader selects ONE PATH and shows one branch per level. Multi-select returns a SET from a FLAT list; Cascader returns one path through a NESTED one. Whether the library keeps Tree and Cascader as two components is DAVE'S — the sidebar-nav precedent. Nothing in this file forecloses either answer.",
+  "accessibility": {
+    "roles": "The trigger is a plain button carrying aria-expanded + aria-controls, deliberately NOT role=combobox — a combobox promises one popup of one type, and this popup is several listboxes. Each column is role=listbox with its own accessible name (which follows the branch it is showing), and its children are role=option carrying aria-selected. A branch that cannot be entered is aria-disabled, never removed.",
+    "keyboard": "Down opens the panel and moves into the first column. Inside a column: Up/Down move (roving tabindex, so the column has ONE tab stop), Home/End jump, Right or Enter enters a branch, Left returns to the parent column, Enter on a leaf commits and closes, Escape closes and returns focus to the trigger.",
+    "announcements": "A polite live region reads the whole path back after every step, because a screen-reader user moving into a new column otherwise hears only the level they have arrived at, not the route they took. The same string is shown visually in the panel footer, so what is heard and what is seen cannot drift.",
+    "states": "Disabled exposed on the trigger (disabled) and per-option (aria-disabled). Open/closed on the trigger (aria-expanded).",
+    "targetArea": "Field, option rows and back row are 44px (target/min).",
+    "$openQuestion": "TWO ARIA MAPPINGS EXIST AND ONLY ONE IS DRAWN. (a) DRAWN: a chain of listboxes — matches the layout the eye sees and the keys the user presses. (b) NOT DRAWN: one role=tree spanning all columns via aria-owns — matches the DATA rather than the layout, and is what a user who thinks in hierarchies may expect. Neither is obviously right; this is Dave's, not the lane's.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.3",
+      "2.4.7",
+      "2.5.8",
+      "4.1.2",
+      "4.1.3"
+    ]
+  },
+  "antiPatterns": [
+    "Opening a branch on HOVER. Hover-to-expand is a pointer-only affordance; the keyboard and touch paths are then second-class, and a passing cursor rewrites the panel.",
+    "Leaving stale columns to the right after a branch changes. If the path no longer exists, the columns showing it must go — otherwise the panel displays a route the user did not take.",
+    "Hiding a branch the user may not enter. aria-disabled keeps the hierarchy the same shape for everyone; removing it makes two users see two different trees.",
+    "Announcing only the level just entered. Without the whole-path readout a screen-reader user has no way to know where they are in the hierarchy.",
+    "Re-drawing the field. The trigger is the gated Dropdown/Multi-select field; if it changes, it changes there first."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS — 19 declared vars resolve in both light and dark; 4 declared contrast pairs clear their thresholds in both modes (snippet gate: 108 snippet(s), 0 failure(s)).",
+    "$scope": "MONO base only. Console, Legacy and Supercharge are NOT measured by this file and were NOT rendered by this lane — declared, not smoothed.",
+    "$deprecated": "No deprecated tokens bound.",
+    "$notGenerated": "canon.css carries NO .cn-cascader scope yet — this lane ran no generator, so _validate_binds_resolve.py check D fails for the snippet until the conductor projects the block.",
+    "$notDeclared": "divider/border/section on background/default is NOT declared as a contrast pair. A resting seam between columns is decoration, not a control affordance; declaring it would assert a 3:1 duty it does not carry (it measures 1.31:1 in light). Stated so the absence is visible."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Wave-4 heavy-7 fan-out (notes/_briefs/2026-08-20-210-wave4-heavy7-fanout-brief-v1.md), lane B. No Figma node."
+  },
+  "$render-verification": "DRIVEN AT #210. Option rows measure 44.00px each. Choosing United Kingdom fills column 2 with England/Scotland/Wales and leaves column 3 hidden; choosing England fills column 3 with London/Bristol/Manchester/Leeds and the live region reads 'Selected path: United Kingdom / England'. Choosing France then REPLACES column 2 and re-hides column 3 - the stale path is gone, not left standing. Keyboard only: Down opens and enters the first column, Right enters a branch, Right on a LEAF does nothing, Left returns to the parent column, Enter on a leaf commits ('France / Ile-de-France / Paris'), sets aria-expanded=false and returns focus to the trigger. Each column has exactly ONE tab stop. Clicking the aria-disabled branch leaves the path unchanged. At a 380px CONTAINER (viewport untouched) exactly one column is displayed and the back row appears reading 'Back to Region'. Zero horizontal overflow at 1180px and at 480px.",
+  "$two-defects-found-by-driving": "(1) showLevel() WAS UNCLAMPED. After a full path is committed, path.length equals the number of columns, so showLevel(path.length) marked NO column current. In the columns layout that is invisible; in the stacked/container-query layout every column is display:none and THE PANEL RE-OPENED EMPTY. Every gate was green over that draft. (2) THE COLUMNS RE-DIVIDED A FIXED WIDTH as the user drilled - with flex:1 1 0 the first column went 100% -> 50% -> 33% and the row under the cursor moved out from under it. The panel now grows to the right on a fixed 220px column basis instead.",
+  "$descender-finding": "⛔ REPO-WIDE CLASS, FOUND HERE, NOT FIXED HERE. The #209 leading-trim block is `:is(button,a,label,span,...,input[type=text],...):not(:has(svg))`, whose specificity is (0,1,2) because of the attribute selectors inside :is(). A SINGLE-CLASS ds-005 override therefore LOSES the cascade and the descenders are clipped anyway. Measured in a real browser at #210: `.cs-value` computed `text-box-edge: cap alphabetic` before the selector was raised to two classes, and `text` after - and the clipped 'g' in 'United Kingdom / England / Bristol' was visible in the render. `_validate_descender_clip.py` reads the DECLARATION, not the cascade, so it passed either way. Six single-class overrides in five OTHER gated snippets were sampled in the browser and ALL SIX compute `cap alphabetic` today. That repair is the conductor's, not this lane's.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Cascader.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:form",
+        "$note": "Form"
+      },
+      {
+        "ref": "context:filter-bar",
+        "$note": "Filter bar"
+      },
+      {
+        "ref": "context:dialog",
+        "$note": "Dialog"
+      },
+      {
+        "ref": "context:toolbar",
+        "$note": "Toolbar"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:hierarchical-location-picker"
+      },
+      {
+        "ref": "pattern:category-and-sub-category-picker"
+      },
+      {
+        "ref": "pattern:organisation-unit-picker"
+      }
+    ]
+  }
+}

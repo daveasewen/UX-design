@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tree — reference implementation (proposed, not gated)</title>
+<!--
+  CANONICAL REFERENCE for Tree (organism). Built 2026-08-20, session #210, wave 4 lane A.
+  ⛔ PROPOSED, NOT RULED. Nothing is registered: no CATEGORIES entry, no MIGRATED_SNIPPETS,
+  no component-types.json membership, no canon.css projection block. Every domain semantic
+  below is PROPOSED (the Kpi-tile precedent, s182-D2). Open questions live in the lane
+  receipt: notes/_receipts/2026-08-20-210-wave4-laneA-calendar-tree.md.
+
+  ⛔ THIS FILE FAILS _validate_a11y.py AND THAT IS DECLARED, NOT HIDDEN.
+  The gate's role vocabulary (_a11y_target.py, INTERACTIVE_ROLES / NON_INTERACTIVE_ROLES)
+  does not contain `tree` or `treeitem`, and the gate is BUILT to fail loud on an unknown
+  role rather than let it default to "not a control" (the dv-vocab shape). There is no
+  native HTML element that maps to `treeitem`, so unlike a table-backed grid this cannot be
+  written without the explicit roles. THE CLASSIFICATION IS NOT THIS LANE'S TO MAKE —
+  extending a shared gate's vocabulary is a ruling and the fence for #210 wave 4 lane A is
+  NEW FILES ONLY. The recommended extension, with reasoning, is in the receipt; the hit
+  targets the gate would have measured are MEASURED IN A REAL BROWSER there instead, so the
+  2.5.8 question is answered by a number rather than left behind a red gate.
+
+  ── SURVEY BEFORE BUILD — what is borrowed, and from where ────────────────────────────
+   - Row anatomy is Sidebar-nav's .sn-link, verbatim in shape: 44px minimum row, flex,
+     12px gap, ellipsing label with text-box-edge:text text, hover on
+     tertiary/background/hover, focus ring inset so it survives a flush row.
+   - The collapsible-group idiom (aria-expanded on the header, rotating chevron) is
+     Sidebar-nav's .sn-group-toggle. What is NEW here is that it RECURSES: Sidebar-nav
+     nests exactly one level and hard-codes the child indent (.sn-sub .sn-link
+     {padding-left:48px}); a tree cannot, so indentation is a declared LADDER (see below).
+   - The loading rows are Skeleton-loader's .bone, copied with its shimmer and its
+     reduced-motion behaviour (static bones — shape alone reads as loading).
+   - The whole-tree empty state is Empty-state's <section class="empty"> idiom.
+   - Icons: arrows-and-chevrons/chevron-right.svg, byte-matched. Nothing drawn.
+     ⚠ NO FOLDER OR HIERARCHY GLYPH EXISTS IN THE LIBRARY. Probe, run at build:
+     `ls knowledge/assets/icons/*/ | grep -iE "folder|hierarch|org|structure|node|group"`
+     returns only structured-notes.svg / structured-notes-active.svg, which mean a
+     financial product, not a container. So branch and leaf are told apart by the TWISTY's
+     presence and by aria-expanded, never by a glyph. An _ICON-GAPS.md entry may be owed —
+     that file is the conductor's.
+
+  ── THE INDENTATION LADDER — depth on the 4px grid ────────────────────────────────────
+  Indent is padding-left on .tr-row, declared per level, never computed: 8 · 32 · 56 · 80 ·
+  104px. A 24px step, which is exactly the twisty's width, so every level's twisty sits
+  under the level above's LABEL. All six values are on the 4px grid. Five levels are
+  declared and the fifth is the floor — deeper nodes keep level 5's indent rather than
+  marching off the right edge. Depth is ALSO carried by aria-level, so the indent is never
+  the only channel.
+
+  ── SELECTION, AND THE COLOUR CALL THIS LANE DID NOT MAKE ─────────────────────────────
+  Selected = tertiary/background/hover surface + a 3px leading bar in form/border/active
+  (MONO) + aria-selected="true". Three channels, no hue.
+  ⚠ Sidebar-nav marks CURRENT LOCATION with the same bar shape in primary/border/default
+  (#DB0011). This lane deliberately did NOT reuse the red, because "the thing I have
+  selected" and "the page I am on" are different meanings and choosing whether they share a
+  mark is Dave's. Drawn mono so nothing is asserted. See the receipt, Q9.
+
+  ── A DEFECT FOUND BY DRIVING, IN THIS FILE'S OWN FIRST DRAFT ─────────────────────────
+  ⛔ The view-only node was drawn at --alpha-40 and MEASURED 2.52:1 (light) / 3.79:1 (dark)
+  in Chromium — a node whose entire purpose is to be READ, dimmed until it could not be.
+  Every gate was green over that draft. Repair, and it is a CATEGORY correction not a
+  colour tweak (the #209 cancelled-mandate class, exactly): a view-only node is not
+  disabled content, it is content you may not ACT on. It keeps full ink, loses its hover
+  affordance, and says "View only" in TEXT.
+
+  ── TWO MORE DEFECTS FOUND BY LOOKING, BOTH GREEN THROUGH EVERY GATE ──────────────────
+  ⛔ EVERY ROW LABEL WAS CLIPPING ITS DESCENDERS. "Northwind Holdings" rendered
+  "Northwind Holdinas". Cause is a SPECIFICITY loss to this file's own leading-trim block,
+  not a missing declaration — see the long comment on .tr-row > .tr-label below.
+  ⚠ Sidebar-nav has the same defect today, measured, and _validate_descender_clip.py is
+  green over both. Declared in the receipt; not repaired here (Sidebar-nav is gated).
+  ⛔ THE INDENT SELECTOR FOR THE LOADING AND EMPTY ROWS MATCHED NOTHING. `data-level` sits
+  ON those rows, so `[data-level="2"] > .tr-loading` can never match. Measured padding-left
+  0px where 56px was intended; the skeleton bones and the empty note sat flush against the
+  panel edge, at the wrong depth, under a green gate chain.
+
+  ── ONE TAB STOP, AND THE TWISTY IS NOT A SECOND CONTROL ──────────────────────────────
+  APG tree: the treeitem itself is the focusable, selectable, activatable element and the
+  whole tree is ONE tab stop (roving tabindex). The twisty is aria-hidden decoration whose
+  POINTER area is the 24px slot inside a 44px row (24×44 measured, clears 2.5.8's 24×24);
+  keyboard users expand with ArrowRight and collapse with ArrowLeft, never needing it. That
+  is why a 400-node tree is one tab stop and not eight hundred.
+
+  TYPE = canon composites only (link to canon/type.css; no raw font declarations in
+  component scope). Labels .t-cm-label, counts and notes .t-cm-caption / .t-ed-body-small.
+  MOTION: the twisty rotates 90°; reduced-motion honoured page-wide.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-08-20 (#210). */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:200ms cubic-bezier(.4,0,.2,1);
+  }
+  [data-theme="light"]{
+    --page:#FFFFFF;                 /* background/default */
+    --panel:#FFFFFF;                /* tertiary/background/default */
+    --text:#1A1A1A;                 /* text/default */
+    --icon:#1A1A1A;                 /* icon/default */
+    --rule:#E1E1E1;                 /* border/subtle */
+    --hover:#F0F0F0;                /* tertiary/background/hover */
+    --pressed:#CECECE;              /* form/background/pressed */
+    --marker:#000000;               /* form/border/active — the selection bar, MONO */
+    --bone:#F0F0F0;                 /* tertiary/background/hover, used as the skeleton bone */
+    --focus:#305A85;                /* focus/ring */
+    --border-radius-control:0;      /* border-radius/control */
+    --border-radius-surface:0;      /* border-radius/surface */
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --panel:#1F1F1F;
+    --text:#FFFFFF;
+    --icon:#FFFFFF;
+    --rule:#808080;
+    --hover:#232323;
+    --pressed:#484848;
+    --marker:#FFFFFF;
+    --bone:#232323;
+    --focus:#4587A7;
+    --border-radius-control:0;
+    --border-radius-surface:0;
+  }
+
+  *{box-sizing:border-box;}
+  /* body carries NO font-family: canon/type.css composites carry every text declaration
+     in this file (type-composite discipline). */
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .sr-only{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+
+  /* ---------- DEMO CHROME ONLY — every width on this page lives here, never in .tr ---------- */
+  .spec-h2{color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+  .spec-note{color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:64ch;}
+  .spec-cap{color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
+  .spec-row{display:flex; align-items:flex-start; gap:32px; flex-wrap:wrap;}
+  .spec-w-md{width:400px; max-width:100%;}     /* demo chrome: a typical panel seat */
+  .spec-w-sm{width:280px; max-width:100%;}     /* demo chrome: a narrow rail seat */
+
+  /* ---------- THE COMPONENT ---------- */
+  .tr-panel{background:var(--panel); border:1px solid var(--rule);
+    border-radius:var(--border-radius-surface); padding:8px 0;}
+  .tr, .tr-group{list-style:none; margin:0; padding:0;}
+
+  .tr-row{display:flex; align-items:center; gap:12px; min-height:44px; padding-right:16px;
+    color:var(--text); position:relative; cursor:pointer;
+    transition:background var(--ease);}
+  /* THE INDENT LADDER — declared per level, 24px step, all values on the 4px grid.
+     Level 5 is the floor: deeper nodes stop marching right. aria-level carries depth too. */
+  [data-level="1"] > .tr-row{padding-left:8px;}
+  [data-level="2"] > .tr-row{padding-left:32px;}
+  [data-level="3"] > .tr-row{padding-left:56px;}
+  [data-level="4"] > .tr-row{padding-left:80px;}
+  [data-level="5"] > .tr-row{padding-left:104px;}
+
+  .tr-twisty{flex:none; width:24px; height:24px; display:inline-flex; align-items:center;
+    justify-content:center; color:var(--icon);}
+  .tr-twisty svg{width:12px; height:12px; display:block; transition:transform var(--ease);}
+  .tr-item[aria-expanded="true"] > .tr-row > .tr-twisty svg{transform:rotate(90deg);}
+  .tr-twisty.is-leaf{visibility:hidden;}   /* keeps the label column aligned across siblings */
+
+  /* ⛔ THE SELECTOR HERE IS LOAD-BEARING AND IT IS NOT A STYLE CHOICE.
+     The leading-trim block at the head of this file is `:is(button,a,label,span,…,
+     input[type=text],…):not(:has(svg))`. :is() takes the specificity of its MOST SPECIFIC
+     argument — `input[type=text]` = (0,1,1) — and :not(:has(svg)) adds (0,0,1), so that
+     rule lands at (0,1,2) and BEATS any single class (0,1,0). A bare `.tr-label
+     {text-box-edge:text text}` therefore LOSES, the computed edge stays `cap alphabetic`,
+     and every descender is clipped by the overflow:hidden the ellipsis needs.
+     MEASURED in Chromium: clientHeight 12 vs scrollHeight 18 = 6px of glyph gone.
+     `.tr-row > .tr-label` is (0,2,0) and wins: clientHeight 21 == scrollHeight 21, edge
+     computes to `text`, ellipsis intact, row height unchanged at 44px.
+     ⚠ _validate_descender_clip.py PASSES BOTH FORMS — it reads the declaration, not the
+     cascade. Sidebar-nav's .sn-label carries the losing form today and is clipped in the
+     same way (measured: clientHeight 12 / scrollHeight 18, edge `cap alphabetic`). That is
+     a corpus finding and a gate finding, both declared in the #210 lane-A receipt. This
+     lane did not edit Sidebar-nav — it is gated. */
+  .tr-row > .tr-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; text-box-edge:text text;}
+  .tr-meta{flex:none; color:var(--text); opacity:var(--alpha-60);}
+
+  .tr-item:hover > .tr-row{background:var(--hover);}
+  .tr-item:active > .tr-row{background:var(--pressed);}
+  .tr-item:focus{outline:none;}
+  .tr-item:focus-visible > .tr-row{outline:2px solid var(--focus); outline-offset:-2px;}
+  /* SELECTED — surface + a 3px leading bar (a SHAPE) + aria-selected. Three channels, mono. */
+  .tr-item[aria-selected="true"] > .tr-row{background:var(--hover);
+    box-shadow:inset 3px 0 0 var(--marker);}
+  /* VIEW-ONLY — ⛔ A CATEGORY CORRECTION, NOT A COLOUR TWEAK (the #209 cancelled-mandate
+     class, caught again here by driving). The first draft dimmed this row to --alpha-40:
+     MEASURED 2.52:1 light / 3.79:1 dark — a node you are invited to READ, rendered
+     unreadable. A view-only node is not disabled content, it is content you may not act
+     on. It keeps FULL INK, loses the hover affordance, and says "View only" IN TEXT. */
+  .tr-item[aria-disabled="true"] > .tr-row{cursor:default;}
+  .tr-item[aria-disabled="true"]:hover > .tr-row,
+  .tr-item[aria-disabled="true"]:active > .tr-row{background:transparent;}
+  .tr-item[aria-expanded="false"] > .tr-group{display:none;}
+
+  /* branch with nothing in it — a STATE, drawn, not an absence */
+  .tr-empty{display:flex; align-items:center; min-height:44px; color:var(--text);
+    opacity:var(--alpha-60);}
+  /* data-level sits ON these rows, so the selector must not be a child combinator.
+     The first draft wrote `[data-level="2"] > .tr-empty` and it MATCHED NOTHING —
+     measured padding-left:0px on every one, with every gate green. */
+  .tr-empty[data-level="2"]{padding-left:56px;}
+  .tr-empty[data-level="3"]{padding-left:80px;}
+
+  /* LOADING — Skeleton-loader's bone, copied with its reduced-motion behaviour */
+  .tr-loading{display:flex; align-items:center; min-height:44px;}
+  .tr-loading[data-level="2"]{padding-left:56px;}
+  .tr-loading[data-level="3"]{padding-left:80px;}
+  .bone{display:block; height:16px; background:var(--bone);
+    border-radius:var(--border-radius-control);
+    background-image:linear-gradient(90deg, var(--bone) 0%, color-mix(in srgb, var(--bone) 50%, var(--page)) 50%, var(--bone) 100%);
+    background-size:200% 100%; background-position:200% 0; animation:shimmer 1.4s linear infinite;}
+  @keyframes shimmer{ to{ background-position:-200% 0; } }
+  .bone.w-lg{width:160px;} .bone.w-sm{width:96px;}
+
+  /* whole-tree empty — Empty-state's idiom */
+  .empty{display:flex; flex-direction:column; align-items:center; text-align:center;
+    gap:8px; padding:32px 16px;}
+  .empty p{margin:0; color:var(--text); opacity:var(--alpha-72); max-width:36ch;}
+  .empty h3{margin:0; color:var(--text);}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .bone{ animation:none; background-image:none; }   /* static bones — shape alone reads as loading (2.3.3) */
+  }
+  @media (max-width:480px){
+    body{padding:1.25rem;}
+    .spec-w-md,.spec-w-sm{width:100%;}
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="ic-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+    <symbol id="es-empty" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9891 0H0.789062V18H16.7891V3.8L12.9891 0ZM15.0921 3.8H12.9891V1.697L15.0921 3.8ZM15.5891 16.8H1.98906V1.2H11.7891V5H15.5891V16.8Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <!-- ================= 1 · LIVE ================= -->
+  <h2 class="spec-h2 t-cm-label">Live — a recursive disclosure list, one tab stop</h2>
+  <p class="spec-note t-ed-body-small">Tab reaches the tree once. Then: down and up move through
+    everything currently visible, right expands a closed branch or steps into an open one, left
+    collapses an open branch or steps out to its parent, Home and End jump to the first and last
+    visible node, Enter or Space selects, the asterisk key opens every branch at the focused level,
+    and typing a letter jumps to the next visible node starting with it. The group under "Treasury
+    services" loads on first open, so the loading state is real rather than drawn.</p>
+  <div class="spec-w-md">
+    <div class="tr-panel">
+      <ul class="tr" role="tree" aria-label="Account structure" id="live-tree">
+
+        <li class="tr-item" role="treeitem" data-level="1" aria-level="1" aria-setsize="3" aria-posinset="1" aria-expanded="true" aria-selected="false" tabindex="0">
+          <span class="tr-row">
+            <span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span>
+            <span class="tr-label t-cm-label">Northwind Holdings</span>
+            <span class="tr-meta t-cm-caption">4</span>
+          </span>
+          <ul class="tr-group" role="group">
+            <li class="tr-item" role="treeitem" data-level="2" aria-level="2" aria-setsize="3" aria-posinset="1" aria-expanded="false" aria-selected="false" tabindex="-1">
+              <span class="tr-row">
+                <span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span>
+                <span class="tr-label t-cm-label">Northwind UK Ltd</span>
+                <span class="tr-meta t-cm-caption">2</span>
+              </span>
+              <ul class="tr-group" role="group">
+                <li class="tr-item" role="treeitem" data-level="3" aria-level="3" aria-setsize="2" aria-posinset="1" aria-selected="false" tabindex="-1">
+                  <span class="tr-row">
+                    <span class="tr-twisty is-leaf" aria-hidden="true"></span>
+                    <span class="tr-label t-cm-label">Current account · 40-12-09 87654321</span>
+                  </span>
+                </li>
+                <li class="tr-item" role="treeitem" data-level="3" aria-level="3" aria-setsize="2" aria-posinset="2" aria-selected="false" tabindex="-1">
+                  <span class="tr-row">
+                    <span class="tr-twisty is-leaf" aria-hidden="true"></span>
+                    <span class="tr-label t-cm-label">Deposit account · 40-12-09 87654322</span>
+                  </span>
+                </li>
+              </ul>
+            </li>
+            <li class="tr-item" role="treeitem" data-level="2" aria-level="2" aria-setsize="3" aria-posinset="2" aria-expanded="false" aria-selected="false" tabindex="-1" data-lazy="true">
+              <span class="tr-row">
+                <span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span>
+                <span class="tr-label t-cm-label">Treasury services</span>
+              </span>
+              <ul class="tr-group" role="group"></ul>
+            </li>
+            <li class="tr-item" role="treeitem" data-level="2" aria-level="2" aria-setsize="3" aria-posinset="3" aria-selected="false" aria-disabled="true" tabindex="-1">
+              <span class="tr-row">
+                <span class="tr-twisty is-leaf" aria-hidden="true"></span>
+                <span class="tr-label t-cm-label">Dormant entity</span>
+                <span class="tr-meta t-cm-caption">View only</span>
+              </span>
+            </li>
+          </ul>
+        </li>
+
+        <li class="tr-item" role="treeitem" data-level="1" aria-level="1" aria-setsize="3" aria-posinset="2" aria-expanded="false" aria-selected="false" tabindex="-1">
+          <span class="tr-row">
+            <span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span>
+            <span class="tr-label t-cm-label">Kestrel Associates</span>
+            <span class="tr-meta t-cm-caption">0</span>
+          </span>
+          <ul class="tr-group" role="group">
+            <li class="tr-empty t-ed-body-small" role="none" data-level="2">No accounts in this entity yet</li>
+          </ul>
+        </li>
+
+        <li class="tr-item" role="treeitem" data-level="1" aria-level="1" aria-setsize="3" aria-posinset="3" aria-selected="false" tabindex="-1">
+          <span class="tr-row">
+            <span class="tr-twisty is-leaf" aria-hidden="true"></span>
+            <span class="tr-label t-cm-label">Unassigned accounts</span>
+            <span class="tr-meta t-cm-caption">1</span>
+          </span>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+  <p class="spec-note t-ed-body-small" id="tree-echo" aria-live="polite" style="margin-top:12px;">Nothing selected yet.</p>
+
+  <!-- ================= 2 · STATES, DRAWN STATIC ================= -->
+  <h2 class="spec-h2 t-cm-label">The states, drawn</h2>
+  <p class="spec-note t-ed-body-small">Left: a selected node (surface, a 3px mono leading bar and
+    aria-selected — three channels, no hue), a branch mid-load with skeleton bones, an empty branch,
+    and a view-only node. Right: five levels of the indent ladder, so the 24px step and the level-5
+    floor can be seen against each other.</p>
+  <div class="spec-row">
+    <div class="spec-w-md">
+      <p class="spec-cap t-cm-caption">Selected · loading · empty · view-only</p>
+      <div class="tr-panel">
+        <ul class="tr" role="tree" aria-label="Tree states">
+          <li class="tr-item" role="treeitem" data-level="1" aria-level="1" aria-setsize="4" aria-posinset="1" aria-selected="true" tabindex="-1">
+            <span class="tr-row">
+              <span class="tr-twisty is-leaf" aria-hidden="true"></span>
+              <span class="tr-label t-cm-label">Selected node</span>
+            </span>
+          </li>
+          <li class="tr-item" role="treeitem" data-level="1" aria-level="1" aria-setsize="4" aria-posinset="2" aria-expanded="true" aria-busy="true" aria-selected="false" tabindex="-1">
+            <span class="tr-row">
+              <span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span>
+              <span class="tr-label t-cm-label">Loading its children</span>
+            </span>
+            <ul class="tr-group" role="group">
+              <li class="tr-loading" role="none" data-level="2"><span class="bone w-lg"></span><span class="sr-only">Loading</span></li>
+              <li class="tr-loading" role="none" data-level="2"><span class="bone w-sm"></span></li>
+            </ul>
+          </li>
+          <li class="tr-item" role="treeitem" data-level="1" aria-level="1" aria-setsize="4" aria-posinset="3" aria-expanded="true" aria-selected="false" tabindex="-1">
+            <span class="tr-row">
+              <span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span>
+              <span class="tr-label t-cm-label">Opened, and empty</span>
+            </span>
+            <ul class="tr-group" role="group">
+              <li class="tr-empty t-ed-body-small" role="none" data-level="2">Nothing in here</li>
+            </ul>
+          </li>
+          <li class="tr-item" role="treeitem" data-level="1" aria-level="1" aria-setsize="4" aria-posinset="4" aria-selected="false" aria-disabled="true" tabindex="-1">
+            <span class="tr-row">
+              <span class="tr-twisty is-leaf" aria-hidden="true"></span>
+              <span class="tr-label t-cm-label">Legacy sort code</span>
+              <span class="tr-meta t-cm-caption">View only</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="spec-w-sm">
+      <p class="spec-cap t-cm-caption">The indent ladder — 8 · 32 · 56 · 80 · 104px</p>
+      <div class="tr-panel">
+        <ul class="tr" role="tree" aria-label="Indent ladder" id="ladder">
+          <li class="tr-item" role="treeitem" data-level="1" aria-level="1" aria-setsize="1" aria-posinset="1" aria-expanded="true" aria-selected="false" tabindex="-1">
+            <span class="tr-row"><span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span><span class="tr-label t-cm-label">Level 1</span></span>
+            <ul class="tr-group" role="group">
+              <li class="tr-item" role="treeitem" data-level="2" aria-level="2" aria-setsize="1" aria-posinset="1" aria-expanded="true" aria-selected="false" tabindex="-1">
+                <span class="tr-row"><span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span><span class="tr-label t-cm-label">Level 2</span></span>
+                <ul class="tr-group" role="group">
+                  <li class="tr-item" role="treeitem" data-level="3" aria-level="3" aria-setsize="1" aria-posinset="1" aria-expanded="true" aria-selected="false" tabindex="-1">
+                    <span class="tr-row"><span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span><span class="tr-label t-cm-label">Level 3</span></span>
+                    <ul class="tr-group" role="group">
+                      <li class="tr-item" role="treeitem" data-level="4" aria-level="4" aria-setsize="1" aria-posinset="1" aria-expanded="true" aria-selected="false" tabindex="-1">
+                        <span class="tr-row"><span class="tr-twisty" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-chevron-right"/></svg></span><span class="tr-label t-cm-label">Level 4</span></span>
+                        <ul class="tr-group" role="group">
+                          <li class="tr-item" role="treeitem" data-level="5" aria-level="5" aria-setsize="1" aria-posinset="1" aria-selected="false" tabindex="-1">
+                            <span class="tr-row"><span class="tr-twisty is-leaf" aria-hidden="true"></span><span class="tr-label t-cm-label">Level 5 — the floor</span></span>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 3 · NOTHING AT ALL ================= -->
+  <h2 class="spec-h2 t-cm-label">Nothing at all — the whole tree is empty</h2>
+  <p class="spec-note t-ed-body-small">An empty BRANCH is a row inside a tree. An empty TREE is not a
+    tree with no rows — it is Empty-state, because there is no hierarchy to navigate and nothing for
+    the roving tabindex to rove over.</p>
+  <div class="spec-w-md">
+    <div class="tr-panel">
+      <section class="empty" aria-labelledby="tr-empty-h">
+        <span aria-hidden="true"><svg viewBox="0 0 18 18" width="32" height="32" style="fill:currentColor; opacity:var(--alpha-40);"><use href="#es-empty"/></svg></span>
+        <h3 class="t-ed-heading-4" id="tr-empty-h">No account structure yet</h3>
+        <p class="t-ed-body-small">Once entities and accounts are added they appear here as a hierarchy you can open and close.</p>
+      </section>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Tree",
+    "vars": {
+      "--page": "background/default",
+      "--panel": "tertiary/background/default",
+      "--text": "text/default",
+      "--icon": "icon/default",
+      "--rule": "border/subtle",
+      "--hover": "tertiary/background/hover",
+      "--pressed": "form/background/pressed",
+      "--marker": "form/border/active",
+      "--bone": "tertiary/background/hover",
+      "--focus": "focus/ring",
+      "--border-radius-control": "border-radius/control",
+      "--border-radius-surface": "border-radius/surface"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "icon/default", "bg": "tertiary/background/hover", "context": "ui" },
+      { "fg": "form/border/active", "bg": "tertiary/background/hover", "context": "ui" }
+    ],
+    "requiredAria": ["role=\"tree\"", "role=\"treeitem\"", "role=\"group\"", "aria-expanded", "aria-selected", "aria-level", "aria-setsize", "aria-posinset", "aria-busy", "aria-disabled", "aria-label"],
+    "icons": {
+      "$source": "assets/icons/arrows-and-chevrons/ (HSBC library) via <symbol> sprite — not invented",
+      "chevron-right": "arrows-and-chevrons/chevron-right.svg",
+      "empty-state glyph": "media/document.svg",
+      "$gap": "NO folder / hierarchy / container glyph exists in the library — branch vs leaf is told by the twisty and by aria-expanded, never by a glyph. An _ICON-GAPS.md entry may be owed (conductor's)."
+    },
+    "$a11y-gate-note": "This file FAILS _validate_a11y.py: the gate's role vocabulary in _a11y_target.py contains neither `tree` nor `treeitem`, and it is built to fail loud on an unknown role. There is no native element that maps to treeitem, so the roles cannot be dropped the way a table-backed grid can drop role=gridcell. Extending a shared gate's vocabulary is a ruling and is NOT this lane's to take — DECLARED in the #210 lane-A receipt with the recommended classification and the browser-measured hit-target figures the gate would otherwise have produced.",
+    "$selection-colour-note": "Selected = tertiary/background/hover + a 3px MONO leading bar (form/border/active) + aria-selected. Sidebar-nav marks CURRENT LOCATION with the same bar shape in primary/border/default (#DB0011). Whether selection and current-location share a mark is DAVE'S — drawn mono so nothing is asserted."
+  }
+  </script>
+
+  <script>
+    const root = document.documentElement;
+    addEventListener('keydown', e => { if (e.key === 'Tab') root.dataset.modality = 'keyboard'; });
+    addEventListener('mousedown', () => root.dataset.modality = 'pointer');
+    addEventListener('touchstart', () => root.dataset.modality = 'pointer', { passive:true });
+
+    /* Lazy children for "Treasury services" — real, so the loading state is real. */
+    const LAZY = [
+      { label: 'Notice deposit · 40-12-09 90001122', leaf: true },
+      { label: 'FX settlement · 40-12-09 90001123', leaf: true },
+      { label: 'Money market · 40-12-09 90001124', leaf: true }
+    ];
+
+    document.querySelectorAll('[role="tree"]').forEach(setupTree);
+
+    function setupTree(tree){
+      const echo = document.getElementById('tree-echo');
+      const items = () => Array.from(tree.querySelectorAll('[role="treeitem"]'));
+      /* VISIBLE = every treeitem no collapsed ancestor is hiding. offsetParent is null for a
+         display:none subtree, which is exactly the question being asked. */
+      const visible = () => items().filter(li => li.offsetParent !== null);
+      const isBranch = li => li.hasAttribute('aria-expanded');
+      const label = li => (li.querySelector('.tr-label') || {}).textContent || '';
+
+      function rove(to){
+        if (!to) return;
+        items().forEach(li => li.tabIndex = -1);
+        to.tabIndex = 0; to.focus();
+      }
+      function setExpanded(li, open){
+        if (!isBranch(li)) return;
+        li.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open && li.dataset.lazy === 'true' && !li.dataset.loaded) loadLazy(li);
+      }
+      function loadLazy(li){
+        const group = li.querySelector(':scope > .tr-group');
+        li.setAttribute('aria-busy','true');
+        group.innerHTML =
+          '<li class="tr-loading" role="none" data-level="3"><span class="bone w-lg"></span>' +
+          '<span class="sr-only">Loading</span></li>' +
+          '<li class="tr-loading" role="none" data-level="3"><span class="bone w-sm"></span></li>';
+        setTimeout(() => {
+          group.innerHTML = '';
+          LAZY.forEach((n, i) => {
+            const el = document.createElement('li');
+            el.className = 'tr-item';
+            el.setAttribute('role','treeitem');
+            el.dataset.level = '3';
+            el.setAttribute('aria-level','3');
+            el.setAttribute('aria-setsize', String(LAZY.length));
+            el.setAttribute('aria-posinset', String(i + 1));
+            el.setAttribute('aria-selected','false');
+            el.tabIndex = -1;
+            el.innerHTML = '<span class="tr-row"><span class="tr-twisty is-leaf" aria-hidden="true"></span>' +
+              '<span class="tr-label t-cm-label"></span></span>';
+            el.querySelector('.tr-label').textContent = n.label;
+            group.appendChild(el);
+          });
+          li.removeAttribute('aria-busy');
+          li.dataset.loaded = 'true';
+        }, 900);
+      }
+      function select(li){
+        if (li.getAttribute('aria-disabled') === 'true') return;
+        items().forEach(n => n.setAttribute('aria-selected','false'));
+        li.setAttribute('aria-selected','true');
+        if (echo && tree.id === 'live-tree') echo.textContent = 'Selected: ' + label(li).trim() + '.';
+      }
+
+      tree.addEventListener('click', e => {
+        const li = e.target.closest('[role="treeitem"]');
+        if (!li || !tree.contains(li)) return;
+        rove(li);
+        if (e.target.closest('.tr-twisty') && isBranch(li)){
+          setExpanded(li, li.getAttribute('aria-expanded') !== 'true');
+          return;
+        }
+        select(li);
+      });
+
+      tree.addEventListener('keydown', e => {
+        const li = e.target.closest('[role="treeitem"]');
+        if (!li) return;
+        const vis = visible();
+        const i = vis.indexOf(li);
+        const key = e.key;
+
+        if (key === 'ArrowDown'){ e.preventDefault(); rove(vis[Math.min(i + 1, vis.length - 1)]); }
+        else if (key === 'ArrowUp'){ e.preventDefault(); rove(vis[Math.max(i - 1, 0)]); }
+        else if (key === 'ArrowRight'){
+          e.preventDefault();
+          if (isBranch(li) && li.getAttribute('aria-expanded') !== 'true') setExpanded(li, true);
+          else if (isBranch(li)){
+            const first = li.querySelector(':scope > .tr-group > [role="treeitem"]');
+            rove(first);
+          }
+        }
+        else if (key === 'ArrowLeft'){
+          e.preventDefault();
+          if (isBranch(li) && li.getAttribute('aria-expanded') === 'true') setExpanded(li, false);
+          else {
+            const parent = li.parentElement.closest('[role="treeitem"]');
+            rove(parent);
+          }
+        }
+        else if (key === 'Home'){ e.preventDefault(); rove(vis[0]); }
+        else if (key === 'End'){ e.preventDefault(); rove(vis[vis.length - 1]); }
+        else if (key === 'Enter' || key === ' '){ e.preventDefault(); select(li); }
+        else if (key === '*'){
+          e.preventDefault();
+          Array.from(li.parentElement.children)
+            .filter(n => n.getAttribute && n.getAttribute('role') === 'treeitem')
+            .forEach(n => setExpanded(n, true));
+        }
+        else if (key.length === 1 && /\S/.test(key)){
+          /* typeahead — next visible node whose label starts with the letter, wrapping */
+          const k = key.toLowerCase();
+          const order = vis.slice(i + 1).concat(vis.slice(0, i + 1));
+          const hit = order.find(n => label(n).trim().toLowerCase().startsWith(k));
+          if (hit){ e.preventDefault(); rove(hit); }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

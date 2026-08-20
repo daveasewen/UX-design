@@ -1,0 +1,171 @@
+{
+  "name": "QR code",
+  "category": "atom",
+  "purpose": "Show a string as a machine-readable square so a second device can pick it up — a link, a reference, an enrolment code. The component's whole job is to stay SCANNABLE: real modules at a real size, with the quiet zone carried inside the artwork, and the same content repeated as text for anyone who is not going to point a camera at a screen.",
+  "$provenance-note": "NEW at #210 (wave 4, lane B) against the wave-4 heavy-7 fan-out brief. Verified absent first-hand at build: `ls knowledge/snippets/ | grep -i qr` -> 0; `ls knowledge/components/ | grep -i qr` -> 0; `grep -rli qr knowledge/snippets/` -> 0.",
+  "$encoding-note": "EVERY MATRIX IN THE SNIPPET IS A REAL ISO/IEC 18004 SYMBOL AND WAS DECODE-VERIFIED BEFORE THE FILE WAS WRITTEN. They were produced by a byte-mode encoder written for this lane (Reed-Solomon over GF(256), the four masking penalty rules, BCH(15,5) format information) and each was read back with OpenCV's QRCodeDetector; the build script REFUSES to emit a symbol that does not decode to its own stated payload. Symbol A encodes 'https://www.hsbc.co.uk/' (version 2, ECC M, mask 6, 25x25 modules). Symbol B encodes 'Pay 250.00 GBP to Acme Ltd ref INV-2291' (version 3, ECC M, mask 2, 29x29 modules). Both payloads are printed in the page beside their symbol. The brief's fence was explicit that a plausible-looking fake was the worst possible outcome; the verification is a known-answer decode, not an eyeball.",
+  "interactive": false,
+  "stateModel": "simple",
+  "props": [
+    {
+      "name": "value",
+      "type": "string",
+      "$note": "The encoded string. It determines the symbol VERSION and therefore the module count: 23 characters gives a 25x25 version-2 symbol, 39 characters a 29x29 version-3 one. The component cannot be given a fixed module count."
+    },
+    {
+      "name": "size",
+      "type": "enum",
+      "values": [
+        "s",
+        "m",
+        "l"
+      ],
+      "default": "m",
+      "$note": "A MODULE size, not a box size: 4px, 8px and 12px per module. The pixel box is derived (module size x unit count) and never typed. Two payloads of different lengths at the same size are physically different sizes, and that is correct."
+    },
+    {
+      "name": "theme",
+      "type": "enum",
+      "values": [
+        "fixed-plate",
+        "follows-theme"
+      ],
+      "default": "fixed-plate",
+      "$status": "PROPOSED #210, Dave's eye owed — see accessibility.$openQuestion. Both are drawn side by side in section 4 of the snippet so the difference can be seen rather than argued about."
+    },
+    {
+      "name": "errorCorrection",
+      "type": "enum",
+      "values": [
+        "L",
+        "M",
+        "Q",
+        "H"
+      ],
+      "default": "M",
+      "$note": "UNRULED. M is used throughout. The level trades symbol size against damage tolerance; a centre logo or lockup would REQUIRE level H and is not drawn here."
+    },
+    {
+      "name": "quietZone",
+      "type": "number",
+      "default": 4,
+      "$note": "In MODULES, and it is inside the viewBox, not padding around it. Four is the ISO/IEC 18004 minimum. It is not exposed as something a consumer should reduce; it is a prop only because the number should be visible rather than buried."
+    }
+  ],
+  "variants": [
+    {
+      "name": "fixed-plate",
+      "use": "The symbol keeps a white plate and dark modules in every theme, because it binds mode-invariant tokens (surface/digital-black on text/reverse — the same hex in light and dark). Dark-on-light is what ISO/IEC 18004 specifies and what every reader handles."
+    },
+    {
+      "name": "follows-theme",
+      "use": "The symbol binds the page's own text and background, so it inverts in dark mode: light modules on a dark field. Visually calmer inside a dark surface; tolerated by many modern scanners and not by all of them."
+    }
+  ],
+  "tokens": {
+    "module-fixed": "surface/digital-black — #1A1A1A in BOTH modes, which is the point",
+    "plate-fixed": "text/reverse — #FFFFFF in BOTH modes",
+    "module-theme": "text/default",
+    "plate-theme": "background/default",
+    "caption": "text/default",
+    "link": "text/default",
+    "focus": "focus/ring",
+    "shape": "border-radius/container",
+    "$mono": "MONO ONLY. No colour is bound anywhere in this component. The two-red law (s151-D1) and the mono error-ink camp (s149-D1) are untouched, and no RAG token appears in the file.",
+    "$sizing": "--qr-mod 4px / 8px / 12px per module. The box is calc(--qr-mod * --qr-units), where --qr-units is the symbol's modules plus 8 (four quiet-zone modules each side)."
+  },
+  "relationships": {
+    "livesInside": [
+      "Receipt",
+      "Dialog",
+      "Onboarding",
+      "Payment or transfer flow",
+      "Statement or document"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "scan to open on another device",
+      "scan to pay",
+      "device enrolment code"
+    ]
+  },
+  "$relatedComponents": "Payment-card-visual is the other 'a real artefact rendered in the UI' component in the library. The two share the discipline that the drawing must be TRUE, not merely plausible; nothing here adjudicates whether they belong to a family.",
+  "accessibility": {
+    "roles": "role=\"img\" with an aria-label that says what the code is FOR, not what it looks like. The matrix itself is decorative to assistive technology — the payload is what matters and it is carried in text.",
+    "keyboard": "Nothing focusable in the symbol. Where the payload is a URL, the accompanying link is a real focusable anchor with the standard focus ring.",
+    "announcements": "None. A QR code that announces its own module count is noise.",
+    "states": "None. This is a static artefact.",
+    "textAlternative": "MANDATORY, not a nicety. A QR code is a sighted-and-has-a-second-device channel. Every specimen carries a figcaption stating the encoded string, and every URL payload also appears as a working link. A code with no text equivalent excludes the reader who cannot see it, the reader with one device, and the reader whose camera will not focus.",
+    "$openQuestion": "WHAT SHOULD A QR CODE DO IN DARK MODE? Both answers are drawn, and #210 MEASURED the difference rather than arguing it: as rendered in dark mode, the fixed-plate variant decoded and the theme-following variant did not (see $render-verification). Fixed plate keeps a white plate in every theme - always readable, but a bright square inside a dark surface. Theme-following is visually calmer and is what a dark UI wants to look like. This is a product-risk decision as much as a visual one, and it is Dave's.",
+    "$secondOpenQuestion": "WHICH PAYMENT-QR STANDARD, IF ANY? Symbol B in the snippet is a PLAIN-TEXT DEMONSTRATION STRING and is deliberately NOT an EPC/SEPA payload. Which standard a payment QR carries is a real product question and was not this lane's to pick.",
+    "relatedSC": [
+      "1.1.1",
+      "1.4.1",
+      "1.4.11",
+      "2.4.4"
+    ]
+  },
+  "antiPatterns": [
+    "Inventing the matrix. A QR code that is a plausible texture rather than a real encoding is worse than no QR code: it looks finished, it passes every visual review, and it fails silently in the reader's hand.",
+    "Cropping the quiet zone. Four modules of clear margin are part of the symbol. Putting the matrix flush inside a padded card, or letting a container tighten around it, is the most common way a design-system QR code stops working.",
+    "Fixing the outer pixel box across payloads. A longer string means more modules; at a fixed box the modules shrink until the camera cannot resolve them. Size the MODULE, let the box follow.",
+    "Shipping without a text alternative. The code alone excludes anyone who cannot see it or has only one device.",
+    "Dropping a logo into the middle without raising error correction to H. The symbol may still scan on the phone it was tested on and fail on the next one.",
+    "Rounding the modules or adding a gradient for style. Both eat the contrast the decoder depends on, and neither is measured by any gate in this repo."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS — 10 declared vars resolve in both light and dark; 2 declared contrast pairs clear their thresholds in both modes (snippet gate: 108 snippet(s), 0 failure(s)). surface/digital-black on text/reverse measures 16.1:1 and does not change between modes.",
+    "$scope": "MONO base only. Console, Legacy and Supercharge are NOT measured by this file and were NOT rendered by this lane. The fixed-plate variant is the one most likely to survive a theme unchanged, because its two tokens are mode-invariant — but that is an argument, not a measurement.",
+    "$deprecated": "No deprecated tokens bound.",
+    "$notGenerated": "canon.css carries NO .cn-qr-code scope yet — this lane ran no generator, so _validate_binds_resolve.py check D fails for the snippet until the conductor projects the block."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Wave-4 heavy-7 fan-out (notes/_briefs/2026-08-20-210-wave4-heavy7-fanout-brief-v1.md), lane B. No Figma node."
+  },
+  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Every specimen was screenshotted AS THE BROWSER PAINTED IT (headless Chromium, file://, real HSBC face) and the pixels were fed back to OpenCV 5.0.0's QRCodeDetector. LIGHT: 6 of 6 sampled specimens decoded to their stated payload (default 264px, small 132px, large 396px, fixed-plate, theme-following, and the 296px version-3 payload). DARK: 5 of 6 decoded; THE THEME-FOLLOWING VARIANT RETURNED AN EMPTY STRING. Inverting those same pixels back to dark-on-light decodes them perfectly, so the failure is POLARITY and not content. One decoder is not every decoder - many phone cameras read inverted symbols - but this is a real reader failing a real render, and it is the strongest single input to the dark-mode question below.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Qr-code.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:receipt",
+        "$note": "Receipt"
+      },
+      {
+        "ref": "context:dialog",
+        "$note": "Dialog"
+      },
+      {
+        "ref": "context:onboarding",
+        "$note": "Onboarding"
+      },
+      {
+        "ref": "context:payment-or-transfer-flow",
+        "$note": "Payment or transfer flow"
+      },
+      {
+        "ref": "context:statement-or-document",
+        "$note": "Statement or document"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:scan-to-open-on-another-device"
+      },
+      {
+        "ref": "pattern:scan-to-pay"
+      },
+      {
+        "ref": "pattern:device-enrolment-code"
+      }
+    ]
+  }
+}

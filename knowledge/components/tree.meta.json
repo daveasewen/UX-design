@@ -1,0 +1,131 @@
+{
+  "name": "Tree",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "A recursive disclosure list: nested nodes that open and close, one selectable at a time, depth carried by an indentation ladder and by aria-level. The shape for anything genuinely hierarchical — a corporate account structure, a category picker, a document tree — where a flat list would lose the containment relation. Built #210 wave 4 (heavy seven). PROPOSED, NOT RULED; every domain semantic is Dave's (the Kpi-tile precedent, s182-D2).",
+  "props": [
+    { "name": "nodes", "type": "array", "default": "[]", "$note": "Recursive: each node is a label, an optional child list and an optional count. A node with a child list is a BRANCH and carries aria-expanded; a node without one is a LEAF." },
+    { "name": "selected", "type": "string", "default": "none", "$note": "Single selection. Multi-select with checkboxes is NOT drawn — it would compose Selection-controls and it changes the aria contract (aria-multiselectable). Receipt Q11." },
+    { "name": "expanded", "type": "array", "default": "[]", "$note": "Which branches are open. Nothing is auto-expanded by the component." },
+    { "name": "lazy", "type": "boolean", "default": false, "$note": "A branch whose children are fetched on first open. While fetching, the node carries aria-busy and its group shows skeleton bones." }
+  ],
+  "variants": [
+    { "name": "single-select", "use": "The drawn component: one selected node, aria-selected, a mono leading bar." },
+    { "name": "lazy branch", "use": "Children arrive after the open. Drawn live rather than mocked so the loading state is real." }
+  ],
+  "$states": ["collapsed branch", "expanded branch", "leaf", "hover", "pressed", "focus (roving, ring inset)", "selected (surface + 3px mono bar + aria-selected)", "view-only (aria-disabled)", "loading (aria-busy + skeleton bones)", "empty branch (a drawn row)", "empty tree (Empty-state, not a tree with no rows)"],
+  "$consumes": ["Sidebar-nav (row anatomy and the collapsible-group idiom — but Sidebar-nav nests exactly one level and hard-codes its child indent; a tree cannot)", "Skeleton-loader (the .bone loading rows, with its reduced-motion behaviour)", "Empty-state (the whole-tree empty idiom)"],
+  "dimensions": {
+    "rowMinHeight": "44px",
+    "twisty": "24x24 visual inside a 44px row, so its pointer area is 24x44 (clears 2.5.8's 24x24)",
+    "indentLadder": "8 / 32 / 56 / 80 / 104px — a 24px step, exactly the twisty's width, so each level's twisty sits under the level above's label. Level 5 is the FLOOR; deeper nodes keep level 5's indent.",
+    "rowGap": "12px between twisty and label (Sidebar-nav's .sn-link gap)",
+    "selectionBar": "3px inset box-shadow",
+    "width": "NONE — width is the container's (#210 discipline). No max-width is declared on .tr or .tr-panel."
+  },
+  "tokens": {
+    "surface": "tertiary/background/default on a 1px border/subtle box, border-radius/surface",
+    "row": "text/default; hover tertiary/background/hover; pressed form/background/pressed",
+    "selection": "tertiary/background/hover surface + a 3px leading bar in form/border/active (MONO) + aria-selected",
+    "twisty": "icon/default, rotated 90 degrees when expanded",
+    "meta": "text/default at --alpha-60 (the child count)",
+    "viewOnly": "FULL INK, no hover surface, aria-disabled, and the words 'View only' in a .tr-meta. ⛔ NOT dimmed — the first draft used --alpha-40 and MEASURED 2.52:1 light / 3.79:1 dark in Chromium with every gate green. A view-only node is content you may READ but not ACT on; dimming it to unreadability is the #209 cancelled-mandate class exactly. A CATEGORY correction, not a colour tweak.",
+    "loading": "Skeleton-loader's bone on tertiary/background/hover, shimmer suppressed under reduced-motion",
+    "focus": "focus/ring, 2px, inset by -2px so it survives a flush row",
+    "radius": "border-radius/control (bones) + border-radius/surface (the panel)"
+  },
+  "relationships": {
+    "livesInside": ["Account structure screens", "Category and taxonomy pickers", "Document and folder views"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["account-hierarchy", "category-picker", "org-structure"]
+  },
+  "behaviour": {
+    "keyboard": "ONE tab stop for the whole tree (roving tabindex). Down and up move through everything currently visible; right expands a closed branch or steps into an open one; left collapses an open branch or steps out to its parent; Home and End go to the first and last visible node; Enter and Space select; the asterisk key expands every branch at the focused level; a letter key jumps to the next visible node whose label starts with it, wrapping.",
+    "pointer": "Clicking the twisty toggles the branch. Clicking anywhere else on the row selects the node. The twisty is aria-hidden decoration, not a second control — keyboard users never need it.",
+    "visibility": "'Visible' is computed as offsetParent !== null, which is exactly the question 'is any ancestor collapsed', rather than a parallel model that can drift from the DOM.",
+    "lazy": "First open sets aria-busy, swaps the group for skeleton bones, and replaces them with real treeitems when the children arrive. The bones are role=none so they never enter the tree's item set."
+  },
+  "accessibility": {
+    "structure": "role=tree on the list, role=treeitem on each <li>, role=group on each nested <ul>. Every item carries aria-level, aria-setsize and aria-posinset, so depth and position are never carried by indentation alone. Non-item rows (loading bones, the empty-branch note) carry role=none so they cannot be mistaken for nodes.",
+    "states": "aria-expanded on branches only (its absence is what makes a node a leaf); aria-selected on every item; aria-busy while children load; aria-disabled on view-only nodes.",
+    "focus": "Roving tabindex — exactly one item has tabindex=0 at any moment, so a 400-node tree is one tab stop and not four hundred. The ring is drawn on the row and inset by -2px so a flush row does not clip it.",
+    "live": "Selection is echoed through a polite live region on the demo page. The component itself does not announce — selection is a state, not an event.",
+    "targets": "The twisty's pointer area is 24 wide by the full 44px row height. Measured in a real browser, not asserted; figures in the #210 lane-A receipt.",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.1.2 No Keyboard Trap", "2.4.3", "2.4.7 Focus Visible", "4.1.2"],
+    "$gate-note": "⛔ THE SNIPPET FAILS _validate_a11y.py AND IT IS DECLARED, NOT HIDDEN. The gate's role vocabulary in _a11y_target.py contains neither `tree` nor `treeitem`, and the gate is built to fail loud on an unknown role rather than let it default to 'not a control'. No native HTML element maps to treeitem, so unlike a table-backed grid these roles cannot simply be dropped. Classifying them extends a shared gate and is a RULING — not this lane's, whose fence is new files only. The recommended classification (treeitem interactive, tree non-interactive) and the browser-measured hit targets the gate would otherwise have produced are both in the #210 lane-A receipt."
+  },
+  "antiPatterns": [
+    "Making the twisty a separate <button>. That doubles the tab stops and the AT nodes; APG's treeitem is one element and expansion belongs on the arrow keys.",
+    "Giving every node its own tab stop. One roving stop, always — otherwise a deep tree is a keyboard trap in practice if not in law.",
+    "Carrying depth by indentation alone. aria-level is not optional here.",
+    "Letting the indent ladder run without a floor — level 5 is the floor; deeper nodes stop marching right rather than pushing the label off the edge.",
+    "Using text/disabled for a view-only node. It is not a disabled control, it is a node you may look at (the #209 cancelled-mandate class).",
+    "Drawing an empty TREE as a tree with no rows. An empty tree is Empty-state: there is no hierarchy and nothing for the roving stop to rove over.",
+    "Letting loading bones or the empty-branch note carry role=treeitem — they would join the item set and the arrow keys would land on them.",
+    "Distinguishing branch from leaf by a folder glyph. No folder glyph exists in the library, and the twisty plus aria-expanded already carry it."
+  ],
+  "responsive": {
+    "unit": "the container",
+    "rule": "Rows are flex and the label ellipses; the indent ladder is fixed, so a narrow container narrows the LABEL, never the structure. No component-level breakpoint — only the demo page has one, at 480px, for its own chrome.",
+    "verified": "Driven in headless Chromium at 1180px with 400px and 280px containers; figures in the #210 lane-A receipt."
+  },
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "current store (values are Sidebar-nav's and Skeleton-loader's, unchanged)",
+    "result": "PASS — no token minted, no colour invented. Row chrome = Sidebar-nav's tertiary/* and form/background/pressed set; the bone = Skeleton-loader's; the selection bar = form/border/active, MONO.",
+    "$note": "⚠ DECLARED, NOT SETTLED: Sidebar-nav marks CURRENT LOCATION with the same 3px bar shape in primary/border/default (#DB0011). This lane drew selection MONO rather than reuse the red, because 'the node I selected' and 'the page I am on' are different meanings and whether they share a mark is Dave's. Nothing is asserted by the mono choice — receipt Q9."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "#210 wave 4, lane A, from the heavy-seven fan-out brief (notes/_briefs/2026-08-20-210-wave4-heavy7-fanout-brief-v1.md). Premise re-probed in-lane: `ls knowledge/snippets/ | grep -icE '^Tree\\.'` returned 0 and `grep -rli 'role=\"tree\"' knowledge/snippets/` returned nothing. Row anatomy and the disclosure idiom come from the Sidebar-nav snippet; the loading rows from Skeleton-loader; the empty tree from Empty-state. No Figma node bound. PROPOSED, never promoted — no registration of any kind was taken by this lane."
+  },
+  "$relationship-to-cascader-and-sidebar-nav": "PROPOSED, NOT ADJUDICATED. Sidebar-nav nests one level and is a NAVIGATION landmark — following a link changes the page. A tree SELECTS a node inside a page and recurses without limit. Cascader (built in the same wave, lane B) walks the same hierarchy as a SELECTION CONTROL that returns a path and closes; the overlap between the three is real and adjudicating it is Dave's, the sidebar-nav precedent.",
+  "$icon-gap": "No folder / hierarchy / container glyph exists in the library. Probe, run at build: `ls knowledge/assets/icons/*/ | grep -iE \"folder|hierarch|org|structure|node|group\"` returns only structured-notes.svg and structured-notes-active.svg, which mean a financial product, not a container. Branch and leaf are told apart by the twisty and by aria-expanded. An _ICON-GAPS.md entry may be owed — that file is the conductor's.",
+  "$twisty-idiom-collision": "Two twisty idioms now exist in the corpus and this lane did not pick between them: Sidebar-nav rotates chevron-down.svg by 180 degrees; Tree rotates chevron-right.svg by 90 degrees (the near-universal disclosure-triangle idiom). Both use real library glyphs. Dave's — receipt Q10.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Tree.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:account-structure-screens",
+        "$note": "Account structure screens"
+      },
+      {
+        "ref": "context:category-and-taxonomy-pickers",
+        "$note": "Category and taxonomy pickers"
+      },
+      {
+        "ref": "context:document-and-folder-views",
+        "$note": "Document and folder views"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:account-hierarchy"
+      },
+      {
+        "ref": "pattern:category-picker"
+      },
+      {
+        "ref": "pattern:org-structure"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:sidebar-nav",
+        "$note": "Sidebar-nav (row anatomy and the collapsible-group idiom — but Sidebar-nav nests exactly one level and hard-codes its child indent; a tree cannot)"
+      },
+      {
+        "ref": "component:skeleton-loader",
+        "$note": "Skeleton-loader (the .bone loading rows, with its reduced-motion behaviour)"
+      },
+      {
+        "ref": "component:empty-state",
+        "$note": "Empty-state (the whole-tree empty idiom)"
+      }
+    ]
+  }
+}

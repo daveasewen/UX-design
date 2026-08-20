@@ -1,0 +1,133 @@
+{
+  "name": "Calendar",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "The standalone month grid: a whole month, in page flow, sized by its container. Weekday heads, whole week rows (out-of-month days drawn, not hidden), full keyboard grid navigation, month and year paging, ink-knockout selection, a structural today ring and a disabled treatment for out-of-range days. Built #210 wave 4 (heavy seven). PROPOSED, NOT RULED — nothing is registered and every question in the receipt is Dave's.",
+  "props": [
+    { "name": "month", "type": "date", "default": "current month", "$note": "The month in view. Week starts Monday (en-GB), as Date-picker does." },
+    { "name": "value", "type": "date", "default": "none", "$note": "The selected day, or nothing. Single selection only — range selection is NOT drawn and is not this component's claim (see Date-range picker, and receipt Q5)." },
+    { "name": "minDate/maxDate", "type": "date", "default": "none", "$note": "Days outside the range render disabled (text/disabled, the Date-picker treatment, in lock-step). The live specimen disables everything before today so the treatment is visible — a demo choice, not a rule." },
+    { "name": "showAdjacentMonths", "type": "boolean", "default": true, "$note": "PROPOSED default. True draws the leading and trailing days of the neighbouring months at a readable recessive ink so week rows are whole; false would leave holes in the grid the way Date-picker's panel does. Receipt Q3 asks Dave which is the house default and whether those days should be selectable." }
+  ],
+  "variants": [
+    { "name": "standalone", "use": "The month living in page flow — a journey step, a booking screen, a statement-period chooser. This is the component." },
+    { "name": "narrow", "use": "The same markup in a ~288px seat: columns are 1fr and cells keep their 40px minimum height, so it narrows with no breakpoint of its own." }
+  ],
+  "$states": ["resting day", "day hover", "day focus (ring, inset)", "today (2px inset ring + aria-current)", "selected (ink knockout + aria-selected)", "today and selected (ring flips to background/default)", "disabled day (text/disabled)", "out-of-month day (text/default at alpha-60, non-interactive)"],
+  "$consumes": ["Date-picker (day-cell state language and keyboard model — lock-step; change it there)", "Icon-button geometry (44x44 month/year nav)"],
+  "dimensions": {
+    "dayCellMinHeight": "40px",
+    "cellGap": "4px (table border-spacing)",
+    "weekdayHeadHeight": "24px",
+    "navButton": "44x44 (Icon-button geometry, --phys-size:44)",
+    "surfacePadding": "16px",
+    "width": "NONE — width is the container's (#210 discipline). Columns are 1fr; no max-width is declared on .cal."
+  },
+  "tokens": {
+    "surface": "background/default on a 1px border/subtle box, border-radius/surface",
+    "day": "text/default on transparent; hover form/background/hover",
+    "selection": "ink knockout — text/default fill + background/default numeral (the tooltip precedent, via Date-picker)",
+    "today": "2px inset ring on form/border/active — a SHAPE, never colour alone; aria-current carries it too",
+    "todayAndSelected": "the ring flips to background/default so it survives inside the knockout (see antiPatterns)",
+    "disabled": "text/disabled (Date-picker lock-step)",
+    "outOfMonth": "text/default at --alpha-60 — a READABLE recessive ink, deliberately NOT text/disabled",
+    "focus": "focus/ring, 2px, inset by -2px so it survives the 4px cell gap",
+    "radius": "border-radius/control (cells, nav) + border-radius/surface (the card)",
+    "motion": "component-type/button-family/press-travel + press-darken on .cal-nav — AUTO-PARTIAL markers in place, injection pending conductor registration"
+  },
+  "relationships": {
+    "livesInside": ["Payment and transfer journeys", "Appointment booking", "Statement period selection"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["payment-date", "appointment-slot", "statement-period"]
+  },
+  "behaviour": {
+    "keyboard": "One tab stop (roving tabindex). Arrows move by day and week and page the view at a month edge; Home and End go to the week's edges; PageUp and PageDown change month, with Shift they change year; Enter and Space select. Identical to Date-picker's model, deliberately.",
+    "select": "Sets aria-selected on the day and announces it through a polite live region. There is no field to write into and nothing to dismiss — that is the whole difference from Date-picker.",
+    "outOfMonthDays": "Drawn and announced, NOT focusable and NOT selectable — they are spans, not buttons. Crossing a month edge with an arrow key pages the view instead. PROPOSED; receipt Q3.",
+    "disabledDays": "Rendered as disabled buttons; the roving stop is kept off them."
+  },
+  "accessibility": {
+    "structure": "A real <table> with role=grid and a visually-hidden <caption> carrying the month. Rows are <tr role=row>, weekday heads are <th role=columnheader scope=col abbr=...>, and cells are plain <td> whose role maps NATIVELY to gridcell because the table's role is grid (HTML-AAM). The redundant role attributes were removed rather than written — first rule of ARIA — and the computed roles were then verified in a real browser rather than asserted.",
+    "states": "aria-selected on every day button; aria-current=date on today (the ring is never the only channel); disabled days carry the native disabled attribute and an 'Unavailable, ...' accessible name.",
+    "names": "Every day carries a full date accessible name ('16 September 2026'), so a screen reader never has to reconstruct the month from a bare numeral.",
+    "focus": "2px focus/ring inset by -2px; input-modality data attribute is set so pointer users do not see keyboard rings.",
+    "live": "The month title is aria-live=polite, so paging announces the new month.",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.1.2 No Keyboard Trap", "2.4.3", "2.4.7 Focus Visible", "4.1.2"],
+    "$gate-note": "The a11y gate's role vocabulary in _a11y_target.py contains neither `gridcell` nor `rowgroup`. This component surfaced that gap (a first draft wrote both roles explicitly and the gate failed loud); the gap is REAL and is declared in the #210 lane-A receipt for the conductor. Date-picker never surfaced it because its grid is built in JavaScript and no static gate can see JavaScript-built markup."
+  },
+  "antiPatterns": [
+    "Hiding out-of-month days in a month that is READ — a week row with a hole in it is not a week (Date-picker's panel is a different case: it is a transient act of picking).",
+    "Dimming out-of-month days to text/disabled. They are not disabled, they are adjacent, and the disabled ink measures 1.42:1 on white — the #209 cancelled-mandate class.",
+    "Leaving the today ring on form/border/active when the day is also selected: it then paints near-black on the near-black knockout and measures 1.06:1. The ring must flip to background/default.",
+    "Colour-alone marking of today or selected (today = ring + aria-current; selected = knockout + aria-selected).",
+    "Baking a fixed width or max-width into the component. Width is the container's.",
+    "Local press-physics CSS on .cal-nav (ADR-0013: physics arrives via the injected partial).",
+    "Press physics on day cells — a day is a selection target, not a button (Date-picker's choice, followed in lock-step).",
+    "A second tab stop inside the grid. One roving stop, always."
+  ],
+  "responsive": {
+    "unit": "the container",
+    "rule": "Columns are 1fr in a table-layout:fixed grid; cells hold a 40px minimum height. No component-level breakpoint exists — only the demo page has one, at 480px, for its own chrome.",
+    "verified": "Driven in headless Chromium at 1180px and at a 288px container; figures in the #210 lane-A receipt."
+  },
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "current store (the light and dark values are the same ones Date-picker and Accordion declare)",
+    "result": "PASS — no new token minted, no colour invented. Day-cell chrome = Date-picker's live form/* and text/* set; the surface rule = border/subtle; nav geometry and motion params = component-type/button-family, byte-identical to Date-picker's.",
+    "$note": "Out-of-month days and weekday heads paint text/default at --alpha-60, a COMPOSED value that no abstract token pair can describe. They are measured in a real browser and the figures live in the receipt, rather than asserted as a contrastPair."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "#210 wave 4, lane A, from the heavy-seven fan-out brief (notes/_briefs/2026-08-20-210-wave4-heavy7-fanout-brief-v1.md). Premise re-probed in-lane: `ls knowledge/snippets/ | grep -icE '^Calendar\\.'` returned 0. Authority for the day-cell language and the keyboard model is the gated Date-picker snippet; the surface is the card idiom. No Figma node bound. PROPOSED, never promoted — no registration of any kind was taken by this lane."
+  },
+  "$relationship-to-date-picker": "PROPOSED, NOT ADJUDICATED (the brief fences this explicitly). Date-picker is a FIELD that owns a calendar: an Input-fields boxed input plus an anchored dismissable panel whose job is to write DD/MM/YYYY back. Calendar is the month grid on its own. The proposal is that Date-picker's panel should CONSUME this organism rather than keep a second copy of the grid; it does not today, and this lane did not edit Date-picker because it is gated and promoted. Whether they merge, whether Calendar is deleted, or whether both stand is DAVE'S — receipt Q1.",
+  "$partials": ".cal-nav (month and year paging) = button-family membership CANDIDATES: empty AUTO-PARTIAL press-physics markers plus --phys-size:44 are declared in the snippet. $members registration in component-types.json is the conductor's and is PROPOSED via the #210 lane-A receipt, never taken here.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Calendar.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:payment-and-transfer-journeys",
+        "$note": "Payment and transfer journeys"
+      },
+      {
+        "ref": "context:appointment-booking",
+        "$note": "Appointment booking"
+      },
+      {
+        "ref": "context:statement-period-selection",
+        "$note": "Statement period selection"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:payment-date"
+      },
+      {
+        "ref": "pattern:appointment-slot"
+      },
+      {
+        "ref": "pattern:statement-period"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:date-picker",
+        "$note": "Date-picker (day-cell state language and keyboard model — lock-step; change it there)"
+      },
+      {
+        "ref": "component:icon-button",
+        "$note": "Icon-button geometry (44x44 month/year nav)"
+      }
+    ],
+    "partial": [
+      {
+        "ref": null,
+        "$note": ".cal-nav (month and year paging) = button-family membership CANDIDATES: empty AUTO-PARTIAL press-physics markers plus --phys-size:44 are declared in the snippet. $members registration in component-types.json is the conductor's and is PROPOSED via the #210 lane-A receipt, never taken here."
+      }
+    ]
+  }
+}

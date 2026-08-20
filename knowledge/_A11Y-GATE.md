@@ -1,8 +1,8 @@
 # A11y gate — _validate_a11y.py
 
-**101 snippet(s)** · **0 failure(s)** · **186 warning(s)** · **237 note(s)**
+**108 snippet(s)** · **0 failure(s)** · **221 warning(s)** · **268 note(s)**
 
-Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **609 control(s)** and **203 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
+Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **689 control(s)** and **203 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
 
 Gating: reduced-motion (2.3.3) · unknown ARIA role · CONTROL target under the 24px floor (2.5.8, aid-009). Reported: CONTROL 24–43 vs the 44 HSBC default (axs-003; `s114-D6` promotes this to blocking, ordered after this rebuild) · DATA MARK under 24 (`s116-D1`) · UNMEASURED boxes.
 
@@ -63,6 +63,43 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
+## Calendar
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.is-today.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.is-today.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button#cell-today-selected.cal-day.is-today.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- 🟡 warn — `button.cal-day.t-cm-figure-5` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+
 ## Cards
 - ⚪ note — `a.linkcard` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.headline` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
@@ -71,6 +108,21 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - ⚪ note — `div.card.opt` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `div.card.opt` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `div.card.opt` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+
+## Cascader
+- ⚪ note — `button#cs1-field.cs-field` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.cs-back.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li#cs1-l0-o1.cs-opt.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li#cs1-l0-o2.cs-opt.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li#cs1-l0-o3.cs-opt.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li#cs1-l0-o4.cs-opt.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#cs2-field.cs-field` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.cs-back.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li#cs2-l0-o1.cs-opt.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li#cs2-l0-o2.cs-opt.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `li#cs2-l0-o3.cs-opt.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#cs3-field.cs-field` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button#cs4-field.cs-field` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 
 ## Chart-bar
 - 🟡 warn — DATA MARK `rect.dv-series` — 219.2x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
@@ -414,6 +466,9 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - ⚪ note — `button#back` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `button#next` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
 
+## Qr-code
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+
 ## Quick-actions
 - ⚪ note — `button.qa` — UNMEASURED: one axis declared (autox88), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `button.qa` — UNMEASURED: one axis declared (autox88), the other layout-determined (a @media-conditioned size exists and is NOT measured)
@@ -552,6 +607,25 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - 🟡 warn — `button.trigger` — ::before hit-expander 24x24 — under the 44 default
 - 🟡 warn — `button.trigger` — ::before hit-expander 24x24 — under the 44 default
 - 🟡 warn — `button.trigger` — ::before hit-expander 24x24 — under the 44 default
+
+## Tree
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `li.tr-item` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Video-player
 - 🟡 warn — `button` — 32x32 is under the 44 default (aid-009)

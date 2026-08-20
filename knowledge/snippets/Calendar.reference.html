@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendar — reference implementation (proposed, not gated)</title>
+<!--
+  CANONICAL REFERENCE for Calendar (organism). Built 2026-08-20, session #210, wave 4 lane A.
+  ⛔ PROPOSED, NOT RULED. Nothing here is registered: no CATEGORIES entry, no MIGRATED_SNIPPETS,
+  no component-types.json membership, no canon.css projection block. Every open question below
+  is Dave's and is listed in the lane receipt
+  (notes/_receipts/2026-08-20-210-wave4-laneA-calendar-tree.md).
+
+  ── THE RELATIONSHIP TO DATE-PICKER, STATED PROPOSED (brief fence, #210) ──────────────
+  Date-picker EXISTS and is gated. This is NOT a re-draw of its popover. Date-picker is a
+  FIELD that happens to own a calendar: an Input-fields boxed input plus an anchored,
+  dismissable panel whose whole job is to write DD/MM/YYYY back into that input.
+  Calendar is the month grid ON ITS OWN — no field, no anchor, no dismissal, sized by its
+  container, living in page flow as a step in a journey or as a month view.
+  PROPOSED, for Dave to rule: Date-picker's panel should CONSUME this organism rather than
+  keep its own copy of the grid. It does not today, and this lane did not edit Date-picker —
+  it is gated and promoted. See $decisionsForDave Q1.
+
+  ── BORROWED, NOT INVENTED (survey before build) ──────────────────────────────────────
+   - Day-cell state language is Date-picker's, verbatim: today = a 2px inset ring on
+     form/border/active (a SHAPE, never colour alone; aria-current carries it too);
+     selected = the ink knockout (text/default fill, background/default numeral — the
+     tooltip precedent); disabled = text/disabled; hover = form/background/hover.
+   - Month/year nav = .cal-nav, the same 44×44 Icon-button geometry Date-picker's .dp-nav
+     uses, --phys-size:44, with the SAME empty AUTO-PARTIAL press-physics markers. Members
+     registration is the conductor's, proposed via the receipt (ADR-0013).
+   - Weekday header = Date-picker's .dp-week treatment (text/default at --alpha-60).
+   - Keyboard model = Date-picker's, verbatim (arrows / Home / End / PageUp / PageDown /
+     Shift+Page / Enter / Space / roving tabindex). A user who learns one learns the other.
+   - Surface = the card idiom: 1px border/subtle + border-radius/surface + 16px padding.
+   - Icons: chevron-left / chevron-right / chevron-double-left / chevron-double-right,
+     byte-matched from knowledge/assets/icons/arrows-and-chevrons/. Nothing drawn.
+
+  ── WHAT THIS ORGANISM DOES THAT DATE-PICKER'S PANEL DOES NOT ─────────────────────────
+   1. OUT-OF-MONTH DAYS ARE DRAWN. Date-picker hides them (.is-empty, visibility:hidden)
+      because a popover is a transient act of picking. A month view that is READ needs the
+      week rows to be whole — a Monday column with a hole in it is not a week. They are
+      drawn at text/default × --alpha-60 (a READABLE recessive ink, NOT text/disabled —
+      see the #209 cancelled-mandate finding: dimming readable content to the disabled ink
+      makes it a 1.42:1 ghost). They are NOT interactive here — see Q3.
+   2. IT IS A REAL <table>. Date-picker builds a div grid with display:contents rows. A
+      month has genuine two-dimensional relations — this cell is a Tuesday AND it is in the
+      week of the 14th — and that is what a table encodes and a div grid asserts by role
+      only. It also means the STATIC specimen below is real markup the gates can parse,
+      where a JS-built grid is invisible to every static gate. DIVERGENCE FROM DATE-PICKER,
+      DECLARED — see Q2.
+   3. WIDTH IS THE CONTAINER'S. No max-width is baked into .cal (the #210 meter discipline).
+      Columns are 1fr; the demo chrome below supplies every width, legibly commented.
+
+  ── A DEFECT FOUND BY DRIVING, AND ITS REPAIR ─────────────────────────────────────────
+  ⛔ When a day is BOTH today AND selected, Date-picker's two treatments cancel: the ring is
+  form/border/active painted on the knockout fill text/default. MEASURED in Chromium, both
+  themes, with the repair rule stripped as the control: rgb(0,0,0) ring on rgb(26,26,26)
+  fill = 1.21:1 in light, rgb(255,255,255) on rgb(255,255,255) = 1.00:1 in dark. An
+  invisible ring. Repair here: .cal-day.is-today[aria-selected="true"] flips the ring to
+  background/default — MEASURED 17.40:1 in both themes. Date-picker carries the same class
+  UNREPAIRED and this lane did not touch it (it is gated) — flagged to the conductor.
+
+  ── ARIA ROLES ARE NATIVE, AND THAT IS PROVEN NOT ASSUMED ─────────────────────────────
+  With role="grid" on the <table>, HTML-AAM maps <td> to gridcell and <thead>/<tbody> to
+  rowgroup with no role attribute written. The redundant attributes were REMOVED (first rule
+  of ARIA) and the computed tree was then read from Chromium's accessibility tree via CDP:
+  4 grid · 20 row · 21 columnheader · 119 gridcell · 5 rowgroup · 4 caption.
+  ⚠ A FINDING FOR THE CONDUCTOR, not a convenience: the first draft wrote those roles out
+  and _validate_a11y.py failed loud — `gridcell` and `rowgroup` are in NEITHER
+  INTERACTIVE_ROLES nor NON_INTERACTIVE_ROLES in _a11y_target.py. Date-picker never
+  surfaced that gap because its grid is built in JavaScript and no static gate can read
+  JavaScript-built markup. The vocabulary gap is real and is in the receipt.
+
+  TYPE = canon composites only (link to canon/type.css; no raw font declarations anywhere in
+  component scope). Day numerals .t-cm-figure-5 (16px tabular), weekday heads .t-cm-caption,
+  month label .t-cm-label. ⚠ There is NO 16px/500 tabular composite on the ramp, so the
+  selected day carries NO weight bump — the knockout and aria-selected are its two channels.
+  Named as Q6.
+  MOTION: reduced-motion honoured; the press-physics partial carries its own override.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-08-20 (#210). */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:200ms cubic-bezier(.4,0,.2,1);
+    --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing/spring + motion/duration/spring */
+    --press:90ms cubic-bezier(0,0,.58,1);        /* motion/duration/press + motion/easing/out */
+  }
+  [data-theme="light"]{
+    --page:#FFFFFF;                 /* background/default */
+    --text:#1A1A1A;                 /* text/default */
+    --text-disabled:#E1E1E1;        /* text/disabled */
+    --field-bg-hover:#F0F0F0;       /* form/background/hover */
+    --border-active:#000000;        /* form/border/active */
+    --rule:#E1E1E1;                 /* border/subtle */
+    --icon:#1A1A1A;                 /* icon/default */
+    --focus:#305A85;                /* focus/ring */
+    --border-radius-control:0;      /* border-radius/control */
+    --border-radius-surface:0;      /* border-radius/surface */
+    --press-travel:2; --press-darken:0.94;   /* component-type/button-family (B-D7) */
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --text:#FFFFFF;
+    --text-disabled:#808080;
+    --field-bg-hover:#232323;
+    --border-active:#FFFFFF;
+    --rule:#808080;
+    --icon:#FFFFFF;
+    --focus:#4587A7;
+    --border-radius-control:0;
+    --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94;
+  }
+
+  *{box-sizing:border-box;}
+  /* NOTE: body carries NO font-family — canon/type.css composites carry every text
+     declaration in this file (type-composite discipline). --font stays declared as the
+     family token for the composites' own use. */
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .sr-only{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+
+  /* ---------- DEMO CHROME ONLY — not part of the component. Every width on this page
+       lives here, never in .cal: width is the container's (#210 discipline). ---------- */
+  .spec-h2{color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
+  .spec-note{color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:64ch;}
+  .spec-cap{color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
+  .spec-row{display:flex; align-items:flex-start; gap:32px; flex-wrap:wrap;}
+  .spec-w-md{width:360px; max-width:100%;}    /* demo chrome: a typical inline seat */
+  .spec-w-sm{width:288px; max-width:100%;}    /* demo chrome: a narrow sidebar seat */
+  .spec-w-lg{width:520px; max-width:100%;}    /* demo chrome: a wide page seat */
+
+  /* ---------- THE COMPONENT ---------- */
+  .cal{background:var(--page); color:var(--text); border:1px solid var(--rule);
+    border-radius:var(--border-radius-surface); padding:16px;}
+  .cal-head{display:flex; align-items:center; gap:0; margin:0 0 8px;}
+  .cal-title{flex:1; min-width:0; text-align:center; color:var(--text);}
+  .cal-nav{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
+    padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer;
+    border-radius:var(--border-radius-control); flex:none;
+    --phys-size:44;   /* LOCAL geometry (B-D7): Icon-button precedent — divides the pixel-true travel */
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+  .cal-nav:hover{background:var(--field-bg-hover);}
+  .cal-nav:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .cal-nav svg{width:18px; height:18px; display:block;}
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+  /* INJECTED-SHAPE placeholder, EMPTY BY DESIGN (ADR-0013). .cal-nav is a button-family
+     membership CANDIDATE: the markers and --phys-size:44 are in place so
+     gen_component_partials.py can fill them once the conductor registers $members in
+     knowledge/component-types.json. DO NOT hand-write physics between these markers. */
+  /* ===== AUTO-PARTIAL press-physics END ===== */
+
+  .cal-grid{width:100%; table-layout:fixed; border-collapse:separate; border-spacing:4px;}
+  .cal-grid th{padding:0; height:24px;}
+  .cal-grid td{padding:0;}
+  .cal-wk{display:flex; align-items:center; justify-content:center; height:24px;
+    color:var(--text); opacity:var(--alpha-60);}
+
+  /* the day cell — Date-picker's state language, lock-step */
+  .cal-day{width:100%; min-height:40px; display:flex; align-items:center; justify-content:center;
+    padding:0; border:0; background:transparent; color:var(--text);
+    border-radius:var(--border-radius-control); position:relative;
+    transition:background var(--ease), color var(--ease);}
+  button.cal-day{cursor:pointer;}
+  button.cal-day:hover:not(:disabled){background:var(--field-bg-hover);}
+  .cal-day:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .cal-day.is-today{box-shadow:inset 0 0 0 2px var(--border-active);}   /* SHAPE, not colour — aria-current carries it too */
+  .cal-day[aria-selected="true"]{background:var(--text); color:var(--page);}   /* ink knockout */
+  /* ⛔ THE REPAIR (see head comment): ring-on-knockout is 1.06:1 without this rule. */
+  .cal-day.is-today[aria-selected="true"]{box-shadow:inset 0 0 0 2px var(--page);}
+  .cal-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
+  /* OUT-OF-MONTH is NOT disabled: readable recessive ink, never the 1.42:1 disabled ghost */
+  .cal-day.is-outside{color:var(--text); opacity:var(--alpha-60); cursor:default;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+  @media (max-width:480px){
+    body{padding:1.25rem;}
+    .spec-w-md,.spec-w-sm,.spec-w-lg{width:100%;}
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, byte-matched) ===== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="ic-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-dbl-left" viewBox="0 0 18 18"><path d="M9 1H10.696L2.698 9L10.696 17H9L1 9L9 1Z" fill="currentColor"/> <path d="M17.696 1L9.698 9L17.696 17H16L8 9L16 1H17.696Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-dbl-right" viewBox="0 0 18 18"><path d="M0.695312 1L8.69331 9L0.695312 17H2.39131L10.3913 9L2.39131 1H0.695312Z" fill="currentColor"/> <path d="M9.39131 1H7.69531L15.6933 9L7.69531 17H9.39131L17.3913 9L9.39131 1Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <!-- ================= 1 · LIVE ================= -->
+  <h2 class="spec-h2 t-cm-label">Live — a standalone month, in page flow</h2>
+  <p class="spec-note t-ed-body-small">No field, no popover, nothing to dismiss. Tab reaches the grid
+    once, then arrow keys move by day, Home and End go to the week's edges, Page up and Page down
+    change the month, Shift with Page up or down changes the year, Enter or Space selects, and
+    crossing a month edge with an arrow pages the view. Dates before today are disabled here so the
+    disabled treatment is visible — that is a demo choice, not a rule.</p>
+  <div class="spec-w-md">
+    <div class="cal" id="live-cal">
+      <div class="cal-head">
+        <button type="button" class="cal-nav" id="cal-prev-y" aria-label="Previous year"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="cal-nav" id="cal-prev-m" aria-label="Previous month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="cal-title t-cm-label" id="cal-title" aria-live="polite">&nbsp;</span>
+        <button type="button" class="cal-nav" id="cal-next-m" aria-label="Next month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="cal-nav" id="cal-next-y" aria-label="Next year"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <table class="cal-grid" role="grid" id="cal-table">
+        <caption class="sr-only" id="cal-caption">Month</caption>
+        <thead>
+          <tr role="row">
+            <th role="columnheader" scope="col" abbr="Monday"><span class="cal-wk t-cm-caption">Mo</span></th>
+            <th role="columnheader" scope="col" abbr="Tuesday"><span class="cal-wk t-cm-caption">Tu</span></th>
+            <th role="columnheader" scope="col" abbr="Wednesday"><span class="cal-wk t-cm-caption">We</span></th>
+            <th role="columnheader" scope="col" abbr="Thursday"><span class="cal-wk t-cm-caption">Th</span></th>
+            <th role="columnheader" scope="col" abbr="Friday"><span class="cal-wk t-cm-caption">Fr</span></th>
+            <th role="columnheader" scope="col" abbr="Saturday"><span class="cal-wk t-cm-caption">Sa</span></th>
+            <th role="columnheader" scope="col" abbr="Sunday"><span class="cal-wk t-cm-caption">Su</span></th>
+          </tr>
+        </thead>
+        <tbody id="cal-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <p class="spec-note t-ed-body-small" id="cal-echo" aria-live="polite" style="margin-top:12px;">Nothing selected yet.</p>
+
+  <!-- ================= 2 · STATIC SPECIMEN — real markup, every state at once ================= -->
+  <h2 class="spec-h2 t-cm-label">Every state, in one month — static markup</h2>
+  <p class="spec-note t-ed-body-small">September 2026, drawn as literal HTML so the static gates can
+    read it. The 1st and 2nd are disabled (a demo min-date), the 3rd is "today", the 16th is selected,
+    and 31 August and 1–4 October are out-of-month: readable recessive ink, not the disabled ghost.
+    The 24th shows today-and-selected together on the same cell in the third specimen below.</p>
+  <div class="spec-w-lg">
+    <div class="cal">
+      <div class="cal-head">
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Previous year"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Previous month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="cal-title t-cm-label">September 2026</span>
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Next month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Next year"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      </div>
+      <table class="cal-grid" role="grid">
+        <caption class="sr-only">September 2026</caption>
+        <thead>
+          <tr role="row">
+            <th role="columnheader" scope="col" abbr="Monday"><span class="cal-wk t-cm-caption">Mo</span></th>
+            <th role="columnheader" scope="col" abbr="Tuesday"><span class="cal-wk t-cm-caption">Tu</span></th>
+            <th role="columnheader" scope="col" abbr="Wednesday"><span class="cal-wk t-cm-caption">We</span></th>
+            <th role="columnheader" scope="col" abbr="Thursday"><span class="cal-wk t-cm-caption">Th</span></th>
+            <th role="columnheader" scope="col" abbr="Friday"><span class="cal-wk t-cm-caption">Fr</span></th>
+            <th role="columnheader" scope="col" abbr="Saturday"><span class="cal-wk t-cm-caption">Sa</span></th>
+            <th role="columnheader" scope="col" abbr="Sunday"><span class="cal-wk t-cm-caption">Su</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr role="row">
+            <td><span class="cal-day t-cm-figure-5 is-outside" aria-label="31 August 2026">31</span></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" disabled aria-selected="false" aria-label="Unavailable, 1 September 2026">1</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" disabled aria-selected="false" aria-label="Unavailable, 2 September 2026">2</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5 is-today" tabindex="-1" aria-current="date" aria-selected="false" aria-label="Today, 3 September 2026">3</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="4 September 2026">4</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="5 September 2026">5</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="6 September 2026">6</button></td>
+          </tr>
+          <tr role="row">
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="7 September 2026">7</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="8 September 2026">8</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="9 September 2026">9</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="10 September 2026">10</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="11 September 2026">11</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="12 September 2026">12</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="13 September 2026">13</button></td>
+          </tr>
+          <tr role="row">
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="14 September 2026">14</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="15 September 2026">15</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="true" aria-label="Selected, 16 September 2026">16</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="17 September 2026">17</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="18 September 2026">18</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="19 September 2026">19</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="20 September 2026">20</button></td>
+          </tr>
+          <tr role="row">
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="21 September 2026">21</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="22 September 2026">22</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="23 September 2026">23</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="24 September 2026">24</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="25 September 2026">25</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="26 September 2026">26</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="27 September 2026">27</button></td>
+          </tr>
+          <tr role="row">
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="28 September 2026">28</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="29 September 2026">29</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-selected="false" aria-label="30 September 2026">30</button></td>
+            <td><span class="cal-day t-cm-figure-5 is-outside" aria-label="1 October 2026">1</span></td>
+            <td><span class="cal-day t-cm-figure-5 is-outside" aria-label="2 October 2026">2</span></td>
+            <td><span class="cal-day t-cm-figure-5 is-outside" aria-label="3 October 2026">3</span></td>
+            <td><span class="cal-day t-cm-figure-5 is-outside" aria-label="4 October 2026">4</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= 3 · THE FOUR CELL TREATMENTS, ISOLATED ================= -->
+  <h2 class="spec-h2 t-cm-label">The cell treatments, isolated</h2>
+  <p class="spec-note t-ed-body-small">Left to right: resting, today (a 2px inset ring — a shape, plus
+    aria-current, never colour alone), selected (the ink knockout — fill plus aria-selected),
+    today-and-selected (the ring flips to the page colour so it survives inside the knockout — measured
+    17.40:1 in both themes; with that flip stripped as a control it measures 1.21:1 in light and
+    1.00:1 in dark and vanishes), disabled, and out-of-month.</p>
+  <div class="spec-w-lg">
+    <div class="cal">
+      <table class="cal-grid" role="grid" id="states-table">
+        <caption class="sr-only">Day cell treatments</caption>
+        <tbody>
+          <tr role="row">
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-label="Resting, 10 September 2026" aria-selected="false">10</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5 is-today" tabindex="-1" aria-current="date" aria-label="Today, 17 September 2026" aria-selected="false">17</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" aria-label="Selected, 16 September 2026" aria-selected="true">16</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5 is-today" id="cell-today-selected" tabindex="-1" aria-current="date" aria-label="Today and selected, 24 September 2026" aria-selected="true">24</button></td>
+            <td><button type="button" class="cal-day t-cm-figure-5" tabindex="-1" disabled aria-label="Unavailable, 1 September 2026" aria-selected="false">1</button></td>
+            <td><span class="cal-day t-cm-figure-5 is-outside" aria-label="2 October 2026">2</span></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= 4 · NARROW CONTAINER ================= -->
+  <h2 class="spec-h2 t-cm-label">Narrow seat — width is the container's</h2>
+  <p class="spec-note t-ed-body-small">The same markup at 288px. .cal declares no width of its own;
+    the columns are 1fr and the cells keep their 40px minimum height, so the grid narrows without any
+    breakpoint of its own.</p>
+  <div class="spec-w-sm">
+    <div class="cal">
+      <div class="cal-head">
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Previous month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="cal-title t-cm-label">September 2026</span>
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Next month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+      </div>
+      <table class="cal-grid" role="grid">
+        <caption class="sr-only">September 2026, narrow</caption>
+        <thead>
+          <tr role="row">
+            <th role="columnheader" scope="col" abbr="Monday"><span class="cal-wk t-cm-caption">Mo</span></th>
+            <th role="columnheader" scope="col" abbr="Tuesday"><span class="cal-wk t-cm-caption">Tu</span></th>
+            <th role="columnheader" scope="col" abbr="Wednesday"><span class="cal-wk t-cm-caption">We</span></th>
+            <th role="columnheader" scope="col" abbr="Thursday"><span class="cal-wk t-cm-caption">Th</span></th>
+            <th role="columnheader" scope="col" abbr="Friday"><span class="cal-wk t-cm-caption">Fr</span></th>
+            <th role="columnheader" scope="col" abbr="Saturday"><span class="cal-wk t-cm-caption">Sa</span></th>
+            <th role="columnheader" scope="col" abbr="Sunday"><span class="cal-wk t-cm-caption">Su</span></th>
+          </tr>
+        </thead>
+        <tbody id="narrow-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Calendar",
+    "vars": {
+      "--page": "background/default",
+      "--text": "text/default",
+      "--text-disabled": "text/disabled",
+      "--field-bg-hover": "form/background/hover",
+      "--border-active": "form/border/active",
+      "--rule": "border/subtle",
+      "--icon": "icon/default",
+      "--focus": "focus/ring",
+      "--border-radius-control": "border-radius/control",
+      "--border-radius-surface": "border-radius/surface",
+      "--press-travel": "component-type/button-family/press-travel",
+      "--press-darken": "component-type/button-family/press-darken"
+    },
+    "contrastPairs": [
+      { "fg": "text/default",       "bg": "background/default",    "context": "text" },
+      { "fg": "text/default",       "bg": "form/background/hover", "context": "text" },
+      { "fg": "background/default", "bg": "text/default",          "context": "text" },
+      { "fg": "form/border/active", "bg": "background/default",    "context": "ui" },
+      { "fg": "icon/default",       "bg": "background/default",    "context": "ui" }
+    ],
+    "requiredAria": ["role=\"grid\"", "role=\"row\"", "role=\"columnheader\"", "aria-selected", "aria-current", "aria-live", "aria-label"],
+    "icons": {
+      "$source": "assets/icons/arrows-and-chevrons/ (HSBC library) via <symbol> sprite — not invented",
+      "chevron-left": "arrows-and-chevrons/chevron-left.svg",
+      "chevron-right": "arrows-and-chevrons/chevron-right.svg",
+      "chevron-dbl-left": "arrows-and-chevrons/chevron-double-left.svg",
+      "chevron-dbl-right": "arrows-and-chevrons/chevron-double-right.svg"
+    },
+    "$partials-note": "The .cal-nav month/year buttons are button-family membership CANDIDATES (ADR-0013): empty AUTO-PARTIAL press-physics markers + --phys-size:44 (Icon-button geometry) are declared. Registration ($members in component-types.json) is the conductor's — PROPOSED via the #210 lane-A receipt, never taken here. Day cells deliberately carry NO press physics: a day is a SELECTION target, not a button (Date-picker's own ruling-flagged choice, followed in lock-step).",
+    "$recessive-ink-note": "Out-of-month days and the weekday heads paint text/default at --alpha-60, a COMPOSED value, so no abstract token pair can describe them. They are measured in a real browser instead and the figures live in the lane receipt — not asserted here."
+  }
+  </script>
+
+  <script>
+    const root = document.documentElement;
+    addEventListener('keydown', e => { if (e.key === 'Tab') root.dataset.modality = 'keyboard'; });
+    addEventListener('mousedown', () => root.dataset.modality = 'pointer');
+    addEventListener('touchstart', () => root.dataset.modality = 'pointer', { passive:true });
+
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const today = new Date();
+    const midnight = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const TODAY0 = midnight(today);
+
+    const tbody  = document.getElementById('cal-body');
+    const title  = document.getElementById('cal-title');
+    const cap    = document.getElementById('cal-caption');
+    const echo   = document.getElementById('cal-echo');
+
+    let view = new Date(today.getFullYear(), today.getMonth(), 1);
+    let selected = null;
+    let focusDay = today.getDate();
+
+    const daysInMonth = (y,m) => new Date(y, m+1, 0).getDate();
+    const firstCol    = (y,m) => (new Date(y, m, 1).getDay() + 6) % 7;   // Monday-first (en-GB)
+    const longLabel   = d => d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+
+    /* Builds one month into a <tbody>. Out-of-month cells are SPANS, not buttons:
+       drawn and announced, never focusable — see $decisionsForDave Q3. */
+    function build(body, y, m, opts){
+      const live = !!(opts && opts.live);
+      const minDate = (opts && opts.minDate) || null;
+      body.innerHTML = '';
+      const lead = firstCol(y, m), days = daysInMonth(y, m);
+      const total = Math.ceil((lead + days) / 7) * 7;
+      let tr = null;
+      for (let cell = 0; cell < total; cell++){
+        if (cell % 7 === 0){ tr = document.createElement('tr'); tr.setAttribute('role','row'); body.appendChild(tr); }
+        const td = document.createElement('td');
+        const d = cell - lead + 1;
+        const inMonth = d >= 1 && d <= days;
+        const date = new Date(y, m, d);           // JS rolls out-of-range days into the neighbour month
+        if (inMonth){
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'cal-day t-cm-figure-5';
+          b.textContent = d;
+          b.dataset.day = d;
+          const disabled = !!(minDate && date < minDate);
+          if (disabled){ b.disabled = true; b.setAttribute('aria-label', 'Unavailable, ' + longLabel(date)); }
+          else b.setAttribute('aria-label', longLabel(date));
+          const isSel = selected && date.toDateString() === selected.toDateString();
+          b.setAttribute('aria-selected', isSel ? 'true' : 'false');
+          if (date.toDateString() === TODAY0.toDateString()){
+            b.classList.add('is-today');
+            b.setAttribute('aria-current','date');
+          }
+          b.tabIndex = (live && d === focusDay && !disabled) ? 0 : -1;
+          if (live && !disabled) b.addEventListener('click', () => select(date));
+          td.appendChild(b);
+        } else {
+          const s = document.createElement('span');
+          s.className = 'cal-day t-cm-figure-5 is-outside';
+          s.textContent = date.getDate();
+          s.setAttribute('aria-label', longLabel(date));
+          td.appendChild(s);
+        }
+        tr.appendChild(td);
+      }
+      return MONTHS[m] + ' ' + y;
+    }
+
+    function render(){
+      const y = view.getFullYear(), m = view.getMonth();
+      const days = daysInMonth(y, m);
+      focusDay = Math.min(Math.max(focusDay, 1), days);
+      // keep the roving stop off a disabled day
+      while (focusDay < days && new Date(y, m, focusDay) < TODAY0) focusDay++;
+      const t = build(tbody, y, m, { live:true, minDate: TODAY0 });
+      title.textContent = t;
+      cap.textContent = t;
+      if (!tbody.querySelector('[tabindex="0"]')){
+        const first = tbody.querySelector('button.cal-day:not(:disabled)');
+        if (first) first.tabIndex = 0;
+      }
+    }
+    function focusGrid(){ const t = tbody.querySelector('[tabindex="0"]'); if (t) t.focus(); }
+    function select(date){
+      selected = date;
+      echo.textContent = 'Selected: ' + longLabel(date) + '.';
+      focusDay = date.getDate();
+      render(); focusGrid();
+    }
+    const shift = (dm, dy) => { view = new Date(view.getFullYear() + dy, view.getMonth() + dm, 1); render(); };
+    document.getElementById('cal-prev-m').addEventListener('click', () => shift(-1, 0));
+    document.getElementById('cal-next-m').addEventListener('click', () => shift(1, 0));
+    document.getElementById('cal-prev-y').addEventListener('click', () => shift(0, -1));
+    document.getElementById('cal-next-y').addEventListener('click', () => shift(0, 1));
+
+    document.getElementById('cal-table').addEventListener('keydown', e => {
+      const cur = document.activeElement;
+      if (!cur || !cur.classList || !cur.classList.contains('cal-day')) return;
+      const d = parseInt(cur.dataset.day, 10);
+      const y = view.getFullYear(), m = view.getMonth();
+      const days = daysInMonth(y, m);
+      const col = (firstCol(y, m) + d - 1) % 7;
+      let next = null;
+      if (e.key === 'ArrowRight') next = d + 1;
+      else if (e.key === 'ArrowLeft') next = d - 1;
+      else if (e.key === 'ArrowDown') next = d + 7;
+      else if (e.key === 'ArrowUp') next = d - 7;
+      else if (e.key === 'Home') next = d - col;
+      else if (e.key === 'End') next = d + (6 - col);
+      else if (e.key === 'PageUp'){ e.preventDefault(); focusDay = d; shift(e.shiftKey ? 0 : -1, e.shiftKey ? -1 : 0); focusGrid(); return; }
+      else if (e.key === 'PageDown'){ e.preventDefault(); focusDay = d; shift(e.shiftKey ? 0 : 1, e.shiftKey ? 1 : 0); focusGrid(); return; }
+      else if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); select(new Date(y, m, d)); return; }
+      else return;
+      e.preventDefault();
+      if (next >= 1 && next <= days){ focusDay = next; render(); focusGrid(); }
+      else if (next < 1){ shift(-1, 0); focusDay = daysInMonth(view.getFullYear(), view.getMonth()) + next; render(); focusGrid(); }
+      else { shift(1, 0); focusDay = next - days; render(); focusGrid(); }
+    });
+
+    render();
+
+    // narrow specimen — the same builder, no live wiring, September 2026 with the 16th selected
+    (function(){
+      const keep = selected;
+      selected = new Date(2026, 8, 16);
+      build(document.getElementById('narrow-body'), 2026, 8, { live:false });
+      selected = keep;
+    })();
+  </script>
+</body>
+</html>

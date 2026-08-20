@@ -89,11 +89,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **91 items · 59 live · 27 Dave's · 32 mine · 72 carry a stated close condition · **19 UNCONDITIONED**.**
+> **95 items · 63 live · 31 Dave's · 32 mine · 76 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (27) — 22 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (31) — 26 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -116,6 +116,10 @@
 > - `W-64` **Dave's eye on the two #209 EXISTENCE questions - the side-by-side review page is the surface** — *closes when:* Dave has looked at reviews/REVIEW-210-existence-side-by-side-v1.html in light AND dark and answered BOTH existence questions - (1) is the product's statement a LIST or a LEDGER, i.e. does transaction-row exist or does row 91 become Duplicate pointing at List-items; and (2) does limits-meter stay as its own component, fold into Progress-bar, or merge into Runway-bar. W-63's per-component design rulings then follow; this row closes on the two existence answers alone.
 > - `W-66` **two #210 spacing fixes PROPOSED - Time-picker label descender clearance (4px->8px) and Data-grid state switcher margin (0->28px)** — *closes when:* Dave's eye accepts the two fixes on reviews/REVIEW-210-spacing-fixes-v1.html - or moves either value; and he rules whether the two CLASSES (the Input-fields family's identical 4px lblrow, and Table/Segmented-control's identical 0px flush switcher) are swept or left
 > - `W-70` **The four progressbar-improvising snippets: do they CONSUME Meter? (named as future work by the #210 impacts memo, deliberately unscoped)** — *closes when:* Dave has ruled whether Progress-tracker, File-upload, Stepper and Runway-bar - the FOUR non-meter snippets that carry role=progressbar in MARKUP and each hand-roll their own track and fill - should CONSUME the Meter molecule rather than re-drawing it, or stay as they are; and if he rules consume, the lane that does it is scoped separately. This row closes on that ruling alone, not on any build.
+> - `W-71` **wave-4 lane C — carousel + image-block BUILT PROPOSED-NOT-RULED, Daves eye owed** — *closes when:* Dave rules per component: promote / rework / delete; the autoplay-variant question, the arrow-glyph byte-match deviation, and the type-composite debt-growth tension are answered first
+> - `W-72` **wave-4 lane A - calendar + tree BUILT PROPOSED-NOT-RULED - Daves eye owed (19 open questions, 3 defects in GATED components)** — *closes when:* Dave has ruled on the lane-A questions (chiefly Q1 does Date-picker consume Calendar, Q9 the tree selection mark, Q17 the descender-clip gate class) and the conductor has actioned or parked the three findings in already-gated files (Date-picker's today+selected ring, Sidebar-nav's clipped labels, the _a11y_target.py role vocabulary)
+> - `W-73` **wave-4 lane B - cascader + splitter + qr-code BUILT PROPOSED-NOT-RULED - Dave's eye owed (19 open questions)** — *closes when:* Dave has ruled the 19 questions in section 4 of the receipt - in particular Q-CS-1 (do Tree and Cascader both exist), Q-SP-1 (is aria-valuenow a percentage or pixels) and Q-QR-1 (what a QR code does in dark mode, where the theme-following variant was MEASURED not to decode) - and the conductor has actioned or parked the section 6 handoff, of which item 5 (the repo-wide ds-005 specificity class, six defeated overrides in five gated snippets) is the one that affects files outside this lane.
+> - `W-74` **wave-4 heavy 7 BUILT PROPOSED-NOT-RULED (calendar tree cascader splitter qr-code carousel image-block) - Daves eye + ~47 named questions owed** — *closes when:* Dave rules per component promote/rework/delete across the seven, having seen the three lane receipts 2026-08-20-210-wave4-lane{A,B,C}-*.md and their decisionsForDave lists (19+19+9); the cross-lane ds-005 trim-specificity decision and the dark-mode QR polarity call are answered with or before this row
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -129,7 +133,7 @@
 
 ---
 
-*(Chain ends. **33,066 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **33,852 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 90,796 real and stays whole for retrieval; you have paid for
-36% of it, and that is the intended figure, not a shortfall.)*
+37% of it, and that is the intended figure, not a shortfall.)*

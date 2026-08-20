@@ -45,7 +45,16 @@
 ## Button.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## Calendar.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Cards.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Carousel.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Cascader.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Chart-bar.reference.html — ✅ PASS
@@ -151,6 +160,9 @@
 ## Icon-button.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## Image-block.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Input-fields.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
@@ -220,6 +232,9 @@
 ## Progress-tracker.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## Qr-code.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Quick-actions.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
@@ -257,6 +272,9 @@
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Split-button.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Splitter.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Standing-order-mandate-row.reference.html — ✅ PASS
@@ -308,6 +326,9 @@
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Transfer-list.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
+## Tree.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Video-player.reference.html — ✅ PASS

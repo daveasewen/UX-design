@@ -1,0 +1,188 @@
+{
+  "name": "Splitter",
+  "category": "molecule",
+  "purpose": "Let the reader decide how much room each of two panes gets. A draggable, keyboard-resizable divider sits between them, publishes where the boundary is, and refuses to let either pane disappear. Use it where two things must stay on screen together and the right balance between them is the reader's business, not the layout's — a list and the record it opens, a filter panel and its results.",
+  "$provenance-note": "NEW at #210 (wave 4, lane B) against the wave-4 heavy-7 fan-out brief. Verified absent first-hand at build: `ls knowledge/snippets/ | grep -iE 'split(ter)?'` -> only Split-button.reference.html (a DIFFERENT component: a button with an attached menu); `grep -rl 'role=\"separator\"' knowledge/snippets/` -> 0. Drag grammar borrowed from the gated Range-slider (focus ring on the moving part, value ALSO shown as text, clamp authored in JS); nothing re-drawn.",
+  "interactive": true,
+  "stateModel": "full",
+  "props": [
+    {
+      "name": "orientation",
+      "type": "enum",
+      "values": [
+        "horizontal",
+        "vertical"
+      ],
+      "default": "horizontal",
+      "$note": "Names the SPLIT, not the bar. `horizontal` = two panes side by side, divided by a VERTICAL bar (which is what aria-orientation then says). `vertical` = two panes stacked, divided by a HORIZONTAL bar. The naming is a known trap and is stated on the snippet's face."
+    },
+    {
+      "name": "value",
+      "type": "number",
+      "default": 50,
+      "$note": "The primary pane's size as a PERCENTAGE of the container, 0-100. Authored in the markup as aria-valuenow; the component reads it from there at start-up, so the markup is the source of truth and not a JS default."
+    },
+    {
+      "name": "minPrimary",
+      "type": "string",
+      "default": "160px",
+      "$note": "CSS custom property --min-pri. A 4px multiple. The pointer drag and the keyboard use the SAME clamp, so a mouse cannot reach a size a keyboard cannot."
+    },
+    {
+      "name": "minSecondary",
+      "type": "string",
+      "default": "160px",
+      "$note": "CSS custom property --min-sec. Same clamp."
+    },
+    {
+      "name": "thickness",
+      "type": "string",
+      "default": "8px",
+      "$note": "CSS custom property --div: the DRAWN rule. The POINTER target is separately 24px via a hit pseudo-element."
+    },
+    {
+      "name": "step",
+      "type": "string",
+      "default": "16px",
+      "$note": "Arrow-key increment; shift+arrow is 64px. Both 4px multiples."
+    },
+    {
+      "name": "collapsible",
+      "type": "boolean",
+      "default": true,
+      "$note": "Enter on the divider collapses the primary pane to zero and restores it to the size it had. The separator is never removed when a pane collapses, so there is always a way back."
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "default",
+        "hover",
+        "focus",
+        "dragging",
+        "disabled"
+      ],
+      "default": "default",
+      "$note": "`disabled` keeps the separator and its accessible name — the boundary still exists — but removes the tab stop, the cursor and the grip, and sets aria-disabled."
+    }
+  ],
+  "variants": [
+    {
+      "name": "horizontal",
+      "use": "Two panes side by side; the bar is vertical and Left/Right resize it."
+    },
+    {
+      "name": "vertical",
+      "use": "Two panes stacked; the bar is horizontal and Up/Down resize it."
+    },
+    {
+      "name": "fixed",
+      "use": "A boundary without a control. Still a separator, still named, no longer resizable."
+    }
+  ],
+  "tokens": {
+    "divider-resting": "divider/border/section",
+    "divider-hover": "form/border/default",
+    "divider-dragging": "form/border/active",
+    "grip": "form/border/default",
+    "pane-surface": "background/default",
+    "gutter-surface": "surface/subtle",
+    "text": "text/default; disabled text/disabled",
+    "focus": "focus/ring",
+    "shape": "border-radius/control",
+    "hit-area": "24px pointer target on the divider (WCAG 2.5.8) via a hit pseudo-element; the drawn rule stays 8px. NOT target/min 44px — see knownFindings.",
+    "$grid": "--div 8px · --min-pri 160px · --min-sec 160px · step 16px · shift-step 64px. Every one a 4px multiple."
+  },
+  "relationships": {
+    "livesInside": [
+      "Page content",
+      "Dialog",
+      "Detail view",
+      "Toolbar-led workspace"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "list and detail",
+      "filter panel and results",
+      "editor and preview"
+    ]
+  },
+  "$relatedComponents": "NAME COLLISION DECLARED: Split-button is a different component (a button with an attached menu affordance) and is not touched. Drawer is the neighbouring idea for a pane that OVERLAYS rather than divides; nothing here adjudicates when to use which.",
+  "accessibility": {
+    "roles": "role=separator with tabindex=0, aria-orientation naming the orientation OF THE BAR, aria-controls pointing at the primary pane, and aria-valuemin / aria-valuemax / aria-valuenow / aria-valuetext publishing where the boundary is. The fixed variant keeps role=separator and its name but drops the tab stop and sets aria-disabled.",
+    "keyboard": "Arrow keys along the axis move the boundary by 16px; shift+arrow by 64px. Home and End drive it to the fences. Enter collapses the primary pane and restores it. F6 returns it to the middle. Double-click on the divider does the same as F6.",
+    "announcements": "aria-valuetext carries the percentage as a spoken string on every change, and the same number is printed in the demo readout — so what a screen reader hears and what the page shows cannot drift apart.",
+    "states": "aria-disabled on the fixed variant; a data-dragging attribute drives the drag colour and is not exposed to AT (the value change is what matters, not the gesture).",
+    "targetArea": "24px pointer target (WCAG 2.5.8), not 44px — flagged, see knownFindings.",
+    "$openQuestion": "aria-valuenow IS A PERCENTAGE here. Pixels are the other honest reading: they are what the user is actually dragging, and a pixel value would let aria-valuemin/max carry the real fences. Percent survives a window resize. PROPOSED #210 — the choice changes what a screen-reader user hears on every keypress, so it is Dave's.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.7",
+      "2.5.8",
+      "4.1.2"
+    ]
+  },
+  "antiPatterns": [
+    "A divider that can only be dragged. Without keys, resizing is a pointer-only capability and the layout becomes unreachable for anyone who does not have one.",
+    "Letting a pane reach zero by accident. Fences exist so the reader cannot destroy the layout by overshooting; a pane may reach zero only by a deliberate collapse, which is reversible.",
+    "Removing the separator when a pane collapses. The way back disappears with it.",
+    "Two clamps. If the drag clamps to different numbers than the keys, a mouse can reach a size a keyboard cannot, and the two paths disagree about what the layout allows.",
+    "Relying on the resting seam to say 'drag me'. divider/border/section measures 1.31:1 in light; the affordance is the grip, the hover darkening, the cursor and the focus ring — never the hairline alone."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
+    "result": "PASS — 12 declared vars resolve in both light and dark; 3 declared contrast pairs clear their thresholds in both modes (snippet gate: 108 snippet(s), 0 failure(s)).",
+    "$scope": "MONO base only. Console, Legacy and Supercharge are NOT measured by this file and were NOT rendered by this lane — declared, not smoothed.",
+    "$deprecated": "No deprecated tokens bound.",
+    "$notGenerated": "canon.css carries NO .cn-splitter scope yet — this lane ran no generator, so _validate_binds_resolve.py check D fails for the snippet until the conductor projects the block.",
+    "$notDeclared": "divider/border/section on background/default is deliberately NOT declared as a contrast pair: at 1.31:1 in light it would fail, and it SHOULD fail if it were a control affordance. It is not — the resting seam is decoration and the control's perceptibility rests on the grip, the hover state, the cursor, the focus ring and the published value. Raising the resting seam to form/border/default would change every seam in the library, which is not this lane's to do."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "Wave-4 heavy-7 fan-out (notes/_briefs/2026-08-20-210-wave4-heavy7-fanout-brief-v1.md), lane B. No Figma node."
+  },
+  "$render-verification": "DRIVEN AT #210. Keyboard: 545 -> 561 (+16) -> 625 (+64 on shift) -> 609 (-16). Home clamps the primary to exactly 160px; End clamps it to 930px, leaving the secondary at exactly 160px. Enter collapses to 0px / 0% and the separator survives at its full 8px; Enter again restores 545px, the pre-collapse size. POINTER: dragged past the left fence -> 160px, past the right fence -> 930px with the secondary at 160px - the SAME two numbers the keyboard reaches, which is the claim that mattered. Drawn rule 8px, ::before hit target 24px, both axes. The fixed variant is role=separator + aria-disabled with NO tabindex, and a whole-page tab-order sweep found exactly two focusable things on the page: the two live separators.",
+  "$resize-finding": "⛔ A DEFECT FOUND BY DRIVING, AND FIXED. The first draft re-derived the split on window resize from the pane's CURRENT RENDERED WIDTH (`setPx(current())`). Playwright's full-page capture momentarily resizes the viewport to 1x1; the handler then ran against a container 0px wide, published 0%, and on restore left the divider pinned at its maximum - a 50/50 split silently became 85/15 with nobody touching it. The 1x1 capture is a stand-in for every real case with the same shape: a splitter inside a hidden tab panel, a display:none ancestor, a print stylesheet, a collapsed accordion. THE FIX IS A CATEGORY CORRECTION, not a guard: the RATIO is what the user chose and the pixel is only how it is drawn right now, so the component keeps the percentage, refuses to write any size while there is no room to write it into, and re-derives when there is. Measured after the fix: at a 1180px viewport the split is 50% / 545px; narrowing the viewport to 480px keeps 50% (215px) instead of the 63% the pixel re-clamp used to produce.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Splitter.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:page-content",
+        "$note": "Page content"
+      },
+      {
+        "ref": "context:dialog",
+        "$note": "Dialog"
+      },
+      {
+        "ref": "context:detail-view",
+        "$note": "Detail view"
+      },
+      {
+        "ref": "context:toolbar-led-workspace",
+        "$note": "Toolbar-led workspace"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:list-and-detail"
+      },
+      {
+        "ref": "pattern:filter-panel-and-results"
+      },
+      {
+        "ref": "pattern:editor-and-preview"
+      }
+    ]
+  }
+}
