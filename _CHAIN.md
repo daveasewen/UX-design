@@ -92,11 +92,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **80 items · 54 live · 23 Dave's · 31 mine · 61 carry a stated close condition · **19 UNCONDITIONED**.**
+> **81 items · 55 live · 24 Dave's · 31 mine · 62 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (23) — 18 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (24) — 19 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -115,6 +115,7 @@
 > - `W-41` **#203 delegated-wrap brief (DO-NOT-RULE list + session facts for the Opus wrap sub)** — *closes when:* the #203 wrap commit is pushed by the conductor under s203-D1 AND the CI read-back is relayed to Dave in chat - both limbs, per the ruling's own words
 > - `W-51` **#207 addendum: Dave's critique of the #206 record (promotion vocabulary open; candidature homed)** — *closes when:* Dave rules the twice-caught vocabulary question (does a mined historical occasion count as a 'catch' toward s204-D1's bar?) AND rules promote/wait/park on the three candidates; the candidature record in knowledge/_DS-IMPROVEMENTS.md then carries the outcome
 > - `W-53` **#207 W-46 three scoped proposals (items 3/4/5) — returning to Dave** — *closes when:* Dave rules build/park per item on the three scoped proposals; W-46 closes on the same event
+> - `W-60` **Dave's eye on the 29 4px-grid snaps (#209) — the review page is the surface** — *closes when:* Dave has looked at reviews/REVIEW-209-grid-snap-before-after-v1.html in light and dark and either accepts the snapped values or names the ones he wants re-cut
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -128,7 +129,7 @@
 
 ---
 
-*(Chain ends. **29,398 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **29,506 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 84,211 real and stays whole for retrieval; you have paid for
 35% of it, and that is the intended figure, not a shortfall.)*
