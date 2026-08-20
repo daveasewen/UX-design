@@ -38,6 +38,9 @@
   .tag{display:inline-block; font-size:11px; padding:2px 7px; border:1px solid var(--line); background:#FFFFFF; margin-right:6px;}
   .tag.zero{border-color:var(--mid); color:var(--mid);}
   .tag.moved{border-color:var(--warn); color:var(--warn);}
+  h3.the11{font-size:14px; margin:26px 0 4px; padding-top:12px; border-top:1px solid var(--line);}
+  p.meas{font-size:12.5px; color:#4A4A4A; max-width:96ch;}
+  a{color:inherit;}
 </style>
 </head>
 <body>
@@ -61,6 +64,16 @@
   <p><b>Your call:</b> keep the inert vocabulary (harmless today, self-enacting the day Chromium ships trim inside form controls — which
   would move every field in the library without a review), or revert the sweep and enact the intent a different way (explicit line-height /
   padding on the field, which is a design decision, not a CSS capability).</p>
+</div>
+
+<div class="call" style="border-left-color:var(--warn);">
+  <p><b>ADDENDUM, later the same session.</b> You then ruled two more things: <i>keep the inert vocabulary and put a canary on it</i>,
+  and <i>add the trim block to all 11 blockless snippets</i>. Both are done. The canary is
+  <code>knowledge/_probe_registry/probe_input_trim_enactment.py</code> (registry probe <b>P-6</b>) &mdash; it renders a fixture in a real
+  browser every registry run and reports a finding the day an engine starts enacting trim inside a form control, which is the day every
+  field in the library moves without a commit. The eleven snippets are in
+  <a href="#the-11"><b>The&nbsp;11</b></a> below &mdash; and unlike everything above, <b>that half moves pixels today</b>.
+  The sections between here and there are unchanged and describe the state as it was measured earlier in the session.</p>
 </div>
 </section>
 
@@ -163,6 +176,7 @@ That is antialiasing-scale, not a leading trim.</p>
 had nothing to extend. Eleven input-bearing snippets are in this state (Amount-input, Combobox, Date-picker, Date-range-picker, Form-layout,
 Multi-select, Secure-entry, Stepper, Tags-input, Textarea, Time-picker). Giving them a trim block would also trim every label, span and
 button in those components — a far larger visual change than the one you ruled — so that is a decision for you, not a sweep.</p>
+<p class="meas"><b>SUPERSEDED, same session:</b> you ruled &ldquo;add to all 11&rdquo;. All eleven now carry the block and Multi-select is no longer untouched &mdash; see <a href="#the-11">The 11</a> for its measured before/after. The pair immediately below is kept as the record of the earlier state.</p>
 <div class="pair">
   <div class="pane"><div class="cap"><b>BEFORE</b> <span>HEAD</span></div>
     <iframe src="_assets/review-209-input-trim/before/Multi-select-light.html" height="760" title="Multi-select before, light"></iframe></div>
@@ -180,6 +194,180 @@ the number on the right is its measured height in this browser, right now.</p>
 </div>
 <p>Reference measurement from the render harness (Chromium 151.0.7922.34, headless shell, this repo&rsquo;s HSBC face):
 span 32.00 &rarr; 11.56 px, button 32.00 &rarr; 11.02 px, input 32.00 &rarr; 32.00 px, textarea 32.00 &rarr; 32.00 px.</p>
+</section>
+
+
+<section id="the-11">
+<h2 style="border-top:3px solid var(--warn); padding-top:20px;">The 11 &mdash; trim blocks added, labels move TODAY</h2>
+<div class="call red">
+  <p><b>This half is the opposite of the one above.</b> You ruled &ldquo;add to all 11&rdquo;, and these eleven input-bearing
+  snippets carried <b>no leading-trim block at all</b>. They now carry the same one-line block as the other 54 &mdash; byte-identical
+  vocabulary, same position, same comment header. Because the block trims <i>labels, spans, buttons, legends</i> and not just inputs,
+  and because the browser <i>does</i> enact trim on those, <b>this is a real visual change you can see right now</b>.</p>
+  <p>Measured across the eleven: <b>401</b> elements now compute <code>trim-both</code> where none did before, <b>330</b> boxes changed
+  height or position, and <b>8 of 11</b> components got shorter &mdash; up to <b>37&nbsp;px</b> off the page (Form-layout).
+  Every label in a stacked form loses roughly <b>5&nbsp;px</b> of leading; the tightest single shrink measured was 10.37&nbsp;px.</p>
+  <p><b>And the input boxes still do not move.</b> Across all eleven, the number of <code>&lt;input&gt;</code> or
+  <code>&lt;textarea&gt;</code> boxes that changed height is <b>zero</b> &mdash; the same inert result as the first half of this page.
+  What you are looking at below is the <i>label</i> half of your ruling landing, and the <i>field</i> half still waiting on a browser.</p>
+  <p><b>Your call on this half:</b> the labels are tighter and the forms are shorter. If that reads right, it stands.
+  If any one component reads too tight, it is a one-line removal in that snippet.</p>
+</div>
+
+<h3>Measured, per component</h3>
+<table>
+<tr><th>Component</th><th>elements that compute<br>trim before &rarr; after</th><th>page height<br>before &rarr; after</th><th>boxes that<br>moved / total</th><th>largest single<br>box shrink</th><th>what shrank</th><th>pixels changed<br>(common region, 2&times;)</th><th>input / textarea<br>boxes moved</th></tr>
+<tr><td>Amount-input</td><td class="n">0 &rarr; 18</td><td class="n">1019 &rarr; 1009 px</td><td class="n">20 / 20</td><td class="n">9.98 px</td><td>span&times;8, label&times;2</td><td class="n">164,207</td><td class="n">0</td></tr>
+<tr><td>Combobox</td><td class="n">0 &rarr; 26</td><td class="n">1084 &rarr; 1059 px</td><td class="n">41 / 43</td><td class="n">4.98 px</td><td>span&times;11, label&times;5</td><td class="n">182,901</td><td class="n">0</td></tr>
+<tr><td>Date-picker</td><td class="n">0 &rarr; 101</td><td class="n">1157 &rarr; 1142 px</td><td class="n">60 / 114</td><td class="n">4.98 px</td><td>label&times;4, span&times;1</td><td class="n">248,228</td><td class="n">0</td></tr>
+<tr><td>Date-range-picker</td><td class="n">0 &rarr; 106</td><td class="n">1023 &rarr; 1013 px</td><td class="n">67 / 121</td><td class="n">4.98 px</td><td>label&times;6, span&times;1</td><td class="n">244,558</td><td class="n">0</td></tr>
+<tr><td>Form-layout</td><td class="n">0 &rarr; 27</td><td class="n">1433 &rarr; 1396 px</td><td class="n">29 / 31</td><td class="n">7.75 px</td><td>label&times;10, span&times;3, legend&times;1</td><td class="n">215,509</td><td class="n">0</td></tr>
+<tr><td>Multi-select</td><td class="n">0 &rarr; 25</td><td class="n">1061 &rarr; 1041 px</td><td class="n">38 / 40</td><td class="n">4.98 px</td><td>span&times;10, label&times;4</td><td class="n">194,707</td><td class="n">0</td></tr>
+<tr><td>Secure-entry</td><td class="n">0 &rarr; 31</td><td class="n">927 &rarr; 927 px</td><td class="n">3 / 35</td><td class="n">10.37 px</td><td>span&times;2</td><td class="n">5,510</td><td class="n">0</td></tr>
+<tr><td>Stepper</td><td class="n">0 &rarr; 25</td><td class="n">900 &rarr; 900 px</td><td class="n">5 / 25</td><td class="n">4.98 px</td><td>span&times;2</td><td class="n">52,988</td><td class="n">0</td></tr>
+<tr><td>Tags-input</td><td class="n">0 &rarr; 21</td><td class="n">1209 &rarr; 1184 px</td><td class="n">36 / 36</td><td class="n">4.98 px</td><td>span&times;8, label&times;5</td><td class="n">255,277</td><td class="n">0</td></tr>
+<tr><td>Textarea</td><td class="n">0 &rarr; 13</td><td class="n">901 &rarr; 900 px</td><td class="n">14 / 14</td><td class="n">4.98 px</td><td>label&times;5, span&times;2</td><td class="n">129,618</td><td class="n">0</td></tr>
+<tr><td>Time-picker</td><td class="n">0 &rarr; 8</td><td class="n">900 &rarr; 900 px</td><td class="n">17 / 17</td><td class="n">4.98 px</td><td>label&times;4</td><td class="n">176,979</td><td class="n">0</td></tr>
+</table>
+<p class="meas">Read the table as one sentence per row: <i>N elements started obeying the trim; M boxes moved; the page got shorter by
+this much</i>. &ldquo;Pixels changed&rdquo; is a full-page image diff over the region both renders share, at 2&times; device scale,
+1180&nbsp;px wide &mdash; it counts sub-pixels, so it is a sensitivity indicator, not a severity one. The severity is the page-height column.</p>
+
+<h3>Live pairs &mdash; light and dark, every one of the 11</h3>
+<p class="meas">Left is the snippet exactly as it stood at <code>HEAD</code> before this lane; right is the snippet now. Same DOM, same
+tokens, same theme &mdash; the only difference in the source is the three added lines. Look at the gap above and below each label.</p>
+<section>
+<h3 class="the11">Amount-input <span class="tag moved">page &minus;10px</span></h3>
+<p class="meas">18 elements gained a computed <code>trim-both</code> (0 before). 20 of 20 measured boxes changed height or position; the largest single box shrank <b>9.98&nbsp;px</b>; page height 1019 &rarr; 1009 px. What shrank: span&times;8, label&times;2. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Amount-input-light.html" height="1035" title="Amount-input before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Amount-input-light.html" height="1035" title="Amount-input after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Amount-input-dark.html" height="1035" title="Amount-input before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Amount-input-dark.html" height="1035" title="Amount-input after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Combobox <span class="tag moved">page &minus;25px</span></h3>
+<p class="meas">26 elements gained a computed <code>trim-both</code> (0 before). 41 of 43 measured boxes changed height or position; the largest single box shrank <b>4.98&nbsp;px</b>; page height 1084 &rarr; 1059 px. What shrank: span&times;11, label&times;5. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Combobox-light.html" height="1100" title="Combobox before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Combobox-light.html" height="1100" title="Combobox after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Combobox-dark.html" height="1100" title="Combobox before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Combobox-dark.html" height="1100" title="Combobox after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Date-picker <span class="tag moved">page &minus;15px</span></h3>
+<p class="meas">101 elements gained a computed <code>trim-both</code> (0 before). 60 of 114 measured boxes changed height or position; the largest single box shrank <b>4.98&nbsp;px</b>; page height 1157 &rarr; 1142 px. What shrank: label&times;4, span&times;1. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Date-picker-light.html" height="1173" title="Date-picker before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Date-picker-light.html" height="1173" title="Date-picker after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Date-picker-dark.html" height="1173" title="Date-picker before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Date-picker-dark.html" height="1173" title="Date-picker after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Date-range-picker <span class="tag moved">page &minus;10px</span></h3>
+<p class="meas">106 elements gained a computed <code>trim-both</code> (0 before). 67 of 121 measured boxes changed height or position; the largest single box shrank <b>4.98&nbsp;px</b>; page height 1023 &rarr; 1013 px. What shrank: label&times;6, span&times;1. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Date-range-picker-light.html" height="1039" title="Date-range-picker before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Date-range-picker-light.html" height="1039" title="Date-range-picker after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Date-range-picker-dark.html" height="1039" title="Date-range-picker before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Date-range-picker-dark.html" height="1039" title="Date-range-picker after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Form-layout <span class="tag moved">page &minus;37px</span></h3>
+<p class="meas">27 elements gained a computed <code>trim-both</code> (0 before). 29 of 31 measured boxes changed height or position; the largest single box shrank <b>7.75&nbsp;px</b>; page height 1433 &rarr; 1396 px. What shrank: label&times;10, span&times;3, legend&times;1. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Form-layout-light.html" height="1473" title="Form-layout before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Form-layout-light.html" height="1473" title="Form-layout after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Form-layout-dark.html" height="1473" title="Form-layout before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Form-layout-dark.html" height="1473" title="Form-layout after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Multi-select <span class="tag moved">page &minus;20px</span></h3>
+<p class="meas">25 elements gained a computed <code>trim-both</code> (0 before). 38 of 40 measured boxes changed height or position; the largest single box shrank <b>4.98&nbsp;px</b>; page height 1061 &rarr; 1041 px. What shrank: span&times;10, label&times;4. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Multi-select-light.html" height="1077" title="Multi-select before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Multi-select-light.html" height="1077" title="Multi-select after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Multi-select-dark.html" height="1077" title="Multi-select before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Multi-select-dark.html" height="1077" title="Multi-select after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Secure-entry <span class="tag zero">page height held</span></h3>
+<p class="meas">31 elements gained a computed <code>trim-both</code> (0 before). 3 of 35 measured boxes changed height or position; the largest single box shrank <b>10.37&nbsp;px</b>; page height 927 &rarr; 927 px. What shrank: span&times;2. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Secure-entry-light.html" height="943" title="Secure-entry before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Secure-entry-light.html" height="943" title="Secure-entry after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Secure-entry-dark.html" height="943" title="Secure-entry before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Secure-entry-dark.html" height="943" title="Secure-entry after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Stepper <span class="tag zero">page height held</span></h3>
+<p class="meas">25 elements gained a computed <code>trim-both</code> (0 before). 5 of 25 measured boxes changed height or position; the largest single box shrank <b>4.98&nbsp;px</b>; page height 900 &rarr; 900 px. What shrank: span&times;2. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Stepper-light.html" height="616" title="Stepper before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Stepper-light.html" height="616" title="Stepper after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Stepper-dark.html" height="616" title="Stepper before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Stepper-dark.html" height="616" title="Stepper after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Tags-input <span class="tag moved">page &minus;25px</span></h3>
+<p class="meas">21 elements gained a computed <code>trim-both</code> (0 before). 36 of 36 measured boxes changed height or position; the largest single box shrank <b>4.98&nbsp;px</b>; page height 1209 &rarr; 1184 px. What shrank: span&times;8, label&times;5. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Tags-input-light.html" height="1225" title="Tags-input before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Tags-input-light.html" height="1225" title="Tags-input after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Tags-input-dark.html" height="1225" title="Tags-input before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Tags-input-dark.html" height="1225" title="Tags-input after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Textarea <span class="tag moved">page &minus;1px</span></h3>
+<p class="meas">13 elements gained a computed <code>trim-both</code> (0 before). 14 of 14 measured boxes changed height or position; the largest single box shrank <b>4.98&nbsp;px</b>; page height 901 &rarr; 900 px. What shrank: label&times;5, span&times;2. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Textarea-light.html" height="917" title="Textarea before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Textarea-light.html" height="917" title="Textarea after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Textarea-dark.html" height="917" title="Textarea before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Textarea-dark.html" height="917" title="Textarea after, dark"></iframe></div>
+</div>
+</section>
+<section>
+<h3 class="the11">Time-picker <span class="tag zero">page height held</span></h3>
+<p class="meas">8 elements gained a computed <code>trim-both</code> (0 before). 17 of 17 measured boxes changed height or position; the largest single box shrank <b>4.98&nbsp;px</b>; page height 900 &rarr; 900 px. What shrank: label&times;4. Input and textarea boxes that moved: <b>0</b>.</p>
+<div class="pair">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Time-picker-light.html" height="806" title="Time-picker before, light"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Time-picker-light.html" height="806" title="Time-picker after, light"></iframe></div>
+</div>
+<div class="pair dark">
+  <div class="pane"><div class="cap"><b>BEFORE</b> <span>BEFORE &mdash; no trim block in the snippet</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/before/Time-picker-dark.html" height="806" title="Time-picker before, dark"></iframe></div>
+  <div class="pane"><div class="cap"><b>AFTER</b> <span>AFTER &mdash; trim block added</span></div><iframe loading="lazy" src="_assets/review-209-input-trim-11/after/Time-picker-dark.html" height="806" title="Time-picker after, dark"></iframe></div>
+</div>
+</section>
 </section>
 
 <section>

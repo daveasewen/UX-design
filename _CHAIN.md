@@ -116,7 +116,7 @@
 > - `W-51` **#207 addendum: Dave's critique of the #206 record (promotion vocabulary open; candidature homed)** — *closes when:* Dave rules the twice-caught vocabulary question (does a mined historical occasion count as a 'catch' toward s204-D1's bar?) AND rules promote/wait/park on the three candidates; the candidature record in knowledge/_DS-IMPROVEMENTS.md then carries the outcome
 > - `W-53` **#207 W-46 three scoped proposals (items 3/4/5) — returning to Dave** — *closes when:* Dave rules build/park per item on the three scoped proposals; W-46 closes on the same event
 > - `W-60` **Dave's eye on the 29 4px-grid snaps (#209) — the review page is the surface** — *closes when:* Dave has looked at reviews/REVIEW-209-grid-snap-before-after-v1.html in light and dark and either accepts the snapped values or names the ones he wants re-cut
-> - `W-61` **Dave's eye on leading-trim applied to text-bearing inputs (#209) — keep the inert vocabulary, or revert** — *closes when:* Dave's eye accepts the trimmed inputs on reviews/REVIEW-209-input-trim-before-after-v1.html and he rules KEEP (inert-but-forward-compatible vocabulary) or REVERT (and whether the 11 trim-block-less input snippets should get the idiom at all)
+> - `W-61` **Dave's eye on leading-trim applied to text-bearing inputs (#209) — keep the inert vocabulary, or revert** — *closes when:* Dave's eye accepts BOTH halves on reviews/REVIEW-209-input-trim-before-after-v1.html: (a) the inert input vocabulary stays as authored, now watched by probe P-6 — or is reverted; and (b) the 11 newly-trimmed snippets read right with their labels tighter and their forms up to 37px shorter — or any one of them has its block removed
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -130,7 +130,7 @@
 
 ---
 
-*(Chain ends. **29,666 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **29,692 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 84,211 real and stays whole for retrieval; you have paid for
 35% of it, and that is the intended figure, not a shortfall.)*

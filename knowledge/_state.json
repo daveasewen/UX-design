@@ -903,6 +903,19 @@
       "condition": "stated"
     },
     {
+      "id": "W-61",
+      "project": "apollo",
+      "title": "Dave's eye on leading-trim applied to text-bearing inputs (#209) — keep the inert vocabulary, or revert",
+      "home": "reviews/REVIEW-209-input-trim-before-after-v1.html",
+      "links": [],
+      "state": "open",
+      "owner": "dave",
+      "opened": 209,
+      "body": "Dave ruled live (#209) that the leading-trim idiom should apply to inputs such as searches and multi-select. All 54 leading-trim blocks in knowledge/snippets/*.reference.html gained the text-bearing input vocabulary (7 typed inputs + input:not([type]) + textarea; checkbox/radio/range/colour/file excluded), canon.css regenerated (91 components) and its hand-tier .canon base rule carries the same vocabulary, 91 showroom pages regenerated. MEASURED CONSEQUENCE: the declaration computes on <input> (none -> trim-both, 18 inputs across 4 components) but Chromium 151 does NOT enact trim inside a form control — isolation probe at line-height:2 gives span 32.00->11.56px and button 32.00->11.02px against input 32.00->32.00px and textarea 32.00->32.00px. Full-page pixel diff is 0 for Search-field, Command-palette, Data-grid; 2,378 sub-pixels on Input-fields, max ink-centre shift 0.75 CSS px, no box height change anywhere. Multi-select, Tags-input and Combobox carry no trim block at all (11 input-bearing snippets are in that state) so they were untouched. ⬛ SECOND HALF, ruled live the same session (#209): Dave ruled KEEP + CANARY on the inert vocabulary, and ADD TO ALL 11 on the blockless snippets. (a) CANARY BUILT — knowledge/_probe_registry/probe_input_trim_enactment.py, registered as probe P-6 in the W-45 registry (environment sandbox-render). It renders a self-contained fixture in a real browser and reports findings=0 while the engine stays inert; the day an engine ENACTS text-box-trim inside a form control it reports rc=1 naming the class, because that day every field in the library moves with no commit and no author. Drive #209: control span 32.00->11.02px (65.6%), input 32.00->32.00px, textarea 32.00->32.00px, findings=0. Selftest passes three arms — green control, SIMULATED ENACTMENT (subjects rendered as a genuinely-trimmed element) fires rc=1 with findings=2, and a browser taken away refuses rc=77 COULD-NOT-ASK in-process AND end-to-end. (b) THE 11 — Amount-input, Combobox, Date-picker, Date-range-picker, Form-layout, Multi-select, Secure-entry, Stepper, Tags-input, Textarea, Time-picker each gained the byte-identical one-line trim block after their AUTO-TOKENS END marker (the position the five tokened snippets already use); 54 blocks became 65. UNLIKE THE FIRST HALF THIS MOVES PIXELS TODAY: 401 elements now compute trim-both where 0 did, 330 of 496 measured boxes changed, 8 of 11 components got shorter (Form-layout -37px, Combobox/Tags-input -25px, Multi-select -20px, Date-picker -15px, Amount-input/Date-range-picker -10px, Textarea -1px), largest single box shrink 10.37px (Secure-entry), typical label shrink 4.98px. The input/textarea boxes that moved: ZERO — the field half of the ruling is still waiting on a browser, which is exactly what P-6 watches. canon.css regenerated (91 components), 11 showroom pages regenerated. Both halves are annotated with live before|after pairs, light and dark, in the review page's new section 'The 11 — trim blocks added, labels move TODAY'.",
+      "closes_when": "Dave's eye accepts BOTH halves on reviews/REVIEW-209-input-trim-before-after-v1.html: (a) the inert input vocabulary stays as authored, now watched by probe P-6 — or is reverted; and (b) the 11 newly-trimmed snippets read right with their labels tighter and their forms up to 37px shorter — or any one of them has its block removed",
+      "condition": "stated"
+    },
+    {
       "id": "G1",
       "title": "Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…",
       "project": "memento",
@@ -1164,19 +1177,6 @@
       "closes_when": "Dave confirms warn as final or flips to block",
       "condition": "stated",
       "closed_by": "s163-D1 (Dave, #163) - flipped to block; audit wired blocking, hits cleared by declaration, homonym fixed in regex"
-    },
-    {
-      "id": "W-61",
-      "project": "apollo",
-      "title": "Dave's eye on leading-trim applied to text-bearing inputs (#209) — keep the inert vocabulary, or revert",
-      "home": "reviews/REVIEW-209-input-trim-before-after-v1.html",
-      "links": [],
-      "state": "open",
-      "owner": "dave",
-      "opened": 209,
-      "body": "Dave ruled live (#209) that the leading-trim idiom should apply to inputs such as searches and multi-select. All 54 leading-trim blocks in knowledge/snippets/*.reference.html gained the text-bearing input vocabulary (7 typed inputs + input:not([type]) + textarea; checkbox/radio/range/colour/file excluded), canon.css regenerated (91 components) and its hand-tier .canon base rule carries the same vocabulary, 91 showroom pages regenerated. MEASURED CONSEQUENCE: the declaration computes on <input> (none -> trim-both, 18 inputs across 4 components) but Chromium 151 does NOT enact trim inside a form control — isolation probe at line-height:2 gives span 32.00->11.56px and button 32.00->11.02px against input 32.00->32.00px and textarea 32.00->32.00px. Full-page pixel diff is 0 for Search-field, Command-palette, Data-grid; 2,378 sub-pixels on Input-fields, max ink-centre shift 0.75 CSS px, no box height change anywhere. Multi-select, Tags-input and Combobox carry no trim block at all (11 input-bearing snippets are in that state) so they were untouched.",
-      "closes_when": "Dave's eye accepts the trimmed inputs on reviews/REVIEW-209-input-trim-before-after-v1.html and he rules KEEP (inert-but-forward-compatible vocabulary) or REVERT (and whether the 11 trim-block-less input snippets should get the idiom at all)",
-      "condition": "stated"
     }
   ]
 }
