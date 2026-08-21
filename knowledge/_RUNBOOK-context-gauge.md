@@ -70,6 +70,24 @@ to Dave` lets a session cross 200,000 deliberately. Nothing lets it cross 256,00
 receipt cannot manufacture evidence that was never collected. **Split the job, or delegate part
 of it to a subagent with its own window.**
 
+★★ **THE 200–256K CONDITIONAL BAND — RULED `s214-D1`/`s214-D2` (2026-08-21, Dave's, amending his
+own #58b shape after a same-day re-source check; proposal + sources:
+`notes/_briefs/2026-08-21-214-conditional-band-200-256-proposal-v1.md`, row `W-99y`).**
+200,000 stays the working line jobs are priced against. Between 200,000 and 256,000 a session is
+LEGAL under three conditions, ALL required: **(1) WORK-TYPE** — only mechanical, receipt-backed,
+instrument-verified work in the band (renders with proofs, gate runs, diff-verified edits,
+mining that quotes file:line); **judgment and inscription work is ILLEGAL in-band** — rulings,
+wrap synthesis, decision readbacks — and delegates to a fresh sub or waits; classification
+happens BEFORE entering the band, and anything unclassifiable is judgment by default.
+**(2) DECLARATION** — crossing 200,000 is announced in chat at the crossing and recorded at the
+wrap. **(3) PROBE** — the band is legal only while the recall probe (`s214-D3`,
+`knowledge/_recall_probe.py`) is green; one miss closes the band for the session and judgment
+work stops immediately. ⛔ **256,000 stays the UNQUALIFIED wall (`s214-D2`)** — no published
+recall measurement exists for the current model beyond it, recall is version-volatile between
+model releases, and the probe may only ever CLOSE the band, never widen past the wall.
+⚠ A green probe is *necessary, never sufficient* (synthetic recall does not predict downstream
+synthesis — the HELMET finding), which is why judgment work stays illegal in-band regardless.
+
 **⛔ A DECLARED GAP PASSES; A SILENT ONE FAILS.** A term you cannot measure is written as an
 estimate with its error bar, or declared `unobservable (<reason>)`. Leaving it out is the only
 thing punished. That asymmetry is the fix — it makes publishing cheaper than refusing.
