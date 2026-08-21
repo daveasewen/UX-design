@@ -39,8 +39,8 @@
      every text element carries a .t-cm-* composite from canon/type.css (the Progress-bar
      precedent, #174). TYPE-002 contribution: 0. */
   :root{ --ease:160ms cubic-bezier(.4,0,.2,1); }
-  [data-theme="light"]{ --page:#FFFFFF; --panel:#FFFFFF; --scrim:#00000080; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A; --rule:#F0F0F0; --hover:#F0F0F0; --field-active:#000000; --focus:#305A85; --shadow:#00000033; --elev-border:#FFFFFF00; --radius:0; }
-  [data-theme="dark"]{ --page:#1A1A1A; --panel:#1F1F1F; --scrim:#00000080; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF; --rule:#808080; --hover:#232323; --field-active:#FFFFFF; --focus:#4587A7; --shadow:#000000D9; --elev-border:#808080; --radius:0; }
+  [data-theme="light"]{ --page:#FFFFFF; --panel:#FFFFFF; --cp-scrim:#00000080; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A; --cp-rule:#F0F0F0; --hover:#F0F0F0; --field-active:#000000; --focus:#305A85; --shadow:#00000033; --elev-border:#FFFFFF00; --radius:0; }
+  [data-theme="dark"]{ --page:#1A1A1A; --panel:#1F1F1F; --cp-scrim:#00000080; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF; --cp-rule:#808080; --hover:#232323; --field-active:#FFFFFF; --focus:#4587A7; --shadow:#000000D9; --elev-border:#808080; --radius:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
 
@@ -49,13 +49,13 @@
 
   /* ---- the stage: the app behind the palette, bounded so the component is visible at rest ---- */
   .cp-stage{position:relative; overflow:hidden; height:460px; max-width:820px;
-            background:var(--page); border:1px solid var(--rule); border-radius:var(--radius);}
+            background:var(--page); border:1px solid var(--cp-rule); border-radius:var(--radius);}
   .cp-stage-mock{padding:20px; display:flex; flex-direction:column; gap:12px;}
-  .cp-stage-mock span{display:block; height:12px; background:var(--rule);}
+  .cp-stage-mock span{display:block; height:12px; background:var(--cp-rule);}
   .cp-stage-mock span:nth-child(1){width:38%;} .cp-stage-mock span:nth-child(2){width:72%;}
   .cp-stage-mock span:nth-child(3){width:64%;} .cp-stage-mock span:nth-child(4){width:80%;}
   .cp-stage-mock span:nth-child(5){width:46%;}
-  .cp-scrim{position:absolute; inset:0; background:var(--scrim);}
+  .cp-scrim{position:absolute; inset:0; background:var(--cp-scrim);}
 
   /* ---- the panel ---- */
   .cp{position:absolute; left:50%; transform:translateX(-50%); top:40px;
@@ -66,7 +66,7 @@
 
   /* ---- the query field: the Search-field chrome, composed, not re-drawn ---- */
   .cp-field{display:flex; align-items:center; gap:12px; height:48px; flex:none; padding:0 12px;
-            border-bottom:1px solid var(--rule);}
+            border-bottom:1px solid var(--cp-rule);}
   /* flex:none added #209 — Dave's eye caught the field rendering 43.9px (populated) vs 33.8px
      (empty): .cp is a max-height flex column and the field was SHRINKABLE, so its declared 48px
      lost to whatever height the results list took. MEASURED before/after in a real render. */
@@ -83,12 +83,12 @@
 
   /* ---- keycap hints ---- */
   kbd{display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:20px;
-      padding:0 4px; border:1px solid var(--rule); border-radius:var(--radius);
+      padding:0 4px; border:1px solid var(--cp-rule); border-radius:var(--radius);
       color:var(--muted); background:transparent;}
 
   /* ---- results ---- */
   .cp-results{overflow:auto; padding:4px 0; scrollbar-gutter:stable;}
-  .cp-group + .cp-group{border-top:1px solid var(--rule); margin-top:4px; padding-top:4px;}
+  .cp-group + .cp-group{border-top:1px solid var(--cp-rule); margin-top:4px; padding-top:4px;}
   .cp-group-label{display:block; padding:8px 16px; color:var(--muted); opacity:.72;}
   .cp-opt{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 16px;
           color:var(--text); cursor:pointer; position:relative;
@@ -109,7 +109,7 @@
 
   /* ---- footer hint bar ---- */
   .cp-foot{display:flex; align-items:center; gap:16px; flex-wrap:wrap; min-height:40px;
-           padding:8px 16px; border-top:1px solid var(--rule); color:var(--muted);}
+           padding:8px 16px; border-top:1px solid var(--cp-rule); color:var(--muted);}
   .cp-foot .hint{display:inline-flex; align-items:center; gap:8px;}
 
   /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
@@ -236,11 +236,11 @@
     "vars": {
       "--page": "background/default",
       "--panel": "tertiary/background/default",
-      "--scrim": "overlay/version1",
+      "--cp-scrim": "overlay/version1",
       "--text": "text/default",
       "--muted": "text/secondary",
       "--icon": "icon/default",
-      "--rule": "divider/border/subsection",
+      "--cp-rule": "divider/border/subsection",
       "--hover": "tertiary/background/hover",
       "--field-active": "form/border/active",
       "--focus": "focus/ring",

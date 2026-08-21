@@ -65,10 +65,6 @@ Dave rules.*
 
 - **pict-014** — Pictograms are a component-library gap. The engine's 38 components include icons (sprite + gate) but no pictogram asset class at all — no tokens, no assets, no manifest entry. If generated experiences ever include pictogram-bearing patterns (empty states, onboarding, confirmation illustrations), this class needs onboarding: distinct contrast rule (3:1 + alt), distinct size floor (60px), level system, and a sourcing pipeline (create.hsbc asset library + "Pictogram creation" approvals process for new symbols). Parked — no current snippet uses pictograms.
 
-## tone-of-voice.md
-
-- **tov-016** — Wit is a flourish, not a register. Source, explicitly: "it's more of a flourish than something we use throughout – it works best in headlines or when we're giving good news." Gradient as stated: advertising/marketing = dial up · good news + headlines = home turf · functional messages = "quite subtle" · important/clear-and- straightforward messages = don't distract · difficult situations (bereavement, pandemic) = zero. This is the fixed/flex temperature dial with a source receipt — see Findings F1.
-
 ## typography-standards-2026.md
 
 - **type26-015** — "Don't overlay text on gradient backgrounds" (+ digital: verify at viewpoints, no unreadable wrap). ⚠ Collides with charter §4's expressive gradient unlock for surfaces/heroes — heroes normally carry headlines. 📌 PARKED 2026-07-02 (Dave) → ruled at the component-finessing pass, alongside mot-007 ("too expressive" family). Interim discipline: no gradient-hero generation; gradient surfaces are treated as text-free zones until ruled (conservative reading holds by default). Candidate mechanisations noted for the pass: text-free-zone gate (no text node over gradient surface) vs worst-point contrast sampling (≥4.5:1 at the ramp's weakest point, render-based).
@@ -87,4 +83,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_35 open item(s)._
+_34 open item(s)._

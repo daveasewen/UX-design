@@ -44,7 +44,7 @@
 | `ADR-0014` | **CLAIMED** | ADR-0014 — Per-theme neutral primitives: the neutral DNA tier + the opacity-snaps-to-ramp state test | knowledge/_validate_palette_tier.py, knowledge/_validate_state_snap.py | `docs/decisions/ADR-0014-per-theme-neutral-primitives-state-snap.md` |
 | `ADR-0015` | **PROVEN** | ADR-0015 — Behaviour partials: the dataviz interaction layer as generated JS | knowledge/gen_component_partials.py | `docs/decisions/ADR-0015-behaviour-partials-dataviz.md` |
 | `ADR-0016` | **PROVEN** | ADR-0016 — Enactment proof: rulings must be provably LIVE, not merely inscribed | knowledge/_validate_dataviz.py | `docs/decisions/ADR-0016-enactment-proof-register.md` |
-| `ADR-0017` | **CLAIMED** | ADR-0017 — WRITE-ONCE: live facts get ONE home and addresses; history gets copies, dated and frozen | knowledge/_validate_state_contrast.py | `docs/decisions/ADR-0017-write-once-live-facts.md` |
+| `ADR-0017` | **CLAIMED** | ADR-0017 — WRITE-ONCE: live facts get ONE home and addresses; history gets copies, dated and frozen | knowledge/_validate_evidence.py, knowledge/_validate_intent_resolve.py, knowledge/_validate_state_contrast.py, knowledge/gen_brief.py, knowledge/gen_itinerary_status.py, knowledge/gen_radius_derive.py | `docs/decisions/ADR-0017-write-once-live-facts.md` |
 | `B-D1` | **UNPROVEN** | B-D1 — Apollo Mono primary carries NO red (2026-07-20). Source: Dave. FIRM. | — | `_proforma/_BUTTON-DECISIONS.md` |
 | `B-D2` | **UNPROVEN** | B-D2 — Mono primary token ladder minted; completes `button/*` (2026-07-20). | — | `_proforma/_BUTTON-DECISIONS.md` |
 | `B-D3` | **UNPROVEN** | B-D3 — Hover = dual token; mechanism is selectable (2026-07-20). → ADR-0009. | — | `_proforma/_BUTTON-DECISIONS.md` |

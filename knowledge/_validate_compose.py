@@ -58,12 +58,29 @@ def inline_scope_vars():
             found |= set(re.findall(r'(--[\w-]+)\s*:', style_attr))
     return found
 
+_COMMENT = re.compile(r"/\*.*?\*/", re.S)
+
+def strip_css_comments(css):
+    """Remove /* ... */ blocks before any var() analysis.
+
+    PARSE IN THE CONSUMER'S GRAMMAR (#122 ds-039): the browser never sees comment
+    text, so a `var(--x)` written inside PROSE is not a reference and a `--x:` inside
+    prose is not a definition. This gate read the raw bytes, so canon.css's own
+    hazard note — "`fill:var(--undefined)` does not fall back to the previous value"
+    (canon.css, projected verbatim from Template-report.reference.html) — was counted
+    as an unresolved reference and reddened the gate on a sentence. Stripping comments
+    is strictly MORE accurate in both directions: it also stops a definition that only
+    exists in a comment from resolving a real dangling ref.
+    """
+    return _COMMENT.sub(" ", css)
+
 def check_canon():
     css = open(CANON).read()
     fails = []
     notes = []
-    defs = set(re.findall(r'(--[\w-]+)\s*:', css))
-    refs = set(re.findall(r'var\((--[\w-]+)', css))
+    code = strip_css_comments(css)
+    defs = set(re.findall(r'(--[\w-]+)\s*:', code))
+    refs = set(re.findall(r'var\((--[\w-]+)', code))
     inline_defs = inline_scope_vars()
     missing = sorted(r for r in refs if r not in defs and r not in RUNTIME_VARS)
     # split out vars resolved via inline-scope (set on markup, not in CSS) —

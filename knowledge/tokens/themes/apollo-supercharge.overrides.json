@@ -1,285 +1,310 @@
 {
- "$description": "Apollo Supercharge override set (ADR-0011 + ADR-0014). Since 2026-07-22 Supercharge carries its OWN warm neutral ramp: the neutral DNA tier (color/neutral/1-15) rebinds here onto color/warm/* — page, ink, surfaces, borders and disabled greys all follow by step index. Status/RAG + dataviz stay identical to Mono (only Legacy differs). State mechanism = colour by default (registry stateMechanism; opacity only where it snaps to a warm step). Dark-mode values are index-symmetric PROPOSALS (provisional-agent, Dave review sheet 2026-07-22) — 'we can always change.' || s158-D4 (Dave, 2026-08-12) OPTION B — SINGLE SOURCE: the twelve palette-owned rag hue keys (error/warning/success/information x bare/-glyph/-background) were TRIMMED from this file; the palette file named by this theme's ragPalette in _themes.json is now their ONE source, projected by canon/gen_theme_cascade.py BEFORE the override set. Every $note that lived on those entries was relocated VERBATIM into the palette file's matching key FIRST (add-then-trim), so no ruling provenance was lost. -tint keys STAY here per s123-D3 (tints derive from per-theme grounds and are NOT palette-owned); rag/text/* stays here too. Enforced by _validate_palette_tier.py --strict-absence. || #176 (2026-08-14, s176 WORKING — Dave's word, NOT YET RATIFIED BY EYE): step/complete was TRIMMED from this file so Supercharge inherits the base, which now aliases rag/success (the success-roundel chain) — Dave: 'they can just inherit then wholesale. Except Legacy.' Supercharge therefore resolves step/complete to its own palette success #5DAC7B, mode-invariant. The trimmed entry's $note was relocated VERBATIM into the base token's $note in tokens/semantic-colour.json (step/complete) FIRST, add-then-trim, and its retired pair (light #B92F1E / dark #CC4333) is quoted there — no ruling provenance was lost. This restores the file's own 'Supercharge ≡ Mono everywhere else' description for this path.",
- "$theme": "apollo-supercharge",
- "$attr": "supercharge",
- "$schemaVersion": "1.0.0",
- "overrides": {
-  "color/neutral/1": {
-   "$alias": "color/warm/1",
-   "$type": "color",
-   "$note": "warm/1 = #000000 = mono/1 — no-op by value; declared for the complete 15-step binding."
-  },
-  "color/neutral/2": {
-   "$alias": "color/warm/2",
-   "$type": "color"
-  },
-  "color/neutral/3": {
-   "$alias": "color/warm/3",
-   "$type": "color"
-  },
-  "color/neutral/4": {
-   "$alias": "color/warm/2",
-   "$type": "color",
-   "$note": "ADR-0014 ANCHOR REMAP (Dave ruled 2026-07-22: SC ink = #13110E, 'just use this we can always change'). neutral/4 is the Mono anchor step (ink = digital-black = action fill = mono/4); Supercharge's anchor is ITS step 2 — the warm ramp packs dark, so index-identity would land the anchor a shade light (warm/4 #25211C, L~33 vs mono/4 L~26). Every anchor-bound role (ink, dark page, primary action fill) follows this one line."
-  },
-  "color/neutral/5": {
-   "$alias": "color/warm/5",
-   "$type": "color"
-  },
-  "color/neutral/6": {
-   "$alias": "color/warm/6",
-   "$type": "color"
-  },
-  "color/neutral/7": {
-   "$alias": "color/warm/7",
-   "$type": "color"
-  },
-  "color/neutral/8": {
-   "$alias": "color/warm/8",
-   "$type": "color"
-  },
-  "color/neutral/9": {
-   "$alias": "color/warm/9",
-   "$type": "color"
-  },
-  "color/neutral/10": {
-   "$alias": "color/warm/10",
-   "$type": "color"
-  },
-  "color/neutral/11": {
-   "$alias": "color/warm/11",
-   "$type": "color"
-  },
-  "color/neutral/12": {
-   "$alias": "color/warm/12",
-   "$type": "color"
-  },
-  "color/neutral/13": {
-   "$alias": "color/warm/13",
-   "$type": "color"
-  },
-  "color/neutral/14": {
-   "$alias": "color/warm/14",
-   "$type": "color"
-  },
-  "color/neutral/15": {
-   "$alias": "color/warm/15",
-   "$type": "color"
-  },
-  "color/neutral/raise-1": {
-   "$value": "#2A2621",
-   "$type": "color",
-   "$note": "CALCULATED (provisional-agent, ADR-0014 review sheet): mono elevation deltas (+5/+9/+13 per channel over the dark ground) applied to warm/4 #25211C. Dave to review; 'we can always change.'"
-  },
-  "color/neutral/raise-2": {
-   "$value": "#2E2A25",
-   "$type": "color",
-   "$note": "CALCULATED (provisional-agent, ADR-0014 review sheet): mono elevation deltas (+5/+9/+13 per channel over the dark ground) applied to warm/4 #25211C. Dave to review; 'we can always change.'"
-  },
-  "color/neutral/raise-3": {
-   "$value": "#322E29",
-   "$type": "color",
-   "$note": "CALCULATED (provisional-agent, ADR-0014 review sheet): mono elevation deltas (+5/+9/+13 per channel over the dark ground) applied to warm/4 #25211C. Dave to review; 'we can always change.'"
-  },
-  "color/neutral/hover-light": {
-   "$alias": "color/warm/7",
-   "$type": "color",
-   "$note": "CARRIED FORWARD unchanged at the s198-D2 mint (2026-08-17): Mono re-derived its primary-action hover at alpha 0.68 onto new primitives; Supercharge keeps the ramp-snapped warm/7 it already rendered (#493F39 light) so this fix changes no Supercharge pixel. A 0.68 re-derivation on the warm ramp is Dave's to call."
-  },
-  "color/neutral/hover-dark": {
-   "$alias": "color/warm/10",
-   "$type": "color",
-   "$note": "CARRIED FORWARD unchanged at the s198-D2 mint (2026-08-17): Supercharge keeps the ramp-snapped warm/10 it already rendered (#806E65 dark). A 0.68 re-derivation on the warm ramp is Dave's to call."
-  },
-  "tabs/inactive": {
-   "light": {
-    "$value": "#493F39",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#AA9B92",
-    "$type": "color"
-   },
-   "$note": "ADR-0014/R-D23 refinement (Dave's Ally reminder, 2026-07-22 post-push): inactive is INTERACTIVE, not disabled — must pass 4.5:1. The DNA index (warm/10 #806E65) sits 3.89:1 on the SC dark page → dark = warm/11 #AA9B92 (7.01:1). Light restates the DNA value warm/7 #493F39 (9.47:1) because a per-mode override must carry BOTH modes (loader falls back to MONO base, not the theme's DNA). PROVISIONAL-AGENT like all SC dark values — on the review sheet."
-  },
-  "motion/press/travel": {
-   "$value": 0,
-   "$type": "number",
-   "$note": "B-D7 (Dave 2026-07-22): press/hover MOVEMENT is ABSENT in Supercharge — state feedback is colour-only (mechanism = colour, registry stateMechanism; movement stays a Mono/Console trait). travel=0 makes scale(calc(1 ± 0/size)) the identity. Theme dial — raise if finessing ever wants it."
-  },
-  "motion/press/darken": {
-   "$value": 1,
-   "$type": "number",
-   "$note": "B-D7: no :active brightness darken in Supercharge — the pressed colour tokens carry the state. brightness(1) = no-op."
-  },
-  "rag/error-tint": {
-   "light": {
-    "$value": "#F1E0DC",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#2C120D",
-    "$type": "color"
-   },
-   "$note": "s123-D3 (Dave, 2026-08-07, #123): SUPERCHARGE keeps SOLID tints — Dave: 'the warm ramp can stay solids, they are for large surfaces'. Pins the pre-s123 base pair explicitly; without this it would silently inherit mono's new alpha-derived composites (the ds-039-class fall-through). Re-hue off the s122 solids is a SEPARATE, unruled call."
-  },
-  "rag/warning-tint": {
-   "light": {
-    "$value": "#F6E5CC",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#3C2C13",
-    "$type": "color"
-   },
-   "$note": "s123-D3 (Dave, 2026-08-07, #123): SUPERCHARGE keeps SOLID tints — Dave: 'the warm ramp can stay solids, they are for large surfaces'. Pins the pre-s123 base pair explicitly; without this it would silently inherit mono's new alpha-derived composites (the ds-039-class fall-through). Re-hue off the s122 solids is a SEPARATE, unruled call."
-  },
-  "rag/success-tint": {
-   "light": {
-    "$value": "#DCEDE3",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#12291D",
-    "$type": "color"
-   },
-   "$note": "s123-D3 (Dave, 2026-08-07, #123): SUPERCHARGE keeps SOLID tints — Dave: 'the warm ramp can stay solids, they are for large surfaces'. Pins the pre-s123 base pair explicitly; without this it would silently inherit mono's new alpha-derived composites (the ds-039-class fall-through). Re-hue off the s122 solids is a SEPARATE, unruled call."
-  },
-  "rag/information-tint": {
-   "light": {
-    "$value": "#D6E3EC",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#092131",
-    "$type": "color"
-   },
-   "$note": "s123-D3 (Dave, 2026-08-07, #123): SUPERCHARGE keeps SOLID tints — Dave: 'the warm ramp can stay solids, they are for large surfaces'. Pins the pre-s123 base pair explicitly; without this it would silently inherit mono's new alpha-derived composites (the ds-039-class fall-through). Re-hue off the s122 solids is a SEPARATE, unruled call. | s132-D1 (Dave, #132): information FILL moved #4F77B0 -> #5A85C1, but this SOLID tint pin is deliberately UNCHANGED - re-hue off the s122 solids remains a SEPARATE, unruled call (this clause), and re-compositing it under s132-D1 would be the fall-through class. Flagged to Dave at #132."
-  },
-  "rag/text/on-information": {
-   "light": {
-    "$value": "#FFFFFF",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#FFFFFF",
-    "$type": "color"
-   },
-   "$note": "Dave, 2026-08-14, #170: white error text OUTSIDE mono. Console + Supercharge take the same white on-information ink Legacy carries (s131-D1 shape), so the reversed error/information text is not graded as mono's dark ink. Mode-invariant (#FFFFFF light + dark)."
-  }
- },
- "$marksNote": "s122-D3 (#122). --mark-* has no store token (its source atom lives in canon.css, TOKENS marks, s121-D1); a theme that re-rules the knockout declares it HERE and gen_theme_cascade.py emits --mark-<status> into the theme root blocks. Both modes are mandatory: there is no per-theme base to fall back to.",
- "marks": {
-  "error": {
-   "light": {
-    "$value": "#FFFFFF",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#FFFFFF",
-    "$type": "color"
-   },
-   "$note": "s122-D3: glyph knockout on the error fill #B92F1E = 6.02:1."
-  },
-  "warning": {
-   "light": {
-    "$value": "#000000",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#000000",
-    "$type": "color"
-   },
-   "$note": "s122-D3: glyph knockout on the warning fill #D5990B = 8.39:1."
-  },
-  "success": {
-   "light": {
-    "$value": "#1A1A1A",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#1A1A1A",
-    "$type": "color"
-   },
-   "$note": "s122-D3: glyph knockout on the success fill #5DAC7B = 6.34:1."
-  },
-  "info": {
-   "light": {
-    "$value": "#1A1A1A",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#1A1A1A",
-    "$type": "color"
-   },
-   "$note": "s122-D3: glyph knockout on the information fill #4F77B0 = 4.57:1."
-  }
- },
- "$guardsNote": "s158-D1 (Dave, #158): GUARDS. Not token overrides — declarations that THIS theme keeps a paint a later MONO-ONLY ruling moved away from it. They were hand-edited into canon.css's AUTO-THEMES block (which says do NOT hand-edit), and that is what held gen_theme_cascade --check red. Sourced here so the generator emits them and canon.css is clean generated output again. Provenance: .cn-banner .banner.err ink + .cn-tabs --badge-bg/--badge-ink = s149-D1 clauses (1) and (3), scoped 'this is right for mono only' — legacy s131-D1 / console+supercharge s132-D1 stay as built; --error-atom: var(--error) = s151-D1, an explicit NO-OP guard so the two-red law's atom fork cannot reach a theme that owns its own red. placement 'sorted' joins the sorted declaration namespace, 'append' is emitted after it in authored order (both reproduce the ratified bytes).",
- "guards": {
-  "badge": {
-   "placement": "sorted",
-   "$noteLight": [
-    "s160-D2 is MONO ONLY — supercharge's badge/background override is untouched, so its numeral keeps the",
-    "WHITE ink (type26-013) rather than inherit mono's new rag/text/on-light seat."
-   ],
-   "declarations": {
-    "--number": {
-     "value": "var(--text-reverse)"
-    }
-   }
-  },
-  "banner": {
-   "rules": [
-    {
-     "$note": [
-      "s149-D1 is MONO ONLY — supercharge s132-D1 untouched: state the white ink explicitly, since",
-      "mono's .banner.err default (which supercharge previously inherited) has moved to #1A1A1A."
-     ],
-     "selector": ".cn-banner .banner.err",
-     "body": "--ink:var(--on-dark);"
+  "$description": "Apollo Supercharge override set (ADR-0011 + ADR-0014). Since 2026-07-22 Supercharge carries its OWN warm neutral ramp: the neutral DNA tier (color/neutral/1-15) rebinds here onto color/warm/* — page, ink, surfaces, borders and disabled greys all follow by step index. Status/RAG + dataviz stay identical to Mono (only Legacy differs). State mechanism = colour by default (registry stateMechanism; opacity only where it snaps to a warm step). Dark-mode values are index-symmetric PROPOSALS (provisional-agent, Dave review sheet 2026-07-22) — 'we can always change.' || s158-D4 (Dave, 2026-08-12) OPTION B — SINGLE SOURCE: the twelve palette-owned rag hue keys (error/warning/success/information x bare/-glyph/-background) were TRIMMED from this file; the palette file named by this theme's ragPalette in _themes.json is now their ONE source, projected by canon/gen_theme_cascade.py BEFORE the override set. Every $note that lived on those entries was relocated VERBATIM into the palette file's matching key FIRST (add-then-trim), so no ruling provenance was lost. -tint keys STAY here per s123-D3 (tints derive from per-theme grounds and are NOT palette-owned); rag/text/* stays here too. Enforced by _validate_palette_tier.py --strict-absence. || #176 (2026-08-14, s176 WORKING — Dave's word, NOT YET RATIFIED BY EYE): step/complete was TRIMMED from this file so Supercharge inherits the base, which now aliases rag/success (the success-roundel chain) — Dave: 'they can just inherit then wholesale. Except Legacy.' Supercharge therefore resolves step/complete to its own palette success #5DAC7B, mode-invariant. The trimmed entry's $note was relocated VERBATIM into the base token's $note in tokens/semantic-colour.json (step/complete) FIRST, add-then-trim, and its retired pair (light #B92F1E / dark #CC4333) is quoted there — no ruling provenance was lost. This restores the file's own 'Supercharge ≡ Mono everywhere else' description for this path.",
+  "$theme": "apollo-supercharge",
+  "$attr": "supercharge",
+  "$schemaVersion": "1.0.0",
+  "overrides": {
+    "color/neutral/1": {
+      "$alias": "color/warm/1",
+      "$type": "color",
+      "$note": "warm/1 = #000000 = mono/1 — no-op by value; declared for the complete 15-step binding."
     },
-    {
-     "$note": [
-      "s149-D1's WASH MEDIUM is MONO ONLY too — supercharge s132-D1 untouched: mono's error-banner action washes",
-      "moved to WHITE-fixed 8%/14%; this theme keeps the ink-derived 14%/22% wash exactly as built.",
-      "Restated here because mono's .banner.err default (which this theme inherited) has changed."
-     ],
-     "selector": ".cn-banner .banner.err .actions .abtn:hover",
-     "body": "background:color-mix(in srgb, var(--ink) 14%, transparent);"
+    "color/neutral/2": {
+      "$alias": "color/warm/2",
+      "$type": "color"
     },
-    {
-     "$note": [
-      "s149-D1 wash medium, pressed leg — see the hover note above."
-     ],
-     "selector": ".cn-banner .banner.err .actions .abtn:active",
-     "body": "background:color-mix(in srgb, var(--ink) 22%, transparent);"
-    }
-   ]
-  },
-  "selection-controls": {
-   "placement": "sorted",
-   "declarations": {
-    "--error-atom": {
-     "value": "var(--error)",
-     "$comment": "s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value"
-    }
-   }
-  },
-  "tabs": {
-   "placement": "append",
-   "$noteLight": [
-    "s149-D1 is MONO ONLY — supercharge s132-D1 untouched: preserve the pre-existing .ovcount",
-    "paint (--tabs-active / --text-reverse) rather than inherit mono's new badge seat."
-   ],
-   "declarations": {
-    "--badge-bg": {
-     "value": "var(--tabs-active)"
+    "color/neutral/3": {
+      "$alias": "color/warm/3",
+      "$type": "color"
     },
-    "--badge-ink": {
-     "value": "var(--text-reverse)"
+    "color/neutral/4": {
+      "$alias": "color/warm/2",
+      "$type": "color",
+      "$note": "ADR-0014 ANCHOR REMAP (Dave ruled 2026-07-22: SC ink = #13110E, 'just use this we can always change'). neutral/4 is the Mono anchor step (ink = digital-black = action fill = mono/4); Supercharge's anchor is ITS step 2 — the warm ramp packs dark, so index-identity would land the anchor a shade light (warm/4 #25211C, L~33 vs mono/4 L~26). Every anchor-bound role (ink, dark page, primary action fill) follows this one line."
+    },
+    "color/neutral/5": {
+      "$alias": "color/warm/5",
+      "$type": "color"
+    },
+    "color/neutral/6": {
+      "$alias": "color/warm/6",
+      "$type": "color"
+    },
+    "color/neutral/7": {
+      "$alias": "color/warm/7",
+      "$type": "color"
+    },
+    "color/neutral/8": {
+      "$alias": "color/warm/8",
+      "$type": "color"
+    },
+    "color/neutral/9": {
+      "$alias": "color/warm/9",
+      "$type": "color"
+    },
+    "color/neutral/10": {
+      "$alias": "color/warm/10",
+      "$type": "color"
+    },
+    "color/neutral/11": {
+      "$alias": "color/warm/11",
+      "$type": "color"
+    },
+    "color/neutral/12": {
+      "$alias": "color/warm/12",
+      "$type": "color"
+    },
+    "color/neutral/13": {
+      "$alias": "color/warm/13",
+      "$type": "color"
+    },
+    "color/neutral/14": {
+      "$alias": "color/warm/14",
+      "$type": "color"
+    },
+    "color/neutral/15": {
+      "$alias": "color/warm/15",
+      "$type": "color"
+    },
+    "color/neutral/raise-1": {
+      "$value": "#2A2621",
+      "$type": "color",
+      "$note": "CALCULATED (provisional-agent, ADR-0014 review sheet): mono elevation deltas (+5/+9/+13 per channel over the dark ground) applied to warm/4 #25211C. Dave to review; 'we can always change.'"
+    },
+    "color/neutral/raise-2": {
+      "$value": "#2E2A25",
+      "$type": "color",
+      "$note": "CALCULATED (provisional-agent, ADR-0014 review sheet): mono elevation deltas (+5/+9/+13 per channel over the dark ground) applied to warm/4 #25211C. Dave to review; 'we can always change.'"
+    },
+    "color/neutral/raise-3": {
+      "$value": "#322E29",
+      "$type": "color",
+      "$note": "CALCULATED (provisional-agent, ADR-0014 review sheet): mono elevation deltas (+5/+9/+13 per channel over the dark ground) applied to warm/4 #25211C. Dave to review; 'we can always change.'"
+    },
+    "color/neutral/hover-light": {
+      "$alias": "color/warm/7",
+      "$type": "color",
+      "$note": "CARRIED FORWARD unchanged at the s198-D2 mint (2026-08-17): Mono re-derived its primary-action hover at alpha 0.68 onto new primitives; Supercharge keeps the ramp-snapped warm/7 it already rendered (#493F39 light) so this fix changes no Supercharge pixel. A 0.68 re-derivation on the warm ramp is Dave's to call."
+    },
+    "color/neutral/hover-dark": {
+      "$alias": "color/warm/10",
+      "$type": "color",
+      "$note": "CARRIED FORWARD unchanged at the s198-D2 mint (2026-08-17): Supercharge keeps the ramp-snapped warm/10 it already rendered (#806E65 dark). A 0.68 re-derivation on the warm ramp is Dave's to call."
+    },
+    "tabs/inactive": {
+      "light": {
+        "$value": "#493F39",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#AA9B92",
+        "$type": "color"
+      },
+      "$note": "ADR-0014/R-D23 refinement (Dave's Ally reminder, 2026-07-22 post-push): inactive is INTERACTIVE, not disabled — must pass 4.5:1. The DNA index (warm/10 #806E65) sits 3.89:1 on the SC dark page → dark = warm/11 #AA9B92 (7.01:1). Light restates the DNA value warm/7 #493F39 (9.47:1) because a per-mode override must carry BOTH modes (loader falls back to MONO base, not the theme's DNA). PROVISIONAL-AGENT like all SC dark values — on the review sheet."
+    },
+    "motion/press/travel": {
+      "$value": 0,
+      "$type": "number",
+      "$note": "B-D7 (Dave 2026-07-22): press/hover MOVEMENT is ABSENT in Supercharge — state feedback is colour-only (mechanism = colour, registry stateMechanism; movement stays a Mono/Console trait). travel=0 makes scale(calc(1 ± 0/size)) the identity. Theme dial — raise if finessing ever wants it."
+    },
+    "motion/press/darken": {
+      "$value": 1,
+      "$type": "number",
+      "$note": "B-D7: no :active brightness darken in Supercharge — the pressed colour tokens carry the state. brightness(1) = no-op."
+    },
+    "rag/error-tint": {
+      "light": {
+        "$value": "#F1E0DC",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#2C120D",
+        "$type": "color"
+      },
+      "$note": "s123-D3 (Dave, 2026-08-07, #123): SUPERCHARGE keeps SOLID tints — Dave: 'the warm ramp can stay solids, they are for large surfaces'. Pins the pre-s123 base pair explicitly; without this it would silently inherit mono's new alpha-derived composites (the ds-039-class fall-through). Re-hue off the s122 solids is a SEPARATE, unruled call."
+    },
+    "rag/warning-tint": {
+      "light": {
+        "$value": "#F6E5CC",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#3C2C13",
+        "$type": "color"
+      },
+      "$note": "s123-D3 (Dave, 2026-08-07, #123): SUPERCHARGE keeps SOLID tints — Dave: 'the warm ramp can stay solids, they are for large surfaces'. Pins the pre-s123 base pair explicitly; without this it would silently inherit mono's new alpha-derived composites (the ds-039-class fall-through). Re-hue off the s122 solids is a SEPARATE, unruled call."
+    },
+    "rag/success-tint": {
+      "light": {
+        "$value": "#DCEDE3",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#12291D",
+        "$type": "color"
+      },
+      "$note": "s123-D3 (Dave, 2026-08-07, #123): SUPERCHARGE keeps SOLID tints — Dave: 'the warm ramp can stay solids, they are for large surfaces'. Pins the pre-s123 base pair explicitly; without this it would silently inherit mono's new alpha-derived composites (the ds-039-class fall-through). Re-hue off the s122 solids is a SEPARATE, unruled call."
+    },
+    "rag/information-tint": {
+      "light": {
+        "$value": "#D6E3EC",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#092131",
+        "$type": "color"
+      },
+      "$note": "s123-D3 (Dave, 2026-08-07, #123): SUPERCHARGE keeps SOLID tints — Dave: 'the warm ramp can stay solids, they are for large surfaces'. Pins the pre-s123 base pair explicitly; without this it would silently inherit mono's new alpha-derived composites (the ds-039-class fall-through). Re-hue off the s122 solids is a SEPARATE, unruled call. | s132-D1 (Dave, #132): information FILL moved #4F77B0 -> #5A85C1, but this SOLID tint pin is deliberately UNCHANGED - re-hue off the s122 solids remains a SEPARATE, unruled call (this clause), and re-compositing it under s132-D1 would be the fall-through class. Flagged to Dave at #132."
+    },
+    "rag/text/on-information": {
+      "light": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "$note": "Dave, 2026-08-14, #170: white error text OUTSIDE mono. Console + Supercharge take the same white on-information ink Legacy carries (s131-D1 shape), so the reversed error/information text is not graded as mono's dark ink. Mode-invariant (#FFFFFF light + dark)."
     }
-   }
+  },
+  "$marksNote": "s122-D3 (#122). --mark-* has no store token (its source atom lives in canon.css, TOKENS marks, s121-D1); a theme that re-rules the knockout declares it HERE and gen_theme_cascade.py emits --mark-<status> into the theme root blocks. Both modes are mandatory: there is no per-theme base to fall back to.",
+  "marks": {
+    "error": {
+      "light": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "$note": "s122-D3: glyph knockout on the error fill #B92F1E = 6.02:1."
+    },
+    "warning": {
+      "light": {
+        "$value": "#000000",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#000000",
+        "$type": "color"
+      },
+      "$note": "s122-D3: glyph knockout on the warning fill #D5990B = 8.39:1."
+    },
+    "success": {
+      "light": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "$note": "s122-D3: glyph knockout on the success fill #5DAC7B = 6.34:1."
+    },
+    "info": {
+      "light": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "$note": "s122-D3: glyph knockout on the information fill #4F77B0 = 4.57:1."
+    }
+  },
+  "$guardsNote": "s158-D1 (Dave, #158): GUARDS. Not token overrides — declarations that THIS theme keeps a paint a later MONO-ONLY ruling moved away from it. They were hand-edited into canon.css's AUTO-THEMES block (which says do NOT hand-edit), and that is what held gen_theme_cascade --check red. Sourced here so the generator emits them and canon.css is clean generated output again. Provenance: .cn-banner .banner.err ink + .cn-tabs --badge-bg/--badge-ink = s149-D1 clauses (1) and (3), scoped 'this is right for mono only' — legacy s131-D1 / console+supercharge s132-D1 stay as built; --error-atom: var(--error) = s151-D1, an explicit NO-OP guard so the two-red law's atom fork cannot reach a theme that owns its own red. placement 'sorted' joins the sorted declaration namespace, 'append' is emitted after it in authored order (both reproduce the ratified bytes).",
+  "guards": {
+    "badge": {
+      "placement": "sorted",
+      "$noteLight": [
+        "s160-D2 is MONO ONLY — supercharge's badge/background override is untouched, so its numeral keeps the",
+        "WHITE ink (type26-013) rather than inherit mono's new rag/text/on-light seat."
+      ],
+      "declarations": {
+        "--number": {
+          "value": "var(--text-reverse)"
+        }
+      }
+    },
+    "banner": {
+      "rules": [
+        {
+          "$note": [
+            "s149-D1 is MONO ONLY — supercharge s132-D1 untouched: state the white ink explicitly, since",
+            "mono's .banner.err default (which supercharge previously inherited) has moved to #1A1A1A."
+          ],
+          "selector": ".cn-banner .banner.err",
+          "body": "--ink:var(--on-dark);"
+        },
+        {
+          "$note": [
+            "s149-D1's WASH MEDIUM is MONO ONLY too — supercharge s132-D1 untouched: mono's error-banner action washes",
+            "moved to WHITE-fixed 8%/14%; this theme keeps the ink-derived 14%/22% wash exactly as built.",
+            "Restated here because mono's .banner.err default (which this theme inherited) has changed."
+          ],
+          "selector": ".cn-banner .banner.err .actions .abtn:hover",
+          "body": "background:color-mix(in srgb, var(--ink) 14%, transparent);"
+        },
+        {
+          "$note": [
+            "s149-D1 wash medium, pressed leg — see the hover note above."
+          ],
+          "selector": ".cn-banner .banner.err .actions .abtn:active",
+          "body": "background:color-mix(in srgb, var(--ink) 22%, transparent);"
+        }
+      ]
+    },
+    "selection-controls": {
+      "placement": "sorted",
+      "declarations": {
+        "--error-atom": {
+          "value": "var(--error)",
+          "$comment": "s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value"
+        }
+      }
+    },
+    "status-indicator": {
+      "rules": [
+        {
+          "$note": [
+            "s212-D2 ENACTMENT (G17-B, the filled status cell) — s149-D1's dark-ink error leg is MONO ONLY.",
+            "Supercharge keeps the s132-D1 WHITE knockout on the shared-map error fill #B92F1E (6.02:1);",
+            "without this guard the cell inherits this theme's --on-light #13110E at 3.13:1.",
+            "Same shape, same reason, as the .cn-banner .banner.err guard above."
+          ],
+          "selector": ".cn-status-indicator .cell.err",
+          "body": "--ink:var(--on-dark);"
+        },
+        {
+          "$note": [
+            "PROPOSED, NOT RULED (#213 lane E2, s212-D2 enactment). As console: the information leg would",
+            "inherit this theme's rag/text/on-information #FFFFFF on the information fill #5A85C1 = 3.78:1,",
+            "below the 4.5:1 text floor (no AA exemption outside legacy). This guard seats it on",
+            "rag/text/on-light #13110E instead: 4.99:1, measured. Dave rules per-component vs upstream;",
+            "the identical leg on .cn-banner .banner.info is NOT touched."
+          ],
+          "selector": ".cn-status-indicator .cell.inf",
+          "body": "--ink:var(--on-light);"
+        }
+      ]
+    },
+    "tabs": {
+      "placement": "append",
+      "$noteLight": [
+        "s149-D1 is MONO ONLY — supercharge s132-D1 untouched: preserve the pre-existing .ovcount",
+        "paint (--tabs-active / --text-reverse) rather than inherit mono's new badge seat."
+      ],
+      "declarations": {
+        "--badge-bg": {
+          "value": "var(--tabs-active)"
+        },
+        "--badge-ink": {
+          "value": "var(--text-reverse)"
+        }
+      }
+    }
   }
- }
 }

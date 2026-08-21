@@ -34,6 +34,24 @@ DROP_FIRST = ("body", "html", "*", ".demo-controls", ".cap", ".stateLabel")
 
 def slug(name): return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
+# ds-039, SECOND SPECIES (#213): manifest PROSE goes into a CSS comment, and CSS comments do
+# not nest — the first `*/` in that prose CLOSES the header early, after which the remaining
+# words parse as garbage selectors and Chromium drops EVERY RULE BELOW, the whole AUTO-THEMES
+# cascade included. Measured live at #213: a `Finding:` quoting the shell probe
+# `ls knowledge/assets/icons/**/ | grep ...` truncated canon.css at 4,094 parsed rules with
+# ZERO [data-apollo-theme] rules reaching the browser; two such globs (Payment-card-visual #204
+# and Standing-order-mandate-row #209) cost 3,135 rules and the entire four-theme layer.
+# The #122 guard above only refused a literal '<'; a glob ending in `*/` walked straight past it.
+# FIX THE CLASS AT THE EMITTER: no authored string can close the comment it is written into.
+def cmt(text):
+    """Make arbitrary prose safe to sit inside a CSS comment.
+
+    The only unsafe sequence is the comment terminator; a single ASCII space breaks it
+    without hiding anything from a reader (`icons/**/` reads as `icons/** /`). Deliberately
+    NOT a zero-width character: an invisible fix is how this class survives the next audit.
+    """
+    return str(text).replace("*/", "* /")
+
 def tokenvar(path): return "--" + path.replace("/", "-")
 
 # ---------- tiny brace-aware CSS walker ----------
@@ -215,11 +233,11 @@ def gen_one(path):
     # ---- decision header ----
     hdr = [f"/* ============================================================",
            f"   {name}  (from snippets/{name}.reference.html)"]
-    if manifest.get("requiredAria"): hdr.append(f"   Aria: {', '.join(manifest['requiredAria'])}")
-    if manifest.get("reuses"): hdr.append(f"   Reuses: {', '.join(manifest['reuses']) if isinstance(manifest['reuses'],list) else manifest['reuses']}")
+    if manifest.get("requiredAria"): hdr.append(f"   Aria: {cmt(', '.join(manifest['requiredAria']))}")
+    if manifest.get("reuses"): hdr.append(f"   Reuses: {cmt(', '.join(manifest['reuses']) if isinstance(manifest['reuses'],list) else manifest['reuses'])}")
     for fnd in manifest.get("knownFindings", []) or []:
-        hdr.append(f"   Finding: {fnd if isinstance(fnd,str) else json.dumps(fnd)}")
-    if drift.get("$reason"): hdr.append(f"   Drift: {drift['$reason']}")
+        hdr.append(f"   Finding: {cmt(fnd if isinstance(fnd,str) else json.dumps(fnd))}")
+    if drift.get("$reason"): hdr.append(f"   Drift: {cmt(drift['$reason'])}")
     hdr.append(f"   Scope: .{sc}   ============================================================ */")
     return "\n".join(hdr) + "\n" + "\n".join(vb) + "\n" + body_css + "\n"
 

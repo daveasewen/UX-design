@@ -4,7 +4,7 @@
 - stats: {'hardcode_leaks': 0, 'real_icons': 0, 'provisional': [], 'refs': '0/0', 'asset_paths': '0/0 real', 'allcaps': 0}
 
 ## ✓ _proforma/Masthead-interactive.html — PASS
-- stats: {'hardcode_leaks': 0, 'real_icons': 44, 'provisional': ['i-brand-apollo', 'i-menu-search'], 'refs': '14/14', 'asset_paths': '44/44 real', 'allcaps': 0}
+- stats: {'hardcode_leaks': 0, 'real_icons': 45, 'provisional': ['i-brand-apollo'], 'refs': '14/14', 'asset_paths': '45/45 real', 'allcaps': 0}
 
 ## ✓ _proforma/Tranche-1-interactive.html — PASS
 - stats: {'hardcode_leaks': 0, 'real_icons': 11, 'provisional': [], 'refs': '10/10', 'asset_paths': '11/11 real', 'allcaps': 0}

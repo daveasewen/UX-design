@@ -2232,6 +2232,10 @@
    Finding: rag/warning dot = 1.69:1 on white (< 3:1) — meaning carried by the label (1.4.1); use the tint chip (form B) when warning must stand alone. NOT declared as a passing pair.
    Finding: rag/neutral-tint missing from the store — neutral/cancelled has no chip form (token gap; add rag/neutral-tint to complete the RAG tint set)
    Finding: PASSIVE atom: no hover/active/keyboard by design (anti-pattern to make it interactive); AT = role=status + aria-live (4.1.3) + label (1.4.1)
+   Finding: s212-D2 (Dave, #212) — the G17 RAG status manifestation canon set is A+B+C. Mapping onto this snippet: G17-A = the inline dot+label (form A above, unchanged); G17-B = the FILLED CELL (new, salience-ramp fill rung, for status columns in dense tables); G17-C = the BAR / edge accent (new, for cards and grouped rows). Tags and pills stay EXCLUDED from status (ctkt / ctkt-018) and are not drawn here. NAMING HAZARD: this snippet's pre-existing form A/B/C labels are a DIFFERENT taxonomy (inline / tint chip / live-announced) minted 2026-06-22 — the G17 letters are prefixed G17- everywhere to keep the two apart.
+   Finding: G17-B neutral/cancelled has NO fill leg: rag/neutral has no -background sibling, the same shape as the rag/neutral-tint gap above. The cancelled row falls back to the inline dot+label rather than inventing a fill token.
+   Finding: G17-B per-theme ink, MEASURED (base gate resolves the mono store only, so these are recorded here): mono err 5.55 / warn 7.99 / ok 10.59 / info 7.04; legacy err 7.87 (guard: white, s131-D1) / warn 10.28 / ok 4.56 / info 7.17; console err 6.02 (guard: white) / warn 6.95 / ok 7.65 / info 4.61 (guard: on-light); supercharge err 6.02 (guard: white) / warn 7.53 / ok 7.65 / info 4.99 (guard: on-light). The console+supercharge INFO guard is PROPOSED, NOT RULED — see the theme override $note.
+   Finding: G17-C carries no new declared pair: the edge is a 4px accent, not the carrier — the label inside the bar carries the meaning (icon-013 / 1.4.1), exactly as the dot does. The warning edge is the same sub-3:1 value as the warning dot and is likewise NOT declared as a passing pair.
    Scope: .cn-status-indicator   ============================================================ */
 .cn-status-indicator{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -2245,6 +2249,15 @@
   --warning-tint: var(--rag-warning-tint);
   --error-tint: var(--rag-error-tint);
   --info-tint: var(--rag-information-tint);
+  --err-bg: var(--rag-error-background);
+  --warn-bg: var(--rag-warning-background);
+  --ok-bg: var(--rag-success-background);
+  --info-bg: var(--rag-information-background);
+  --on-dark: var(--rag-text-on-dark);
+  --on-light: var(--rag-text-on-light);
+  --on-ok: var(--text-on-success);
+  --on-info: var(--rag-text-on-information);
+  --surface: var(--surface-subtle);
   --label: var(--text-default);
   --disabled: var(--text-disabled);
   --divider: var(--divider-border-section);
@@ -2276,6 +2289,30 @@
 .cn-status-indicator .chip.warn{background:var(--warning-tint);}
 .cn-status-indicator .chip.err{background:var(--error-tint);}
 .cn-status-indicator .chip.inf{background:var(--info-tint);}
+/* ---- G17-B: FILLED STATUS CELL (s212-D2) — the salience-ramp fill rung.
+         Canon manifestation B of the RAG status set: dense tables / dashboards where a COLUMN IS
+         the status and scan speed matters. Distinct from the tint chip above: the chip is the CALM
+         rung (tint ground, text/default ink); this is the LOUD rung (signal fill, ruled knockout ink).
+         Ink slots follow the Banner precedent exactly — err/warn ride rag/text/on-light, success rides
+         text/on-success, information rides its own rag/text/on-information slot (s131-D1). ---- */
+.cn-status-indicator .statustable{border-collapse:collapse; width:100%; color:var(--label);}
+.cn-status-indicator .statustable th{text-align:left; /* type: t-cm-ctl-14 (bound in canon/type.css - T-D9/T-D12); DEF-005: 8px matches the td row rhythm */ padding:8px 12px; border-bottom:1px solid var(--divider); color:var(--label); white-space:nowrap;}
+.cn-status-indicator .statustable td{padding:8px 12px; border-bottom:1px solid var(--divider); font-variant-numeric:tabular-nums;}
+.cn-status-indicator .cell{display:inline-block; min-width:84px; text-align:center; padding:4px 12px; border-radius:var(--border-radius-indicator); background:var(--fill); color:var(--ink); white-space:nowrap;}
+.cn-status-indicator .cell.ok{--fill:var(--ok-bg); --ink:var(--on-ok);}
+.cn-status-indicator .cell.warn{--fill:var(--warn-bg); --ink:var(--on-light);}
+.cn-status-indicator .cell.err{--fill:var(--err-bg); --ink:var(--on-light);}
+/* s149-D1 MONO: the error leg left the white-type camp; non-mono themes restate white in their guard */
+.cn-status-indicator .cell.inf{--fill:var(--info-bg); --ink:var(--on-info);}
+/* ---- G17-C: BAR / EDGE ACCENT (s212-D2) — left-edge accent for cards and grouped rows where the
+         WHOLE object carries the status. Colour is never the only carrier (icon-013): the label is
+         inside the bar. The edge binds the bare rag ROLE (same value the dot uses), not the fill. ---- */
+.cn-status-indicator .sbar{display:flex; align-items:center; gap:12px; padding:12px 16px; margin:8px 0; background:var(--surface); border-left:4px solid var(--edge); color:var(--label); /* type: t-ed-body on the inner label (bound in canon/type.css - T-D9/T-D12) — Editorial, not Component: the bar's label wraps */}
+.cn-status-indicator .sbar.ok{--edge:var(--success);}
+.cn-status-indicator .sbar.warn{--edge:var(--warning);}
+.cn-status-indicator .sbar.err{--edge:var(--error);}
+.cn-status-indicator .sbar.inf{--edge:var(--info);}
+.cn-status-indicator .sbar.neu{--edge:var(--neutral);}
 /* ---- form C: live announced status ---- */
 .cn-status-indicator .live{display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:12px 16px; border:1px solid var(--divider);}
 .cn-status-indicator .live .now{display:flex; align-items:center; gap:12px; font:500 16px/1.3 var(--font); min-width:160px;}
@@ -5771,7 +5808,7 @@
   --alpha-96: 0.96;
   --ease: 140ms ease;
   --surface: var(--tertiary-background-hover);
-  --ring: var(--border-subtle);
+  --avg-ring: var(--border-subtle);
   --text: var(--text-default);
   --icon: var(--icon-default);
   --focus: var(--focus-ring);
@@ -5823,7 +5860,7 @@
 /* ---- interactive: MEDIUM AND LARGE ONLY (44px min-hit-area, enforced by hand) ---- */
 .cn-avatar-group a.avg-face, .cn-avatar-group button.avg-face{cursor:pointer; text-decoration:none; padding:0; border:0;}
 .cn-avatar-group a.avg-face:focus-visible, .cn-avatar-group button.avg-face:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-.cn-avatar-group a.avg-face:hover, .cn-avatar-group button.avg-face:hover{box-shadow:0 0 0 2px var(--stack-ring), 0 0 0 3px var(--ring);}
+.cn-avatar-group a.avg-face:hover, .cn-avatar-group button.avg-face:hover{box-shadow:0 0 0 2px var(--stack-ring), 0 0 0 3px var(--avg-ring);}
 /* ---- group-as-one-target: the correct answer when the set is small (32px discs) ---- */
 .cn-avatar-group .avg-btn{display:inline-flex; align-items:center; min-height:44px; padding:0 4px;
     background:transparent; border:0; border-radius:var(--border-radius-surface); cursor:pointer;
@@ -6095,6 +6132,7 @@
   --alpha-88: 0.88;
   --alpha-92: 0.92;
   --alpha-96: 0.96;
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 140ms ease;
   --h: 44px;
   --pad-x: 20px;
@@ -6139,7 +6177,7 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-cta-lockup :is(button, .cn-cta-lockup a, .cn-cta-lockup label, .cn-cta-lockup span, .cn-cta-lockup small, .cn-cta-lockup strong, .cn-cta-lockup em, .cn-cta-lockup b, .cn-cta-lockup i, .cn-cta-lockup th, .cn-cta-lockup td, .cn-cta-lockup dt, .cn-cta-lockup dd, .cn-cta-lockup li, .cn-cta-lockup figcaption, .cn-cta-lockup legend, .cn-cta-lockup caption, .cn-cta-lockup summary, .cn-cta-lockup output, .cn-cta-lockup time, .cn-cta-lockup input[type=text], .cn-cta-lockup input[type=search], .cn-cta-lockup input[type=email], .cn-cta-lockup input[type=tel], .cn-cta-lockup input[type=url], .cn-cta-lockup input[type=password], .cn-cta-lockup input[type=number], .cn-cta-lockup input:not([type]), .cn-cta-lockup textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 .cn-cta-lockup h2.spec-h{margin:2.5rem 0 1rem;}
-.cn-cta-lockup .demo-note{font:400 12px/1.3 var(--uf); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
+.cn-cta-lockup .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
 /* ===== Button.reference.html, verbatim (.btn + primary/secondary + press-physics partial) ===== */
 /* .btn's font+box declarations are OMITTED here exactly as they are in Button.reference.html
      itself — canon/type.css already binds `.btn` into its `.t-cm-button`/`.t-cm-slot` composite
@@ -7107,9 +7145,9 @@
   --line: var(--border-subtle);
   --shadow: var(--elevation-functional);
   --data-axis: var(--data-axis-color);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
   --data-series-1-hc: #484D6F;
   --axis-alpha: .6;
-  --data-control-label-disabled: #9D9D9D;
   --data-control-swatch-off: currentColor;
   --pop-border: #FFFFFF00;
   --dv-range-1: #EDEDED;
@@ -7118,7 +7156,6 @@
 }
 [data-theme="dark"] .cn-chart-bullet{
   --data-series-1-hc: #93B6CC;
-  --data-control-label-disabled: #808080;
   --pop-border: #808080;
   --dv-range-1: #212121;
   --dv-range-2: #404040;
@@ -7572,17 +7609,16 @@
   --line: var(--border-subtle);
   --shadow: var(--elevation-functional);
   --data-axis: var(--data-axis-color);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
   --axis-alpha: .6;
   --data-grid: #626262;
   --grid-alpha: .1;
-  --data-control-label-disabled: #9D9D9D;
   --data-control-swatch-off: currentColor;
   --pop-border: #FFFFFF00;
 }
 [data-theme="dark"] .cn-chart-candlestick{
   --data-grid: #9D9D9D;
   --grid-alpha: .16;
-  --data-control-label-disabled: #808080;
   --pop-border: #808080;
 }
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
@@ -9361,11 +9397,11 @@
   --ease: 160ms cubic-bezier(.4,0,.2,1);
   --page: var(--background-default);
   --panel: var(--tertiary-background-default);
-  --scrim: var(--overlay-version1);
+  --cp-scrim: var(--overlay-version1);
   --text: var(--text-default);
   --muted: var(--text-secondary);
   --icon: var(--icon-default);
-  --rule: var(--divider-border-subsection);
+  --cp-rule: var(--divider-border-subsection);
   --hover: var(--tertiary-background-hover);
   --field-active: var(--form-border-active);
   --focus: var(--focus-ring);
@@ -9384,15 +9420,15 @@
 /* explicit gap above — leading-trim is ON */
 /* ---- the stage: the app behind the palette, bounded so the component is visible at rest ---- */
 .cn-command-palette .cp-stage{position:relative; overflow:hidden; height:460px; max-width:820px;
-            background:var(--page); border:1px solid var(--rule); border-radius:var(--radius);}
+            background:var(--page); border:1px solid var(--cp-rule); border-radius:var(--radius);}
 .cn-command-palette .cp-stage-mock{padding:20px; display:flex; flex-direction:column; gap:12px;}
-.cn-command-palette .cp-stage-mock span{display:block; height:12px; background:var(--rule);}
+.cn-command-palette .cp-stage-mock span{display:block; height:12px; background:var(--cp-rule);}
 .cn-command-palette .cp-stage-mock span:nth-child(1){width:38%;}
 .cn-command-palette .cp-stage-mock span:nth-child(2){width:72%;}
 .cn-command-palette .cp-stage-mock span:nth-child(3){width:64%;}
 .cn-command-palette .cp-stage-mock span:nth-child(4){width:80%;}
 .cn-command-palette .cp-stage-mock span:nth-child(5){width:46%;}
-.cn-command-palette .cp-scrim{position:absolute; inset:0; background:var(--scrim);}
+.cn-command-palette .cp-scrim{position:absolute; inset:0; background:var(--cp-scrim);}
 /* ---- the panel ---- */
 .cn-command-palette .cp{position:absolute; left:50%; transform:translateX(-50%); top:40px;
       width:min(560px, calc(100% - 32px)); background:var(--panel);
@@ -9401,7 +9437,7 @@
       max-height:calc(100% - 80px); overflow:hidden;}
 /* ---- the query field: the Search-field chrome, composed, not re-drawn ---- */
 .cn-command-palette .cp-field{display:flex; align-items:center; gap:12px; height:48px; flex:none; padding:0 12px;
-            border-bottom:1px solid var(--rule);}
+            border-bottom:1px solid var(--cp-rule);}
 /* flex:none added #209 — Dave's eye caught the field rendering 43.9px (populated) vs 33.8px
      (empty): .cp is a max-height flex column and the field was SHRINKABLE, so its declared 48px
      lost to whatever height the results list took. MEASURED before/after in a real render. */
@@ -9417,11 +9453,11 @@
 .cn-command-palette .cp-field input:focus-visible{outline:none;}
 /* ---- keycap hints ---- */
 .cn-command-palette kbd{display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:20px;
-      padding:0 4px; border:1px solid var(--rule); border-radius:var(--radius);
+      padding:0 4px; border:1px solid var(--cp-rule); border-radius:var(--radius);
       color:var(--muted); background:transparent;}
 /* ---- results ---- */
 .cn-command-palette .cp-results{overflow:auto; padding:4px 0; scrollbar-gutter:stable;}
-.cn-command-palette .cp-group + .cp-group{border-top:1px solid var(--rule); margin-top:4px; padding-top:4px;}
+.cn-command-palette .cp-group + .cp-group{border-top:1px solid var(--cp-rule); margin-top:4px; padding-top:4px;}
 .cn-command-palette .cp-group-label{display:block; padding:8px 16px; color:var(--muted); opacity:.72;}
 .cn-command-palette .cp-opt{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 16px;
           color:var(--text); cursor:pointer; position:relative;
@@ -9441,7 +9477,7 @@
 .cn-command-palette .cp-empty{display:flex; flex-direction:column; gap:4px; padding:28px 16px; color:var(--muted);}
 /* ---- footer hint bar ---- */
 .cn-command-palette .cp-foot{display:flex; align-items:center; gap:16px; flex-wrap:wrap; min-height:40px;
-           padding:8px 16px; border-top:1px solid var(--rule); color:var(--muted);}
+           padding:8px 16px; border-top:1px solid var(--cp-rule); color:var(--muted);}
 .cn-command-palette .cp-foot .hint{display:inline-flex; align-items:center; gap:8px;}
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
@@ -10622,6 +10658,7 @@
   --alpha-88: 0.88;
   --alpha-92: 0.92;
   --alpha-96: 0.96;
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 140ms ease;
   --surface: var(--tertiary-background-default);
   --border: var(--border-subtle);
@@ -10634,8 +10671,9 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-feature-grid-lockup :is(button, .cn-feature-grid-lockup a, .cn-feature-grid-lockup label, .cn-feature-grid-lockup span, .cn-feature-grid-lockup small, .cn-feature-grid-lockup strong, .cn-feature-grid-lockup em, .cn-feature-grid-lockup b, .cn-feature-grid-lockup i, .cn-feature-grid-lockup th, .cn-feature-grid-lockup td, .cn-feature-grid-lockup dt, .cn-feature-grid-lockup dd, .cn-feature-grid-lockup li, .cn-feature-grid-lockup figcaption, .cn-feature-grid-lockup legend, .cn-feature-grid-lockup caption, .cn-feature-grid-lockup summary, .cn-feature-grid-lockup output, .cn-feature-grid-lockup time, .cn-feature-grid-lockup input[type=text], .cn-feature-grid-lockup input[type=search], .cn-feature-grid-lockup input[type=email], .cn-feature-grid-lockup input[type=tel], .cn-feature-grid-lockup input[type=url], .cn-feature-grid-lockup input[type=password], .cn-feature-grid-lockup input[type=number], .cn-feature-grid-lockup input:not([type]), .cn-feature-grid-lockup textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* --font byte-identical to Page-header-lockup:68 — this snippet reached for type.css's --uf instead, which does not exist in canon.css (#213 compose-gate repair) */
 .cn-feature-grid-lockup h2.spec-h{margin:2.5rem 0 1rem;}
-.cn-feature-grid-lockup .demo-note{font:400 12px/1.3 var(--uf); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
+.cn-feature-grid-lockup .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
 /* ===== Cards.reference.html, verbatim (.card base + the Action-card icon/title/body geometry,
      minus the `.actions` button row — declared omission, see the file banner) ===== */
 .cn-feature-grid-lockup .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface); container-type:inline-size; display:flex; flex-direction:column;}
@@ -12826,7 +12864,7 @@
    Aria: role="group", aria-labelledby, aria-hidden="true", aria-pressed
    Reuses: Account-card (shell, masked-number idiom, meta row), Tags (square chip), Status-indicator (RAG tint chip), Button (tertiary, 44px)
    Finding: PROPOSED #204 — NOT GATED, NOT RULED. Fintech semantics are Dave's.
-   Finding: EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/**/ | grep -iE "chip|visa|mastercard|amex|network"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.
+   Finding: EVERY BRAND SURFACE IS AN EMPTY DECLARED SLOT. Card-network marks, issuer logotypes, the EMV chip contact pattern and embossing are licensed/governed artwork and were NOT drawn. Probe, quoted: `ls knowledge/assets/icons/** / | grep -iE "chip|visa|mastercard|amex|network"` -> EMPTY. #86-D2 fences our own marks too. The slots are .pcv-slot, dashed, labelled, aria-hidden.
    Finding: THE ONE GLYPH IS REAL: assets/icons/media/contactless.svg, byte-matched via <symbol>. It is a functional indicator, not a brand mark.
    Finding: Status dot is < 3:1 standalone (rag/success 1.98:1, rag/warning 2.18:1 on white, measured #204) so meaning is carried by the label text (1.4.1) — the SAME handled finding Account-card and Status-indicator already declare, INHERITED VERBATIM and NOT resolved here. It is the same class as the live Stat-card/Kpi-tile FILL-vs-INK two-red seam and is on this lane's DO-NOT-RULE list.
    Finding: NO DARK / PREMIUM CARD FACE IS BUILT, and that is a token gap, not an oversight. knowledge/_COMPONENT-GAPS.md logs 'Inverse / hero surface - no light-mode dark-band role - the portfolio invented charcoals (#0E1014...)'. A dark card face today would re-commit that recorded defect. The card face therefore binds tertiary/background/default, exactly like Account-card. FINDING for Dave.
@@ -13020,18 +13058,18 @@
 .cn-popconfirm .pc-trigger.icon-only{min-width:var(--target-min); width:var(--target-min); height:var(--target-min);
     padding:0; border:0;}
 /* ---- the bubble. Popover's chrome, verbatim; anchored in flow rather than fixed (declared). ---- */
-.cn-popconfirm .pc{--tail-x:24px; position:absolute; z-index:50; top:calc(100% + 12px); left:0;
+.cn-popconfirm .pc{--pc-tail-x:24px; position:absolute; z-index:50; top:calc(100% + 12px); left:0;
     width:max-content; max-width:min(320px, calc(100vw - 32px));
     background:var(--surface); color:var(--text); border:1px solid var(--pop-border);
     border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow); padding:16px;
     text-align:left; opacity:0; pointer-events:none; transition:opacity var(--ease);}
 .cn-popconfirm .pc.is-open{opacity:1; pointer-events:auto;}
-.cn-popconfirm .pc::after{content:""; position:absolute; left:var(--tail-x); width:10px; height:10px;
+.cn-popconfirm .pc::after{content:""; position:absolute; left:var(--pc-tail-x); width:10px; height:10px;
     background:var(--surface); border:1px solid var(--pop-border);
     bottom:100%; transform:translate(-50%,50%) rotate(45deg); border-bottom:0; border-right:0;}
 /* right-anchored form, for a trigger near the end of a row */
 .cn-popconfirm .pc.align-end{left:auto; right:0;}
-.cn-popconfirm .pc.align-end::after{left:auto; right:calc(var(--tail-x) - 5px);}
+.cn-popconfirm .pc.align-end::after{left:auto; right:calc(var(--pc-tail-x) - 5px);}
 .cn-popconfirm .pc-head{display:flex; align-items:flex-start; gap:8px; margin-bottom:8px;}
 .cn-popconfirm .pc-glyph{flex:none; width:18px; height:18px; display:inline-flex; margin-top:1px;}
 .cn-popconfirm .pc-glyph svg{width:18px; height:18px; display:block; fill:currentColor;}
@@ -14178,8 +14216,8 @@
 /* ---------- the splitter ---------- */
 .cn-splitter .sp{display:grid; height:100%; width:100%; background:var(--surface);
     --div:8px;            /* the drawn divider thickness — 4px grid */
-    --min-pri:160px;      /* fence: the primary pane may not go below this */
-    --min-sec:160px;      /* fence: the secondary pane may not go below this */
+    --spl-min-pri:160px;      /* fence: the primary pane may not go below this */
+    --spl-min-sec:160px;      /* fence: the secondary pane may not go below this */
     --pri:50%;            /* the live size of the primary pane; JS overrides in px */}
 .cn-splitter .sp[data-orientation="horizontal"]{grid-template-columns:var(--pri) var(--div) 1fr;
     grid-template-rows:100%;}
@@ -14225,7 +14263,7 @@
    Finding: NO MONEY COLOUR AND NO RED FAILURE STATE WAS INVENTED. Every amount is monochrome text/default in Amount-display's format. The failed row carries the WORD on the WARNING seat plus a plain text consequence line; the error seat touches the two-red law (s151-D1) and is DAVE'S. That restraint is a declared choice, not a considered ruling.
    Finding: The VARIABLE-amount Direct Debit shows the LAST taken figure and says 'Amount varies' in the rhythm line, rather than presenting a stale number as if it were the next one. Which figure a variable mandate should show is P2, Dave's.
    Finding: 44px min-hit-area enforced BY HAND — no gate reads the ruled token from a snippet. Primary target = the stretched-link row (min-height 76). Manage button = 44x44. The cancelled row's control is a native disabled button whose accessible name carries the reason.
-   Finding: ⚠ NO RECURRING-PAYMENT GLYPH EXISTS IN THE LIBRARY. Probe run and quoted: `ls knowledge/assets/icons/*/ | grep -iE "recur|repeat|refresh|cycle|rotate|mandate"` → refresh.svg, refresh-active.svg, rotate-left.svg, rotate-right.svg — four RELOAD glyphs, none of which means 'this payment repeats'. The generic media/document.svg glyph stands in (byte-matched off disk) and P8 names the substitution. An icon-gap entry may be owed to _ICON-GAPS.md — the conductor's file, not this lane's. Both glyphs used here are byte-matched: media/document.svg and global-controls/menu-more-horizontal.svg.
+   Finding: ⚠ NO RECURRING-PAYMENT GLYPH EXISTS IN THE LIBRARY. Probe run and quoted: `ls knowledge/assets/icons/* / | grep -iE "recur|repeat|refresh|cycle|rotate|mandate"` → refresh.svg, refresh-active.svg, rotate-left.svg, rotate-right.svg — four RELOAD glyphs, none of which means 'this payment repeats'. The generic media/document.svg glyph stands in (byte-matched off disk) and P8 names the substitution. An icon-gap entry may be owed to _ICON-GAPS.md — the conductor's file, not this lane's. Both glyphs used here are byte-matched: media/document.svg and global-controls/menu-more-horizontal.svg.
    Finding: The failure note is role="status" (polite), not role="alert": the failure already happened and the row is being read, not interrupted.
    Finding: TYPE: contributes 0 to the shrink-only ratchet. No raw font declarations in component scope.
    Finding: INHERITED: text/secondary on tertiary/background/hover in dark measures 3.34:1 (< 4.5) — List-items' own open $darkFinding, SYSTEMIC across every interactive row with secondary text on a hover surface. Not invented around; the List-items meta is the home.
@@ -15269,6 +15307,8 @@
   --line: var(--border-subtle);
   --hover: var(--form-background-hover);
   --focus: var(--focus-ring);
+  --header: var(--table-header-background);
+  --fborder: var(--form-border-default);
   --success: #66CC8D;
   --warning: var(--rag-warning);
   --info: var(--rag-information);
@@ -15371,14 +15411,11 @@
 .cn-template-confirmation .confirm__title{color:var(--text); margin:0;}
 .cn-template-confirmation .confirm__msg{color:var(--muted); margin:0;}
 .cn-template-confirmation .confirm__actions{display:flex; flex-direction:column; gap:12px; width:100%; margin-top:12px;}
-.cn-template-confirmation display:inline-flex; align-items:center; justify-content:center; transition:background var(--ease), .cn-template-confirmation filter var(--press); }
-
-
-  /* ---- Confirmation's ENTRANCE — carried verbatim. A success screen earns a pop. ---- */
-  /* entrance — success pops in (spring), .cn-template-confirmation then title / message / actions rise in sequence */
-  @keyframes pop{0%{ transform:scale(.5); opacity:0; } 60%{ transform:scale(1.06); } 100%{ transform:scale(1); opacity:1; }}
+/* ---- Confirmation's ENTRANCE — carried verbatim. A success screen earns a pop. ---- */
+/* entrance — success pops in (spring), then title / message / actions rise in sequence */
+@keyframes cn-template-confirmation-pop{ 0%{ transform:scale(.5); opacity:0; } 60%{ transform:scale(1.06); } 100%{ transform:scale(1); opacity:1; } }
 @keyframes cn-template-confirmation-rise{ from{ transform:translateY(10px); opacity:0; } to{ transform:translateY(0); opacity:1; } }
-.cn-template-confirmation .confirm .success{animation:pop 460ms cubic-bezier(.5,1.6,.4,1) both;}
+.cn-template-confirmation .confirm .success{animation:cn-template-confirmation-pop 460ms cubic-bezier(.5,1.6,.4,1) both;}
 .cn-template-confirmation .confirm__title{animation:cn-template-confirmation-rise 360ms ease 140ms both;}
 .cn-template-confirmation .confirm__msg{animation:cn-template-confirmation-rise 360ms ease 220ms both;}
 .cn-template-confirmation .confirm__actions{animation:cn-template-confirmation-rise 360ms ease 300ms both;}
@@ -15398,8 +15435,11 @@
 .cn-template-confirmation .status.ok .dot{background:var(--success);}
 .cn-template-confirmation .status.warn{background:var(--warning-tint);}
 .cn-template-confirmation .status.warn .dot{background:var(--warning);}
-.cn-template-confirmation .status.err{background:var(--error-tint);}
-.cn-template-confirmation .status.err .dot{background:var(--error);}
+/* NO `.status.err` rule here. This file's theme blocks deliberately declare no `--error` /
+     `--error-tint` (see the theme-block header: every value COPIED, nothing new), and the
+     markup carries no `status err` chip — a confirmation page has no error state. The rule
+     was carried from the source chip block without its tokens and referenced two properties
+     that resolve nowhere, which is invalid-at-computed-value-time, not a fallback (ds-018). */
 .cn-template-confirmation .status.inf{background:var(--info-tint);}
 .cn-template-confirmation .status.inf .dot{background:var(--info);}
 /* ---- the decorative anchor glyph — Empty-state `.empty .glyph` ---- */
@@ -16579,6 +16619,7 @@
   --line: var(--border-subtle);
   --hover: var(--form-background-hover);
   --focus: var(--focus-ring);
+  --header: var(--table-header-background);
   --fborder: var(--form-border-default);
   --bar: var(--form-border-active);
   --pri-default: var(--button-primary-background-default);
@@ -16821,6 +16862,8 @@
   --line: var(--border-subtle);
   --hover: var(--form-background-hover);
   --focus: var(--focus-ring);
+  --header: var(--table-header-background);
+  --fborder: var(--form-border-default);
   --pri-default: var(--button-primary-background-default);
   --pri-label: var(--button-primary-label-default);
   --pri-hover: var(--button-primary-background-hover);
@@ -16911,16 +16954,17 @@
      Button ATOM, so carrying a second button ladder would fork it. ---- */
 /* ---- Confirmation / success ---- */
 .cn-template-error .confirm{display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:12px; max-width:380px; margin:0 auto; padding:40px 24px;}
-.cn-template-error .confirm .success{width:56px; height:56px; fill:var(--success);}
-/* success-solid glyph; tick is a cutout showing the page behind — light: white tick on green (4.56 ✓); dark: shape flips WHITE so the cutout reads as a BLACK tick (roundel policy) */
+/* NO `.confirm .success` roundel rule here. It was carried from Confirmation but this file
+     declares NO rag/* token at all (see the theme-block header) and the markup carries no
+     `.success` glyph — composition rule 6 below says so in Dave's own terms: an error page
+     uses Empty-state's 48px anchor glyph, NOT Confirmation's 56px RAG roundel. The carried
+     rule's `var(--success)` resolved nowhere, i.e. invalid-at-computed-value-time (ds-018). */
 .cn-template-error .confirm__title{color:var(--text); margin:0;}
 .cn-template-error .confirm__msg{color:var(--muted); margin:0;}
 .cn-template-error .confirm__actions{display:flex; flex-direction:column; gap:12px; width:100%; margin-top:12px;}
-.cn-template-error display:inline-flex; align-items:center; justify-content:center; transition:background var(--ease), .cn-template-error filter var(--press); }
-
-
-  /* ---- the decorative anchor glyph — Empty-state.reference.html `.empty .glyph`, .cn-template-error declaration-for-declaration (48px, .cn-template-error text ink at alpha/40, .cn-template-error aria-hidden). ---- */
-  .glyph{width:48px; height:48px; color:var(--text); opacity:var(--alpha-40);}
+/* ---- the decorative anchor glyph — Empty-state.reference.html `.empty .glyph`,
+     declaration-for-declaration (48px, text ink at alpha/40, aria-hidden). ---- */
+.cn-template-error .glyph{width:48px; height:48px; color:var(--text); opacity:var(--alpha-40);}
 .cn-template-error .glyph svg{width:48px; height:48px; display:block; fill:currentColor;}
 /* ============================================================================================
      THE COMPOSITION RULES — each is a RELATIONSHIP, never an atom's appearance.
@@ -17843,7 +17887,7 @@
   --alpha-92: 0.92;
   --alpha-96: 0.96;
   --ease: 180ms cubic-bezier(.4,0,.2,1);
-  --move: 200ms cubic-bezier(.4,0,.2,1);
+  --tset-move: 200ms cubic-bezier(.4,0,.2,1);
   --spring: 300ms cubic-bezier(.5,1.6,.4,1);
   --press: 90ms cubic-bezier(0,0,.58,1);
   --phys-size: 120;
@@ -17857,6 +17901,7 @@
   --divider: var(--divider-border-section);
   --hover: var(--form-background-hover);
   --focus: var(--focus-ring);
+  --header: var(--table-header-background);
   --fborder: var(--form-border-default);
   --field-bg-hover: var(--form-background-hover);
   --border-default: var(--form-border-default);
@@ -17982,18 +18027,18 @@
 .cn-template-settings .btn svg{width:16px; height:16px; fill:currentColor; flex:none;}
 /* ---- Segmented control — the ATOM (Segmented-control.reference.html), 2px inset
      track + floating indicator. `--border` is renamed to `--fborder` and its local
-     `--ease` to `--move`: BOTH are var-NAME collisions with other components on this
+     `--ease` to `--tset-move`: BOTH are var-NAME collisions with other components on this
      page (Segmented-control calls form/border/default `--border`; Data-grid and
      Template-dashboard call border/subtle by that name). Same tokens, one name each. ---- */
 .cn-template-settings .seg{position:relative; display:inline-flex; padding:2px; border:1px solid var(--fborder); background:var(--surface); vertical-align:top;}
 .cn-template-settings .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0;
-    transition:left var(--move), width var(--move);}
+    transition:left var(--tset-move), width var(--tset-move);}
 /* the active fill — floats in the 2px inset, slides */
 .cn-template-settings .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
     /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
        (composites .t-cm-ctl-12/-14/-16; sized selectors registered in _type-bindings.json). */
-    cursor:pointer; transition:color var(--move);}
+    cursor:pointer; transition:color var(--tset-move);}
 /* NO inter-button divider — one border frames the whole track; the fill floats + slides. */
 .cn-template-settings .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
 /* hover only on inactive (active sits over the fill) */
@@ -18152,10 +18197,11 @@
 .cn-template-settings .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
     border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
 .cn-template-settings .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
-.cn-template-settings .status.ok{background:var(--success-tint);}
-.cn-template-settings .status.ok .dot{background:var(--success);}
-.cn-template-settings .status.warn{background:var(--warning-tint);}
-.cn-template-settings .status.warn .dot{background:var(--warning);}
+/* NO `.status.ok` / `.status.warn` rules here. This file's theme blocks declare `--error` and
+     `--error-tint` but deliberately no `--success-tint` / `--warning` / `--warning-tint` (its RAG
+     comment carries `--info` + `--info-tint` only), and the markup carries one chip: `status inf`.
+     The two rules were carried from the source chip block without their tokens and referenced four
+     properties that resolve nowhere — invalid-at-computed-value-time, not a fallback (ds-018). */
 .cn-template-settings .status.err{background:var(--error-tint);}
 .cn-template-settings .status.err .dot{background:var(--error);}
 .cn-template-settings .status.inf{background:var(--info-tint);}
@@ -19688,14 +19734,14 @@
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-avatar-group{
+  --avg-ring: #D7D8D6;
   --card-border: #D7D8D6;
-  --ring: #D7D8D6;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-avatar-group,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-avatar-group{
+  --avg-ring: #404040;
   --card-border: #404040;
-  --ring: #404040;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-avatar{
@@ -20886,25 +20932,42 @@
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-status-indicator{
+  --err-bg: #A8000B;
   --error: #A8000B;
   --error-tint: #F9F2F3;
   --info: #305A85;
+  --info-bg: #305A85;
   --info-tint: #EBEFF4;
   --label: #333333;
+  --ok-bg: #00847F;
+  --on-info: #FFFFFF;
+  --on-ok: #FFFFFF;
   --success: #00847F;
   --success-tint: #E5F2F2;
+  --warn-bg: #FFBB33;
   --warning: #FFBB33;
   --warning-tint: #FFF8EA;
 }
+/* s212-D2 ENACTMENT (G17-B, the filled status cell) — s149-D1's dark-ink error leg is MONO ONLY.
+   Legacy keeps the s131-D1 WHITE knockout on its own error fill #A8000B (7.87:1); without this
+   guard the cell would inherit mono's --ink:var(--on-light) #1A1A1A and render at 2.21:1.
+   Same shape, same reason, as the .cn-banner .banner.err guard above. */
+[data-apollo-theme="legacy"] .cn-status-indicator .cell.err{--ink:var(--on-dark);}
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-status-indicator,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-status-indicator{
+  --err-bg: #A8000B;
   --error: #A8000B;
   --error-tint: #260005;
   --info: #305A85;
+  --info-bg: #305A85;
   --info-tint: #000D1B;
   --label: #FFFFFF;
+  --ok-bg: #00847F;
+  --on-info: #FFFFFF;
+  --on-ok: #FFFFFF;
   --success: #00847F;
   --success-tint: #001615;
+  --warn-bg: #FFBB33;
   --warning: #FFBB33;
   --warning-tint: #221701;
 }
@@ -22557,25 +22620,48 @@
 [data-apollo-theme="console"] .cn-status-indicator{
   --border-radius-control: 8px;
   --border-radius-indicator: 4px;
+  --err-bg: #B92F1E;
   --error: #B92F1E;
   --error-tint: #EECDC9;
   --info: #5A85C1;
+  --info-bg: #5A85C1;
   --info-tint: #D1DDEE;
+  --ok-bg: #5DAC7B;
+  --on-info: #FFFFFF;
   --success: #5DAC7B;
   --success-tint: #D2E8DA;
+  --warn-bg: #D5990B;
   --warning: #D5990B;
   --warning-tint: #F2DEB1;
 }
+/* s212-D2 ENACTMENT (G17-B, the filled status cell) — s149-D1's dark-ink error leg is MONO ONLY.
+   Console keeps the s132-D1 WHITE knockout on the shared-map error fill #B92F1E (6.02:1);
+   without this guard the cell inherits mono's --ink:var(--on-light) #1A1A1A at 2.89:1.
+   Same shape, same reason, as the .cn-banner .banner.err guard above. */
+[data-apollo-theme="console"] .cn-status-indicator .cell.err{--ink:var(--on-dark);}
+/* PROPOSED, NOT RULED (#213 lane E2, s212-D2 enactment). The information leg of the filled
+   cell would inherit rag/text/on-information, which this theme overrides to #FFFFFF; on the
+   shared-map information fill #5A85C1 that measures 3.78:1 — below the 4.5:1 text floor, and
+   console carries NO Legacy-style AA exemption (R-D24 is legacy-only). This guard seats the
+   cell's information ink on rag/text/on-light instead: 4.61:1, measured. Dave rules whether
+   the fix belongs here (per-component) or upstream in the on-information slot / the fill hue;
+   the SAME 3.78:1 leg already exists on .cn-banner .banner.info and is NOT touched by this guard. */
+[data-apollo-theme="console"] .cn-status-indicator .cell.inf{--ink:var(--on-light);}
 [data-apollo-theme="console"][data-theme="dark"] .cn-status-indicator,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-status-indicator{
   --border-radius-control: 8px;
   --border-radius-indicator: 4px;
+  --err-bg: #B92F1E;
   --error: #B92F1E;
   --error-tint: #60231C;
   --info: #5A85C1;
+  --info-bg: #5A85C1;
   --info-tint: #364963;
+  --ok-bg: #5DAC7B;
+  --on-info: #FFFFFF;
   --success: #5DAC7B;
   --success-tint: #355441;
+  --warn-bg: #D5990B;
   --warning: #D5990B;
   --warning-tint: #654D14;
 }
@@ -23614,22 +23700,22 @@
   --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-avatar-group{
+  --avg-ring: #CDC8C6;
   --card: #F7F6F4;
   --card-border: #CDC8C6;
   --icon: #13110E;
   --page: #F7F6F4;
-  --ring: #CDC8C6;
   --stack-ring: #F7F6F4;
   --surface: #DFDEDC;
   --text: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-avatar-group,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-avatar-group{
+  --avg-ring: #524842;
   --card: #2A2621;
   --card-border: #524842;
   --icon: #F7F6F4;
   --page: #1A1A1A;
-  --ring: #524842;
   --stack-ring: #1A1A1A;
   --surface: #2E2A25;
   --text: #F7F6F4;
@@ -23990,6 +24076,7 @@
 [data-apollo-theme="supercharge"] .cn-chart-bullet{
   --baseline: #13110E;
   --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
   --ink: #13110E;
   --line: #CDC8C6;
   --page: #F7F6F4;
@@ -23998,6 +24085,7 @@
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-bullet{
   --baseline: #FFFFFF;
   --data-axis: #635750;
+  --data-control-label-disabled: #524842;
   --ink: #F7F6F4;
   --line: #524842;
   --page: #1A1A1A;
@@ -24047,6 +24135,7 @@
 [data-apollo-theme="supercharge"] .cn-chart-candlestick{
   --baseline: #13110E;
   --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
   --ink: #13110E;
   --line: #CDC8C6;
   --page: #F7F6F4;
@@ -24055,6 +24144,7 @@
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-candlestick{
   --baseline: #FFFFFF;
   --data-axis: #635750;
+  --data-control-label-disabled: #524842;
   --ink: #F7F6F4;
   --line: #524842;
   --page: #1A1A1A;
@@ -24243,6 +24333,7 @@
   --text-disabled: #524842;
 }
 [data-apollo-theme="supercharge"] .cn-command-palette{
+  --cp-rule: #DFDEDC;
   --elev-border: #FFFFFF00;
   --field-active: #000000;
   --hover: #DFDEDC;
@@ -24250,11 +24341,11 @@
   --muted: #13110E;
   --page: #F7F6F4;
   --panel: #F7F6F4;
-  --rule: #DFDEDC;
   --text: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-command-palette,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-command-palette{
+  --cp-rule: #524842;
   --elev-border: #524842;
   --field-active: #F7F6F4;
   --hover: #2E2A25;
@@ -24262,7 +24353,6 @@
   --muted: #F7F6F4;
   --page: #1A1A1A;
   --panel: #2A2621;
-  --rule: #524842;
   --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-confirmation{
@@ -25794,31 +25884,56 @@
 [data-apollo-theme="supercharge"] .cn-status-indicator{
   --disabled: #CDC8C6;
   --divider: #CDC8C6;
+  --err-bg: #B92F1E;
   --error: #B92F1E;
   --error-tint: #F1E0DC;
   --info: #5A85C1;
+  --info-bg: #5A85C1;
   --info-tint: #D6E3EC;
   --label: #13110E;
   --neutral: #524842;
+  --ok-bg: #5DAC7B;
+  --on-info: #FFFFFF;
+  --on-light: #13110E;
   --page: #F7F6F4;
   --success: #5DAC7B;
   --success-tint: #DCEDE3;
+  --surface: #DFDEDC;
+  --warn-bg: #D5990B;
   --warning: #D5990B;
   --warning-tint: #F6E5CC;
 }
+/* s212-D2 ENACTMENT (G17-B, the filled status cell) — s149-D1's dark-ink error leg is MONO ONLY.
+   Supercharge keeps the s132-D1 WHITE knockout on the shared-map error fill #B92F1E (6.02:1);
+   without this guard the cell inherits this theme's --on-light #13110E at 3.13:1.
+   Same shape, same reason, as the .cn-banner .banner.err guard above. */
+[data-apollo-theme="supercharge"] .cn-status-indicator .cell.err{--ink:var(--on-dark);}
+/* PROPOSED, NOT RULED (#213 lane E2, s212-D2 enactment). As console: the information leg would
+   inherit this theme's rag/text/on-information #FFFFFF on the information fill #5A85C1 = 3.78:1,
+   below the 4.5:1 text floor (no AA exemption outside legacy). This guard seats it on
+   rag/text/on-light #13110E instead: 4.99:1, measured. Dave rules per-component vs upstream;
+   the identical leg on .cn-banner .banner.info is NOT touched. */
+[data-apollo-theme="supercharge"] .cn-status-indicator .cell.inf{--ink:var(--on-light);}
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-status-indicator,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-status-indicator{
   --disabled: #524842;
   --divider: #524842;
+  --err-bg: #B92F1E;
   --error: #B92F1E;
   --error-tint: #2C120D;
   --info: #5A85C1;
+  --info-bg: #5A85C1;
   --info-tint: #092131;
   --label: #F7F6F4;
   --neutral: #FFFFFF;
+  --ok-bg: #5DAC7B;
+  --on-info: #FFFFFF;
+  --on-light: #13110E;
   --page: #1A1A1A;
   --success: #5DAC7B;
   --success-tint: #12291D;
+  --surface: #2A2621;
+  --warn-bg: #D5990B;
   --warning: #D5990B;
   --warning-tint: #3C2C13;
 }
@@ -26049,6 +26164,8 @@
 [data-apollo-theme="supercharge"] .cn-template-confirmation{
   --border: #CDC8C6;
   --divider: #CDC8C6;
+  --fborder: #524842;
+  --header: #DFDEDC;
   --hover: #DFDEDC;
   --icon: #13110E;
   --info: #5A85C1;
@@ -26076,6 +26193,8 @@
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-template-confirmation{
   --border: #524842;
   --divider: #524842;
+  --fborder: #524842;
+  --header: #2A2621;
   --hover: #2E2A25;
   --icon: #F7F6F4;
   --info: #5A85C1;
@@ -26321,6 +26440,7 @@
   --border: #CDC8C6;
   --divider: #CDC8C6;
   --fborder: #524842;
+  --header: #DFDEDC;
   --hover: #DFDEDC;
   --icon: #13110E;
   --line: #CDC8C6;
@@ -26343,6 +26463,7 @@
   --border: #524842;
   --divider: #524842;
   --fborder: #524842;
+  --header: #2A2621;
   --hover: #2E2A25;
   --icon: #F7F6F4;
   --line: #524842;
@@ -26361,6 +26482,8 @@
 }
 [data-apollo-theme="supercharge"] .cn-template-error{
   --divider: #CDC8C6;
+  --fborder: #524842;
+  --header: #DFDEDC;
   --hover: #DFDEDC;
   --icon: #13110E;
   --line: #CDC8C6;
@@ -26380,6 +26503,8 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-template-error,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-template-error{
   --divider: #524842;
+  --fborder: #524842;
+  --header: #2A2621;
   --hover: #2E2A25;
   --icon: #F7F6F4;
   --line: #524842;
@@ -26575,6 +26700,7 @@
   --error-tint: #F1E0DC;
   --fborder: #524842;
   --field-bg-hover: #DFDEDC;
+  --header: #DFDEDC;
   --hover: #DFDEDC;
   --icon: #13110E;
   --icon-disabled: #CDC8C6;
@@ -26611,6 +26737,7 @@
   --error-tint: #2C120D;
   --fborder: #524842;
   --field-bg-hover: #2E2A25;
+  --header: #2A2621;
   --hover: #2E2A25;
   --icon: #F7F6F4;
   --icon-disabled: #524842;

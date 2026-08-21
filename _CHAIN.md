@@ -88,7 +88,7 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **126 items · 67 live · 28 Dave's · 39 mine · 112 carry a stated close condition · **14 UNCONDITIONED**.**
+> **128 items · 69 live · 28 Dave's · 41 mine · 114 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
@@ -122,14 +122,14 @@
 > - `W-99d` **G9 riders: bill_of() 1.57x overstatement repair + re-PICK of SIZE_BUDGET compactable 8000 and TITLE_CAP_TAPE 120 (picked-never-measured)** — *closes when:* Dave authorises the bill_of repair and re-picks (or blesses) the two picked constants
 > - `W-99e` **Routing currency check #212 — the dated desk-research brief behind s212-D10/s212-D12; P8 is the one amendment still unruled** — *closes when:* Dave rules P8 (one of the brief's three readings, or his own)
 >
-> **MINE (39), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99b` · `W-99f` · `G4`
+> **MINE (41), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99b` · `W-99f` · `G4` · `W-99g` · `W-99h`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **22,005 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **22,019 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 67,820 real and stays whole for retrieval; you have paid for
 32% of it, and that is the intended figure, not a shortfall.)*

@@ -10,6 +10,12 @@
   #token-manifest maps every CSS var to its token, and _validate_snippets.py fails the build if
   any value drifts from the store, required ARIA is missing, or a contrast pair falls below threshold.
   Edit tokens in the store, not here.
+  s212-D2 (Dave, #212) — G17 CLOSED, the RAG status manifestation canon set is A+B+C. Enacted here as
+  G17-A (inline dot + label, already canon), G17-B (filled status cell — the salience-ramp fill rung,
+  for status columns in dense tables) and G17-C (bar / left-edge accent, for cards and grouped rows).
+  Tags and pills remain EXCLUDED from status (ctkt / ctkt-018) and are deliberately not drawn.
+  ⚠ The G17- prefix is load-bearing: this file's original "form A/B/C" labels below are a DIFFERENT
+  2026-06-22 taxonomy (inline / tint chip / live-announced). Both survive; neither is renamed.
   A PASSIVE RAG atom (Figma node 2298:164342): a coloured dot + a text LABEL. Two canonical forms —
   (A) inline dot + label, (B) square tint chip. FORM B IS THE SAME PRIMITIVE used as the status detail
   in List-items transaction rows — one atom, reused (cross-referenced in both metas). Form C demonstrates
@@ -29,6 +35,11 @@
   [data-theme="light"]{
     --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --neutral:#808080; --info:#78A7E8;
     --success-tint:#D4F1DF; --warning-tint:#F6E6C0; --error-tint:#FDD9D4; --info-tint:#DFEAF9;
+    /* s212-D2 salience-ramp FILL rung + its ruled inks — the G17-B manifestation. Binding copied
+       VERBATIM from the Banner reference (the canon precedent for text on a rag fill), not re-derived. */
+    --err-bg:#F6604C; --warn-bg:#E0A61F; --ok-bg:#66CC8D; --info-bg:#78A7E8;
+    --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000; --on-info:#1A1A1A;
+    --surface:#F0F0F0;
     --label:#1A1A1A; --disabled:#E1E1E1; --divider:#E1E1E1; --focus:#305A85; --page:#FFFFFF;
     /* shape — semantic radius tier (ADR-0010 flex slots). Tint chip = INDICATOR (same atom as
        List-items .status, which binds indicator); the simulate button = CONTROL; dots 50% literal. */
@@ -37,6 +48,10 @@
   [data-theme="dark"]{
     --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --neutral:#FFFFFF; --info:#78A7E8;
     --success-tint:#32533F; --warning-tint:#614C1C; --error-tint:#60302A; --info-tint:#38475C;
+    /* s212-D2 fill rung — mode-invariant by R-D7/s122-D2 (the fills do not move between modes). */
+    --err-bg:#F6604C; --warn-bg:#E0A61F; --ok-bg:#66CC8D; --info-bg:#78A7E8;
+    --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000; --on-info:#1A1A1A;
+    --surface:#1F1F1F;
     --label:#FFFFFF; --disabled:#808080; --divider:#808080; --focus:#4587A7; --page:#1A1A1A;
     --border-radius-control:0; --border-radius-indicator:0;
   }
@@ -59,6 +74,28 @@
   .chip .dot{width:8px; height:8px;}
   .chip.ok{background:var(--success-tint);} .chip.warn{background:var(--warning-tint);}
   .chip.err{background:var(--error-tint);} .chip.inf{background:var(--info-tint);}
+
+  /* ---- G17-B: FILLED STATUS CELL (s212-D2) — the salience-ramp fill rung.
+         Canon manifestation B of the RAG status set: dense tables / dashboards where a COLUMN IS
+         the status and scan speed matters. Distinct from the tint chip above: the chip is the CALM
+         rung (tint ground, text/default ink); this is the LOUD rung (signal fill, ruled knockout ink).
+         Ink slots follow the Banner precedent exactly — err/warn ride rag/text/on-light, success rides
+         text/on-success, information rides its own rag/text/on-information slot (s131-D1). ---- */
+  .statustable{border-collapse:collapse; width:100%; color:var(--label);}
+  .statustable th{text-align:left; /* type: t-cm-ctl-14 (bound in canon/type.css - T-D9/T-D12); DEF-005: 8px matches the td row rhythm */ padding:8px 12px; border-bottom:1px solid var(--divider); color:var(--label); white-space:nowrap;}
+  .statustable td{padding:8px 12px; border-bottom:1px solid var(--divider); font-variant-numeric:tabular-nums;}
+  .cell{display:inline-block; min-width:84px; text-align:center; padding:4px 12px; border-radius:var(--border-radius-indicator); background:var(--fill); color:var(--ink); white-space:nowrap;}
+  .cell.ok{--fill:var(--ok-bg); --ink:var(--on-ok);}
+  .cell.warn{--fill:var(--warn-bg); --ink:var(--on-light);}
+  .cell.err{--fill:var(--err-bg); --ink:var(--on-light);} /* s149-D1 MONO: the error leg left the white-type camp; non-mono themes restate white in their guard */
+  .cell.inf{--fill:var(--info-bg); --ink:var(--on-info);}
+
+  /* ---- G17-C: BAR / EDGE ACCENT (s212-D2) — left-edge accent for cards and grouped rows where the
+         WHOLE object carries the status. Colour is never the only carrier (icon-013): the label is
+         inside the bar. The edge binds the bare rag ROLE (same value the dot uses), not the fill. ---- */
+  .sbar{display:flex; align-items:center; gap:12px; padding:12px 16px; margin:8px 0; background:var(--surface); border-left:4px solid var(--edge); color:var(--label); /* type: t-ed-body on the inner label (bound in canon/type.css - T-D9/T-D12) — Editorial, not Component: the bar's label wraps */}
+  .sbar.ok{--edge:var(--success);} .sbar.warn{--edge:var(--warning);} .sbar.err{--edge:var(--error);}
+  .sbar.inf{--edge:var(--info);} .sbar.neu{--edge:var(--neutral);}
 
   /* ---- form C: live announced status ---- */
   .live{display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:12px 16px; border:1px solid var(--divider);}
@@ -98,6 +135,31 @@
     </div>
   </div>
 
+  <!-- ===== G17-B. Filled status cell — the salience-ramp fill rung (s212-D2 canon) ===== -->
+  <div class="wrap">
+    <h2 class="spec-h">Filled cell — status column in a dense table</h2>
+    <table class="statustable">
+      <thead><tr><th scope="col" class="t-cm-ctl-14">Counterparty</th><th scope="col" class="t-cm-ctl-14">Utilisation</th><th scope="col" class="t-cm-ctl-14">Status</th></tr></thead>
+      <tbody>
+        <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell ok">Healthy</span></td></tr>
+        <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell warn">Watch</span></td></tr>
+        <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell err">Breach</span></td></tr>
+        <tr><td>Sundara Trust</td><td>—</td><td><span class="cell inf">Under review</span></td></tr>
+        <tr><td>Kestrel Partners</td><td>—</td><td><span class="stat neu" style="margin:0"><span class="dot" aria-hidden="true"></span><span>Cancelled (no fill — rag/neutral-background gap)</span></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== G17-C. Bar / edge accent — the whole object carries the status (s212-D2 canon) ===== -->
+  <div class="wrap">
+    <h2 class="spec-h">Bar — left-edge accent on a card or grouped row</h2>
+    <div class="sbar ok"><span class="t-ed-body">Meridian Capital · Healthy · 62%</span></div>
+    <div class="sbar warn"><span class="t-ed-body">Novara Holdings · Watch · 88%</span></div>
+    <div class="sbar err"><span class="t-ed-body">Trbovlje AG · Breach · 103%</span></div>
+    <div class="sbar inf"><span class="t-ed-body">Sundara Trust · Under review</span></div>
+    <div class="sbar neu"><span class="t-ed-body">Kestrel Partners · Cancelled</span></div>
+  </div>
+
   <!-- ===== C. Live announced status change (4.1.3 — the component's actual job) ===== -->
   <div class="wrap">
     <h2 class="spec-h">Live update — announced to AT</h2>
@@ -117,6 +179,9 @@
     "vars": {
       "--success":"rag/success", "--warning":"rag/warning", "--error":"rag/error", "--neutral":"rag/neutral", "--info":"rag/information",
       "--success-tint":"rag/success-tint", "--warning-tint":"rag/warning-tint", "--error-tint":"rag/error-tint", "--info-tint":"rag/information-tint",
+      "--err-bg":"rag/error-background", "--warn-bg":"rag/warning-background", "--ok-bg":"rag/success-background", "--info-bg":"rag/information-background",
+      "--on-dark":"rag/text/on-dark", "--on-light":"rag/text/on-light", "--on-ok":"text/on-success", "--on-info":"rag/text/on-information",
+      "--surface":"surface/subtle",
       "--label":"text/default", "--disabled":"text/disabled", "--divider":"divider/border/section", "--focus":"focus/ring", "--page":"background/default",
       "--border-radius-control":"border-radius/control", "--border-radius-indicator":"border-radius/indicator"
     },
@@ -127,12 +192,21 @@
       { "fg":"text/default", "bg":"rag/success-tint", "context":"text" },
       { "fg":"text/default", "bg":"rag/warning-tint", "context":"text" },
       { "fg":"text/default", "bg":"rag/error-tint", "context":"text" },
-      { "fg":"text/default", "bg":"rag/information-tint", "context":"text" }
+      { "fg":"text/default", "bg":"rag/information-tint", "context":"text" },
+      { "fg":"rag/text/on-light", "bg":"rag/error-background", "context":"text" },
+      { "fg":"rag/text/on-light", "bg":"rag/warning-background", "context":"text" },
+      { "fg":"text/on-success", "bg":"rag/success-background", "context":"text" },
+      { "fg":"rag/text/on-information", "bg":"rag/information-background", "context":"text" },
+      { "fg":"text/default", "bg":"surface/subtle", "context":"text" }
     ],
     "knownFindings": [
       "rag/warning dot = 1.69:1 on white (< 3:1) — meaning carried by the label (1.4.1); use the tint chip (form B) when warning must stand alone. NOT declared as a passing pair.",
       "rag/neutral-tint missing from the store — neutral/cancelled has no chip form (token gap; add rag/neutral-tint to complete the RAG tint set)",
-      "PASSIVE atom: no hover/active/keyboard by design (anti-pattern to make it interactive); AT = role=status + aria-live (4.1.3) + label (1.4.1)"
+      "PASSIVE atom: no hover/active/keyboard by design (anti-pattern to make it interactive); AT = role=status + aria-live (4.1.3) + label (1.4.1)",
+      "s212-D2 (Dave, #212) — the G17 RAG status manifestation canon set is A+B+C. Mapping onto this snippet: G17-A = the inline dot+label (form A above, unchanged); G17-B = the FILLED CELL (new, salience-ramp fill rung, for status columns in dense tables); G17-C = the BAR / edge accent (new, for cards and grouped rows). Tags and pills stay EXCLUDED from status (ctkt / ctkt-018) and are not drawn here. NAMING HAZARD: this snippet's pre-existing form A/B/C labels are a DIFFERENT taxonomy (inline / tint chip / live-announced) minted 2026-06-22 — the G17 letters are prefixed G17- everywhere to keep the two apart.",
+      "G17-B neutral/cancelled has NO fill leg: rag/neutral has no -background sibling, the same shape as the rag/neutral-tint gap above. The cancelled row falls back to the inline dot+label rather than inventing a fill token.",
+      "G17-B per-theme ink, MEASURED (base gate resolves the mono store only, so these are recorded here): mono err 5.55 / warn 7.99 / ok 10.59 / info 7.04; legacy err 7.87 (guard: white, s131-D1) / warn 10.28 / ok 4.56 / info 7.17; console err 6.02 (guard: white) / warn 6.95 / ok 7.65 / info 4.61 (guard: on-light); supercharge err 6.02 (guard: white) / warn 7.53 / ok 7.65 / info 4.99 (guard: on-light). The console+supercharge INFO guard is PROPOSED, NOT RULED — see the theme override $note.",
+      "G17-C carries no new declared pair: the edge is a 4px accent, not the carrier — the label inside the bar carries the meaning (icon-013 / 1.4.1), exactly as the dot does. The warning edge is the same sub-3:1 value as the warning dot and is likewise NOT declared as a passing pair."
     ],
     "reuses": ["used as the status detail in List items transaction rows — same tint-chip primitive"],
     "requiredAria": ["aria-hidden", "role=\"status\"", "aria-live"]

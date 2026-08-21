@@ -17,10 +17,10 @@
 |---|---:|---|
 | **UNDER-INSTRUMENTED** | 12 | a gate names it but sits BELOW the rung its property needs — passes without observing |
 | **UNGATED** | 165 | no gate names it; the rung shown is the COST of gating it |
-| **UNTAGGED** | 283 | the pattern table could not classify the rule — a finding about THIS TOOL, never filed as I0 |
+| **UNTAGGED** | 282 | the pattern table could not classify the rule — a finding about THIS TOOL, never filed as I0 |
 | **EYE-ONLY** | 5 | needs judgment; correctly ungateable |
 | **FIT** | 6 | the gate's instrument reaches the property |
-| **TOTAL** | 471 | |
+| **TOTAL** | 470 | |
 
 **12 rules carry a gate that cannot observe them; 2 of those are BLOCKING.** A BLOCKING rule with an under-powered gate is the `aid-009` shape: green, and blind.
 
@@ -28,7 +28,7 @@
 
 ## ⚠ Dangling citations — gates enforcing rules the INDEX cannot see
 
-*`guidelines/*.md` declares **698** rule anchors. `_rules-index.json` holds the **471** that carry an enforcement-destiny tag. The other **259** are invisible to the index, to `_consult.py`, and to this register — and the following are cited by a LIVE GATE as its authority.*
+*`guidelines/*.md` declares **698** rule anchors. `_rules-index.json` holds the **470** that carry an enforcement-destiny tag. The other **260** are invisible to the index, to `_consult.py`, and to this register — and the following are cited by a LIVE GATE as its authority.*
 
 | cited rule | not in index | cited by |
 |---|---|---|
@@ -71,9 +71,12 @@
 | `knowledge/_validate_descender_clip.py` | I0-STATIC |
 | `knowledge/_validate_dtcg.py` | I0-STATIC |
 | `knowledge/_validate_edge_extremity.py` | I0-STATIC |
+| `knowledge/_validate_evidence.py` | I0-STATIC |
 | `knowledge/_validate_grid.py` | I0-STATIC |
 | `knowledge/_validate_help_gate.py` | I0-STATIC |
+| `knowledge/_validate_hit_area.py` | I2-RENDER |
 | `knowledge/_validate_icons.py` | I0-STATIC |
+| `knowledge/_validate_intent_resolve.py` | I0-STATIC |
 | `knowledge/_validate_kg.py` | I0-STATIC |
 | `knowledge/_validate_legacy_leak.py` | I0-STATIC |
 | `knowledge/_validate_no_hardcode.py` | I0-STATIC |
@@ -82,6 +85,7 @@
 | `knowledge/_validate_partials.py` | I0-STATIC |
 | `knowledge/_validate_proforma.py` | I0-STATIC |
 | `knowledge/_validate_property_resolves.py` | I0-STATIC |
+| `knowledge/_validate_queue_fresh.py` | I0-STATIC |
 | `knowledge/_validate_radius.py` | I0-STATIC |
 | `knowledge/_validate_screen.py` | I2-RENDER |
 | `knowledge/_validate_snippets.py` | I0-STATIC |
@@ -107,7 +111,7 @@
 
 ## Untagged — what the pattern table cannot classify
 
-*283 rules. This count is a finding about the tool, not the corpus. They are NOT filed as I0: an unclassified rule recorded as 'static is adequate' is the exact lie this register exists to expose.*
+*282 rules. This count is a finding about the tool, not the corpus. They are NOT filed as I0: an unclassified rule recorded as 'static is adequate' is the exact lie this register exists to expose.*
 
 - `aca-003` (BLOCKING) — CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears
 - `aca-005` (ADVISORY) — CA-5 — repeated links to one target are ONE link (SC 1.1.1 + 2.4.4 A): adjacent image + text with the same tar
@@ -134,5 +138,5 @@
 - `avd-006` (BLOCKING) — VD-7 — every non-text element gets a purpose-alt (SC 1.1.1 A): alt describes PURPOSE; actionable images descri
 - `avd-008` (ADVISORY) — VD-8 — never prompt the same information twice in a journey (SC 3.3.7, 2022/ framework-2024): auto-populate or
 - `axf-002` (ADVISORY) — Two-element standard — (1) international legal compliance (the WCAG 2.2 bar above); (2) assured experience: th
-- *… 258 more in `_instrument-fit.json`*
+- *… 257 more in `_instrument-fit.json`*
 

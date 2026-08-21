@@ -1,15 +1,25 @@
 # Theme-provenance gate (ADR-0011, R-D19) — ADVISORY
 
-Scanned **110** Mono-designated library files (snippets, _proforma, _review). Foreign-theme hexes checked: #00847F, #A8000B, #DB0011, $NOTE.
+Scanned **164** Mono-designated library files (snippets, _proforma, _review). Foreign-theme hexes checked: #00847F, #A8000B, #DB0011, $NOTE.
 
-**38** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
+**48** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
 
 | Area | File | Hex | ×  | Belongs to |
 |---|---|---|---|---|
+| snippets | Hero-variants.reference.html | `#DB0011` | 4 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | App-shell-multi-column.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | App-shell-top-nav.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Notifications.reference.html | `#A8000B` | 2 | Apollo Legacy: Legacy error red (light) |
 | snippets | Hero.reference.html | `#DB0011` | 4 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | Anchor-nav.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | App-shell-nav-rail.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Sidebar-nav.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | App-shell-side-nav.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | App-shell-split.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Cards.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | Section-heading-lockup.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | Stats-band-lockup.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | App-shell-doormat.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Navigations.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | _proforma | Masthead-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
 | _proforma | Masthead-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |

@@ -96,6 +96,9 @@
   [data-theme="light"]{
     --page:#FFFFFF; --surface:#FFFFFF; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A;
     --border:#E1E1E1; --divider:#E1E1E1; --line:#E1E1E1; --hover:#F0F0F0; --focus:#305A85;
+    /* DEMO CHROME's two tokens. Values COPIED verbatim from Template-dashboard.reference.html
+       (light). Consumed only by the demo bar at the foot of this file, never by the template. */
+    --header:#F0F0F0; --fborder:#808080;
     --success:#66CC8D; --warning:#E0A61F; --info:#78A7E8;
     --success-tint:#D4F1DF; --warning-tint:#F6E6C0; --info-tint:#DFEAF9;
     --pri-default:#1A1A1A; --pri-label:#FFFFFF; --pri-hover:#636363;
@@ -109,6 +112,8 @@
   [data-theme="dark"]{
     --page:#1A1A1A; --surface:#1F1F1F; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF;
     --border:#808080; --divider:#808080; --line:#808080; --hover:#232323; --focus:#4587A7;
+    /* DEMO CHROME's two tokens — Template-dashboard.reference.html (dark), verbatim. */
+    --header:#1F1F1F; --fborder:#808080;
     --success:#FFFFFF; --warning:#E0A61F; --info:#78A7E8;
     --success-tint:#32533F; --warning-tint:#614C1C; --info-tint:#38475C;
     --pri-default:#FAFAFA; --pri-label:#333333; --pri-hover:#B2B2B2;
@@ -190,7 +195,6 @@
   .confirm__title{  color:var(--text); margin:0; }
   .confirm__msg{  color:var(--muted); margin:0; }
   .confirm__actions{ display:flex; flex-direction:column; gap:12px; width:100%; margin-top:12px; }
-    display:inline-flex; align-items:center; justify-content:center; transition:background var(--ease), filter var(--press); }
 
 
   /* ---- Confirmation's ENTRANCE — carried verbatim. A success screen earns a pop. ---- */
@@ -219,7 +223,11 @@
   .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
   .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
   .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
-  .status.err{background:var(--error-tint);}    .status.err .dot{background:var(--error);}
+  /* NO `.status.err` rule here. This file's theme blocks deliberately declare no `--error` /
+     `--error-tint` (see the theme-block header: every value COPIED, nothing new), and the
+     markup carries no `status err` chip — a confirmation page has no error state. The rule
+     was carried from the source chip block without its tokens and referenced two properties
+     that resolve nowhere, which is invalid-at-computed-value-time, not a fallback (ds-018). */
   .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
 
 
@@ -429,6 +437,8 @@
       "--line": "border/subtle",
       "--hover": "form/background/hover",
       "--focus": "focus/ring",
+      "--header": "table/header/background",
+      "--fborder": "form/border/default",
       "--success": "rag/success",
       "--warning": "rag/warning",
       "--info": "rag/information",

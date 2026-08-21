@@ -25,7 +25,7 @@
   TWO VAR-NAME COLLISIONS, RESOLVED BY RENAME, NOT BY A NEW VALUE (the wave-5 §5(a) class):
     Segmented-control calls form/border/default `--border`; this page already calls border/subtle
     by that name, so the borrowed rule reads `--fborder`. Segmented-control's local `--ease`
-    (200ms) collides with Selection-controls' `--ease` (180ms), so it reads `--move`.
+    (200ms) collides with Selection-controls' `--ease` (180ms), so it reads `--tset-move`.
     Selection-controls' `--label` / `--label-disabled` are text/default and text/disabled, which
     Form-layout already declares as `--text` / `--text-disabled`. Same tokens. One name each.
 
@@ -81,7 +81,7 @@
      ============================================================================================ */
   :root{
     --ease:180ms cubic-bezier(.4,0,.2,1);               /* Selection-controls */
-    --move:200ms cubic-bezier(.4,0,.2,1);               /* Segmented-control (its own --ease) */
+    --tset-move:200ms cubic-bezier(.4,0,.2,1);               /* Segmented-control (its own --ease) */
     --spring:300ms cubic-bezier(.5,1.6,.4,1);           /* Button / Form-layout / Selection-controls */
     --press:90ms cubic-bezier(0,0,.58,1);               /* Button / Form-layout / Selection-controls */
     --phys-size:120;                                    /* Button — text-button characteristic size */
@@ -91,6 +91,9 @@
     --page:#FFFFFF; --surface:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A;
     --border:#E1E1E1; --divider:#E1E1E1; --hover:#F0F0F0; --focus:#305A85;
     --fborder:#808080;
+    /* `--header` is DEMO CHROME's token — value COPIED verbatim from
+       Template-dashboard.reference.html (light); consumed only by the demo bar. */
+    --header:#F0F0F0;
     /* form field anatomy — Form-layout.reference.html */
     --text-disabled:#E1E1E1; --field-bg-default:#FFFFFF00; --field-bg-hover:#F0F0F0;
     --border-default:#808080; --border-active:#000000; --border-disabled:#E1E1E1;
@@ -116,6 +119,8 @@
     --page:#1A1A1A; --surface:#1F1F1F; --text:#FFFFFF; --icon:#FFFFFF;
     --border:#808080; --divider:#808080; --hover:#232323; --focus:#4587A7;
     --fborder:#808080;
+    /* `--header` — Template-dashboard.reference.html (dark), verbatim. Demo chrome only. */
+    --header:#1F1F1F;
     --text-disabled:#808080; --field-bg-default:#FFFFFF00; --field-bg-hover:#232323;
     --border-default:#808080; --border-active:#FFFFFF; --border-disabled:#484848;
     --icon-disabled:#808080; --error:#F6604C; --error-tint:#60302A; --success:#66CC8D;
@@ -217,17 +222,17 @@
 
   /* ---- Segmented control — the ATOM (Segmented-control.reference.html), 2px inset
      track + floating indicator. `--border` is renamed to `--fborder` and its local
-     `--ease` to `--move`: BOTH are var-NAME collisions with other components on this
+     `--ease` to `--tset-move`: BOTH are var-NAME collisions with other components on this
      page (Segmented-control calls form/border/default `--border`; Data-grid and
      Template-dashboard call border/subtle by that name). Same tokens, one name each. ---- */
   .seg{position:relative; display:inline-flex; padding:2px; border:1px solid var(--fborder); background:var(--surface); vertical-align:top;}
   .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0;
-    transition:left var(--move), width var(--move);}                          /* the active fill — floats in the 2px inset, slides */
+    transition:left var(--tset-move), width var(--tset-move);}                          /* the active fill — floats in the 2px inset, slides */
   .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
     /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
        (composites .t-cm-ctl-12/-14/-16; sized selectors registered in _type-bindings.json). */
-    cursor:pointer; transition:color var(--move);}
+    cursor:pointer; transition:color var(--tset-move);}
   /* NO inter-button divider — one border frames the whole track; the fill floats + slides. */
   .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}      /* hover only on inactive (active sits over the fill) */
   .seg button[aria-pressed="true"]{color:var(--on-sel);}                      /* fill comes from the sliding .ind behind */
@@ -395,8 +400,11 @@
   .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
     border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
   .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
-  .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
-  .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
+  /* NO `.status.ok` / `.status.warn` rules here. This file's theme blocks declare `--error` and
+     `--error-tint` but deliberately no `--success-tint` / `--warning` / `--warning-tint` (its RAG
+     comment carries `--info` + `--info-tint` only), and the markup carries one chip: `status inf`.
+     The two rules were carried from the source chip block without their tokens and referenced four
+     properties that resolve nowhere — invalid-at-computed-value-time, not a fallback (ds-018). */
   .status.err{background:var(--error-tint);}    .status.err .dot{background:var(--error);}
   .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
 
@@ -767,6 +775,7 @@
       "--divider": "divider/border/section",
       "--hover": "form/background/hover",
       "--focus": "focus/ring",
+      "--header": "table/header/background",
       "--fborder": "form/border/default",
       "--text-disabled": "text/disabled",
       "--field-bg-hover": "form/background/hover",

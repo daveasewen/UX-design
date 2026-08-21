@@ -24,7 +24,7 @@
   drag, keyboard resize, min-pane fences, and a collapse/restore toggle on Enter.
 
   ⛔ THE FENCES ARE ON THE 4px GRID AND THEY ARE NOT DECORATION.
-    --min-pri / --min-sec = 160px each. --div = 8px. --step = 16px (arrow), --step-lg = 64px
+    --spl-min-pri / --spl-min-sec = 160px each. --div = 8px. --step = 16px (arrow), --step-lg = 64px
     (shift+arrow). Every one is a 4px multiple; the drag clamp uses the SAME numbers as the
     keyboard, so a mouse cannot reach a size a keyboard cannot.
 
@@ -120,8 +120,8 @@
   /* ---------- the splitter ---------- */
   .sp{display:grid; height:100%; width:100%; background:var(--surface);
     --div:8px;            /* the drawn divider thickness — 4px grid */
-    --min-pri:160px;      /* fence: the primary pane may not go below this */
-    --min-sec:160px;      /* fence: the secondary pane may not go below this */
+    --spl-min-pri:160px;      /* fence: the primary pane may not go below this */
+    --spl-min-sec:160px;      /* fence: the secondary pane may not go below this */
     --pri:50%;            /* the live size of the primary pane; JS overrides in px */
   }
   .sp[data-orientation="horizontal"]{grid-template-columns:var(--pri) var(--div) 1fr;
@@ -326,8 +326,8 @@
       const num = name => parseFloat(getComputedStyle(sp).getPropertyValue(name)) || 0;
       const total = () => vertical ? sp.clientHeight : sp.clientWidth;
       const divPx = () => num('--div');
-      const minPri = () => num('--min-pri');
-      const minSec = () => num('--min-sec');
+      const minPri = () => num('--spl-min-pri');
+      const minSec = () => num('--spl-min-sec');
       const current = () => vertical ? pri.getBoundingClientRect().height
                                      : pri.getBoundingClientRect().width;
 

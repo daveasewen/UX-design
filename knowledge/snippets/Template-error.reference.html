@@ -89,6 +89,10 @@
   [data-theme="light"]{
     --page:#FFFFFF; --surface:#FFFFFF; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A;
     --border:#E1E1E1; --divider:#E1E1E1; --line:#E1E1E1; --hover:#F0F0F0; --focus:#305A85;
+    /* DEMO CHROME's two tokens. Values COPIED verbatim from Template-dashboard.reference.html
+       (light). Consumed only by the demo bar at the foot of this file, never by the template.
+       Neither is a rag token, so the header's "NO rag/* token in this file" still holds. */
+    --header:#F0F0F0; --fborder:#808080;
     --pri-default:#1A1A1A; --pri-label:#FFFFFF; --pri-hover:#636363;
     --ter-border:#1A1A1A; --ter-label:#1A1A1A; --ter-hover:#F0F0F0;
     --quat-label:#1A1A1A; --quat-hover:#F0F0F0;
@@ -100,6 +104,8 @@
   [data-theme="dark"]{
     --page:#1A1A1A; --surface:#1F1F1F; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF;
     --border:#808080; --divider:#808080; --line:#808080; --hover:#232323; --focus:#4587A7;
+    /* DEMO CHROME's two tokens — Template-dashboard.reference.html (dark), verbatim. */
+    --header:#1F1F1F; --fborder:#808080;
     --pri-default:#FAFAFA; --pri-label:#333333; --pri-hover:#B2B2B2;
     --ter-border:#FFFFFF; --ter-label:#FFFFFF; --ter-hover:#232323;
     --quat-label:#FFFFFF; --quat-hover:#232323;
@@ -175,11 +181,14 @@
      Button ATOM, so carrying a second button ladder would fork it. ---- */
   /* ---- Confirmation / success ---- */
   .confirm{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:12px; max-width:380px; margin:0 auto; padding:40px 24px; }
-  .confirm .success{ width:56px; height:56px; fill:var(--success); }   /* success-solid glyph; tick is a cutout showing the page behind — light: white tick on green (4.56 ✓); dark: shape flips WHITE so the cutout reads as a BLACK tick (roundel policy) */
+  /* NO `.confirm .success` roundel rule here. It was carried from Confirmation but this file
+     declares NO rag/* token at all (see the theme-block header) and the markup carries no
+     `.success` glyph — composition rule 6 below says so in Dave's own terms: an error page
+     uses Empty-state's 48px anchor glyph, NOT Confirmation's 56px RAG roundel. The carried
+     rule's `var(--success)` resolved nowhere, i.e. invalid-at-computed-value-time (ds-018). */
   .confirm__title{  color:var(--text); margin:0; }
   .confirm__msg{  color:var(--muted); margin:0; }
   .confirm__actions{ display:flex; flex-direction:column; gap:12px; width:100%; margin-top:12px; }
-    display:inline-flex; align-items:center; justify-content:center; transition:background var(--ease), filter var(--press); }
 
 
   /* ---- the decorative anchor glyph — Empty-state.reference.html `.empty .glyph`,
@@ -314,6 +323,8 @@
       "--line": "border/subtle",
       "--hover": "form/background/hover",
       "--focus": "focus/ring",
+      "--header": "table/header/background",
+      "--fborder": "form/border/default",
       "--pri-default": "button/primary/background/default",
       "--pri-label": "button/primary/label/default",
       "--pri-hover": "button/primary/background/hover",

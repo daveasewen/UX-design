@@ -1,287 +1,314 @@
 {
- "$description": "Apollo Console override set (ADR-0011). Console INHERITS Mono's palette (Dave 2026-07-21: Console + Supercharge inherit Mono; dataviz + status/RAG identical across Mono/Console/Supercharge — only Legacy differs). The one live divergence NOW is shape: Console = rounded corners. Everything absent here falls back to Mono. Anticipated flex slots (UI greys, future input error-condition colour) are declared in _themes.json declaredSlots per ADR-0010 — a value can be added here any time without re-architecture. || s158-D4 (Dave, 2026-08-12) OPTION B — SINGLE SOURCE: the twelve palette-owned rag hue keys (error/warning/success/information x bare/-glyph/-background) were TRIMMED from this file; the palette file named by this theme's ragPalette in _themes.json is now their ONE source, projected by canon/gen_theme_cascade.py BEFORE the override set. Every $note that lived on those entries was relocated VERBATIM into the palette file's matching key FIRST (add-then-trim), so no ruling provenance was lost. -tint keys STAY here per s123-D3 (tints derive from per-theme grounds and are NOT palette-owned); rag/text/* stays here too. Enforced by _validate_palette_tier.py --strict-absence.",
- "$theme": "apollo-console",
- "$attr": "console",
- "$schemaVersion": "1.0.0",
- "overrides": {
-  "border-radius/default": {
-   "$value": 4,
-   "$type": "number",
-   "$note": "Dave 2026-07-22: base/control = 4 (the 4px try; was 8, provisional). control + indicator follow this via alias. Roles are dialed INDEPENDENTLY — see surface below — so corners tune per component type, not uniform. Experiment; rule on the harness."
-  },
-  "border-radius/control": {
-   "$value": 8,
-   "$type": "number",
-   "$note": "Dave 2026-08-18 s199-D3 (tuner pick, reviews/RADIUS-CORNER-TUNER-2026-08-18-v1.html): control breaks off the default(=4) alias to 8. ⚠ Segmented-control SWITCH is ruled to get its OWN carve-out token — inner/outer nested radii cannot share a value (curve matching) — NOT minted yet, Dave tunes it on tuner v2."
-  },
-  "border-radius/surface": {
-   "$value": 20,
-   "$type": "number",
-   "$note": "Dave 2026-07-22: RESTORED to 12 (cards/dialogs rounder than buttons) — corners tune per component type, not uniform. Dave 2026-08-18 s199-D3: 12 → 20 (tuner pick). container 20 MINTED at #200 (s200-D2/s200-D3) — see border-radius/container below; data-mark 0 from the same export STAYS a PROPOSED slot, not canon."
-  },
-  "border-radius/container": {
-   "$value": 20,
-   "$type": "number",
-   "$note": "MINTED s200-D2 / s200-D3 (#200, Dave, 2026-08-18) — promotes the s199-D3 PROPOSED slot to canon. Outer radius of the concentric pair; the segmented thumb radii below DERIVED AT MINT TIME from it per s200-D1 (container − padding). s200-D3 scope: CONSOLE ONLY — no container entry was written for mono/legacy/supercharge; they follow the layout.json base alias."
-  },
-  "size/segmented-control/xs": {
-   "$value": 24,
-   "$type": "number",
-   "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Total outer height at scale `xs` — dimension-first tuned input (tuner v3 export, reviews/RADIUS-CORNER-TUNER-2026-08-18-v3.html, pasted and enacted by Dave). This mint SUPERSEDES and RETIRES the padding-first small/medium/large segmented set of s200-D2/s200-D3 (paddings 2/4/6, thumbs 18/16/14) — removed in the same motion, closing the mixed-grammar debt s200-D4 declared."
-  },
-  "padding/segmented-control/xs": {
-   "$value": 2,
-   "$type": "number",
-   "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Track inset at scale `xs`; 2px steps snap stacked totals to the 4px grid (s200-D1 clause d)."
-  },
-  "border-radius/segmented-container/xs": {
-   "$value": 6,
-   "$type": "number",
-   "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Outer radius of the concentric pair at scale `xs` (tuner v3 readout 24/2/6)."
-  },
-  "border-radius/segmented-thumb/xs": {
-   "$value": 0,
-   "$type": "number",
-   "$note": "RE-MINTED s202-D2 corrected reading (#202, Dave, 2026-08-18) — the s199-D3 switch carve-out IS the thumb; derivation input re-tuned from inset to dial 6: container (6/8/10/12) − 6, floored 0. Supersedes the s201-D1 concentric values 4/6/6/8."
-  },
-  "size/segmented-control/m": {
-   "$value": 44,
-   "$type": "number",
-   "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Total outer height at scale `m` — dimension-first tuned input (tuner v3 export)."
-  },
-  "padding/segmented-control/m": {
-   "$value": 4,
-   "$type": "number",
-   "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Track inset at scale `m`; 2px step (s200-D1 clause d)."
-  },
-  "border-radius/segmented-container/m": {
-   "$value": 10,
-   "$type": "number",
-   "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Outer radius of the concentric pair at scale `m` (tuner v3 readout 44/4/10)."
-  },
-  "border-radius/segmented-thumb/m": {
-   "$value": 4,
-   "$type": "number",
-   "$note": "RE-MINTED s202-D2 corrected reading (#202, Dave, 2026-08-18) — the s199-D3 switch carve-out IS the thumb; derivation input re-tuned from inset to dial 6: container (6/8/10/12) − 6, floored 0. Supersedes the s201-D1 concentric values 4/6/6/8."
-  },
-  "size/segmented-control/l": {
-   "$value": 48,
-   "$type": "number",
-   "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Total outer height at scale `l` — dimension-first tuned input (tuner v3 export)."
-  },
-  "padding/segmented-control/l": {
-   "$value": 4,
-   "$type": "number",
-   "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Track inset at scale `l`; 2px step (s200-D1 clause d)."
-  },
-  "border-radius/segmented-container/l": {
-   "$value": 12,
-   "$type": "number",
-   "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Outer radius of the concentric pair at scale `l` (tuner v3 readout 48/4/12)."
-  },
-  "border-radius/segmented-thumb/l": {
-   "$value": 6,
-   "$type": "number",
-   "$note": "RE-MINTED s202-D2 corrected reading (#202, Dave, 2026-08-18) — the s199-D3 switch carve-out IS the thumb; derivation input re-tuned from inset to dial 6: container (6/8/10/12) − 6, floored 0. Supersedes the s201-D1 concentric values 4/6/6/8."
-  },
-  "size/segmented-control/s": {
-   "$value": 36,
-   "$type": "number",
-   "$note": "MINTED s200-D4 (#200, Dave, 2026-08-18), CONSOLE ONLY. Total outer height of the segmented control at scale `s` — the TUNED input of the DIMENSION-FIRST grammar (tuner v3 export draft, reviews/RADIUS-CORNER-TUNER-2026-08-18-v3.html). Dave: 'can we mint this for console at the moment, with the 44px hit area fix'. Key grammar follows the v3 export draft (size/segmented-control/<scale>). s201-D1 (#201): xs/m/l minted alongside; the padding-first small/medium/large set RETIRED."
-  },
-  "padding/segmented-control/s": {
-   "$value": 2,
-   "$type": "number",
-   "$note": "MINTED s200-D4 (#200, Dave, 2026-08-18), CONSOLE ONLY. Track inset at scale `s`. Steps in 2px so stacked totals snap to the 4px grid (s200-D1 clause d). Dimension-first scale. s201-D1 (#201): the padding-first small/medium/large set is RETIRED — the mixed-grammar debt s200-D4 declared is CLOSED; xs/s/m/l is the sole segmented grammar."
-  },
-  "border-radius/segmented-container/s": {
-   "$value": 8,
-   "$type": "number",
-   "$note": "MINTED s200-D4 (#200, Dave, 2026-08-18), CONSOLE ONLY. Outer radius of the concentric pair at scale `s` (tuner v3 readout 36/2/8). Distinct from the general border-radius/container role (20) — that role is UNCHANGED; this is the per-scale segmented outer radius."
-  },
-  "border-radius/segmented-thumb/s": {
-   "$value": 2,
-   "$type": "number",
-   "$note": "RE-MINTED s202-D2 corrected reading (#202, Dave, 2026-08-18) — the s199-D3 switch carve-out IS the thumb; derivation input re-tuned from inset to dial 6: container (6/8/10/12) − 6, floored 0. Supersedes the s201-D1 concentric values 4/6/6/8."
-  },
-  "size/segmented-control/min-hit-area": {
-   "$value": 44,
-   "$type": "number",
-   "$note": "MINTED s200-D4 (#200, Dave, 2026-08-18), CONSOLE ONLY. Minimum touch target for segmented controls: any scale whose VISUAL height is under 44 (scale `s` is 36) must present a 44px hit target — the visual box is unchanged, the interactive box is expanded. Dave's words: 'with the 44px hit area fix'; the min-hit-area token reading was the conductor's read-back at #200 with veto open. s201-D2 (#201, Dave): CONFIRMED as HIT ZONE — 44 binds the interactive target, not the visual height; xs (24) and s (36) keep their visual boxes and expand the hit target to 44. s201-D3 (#201, Dave): hit box = max(44, visual height) — NATURAL above the floor, so l keeps 48; ratifies the specimen's geometry (SEGMENTED-SCALE-SPECIMEN-2026-08-18-v1.html, approved by eye). Scale-independent, hence no /<scale> segment."
-  },
-  "padding/card/internal": {
-   "$value": 20,
-   "$type": "number",
-   "$note": "MINTED s200-D2 / s200-D3 (#200, Dave, 2026-08-18), CONSOLE ONLY. DERIVED AT MINT TIME per s200-D1 from the card's own minted radius: max(border-radius/surface = 20, 8) snapped to 2px = 20. ⚠ ANNOTATION, not a claim of ratification: the FORMULA max(radius,8) snap-2 is still PROPOSED (s200-D1 scope limit, Claude's pick) — Dave minted this VALUE after seeing it rendered on reviews/RADIUS-DERIVE-SPECIMEN-2026-08-18-v1.html; the formula itself remains unruled. Plain static number on disk (s200-D1 clause a)."
-  },
-  "rag/error-tint": {
-   "light": {
-    "$value": "#EECDC9",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#60231C",
-    "$type": "color"
-   },
-   "$note": "s123-D3 (Dave, 2026-08-07, #123, tuner v2 export): CONSOLE tint = TUNED OPACITY — #B92F1E at --alpha-24 (light) / --alpha-44 (dark) over background/default, stored composited. Console rag/* fence lifted s122-D4."
-  },
-  "rag/warning-tint": {
-   "light": {
-    "$value": "#F2DEB1",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#654D14",
-    "$type": "color"
-   },
-   "$note": "s123-D3 (Dave, 2026-08-07, #123, tuner v2 export): CONSOLE tint = TUNED OPACITY — #D5990B at --alpha-32 (light) / --alpha-40 (dark) over background/default, stored composited. Console rag/* fence lifted s122-D4."
-  },
-  "rag/success-tint": {
-   "light": {
-    "$value": "#D2E8DA",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#355441",
-    "$type": "color"
-   },
-   "$note": "s123-D3 (Dave, 2026-08-07, #123, tuner v2 export): CONSOLE tint = TUNED OPACITY — #5DAC7B at --alpha-28 (light) / --alpha-40 (dark) over background/default, stored composited. Console rag/* fence lifted s122-D4."
-  },
-  "rag/information-tint": {
-   "light": {
-    "$value": "#D1DDEE",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#364963",
-    "$type": "color"
-   },
-   "$note": "s123-D3 (Dave, 2026-08-07, #123, tuner v2 export): CONSOLE tint = TUNED OPACITY — #4F77B0 at --alpha-28 (light) / --alpha-44 (dark) over background/default, stored composited. Console rag/* fence lifted s122-D4. | s132-D1 (Dave, #132, ruled off info-blue-controller v1): information fill #4F77B0 -> #5A85C1, mark FLIPS WHITE -> INK #1A1A1A (4.61:1) - error is now the SOLE white mark on console/SC. Mode-invariant unchanged. Tint re-composited from the new fill at the s123-D3 ruled alphas: light #D1DDEE (28% over #FFFFFF), dark #364963 (44% over #1A1A1A). (was #CED9E9/#31435C)"
-  },
-  "rag/text/on-information": {
-   "light": {
-    "$value": "#FFFFFF",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#FFFFFF",
-    "$type": "color"
-   },
-   "$note": "Dave, 2026-08-14, #170: white error text OUTSIDE mono. Console + Supercharge take the same white on-information ink Legacy carries (s131-D1 shape), so the reversed error/information text is not graded as mono's dark ink. Mode-invariant (#FFFFFF light + dark)."
-  }
- },
- "$marksNote": "s122-D3 (Dave, #122): the glyph knockout on each Console RAG fill. --mark-* is not a store token — gen_theme_cascade.py emits it from this key. Mode-invariant.",
- "marks": {
-  "error": {
-   "light": {
-    "$value": "#FFFFFF",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#FFFFFF",
-    "$type": "color"
-   },
-   "$note": "s122-D3: glyph knockout on the error fill #B92F1E = 6.02:1."
-  },
-  "warning": {
-   "light": {
-    "$value": "#000000",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#000000",
-    "$type": "color"
-   },
-   "$note": "s122-D3: glyph knockout on the warning fill #D5990B = 8.39:1."
-  },
-  "success": {
-   "light": {
-    "$value": "#1A1A1A",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#1A1A1A",
-    "$type": "color"
-   },
-   "$note": "s122-D3: glyph knockout on the success fill #5DAC7B = 6.34:1."
-  },
-  "info": {
-   "light": {
-    "$value": "#1A1A1A",
-    "$type": "color"
-   },
-   "dark": {
-    "$value": "#1A1A1A",
-    "$type": "color"
-   },
-   "$note": "s122-D3: glyph knockout on the information fill #4F77B0 = 4.57:1."
-  }
- },
- "$guardsNote": "s158-D1 (Dave, #158): GUARDS. Not token overrides — declarations that THIS theme keeps a paint a later MONO-ONLY ruling moved away from it. They were hand-edited into canon.css's AUTO-THEMES block (which says do NOT hand-edit), and that is what held gen_theme_cascade --check red. Sourced here so the generator emits them and canon.css is clean generated output again. Provenance: .cn-banner .banner.err ink + .cn-tabs --badge-bg/--badge-ink = s149-D1 clauses (1) and (3), scoped 'this is right for mono only' — legacy s131-D1 / console+supercharge s132-D1 stay as built; --error-atom: var(--error) = s151-D1, an explicit NO-OP guard so the two-red law's atom fork cannot reach a theme that owns its own red. placement 'sorted' joins the sorted declaration namespace, 'append' is emitted after it in authored order (both reproduce the ratified bytes).",
- "guards": {
-  "badge": {
-   "placement": "sorted",
-   "$noteLight": [
-    "s160-D2 is MONO ONLY — console's badge/background override is untouched, so its numeral keeps the",
-    "WHITE ink (type26-013) rather than inherit mono's new rag/text/on-light seat."
-   ],
-   "declarations": {
-    "--number": {
-     "value": "var(--text-reverse)"
-    }
-   }
-  },
-  "banner": {
-   "rules": [
-    {
-     "$note": [
-      "s149-D1 is MONO ONLY — console s132-D1 untouched: state the white ink explicitly, since mono's",
-      ".banner.err default (which console previously inherited) has moved to #1A1A1A."
-     ],
-     "selector": ".cn-banner .banner.err",
-     "body": "--ink:var(--on-dark);"
+  "$description": "Apollo Console override set (ADR-0011). Console INHERITS Mono's palette (Dave 2026-07-21: Console + Supercharge inherit Mono; dataviz + status/RAG identical across Mono/Console/Supercharge — only Legacy differs). The one live divergence NOW is shape: Console = rounded corners. Everything absent here falls back to Mono. Anticipated flex slots (UI greys, future input error-condition colour) are declared in _themes.json declaredSlots per ADR-0010 — a value can be added here any time without re-architecture. || s158-D4 (Dave, 2026-08-12) OPTION B — SINGLE SOURCE: the twelve palette-owned rag hue keys (error/warning/success/information x bare/-glyph/-background) were TRIMMED from this file; the palette file named by this theme's ragPalette in _themes.json is now their ONE source, projected by canon/gen_theme_cascade.py BEFORE the override set. Every $note that lived on those entries was relocated VERBATIM into the palette file's matching key FIRST (add-then-trim), so no ruling provenance was lost. -tint keys STAY here per s123-D3 (tints derive from per-theme grounds and are NOT palette-owned); rag/text/* stays here too. Enforced by _validate_palette_tier.py --strict-absence.",
+  "$theme": "apollo-console",
+  "$attr": "console",
+  "$schemaVersion": "1.0.0",
+  "overrides": {
+    "border-radius/default": {
+      "$value": 4,
+      "$type": "number",
+      "$note": "Dave 2026-07-22: base/control = 4 (the 4px try; was 8, provisional). control + indicator follow this via alias. Roles are dialed INDEPENDENTLY — see surface below — so corners tune per component type, not uniform. Experiment; rule on the harness."
     },
-    {
-     "$note": [
-      "s149-D1's WASH MEDIUM is MONO ONLY too — console s132-D1 untouched: mono's error-banner action washes",
-      "moved to WHITE-fixed 8%/14%; this theme keeps the ink-derived 14%/22% wash exactly as built.",
-      "Restated here because mono's .banner.err default (which this theme inherited) has changed."
-     ],
-     "selector": ".cn-banner .banner.err .actions .abtn:hover",
-     "body": "background:color-mix(in srgb, var(--ink) 14%, transparent);"
+    "border-radius/control": {
+      "$value": 8,
+      "$type": "number",
+      "$note": "Dave 2026-08-18 s199-D3 (tuner pick, reviews/RADIUS-CORNER-TUNER-2026-08-18-v1.html): control breaks off the default(=4) alias to 8. ⚠ Segmented-control SWITCH is ruled to get its OWN carve-out token — inner/outer nested radii cannot share a value (curve matching) — NOT minted yet, Dave tunes it on tuner v2."
     },
-    {
-     "$note": [
-      "s149-D1 wash medium, pressed leg — see the hover note above."
-     ],
-     "selector": ".cn-banner .banner.err .actions .abtn:active",
-     "body": "background:color-mix(in srgb, var(--ink) 22%, transparent);"
-    }
-   ]
-  },
-  "selection-controls": {
-   "placement": "sorted",
-   "declarations": {
-    "--error-atom": {
-     "value": "var(--error)",
-     "$comment": "s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value"
-    }
-   }
-  },
-  "tabs": {
-   "placement": "append",
-   "$noteLight": [
-    "s149-D1 is MONO ONLY — console s132-D1 untouched: preserve the pre-existing .ovcount paint",
-    "(--tabs-active / --text-reverse) rather than inherit mono's new badge seat."
-   ],
-   "declarations": {
-    "--badge-bg": {
-     "value": "var(--tabs-active)"
+    "border-radius/surface": {
+      "$value": 20,
+      "$type": "number",
+      "$note": "Dave 2026-07-22: RESTORED to 12 (cards/dialogs rounder than buttons) — corners tune per component type, not uniform. Dave 2026-08-18 s199-D3: 12 → 20 (tuner pick). container 20 MINTED at #200 (s200-D2/s200-D3) — see border-radius/container below; data-mark 0 from the same export STAYS a PROPOSED slot, not canon."
     },
-    "--badge-ink": {
-     "value": "var(--text-reverse)"
+    "border-radius/container": {
+      "$value": 20,
+      "$type": "number",
+      "$note": "MINTED s200-D2 / s200-D3 (#200, Dave, 2026-08-18) — promotes the s199-D3 PROPOSED slot to canon. Outer radius of the concentric pair; the segmented thumb radii below DERIVED AT MINT TIME from it per s200-D1 (container − padding). s200-D3 scope: CONSOLE ONLY — no container entry was written for mono/legacy/supercharge; they follow the layout.json base alias."
+    },
+    "size/segmented-control/xs": {
+      "$value": 24,
+      "$type": "number",
+      "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Total outer height at scale `xs` — dimension-first tuned input (tuner v3 export, reviews/RADIUS-CORNER-TUNER-2026-08-18-v3.html, pasted and enacted by Dave). This mint SUPERSEDES and RETIRES the padding-first small/medium/large segmented set of s200-D2/s200-D3 (paddings 2/4/6, thumbs 18/16/14) — removed in the same motion, closing the mixed-grammar debt s200-D4 declared."
+    },
+    "padding/segmented-control/xs": {
+      "$value": 2,
+      "$type": "number",
+      "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Track inset at scale `xs`; 2px steps snap stacked totals to the 4px grid (s200-D1 clause d)."
+    },
+    "border-radius/segmented-container/xs": {
+      "$value": 6,
+      "$type": "number",
+      "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Outer radius of the concentric pair at scale `xs` (tuner v3 readout 24/2/6)."
+    },
+    "border-radius/segmented-thumb/xs": {
+      "$value": 0,
+      "$type": "number",
+      "$note": "RE-MINTED s202-D2 corrected reading (#202, Dave, 2026-08-18) — the s199-D3 switch carve-out IS the thumb; derivation input re-tuned from inset to dial 6: container (6/8/10/12) − 6, floored 0. Supersedes the s201-D1 concentric values 4/6/6/8."
+    },
+    "size/segmented-control/m": {
+      "$value": 44,
+      "$type": "number",
+      "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Total outer height at scale `m` — dimension-first tuned input (tuner v3 export)."
+    },
+    "padding/segmented-control/m": {
+      "$value": 4,
+      "$type": "number",
+      "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Track inset at scale `m`; 2px step (s200-D1 clause d)."
+    },
+    "border-radius/segmented-container/m": {
+      "$value": 10,
+      "$type": "number",
+      "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Outer radius of the concentric pair at scale `m` (tuner v3 readout 44/4/10)."
+    },
+    "border-radius/segmented-thumb/m": {
+      "$value": 4,
+      "$type": "number",
+      "$note": "RE-MINTED s202-D2 corrected reading (#202, Dave, 2026-08-18) — the s199-D3 switch carve-out IS the thumb; derivation input re-tuned from inset to dial 6: container (6/8/10/12) − 6, floored 0. Supersedes the s201-D1 concentric values 4/6/6/8."
+    },
+    "size/segmented-control/l": {
+      "$value": 48,
+      "$type": "number",
+      "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Total outer height at scale `l` — dimension-first tuned input (tuner v3 export)."
+    },
+    "padding/segmented-control/l": {
+      "$value": 4,
+      "$type": "number",
+      "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Track inset at scale `l`; 2px step (s200-D1 clause d)."
+    },
+    "border-radius/segmented-container/l": {
+      "$value": 12,
+      "$type": "number",
+      "$note": "MINTED s201-D1 (#201, Dave, 2026-08-18), CONSOLE ONLY. Outer radius of the concentric pair at scale `l` (tuner v3 readout 48/4/12)."
+    },
+    "border-radius/segmented-thumb/l": {
+      "$value": 6,
+      "$type": "number",
+      "$note": "RE-MINTED s202-D2 corrected reading (#202, Dave, 2026-08-18) — the s199-D3 switch carve-out IS the thumb; derivation input re-tuned from inset to dial 6: container (6/8/10/12) − 6, floored 0. Supersedes the s201-D1 concentric values 4/6/6/8."
+    },
+    "size/segmented-control/s": {
+      "$value": 36,
+      "$type": "number",
+      "$note": "MINTED s200-D4 (#200, Dave, 2026-08-18), CONSOLE ONLY. Total outer height of the segmented control at scale `s` — the TUNED input of the DIMENSION-FIRST grammar (tuner v3 export draft, reviews/RADIUS-CORNER-TUNER-2026-08-18-v3.html). Dave: 'can we mint this for console at the moment, with the 44px hit area fix'. Key grammar follows the v3 export draft (size/segmented-control/<scale>). s201-D1 (#201): xs/m/l minted alongside; the padding-first small/medium/large set RETIRED."
+    },
+    "padding/segmented-control/s": {
+      "$value": 2,
+      "$type": "number",
+      "$note": "MINTED s200-D4 (#200, Dave, 2026-08-18), CONSOLE ONLY. Track inset at scale `s`. Steps in 2px so stacked totals snap to the 4px grid (s200-D1 clause d). Dimension-first scale. s201-D1 (#201): the padding-first small/medium/large set is RETIRED — the mixed-grammar debt s200-D4 declared is CLOSED; xs/s/m/l is the sole segmented grammar."
+    },
+    "border-radius/segmented-container/s": {
+      "$value": 8,
+      "$type": "number",
+      "$note": "MINTED s200-D4 (#200, Dave, 2026-08-18), CONSOLE ONLY. Outer radius of the concentric pair at scale `s` (tuner v3 readout 36/2/8). Distinct from the general border-radius/container role (20) — that role is UNCHANGED; this is the per-scale segmented outer radius."
+    },
+    "border-radius/segmented-thumb/s": {
+      "$value": 2,
+      "$type": "number",
+      "$note": "RE-MINTED s202-D2 corrected reading (#202, Dave, 2026-08-18) — the s199-D3 switch carve-out IS the thumb; derivation input re-tuned from inset to dial 6: container (6/8/10/12) − 6, floored 0. Supersedes the s201-D1 concentric values 4/6/6/8."
+    },
+    "size/segmented-control/min-hit-area": {
+      "$value": 44,
+      "$type": "number",
+      "$note": "MINTED s200-D4 (#200, Dave, 2026-08-18), CONSOLE ONLY. Minimum touch target for segmented controls: any scale whose VISUAL height is under 44 (scale `s` is 36) must present a 44px hit target — the visual box is unchanged, the interactive box is expanded. Dave's words: 'with the 44px hit area fix'; the min-hit-area token reading was the conductor's read-back at #200 with veto open. s201-D2 (#201, Dave): CONFIRMED as HIT ZONE — 44 binds the interactive target, not the visual height; xs (24) and s (36) keep their visual boxes and expand the hit target to 44. s201-D3 (#201, Dave): hit box = max(44, visual height) — NATURAL above the floor, so l keeps 48; ratifies the specimen's geometry (SEGMENTED-SCALE-SPECIMEN-2026-08-18-v1.html, approved by eye). Scale-independent, hence no /<scale> segment."
+    },
+    "padding/card/internal": {
+      "$value": 20,
+      "$type": "number",
+      "$note": "MINTED s200-D2 / s200-D3 (#200, Dave, 2026-08-18), CONSOLE ONLY. DERIVED AT MINT TIME per s200-D1 from the card's own minted radius: max(border-radius/surface = 20, 8) snapped to 2px = 20. ⚠ ANNOTATION, not a claim of ratification: the FORMULA max(radius,8) snap-2 is still PROPOSED (s200-D1 scope limit, Claude's pick) — Dave minted this VALUE after seeing it rendered on reviews/RADIUS-DERIVE-SPECIMEN-2026-08-18-v1.html; the formula itself remains unruled. Plain static number on disk (s200-D1 clause a)."
+    },
+    "rag/error-tint": {
+      "light": {
+        "$value": "#EECDC9",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#60231C",
+        "$type": "color"
+      },
+      "$note": "s123-D3 (Dave, 2026-08-07, #123, tuner v2 export): CONSOLE tint = TUNED OPACITY — #B92F1E at --alpha-24 (light) / --alpha-44 (dark) over background/default, stored composited. Console rag/* fence lifted s122-D4."
+    },
+    "rag/warning-tint": {
+      "light": {
+        "$value": "#F2DEB1",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#654D14",
+        "$type": "color"
+      },
+      "$note": "s123-D3 (Dave, 2026-08-07, #123, tuner v2 export): CONSOLE tint = TUNED OPACITY — #D5990B at --alpha-32 (light) / --alpha-40 (dark) over background/default, stored composited. Console rag/* fence lifted s122-D4."
+    },
+    "rag/success-tint": {
+      "light": {
+        "$value": "#D2E8DA",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#355441",
+        "$type": "color"
+      },
+      "$note": "s123-D3 (Dave, 2026-08-07, #123, tuner v2 export): CONSOLE tint = TUNED OPACITY — #5DAC7B at --alpha-28 (light) / --alpha-40 (dark) over background/default, stored composited. Console rag/* fence lifted s122-D4."
+    },
+    "rag/information-tint": {
+      "light": {
+        "$value": "#D1DDEE",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#364963",
+        "$type": "color"
+      },
+      "$note": "s123-D3 (Dave, 2026-08-07, #123, tuner v2 export): CONSOLE tint = TUNED OPACITY — #4F77B0 at --alpha-28 (light) / --alpha-44 (dark) over background/default, stored composited. Console rag/* fence lifted s122-D4. | s132-D1 (Dave, #132, ruled off info-blue-controller v1): information fill #4F77B0 -> #5A85C1, mark FLIPS WHITE -> INK #1A1A1A (4.61:1) - error is now the SOLE white mark on console/SC. Mode-invariant unchanged. Tint re-composited from the new fill at the s123-D3 ruled alphas: light #D1DDEE (28% over #FFFFFF), dark #364963 (44% over #1A1A1A). (was #CED9E9/#31435C)"
+    },
+    "rag/text/on-information": {
+      "light": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "$note": "Dave, 2026-08-14, #170: white error text OUTSIDE mono. Console + Supercharge take the same white on-information ink Legacy carries (s131-D1 shape), so the reversed error/information text is not graded as mono's dark ink. Mode-invariant (#FFFFFF light + dark)."
     }
-   }
+  },
+  "$marksNote": "s122-D3 (Dave, #122): the glyph knockout on each Console RAG fill. --mark-* is not a store token — gen_theme_cascade.py emits it from this key. Mode-invariant.",
+  "marks": {
+    "error": {
+      "light": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "$note": "s122-D3: glyph knockout on the error fill #B92F1E = 6.02:1."
+    },
+    "warning": {
+      "light": {
+        "$value": "#000000",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#000000",
+        "$type": "color"
+      },
+      "$note": "s122-D3: glyph knockout on the warning fill #D5990B = 8.39:1."
+    },
+    "success": {
+      "light": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "$note": "s122-D3: glyph knockout on the success fill #5DAC7B = 6.34:1."
+    },
+    "info": {
+      "light": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "$note": "s122-D3: glyph knockout on the information fill #4F77B0 = 4.57:1."
+    }
+  },
+  "$guardsNote": "s158-D1 (Dave, #158): GUARDS. Not token overrides — declarations that THIS theme keeps a paint a later MONO-ONLY ruling moved away from it. They were hand-edited into canon.css's AUTO-THEMES block (which says do NOT hand-edit), and that is what held gen_theme_cascade --check red. Sourced here so the generator emits them and canon.css is clean generated output again. Provenance: .cn-banner .banner.err ink + .cn-tabs --badge-bg/--badge-ink = s149-D1 clauses (1) and (3), scoped 'this is right for mono only' — legacy s131-D1 / console+supercharge s132-D1 stay as built; --error-atom: var(--error) = s151-D1, an explicit NO-OP guard so the two-red law's atom fork cannot reach a theme that owns its own red. placement 'sorted' joins the sorted declaration namespace, 'append' is emitted after it in authored order (both reproduce the ratified bytes).",
+  "guards": {
+    "badge": {
+      "placement": "sorted",
+      "$noteLight": [
+        "s160-D2 is MONO ONLY — console's badge/background override is untouched, so its numeral keeps the",
+        "WHITE ink (type26-013) rather than inherit mono's new rag/text/on-light seat."
+      ],
+      "declarations": {
+        "--number": {
+          "value": "var(--text-reverse)"
+        }
+      }
+    },
+    "banner": {
+      "rules": [
+        {
+          "$note": [
+            "s149-D1 is MONO ONLY — console s132-D1 untouched: state the white ink explicitly, since mono's",
+            ".banner.err default (which console previously inherited) has moved to #1A1A1A."
+          ],
+          "selector": ".cn-banner .banner.err",
+          "body": "--ink:var(--on-dark);"
+        },
+        {
+          "$note": [
+            "s149-D1's WASH MEDIUM is MONO ONLY too — console s132-D1 untouched: mono's error-banner action washes",
+            "moved to WHITE-fixed 8%/14%; this theme keeps the ink-derived 14%/22% wash exactly as built.",
+            "Restated here because mono's .banner.err default (which this theme inherited) has changed."
+          ],
+          "selector": ".cn-banner .banner.err .actions .abtn:hover",
+          "body": "background:color-mix(in srgb, var(--ink) 14%, transparent);"
+        },
+        {
+          "$note": [
+            "s149-D1 wash medium, pressed leg — see the hover note above."
+          ],
+          "selector": ".cn-banner .banner.err .actions .abtn:active",
+          "body": "background:color-mix(in srgb, var(--ink) 22%, transparent);"
+        }
+      ]
+    },
+    "selection-controls": {
+      "placement": "sorted",
+      "declarations": {
+        "--error-atom": {
+          "value": "var(--error)",
+          "$comment": "s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value"
+        }
+      }
+    },
+    "status-indicator": {
+      "rules": [
+        {
+          "$note": [
+            "s212-D2 ENACTMENT (G17-B, the filled status cell) — s149-D1's dark-ink error leg is MONO ONLY.",
+            "Console keeps the s132-D1 WHITE knockout on the shared-map error fill #B92F1E (6.02:1);",
+            "without this guard the cell inherits mono's --ink:var(--on-light) #1A1A1A at 2.89:1.",
+            "Same shape, same reason, as the .cn-banner .banner.err guard above."
+          ],
+          "selector": ".cn-status-indicator .cell.err",
+          "body": "--ink:var(--on-dark);"
+        },
+        {
+          "$note": [
+            "PROPOSED, NOT RULED (#213 lane E2, s212-D2 enactment). The information leg of the filled",
+            "cell would inherit rag/text/on-information, which this theme overrides to #FFFFFF; on the",
+            "shared-map information fill #5A85C1 that measures 3.78:1 — below the 4.5:1 text floor, and",
+            "console carries NO Legacy-style AA exemption (R-D24 is legacy-only). This guard seats the",
+            "cell's information ink on rag/text/on-light instead: 4.61:1, measured. Dave rules whether",
+            "the fix belongs here (per-component) or upstream in the on-information slot / the fill hue;",
+            "the SAME 3.78:1 leg already exists on .cn-banner .banner.info and is NOT touched by this guard."
+          ],
+          "selector": ".cn-status-indicator .cell.inf",
+          "body": "--ink:var(--on-light);"
+        }
+      ]
+    },
+    "tabs": {
+      "placement": "append",
+      "$noteLight": [
+        "s149-D1 is MONO ONLY — console s132-D1 untouched: preserve the pre-existing .ovcount paint",
+        "(--tabs-active / --text-reverse) rather than inherit mono's new badge seat."
+      ],
+      "declarations": {
+        "--badge-bg": {
+          "value": "var(--tabs-active)"
+        },
+        "--badge-ink": {
+          "value": "var(--text-reverse)"
+        }
+      }
+    }
   }
- }
 }
