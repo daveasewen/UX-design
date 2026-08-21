@@ -374,6 +374,40 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      invisible. There is **no writer** for these blocks: the conductor hand-writes them, and every
      production path only READS this file.
 
+     ### ★ THE DELEGATED-WRAP CONDUCTOR-COST LINES (`s214-D5`, 2026-08-21 — closes the schema hole the #212 mining named)
+
+     A gauge-log block for a **DELEGATED** wrap carries these terms, each MEASURED or declared
+     `unobservable (<reason>)` — never omitted silently, never guessed
+     [[feedback-measuring-tool-must-not-guess]]:
+
+     ```
+     wrap-handover: brief-cut <N> real (conductor) · sub-cut <N> real (first-hand) · delta <N> real · replay <N or unobservable (<reason>)> real
+     ```
+
+     - **brief-cut** = the conductor's FILL when the wrap brief was cut (the conductor DECLARES it in
+       the brief). **sub-cut** = the wrap sub's own first-hand `_checkin.py` reading of the
+       conductor's transcript. **delta** = sub-cut − brief-cut (the hand-over's cost). **replay** =
+       what reading the sub's report back cost the conductor, if measurable at write time — usually
+       it is NOT (the wrap sub cannot see it), and `unobservable (conductor-side, post-wrap)` is the
+       honest form; the conductor may append the measured figure at the NEXT opener.
+     - ⚠️ UNIT: REAL tokens, FILL moments — stated separately, never summed, never averaged into one
+       "wrap cost" [[measure-dont-convert-units]]. An IN-WINDOW wrap writes no such line.
+     - WHY: the advisory-line re-derivation (`s214-D4`) is STAGED on this field reaching n≥2 — the
+       hand-over reserve must be a measurement before it may replace the 49,071 wrap term.
+     - ⚠️ No gate parses this line yet — the consumer is the `s214-D4` staging check and the re-base
+       sitting, both human-read. A `_capture_gate.py` guard is a priced candidate, not built.
+
+     ### ★ BANNER DISCIPLINE (`s214-D6` — the boot-reduction pair, half 1)
+
+     Every wrap brief carries this clause: **the ★ LATEST banner is written toward a `_CHAIN.md` of
+     ~10–12K real** (it measured 21,323 at #213 — doubled since #109, and the chain IS mostly the
+     banner). The clause commands **SHORTER, never decide-what-to-drop**: a wrap sub compresses
+     girth — tighter sentences, pointers instead of restatement — and NEVER omits an item, a carry,
+     a declared skip, or a receipt name; roll-to-archive already preserves every prior banner
+     verbatim, so nothing is ever lost by writing the new one tight. The chain's generated footer is
+     the measurement; quote it at the wrap. *(Half 2 of the pair — MEMORY.md compaction at owed
+     openers — lives in the memory-compaction mechanics, not here.)*
+
    - **commit-states → `_GM-ARCHIVE.md`**, under the same `<date> <session#>` batch key as 2c.
 
    ### ★★ ds-022 (ENACTED #34) — THIS ROLL IS NO LONGER DONE BY HAND
