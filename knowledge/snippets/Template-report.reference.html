@@ -186,8 +186,14 @@
   .l-split{ display:grid; gap:var(--l-gap); grid-template-columns:minmax(0, 1fr) 280px;
     container-type:inline-size; }
   .l-measure{ max-width:64ch; }
+  /* #211 — REPAIRED AT CAUSE IN Layout-utilities.reference.html, copied faithfully here.
+     WAS: `@container (max-width:760px){ .l-split{ grid-template-columns:minmax(0,1fr); } }`.
+     `.l-split` declares `container-type:inline-size` on itself, so that rule was aimed at the one
+     element it could never match — a container query resolves against the nearest ANCESTOR
+     container and an element is never its own. The split never collapsed. The collapse is now
+     expressed on the CHILDREN, where the query does resolve. */
   @container (max-width: 760px){          /* breakpoint/ms, measured against the CONTAINER */
-    .l-split{ grid-template-columns:minmax(0, 1fr); }
+    .l-split > *{ grid-column:1 / -1; }   /* #211: the collapse, driven from the CHILDREN */
   }
   nav.tpl-crumbs ol{list-style:none; display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0; padding:0;}
   nav.tpl-crumbs li{display:inline-flex; align-items:center; gap:8px;}

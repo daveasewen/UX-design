@@ -92,11 +92,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **106 items · 73 live · 41 Dave's · 32 mine · 87 carry a stated close condition · **19 UNCONDITIONED**.**
+> **111 items · 78 live · 45 Dave's · 33 mine · 92 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (41) — 36 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (45) — 40 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -133,20 +133,24 @@
 > - `W-83` **wave-6 lane A - FOUR P3 app shells BUILT PROPOSED-NOT-RULED (rows 100/101/102/103 split, focused/full-page, doormat, nav rail) - Daves eye + 32 named questions owed** — *closes when:* Dave rules promote/rework/delete on each of the four shells (receipt notes/_receipts/2026-08-20-210-wave6-laneA-p3-shells.md) AND answers the four structural ones this lane raised: (a) ONE PROGRESS STATEMENT PER SCREEN - shell band vs hosted wizard step rail, ruled once for the library; (b) the TWO-CONTRACT FLYOUT RULE - a name-repeating flyout is decorative/aria-hidden, a destination-carrying flyout is a disclosure/announced - which also answers the #203 rail-tooltip question; (c) the phone-bar SHORT-NAME convention or a cap-at-four with a More disclosure (measured: four short names fit a 390px bar with zero truncation, five long ones truncate to 62px boxes); (d) whether scroll-margin-top against sticky regions becomes a library-wide rule or a gate. Carried unruled and NOT closed by this lane: the breakpoint scale, and whether a shell belongs in knowledge/snippets at all.
 > - `W-84` **wave-6 Layer-2 SIXTEEN P3 organisms BUILT PROPOSED (4 shells + 5 templates + 7 lock-ups) - Daves eye + ~33 questions owed; row 124 variant-matrices DEFERRED to Dave** — *closes when:* Dave rules per organism promote/rework/delete across the sixteen (receipts wave6-lane{A,B,C,D}) AND rules row 124 in-or-out (variant matrices - review artefact not component, excluded from the wave on that reading); the lane-A structural four (progress-statement-per-screen, flyout two-contract rule, phone-bar short-name convention, scroll-margin-vs-sticky gate) and lane-B gate candidates ride with it
 > - `W-85` **Probe registry P-7 (container self-query) + P-8 (dangling var, TEXT tier) — registered ADVISORY #210, live findings STANDING, nothing repaired** — *closes when:* Dave has observed each probe live and PROMOTED or PARKED it individually (s204-D1 twice-caught bar, derivation governance — promotion is his, never the tool's). ⚠ NOT closed by the probes existing or running: P-7 currently reports 6 findings + 3 WARN and P-8 reports 58 findings in 9 of 135 snippets, and this lane REPAIRED NOTHING. P-7's ledger carries 3 mined #210 catches + its own live drive but ONE distinct session, so it is NOT twice-caught; P-8 has two (184, 210), with the 184 occasion SHARED with P-3 and declared.
+> - `W-87` **wave-1 lane R1 — gen_token_ramp comment-injection REPAIRED, P-8 58→12; 12 ABSENT tints + C2 gate blindness priced** — *closes when:* Dave rules the 12 ABSENT tint values (or parks them) and picks up/parks the priced C2-gate and declared_value gate extensions
+> - `W-88` **wave-1 lane R3 — Date-picker ring 1.21→17.40, Drawer focus repaired, input descender clip repaired; 3 more clipping snippets + P-6 wrong-organ finding priced** — *closes when:* Dave looks at the three repairs, rules the P-6 ink-verdict gate extension in or out, and disposes of the three remaining clipping snippets
+> - `W-89` **wave-1 lane R4 — P-3/P-6 crash→refuse rc=77 REPAIRED; error-solid.svg NOT repairable locally (FIGMA_TOKEN + upstream zero-fill node)** — *closes when:* Dave (or a session holding FIGMA_TOKEN) fixes the Figma error-solid node and re-exports, or Dave rules the icon dropped
+> - `W-90` **wave-2 lane R2 — .l-split container self-query REPAIRED at cause, P-7 6+3WARN→0; showroom payloads + review page still carry old defect** — *closes when:* Dave rules P-7 promote/park (W-85), the REVIEW-204 7th instance is repaired at his sitting, and the 4 canon radius literals are ruled snap-or-waive
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-15` **LEDGER § ★ #59** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-16` **UNHOMED PAIR, copied up at the #78 2c EXIT CHECK** — *closes when:* ⛔ **none stated — cannot close until you name one**
 >
-> **MINE (32), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62`
+> **MINE (33), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **41,235 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **41,783 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 97,654 real and stays whole for retrieval; you have paid for
-42% of it, and that is the intended figure, not a shortfall.)*
+43% of it, and that is the intended figure, not a shortfall.)*

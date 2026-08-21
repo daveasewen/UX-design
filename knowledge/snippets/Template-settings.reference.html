@@ -166,9 +166,15 @@
     container-type:inline-size; }
   .l-measure{ max-width:64ch; }
   @container (max-width: 760px){          /* breakpoint/ms, measured against the CONTAINER */
-    .l-split{ grid-template-columns:minmax(0, 1fr); }
+    .l-split > *{ grid-column:1 / -1; }   /* #211: the collapse, driven from the CHILDREN */
   }
-  .tpl-split-host{ container-type:inline-size; }
+  /* `.tpl-split-host{ container-type:inline-size; }` REMOVED #211. It was a workaround for the
+     parent primitive's self-query defect (`@container` aimed at `.l-split`, the element that
+     declares `container-type` — an element is never its own ancestor container, so that rule
+     could never fire). Layout-utilities now puts the collapse on `.l-split > *`, which resolves
+     against the split itself and needs no host. The wrapper div in the markup below keeps the
+     class as a composition marker only; `.tpl-setting-host` further down is a DIFFERENT host for
+     a DIFFERENT query (460px, on `.tpl-section`) and is untouched. */
   nav.tpl-crumbs ol{list-style:none; display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0; padding:0;}
   nav.tpl-crumbs li{display:inline-flex; align-items:center; gap:8px;}
   .sep{color:var(--text); opacity:var(--alpha-52); display:inline-flex; align-items:center;}

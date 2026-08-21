@@ -50,7 +50,24 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
 
-  .tl{display:flex; align-items:stretch; gap:16px; width:var(--demo-width, 640px); max-width:100%; container-type:inline-size;}
+  /* #211 — THE FRAME IS THE CONTAINER, AND THAT IS THE REPAIR (P-7, container self-query).
+     WAS: `.tl{ … width:var(--demo-width,640px); max-width:100%; container-type:inline-size; }`
+     with `@container (max-width:480px){ .tl{flex-direction:column;} … }` further down. `.tl`
+     declared `container-type` on ITSELF, and a container query resolves against the matched
+     element's nearest ANCESTOR container — an element is never its own. So the `.tl` leg of that
+     query could never fire and the two panels NEVER STACKED. DRIVEN #211 at a 420px viewport
+     before this repair: `.tl` measured 340px wide (well under the 480px breakpoint), computed
+     `flex-direction: row`, and its three children measured 54px / 200px / 54px — two 54-pixel
+     panels. Note the `.moves` leg of the same query DID fire, because `.moves` is a DESCENDANT;
+     only the rule aimed at the container itself was dead, which is why this looked half-right.
+     THE REPAIR is the `.hv-frame` shape Hero-variants already uses (wave-5 lesson 3): the width
+     and the `container-type` move to a WRAPPER, so the query measures exactly the same number it
+     always measured, and `.tl` becomes a plain full-width flex row that the query can reach.
+     ⛔ `.l-split` got a DIFFERENT repair shape (the declaration moved onto the children) because
+     `grid-column` is a child property and `flex-direction` is not — the asymmetry is deliberate
+     and is named in the #211 receipt, not hidden. */
+  .tl-frame{width:var(--demo-width, 640px); max-width:100%; container-type:inline-size;}
+  .tl{display:flex; align-items:stretch; gap:16px; width:100%;}
   .panel{flex:1; min-width:0; border:1px solid var(--panel-border); background:var(--surface); display:flex; flex-direction:column;}
   .panel .head{display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--divider);}
   .panel .count{margin-left:auto; color:var(--muted);}
@@ -104,6 +121,9 @@
     <symbol id="ic-chev-ll" viewBox="0 0 18 18"><path d="M9 1H10.696L2.698 9L10.696 17H9L1 9L9 1Z" fill="currentColor"/></path></symbol>
   </svg>
 
+  <!-- #211 · `.tl-frame` is the query container for `.tl`. It carries the width `.tl` used to
+       carry, so the 480px container query measures the same number it always measured. -->
+  <div class="tl-frame">
   <div class="tl" id="tl1">
     <div class="panel" id="panel-avail">
       <div class="head">
@@ -137,6 +157,7 @@
       <p class="visually-hidden" role="status" id="sel-status"></p>
     </div>
   </div>
+  </div><!-- /.tl-frame (#211) -->
 
   <script type="application/json" id="token-manifest">
   {

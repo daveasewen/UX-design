@@ -25,6 +25,17 @@ Idempotent; content-compared, never mtime. A file that stops referencing every s
 gets its block REMOVED. Local declarations in a consumer keep winning (they come
 later in the cascade) — Tranche-6/9's state-class --mark declarations are untouched.
 
+⛔ HTML COMMENTS ARE NOT CSS, AND THIS GENERATOR NOW KNOWS THAT (#211, P-8's generator
+cause). The original injection point was `re.search(r"<style[^>]*>", html)` over the RAW
+text, so the first LITERAL `<style>` won — and in five files that literal sits inside a
+prose comment (`<!-- TYPE-001 · … MUST come BEFORE the component <style> below … -->`).
+The whole alpha ramp was appended INSIDE the comment: not CSS, silently dead, and
+idempotent over its own defect so `--check` reported "in sync" forever. Both the
+injection point AND the set-detector now read a COMMENT-MASKED copy, and render()
+refuses (TokenRampError) if the block it just built would land inside a comment —
+the post-condition is the gate, because a generator that cannot see comments will
+re-make this exact hole the next time a consumer's prose mentions `<style>`.
+
 Modes: (default) write · --check (exit 1 on any drift, for _build_all.py) · --selftest.
 Failures are LOUD and NAMED (TokenRampError) — a parse helper that guesses is the
 ds-025 defect.
@@ -90,8 +101,40 @@ def strip_block(html):
     return AUTO_RX.sub("", html)
 
 
+COMMENT_OPEN, COMMENT_CLOSE = "<!--", "-->"
+
+
+def mask_comments(html):
+    """Blank every HTML comment's bytes, PRESERVING LENGTH and newlines (#211).
+
+    Returned string is index-for-index aligned with the input, so an offset found in
+    the mask addresses the same byte in the original. An UNTERMINATED `<!--` masks to
+    EOF, which is what a browser does — a generator that stopped at the missing `-->`
+    would be guessing (ds-025).
+    """
+    out = list(html)
+    i = 0
+    while True:
+        a = html.find(COMMENT_OPEN, i)
+        if a < 0:
+            return "".join(out)
+        b = html.find(COMMENT_CLOSE, a + len(COMMENT_OPEN))
+        end = len(html) if b < 0 else b + len(COMMENT_CLOSE)
+        for k in range(a, end):
+            if out[k] != "\n":
+                out[k] = " "
+        i = end
+
+
+def in_comment(html, offset):
+    """True if `offset` falls inside an HTML comment — the post-condition's question."""
+    return mask_comments(html)[offset] != html[offset]
+
+
 def sets_referenced(html_without_block):
-    return {s for s, (_, rx, _) in SETS.items() if rx.search(html_without_block)}
+    """⛔ Asked of a COMMENT-MASKED copy: a var() named only in prose is not a reference."""
+    masked = mask_comments(html_without_block)
+    return {s for s, (_, rx, _) in SETS.items() if rx.search(masked)}
 
 
 def render(html, css):
@@ -100,12 +143,21 @@ def render(html, css):
     need = sets_referenced(bare)
     if not need:
         return bare
-    m = re.search(r"<style[^>]*>\n?", bare)
+    # ⛔ the injection point is found in the MASKED copy: a literal `<style>` written
+    # inside a prose comment is not a style tag (#211 — P-8's generator cause).
+    m = re.search(r"<style[^>]*>\n?", mask_comments(bare))
     if not m:
         raise TokenRampError(
-            "file references a token set but has no <style> tag to inject into — refusing to guess (ds-025).")
+            "file references a token set but has no <style> tag to inject into "
+            "OUTSIDE AN HTML COMMENT — refusing to guess (ds-025).")
     block = payload_for(css, need)
-    return bare[: m.end()] + block + "\n" + bare[m.end():]
+    out = bare[: m.end()] + block + "\n" + bare[m.end():]
+    # POST-CONDITION, not a comment: the block we just wrote must be live CSS.
+    if in_comment(out, out.index(BEGIN)):
+        raise TokenRampError(
+            "the AUTO-TOKENS block would land INSIDE an HTML comment — that is dead CSS "
+            "and it is the #211 defect; refusing to write it (s121-D1).")
+    return out
 
 
 def targets():
@@ -182,12 +234,54 @@ def selftest():
             fails.append(f"{tag} did not raise")
         except TokenRampError:
             pass
+    # 6. ⛔ #211 — a literal `<style>` written inside a PROSE COMMENT is not a style tag.
+    #    This is the exact shape of Button.reference.html:45, which put the whole alpha
+    #    ramp inside `<!-- … MUST come BEFORE the component <style> … -->` and stayed
+    #    "in sync" forever because the generator was idempotent over its own defect.
+    shadowed = ("<html>\n<!-- NOTE: this must come BEFORE the component <style> below. -->\n"
+                "<style>\n.a{opacity:var(--alpha-60);}\n</style></html>")
+    try:
+        out6 = render(shadowed, css)
+    except TokenRampError as e:
+        # a crash is not a fail [[a-crash-is-not-a-fail]] — name it and keep the rc honest
+        out6 = None
+        fails.append("#211 comment-shadowed <style>: render REFUSED (%s)" % e)
+    if out6 is not None:
+        if BEGIN not in out6:
+            fails.append("#211 comment-shadowed <style>: no block injected at all")
+        elif in_comment(out6, out6.index(BEGIN)):
+            fails.append("#211 comment-shadowed <style>: block landed INSIDE the HTML comment (dead CSS)")
+        if out6.count("<!-- NOTE: this must come BEFORE the component <style> below. -->") != 1:
+            fails.append("#211 comment-shadowed <style>: the prose comment was severed, not preserved")
+        try:
+            if render(out6, css) != out6:
+                fails.append("#211 comment-shadowed <style>: not idempotent on re-render")
+        except TokenRampError as e:
+            fails.append("#211 comment-shadowed <style>: re-render REFUSED (%s)" % e)
+    # 7. a file whose ONLY `<style>` text is inside a comment must REFUSE, loud and named.
+    try:
+        render("<html><!-- <style> --> .a{opacity:var(--alpha-60);}</html>", css)
+        fails.append("#211 comment-only <style> did not raise")
+    except TokenRampError:
+        pass
+    # 8. the set DETECTOR is comment-masked too: a var() named only in prose is not a reference.
+    prose_only = "<html>\n<!-- we deliberately do NOT use var(--alpha-60) here -->\n<style>\n.b{color:red;}\n</style></html>"
+    if render(prose_only, css) != prose_only:
+        fails.append("#211 a var() named only inside a comment triggered an injection")
+    # 9. an UNTERMINATED `<!--` comments out the rest of the file, exactly as a browser
+    #    reads it — so nothing after it is CSS and the file must come back UNCHANGED.
+    unterm = "<html>\n<!-- oops, never closed … <style>\n.a{opacity:var(--alpha-60);}\n</style></html>"
+    try:
+        if render(unterm, css) != unterm:
+            fails.append("#211 unterminated <!-- : text after it was treated as live CSS")
+    except TokenRampError as e:
+        fails.append("#211 unterminated <!-- : render REFUSED instead of leaving the file alone (%s)" % e)
     if fails:
         print("gen_token_ramp selftest: FAIL")
         for f in fails:
             print("   ❌ " + f)
         return 1
-    print("gen_token_ramp selftest: 6 bites GREEN")
+    print("gen_token_ramp selftest: 6 bites GREEN + 4 comment bites (#211) GREEN")
     return 0
 
 

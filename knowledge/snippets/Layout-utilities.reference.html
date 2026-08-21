@@ -238,9 +238,25 @@
   @media (max-width: 760px){        /* breakpoint/ms */
     .l-cols > [class*="l-span-"]{ grid-column:span 12; }
   }
+  /* ⛔ THE COLLAPSE IS DRIVEN FROM THE CHILDREN, AND THAT IS THE WHOLE REPAIR (#211, P-7).
+     WHAT WAS HERE BEFORE, verbatim, and why it could never work:
+         @container (max-width: 760px){ .l-split{ grid-template-columns:minmax(0, 1fr); } }
+     `.l-split` declares `container-type:inline-size` four rules up. That makes it a query
+     container FOR ITS DESCENDANTS and for nothing else: a `@container` rule resolves against the
+     matched element's nearest ANCESTOR container, and an element is never its own ancestor. So
+     the rule above was aimed at the one element it could never match, the split NEVER COLLAPSED,
+     and every gate stayed green because nothing parsed the artefact in the consumer's grammar
+     [[no-gate-parses-the-artefact]]. DRIVEN #211, this file, at seven container widths — at 420px
+     the "collapsed" specimen still computed `116px 280px`. It was never a near miss.
+     THE REPAIR: query the same container (`.l-split` itself, which it legitimately is for its own
+     children) and move the DECLARATION onto the children, where the query can actually reach.
+     `grid-column:1 / -1` makes every item span both tracks, so the items stack full-width — the
+     collapse the rule above was asking for, expressed where it fires. This needs NO wrapper and
+     NO markup contract, so every consumer of `.l-split` is repaired by this file alone; the
+     `.tpl-split-host` hosts three templates grew are removed as part of the same repair.
+     It covers `data-side="start"` in one rule: spanning 1/-1 collapses either track order. */
   @container (max-width: 760px){    /* breakpoint/ms, measured against the CONTAINER */
-    .l-split{ grid-template-columns:minmax(0, 1fr); }
-    .l-split[data-side="start"]{ grid-template-columns:minmax(0, 1fr); }
+    .l-split > *{ grid-column:1 / -1; }
   }
 
   /* ---- DEMO CHROME below this line. Not the component. ---- */

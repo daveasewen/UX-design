@@ -207,21 +207,38 @@ def measure(simulate=False, roots=None, allow_own=True):
     path = os.path.join(tmp, "fixture.html")
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(fixture_html(simulate=simulate))
+    refusal_launch = None
+    readings = None
     try:
         with sync_playwright() as p:
-            b = p.chromium.launch(headless=True,
-                                  args=["--no-sandbox", "--disable-dev-shm-usage",
-                                        "--disable-gpu"], **kwargs)
-            pg = b.new_page(viewport={"width": 640, "height": 640})
-            pg.goto("file://" + path)
-            # SETTLE BEFORE READING (runbook 2026-07-27): a value read in the same task as a
-            # class change is the PRE-transition value.
-            pg.add_style_tag(content="*{transition:none!important;animation:none!important}")
-            pg.wait_for_timeout(200)
-            readings = pg.evaluate(JS)
-            b.close()
+            try:
+                b = p.chromium.launch(headless=True,
+                                      args=["--no-sandbox", "--disable-dev-shm-usage",
+                                            "--disable-gpu"], **kwargs)
+            except Exception as e:
+                # ⛔ #211 P-6 fix — same class as P-3's: `_browser_env()` only proves a FILE
+                # exists at the expected layout path, not that it can LAUNCH. Missing shared
+                # libs raise HERE, uncaught, and a Python traceback used to exit 1 — a crash no
+                # consumer can tell apart from a real red [[a-crash-is-not-a-fail]]. Refusal
+                # stays keyed on the unreachable input (the binary could not start).
+                refusal_launch = ("NOT-IN-THIS-ENVIRONMENT: chromium was found at %r but could "
+                                  "not launch (%s: %s). REFUSED — not a pass."
+                                  % (kwargs.get("executable_path",
+                                                "playwright's own resolution"),
+                                     type(e).__name__, str(e)[:200]))
+            else:
+                pg = b.new_page(viewport={"width": 640, "height": 640})
+                pg.goto("file://" + path)
+                # SETTLE BEFORE READING (runbook 2026-07-27): a value read in the same task as a
+                # class change is the PRE-transition value.
+                pg.add_style_tag(content="*{transition:none!important;animation:none!important}")
+                pg.wait_for_timeout(200)
+                readings = pg.evaluate(JS)
+                b.close()
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+    if refusal_launch:
+        return None, refusal_launch
     return readings, None
 
 

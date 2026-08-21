@@ -202,10 +202,25 @@
     const scrim=document.getElementById('scrim'), sheet=document.getElementById('sheet'), page=document.getElementById('page');
     const openBtn=document.getElementById('open');
     const focusable=()=>[...sheet.querySelectorAll('button,[href],[tabindex]:not([tabindex="-1"])')].filter(el=>!el.disabled);
+    /* OPEN ORDER IS LOAD-BEARING — 1 show · 2 wait two frames · 3 focus in · 4 only THEN inert.
+       Two independent facts force it, both measured (#210 wave-5 lane A; re-driven #211 lane R3):
+       (a) `visibility` is TRANSITIONED on .sheet, so it still computes `hidden` for two more
+           frames after `.open` lands, and focus() on a hidden element is a SILENT NO-OP. A forced
+           reflow (void offsetWidth) does not help — the before-change style is still hidden.
+       (b) Setting the background inert BLURS whatever holds focus, asynchronously, which wipes an
+           earlier focus(). So inert must come last, after focus is already inside the sheet.
+       ⛔ The previous shape set inert FIRST and moved focus on a bare setTimeout(...,60) — a timer
+       racing a transition. Mutation-proven #211: with a 200ms main-thread stall on the same click
+       the timer wins, focus() lands on a still-hidden sheet, and the drawer opens with NO keyboard
+       entry point (activeElement stranded on BODY). rAF-gating removes the race entirely. */
     function open(){
-      page.inert=true; page.setAttribute('aria-hidden','true'); openBtn.disabled=true;
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{ scrim.classList.add('open'); sheet.classList.add('open'); }));
-      setTimeout(()=>focusable()[0].focus(), 60);
+      scrim.classList.add('open'); sheet.classList.add('open');            // 1 SHOW
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{                // 2 TWO FRAMES — visibility settles
+        const f=focusable();
+        if(f.length) f[0].focus();                                         // 3 FOCUS IN (never onto a hidden element)
+        page.inert=true; page.setAttribute('aria-hidden','true');          // 4 ONLY THEN INERT
+        openBtn.disabled=true;
+      }));
     }
     function close(){
       scrim.classList.remove('open'); sheet.classList.remove('open');

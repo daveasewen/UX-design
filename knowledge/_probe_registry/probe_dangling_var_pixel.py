@@ -220,9 +220,22 @@ def drive(paths, verbose=True, viewport=(1180, 1400)):
     from playwright.sync_api import sync_playwright
     findings, controls = [], []
     with sync_playwright() as p:
-        b = p.chromium.launch(headless=True,
-                              args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
-                              **kwargs)
+        try:
+            b = p.chromium.launch(headless=True,
+                                  args=["--no-sandbox", "--disable-dev-shm-usage",
+                                        "--disable-gpu"], **kwargs)
+        except Exception as e:
+            # ⛔ #211 P-3 fix — `_browser_env()` only proves a FILE exists at the expected layout
+            # path; it does not prove that binary can LAUNCH. Missing shared libs (an unset/wrong
+            # LD_LIBRARY_PATH, measured #211 as `libXdamage.so.1: cannot open shared object
+            # file`) raise HERE, uncaught, and a Python traceback used to exit 1 — a crash no
+            # consumer can tell apart from a real red [[a-crash-is-not-a-fail]]. This is the SAME
+            # "browser unreachable" class `_browser_env()` already refuses on; the refusal stays
+            # keyed on the unreachable input (the binary could not start), never on "am I in CI".
+            return None, None, ("NOT-IN-THIS-ENVIRONMENT: chromium was found at %r but could "
+                                "not launch (%s: %s). REFUSED — not a pass."
+                                % (kwargs.get("executable_path", "playwright's own resolution"),
+                                   type(e).__name__, str(e)[:200]))
         pg = b.new_page(viewport={"width": viewport[0], "height": viewport[1]})
         for path in paths:
             rel = os.path.relpath(path, ROOT) if path.startswith(ROOT) else path

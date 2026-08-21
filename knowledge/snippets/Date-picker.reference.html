@@ -147,6 +147,12 @@
     transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
   .dp-box input{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0;
     font:400 16px/24px var(--font); color:var(--text);}
+  /* ds-005, INPUT LEG — lock-step with Form-layout (the Input-fields anatomy this file mirrors).
+     The #209 leading-trim block weighs 0-1-2; `.dp-box input` is 0-1-1 and loses, so the field
+     computed `text-box-edge: cap alphabetic` and cut 3.25px off every descender (pixel-measured,
+     mutation-controlled, #211 lane R3). `.dp .dp-box input` is 0-2-1 — the idiom already used by
+     `.dp.is-completed .dp-box input` below. The trim block itself is untouched. */
+  .dp .dp-box input{text-box-edge:text text;}
   .dp-box input::placeholder{color:var(--text); opacity:1; font-weight:400;}
   .dp-box:hover:not(:focus-within){background:var(--field-bg-hover);}
   .dp-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
@@ -221,6 +227,12 @@
   .dp-day:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
   .dp-day.is-today{box-shadow:inset 0 0 0 2px var(--border-active);}   /* today = structural ring, never colour-alone (numeral carries aria-current) */
   .dp-day[aria-selected="true"]{background:var(--text); color:var(--page); font-weight:500;}   /* ink knockout — tooltip precedent */
+  /* today AND selected: the cell is already knocked out to --text, so a --border-active ring is
+     invisible on it (measured 1.21:1 light / 1.00:1 dark, #210 wave-4 lane A claim 2, mutation-proven).
+     The ring JOINS the knockout: it is drawn in --page, the same token the knocked-out numeral
+     already uses on this very selector. NO new token, no new tint — background/default on
+     text/default is a pair this file's own token-manifest already declares. (#211 lane R3) */
+  .dp-day.is-today[aria-selected="true"]{box-shadow:inset 0 0 0 2px var(--page);}
   .dp-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
   .dp-day.is-empty{visibility:hidden; pointer-events:none;}
 
