@@ -538,6 +538,16 @@ MEASURERS = {
         "TAPE: the PER-TYPE BREAKDOWN is still tiktoken cl100k (encoder(), unchanged from D1), "
         "kept for SHAPE only — it does NOT sum to the headline and is NEVER scaled to match it "
         "(#54's defect); the footer says so explicitly on its own line."),
+    "_boot_remeasure.py": ("estimate-only",
+        "BUILT #214 under `s214-D5` half 2 (per-session boot re-measure over the mounted "
+        "disk-resident boot inputs), and REGISTERED HERE AT THE WRAP THAT SHIPPED IT — the "
+        "ds-021 (C) bite caught it unregistered on its first gate run, which is the birth-catch "
+        "the bite exists for. It counts in tiktoken cl100k ONLY and can name NO real tier: its "
+        "output is a TAPE PROXY kept for SHAPE and DELTA across sessions, and the row that owns "
+        "it (`W-99za`) already declares exactly that — this entry MIRRORS that declaration, it "
+        "does not make a new one. ⛔ Its figures are NEVER summed with, scaled to, or compared "
+        "against a `real` measurement [[measure-dont-convert-units]]; the consumer is the "
+        "boot-band re-base sitting, which is DAVE'S."),
 }
 
 
@@ -2984,7 +2994,21 @@ CARRY_SIM_MIN = 0.86             # ⚠ PICKED, NOT DERIVED — the same standing
                                  # `GRADE_AGING_DAYS` and `STALE_AFTER_SESSIONS`. It is a
                                  # PAIRING guard, not a verdict: below it the two items are
                                  # not treated as the same carry at all.
-_AGE_RE = re.compile(r"\[(\d+)(?:\s*[—-][^\]]*)?\]")
+# ⚠ THE QUALIFIER CLASS CARRIES A COMMA SINCE #214, AND THAT COMMA IS THE WHOLE REPAIR.
+# The banner form `[2, DAVE'S]` has been in use since #212, and this regex could not see it:
+# the bracket survived `_carry_norm`'s stripping, so a carry re-typed at AGES +1 EXACTLY AS THE
+# 2c INVARIANT DEMANDS compared as CHANGED. #213 MEASURED the blindness and reported it as
+# unrepaired (its banner residual ⑤). #214 hit the consequence: with sixteen re-typed carries a
+# pair finally matched on title, and `carry_wording_check` — which is BLOCKING — refused a wrap
+# whose carries were verbatim-correct, quoting a diff consisting ONLY of the age digits it was
+# supposed to have stripped. ⛔ THAT IS A GATE THAT CANNOT PASS ON CORRECT BEHAVIOUR
+# [[gate-cannot-pass-in-one-environment]], which is the one shape the ritual says must never be
+# left standing — it teaches sessions to fake the artefact rather than fix the parser
+# [[honest-refusal-needs-a-legal-form]]. Widened, and mutation-driven BOTH ways at #214:
+# an AGES+1-only edit now passes silently, and a real wording change still FAILS unreceipted.
+# ⛔ NO THRESHOLD, TIER OR POLICY MOVED — `CARRY_GATE_BLOCKING` is untouched and the s183-D1 /
+# s188-D2 contract is unchanged. This lets the gate MEASURE what it was already required to.
+_AGE_RE = re.compile(r"\[(\d+)(?:\s*[,—-][^\]]*)?\]")
 _RETRACTION_MARKER_RE = re.compile(r"RETRACT(?:ED|ION)|STRUCK|~~", re.I)
 _RECEIPT_SESSION_RE = re.compile(r"#\d{1,4}\b")
 _RECEIPT_INSCRIPTION_RE = re.compile(r"s\d{2,4}-D\d+|`[^`]+\.(?:py|md|json|css|html|sh)[^`]*`"
