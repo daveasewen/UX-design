@@ -881,13 +881,24 @@ SCRIPT = '''
   // same-document fragment navigation: no reload, no cross-origin access.
   function frag(){
     var p = ["theme=" + state.theme, "m=" + state.mode];
-    if (state.w !== "full") p.push("w=" + state.w);
+    // ALWAYS name the width. "full" maps to the showroom slider's own full
+    // stop (1600), so a specimen whose inner slider carries stale state (seen
+    // live #213: a 400px viewport surviving into a Full review) is RESET to
+    // desktop rather than left wherever it last was.
+    p.push("w=" + (state.w === "full" ? "1600" : state.w));
     return "#" + p.join("&");
   }
+  var nonce = 0;
   function paint(f){
     var base = f.getAttribute("data-base");
     var want = base + frag();
-    if (f.getAttribute("src") !== want) f.setAttribute("src", want);
+    // If the wanted src equals the current one, an identical fragment fires no
+    // `hashchange` and a stale INNER state (the inner slider, driven by hand)
+    // survives an outer re-broadcast — proven live #213: Full over an inner
+    // 400px stayed 400px. A nonce key makes every broadcast a real navigation;
+    // the showroom's hash parser reads only theme/m/w and ignores it.
+    if (f.getAttribute("src") === want) want += "&n=" + (++nonce);
+    f.setAttribute("src", want);
     // outer width: the review page's own responsive check, independent of the
     // showroom's inner slider
     f.style.width = (state.w === "full") ? "100%" : (state.w + "px");
