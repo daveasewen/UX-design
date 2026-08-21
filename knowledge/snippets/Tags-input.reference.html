@@ -132,6 +132,14 @@
     transition:border-color var(--ease), background var(--ease), box-shadow var(--ease);}
   .ti-box input{flex:1 1 10ch; min-width:10ch; border:0; background:transparent; padding:0;
     color:var(--text); height:32px;}
+  /* ds-005, INPUT LEG — the #209 leading-trim block above weighs 0-1-2 (`:is()` takes its highest
+     arg, `input[type=text]` = 0-1-1, plus `svg` inside `:not(:has())`). `.ti-box input` is 0-1-1
+     and LOSES, so every field computed `text-box-edge: cap alphabetic` and the input clips to its
+     own box: 3.25px of every descender cut flat, pixel-measured with a text-box-trim:none mutation
+     control (#211 lane R3 caught it live in this file; lane R5 repairs it). `.ti .ti-box input` is
+     0-2-1 and wins — the same two-class idiom this file already uses (`.ti.is-error .ti-box`).
+     Nothing in the trim block moves: the cross-file ds-005 class remedy is Dave's call, not a repair's. */
+  .ti .ti-box input{text-box-edge:text text;}
   .ti-box input::placeholder{color:var(--text); opacity:1;}
   .ti-box:hover:not(:focus-within){background:var(--field-bg-hover);}
   .ti-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}

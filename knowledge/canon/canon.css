@@ -9276,6 +9276,14 @@
     border-radius:var(--border-radius-control); position:relative; color:var(--icon);
     transition:border-color var(--ease), background var(--ease), box-shadow var(--ease);}
 .cn-combobox .cb-box input{flex:1; min-width:0; border:0; background:transparent; padding:0; color:var(--text);}
+/* ds-005, INPUT LEG — the #209 leading-trim block above weighs 0-1-2 (`:is()` takes its highest
+     arg, `input[type=text]` = 0-1-1, plus `svg` inside `:not(:has())`). `.cb-box input` is 0-1-1
+     and LOSES, so every field computed `text-box-edge: cap alphabetic` and the input clips to its
+     own box: 2.75px of every descender cut flat, pixel-measured with a text-box-trim:none mutation
+     control (#211 lane R3 caught it live in this file; lane R5 repairs it). `.cb .cb-box input` is
+     0-2-1 and wins — the same two-class idiom this file already uses (`.cb.is-completed .cb-box input`).
+     Nothing in the trim block moves: the cross-file ds-005 class remedy is Dave's call, not a repair's. */
+.cn-combobox .cb .cb-box input{text-box-edge:text text;}
 .cn-combobox .cb-box input::placeholder{color:var(--text); opacity:1;}
 .cn-combobox .cb-box:hover:not(:focus-within){background:var(--field-bg-hover);}
 .cn-combobox .cb-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
@@ -12508,6 +12516,14 @@
     transition:border-color var(--ease), background var(--ease), box-shadow var(--ease);}
 .cn-multi-select .ms-box input{flex:1 1 8ch; min-width:8ch; border:0; background:transparent; padding:0;
     color:var(--text); height:32px;}
+/* ds-005, INPUT LEG — the #209 leading-trim block above weighs 0-1-2 (`:is()` takes its highest
+     arg, `input[type=text]` = 0-1-1, plus `svg` inside `:not(:has())`). `.ms-box input` is 0-1-1
+     and LOSES, so every field computed `text-box-edge: cap alphabetic` and the input clips to its
+     own box: 3.25px of every descender cut flat, pixel-measured with a text-box-trim:none mutation
+     control (#211 lane R3 caught it live in this file; lane R5 repairs it). `.ms .ms-box input` is
+     0-2-1 and wins — the same two-class idiom this file already uses (`.ms.is-error .ms-box`).
+     Nothing in the trim block moves: the cross-file ds-005 class remedy is Dave's call, not a repair's. */
+.cn-multi-select .ms .ms-box input{text-box-edge:text text;}
 .cn-multi-select .ms-box input::placeholder{color:var(--text); opacity:1;}
 .cn-multi-select .ms-box:hover:not(:focus-within){background:var(--field-bg-hover);}
 .cn-multi-select .ms-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
@@ -14894,6 +14910,14 @@
     transition:border-color var(--ease), background var(--ease), box-shadow var(--ease);}
 .cn-tags-input .ti-box input{flex:1 1 10ch; min-width:10ch; border:0; background:transparent; padding:0;
     color:var(--text); height:32px;}
+/* ds-005, INPUT LEG — the #209 leading-trim block above weighs 0-1-2 (`:is()` takes its highest
+     arg, `input[type=text]` = 0-1-1, plus `svg` inside `:not(:has())`). `.ti-box input` is 0-1-1
+     and LOSES, so every field computed `text-box-edge: cap alphabetic` and the input clips to its
+     own box: 3.25px of every descender cut flat, pixel-measured with a text-box-trim:none mutation
+     control (#211 lane R3 caught it live in this file; lane R5 repairs it). `.ti .ti-box input` is
+     0-2-1 and wins — the same two-class idiom this file already uses (`.ti.is-error .ti-box`).
+     Nothing in the trim block moves: the cross-file ds-005 class remedy is Dave's call, not a repair's. */
+.cn-tags-input .ti .ti-box input{text-box-edge:text text;}
 .cn-tags-input .ti-box input::placeholder{color:var(--text); opacity:1;}
 .cn-tags-input .ti-box:hover:not(:focus-within){background:var(--field-bg-hover);}
 .cn-tags-input .ti-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}

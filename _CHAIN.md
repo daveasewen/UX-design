@@ -92,11 +92,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **111 items · 78 live · 45 Dave's · 33 mine · 92 carry a stated close condition · **19 UNCONDITIONED**.**
+> **113 items · 80 live · 47 Dave's · 33 mine · 94 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (45) — 40 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (47) — 42 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -137,6 +137,8 @@
 > - `W-88` **wave-1 lane R3 — Date-picker ring 1.21→17.40, Drawer focus repaired, input descender clip repaired; 3 more clipping snippets + P-6 wrong-organ finding priced** — *closes when:* Dave looks at the three repairs, rules the P-6 ink-verdict gate extension in or out, and disposes of the three remaining clipping snippets
 > - `W-89` **wave-1 lane R4 — P-3/P-6 crash→refuse rc=77 REPAIRED; error-solid.svg NOT repairable locally (FIGMA_TOKEN + upstream zero-fill node)** — *closes when:* Dave (or a session holding FIGMA_TOKEN) fixes the Figma error-solid node and re-exports, or Dave rules the icon dropped
 > - `W-90` **wave-2 lane R2 — .l-split container self-query REPAIRED at cause, P-7 6+3WARN→0; showroom payloads + review page still carry old defect** — *closes when:* Dave rules P-7 promote/park (W-85), the REVIEW-204 7th instance is repaired at his sitting, and the 4 canon radius literals are ruled snap-or-waive
+> - `W-91` **wave-3 lane R5 — the last three input descender clips REPAIRED (Multi-select/Tags-input/Combobox 3.25px→0)** — *closes when:* Dave's eye passes the three repairs (or the ds-005 class ruling supersedes the per-instance shape)
+> - `W-92` **wave-3 lane R6 — declared_value/check_contracts/manifest_vars comment-blindness FIXED (R1's class); sync no-op proven; Image-block latent injection exposure priced** — *closes when:* Dave picks up or parks the three priced residuals (Image-block exposure, shared mask helper, CSS-parse upgrade)
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -150,7 +152,7 @@
 
 ---
 
-*(Chain ends. **41,783 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **42,012 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 97,654 real and stays whole for retrieval; you have paid for
 43% of it, and that is the intended figure, not a shortfall.)*

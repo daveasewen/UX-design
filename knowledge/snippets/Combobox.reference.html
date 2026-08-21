@@ -143,6 +143,14 @@
     border-radius:var(--border-radius-control); position:relative; color:var(--icon);
     transition:border-color var(--ease), background var(--ease), box-shadow var(--ease);}
   .cb-box input{flex:1; min-width:0; border:0; background:transparent; padding:0; color:var(--text);}
+  /* ds-005, INPUT LEG — the #209 leading-trim block above weighs 0-1-2 (`:is()` takes its highest
+     arg, `input[type=text]` = 0-1-1, plus `svg` inside `:not(:has())`). `.cb-box input` is 0-1-1
+     and LOSES, so every field computed `text-box-edge: cap alphabetic` and the input clips to its
+     own box: 2.75px of every descender cut flat, pixel-measured with a text-box-trim:none mutation
+     control (#211 lane R3 caught it live in this file; lane R5 repairs it). `.cb .cb-box input` is
+     0-2-1 and wins — the same two-class idiom this file already uses (`.cb.is-completed .cb-box input`).
+     Nothing in the trim block moves: the cross-file ds-005 class remedy is Dave's call, not a repair's. */
+  .cb .cb-box input{text-box-edge:text text;}
   .cb-box input::placeholder{color:var(--text); opacity:1;}
   .cb-box:hover:not(:focus-within){background:var(--field-bg-hover);}
   .cb-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}

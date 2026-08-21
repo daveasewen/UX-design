@@ -195,17 +195,73 @@ def provenance(pname, group, source):
 def generated_inner(src_css, pname, group, source, root_sel, member_sel):
     return provenance(pname, group, source) + "\n" + rewrite_selectors(src_css, root_sel, member_sel)
 
+# ------------------------------------------------------------------ comment mask (#211 lane R6)
+# The CONTRACT readers below used to read RAW html, so a declaration, a required declaration
+# substring or a whole #token-manifest sitting inside an HTML comment SATISFIED the contract.
+# That is the same class lane R1 fixed in gen_token_ramp (#211): raw-text reading satisfied by
+# content inside HTML comments, which there silently killed 120 declarations, and which ds-018's
+# C2 gate was green over for its whole life.
+#
+# ⛔ THE MASK IS APPLIED TO THE CONTRACT READERS ONLY — declared_value, check_contracts'
+# `declarations` substring test, and manifest_vars. It is deliberately NOT applied to
+# BEHAVIOUR_RE, AUTO_MARKUP_RE, markup_source_block or non_consumer_marker_fails, whose markers
+# ARE HTML comments by design: masking there would blind the generator to its own injection
+# sites. Selftest arm 5f drives that fence in both directions.
+COMMENT_OPEN, COMMENT_CLOSE = "<!--", "-->"
+
+def mask_comments(html):
+    """Blank every HTML comment's bytes, PRESERVING LENGTH and newlines.
+
+    Index-for-index aligned with the input, so a span found in the mask addresses the same
+    bytes in the original (manifest_vars relies on exactly that). An UNTERMINATED `<!--`
+    masks to EOF, which is what a browser does — a helper that stopped at the missing `-->`
+    would be guessing (ds-025). Same shape as gen_token_ramp.mask_comments (lane R1),
+    duplicated rather than imported: importing a sibling generator runs its help gate.
+    """
+    out = list(html)
+    i = 0
+    while True:
+        a = html.find(COMMENT_OPEN, i)
+        if a < 0:
+            return "".join(out)
+        b = html.find(COMMENT_CLOSE, a + len(COMMENT_OPEN))
+        end = len(html) if b < 0 else b + len(COMMENT_CLOSE)
+        for k in range(a, end):
+            if out[k] != "\n":
+                out[k] = " "
+        i = end
+
+_MASK_CACHE = {}
+
+def live_text(html):
+    """The document's LIVE bytes, comments blanked. Memoised — the contract readers ask the
+    same handful of documents hundreds of times in one run."""
+    got = _MASK_CACHE.get(html)
+    if got is None:
+        got = _MASK_CACHE[html] = mask_comments(html)
+    return got
+
 # ------------------------------------------------------------------ contracts
 def declared_value(html, var):
-    """First declared value of --var anywhere in the document's CSS."""
-    m = re.search(re.escape(var) + r'\s*:\s*([^;]+);', html)
+    """First declared value of --var anywhere in the document's LIVE CSS.
+
+    ⛔ Asked of a COMMENT-MASKED copy (#211 lane R6): a `--var: value;` written inside an
+    HTML comment is not a declaration, and must not satisfy `requires.vars` or supply a
+    `matchValues` comparand.
+    """
+    m = re.search(re.escape(var) + r'\s*:\s*([^;]+);', live_text(html))
     return m.group(1).strip() if m else None
 
 MANIFEST_RE = re.compile(r'<script[^>]*id="token-manifest"[^>]*>(.*?)</script>', re.S)
 
 def manifest_vars(html):
-    m = MANIFEST_RE.search(html)
-    return (json.loads(m.group(1)).get("vars", {})) if m else {}
+    """The document's LIVE #token-manifest. ⛔ LOCATED in the comment-masked copy — a manifest
+    inside an HTML comment is not the document's manifest — but PARSED from the ORIGINAL bytes
+    at that span, so the mask can never corrupt the JSON it helped us find. This is the only
+    consumer of mask_comments' length-preservation property, and the reason it is a property
+    and not a convenience."""
+    m = MANIFEST_RE.search(live_text(html))
+    return json.loads(html[m.start(1):m.end(1)]).get("vars", {}) if m else {}
 
 def check_contracts(name, html, partial, src_html, extra=None):
     """requires.vars / matchValues / declarations / $manifestBinds -> list of failures.
@@ -226,8 +282,11 @@ def check_contracts(name, html, partial, src_html, extra=None):
         have = declared_value(html, var)
         if want is not None and have is not None and have != want:
             fails.append(f"{name}: {var} = '{have}' != source atom's '{want}' (matchValues)")
+    # ⛔ comment-masked (#211 lane R6): a required declaration that appears ONLY inside an HTML
+    # comment is not carried by the consumer — same class as declared_value above.
+    live = live_text(html)
     for needle in list(req.get("declarations", [])) + list(extra.get("declarations", [])):
-        if needle not in html:
+        if needle not in live:
             fails.append(f"{name}: required declaration '{needle}' missing")
     mv = manifest_vars(html)
     binds = {**(partial.get("$manifestBinds") or {}), **(extra.get("manifestBinds") or {})}
@@ -561,6 +620,54 @@ def selftest():
         fails.append("figure_attrs did not read data-lockup-title off the figure tag")
     if not FIGURE_RE.search(mempty):
         fails.append("FIGURE_RE did not match a <figure>...</figure> block")
+    # 5f. #211 lane R6 — COMMENTED-OUT CONTENT MUST NOT SATISFY A CONTRACT.
+    #     Six bites: three on the three contract readers, two on the mask's own properties,
+    #     one on the FENCE (the mask must NOT reach the HTML-comment markers).
+    #  (i) declared_value: a declaration inside an HTML comment is not a declaration
+    commented = '<style>.x{color:red}</style>\n<!-- .y{--press-travel: 1px;} -->'
+    if declared_value(commented, "--press-travel") is not None:
+        fails.append("declared_value satisfied by a declaration inside an HTML comment (#211 class)")
+    if declared_value('<style>.y{--press-travel: 1px;}</style>', "--press-travel") != "1px":
+        fails.append("declared_value no longer sees a REAL declaration (mask over-reached)")
+    p6 = {"requires": {"vars": ["--press-travel"], "matchValues": [], "declarations": []}}
+    if not any("required var --press-travel" in f for f in check_contracts("T", commented, p6, commented)):
+        fails.append("requires.vars satisfied by a commented-out declaration (#211 class)")
+    #  (ii) matchValues must not read the SOURCE atom's commented-out value as its value
+    src_c = '<!-- :root{--spring: 999ms;} -->\n<style>:root{--spring: 300ms;}</style>'
+    p6b = {"requires": {"vars": [], "matchValues": ["--spring"], "declarations": []}}
+    if check_contracts("T", '<style>:root{--spring: 300ms;}</style>', p6b, src_c):
+        fails.append("matchValues compared against the source atom's COMMENTED-OUT value (#211 class)")
+    #  (iii) the `declarations` substring test
+    p6c = {"requires": {"vars": [], "matchValues": [], "declarations": ['data-tip="']}}
+    if not any("required declaration" in f
+               for f in check_contracts("T", '<!-- <i data-tip="x"></i> -->', p6c, "")):
+        fails.append("required declaration satisfied by text inside an HTML comment (#211 class)")
+    #  (iv) manifest_vars: a commented-out manifest is not the document's manifest
+    real_mf = '<script id="token-manifest">{"vars":{"--a":"p/real"}}</script>'
+    if manifest_vars('<!-- ' + real_mf.replace("real", "dead") + ' -->') != {}:
+        fails.append("manifest_vars read a #token-manifest sitting inside an HTML comment (#211 class)")
+    if manifest_vars(real_mf).get("--a") != "p/real":
+        fails.append("manifest_vars no longer reads a REAL manifest (mask over-reached)")
+    #  (v) mask properties: length preserved (manifest_vars' span depends on it) and an
+    #      UNTERMINATED `<!--` masks to EOF, as a browser reads it
+    for probe in (commented, src_c, '<a><!-- x --><b>', '<a><!-- never closed'):
+        if len(mask_comments(probe)) != len(probe):
+            fails.append("mask_comments stopped preserving length — manifest_vars' span misaligns")
+        if mask_comments(probe).count("\n") != probe.count("\n"):
+            fails.append("mask_comments ate a newline (line numbers would misalign)")
+    if "unterminated" in mask_comments('<style>x</style><!-- unterminated'):
+        fails.append("an unterminated <!-- did not mask to EOF (a browser reads it as a comment)")
+    if manifest_vars('<!-- open\n' + real_mf) != {}:
+        fails.append("a manifest after an UNTERMINATED <!-- was read as live (browser reads it dead)")
+    #  (vi) THE FENCE — the mask must NOT reach the markers that ARE HTML comments.
+    #       BEHAVIOUR/MARKUP/AUTO-MARKUP markers must still be found in the RAW text.
+    if BEHAVIOUR_RE("b").search(live_text(bempty)):
+        fails.append("marker fence broken: AUTO-BEHAVIOUR markers survive masking, so the "
+                     "'do not mask the injection sites' fence would be untestable")
+    if not (BEHAVIOUR_RE("b").search(bempty) and AUTO_MARKUP_RE("dv-lockup-title").search(mempty)
+            and markup_source_block(msrc, "dv-lockup-title")):
+        fails.append("HTML-comment markers no longer read from RAW text — the mask over-reached "
+                     "into the injection sites (#211 lane R6 fence)")
     # 6. registry caches: live registry must pass; a poisoned cache must fail
     reg = load_registry()
     live = check_caches(reg)
