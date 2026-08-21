@@ -52,7 +52,7 @@ Formerly "Undecided". All four rules are now explicit; no run guesses:
 The register is an **inference ramp** that lifts *foundational* curbs from sober→expressive
 while the *cardinal* curbs never move. (Was: parked 2026-07-02.)
 
-## 4b. Register temperature — wit licence per band (PROVISIONAL, 2026-07-02)
+## 4b. Register temperature — wit licence per band (RATIFIED 2026-08-21, `s212-D3`; adopted provisionally 2026-07-02)
 
 The temperature dial now has its brand source: the intelligent-wit gradient
 (tov-016), the mid-scale formality anchor (tov-045) and stress-≠-stiffness
@@ -68,13 +68,14 @@ The temperature dial now has its brand source: the intelligent-wit gradient
 runs informal, India/Malaysia a few degrees formal, and clarity always outranks
 the local adjustment.
 
-*Status: PROVISIONAL — may need adjusting; a separate build-time temperature
-control may supersede how this is expressed. tov-016's REVIEW stays OPEN until
-that settles (Dave, 2026-07-02).*
+*Status: RATIFIED AS-IS — Dave, 2026-08-21, `s212-D1..D8` sitting (`knowledge/_rulings.json` s212-D3),
+after seven weeks live without friction. The prior PROVISIONAL status (Dave, 2026-07-02) is history,
+kept here as provenance; a future build-time temperature control may still supersede how this is
+expressed, which would be a new ruling, not a reopening of this one.*
 
 **§4b = the copy/tone dimension of the §9 ramp** — wit licence scales with the inference
-band exactly as the curbs do (sober = zero wit, expressive = on). Resolve tov-016 to lift
-the provisional tag.
+band exactly as the curbs do (sober = zero wit, expressive = on). tov-016 resolved and the
+provisional tag lifted — `s212-D3`, 2026-08-21.
 
 ---
 

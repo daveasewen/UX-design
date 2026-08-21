@@ -926,7 +926,10 @@ TITLE_LINE_RE = re.compile(r"^\s*>?\s*\*\*TITLE THE NEXT CHAT\b.*$", re.I)
 #     (a) GROWTH — §A is bigger than the last wrap stamped AND no banner line names a §A change;
 #     (b) BACKSTOP — an absolute ceiling, so drift accumulated over many wraps still surfaces once.
 #   Nothing here may be read as an instruction to trim §A. It reports; Dave rules.
-SECTION_A_WARN_TK = 4500   # §A measured 4,208 tk at the ruling (2026-07-27) — headroom is deliberate
+SECTION_A_WARN_TK = 7200   # RESTAMPED REAL s212-D11 2026-08-21 (was 4500 cl100k; §A measured 4,208
+#   cl100k at the 2026-07-27 ruling = 6,957 real today; restatement not re-dial, same headroom rule;
+#   receipt notes/_receipts/2026-08-21-212-g9-ds023-remeasurement.md). The old warn was a pure unit
+#   artefact once measurement_tier() went real. Headroom is deliberate, as it always was.
 STAMP_PRECISION_TK = 100   # the stamp writes §A as `N.NK tk`, so its granularity is 100 tk. Growth
 #   below the instrument's own precision is NOT an observation — compare with this slack or every
 #   wrap warns on its own rounding ([[measure-dont-convert-units]]: the unit you state in bounds
@@ -947,8 +950,11 @@ SIZE_A_RE = re.compile(r"§A\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b", re.I)  # K REQ
 #   STILL at BLOCK). ★ A constant could only be re-picked; a DERIVED cap cannot be raised by fiat
 #   and FALLS on its own if banners get leaner — which is Dave's leanness condition discharged
 #   MECHANICALLY rather than by discipline, and the same shape he gave D3's amber.
-BANNER_BUDGET_FALLBACK_TK = (4000, 5000)   # used ONLY when the archive cannot be measured, and
+BANNER_BUDGET_FALLBACK_TK = (6400, 7800)   # used ONLY when the archive cannot be measured, and
                                            # NEVER silently — the provenance string says so.
+#   RESTAMPED REAL s212-D11 2026-08-21 (was (4000, 5000) cl100k; no artefact of its own — restated
+#   through the ruling-day floor arithmetic; path currently unreachable, n=211 >= BANNER_ARCHIVE_MIN_N;
+#   receipt notes/_receipts/2026-08-21-212-g9-ds023-remeasurement.md).
 BANNER_ARCHIVE_MIN_N = 10                  # below this the median is not a measurement
 BANNER_HEADROOM_PCTL = 75                  # block admits two 75th-percentile banners
 
@@ -1052,13 +1058,22 @@ BANNER_LATEST_RE = re.compile(r"^>?\s*#{1,6}\s*★\s*LATEST\b", re.M)
 #   ledger line, like every other value in the pin below.
 #   ⛔ THE TIER IS UNTOUCHED: still ADVISORY, still AGENT-DERIVED, still AWAITING DAVE. Re-pointing
 #   the unit is not promotion, and the engine never derives-and-promotes.
-CHAIN_BUDGET_TK = (4917, 6417)     # (warn, BLOCK-CANDIDATE) — ADVISORY, agent-derived, awaiting
-#                                    Dave. = the ruled (4500, 6000) on the SLICE + the measured
-#                                    417-tape wrapper, restated #48 onto the FILE. 3,410 tk was
-#                                    the slice at the #33 cut; warn still leaves ~32% headroom.
-CORPUS_BUDGET_TK = 36000           # (warn only) — GM + LS whole, the RETRIEVAL SURFACE. Never
-#                                    blocks: it is the thing the cut made cheap to carry, not the
-#                                    thing the cut made small. 34,094 tk at the cut.
+CHAIN_BUDGET_TK = (7700, 10000)    # RESTAMPED REAL s212-D11 2026-08-21, RULED BY DAVE (was
+#                                    (4917, 6417) cl100k, agent-derived: the ruled (4500, 6000) on
+#                                    the SLICE + the 417-tape wrapper, restated #48 onto the FILE).
+#                                    Restatement not re-dial: REAL(file at #48 baseline) x
+#                                    (cap / cl100k at #48), baseline reproduced exactly. ⚠ The
+#                                    chain measures 19,189 real today — the warn STILL FIRES after
+#                                    restamp; that is real growth, not unit noise. Receipt
+#                                    notes/_receipts/2026-08-21-212-g9-ds023-remeasurement.md.
+CORPUS_BUDGET_TK = 55700           # RESTAMPED REAL s212-D11 2026-08-21, RULED BY DAVE (was 36000
+#                                    cl100k, agent-derived; 34,094 cl100k measured at the #33 cut,
+#                                    reproduced exactly, = 55,700-equivalent real with the same
+#                                    headroom). (warn only) — GM + LS whole, the RETRIEVAL SURFACE;
+#                                    never blocks. ⚠ Corpus measures 184,746 real today — the warn
+#                                    STILL FIRES after restamp; that is real growth (3.3x), not
+#                                    unit noise. Receipt
+#                                    notes/_receipts/2026-08-21-212-g9-ds023-remeasurement.md.
 
 DATE_PREFIX_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})-")
 STATUS_RE = re.compile(r"^status:\s*(\S+)\s*(.*)$")
@@ -5813,17 +5828,23 @@ def selftest_growth():
 
     with tempfile.TemporaryDirectory() as td:
         # ---- M8: banner budget — fires at warn, fires at block, silent for a normal banner.
-        # FAT measures 240 tk/line, so 17 lines ≈ 4.1K (warn band) and 30 ≈ 7.3K (block). The
-        # numbers are MEASURED, not assumed: the first draft guessed ~200 tk/line, put the warn
-        # fixture at 5.4K, and bit as a block instead.
-        _f, w, _n = _warns_for(td, fat_banner=17)
+        # FAT measures ~240 tk/line (MEASURED, not assumed: the first draft guessed ~200 tk/line,
+        # put the warn fixture at 5.4K, and bit as a block instead). s212-D11 (2026-08-21) CLASS
+        # FIX: the fixture SIZES are now DERIVED from the live fallback pair instead of hardcoded —
+        # the restamp to (6400, 7800) broke the old hardcoded 17/30-line fixtures, which is the
+        # fixture-hardcoding class biting its own selftest. Warn fixture aims mid-band; block
+        # fixture aims comfortably past block so ±10% per-line drift stays on the right side.
+        _m8_w, _m8_b = BANNER_BUDGET_FALLBACK_TK
+        _m8_warn_lines = max(1, round(((_m8_w + _m8_b) / 2) / 240))
+        _m8_block_lines = _m8_b // 240 + 4
+        _f, w, _n = _warns_for(td, fat_banner=_m8_warn_lines)
         if not any("banner region" in x for x in w):
             failures.append("M8: a 17-fat-line banner did not WARN — the sub-budget does not bite")
         # ★ M8 TIER-BY-LEGALITY (#154, closing DO-FIRST 11) — both arms asserted, both ways.
         # (a) AT MINIMUM: the fixture has ★ LATEST and NO ★ PRIOR, so no roll is legal; an
         # over-block region must land in WARNS, say why, and must NOT fail — the old fail here
         # demanded a forbidden action (proven-by-reversal #58; #49/#51/#153 shaved record for it).
-        f, w, _n = _warns_for(td, fat_banner=30)
+        f, w, _n = _warns_for(td, fat_banner=_m8_block_lines)
         if any("banner region" in x for x in f):
             failures.append("M8: an over-block region AT the 2c minimum FAILED — the gate is "
                             "demanding a roll the 2c contract forbids (DO-FIRST 11, closed #154)")
@@ -5836,7 +5857,7 @@ def selftest_growth():
         # warn too and the pair would catch it.
         _two_priors = ("> ## ★ PRIOR — fixture prior A\n> - prior body line\n"
                        "> ## ★ PRIOR — fixture prior B\n> - prior body line")
-        f, _w, _n = _warns_for(td, fat_banner=30, banner_extra=_two_priors)
+        f, _w, _n = _warns_for(td, fat_banner=_m8_block_lines, banner_extra=_two_priors)
         if not any("roll a banner" in x for x in f):
             failures.append("M8: an over-block region WITH a rollable ★ PRIOR did not BLOCK — "
                             "the legality key has widened the downgrade past its licence "
@@ -6102,24 +6123,32 @@ def selftest_growth():
     # restatement is that it is BORING TODAY: if this change had also moved a pass to a warn, it
     # would be a re-dial wearing a unit change, and this pin would be the only honest record left.
     for name, got, want, note in (
-            ("CHAIN_BUDGET_TK", CHAIN_BUDGET_TK, (4917, 6417),
+            ("CHAIN_BUDGET_TK", CHAIN_BUDGET_TK, (7700, 10000),
              "RE-POINTED TWICE, both times the REFERENT and never the ruling. #33 2026-07-28: was "
              "(24000, 28000) against the GM+LS-whole referent, ruled 2026-07-27 M-set → (4500, "
              "6000) against the SLICE. #48 2026-07-30 (open 16 (a), Dave #47): → (4917, 6417) "
              "against the whole _CHAIN.md FILE = the same (4500, 6000) plus the MEASURED 417-tape "
              "wrapper, so the verdict is arithmetically unchanged (ds-021: restate, never silently "
-             "tighten). Values still AGENT-DERIVED, still ADVISORY, still awaiting Dave"),
-            ("BANNER_BUDGET_FALLBACK_TK", BANNER_BUDGET_FALLBACK_TK, (4000, 5000),
+             "tighten). Values still AGENT-DERIVED, still ADVISORY, still awaiting Dave. "
+             "s212-D11 2026-08-21: RESTAMPED REAL (7700, 10000), RULED BY DAVE — no longer "
+             "agent-derived; still fires today on real growth (chain 19,189 real)"),
+            ("BANNER_BUDGET_FALLBACK_TK", BANNER_BUDGET_FALLBACK_TK, (6400, 7800),
              "⛔ NO LONGER THE CAP — it is the DECLARED FALLBACK only. Born as the cap, ruled "
              "2026-07-27 M-set; RE-EXPRESSED AS A FUNCTION 2026-07-30 #53 on Dave's D4 (a), "
              "because the measurement showed (4000, 5000) sat at the floor plus TWO TAPE "
              "(header 1,968 + 2 × median 1,515 = 4,998) and could not be complied with. The "
              "old pair is retained VERBATIM as the fallback so a repo with no archive behaves "
              "exactly as it always did — ds-021: restate openly, never silently re-dial. The "
-             "live cap is `banner_budget_tk()` and publishes its own provenance every run"),
-            ("SECTION_A_WARN_TK", SECTION_A_WARN_TK, 4500, "ruled 2026-07-27 M-set"),
-            ("CORPUS_BUDGET_TK", CORPUS_BUDGET_TK, 36000,
-             "born #33 2026-07-28, AGENT-DERIVED from 34,094 tk measured, warn-only, awaiting Dave"),
+             "live cap is `banner_budget_tk()` and publishes its own provenance every run. "
+             "s212-D11 2026-08-21: fallback pair RESTAMPED REAL (6400, 7800), RULED BY DAVE; "
+             "path unreachable today (n=211 >= min 10)"),
+            ("SECTION_A_WARN_TK", SECTION_A_WARN_TK, 7200,
+             "ruled 2026-07-27 M-set; s212-D11 2026-08-21: RESTAMPED REAL 7200, RULED BY DAVE — "
+             "the old 4500 warn was a pure unit artefact once measurement went real"),
+            ("CORPUS_BUDGET_TK", CORPUS_BUDGET_TK, 55700,
+             "born #33 2026-07-28, AGENT-DERIVED from 34,094 tk measured, warn-only, awaiting Dave. "
+             "s212-D11 2026-08-21: RESTAMPED REAL 55700, RULED BY DAVE — no longer awaiting; "
+             "still fires today on real growth (corpus 184,746 real, 3.3x)"),
             # ds-021, enacted #34. The ratio is the load-bearing number now — every cap in this
             # file binds through it — so it gets the same pin as the caps it converts. ⚠ It is
             # PROVISIONAL at n=2 and firming it is a RULING, not a re-dial: when n>=4, the

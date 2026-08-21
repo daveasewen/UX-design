@@ -111,10 +111,11 @@ documented in `gen_rules_index.py`.
   headlines = home turf · functional messages = "quite subtle" · important/clear-and-
   straightforward messages = don't distract · difficult situations (bereavement,
   pandemic) = zero.** This is the fixed/flex temperature dial with a source receipt —
-  see Findings F1. [REVIEW — PROVISIONAL mapping enacted in _FIXED-FLEX-CHARTER §4b
-  (Dave, 2026-07-02): expressive = wit ON surface-scoped · balanced = subtle ·
-  sober = zero-with-warmth; STAYS OPEN — may need adjusting once a separate
-  build-time temperature control exists] {#tov-016}
+  see Findings F1. [RATIFIED — mapping in _FIXED-FLEX-CHARTER §4b ratified as-is
+  by Dave 2026-08-21 (`s212-D3`, knowledge/_rulings.json), adopted provisionally
+  2026-07-02: expressive = wit ON surface-scoped · balanced = subtle ·
+  sober = zero-with-warmth. A future build-time temperature control would be a
+  new ruling, not a reopening] {#tov-016}
 - **Specific beats generic: use references that resonate with the named audience**
   (UHNW legacy framing vs student 'pop into a branch'). No two audiences the same.
   [TASTE at generation — audience parameter feeds example selection] {#tov-017}

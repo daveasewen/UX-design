@@ -5,19 +5,24 @@
 > Supersedes the `model-selection-by-phase` memory (now points here). Audited 2026-07-23 against
 > the Fable-era routing research (sheet: `reviews/ROUTING-AUDIT-2026-07-23-v1.html`; all 13
 > proposals ratified by Dave same session) — still Dave's to tune.
-> *Last updated: 2026-07-30 #48 (Default tier corrected `Opus 4.8` → `Opus 5` — open 20 (a),
-> Dave's ruling; see the staleness note under the table). Prior: 2026-07-25 (budget-aware routing
-> governor added — Dave's proposal, reflected back + confirmed "good call") · 2026-07-23
-> (routing-audit #6 + #12: Fable-era notes · Mode 2 → deliberate · mid-session-switch anti-pattern).*
+> *Last updated: 2026-08-21 #212 `s212-D12` (routing currency check against live Anthropic docs,
+> four weeks on — P1–P7, P9, P10 applied: model strings pinned across all four tiers, the effort
+> ladder corrected to five rungs, the classifier-routing destination corrected [Opus 5 also runs
+> classifiers now], and the tokenizer-overhead figure corrected. P8 — the rule-5 verification
+> conflict — deliberately left open, Dave's call, not a sub's). Prior: 2026-07-30 #48 (Default
+> tier corrected `Opus 4.8` → `Opus 5` — open 20 (a), Dave's ruling; see the staleness note under
+> the table). Prior: 2026-07-25 (budget-aware routing governor added — Dave's proposal, reflected
+> back + confirmed "good call") · 2026-07-23 (routing-audit #6 + #12: Fable-era notes · Mode 2 →
+> deliberate · mid-session-switch anti-pattern).*
 
 ## The tiers (Dave's real economy)
 
 | Tier | Model | When | Notes |
 |---|---|---|---|
-| **Premium — rationed** | **Fable** | Big, high-stakes, hands-off jobs where a mistake across the whole scope is costly and you can't babysit it — "I need to trust this." | Most-trusted, but dear. Spend it where high-trust-*at-scale* actually pays; not the daily driver. |
-| **Default — complex** | **Opus 5 · high** | Judgment, architecture, sequencing, audits, critique, governance, ambiguous or irreversible calls, reviews. | The workhorse. Your default for anything that needs thinking. |
-| **Throughput — to a plan** | **Sonnet** | Execute a known runbook/spec: gates, metas, snippets, token rebinds, ingestion tranches, refactors to spec. | The judgment is already made; you need reliable execution. Saves Opus budget. |
-| **Chore — mechanical** | **Haiku** | Doc-drift fixes, find/replace, formatting, renames, gate-count sweeps, index bumps. | No judgment involved — never pay more than you must. |
+| **Premium — rationed** | **Fable** | Big, high-stakes, hands-off jobs where a mistake across the whole scope is costly and you can't babysit it — "I need to trust this." | Most-trusted, but dear. Spend it where high-trust-*at-scale* actually pays; not the daily driver. `claude-fable-5` · $10/$50 per MTok · on Pro/Max/Team plans it draws on **usage credits**, not the standard weekly allowance (Anthropic, 1 Jul 2026). Rationing is a billing fact, not just a habit. *(added `s212-D12`, 2026-08-21, P1)* |
+| **Default — complex** | **Opus 5 · high** | Judgment, architecture, sequencing, audits, critique, governance, ambiguous or irreversible calls, reviews. | The workhorse. Your default for anything that needs thinking. Exact API string `claude-opus-5`. *(added `s212-D12`, 2026-08-21, P2 — see the staleness note below, now independently confirmed)* |
+| **Throughput — to a plan** | **Sonnet** | Execute a known runbook/spec: gates, metas, snippets, token rebinds, ingestion tranches, refactors to spec. | The judgment is already made; you need reliable execution. Saves Opus budget. Exact API string `claude-sonnet-5` · $2/$10 per MTok · 1M context · prompt-cache minimum **1,024 tokens** (not 512 — that's Opus/Fable/Mythos only). *(added `s212-D12`, 2026-08-21, P3)* |
+| **Chore — mechanical** | **Haiku** | Doc-drift fixes, find/replace, formatting, renames, gate-count sweeps, index bumps. | No judgment involved — never pay more than you must. Exact API string `claude-haiku-4-5-20251001` · $1/$5 per MTok · 200k context · cache minimum 4,096 tokens · **no adaptive thinking, no `xhigh`, no `max`** — this tier behaves categorically differently from the other three. Watch date: tentative retirement not sooner than **15 October 2026**, roughly eight weeks out as of this writing. *(added `s212-D12`, 2026-08-21, P3)* |
 
 *The Fable↔Opus and Sonnet↔Haiku boundaries are yours to calibrate from experience; the roles are the fixed part, not the exact model on each line.*
 
@@ -33,6 +38,13 @@
 > notice it is wrong, correct it at source rather than routing around it
 > [[assertion-propagation-gap]]. **Unfixed in the same class: the two amber edges and the
 > "Measured, adjustable." annotation — open 20 (b) and (c), both still Dave's.**
+>
+> **ADDED `s212-D12`, 2026-08-21 (P2) — the correction is now independently confirmed, not just
+> ruled.** Claude Opus 5 was announced 24 July 2026, one day after the 2026-07-23 research was
+> filed. The live models overview names it the recommended starting point: "If you're unsure which
+> model to use, start with Claude Opus 5." Sources fetched 2026-08-21:
+> `anthropic.com/news/claude-opus-5` and `platform.claude.com/docs/en/about-claude/models/overview`.
+> A ruling that started as Dave's word now also has a receipt.
 
 ## Fable-era notes
 
@@ -48,13 +60,49 @@
   no top-level effort knob; it exists only in agent-definition frontmatter. Record effort where
   known (handoff/receipt header slot, #8); don't build routing logic on the missing knob. This
   section pays off on a move to Code.
+  **CORRECTED `s212-D12`, 2026-08-21 (P6) — the Cowork observation and the 2026-07-24 correction
+  above are untouched, both are OBSERVED facts about this environment and no doc speaks to them;
+  only the API half moves.** The ladder is now **five rungs**: `low · medium · high · xhigh · max`
+  — `max` is new since July ("absolute maximum capability with no constraints on token spending").
+  `high` is the API default and is identical to omitting the parameter. There is now a dedicated
+  page, `build-with-claude/effort`, with per-model recommendations. **For Fable:** start `high`,
+  `xhigh` for capability-sensitive work, step down to `medium`/`low` for routine. **For Opus 5:**
+  start `high`, and — quoted, because it bears on the habit of carrying settings across model
+  generations — "If you carried effort settings over from an earlier model, run a fresh effort
+  sweep on your evals rather than reusing them." (Sources: `build-with-claude/effort`,
+  migration-guide, both fetched 2026-08-21.)
 - **Diagnose before attributing a failure to safety classifiers.** Our one logged "refusal"
   (Playwright, 07-22) was a misdiagnosis of an installer's expected exit
   (`_RUNBOOK-render-verify.md`). Fallback-aware routing (route classifier-prone task classes to
   Opus) only ever acts on DIAGNOSED refusals, not pattern-matched ones.
+  **CORRECTED `s212-D12`, 2026-08-21 (P4) — the diagnose-first discipline above stands unchanged,
+  it was right and it caught a real misdiagnosis; only the destination is wrong now.** Claude
+  Opus 5 also ships safety classifiers: "Claude Fable 5 and Claude Opus 5 include safety
+  classifiers that can decline a request" (refusals-and-fallback page, fetched 2026-08-21). "Route
+  it to Opus" is no longer automatically a classifier-free destination — it depends which Opus.
+  Anthropic's own default fallback target for Fable's `cyber` category is **Opus 4.8**, not Opus 5.
+  A diagnosed classifier refusal on Fable routes **down a generation, not sideways**.
+  **ADDED `s212-D12`, 2026-08-21 (P5) — name the category, don't pattern-match it.** The refusal
+  categories are published and named: `cyber`, `bio`, `frontier_llm`, `reasoning_extraction`,
+  `general_harms` — a refusal reports which one fired in `stop_details.category`. A named API
+  category is a diagnosis; "felt security-adjacent" is a pattern-match, and canon's own rule is
+  that a diagnosis must be diagnosed. **Freshness warning:** refusal *rates* move — Anthropic
+  tightened the cyber classifier 1 July 2026 and explicitly accepted more false positives on
+  "routine coding and debugging tasks," then relaxed biology 7 August 2026, cutting bio fallbacks
+  by about 85%. A refusal-rate observation is stale within weeks; the category name is the durable
+  part, the rate is not.
 - **Fable is now a spawnable subagent target** in Cowork's Agent tool (OBSERVED 2026-07-23) —
   rule 5's peer-or-stronger verification can be satisfied with a fresh-context Fable subagent
   when the session itself runs on Fable.
+- **ADDED `s212-D12`, 2026-08-21 (P10) — the ~30% tokenizer-overhead figure that shadowed Fable's
+  price tag is corrected, and the practitioner claim behind it is demoted.** The 2026-07-23
+  research carried a practitioner report (Verdent, not official) of ~30% higher token counts on
+  Fable from a newer tokenizer. The official migration guide **contradicts this as a Fable-vs-Opus-
+  4.8 delta**: "Token counts are roughly unchanged because the models use the same tokenizer." The
+  ~30% figure is real, but it is the delta versus models **before Opus 4.7** — a cost already paid
+  generations ago, not one Fable adds. **Fable's true premium over Opus 4.8 is 2× per token and
+  nothing more; over Opus 5, also 2×.** No inflated tokenizer surcharge belongs in any Fable-vs-
+  Opus cost comparison. (Source: migration-guide, fetched via curl 2026-08-21, size-cap route.)
 
 ## The rules (matter more than the table)
 
@@ -99,7 +147,16 @@ A chat runs on **one model**; it changes only when you deliberately `/model`. No
   gauge read). Throughput's real carrier is the **parallel worker-chat model with divvy plans**
   (`_RUNBOOK-parallel-conductor.md`) — proven at scale 07-19 → 07-22. Say so when you delegate,
   as before.
-- **Mode 3 — handoff pre-selects the next model.** `GOOD-MORNING.md` ends with "next session = <work> → <model>", so cold-start the choice is already made (you still action it via the selector). **Anti-pattern (inscribed 2026-07-23, audit #6c): never switch model mid-session** — it invalidates the whole prompt cache (REPORTED, migration-guide era) and Cowork can't do it anyway; the handoff seam IS the routing point.
+  **ADDED `s212-D12`, 2026-08-21 (P9) — the ruling stands, and the live docs now corroborate it
+  from the Default tier's own model, not just Cowork economics.** The doc evidence cuts both ways
+  by model: the Fable guide pushes the other way ("Use subagents frequently… prefer asynchronous
+  communication between orchestrator and subagents over blocking"), but the Opus 5 guide pushes
+  Dave's way — "Delegate to a subagent only for large tasks that are genuinely independent and
+  parallelizable… Do not delegate work you can finish yourself in a handful of tool calls… keep
+  spawn counts low" (fetched 2026-08-21). Since Dave's Default tier is Opus 5, this is
+  model-appropriate as well as environment-specific — worth saying so, since the ruling previously
+  read as purely a Cowork-cost artifact.
+- **Mode 3 — handoff pre-selects the next model.** `GOOD-MORNING.md` ends with "next session = <work> → <model>", so cold-start the choice is already made (you still action it via the selector). **Anti-pattern (inscribed 2026-07-23, audit #6c; broadened `s212-D12`, 2026-08-21, P7): never switch model or effort mid-session** — it invalidates the whole prompt cache (REPORTED, migration-guide era, for the model half; now also officially documented for effort — "Because effort shapes the rendered prompt, changing it between requests does not preserve cached prefixes from earlier turns; if you rely on prompt caching across a long session, pick an effort level at the start and keep it constant," `build-with-claude/effort`, fetched 2026-08-21) and Cowork can't do it anyway; the handoff seam IS the routing point for both model and effort now.
 
 **Biggest saving for Dave specifically (re-weighted 2026-07-23):** manual switching is hard in Cowork, so **Mode 3 + the parallel worker-chat model carry the weight** — route at the handoff seam, run throughput lanes on cheap models per the divvy plan, and reserve Fable for genuinely big high-trust jobs. Mode 2 subagents are the exception tool, not the standing lever (see the supersession note above).
 

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review 212 — the 14 dials, seen before ratified</title>
+<style>
+  :root{--ink:#1A1A1A; --page:#FAFAFA; --line:#E1E1E1; --mid:#808080; --warn:#DA1A00; --ok:#007A53;}
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+       background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  header{padding:24px 28px; background:#FFFFFF; border-bottom:1px solid var(--line);}
+  h1{font-size:20px; font-weight:500; margin:0 0 6px;}
+  .sub{font-size:13px; color:var(--mid); margin:0; max-width:110ch;}
+  main{padding:24px 28px 64px; max-width:1200px;}
+  h2{font-size:15px; font-weight:500; margin:32px 0 8px; padding-top:16px; border-top:1px solid var(--line);}
+  p{font-size:13px; line-height:1.55; max-width:96ch; margin:0 0 12px;}
+  table{border-collapse:collapse; font-size:12.5px; background:#FFFFFF; margin:0 0 16px; width:100%;}
+  th,td{border:1px solid var(--line); padding:6px 10px; text-align:left; vertical-align:top;}
+  th{font-weight:500; background:#F4F4F4;}
+  td.v{font-variant-numeric:tabular-nums; white-space:nowrap; font-family:ui-monospace,Menlo,monospace; font-size:12px;}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:12px; background:#F0F0F0; padding:1px 4px;}
+  .ctl{white-space:nowrap;}
+  .ctl label{font-size:12px; margin-right:10px; cursor:pointer;}
+  .rec{display:inline-block; font-size:11px; padding:2px 7px; border:1px solid var(--mid); color:var(--mid); margin-left:6px;}
+  button{font:inherit; font-size:13px; padding:8px 16px; border:1px solid var(--ink); background:#FFFFFF; cursor:pointer;}
+  button:hover{background:var(--ink); color:#FFFFFF;}
+  textarea{width:100%; height:240px; font-family:ui-monospace,Menlo,monospace; font-size:12px; margin-top:12px;
+           border:1px solid var(--line); padding:10px; background:#FFFFFF;}
+  .call{background:#FFFFFF; border:1px solid var(--line); border-left:3px solid var(--ink); padding:14px 16px; margin:0 0 16px; max-width:110ch;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Review 212 — the 14 dials, seen before ratified</h1>
+  <p class="sub">You asked to see them before parking. Each row: the dial's <b>current value</b>, what it actually gates, and what
+  “ratify + park” means for it. Where the decision is visual, the row points at the <b>existing review artefact</b> — nothing here is re-drawn.
+  RATIFY+PARK = current value stands until a gate fails on it, at which point it returns to your desk with a live failure attached.</p>
+</header>
+<main>
+
+<h2>A · The six numeric constants (G1 G2 G4 G5 G6 G10)</h2>
+<table>
+<tr><th>Dial</th><th>Current value</th><th>What it gates / the honest state</th><th class="ctl">Your call</th></tr>
+<tr data-id="G1 DOFIRST_INDEX_TK_MAX"><td><code>G1</code></td><td class="v">700 tk</td>
+  <td>Cap on the worklist presence index in the chain. Agent-picked stopgap; the index actually measures ~531 real, so 700 has ~24% headroom. Low risk. <span class="rec">RATIFY+PARK</span></td><td class="ctl"></td></tr>
+<tr data-id="G2 TAPE_TO_BILL ratio"><td><code>G2</code></td><td class="v">1.57 (n=2)</td>
+  <td>The tape→real conversion ratio — <b>reported, never applied</b>, and its own rule says it needs n=4 measured pairs before firm-or-retire. Parking is honest: it stays provisional until 4 pairs exist. <span class="rec">RATIFY+PARK</span></td><td class="ctl"></td></tr>
+<tr data-id="G4 GM section-C warn cap 150"><td><code>G4</code></td><td class="v">warn 150 / measured 185–191</td>
+  <td>⚠ <b>The one dial that is currently BITING.</b> §C runs ~185 charged lines against the 150 warn — every wrap declares the same skip. Parking as-is means accepting the warning noise forever. The real fix is your OFFLOAD / TRIM / KEEP pick on §C's content — and today's row-parking already shrinks §C, so re-measuring first is fair. <span class="rec">RE-MEASURE AFTER TODAY'S PARKS, THEN PICK</span></td><td class="ctl"></td></tr>
+<tr data-id="G5 four advisory size caps (old unit)"><td><code>G5</code></td><td class="v">36000 · (4917, 6417) · fallback · 4500</td>
+  <td>Four advisory caps still denominated in the <b>old tape unit</b> — blocked on G9's re-measurement programme by its own close condition. Cannot honestly be ratified before re-measurement; parking just names that. <span class="rec">PARK (blocked anyway)</span></td><td class="ctl"></td></tr>
+<tr data-id="G6 DEFER_STREAK 6 + history non-blocking"><td><code>G6</code></td><td class="v">6 · BLOCKING=False</td>
+  <td>How many consecutive sessions may defer a usage-history candidate before it warns, and whether that warning blocks. Advisory today; nothing has visibly misfired on it. <span class="rec">RATIFY+PARK</span></td><td class="ctl"></td></tr>
+<tr data-id="G10 stray 70%/95% band"><td><code>G10</code></td><td class="v">"70%/95%" — no provenance</td>
+  <td>A band in GM matching <b>no ruled system</b>, no provenance repo-wide, already FENCED. This isn't a dial to ratify — it's a stray to strike. <span class="rec">STRIKE THE STRAY</span></td><td class="ctl"></td></tr>
+</table>
+
+<h2>B · The eight design leftovers (G9 G11 G12 G13b G14 G15 G16 G17)</h2>
+<p>Three are genuinely visual — their artefacts already exist; open them beside this page. The rest are programme/sign-off calls.</p>
+<table>
+<tr><th>Dial</th><th>What it is</th><th>Where to look</th><th class="ctl">Your call</th></tr>
+<tr data-id="G11 DS-018 disabled-state recessive grey"><td><code>G11</code></td><td><b>Visual:</b> pick the recessive grey for disabled states — four candidates incl. <code>#9D9D9D</code>.</td>
+  <td><code>reviews/DS-018-DISABLED-STATE-2026-07-27-v1.REVIEW.html</code></td><td class="ctl"></td></tr>
+<tr data-id="G13b menu-search combined glyph"><td><code>G13b</code></td><td><b>Visual:</b> approve the combined menu-search glyph (provisional since 16 Jul).</td>
+  <td><code>_ICON-GAPS.md</code></td><td class="ctl"></td></tr>
+<tr data-id="G17 RAG status manifestation A / A+B / A+B+C"><td><code>G17</code></td><td><b>Visual:</b> canon pick between manifestations A / A+B / A+B+C (⚠ live render was unverified at #86).</td>
+  <td><code>reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1…</code></td><td class="ctl"></td></tr>
+<tr data-id="G12 tone-of-voice temperature map"><td><code>G12</code></td><td>Charter §4b tone map, provisional since <b>2 Jul</b> — live in guidelines and nothing has complained in 7 weeks.</td>
+  <td><code>_FIXED-FLEX-CHARTER.md:55–71</code> <span class="rec">RATIFY+PARK</span></td><td class="ctl"></td></tr>
+<tr data-id="G14 icon-button dark bindings"><td><code>G14</code></td><td>Icon-button reuses Button's on-light/on-dark verbatim; parent question is SC-dark (ADR-0014), which is itself waiting on you.</td>
+  <td><code>icon-button.meta.json:68</code> <span class="rec">PARK UNDER SC-DARK</span></td><td class="ctl"></td></tr>
+<tr data-id="G15 donut centre figure + release wiring"><td><code>G15</code></td><td>Two agent's calls awaiting your sign-off eye (DV-D13 donut centre + visibility release wiring).</td>
+  <td><code>_REVIEW-SIGNOFF.md</code> backlog</td><td class="ctl"></td></tr>
+<tr data-id="G16 dataviz proforma enactment call"><td><code>G16</code></td><td>An agent's enactment call at <code>_DATAVIZ-DECISIONS.md:567</code> — ratify or reverse.</td>
+  <td><code>_proforma/_DATAVIZ-DECISIONS.md:567</code></td><td class="ctl"></td></tr>
+<tr data-id="G9 ds-023 re-measurement programme"><td><code>G9</code></td><td>The programme that unblocks G5: re-measure every old-unit ceiling on its artefact in real tokens, restamp with provenance. This is Claude-work once you say run it.</td>
+  <td>ledger:1764 <span class="rec">RULE: RUN IT (delegatable)</span></td><td class="ctl"></td></tr>
+</table>
+
+<div class="call">
+  <p><b>Fair warning on the two RECOMMENDs that aren't parks:</b> G4 is live noise every single wrap, and G9 is the blocker under G5 —
+  parking those two doesn't clear your desk, it just mutes it. Everything else genuinely can sleep.</p>
+</div>
+
+<h2>Build the ruling text</h2>
+<button onclick="build()">Build my rulings</button>
+<button onclick="copyOut()">Copy to clipboard</button>
+<textarea id="out" placeholder="Your choices appear here — paste the text back to Claude."></textarea>
+
+<script>
+(function(){
+  document.querySelectorAll("tr[data-id]").forEach(function(tr,i){
+    var opts=["RATIFY+PARK","RULE NOW","LEAVE OPEN"];
+    var cell=tr.querySelector(".ctl"); var name="d"+i;
+    opts.forEach(function(o){
+      var l=document.createElement("label");
+      var r=document.createElement("input"); r.type="radio"; r.name=name; r.value=o;
+      l.appendChild(r); l.appendChild(document.createTextNode(" "+o));
+      cell.appendChild(l);
+    });
+  });
+})();
+function build(){
+  var lines=["REVIEW-212 dial rulings ("+new Date().toISOString().slice(0,10)+"):"];
+  document.querySelectorAll("tr[data-id]").forEach(function(tr){
+    var c=tr.querySelector("input:checked");
+    lines.push((c?c.value:"(no call)")+" — "+tr.dataset.id);
+  });
+  document.getElementById("out").value=lines.join("\n");
+}
+function copyOut(){ build(); var t=document.getElementById("out"); t.select(); document.execCommand("copy"); }
+</script>
+</main>
+</body>
+</html>

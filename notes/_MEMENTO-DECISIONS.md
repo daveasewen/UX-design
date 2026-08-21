@@ -2242,6 +2242,201 @@ subagent transcripts are separate files outside its glob, and only a ~2–3K `to
 returned ~350 tokens for a finding that overturns a standing ruling. Earlier returns this session ran
 thousands. ⇒ **cap the return and demand a file** — that is the fan-out economics lever, not the brief.
 
+## ★ #59 — 2026-07-31 — THE WRAP COST IS MEASURED FOR THE FIRST TIME IN THE LIVE UNIT, AND DAVE RULED: RECORD THE FORMULA, NOT THE NUMBER
+
+⚠ **RECONSTRUCTED 2026-08-21 at #212 (row `W-15`, Dave's word) from the named sources — this is a
+backfill, not a record written at #59.** #59's wrap ran, its banner rolled, and its ledger section was
+never written; the rolled banner has pointed at a non-existent `§ ★ #59` for 153 sessions
+(`W-15`, born #59, copied up #62 by the 2c EXIT CHECK — `GOOD-MORNING.md:117` ·
+`knowledge/_state.json:278–280`). Nothing below is recovered from #59's transcript, which is
+unreadable to any later session by #59's own finding. Every claim here is quoted or paraphrased from
+a surviving artefact, cited inline.
+
+**SOURCES (all read 2026-08-21, quoted by path:line):**
+`_GM-ARCHIVE.md:3165–3181` — the rolled #59 ★ PRIOR banner (rolled by #62, `## Batch 2026-07-31 #62`) ·
+`_GM-ARCHIVE.md:3167` — the dangling pointer itself ·
+`notes/_GAUGE-LOG.md:634–645` — the `#### 2026-07-31 #59` stratum (pre-flight, post-mortem, step sizes, section usage/sizes, consult-receipts) ·
+`knowledge/_gauge_tokens.py:78–87` — the formula ruling's MACHINE HOME, where it has been operative the whole time ·
+plus the later corrections that quote #59: ledger § ★ #91 (`#91-F2`/`#91-F4`), § ★ #93, § ★ #94, and `_GM-ARCHIVE.md:2610 · 2619 · 2635 · 2670–2676`.
+⛔ **NOT recovered:** #59's own commit sha — its banner's COMMIT STATE is a literal
+`⛔ PLACEHOLDER — filled after the real commit lands` (`_GM-ARCHIVE.md`, #59 batch). No sha is asserted here.
+
+### ⬛ D1 (RULED, Dave) — RECORD THE FORMULA, NOT THE NUMBER
+
+**His ruling, as the banner carries it** (`_GM-ARCHIVE.md:3172`): *"⬛ DAVE RULED — RECORD THE FORMULA,
+NOT THE NUMBER."*
+
+```
+stop = wall − wrap − step        # each term tagged MEASURED or ESTIMATED
+```
+
+Two riders, both his, both in the same banner line:
+
+- **160,000 is relabelled `PICKED`, not `DERIVED`.** It was 80% of working wearing a `DERIVED` label —
+  the exact defect *"derive a cap, never pick it"* exists to catch: **ruled #53 · gate-asserted #56 ·
+  second remedy #58**, three dates that had collapsed into one citation.
+- **⬛ RESERVE THE HIGH END OF BOTH TERMS, OR NEITHER.** He caught the agent reserving the max for
+  `wrap` and the median for `step`: *"a stop line reserved at the median step is under water half the
+  time by construction."*
+
+★ **Why the formula and not the number: the formula self-corrects.** When `wrap` becomes measured the
+line moves without a new ruling.
+
+**MACHINE HOME — the ruling has been live in code since #59 and is quotable today**
+(`knowledge/_gauge_tokens.py:78–87`, verbatim):
+
+> `⛔ AMBER IS **PICKED**, NOT DERIVED — RULED BY DAVE, #59. 80% of working is a round fraction, not a`
+> `derivation; labelling it DERIVED made it immune to the very rule that should have caught it … ★ THE`
+> `FORMULA IS THE RULING, THE NUMBER IS NOT:  stop = wall − wrap − step  # each term tagged MEASURED or`
+> `ESTIMATED  … and the HIGH end of BOTH terms is reserved, or neither … ⚠ DO NOT stack a step reserve`
+> `on top of an amber that already contains one — that is a RESERVE ON A RESERVE, ~10K/window, invisible`
+> `because each layer is individually defensible. … NO BEHAVIOUR CHANGE HERE — the value is untouched by`
+> `ruling; only the label was a lie.`
+
+★ **The ruling was never lost — it was unretrievable AS A RULING.** It lived in a comment block a
+gate never indexes and the store never rows. That gap is what `W-15` has been naming since #59, and
+it is what this section closes.
+
+### ★★ F1 — THE WRAP COST IS MEASURED FOR THE FIRST TIME IN THE LIVE UNIT: 42,434 REAL, AND STILL CLIMBING
+
+Wrap-start stamp **118,155** → **160,589** at the banner stamp = **42,434 real tokens, STILL CLIMBING**
+(`notes/_GAUGE-LOG.md:637`). Inherited estimate **~25,000** ⇒ **low by ≥1.7×**.
+
+⛔ **The corpus contained ZERO prior wrap measurements in the live unit.** Every wrap term in
+`notes/_GAUGE-LOG.md` before this one is a percentage (`wrap 5%`/`6%`/`8%`) in the band **#56 RETIRED**,
+and one ratio cannot re-denominate a corpus ⇒ **unconvertible, not merely stale.** ★ **~25,000 was
+never a stale measurement — it was folklore**, and every derived stop line built on it was wrong in
+the dangerous direction (`_GM-ARCHIVE.md:3171` · `notes/_GAUGE-LOG.md:638`).
+
+⛔ **AND HE FENCED IT THE SAME BREATH: n=1, A POINT NOT A LAW.** *"wrap cost scales with how eventful
+the window was, so the distribution needs 2–3 more; when it has them, the stop line reserves the HIGH
+end, not the mean, or it is under water half the time"* (`notes/_GAUGE-LOG.md:637`, Dave's rule).
+
+⚠ **THE FENCE DID NOT SURVIVE RETRIEVAL, AND THE LEDGER GAP IS PART OF WHY.** #60–#65 quote 42,434
+honestly as `ESTIMATED` (#59's floor); **#90 stated it flat and titled a cut to it**; #91 re-found the
+caveat and re-derived it from the banner (§ ★ #91, `#91-F4`; `_GM-ARCHIVE.md:2672`). The high-end rule
+itself held and is still being cited by name at #93/#94 (`_GM-ARCHIVE.md:2619 · 2635`) — **the rule
+travelled, the caveat on the number did not.**
+
+### ★★ F2 — A NEW CLASS: A RESERVE STACKED ON A RESERVE
+
+The agent's *"stop at ~150,400"* was PICKED amber − one step; but if amber is itself `wall − wrap − step`,
+the step was **already inside it**. **~10K a window, invisible because each layer is individually
+defensible.** Dave: *"nobody adds a bad reserve; they add a second reasonable one to a number whose
+contents they didn't open."* (`_GM-ARCHIVE.md:3173`.)
+
+★ **This is the argument FOR D1.** The double-charge only became visible because the formula got
+written out; a stop line published as a number hides its own composition.
+
+### ✅ F3 — THE FILL READ IS CLOSED: MAX-PER-`message.id`, SYNTHETIC SKIPPED
+
+Verified, not inferred (`_GM-ARCHIVE.md:3174` · `notes/_GAUGE-LOG.md:642`):
+
+- `usage` is **byte-identical within every `message.id`** — 35 records / 20 turns checked ⇒ *"read the
+  last record"* is not reading a partial.
+- **Records ≠ turns (~1.75×)** — one record per content block ⇒ #58b's *"213 assistant turns"* is
+  inflated, and any per-turn model must dedupe.
+- ⛔ **A `model: "<synthetic>"` record with all-zero `usage` exists** — the client-side *"No response
+  requested."* written at an interrupt. **If it lands last, a naive read returns 0 and reports a
+  comfortable green.**
+- ⇒ the correct read is **max-per-`message.id` with an explicit synthetic/zero skip**, and every figure
+  in #59's banner used it.
+
+⚠ **RESEARCHED HERE, WIRED THIRTY-TWO SESSIONS LATER.** This read was not built into `_checkin.py`
+until #91 (§ ★ #91) — [[instrument-without-a-consumer]]. Both #59 findings survive in that consumer's
+own comments today: `knowledge/_checkin.py:164` (*"#59 found a `model:\"<synthetic>\"`"*) and
+`knowledge/_checkin.py:168` (*"#59 verified usage is"* byte-identical per id).
+
+### ★ F4 — MEASURED STEP SIZES, AND THE MAX IS NOT STABLE WITHIN A WINDOW
+
+Per distinct `message.id` (`notes/_GAUGE-LOG.md:639`): min **181** · median **1,633** · **MAX 17,681** —
+and *the max moved 9,638 → 17,681 mid-window* (a runbook read and a worker report). ⇒ **a stop line
+reserving one step must reserve the OBSERVED max, and the observed max is a moving target.**
+
+### ⚠ F5 — THE GAUGE IS LATE BY EXACTLY ONE STEP (Dave, this session)
+
+`usage` on the last record is **the prompt for the call that ALREADY RAN**; the output being written
+now, plus the tool results it pulls in, land in the NEXT turn's input. ⇒ **price the next turn, not the
+last** (`notes/_GAUGE-LOG.md:640`). Still carried in the live instrument:
+`knowledge/_checkin.py:1015` prints *"⚠ LATE BY ONE STEP (Dave, #59)"*.
+
+### ⚠ F6 — RETROSPECTIVE WRAP COST IS UNAVAILABLE TO A SESSION
+
+`/sessions/` holds **~190 sibling session dirs; exactly one `.jsonl` is readable — the running
+session's own.** #58's transcript exists and no session can read it. ⇒ **wrap cost is measurable
+PROSPECTIVELY ONLY** (stamp at wrap-start, re-read at commit), which is what #59 did, n=1
+(`_GM-ARCHIVE.md:3176` · `notes/_GAUGE-LOG.md:643`).
+⚠ **Later status:** this caveat is recorded as re-examined at #93 (§ ★ #93) — see that section, not
+this one, for its current standing. **This backfill does not re-open it.**
+
+### ⚠ F7 — `/tmp` IS WORLD-READABLE AND NOT WRITABLE: A SILENT STALE-ARTEFACT TRAP, HIT LIVE AT THIS OPENER
+
+`cmd > /tmp/f` fails *Permission denied*, the command never runs, and the following `tail /tmp/f`
+**serves a PREVIOUS session's output.** #59 read `✗ _CHAIN.md is STALE` off a file dated
+**2026-07-30 21:34 owned by `nobody`** and was one sentence from recording it as that window's verdict.
+Re-run to the outputs dir: **`✅ _CHAIN.md is FRESH`, exit 0.** ⚠ **No `/tmp` writes exist in the
+toolchain `.py`/`.sh` — the exposure is in the RUNBOOKS** (`_RUNBOOK-context-gauge.md` ·
+`_RUNBOOK-git-commit.md` · `_RUNBOOK-render-verify.md`), i.e. **aimed squarely at a session following
+instructions.** (`_GM-ARCHIVE.md:3175`.) ⇒ this is the birth of DO-FIRST item 13 / row `W-13`
+*"`/tmp` RUNBOOK EXPOSURE, UNFIXED"* — `[born #59 · copied up #62]` (`_GM-ARCHIVE.md:2358`).
+
+### ⚠ F8 — WHAT #59 GOT WRONG, ALL THREE CAUGHT BY DAVE IN-WINDOW
+
+From `_GM-ARCHIVE.md:3177`:
+
+1. **Quoted 122K as "room"** when it was the distance to the line we are told not to reach — Dave:
+   *"how a session talks itself into the danger zone one job at a time."*
+2. **Priced the turn that just happened, not the next one** — F5's defect, committed before it was named.
+3. **Called *"zero compaction records in 10 assistant records"* evidence** when at 77K fill **the probe
+   had no failing branch.** The honest form is *"not yet applicable at this fill"* —
+   [[unmatched-grep-is-not-an-absence]] in its measurement register.
+
+★ **And a fourth, inside the stamp itself:** #59 stamped the band **RED from memory** and its own gate
+caught it — 169,747 is **AMBER** against the thresholds in `_gauge_tokens.py`. *"I recalled the band
+instead of quoting it — the exact thing the gate's own failure text forbids, committed inside the stamp
+that reports it."* (`_GM-ARCHIVE.md:3166`.) #60 declined the same trap by name.
+
+### 📐 THE #59 STAMP, AS RECORDED
+
+**pre-flight #59 (RETROSPECTIVE — declared a LAPSE; no band was written before the work.** Dave's
+opener steer: *"stabilize Memento until ~4pm, then Apollo."***)** boot **61,812 MEASURED**
+(`message.usage`, turn one, harness INCLUDED — reproduces #58b's 61,582 to within 230) + job
+**56,343 MEASURED** + wrap **51,592 MEASURED and still climbing** = **169,747 of 200,000 — 🟡 AMBER**.
+★★ **Every term MEASURED, which no prior pre-flight in the record could say.**
+(`_GM-ARCHIVE.md:3166` · `notes/_GAUGE-LOG.md:636`.)
+
+★★ **BOOT BECAME A CONSTANT BY REPRODUCTION HERE.** #58b **61,582** · #59 **61,812** · #60 **61,775** —
+three independent readings, spread **240** (`_GM-ARCHIVE.md:3146`; also § ★ #89, which adds two more).
+⚠ **Superseded since:** the boot constant was re-based at #109 and again at #208 — see § ★ #109 and the
+live constant in `knowledge/_gauge_tokens.py`, never this line.
+
+**consult-receipts #59:** none — retrieval was by targeted `grep` and direct `Read`; `_memento_search.py`
+was NOT used. ⚠ **Declared, not excused:** RETRIEVAL-FIRST was standing and that window did not honour it
+(`notes/_GAUGE-LOG.md:645`).
+
+**⛔ NO MEMENTO GATE-SUITE WORK AND NO APOLLO — DECLARED, NOT SLIPPED.** The window went to the budget
+model at Dave's direction. Gates were **PROBED not built**: `_gen_chain.py --check` exit 0 / FRESH ·
+`_capture_gate.py` 40 in scope · 0 fail · 0 warn. ★ **Both green, and that proves nothing about whether
+they BITE** — the per-gate test plan was owed from here (`_GM-ARCHIVE.md:3178`), born as DO-FIRST item 10
+`[born #59]` (`_GM-ARCHIVE.md:3115 · 3136`) and discharged across #62–#65.
+
+### ⬛ HELD, NOT FILED (Dave's call at #59)
+
+**DAVE'S FOUNDING PRINCIPLE:** *"we research, we analyse, we probe, we test."* Placement deferred;
+**do not inscribe as canon without his word** (`_GM-ARCHIVE.md:3164 · 3179`). ⇒ born as DO-FIRST item 14
+`[born #59]`, **extended by him at #62** (+ PLAN, + DESK RESEARCH), and ratified as the **six-beat
+ladder** at `s63-D1` — see § ★ #63 and [[six-beat-ladder-ruled]]. **Closed elsewhere; recorded here only
+as its origin.**
+
+### ⚠ WHAT THIS BACKFILL DOES NOT DO
+
+It **rules nothing**, retires nothing, and re-opens nothing. Every figure above is quoted from an
+artefact that already carried it, and where a later session superseded a figure the supersession is
+named and pointed at rather than restated. ⛔ **The authority for the formula remains
+`knowledge/_gauge_tokens.py`; the authority for the stop line remains its own later ruling
+(`s93-D1` → enacted #94 → the advisory 150,929 line). This section is a RETRIEVAL HOME, not a source of
+truth.**
+
 ## ★ #60 — 2026-07-31 — DELEGATION MEASURED AT 46:1, TWO GATES CANNOT FAIL IN CI, AND MULTI-WINDOW IS SETTLED
 
 *provenance: 2026-07-31 · status: ruled (Dave, D1, D8) — D2–D7 are measured findings, not rulings; titles reuse the conductor's own ★ LATEST banner headline verbatim. See `GOOD-MORNING.md` § ★ LATEST for full context.*
@@ -5798,3 +5993,114 @@ homes the HEADER PROSE, not the rulings.
 is cut (homed at (b)); the banner keeps ONE full statement of the `s168-D5` outcome on the ★ LATEST heading
 and pointers on ⑤/⑥/residual-①. **Nothing is deleted from the record — it moved here.** The rename-relay
 class note from (a) is ALSO standing in auto-memory [[delegated-wrap-rename-relay]].
+
+## ★ #212 — THE TRIAGE SITTING: TWELVE RULINGS, AND DAVE'S DESK GOES 48 OPEN ROWS → 27 (2026-08-21, FABLE conductor + 4 work subs, DELEGATED OPUS wrap)
+
+*Opened on one line — Dave: "to start, Id like to get this boot down" — and became a full triage of
+the desk. Three control pages carried the sitting: `reviews/REVIEW-212-boot-and-desk-triage-v1.html`
+(boot passengers + the desk as ONE strike-list) · `reviews/REVIEW-212-dials-v1.html` (the 14 dials,
+seen before ratified) · `reviews/REVIEW-212-rule-now-v1.html` (every open call, visual where it can
+be). All three are rowed `W-95`. He ruled by export text and in chat.*
+
+**⛔ THE RULINGS ARE NOT RE-TYPED HERE.** All twelve live in `knowledge/_rulings.json` §
+`s212-D1`…`s212-D12`, each written by `_inscribe_ruling.py` (the only writer, `s179-D1`), dry-run
+first — plus **one evidence amend on `s212-D1`**. This section is the LEDGER JOIN: which register
+row each ruling closes, and what it left open. Read the ruling text from the store
+[[trust-the-spine-not-the-prose]].
+
+| ruling | closes / parks | what it left OPEN |
+|---|---|---|
+| `s212-D1` | **G11** — ds-018 recessive grey **`#9D9D9D`** | enactment (`W-99`): `--text-disabled` + `--border-disabled` in ONE pass, regenerated per chart family **in the generator**, never a `canon.css` hand-patch |
+| `s212-D2` | **G17** — RAG status manifestation **A+B+C** | enactment into canon (`W-99a`) |
+| `s212-D3` | **G12** — charter §4b temperature map **RATIFIED as-is** | nothing; stamps landed the same session |
+| `s212-D4` | **G10** — the stray **70%/95%** band **STRUCK** | nothing — and see the finding below |
+| `s212-D5` | **G1 + G2 + G6** — three constants **RATIFIED and PARKED as a set** | the park is CONDITIONAL: any of the three returns to Dave the first time a gate fails on it, with the live failure attached; G2's own firm-or-retire-at-n=4 rule survives the park |
+| `s212-D6` | **G4** — GM §C remedy is **OFFLOAD** | the enactment (`W-99b`); the 150 cap is **not** re-dialled by the ruling; G4 closes only when §C measures back under warn |
+| `s212-D7` | **G9** — the ds-023 re-measurement programme **RUNS, delegated** | nothing is ratified by it; it authorises the measurement only |
+| `s212-D8` | **G14** — icon-button dark bindings **PARKED under the SC-dark parent** | un-parks automatically into the SC-dark sitting (ADR-0014, G14's parent) |
+| `s212-D9` | **G13b** — the designed `menu-search` glyph **APPROVED** | nothing |
+| `s212-D10` | **W-14** — the founding principle **SETTLED**: the six-beat ladder, model-free, a guiding principle not a manifesto | the routing amendments it surfaced are SEPARATE (→ `s212-D12`) |
+| `s212-D11` | **G5** — the four advisory caps **RATIFIED at the measured restamps** | **`W-99d`**: the `bill_of()` **1.57×** overstatement repair, and the re-PICK of `SIZE_BUDGET` compactable **8000** + `TITLE_CAP_TAPE` **120** (picked-never-measured, so no restamp is possible — only a fresh pick) |
+| `s212-D12` | `MODEL-ROUTING.md` — **P1–P7 + P9 + P10 TAKEN** | ⬛ **P8 DELIBERATELY NOT RULED** — Anthropic's Opus 5 guidance to REMOVE verification scaffolding vs canon verification rule 5 vs the `s204-D1` adversarial-verifier topology; three readings stand in the check and the pick is Dave's |
+
+**Also closed this session, on his word at the review pages:** `W-0c` · `W-0d` (disposal ruled) ·
+`W-15` (reassigned to Claude — *"YES - CLAUDE WRITES IT"*) · `W-16` (split into `W-96` + `W-97`).
+**Also parked:** the `W-75`…`W-84` P3 subset.
+
+### THE MEASURED SHAPE OF THE DESK — counted, never typed
+
+Joined at the wrap between `knowledge/_state.json` and `git show HEAD:knowledge/_state.json`:
+**items 115 → 126** (+11) · **open 81 → 67** · **done 29 → 41** · **parked 4 → 18** ·
+**Dave-owned OPEN 48 → 28**. ⚠ The wrap brief said *"49 Dave rows → ~24"*; the store says
+**48 → 28**. The brief's figure was not wrong when written — it was a moment, and a moment is not a
+measurement [[premise-ages-faster-than-rule]].
+
+⛔ **THE `W-` TWO-DIGIT ID SPACE IS EXHAUSTED AT `W-99`.** `W-99a`…`W-99d` are letter suffixes minted
+under pressure inside this session. **Widening the scheme is Dave's**, and every session that waits
+mints more suffixes — the cost of deferring is not zero, it is monotonic.
+
+### ★ THE ENACTMENTS THAT LANDED IN THE ARTEFACTS, NOT ONLY IN THE STORE
+
+- **`s212-D11` restamp** — `knowledge/_capture_gate.py`: corpus `36000 → 55700` · chain-region pair
+  `(4917, 6417) → (7700, 10000)` · banner fallback `(4000, 5000) → (6400, 7800)` · §A warn
+  `4500 → 7200`; pins moved **by addition** with notes. Receipt:
+  `notes/_receipts/2026-08-21-212-g9-ds023-remeasurement.md`, baselines reproduced exactly at their
+  ruling commits BEFORE any restamp was proposed.
+- **`s212-D12` routing edits** — `MODEL-ROUTING.md`, nine amendments **by addition**, applied by a
+  Sonnet sub. Receipt: `notes/_receipts/2026-08-21-212-routing-p-edits.md`. **P8 untouched.**
+- **`s212-D3` stamps** — `knowledge/_FIXED-FLEX-CHARTER.md` §4b and
+  `knowledge/guidelines/tone-of-voice.md` tov-016, PROVISIONAL → RATIFIED. **Release packs
+  untouched** [[designer-skills-packs-are-releases]].
+- **`s212-D9` glyph** — `knowledge/assets/icons/menu-search.svg` NEW (Figma Neo-net v02.0 Brand dev
+  06, node **2785:97115**; background stripped, `currentColor`, geometry untouched, provenance
+  comment in-file), swapped into `knowledge/_proforma/Masthead-interactive.html`'s `i-menu-search`
+  symbol; `knowledge/_ICON-GAPS.md` row annotated. Dave on the placed swap: *"good"*.
+- **`W-15` backfill** — `notes/_MEMENTO-DECISIONS.md` § ★ #59, written and **marked RECONSTRUCTED**.
+  Receipt: `notes/_receipts/2026-08-21-212-w15-ledger-59-backfill.md`.
+
+### ⛔ FINDINGS — reported at the wrap, none of them ruled
+
+1. **A TEST FIXTURE THAT HARD-CODES A DERIVED NUMBER TURNS A RATIFIED CONSTANT CHANGE INTO A FAKE
+   PRODUCT FAILURE.** The `s212-D11` restamp went red on **M8** first, because the selftest fixtures
+   pinned 17- and 30-line bodies sized to the OLD constants. **CLASS FIX enacted: fixture sizes are
+   now DERIVED from the live constant**; selftest green after. The general shape is worth hunting
+   anywhere a selftest pins a size it does not own [[gate-dont-patch]].
+2. **A RULING CAN BE ENACTED BY THE WORLD BEFORE IT IS INSCRIBED.** `s212-D4` strikes the stray
+   70%/95% band — and the literal was **already absent** from `GOOD-MORNING.md`. PROBED at the wrap
+   (`grep -c` = **0**); the five surviving repo mentions are all *dated* homes (`_HANDOFF-87`,
+   `_TRIAGE-TICKLIST-2026-08-02-v1.md`, `notes/_DELTA-168-effort-removal-v1.md`, a #209 demo brief)
+   or *generated* ones (`_CHAIN.md`'s open-work block, which clears itself as the row closes).
+   ⛔ No edit was manufactured to produce an enactment [[enactment-register-adr-0016]].
+3. **THE GOVERNING REGISTER HAS NO JOIN GATE, AND THREE ROWS PROVED IT.** `G3` / `G7` / `G8` read
+   **OPEN** in `knowledge/_GOVERNING-RECORDS.md` while `knowledge/_state.json` had carried them
+   closed since **#161 / #163**, and `G18` has a store row and **no register row at all**. Found at
+   this wrap by joining register to store; repaired by **MARKING** (never deleting), each with its
+   OWN pre-existing pointer, not this session's. ⛔ Nothing prevents the next recurrence — a
+   register-vs-store join check is the priced candidate and building it is not a wrap's
+   [[instrument-without-a-consumer]].
+4. **THE BY-REFERENCE CARRY TAIL BROKE AT ITS FIRST ROLL.** #211's lean banner pointed the deep carry
+   tail at the ★ PRIOR (#210) banner *"WHICH IS STILL LIVE IN THIS FILE"*; this wrap's 2c rolled that
+   banner, so the pointer went stale-by-one on a live surface. It is **REDIRECTED** on the #212
+   residual to `_GM-ARCHIVE.md` § Batch 2026-08-21 #212, not silently left wrong. ★ **The trade,
+   stated so Dave can reverse it:** by-reference buys a lean chain and pays a **redirect every wrap,
+   compounding by one hop each time**; re-typing pays tokens and buys a machine check. #212 took the
+   middle: the five surviving carries are **re-typed and MEASURED**, the deep tail stays by reference
+   and is **DECLARED UNMEASURED**.
+5. **THE CONDUCTOR-SIDE COST OF A DELEGATED WRAP IS NOT A FIELD THAT EXISTS.** Mined from
+   `notes/_GAUGE-LOG.md` at the brief's request: the schema carries `pre-flight` (⛔ NOT CAPTURED on
+   **thirteen consecutive** delegated wraps, #199…#212), `post-mortem` (FILL at the wrap-brief cut — a
+   whole-session figure, not the wrap's share), and `subs` (QUOTA, with the wrap sub's own spend
+   explicitly excluded and unknowable at write time). ⇒ **There is no term anywhere in the log for
+   what the conductor spends writing the brief and orchestrating the hand-off.** The nearest available
+   series, verbatim from the blocks: **#204 ~155,000 · #205 ~156,000 · #206 128,711 · #207 158,954 ·
+   #208 191,993 · #209 515,335 · #210 369,000 · #211 305,137 · #212 237,361**. ⛔ REPORT ONLY — the
+   stop-line re-base is Dave's, and his `s208-D1` rider requires a boot-REDUCTION option priced beside
+   it [[feedback-measuring-tool-must-not-guess]].
+
+### ⛔ THE DO-NOT-RULE FENCE HELD
+
+Untouched by this wrap, every one named in the brief: **P8** · the stop-line / wall re-base · the
+boot band · `W-99d` · `W-93` photography · the whole **#211 seven-receipt sitting** · `W-96`
+build-or-park · `W-98` dv-lockup titles · the §C OFFLOAD enactment (`W-99b`) · the eye-pile showroom
+batch · memory compaction (the conductor's, deferred to the #213 opener) · every connector/skill
+strike (Dave's own UI clicks). The wrap **measured** several of these and **ruled** none of them.
