@@ -40,9 +40,20 @@ RESOLUTION LADDER (precedence, highest first; `basis` names which rung fired):
 FAIL LOUD, NEVER GUESS (the brief's words): a row whose `#` is not an integer, or whose Component
 cell is blank, raises SystemExit naming the sheet row. A crash is not a fail [[a-crash-is-not-a-fail]].
 
-Outputs (both deterministic — no timestamps, so `--check` is meaningful):
-  reviews/ITINERARY-STATUS-2026-08-19-v1.html   Dave's surface: drift table + TRUE-gap list
-  reviews/ITINERARY-STATUS-2026-08-19-v1.json   machine-readable sidecar (next wave's brief input)
+THE THIRD DEFECT, fixed #214 — THE GENERATOR'S OWN HAND-CARRIED PREMISE. Rows 97-124 (Layer 2)
+were short-circuited to NO-ARTEFACT-CLASS on a sentence typed at #203 ("No artefact class for
+these exists in the store yet"). By #213 that sentence was measurably false — 27 shell/template/
+lock-up snippets on disk with meta + showroom + canon scope — and because the shortcut fired
+before any probe, the only symptom was `$orphan_snippets` climbing 1 -> 28 while no Layer-2 row
+could ever change status. Layer-2 rows now take the SAME five probes, resolved by a mechanical
+family ladder (see LAYER2_FAMILIES), and the Layer-2 note is GENERATED from the measurement
+rather than typed. A hand-carried premise inside the instrument built to catch hand-carried
+premises is still a hand-carried premise [[premise-ages-faster-than-rule]].
+
+Outputs (both deterministic — no timestamps, so `--check` is meaningful). STAMP names a NEW
+dated pair each re-measurement; earlier snapshots are WRITE-ONCE and stay on disk:
+  reviews/ITINERARY-STATUS-<STAMP>.html   Dave's surface: drift table + TRUE-gap list
+  reviews/ITINERARY-STATUS-<STAMP>.json   machine-readable sidecar (next wave's brief input)
 
 ⛔ NOTHING HERE IS A RULING. Every derived status is a MEASUREMENT of the store, and every TRUE-gap
 verdict carries the probes it was measured by. Component promotion is on Dave's DO-NOT-RULE list;
@@ -78,7 +89,14 @@ ICONS = os.path.join(HERE, "assets", "icons")
 LOGOS = os.path.join(HERE, "assets", "logos")
 
 ITIN = os.path.join(ROOT, "reviews", "ITINERARY-2026-07-14-apollo-component-library.xlsx")
-STAMP = "2026-08-19-v1"
+# ⛔ WRITE-ONCE (ADR-0017 / `s192-D1`). Bumping STAMP is how this generator re-measures: v1
+# (#203) and v2 (#213) stay on disk as frozen snapshots and a NEW dated pair is written beside
+# them. NEVER point STAMP back at an existing snapshot.
+STAMP = "2026-08-21-v3"
+SESSION = "#214"
+MEASURED = "2026-08-21"
+PRIOR = ("reviews/ITINERARY-STATUS-2026-08-21-v2.json (session #213 re-measurement with the "
+         "UNFIXED Layer-2 shortcut, superseded by this run, NOT overwritten)")
 OUT_HTML = os.path.join(ROOT, "reviews", "ITINERARY-STATUS-%s.html" % STAMP)
 OUT_JSON = os.path.join(ROOT, "reviews", "ITINERARY-STATUS-%s.json" % STAMP)
 
@@ -205,13 +223,41 @@ ROW_MAP = {
          "why": "Notes: 'Spend/transfer limit gauge.'"},
 }
 
-# Rows 97-124 are Layer 2. There is NO shell/template/lock-up artefact class in the store at all
-# (probe: `find . -maxdepth 3 -iname '*shell*'` and `-iname '*template*'` return nothing in-repo).
-# Absence of a Layer-1 snippet is therefore not evidence about them, and they are reported as a
-# class, not as 28 individual "gaps" [[measure-dont-convert-units]].
-LAYER2_NOTE = ("Layer 2 (shells · templates · lock-ups · variant matrices). No artefact class for "
-               "these exists in the store yet — not a snippet, not a meta, not a showroom page. "
-               "Their absence is measured as ONE structural gap, not 28 component gaps.")
+# ---------------------------------------------------------------------------
+# LAYER 2 (rows 97-124: shells · templates · lock-ups · variant matrices).
+#
+# ⛔ THE #214 DEFECT, FIXED HERE. Until #214 this file carried a HAND-WRITTEN sentence —
+# "No artefact class for these exists in the store yet — not a snippet, not a meta, not a
+# showroom page" — and `resolve()` early-returned every Layer-2 row to NO-ARTEFACT-CLASS on
+# the strength of it, WITHOUT PROBING THE STORE. That sentence was true when it was typed
+# (#203) and measurably false by #213: 27 shell/template/lock-up snippets are on disk with
+# meta.json + showroom page + dozens of `.cn-` canon rules each. The only symptom was
+# `$orphan_snippets` growing 1 -> 28, because no per-row status could ever move.
+# A hand-carried premise inside the very instrument built to catch hand-carried premises
+# [[premise-ages-faster-than-rule]]. The fix is not a better sentence — a sentence rots the
+# same way. Layer-2 rows now get the SAME five probes every other row gets, and the note
+# below is DERIVED from that measurement at generation time (`layer2_note()`).
+#
+# MAPPING IS MECHANICAL, NEVER HAND-INVENTED. Naming judgment is Dave's; this instrument only
+# measures. Four rungs, `basis` records which fired, and an ambiguous or unmatched row is
+# reported honestly rather than guessed [[unmatched-grep-is-not-an-absence]]:
+#   layer-2-family     the row's family pattern + slugified descriptor HITS the store
+#                      ('Template — settings'      -> template-settings)
+#   layer-2-direct     the full slugified descriptor is itself a SNIPPET name
+#                      ('Lock-up — hero variants'  -> hero-variants). Snippet-only on purpose:
+#                      a bare descriptor like 'error' or 'page' can collide with a canon-only
+#                      `.cn-` scope, and a canon hit is not an artefact.
+#   layer-2-tokens     exactly ONE member of the row's family has a distinctive-token set that
+#                      is a subset of the row's descriptor tokens, naive-singularised
+#                      ('App shell — top / stacked nav' -> app-shell-top-nav)
+#   layer-2-ambiguous  more than one member qualifies -> UNRESOLVED. NEVER GUESS.
+#   layer-2-absent     nothing answers -> fuzzy scan; plausible alias -> UNRESOLVED, else GAP.
+# ---------------------------------------------------------------------------
+LAYER2_FAMILIES = [
+    ("app shell", "app-shell-{d}"),
+    ("template", "template-{d}"),
+    ("lock-up", "{d}-lockup"),
+]
 
 STOPWORDS = {"a", "the", "of", "and", "or", "kit", "system", "block", "row", "bar", "card",
              "tile", "menu", "view", "mobile", "display", "interactive", "linear", "circular"}
@@ -390,6 +436,96 @@ def notes_slug(notes, idx):
     return None
 
 
+def _l2_singular(tok):
+    """Naive, deterministic singularisation — 'headers'->'header', 'matrices'->'matrix'."""
+    if len(tok) > 3 and tok.endswith("ies"):
+        return tok[:-3] + "y"
+    if len(tok) > 3 and tok.endswith("s") and not tok.endswith("ss"):
+        return tok[:-1]
+    return tok
+
+
+def _l2_tokens(text):
+    """ALL tokens, singularised. Deliberately NOT STOPWORDS-filtered: 'card' and 'row' are
+    stopwords for Layer-1 fuzzy matching but are LOAD-BEARING in a lock-up name
+    ('Lock-up — card headers'), and filtering them makes card-header a subset of every
+    other *-header row [[gate-glob-scope-rule]]."""
+    return {_l2_singular(t) for t in re.split(r"[^a-z0-9]+", text.lower()) if t}
+
+
+def layer2_family(name):
+    """-> (slug pattern or None, descriptor). Family is the head of 'Family — descriptor'."""
+    parts = re.split(r"\s+[—–-]\s+", name, 1)
+    if len(parts) != 2:
+        return None, name
+    head = slugify(parts[0])
+    for key, pattern in LAYER2_FAMILIES:
+        if head == slugify(key):
+            return pattern, parts[1]
+    return None, parts[1]
+
+
+def layer2_family_members(pattern, idx):
+    """{store slug: distinctive part} for every store slug in this family."""
+    pre, _sep, post = pattern.partition("{d}")
+    out = {}
+    for s in all_store_slugs(idx):
+        if pre and not s.startswith(pre):
+            continue
+        if post and not s.endswith(post):
+            continue
+        d = s[len(pre): len(s) - len(post)] if post else s[len(pre):]
+        if d:
+            out[s] = d
+    return out
+
+
+def resolve_layer2(row, idx):
+    """The Layer-2 ladder. Mechanical at every rung; refuses rather than guesses."""
+    pattern, desc = layer2_family(row["name"])
+    base = re.sub(r"\(.*?\)", " ", desc)
+    fam = pattern.replace("{d}", "*") if pattern else "(no family prefix in the row name)"
+    probed = []
+
+    if pattern:
+        for c in mechanical_candidates(base):
+            cand = pattern.replace("{d}", c)
+            probed.append(cand)
+            if cand in all_store_slugs(idx):
+                return [cand], "layer-2-family", {
+                    "class": "layer-2",
+                    "why": "family pattern %s + slugified descriptor '%s' hits the store" % (fam, c)}
+
+    direct = slugify(base)
+    probed.append(direct + " (snippet)")
+    if direct in idx["snippets"]:
+        return [direct], "layer-2-direct", {
+            "class": "layer-2",
+            "why": "the full slugified descriptor is itself a snippet: %s" % idx["snippets"][direct]}
+
+    if pattern:
+        dt = _l2_tokens(base)
+        members = layer2_family_members(pattern, idx)
+        hits = sorted(s for s, d in members.items() if _l2_tokens(d) <= dt)
+        if len(hits) == 1:
+            return hits, "layer-2-tokens", {
+                "class": "layer-2",
+                "why": "unique member of the %s family whose distinctive tokens {%s} are a subset "
+                       "of the row descriptor's {%s}"
+                       % (fam, ", ".join(sorted(_l2_tokens(members[hits[0]]))), ", ".join(sorted(dt)))}
+        if len(hits) > 1:
+            return [], "layer-2-ambiguous", {
+                "class": "layer-2", "ambiguous": hits,
+                "why": "%d members of the %s family match this row's descriptor tokens equally well "
+                       "(%s). Which one this row means is a NAMING judgment, not a measurement — "
+                       "NOT GUESSING." % (len(hits), fam, ", ".join(hits))}
+
+    return [], "layer-2-absent", {
+        "class": "layer-2", "fuzzy_candidates": fuzzy_aliases(row["name"], idx),
+        "probed": probed,
+        "why": "no artefact in the %s family answers to this row; probed %s" % (fam, ", ".join(probed))}
+
+
 def resolve(row, idx):
     """-> (slugs, basis, extra) where extra carries why/class/related/candidates."""
     n = row["n"]
@@ -397,7 +533,7 @@ def resolve(row, idx):
         e = dict(ROW_MAP[n])
         return e.get("slugs", []), "map", e
     if str(row["layer"]).strip().startswith("2"):
-        return [], "layer-2", {"class": "layer-2", "why": LAYER2_NOTE}
+        return resolve_layer2(row, idx)
     # ⚠ mechanical BEFORE notes: a Notes cell may MENTION a neighbouring slug in prose
     # (row 5's note names 'button' while the row IS icon-button). A direct hit on the row's
     # own name outranks a prose mention [[unmatched-grep-is-not-an-absence]] — matched is
@@ -491,10 +627,29 @@ def derive_row(row, idx):
             rec["evidence_line"] = "no assets, no component"
         return _with_drift(rec)
 
-    # --- layer-2 rows
-    if rec["class"] == "layer-2":
-        rec["derived"] = "NO-ARTEFACT-CLASS"
-        rec["evidence_line"] = "Layer 2 — no shell/template/lock-up artefact class exists in the store"
+    # --- layer-2 rows THAT DID NOT RESOLVE. A resolved Layer-2 row falls through to the
+    # ordinary component path below and takes the SAME five probes as every other row —
+    # that is the #214 fix. Only an unresolved one is reported as a class statement, and
+    # even then the verdict is measured (fuzzy scan), never asserted.
+    if rec["class"] == "layer-2" and not rec["slugs"]:
+        fz = extra.get("fuzzy_candidates") or []
+        if basis == "layer-2-ambiguous":
+            rec["derived"] = "UNRESOLVED"
+            rec["unresolved_reason"] = extra["why"]
+            rec["evidence_line"] = extra["why"]
+        elif fz:
+            rec["derived"] = "UNRESOLVED"
+            rec["unresolved_reason"] = (
+                "Layer-2 row did not resolve inside its family, but the store holds plausible "
+                "aliases %s. A slug mismatch is indistinguishable from an absence — name the "
+                "artefact or confirm the gap. NOT GUESSING."
+                % ", ".join("%s(%.2f)" % f for f in fz))
+            rec["evidence_line"] = rec["unresolved_reason"]
+        else:
+            rec["derived"] = "GAP"
+            rec["evidence_line"] = ("Layer 2 — nothing in the store answers to this row (probed %s) "
+                                    "and the fuzzy alias scan is empty"
+                                    % ", ".join(extra.get("probed") or ["—"]))
         return _with_drift(rec)
 
     # --- ordinary component rows
@@ -571,8 +726,10 @@ def _with_drift(rec):
     d, i = RANK.get(rec["derived"], -1), ITIN_RANK.get(rec["itinerary_status"], -1)
     if rec["derived"] == "UNRESOLVED":
         rec["drift"] = "UNRESOLVED"
-    elif rec["class"] == "layer-2":
-        rec["drift"] = "AGREES" if rec["itinerary_status"] == "Gap" else "REVIEW"
+    # ⛔ #214: there used to be a `class == "layer-2"` branch here that hard-coded
+    # AGREES-if-the-itinerary-says-Gap. It could only ever agree, because the class could
+    # only ever derive NO-ARTEFACT-CLASS. With Layer-2 rows now measured like any other,
+    # they take the ordinary rank comparison and their drift becomes visible.
     elif d == i:
         rec["drift"] = "AGREES"
     elif d > i:
@@ -593,6 +750,30 @@ def orphans(records, idx):
     return sorted(s for s in idx["snippets"] if s not in claimed)
 
 
+def layer2_note(records):
+    """The Layer-2 statement, DERIVED at generation time from what was just measured.
+    ⛔ Never re-stamp a hand sentence here — that sentence was the #214 defect. Stale twice
+    ⇒ GENERATE [[no-gate-parses-the-artefact]]."""
+    l2 = [r for r in records if r["class"] == "layer-2"]
+    if not l2:
+        return "No Layer-2 rows in the source snapshot."
+    by = {}
+    for r in l2:
+        by[r["derived"]] = by.get(r["derived"], 0) + 1
+    resolved = [r for r in l2 if r["slugs"]]
+    unres = [r["n"] for r in l2 if r["derived"] == "UNRESOLVED"]
+    gaps = [r["n"] for r in l2 if r["derived"] == "GAP"]
+    return ("Layer 2 (shells · templates · lock-ups · variant matrices), MEASURED %s: %d rows, "
+            "%d resolved to a store artefact by the mechanical Layer-2 ladder and probed like any "
+            "other row (%s); %d GAP (%s); %d UNRESOLVED (%s). Every verdict here is five probes "
+            "deep — snippet · meta · showroom · radius ratchet · canon .cn- rules — not a class "
+            "assertion."
+            % (MEASURED, len(l2), len(resolved),
+               ", ".join("%s %d" % (k, v) for k, v in sorted(by.items())),
+               len(gaps), ", ".join("row %d" % n for n in gaps) or "none",
+               len(unres), ", ".join("row %d" % n for n in unres) or "none"))
+
+
 def build():
     idx = store_index()
     rows = read_itinerary()
@@ -608,15 +789,21 @@ def build():
         drifts[r["drift"]] = drifts.get(r["drift"], 0) + 1
     data = {
         "$generated_by": "knowledge/gen_itinerary_status.py",
-        "$session": "#203 Wave 3b Lane H",
+        "$session": SESSION,
+        "$measured": MEASURED,
         "$source_snapshot": "reviews/ITINERARY-2026-07-14-apollo-component-library.xlsx (FROZEN, read-only)",
-        "$status": "PROPOSED #203, Dave's eye owed — a MEASUREMENT of the store, not a ruling",
+        "$prior_snapshot": PRIOR,
+        "$status": "PROPOSED %s, Dave's eye owed — a MEASUREMENT of the store, not a ruling" % SESSION,
         "$signals": ["snippet", "meta", "showroom", "radius-ratchet (MIGRATED_SNIPPETS)", "canon .cn- rules"],
         "$row_count": len(records),
         "$counts": counts,
         "$drift_counts": drifts,
         "$true_gaps": [r["n"] for r in true_gaps],
         "$unresolved": [r["n"] for r in records if r["derived"] == "UNRESOLVED"],
+        "$layer2_note": layer2_note(records),
+        "$layer2_rows": {str(r["n"]): {"derived": r["derived"], "basis": r["basis"],
+                                       "slugs": r["slugs"]}
+                         for r in records if r["class"] == "layer-2"},
         "$orphan_snippets": orph,
         "$radius_ratchet_advisory": sorted(
             {s for r in records for s in (r.get("radius_ratchet_missing") or [])}),
@@ -694,10 +881,13 @@ def render_html(data, records, true_gaps, orph):
     A("<meta name='viewport' content='width=device-width,initial-scale=1'>")
     A("<title>Itinerary status, derived — %s</title><style>%s</style></head><body><div class='wrap'>" % (STAMP, CSS))
     A("<h1>Apollo component itinerary — status DERIVED from the store</h1>")
-    A("<p class='sub'>Generated by <code>knowledge/gen_itinerary_status.py</code> · #203 Wave 3b Lane H · "
-      "source snapshot <code>reviews/ITINERARY-2026-07-14-apollo-component-library.xlsx</code> (frozen, read-only)</p>")
-    A("<p class='sub'><strong>PROPOSED #203, Dave's eye owed.</strong> Every verdict below is a measurement "
-      "of the store with its probes attached. Nothing here promotes, rules or edits a component.</p>")
+    A("<p class='sub'>Generated by <code>knowledge/gen_itinerary_status.py</code> · session %s · measured %s · "
+      "source snapshot <code>reviews/ITINERARY-2026-07-14-apollo-component-library.xlsx</code> (frozen, read-only)</p>"
+      % (esc(SESSION), esc(MEASURED)))
+    A("<p class='sub'><strong>PROPOSED %s, Dave's eye owed.</strong> Every verdict below is a measurement "
+      "of the store with its probes attached. Nothing here promotes, rules or edits a component.</p>"
+      % esc(SESSION))
+    A("<p class='sub'>Prior, untouched: <code>%s</code></p>" % esc(PRIOR))
     A("<p class='lede'>The 2026-07-14 spreadsheet's <code>Status</code> column is hand-maintained. "
       "It was written before 24 components landed on 19 and 22 July and was never re-statused, so #203 "
       "briefed a six-lane wave to build components that already existed &mdash; 18 of 18. "
@@ -799,6 +989,25 @@ def render_html(data, records, true_gaps, orph):
     else:
         A("<p class='note'>None. Every gated snippet is claimed by at least one itinerary row.</p>")
 
+    l2 = [r for r in records if r["class"] == "layer-2"]
+    A("<h2>5b &middot; Layer 2 &mdash; shells, templates, lock-ups (measured, not asserted)</h2>")
+    A("<p class='note'>Until #214 every row here was short-circuited to "
+      "<code>NO-ARTEFACT-CLASS</code> on a hand-written sentence that had gone false: 27 "
+      "shell/template/lock-up snippets were on disk, fully routed, and no per-row status could "
+      "move. These rows now take the same five probes as every other row; the mapping is "
+      "mechanical (see <code>basis</code>) and an ambiguous row is reported UNRESOLVED rather "
+      "than guessed.</p>")
+    A("<p class='note'>%s</p>" % esc(data["$layer2_note"]))
+    A("<table><tr><th>#</th><th>Component</th><th>Derived</th><th>Resolved via</th>"
+      "<th>Slug</th><th>Evidence</th></tr>")
+    for r in l2:
+        cls = "gap" if r["derived"] == "GAP" else ("unres" if r["derived"] == "UNRESOLVED" else "")
+        A("<tr><td class='mono'>%s</td><td>%s</td><td><span class='tag %s'>%s</span></td>"
+          "<td class='mono'>%s</td><td class='mono'>%s</td><td>%s</td></tr>"
+          % (r["n"], esc(r["name"]), cls, esc(r["derived"]), esc(r["basis"]),
+             esc(", ".join(r["slugs"]) or "&mdash;"), esc(r["evidence_line"])))
+    A("</table>")
+
     A("<h2>6 &middot; What this does not measure</h2>")
     A("<ul class='note'>"
       "<li><strong>Quality is out of scope.</strong> GATED means five artefacts exist and the radius "
@@ -806,8 +1015,9 @@ def render_html(data, records, true_gaps, orph):
       "surfaces found real defects in components this page calls GATED.</li>"
       "<li><strong>PARTIAL rows are not sized.</strong> The itinerary's Partial rows carry prose about "
       "missing variants; no signal here reads a variant list.</li>"
-      "<li><strong>Layer 2 is one structural gap, not 28.</strong> No shell/template/lock-up artefact "
-      "class exists in the store, so per-row absence carries no information.</li>"
+      "<li><strong>Layer-2 MAPPING is mechanical, not curated.</strong> A row resolves by family "
+      "pattern, exact snippet name, or a unique token-subset inside its family &mdash; nothing here "
+      "decides what a row OUGHT to be called. Naming is Dave's.</li>"
       "<li><strong>This is a snapshot of a LIVE tree.</strong> It was generated while five sibling "
       "lanes were writing snippets into the same working tree; rows measured PARTIAL with only a "
       "snippet present are mid-route, and the generated surfaces (showroom, canon) had not run yet. "
@@ -849,10 +1059,11 @@ def main(argv):
                 f.write(txt)
             print("wrote %s (%d B)" % (os.path.relpath(path, ROOT), len(txt.encode("utf-8"))))
     c = data["$counts"]
-    print("rows %d | GATED %d | BUILT %d | PARTIAL %d | GAP %d | ASSET-ONLY %d | layer-2 %d"
+    print("rows %d | GATED %d | BUILT %d | PARTIAL %d | GAP %d | ASSET-ONLY %d | layer-2 rows %d"
           % (data["$row_count"], c.get("GATED", 0), c.get("BUILT", 0), c.get("PARTIAL", 0),
-             c.get("GAP", 0), c.get("ASSET-ONLY", 0), c.get("NO-ARTEFACT-CLASS", 0)))
+             c.get("GAP", 0), c.get("ASSET-ONLY", 0), len(data["$layer2_rows"])))
     print("drift: %s" % json.dumps(data["$drift_counts"]))
+    print("layer 2: %s" % data["$layer2_note"])
     print("TRUE gaps (Layer 1): %s" % ", ".join(str(n) for n in data["$true_gaps"]))
     print("ADVISORY — snippets present but not on the radius ratchet (%d): %s"
           % (len(data["$radius_ratchet_advisory"]), ", ".join(data["$radius_ratchet_advisory"])))
@@ -870,6 +1081,17 @@ def main(argv):
 # selftest — drives the derivation on REAL data, both directions, plus a mutation
 # arm on the CLAUSE that produced the #203 defect [[mutation-tests-the-clause-not-the-feature]].
 # ---------------------------------------------------------------------------
+def _hidden(idx, slugs):
+    """A scratch COPY of the store index with `slugs` erased from all four signals.
+    Never mutates the real index — the arms that use it drive the real resolve()/derive_row()
+    against a store that is missing an artefact [[mutation-tests-the-clause-not-the-feature]]."""
+    mut = {k: (dict(v) if isinstance(v, dict) else set(v)) for k, v in idx.items()}
+    for s in slugs:
+        for key in ("snippets", "metas", "showroom", "canon"):
+            mut[key].pop(s, None)
+    return mut
+
+
 def selftest():
     fails = []
     idx = store_index()
@@ -881,18 +1103,23 @@ def selftest():
         if rec["derived"] not in ("GATED", "BUILT"):
             fails.append("arm1 row %d expected GATED/BUILT, got %s" % (n, rec["derived"]))
 
-    # arm 2 — FAIL ARM: row 86 must still measure a gap; a derivation that cannot
-    # report a gap is always-true and worthless.
-    # ⚠ Fixture rows are chosen from rows NO #203 lane owns. Rows 21/22/23/35/36/37/55/56/57
-    # were the obvious fixtures and are WRONG here: Lanes I/J/K are building them in this same
-    # working tree right now, so they move under the test [[premise-ages-faster-than-rule]].
+    # arm 2 — FAIL ARM: the derivation must be CAPABLE of reporting a gap. A derivation that
+    # cannot report a gap is always-true and worthless.
+    # ⚠ #214 REPAIR. This arm used to name six live fixture rows (6, 7, 25, 26, 61, 93) and
+    # assert they measure GAP. All six had become GATED by #213 — the fixtures MOVED under the
+    # test, exactly as the old comment here warned they would [[premise-ages-faster-than-rule]].
+    # Re-typing a fresh fixture list would only restart that clock. So the arm is now DERIVED:
+    # it takes a mapped row that is currently routed and HIDES its artefacts, which must produce
+    # GAP whatever the live tree happens to hold. The only standing live fixture is row 86,
+    # whose ASSET-ONLY split verdict is a structural fact about the logo assets, not a build state.
     rec86 = derive_row(rows[86], idx)
     if rec86["derived"] != "ASSET-ONLY":
         fails.append("arm2 row 86 expected ASSET-ONLY, got %s" % rec86["derived"])
-    for n in (6, 7, 25, 26, 61, 93):
-        got = derive_row(rows[n], idx)["derived"]
-        if got != "GAP":
-            fails.append("arm2 row %d expected GAP, got %s" % (n, got))
+    blind = _hidden(idx, ["form-layout"])
+    got = derive_row(rows[13], blind)["derived"]
+    if got != "GAP":
+        fails.append("arm2 mutation: row 13 with form-layout hidden from all four indexes must "
+                     "report GAP, got %s — the derivation cannot report a gap" % got)
 
     # arm 3 — MUTATION on the store: hide Amount-input from the index; row 17 must
     # flip GATED -> UNRESOLVED (the fuzzy rung sees amount-display and refuses to guess).
@@ -947,11 +1174,76 @@ def selftest():
         finally:
             os.unlink(path)
 
+    # arm 6 — LAYER 2, the #214 fix, driven four ways. Each sub-arm must be able to go RED:
+    # 6a goes red if the NO-ARTEFACT-CLASS shortcut is ever restored, 6b if the verdict stops
+    # being measured, 6c if the mapping stops being load-bearing, 6d if the refusal is dropped.
+    # 6a — the probes actually FIRE on a Layer-2 row (the shortcut is gone)
+    r104 = derive_row(rows[104], idx)
+    if r104["class"] != "layer-2":
+        fails.append("arm6a row 104 should carry class layer-2, got %s" % r104["class"])
+    if r104["derived"] == "NO-ARTEFACT-CLASS":
+        fails.append("arm6a row 104 reported NO-ARTEFACT-CLASS while "
+                     "Template-dashboard.reference.html is on disk — THE #214 DEFECT, reproduced")
+    if r104["slugs"] != ["template-dashboard"]:
+        fails.append("arm6a row 104 expected slug template-dashboard, got %s" % r104["slugs"])
+    if r104["derived"] not in ("GATED", "BUILT"):
+        fails.append("arm6a row 104 expected GATED/BUILT, got %s" % r104["derived"])
+    if not r104["artefacts"] or len(r104["artefacts"][0]["probes"]) != 5:
+        fails.append("arm6a row 104 did not carry the five per-slug probes")
+
+    # 6b — MUTATION on the store: hide the artefact and the routed verdict must collapse.
+    # ⚠ It collapses to UNRESOLVED, not GAP: with template-dashboard gone the fuzzy rung still
+    # sees the rest of the template-* family as plausible aliases and REFUSES to call a gap.
+    # That refusal is the instrument working, so the arm asserts "no longer routed" — which is
+    # the clause under test — rather than pinning a verdict the fuzzy rung owns.
+    m104 = derive_row(rows[104], _hidden(idx, ["template-dashboard"]))
+    if m104["derived"] in ("GATED", "BUILT") or m104["derived"] == r104["derived"]:
+        fails.append("arm6b mutation: row 104 with template-dashboard hidden from all four "
+                     "indexes still reported %s — the Layer-2 verdict is not measured"
+                     % m104["derived"])
+
+    # 6e — the Layer-2 GAP path is REACHABLE. A synthetic row in a real family whose descriptor
+    # nothing answers to, and which the fuzzy rung cannot alias, must report GAP. Synthetic
+    # rather than live so no future build can move it [[premise-ages-faster-than-rule]].
+    synth = {"n": 9001, "name": "Lock-up — zzqq wibble", "category": "Lock-ups (Layer 2)",
+             "layer": "2 Layer", "status": "Gap", "priority": "P3", "notes": "", "sheet_row": 0}
+    s = derive_row(synth, idx)
+    if s["derived"] != "GAP" or s["basis"] != "layer-2-absent":
+        fails.append("arm6e: an unanswerable Layer-2 row expected GAP/layer-2-absent, got %s/%s "
+                     "— the Layer-2 gap path is unreachable" % (s["derived"], s["basis"]))
+
+    # 6c — MUTATION on the MAPPING CLAUSE: with the family table emptied, the row must NOT
+    # still report routed. The mapping is what carries the row to its artefact.
+    saved_fams = LAYER2_FAMILIES[:]
+    try:
+        del LAYER2_FAMILIES[:]
+        c104 = derive_row(rows[104], idx)
+        if c104["derived"] in ("GATED", "BUILT"):
+            fails.append("arm6c mutation: row 104 still reported %s with LAYER2_FAMILIES emptied "
+                         "— the family mapping is not load-bearing" % c104["derived"])
+    finally:
+        LAYER2_FAMILIES[:] = saved_fams
+
+    # 6d — REFUSAL: two family members matching a row's descriptor equally well must raise
+    # UNRESOLVED, never a pick. Row 109 ('Template — multi-step wizard') resolves to
+    # template-wizard today; plant a template-step and the row becomes genuinely ambiguous.
+    amb = _hidden(idx, [])
+    amb["snippets"]["template-step"] = "Template-step.reference.html"
+    a109 = derive_row(rows[109], amb)
+    if a109["derived"] != "UNRESOLVED":
+        fails.append("arm6d refusal: row 109 with two equally-good family members "
+                     "(template-wizard, template-step) expected UNRESOLVED, got %s — the "
+                     "instrument guessed" % a109["derived"])
+    elif a109["basis"] != "layer-2-ambiguous":
+        fails.append("arm6d refusal: expected basis layer-2-ambiguous, got %s" % a109["basis"])
+
     for f in fails:
         print("SELFTEST FAIL — %s" % f)
     if fails:
         return 1
-    print("SELFTEST OK — 5 arms: pass(6 rows) · fail(5 rows) · mutation-store · mutation-clause · fail-loud")
+    print("SELFTEST OK — 6 arms: pass(6 rows) · fail(row 86 + derived gap mutation) · "
+          "mutation-store · mutation-clause · fail-loud · layer-2(probe · store-mutation · "
+          "mapping-mutation · ambiguity-refusal · gap-reachable)")
     return 0
 
 

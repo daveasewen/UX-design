@@ -85,11 +85,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **147 items · 85 live · 35 Dave's · 50 mine · 133 carry a stated close condition · **14 UNCONDITIONED**.**
+> **148 items · 86 live · 36 Dave's · 50 mine · 134 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (35) — 35 with a ratified `closes_when`, 0 with NONE:**
+> **DAVE'S (36) — 36 with a ratified `closes_when`, 0 with NONE:**
 > - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
 > - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…** — *closes when:* Dave ratifies or reverses
 > - `W-38` **Size-ramp + per-theme size modes proposal (FLOATED, Dave's instinct, #200)** — *closes when:* Dave rules the pair semantics and the per-theme mode mapping, or drops the shape
@@ -125,15 +125,16 @@
 > - `W-99r` **Dave's calls copied up #28 (3): consumes-manifest TENTATIVE-to-firm · consult-receipts probe promotion · LS-trim-vs-defer (P4b)** — *closes when:* The block's own words: each is HIS word - the ADR-0015-A2 posture firmed either way, the consult-receipts probe promoted to blocking or left advisory, and the P4b payer question answered.
 > - `W-99x` **#214 context-territory strategy brief: delegated-wrap gain measured-adjacent, advisory-line re-derivation option, two instruments, boot-reduction pair (s208-D1 rider satisfied)** — *closes when:* Dave rules on the brief's four-question decision surface (advisory re-derivation / lines hold / instruments / boot-reduction pair), each answerable independently
 > - `W-99y` **#214 conditional-band proposal (200-256K): re-source check DONE, band conditioned on work-type + declaration + live recall probe; amends Dave's #58b shape** — *closes when:* Dave rules on the three-question decision surface (adopt band / 256K stays wall / build recall probe), each answerable independently
+> - `W-99zb` **#214 itinerary generator Layer-2 fix: shortcut deleted, mechanical row->snippet ladder, premise note GENERATED, selftest derived-fixture repair; v3 snapshot: orphans 28->1, GATED 94->121** — *closes when:* Dave's eye on two calls the fix surfaced: whether row 124 (per-component variant matrices, honest GAP) joins the true-gap list, and the 27 Layer-2 snippets now visible as off the radius-ratchet (advisory 26->53)
 >
 > **MINE (50), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `G4` · `W-99z` · `W-99za`
 >
-> ⚠ store gate: **FAIL** — 3 failure(s): W-99za: id does not match '^(?:W-[0-9]{1,2}[a-z]?|G[0-9]{1,2}[a-z]?)$'. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
+> ⚠ store gate: **FAIL** — 4 failure(s): W-99za: id does not match '^(?:W-[0-9]{1,2}[a-z]?|G[0-9]{1,2}[a-z]?)$'. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **21,593 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **21,780 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 64,034 real and stays whole for retrieval; you have paid for
 34% of it, and that is the intended figure, not a shortfall.)*
