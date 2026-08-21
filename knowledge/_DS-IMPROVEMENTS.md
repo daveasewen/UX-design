@@ -146,6 +146,23 @@ is now a blocking build step (27/34): every truncating label (`text-overflow:ell
 were already safe) was fixed, not waived. Removing any override now turns the build red and points back
 here — so a cold session cannot "fix" the override away without the gate stopping it.
 
+**⚠ ADDITION 2026-08-21 (#214) — WRITING THE OVERRIDE IS NOT WINNING THE CASCADE.** The gate above
+compared authored selector STRINGS and had no model of specificity, so it certified green **18
+cascade-dead overrides across 9 reference snippets**: the snippets' own copy of the leading-trim rule
+`:is(…,input[type=text],…):not(:has(svg))` weighs **(0,1,2)**, and a bare `.sn-label{text-box-edge:text
+text}` weighs (0,1,0) and LOSES — declaration present, descenders clipped anyway. A **specificity leg**
+was added to `_validate_descender_clip.py` (`specificity()` / `check_specificity()`, `:is()`/`:not()`/
+`:has()`/`:where()`-aware) and all 18 were repaired to the two-class descendant form canon uses at
+`canon.css:4724`. Dave authorised both halves, incl. the gated `Sidebar-nav.reference.html`: *"This
+sounds great. lets get these done"*.
+⛔ **OPEN, DAVE'S CALL — canon.css carries 48 of its own**, because the `.cn-<component>` absorb
+prefixer is **not specificity-preserving**: it prefixes the trim rule's `:is()` ARGUMENTS as well as
+the rule, so the trim gains one more class than the override and a repair that wins in the snippet
+loses in canon. Held as a **shrink-only ratchet** (`SPECIFICITY_RATCHET`, report-only, 49 turns the
+build red) — not a waiver, and render-UNPROVEN pending the `--computed` leg.
+**Receipts:** `notes/_receipts/2026-08-21-214-descender-cascade-audit.md` (audit) ·
+`notes/_receipts/2026-08-21-214-descender-gate-and-repair.md` (leg + repair + mutation proofs).
+
 **Finding.** The canon leading-trim strategy applies `text-box-trim:trim-both; text-box-edge:cap alphabetic`
 to label elements. `cap alphabetic` trims the box to cap-height…baseline — which is *exactly* what makes a
 label optically centre against an adjacent **icon** (the ✕ in a tag, an icon in a button). BUT when that

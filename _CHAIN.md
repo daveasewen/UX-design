@@ -85,11 +85,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **151 items · 89 live · 39 Dave's · 50 mine · 137 carry a stated close condition · **14 UNCONDITIONED**.**
+> **153 items · 91 live · 41 Dave's · 50 mine · 139 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (39) — 39 with a ratified `closes_when`, 0 with NONE:**
+> **DAVE'S (41) — 41 with a ratified `closes_when`, 0 with NONE:**
 > - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
 > - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…** — *closes when:* Dave ratifies or reverses
 > - `W-38` **Size-ramp + per-theme size modes proposal (FLOATED, Dave's instinct, #200)** — *closes when:* Dave rules the pair semantics and the per-theme mode mapping, or drops the shape
@@ -129,15 +129,17 @@
 > - `W-99zc` **#214 review-213 TRANCHE MAP: 6 sittings ~20-35 questions each; statement family confirmed (5 members incl. Template-list-index); lock-ups NOT a family (14.8%)** — *closes when:* Dave adopts, amends, or discards the tranche plan at his first sitting
 > - `W-99zd` **#214 taxonomy research: consensus is Foundations/Tokens/Components/Patterns, NOT atomic-as-navigation; 'lock-up' is a coinage (industry: block); aliases+facets+search beat taxonomy for findability** — *closes when:* Dave picks the library's level vocabulary (3 candidates laid out, trade-offs even) - can ride a tranche sitting
 > - `W-99ze` **#214 descender audit: ds-005 fix NOT regressed, components fully TOKENISED; failure = specificity (18 dead overrides, 9 snippets, 6 review components); gate reads declarations not computed edges** — *closes when:* Dave rules on G1 (specificity leg for _validate_descender_clip.py, ~90min/~18K, recommended) + the 18-selector repair (~60min/~12K, needs his nod because Sidebar-nav is ds-005-GATED against 'fixing')
+> - `W-99zf` **#214 descender gate leg BUILT + 18 selectors REPAIRED (Dave's nod, incl. ds-005-gated Sidebar-nav); full gate GREEN 151 files; NEW: canon.css has 48 of its own via non-specificity-preserving prefixer** — *closes when:* Dave rules the canon.css 48-selector class (the .cn- absorb prefixer inflates trim (0,1,2)->(0,3,2) vs override +1 class - a snippet-winning repair LOSES in canon; held as shrink-only ratchet 48, canon.css:9316 already says cross-file remedy is his)
+> - `W-99zg` **#214 LIBRARY v2 BUILT: true header (theme/dark/width), overlay off component pages (#chrome=0 opt-out), search+68 aliases+cmd-K, level facet chips (config swap point, word-set UNPICKED), 135 components, driven headless 24/25** — *closes when:* Dave's eye on the page + two calls: does v2 REPLACE showroom/index.html, and which level word-set fills the LEVELS config (three candidates commented beside it)
 >
 > **MINE (50), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `G4` · `W-99z` · `W-99za`
 >
-> ⚠ store gate: **FAIL** — 7 failure(s): W-99za: id does not match '^(?:W-[0-9]{1,2}[a-z]?|G[0-9]{1,2}[a-z]?)$'. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
+> ⚠ store gate: **FAIL** — 9 failure(s): W-99za: id does not match '^(?:W-[0-9]{1,2}[a-z]?|G[0-9]{1,2}[a-z]?)$'. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **22,216 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **22,609 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 64,034 real and stays whole for retrieval; you have paid for
 35% of it, and that is the intended figure, not a shortfall.)*

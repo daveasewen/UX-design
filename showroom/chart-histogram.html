@@ -31,6 +31,13 @@
   .frame.dark{background:var(--dark);}
   .frame iframe{display:block; width:100%; height:100%; border:0; margin:0 auto;}
 </style>
+<style>
+  /* EMBED MODE (#chrome=0, added #214): the embedding library page owns the controls,
+     so this page's own bar goes away and the pane takes the whole viewport. */
+  body.embed header{display:none;}
+  body.embed main{padding:0;}
+  body.embed .frame{border:0; height:100vh; resize:none;}
+</style>
 </head>
 <body>
 <header>
@@ -58,12 +65,30 @@
   var b64=document.getElementById('payload').textContent.trim();
   var src=new TextDecoder().decode(Uint8Array.from(atob(b64),function(c){return c.charCodeAt(0)}));
   var f=document.getElementById('f'), frameBox=document.getElementById('frame');
-  var state={theme:'mono',mode:'light',w:null};
+  var state={theme:'mono',mode:'light',w:null,embed:false};
+
+  // EMBED MODE (#214). The review overlay is injected at the END of the payload behind
+  // this marker, so cutting at the marker drops the overlay and NOTHING else. See the
+  // module docstring for the swap point if the overlay should go everywhere.
+  var OVERLAY_MARK='<!-- APOLLO-REVIEW-OVERLAY -->';
+  function payloadFor(embed){
+    if(!embed) return src;
+    var i=src.indexOf(OVERLAY_MARK);
+    return i<0 ? src : (src.slice(0,i)+'\n</body>\n</html>\n');
+  }
+  var mounted=null;
+  function mount(){
+    if(mounted===state.embed) return;
+    mounted=state.embed;
+    document.body.classList.toggle('embed', state.embed);
+    f.srcdoc=payloadFor(state.embed);
+  }
 
   function hash(){ var h={}; location.hash.replace(/^#/,'').split('&').forEach(function(kv){
       var p=kv.split('='); if(p[0]) h[p[0]]=decodeURIComponent(p[1]||''); }); return h; }
   function setHash(){ var parts=['theme='+state.theme,'m='+state.mode];
     if(state.w) parts.push('w='+state.w);
+    if(state.embed) parts.push('chrome=0');
     history.replaceState(null,'','#'+parts.join('&')); }
 
   function apply(){
@@ -82,7 +107,6 @@
     setHash(); }
 
   f.addEventListener('load',apply);
-  f.srcdoc=src;
 
   document.getElementById('themes').addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
@@ -130,6 +154,8 @@
   function initFromHash(){ var h=hash();
     if(h.theme&&THEMES.some(function(t){return t.attr===h.theme})) state.theme=h.theme;
     if(h.m==='light'||h.m==='dark') state.mode=h.m;
+    state.embed=(h.chrome==='0');            // SWAP POINT — see the module docstring
+    mount();
     if(h.w){ w.value=h.w; setW(); }
     apply(); }
   window.addEventListener('hashchange',initFromHash);

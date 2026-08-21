@@ -24,6 +24,19 @@ rv-file points at the CLEAN snippet source (edits land there, then regenerate). 
 rides the PANES only; index.html carries none (Dave, 2026-07-22). Panes render in
 same-origin srcdoc iframes; the chrome sets html[data-apollo-theme] + body[data-theme].
 
+EMBED MODE — `#chrome=0` (added #214, for the library browser)
+  Dave, 2026-08-21: "the component pages don't need the review overlay, its just clutter"
+  — said of the LIBRARY view. A component page opened with `chrome=0` in its hash:
+    * hides its own one-bar header (the embedding page owns the controls now), and
+    * mounts the payload with the REVIEW OVERLAY BLOCK CUT OFF (everything from
+      <!-- APOLLO-REVIEW-OVERLAY --> onward is dropped before srcdoc).
+  ⚠ SWAP POINT: the overlay is opt-OUT, not removed. Default (no chrome=0) is byte-for-byte
+  the behaviour REVIEW-213-wave-components-four-theme-v1.html depends on — that review
+  surface iframes these same pages and WANTS its comment pins. If Dave rules the overlay
+  gone everywhere, flip the default in `initFromHash` (h.chrome!=='1') — one line, and then
+  REVIEW-213's generator must pass chrome=1.
+  Consumer: knowledge/_render/gen_library_214.py -> reviews/LIBRARY-2026-08-21-v2.html.
+
 Deterministic (no timestamps) so `--check` can verify the showroom regenerates
 byte-identically — wired into _build_all.py like every other generated surface.
 
@@ -210,6 +223,13 @@ PAGE_TMPL = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>__LABEL__ · Apollo showroom</title>
 <style>__CSS__</style>
+<style>
+  /* EMBED MODE (#chrome=0, added #214): the embedding library page owns the controls,
+     so this page's own bar goes away and the pane takes the whole viewport. */
+  body.embed header{display:none;}
+  body.embed main{padding:0;}
+  body.embed .frame{border:0; height:100vh; resize:none;}
+</style>
 </head>
 <body>
 <header>
@@ -237,12 +257,30 @@ PAGE_TMPL = """<!doctype html>
   var b64=document.getElementById('payload').textContent.trim();
   var src=new TextDecoder().decode(Uint8Array.from(atob(b64),function(c){return c.charCodeAt(0)}));
   var f=document.getElementById('f'), frameBox=document.getElementById('frame');
-  var state={theme:'mono',mode:'light',w:null};
+  var state={theme:'mono',mode:'light',w:null,embed:false};
+
+  // EMBED MODE (#214). The review overlay is injected at the END of the payload behind
+  // this marker, so cutting at the marker drops the overlay and NOTHING else. See the
+  // module docstring for the swap point if the overlay should go everywhere.
+  var OVERLAY_MARK='<!-- APOLLO-REVIEW-OVERLAY -->';
+  function payloadFor(embed){
+    if(!embed) return src;
+    var i=src.indexOf(OVERLAY_MARK);
+    return i<0 ? src : (src.slice(0,i)+'\\n</body>\\n</html>\\n');
+  }
+  var mounted=null;
+  function mount(){
+    if(mounted===state.embed) return;
+    mounted=state.embed;
+    document.body.classList.toggle('embed', state.embed);
+    f.srcdoc=payloadFor(state.embed);
+  }
 
   function hash(){ var h={}; location.hash.replace(/^#/,'').split('&').forEach(function(kv){
       var p=kv.split('='); if(p[0]) h[p[0]]=decodeURIComponent(p[1]||''); }); return h; }
   function setHash(){ var parts=['theme='+state.theme,'m='+state.mode];
     if(state.w) parts.push('w='+state.w);
+    if(state.embed) parts.push('chrome=0');
     history.replaceState(null,'','#'+parts.join('&')); }
 
   function apply(){
@@ -261,7 +299,6 @@ PAGE_TMPL = """<!doctype html>
     setHash(); }
 
   f.addEventListener('load',apply);
-  f.srcdoc=src;
 
   document.getElementById('themes').addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
@@ -309,6 +346,8 @@ PAGE_TMPL = """<!doctype html>
   function initFromHash(){ var h=hash();
     if(h.theme&&THEMES.some(function(t){return t.attr===h.theme})) state.theme=h.theme;
     if(h.m==='light'||h.m==='dark') state.mode=h.m;
+    state.embed=(h.chrome==='0');            // SWAP POINT — see the module docstring
+    mount();
     if(h.w){ w.value=h.w; setW(); }
     apply(); }
   window.addEventListener('hashchange',initFromHash);
@@ -571,6 +610,20 @@ def selftest():
     bite("6e · index has no theme seg — controls live on the page bar only (#98)",
          'id="themes"' in INDEX_TMPL, False)
 
+    # 7 · EMBED MODE contract (#214). The library browser depends on all four halves:
+    #     the hash key, the overlay cut, the header hide, and the overlay marker still
+    #     being the thing the payload actually carries.
+    bite("7 · page template honours #chrome=0",
+         "h.chrome==='0'" in PAGE_TMPL, True)
+    bite("7b · embed mode cuts the payload at the review-overlay marker",
+         "OVERLAY_MARK='" + OVERLAY_MARK + "'" in PAGE_TMPL, True)
+    bite("7c · embed mode hides the page's own bar",
+         "body.embed header{display:none;}" in PAGE_TMPL, True)
+    bite("7d · the marker embed mode cuts at is the marker the payload is stamped with",
+         OVERLAY_MARK in overlay_block("X", "y"), True)
+    bite("7e · overlay is opt-OUT — default (no chrome=0) still carries it (REVIEW-213)",
+         "h.chrome!=='1'" in PAGE_TMPL, False)
+
     if fails:
         print("gen_showroom --selftest: %d BITE(S) FAILED" % len(fails))
         for f in fails:
@@ -578,7 +631,7 @@ def selftest():
         sys.exit(1)
     print("gen_showroom --selftest OK — %d bites (rebase · fragments · absolutes · "
           "double-rebase fails loud · missing-target gate · query suffix · "
-          "#98-D1 one-bar contract ×4)." % len(ran))
+          "#98-D1 one-bar contract ×4 · embed mode ×5)." % len(ran))
 
 def main():
     if "--selftest" in sys.argv:
