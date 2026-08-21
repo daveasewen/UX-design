@@ -75,10 +75,16 @@ def snippet_path(name):
 
 # ------------------------------------------------------------------ extraction
 def source_block(html, pname):
-    """CSS between the atom's PARTIAL markers (exclusive). None if absent."""
+    """CSS between the atom's PARTIAL markers (exclusive). None if absent.
+
+    ⛔ LOCATED in the comment-masked copy (#211 lane R7) — a PARTIAL block written inside an
+    HTML comment is dead CSS and must never be read as an atom's source of truth — but the
+    payload is SLICED FROM THE ORIGINAL BYTES at that span, so masking can never corrupt the
+    CSS it helped us find. Same locate-live / slice-raw discipline as manifest_vars (lane R6).
+    """
     m = re.search(r'/\* ===== PARTIAL ' + re.escape(pname) + r' START[^\n]*===== \*/\n(.*?)\n\s*/\* ===== PARTIAL '
-                  + re.escape(pname) + r' END ===== \*/', html, re.S)
-    return m.group(1) if m else None
+                  + re.escape(pname) + r' END ===== \*/', live_text(html), re.S)
+    return html[m.start(1):m.end(1)] if m else None
 
 # Both marker comments captured whole; group(2) = whatever sits between them (may be
 # empty — a freshly-migrated file carries ADJACENT markers for the generator to fill).
@@ -202,11 +208,14 @@ def generated_inner(src_css, pname, group, source, root_sel, member_sel):
 # content inside HTML comments, which there silently killed 120 declarations, and which ds-018's
 # C2 gate was green over for its whole life.
 #
-# ⛔ THE MASK IS APPLIED TO THE CONTRACT READERS ONLY — declared_value, check_contracts'
-# `declarations` substring test, and manifest_vars. It is deliberately NOT applied to
-# BEHAVIOUR_RE, AUTO_MARKUP_RE, markup_source_block or non_consumer_marker_fails, whose markers
-# ARE HTML comments by design: masking there would blind the generator to its own injection
-# sites. Selftest arm 5f drives that fence in both directions.
+# ⛔ THE MASK IS APPLIED TO THE CONTRACT READERS — declared_value, check_contracts'
+# `declarations` substring test, and manifest_vars — AND, since #211 lane R7, to the three
+# SPAN SELECTORS that pick an injection source or target out of the document (source_block,
+# AUTO_RE via live_match, FIGURE_RE via live_figure_spans; see § live spans below). It is
+# deliberately NOT applied to BEHAVIOUR_RE, AUTO_MARKUP_RE, markup_source_block or
+# non_consumer_marker_fails, whose markers ARE HTML comments by design: masking there would
+# blind the generator to its own injection sites. Selftest arms 5f and 5g drive that fence in
+# both directions.
 COMMENT_OPEN, COMMENT_CLOSE = "<!--", "-->"
 
 def mask_comments(html):
@@ -240,6 +249,51 @@ def live_text(html):
     if got is None:
         got = _MASK_CACHE[html] = mask_comments(html)
     return got
+
+# ------------------------------------------------------------------ live spans (#211 lane R7)
+# THE INJECTION-SITE half of R6's fix. R6 masked the three CONTRACT readers; the readers that
+# SELECT A SOURCE OR TARGET SPAN out of raw text were left raw, and one of them was LATENT-live:
+# Image-block.reference.html says "real <figure>/<figcaption> semantics" inside its prose header
+# comment, and FIGURE_RE (non-greedy, DOTALL) therefore matched from THAT `<figure` to the first
+# REAL `</figure>` — one span swallowing the whole comment AND the file's first real figure.
+#
+# ⛔ THE DISCIPLINE IS LOCATE-LIVE / SLICE-RAW, exactly as manifest_vars does it: the span is
+# found in the comment-masked copy (so commented-out markup can never be selected), and the
+# bytes handed on are the ORIGINAL ones at that span (so the AUTO-MARKUP / AUTO-BEHAVIOUR
+# markers INSIDE a live figure — which ARE HTML comments by design — survive intact). Masking
+# the CONTENTS instead of just the SELECTION would delete 80 AUTO-MARKUP injection sites.
+# mask_comments' length-preservation is what makes a masked span address the same raw bytes.
+#
+# ⛔ THE R6 FENCE STILL BINDS AND IS NOT WIDENED HERE: BEHAVIOUR_RE, AUTO_MARKUP_RE,
+# markup_source_block and non_consumer_marker_fails read markers that ARE HTML comments and
+# keep reading RAW text. Selftest arms 5f (vi) and 5g drive that fence in both directions.
+def live_match(rx, html):
+    """`rx` matched against the document's LIVE bytes. Group SPANS transfer index-for-index to
+    the original — the caller slices `html`, never the mask."""
+    return rx.search(live_text(html))
+
+def live_figure_spans(html):
+    """(start, end) of every LIVE <figure>…</figure>, in document order. A <figure> named inside
+    an HTML comment is prose, not markup, and is never an injection site."""
+    return [m.span() for m in FIGURE_RE.finditer(live_text(html))]
+
+def rewrite_live_figures(html, fn):
+    """Rebuild `html` with `fn` applied to each LIVE figure, splicing the original bytes either
+    side. ⛔ `fn` receives the figure's ORIGINAL bytes, never the mask — the AUTO-MARKUP markers
+    inside a figure ARE HTML comments and would arrive blanked, so nothing would ever be injected.
+
+    This is a NAMED function and not an inline loop in run() precisely so the selftest can drive
+    the code the generator actually runs [[mutation-tests-the-clause-not-the-feature]]: an arm that
+    only checked live_figure_spans left the splice itself untested, and a mutant that sliced from
+    the mask survived it.
+    """
+    pieces, cursor = [], 0
+    for a, b in live_figure_spans(html):
+        pieces.append(html[cursor:a])
+        pieces.append(fn(html[a:b]))
+        cursor = b
+    pieces.append(html[cursor:])
+    return "".join(pieces)
 
 # ------------------------------------------------------------------ contracts
 def declared_value(html, var):
@@ -365,15 +419,19 @@ def run(write):
                 inner = generated_inner(src_css, pname, gname, source, root_sel, member_sel)
                 between = "\n" + inner + "\n  "     # canonical padding either side of the payload
                 rx = AUTO_RE(pname)
-                m = rx.search(html)
+                # ⛔ LOCATED LIVE (#211 lane R7): a marker pair sitting inside an HTML comment is
+                # not an injection site — injecting there writes a payload the browser never sees.
+                # Spans transfer index-for-index, so the payload is compared and REPLACED in the
+                # ORIGINAL bytes.
+                m = live_match(rx, html)
                 if not m:
                     fails.append(f"{gname}/{pname}: {mname} is a member but carries no AUTO-PARTIAL "
                                  f"markers (membership is deliberate — add the marker pair to migrate)")
                     continue
-                if m.group(2) != between:
+                if html[m.start(2):m.end(2)] != between:
                     out_of_sync.append(f"{mname} ({pname})")
                     if write:
-                        html = rx.sub(lambda mm: mm.group(1) + between + mm.group(3), html, count=1)
+                        html = html[:m.start(2)] + between + html[m.end(2):]
                         open(mp, "w").write(html)
                         injected += 1
         # ---- behaviour partials (ADR-0015): source = a hand-authored JS file under knowledge/
@@ -465,8 +523,10 @@ def run(write):
                 seen = {n: 0 for n in markup_list}
                 local_fails = []
                 inj_count = [0]
-                def process_fig(fm):
-                    fig_html = fm.group(0)
+                def process_fig(fig_html):
+                    # fig_html is the ORIGINAL bytes of one LIVE figure (span located in the
+                    # comment-masked copy, #211 lane R7). Everything below reads RAW inside it —
+                    # the AUTO-MARKUP markers ARE HTML comments and must stay visible (R6 fence).
                     attrs = figure_attrs(fig_html)
                     for pname in markup_list:
                         spec = mk[pname]
@@ -497,7 +557,12 @@ def run(write):
                             inj_count[0] += 1
                             fig_html = rx.sub(lambda z: z.group(1) + between + z.group(3), fig_html, count=1)
                     return fig_html
-                new_html = FIGURE_RE.sub(process_fig, html)
+                # ⛔ NOT FIGURE_RE.sub(…, html) any more (#211 lane R7): that walked RAW text, so a
+                # <figure> named inside a prose comment was selected as an injection site — and
+                # because FIGURE_RE is non-greedy over DOTALL, that span ran from the COMMENT to
+                # the first REAL </figure>, swallowing a live figure whole. Rebuild from the live
+                # spans instead, splicing the original bytes either side.
+                new_html = rewrite_live_figures(html, process_fig)
                 fails += local_fails
                 for pname in markup_list:
                     if seen[pname] == 0:
@@ -668,6 +733,72 @@ def selftest():
             and markup_source_block(msrc, "dv-lockup-title")):
         fails.append("HTML-comment markers no longer read from RAW text — the mask over-reached "
                      "into the injection sites (#211 lane R6 fence)")
+    # 5g. #211 lane R7 — A COMMENTED-OUT SOURCE OR TARGET IS NEVER AN INJECTION SITE.
+    #     The span selectors LOCATE LIVE and SLICE RAW. Five bites: the figure walk (the live
+    #     defect), the swallow shape it caused, the raw-slice property the AUTO-MARKUP markers
+    #     depend on, source_block, and AUTO_RE — plus green controls for each.
+    #  (i) FIGURE_RE: a <figure> named inside a prose comment is not an injection site. This is
+    #      Image-block.reference.html's exact shape (offset 368, "real <figure>/<figcaption>").
+    real_fig = ('<figure class="dv" data-lockup-title="X">'
+                '<!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->'
+                '<!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->'
+                '</figure>')
+    doc_fig = '<!--\n  prose: uses real <figure>/<figcaption> semantics\n-->\n' + real_fig
+    spans = live_figure_spans(doc_fig)
+    if len(spans) != 1 or doc_fig[spans[0][0]:spans[0][1]] != real_fig:
+        fails.append("live_figure_spans selected a <figure> named inside an HTML comment "
+                     "(#211 lane R7) — got %r" % [doc_fig[a:b][:40] for a, b in spans])
+    #      the SWALLOW is the reason it matters: read raw, that span starts in the comment and
+    #      runs to the REAL </figure>, so the live figure disappears inside it.
+    raw_spans = [m.span() for m in FIGURE_RE.finditer(doc_fig)]
+    if raw_spans and raw_spans[0][0] >= doc_fig.index(real_fig):
+        fails.append("the raw-text swallow this arm exists to prove no longer reproduces — "
+                     "the arm has stopped testing anything (#211 lane R7)")
+    #  (ii) SLICE RAW, never the mask — driven THROUGH rewrite_live_figures, the function run()
+    #       actually calls, not through a re-implementation of it. The AUTO-MARKUP markers inside
+    #       a live figure ARE HTML comments; if the splice handed the mask on, all 80 injection
+    #       sites would arrive blanked and nothing would ever be injected (R6 fence).
+    _seen_by_fn = []
+    def _probe_fig(fig_bytes):
+        _seen_by_fn.append(fig_bytes)
+        return fig_bytes
+    if rewrite_live_figures(doc_fig, _probe_fig) != doc_fig:
+        fails.append("rewrite_live_figures is not byte-identity under an identity callback — "
+                     "the splice is losing or duplicating bytes (#211 lane R7)")
+    if len(_seen_by_fn) != 1 or _seen_by_fn[0] != real_fig:
+        fails.append("rewrite_live_figures handed the callback the wrong figure bytes: %r"
+                     % [s[:40] for s in _seen_by_fn])
+    if not (_seen_by_fn and AUTO_MARKUP_RE("dv-lockup-title").search(_seen_by_fn[0])):
+        fails.append("the figure reached the injection callback as MASKED bytes — its AUTO-MARKUP "
+                     "markers are gone, so nothing would ever be injected (#211 lane R7 fence)")
+    #       green control: a document with no commented figure is selected identically either way
+    if live_figure_spans(real_fig) != [m.span() for m in FIGURE_RE.finditer(real_fig)]:
+        fails.append("live_figure_spans moved a REAL figure's span (mask over-reached)")
+    #  (iii) source_block: a PARTIAL block inside an HTML comment is dead CSS, not a source atom
+    live_src = ("/* ===== PARTIAL q START (t) ===== */\n.btn{transform:scale(1);}\n"
+                "/* ===== PARTIAL q END ===== */")
+    if source_block("<!--\n" + live_src.replace("scale(1)", "scale(9)") + "\n-->", "q") is not None:
+        fails.append("source_block read a PARTIAL block sitting inside an HTML comment as the "
+                     "atom's source of truth (#211 lane R7)")
+    if source_block(live_src, "q") != ".btn{transform:scale(1);}":
+        fails.append("source_block no longer reads a REAL PARTIAL block (mask over-reached)")
+    #       …and the payload must be the ORIGINAL bytes, not the mask's. Reachable shape: an HTML
+    #       comment INSIDE the PARTIAL block — the markers are still live, so the block is found,
+    #       but a masked payload would inject blanks where CSS bytes were. LATENT, not live: 0
+    #       style blocks in the tree carry a literal '<!--' today (#211 lane R7 census).
+    cdo_src = ("/* ===== PARTIAL q START (t) ===== */\n.a{x:1}<!-- note -->.b{y:2}\n"
+               "/* ===== PARTIAL q END ===== */")
+    if source_block(cdo_src, "q") != ".a{x:1}<!-- note -->.b{y:2}":
+        fails.append("source_block returned MASKED bytes instead of the original CSS — the "
+                     "injected payload would be blanked where the source held bytes (#211 lane R7)")
+    #  (iv) AUTO_RE via live_match: a marker pair inside an HTML comment is not a target
+    if live_match(AUTO_RE("p"), "<!--\n" + empty + "\n-->") is not None:
+        fails.append("an AUTO-PARTIAL marker pair inside an HTML comment was selected as an "
+                     "injection target — the payload would be written where no browser reads it")
+    lm = live_match(AUTO_RE("p"), filled)
+    if lm is None or filled[lm.start(2):lm.end(2)] != "\nX\n  ":
+        fails.append("live_match lost a REAL AUTO-PARTIAL payload span (mask over-reached, or "
+                     "the group span stopped addressing the original bytes)")
     # 6. registry caches: live registry must pass; a poisoned cache must fail
     reg = load_registry()
     live = check_caches(reg)

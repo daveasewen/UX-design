@@ -92,11 +92,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **113 items · 80 live · 47 Dave's · 33 mine · 94 carry a stated close condition · **19 UNCONDITIONED**.**
+> **115 items · 82 live · 49 Dave's · 33 mine · 96 carry a stated close condition · **19 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 19 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (47) — 42 with a ratified `closes_when`, 5 with NONE:**
+> **DAVE'S (49) — 44 with a ratified `closes_when`, 5 with NONE:**
 > - `G1` **Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…** — *closes when:* Dave ratifies 700 or names his own number
 > - `G10` **The "70%/95%" stray band (GM:36** — *closes when:* Dave rules provenance or strikes it
 > - `G11` **DS-018 recessive value** — *closes when:* Dave picks the recessive value
@@ -139,6 +139,8 @@
 > - `W-90` **wave-2 lane R2 — .l-split container self-query REPAIRED at cause, P-7 6+3WARN→0; showroom payloads + review page still carry old defect** — *closes when:* Dave rules P-7 promote/park (W-85), the REVIEW-204 7th instance is repaired at his sitting, and the 4 canon radius literals are ruled snap-or-waive
 > - `W-91` **wave-3 lane R5 — the last three input descender clips REPAIRED (Multi-select/Tags-input/Combobox 3.25px→0)** — *closes when:* Dave's eye passes the three repairs (or the ds-005 class ruling supersedes the per-instance shape)
 > - `W-92` **wave-3 lane R6 — declared_value/check_contracts/manifest_vars comment-blindness FIXED (R1's class); sync no-op proven; Image-block latent injection exposure priced** — *closes when:* Dave picks up or parks the three priced residuals (Image-block exposure, shared mask helper, CSS-parse upgrade)
+> - `W-93` **PHOTOGRAPHY ASSETS ARRIVED (Dave #211): 251 Getty/EyeEm JPEGs, 2.5GB — mapping + KG + tagging owed; originals fenced NON-REPO via .gitignore** — *closes when:* manifest + KG mapping exist in-repo, a tagging approach is ruled, and Dave rules the originals' pipeline
+> - `W-94` **wave-4 lane R7 — FIGURE_RE raw-span exposure CLOSED (it ate a real figure, not just latent); locate-live/slice-raw across 3 selectors** — *closes when:* Dave's eye passes it alongside the wave receipts sitting
 > - `W-0c` **NEXT BUILD CANDIDATES** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-0d` **✅ THE #67 ENACT WAVE** — *closes when:* ⛔ **none stated — cannot close until you name one**
 > - `W-14` **⬛ DAVE'S FOUNDING PRINCIPLE** — *closes when:* ⛔ **none stated — cannot close until you name one**
@@ -152,7 +154,7 @@
 
 ---
 
-*(Chain ends. **42,012 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **42,254 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 97,654 real and stays whole for retrieval; you have paid for
 43% of it, and that is the intended figure, not a shortfall.)*
