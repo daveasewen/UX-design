@@ -2,9 +2,21 @@
 """
 gen_showroom.py — the generated, browsable component library (RULED, Dave 2026-07-21).
 
-One separate file per component + one master categorised index (showroom/), assembled
-FROM the canon (snippets + tokens + the theme cascade stay the gated source) so it
-cannot rot. reviews/ is demoted to scratch; THIS is the human-navigable library.
+One separate file per component (showroom/), assembled FROM the canon (snippets + tokens +
+the theme cascade stay the gated source) so it cannot rot. reviews/ is demoted to scratch;
+THIS is the human-navigable library.
+
+⛔ THE INDEX IS NO LONGER THIS GENERATOR'S — s215-D5 (1), Dave 2026-08-22.
+  Library v2 REPLACES showroom/index.html, and two indexes must not coexist to drift. So:
+    * `INDEX_TMPL` and the index-assembly block are GONE from this file;
+    * `showroom/index.html` is PROTECTED from the orphan prune below (it is not in `files`,
+      and without the protection the prune would delete another generator's output);
+    * `--check` still bites on the index: it must EXIST and carry the library sentinel.
+  Owner: knowledge/_render/gen_library_214.py (which also writes showroom/index.json and
+  keeps the old reviews/LIBRARY-2026-08-21-v2.html address alive as a redirect stub).
+  ⚠ SWAP POINT: if the index ever comes back here, restore INDEX_TMPL from git history
+  (#214 and earlier) AND drop INDEX_OWNED_ELSEWHERE — doing one without the other gives
+  you the two-index drift the ruling forbids.
 
 Each component page is the UNIVERSAL REVIEW HARNESS (build-out Phase 0), ONE BAR
 (#98-D1, Dave 2026-08-05 — controls consolidated, snippet sources are pure canon):
@@ -35,7 +47,7 @@ EMBED MODE — `#chrome=0` (added #214, for the library browser)
   surface iframes these same pages and WANTS its comment pins. If Dave rules the overlay
   gone everywhere, flip the default in `initFromHash` (h.chrome!=='1') — one line, and then
   REVIEW-213's generator must pass chrome=1.
-  Consumer: knowledge/_render/gen_library_214.py -> reviews/LIBRARY-2026-08-21-v2.html.
+  Consumer: knowledge/_render/gen_library_214.py -> showroom/index.html (s215-D5 (1)).
 
 Deterministic (no timestamps) so `--check` can verify the showroom regenerates
 byte-identically — wired into _build_all.py like every other generated surface.
@@ -358,97 +370,13 @@ PAGE_TMPL = """<!doctype html>
 </html>
 """
 
-INDEX_TMPL = """<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Apollo component library · showroom</title>
-<style>__CSS__
-  .count{display:inline-flex; align-items:baseline; gap:8px; font-size:13px; color:var(--mid);}
-  .count strong{font-size:40px; font-weight:300; line-height:1; color:var(--ink);
-    font-variant-numeric:tabular-nums; letter-spacing:-1px;}
-  .shell{display:grid; grid-template-columns:260px 1fr; min-height:calc(100vh - 57px);}
-  nav.tree{border-right:1px solid var(--line); background:#FFFFFF; padding:12px 0 24px;
-    overflow-y:auto; position:sticky; top:57px; height:calc(100vh - 57px);}
-  nav.tree details{border-bottom:1px solid var(--line);}
-  nav.tree summary{font-size:13px; font-weight:500; color:var(--ink); padding:10px 16px;
-    cursor:pointer; list-style:none; display:flex; align-items:baseline; gap:8px;}
-  nav.tree summary::-webkit-details-marker{display:none;}
-  nav.tree summary::before{content:"▸"; font-size:10px; color:var(--mid); transition:transform 140ms;}
-  nav.tree details[open] summary::before{transform:rotate(90deg);}
-  nav.tree summary .c{margin-left:auto; font-size:11px; color:var(--mid);
-    font-variant-numeric:tabular-nums;}
-  nav.tree a{display:block; font-size:13px; color:var(--ink); text-decoration:none;
-    padding:6px 16px 6px 34px; border-left:2px solid transparent;}
-  nav.tree a:hover{background:var(--wash, #F4F4F4);}
-  nav.tree a[aria-current="true"]{border-left-color:var(--ink); font-weight:500;
-    background:var(--wash, #F4F4F4);}
-  main.view{min-width:0; display:flex; flex-direction:column;}
-  .view iframe{display:none; border:0; width:100%; flex:1;}
-  .view.on iframe{display:block;}
-  .view.on .intro{display:none;}
-  .intro{padding:24px 24px 0; max-width:820px;}
-  .intro p{font-size:14px; color:var(--mid); line-height:1.5; margin:4px 0 0;}
-  @media (max-width:760px){
-    .shell{grid-template-columns:1fr; align-content:start;}
-    nav.tree{position:static; height:auto; max-height:40vh;}
-  }
-</style>
-</head>
-<body>
-<header>
-  <h1>Apollo component library</h1>
-  <span class="count" aria-label="__COUNT__ components"><strong>__COUNT__</strong> components</span>
-  <span class="note">Every control lives on the component page's one bar (#98-D1).</span>
-</header>
-<div class="shell">
-<nav class="tree" aria-label="Components">
-__SECTIONS__
-</nav>
-<main class="view" id="view">
-  <div class="intro">
-    <p>Generated from the gated canon (snippets + tokens + theme cascade) — regenerate with
-    <code>python3 knowledge/gen_showroom.py</code>; never hand-edit. Each page: ONE bar
-    (title · details · theme · light/dark · width · replay · open) over the component's
-    full live variant spread. Snippet sources are pure canon — no demo controls (#98-D1).</p>
-    <p>Pick a component from the tree to preview it here.</p>
-  </div>
-  <iframe id="vframe" title="Component preview"></iframe>
-</main>
-</div>
-<script>
-(function(){
-  var current=null;
-  var view=document.getElementById('view'), frame=document.getElementById('vframe');
-  function pageURL(slug){ return slug+'.html'; }
-  function setHash(){ location.hash=current?('c='+current):''; }
-  function show(slug){
-    current=slug;
-    view.classList.add('on');
-    frame.src=pageURL(slug);
-    document.querySelectorAll('nav.tree a').forEach(function(a){
-      var on=(a.dataset.slug===slug);
-      a.setAttribute('aria-current', String(on));
-      if(on){ var d=a.closest('details'); if(d) d.open=true; }
-    });
-  }
-  document.querySelector('nav.tree').addEventListener('click',function(e){
-    var a=e.target.closest('a[data-slug]'); if(!a) return;
-    e.preventDefault(); show(a.dataset.slug); setHash();
-  });
-  function initFromHash(){
-    var h={}; location.hash.replace(/^#/,'').split('&').forEach(function(p){
-      var kv=p.split('='); if(kv[0]) h[kv[0]]=kv[1]; });
-    if(h.c && document.querySelector('nav.tree a[data-slug="'+h.c+'"]')) show(h.c);
-  }
-  window.addEventListener('hashchange',initFromHash);
-  initFromHash();
-})();
-</script>
-</body>
-</html>
-"""
+# ---------------------------------------------------------------------------
+# s215-D5 (1) — the index moved out. These two names are the whole contract with
+# knowledge/_render/gen_library_214.py, which now owns showroom/index.html.
+# ---------------------------------------------------------------------------
+INDEX_OWNED_ELSEWHERE = "knowledge/_render/gen_library_214.py"
+INDEX_SENTINEL = "<!-- APOLLO-LIBRARY-INDEX v2 (gen_library_214.py) -->"
+PROTECTED = {"index.html"}          # never pruned: another generator's output
 
 # ---------------------------------------------------------------- generation
 def theme_meta(themes, manifest_vars):
@@ -525,25 +453,8 @@ def build_pages():
         cards[slug] = {"label": label_of(slug),
                        "cat": CAT_OF.get(slug, "More"),
                        "meta": meta_line}
-    # index
-    sections = []
-    cats = [c for c, _ in CATEGORIES] + (["More"] if any(v["cat"] == "More" for v in cards.values()) else [])
-    for cat in cats:
-        slugs = sorted(s for s, v in cards.items() if v["cat"] == cat)
-        if not slugs:
-            continue
-        links = "".join(
-            '<a data-slug="%s" href="%s.html" aria-current="false" title="%s">%s</a>'
-            % (s, s, htmlmod.escape(cards[s]["meta"], quote=True),
-               htmlmod.escape(cards[s]["label"]))
-            for s in slugs)
-        sections.append('<details open><summary>%s<span class="c">%d</span></summary>%s</details>'
-                        % (htmlmod.escape(cat), len(slugs), links))
-    files["index.html"] = (INDEX_TMPL
-                           .replace("__CSS__", CHROME_CSS)
-                           .replace("__THEME_BTNS__", btns)
-                           .replace("__COUNT__", str(len(cards)))
-                           .replace("__SECTIONS__", "\n".join(sections)))
+    # ⛔ NO INDEX HERE — s215-D5 (1). showroom/index.html belongs to
+    # INDEX_OWNED_ELSEWHERE; `cards` survives only as the per-page label/category map.
     return files
 
 def selftest():
@@ -605,10 +516,14 @@ def selftest():
          PAGE_TMPL.count("<iframe"), 1)
     bite("6c · replay + open live in the ONE bar",
          'id="replay"' in PAGE_TMPL and 'id="open"' in PAGE_TMPL, True)
-    bite("6d · index has no duplicate viewbar",
-         "viewbar" in INDEX_TMPL, False)
-    bite("6e · index has no theme seg — controls live on the page bar only (#98)",
-         'id="themes"' in INDEX_TMPL, False)
+    # 6d/6e (was: "the index has no viewbar / no theme seg") are RETIRED with the index
+    # itself at s215-D5 (1). Their replacements bite on the NEW contract: this generator
+    # must not carry an index template any more, and it must not delete the one the
+    # library generator writes.
+    bite("6d · s215-D5 (1) · this module carries no index template of its own",
+         "INDEX_TMPL" in globals(), False)
+    bite("6e · s215-D5 (1) · showroom/index.html is protected from the orphan prune",
+         "index.html" in PROTECTED, True)
 
     # 7 · EMBED MODE contract (#214). The library browser depends on all four halves:
     #     the hash key, the overlay cut, the header hide, and the overlay marker still
@@ -647,21 +562,40 @@ def main():
             if not check:
                 os.makedirs(OUTD, exist_ok=True)
                 open(path, "w").write(content)
-    # prune orphans (a renamed/removed snippet must not leave a rotting page)
+    # prune orphans (a renamed/removed snippet must not leave a rotting page).
+    # ⛔ PROTECTED is not cosmetic: showroom/index.html is another generator's output and
+    # without this guard every run of this script would delete the library (s215-D5 (1)).
     orphans = [os.path.basename(p) for p in glob.glob(os.path.join(OUTD, "*.html"))
-               if os.path.basename(p) not in files]
+               if os.path.basename(p) not in files
+               and os.path.basename(p) not in PROTECTED]
     if not check:
         for o in orphans:
             os.remove(os.path.join(OUTD, o))
+    # THE INDEX LEG OF THE SYNC GATE — still bites, now on someone else's artefact:
+    # it must exist, and it must be the LIBRARY index (sentinel), not a resurrected v1.
+    index_path = os.path.join(OUTD, "index.html")
+    index_fault = None
+    if not os.path.exists(index_path):
+        index_fault = ("showroom/index.html is MISSING — it is written by %s (run it)"
+                       % INDEX_OWNED_ELSEWHERE)
+    elif INDEX_SENTINEL not in open(index_path).read():
+        index_fault = ("showroom/index.html carries no library sentinel — it is not the "
+                       "index %s writes (two-index drift, forbidden by s215-D5)"
+                       % INDEX_OWNED_ELSEWHERE)
     if check:
-        if stale or orphans:
-            print("gen_showroom --check: OUT OF SYNC — stale: %s orphaned: %s\n"
-                  "Run: python3 knowledge/gen_showroom.py" % (stale[:6], orphans[:6]))
+        if stale or orphans or index_fault:
+            print("gen_showroom --check: OUT OF SYNC — stale: %s orphaned: %s index: %s\n"
+                  "Run: python3 knowledge/gen_showroom.py"
+                  % (stale[:6], orphans[:6], index_fault or "ok"))
             sys.exit(1)
-        print("gen_showroom --check OK — %d page(s) + index in sync." % (len(files) - 1))
+        print("gen_showroom --check OK — %d page(s) + index in sync (index owned by %s)."
+              % (len(files), INDEX_OWNED_ELSEWHERE))
         return
-    print("gen_showroom: %d page(s) + index -> showroom/ (%d written, %d orphan(s) pruned)"
-          % (len(files) - 1, len(stale), len(orphans)))
+    if index_fault:
+        print("gen_showroom: ⚠ %s" % index_fault)
+    print("gen_showroom: %d page(s) -> showroom/ (%d written, %d orphan(s) pruned; "
+          "index owned by %s)"
+          % (len(files), len(stale), len(orphans), INDEX_OWNED_ELSEWHERE))
 
 if __name__ == "__main__":
     main()
