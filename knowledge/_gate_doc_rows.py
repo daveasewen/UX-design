@@ -112,11 +112,20 @@ def _homes(store_text):
 
 def unrowed(store_text, pop):
     homes = _homes(store_text)
+    # #215 CLASS FIX (Dave: "always real fixes never patches, they just get lost"): a home that
+    # ends in "/" is a DIRECTORY ADDRESS — it rows every file beneath it. Introduced for asset
+    # sets (e.g. a research doc's screenshot directory), where one row per PNG would be noise
+    # that hides signal, while an unrowed asset stays invisible to every carry. The row still
+    # exists, still carries owner/state/close-condition — only the address form widened.
+    dir_homes = [h for h in homes if h.rstrip().endswith("/")]
     missing = []
     for d, p in pop:
         base = os.path.basename(p)
-        if not any(p in h or base in h for h in homes):
-            missing.append((d, p))
+        if any(p in h or base in h for h in homes):
+            continue
+        if any(p.startswith(dh.rstrip()) for dh in dir_homes):
+            continue
+        missing.append((d, p))
     return missing
 
 def check():
@@ -180,13 +189,41 @@ def selftest():
     if not rowed:
         print("⛔ SELFTEST MUTATION-ARM: no rowed doc to mutate — arm is vacuous, not green.")
         return 1
-    victim = rowed[-1]
+    # #215: a directory-home-covered doc has NO per-file reference to delete — replace() would
+    # be a no-op and the arm vacuous. The victim must be a doc whose own path/basename appears
+    # in the store text; the directory clause gets its own arm below.
+    per_file_rowed = [p for p in rowed
+                      if (p in live or os.path.basename(p) in live)]
+    if not per_file_rowed:
+        print("⛔ SELFTEST MUTATION-ARM: no per-file-rowed doc to mutate — arm is vacuous, not green.")
+        return 1
+    victim = per_file_rowed[-1]
     key = victim if victim in live else os.path.basename(victim)
     mutated = live.replace(key, "X" * len(key))
     if not any(p == victim for _, p in unrowed(mutated, pop)):
         print(f"⛔ SELFTEST MUTATION-ARM: reference to {victim} deleted, gate did not flag — matcher is always-true.")
         return 1
     print(f"✅ mutation-arm: deleting the {victim} reference is flagged.")
+    # directory-arm (#215, both ways): a doc covered ONLY by a directory home must (a) be
+    # covered now, and (b) become UNROWED the moment the directory home is deleted. If no
+    # directory home exists in the store, the arm reports itself absent rather than passing.
+    dir_homes = [h for h in _homes(live) if h.rstrip().endswith("/")]
+    dir_covered = [p for _, p in pop
+                   if not (p in live or os.path.basename(p) in live)
+                   and any(p.startswith(dh.rstrip()) for dh in dir_homes)]
+    if dir_covered:
+        dvictim = dir_covered[-1]
+        dh = next(h for h in dir_homes if dvictim.startswith(h.rstrip()))
+        dmutated = live.replace(dh, "X" * len(dh))
+        if any(p == dvictim for _, p in unrowed(live, pop)):
+            print(f"⛔ SELFTEST DIRECTORY-ARM: {dvictim} flagged despite a live directory home — clause dead.")
+            return 1
+        if not any(p == dvictim for _, p in unrowed(dmutated, pop)):
+            print(f"⛔ SELFTEST DIRECTORY-ARM: directory home {dh} deleted, {dvictim} not flagged — clause always-true.")
+            return 1
+        print(f"✅ directory-arm: {dvictim} covered by {dh}; deleting that home is flagged.")
+    else:
+        print("▫ directory-arm: no directory-home-covered doc in population — arm not exercised (reported, not passed).")
     print("✅ SELFTEST PASS — the green can fail (both non-green arms shown above).")
     return 0
 

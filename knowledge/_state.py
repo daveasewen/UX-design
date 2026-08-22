@@ -290,6 +290,17 @@ def resolve_home(home, root=None):
     home = (home or "").strip()
     if not home:
         return ("empty", "no home recorded")
+    if home.endswith("/"):
+        # #215 DIRECTORY ADDRESS (paired with _gate_doc_rows.py's directory-home clause —
+        # one grammar, two consumers): the home is a directory whose files the row owns.
+        # Resolves iff the directory exists and is non-empty; an empty dir is a rotted home.
+        dp = os.path.join(root, home.rstrip("/"))
+        if not os.path.isdir(dp):
+            return ("missing-file", f"directory {home!r} does not exist under {root}")
+        n = len([e for e in os.listdir(dp) if not e.startswith(".")])
+        if n == 0:
+            return ("anchor-absent", f"directory {home!r} exists but is EMPTY — a rotted home")
+        return ("anchor-ok", f"{home} exists, {n} file(s)")
     if HOME_ANCHOR in home:
         rel, anchor = home.split(HOME_ANCHOR, 1)
         kind = "anchor"

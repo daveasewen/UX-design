@@ -3,8 +3,16 @@
 
 Run from the repo root with the render env exported (knowledge/_RUNBOOK-render-verify.md):
   python3 knowledge/_render/drive_library_215.py [showroom/index.html]
-30 checks: tabs, search + aliases, cmd-K, status facet, thumbnails decoded, related links,
-the #chrome=0 embed contract, the theme broadcast. Exits non-zero on any red.
+33 checks: tabs, search + aliases, cmd-K, status facet, thumbnails decoded, related links,
+the #chrome=0 embed contract, the theme broadcast, and (added at the #215 Swiss restyle)
+the three Swiss contract checks BB/CC/DD. Exits non-zero on any red.
+
+⚠ TWO ASSERTIONS CHANGED AT THE #215 SWISS RESTYLE, both STYLING-COUPLED, neither weakened:
+  A and M read #rc with inner_text, which returns the RENDERED text — the result line is now
+  a Swiss caption with `text-transform:uppercase`, so the same string arrives as
+  "135 OF 135 SHOWN". Both now compare `.lower()`; the exact count string is still asserted
+  character for character. (Driven: before the change they went red, 28/30 — that red was the
+  restyle showing up in the drive, not a functional break.)
 
 DRIVEN RED 2026-08-22 (the check that proves the check): a single thumbnail path corrupted
 in showroom/index.html took check Q from green to red, 29/30. Restored by regeneration.
@@ -30,7 +38,7 @@ with sync_playwright() as p:
     pg=b.new_page(viewport={"width":1500,"height":950})
     errs=[]; pg.on("pageerror",lambda e: errs.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(700)
-    ck("A · full count at load", pg.inner_text("#rc"), "135 of 135 shown")
+    ck("A · full count at load", pg.inner_text("#rc").lower(), "135 of 135 shown")
     ck("B · Type tab is the default", pg.get_attribute("#tab-type","aria-selected"), "true")
     ck("C · Type tab draws the ruled ladder",
        pg.eval_on_selector_all("#tree-type summary","e=>e.map(x=>x.firstChild.textContent)"),
@@ -58,7 +66,7 @@ with sync_playwright() as p:
     ck("L · the gallery filters with the search",
        pg.eval_on_selector_all(".card:not([hidden])","e=>e.map(x=>x.dataset.slug)"), ["loading-indicator"])
     pg.click("#qclear"); pg.wait_for_timeout(250)
-    ck("M · clear restores", pg.inner_text("#rc"), "135 of 135 shown")
+    ck("M · clear restores", pg.inner_text("#rc").lower(), "135 of 135 shown")
     # cmd-K
     pg.keyboard.press("Control+k"); pg.wait_for_timeout(150)
     ck("N · cmd/ctrl-K focuses the search box", pg.evaluate("document.activeElement.id"), "q")
@@ -106,6 +114,22 @@ with sync_playwright() as p:
     pg.click("#all"); pg.wait_for_timeout(400)
     ck("Z · back to the gallery", pg.locator("#gallery").is_visible(), True)
     ck("AA · no page errors", errs, [])
+    # ---- #215 SWISS RESTYLE, driven in the browser (computed styles, not source text) ----
+    ck("BB · active tab is underlined in the accent #DA1A00 (two-red law s151-D1)",
+       pg.evaluate("()=>getComputedStyle(document.getElementById('tab-type')).borderBottomColor"),
+       "rgb(218, 26, 0)")
+    ck("CC · Swiss: nothing in the chrome is rounded or shadowed",
+       pg.evaluate("""()=>{const bad=[];
+         document.querySelectorAll('.card,.chip,.pill,.btn,.seg,.seg button,#q,.cardgrid,header.app,nav.tree')
+           .forEach(e=>{const c=getComputedStyle(e);
+             if(parseFloat(c.borderTopLeftRadius)>0) bad.push(e.className+':radius');
+             if(c.boxShadow!=='none') bad.push(e.className+':shadow');});
+         return bad.slice(0,6);}"""), [])
+    ck("DD · the label pattern draws a 20px accent dash before an uppercase eyebrow",
+       pg.evaluate("""()=>{const l=document.querySelector('.gallery .label');
+         const b=getComputedStyle(l,'::before'); const s=getComputedStyle(l);
+         return [b.backgroundColor,b.width,s.textTransform,s.color];}"""),
+       ["rgb(218, 26, 0)", "20px", "uppercase", "rgb(218, 26, 0)"])
     pg.screenshot(path="/var/tmp/library-215-gallery.png")
     b.close()
 bad=[r for r in res if not r[0]]
