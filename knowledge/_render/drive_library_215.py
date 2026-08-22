@@ -27,6 +27,13 @@ WARNING - TWO POTHOLES BANKED HERE, 30s of timeout each, 2026-08-22:
 REPO HOME per s191-D2: the working copy lives at /var/tmp during a session; THIS is the
 canonical copy. Copy it out, never retype it.
 """
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
+_hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
+while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
+    _hg_d = _hg_os.path.dirname(_hg_d)
+_hg_sys.path.insert(0, _hg_d)
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
+
 import sys, json
 from playwright.sync_api import sync_playwright
 REPO="/sessions/sweet-blissful-albattani/mnt/UX-design"
