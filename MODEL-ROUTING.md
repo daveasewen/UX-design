@@ -9,7 +9,8 @@
 > four weeks on — P1–P7, P9, P10 applied: model strings pinned across all four tiers, the effort
 > ladder corrected to five rungs, the classifier-routing destination corrected [Opus 5 also runs
 > classifiers now], and the tokenizer-overhead figure corrected. P8 — the rule-5 verification
-> conflict — deliberately left open, Dave's call, not a sub's). Prior: 2026-07-30 #48 (Default
+> conflict — RULED `s215-D3` 2026-08-22 at reading 2, rule 5 now model-conditional; was
+> deliberately left open at #212, Dave's call, not a sub's). Prior: 2026-07-30 #48 (Default
 > tier corrected `Opus 4.8` → `Opus 5` — open 20 (a), Dave's ruling; see the staleness note under
 > the table). Prior: 2026-07-25 (budget-aware routing governor added — Dave's proposal, reflected
 > back + confirmed "good call") · 2026-07-23 (routing-audit #6 + #12: Fable-era notes · Mode 2 →
@@ -110,7 +111,7 @@
 2. **Model never moves judgment.** Promotion to canon and "vouched" are Dave's, regardless of which model ran (`derivation-governance`). Cheap models draft; the human decides.
 3. **Declare + record the model.** The handoff names the session's work — add the model. Record which model produced any generated artifact (the Sonnet-vs-Opus spread proved model is a real variable; the trace/audit want the provenance).
 4. **In experiments, model is a variable.** When testing the engine (e.g. the calibration run), pick the model on purpose and change **one thing at a time** (the 2026-07-05 confound was model + rule changed together).
-5. **Verify with a peer-or-stronger model.** Adversarial checks or critique of a strong model's output use equal-or-stronger — never audit Opus judgment with Haiku.
+5. **Verify with a peer-or-stronger model — MODEL-CONDITIONAL since `s215-D3` (P8 ruled, 2026-08-22).** Adversarial checks or critique of a strong model's output use equal-or-stronger — never audit Opus judgment with Haiku. **Scope ruled at reading 2:** the adversarial verifier (a *different seat* auditing the work) STAYS for Fable-run and high-stakes work; routine "re-check your own work" self-verification scaffolding COMES OFF Opus 5 sub briefs, per Anthropic's own Opus 5 guidance ("do not use subagents to verify or double-check your own work") — adversarial audit and self-verification are different acts, and only the second is redundant on Opus 5.
 6. **Fresh context pairs with the "decide" tier.** Judgment/audit sessions run cold *and* on Opus.
 
 ## Budget-aware routing governor (added 2026-07-25, Dave's proposal)
