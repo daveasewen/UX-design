@@ -87,7 +87,7 @@
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
   [data-theme="light"]{
-    --text:#1A1A1A; --muted:#767676; --pri:#DB0011; --on-pri:#FFFFFF; --accent:#DB0011; --focus:#305A85; --page:#FFFFFF;
+    --text:#1A1A1A; --muted:#767676; --pri:#DB0011; --on-pri:#FFFFFF; --accent:#DB0011; --focus:#305A85; --page:#FFFFFF; --border-radius-surface:0;
     /* Layout-utilities l-split (verbatim, PROPOSED source) */
     --l-gap-l:24px;
     /* Stat-card (verbatim) */
@@ -98,7 +98,7 @@
     --img-a:#F0F0F0; --img-b:#E1E1E1;
   }
   [data-theme="dark"]{
-    --text:#FFFFFF; --muted:#9a9a9a; --pri:#DB0011; --on-pri:#FFFFFF; --accent:#DB0011; --focus:#4587A7; --page:#1A1A1A;
+    --text:#FFFFFF; --muted:#9a9a9a; --pri:#DB0011; --on-pri:#FFFFFF; --accent:#DB0011; --focus:#4587A7; --page:#1A1A1A; --border-radius-surface:0;
     --l-gap-l:24px;
     --stat-surface:#1F1F1F; --stat-border:#808080; --stat-up:#66CC8D; --stat-down:#F6604C;
     --btn-pri-default:#FAFAFA; --btn-pri-hover:#B2B2B2; --btn-pri-label:#333333;
@@ -143,12 +143,12 @@
   .hv-media{ display:grid; gap:var(--l-gap-l); grid-template-columns:minmax(0,1fr) minmax(0,1fr);
     align-items:center; padding-right:2rem; }
   .hv-media .hero{padding-left:2rem; max-width:none;}
-  .hv-media .img{aspect-ratio:4/3; background:linear-gradient(135deg,var(--img-a),var(--img-b)); border-radius:var(--border-radius-default);}
+  .hv-media .img{aspect-ratio:4/3; background:linear-gradient(135deg,var(--img-a),var(--img-b)); border-radius:var(--border-radius-surface);}
   @container (max-width: 640px){ .hv-media{grid-template-columns:minmax(0,1fr);} .hv-media .img{order:-1;} }
 
   .hv-stat-board{display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:16px; max-width:640px; margin-top:32px;}
   /* borrowed verbatim: Stat-card tile */
-  .stat-card{background:var(--stat-surface); border:1px solid var(--stat-border); border-radius:var(--border-radius-default); padding:16px; display:flex; flex-direction:column; gap:8px;}
+  .stat-card{background:var(--stat-surface); border:1px solid var(--stat-border); border-radius:var(--border-radius-surface); padding:16px; display:flex; flex-direction:column; gap:8px;}
   .stat-card .lbl16{margin:0; opacity:var(--alpha-60);}
   .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap; font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
   .delta{display:flex; align-items:center; gap:4px;}
@@ -244,7 +244,7 @@
     "component": "Hero-variants",
     "$layer": "2 Lock-up",
     "vars": {
-      "--text": "text/default", "--pri": "primary/background/default",
+      "--border-radius-surface": "border-radius/surface", "--text": "text/default", "--pri": "primary/background/default",
       "--on-pri": "text/reverse", "--accent": "primary/background/default", "--focus": "focus/ring", "--page": "background/default",
       "--stat-surface": "tertiary/background/default", "--stat-border": "border/subtle",
       "--stat-up": "rag/success", "--stat-down": "rag/error",
