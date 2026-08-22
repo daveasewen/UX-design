@@ -22,6 +22,10 @@ Usage:
   python3 knowledge/_boot_remeasure.py            # measure + print
   python3 knowledge/_boot_remeasure.py --log      # also append one JSONL row to notes/_BOOT-DISK-LOG.jsonl
 """
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
+_hg_sys.path.insert(0, _hg_os.path.dirname(_hg_os.path.abspath(__file__)))
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
+
 import json, os, sys, datetime
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
