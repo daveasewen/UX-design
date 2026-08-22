@@ -11,6 +11,17 @@ Polaroid failure. **Every step below was run and OBSERVED working 2026-07-23** i
 (contrast maths, `node --check`, gates). **HTML is what Dave reviews, never PNGs.** A standing
 "render-verify OWED" note clears only when a render has been *seen*, not when the pipeline exists.
 
+⚠ **FOURTH STRATUM 2026-08-22 (#215) — THE #125 TLS READING IS ENVIRONMENT-DEPENDENT, AND TODAY'S
+ENVIRONMENT WAS THE BLOCKED ONE.** The research sub's install failed 5× across 3 CDN hosts on
+`UNABLE_TO_GET_ISSUER_CERT_LOCALLY` — the exact reading #129 could not reproduce — and was
+unblocked by **`NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt`** on the install command.
+So BOTH #125 readings were true of their sessions: the sandbox proxy's cert is sometimes in
+node's trust path and sometimes not. **Recipe that landed #215:** `NODE_EXTRA_CA_CERTS` set +
+`PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-<session>`; when `--with-deps` still fails on
+missing X libs with no root, `libXdamage.so.1` (and kin) can be dpkg-extracted and served via
+`LD_LIBRARY_PATH=<dir>/root/usr/lib/aarch64-linux-gnu` — the conductor drove a probe green this
+way off `/var/tmp/chromelibs-s213e2` (⚠ a FOREIGN session's artefact; re-extract, don't rely).
+
 ✅ **RE-VERIFIED 2026-08-08 (#129) — THE #125 CONTRADICTION IS ADJUDICATED: THE DOWNLOAD WORKS.**
 Two #125 subs recorded opposite first-hand readings (succeed-then-`EPERM` vs TLS-blocked-on-3-CDNs);
 three sessions carried both without a winner. Run fresh today, first-hand, exit **0**:

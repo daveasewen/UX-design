@@ -305,3 +305,19 @@ without it the count does not move. Flagged for ratification rather than assumed
 | `knowledge/_state.json` | rows W-100, W-101 |
 
 Not committed — the tree is left dirty for the conductor.
+
+---
+
+## CORRECTION — ADDED #215, same session, BY ADDITION (the claim above stands as written history)
+
+⛔ **OPEN-TO-DAVE item 1 ("the :is() split is a MATCHING bug — the leading-trim rule has only
+ever matched `button`") is DISPROVEN BY DRIVING, and is WITHDRAWN.** Computed-style probe in
+headless Chromium against the REAL canon, `.cn-button` wrapper holding `button` + `a` + `span`,
+BOTH eras — today's `:where()` file and the pre-#215 form from `161db61`:
+`text-box-trim` = `trim-both` on ALL THREE elements, in BOTH files. The reasoning error:
+`:is(button, .cn-x a)` under an outer `.cn-x` scope does not demand a SECOND `.cn-x` ancestor —
+the same ancestor satisfies both. Redundant, not broken. What remains is COSMETIC: argument
+bloat, plus a theoretical edge if an `:is()` argument ever starts with `html`/`:root` (none do
+today). No rendering change exists for Dave to rule on; the tidy-up is an ordinary low row.
+Probe artefacts: /var/tmp/isbug.html · isbug-old.html (session-scratch, not homed — the method
+is restated here in full so the probe re-derives).
