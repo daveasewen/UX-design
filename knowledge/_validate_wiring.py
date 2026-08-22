@@ -43,6 +43,15 @@ EXEMPT: dict[str, tuple[str, str]] = {
     # EMPTY IS A LEGITIMATE STATE: selftest bites 3+4 use a SYNTHETIC exemption so they keep
     # biting with no real entries here — a bite that needs a real exemption to exist is a bite
     # that can silently stop existing.
+    "_validate_descender_computed.py": (
+        "G2 render leg (#215, row W-101): drives real pages in headless chromium and reads "
+        "getComputedStyle — needs a STAGED BROWSER, which _build_all.py's environment does not "
+        "guarantee. Wiring it would make the build red on an ENVIRONMENT fact dressed as an "
+        "artefact verdict (#173/#183 class). It runs on demand: "
+        "`python3 knowledge/_validate_descender_clip.py --computed`, proof-of-record wherever "
+        "chromium is staged. ⚠ Re-visit if the render job ever gains a knowledge-gate step.",
+        "2026-08-22",
+    ),
 }
 
 
