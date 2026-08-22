@@ -111,7 +111,10 @@ LEGACY_IDS = (
     "W-08", "W-09", "W-10", "W-11", "W-12", "W-13", "W-14", "W-15", "W-16",
 )
 
-ID_RE = re.compile(r"^(?:W-[0-9]{1,2}[a-z]?|G[0-9]{1,2}[a-z]?)$")
+# s215-D1 (Dave, 2026-08-22): W- widened to 3 digits + up to two-letter suffix. The eight
+# #214 stopgaps (W-99za..W-99zh) are GRANDFATHERED VERBATIM — ids are addresses; renaming
+# rots every citation (ADR-0017). Next fresh mint is W-100. G scheme untouched.
+ID_RE = re.compile(r"^(?:W-[0-9]{1,3}[a-z]{0,2}|G[0-9]{1,2}[a-z]?)$")
 
 # ---- `priority_override` — OPTIONAL, DAVE'S ALONE (narrow schema addition, #165) -------------
 # The dashboard computes a PROPOSED priority score from the store. Dave overrules it by writing

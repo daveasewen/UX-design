@@ -140,12 +140,12 @@
 >
 > **MINE (51), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `G4` · `W-99z` · `W-99za` · `W-99zh`
 >
-> ⚠ store gate: **FAIL** — 10 failure(s): W-99za: id does not match '^(?:W-[0-9]{1,2}[a-z]?|G[0-9]{1,2}[a-z]?)$'. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
+> ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **24,940 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **24,877 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 70,440 real and stays whole for retrieval; you have paid for
 35% of it, and that is the intended figure, not a shortfall.)*
