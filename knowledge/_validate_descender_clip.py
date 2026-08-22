@@ -33,6 +33,10 @@ gate exists to catch — the build will go red and point you straight back here.
 Usage:  python3 knowledge/_validate_descender_clip.py <file.css|file.html> [more ...]
         python3 knowledge/_validate_descender_clip.py --selftest
         python3 knowledge/_validate_descender_clip.py         # build mode: gate DEFAULT_TARGETS
+        python3 knowledge/_validate_descender_clip.py --computed [--range A:B|--resume|--bite <slug>]
+              # G2 (#215): the RENDER leg — drives real pages in headless Chromium and reads
+              # getComputedStyle, proving the cascade instead of modelling it. Needs a staged
+              # browser (knowledge/_RUNBOOK-render-verify.md); see _validate_descender_computed.py.
 Exit non-zero on any un-overridden truncating label (blocking). Wired into _build_all.py.
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
@@ -336,16 +340,26 @@ def _fmt(sp):
 #   in canon. The prefixer is not specificity-preserving, and it inverts exactly the fix ds-005
 #   exists to protect.
 #
-# ⛔ NOT REPAIRED HERE ON PURPOSE. It is a 48-selector cross-file class remedy on a gated canon,
-# it is Dave's call (canon.css:9316 says so in as many words — "the cross-file ds-005 class remedy
-# is Dave's call, not a repair's"), and the render leg that would PROVE it (G2) is priced-not-built.
-# Blocking it today would fail a build for a defect nobody has been authorised to fix.
+# REPAIRED AT CAUSE, #215 (Dave: "always real fixes never patches, they just get lost").
+# NOT by rewriting 48 override selectors — by making the two SCOPE CLASSES specificity-neutral,
+# because neither of them was ever an authoring decision:
+#   1. gen_canon_components.prefix_selector now emits `:where(.cn-<scope>)` instead of `.cn-<scope>`.
+#      That alone moved the count 48 -> 49 and unmasked the real dominator:
+#   2. canon.css's own root marker on the DEFAULT leading-trim rule, now `:where(.canon)` instead
+#      of `.canon` — it was lifting a base default to (0,2,2), above every two-class ds-005
+#      override in the file.
+# `:where(X) Y` matches EXACTLY the elements `X Y` matches, so nothing's containment changed; only
+# the specificity the scaffolding was silently contributing went away, and each snippet's REVIEWED
+# cascade is now reproduced verbatim in canon.
 #
-# So the count below is a RATCHET: exceed it and the gate goes RED, come in under it and the gate
-# tells you to lower the number. It can only ever shrink. It cannot rot into a silent pass.
+# Measured after the fix (2026-08-22, #215): 0 cascade-dead overrides in canon.css.
+#
+# The count below stays a RATCHET, now seated at that measurement: exceed it and the gate goes RED,
+# come in under it and the gate tells you to lower the number. It can only ever shrink. It cannot
+# rot into a silent pass. At 0 it is, in effect, blocking — which is where a gate belongs.
 # -------------------------------------------------------------------------------------------------
 SPECIFICITY_RATCHET = {
-    os.path.join("canon", "canon.css"): 48,   # measured #214, post-snippet-repair. SHRINK ONLY.
+    os.path.join("canon", "canon.css"): 0,    # measured #215, post-:where() cause fix. SHRINK ONLY.
 }
 
 
@@ -401,11 +415,15 @@ def run(paths):
             print(f"\n↓ SPECIFICITY RATCHET CAN TIGHTEN — {key}: {seen} cascade-dead override(s), "
                   f"allowance {allowed}. Lower SPECIFICITY_RATCHET to {seen} in "
                   f"knowledge/_validate_descender_clip.py so the ground you won cannot be given back.")
+        elif allowed == 0:
+            print(f"\n✓ SPECIFICITY RATCHET AT ZERO — {key}: no cascade-dead descender override. "
+                  f"The scope classes are specificity-neutral (`:where()`); every ds-005 override "
+                  f"wins its cascade. Any regression here is now a RED build, not a report.")
         else:
             print(f"\n⚠ REPORT-ONLY TRANCHE HOLDING — {key}: {seen} cascade-dead descender "
-                  f"override(s), at the allowance. NOT a pass: these labels clip today. The absorb "
-                  f"prefixer is the cause (see the block above SPECIFICITY_RATCHET). ⛔ The repair is "
-                  f"a cross-file class remedy on gated canon — Dave's call, not a lane's.")
+                  f"override(s), at the allowance. NOT a pass: these labels clip today. A scope "
+                  f"class inflating specificity is the usual cause (see the block above "
+                  f"SPECIFICITY_RATCHET). Fix at cause; do not rewrite override selectors.")
     if ratchet_fail:
         return 1
     if total or dead_total:
@@ -488,6 +506,16 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     if args and args[0] == "--selftest":
         sys.exit(selftest())
+    if args and args[0] == "--computed":
+        # G2 (#215) — the RENDER leg. Legs 1 and 2 above are arithmetic; this one drives real pages
+        # in headless Chromium and reads getComputedStyle, so it proves the FEATURE and not just
+        # this file's model of the cascade [[mutation-tests-the-clause-not-the-feature]]. It needs
+        # a staged browser (knowledge/_RUNBOOK-render-verify.md), so it is a SEPARATE invocation,
+        # never part of the default build-mode run — a gate that cannot run in one environment must
+        # not be wired where it will be silently skipped [[gate-cannot-pass-in-one-environment]].
+        sys.path.insert(0, HERE)
+        import _validate_descender_computed as G2
+        sys.exit(G2.main(args[1:]))
     if args:
         sys.exit(run(args))
     rc = selftest()

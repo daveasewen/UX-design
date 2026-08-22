@@ -113,6 +113,32 @@ def is_harness(sel):
     if first in ("body", "html", "*"): return True
     return False
 
+# #215 — THE ABSORB PREFIXER IS SPECIFICITY-NEUTRAL. Read this before "simplifying" it.
+#
+# The scope class this function adds is SCAFFOLDING: it exists to stop one component's rules
+# reaching another component's markup in a shared stylesheet. It is NOT an authoring decision and
+# it must NOT change which of the snippet's OWN rules beats which. A bare `.cn-x ` prefix does
+# change that, because it is not added evenly:
+#
+#   snippet trim  :is(…,input[type=text],…):not(:has(svg))                     (0,1,2)
+#   canon   trim  .cn-x :is(…,.cn-x input[type=text],…):not(:has(svg))         (0,3,2)   +2 classes
+#   snippet ovr   .sn .sn-label                                                (0,2,0)
+#   canon   ovr   .cn-x .sn .sn-label                                          (0,3,0)   +1 class
+#
+# (The trim collects TWO because `sel.split(",")` below splits inside `:is(…)` too, so the prefix
+# lands on the :is() ARGUMENTS as well as the whole selector.) The trim gained one class more than
+# the override did, so a ds-005 descender repair that WINS in the reviewed snippet LOSES in canon.
+# Measured #214: 48 cascade-dead descender overrides in canon.css, none of them authored wrong.
+#
+# THE FIX AT CAUSE: wrap the ADDED scope in `:where()`, which contributes ZERO specificity
+# (Selectors-4). `:where(.cn-x) .foo` matches EXACTLY the same elements as `.cn-x .foo` — the
+# containment is unchanged — but the authored selector's specificity now passes through untouched,
+# so the snippet's own cascade is reproduced verbatim in canon. Only the scope we add is wrapped;
+# nothing authored is ever wrapped.
+#
+# ⛔ Do NOT go back to a bare `.{scope}` prefix. The descender gate's specificity leg
+# (knowledge/_validate_descender_clip.py, SPECIFICITY_RATCHET) will go red, and the labels really
+# do clip — that is a render-measured defect, not a lint.
 def prefix_selector(sel, scope):
     out = []
     for part in sel.split(","):
@@ -124,9 +150,9 @@ def prefix_selector(sel, scope):
         # ring-suppression rule :root[data-modality="pointer"] .box{...}).
         m = re.match(r'^((?::root|html)(?:\[[^\]]*\])*|\[[^\]]*\])\s+(.+)$', p)
         if m:
-            out.append(f"{m.group(1)} .{scope} {m.group(2)}")
+            out.append(f"{m.group(1)} :where(.{scope}) {m.group(2)}")
         else:
-            out.append(f".{scope} {p}")
+            out.append(f":where(.{scope}) {p}")
     return ", ".join(out)
 
 def process(css, scope, kf_names):

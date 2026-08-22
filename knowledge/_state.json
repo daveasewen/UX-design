@@ -2214,6 +2214,39 @@
       "body": "The dated brief the #214 Opus wrap sub runs from. First wrap under today's own rulings: wrap-handover cost line (s214-D5) and banner-discipline clause (s214-D6) both binding on it. Memory step 3 + compaction already done by conductor in-session and fenced from the sub. Rowed at creation (forgotten-document class).",
       "provenance": "#214 2026-08-21 - doc-row gate blocking; rowed like W-99w at #213",
       "condition": "stated"
+    },
+    {
+      "links": [],
+      "home": "notes/_receipts/2026-08-22-215-prefixer-where-fix.md### 2 · What changed",
+      "id": "W-100",
+      "title": "#215 absorb prefixer made specificity-neutral (:where) — canon cascade-dead descender overrides 48 -> 0",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 215,
+      "closes_when": "python3 knowledge/_validate_descender_clip.py reports 0 cascade-dead override(s) in canon/canon.css with SPECIFICITY_RATCHET seated at that measured 0, and gen_canon_components.py --check + gen_showroom.py --check both pass",
+      "body": "Fix at cause, not a patch (Dave #215: 'always real fixes never patches, they just get lost'). gen_canon_components.prefix_selector now emits :where(.cn-<scope>) so the generated scope contributes ZERO specificity; canon.css's own root marker was the second, larger inflator and is now :where(.canon) on the global leading-trim rule and on the h1-h4/p margin reset. :where(X) Y matches exactly what X Y matches, so containment is unchanged and each snippet's REVIEWED cascade is reproduced verbatim in canon. Measured 48 -> 49 (prefixer alone, the second inflator unmasked) -> 0. Ratchet lowered 48 -> 0 with the measurement quoted beside it. Driven both ways on the real canon.css and in Chromium. Whole-file flip sweep found and fixed one regression the fix itself introduced (43 component heading-margin rules). ⬛ TWO OPEN-TO-DAVE items in the receipt: the prefixer's :is() comma-shred is still a MATCHING defect (the per-component trim rule has only ever matched `button`), and the two :where(.canon) edits touch gated canon outside the AUTO markers.",
+      "closed_by": "#215 2026-08-22 - BUILT and DRIVEN BOTH WAYS. Measured 48 -> 0 cascade-dead overrides in canon/canon.css; ratchet lowered to the measured 0; gen_canon_components --check + gen_showroom --check green. Receipt notes/_receipts/2026-08-22-215-prefixer-where-fix.md. ⚠ NOT COMMITTED by the sub - the conductor commits.",
+      "closed_by": "#215 2026-08-22 - BUILT and DRIVEN BOTH WAYS. Measured 48 -> 0 cascade-dead overrides in canon/canon.css; ratchet lowered to the measured 0; gen_canon_components --check + gen_showroom --check green. Receipt notes/_receipts/2026-08-22-215-prefixer-where-fix.md. ⚠ NOT COMMITTED by the sub - the conductor commits.",
+      "provenance": "#215 2026-08-22 - Opus build sub under s204-D1; receipt notes/_receipts/2026-08-22-215-prefixer-where-fix.md",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-100"
+      ],
+      "home": "notes/_receipts/2026-08-22-215-prefixer-where-fix.md### 4 · G2 — the `--computed` render leg",
+      "id": "W-101",
+      "title": "#215 G2 BUILT — the --computed render leg of the descender gate (getComputedStyle in headless Chromium, driven red then green)",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 215,
+      "closes_when": "python3 knowledge/_validate_descender_clip.py --computed drives every ds-005 override in canon.css through headless Chromium at two viewports and passes, AND --bite <slug> on a planted regression returns a caught RED",
+      "body": "Priced ~3h/~45K at #214, built at #215 as knowledge/_validate_descender_computed.py with a --computed entry on _validate_descender_clip.py. Legs 1 and 2 are arithmetic; G2 reads getComputedStyle - Chromium's own cascade resolution - on the real label elements, comparing the canon projection against the REVIEWED snippet at 1180px and 480px. GREEN: 550 label-reads across 25 components. RED driven twice before the green was trusted (--bite sidebar-nav 16 mismatches, --bite transaction-row 32). Runbook rules obeyed: goto file:// not set_content, canvas font probe with two controls not document.fonts.check (DISCRIMINATES 346.88 vs 375.39 vs 301.07), transitions settled before any read, --range/--resume chunking, /var/tmp scratch, font symlink farm leaving 0 .uuid strays. Deliberately NOT wired into build mode: it needs a staged browser and a gate that cannot pass in one environment must not sit where it is silently skipped. UNPROVEN BY SCOPE, DECLARED: light mode only, two widths, demo scripts stripped.",
+      "closed_by": "#215 2026-08-22 - BUILT, driven RED (--bite sidebar-nav 16, --bite transaction-row 32) then GREEN (550 label-reads, 25 components, 1180px + 480px). Receipt notes/_receipts/2026-08-22-215-prefixer-where-fix.md. ⚠ NOT COMMITTED by the sub - the conductor commits.",
+      "provenance": "#215 2026-08-22 - Opus build sub under s204-D1; receipt notes/_receipts/2026-08-22-215-prefixer-where-fix.md",
+      "condition": "stated"
     }
   ]
 }
