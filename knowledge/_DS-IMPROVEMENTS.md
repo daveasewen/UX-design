@@ -2226,3 +2226,187 @@ UNRULED vocabulary question (store searched #207 — `_memento_search.py` + `_ru
 the ruled text says "catches a real defect twice", no definition of catch). **If mined history
 does not count, the ruled answer is already "wait".** That vocabulary call, and promotion itself,
 are Dave's. Home of the full critique: `notes/_briefs/2026-08-19-207-addendum-206-report-critique.md`.
+
+---
+
+## ds-040 — a boxed control that never consumes `--border-radius-control` (Search-field, and six siblings)
+
+**Status:** LOGGED 2026-08-22 #216, from the Nio-dash v2 build. **Nothing changed in canon or in
+the snippets.** Promotion is Dave's under this file's Governance.
+
+**Finding.** `.cn-search-field .search.boxed` draws a full `1px solid var(--border)` box and
+declares **no `border-radius` at all**. The token is not missing and does not dangle:
+`--border-radius-control` resolves to **8px on that very element** under Console. The component
+simply never reads it. Under **mono** (radius 0) the result looks correct, which is why it survived
+review; under Console, Legacy and Supercharge it is a square control sitting in a family of
+rounded ones. Dave read this as *"the inputs render generic, not Console"* — the search field is
+the only boxed control on the Nio screen that misses.
+
+**Evidence (measured first-hand in Chromium, `nio-dash-console-v1.canon.html`, Console light+dark):**
+
+| element | computed `border-radius` | `--border-radius-control` on it |
+|---|---|---|
+| `.cn-search-field .search.boxed` | **`0px`** | `8px` |
+| `.cn-input-fields` boxed field | `8px` | `8px` |
+| `.cn-dropdown .trigger` | `8px` | `8px` |
+| `.cn-account-selector .as-trigger` | `8px` | `8px` |
+| `.cn-amount-input .ai-box` | `8px` | `8px` |
+| `.btn.primary` | `8px` | `8px` |
+
+**The class, not the instance.** A sweep of all 135 `.cn-*` scopes in `canon.css` finds **16 that
+declare no `border-radius` anywhere**, and **seven of those draw a full 1px box**:
+`.cn-search-field` (`.search.boxed`) · `.cn-headers` (`.frame`) · `.cn-quick-actions` (`.qa`) ·
+`.cn-reorder` (`ul.reorder`) · `.cn-view-options` (`.seg`) · `.cn-splitter` (`.demo-box`) ·
+`.cn-pagination` (`.pg a`, transparent border). The other nine draw no box and are correct as they
+stand (`.cn-divider`, `.cn-eyebrow`, `.cn-summary`, `.cn-breadcrumbs`, `.cn-navigations`,
+`.cn-accordion`, `.cn-hero`, `.cn-amount-display`, `.cn-countdown-timer`).
+
+**Recommendation.** The real home is the **snippet**, not `canon.css` — `canon.css` is generated
+from `knowledge/snippets/*.reference.html` by `canon/gen_canon_components.py`, so a `canon.css`
+edit is erased on the next regeneration. Candidate, unpromoted: add
+`border-radius:var(--border-radius-control)` to the boxed rule in
+`knowledge/snippets/Search-field.reference.html` (and audit the other six by eye — some may be
+deliberately square). **Blast radius:** 1–7 gated snippets + `canon.css` regen + gate sweep + every
+showroom/review page that shows those components, and it would **retroactively restyle
+`nio-dash-console-v1.canon.html`**, which is why the v2 build fixed it in-page instead.
+
+**⚙ THE GATE-SHAPED VERSION OF THIS FINDING — and it is the case for the compiled per-theme
+stylesheet.** No gate can see this defect today, and the reason is structural: **the token
+resolves correctly, nothing dangles, and no output is wrong.** The miss is an **unconsumed value**,
+which is a NON-EVENT. A compiler minting a per-theme sheet from the override store (ADR-0011 /
+`s200-D1`) would emit a concrete `border-radius: 8px` for every rule that draws a box, and *a
+boxed rule with no radius output* becomes a question the compiler can be asked and can refuse to
+answer. **Only an emitter that enumerates consumers can detect a consumer that is absent.** The
+cheap interim is a static gate over `canon.css`: *"any rule setting a full `border:` on a control
+must also set `border-radius`"* — that would have caught all seven.
+
+**Artifacts:** `knowledge/_fitness-test/nio-dash-console-v2.mapping.md` §③ ·
+`knowledge/_render/verify_nio_dash_v2.py` (stage a carries the v1 positive control).
+
+## ds-041 — a composed screen's own `<style>` can lose a rule to a comment terminator, and no gate parses it
+
+**Status:** LOGGED 2026-08-22 #216, from the Nio-dash v2 build. Repaired **in v2 only**; v1 is
+byte-untouched and still carries the defect.
+
+**Finding.** `nio-dash-console-v1.canon.html` opens its harness stylesheet with the comment
+`/* ... no .c-<star>/.cn-<star> ... */` written with literal asterisks. **`<star>` followed by `/`
+is a CSS comment terminator**, so the comment closes at `no .c-<star>`, the parser meets garbage,
+and **it discards the very next rule** — which was `body{ margin:0; background:var(--surface-hover);
+color:var(--text) }`.
+
+**Evidence (measured in Chromium):** v1's page `<style>` parses to **45 rules with no `body` rule
+in the list** — the parsed selectors begin at `.nio-shell`. Consequences, both live and visible:
+v1's page background stays `rgb(255,255,255)` (identical to a card, so the screen looks flat and
+the intended grey never appeared), and **`body` carries `margin-top: 8px`**, the browser default.
+Two dead declarations, one of which had been mistaken for a specificity problem.
+
+**Why this matters beyond one file.** This is **ds-039's second species**, which
+`canon/gen_canon_components.py` already guards against **at the emitter** for `canon.css` (its own
+comment describes the mechanism at length, having cost 3,135 rules at #213). The guard is
+emitter-side and covers **canon.css only**. A composed screen writes its **own** `<style>` block,
+and `_validate_compose.py` does not parse it — it only regexes it for hex literals and `.cn-*{`
+redefinitions. **A screen can therefore silently lose any rule and pass every gate.**
+
+Second-order: the same defect **blinds the compose gate's own hex scan**. `check_screen()` matches
+`<style>(.*?)</style>` — and v1's comment contains the literal string `<style>` in prose ("The
+`<style>` below is LAYOUT HARNESS ONLY"), so the scan's capture **starts at that word inside the
+comment** and swallows the head comment. Any hex literal written in the page's head prose is read
+as a rogue colour in the stylesheet. Observed live during the v2 build: a token table written as
+prose in the head comment failed the gate.
+
+**Recommendation (two, both cheap, neither promoted).**
+1. Add to `_validate_compose.py`: **parse** each composed screen's `<style>` with a real CSS
+   tokenizer (or the emitter's existing `no authored string may close the comment it is written
+   into` guard, reused) and fail on any comment containing `<star>/` or `<`.
+2. Anchor the hex scan on `<style[^>]*>` **after** stripping HTML comments, so page prose cannot
+   move the capture window.
+
+**Blast radius:** `_validate_compose.py` only; then one comment repair per offending screen.
+
+**Artifacts:** `knowledge/_fitness-test/nio-dash-console-v2.mapping.md` §① ·
+`knowledge/_render/verify_nio_dash_v2.py` (asserts v2's `body` rule is present and v1's is absent).
+
+## ds-042 — the page-shell template scope carries chart geometry and out-orders the chart's own scope
+
+**Status:** LOGGED 2026-08-22 #216, from the Nio-dash v2 build. Worked around in v2's harness only.
+
+**Finding.** `canon.css` (~line 16124) declares
+`:where(.cn-template-dashboard) .dv-svg{ display:block; width:580px; height:260px; overflow:visible }`.
+That is **component-specific chart geometry living in a TEMPLATE scope**. It is the same
+specificity as `:where(.cn-chart-donut) .dv-svg` (~line 8023), which sets **no width at all**, and
+it comes **later in the file** — so on any page whose shell carries `.cn-template-dashboard`, a
+**donut** is forced to 580 × 260 even though its own markup declares `width="300" height="260"`.
+
+**Evidence.** On `nio-dash-console-v1.canon.html` the donut svg has `width="300"` and no inline
+style, yet `getComputedStyle(svg).width` reads **`580px`**, overflowing its 426px column; the
+symptom is hidden because `:where(.cn-chart-donut) .dv-stage` carries `overflow-x:auto`, so the
+donut is silently **horizontally scrollable** rather than visibly broken.
+
+**Recommendation (unpromoted).** Either scope the template's `.dv-svg` rule to the chart types it
+actually means, or give `:where(.cn-chart-donut) .dv-svg` its own explicit width so the component
+wins on its own terms. Candidate probe for the class: *no `.cn-template-*` scope may set geometry
+on a `.dv-*` selector.* **Blast radius:** every dashboard/report/detail-templated page carrying a
+chart — needs a render sweep, not a grep.
+
+**Artifacts:** `knowledge/_fitness-test/nio-dash-console-v2.mapping.md` § "Two defects found while
+building v2" A.
+
+## ds-043 — the data-series palette stops at 5; a sixth category renders silent black
+
+**Status:** LOGGED 2026-08-22 #216, from the Nio-dash v2 build. **Carried, not repaired** — the
+honest fix is a new palette step and a fitness-test screen mints no colour.
+
+**Finding.** `--data-series-6`, `--data-series-7` and `--data-series-8` are **defined nowhere in
+`canon.css`** (grep: 0 occurrences each; series 1–5 have 13/8/9/4/4 definitions). Any chart with
+more than five series therefore has a series with **no colour token**.
+
+**Evidence (Nio donut, six spending categories, Console light AND dark):**
+
+| series | `--sc` on the legend swatch | swatch background | arc `fill` |
+|---|---|---|---|
+| 1 | `#766682` | painted | painted |
+| 2–5 | `#A45C3A` · `#577C78` · `#7F7B45` · `#A37E94` | painted | painted |
+| **6** | **empty** | **`rgba(0,0,0,0)` — the swatch is invisible** | **`rgb(0,0,0)` — pure black in BOTH modes** |
+
+The two failure modes differ because the fallbacks differ: `background:var(--sc)` with an empty
+`--sc` yields transparent, while SVG `fill="var(--data-series-6)"` falls back to the SVG initial
+value, **black**. So the legend row loses its colour channel entirely (only the letter `F` still
+carries the identity) while the arc paints a colour nobody chose — and in **dark mode** a pure-black
+arc on a `#1F1F1F` card is very nearly invisible. Exactly the
+`dangling-dataviz-var-renders-silent-black` class.
+
+**Recommendation (unpromoted).** Either publish series steps 6–8 in the dataviz ramp with the same
+derivation as 1–5, **or** publish a documented ceiling ("charts carry at most five series; beyond
+that, group") and add a gate that refuses a `data-series-group` above the ceiling. Doing neither
+means the next six-category chart repeats this silently. **Blast radius:** the dataviz token ramp,
+`gen_canon_tokens.py`, and a re-run of the series-contrast measurements (`series-3` is already at
+4.61:1 and fenced from lightening).
+
+**Artifacts:** `knowledge/_render/verify_nio_dash_v2.py` stage a (asserts the defect so it is a
+measurement in the record) · `knowledge/_fitness-test/nio-dash-console-v2.mapping.md` § B.
+
+## Component-variant candidates raised by the Nio-dash v2 build (RECORDED 2026-08-22 #216, NOT added to the showroom)
+
+Both are **variants of existing components**, not new components, and both are wired live on
+`nio-dash-console-v2.canon.html` as toggles with **neither option defaulted as a recommendation**.
+Recording, not proposing; adoption is Dave's.
+
+1. **`dv-legend` — a LIST presentation with a VALUE column.** v1 needed `.dv-leg` (the filter,
+   names only) *beside* a `.cn-summary` `dl` (the figures) to reproduce the reference. The list
+   variant merges them into one list carrying swatch + letter + label + value, plus a Total row.
+   ★ **It required no behaviour-layer change at all** — `dv-legend.js` binds nothing to a layout;
+   every listener is delegated at document level and resolves by CLASS CONTRACT (`.dv-leg`,
+   `.dv-legrow[data-series]`, `.dv-leg-sw`, `.dv-leg-item`, `.dv-leg-reset`, `.dv-leg-name`), with
+   state on `host.__dv`. Honouring the contract inherits hover-fade, ghost-toggle, the DV-D19
+   isolate latch, the "at least one must stay" guard, Reset and the live region. Parity with the
+   capsule form was **driven and proved** (same ghosted set, same centre figure, with a mutation
+   control). This answers v1 mapping row 19's open DS question with a working shape, not an
+   opinion. ⚠ Two limits found and declared: dv-legend keeps **one state record per host** (so two
+   legends on one figure hold separate states), and its hover path resolves a figure's legend with
+   `querySelector('.dv-leg')` — the **first** match, so two simultaneous legends drive the wrong
+   record unless one is de-classed.
+2. **`.cn-list-items` — a `flush` (chromeless) form.** The component draws chrome in exactly three
+   places: `ul.list` background, `ul.list` border, and `li + li` separator. Chromeless = the first
+   two off, **the separator kept**. Because the `.tag` outline is genuinely ambiguous as "chrome",
+   both readings are offered (tags kept / tags plain) rather than one being picked. Row markup,
+   hover, press, focus ring and geometry are untouched.

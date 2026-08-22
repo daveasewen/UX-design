@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bento layout, full-scale bento &amp; photography gallery &mdash; v2 exploration (fitness-test, NOT gated)</title>
+<link rel="stylesheet" href="../canon/type.css">
+<link rel="stylesheet" href="../canon/canon.css">
+<!--
+  ============================ V2 ============================
+  v2 = v1 VERBATIM plus ONE new section: "3 · Full-scale bento", modelled on the Bolt.com-style
+  reference Dave saw. v1 (bento-gallery-showcase-v1.html) is BYTE-UNTOUCHED and stands as the
+  record of the first pass — version-don't-overwrite.
+
+  WHAT IS NEW IN v2, and nothing else is:
+    - a `.fs-*` block in the stylesheet (12-column grid, alternating asymmetric rows)
+    - a `<section id="fullscale">` inside the SAME `.rv-stage`, so the Stage width control in the
+      top bar governs it exactly as it governs sections 1 and 2
+    - three seg controls (`fsRatio`, `fsAlt`, `fsSurface`) and ~14 lines in the review controller
+    - two paragraphs in the lede and two bullets in "What is open"
+  No v1 rule was edited, no v1 markup was moved, no colour value was authored, and the file still
+  declares ZERO font-size and ZERO font-weight.
+  ============================================================
+
+  EXPLORATION SPECIMEN — NOT CANON, NOT GATED, NOTHING HERE IS RULED.
+  Three layout explorations put in front of Dave's eye: (1) a BENTO layout built on CSS Grid alone,
+  (2) a PHOTOGRAPHY GALLERY in both of its two real modes, with a lightbox that uses the Popover API
+  driven by INVOKER COMMANDS (command / commandfor) — no JavaScript in the component at all,
+  (3) a FULL-SCALE BENTO — full-bleed marketing-scale rows on a 12-column grid whose spans alternate
+  7/5, 5/7, 7/5. Pure CSS; the only script on the page remains the review chrome.
+
+  SCAFFOLDING COPIED, NOT INVENTED: the head order (type.css before canon.css), the single scoped
+  wrapper class binding page-local names to canon's OWN custom properties, the leading-trim block and
+  the reduced-motion block are all carried from reviews/REVIEW-204-layout-utilities-four-themes-v1.html.
+  Hand-rolling a new scaffold invents defects (#202), so none was hand-rolled.
+
+  TYPOGRAPHY: every text element carries a canon composite (.t-cm-* / .t-ed-*). This file declares
+  ZERO raw font-size and ZERO raw font-weight, including in the review chrome. (The type-composite
+  gate's own glob is canon.css + knowledge/snippets/*.html + knowledge/_proforma/*.html, so it does
+  not reach this path — the rule is honoured anyway rather than leaned on.)
+
+  COLOUR: no colour value is authored here. Every surface, ink, border and radius resolves through a
+  canon token, so all four themes and both light/dark come from canon.css's own cascade. NO RED and
+  NO GREEN appears anywhere on this page — the two-red law (s151-D1) and the mono error ink camp
+  (s149-D1) are untouched, and a layout exploration has no business minting a status colour.
+
+  IMAGES: 14 locally generated SVG "photographs" in assets-bento-gallery/ (generator beside them,
+  deterministic). Nothing is fetched from any external host. Their palette is blues/teals/greens/
+  violets/slates only — deliberately no red and no yellow.
+-->
+<style>
+/* ============================================================================
+   PAGE + REVIEW CHROME  (.rv-* — demo-chrome scope, matches the type gate's own
+   CHROME_SEL convention: \.demo|\bdemo-|harness|\.dossier|\.swatch|\.spec-|#rv-|\.rv-)
+   ============================================================================ */
+.bgx{
+  /* ---- page-local names bound to canon's OWN properties. Nothing is a copied literal, so the
+     four-theme cascade below is canon.css's cascade, not a re-typed snapshot of resolved values. */
+  --page:      var(--background-default);
+  --surface:   var(--surface-raised);
+  --surface-2: var(--surface-subtle);
+  --surface-3: var(--tertiary-background-default);
+  --line:      var(--border-subtle);
+  --line-2:    var(--border-strong);
+  --ink:       var(--text-default);
+  --ink-2:     var(--text-secondary);
+  --focus:     var(--focus-ring);
+  --focus-w:   var(--focus-ring-width);
+  --radius:    var(--border-radius-surface);
+  --radius-ctl:var(--border-radius-control);
+  --gutter:    var(--layout-app-gutter);
+  --margin:    var(--layout-app-margin);
+  --tap:       var(--target-min);
+  --ease:      160ms cubic-bezier(.4,0,.2,1);
+  /* the demo ramp — spacing only, no colour, no type */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+  background:var(--page); color:var(--ink);
+  margin:0; padding:0;
+  -webkit-font-smoothing:antialiased;
+}
+.bgx *{box-sizing:border-box;}
+/* leading trim — carried verbatim in shape from the layout-utilities review scaffold */
+.bgx :is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){
+  text-box-trim:trim-both; text-box-edge:cap alphabetic;
+}
+.bgx :focus-visible{outline:var(--focus-w) solid var(--focus); outline-offset:2px;}
+.bgx .rv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+  clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+/* ---- sticky controller bar ---- */
+.rv-bar{
+  position:sticky; top:0; z-index:40;
+  background:var(--page); border-bottom:1px solid var(--line-2);
+  padding:var(--sp-3) var(--sp-5);
+  display:flex; flex-wrap:wrap; gap:var(--sp-4) var(--sp-5); align-items:flex-end;
+}
+.rv-grp{display:flex; flex-direction:column; gap:var(--sp-1); min-width:0;}
+.rv-grp > .rv-legend{color:var(--ink-2); text-transform:uppercase; letter-spacing:.06em;}
+.rv-seg{display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--line-2); border-radius:var(--radius-ctl); overflow:hidden;}
+.rv-seg button{
+  appearance:none; font:inherit; border:0; border-right:1px solid var(--line-2);
+  background:var(--surface); color:var(--ink); cursor:pointer;
+  min-height:var(--tap); padding:0 var(--sp-3); display:inline-flex; align-items:center; justify-content:center;
+  transition:background var(--ease), color var(--ease);
+}
+.rv-seg button:last-child{border-right:0;}
+.rv-seg button:hover{background:var(--surface-2);}
+.rv-seg button[aria-pressed="true"]{background:var(--ink); color:var(--page);}
+.rv-num{display:flex; align-items:center; gap:var(--sp-2);}
+.rv-num input[type=range]{accent-color:var(--ink); max-width:132px;}
+.rv-out{color:var(--ink-2); min-width:5ch;}
+.rv-badges{display:flex; flex-wrap:wrap; gap:var(--sp-2); margin-left:auto;}
+.rv-badge{border:1px solid var(--line); border-radius:var(--radius-ctl); padding:var(--sp-1) var(--sp-2);
+  color:var(--ink-2); white-space:nowrap;}
+.rv-badge[data-ok="no"]{border-color:var(--line-2); color:var(--ink); text-decoration:line-through;}
+
+/* ---- page body / prose ---- */
+.rv-main{padding:var(--sp-6) var(--sp-5) var(--sp-7);}
+.rv-lede{max-width:70ch; display:flex; flex-direction:column; gap:var(--sp-4); margin:0 0 var(--sp-6);}
+.rv-lede p{margin:0;}
+.rv-note{border-left:3px solid var(--line-2); padding:var(--sp-2) 0 var(--sp-2) var(--sp-3); margin:0;}
+.bgx details{border:1px solid var(--line); border-radius:var(--radius); padding:var(--sp-3) var(--sp-4); max-width:80ch;}
+.bgx details summary{cursor:pointer; color:var(--ink-2);}
+.bgx details > *:not(summary){margin-top:var(--sp-3);}
+.bgx details ul{margin:0; padding-left:1.2em; display:flex; flex-direction:column; gap:var(--sp-2);}
+.rv-sec{margin:0 0 var(--sp-7); scroll-margin-top:96px;}
+.rv-sec > h2{margin:0 0 var(--sp-2);}
+.rv-sec > .rv-sub{margin:0 0 var(--sp-5); max-width:70ch; color:var(--ink-2);}
+.rv-h3{margin:var(--sp-6) 0 var(--sp-3);}
+.rv-caption{color:var(--ink-2); margin:var(--sp-2) 0 0; max-width:70ch;}
+/* no font-family declared — <code> keeps the UA monospace default, so this file authors ZERO font
+   declarations of any kind and the type-composite gate reads clean */
+.bgx code{background:var(--surface-2); padding:0 .3em; border-radius:var(--radius-ctl);}
+
+/* the width harness — lets Dave see a narrow layout without resizing the window */
+.rv-stage{container-type:inline-size; container-name:stage;
+  width:100%; max-width:var(--rv-stage-w, 100%); transition:max-width var(--ease);}
+.rv-stage[data-framed="yes"]{border:1px dashed var(--line-2); padding:var(--sp-4);}
+
+/* ============================================================================
+   1 · BENTO  — CSS GRID ONLY. No flex, no JS, no absolute positioning.
+   ============================================================================ */
+.bx-grid{
+  display:grid;
+  grid-template-columns:repeat(var(--bx-cols,4), minmax(0,1fr));
+  grid-auto-rows:var(--bx-row,128px);
+  gap:var(--bx-gap,16px);
+}
+.bx-grid[data-dense="on"]{grid-auto-flow:row dense;}
+
+/* span utilities — the whole vocabulary is these four attribute values */
+.bx-tile{grid-column:span 1; grid-row:span 1;}
+.bx-tile[data-span="wide"]{grid-column:span 2;}
+.bx-tile[data-span="tall"]{grid-row:span 2;}
+.bx-tile[data-span="big"] {grid-column:span 2; grid-row:span 2;}
+.bx-tile[data-span="hero"]{grid-column:span 3; grid-row:span 2;}
+
+/* span PRESETS — the same markup, three different emphasis settings, so Dave can rule the
+   vocabulary rather than one arrangement of it */
+.bx-grid[data-preset="flat"] .bx-tile{grid-column:span 1; grid-row:span 1;}
+.bx-grid[data-preset="calm"] .bx-tile[data-span="hero"]{grid-column:span 2; grid-row:span 2;}
+.bx-grid[data-preset="calm"] .bx-tile[data-span="big"]{grid-column:span 2; grid-row:span 1;}
+.bx-grid[data-preset="loud"] .bx-tile[data-span="wide"]{grid-column:span 2; grid-row:span 2;}
+
+/* TILE SURFACE IS A CONTROL, NOT A CHOICE MADE HERE. Measured in all four themes: in LIGHT,
+   --surface-raised and --tertiary-background-default are both IDENTICAL to --background-default,
+   so a tile painted with the semantically-correct "raised card" token is invisible except for its
+   border. Only --surface-subtle differs in light. That is a token question and it is Dave's, so all
+   three are offered and the measurement is printed on the page rather than quietly worked around. */
+.bx-grid{--bx-surface:var(--surface-2);}
+.bx-grid[data-surface="raised"]{--bx-surface:var(--surface);}
+.bx-grid[data-surface="subtle"]{--bx-surface:var(--surface-2);}
+.bx-grid[data-surface="flush"] {--bx-surface:transparent;}
+.bx-tile{
+  background:var(--bx-surface); border:1px solid var(--line); border-radius:var(--radius);
+  padding:var(--sp-4); overflow:hidden;
+  display:flex; flex-direction:column; gap:var(--sp-2); min-width:0;
+}
+.bx-tile[data-tone="flush"]{padding:0; border:0; background:transparent;}
+.bx-eyebrow{color:var(--ink-2); text-transform:uppercase; letter-spacing:.06em;}
+.bx-fig{margin:auto 0 0; font-variant-numeric:tabular-nums;}
+.bx-sub{color:var(--ink-2);}
+.bx-rows{list-style:none; margin:auto 0 0; padding:0; display:flex; flex-direction:column;}
+.bx-rows li{display:flex; justify-content:space-between; gap:var(--sp-3);
+  padding:var(--sp-2) 0; border-bottom:1px solid var(--line);}
+.bx-rows li:last-child{border-bottom:0;}
+/* ds-005: a truncating label must opt out of the cap/alphabetic trim or its descenders are sliced.
+   Caught by knowledge/_validate_descender_clip.py, which prescribed this exact override. */
+.bx-rows .bx-r-name{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text;}
+.bx-rows .bx-r-amt{font-variant-numeric:tabular-nums; flex:0 0 auto;}
+/* meter track is a HAIRLINE, not a tint — a tinted track disappears whenever the tile surface
+   control lands on the same value, which it does in dark in all four themes */
+.bx-meter{height:8px; background:transparent; border:1px solid var(--line-2);
+  border-radius:var(--radius-ctl); overflow:hidden;}
+.bx-meter > i{display:block; height:100%; background:var(--ink); width:var(--v,50%);}
+.bx-acts{display:flex; gap:var(--sp-2); flex-wrap:wrap; margin-top:auto;}
+.bx-btn{appearance:none; font:inherit; cursor:pointer; min-height:var(--tap);
+  padding:0 var(--sp-4); border-radius:var(--radius-ctl); border:1px solid var(--ink);
+  background:var(--ink); color:var(--page); transition:opacity var(--ease);}
+.bx-btn[data-kind="ghost"]{background:transparent; color:var(--ink); border-color:var(--line-2);}
+.bx-btn:hover{opacity:.86;}
+.bx-photo{width:100%; height:100%; object-fit:cover; display:block; border-radius:var(--radius);}
+.bx-spark{display:flex; align-items:flex-end; gap:3px; height:36px; margin-top:auto;}
+.bx-spark > i{flex:1; background:var(--ink); opacity:.34; border-radius:1px; height:var(--h,40%);}
+.bx-spark > i:last-child{opacity:1;}
+
+/* RESPONSIVE — the container, not the viewport, decides. Below 700px the column count is
+   overridden to 2 and every span is clamped; below 460px it is one column. */
+@container stage (max-width:700px){
+  .bx-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .bx-tile[data-span="hero"]{grid-column:span 2;}
+}
+@container stage (max-width:460px){
+  .bx-grid{grid-template-columns:1fr; grid-auto-rows:minmax(var(--bx-row,128px),auto);}
+  .bx-tile{grid-column:span 1 !important;}
+}
+
+/* ============================================================================
+   2 · PHOTOGRAPHY GALLERY — two modes, one markup
+   ============================================================================ */
+.gl{--gl-cols:4; --gl-gap:16px; --gl-ar:4/3;}
+
+/* (a) MASONRY via CSS columns — staggered, native heights preserved */
+.gl[data-mode="masonry"]{columns:var(--gl-cols) auto; column-gap:var(--gl-gap);}
+.gl[data-mode="masonry"] .gl-cell{break-inside:avoid; margin:0 0 var(--gl-gap); display:block;}
+.gl[data-mode="masonry"] .gl-img{width:100%; height:auto; aspect-ratio:auto;}
+
+/* (b) UNIFORM-ROW GRID — object-fit:cover into a chosen ratio */
+.gl[data-mode="grid"]{display:grid; grid-template-columns:repeat(var(--gl-cols),minmax(0,1fr)); gap:var(--gl-gap);}
+.gl[data-mode="grid"] .gl-img{width:100%; height:100%; object-fit:cover; aspect-ratio:var(--gl-ar);}
+.gl[data-mode="grid"][data-aspect="free"] .gl-img{aspect-ratio:auto; height:auto; object-fit:fill;}
+
+.gl-cell{margin:0; min-width:0;}
+.gl-open{
+  display:block; width:100%; padding:0; border:1px solid var(--line); background:var(--surface);
+  border-radius:var(--radius); overflow:hidden; cursor:pointer; position:relative;
+  transition:transform var(--ease), border-color var(--ease);
+}
+.gl-open:hover{transform:scale(1.012); border-color:var(--line-2);}
+.gl-open:active{transform:scale(.994);}
+.gl-img{display:block; border-radius:0;}
+.gl-cap{display:flex; justify-content:space-between; gap:var(--sp-2);
+  padding:var(--sp-2) var(--sp-3); color:var(--ink-2); text-align:left;}
+.gl-cap .gl-ratio{flex:0 0 auto; font-variant-numeric:tabular-nums;}
+
+/* ---- LIGHTBOX — popover + invoker commands. ZERO JavaScript in this component. ---- */
+.gl-lb{
+  border:1px solid var(--line-2); border-radius:var(--radius); background:var(--page); color:var(--ink);
+  padding:var(--sp-4); margin:auto; inset:0; max-width:min(92vw,1100px); max-height:92vh;
+  overflow:auto; box-shadow:var(--elevation-functional-x,0) var(--elevation-functional-y,8px)
+    var(--elevation-functional-blur,32px) var(--elevation-functional-spread,0) var(--elevation-functional,rgba(0,0,0,.28));
+}
+.gl-lb::backdrop{background:var(--scrim-bg, rgba(0,0,0,.62)); backdrop-filter:blur(2px);}
+.gl-lb-head{display:flex; justify-content:space-between; align-items:center; gap:var(--sp-4); margin-bottom:var(--sp-3);}
+.gl-lb-x{appearance:none; font:inherit; cursor:pointer; min-width:var(--tap); min-height:var(--tap);
+  border:1px solid var(--line-2); border-radius:var(--radius-ctl); background:transparent; color:var(--ink);
+  display:inline-flex; align-items:center; justify-content:center; padding:0 var(--sp-3);}
+.gl-lb-x:hover{background:var(--surface-2);}
+.gl-lb img{display:block; width:100%; height:auto; max-height:70vh; object-fit:contain; background:var(--surface-2);}
+.gl-lb-meta{display:flex; gap:var(--sp-4); flex-wrap:wrap; color:var(--ink-2); margin-top:var(--sp-3);}
+
+/* ---- the side-by-side compare strip: both modes at once, same six photographs ---- */
+.gl-compare{display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-5);}
+.gl-compare > figure{margin:0; min-width:0;}
+.gl-compare figcaption{margin:0 0 var(--sp-3); color:var(--ink-2);}
+@container stage (max-width:820px){ .gl-compare{grid-template-columns:1fr;} }
+@container stage (max-width:700px){ .gl{--gl-cols:2 !important;} }
+@container stage (max-width:420px){ .gl{--gl-cols:1 !important;} }
+
+/* order-tracer — proves the DOM-order / visual-order divergence rather than asserting it */
+.gl[data-tracer="on"] .gl-open::after{
+  content:attr(data-n); position:absolute; top:var(--sp-2); left:var(--sp-2); z-index:2;
+  min-width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;
+  background:var(--ink); color:var(--page); border-radius:var(--radius-ctl); padding:0 var(--sp-1);
+}
+.bx-grid[data-tracer="on"] .bx-tile{position:relative;}
+.bx-grid[data-tracer="on"] .bx-tile::after{
+  content:attr(data-n); position:absolute; top:var(--sp-2); right:var(--sp-2); z-index:2;
+  min-width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;
+  background:var(--ink); color:var(--page); border-radius:var(--radius-ctl); padding:0 var(--sp-1);
+}
+
+/* ============================================================================
+   3 · FULL-SCALE BENTO  (v2) — the Bolt-reference shape.
+   A 12-COLUMN grid whose rows alternate asymmetric spans: 7/5, then 5/7, then 7/5.
+   CSS Grid only. No flex on the grid, no JS, no absolute positioning, no authored colour.
+
+   WHY CONTAINER QUERIES AND NOT MEDIA QUERIES — and it is a measurable reason, not a taste:
+   the page ships a STAGE WIDTH harness (Full / 900 / 640 / 380) so Dave can see a narrow layout
+   without resizing his window. A viewport query CANNOT see that harness — at stage 380 on a
+   1400px screen every `@media` breakpoint still reports 1400 and the layout would refuse to
+   collapse. `.rv-stage` already declares `container-type:inline-size; container-name:stage`
+   (v1, carried), so `@container stage (...)` reads the harness box and collapses correctly.
+   Same argument v1 made for section 1; this section is added to the SAME container so one
+   control governs all three.
+   A SECOND, NESTED container is used for the tile INTERIOR: each tile declares
+   `container-name:fstile`, so whether the illustration sits BESIDE the text or ABOVE it is
+   decided by the TILE's own width. That matters because a 7-span tile and a 5-span tile in the
+   same row are different widths and should not be forced to flip together.
+   ============================================================================ */
+.fs{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:var(--fs-gap);
+  /* the split is a CONTROL, not a decision made here — see the seg above the section */
+  --fs-a:7; --fs-b:5;
+  /* ⚠ --fs-gap and --fs-pad are DECLARED here, not left to an inline `var(x, fallback)`.
+     The first draft wrote `gap:var(--fs-gap,24px)` with no declaration; it RENDERED CORRECTLY
+     (the fallback fired) but the property itself resolved EMPTY in all four themes, which is
+     indistinguishable from a dangling var to any instrument — and a fallback silently becomes
+     the shipped value the moment someone assumes the token exists. The v2 probe's extended
+     var-resolution sweep caught it; declaring it is the fix at cause. */
+  --fs-gap:24px;
+  --fs-pad:40px;         /* generous tile padding; a spacing value, no token exists for it */
+}
+.fs[data-ratio="7-5"]{--fs-a:7; --fs-b:5;}
+.fs[data-ratio="8-4"]{--fs-a:8; --fs-b:4;}
+.fs[data-ratio="6-6"]{--fs-a:6; --fs-b:6;}
+
+/* the two span roles. Rows alternate by AUTHORING order: a/b, b/a, a/b. */
+.fs-tile[data-w="a"]{grid-column:span var(--fs-a);}
+.fs-tile[data-w="b"]{grid-column:span var(--fs-b);}
+
+/* SURFACE — the same open token question section 1 raises, not a second decision.
+   Measured in v1 and unchanged: surface/raised and tertiary/background/default are IDENTICAL to
+   background/default in light in all four themes, so a tile painted with the semantically correct
+   card token is invisible except for its hairline. */
+.fs{--fs-surface:var(--surface-2);}
+.fs[data-surface="raised"]{--fs-surface:var(--surface);}
+.fs[data-surface="subtle"]{--fs-surface:var(--surface-2);}
+.fs[data-surface="flush"] {--fs-surface:transparent;}
+
+.fs-tile{
+  container-type:inline-size; container-name:fstile;
+  background:var(--fs-surface); border:1px solid var(--line); border-radius:var(--radius);
+  padding:var(--fs-pad); overflow:hidden; min-width:0;
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,42%);
+  gap:var(--fs-pad); align-items:center;
+  transition:border-color var(--ease);
+}
+.fs-tile:hover{border-color:var(--line-2);}
+.fs-body{display:flex; flex-direction:column; gap:var(--sp-3); min-width:0;}
+.fs-eyebrow{color:var(--ink-2); text-transform:uppercase; letter-spacing:.06em;}
+.fs-h{margin:0; max-width:22ch;}
+.fs-copy{margin:0; color:var(--ink-2); max-width:44ch;}
+/* the "More about →" text link. Colour is --ink, i.e. canon's own text token — NO link colour is
+   authored here, because a link seat is a token decision and it is not this page's to mint. */
+.fs-link{
+  align-self:flex-start; color:var(--ink); text-decoration:underline; text-underline-offset:3px;
+  display:inline-flex; align-items:center; gap:var(--sp-2); min-height:var(--tap);
+}
+.fs-link:hover{text-decoration-thickness:2px;}
+.fs-link .fs-arrow{transition:transform var(--ease);}
+.fs-link:hover .fs-arrow{transform:translateX(3px);}
+.fs-art{margin:0; min-width:0;}
+.fs-art img{
+  display:block; width:100%; height:auto; aspect-ratio:4/3; object-fit:cover;
+  border-radius:var(--radius-ctl); background:var(--surface-2);
+}
+
+/* IMAGE-SIDE ALTERNATION — on: the illustration swaps side row by row, so the eye zig-zags down
+   the page (the reference's behaviour). off: every illustration sits on the right. This is a
+   `order` swap ONLY — the DOM order is text-then-illustration in every tile either way, so the
+   reading order does NOT diverge from the visual order the way section 1's dense packing does. */
+.fs[data-alt="on"] .fs-tile[data-flip="yes"]{grid-template-columns:minmax(0,42%) minmax(0,1fr);}
+.fs[data-alt="on"] .fs-tile[data-flip="yes"] .fs-body{order:2;}
+.fs[data-alt="on"] .fs-tile[data-flip="yes"] .fs-art{order:1;}
+
+/* ---- RESPONSIVE, step 1: the STAGE decides the column structure ---- */
+/* mid — 2-up EQUAL: the asymmetry is abandoned rather than squeezed, because a 5-span tile below
+   ~430px cannot hold a display heading and an illustration side by side. */
+@container stage (max-width:1000px){
+  .fs-tile[data-w="a"], .fs-tile[data-w="b"]{grid-column:span 6;}
+  .fs{--fs-pad:32px;}
+}
+/* narrow — single column */
+@container stage (max-width:640px){
+  .fs-tile[data-w="a"], .fs-tile[data-w="b"]{grid-column:span 12;}
+  .fs{--fs-pad:24px; --fs-gap:16px;}
+}
+
+/* ---- RESPONSIVE, step 2: the TILE decides its own interior ---- */
+/* Below 520px of its OWN CONTENT BOX the illustration goes ABOVE the text, in both alternation
+   states. Note that is the CONTENT box: a 5-span tile measures 549px on a 1400px screen but only
+   467px inside its 40px padding, which is why the narrow half of a row flips while the wide half
+   does not — the effect the nested container exists for.
+
+   ⛔ MEASURED PLATFORM FACT, BANKED — DO NOT "SIMPLIFY" THIS BACK.
+   The obvious way to write this is `.fs-tile{grid-template-columns:minmax(0,1fr)}` inside the
+   query. It DOES NOT TAKE. A size container's own layout property is not re-styled by its own
+   container query — driven and measured on this page: inside the SAME @container block the
+   descendant rules applied (`.fs-art img` computed `16/9`, `.fs-body` computed `order:2`) while
+   the container's own `grid-template-columns` still computed TWO tracks. The rule was there, it
+   matched, and it did nothing, which is the worst shape a CSS bug can take. The fix is to change
+   the CHILDREN instead: both span the full track set, so they stack whatever the tracks are. */
+@container fstile (max-width:520px){
+  .fs-tile > .fs-body, .fs-tile > .fs-art{grid-column:1 / -1;}
+  .fs-tile > .fs-body{order:2;}
+  .fs-tile > .fs-art{order:1;}
+  .fs-art img{aspect-ratio:16/9;}
+}
+
+/* order tracer works here too — it should show a STRICTLY ascending sequence in every state,
+   which is the point: this section has no reading-order divergence to disclose. */
+.fs[data-tracer="on"] .fs-tile{position:relative;}
+.fs[data-tracer="on"] .fs-tile::after{
+  content:attr(data-n); position:absolute; top:var(--sp-2); right:var(--sp-2); z-index:2;
+  min-width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;
+  background:var(--ink); color:var(--page); border-radius:var(--radius-ctl); padding:0 var(--sp-1);
+}
+
+@media (prefers-reduced-motion: reduce){
+  .bgx *, .bgx *::before, .bgx *::after{transition-duration:.01ms !important; animation-duration:.01ms !important;
+    animation-iteration-count:1 !important; scroll-behavior:auto !important;}
+  .gl-open:hover, .gl-open:active{transform:none !important;}
+  .fs-link:hover .fs-arrow{transform:none !important;}
+}
+</style>
+</head>
+<body class="bgx">
+
+<!-- ========================= REVIEW CHROME ========================= -->
+<header class="rv-bar" role="region" aria-label="Review controls">
+  <div class="rv-grp">
+    <span class="rv-legend t-cm-legal">Theme</span>
+    <div class="rv-seg" id="rvTheme" role="group" aria-label="Apollo theme">
+      <button type="button" class="t-cm-ctl-12" data-v="mono"       aria-pressed="true">Mono</button>
+      <button type="button" class="t-cm-ctl-12" data-v="legacy"     aria-pressed="false">Legacy</button>
+      <button type="button" class="t-cm-ctl-12" data-v="console"    aria-pressed="false">Console</button>
+      <button type="button" class="t-cm-ctl-12" data-v="supercharge" aria-pressed="false">Supercharge</button>
+    </div>
+  </div>
+  <div class="rv-grp">
+    <span class="rv-legend t-cm-legal">Mode</span>
+    <div class="rv-seg" id="rvDark" role="group" aria-label="Light or dark">
+      <button type="button" class="t-cm-ctl-12" data-v="light" aria-pressed="true">Light</button>
+      <button type="button" class="t-cm-ctl-12" data-v="dark"  aria-pressed="false">Dark</button>
+    </div>
+  </div>
+  <div class="rv-grp">
+    <span class="rv-legend t-cm-legal">Stage width</span>
+    <div class="rv-seg" id="rvWidth" role="group" aria-label="Stage width">
+      <button type="button" class="t-cm-ctl-12" data-v="100%" aria-pressed="true">Full</button>
+      <button type="button" class="t-cm-ctl-12" data-v="900px" aria-pressed="false">900</button>
+      <button type="button" class="t-cm-ctl-12" data-v="640px" aria-pressed="false">640</button>
+      <button type="button" class="t-cm-ctl-12" data-v="380px" aria-pressed="false">380</button>
+    </div>
+  </div>
+  <div class="rv-grp">
+    <span class="rv-legend t-cm-legal">Order tracer</span>
+    <div class="rv-seg" id="rvTracer" role="group" aria-label="Show DOM order numbers">
+      <button type="button" class="t-cm-ctl-12" data-v="off" aria-pressed="true">Off</button>
+      <button type="button" class="t-cm-ctl-12" data-v="on"  aria-pressed="false">Show DOM order</button>
+    </div>
+  </div>
+  <div class="rv-badges">
+    <span class="rv-badge t-cm-legal" id="capCmd">invoker commands &mdash;</span>
+    <span class="rv-badge t-cm-legal" id="capPop">popover &mdash;</span>
+    <span class="rv-badge t-cm-legal" id="capMasonry">CSS masonry &mdash;</span>
+  </div>
+</header>
+
+<main class="rv-main">
+
+  <h1 class="t-ed-heading-1">Bento layout, full-scale bento &amp; photography gallery <span class="t-cm-legal">&mdash; v2</span></h1>
+
+  <div class="rv-lede">
+    <p class="t-ed-body"><strong>Three layouts the library does not have yet, drawn so you can rule them by eye.</strong>
+      The first is a <em>bento</em> &mdash; a wall of tiles of deliberately different sizes, where the size
+      itself is the emphasis. The second is a <em>photography gallery</em>, shown both of the two ways a
+      gallery can honestly be built, because which one is right is a judgement about pictures, not about code.
+      The third, <strong>new in this version</strong>, is a <em>full-scale bento</em>: the same idea at
+      marketing scale, where each tile is a whole statement on a twelve-column grid and the rows alternate
+      7/5, 5/7, 7/5.</p>
+
+    <p class="rv-note t-ed-body-small"><strong>This is v2. Nothing was taken away.</strong>
+      <code>bento-gallery-showcase-v1.html</code> is untouched on disk and still says exactly what it said;
+      this file is that page plus <strong>section 3</strong> and its three controls. If section 3 is the wrong
+      idea, v1 is the record of the page without it.</p>
+
+    <p class="t-ed-body">Everything on this page is <strong>proposed, not decided</strong>. No colour value was
+      authored; every surface, ink, border and corner comes from a canon token, which is why the four theme
+      buttons at the top change the look without anything here changing. The controls are there so you can
+      settle the open questions live rather than from a description &mdash; column count, gap, how loud the
+      tiles get, which gallery mode, and what shape a photograph should be forced into.</p>
+
+    <p class="rv-note t-ed-body-small"><strong>Two things will look like bugs and are not &mdash; they are the
+      trade-off you are being asked to rule on.</strong> A staggered masonry gallery reads down its columns,
+      but a screen reader and a keyboard read across the source order, so the picture you tab to next is not
+      the picture beside the one you were on. Turning on <em>dense</em> packing in the bento does the same
+      thing: it back-fills holes with whatever tile happens to fit, so a later tile jumps ahead of an earlier
+      one. Press <strong>Show DOM order</strong> in the bar above and both sections number themselves in source
+      order &mdash; where the numbers stop counting up, the reading order and the visual order have parted.
+      Nothing on this page resolves that; it is shown, deliberately.</p>
+
+    <p class="rv-note t-ed-body-small"><strong>The lightbox has no JavaScript in it at all.</strong> Clicking a
+      photograph opens it through the browser's own Popover API, triggered by the
+      <code>command</code> / <code>commandfor</code> attributes on the button. There is no
+      <code>:target</code> trick and no hidden checkbox. Escape closes it, clicking outside closes it, and
+      focus returns to the photograph you came from &mdash; all from the platform. The badges in the bar report
+      whether the browser you are reading this in actually supports that; the script that fills them in is
+      review chrome and touches nothing in either component.</p>
+
+    <details>
+      <summary class="t-cm-label">Technical detail</summary>
+      <ul class="t-ed-body-small">
+        <li><strong>Bento is CSS Grid only.</strong> A repeating column track
+          (<code>repeat(var(--bx-cols), minmax(0,1fr))</code>), a fixed row rhythm
+          (<code>grid-auto-rows</code>), and four span utilities &mdash; <code>wide</code> (2&times;1),
+          <code>tall</code> (1&times;2), <code>big</code> (2&times;2), <code>hero</code> (3&times;2) &mdash;
+          expressed as <code>data-span</code> attributes. <code>grid-auto-flow: row dense</code> is a toggle,
+          never a default. No flexbox, no absolute positioning, no measurement JavaScript.</li>
+        <li><strong>Responsiveness is a container query, not a viewport query.</strong> The stage declares
+          <code>container-type: inline-size</code>, so the bento collapses to two columns at 700px and one at
+          460px <em>of its own box</em>. That is why the 380px stage-width button collapses the layout on a wide
+          screen &mdash; a viewport query could not see it. (Same argument as the <code>l-split</code> case in
+          the #204 layout-utilities page.)</li>
+        <li><strong>Gallery mode (a), masonry, is <code>columns</code>.</strong> CSS multi-column with
+          <code>break-inside: avoid</code> on each cell. It preserves every photograph's native ratio and costs
+          the reading order. <strong>Mode (b) is a uniform grid</strong> with
+          <code>object-fit: cover</code> and an <code>aspect-ratio</code>; it keeps the reading order and costs
+          the crop.</li>
+        <li><strong>Native CSS masonry (Grid Lanes) is deliberately not used.</strong> It is not Baseline; the
+          badge in the bar reports <code>CSS.supports('grid-template-rows','masonry')</code> as measured in your
+          browser, and the layout does not depend on it either way.</li>
+        <li><strong>Lightbox mechanism.</strong> <code>&lt;button command="show-popover"
+          commandfor="lb-N"&gt;</code> against <code>&lt;div id="lb-N" popover&gt;</code>; the close button is
+          <code>command="hide-popover"</code>. Light dismiss, Escape, the top layer, and focus restoration are
+          all the platform's.</li>
+        <li><strong>Token binding.</strong> Page-local names (<code>--ink</code>, <code>--surface</code>,
+          <code>--line</code>, <code>--radius</code>&hellip;) are bound to canon's own custom properties at the
+          <code>.bgx</code> scope &mdash; <code>--text-default</code>, <code>--surface-raised</code>,
+          <code>--surface-subtle</code>, <code>--tertiary-background-default</code>,
+          <code>--border-subtle</code>, <code>--border-strong</code>, <code>--text-secondary</code>,
+          <code>--focus-ring</code>, <code>--border-radius-surface</code>, <code>--border-radius-control</code>,
+          <code>--target-min</code>, <code>--layout-app-gutter</code>. All twelve are defined in canon.css's
+          <code>:root</code>, so none can dangle into a silent black in any theme.</li>
+        <li><strong>Radius is not a decision here.</strong> Corners are <code>--border-radius-surface</code> and
+          <code>--border-radius-control</code> as canon ships them per theme. Measured on this page:
+          <strong>Console is the only rounded theme</strong> &mdash; surface <code>20px</code>, control
+          <code>8px</code> (<code>s199-D3</code>) &mdash; while Mono, Legacy <em>and Supercharge</em> all
+          resolve to <code>0</code>. Switch themes and the corners move; no radius value was authored here.</li>
+        <li><strong>Type.</strong> Zero raw <code>font-size</code> and zero raw <code>font-weight</code> in this
+          file, chrome included. Every text node carries a <code>.t-cm-*</code> or <code>.t-ed-*</code>
+          composite.</li>
+        <li><strong>Images.</strong> 14 SVGs generated locally by
+          <code>assets-bento-gallery/_gen-photos.py</code> (deterministic; re-runnable). No external fetch.
+          Their palette is cool-only by construction &mdash; no red, no yellow &mdash; so nothing can be
+          mistaken for a status signal.</li>
+      </ul>
+    </details>
+  </div>
+
+  <div class="rv-stage" id="stage" data-framed="no">
+
+  <!-- ===================== 1 · BENTO ===================== -->
+  <section class="rv-sec" id="bento" aria-labelledby="bento-h">
+    <h2 class="t-ed-heading-3" id="bento-h">1 &middot; Bento layout</h2>
+    <p class="rv-sub t-ed-body">A dashboard wall where importance is expressed as area. Twelve tiles, one
+      grid, four span sizes. Drag the controls and the same markup becomes a different wall &mdash; that is
+      the thing to judge, not any one arrangement.</p>
+
+    <div class="rv-bar" style="position:static; border:1px solid var(--line); border-bottom:1px solid var(--line); border-radius:var(--radius); margin-bottom:var(--sp-5);">
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Columns</span>
+        <div class="rv-num"><input type="range" id="bxCols" min="2" max="6" step="1" value="4" aria-label="Bento column count">
+          <output class="rv-out t-cm-ctl-12" id="bxColsOut">4</output></div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Gap</span>
+        <div class="rv-num"><input type="range" id="bxGap" min="0" max="32" step="4" value="16" aria-label="Bento gap in pixels">
+          <output class="rv-out t-cm-ctl-12" id="bxGapOut">16px</output></div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Row height</span>
+        <div class="rv-num"><input type="range" id="bxRow" min="80" max="200" step="8" value="128" aria-label="Bento auto row height">
+          <output class="rv-out t-cm-ctl-12" id="bxRowOut">128px</output></div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Span preset</span>
+        <div class="rv-seg" id="bxPreset" role="group" aria-label="Span emphasis preset">
+          <button type="button" class="t-cm-ctl-12" data-v="authored" aria-pressed="true">As authored</button>
+          <button type="button" class="t-cm-ctl-12" data-v="calm" aria-pressed="false">Calm</button>
+          <button type="button" class="t-cm-ctl-12" data-v="loud" aria-pressed="false">Loud</button>
+          <button type="button" class="t-cm-ctl-12" data-v="flat" aria-pressed="false">Flat (no spans)</button>
+        </div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Dense packing</span>
+        <div class="rv-seg" id="bxDense" role="group" aria-label="grid-auto-flow dense">
+          <button type="button" class="t-cm-ctl-12" data-v="off" aria-pressed="true">Off</button>
+          <button type="button" class="t-cm-ctl-12" data-v="on"  aria-pressed="false">On</button>
+        </div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Tile surface</span>
+        <div class="rv-seg" id="bxSurface" role="group" aria-label="Which surface token the tiles paint with">
+          <button type="button" class="t-cm-ctl-12" data-v="subtle" aria-pressed="true">Subtle</button>
+          <button type="button" class="t-cm-ctl-12" data-v="raised" aria-pressed="false">Raised</button>
+          <button type="button" class="t-cm-ctl-12" data-v="flush"  aria-pressed="false">Border only</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="rv-note t-ed-body-small" style="max-width:70ch; margin:0 0 var(--sp-5);"><strong>One measured
+      thing before you look, because it will otherwise read as a bug in the drawing.</strong> The token that
+      means &ldquo;a raised card&rdquo; &mdash; <code>surface/raised</code> &mdash; resolves to <em>exactly the
+      page background</em> in light mode in all four themes (measured: <code>#FFFFFF</code> on
+      <code>#FFFFFF</code> under Mono, Legacy and Console; <code>#F7F6F4</code> on <code>#F7F6F4</code> under
+      Supercharge). So does <code>tertiary/background/default</code>. A bento painted with the correct card
+      token is invisible in daylight except for its hairline. The <strong>Tile surface</strong> control starts
+      on <em>Subtle</em> purely so the layout is legible on arrival &mdash; that starting position is not a
+      recommendation, and <strong>which token a card should use is a token decision and it is yours</strong>.
+      Press <em>Raised</em> to see the measurement for yourself.</p>
+
+    <div class="bx-grid" id="bxGrid" data-dense="off" data-preset="authored" data-tracer="off" data-surface="subtle"
+         style="--bx-cols:4; --bx-gap:16px; --bx-row:128px;">
+
+      <div class="bx-tile" data-span="hero" data-n="1">
+        <span class="bx-eyebrow t-cm-legal">Current account &middot; &bull;&bull;&bull;&bull; 4417</span>
+        <span class="bx-fig t-cm-figure-2">&pound;18,204.36</span>
+        <span class="bx-sub t-ed-body-small">Available now &middot; &pound;240.00 pending</span>
+        <div class="bx-spark" aria-hidden="true">
+          <i style="--h:38%"></i><i style="--h:52%"></i><i style="--h:44%"></i><i style="--h:66%"></i>
+          <i style="--h:58%"></i><i style="--h:74%"></i><i style="--h:62%"></i><i style="--h:88%"></i>
+          <i style="--h:71%"></i><i style="--h:95%"></i>
+        </div>
+        <div class="bx-acts">
+          <button type="button" class="bx-btn t-cm-button">Make a payment</button>
+          <button type="button" class="bx-btn t-cm-button" data-kind="ghost">Statements</button>
+        </div>
+      </div>
+
+      <div class="bx-tile" data-span="big" data-n="2">
+        <span class="bx-eyebrow t-cm-legal">Recent activity</span>
+        <ul class="bx-rows">
+          <li><span class="bx-r-name t-ed-body-small">Northgate Supplies Ltd</span><span class="bx-r-amt t-cm-figure-6">&minus;1,240.00</span></li>
+          <li><span class="bx-r-name t-ed-body-small">Payroll &mdash; August</span><span class="bx-r-amt t-cm-figure-6">&minus;8,916.50</span></li>
+          <li><span class="bx-r-name t-ed-body-small">Client invoice 20418</span><span class="bx-r-amt t-cm-figure-6">+4,500.00</span></li>
+          <li><span class="bx-r-name t-ed-body-small">HMRC VAT quarter 2</span><span class="bx-r-amt t-cm-figure-6">&minus;2,318.72</span></li>
+          <li><span class="bx-r-name t-ed-body-small">Card &mdash; fuel &amp; travel</span><span class="bx-r-amt t-cm-figure-6">&minus;96.40</span></li>
+        </ul>
+      </div>
+
+      <div class="bx-tile" data-span="tall" data-tone="flush" data-n="3">
+        <img class="bx-photo" src="assets-bento-gallery/p09-stairwell.svg" width="900" height="1600"
+             alt="Placeholder photograph: stairwell, tall portrait" loading="lazy" decoding="async">
+      </div>
+
+      <div class="bx-tile" data-n="4">
+        <span class="bx-eyebrow t-cm-legal">GBP / EUR</span>
+        <span class="bx-fig t-cm-figure-3">1.1642</span>
+        <span class="bx-sub t-ed-caption">Indicative &middot; 09:41</span>
+      </div>
+
+      <div class="bx-tile" data-n="5">
+        <span class="bx-eyebrow t-cm-legal">Cards</span>
+        <span class="bx-fig t-cm-figure-3">6</span>
+        <span class="bx-sub t-ed-caption">4 active &middot; 2 frozen</span>
+      </div>
+
+      <div class="bx-tile" data-span="wide" data-n="6">
+        <span class="bx-eyebrow t-cm-legal">Payments due this week</span>
+        <span class="bx-fig t-cm-figure-3">&pound;11,482.00</span>
+        <div class="bx-meter" role="presentation"><i style="--v:64%"></i></div>
+        <span class="bx-sub t-ed-caption">64% of the weekly transfer limit used</span>
+      </div>
+
+      <div class="bx-tile" data-span="tall" data-n="7">
+        <span class="bx-eyebrow t-cm-legal">Beneficiaries</span>
+        <ul class="bx-rows">
+          <li><span class="bx-r-name t-ed-body-small">Northgate Supplies</span></li>
+          <li><span class="bx-r-name t-ed-body-small">J. Okonkwo</span></li>
+          <li><span class="bx-r-name t-ed-body-small">Meridian Freight</span></li>
+          <li><span class="bx-r-name t-ed-body-small">Ashgrove Property</span></li>
+          <li><span class="bx-r-name t-ed-body-small">HMRC</span></li>
+        </ul>
+        <button type="button" class="bx-btn t-cm-button" data-kind="ghost">Add payee</button>
+      </div>
+
+      <div class="bx-tile" data-n="8">
+        <span class="bx-eyebrow t-cm-legal">Savings goal</span>
+        <span class="bx-fig t-cm-figure-3">72%</span>
+        <div class="bx-meter" role="presentation"><i style="--v:72%"></i></div>
+      </div>
+
+      <div class="bx-tile" data-span="wide" data-n="9">
+        <span class="bx-eyebrow t-cm-legal">Statement ready</span>
+        <span class="t-ed-body">Your July business statement is available to download.</span>
+        <div class="bx-acts">
+          <button type="button" class="bx-btn t-cm-button" data-kind="ghost">Download PDF</button>
+        </div>
+      </div>
+
+      <div class="bx-tile" data-n="10">
+        <span class="bx-eyebrow t-cm-legal">Notifications</span>
+        <span class="bx-fig t-cm-figure-3">3</span>
+        <span class="bx-sub t-ed-caption">2 unread</span>
+      </div>
+
+      <div class="bx-tile" data-span="wide" data-n="11">
+        <span class="bx-eyebrow t-cm-legal">Next scheduled transfer</span>
+        <span class="bx-fig t-cm-figure-3">&pound;2,000.00</span>
+        <span class="bx-sub t-ed-body-small">Ashgrove Property &middot; 1 September &middot; monthly</span>
+      </div>
+
+      <div class="bx-tile" data-n="12">
+        <span class="bx-eyebrow t-cm-legal">Support</span>
+        <span class="t-ed-body-small">Message a business manager</span>
+        <button type="button" class="bx-btn t-cm-button" data-kind="ghost">Open chat</button>
+      </div>
+
+    </div>
+
+    <p class="rv-caption t-ed-body-small"><strong>What to look for.</strong> Set <em>Columns</em> to 5 or 6 and
+      the wall gets airy but the hero stops dominating; set it to 3 and the spans start fighting each other.
+      <em>Flat (no spans)</em> is the honest control &mdash; it is what the same content looks like with no
+      bento at all, and if it reads better than the bento, that is an answer. Turn <em>Dense packing</em> on
+      with the order tracer showing and watch tile 10 jump ahead of tile 9.</p>
+  </section>
+
+  <!-- ===================== 2 · GALLERY ===================== -->
+  <section class="rv-sec" id="gallery" aria-labelledby="gallery-h">
+    <h2 class="t-ed-heading-3" id="gallery-h">2 &middot; Photography gallery</h2>
+    <p class="rv-sub t-ed-body">Fourteen photographs of deliberately awkward shapes &mdash; two panoramas, four
+      portraits, two squares. A gallery that only ever sees 4:3 landscapes proves nothing.</p>
+
+    <div class="rv-bar" style="position:static; border:1px solid var(--line); border-radius:var(--radius); margin-bottom:var(--sp-5);">
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Mode</span>
+        <div class="rv-seg" id="glMode" role="group" aria-label="Gallery layout mode">
+          <button type="button" class="t-cm-ctl-12" data-v="masonry" aria-pressed="true">Masonry (columns)</button>
+          <button type="button" class="t-cm-ctl-12" data-v="grid" aria-pressed="false">Uniform grid</button>
+        </div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Aspect ratio <span class="t-cm-legal" id="glArNote">&mdash; grid mode only</span></span>
+        <div class="rv-seg" id="glAspect" role="group" aria-label="Aspect ratio in grid mode">
+          <button type="button" class="t-cm-ctl-12" data-v="1/1" aria-pressed="false">1:1</button>
+          <button type="button" class="t-cm-ctl-12" data-v="4/3" aria-pressed="true">4:3</button>
+          <button type="button" class="t-cm-ctl-12" data-v="3/2" aria-pressed="false">3:2</button>
+          <button type="button" class="t-cm-ctl-12" data-v="free" aria-pressed="false">Free (no crop)</button>
+        </div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Columns</span>
+        <div class="rv-num"><input type="range" id="glCols" min="2" max="6" step="1" value="4" aria-label="Gallery column count">
+          <output class="rv-out t-cm-ctl-12" id="glColsOut">4</output></div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Gap</span>
+        <div class="rv-num"><input type="range" id="glGap" min="0" max="32" step="4" value="16" aria-label="Gallery gap in pixels">
+          <output class="rv-out t-cm-ctl-12" id="glGapOut">16px</output></div>
+      </div>
+    </div>
+
+    <div class="gl" id="glMain" data-mode="masonry" data-aspect="4/3" data-tracer="off"
+         style="--gl-cols:4; --gl-gap:16px; --gl-ar:4/3;">
+
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-1" data-n="1">
+          <img class="gl-img" src="assets-bento-gallery/p01-harbour.svg" width="1600" height="1067" alt="Harbour at dusk" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Harbour at dusk</span><span class="gl-ratio t-cm-legal">3:2</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-2" data-n="2">
+          <img class="gl-img" src="assets-bento-gallery/p02-ridge.svg" width="1600" height="900" alt="Ridge line" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Ridge line</span><span class="gl-ratio t-cm-legal">16:9</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-3" data-n="3">
+          <img class="gl-img" src="assets-bento-gallery/p03-atrium.svg" width="800" height="1200" alt="Atrium" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Atrium</span><span class="gl-ratio t-cm-legal">2:3</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-4" data-n="4">
+          <img class="gl-img" src="assets-bento-gallery/p04-still-life.svg" width="1200" height="1200" alt="Still life" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Still life</span><span class="gl-ratio t-cm-legal">1:1</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-5" data-n="5">
+          <img class="gl-img" src="assets-bento-gallery/p05-terrace.svg" width="1600" height="1200" alt="Terrace" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Terrace</span><span class="gl-ratio t-cm-legal">4:3</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-6" data-n="6">
+          <img class="gl-img" src="assets-bento-gallery/p06-figure.svg" width="900" height="1350" alt="Figure, seated" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Figure, seated</span><span class="gl-ratio t-cm-legal">2:3</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-7" data-n="7">
+          <img class="gl-img" src="assets-bento-gallery/p07-canopy.svg" width="1200" height="900" alt="Canopy" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Canopy</span><span class="gl-ratio t-cm-legal">4:3</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-8" data-n="8">
+          <img class="gl-img" src="assets-bento-gallery/p08-tideline.svg" width="1600" height="640" alt="Tideline" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Tideline</span><span class="gl-ratio t-cm-legal">5:2</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-9" data-n="9">
+          <img class="gl-img" src="assets-bento-gallery/p09-stairwell.svg" width="900" height="1600" alt="Stairwell" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Stairwell</span><span class="gl-ratio t-cm-legal">9:16</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-10" data-n="10">
+          <img class="gl-img" src="assets-bento-gallery/p10-estuary.svg" width="1500" height="1000" alt="Estuary" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Estuary</span><span class="gl-ratio t-cm-legal">3:2</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-11" data-n="11">
+          <img class="gl-img" src="assets-bento-gallery/p11-glasshouse.svg" width="1100" height="1100" alt="Glasshouse" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Glasshouse</span><span class="gl-ratio t-cm-legal">1:1</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-12" data-n="12">
+          <img class="gl-img" src="assets-bento-gallery/p12-dunes.svg" width="1600" height="1067" alt="Dunes" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Dunes</span><span class="gl-ratio t-cm-legal">3:2</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-13" data-n="13">
+          <img class="gl-img" src="assets-bento-gallery/p13-portico.svg" width="960" height="1280" alt="Portico" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Portico</span><span class="gl-ratio t-cm-legal">3:4</span></span>
+        </button>
+      </figure>
+      <figure class="gl-cell">
+        <button class="gl-open" type="button" command="show-popover" commandfor="lb-14" data-n="14">
+          <img class="gl-img" src="assets-bento-gallery/p14-lagoon.svg" width="1400" height="875" alt="Lagoon" loading="lazy" decoding="async">
+          <span class="gl-cap"><span class="t-cm-legal">Lagoon</span><span class="gl-ratio t-cm-legal">8:5</span></span>
+        </button>
+      </figure>
+    </div>
+
+    <p class="rv-caption t-ed-body-small"><strong>What to look for.</strong> Switch to <em>Uniform grid</em> and
+      set <em>1:1</em>: the four portraits lose their tops and bottoms, and the 5:2 panorama loses most of
+      itself. Set <em>Free (no crop)</em> in grid mode and the rows go ragged, which is the reason masonry
+      exists. There is no setting that is right for every photograph &mdash; the question is which compromise
+      this library ships as its default.</p>
+
+    <h3 class="rv-h3 t-ed-heading-4">Both modes at once</h3>
+    <p class="rv-caption t-ed-body-small" style="margin:0 0 var(--sp-4);">The same six photographs, so the
+      difference is the layout and nothing else. These two follow the column and gap controls above but not the
+      mode toggle.</p>
+    <div class="gl-compare">
+      <figure>
+        <figcaption class="t-cm-label">(a) Masonry &mdash; CSS <code>columns</code></figcaption>
+        <div class="gl" id="glCmpA" data-mode="masonry" style="--gl-cols:3; --gl-gap:12px;">
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p01-harbour.svg" width="1600" height="1067" alt="Harbour at dusk" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p03-atrium.svg" width="800" height="1200" alt="Atrium" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p08-tideline.svg" width="1600" height="640" alt="Tideline" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p11-glasshouse.svg" width="1100" height="1100" alt="Glasshouse" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p13-portico.svg" width="960" height="1280" alt="Portico" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p14-lagoon.svg" width="1400" height="875" alt="Lagoon" loading="lazy"></span></figure>
+        </div>
+      </figure>
+      <figure>
+        <figcaption class="t-cm-label">(b) Uniform grid &mdash; <code>object-fit: cover</code></figcaption>
+        <div class="gl" id="glCmpB" data-mode="grid" data-aspect="4/3" style="--gl-cols:3; --gl-gap:12px; --gl-ar:4/3;">
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p01-harbour.svg" width="1600" height="1067" alt="Harbour at dusk" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p03-atrium.svg" width="800" height="1200" alt="Atrium" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p08-tideline.svg" width="1600" height="640" alt="Tideline" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p11-glasshouse.svg" width="1100" height="1100" alt="Glasshouse" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p13-portico.svg" width="960" height="1280" alt="Portico" loading="lazy"></span></figure>
+          <figure class="gl-cell"><span class="gl-open" style="cursor:default"><img class="gl-img" src="assets-bento-gallery/p14-lagoon.svg" width="1400" height="875" alt="Lagoon" loading="lazy"></span></figure>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== 3 · FULL-SCALE BENTO  (NEW IN v2) ===================== -->
+  <section class="rv-sec" id="fullscale" aria-labelledby="fullscale-h">
+    <h2 class="t-ed-heading-3" id="fullscale-h">3 &middot; Full-scale bento</h2>
+    <p class="rv-sub t-ed-body">The other kind of bento &mdash; not a dashboard wall of small tiles, but a
+      full-width composition where each tile is a whole statement: an eyebrow, a display heading, one line of
+      copy, one link, and an illustration. Six tiles on a <strong>12-column grid</strong>, laid out
+      <strong>7/5, then 5/7, then 7/5</strong>, so the weight swings side to side down the page. This is the
+      shape of the reference you were looking at; whether Apollo should have it is the question.</p>
+
+    <div class="rv-bar" style="position:static; border:1px solid var(--line); border-bottom:1px solid var(--line); border-radius:var(--radius); margin-bottom:var(--sp-5);">
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Split ratio</span>
+        <div class="rv-seg" id="fsRatio" role="group" aria-label="Asymmetric split of the twelve columns">
+          <button type="button" class="t-cm-ctl-12" data-v="7-5" aria-pressed="true">7 / 5</button>
+          <button type="button" class="t-cm-ctl-12" data-v="8-4" aria-pressed="false">8 / 4</button>
+          <button type="button" class="t-cm-ctl-12" data-v="6-6" aria-pressed="false">6 / 6 (symmetric)</button>
+        </div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Illustration side alternates</span>
+        <div class="rv-seg" id="fsAlt" role="group" aria-label="Alternate the illustration between left and right">
+          <button type="button" class="t-cm-ctl-12" data-v="on"  aria-pressed="true">On</button>
+          <button type="button" class="t-cm-ctl-12" data-v="off" aria-pressed="false">Off &mdash; always right</button>
+        </div>
+      </div>
+      <div class="rv-grp">
+        <span class="rv-legend t-cm-legal">Tile surface</span>
+        <div class="rv-seg" id="fsSurface" role="group" aria-label="Which surface token the full-scale tiles paint with">
+          <button type="button" class="t-cm-ctl-12" data-v="subtle" aria-pressed="true">Subtle</button>
+          <button type="button" class="t-cm-ctl-12" data-v="raised" aria-pressed="false">Raised</button>
+          <button type="button" class="t-cm-ctl-12" data-v="flush"  aria-pressed="false">Border only</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="rv-note t-ed-body-small" style="max-width:70ch; margin:0 0 var(--sp-5);"><strong>Three things
+      worth knowing before you look.</strong> (1) The <em>Tile surface</em> control here is
+      <strong>the same open token question section 1 raises, not a second one</strong> &mdash;
+      <code>surface/raised</code> and <code>tertiary/background/default</code> are identical to
+      <code>background/default</code> in light in all four themes, so a full-scale tile painted with the
+      correct card token is invisible except for its hairline. It starts on <em>Subtle</em> for legibility
+      only; that is not a recommendation. (2) <strong>Nothing here is a recommendation</strong> &mdash; 7/5 is
+      the starting position because it is the reference's shape, and 6/6 is on the control precisely so
+      &ldquo;don't be asymmetric&rdquo; stays an available answer. (3) <strong>Corners are canon's</strong>:
+      Console is the only rounded theme, so switch themes and the tiles square off &mdash; no radius value was
+      authored.</p>
+
+    <p class="rv-note t-ed-body-small" style="max-width:70ch; margin:0 0 var(--sp-5);"><strong>How it
+      collapses, and why it is a container query.</strong> Full 7/5 alternation while the stage is wide;
+      <strong>2-up equal</strong> below 1000px of the stage; <strong>single column</strong> below 640px. Inside
+      each tile a <em>second, nested</em> container query moves the illustration from beside the text to above
+      it below 520px <em>of that tile's own box</em> &mdash; which is why the narrow 5-span tile flips before
+      the wide 7-span one does. Press <strong>380</strong> on the Stage width control in the top bar and watch
+      it happen on a wide screen: a <code>@media</code> query could not see the harness at all, because the
+      viewport never changes.</p>
+
+    <div class="fs" id="fsGrid" data-ratio="7-5" data-alt="on" data-surface="subtle" data-tracer="off">
+
+      <article class="fs-tile" data-w="a" data-n="1">
+        <div class="fs-body">
+          <span class="fs-eyebrow t-cm-legal">Payments</span>
+          <h3 class="fs-h t-ed-display-2">Move money without leaving the flow</h3>
+          <p class="fs-copy t-ed-body">One instruction, one confirmation, one receipt &mdash; the same shape
+            whether it is a single transfer or a file of four thousand.</p>
+          <a class="fs-link t-cm-link" href="#fullscale">More about payments
+            <span class="fs-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+        <figure class="fs-art"><img src="assets-bento-gallery/p01-harbour.svg" alt=""></figure>
+      </article>
+
+      <article class="fs-tile" data-w="b" data-n="2" data-flip="yes">
+        <div class="fs-body">
+          <span class="fs-eyebrow t-cm-legal">Accounts</span>
+          <h3 class="fs-h t-ed-display-2">Everything, in one balance</h3>
+          <p class="fs-copy t-ed-body">Positions across entities and currencies, reconciled to the minute.</p>
+          <a class="fs-link t-cm-link" href="#fullscale">More about accounts
+            <span class="fs-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+        <figure class="fs-art"><img src="assets-bento-gallery/p12-dunes.svg" alt=""></figure>
+      </article>
+
+      <article class="fs-tile" data-w="b" data-n="3">
+        <div class="fs-body">
+          <span class="fs-eyebrow t-cm-legal">Controls</span>
+          <h3 class="fs-h t-ed-display-2">Limits that explain themselves</h3>
+          <p class="fs-copy t-ed-body">Every threshold shows what it is for and who may change it.</p>
+          <a class="fs-link t-cm-link" href="#fullscale">More about controls
+            <span class="fs-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+        <figure class="fs-art"><img src="assets-bento-gallery/p05-terrace.svg" alt=""></figure>
+      </article>
+
+      <article class="fs-tile" data-w="a" data-n="4" data-flip="yes">
+        <div class="fs-body">
+          <span class="fs-eyebrow t-cm-legal">Insight</span>
+          <h3 class="fs-h t-ed-display-2">The number, then the reason for it</h3>
+          <p class="fs-copy t-ed-body">Charts that answer the follow-up question in the same view, so nobody
+            has to export a spreadsheet to find out what moved.</p>
+          <a class="fs-link t-cm-link" href="#fullscale">More about insight
+            <span class="fs-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+        <figure class="fs-art"><img src="assets-bento-gallery/p08-tideline.svg" alt=""></figure>
+      </article>
+
+      <article class="fs-tile" data-w="a" data-n="5">
+        <div class="fs-body">
+          <span class="fs-eyebrow t-cm-legal">Approvals</span>
+          <h3 class="fs-h t-ed-display-2">A queue that clears itself</h3>
+          <p class="fs-copy t-ed-body">Batch what is routine, surface what is not, and keep the audit trail
+            intact either way.</p>
+          <a class="fs-link t-cm-link" href="#fullscale">More about approvals
+            <span class="fs-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+        <figure class="fs-art"><img src="assets-bento-gallery/p14-lagoon.svg" alt=""></figure>
+      </article>
+
+      <article class="fs-tile" data-w="b" data-n="6" data-flip="yes">
+        <div class="fs-body">
+          <span class="fs-eyebrow t-cm-legal">Onboarding</span>
+          <h3 class="fs-h t-ed-display-2">Ready on day one</h3>
+          <p class="fs-copy t-ed-body">Set up once; the shape of the work is the same everywhere after.</p>
+          <a class="fs-link t-cm-link" href="#fullscale">More about onboarding
+            <span class="fs-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+        <figure class="fs-art"><img src="assets-bento-gallery/p04-still-life.svg" alt=""></figure>
+      </article>
+
+    </div>
+
+    <p class="rv-note t-ed-body-small" style="max-width:70ch;"><strong>A correction, made rather than
+      glossed.</strong> v1&rsquo;s note said the placeholder photographs were &ldquo;cool-only by
+      construction&rdquo; with no green. That was not true: the generator&rsquo;s own palette comment lists
+      <em>greens</em> among its duotones, and three of the fourteen images
+      (<code>p02-ridge</code>, <code>p07-canopy</code>, <code>p10-estuary</code>) sit in the green hue band.
+      Three of them were the first pictures this section reached for. They are swapped out here, and the v2
+      probe now classifies every hex in every image this section uses by hue angle so the claim is measured
+      rather than asserted. <strong>The three green images are still in section 2 and in v1</strong> &mdash;
+      reported, not swept, because changing what you have already been shown is a decision, not a tidy-up.</p>
+
+    <p class="rv-caption t-ed-body-small">Illustrations are the same locally generated placeholder set as
+      section 2, filtered to the green-free six, and they are
+      <code>alt=""</code> here because in this composition the picture is decorative: the heading and copy
+      carry the whole message. If a real illustration ever carries meaning, that <code>alt</code> becomes a
+      content decision.</p>
+  </section>
+
+  </div><!-- /.rv-stage -->
+
+  <!-- ===================== OPEN DECISIONS ===================== -->
+  <section class="rv-sec" id="open" aria-labelledby="open-h">
+    <h2 class="t-ed-heading-3" id="open-h">What is open, and who decides it</h2>
+    <div class="rv-lede">
+      <p class="t-ed-body">Everything below is yours. Nothing on this page has been ruled, recommended, or
+        quietly defaulted into place; where a control has a starting position it is a starting position, not a
+        proposal.</p>
+      <ul class="t-ed-body-small" style="margin:0; padding-left:1.2em; display:flex; flex-direction:column; gap:var(--sp-2); max-width:70ch;">
+        <li><strong>Bento defaults</strong> &mdash; column count, gap, row height and which span preset (if
+          any) is the shipped one. The <em>Flat</em> preset is on the page precisely so &ldquo;no bento&rdquo;
+          stays an available answer.</li>
+        <li><strong>Dense packing</strong> &mdash; whether <code>grid-auto-flow: dense</code> is offered at all,
+          given it breaks reading order. It is a toggle here, never a default.</li>
+        <li><strong>The gallery&rsquo;s mode</strong> &mdash; masonry or uniform grid as the library&rsquo;s
+          default, or both as equal siblings. Not settled here.</li>
+        <li><strong>The aspect-ratio default</strong> &mdash; 1:1, 4:3, 3:2 or free. Every one of them crops
+          something; which crop is acceptable is a judgement about the pictures.</li>
+        <li><strong>The full-scale bento&rsquo;s split ratio</strong> &mdash; 7/5, 8/4, or symmetric 6/6.
+          7/5 is the starting position only because it is the reference&rsquo;s shape; 6/6 is on the control
+          so that &ldquo;don&rsquo;t be asymmetric&rdquo; stays an answer you can pick rather than one you
+          have to ask for.</li>
+        <li><strong>Whether the illustration alternates sides</strong> down the full-scale page, or always
+          sits right. Unlike dense packing in section 1 this costs nothing in reading order &mdash; the DOM
+          is text-then-illustration in every tile either way &mdash; so it is a pure look decision.</li>
+        <li><strong>Where the full-scale layout should give up its asymmetry</strong> &mdash; it currently
+          goes 2-up equal at 1000px of the stage and single-column at 640px, and the illustration moves above
+          the text at 520px of the tile. Those three numbers are proposed, measured, and yours to move.</li>
+        <li><strong>Whether either of these becomes a gated component</strong> at all, or stays an exploration.</li>
+        <li><strong>Which surface token a card paints with</strong> &mdash; and this one is measured, not felt.
+          <code>surface/raised</code> and <code>tertiary/background/default</code> are both identical to
+          <code>background/default</code> in light in all four themes, so the semantically correct card token
+          renders flush. Fixing that is a token move; the control on the bento only lets you see it.</li>
+        <li><strong>Theme ink and grey tints</strong> &mdash; surfaced, not touched. Switch themes and watch the
+          tile surface against the page; if any pair reads flat to you, that is a token question, not a layout
+          one, and it belongs to you.</li>
+      </ul>
+      <p class="rv-note t-ed-body-small">Selections on this page are <strong>not persisted</strong>. Rulings
+        land in chat and in the ledger, never in a control&rsquo;s position.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ===================== LIGHTBOXES — popover + invoker commands, NO JavaScript ===================== -->
+<div id="lb-1" popover class="gl-lb" aria-label="Harbour at dusk">
+  <div class="gl-lb-head"><span class="t-cm-label">Harbour at dusk</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-1">Close</button></div>
+  <img src="assets-bento-gallery/p01-harbour.svg" alt="Harbour at dusk">
+  <div class="gl-lb-meta"><span class="t-cm-legal">3:2 &middot; 1600 &times; 1067</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-2" popover class="gl-lb" aria-label="Ridge line">
+  <div class="gl-lb-head"><span class="t-cm-label">Ridge line</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-2">Close</button></div>
+  <img src="assets-bento-gallery/p02-ridge.svg" alt="Ridge line">
+  <div class="gl-lb-meta"><span class="t-cm-legal">16:9 &middot; 1600 &times; 900</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-3" popover class="gl-lb" aria-label="Atrium">
+  <div class="gl-lb-head"><span class="t-cm-label">Atrium</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-3">Close</button></div>
+  <img src="assets-bento-gallery/p03-atrium.svg" alt="Atrium">
+  <div class="gl-lb-meta"><span class="t-cm-legal">2:3 &middot; 800 &times; 1200</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-4" popover class="gl-lb" aria-label="Still life">
+  <div class="gl-lb-head"><span class="t-cm-label">Still life</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-4">Close</button></div>
+  <img src="assets-bento-gallery/p04-still-life.svg" alt="Still life">
+  <div class="gl-lb-meta"><span class="t-cm-legal">1:1 &middot; 1200 &times; 1200</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-5" popover class="gl-lb" aria-label="Terrace">
+  <div class="gl-lb-head"><span class="t-cm-label">Terrace</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-5">Close</button></div>
+  <img src="assets-bento-gallery/p05-terrace.svg" alt="Terrace">
+  <div class="gl-lb-meta"><span class="t-cm-legal">4:3 &middot; 1600 &times; 1200</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-6" popover class="gl-lb" aria-label="Figure, seated">
+  <div class="gl-lb-head"><span class="t-cm-label">Figure, seated</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-6">Close</button></div>
+  <img src="assets-bento-gallery/p06-figure.svg" alt="Figure, seated">
+  <div class="gl-lb-meta"><span class="t-cm-legal">2:3 &middot; 900 &times; 1350</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-7" popover class="gl-lb" aria-label="Canopy">
+  <div class="gl-lb-head"><span class="t-cm-label">Canopy</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-7">Close</button></div>
+  <img src="assets-bento-gallery/p07-canopy.svg" alt="Canopy">
+  <div class="gl-lb-meta"><span class="t-cm-legal">4:3 &middot; 1200 &times; 900</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-8" popover class="gl-lb" aria-label="Tideline">
+  <div class="gl-lb-head"><span class="t-cm-label">Tideline</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-8">Close</button></div>
+  <img src="assets-bento-gallery/p08-tideline.svg" alt="Tideline">
+  <div class="gl-lb-meta"><span class="t-cm-legal">5:2 &middot; 1600 &times; 640</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-9" popover class="gl-lb" aria-label="Stairwell">
+  <div class="gl-lb-head"><span class="t-cm-label">Stairwell</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-9">Close</button></div>
+  <img src="assets-bento-gallery/p09-stairwell.svg" alt="Stairwell">
+  <div class="gl-lb-meta"><span class="t-cm-legal">9:16 &middot; 900 &times; 1600</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-10" popover class="gl-lb" aria-label="Estuary">
+  <div class="gl-lb-head"><span class="t-cm-label">Estuary</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-10">Close</button></div>
+  <img src="assets-bento-gallery/p10-estuary.svg" alt="Estuary">
+  <div class="gl-lb-meta"><span class="t-cm-legal">3:2 &middot; 1500 &times; 1000</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-11" popover class="gl-lb" aria-label="Glasshouse">
+  <div class="gl-lb-head"><span class="t-cm-label">Glasshouse</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-11">Close</button></div>
+  <img src="assets-bento-gallery/p11-glasshouse.svg" alt="Glasshouse">
+  <div class="gl-lb-meta"><span class="t-cm-legal">1:1 &middot; 1100 &times; 1100</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-12" popover class="gl-lb" aria-label="Dunes">
+  <div class="gl-lb-head"><span class="t-cm-label">Dunes</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-12">Close</button></div>
+  <img src="assets-bento-gallery/p12-dunes.svg" alt="Dunes">
+  <div class="gl-lb-meta"><span class="t-cm-legal">3:2 &middot; 1600 &times; 1067</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-13" popover class="gl-lb" aria-label="Portico">
+  <div class="gl-lb-head"><span class="t-cm-label">Portico</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-13">Close</button></div>
+  <img src="assets-bento-gallery/p13-portico.svg" alt="Portico">
+  <div class="gl-lb-meta"><span class="t-cm-legal">3:4 &middot; 960 &times; 1280</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+<div id="lb-14" popover class="gl-lb" aria-label="Lagoon">
+  <div class="gl-lb-head"><span class="t-cm-label">Lagoon</span>
+    <button class="gl-lb-x t-cm-ctl-14" type="button" command="hide-popover" commandfor="lb-14">Close</button></div>
+  <img src="assets-bento-gallery/p14-lagoon.svg" alt="Lagoon">
+  <div class="gl-lb-meta"><span class="t-cm-legal">8:5 &middot; 1400 &times; 875</span><span class="t-cm-legal">Esc or click outside to close</span></div>
+</div>
+
+<script>
+/* REVIEW CONTROLLER ONLY.
+   This script drives the review chrome — theme switch, stage width, and the demo sliders.
+   It does NOT participate in either component: the bento is CSS Grid with no script, and the
+   lightbox is the platform's popover driven by command/commandfor attributes. Deleting this
+   script leaves both components fully working at their authored defaults. */
+(function () {
+  "use strict";
+  var root = document.documentElement;
+
+  function seg(id, onPick) {
+    var box = document.getElementById(id);
+    if (!box) return;
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-v]");
+      if (!b || !box.contains(b)) return;
+      Array.prototype.forEach.call(box.querySelectorAll("button[data-v]"), function (o) {
+        o.setAttribute("aria-pressed", String(o === b));
+      });
+      onPick(b.dataset.v, b);
+    });
+  }
+
+  /* --- theme + light/dark, both set on <html> so canon.css's own cascade does the work --- */
+  seg("rvTheme", function (v) { root.setAttribute("data-apollo-theme", v); });
+  seg("rvDark",  function (v) { root.setAttribute("data-theme", v); });
+
+  /* --- stage width harness --- */
+  var stage = document.getElementById("stage");
+  seg("rvWidth", function (v) {
+    stage.style.setProperty("--rv-stage-w", v);
+    stage.setAttribute("data-framed", v === "100%" ? "no" : "yes");
+  });
+
+  /* --- DOM-order tracer, on both sections at once --- */
+  var bxGrid = document.getElementById("bxGrid");
+  var glMain = document.getElementById("glMain");
+  var fsGrid = document.getElementById("fsGrid");
+  seg("rvTracer", function (v) {
+    bxGrid.setAttribute("data-tracer", v);
+    glMain.setAttribute("data-tracer", v);
+    fsGrid.setAttribute("data-tracer", v);
+  });
+
+  /* --- full-scale bento controls (v2). Three open decisions, none defaulted as a proposal. --- */
+  seg("fsRatio",   function (v) { fsGrid.setAttribute("data-ratio", v); });
+  seg("fsAlt",     function (v) { fsGrid.setAttribute("data-alt", v); });
+  seg("fsSurface", function (v) { fsGrid.setAttribute("data-surface", v); });
+
+  /* --- bento controls --- */
+  function slider(id, outId, prop, target, unit, fmt) {
+    var el = document.getElementById(id), out = document.getElementById(outId);
+    if (!el) return;
+    var apply = function () {
+      target.style.setProperty(prop, el.value + unit);
+      out.textContent = fmt ? fmt(el.value) : el.value + unit;
+    };
+    el.addEventListener("input", apply);
+    apply();
+  }
+  slider("bxCols", "bxColsOut", "--bx-cols", bxGrid, "", function (v) { return v; });
+  slider("bxGap",  "bxGapOut",  "--bx-gap",  bxGrid, "px");
+  slider("bxRow",  "bxRowOut",  "--bx-row",  bxGrid, "px");
+  seg("bxPreset",  function (v) { bxGrid.setAttribute("data-preset", v); });
+  seg("bxDense",   function (v) { bxGrid.setAttribute("data-dense", v); });
+  seg("bxSurface", function (v) { bxGrid.setAttribute("data-surface", v); });
+
+  /* --- gallery controls (main gallery + both compare panes follow cols/gap) --- */
+  var glAll = [glMain, document.getElementById("glCmpA"), document.getElementById("glCmpB")];
+  function glSlider(id, outId, prop, unit, fmt) {
+    var el = document.getElementById(id), out = document.getElementById(outId);
+    var apply = function () {
+      glMain.style.setProperty(prop, el.value + unit);
+      out.textContent = fmt ? fmt(el.value) : el.value + unit;
+    };
+    el.addEventListener("input", apply);
+    apply();
+  }
+  glSlider("glCols", "glColsOut", "--gl-cols", "", function (v) { return v; });
+  glSlider("glGap",  "glGapOut",  "--gl-gap",  "px");
+
+  var arNote = document.getElementById("glArNote");
+  var aspectBox = document.getElementById("glAspect");
+  function syncAspectAvailability() {
+    var isGrid = glMain.getAttribute("data-mode") === "grid";
+    Array.prototype.forEach.call(aspectBox.querySelectorAll("button"), function (b) { b.disabled = !isGrid; });
+    /* An honest label, not a hidden control: in masonry the ratio IS the photograph, so there is
+       nothing for this control to decide. Said, rather than silently greyed. */
+    arNote.textContent = isGrid ? "— in use" : "— no effect in masonry: the ratio is the photograph";
+  }
+  seg("glMode", function (v) { glMain.setAttribute("data-mode", v); syncAspectAvailability(); });
+  seg("glAspect", function (v) {
+    glMain.setAttribute("data-aspect", v);
+    if (v !== "free") glMain.style.setProperty("--gl-ar", v);
+  });
+  syncAspectAvailability();
+
+  /* --- capability badges: MEASURED in the reading browser, never asserted --- */
+  function badge(id, label, ok) {
+    var el = document.getElementById(id);
+    el.textContent = label + " · " + (ok ? "supported" : "not supported");
+    el.setAttribute("data-ok", ok ? "yes" : "no");
+  }
+  badge("capCmd", "invoker commands", "command" in HTMLButtonElement.prototype);
+  badge("capPop", "popover", HTMLElement.prototype.hasOwnProperty("popover"));
+  badge("capMasonry", "CSS masonry", CSS.supports("grid-template-rows", "masonry"));
+})();
+</script>
+</body>
+</html>

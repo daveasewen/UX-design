@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="console" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nio business-banking overview v2 — Apollo Console, review variants</title>
+<link rel="stylesheet" href="../canon/type.css">
+<link rel="stylesheet" href="../canon/canon.css">
+<!--
+  COMPOSED SCREEN — a recreation of Nio-Dash.png (HSBC "Nio" business-banking overview) under the
+  APOLLO CONSOLE theme, assembled EXCLUSIVELY from components already in the library. Nothing here
+  is a new component. Dave's constraint, verbatim: "recreate this using console components, don't
+  invent anything apart from the header and footer."
+
+  ⬛ NOT GATED-AS-CANON, NOTHING RULED, AWAITING DAVE'S EYE. Fitness-test surface.
+
+  HOW IT IS BUILT
+    · Root carries data-apollo-theme="console" + data-theme="light|dark" — Console resolution only.
+      Radius therefore arrives per-theme (surface 20px / control 8px) from canon's own cascade.
+    · Page scaffold = .cn-template-dashboard (.tpl-page/.tpl-section/.tpl-panel/.l-* utilities).
+      Each component sits inside its own .cn-<component> scope, with the SNIPPET'S OWN MARKUP.
+    · ZERO authored colour. The reference's HSBC reds and greens are NOT copied: financial
+      direction and RAG arrive from canon's semantic tokens under Console resolution
+      (--data-series-N, .status ok/warn/err, .delta up/down). Two-red law s151-D1 untouched.
+    · ZERO font-size and ZERO font-weight declared on this page. Every text element carries a
+      .t-cm-* / .t-ed-* composite. The style block below is LAYOUT HARNESS ONLY (.nio-*):
+      no hex colour, no canon-class redefinition, no component CSS.
+      (v2: this line no longer spells out the canon class prefixes with literal asterisks, and no
+      longer names the style tag. Both were load-bearing defects — see the style block's own note
+      and ds-041: the asterisk-slash closed the CSS comment and ate a rule, and the tag name in
+      prose moved the compose gate's style-block scan window into this comment.)
+    · Chart geometry is MINTED, not hand-typed — knowledge/_render/gen_nio_dash.py (s200-D1
+      mint-time derivation). Re-run the generator to change the data; never edit the SVG here.
+
+  CONTENT PROVENANCE
+    · Every printed figure, label, account row, invoice line and predictive signal is verbatim
+      from the reference.
+    · ⚠ The reference's own spending arithmetic does not close: its six category rows sum to
+      13,734 but it prints "£12,684" in the donut centre and in the Total row. This screen keeps
+      the six rows verbatim and shows the ARITHMETIC SUM (13,734), because the donut arcs are
+      derived from the rows. Declared, not silently reconciled.
+    · The four chart panels print no numbers, only shapes. Their series are read off the drawn
+      heights against the reference's own 0–100 axis — declared as a reading, not a measurement.
+
+  MAPPING TABLE: nio-dash-console-v1.mapping.md, beside this file (v1's; v2 changes are the
+  six items below and nothing else about the composition moved).
+
+  ======================================================================================
+  V2 — SIX CHANGES ON TOP OF v1. v1 IS PRESERVED UNTOUCHED BESIDE THIS FILE.
+  Generator: knowledge/_render/gen_nio_dash_v2.py. NOTHING RULED. Awaiting Dave's eye.
+  ======================================================================================
+
+  ① LIGHT GREY PAGE BACKGROUND — and the reason v1 did not have one.
+     v1 declared `body{ background: var(--surface-hover) }` and IT NEVER APPLIED — but NOT for
+     the reason it looks like. THE RULE WAS NEVER PARSED. v1's harness header comment wrote its
+     exclusion list with literal asterisks ("no .c-<star>/.cn-<star>"), and <star>-then-slash is a
+     CSS COMMENT TERMINATOR: the comment closed early, the parser hit garbage and DISCARDED THE
+     NEXT RULE, which was `body{ }`. Measured: v1's page style block parses to 44 rules with no
+     body rule in it, and v1 still shows the browser's default 8px body margin — the other
+     declaration in that same dead rule. Specificity was never involved, and a specificity fix
+     would have been a false fix on a true symptom. The comment is repaired in v2's style block,
+     where the mechanism is written out. v2 then FEEDS canon's own painting rule by re-pointing
+     canon's own `--page` variable on <body>. Every .cn-* scope re-declares --page from
+     --background-default, so component internals (including the donut's inter-segment
+     stroke="var(--page)") are unaffected; only the .canon reset reads the new value.
+     ⚠ THE GREY IS PER-MODE, AND THAT IS A TOKEN DEFECT, NOT A PREFERENCE. Under Console
+     there is NO single surface token that is grey-and-distinct-from-card in BOTH modes:
+        light: --surface-subtle   vs card --surface-raised   -> DISTINCT (grey on white) ✓
+               --background-default vs card --surface-raised   -> IDENTICAL (both white)  ✗
+        dark:  --surface-subtle   vs card --surface-raised   -> IDENTICAL (same grey)   ✗
+               --background-default vs card --surface-raised   -> DISTINCT (darker)      ✓
+     (The measured values are tabulated in nio-dash-console-v2.mapping.md. They are deliberately
+      NOT written here: v1's own comment above carries a literal style tag, which makes the
+      compose gate's style-block scan start there and swallow this comment — logged as a gate
+      defect in _DS-IMPROVEMENTS.md.)
+     So v2 selects --surface-subtle in light and --background-default in dark. ZERO values are
+     minted; both are existing tokens read verbatim. This is the SAME defect v1's sibling
+     exploration surfaced (surface/raised == background in light) seen from the other mode.
+     LOGGED as a DS defect — the library has no "page behind raised surfaces" token that holds
+     its meaning across light and dark.
+
+  ② 1600px CONTENT COLUMN. .l-container's own `--l-max` (1120px) is RE-POINTED to 1600px on the
+     page shell rather than overridden — the component keeps owning its own centring maths. The
+     masthead and footer inners are given the same measure by a harness class so chrome stays
+     full-bleed while its content lines up with the column.
+
+  ③ THE CONSOLE-STYLING MISS ON INPUTS — ROOT CAUSE, MEASURED, NOT INFERRED.
+     Dave read the search field as "not Console". It is not a cascade-order, specificity or
+     scope problem: the field IS inside .cn-search-field, and --border-radius-control resolves
+     to 8px ON THAT VERY ELEMENT. THE COMPONENT'S CSS SIMPLY NEVER CONSUMES IT.
+        .cn-search-field .search.boxed  ->  border-radius 0px    (--border-radius-control = 8px)
+        .cn-input-fields  boxed field   ->  border-radius 8px
+        .cn-dropdown .trigger           ->  border-radius 8px
+        .cn-account-selector .as-trigger->  border-radius 8px
+        .cn-amount-input .ai-box        ->  border-radius 8px
+        .btn.primary                    ->  border-radius 8px
+     Search-field is the ONLY boxed control on this screen that draws a 1px box and declares no
+     radius, so under Console (8px) it is the one square control in a family of rounded ones —
+     which is exactly what "generic, not Console" looks like. THE CLASS: a sweep of all 135
+     .cn-* scopes in canon.css finds 16 that declare no border-radius at all, and SEVEN of those
+     nevertheless draw a full 1px box: .cn-search-field, .cn-headers (.frame), .cn-quick-actions
+     (.qa), .cn-reorder (ul.reorder), .cn-view-options (.seg), .cn-splitter (.demo-box),
+     .cn-pagination (.pg a). Every one of them is invisible under mono (radius 0) and wrong
+     under the other three themes. That is why it survived review.
+     WHERE THE REAL FIX LIVES: knowledge/snippets/Search-field.reference.html — canon.css is
+     GENERATED from the snippets by canon/gen_canon_components.py, so a canon.css edit would be
+     erased on the next regeneration. It is NOT applied here for two reasons, both stated:
+     (a) it is a gated-snippet change, un-ruled, and would ripple through the whole library;
+     (b) canon.css is shared, so changing it would retroactively restyle v1 — the artefact Dave
+     asked to keep as the comparison. LOGGED to _DS-IMPROVEMENTS.md instead.
+     WHAT v2 DOES: one page-level rule, applied to the CLASS of boxed search fields on this
+     screen (both instances and any added later), consuming the token the component forgot —
+     `.nio-shell .search.boxed{ border-radius: var(--border-radius-control) }`. It names no
+     .cn-* selector, so the compose gate's redefinition check stays satisfied.
+     ⚙ WHAT A COMPILED PER-THEME STYLESHEET WOULD HAVE PREVENTED (evidence for the ADR-0011 /
+     s200-D1 proposal, which this page does NOT build): a compiler minting a Console sheet from
+     the override store would emit a CONCRETE `border-radius: 8px` for every rule that draws a
+     box, and the absence of a radius declaration on a boxed control becomes a MISSING OUTPUT —
+     a thing the compiler can be asked about ("which boxed controls got no radius under
+     console?") and can refuse to emit. Today the miss is a NON-EVENT: the token resolves
+     correctly, nothing dangles, no gate has anything to look at, and the only detector is a
+     human noticing one square corner among six rounded ones. The defect is not a wrong value;
+     it is an UNCONSUMED value, and only a compiler that enumerates consumers can see it.
+
+  ④ LIGHT / DARK SWITCH. data-theme on <html>, the bento showcase mechanism, driven from a
+     .cn-segmented-control. Buttons, so keyboard operation is native; the sliding indicator is
+     re-placed through canon's OWN dv-behaviour placeSegs() (a resize event), not re-implemented.
+
+  ⑤ DONUT LEGEND — CAPSULE vs LIST, live toggle, NEITHER RECOMMENDED.
+     v1 needed TWO blocks side by side to reproduce the reference: .dv-leg (the interactive
+     filter, names only) plus a .cn-summary dl (the figures). v2 adds a LIST variant that merges
+     them: one list, swatch + letter + label + value per row, plus the Total row.
+     ⚙ IT NEEDED NO BEHAVIOUR-LAYER EXTENSION, AND THAT IS THE FINDING. dv-legend.js binds
+     nothing to a layout: every listener is delegated at document level and resolves by CLASS
+     CONTRACT (.dv-leg host, .dv-legrow[data-series], .dv-leg-sw, .dv-leg-item, .dv-leg-reset,
+     .dv-leg-name), with state parked on the host as host.__dv. A list-shaped legend that honours
+     that contract inherits hover-fade, ghost-toggle, isolate-latch (DV-D19), the "at least one
+     must stay" guard, Reset and the live region for free. The value cell is added INSIDE
+     .dv-leg-item, after .dv-leg-name, so nameOf() reads exactly what it read before.
+     ⇒ COMPONENT-VARIANT CANDIDATE, not a new component: dv-legend gains a VALUE COLUMN and a
+     list presentation. Gap-logged. This is the DS question v1's mapping row 19 already asked.
+     ⚠ TWO HONEST LIMITS, both declared and neither hidden:
+       · dv-legend keeps ONE state record per host. The two legends therefore hold SEPARATE
+         states, so the variant switch RESETS the outgoing legend (its own Reset button is
+         clicked) before swapping — selection does not carry across the switch.
+       · dv-legend's hover path resolves a figure's legend with figure.querySelector('.dv-leg'),
+         i.e. the FIRST one. The inactive legend therefore has its `dv-leg` class removed while
+         hidden, so exactly one legend is ever discoverable. Without that, hovering an arc would
+         drive the wrong record.
+
+  ⑥ CHROMELESS ACCOUNT-LIST VARIANT, live toggle against v1's card form.
+     .cn-list-items draws its chrome in exactly three places: ul.list carries
+     `background:var(--surface)` + `border:1px solid var(--divider)` (the card), li+li carries
+     `border-top:1px solid var(--divider)` (the separator), and .tag carries
+     `border:1px solid var(--tag-border)` (the outline box). Chromeless = the first two
+     declarations off, the SEPARATOR KEPT. Because the tag outline is genuinely ambiguous as
+     "chrome", BOTH readings are offered: Chromeless (tags kept) and Chromeless, plain tags.
+     Row behaviour, hover, press, focus ring and markup are untouched in every variant.
+     ⇒ COMPONENT-VARIANT CANDIDATE for .cn-list-items: a `flush` form. Gap-logged.
+
+  ⚙ EVERYTHING ELSE IS v1 VERBATIM. Still zero authored colour, zero font-size, zero
+    font-weight, no canon-class redefinition, canon radius throughout, two-red law untouched.
+-->
+<style>
+  /* ============ LAYOUT HARNESS ONLY. No colour values, no type, no canon-class redefinition.
+     ⛔ v2 FIX — THIS COMMENT USED TO EAT THE NEXT RULE. v1 wrote the exclusion list with literal
+     asterisks as "no .c-STAR/.cn-STAR"; that STAR-then-slash sequence is a CSS COMMENT TERMINATOR,
+     so the comment closed early, the parser hit garbage and DISCARDED THE VERY NEXT RULE — which
+     was body{ }. MEASURED on v1: its page style block parses to 44 rules with NO body rule at all,
+     so BOTH of v1's body declarations were dead. Its page grey never applied (that, not
+     specificity, is why v1's background stayed white) and v1 still carries the browser default 8px
+     body margin. Same species as ds-039's SECOND form, which canon/gen_canon_components.py already
+     guards against at the EMITTER for canon.css — but a composed screen writes its own style block
+     and no gate parses it. Logged to _DS-IMPROVEMENTS.md. ============ */
+  /* ① PAGE GREY — canon's OWN --page variable re-pointed, never an out-specified background.
+     canon.css paints the page with `.canon`+background:var(--page), so feeding --page is the
+     component-respecting move: every .cn- scope re-declares --page from --background-default, so
+     nothing inside a component (the donut's inter-arc stroke included) is disturbed.
+     Per-mode because no Console surface token is grey-and-distinct-from-card in BOTH modes —
+     see the header note and the mapping table. Both values are EXISTING tokens; none is minted.
+     ⚠ v1's grey was not lost to specificity. It was lost to the comment defect fixed above. */
+  body{ margin:0; --page:var(--surface-subtle); color:var(--text); }
+  [data-theme="dark"] body{ --page:var(--background-default); }
+
+  /* ② 1600px MEASURE. .l-container owns its own --l-max (1120px default) — re-pointed, not
+     overridden. Chrome stays full-bleed; its inner content takes the same measure. */
+  .nio-shell{ min-height:100vh; display:flex; flex-direction:column; --nio-max:1600px; }
+  .nio-shell > main{ flex:1; --l-max:var(--nio-max); }
+  .nio-shell .sh-masthead,
+  .nio-shell .ft-inner{ width:100%; max-width:var(--nio-max); margin-inline:auto; }
+
+  /* ③ THE SEARCH-FIELD RADIUS MISS — the component draws a 1px box and never consumes
+     --border-radius-control, so it renders square in every theme (invisible under mono, wrong
+     under the other three). Applied to the CLASS of boxed search fields on this page, feeding
+     the token the component forgot. Real home: knowledge/snippets/Search-field.reference.html
+     (canon.css is generated from it) — logged to _DS-IMPROVEMENTS.md, not patched here, because
+     canon.css is shared with v1. NOT a .cn-* redefinition: the selector names no canon scope. */
+  .nio-shell .search.boxed{ border-radius:var(--border-radius-control); }
+
+  /* ④⑤⑥ REVIEW BAR — page chrome for Dave's live comparison. Not part of any component; delete
+     the bar and its controller and the page renders at its authored defaults. */
+  .nio-review{ position:sticky; top:0; z-index:20; display:flex; flex-wrap:wrap; align-items:center;
+                gap:24px; padding:10px 32px; border-bottom:1px solid var(--divider);
+                background:var(--surface-raised); }
+  .nio-review-in{ display:flex; flex-wrap:wrap; align-items:center; gap:24px;
+                   width:100%; max-width:var(--nio-max); margin-inline:auto; }
+  .nio-rv-grp{ display:flex; align-items:center; gap:10px; }
+
+  /* ⑤ LIST-STYLE LEGEND — presentation only. Every dv-legend class contract is honoured, so the
+     behaviour layer is untouched: swatch = check, label = isolate, Reset, hover fade, live
+     region. The value cell sits INSIDE .dv-leg-item, after .dv-leg-name, so nameOf() is unmoved. */
+  /* In LIST mode the separate figures column is withdrawn, so the donut panel collapses to a
+     single column and .dv-donut-row's own flex lays donut | list SIDE BY SIDE — which is the
+     placement asked for. No component rule is touched; only the harness grid changes. */
+  .nio-donut-split[data-nio-leg="list"]{ grid-template-columns:minmax(0,1fr); }
+  /* ⚠ `width:100%` here made the list take the WHOLE flex line and wrap under the donut —
+     .dv-donut-row is `display:flex; flex-wrap:wrap`, so a 100%-wide item can never sit beside
+     anything. It is a flex ITEM: give it a basis and let it share the line. */
+  .nio-leg-list{ align-self:center; flex:1 1 300px; min-width:0; }
+
+  /* ⚠ CANON SCOPE BLEED, FOUND WHILE PLACING THE LIST LEGEND — measured, and it affects v1 too.
+     The PAGE-SHELL scope declares `:where(.cn-template-dashboard) .dv-svg{width:580px;height:260px}`
+     (canon.css line ~16124). It is component-specific chart geometry living in a TEMPLATE scope,
+     and it comes LATER in the file than `:where(.cn-chart-donut) .dv-svg`, which sets no width at
+     all — so on any dashboard-templated page the DONUT is forced to 580px wide even though its own
+     markup says width="300". In v1 that makes the donut overflow its 426px column and become
+     horizontally SCROLLABLE (.dv-stage carries overflow-x:auto, which hides the symptom).
+     v2 restores the size the svg's own width/height attributes already declare. No value is
+     invented — 300 and 260 are read off the markup. Logged to _DS-IMPROVEMENTS.md. */
+  .nio-donut-split .dv-svg{ width:300px; height:260px; }
+  .nio-leg-list .dv-legrow{ width:100%; }
+  .nio-leg-list .dv-leg-item{ flex:1; min-width:0; display:flex; align-items:center; gap:10px; }
+  .nio-leg-list .dv-leg-name{ flex:1; min-width:0; }
+  .nio-leg-val{ flex:none; margin-left:auto; font-variant-numeric:tabular-nums; }
+  .nio-leg-total{ display:flex; align-items:center; gap:10px; padding-top:8px; margin-top:4px;
+                   border-top:1px solid var(--divider); }
+  .nio-leg-total .nio-leg-total-k{ flex:1; }
+  .nio-leg-total .nio-leg-val{ margin-left:auto; }
+  .nio-leg-off{ display:none; }
+
+  /* ⑥ CHROMELESS LIST — the three chrome declarations .cn-list-items owns, switched off by
+     data attribute. The SEPARATOR (li + li border-top) is deliberately kept: that is the whole
+     brief. --surface-transparent is an existing canon token, not an authored value. */
+  .nio-acct-list[data-nio-list="flush"] ul.list,
+  .nio-acct-list[data-nio-list="flush-plain"] ul.list{ background:var(--surface-transparent); border:0; }
+  .nio-acct-list[data-nio-list="flush-plain"] .row .tag{ border:0; padding:0; height:auto; }
+
+  /* --- masthead (App-shell-top-nav's own .sh chrome, laid out for this screen).
+     ⚠ THREE LAYOUT-ONLY OVERRIDES, declared: the shell's .sh frame is a SPECIMEN frame —
+     min-height:560px + a 1px border + a 20px radius exist so the component reads as a card in
+     the showroom. On a real page the masthead is full-bleed chrome. Nothing else about the
+     component is touched: no colour, no type, no spacing inside the bar. --- */
+  .nio-shell .sh{ min-height:0; border:0; border-radius:0; border-bottom:1px solid var(--divider); }
+  .nio-brandrule{ border-left:1px solid var(--divider); padding-left:12px; margin-left:12px; }
+  .nio-assist{ flex:1; min-width:0; max-width:520px; margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .nio-assist .search{ flex:1; min-width:0; }
+
+  /* --- panels --- */
+  .nio-panel-title{ margin:0; }
+  .nio-flush{ padding:0; }
+  .nio-flush > .nio-panel-title{ padding:24px 24px 20px; }
+  .nio-divider{ border-top:1px solid var(--divider); }
+  .nio-kpis{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .nio-kpis > .kpi-tile{ border:0; border-left:1px solid var(--divider); border-radius:0; }
+  .nio-kpis > .kpi-tile:first-child{ border-left:0; }
+  .nio-cur{ margin-left:3px; }
+  .nio-acct-head .amount__cur{ margin-left:3px; }
+  .nio-kpis .stat{ margin:0; min-width:0; }
+  .nio-kpis .stat > span:last-child{ min-width:0; overflow-wrap:anywhere; }
+
+  /* --- accounts --- */
+  .nio-acct-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 24px 12px; }
+  .nio-acct-list{ border-top:1px solid var(--divider); padding:0 12px; }
+  .nio-acct-foot{ padding:12px 24px 24px; }
+  .nio-two{ display:grid; grid-template-columns:minmax(0,4fr) minmax(0,6fr); gap:24px; align-items:start; }
+  .nio-donut-split{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; align-items:center; }
+
+  /* --- payments --- */
+  .nio-pay{ display:grid; grid-template-columns:220px minmax(0,1fr); gap:32px; align-items:start; }
+  .nio-pay-cols{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px; align-items:start; }
+  .nio-stack{ display:flex; flex-direction:column; gap:16px; }
+  .nio-stack-s{ display:flex; flex-direction:column; gap:8px; }
+  .nio-payee{ border:1px solid var(--border); border-radius:var(--border-radius-container); padding:16px; }
+  .nio-payee-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .nio-invoice{ display:flex; align-items:center; gap:12px; border:1px solid var(--border);
+                border-radius:var(--border-radius-control); padding:12px 16px; }
+  .nio-invoice .nio-grow{ flex:1; min-width:0; }
+  .nio-actions{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:24px; }
+  .nio-actions-r{ display:flex; gap:12px; }
+
+  /* --- predictive signals --- */
+  .nio-signals{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .nio-signal{ border:0; border-left:1px solid var(--divider); border-radius:0;
+               display:flex; flex-direction:column; gap:10px; padding:20px; }
+  .nio-signals > .nio-signal:first-child{ border-left:0; }
+  .nio-signal-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .nio-signal-note{ margin:0; }
+  .nio-signal .stat{ margin:0; }
+  .nio-signal-foot{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:auto; }
+
+  /* --- feedback + doormat --- */
+  .nio-feedback{ display:flex; flex-direction:column; align-items:center; gap:20px; padding:32px 24px; }
+  .nio-chips{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+  .nio-feat-cta{ margin:16px 0 0; }
+  .nio-legal{ margin:16px 0 0; max-width:70ch; }
+
+  /* --- narrow --- */
+  @media (max-width:1100px){
+    .nio-review{ padding:10px 16px; }
+  }
+  @media (max-width:900px){
+    .nio-two, .nio-pay, .nio-pay-cols, .nio-donut-split{ grid-template-columns:minmax(0,1fr); }
+    .nio-kpis, .nio-signals{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .nio-kpis > .kpi-tile:nth-child(odd),
+    .nio-signals > .nio-signal:nth-child(odd){ border-left:0; }
+  }
+  @media (max-width:560px){
+    .nio-kpis, .nio-signals{ grid-template-columns:minmax(0,1fr); }
+    .nio-kpis > .kpi-tile, .nio-signals > .nio-signal{ border-left:0; border-top:1px solid var(--divider); }
+  }
+</style>
+</head>
+<body class="canon">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="menu" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol><symbol id="close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol><symbol id="search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol><symbol id="profile" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z" fill="currentColor"/></symbol><symbol id="add" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 8.4H9.6V0H8.4V8.4H0V9.6H8.4V18H9.6V9.6H18V8.4Z" fill="currentColor"/></symbol><symbol id="more" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 7.5C0.672 7.5 0 8.172 0 9C0 9.828 0.672 10.5 1.5 10.5C2.328 10.5 3 9.829 3 9C3 8.171 2.328 7.5 1.5 7.5ZM16.5 7.5C15.672 7.5 15 8.172 15 9C15 9.828 15.672 10.5 16.5 10.5C17.328 10.5 18 9.829 18 9C18 8.171 17.328 7.5 16.5 7.5ZM9 7.5C8.172 7.5 7.5 8.172 7.5 9C7.5 9.828 8.172 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></symbol><symbol id="share" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9989 5.99986V7.21686H15.7819V15.7829H2.22091V7.21686H4.99891V5.99986H1.00391V16.9999H16.9989V5.99986H12.9989ZM8.39891 11.9999H9.59891V2.44786L11.9989 4.84786V3.15186L8.99891 0.151855L5.99891 3.15186V4.84786L8.39891 2.44786V11.9999Z" fill="currentColor"/></symbol><symbol id="settings" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.376 6.992C16.208 6.374 15.96 5.774 15.634 5.206L16.319 3.592L14.408 1.68L12.794 2.365C12.225 2.04 11.626 1.791 11.007 1.623L10.352 0H7.648L6.992 1.624C6.374 1.791 5.774 2.04 5.206 2.365L3.592 1.68L1.68 3.592L2.365 5.206C2.04 5.774 1.791 6.374 1.624 6.992L0 7.648V10.351L1.624 11.007C1.791 11.626 2.04 12.225 2.366 12.794L1.68 14.408L3.592 16.32L5.206 15.635C5.775 15.961 6.374 16.209 6.993 16.377L7.648 18H10.351L11.007 16.377C11.625 16.209 12.225 15.961 12.794 15.635L14.408 16.32L16.32 14.408L15.635 12.794C15.961 12.225 16.209 11.626 16.377 11.007L18 10.352V7.648L16.376 6.992ZM15.374 10.118L15.218 10.694C15.077 11.214 14.867 11.72 14.593 12.198L14.298 12.715L14.53 13.263L14.899 14.132L14.132 14.899L12.716 14.297L12.199 14.593C11.721 14.866 11.215 15.077 10.694 15.218L10.119 15.374L9.542 16.8H8.458L7.882 15.375L7.306 15.219C6.785 15.078 6.28 14.867 5.802 14.594L5.285 14.298L4.736 14.53L3.868 14.899L3.101 14.132L3.703 12.716L3.407 12.199C3.134 11.721 2.923 11.215 2.782 10.694L2.626 10.119L1.2 9.542V8.458L2.625 7.882L2.781 7.307C2.922 6.786 3.133 6.28 3.406 5.802L3.702 5.285L3.47 4.737L3.101 3.868L3.868 3.101L5.285 3.703L5.802 3.407C6.28 3.134 6.786 2.924 7.307 2.782L7.882 2.626L8.458 1.2H9.543L10.119 2.625L10.694 2.781C11.215 2.922 11.721 3.133 12.199 3.406L12.716 3.702L14.133 3.1L14.9 3.867L14.297 5.285L14.593 5.802C14.866 6.279 15.076 6.785 15.218 7.306L15.374 7.881L15.927 8.104L16.8 8.458V9.542L15.374 10.118ZM9 4.8C7.878 4.8 6.823 5.237 6.03 6.03C5.237 6.823 4.8 7.878 4.8 9C4.8 10.122 5.237 11.177 6.03 11.97C6.823 12.763 7.878 13.2 9 13.2C10.122 13.2 11.176 12.763 11.97 11.97C12.764 11.177 13.2 10.122 13.2 9C13.2 7.878 12.763 6.823 11.97 6.03C11.177 5.237 10.122 4.8 9 4.8ZM11.121 11.121C10.536 11.707 9.768 12 9 12C8.232 12 7.464 11.707 6.878 11.121C5.707 9.95 5.707 8.05 6.878 6.879C7.464 6.293 8.232 6 9 6C9.768 6 10.536 6.293 11.121 6.879C12.293 8.05 12.293 9.95 11.121 11.121Z" fill="currentColor"/></symbol><symbol id="edit" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.368 1.584L16.416 0.632C15.994 0.211 15.441 0 14.889 0C14.337 0 13.784 0.211 13.362 0.632L2.954 11.041L0 18L6.959 15.046L17.368 4.638C18.211 3.795 18.211 2.427 17.368 1.584ZM6.276 14.032L2.265 15.734L3.967 11.723L12.421 3.269L14.729 5.577L6.276 14.032ZM16.519 3.789L15.578 4.73L13.27 2.422L14.211 1.481C14.392 1.3 14.633 1.2 14.889 1.2C15.145 1.2 15.386 1.3 15.567 1.481L16.519 2.433C16.893 2.807 16.893 3.415 16.519 3.789Z" fill="currentColor"/></symbol><symbol id="viewall" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 17H8V1H1V17ZM2.2 2.2H6.8V15.8H2.2V2.2ZM10 1V5H17V1H10ZM15.8 3.8H11.2V2.2H15.8V3.8ZM10 17H17V13H10V17ZM11.2 14.2H15.8V15.8H11.2V14.2ZM10 11H17V7H10V11ZM11.2 8.2H15.8V9.8H11.2V8.2Z" fill="currentColor"/></symbol><symbol id="grid" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol><symbol id="kpiup" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol><symbol id="kpidown" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol><symbol id="ptcheck" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.91547 15.9421L0.105469 10.1341L1.37747 8.86011L5.91547 13.3971L16.6215 2.69312L17.8935 3.96712L5.91547 15.9421Z" fill="currentColor"/></symbol><symbol id="aschev" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol><symbol id="chevleft" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol><symbol id="snhome" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z" fill="currentColor"/></symbol><symbol id="snacct" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 5H1.5C0.675 5 0 5.675 0 6.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V6.5C18 5.675 17.325 5 16.5 5ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V6.5C1.2 6.337 1.337 6.2 1.5 6.2H16.5C16.663 6.2 16.8 6.337 16.8 6.5V16.5ZM3 12H5V10H3V12ZM14.8 2.6H3.2C2.537 2.6 2 3.137 2 3.8H16C16 3.137 15.463 2.6 14.8 2.6ZM12.8 0H5.2C4.537 0 4 0.537 4 1.2H14C14 0.537 13.463 0 12.8 0Z" fill="currentColor"/></symbol><symbol id="sncard" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 6H1.5C0.675 6 0 6.675 0 7.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V7.5C18 6.675 17.325 6 16.5 6ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V10.2H16.8V16.5ZM16.8 9H1.2V7.5C1.2 7.337 1.337 7.2 1.5 7.2H16.5C16.663 7.2 16.8 7.337 16.8 7.5V9ZM15 12H12V13.2H15V12ZM13.05 1.221C13.085 1.207 13.122 1.2 13.159 1.2C13.262 1.2 13.389 1.258 13.441 1.387L14.82 4.8H16.114L14.553 0.938C14.318 0.355 13.753 0 13.159 0C12.973 0 12.784 0.035 12.601 0.109L0.988 4.8H4.192L13.05 1.221Z" fill="currentColor"/></symbol><symbol id="sntransfer" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.003 7.18915H11.997V5.98497H15.003V7.18915ZM6.05701 8.62698L5.09401 9.58853H8.748V10.7837H5.06701L6.05701 11.7632H4.36501L2.79002 10.1996L4.36501 8.62698H6.05701ZM7.551 12.2216L9.126 13.7942L7.551 15.3309H5.85901L6.84901 14.3783H3.17702V13.1561H6.82201L5.85901 12.1946L7.551 12.2216ZM6.00301 7.18915C4.05227 7.18188 2.2899 8.35058 1.54002 10.1487C0.790141 11.9469 1.20094 14.0191 2.58033 15.3964C3.95972 16.7738 6.03509 17.1839 7.83595 16.4352C9.63682 15.6864 10.8073 13.9267 10.8 11.9789C10.7901 9.3377 8.64821 7.199 6.00301 7.18915ZM6.00301 5.99395C8.43708 5.99033 10.6332 7.45254 11.5655 9.6976C12.4978 11.9427 11.9823 14.5275 10.2599 16.2448C8.53746 17.9621 5.94795 18.4728 3.70091 17.5386C1.45386 16.6043 -0.00725782 14.4093 2.71165e-05 11.9789C2.34e-05 8.66709 2.6862 5.98094 6.00301 5.97598V5.99395ZM18 1.49175V10.4782C17.9986 10.6786 17.9589 10.8768 17.883 11.0623C17.6403 11.6097 17.0966 11.9623 16.497 11.9609H13.212C13.2075 11.5663 13.1714 11.1726 13.104 10.7837H16.497C16.664 10.779 16.7983 10.6449 16.803 10.4782V4.18768H4.20301V5.02342C3.78991 5.13033 3.3865 5.27161 2.99702 5.44578V1.49175C3.00197 0.666427 3.67343 -1.47967e-05 4.50001 2.46473e-10H16.497C17.3236 -1.47967e-05 17.995 0.666427 18 1.49175ZM16.497 1.1952H4.50001C4.42125 1.1952 4.3457 1.22644 4.29 1.28205C4.23431 1.33767 4.20301 1.4131 4.20301 1.49175V2.99248H16.803V1.49175C16.7981 1.32652 16.6625 1.19512 16.497 1.1952Z" fill="currentColor"/></symbol><symbol id="snchart" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0V7H18C18 3.134 14.866 0 11 0ZM12.2 1.325C14.437 1.797 16.203 3.563 16.675 5.8H12.2V1.325ZM9 2H8C3.582 2 0 5.582 0 10C0 14.418 3.582 18 8 18C12.418 18 16 14.418 16 10V9H9V2ZM1.2 10C1.2 6.318 4.143 3.317 7.8 3.21V9.551L2.885 14.466C1.839 13.27 1.2 11.71 1.2 10ZM8 16.8C6.392 16.8 4.914 16.236 3.749 15.299L8 11.049L12.251 15.299C11.086 16.236 9.608 16.8 8 16.8ZM14.79 10.2C14.742 11.831 14.12 13.317 13.115 14.466L8.849 10.2H14.79Z" fill="currentColor"/></symbol><symbol id="pdf" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.69006 9.378H3.37306V10.176H3.64006C4.18706 10.176 4.26106 9.967 4.26106 9.763C4.26106 9.489 4.09506 9.378 3.69006 9.378ZM12.9891 0H2.78906V5.8H3.98906V1.2H11.7891V5H15.5891V16.8H3.98906V15.2H2.78906V18H16.7891V3.8L12.9891 0ZM12.9891 3.8V1.697L15.0921 3.8H12.9891ZM12.7891 13.99V7.01C12.7891 7.004 12.7851 7 12.7791 7H0.799062C0.793062 7 0.789062 7.004 0.789062 7.01V13.99C0.789062 13.995 0.793062 14 0.799062 14H12.7791C12.7851 14 12.7891 13.995 12.7891 13.99ZM4.54906 10.77L4.54806 10.771C4.37706 10.84 4.14306 10.877 3.89006 10.877H3.37306V12.15H2.46106V8.676H3.77606C4.09806 8.676 4.43606 8.692 4.72006 8.883C5.02206 9.088 5.18106 9.404 5.18106 9.795C5.18206 10.239 4.94506 10.604 4.54906 10.77ZM6.60206 12.151H5.47406V8.676H6.71206C7.98706 8.676 8.63406 9.255 8.63406 10.398C8.63306 11.952 7.54806 12.151 6.60206 12.151ZM11.3691 9.383H9.90606V10.058H11.2831V10.76H9.90606V12.152H9.00706V8.676H11.3691V9.383ZM6.64806 9.378H6.38506V11.449H6.62006C7.37906 11.449 7.70306 11.137 7.70306 10.406C7.70306 9.675 7.39806 9.378 6.64806 9.378Z" fill="currentColor"/></symbol><symbol id="download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/></symbol><symbol id="tip" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 17L5 1L13 9L5 17Z" fill="currentColor"/></symbol><symbol id="ftup" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol><symbol id="fglsec" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 5.734H14V4C14 1.8 12.2 0 10 0H8C5.8 0 4 1.8 4 4V5.734H2.5C1.675 5.734 1 6.409 1 7.234V16.5C1 17.325 1.675 18 2.5 18H15.5C16.325 18 17 17.325 17 16.5V7.234C17 6.409 16.325 5.734 15.5 5.734ZM5.2 4C5.2 2.456 6.456 1.2 8 1.2H10C11.544 1.2 12.8 2.456 12.8 4V5.734H11.6V4C11.6 3.118 10.882 2.4 10 2.4H8C7.118 2.4 6.4 3.118 6.4 4V5.734H5.2V4ZM10.4 4V5.734H7.6V4C7.6 3.783 7.783 3.6 8 3.6H10C10.217 3.6 10.4 3.783 10.4 4ZM15.8 16.5C15.8 16.663 15.663 16.8 15.5 16.8H2.5C2.337 16.8 2.2 16.663 2.2 16.5V7.234C2.2 7.071 2.337 6.934 2.5 6.934H15.5C15.663 6.934 15.8 7.071 15.8 7.234V16.5ZM8.4 14H9.6V10H8.4V14Z" fill="currentColor"/></symbol><symbol id="fglmob" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.78906 0H12.7891C13.8891 0 14.7891 0.9 14.7891 2V16C14.7891 17.1 13.8891 18 12.7891 18H4.78906C3.68906 18 2.78906 17.1 2.78906 16V2C2.78906 0.9 3.68906 0 4.78906 0ZM12.7891 1.2H4.78906C4.38906 1.2 3.98906 1.6 3.98906 2V13H13.5891V2C13.5891 1.6 13.1891 1.2 12.7891 1.2ZM12.7891 16.8H4.78906C4.38906 16.8 3.98906 16.4 3.98906 16V14.2H13.5891V16C13.5891 16.4 13.1891 16.8 12.7891 16.8Z" fill="currentColor"/></symbol><symbol id="success" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></symbol><symbol id="sort" viewBox="0 0 18 18"><path d="M1.5 7.5L9 0L16.5 7.5H1.5Z" fill="currentColor"/><path d="M16.5 10.5L9 18L1.5 10.5H16.5Z" fill="currentColor"/></symbol></svg>
+
+<div class="cn-template-dashboard nio-shell">
+
+<!-- ============ REVIEW BAR (v2) — page chrome, NOT a component. Every control is a canon
+     Segmented-control: real <button>s, so Tab + Enter/Space work natively. ============ -->
+<div class="nio-review" role="region" aria-label="Review controls">
+  <div class="nio-review-in">
+    <div class="nio-rv-grp">
+      <span class="t-cm-legal" id="rvModeL">Mode</span>
+      <div class="cn-segmented-control">
+        <div class="seg sm" id="rvMode" role="group" aria-labelledby="rvModeL">
+          <span class="ind" aria-hidden="true"></span>
+          <button type="button" class="t-cm-button" data-v="light" aria-pressed="true">Light</button>
+          <button type="button" class="t-cm-button" data-v="dark" aria-pressed="false">Dark</button>
+        </div>
+      </div>
+    </div>
+    <div class="nio-rv-grp">
+      <span class="t-cm-legal" id="rvLegL">Donut legend</span>
+      <div class="cn-segmented-control">
+        <div class="seg sm" id="rvLeg" role="group" aria-labelledby="rvLegL">
+          <span class="ind" aria-hidden="true"></span>
+          <button type="button" class="t-cm-button" data-v="capsule" aria-pressed="true">Capsule + values</button>
+          <button type="button" class="t-cm-button" data-v="list" aria-pressed="false">One list</button>
+        </div>
+      </div>
+    </div>
+    <div class="nio-rv-grp">
+      <span class="t-cm-legal" id="rvListL">Account list</span>
+      <div class="cn-segmented-control">
+        <div class="seg sm" id="rvList" role="group" aria-labelledby="rvListL">
+          <span class="ind" aria-hidden="true"></span>
+          <button type="button" class="t-cm-button" data-v="card" aria-pressed="true">Card</button>
+          <button type="button" class="t-cm-button" data-v="flush" aria-pressed="false">Chromeless</button>
+          <button type="button" class="t-cm-button" data-v="flush-plain" aria-pressed="false">Chromeless, plain tags</button>
+        </div>
+      </div>
+    </div>
+    <p class="t-cm-legal" style="margin:0; max-width:56ch">Neither legend and neither list form is a
+      recommendation — both are here to be compared. Nothing on this page is ruled.</p>
+  </div>
+</div>
+
+<!-- ============ MASTHEAD — App-shell-top-nav (inline form) + Search-field + Icon-button ====== -->
+<div class="cn-app-shell-top-nav">
+  <div class="sh" data-form="inline">
+    <a class="sh-skip t-cm-button" href="#nio-main">Skip to main content</a>
+    <header class="sh-masthead">
+      <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+      <span class="t-cm-caption nio-brandrule">NIO</span>
+      <nav class="sh-nav" aria-label="Primary">
+        <a class="t-cm-button" href="#" aria-current="page">Overview</a>
+        <a class="t-cm-button" href="#">Spending</a>
+        <a class="t-cm-button" href="#">Payments</a>
+        <a class="t-cm-button" href="#">Authorisations</a>
+      </nav>
+      <div class="nio-assist">
+        <div class="cn-icon-button"><button class="iconbtn tertiary" type="button" aria-label="Add a shortcut"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#add"/></svg></button></div>
+        <div class="cn-search-field">
+          <div class="search boxed">
+            <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#search"/></svg></span>
+            <input type="search" aria-label="Nio assist: ask a question or search for something" placeholder="Nio assist: ask a question or search for something" value="">
+          </div>
+        </div>
+      </div>
+      <div class="sh-actions">
+        <button type="button" aria-label="Notifications"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#more"/></svg></button>
+        <button type="button" aria-label="Your profile"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#profile"/></svg></button>
+      </div>
+    </header>
+  </div>
+</div>
+
+<main class="tpl-page l-container" id="nio-main">
+  <div class="l-stack" data-gap="xxl">
+
+    <!-- ============ BALANCES ============ -->
+    <section class="tpl-section" aria-labelledby="bal-sec">
+      <div class="stat-card tpl-panel nio-flush">
+        <h2 id="bal-sec" class="nio-panel-title t-ed-heading-3">Balances</h2>
+        <div class="cn-kpi-tile cn-status-indicator nio-divider">
+          <div class="nio-kpis">
+      <div class="kpi-tile" role="group" aria-label="Combined cash balance - FX adjusted">
+        <p class="lbl16 t-cm-caption"><span class="stat err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-caption">Combined cash balance - FX adjusted</span></span></p>
+        <span class="amt t-cm-figure-4"><span>32,875.00</span><span class="nio-cur t-cm-figure-6">EUR</span></span>
+        <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#kpidown"/></svg></span><span class="t-cm-figure-6">&minus;1,900.78 down</span><span class="per t-cm-legal">vs last month</span></span>
+        <div class="kpi-spark"><svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,3.0 20.6,7.1 38.3,11.2 55.9,15.3 73.5,13.2 91.2,19.4 108.8,25.5 126.5,23.5 144.1,29.6 161.7,33.7 179.4,37.8 197.0,45.0"/>
+          <circle class="dv-end" cx="197.0" cy="45.0" r="3"/>
+        </svg></div>
+      </div>
+      <div class="kpi-tile" role="group" aria-label="Spending this month">
+        <p class="lbl16 t-cm-caption"><span class="stat ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-caption">Spending this month</span></span></p>
+        <span class="amt t-cm-figure-4"><span>4,236.42</span><span class="nio-cur t-cm-figure-6">EUR</span></span>
+        <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#kpiup"/></svg></span><span class="t-cm-figure-6">&minus;1,900.78 up</span><span class="per t-cm-legal">vs last month</span></span>
+        <div class="kpi-spark"><svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,45.0 20.6,40.2 38.3,35.3 55.9,36.9 73.5,30.5 91.2,27.2 108.8,28.8 126.5,24.0 144.1,19.2 161.7,14.3 179.4,11.1 197.0,3.0"/>
+          <circle class="dv-end" cx="197.0" cy="3.0" r="3"/>
+        </svg></div>
+      </div>
+      <div class="kpi-tile" role="group" aria-label="Total credit available">
+        <p class="lbl16 t-cm-caption"><span class="stat err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-caption">Total credit available</span></span></p>
+        <span class="amt t-cm-figure-4"><span>82,200.00</span><span class="nio-cur t-cm-figure-6">EUR</span></span>
+        <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#kpidown"/></svg></span><span class="t-cm-figure-6">Limit: 100,000.00</span><span class="per t-cm-legal">82% drawn</span></span>
+        <div class="kpi-spark"><svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,3.0 20.6,6.8 38.3,8.7 55.9,14.5 73.5,12.5 91.2,20.2 108.8,24.0 126.5,22.1 144.1,29.7 161.7,35.5 179.4,39.3 197.0,45.0"/>
+          <circle class="dv-end" cx="197.0" cy="45.0" r="3"/>
+        </svg></div>
+      </div>
+      <div class="kpi-tile" role="group" aria-label="Total cash in">
+        <p class="lbl16 t-cm-caption"><span class="stat ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-caption">Total cash in</span></span></p>
+        <span class="amt t-cm-figure-4"><span>2,278.70</span><span class="nio-cur t-cm-figure-6">EUR</span></span>
+        <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#kpiup"/></svg></span><span class="t-cm-figure-6">7,345.70 up</span><span class="per t-cm-legal">vs last month</span></span>
+        <div class="kpi-spark"><svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polyline class="dv-series" points="3.0,45.0 20.6,39.0 38.3,34.5 55.9,36.0 73.5,30.0 91.2,27.0 108.8,28.5 126.5,22.5 144.1,16.5 161.7,21.0 179.4,13.5 197.0,3.0"/>
+          <circle class="dv-end" cx="197.0" cy="3.0" r="3"/>
+        </svg></div>
+      </div>
+          </div>
+        </div>
+        <div class="cn-chart-bar cn-segmented-control nio-divider" style="padding:24px">
+      <figure class="dv dv-animate" data-dv-type="grouped-column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="bal-h">
+      <figcaption id="bal-h" class="sr-only">Money in and money out by month, thousands of euro</figcaption>
+      <div class="dv-head">
+        <h3 class="dv-title t-cm-section-label">Balances overview</h3>
+        <div class="dv-controls" role="group" aria-label="Chart tools">
+        <div class="seg sm" role="group" aria-label="Range"><span class="ind" aria-hidden="true"></span><button type="button" class="t-cm-chart-label" aria-pressed="true">1Y</button><button type="button" class="t-cm-chart-label" aria-pressed="false">6M</button><button type="button" class="t-cm-chart-label" aria-pressed="false">3M</button><button type="button" class="t-cm-chart-label" aria-pressed="false">1M</button></div>
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="bal-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
+          <div class="dv-tablepanel" id="bal-tbl" role="region" aria-label="Money in and money out by month, thousands of euro, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal"><caption>Money in and money out by month, thousands of euro</caption>
+          <thead><tr><th scope="col">Month</th><th scope="col">In / out</th></tr></thead>
+          <tbody><tr><th scope="row">May</th><td>45 / 30</td></tr><tr><th scope="row">Jun</th><td>62 / 100</td></tr><tr><th scope="row">Jul</th><td>18 / 22</td></tr><tr><th scope="row">Aug</th><td>55 / 60</td></tr><tr><th scope="row">Sep</th><td>85 / 40</td></tr><tr><th scope="row">Oct</th><td>42 / 30</td></tr><tr><th scope="row">Nov</th><td>58 / 46</td></tr><tr><th scope="row">Dec</th><td>50 / 60</td></tr><tr><th scope="row">Jan</th><td>95 / 72</td></tr><tr><th scope="row">Feb</th><td>40 / 65</td></tr><tr><th scope="row">Mar</th><td>30 / 22</td></tr><tr><th scope="row">Apr</th><td>20 / 25</td></tr></tbody></table>
+          </div>
+        </details>
+      </div>
+      </div>
+      <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Money in and money out by month, thousands of euro, twelve months to April.">
+        <line class="dv-grid" x1="46" y1="230.0" x2="568" y2="230.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233.0" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="186.8" x2="568" y2="186.8" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="189.8" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="143.6" x2="568" y2="143.6" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="146.6" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-grid" x1="46" y1="100.4" x2="568" y2="100.4" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="103.4" text-anchor="end" data-fx="0" data-dx="-8">60</text>
+        <line class="dv-grid" x1="46" y1="57.2" x2="568" y2="57.2" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="60.2" text-anchor="end" data-fx="0" data-dx="-8">80</text>
+        <line class="dv-grid" x1="46" y1="14.0" x2="568" y2="14.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17.0" text-anchor="end" data-fx="0" data-dx="-8">100</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="52.8" y="132.8" width="14" height="97.2" data-fx="0.0129" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, May: 45" data-tip="A &middot; Money in &middot; May: 45"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-2)" x="68.8" y="165.2" width="14" height="64.8" data-fx="0.0436" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, May: 30" data-tip="B &middot; Money out &middot; May: 30"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-1)" x="96.2" y="96.1" width="14" height="133.9" data-fx="0.0963" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Jun: 62" data-tip="A &middot; Money in &middot; Jun: 62"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-2)" x="112.2" y="14.0" width="14" height="216.0" data-fx="0.1269" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Jun: 100" data-tip="B &middot; Money out &middot; Jun: 100"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-1)" x="139.8" y="191.1" width="14" height="38.9" data-fx="0.1796" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Jul: 18" data-tip="A &middot; Money in &middot; Jul: 18"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-2)" x="155.8" y="182.5" width="14" height="47.5" data-fx="0.2102" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Jul: 22" data-tip="B &middot; Money out &middot; Jul: 22"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:270ms" fill="var(--data-series-1)" x="183.2" y="111.2" width="14" height="118.8" data-fx="0.2629" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Aug: 55" data-tip="A &middot; Money in &middot; Aug: 55"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:315ms" fill="var(--data-series-2)" x="199.2" y="100.4" width="14" height="129.6" data-fx="0.2936" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Aug: 60" data-tip="B &middot; Money out &middot; Aug: 60"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:360ms" fill="var(--data-series-1)" x="226.8" y="46.4" width="14" height="183.6" data-fx="0.3463" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Sep: 85" data-tip="A &middot; Money in &middot; Sep: 85"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:405ms" fill="var(--data-series-2)" x="242.8" y="143.6" width="14" height="86.4" data-fx="0.3769" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Sep: 40" data-tip="B &middot; Money out &middot; Sep: 40"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:450ms" fill="var(--data-series-1)" x="270.2" y="139.3" width="14" height="90.7" data-fx="0.4296" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Oct: 42" data-tip="A &middot; Money in &middot; Oct: 42"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:495ms" fill="var(--data-series-2)" x="286.2" y="165.2" width="14" height="64.8" data-fx="0.4602" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Oct: 30" data-tip="B &middot; Money out &middot; Oct: 30"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:540ms" fill="var(--data-series-1)" x="313.8" y="104.7" width="14" height="125.3" data-fx="0.5129" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Nov: 58" data-tip="A &middot; Money in &middot; Nov: 58"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:585ms" fill="var(--data-series-2)" x="329.8" y="130.6" width="14" height="99.4" data-fx="0.5436" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Nov: 46" data-tip="B &middot; Money out &middot; Nov: 46"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:630ms" fill="var(--data-series-1)" x="357.2" y="122.0" width="14" height="108.0" data-fx="0.5963" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Dec: 50" data-tip="A &middot; Money in &middot; Dec: 50"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:675ms" fill="var(--data-series-2)" x="373.2" y="100.4" width="14" height="129.6" data-fx="0.6269" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Dec: 60" data-tip="B &middot; Money out &middot; Dec: 60"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:720ms" fill="var(--data-series-1)" x="400.8" y="24.8" width="14" height="205.2" data-fx="0.6796" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Jan: 95" data-tip="A &middot; Money in &middot; Jan: 95"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:765ms" fill="var(--data-series-2)" x="416.8" y="74.5" width="14" height="155.5" data-fx="0.7102" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Jan: 72" data-tip="B &middot; Money out &middot; Jan: 72"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:810ms" fill="var(--data-series-1)" x="444.2" y="143.6" width="14" height="86.4" data-fx="0.7629" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Feb: 40" data-tip="A &middot; Money in &middot; Feb: 40"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:855ms" fill="var(--data-series-2)" x="460.2" y="89.6" width="14" height="140.4" data-fx="0.7936" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Feb: 65" data-tip="B &middot; Money out &middot; Feb: 65"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:900ms" fill="var(--data-series-1)" x="487.8" y="165.2" width="14" height="64.8" data-fx="0.8463" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Mar: 30" data-tip="A &middot; Money in &middot; Mar: 30"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:945ms" fill="var(--data-series-2)" x="503.8" y="182.5" width="14" height="47.5" data-fx="0.8769" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Mar: 22" data-tip="B &middot; Money out &middot; Mar: 22"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:990ms" fill="var(--data-series-1)" x="531.2" y="186.8" width="14" height="43.2" data-fx="0.9296" data-fw="0.0268" tabindex="0" role="img" aria-label="A, Money in, Apr: 20" data-tip="A &middot; Money in &middot; Apr: 20"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:1035ms" fill="var(--data-series-2)" x="547.2" y="176.0" width="14" height="54.0" data-fx="0.9602" data-fw="0.0268" tabindex="0" role="img" aria-label="B, Money out, Apr: 25" data-tip="B &middot; Money out &middot; Apr: 25"></rect>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="59.8" y="128.8" text-anchor="middle" data-fx="0.0263">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="75.8" y="161.2" text-anchor="middle" data-fx="0.057">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="103.2" y="92.1" text-anchor="middle" data-fx="0.1097">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="119.2" y="10.0" text-anchor="middle" data-fx="0.1403">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="146.8" y="187.1" text-anchor="middle" data-fx="0.193">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="162.8" y="178.5" text-anchor="middle" data-fx="0.2237">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="190.2" y="107.2" text-anchor="middle" data-fx="0.2763">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="206.2" y="96.4" text-anchor="middle" data-fx="0.307">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="233.8" y="42.4" text-anchor="middle" data-fx="0.3597">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="249.8" y="139.6" text-anchor="middle" data-fx="0.3903">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="277.2" y="135.3" text-anchor="middle" data-fx="0.443">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="293.2" y="161.2" text-anchor="middle" data-fx="0.4737">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="320.8" y="100.7" text-anchor="middle" data-fx="0.5263">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="336.8" y="126.6" text-anchor="middle" data-fx="0.557">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="364.2" y="118.0" text-anchor="middle" data-fx="0.6097">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="380.2" y="96.4" text-anchor="middle" data-fx="0.6403">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="407.8" y="20.8" text-anchor="middle" data-fx="0.693">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="423.8" y="70.5" text-anchor="middle" data-fx="0.7237">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="451.2" y="139.6" text-anchor="middle" data-fx="0.7763">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="467.2" y="85.6" text-anchor="middle" data-fx="0.807">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="494.8" y="161.2" text-anchor="middle" data-fx="0.8597">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="510.8" y="178.5" text-anchor="middle" data-fx="0.8903">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="538.2" y="182.8" text-anchor="middle" data-fx="0.943">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="554.2" y="172.0" text-anchor="middle" data-fx="0.9737">B</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="67.8" y="246" text-anchor="middle" data-fx="0.0417">May</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.125">Jun</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="154.8" y="246" text-anchor="middle" data-fx="0.2083">Jul</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="198.2" y="246" text-anchor="middle" data-fx="0.2917">Aug</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.375">Sep</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="285.2" y="246" text-anchor="middle" data-fx="0.4583">Oct</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="328.8" y="246" text-anchor="middle" data-fx="0.5417">Nov</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.625">Dec</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="415.8" y="246" text-anchor="middle" data-fx="0.7083">Jan</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="459.2" y="246" text-anchor="middle" data-fx="0.7917">Feb</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.875">Mar</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="546.2" y="246" text-anchor="middle" data-fx="0.9583">Apr</text>
+      </svg>
+      </div></div>
+      <ul class="dv-leg center t-cm-chart-label" id="bal-legend" role="group" aria-label="Series — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+        <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Money in" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Money in"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Money in</span></button></li>
+        <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Money out" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Money out"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Money out</span></button></li>
+        <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="bal-legend" disabled>Reset</button></li>
+      </ul>
+      <p class="dv-sr" id="bal-live" role="status" aria-live="polite"></p>
+    </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ACCOUNTS  |  SPENDING ============ -->
+    <section class="tpl-section" aria-label="Accounts and spending">
+      <div class="nio-two">
+
+        <div class="stat-card tpl-panel nio-flush">
+          <h2 class="nio-panel-title t-ed-heading-3" id="acct-h">Accounts</h2>
+          <div class="nio-acct-head">
+            <div class="cn-amount-display nio-stack-s">
+              <p class="t-cm-caption" id="bal-total-l" style="margin:0">Balance total</p>
+              <span class="amount amount--display t-cm-figure-4" aria-labelledby="bal-total-l"><span class="amount__val">112,514.11</span><span class="amount__cur">GBP</span></span>
+            </div>
+          </div>
+          <div class="nio-acct-head">
+            <div class="cn-segmented-control">
+              <div class="seg sm" role="group" aria-label="Filter accounts">
+                <span class="ind" aria-hidden="true"></span>
+                <button type="button" aria-pressed="true">All</button>
+                <button type="button" aria-pressed="false">Current</button>
+                <button type="button" aria-pressed="false">Cards</button>
+              </div>
+            </div>
+            <div class="cn-view-options">
+              <div class="seg" role="group" aria-label="List tools">
+                <span class="ind" aria-hidden="true"></span>
+                <button type="button" aria-pressed="false" aria-label="Filter accounts"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#settings"/></svg></button>
+                <button type="button" aria-pressed="false" aria-label="Sort accounts"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#sort"/></svg></button>
+              </div>
+            </div>
+          </div>
+          <div class="cn-list-items nio-acct-list" id="acctList" data-nio-list="card">
+            <ul class="list" aria-labelledby="acct-h">
+          <li><button class="row" type="button">
+            <span class="body">
+              <span class="line"><span class="title">Current Account</span><span class="amount">42,710.18 GBP</span></span>
+              <span class="line"><span class="desc">GB | 001-011113-004</span><span class="tag">Current</span></span>
+            </span>
+          </button></li>
+          <li><button class="row" type="button">
+            <span class="body">
+              <span class="line"><span class="title">Business Reserve Savings</span><span class="amount">60,000.00 GBP</span></span>
+              <span class="line"><span class="desc">GB | 001-011113-004</span><span class="tag">Savings</span></span>
+            </span>
+          </button></li>
+          <li><button class="row" type="button">
+            <span class="body">
+              <span class="line"><span class="title">Tax Savings</span><span class="amount">22,825.38 GBP</span></span>
+              <span class="line"><span class="desc">GB | 001-011113-004</span><span class="tag">Savings</span></span>
+            </span>
+          </button></li>
+          <li><button class="row" type="button">
+            <span class="body">
+              <span class="line"><span class="title">Business Credit Card</span><span class="amount">6,225.10 GBP</span></span>
+              <span class="line"><span class="desc">GB | 001-011113-004</span><span class="tag">Cards</span></span>
+            </span>
+          </button></li>
+          <li><button class="row" type="button">
+            <span class="body">
+              <span class="line"><span class="title">Business Credit Card</span><span class="amount">6,225.10 GBP</span></span>
+              <span class="line"><span class="desc">GB | 001-011113-004</span><span class="tag">Cards</span></span>
+            </span>
+          </button></li>
+          <li><button class="row" type="button">
+            <span class="body">
+              <span class="line"><span class="title">UK Current Account</span><span class="amount">42,710.18 GBP</span></span>
+              <span class="line"><span class="desc">GB | 001-011113-004</span><span class="tag">Current</span></span>
+            </span>
+          </button></li>
+          <li><button class="row" type="button">
+            <span class="body">
+              <span class="line"><span class="title">Instant access savings</span><span class="amount">22,825.38 GBP</span></span>
+              <span class="line"><span class="desc">GB | 001-011113-004</span><span class="tag">Savings</span></span>
+            </span>
+          </button></li>
+          <li><button class="row" type="button">
+            <span class="body">
+              <span class="line"><span class="title">Instant access savings</span><span class="amount">22,825.38 GBP</span></span>
+              <span class="line"><span class="desc">GB | 001-011113-004</span><span class="tag">Savings</span></span>
+            </span>
+          </button></li>
+            </ul>
+          </div>
+          <div class="cn-search-field nio-acct-foot">
+            <div class="search boxed">
+              <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#search"/></svg></span>
+              <input type="search" aria-label="Search accounts" placeholder="Search" value="">
+            </div>
+          </div>
+        </div>
+
+        <div class="nio-stack">
+          <div class="stat-card tpl-panel">
+            <h2 class="nio-panel-title t-ed-heading-3">Spending</h2>
+            <div class="cn-chart-donut cn-summary nio-donut-split" style="margin-top:20px">
+        <figure class="dv" data-dv-type="donut" data-total="13734" data-surface="page" data-labelling="spider" role="group" aria-labelledby="sp-h">
+      <figcaption id="sp-h" class="sr-only">Spending breakdown this month, pounds</figcaption>
+      <div class="dv-head">
+        <h3 class="dv-title t-cm-section-label">Spending breakdown</h3>
+        <div class="dv-controls" role="group" aria-label="Chart tools">
+        
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="sp-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
+          <div class="dv-tablepanel" id="sp-tbl" role="region" aria-label="Spending breakdown this month, pounds, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal"><caption>Spending breakdown this month, pounds</caption>
+          <thead><tr><th scope="col">Category</th><th scope="col">Amount (&pound;)</th></tr></thead>
+          <tbody><tr><th scope="row">A. Payroll</th><td>8,500</td></tr><tr><th scope="row">B. Rent</th><td>2,400</td></tr><tr><th scope="row">C. Software</th><td>1,050</td></tr><tr><th scope="row">D. Travel</th><td>890</td></tr><tr><th scope="row">E. Utilities</th><td>314</td></tr><tr><th scope="row">F. Other</th><td>580</td></tr></tbody></table>
+          </div>
+        </details>
+      </div>
+      </div>
+      <div class="dv-stage"><div class="dv-donut-row">
+        <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 300 260" width="300" height="260" role="group" aria-label="Spending by category. Total 13,734 pounds.">
+        <path class="dv-series dv-donut-seg dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll: 8500 pounds, 62 per cent" data-tip="A &middot; Payroll: &pound;8,500" data-tip-value="A &middot; Payroll: &pound;8,500" data-tip-percent="A &middot; Payroll: 62%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="-90.000" data-a2="132.805" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M150.00 30.00 A100 100 0 1 1 82.05 203.37 L109.23 174.02 A60 60 0 1 0 150.00 70.00 Z"/>
+        <path class="dv-series dv-donut-seg dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Rent: 2400 pounds, 17 per cent" data-tip="B &middot; Rent: &pound;2,400" data-tip-value="B &middot; Rent: &pound;2,400" data-tip-percent="B &middot; Rent: 17%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="132.805" data-a2="195.714" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M82.05 203.37 A100 100 0 0 1 53.74 102.92 L92.24 113.75 A60 60 0 0 0 109.23 174.02 Z"/>
+        <path class="dv-series dv-donut-seg dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Software: 1050 pounds, 8 per cent" data-tip="C &middot; Software: &pound;1,050" data-tip-value="C &middot; Software: &pound;1,050" data-tip-percent="C &middot; Software: 8%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="195.714" data-a2="223.237" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M53.74 102.92 A100 100 0 0 1 77.15 61.50 L106.29 88.90 A60 60 0 0 0 92.24 113.75 Z"/>
+        <path class="dv-series dv-donut-seg dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel: 890 pounds, 6 per cent" data-tip="D &middot; Travel: &pound;890" data-tip-value="D &middot; Travel: &pound;890" data-tip-percent="D &middot; Travel: 6%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="223.237" data-a2="246.566" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M77.15 61.50 A100 100 0 0 1 110.23 38.25 L126.14 74.95 A60 60 0 0 0 106.29 88.90 Z"/>
+        <path class="dv-series dv-donut-seg dv-marker" data-series-group="5" tabindex="0" role="img" aria-label="E, Utilities: 314 pounds, 2 per cent" data-tip="E &middot; Utilities: &pound;314" data-tip-value="E &middot; Utilities: &pound;314" data-tip-percent="E &middot; Utilities: 2%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="246.566" data-a2="254.797" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M110.23 38.25 A100 100 0 0 1 123.78 33.50 L134.27 72.10 A60 60 0 0 0 126.14 74.95 Z"/>
+        <path class="dv-series dv-donut-seg dv-marker" data-series-group="6" tabindex="0" role="img" aria-label="F, Other: 580 pounds, 4 per cent" data-tip="F &middot; Other: &pound;580" data-tip-value="F &middot; Other: &pound;580" data-tip-percent="F &middot; Other: 4%" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="254.797" data-a2="270.000" fill="var(--data-series-6)" stroke="var(--page)" stroke-width="2" d="M123.78 33.50 A100 100 0 0 1 150.00 30.00 L150.00 70.00 A60 60 0 0 0 134.27 72.10 Z"/>
+        <polyline class="dv-leader dv-anno show" data-seq="0" data-series-group="1" points="244.97,167.22 255.21,171.24"/>
+        <polyline class="dv-leader dv-anno show" data-seq="1" data-series-group="2" points="51.82,157.67 41.24,160.65"/>
+        <polyline class="dv-leader dv-anno show" data-seq="2" data-series-group="3" points="61.2,79.81 51.63,74.4"/>
+        <polyline class="dv-leader dv-anno show" data-seq="3" data-series-group="4" points="91.35,46.55 85.03,37.55"/>
+        <polyline class="dv-leader dv-anno show" data-seq="4" data-series-group="5" points="116.26,33.74 112.62,23.36"/>
+        <polyline class="dv-leader dv-anno show" data-seq="5" data-series-group="6" points="136.51,28.9 135.05,17.99"/>
+        <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="0" data-series-group="1" fill="var(--ink)" x="263.59" y="175.2" text-anchor="middle">A</text>
+        <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="1" data-series-group="2" fill="var(--ink)" x="32.57" y="164.7" text-anchor="middle">B</text>
+        <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="2" data-series-group="3" fill="var(--ink)" x="43.79" y="78.4" text-anchor="middle">C</text>
+        <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="3" data-series-group="4" fill="var(--ink)" x="79.85" y="41.5" text-anchor="middle">D</text>
+        <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="4" data-series-group="5" fill="var(--ink)" x="109.64" y="27.4" text-anchor="middle">E</text>
+        <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="5" data-series-group="6" fill="var(--ink)" x="133.86" y="22.0" text-anchor="middle">F</text>
+        <g data-dv-view="value"><text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">&pound;13,734</text></g>
+        </svg>
+        <ul class="dv-leg vert t-cm-chart-label" id="sp-legend" data-leg-variant="capsule" role="group" aria-label="Categories — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+        <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Payroll" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Payroll"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Payroll</span></button></li>
+        <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Rent" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Rent"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Rent</span></button></li>
+        <li class="dv-legrow" data-series="3"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Software" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="3" aria-pressed="false" aria-label="Isolate Software"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Software</span></button></li>
+        <li class="dv-legrow" data-series="4"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Travel" style="--sc:var(--data-series-4)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="4" aria-pressed="false" aria-label="Isolate Travel"><span class="dv-key t-cm-chart-key">D</span><span class="dv-leg-name">Travel</span></button></li>
+        <li class="dv-legrow" data-series="5"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Utilities" style="--sc:var(--data-series-5)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="5" aria-pressed="false" aria-label="Isolate Utilities"><span class="dv-key t-cm-chart-key">E</span><span class="dv-leg-name">Utilities</span></button></li>
+        <li class="dv-legrow" data-series="6"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Other" style="--sc:var(--data-series-6)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="6" aria-pressed="false" aria-label="Isolate Other"><span class="dv-key t-cm-chart-key">F</span><span class="dv-leg-name">Other</span></button></li>
+        <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="sp-legend" disabled>Reset</button></li>
+        </ul>
+        <p class="dv-sr" id="sp-live" role="status" aria-live="polite"></p>
+        <ul class="dv-leg vert nio-leg-list nio-leg-off t-cm-chart-label" id="sp-legend-list" data-leg-variant="list" hidden role="group" aria-label="Categories with values — uncheck a swatch to dim it, click a row to isolate — then check swatches to add — Reset to show all">
+        <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Payroll" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Payroll"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Payroll</span><span class="nio-leg-val t-cm-chart-label">8,500</span></button></li>
+        <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Rent" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Rent"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Rent</span><span class="nio-leg-val t-cm-chart-label">2,400</span></button></li>
+        <li class="dv-legrow" data-series="3"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Software" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="3" aria-pressed="false" aria-label="Isolate Software"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Software</span><span class="nio-leg-val t-cm-chart-label">1,050</span></button></li>
+        <li class="dv-legrow" data-series="4"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Travel" style="--sc:var(--data-series-4)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="4" aria-pressed="false" aria-label="Isolate Travel"><span class="dv-key t-cm-chart-key">D</span><span class="dv-leg-name">Travel</span><span class="nio-leg-val t-cm-chart-label">890</span></button></li>
+        <li class="dv-legrow" data-series="5"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Utilities" style="--sc:var(--data-series-5)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="5" aria-pressed="false" aria-label="Isolate Utilities"><span class="dv-key t-cm-chart-key">E</span><span class="dv-leg-name">Utilities</span><span class="nio-leg-val t-cm-chart-label">314</span></button></li>
+        <li class="dv-legrow" data-series="6"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Other" style="--sc:var(--data-series-6)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="6" aria-pressed="false" aria-label="Isolate Other"><span class="dv-key t-cm-chart-key">F</span><span class="dv-leg-name">Other</span><span class="nio-leg-val t-cm-chart-label">580</span></button></li>
+        <li class="nio-leg-total t-cm-chart-label"><span class="nio-leg-total-k">Total</span><span class="nio-leg-val">13,734</span></li>
+        <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="sp-legend-list" disabled>Reset</button></li>
+        </ul>
+        <p class="dv-sr" id="sp-live-list" role="status" aria-live="polite"></p>
+      </div></div>
+    </figure>
+              <div id="spSummary"><dl class="summary"><div class="summary__row"><dt class="summary__k">A. Payroll</dt><dd class="summary__v">8,500</dd></div><div class="summary__row"><dt class="summary__k">B. Rent</dt><dd class="summary__v">2,400</dd></div><div class="summary__row"><dt class="summary__k">C. Software</dt><dd class="summary__v">1,050</dd></div><div class="summary__row"><dt class="summary__k">D. Travel</dt><dd class="summary__v">890</dd></div><div class="summary__row"><dt class="summary__k">E. Utilities</dt><dd class="summary__v">314</dd></div><div class="summary__row"><dt class="summary__k">F. Other</dt><dd class="summary__v">580</dd></div><div class="summary__row summary__row--total"><dt class="summary__k">Total</dt><dd class="summary__v">13,734</dd></div></dl></div>
+            </div>
+          </div>
+          <div class="stat-card tpl-panel cn-chart-line cn-segmented-control">
+      <figure class="dv dv-animate" data-dv-type="line" data-surface="page" role="group" aria-labelledby="sl-h">
+      <figcaption id="sl-h" class="sr-only">Spending by month, thousands of pounds</figcaption>
+      <div class="dv-head">
+        <h3 class="dv-title t-cm-section-label">Spending Overview</h3>
+        <div class="dv-controls" role="group" aria-label="Chart tools">
+        <div class="seg sm" role="group" aria-label="Range"><span class="ind" aria-hidden="true"></span><button type="button" class="t-cm-chart-label" aria-pressed="true">1Y</button><button type="button" class="t-cm-chart-label" aria-pressed="false">6M</button><button type="button" class="t-cm-chart-label" aria-pressed="false">3M</button><button type="button" class="t-cm-chart-label" aria-pressed="false">1M</button></div>
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="sl-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
+          <div class="dv-tablepanel" id="sl-tbl" role="region" aria-label="Spending by month, thousands of pounds, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal"><caption>Spending by month, thousands of pounds</caption>
+          <thead><tr><th scope="col">Month</th><th scope="col">Spend</th></tr></thead>
+          <tbody><tr><th scope="row">May</th><td>30</td></tr><tr><th scope="row">Jun</th><td>100</td></tr><tr><th scope="row">Jul</th><td>42</td></tr><tr><th scope="row">Aug</th><td>8</td></tr><tr><th scope="row">Sep</th><td>30</td></tr><tr><th scope="row">Oct</th><td>28</td></tr><tr><th scope="row">Nov</th><td>55</td></tr><tr><th scope="row">Dec</th><td>62</td></tr><tr><th scope="row">Jan</th><td>58</td></tr><tr><th scope="row">Feb</th><td>65</td></tr><tr><th scope="row">Mar</th><td>68</td></tr><tr><th scope="row">Apr</th><td>88</td></tr></tbody></table>
+          </div>
+        </details>
+      </div>
+      </div>
+      <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Spending by month, May to April.">
+        <line class="dv-grid" x1="46" y1="230.0" x2="568" y2="230.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233.0" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="186.8" x2="568" y2="186.8" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="189.8" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="143.6" x2="568" y2="143.6" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="146.6" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-grid" x1="46" y1="100.4" x2="568" y2="100.4" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="103.4" text-anchor="end" data-fx="0" data-dx="-8">60</text>
+        <line class="dv-grid" x1="46" y1="57.2" x2="568" y2="57.2" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="60.2" text-anchor="end" data-fx="0" data-dx="-8">80</text>
+        <line class="dv-grid" x1="46" y1="14.0" x2="568" y2="14.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17.0" text-anchor="end" data-fx="0" data-dx="-8">100</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <polyline class="dv-series" data-series-group="1" pathLength="2400" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,165.2 93.5,14.0 140.9,139.3 188.4,212.7 235.8,165.2 283.3,169.5 330.7,111.2 378.2,96.1 425.6,104.7 473.1,89.6 520.5,83.1 568.0,39.9" data-fxs="0.0 0.0909 0.1818 0.2727 0.3636 0.4545 0.5455 0.6364 0.7273 0.8182 0.9091 1.0" data-ys="165.2 14.0 139.3 212.7 165.2 169.5 111.2 96.1 104.7 89.6 83.1 39.9"/>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, May: 30" data-tip="A &middot; Spend &middot; May: 30" data-fx="0.0" data-x0="46.0" style="animation-delay:0ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="46.0" cy="165.2" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Jun: 100" data-tip="A &middot; Spend &middot; Jun: 100" data-fx="0.0909" data-x0="93.5" style="animation-delay:110ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="93.5" cy="14.0" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Jul: 42" data-tip="A &middot; Spend &middot; Jul: 42" data-fx="0.1818" data-x0="140.9" style="animation-delay:220ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="140.9" cy="139.3" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Aug: 8" data-tip="A &middot; Spend &middot; Aug: 8" data-fx="0.2727" data-x0="188.4" style="animation-delay:330ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="188.4" cy="212.7" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Sep: 30" data-tip="A &middot; Spend &middot; Sep: 30" data-fx="0.3636" data-x0="235.8" style="animation-delay:440ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="235.8" cy="165.2" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Oct: 28" data-tip="A &middot; Spend &middot; Oct: 28" data-fx="0.4545" data-x0="283.3" style="animation-delay:550ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="283.3" cy="169.5" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Nov: 55" data-tip="A &middot; Spend &middot; Nov: 55" data-fx="0.5455" data-x0="330.7" style="animation-delay:660ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="330.7" cy="111.2" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Dec: 62" data-tip="A &middot; Spend &middot; Dec: 62" data-fx="0.6364" data-x0="378.2" style="animation-delay:770ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="378.2" cy="96.1" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Jan: 58" data-tip="A &middot; Spend &middot; Jan: 58" data-fx="0.7273" data-x0="425.6" style="animation-delay:880ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="425.6" cy="104.7" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Feb: 65" data-tip="A &middot; Spend &middot; Feb: 65" data-fx="0.8182" data-x0="473.1" style="animation-delay:990ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="473.1" cy="89.6" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Mar: 68" data-tip="A &middot; Spend &middot; Mar: 68" data-fx="0.9091" data-x0="520.5" style="animation-delay:1100ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="520.5" cy="83.1" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Spend, Apr: 88" data-tip="A &middot; Spend &middot; Apr: 88" data-fx="1.0" data-x0="568.0" style="animation-delay:1210ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="568.0" cy="39.9" r="5.5"/></g>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="46.0" y="246" text-anchor="middle" data-fx="0.0">May</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="93.5" y="246" text-anchor="middle" data-fx="0.0909">Jun</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="140.9" y="246" text-anchor="middle" data-fx="0.1818">Jul</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="188.4" y="246" text-anchor="middle" data-fx="0.2727">Aug</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="235.8" y="246" text-anchor="middle" data-fx="0.3636">Sep</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="283.3" y="246" text-anchor="middle" data-fx="0.4545">Oct</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="330.7" y="246" text-anchor="middle" data-fx="0.5455">Nov</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="378.2" y="246" text-anchor="middle" data-fx="0.6364">Dec</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="425.6" y="246" text-anchor="middle" data-fx="0.7273">Jan</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="473.1" y="246" text-anchor="middle" data-fx="0.8182">Feb</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="520.5" y="246" text-anchor="middle" data-fx="0.9091">Mar</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="568.0" y="246" text-anchor="middle" data-fx="1.0">Apr</text>
+      </svg>
+      </div></div>
+    </figure>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ PAYMENTS ============ -->
+    <section class="tpl-section" aria-labelledby="pay-h">
+      <div class="stat-card tpl-panel nio-flush">
+        <h2 id="pay-h" class="nio-panel-title t-ed-heading-3">Payments</h2>
+        <div class="nio-divider" style="padding:24px">
+          <div class="nio-pay">
+
+            <div class="cn-sidebar-nav">
+              <nav class="sn" aria-label="Payment types">
+                <div class="sn-body">
+                  <div class="sn-group">
+                    <ul>
+                      <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#sntransfer"/></svg></span><span class="sn-label t-cm-label">Transfers</span></a></li>
+                      <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#pdf"/></svg></span><span class="sn-label t-cm-label">Bills</span></a></li>
+                      <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#snacct"/></svg></span><span class="sn-label t-cm-label">Standing Orders</span></a></li>
+                      <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#sncard"/></svg></span><span class="sn-label t-cm-label">Direct Debits</span></a></li>
+                      <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#snhome"/></svg></span><span class="sn-label t-cm-label">Payments</span></a></li>
+                      <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#snchart"/></svg></span><span class="sn-label t-cm-label">Term Deposit</span></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+            </div>
+
+            <div class="nio-stack">
+              <h3 class="t-ed-heading-4" style="margin:0">Make a payment</h3>
+
+              <div class="cn-progress-tracker">
+                <div class="pt" style="--demo-width:100%">
+                  <ol class="steps" aria-label="Make a payment progress">
+                    <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ptcheck"/></svg></span><span class="step-label">Payee</span></li>
+                    <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Details</span></li>
+                    <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+                  </ol>
+                </div>
+              </div>
+
+              <div class="cn-document-row cn-status-indicator nio-invoice">
+                <span class="dr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#pdf"/></svg></span>
+                <span class="nio-grow t-cm-label">British_Gas_Invoice_April_2024.pdf</span>
+                <span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Validated</span></span>
+              </div>
+
+              <div class="nio-pay-cols">
+
+                <div class="nio-stack-s">
+                  <p class="t-cm-label" style="margin:0">Paying to</p>
+                  <div class="cn-tags cn-summary nio-payee">
+                    <div class="nio-payee-top">
+                      <div>
+                        <p class="t-ed-heading-4" style="margin:0">British Gas Business</p>
+                        <p class="t-ed-body-small" style="margin:4px 0 0">1st Floor, Millstream, Maidenhead Road, Windsor, SL4 5GD</p>
+                      </div>
+                      <span class="tag"><span class="lbl">Utility</span></span>
+                    </div>
+                    <dl class="summary" style="margin-top:12px">
+                      <div class="summary__row"><dt class="summary__k">INV-2026-04-15678</dt><dd class="summary__v">Issued: 20 April 2026</dd></div>
+                      <div class="summary__row"><dt class="summary__k">&nbsp;</dt><dd class="summary__v">Due: 29 April 2026</dd></div>
+                    </dl>
+                  </div>
+                  <div class="cn-summary">
+                    <dl class="summary">
+                      <div class="summary__row"><dt class="summary__k">Account number</dt><dd class="summary__v">12343181</dd></div>
+                      <div class="summary__row"><dt class="summary__k">Sort code</dt><dd class="summary__v">38-15-81</dd></div>
+                      <div class="summary__row"><dt class="summary__k">Reference</dt><dd class="summary__v">GAS-APR-2026</dd></div>
+                    </dl>
+                  </div>
+                  <div class="cn-accordion cn-summary">
+                    <div class="acc">
+                      <div class="item">
+                        <button class="head" type="button" aria-expanded="true" aria-controls="gasPanel"><span class="t-cm-label">Gas Supply &ndash; total &nbsp; &pound;1,247.85 GBP</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#aschev"/></svg></span></button>
+                        <div class="panel" id="gasPanel" style="max-height:220px"><div class="inner">
+                          <dl class="summary">
+                            <div class="summary__row"><dt class="summary__k">Gas Supply (March 2026)</dt><dd class="summary__v">&pound;1,058.25</dd></div>
+                            <div class="summary__row"><dt class="summary__k">Standing Charge</dt><dd class="summary__v">&pound;13.95</dd></div>
+                            <div class="summary__row"><dt class="summary__k">Network Charges</dt><dd class="summary__v">&pound;125.00</dd></div>
+                            <div class="summary__row"><dt class="summary__k">VAT (5%)</dt><dd class="summary__v">&pound;50.65</dd></div>
+                          </dl>
+                        </div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="nio-stack">
+                  <div class="cn-account-selector">
+                    <div class="as">
+                      <span class="as-label t-cm-caption" id="payFromL">Paying from</span>
+                      <button class="as-trigger" id="payFrom" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="payFromMenu" aria-labelledby="payFromL payFrom">
+                        <span class="who"><span class="t-cm-label em">Operations</span><span class="mask16 t-cm-legal" aria-label="Current account ending 4417">Current &nbsp;&middot;&middot;&middot;&middot; 4417</span></span>
+                        <span class="bal t-cm-figure-5"><span>&pound;</span><span>32,450 GBP</span></span>
+                        <span class="chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#aschev"/></svg></span>
+                      </button>
+                      <ul class="as-menu" id="payFromMenu" role="listbox" aria-labelledby="payFromL" tabindex="-1">
+                        <li class="as-opt" role="option" aria-selected="true" data-name="Operations" data-mask="&middot;&middot;&middot;&middot;4417" data-bal="32,450">
+                          <span class="who"><span class="t-cm-label em">Operations</span><span class="mask16 t-cm-legal">Current &middot;&middot;&middot;&middot; 4417</span></span>
+                          <span class="bal t-cm-figure-6"><span>&pound;</span><span>32,450</span></span></li>
+                        <li class="as-opt" role="option" aria-selected="false" data-name="Tax Savings" data-mask="&middot;&middot;&middot;&middot;0041" data-bal="22,825.38">
+                          <span class="who"><span class="t-cm-label">Tax Savings</span><span class="mask16 t-cm-legal">Savings &middot;&middot;&middot;&middot; 0041</span></span>
+                          <span class="bal t-cm-figure-6"><span>&pound;</span><span>22,825.38</span></span></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="cn-amount-input cn-icon-button">
+                    <div class="ai-group">
+                      <div class="ai-lblrow"><label class="t-cm-label" for="payAmt">Amount</label></div>
+                      <div class="ai-box">
+                        <input id="payAmt" class="t-cm-figure-5" type="text" inputmode="decimal" value="&pound;1,247.85 GBP" readonly>
+                        <button class="iconbtn tertiary" type="button" aria-label="Edit amount"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#edit"/></svg></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cn-dropdown">
+                    <div class="dd boxed">
+                      <label id="payTypeL" for="payType">Payment type</label>
+                      <button class="trigger" id="payType" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="payTypeMenu" aria-labelledby="payTypeL payType">
+                        <span class="ddval">Instant payment &mdash; under 2 minutes via Faster Payments</span>
+                        <span class="chev" aria-hidden="true">&#9662;</span>
+                      </button>
+                      <ul class="menu" id="payTypeMenu" role="listbox" aria-labelledby="payTypeL" tabindex="-1">
+                        <li class="opt" role="option" aria-selected="true" tabindex="-1">Instant payment &mdash; under 2 minutes via Faster Payments</li>
+                        <li class="opt" role="option" aria-selected="false" tabindex="-1">Standard payment &mdash; next working day</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="cn-button nio-actions">
+                    <button class="btn tertiary" type="button">Back</button>
+                    <span class="nio-actions-r">
+                      <button class="btn secondary" type="button">Cancel</button>
+                      <button class="btn primary" type="button">Continue</button>
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PREDICTIVE SIGNALS ============ -->
+    <section class="tpl-section" aria-labelledby="sig-h">
+      <div class="stat-card tpl-panel nio-flush">
+        <h2 id="sig-h" class="nio-panel-title t-ed-heading-3">Predictive signals</h2>
+        <div class="cn-meter cn-status-indicator cn-links nio-divider">
+          <div class="nio-signals">
+      <div class="stat-card nio-signal" role="group" aria-label="Credit facility headroom">
+        <div class="nio-signal-head">
+          <span class="t-cm-caption em">USD</span>
+          <span class="t-cm-caption">Credit facility headroom</span>
+        </div>
+        <span class="amt t-cm-figure-4">48.5M</span>
+        <p class="t-cm-legal nio-signal-note">3 of 5 tranches undrawn</p>
+        <div class="meter">
+          <div class="meter-track" role="progressbar" aria-labelledby="sig0-l" aria-valuenow="99" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Confidence 99 percent">
+            <div class="meter-fill" style="width:99%"></div>
+          </div>
+        </div>
+        <div class="nio-signal-foot">
+          <span class="stat ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal" id="sig0-l">Confidence 99%</span></span>
+          <a class="arrow" href="#"><span class="lbl t-cm-button">Inspect XAI</span><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#tip"/></svg></span></a>
+        </div>
+      </div>
+      <div class="stat-card nio-signal" role="group" aria-label="30 day liquidity gap">
+        <div class="nio-signal-head">
+          <span class="t-cm-caption em">USD</span>
+          <span class="t-cm-caption">30 day liquidity gap</span>
+        </div>
+        <span class="amt t-cm-figure-4">- 4.2M</span>
+        <p class="t-cm-legal nio-signal-note">USD drawdown vs EUR surplus</p>
+        <div class="meter">
+          <div class="meter-track" role="progressbar" aria-labelledby="sig1-l" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Confidence 87 percent">
+            <div class="meter-fill" style="width:87%"></div>
+          </div>
+        </div>
+        <div class="nio-signal-foot">
+          <span class="stat warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal" id="sig1-l">Confidence 87%</span></span>
+          <a class="arrow" href="#"><span class="lbl t-cm-button">Inspect XAI</span><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#tip"/></svg></span></a>
+        </div>
+      </div>
+      <div class="stat-card nio-signal" role="group" aria-label="FX exposure (EUR)">
+        <div class="nio-signal-head">
+          <span class="t-cm-caption em">EUR</span>
+          <span class="t-cm-caption">FX exposure (EUR)</span>
+        </div>
+        <span class="amt t-cm-figure-4">+12.4M</span>
+        <p class="t-cm-legal nio-signal-note">Unhedged, maturing 45d</p>
+        <div class="meter">
+          <div class="meter-track" role="progressbar" aria-labelledby="sig2-l" aria-valuenow="91" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Confidence 91 percent">
+            <div class="meter-fill" style="width:91%"></div>
+          </div>
+        </div>
+        <div class="nio-signal-foot">
+          <span class="stat err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal" id="sig2-l">Confidence 91%</span></span>
+          <a class="arrow" href="#"><span class="lbl t-cm-button">Inspect XAI</span><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#tip"/></svg></span></a>
+        </div>
+      </div>
+      <div class="stat-card nio-signal" role="group" aria-label="30 day liquidity gap">
+        <div class="nio-signal-head">
+          <span class="t-cm-caption em">USD</span>
+          <span class="t-cm-caption">30 day liquidity gap</span>
+        </div>
+        <span class="amt t-cm-figure-4">- 4.2M</span>
+        <p class="t-cm-legal nio-signal-note">USD drawdown vs EUR surplus</p>
+        <div class="meter">
+          <div class="meter-track" role="progressbar" aria-labelledby="sig3-l" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Confidence 87 percent">
+            <div class="meter-fill" style="width:87%"></div>
+          </div>
+        </div>
+        <div class="nio-signal-foot">
+          <span class="stat warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal" id="sig3-l">Confidence 87%</span></span>
+          <a class="arrow" href="#"><span class="lbl t-cm-button">Inspect XAI</span><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#tip"/></svg></span></a>
+        </div>
+      </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ YOUR SPENDING ============ -->
+    <section class="tpl-section" aria-labelledby="ys-h">
+      <div class="stat-card tpl-panel nio-flush">
+        <h2 id="ys-h" class="nio-panel-title t-ed-heading-3">Your spending</h2>
+        <div class="cn-chart-line cn-segmented-control nio-divider" style="padding:24px">
+      <figure class="dv dv-animate" data-dv-type="multiline" data-surface="page" role="group" aria-labelledby="ysl-h">
+      <figcaption id="ysl-h" class="sr-only">Spending by category by month, thousands of pounds</figcaption>
+      <div class="dv-head">
+        <h3 class="dv-title t-cm-section-label">Spending Overview</h3>
+        <div class="dv-controls" role="group" aria-label="Chart tools">
+        <div class="seg sm" role="group" aria-label="Range"><span class="ind" aria-hidden="true"></span><button type="button" class="t-cm-chart-label" aria-pressed="true">1Y</button><button type="button" class="t-cm-chart-label" aria-pressed="false">6M</button><button type="button" class="t-cm-chart-label" aria-pressed="false">3M</button><button type="button" class="t-cm-chart-label" aria-pressed="false">1M</button></div>
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="ysl-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
+          <div class="dv-tablepanel" id="ysl-tbl" role="region" aria-label="Spending by category by month, thousands of pounds, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal"><caption>Spending by category by month, thousands of pounds</caption>
+          <thead><tr><th scope="col">Month</th><th scope="col">Payroll / Suppliers / Overheads / Travel</th></tr></thead>
+          <tbody><tr><th scope="row">May</th><td>30 / 22 / 10 / 12</td></tr><tr><th scope="row">Jun</th><td>34 / 28 / 16 / 90</td></tr><tr><th scope="row">Jul</th><td>40 / 45 / 30 / 46</td></tr><tr><th scope="row">Aug</th><td>22 / 55 / 44 / 40</td></tr><tr><th scope="row">Sep</th><td>62 / 44 / 30 / 58</td></tr><tr><th scope="row">Oct</th><td>30 / 70 / 34 / 38</td></tr><tr><th scope="row">Nov</th><td>42 / 38 / 44 / 30</td></tr><tr><th scope="row">Dec</th><td>50 / 30 / 32 / 40</td></tr><tr><th scope="row">Jan</th><td>40 / 34 / 38 / 36</td></tr><tr><th scope="row">Feb</th><td>52 / 44 / 50 / 42</td></tr><tr><th scope="row">Mar</th><td>60 / 62 / 74 / 52</td></tr><tr><th scope="row">Apr</th><td>92 / 88 / 86 / 80</td></tr></tbody></table>
+          </div>
+        </details>
+      </div>
+      </div>
+      <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Spending by category over twelve months: Payroll, Suppliers, Overheads and Travel.">
+        <line class="dv-grid" x1="46" y1="230.0" x2="568" y2="230.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233.0" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="186.8" x2="568" y2="186.8" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="189.8" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="143.6" x2="568" y2="143.6" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="146.6" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-grid" x1="46" y1="100.4" x2="568" y2="100.4" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="103.4" text-anchor="end" data-fx="0" data-dx="-8">60</text>
+        <line class="dv-grid" x1="46" y1="57.2" x2="568" y2="57.2" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="60.2" text-anchor="end" data-fx="0" data-dx="-8">80</text>
+        <line class="dv-grid" x1="46" y1="14.0" x2="568" y2="14.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17.0" text-anchor="end" data-fx="0" data-dx="-8">100</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <polyline class="dv-series" data-series-group="1" pathLength="2400" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,165.2 93.5,156.6 140.9,143.6 188.4,182.5 235.8,96.1 283.3,165.2 330.7,139.3 378.2,122.0 425.6,143.6 473.1,117.7 520.5,100.4 568.0,31.3" data-fxs="0.0 0.0909 0.1818 0.2727 0.3636 0.4545 0.5455 0.6364 0.7273 0.8182 0.9091 1.0" data-ys="165.2 156.6 143.6 182.5 96.1 165.2 139.3 122.0 143.6 117.7 100.4 31.3"/>
+        <polyline class="dv-series" data-series-group="2" pathLength="2400" fill="none" stroke="var(--data-series-2)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,182.5 93.5,169.5 140.9,132.8 188.4,111.2 235.8,135.0 283.3,78.8 330.7,147.9 378.2,165.2 425.6,156.6 473.1,135.0 520.5,96.1 568.0,39.9" data-fxs="0.0 0.0909 0.1818 0.2727 0.3636 0.4545 0.5455 0.6364 0.7273 0.8182 0.9091 1.0" data-ys="182.5 169.5 132.8 111.2 135.0 78.8 147.9 165.2 156.6 135.0 96.1 39.9"/>
+        <polyline class="dv-series" data-series-group="3" pathLength="2400" fill="none" stroke="var(--data-series-3)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,208.4 93.5,195.4 140.9,165.2 188.4,135.0 235.8,165.2 283.3,156.6 330.7,135.0 378.2,160.9 425.6,147.9 473.1,122.0 520.5,70.2 568.0,44.2" data-fxs="0.0 0.0909 0.1818 0.2727 0.3636 0.4545 0.5455 0.6364 0.7273 0.8182 0.9091 1.0" data-ys="208.4 195.4 165.2 135.0 165.2 156.6 135.0 160.9 147.9 122.0 70.2 44.2"/>
+        <polyline class="dv-series" data-series-group="4" pathLength="2400" fill="none" stroke="var(--data-series-4)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,204.1 93.5,35.6 140.9,130.6 188.4,143.6 235.8,104.7 283.3,147.9 330.7,165.2 378.2,143.6 425.6,152.2 473.1,139.3 520.5,117.7 568.0,57.2" data-fxs="0.0 0.0909 0.1818 0.2727 0.3636 0.4545 0.5455 0.6364 0.7273 0.8182 0.9091 1.0" data-ys="204.1 35.6 130.6 143.6 104.7 147.9 165.2 143.6 152.2 139.3 117.7 57.2"/>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, May: 30" data-tip="A &middot; Payroll &middot; May: 30" data-fx="0.0" data-x0="46.0" style="animation-delay:0ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="46.0" cy="165.2" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Jun: 34" data-tip="A &middot; Payroll &middot; Jun: 34" data-fx="0.0909" data-x0="93.5" style="animation-delay:110ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="93.5" cy="156.6" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Jul: 40" data-tip="A &middot; Payroll &middot; Jul: 40" data-fx="0.1818" data-x0="140.9" style="animation-delay:220ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="140.9" cy="143.6" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Aug: 22" data-tip="A &middot; Payroll &middot; Aug: 22" data-fx="0.2727" data-x0="188.4" style="animation-delay:330ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="188.4" cy="182.5" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Sep: 62" data-tip="A &middot; Payroll &middot; Sep: 62" data-fx="0.3636" data-x0="235.8" style="animation-delay:440ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="235.8" cy="96.1" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Oct: 30" data-tip="A &middot; Payroll &middot; Oct: 30" data-fx="0.4545" data-x0="283.3" style="animation-delay:550ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="283.3" cy="165.2" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Nov: 42" data-tip="A &middot; Payroll &middot; Nov: 42" data-fx="0.5455" data-x0="330.7" style="animation-delay:660ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="330.7" cy="139.3" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Dec: 50" data-tip="A &middot; Payroll &middot; Dec: 50" data-fx="0.6364" data-x0="378.2" style="animation-delay:770ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="378.2" cy="122.0" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Jan: 40" data-tip="A &middot; Payroll &middot; Jan: 40" data-fx="0.7273" data-x0="425.6" style="animation-delay:880ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="425.6" cy="143.6" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Feb: 52" data-tip="A &middot; Payroll &middot; Feb: 52" data-fx="0.8182" data-x0="473.1" style="animation-delay:990ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="473.1" cy="117.7" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Mar: 60" data-tip="A &middot; Payroll &middot; Mar: 60" data-fx="0.9091" data-x0="520.5" style="animation-delay:1100ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="520.5" cy="100.4" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Payroll, Apr: 92" data-tip="A &middot; Payroll &middot; Apr: 92" data-fx="1.0" data-x0="568.0" style="animation-delay:1210ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="568.0" cy="31.3" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, May: 22" data-tip="B &middot; Suppliers &middot; May: 22" data-fx="0.0" data-x0="46.0" style="animation-delay:0ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="40.5" y="177.0" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Jun: 28" data-tip="B &middot; Suppliers &middot; Jun: 28" data-fx="0.0909" data-x0="93.5" style="animation-delay:110ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="88.0" y="164.0" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Jul: 45" data-tip="B &middot; Suppliers &middot; Jul: 45" data-fx="0.1818" data-x0="140.9" style="animation-delay:220ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="135.4" y="127.3" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Aug: 55" data-tip="B &middot; Suppliers &middot; Aug: 55" data-fx="0.2727" data-x0="188.4" style="animation-delay:330ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="182.9" y="105.7" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Sep: 44" data-tip="B &middot; Suppliers &middot; Sep: 44" data-fx="0.3636" data-x0="235.8" style="animation-delay:440ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="230.3" y="129.5" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Oct: 70" data-tip="B &middot; Suppliers &middot; Oct: 70" data-fx="0.4545" data-x0="283.3" style="animation-delay:550ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="277.8" y="73.3" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Nov: 38" data-tip="B &middot; Suppliers &middot; Nov: 38" data-fx="0.5455" data-x0="330.7" style="animation-delay:660ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="325.2" y="142.4" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Dec: 30" data-tip="B &middot; Suppliers &middot; Dec: 30" data-fx="0.6364" data-x0="378.2" style="animation-delay:770ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="372.7" y="159.7" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Jan: 34" data-tip="B &middot; Suppliers &middot; Jan: 34" data-fx="0.7273" data-x0="425.6" style="animation-delay:880ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="420.1" y="151.1" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Feb: 44" data-tip="B &middot; Suppliers &middot; Feb: 44" data-fx="0.8182" data-x0="473.1" style="animation-delay:990ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="467.6" y="129.5" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Mar: 62" data-tip="B &middot; Suppliers &middot; Mar: 62" data-fx="0.9091" data-x0="520.5" style="animation-delay:1100ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="515.0" y="90.6" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Suppliers, Apr: 88" data-tip="B &middot; Suppliers &middot; Apr: 88" data-fx="1.0" data-x0="568.0" style="animation-delay:1210ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="562.5" y="34.4" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, May: 10" data-tip="C &middot; Overheads &middot; May: 10" data-fx="0.0" data-x0="46.0" style="animation-delay:0ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="46.0,201.9 52.5,208.4 46.0,214.9 39.5,208.4"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Jun: 16" data-tip="C &middot; Overheads &middot; Jun: 16" data-fx="0.0909" data-x0="93.5" style="animation-delay:110ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="93.5,188.9 100.0,195.4 93.5,201.9 87.0,195.4"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Jul: 30" data-tip="C &middot; Overheads &middot; Jul: 30" data-fx="0.1818" data-x0="140.9" style="animation-delay:220ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="140.9,158.7 147.4,165.2 140.9,171.7 134.4,165.2"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Aug: 44" data-tip="C &middot; Overheads &middot; Aug: 44" data-fx="0.2727" data-x0="188.4" style="animation-delay:330ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="188.4,128.5 194.9,135.0 188.4,141.5 181.9,135.0"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Sep: 30" data-tip="C &middot; Overheads &middot; Sep: 30" data-fx="0.3636" data-x0="235.8" style="animation-delay:440ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="235.8,158.7 242.3,165.2 235.8,171.7 229.3,165.2"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Oct: 34" data-tip="C &middot; Overheads &middot; Oct: 34" data-fx="0.4545" data-x0="283.3" style="animation-delay:550ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="283.3,150.1 289.8,156.6 283.3,163.1 276.8,156.6"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Nov: 44" data-tip="C &middot; Overheads &middot; Nov: 44" data-fx="0.5455" data-x0="330.7" style="animation-delay:660ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="330.7,128.5 337.2,135.0 330.7,141.5 324.2,135.0"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Dec: 32" data-tip="C &middot; Overheads &middot; Dec: 32" data-fx="0.6364" data-x0="378.2" style="animation-delay:770ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="378.2,154.4 384.7,160.9 378.2,167.4 371.7,160.9"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Jan: 38" data-tip="C &middot; Overheads &middot; Jan: 38" data-fx="0.7273" data-x0="425.6" style="animation-delay:880ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="425.6,141.4 432.1,147.9 425.6,154.4 419.1,147.9"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Feb: 50" data-tip="C &middot; Overheads &middot; Feb: 50" data-fx="0.8182" data-x0="473.1" style="animation-delay:990ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="473.1,115.5 479.6,122.0 473.1,128.5 466.6,122.0"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Mar: 74" data-tip="C &middot; Overheads &middot; Mar: 74" data-fx="0.9091" data-x0="520.5" style="animation-delay:1100ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="520.5,63.7 527.0,70.2 520.5,76.7 514.0,70.2"/></g>
+        <g class="dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Overheads, Apr: 86" data-tip="C &middot; Overheads &middot; Apr: 86" data-fx="1.0" data-x0="568.0" style="animation-delay:1210ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="568.0,37.7 574.5,44.2 568.0,50.7 561.5,44.2"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, May: 12" data-tip="D &middot; Travel &middot; May: 12" data-fx="0.0" data-x0="46.0" style="animation-delay:0ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="40.5" y="198.6" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Jun: 90" data-tip="D &middot; Travel &middot; Jun: 90" data-fx="0.0909" data-x0="93.5" style="animation-delay:110ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="88.0" y="30.1" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Jul: 46" data-tip="D &middot; Travel &middot; Jul: 46" data-fx="0.1818" data-x0="140.9" style="animation-delay:220ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="135.4" y="125.1" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Aug: 40" data-tip="D &middot; Travel &middot; Aug: 40" data-fx="0.2727" data-x0="188.4" style="animation-delay:330ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="182.9" y="138.1" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Sep: 58" data-tip="D &middot; Travel &middot; Sep: 58" data-fx="0.3636" data-x0="235.8" style="animation-delay:440ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="230.3" y="99.2" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Oct: 38" data-tip="D &middot; Travel &middot; Oct: 38" data-fx="0.4545" data-x0="283.3" style="animation-delay:550ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="277.8" y="142.4" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Nov: 30" data-tip="D &middot; Travel &middot; Nov: 30" data-fx="0.5455" data-x0="330.7" style="animation-delay:660ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="325.2" y="159.7" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Dec: 40" data-tip="D &middot; Travel &middot; Dec: 40" data-fx="0.6364" data-x0="378.2" style="animation-delay:770ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="372.7" y="138.1" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Jan: 36" data-tip="D &middot; Travel &middot; Jan: 36" data-fx="0.7273" data-x0="425.6" style="animation-delay:880ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="420.1" y="146.7" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Feb: 42" data-tip="D &middot; Travel &middot; Feb: 42" data-fx="0.8182" data-x0="473.1" style="animation-delay:990ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="467.6" y="133.8" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Mar: 52" data-tip="D &middot; Travel &middot; Mar: 52" data-fx="0.9091" data-x0="520.5" style="animation-delay:1100ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="515.0" y="112.2" width="11" height="11"/></g>
+        <g class="dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Travel, Apr: 80" data-tip="D &middot; Travel &middot; Apr: 80" data-fx="1.0" data-x0="568.0" style="animation-delay:1210ms"><rect class="dv-mk" style="--sc:var(--data-series-4)" x="562.5" y="51.7" width="11" height="11"/></g>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="46.0" y="246" text-anchor="middle" data-fx="0.0">May</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="93.5" y="246" text-anchor="middle" data-fx="0.0909">Jun</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="140.9" y="246" text-anchor="middle" data-fx="0.1818">Jul</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="188.4" y="246" text-anchor="middle" data-fx="0.2727">Aug</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="235.8" y="246" text-anchor="middle" data-fx="0.3636">Sep</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="283.3" y="246" text-anchor="middle" data-fx="0.4545">Oct</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="330.7" y="246" text-anchor="middle" data-fx="0.5455">Nov</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="378.2" y="246" text-anchor="middle" data-fx="0.6364">Dec</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="425.6" y="246" text-anchor="middle" data-fx="0.7273">Jan</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="473.1" y="246" text-anchor="middle" data-fx="0.8182">Feb</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="520.5" y="246" text-anchor="middle" data-fx="0.9091">Mar</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="568.0" y="246" text-anchor="middle" data-fx="1.0">Apr</text>
+      </svg>
+      </div></div>
+      <ul class="dv-leg center t-cm-chart-label" id="ysl-legend" role="group" aria-label="Series — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+        <li class="dv-legrow" data-series="1"><span class="dv-leg-sw sw-circle" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Payroll" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Payroll"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Payroll</span></button></li>
+        <li class="dv-legrow" data-series="2"><span class="dv-leg-sw sw-square" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Suppliers" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Suppliers"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Suppliers</span></button></li>
+        <li class="dv-legrow" data-series="3"><span class="dv-leg-sw sw-diamond" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Overheads" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="3" aria-pressed="false" aria-label="Isolate Overheads"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Overheads</span></button></li>
+        <li class="dv-legrow" data-series="4"><span class="dv-leg-sw sw-square" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Travel" style="--sc:var(--data-series-4)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="4" aria-pressed="false" aria-label="Isolate Travel"><span class="dv-key t-cm-chart-key">D</span><span class="dv-leg-name">Travel</span></button></li>
+        <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="ysl-legend" disabled>Reset</button></li>
+      </ul>
+    </figure>
+        </div>
+        <div class="cn-chart-bar cn-segmented-control nio-divider" style="padding:24px">
+      <figure class="dv dv-animate" data-dv-type="grouped-column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="ysb-h">
+      <figcaption id="ysb-h" class="sr-only">Spending by category by month, thousands of pounds</figcaption>
+      <div class="dv-head">
+        <h3 class="dv-title t-cm-section-label">Spending Overview</h3>
+        <div class="dv-controls" role="group" aria-label="Chart tools">
+        <div class="seg sm" role="group" aria-label="Range"><span class="ind" aria-hidden="true"></span><button type="button" class="t-cm-chart-label" aria-pressed="true">1Y</button><button type="button" class="t-cm-chart-label" aria-pressed="false">6M</button><button type="button" class="t-cm-chart-label" aria-pressed="false">3M</button><button type="button" class="t-cm-chart-label" aria-pressed="false">1M</button></div>
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="ysb-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
+          <div class="dv-tablepanel" id="ysb-tbl" role="region" aria-label="Spending by category, six months, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal"><caption>Spending by category, six months</caption>
+          <thead><tr><th scope="col">Month</th><th scope="col">Payroll / Suppliers / Overheads</th></tr></thead>
+          <tbody><tr><th scope="row">May</th><td>30 / 55 / 44</td></tr><tr><th scope="row">Jun</th><td>50 / 68 / 82</td></tr><tr><th scope="row">Jul</th><td>18 / 24 / 14</td></tr><tr><th scope="row">Aug</th><td>40 / 52 / 46</td></tr><tr><th scope="row">Sep</th><td>92 / 70 / 60</td></tr><tr><th scope="row">Oct</th><td>22 / 46 / 38</td></tr></tbody></table>
+          </div>
+        </details>
+      </div>
+      </div>
+      <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Spending by category over six months: Payroll, Suppliers and Overheads.">
+        <line class="dv-grid" x1="46" y1="230.0" x2="568" y2="230.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233.0" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <line class="dv-grid" x1="46" y1="186.8" x2="568" y2="186.8" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="189.8" text-anchor="end" data-fx="0" data-dx="-8">20</text>
+        <line class="dv-grid" x1="46" y1="143.6" x2="568" y2="143.6" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="146.6" text-anchor="end" data-fx="0" data-dx="-8">40</text>
+        <line class="dv-grid" x1="46" y1="100.4" x2="568" y2="100.4" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="103.4" text-anchor="end" data-fx="0" data-dx="-8">60</text>
+        <line class="dv-grid" x1="46" y1="57.2" x2="568" y2="57.2" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="60.2" text-anchor="end" data-fx="0" data-dx="-8">80</text>
+        <line class="dv-grid" x1="46" y1="14.0" x2="568" y2="14.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17.0" text-anchor="end" data-fx="0" data-dx="-8">100</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="55.5" y="165.2" width="20" height="64.8" data-fx="0.0182" data-fw="0.0383" tabindex="0" role="img" aria-label="A, Payroll, May: 30" data-tip="A &middot; Payroll &middot; May: 30"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-2)" x="79.5" y="111.2" width="20" height="118.8" data-fx="0.0642" data-fw="0.0383" tabindex="0" role="img" aria-label="B, Suppliers, May: 55" data-tip="B &middot; Suppliers &middot; May: 55"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-3)" x="103.5" y="135.0" width="20" height="95.0" data-fx="0.1102" data-fw="0.0383" tabindex="0" role="img" aria-label="C, Overheads, May: 44" data-tip="C &middot; Overheads &middot; May: 44"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-1)" x="142.5" y="122.0" width="20" height="108.0" data-fx="0.1849" data-fw="0.0383" tabindex="0" role="img" aria-label="A, Payroll, Jun: 50" data-tip="A &middot; Payroll &middot; Jun: 50"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-2)" x="166.5" y="83.1" width="20" height="146.9" data-fx="0.2308" data-fw="0.0383" tabindex="0" role="img" aria-label="B, Suppliers, Jun: 68" data-tip="B &middot; Suppliers &middot; Jun: 68"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-3)" x="190.5" y="52.9" width="20" height="177.1" data-fx="0.2768" data-fw="0.0383" tabindex="0" role="img" aria-label="C, Overheads, Jun: 82" data-tip="C &middot; Overheads &middot; Jun: 82"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:270ms" fill="var(--data-series-1)" x="229.5" y="191.1" width="20" height="38.9" data-fx="0.3515" data-fw="0.0383" tabindex="0" role="img" aria-label="A, Payroll, Jul: 18" data-tip="A &middot; Payroll &middot; Jul: 18"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:315ms" fill="var(--data-series-2)" x="253.5" y="178.2" width="20" height="51.8" data-fx="0.3975" data-fw="0.0383" tabindex="0" role="img" aria-label="B, Suppliers, Jul: 24" data-tip="B &middot; Suppliers &middot; Jul: 24"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:360ms" fill="var(--data-series-3)" x="277.5" y="199.8" width="20" height="30.2" data-fx="0.4435" data-fw="0.0383" tabindex="0" role="img" aria-label="C, Overheads, Jul: 14" data-tip="C &middot; Overheads &middot; Jul: 14"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:405ms" fill="var(--data-series-1)" x="316.5" y="143.6" width="20" height="86.4" data-fx="0.5182" data-fw="0.0383" tabindex="0" role="img" aria-label="A, Payroll, Aug: 40" data-tip="A &middot; Payroll &middot; Aug: 40"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:450ms" fill="var(--data-series-2)" x="340.5" y="117.7" width="20" height="112.3" data-fx="0.5642" data-fw="0.0383" tabindex="0" role="img" aria-label="B, Suppliers, Aug: 52" data-tip="B &middot; Suppliers &middot; Aug: 52"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:495ms" fill="var(--data-series-3)" x="364.5" y="130.6" width="20" height="99.4" data-fx="0.6102" data-fw="0.0383" tabindex="0" role="img" aria-label="C, Overheads, Aug: 46" data-tip="C &middot; Overheads &middot; Aug: 46"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:540ms" fill="var(--data-series-1)" x="403.5" y="31.3" width="20" height="198.7" data-fx="0.6849" data-fw="0.0383" tabindex="0" role="img" aria-label="A, Payroll, Sep: 92" data-tip="A &middot; Payroll &middot; Sep: 92"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:585ms" fill="var(--data-series-2)" x="427.5" y="78.8" width="20" height="151.2" data-fx="0.7308" data-fw="0.0383" tabindex="0" role="img" aria-label="B, Suppliers, Sep: 70" data-tip="B &middot; Suppliers &middot; Sep: 70"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:630ms" fill="var(--data-series-3)" x="451.5" y="100.4" width="20" height="129.6" data-fx="0.7768" data-fw="0.0383" tabindex="0" role="img" aria-label="C, Overheads, Sep: 60" data-tip="C &middot; Overheads &middot; Sep: 60"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:675ms" fill="var(--data-series-1)" x="490.5" y="182.5" width="20" height="47.5" data-fx="0.8515" data-fw="0.0383" tabindex="0" role="img" aria-label="A, Payroll, Oct: 22" data-tip="A &middot; Payroll &middot; Oct: 22"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:720ms" fill="var(--data-series-2)" x="514.5" y="130.6" width="20" height="99.4" data-fx="0.8975" data-fw="0.0383" tabindex="0" role="img" aria-label="B, Suppliers, Oct: 46" data-tip="B &middot; Suppliers &middot; Oct: 46"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:765ms" fill="var(--data-series-3)" x="538.5" y="147.9" width="20" height="82.1" data-fx="0.9435" data-fw="0.0383" tabindex="0" role="img" aria-label="C, Overheads, Oct: 38" data-tip="C &middot; Overheads &middot; Oct: 38"></rect>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="65.5" y="161.2" text-anchor="middle" data-fx="0.0374">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="89.5" y="107.2" text-anchor="middle" data-fx="0.0833">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="3" fill="var(--ink)" x="113.5" y="131.0" text-anchor="middle" data-fx="0.1293">C</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="152.5" y="118.0" text-anchor="middle" data-fx="0.204">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="176.5" y="79.1" text-anchor="middle" data-fx="0.25">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="3" fill="var(--ink)" x="200.5" y="48.9" text-anchor="middle" data-fx="0.296">C</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="239.5" y="187.1" text-anchor="middle" data-fx="0.3707">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="263.5" y="174.2" text-anchor="middle" data-fx="0.4167">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="3" fill="var(--ink)" x="287.5" y="195.8" text-anchor="middle" data-fx="0.4626">C</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="326.5" y="139.6" text-anchor="middle" data-fx="0.5374">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="350.5" y="113.7" text-anchor="middle" data-fx="0.5833">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="3" fill="var(--ink)" x="374.5" y="126.6" text-anchor="middle" data-fx="0.6293">C</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="413.5" y="27.3" text-anchor="middle" data-fx="0.704">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="437.5" y="74.8" text-anchor="middle" data-fx="0.75">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="3" fill="var(--ink)" x="461.5" y="96.4" text-anchor="middle" data-fx="0.796">C</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--ink)" x="500.5" y="178.5" text-anchor="middle" data-fx="0.8707">A</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="524.5" y="126.6" text-anchor="middle" data-fx="0.9167">B</text>
+        <text class="dv-barkey t-cm-chart-key" data-series-group="3" fill="var(--ink)" x="548.5" y="143.9" text-anchor="middle" data-fx="0.9626">C</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="89.5" y="246" text-anchor="middle" data-fx="0.0833">May</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="176.5" y="246" text-anchor="middle" data-fx="0.25">Jun</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="263.5" y="246" text-anchor="middle" data-fx="0.4167">Jul</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="350.5" y="246" text-anchor="middle" data-fx="0.5833">Aug</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="437.5" y="246" text-anchor="middle" data-fx="0.75">Sep</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="524.5" y="246" text-anchor="middle" data-fx="0.9167">Oct</text>
+      </svg>
+      </div></div>
+      <ul class="dv-leg center t-cm-chart-label" id="ysb-legend" role="group" aria-label="Series — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+        <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Payroll" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Payroll"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Payroll</span></button></li>
+        <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Suppliers" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Suppliers"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Suppliers</span></button></li>
+        <li class="dv-legrow" data-series="3"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Overheads" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="3" aria-pressed="false" aria-label="Isolate Overheads"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Overheads</span></button></li>
+        <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="ysb-legend" disabled>Reset</button></li>
+      </ul>
+    </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEEDBACK ============ -->
+    <section class="tpl-section" aria-labelledby="fb-h">
+      <div class="stat-card tpl-panel cn-cta-lockup cn-button nio-flush">
+        <div class="ctal centered nio-feedback">
+          <div class="ctal-titleblock">
+            <p class="ctal-support t-ed-body">Your feedback is important to us</p>
+            <h2 class="ctal-heading t-ed-heading-3" id="fb-h">Tell us what you think about Nio</h2>
+          </div>
+          <div class="nio-chips">
+            <button class="btn tertiary" type="button">I like something <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#success"/></svg></button>
+            <button class="btn tertiary" type="button">I don't like something <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#close"/></svg></button>
+            <button class="btn tertiary" type="button">I have a suggestion <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#add"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LEARN MORE ============ -->
+    <section class="tpl-section" aria-labelledby="lm-h">
+      <h2 id="lm-h" class="tpl-section-head t-ed-heading-3">Learn more about Neo</h2>
+      <div class="cn-feature-grid-lockup cn-button">
+        <div class="fgl-outer">
+          <div class="fgl-grid up-4">
+          <article class="card feat">
+            <span class="ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 18 18"><use href="#fglsec"/></svg></span>
+            <h3 class="t-cm-button">Manage your mandates online</h3>
+            <p class="t-ed-body-small">React to changes in your business and get greater control over your signatories by viewing, updating, and setting up bank mandates online.</p>
+            <p class="nio-feat-cta"><button class="btn primary" type="button">Find out more</button></p>
+          </article>
+          <article class="card feat">
+            <span class="ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 18 18"><use href="#snacct"/></svg></span>
+            <h3 class="t-cm-button">Make account changes seamlessly</h3>
+            <p class="t-ed-body-small">Maintaining up-to-date and accurate account information has never been easier. Change your business name, address and more with a few clicks.</p>
+            <p class="nio-feat-cta"><button class="btn primary" type="button">Find out more</button></p>
+          </article>
+          <article class="card feat">
+            <span class="ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 18 18"><use href="#fglmob"/></svg></span>
+            <h3 class="t-cm-button">A Digital Security Device in your pocket</h3>
+            <p class="t-ed-body-small">Securely log on to HSBCnet with mobile authentication. Generate codes in the banking app for seamless account access, anywhere, anytime, no extra device needed.</p>
+            <p class="nio-feat-cta"><button class="btn primary" type="button">Find out more</button></p>
+          </article>
+          <article class="card feat">
+            <span class="ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 18 18"><use href="#snchart"/></svg></span>
+            <h3 class="t-cm-button">Trade transactions on-the-go</h3>
+            <p class="t-ed-body-small">Trade Transaction Tracker gives you a global view of your documentary credits, collections, trade loans and guarantees across the world, all in a single app.</p>
+            <p class="nio-feat-cta"><button class="btn primary" type="button">Find out more</button></p>
+          </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ============ FOOTER — Footer (compact / legal band form) ============ -->
+<div class="cn-footer">
+  <footer class="ft slim" role="contentinfo" aria-label="Legal footer">
+    <div class="ft-inner">
+      <div class="ft-legal">
+        <ul>
+          <li><a class="lnk t-cm-legal" href="#">HSBC UK Customer Legal Information</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Security</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Careers at HSBC</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Terms &amp; Conditions of use</a></li>
+          <li><a class="lnk t-cm-legal" href="#">Privacy and data protection statement</a></li>
+        </ul>
+        <p class="copy t-cm-legal">&copy; HSBC Bank plc 2026</p>
+      </div>
+      <p class="t-cm-legal nio-legal">All rights reserved. No endorsement or approval of any third parties or their advice, opinions, information, products or services is expressed or implied by any information on this Site or by any hyperlinks to or from any third party websites or pages. Your use of this website is subject to the terms and conditions governing it. Please read those terms and conditions before using the website.</p>
+    </div>
+  </footer>
+</div>
+
+</div>
+
+<!-- ============ V2 REVIEW CONTROLLER — page chrome only. It drives the three review
+     switches and NOTHING inside any component. Delete it and the page renders at its
+     authored defaults: Console light, capsule legend, card list. ============ -->
+<script>
+(function () {
+  "use strict";
+  var root = document.documentElement;
+
+  /* canon's own dv-behaviour re-places every .seg indicator on resize (placeSegs). Reuse it
+     rather than re-implementing the atom's maths. */
+  function replaceIndicators() { window.dispatchEvent(new Event("resize")); }
+
+  function seg(id, onPick) {
+    var box = document.getElementById(id);
+    if (!box) { return; }
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-v]");
+      if (!b || !box.contains(b) || b.getAttribute("aria-pressed") === "true") { return; }
+      Array.prototype.forEach.call(box.querySelectorAll("button[data-v]"), function (o) {
+        o.setAttribute("aria-pressed", String(o === b));
+      });
+      replaceIndicators();
+      onPick(b.getAttribute("data-v"));
+    });
+  }
+
+  /* ④ light / dark — data-theme on <html>, the bento mechanism. */
+  seg("rvMode", function (v) { root.setAttribute("data-theme", v); });
+
+  /* ⑤ capsule <-> list legend.
+     dv-legend holds ONE state record per host and resolves a figure's legend with
+     figure.querySelector('.dv-leg') — the FIRST match. So: reset the OUTGOING legend while it is
+     still discoverable, then remove its `dv-leg` class and hide it, so exactly one legend is ever
+     findable. Declared on the face of the page: selection does not carry across the switch. */
+  var legs = [document.getElementById("sp-legend"), document.getElementById("sp-legend-list")];
+  var summary = document.getElementById("spSummary");
+  seg("rvLeg", function (v) {
+    legs.forEach(function (el) {
+      if (!el) { return; }
+      if (el.getAttribute("data-leg-variant") !== v) {
+        var r = el.querySelector(".dv-leg-reset");
+        if (r && !r.disabled) { r.click(); }
+      }
+    });
+    legs.forEach(function (el) {
+      if (!el) { return; }
+      var on = el.getAttribute("data-leg-variant") === v;
+      el.classList.toggle("dv-leg", on);
+      el.classList.toggle("nio-leg-off", !on);
+      if (on) { el.removeAttribute("hidden"); } else { el.setAttribute("hidden", ""); }
+    });
+    /* the separate figures column is v1's answer; the list variant carries the values itself,
+       and the panel collapses to one column so the list sits BESIDE the donut rather than under it */
+    if (summary) { summary.hidden = (v === "list"); }
+    var split = document.querySelector(".nio-donut-split");
+    if (split) { split.setAttribute("data-nio-leg", v); }
+  });
+
+  /* ⑥ account list chrome. */
+  var acct = document.getElementById("acctList");
+  seg("rvList", function (v) { if (acct) { acct.setAttribute("data-nio-list", v); } });
+}());
+</script>
+<script src="../canon/dv-behaviour.js"></script>
+<script src="../canon/dv-legend.js"></script>
+<script src="../canon/dv-donut-sweep.js"></script>
+</body>
+</html>
