@@ -216,29 +216,14 @@ def generated_inner(src_css, pname, group, source, root_sel, member_sel):
 # non_consumer_marker_fails, whose markers ARE HTML comments by design: masking there would
 # blind the generator to its own injection sites. Selftest arms 5f and 5g drive that fence in
 # both directions.
-COMMENT_OPEN, COMMENT_CLOSE = "<!--", "-->"
-
-def mask_comments(html):
-    """Blank every HTML comment's bytes, PRESERVING LENGTH and newlines.
-
-    Index-for-index aligned with the input, so a span found in the mask addresses the same
-    bytes in the original (manifest_vars relies on exactly that). An UNTERMINATED `<!--`
-    masks to EOF, which is what a browser does — a helper that stopped at the missing `-->`
-    would be guessing (ds-025). Same shape as gen_token_ramp.mask_comments (lane R1),
-    duplicated rather than imported: importing a sibling generator runs its help gate.
-    """
-    out = list(html)
-    i = 0
-    while True:
-        a = html.find(COMMENT_OPEN, i)
-        if a < 0:
-            return "".join(out)
-        b = html.find(COMMENT_CLOSE, a + len(COMMENT_OPEN))
-        end = len(html) if b < 0 else b + len(COMMENT_CLOSE)
-        for k in range(a, end):
-            if out[k] != "\n":
-                out[k] = " "
-        i = end
+# ★ #218 (W-92 residual, "prefer the helper"): this function was a BYTE-IDENTICAL COPY of
+# `gen_token_ramp.mask_comments`, and its docstring gave the reason — "duplicated rather than
+# imported: importing a sibling generator runs its help gate". ⚠ THE PREMISE WAS FALSE:
+# `help_gate` is a no-op on import. The true objection (a generator must not import a sibling
+# generator) is answered by a side-effect-free module instead of a second copy — two copies with
+# no comparing gate is a fix that lands on one side and is green on both.
+from _htmlmask import COMMENT_OPEN, COMMENT_CLOSE, mask_comments  # noqa: E402,F401
+from _htmlmask import selftest_mask as _htmlmask_selftest  # noqa: E402
 
 _MASK_CACHE = {}
 
@@ -576,6 +561,15 @@ def run(write):
 # ------------------------------------------------------------------ selftest
 def selftest():
     fails = []
+    # 0. ★ #218 (W-92): ONE mask implementation. This file carried a byte-identical COPY of
+    # `gen_token_ramp.mask_comments` with no gate comparing them; re-defining it locally makes
+    # `__module__` this file and turns this arm RED. The mask's own property bites now live in
+    # `_htmlmask.selftest_mask` so BOTH consumers inherit the same ones.
+    if mask_comments.__module__ != "_htmlmask":
+        fails.append(f"mask_comments came from `{mask_comments.__module__}`, not `_htmlmask` — "
+                     f"a second copy of the comment mask is back (W-92). Import it, never "
+                     f"re-implement it.")
+    fails += [f"shared mask: {x}" for x in _htmlmask_selftest()]
     # 1. selector rewrite is word-boundary safe
     css = ".btn:hover{x} .btn.full:hover{y} .btn-x{z} /* --btn-grow */"
     got = rewrite_selectors(css, ".btn", ".iconbtn")

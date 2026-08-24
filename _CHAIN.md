@@ -83,11 +83,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **193 items · 114 live · 62 Dave's · 52 mine · 179 carry a stated close condition · **14 UNCONDITIONED**.**
+> **197 items · 118 live · 63 Dave's · 55 mine · 183 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (62) — 62 with a ratified `closes_when`, 0 with NONE:**
+> **DAVE'S (63) — 63 with a ratified `closes_when`, 0 with NONE:**
 > - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
 > - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…** — *closes when:* Dave ratifies or reverses
 > - `W-104` **#215 taxonomy research v2 - Carbon deep-dive, 135-component ladder map, lifecycle vocabulary, name distribution, nav screenshots** — *closes when:* Dave has ruled on the 12 PROPOSED-FOR-DAVE placements in section 2.3 and on Map A vs Map B (whether a Primitives tier is used), and gen_library_214.py LEVELS + level_of() have been changed to match, with the section 2.2 table regenerated from the changed derivation
@@ -110,6 +110,7 @@
 > - `W-135` **#218 RECEIPT - Dave's four verbatim per-theme photography exports, transcribed as the source for s218-D3** — *closes when:* Dave has ruled the three open photography calls (mono caption shade, five over-ceiling derivatives, edge:square) - the receipt is then history
 > - `W-136` **#218 BUILD - Foundations > Grids group: grids-12col + grids-display/gallery/dashboard, one data path, controls kept, explorer untouched (s218-D2)** — *closes when:* Dave has read the four Grids pages and either signed them off or named what to change
 > - `W-137` **#218 BUILD - per-theme photography settings enacted, all 251 derivatives minted, page lazy-loaded (s218-D3)** — *closes when:* Dave has ruled the mono caption shade (PROPOSED #1A1A1A/white), the five over-ceiling derivatives and whether edge:square reopens
+> - `W-138` **#217 CSS delivery strategy — compiled sizes measured, subset mints + critical-CSS + font-display priced** — *closes when:* Dave adopts, amends or parks the site-mint / critical-CSS / font-display options when the s216-D1 mint step is built
 > - `W-38` **Size-ramp + per-theme size modes proposal (FLOATED, Dave's instinct, #200)** — *closes when:* Dave rules the pair semantics and the per-theme mode mapping, or drops the shape
 > - `W-41` **#203 delegated-wrap brief (DO-NOT-RULE list + session facts for the Opus wrap sub)** — *closes when:* the #203 wrap commit is pushed by the conductor under s203-D1 AND the CI read-back is relayed to Dave in chat - both limbs, per the ruling's own words
 > - `W-51` **#207 addendum: Dave's critique of the #206 record (promotion vocabulary open; candidature homed)** — *closes when:* Dave rules the twice-caught vocabulary question (does a mined historical occasion count as a 'catch' toward s204-D1's bar?) AND rules promote/wait/park on the three candidates; the candidature record in knowledge/_DS-IMPROVEMENTS.md then carries the outcome
@@ -151,14 +152,14 @@
 > - `W-99zg` **#214 LIBRARY v2 BUILT: true header (theme/dark/width), overlay off component pages (#chrome=0 opt-out), search+68 aliases+cmd-K, level facet chips (config swap point, word-set UNPICKED), 135 components, driven headless 24/25** — *closes when:* Dave's eye on the page + two calls: does v2 REPLACE showroom/index.html, and which level word-set fills the LEVELS config (three candidates commented beside it)
 > - `W-99zi` **#217 bento research brief v1: Dave three-role taxonomy tested against practice (Apple tile CSS measured 18px radius, Flickr justified-layout widows + fullWidthBreakoutRowCadence, concentricity WWDC25, dense-flow a11y trap)** — *closes when:* Dave has read the verdict and ruled on the three bends: GALLERY role vs justified-row family, the flush/container-radius dashboard signature having no bento precedent (only Apple concentricity + inset-grouped lists), and whether orphan/squaring policy is a role property or an orthogonal parameter
 >
-> **MINE (52), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `G4` · `W-99za` · `W-99zh`
+> **MINE (55), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `G4` · `W-99za` · `W-99zh`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **29,553 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **29,669 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 75,342 real and stays whole for retrieval; you have paid for
 39% of it, and that is the intended figure, not a shortfall.)*

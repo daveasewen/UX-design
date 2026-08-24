@@ -92,7 +92,11 @@ STEPS = [
     # session's context. Memento §4.1; rulings D1a/D2/D3 2026-07-26
     # (notes/_MEMENTO-DECISIONS.md). Repo-side only — the memory store is invisible to
     # gates BY RULING; wrap-time checks are `--wrap`, session-run, not wired here.
-    ("capture/provenance gate — status+provenance on new notes+dossiers (Memento §4.1)", "_capture_gate.py"),
+    # ⚠ #218: `--build` is now MANDATORY here. `_capture_gate.py` gained an argv contract (the
+    # #158 write-by-default class, both legs) and a BARE invocation is REFUSED with exit 2 —
+    # the step ID (the routing key) is unchanged, only the stated intention is now explicit.
+    ("capture/provenance gate — status+provenance on new notes+dossiers (Memento §4.1)",
+     "_capture_gate.py", ["--build"]),
     ("capture/provenance selftest (Memento §4.1)", "_capture_gate.py", ["--selftest"]),
     # #79 P5: the counting path (cl100k exact fixtures), the cache (hit fidelity,
     # content-hash keying, corrupt-file robustness), and degraded-measurement honesty

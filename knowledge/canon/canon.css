@@ -6528,6 +6528,14 @@
 /* SHAPE, not colour — aria-current carries it too */
 :where(.cn-calendar) .cal-day[aria-selected="true"]{background:var(--text); color:var(--page);}
 /* ink knockout */
+/* ⛔ THE KNOCKOUT HOLDS THROUGH HOVER/PRESSED (#218, measured by _validate_state_contrast.py).
+     The hover rule above is `button.cal-day:hover:not(:disabled)` = (0,3,1) and OUT-SPECIFIES the
+     knockout at (0,2,0), so hovering a SELECTED day repainted the fill --field-bg-hover while the
+     text stayed --page: 1.14:1 light / 1.11:1 dark, hover AND pressed, on both selected days —
+     8 of the gate's 8 TEXT failures. Date-picker does not carry it because .dp-day:hover is
+     (0,2,0) and its knockout rule comes LATER; Calendar's does not. Restated here at (0,3,1),
+     same two tokens as the knockout itself — no new colour, no new constant. */
+:where(.cn-calendar) button.cal-day[aria-selected="true"]:hover:not(:disabled){background:var(--text); color:var(--page);}
 /* ⛔ THE REPAIR (see head comment): ring-on-knockout is 1.06:1 without this rule. */
 :where(.cn-calendar) .cal-day.is-today[aria-selected="true"]{box-shadow:inset 0 0 0 2px var(--page);}
 :where(.cn-calendar) .cal-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}

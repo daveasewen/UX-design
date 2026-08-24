@@ -41,7 +41,10 @@ TIER (ruled #23, trigger fired #24): O1′ started, so the promotion pair flippe
 SECTION_USAGE_BLOCKING=True in `_capture_gate.py` + its selftest pin, one deliberate
 edit pair (M10's pattern). A missing/malformed stratum line now FAILS the wrap.
 
-Usage:  python3 knowledge/_gm_usage.py --sizes --session 23   # print the code-measured sizes line
+Usage:  python3 knowledge/_gm_usage.py --usage-template --session 23  # ★ #218: the usage line's
+                                                              #   FORM from the vocabulary, codes
+                                                              #   left blank (`?`) for you to fill
+        python3 knowledge/_gm_usage.py --sizes --session 23   # print the code-measured sizes line
         python3 knowledge/_gm_usage.py --check-line "<line>"  # validate a usage line (exit 1 on malformed)
         python3 knowledge/_gm_usage.py --history              # #35: read the ACCUMULATED testimony as a series
         python3 knowledge/_gm_usage.py --selftest             # bites — every check proves it can FAIL
@@ -170,9 +173,47 @@ SIZES_RE = re.compile(
     r"^>\s*\*\*section-sizes\s+#(\d+)\s*\(([^)]*)\):\*\*\s*GM\s+(.*?)\s*·\s*LS\s+(.*?)(\s*·\s*totals.*)?$")
 TOKEN_RE = re.compile(r"^([A-Za-z0-9]+):([A-Za-z0-9]+)$")
 
+# ★★ #218 — THE SCAFFOLD, AND THE ARCHAEOLOGY THAT SAYS WHY IT IS A SCAFFOLD AND NOT A LOOSENING.
+#
+# WHAT HAPPENED AT THE #218 WRAP: the gate refused the stratum twice, with two fails —
+# `LS: unknown section id \`WEATHER\`` and `LS: no testimony for WEBFONT, LIVE, LIFECYCLE, …`
+# (7 ids). The obvious reading — "#217's line passed, #218's failed, so the vocabulary tightened
+# between the two wraps" — IS FALSE, and it was checked before anything was changed
+# [[premise-ages-faster-than-rule]]:
+#   · `git diff e6a1fe5 080204a -- knowledge/_gm_usage.py` is EMPTY. `GM_VOCAB`/`LS_VOCAB` have
+#     not been touched since `2bc83b4` (#158, 2026-08-12) — 60 sessions.
+#   · `_LIVE-STATE.md`'s `## ` headings are structurally IDENTICAL at both wraps (11 sections).
+#   · Both committed #218 versions of `GOOD-MORNING.md` carry the CORRECT line; the refusal is
+#     in `notes/_REHEARSAL-LOG.jsonl` at wrap-open only.
+# ⇒ NOTHING TIGHTENED. A HAND-TYPED LINE DRIFTED: `WEATHER` for `WEBFONT`, and seven ids simply
+# not typed. The gate did its job, the wrap sub repaired the line, and the whole cost was paid at
+# the seam where a wrap is most expensive. ⛔ So the vocabulary is NOT loosened here, and no id
+# is added: `WEATHER` is not a section, it is a typo, and registering it would inscribe a false
+# fact in the one copy the sizes walk depends on.
+#
+# ★ WHAT THE CLASS ACTUALLY IS: the `section-sizes` line is CODE-MEASURED (`--sizes`), while its
+# sibling `section-usage` — 20 ids that must match two vocabularies exactly — is typed by hand
+# every wrap, from memory or by copying last session's line. The IDS are FORM (this file already
+# holds the only copy of them); only the CODES are testimony. Making a human retype the form
+# guarantees exactly this defect, on a schedule.
+# ⇒ `--usage-template` emits the FORM from the vocabulary and leaves the TESTIMONY blank. The
+# placeholder is illegal on purpose: a pasted-but-unfilled template REFUSES, loudly and by name,
+# so the scaffold can never become machine-authored testimony. The honesty contract is untouched
+# — no code is ever written by this tool.
+USAGE_PLACEHOLDER = "?"
+
 
 def _ids(vocab):
     return [i for i, _ in vocab]
+
+
+def usage_template(session):
+    """The section-usage line as a SCAFFOLD: every id, in document order, from the ONLY copy of
+    the vocabulary, with `?` where the session's own testimony goes. Refused until filled."""
+    def blob(vocab):
+        return " ".join(f"{v}:{USAGE_PLACEHOLDER}" for v in _ids(vocab))
+    return (f"> **section-usage #{session} (self-report):** "
+            f"GM {blob(GM_VOCAB)} · LS {blob(LS_VOCAB)}")
 
 
 def split_sections(lines, vocab, unknown_check=None):
@@ -283,17 +324,34 @@ def validate_usage_line(line):
     if "self-report" not in m.group(2):
         issues.append("status parenthetical must say self-report — the line is testimony "
                       "and must describe itself as such (confident-false-inscription guard)")
+    # ★ #218 — the SCAFFOLD, unfilled. Named as its own refusal rather than left to fall out as
+    # N malformed tokens: the remedy ("write your own U/R/C") is different from every other
+    # failure here, and a refusal that names the wrong remedy costs a wrap seam.
+    blanks = [t for t in (m.group(3) + " " + m.group(4)).split()
+              if t.endswith(":" + USAGE_PLACEHOLDER)]
+    if blanks:
+        issues.append(f"{len(blanks)} section(s) still carry the `{USAGE_PLACEHOLDER}` "
+                      f"placeholder ({', '.join(blanks[:4])}…) — `--usage-template` emits the "
+                      f"FORM, never the testimony. Replace every `{USAGE_PLACEHOLDER}` with "
+                      f"U (unread) / R (read) / C (cited) yourself; a machine-authored code "
+                      f"would be a false inscription, which is what this line exists to prevent.")
     for group, blob, vocab in (("GM", m.group(3), GM_VOCAB), ("LS", m.group(4), LS_VOCAB)):
         seen = {}
         for tok in blob.split():
             tm = TOKEN_RE.match(tok)
             if not tm:
+                if tok.endswith(":" + USAGE_PLACEHOLDER):
+                    seen[tok.split(":")[0]] = USAGE_PLACEHOLDER   # counted, already reported
+                    continue
                 issues.append(f"{group}: malformed token `{tok}`")
                 continue
             vid, code = tm.group(1), tm.group(2)
             if vid not in _ids(vocab):
                 issues.append(f"{group}: unknown section id `{vid}` — vocabulary is the "
-                              f"only copy (register it, never free-type)")
+                              f"only copy (register it, never free-type). ⚠ #218's `WEATHER` "
+                              f"was a TYPO for `WEBFONT`, not a new section: generate the line "
+                              f"with `python3 knowledge/_gm_usage.py --usage-template --session "
+                              f"<N>` and fill in the codes, rather than retyping 20 ids")
             elif vid in seen:
                 issues.append(f"{group}: section `{vid}` testified twice")
             elif code not in CODES:
@@ -302,7 +360,10 @@ def validate_usage_line(line):
         missing = [v for v in _ids(vocab) if v not in seen]
         if missing:
             issues.append(f"{group}: no testimony for {', '.join(missing)} — every section "
-                          f"is testified exactly once, U is a statement too")
+                          f"is testified exactly once, U is a statement too. ⚠ Ids are FORM, not "
+                          f"testimony: `python3 knowledge/_gm_usage.py --usage-template "
+                          f"--session <N>` emits all {len(_ids(vocab))} of this group's from the "
+                          f"vocabulary itself, so only the codes are yours to write (#218)")
     return issues
 
 
@@ -312,9 +373,10 @@ def validate_stratum(text):
     issues = []
     usage = [ln for ln in text.splitlines() if "section-usage" in ln and ln.lstrip().startswith(">")]
     if not usage:
-        issues.append("section-usage line MISSING from the session stratum — write the "
-                      "testimony (U/R/C per section) via _gm_usage.py; the dataset this "
-                      "feeds is what LS-trim-vs-defer waits on")
+        issues.append("section-usage line MISSING from the session stratum — start from "
+                      "`python3 knowledge/_gm_usage.py --usage-template --session <N>` (the "
+                      "ids come from the vocabulary, the U/R/C codes are yours to write); the "
+                      "dataset this feeds is what LS-trim-vs-defer waits on")
     else:
         for problem in validate_usage_line(usage[0]):
             issues.append(f"section-usage line MALFORMED (worse than missing — a false "
@@ -559,6 +621,49 @@ def selftest():
     bite("missing self-report tag must fire", any("self-report" in i for i in
          validate_usage_line(GOOD_USAGE.replace("(observed, self-report)", "(observed)"))))
     bite("non-matching line must fire", validate_usage_line("> section-usage nonsense") != [])
+
+    # ---- ★ #218 — THE HAND-TYPED-LINE CLASS, driven on the ACTUAL #218 wrap-open failure and on
+    # the scaffold that removes it. The defect line below is reconstructed from the two refusals
+    # recorded in `notes/_REHEARSAL-LOG.jsonl` (2026-08-24, kind `wrap-open`): `unknown section
+    # id WEATHER` + `no testimony for WEBFONT, LIVE, LIFECYCLE, …` (7 ids).
+    defect_218 = ("> **section-usage #218 (self-report, delegated OPUS wrap sub):** "
+                  "GM HDR:C LATEST:C PRIOR:R DOFIRST:U A:U C1:R C2:U C4:U STRATA:C "
+                  "· LS HDR:C LANES:R SPIN:U DELTAS:C WEATHER:U")
+    d_issues = validate_usage_line(defect_218)
+    bite("#218 defect: `WEATHER` must be refused as an unknown id (NOT registered — it is a "
+         "typo for WEBFONT, and registering it would inscribe a false section)",
+         any("unknown section id `WEATHER`" in i for i in d_issues))
+    bite("#218 defect: the 7 untyped LS ids must be named one by one",
+         any("no testimony for" in i and "WEBFONT" in i and "SPINOFFS" in i for i in d_issues))
+    bite("#218 defect: both refusals must NAME THE SCAFFOLD (a refusal that does not carry its "
+         "remedy costs the same wrap seam twice)",
+         all(any("--usage-template" in i for i in d_issues) for _ in (0,)))
+
+    # ---- the scaffold itself: FORM from the vocabulary, TESTIMONY refused until written.
+    tmpl = usage_template(219)
+    # ⚠ PARSED IN THE CONSUMER'S GRAMMAR (USAGE_RE — the same reader the gate uses), never by
+    # substring: a template that merely CONTAINS the ids could still be malformed, and a check
+    # that raises on a mutation is a crash, not a fail [[a-crash-is-not-a-fail]].
+    _tm = USAGE_RE.match(tmpl.strip())
+    _toks = (lambda blob: [t.split(":")[0] for t in blob.split()])
+    bite("template parses as a section-usage line at all", _tm is not None)
+    bite("template carries EVERY id of BOTH vocabularies, in document order, and nothing else "
+         "— it is DERIVED from GM_VOCAB/LS_VOCAB, so a vocabulary change flows into it and "
+         "cannot be forgotten by a typist",
+         bool(_tm) and _toks(_tm.group(3)) == _ids(GM_VOCAB)
+         and _toks(_tm.group(4)) == _ids(LS_VOCAB))
+    t_issues = validate_usage_line(tmpl)
+    bite("an UNFILLED template REFUSES — a scaffold may never become testimony by accident",
+         any("placeholder" in i for i in t_issues))
+    bite("…and it says so ONCE, as its own remedy, not as 20 malformed tokens",
+         len([i for i in t_issues if "malformed token" in i]) == 0)
+    filled = tmpl.replace(f":{USAGE_PLACEHOLDER}", ":U")
+    bite("a template with the codes WRITTEN IN validates — the scaffold's whole point",
+         validate_usage_line(filled) == [])
+    bite("a template with ONE id deleted still fires the missing-testimony bite (the scaffold "
+         "helps, it does not replace the check)",
+         any("no testimony" in i for i in
+             validate_usage_line(filled.replace(" SPINOFFS:U", ""))))
 
     good_stratum = GOOD_USAGE + "\n> **section-sizes #23 (tiktoken):** GM HDR:1 · LS HDR:1"
     bite("good stratum quiet", validate_stratum(good_stratum) == [])
@@ -856,6 +961,16 @@ def main(argv):
         report, _rows, refusals = history_report()
         print(report)
         return 1 if refusals else 0
+    if "--usage-template" in argv:
+        # ★ #218 — the FORM, generated; the TESTIMONY, blank and refused until you write it.
+        session = argv[argv.index("--session") + 1] if "--session" in argv else "?"
+        line = usage_template(session)
+        print(line)
+        print(f"# ⚠ NOT VALID YET, ON PURPOSE: replace every `:{USAGE_PLACEHOLDER}` with U "
+              f"(unread) / R (read) / C (cited). The ids are FORM (from GM_VOCAB/LS_VOCAB, the "
+              f"only copy); the codes are TESTIMONY and no tool may write them for you.",
+              file=sys.stderr)
+        return 0
     if "--sizes" in argv:
         session = argv[argv.index("--session") + 1] if "--session" in argv else "?"
         line, errors = sizes_line(session)

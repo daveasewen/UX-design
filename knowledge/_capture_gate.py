@@ -39,11 +39,15 @@ TWO MODES, one script (D3):
     by design (D1a). Claiming otherwise would be the false inscription this programme
     exists to stop.
 
-Usage:  python3 knowledge/_capture_gate.py             # build mode (blocking)
-        python3 knowledge/_capture_gate.py --wrap      # wrap mode (session-run)
+Usage:  python3 knowledge/_capture_gate.py --build     # build mode (blocking) — THE ONLY WRITER
+        python3 knowledge/_capture_gate.py --wrap      # wrap mode (session-run), stdout only
         python3 knowledge/_capture_gate.py --wrap --lane  # lane session wrap (skips GM check)
+        python3 knowledge/_capture_gate.py --rehearse  # #92 early wrap-gate run, stdout + log
         python3 knowledge/_capture_gate.py --selftest  # bite-test, one fixture per FAIL class
-Build mode writes _CAPTURE-GATE.md; wrap mode is stdout-only (S-D3). Exits non-zero on any FAIL."""
+Build mode writes _CAPTURE-GATE.md; wrap mode is stdout-only (S-D3). Exits non-zero on any FAIL.
+⛔ ARGV IS A CONTRACT (#218, the #158 write-by-default class): a BARE run and any UNRECOGNISED
+flag are REFUSED with exit 2 — they used to fall through to build mode and rewrite the committed
+report. `--build` is the only argv that writes; see `argv_refusal()` and its selftest."""
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
 while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
@@ -3654,8 +3658,40 @@ def _parse_boot_drift_declarations(text):
     return out
 
 
+# ★★ #218 — A DELTA BESIDE `boot` IS NOT A READING, AND UNTIL NOW NOTHING SAID SO.
+#
+# THE CLASS: this parser reads "a number near the word boot" as A MEASUREMENT OF BOOT. The gauge
+# log's own prose is full of numbers that sit beside `boot` and are NOT boot — they are the
+# DRIFT: "boot drift of 8,942" (#218), "declared boot … 2,345 over the band" (#215). Two failure
+# modes, and the quiet one is the worse one:
+#   · a SMALL delta (`boot 2,345 over the band`) lands outside the 10,000–200,000 sanity range
+#     and is REFUSED — which fails the whole gate, loudly, on a line that was perfectly honest;
+#   · a LARGE delta (`boot 12,345 over the band`) lands INSIDE the range and is counted as a
+#     BOOT SAMPLE. The band is then computed off a number that was never a boot, and reads GREEN.
+# ⛔ THE REMEDY UNTIL NOW WAS PROSE DISCIPLINE — #218's own wrap brief instructed the wrap sub to
+# "phrase as 'boot drift of 8,942'" to dodge the parser, and `_CHAIN.md` carries that as the
+# #215 pothole AVOIDED, NOT FIXED. A rule that lives in a brief is a rule that dies with it.
+# ⇒ The distinction is now IN THE PARSER, in three named shapes, and deltas are RETURNED rather
+# than dropped: an unmatched line is not an absence, and neither is a silently skipped one.
+# ⚠ SCOPE, HONESTLY: the reading regex itself is UNCHANGED. Widening what counts as a reading
+# would move the live drift window — a band-adjacent effect, and the band is Dave's.
+BOOT_DELTA_WORD_RE = re.compile(
+    r"\bboot[\s\-]*(?:drift|delta)\b\s*(?:of\s+)?([+-]?[\d,]*\d)", re.I)
+# A SIGNED number beside boot is never a reading — a boot is a quantity, not a movement.
+BOOT_SIGNED_RE = re.compile(r"\bboot\b\s*(?:#\d+\s*=\s*)?([+-][\d,]*\d)", re.I)
+# …and the qualifier AFTER the number that turns it into a comparison against the band.
+# ⚠ `vs` and `against` are deliberately NOT here: "#112 boot 55,025 vs #111 55,733" is two
+# READINGS compared, a shape live in this log — the list is the specification, measured on it.
+BOOT_DELTA_TAIL_RE = re.compile(
+    r"^[\s*_`,)\]]*(?:over|under|above|below|outside|out\s+of|past|beyond|off)\b", re.I)
+
+
 def _parse_boot_samples(text):
-    """Pull (session, real-tokens) boot samples out of the gauge log.
+    """Pull boot samples out of the gauge log. Returns (good, refused, deltas).
+
+    `good`   — [(session, real-tokens)], the readings.
+    `refused`— lines that look like a boot reading and do NOT parse (never skipped).
+    `deltas` — [(line, number)] recognised as DRIFT, not boot: reported, never counted.
 
     Line-based on purpose. The log records boot in at least four shapes across its
     history (`boot #95 = 65,657 real`, `pre-flight #100 ...: boot 64,940 real`,
@@ -3671,15 +3707,34 @@ def _parse_boot_samples(text):
     # Three consecutive sessions of evidence (#125, #126) sat in the log unread by the gate that
     # grades the constant they disagree with. An unmatched grep is not an absence
     # [[unmatched-grep-is-not-an-absence]]. Fix is the flag, not a second regex.
-    good, refused = [], []
+    good, refused, deltas = [], [], []
+
+    def _num(s):
+        return int(s.replace(",", "").replace("+", ""))
+
     for ln in text.splitlines():
         if "boot" not in ln.lower():
             continue
+        line_deltas = []
+        # ---- SHAPE 1: `boot drift/delta of N` — named as a movement by the prose itself.
+        for dm in BOOT_DELTA_WORD_RE.finditer(ln):
+            line_deltas.append((ln.strip()[:110], _num(dm.group(1))))
+        # ---- SHAPE 2: `boot +N` / `boot -N` — a sign makes it a movement whatever it says.
+        for sm_ in BOOT_SIGNED_RE.finditer(ln):
+            line_deltas.append((ln.strip()[:110], _num(sm_.group(1))))
         m = re.search(r"\bboot\b\s*(?:#\d+\s*=\s*)?([1-9][\d,]{4,})", ln, re.I)
         if not m:
-            # A line mentioning boot with no number is prose, not a refusal.
-            if re.search(r"\bboot\b\s*(?:#\d+\s*=\s*)?\d", ln, re.I):
+            # A line mentioning boot with no number is prose, not a refusal — and a line whose
+            # only number was one of the delta shapes above is ACCOUNTED FOR, not refused.
+            if re.search(r"\bboot\b\s*(?:#\d+\s*=\s*)?\d", ln, re.I) and not line_deltas:
                 refused.append(ln.strip()[:110])
+            deltas += line_deltas
+            continue
+        # ---- SHAPE 3: `boot N over/under/outside the band` — the number is a comparison, and
+        # this is the shape #215 had to WRITE AROUND and #218 was briefed to avoid.
+        deltas += line_deltas
+        if BOOT_DELTA_TAIL_RE.match(ln[m.end():]):
+            deltas.append((ln.strip()[:110], _num(m.group(1))))
             continue
         try:
             tk = int(m.group(1).replace(",", ""))
@@ -3691,7 +3746,7 @@ def _parse_boot_samples(text):
             continue
         sm = re.search(r"#(\d+)", ln)
         good.append((int(sm.group(1)) if sm else -1, tk))
-    return good, refused
+    return good, refused, deltas
 
 
 def boot_constant_drift_check(repo):
@@ -3743,7 +3798,13 @@ def boot_constant_drift_check(repo):
         return fails, notes
 
     with open(log, encoding="utf-8") as f:
-        samples, refused = _parse_boot_samples(f.read())
+        samples, refused, deltas = _parse_boot_samples(f.read())
+    if deltas:
+        # ★ #218 — NEVER SILENT. A recognised delta is a number this gate deliberately did NOT
+        # count; saying so is what stops the next reader re-deriving the pothole from scratch.
+        notes.append("boot-drift: %d line(s) state a DRIFT beside `boot`, not a reading, and "
+                     "were NOT counted as samples (#218 parser split) — e.g. %s"
+                     % (len(deltas), " · ".join(f"{n:,} in “{ln[:60]}…”" for ln, n in deltas[:2])))
     if refused:
         fails.append("boot-drift: %d gauge-log line(s) look like boot readings but do "
                      "NOT parse — %s. The band would be computed off an incomplete "
@@ -3924,22 +3985,74 @@ INSTRUMENT_READONLY_DIRS = ("knowledge/assets",)
 # wildcard — the list is the specification.
 INSTRUMENT_SIGNATURES = (".uuid",)
 
+# ★★ THE `s217-D1` RE-SCOPE (#218 gates wave) — THE PREMISE ABOVE AGED, AND THE RULE DID NOT.
+#
+# WHAT AGED: this gate keys on UNTRACKED, and its scope note argues untracked-under-assets ⇒
+# instrument. `s217-D1` (#217) then made `knowledge/assets/photography-web/` a COMMITTED SURFACE
+# — web-sized derivatives MINTED BY A NAMED GENERATOR and committed, while the 2.5 GB originals
+# stay NON-REPO behind the #211 `.gitignore` fence. So a legitimate `--derivatives` run now
+# produces exactly the shape this gate was built to forbid: at the #218 wrap it FAILED on **236
+# untracked paths** and cleared only because they were staged. A gate that fires on ruled,
+# correct work is a gate on its way to being switched off [[premise-ages-faster-than-rule]].
+#
+# ⛔ WHAT DID NOT CHANGE, AND MUST NOT: an instrument writing where it only reads is still a FAIL,
+# INSIDE these directories too. The re-scope is not an exemption for a PATH — it is a
+# recognition of a PRODUCT. Three things are graded separately below:
+#   1. INSTRUMENT_SIGNATURES (`.uuid*`) — a FAIL anywhere, committed surface included. A
+#      derivative directory is the easiest place for fontconfig to hide, not the hardest.
+#   2. A basename matching the surface's own `product` pattern — a NOTE: unstaged output of the
+#      named generator, destined for the commit the ruling requires. Never silent (the push
+#      clean-tree assert will still meet it, and the note says so).
+#   3. ANYTHING ELSE under the surface — still a FAIL. The pattern is the specification: a
+#      stray `.DS_Store`, a temp file or a hand-dropped `.jpg` with no `-wNNN` size suffix is
+#      NOT a product of `--derivatives` and is not licensed by `s217-D1`.
+# ⚠ ADDING A DIRECTORY HERE IS A RULING-BACKED ACT, not a convenience: the entry must name the
+# ruling that made the surface committed and the generator that mints it, and both are printed
+# in the note, so a reader can check the licence without leaving the output.
+COMMITTED_SURFACE_DIRS = {
+    "knowledge/assets/photography-web": {
+        # `<slug>-w<width>.<ext>` — the shape `_build_photo_manifest.py --derivatives` mints and
+        # the shape `_PHOTOGRAPHY-MANIFEST.md`'s `derivative` column records.
+        "product": re.compile(r"^[^/]+-w\d{2,5}\.(?:jpe?g|png|webp)$", re.I),
+        "ruling": "s217-D1",
+        "generator": "python3 knowledge/_build_photo_manifest.py --derivatives",
+    },
+}
+
 
 def _sig_hit(path):
     return os.path.basename(path).startswith(INSTRUMENT_SIGNATURES)
 
 
-def instrument_stray_check(repo, dirs=INSTRUMENT_READONLY_DIRS):
-    """Return (fails, warns). Untracked paths under read-only asset dirs are FAILS.
+def _committed_surface(path):
+    """(dir, spec) if `path` sits under a ruled committed surface, else (None, None)."""
+    for d, spec in COMMITTED_SURFACE_DIRS.items():
+        if path == d or path.startswith(d.rstrip("/") + "/"):
+            return d, spec
+    return None, None
 
-    Pass 1: untracked and NOT ignored — anything at all is a stray.
+
+def _is_ruled_product(path):
+    """True only for a basename matching its own surface's product pattern. An instrument
+    signature is NEVER a product — rule 1 above outranks rule 2, in this order, on purpose."""
+    if _sig_hit(path):
+        return False
+    _d, spec = _committed_surface(path)
+    return bool(spec) and bool(spec["product"].match(os.path.basename(path)))
+
+
+def instrument_stray_check(repo, dirs=INSTRUMENT_READONLY_DIRS):
+    """Return (fails, warns, notes). Untracked paths under read-only asset dirs are FAILS,
+    EXCEPT the ruled committed-surface products of COMMITTED_SURFACE_DIRS, which are NOTES.
+
+    Pass 1: untracked and NOT ignored — anything that is not a ruled product is a stray.
     Pass 2: untracked INCLUDING ignored, filtered to INSTRUMENT_SIGNATURES — so a
-    `.gitignore` entry cannot silence a known instrument.
+    `.gitignore` entry cannot silence a known instrument, committed surface or not.
 
     Never raises: if git cannot be run the gate says so LOUD and NAMED rather than
     returning a green it did not measure [[feedback-measuring-tool-must-not-guess]].
     """
-    fails, warns = [], []
+    fails, warns, notes = [], [], []
     for d in dirs:
         found, failed_to_run = [], False
         for args, keep in ((["--exclude-standard"], lambda p: True), ([], _sig_hit)):
@@ -3961,7 +4074,9 @@ def instrument_stray_check(repo, dirs=INSTRUMENT_READONLY_DIRS):
             found += [x for x in r.stdout.splitlines() if x.strip() and keep(x)]
         if failed_to_run:
             continue
-        strays = sorted(set(found))
+        untracked = sorted(set(found))
+        strays = [p for p in untracked if not _is_ruled_product(p)]
+        products = [p for p in untracked if _is_ruled_product(p)]
         if strays:
             shown = ", ".join(f"`{s}`" for s in strays[:6])
             more = f" (+{len(strays) - 6} more)" if len(strays) > 6 else ""
@@ -3971,8 +4086,135 @@ def instrument_stray_check(repo, dirs=INSTRUMENT_READONLY_DIRS):
                 f"means fontconfig — its `<dir>` is pointed at the repo instead of the /var/tmp "
                 f"symlink farm, see `_RUNBOOK-render-verify.md` § SYMLINK FARM). Move them out "
                 f"with a SAME-MOUNT `mv` to `_to_delete/` — a `mv` to /var/tmp fails, different "
-                f"filesystem. ⛔ Do NOT gitignore them: this gate ignores .gitignore on purpose.")
-    return fails, warns
+                f"filesystem. ⛔ Do NOT gitignore them: this gate ignores .gitignore on purpose. "
+                f"⚠ If one of these IS a ruled committed-surface product, its directory and "
+                f"filename pattern belong in `COMMITTED_SURFACE_DIRS` with the ruling that made "
+                f"it committed — never by widening this check.")
+        # ★ The s217-D1 recognition, and it is a NOTE rather than silence: unstaged output is
+        # still something the push's clean-tree assert will meet, so the reader is told the
+        # count, the licence and the next move. [[unmatched-grep-is-not-an-absence]]
+        for surface in sorted({_committed_surface(p)[0] for p in products}):
+            spec = COMMITTED_SURFACE_DIRS[surface]
+            mine = [p for p in products if _committed_surface(p)[0] == surface]
+            notes.append(
+                f"INSTRUMENT-STRAY re-scope ({spec['ruling']}): {len(mine)} untracked path(s) "
+                f"under `{surface}` match the ruled product pattern "
+                f"`{spec['product'].pattern}` — NOT instrument strays. That directory is a "
+                f"COMMITTED SURFACE minted by `{spec['generator']}`, so these are unstaged "
+                f"work: STAGE them (the push clean-tree assert still refuses an unstaged tree). "
+                f"⛔ An instrument signature under the same directory is STILL a fail.")
+    return fails, warns, notes
+
+
+# ★★ THE REGISTER-vs-STORE JOIN (#212 finding 3, built #218) — ADVISORY AT BIRTH.
+#
+# THE CLASS, and #212 proved it with three rows: `knowledge/_GOVERNING-RECORDS.md` (the standing
+# register of Dave-owed close conditions) and `knowledge/_state.json` (the worklist store) hold
+# the SAME facts and NOTHING JOINS THEM. G3, G7 and G8 were CLOSED in the store at #161 and read
+# OPEN on the register for FIFTY-ONE SESSIONS, until a human happened to look. G18 runs the other
+# way: a row in the store with no register row at all, so the register never carried it.
+# ⇒ Two homes for one fact is a duplicate-home defect (ADR-0017 WRITE-ONCE); this gate cannot
+# merge the homes, but it can make their disagreement IMPOSSIBLE TO CARRY SILENTLY.
+#
+# ⛔ ADVISORY AT BIRTH, AND THE TIER IS NOT AN AGENT'S TO MOVE. Promotion to BLOCKING is Dave's
+# word (the #111/#161/#163 pattern: warn provisionally, ratify, then flip). It warns from day one
+# rather than gating, because its inputs include HAND-WRITTEN status prose and a first red would
+# land on the register's own author.
+#
+# ★ A DECLARED GAP PASSES, A SILENT ONE FAILS — the asymmetry this repo already runs on (#111-D1).
+# The register's closing paragraph names G18 as a known, deliberate absence ("exists as a row in
+# `knowledge/_state.json` and has **no row here**"), so the join reports it as DECLARED, not as
+# drift. Fabricating a row to silence a gate is the failure; naming the gap is the remedy.
+GOV_ROW_RE = re.compile(r"^\|\s*(G\d+[a-z]?)\s*\|(.*)\|(.*)\|(.*)\|\s*$")
+GOV_ID_RE = re.compile(r"^G\d+[a-z]?$")
+# The register's own legal declaration for a store row it deliberately does not carry.
+GOV_DECLARED_GAP_RE = re.compile(r"`(G\d+[a-z]?)`(?:(?!\n\n).){0,400}?no row\s+here", re.S)
+# status cell → store state. The register writes prose; the store writes a vocabulary.
+GOV_STATUS_TO_STATE = (("CLOSED", "done"), ("PARKED", "parked"), ("OPEN", "open"))
+
+
+def _gov_status(cell):
+    """The register's status word for a row, or None if the cell says nothing legal.
+    ⚠ FIRST-WORD-WINS is wrong here and would lie: a CLOSED cell routinely quotes the word
+    OPEN in its history ("read OPEN for 51 sessions"). The marked verdict is what counts —
+    `✅ **CLOSED …` / `✅ **PARKED …` — and a bare leading `OPEN` only when nothing is marked."""
+    for word, state in GOV_STATUS_TO_STATE[:2]:
+        if re.search(r"✅\s*\**\s*%s\b" % word, cell):
+            return word, state
+    if re.match(r"\s*\**\s*OPEN\b", cell):
+        return "OPEN", "open"
+    return None, None
+
+
+def governing_records_join_check(repo):
+    """Join `_GOVERNING-RECORDS.md` against `_state.json`. Returns (warns, notes). ADVISORY."""
+    warns, notes = [], []
+    reg_path = os.path.join(repo, "knowledge", "_GOVERNING-RECORDS.md")
+    store_path = os.path.join(repo, "knowledge", "_state.json")
+    if not (os.path.exists(reg_path) and os.path.exists(store_path)):
+        # DECLARED, never silent — a fixture tree is not a state tree.
+        return warns, [f"REGISTER↔STORE JOIN SKIPPED — "
+                       f"{'register' if not os.path.exists(reg_path) else 'store'} not present "
+                       f"under {repo}. NOT a pass: the join was not made here."]
+    try:
+        with open(reg_path, encoding="utf-8") as f:
+            reg_text = f.read()
+        with open(store_path, encoding="utf-8") as f:
+            store = json.load(f)
+    except (OSError, ValueError) as e:                                # noqa: BLE001
+        return ([f"REGISTER↔STORE JOIN DID NOT RUN ({type(e).__name__}: {e}) — this is UNKNOWN, "
+                 f"not agreement. Read both files by hand before wrapping."], notes)
+
+    register = {}
+    for ln in reg_text.splitlines():
+        m = GOV_ROW_RE.match(ln)
+        if m:
+            register[m.group(1)] = m.group(4)
+    declared_gaps = set(GOV_DECLARED_GAP_RE.findall(reg_text))
+    rows = [it for it in store.get("items", []) if GOV_ID_RE.match(str(it.get("id", "")))]
+    store_state = {it["id"]: (it.get("state") or "UNKNOWN") for it in rows}
+
+    if not register or not rows:
+        return warns, [f"REGISTER↔STORE JOIN SKIPPED — {len(register)} register row(s) vs "
+                       f"{len(rows)} store row(s); one side is empty, so there is nothing to "
+                       f"join. NOT a pass."]
+
+    for gid in sorted(set(store_state) - set(register), key=lambda s: (len(s), s)):
+        if gid in declared_gaps:
+            notes.append(f"REGISTER↔STORE JOIN: `{gid}` is in `_state.json` "
+                         f"(state `{store_state[gid]}`) with no register row — DECLARED in "
+                         f"`_GOVERNING-RECORDS.md` as a known gap, so it passes. A declared gap "
+                         f"passes; a silent one does not (#111-D1).")
+        else:
+            warns.append(f"REGISTER↔STORE JOIN (advisory): `{gid}` exists in `_state.json` "
+                         f"(state `{store_state[gid]}`) but has NO ROW in "
+                         f"`_GOVERNING-RECORDS.md` — the register has never carried it (the #212 "
+                         f"G18 shape). Either add the row WITH a `closes_when` (new rows enter "
+                         f"only that way) or DECLARE the gap in the register's own prose.")
+    for gid in sorted(set(register) - set(store_state), key=lambda s: (len(s), s)):
+        warns.append(f"REGISTER↔STORE JOIN (advisory): register row `{gid}` has no item in "
+                     f"`_state.json` — the worklist cannot surface a governing item it does not "
+                     f"hold. Mint the store row, or say in the register why it has none.")
+    for gid in sorted(set(register) & set(store_state), key=lambda s: (len(s), s)):
+        word, mapped = _gov_status(register[gid])
+        if word is None:
+            warns.append(f"REGISTER↔STORE JOIN (advisory): register row `{gid}`'s status cell "
+                         f"states no legal verdict — `{register[gid].strip()[:90]}`. UNKNOWN is "
+                         f"never defaulted to agreement; write `OPEN`, `✅ CLOSED …` or "
+                         f"`✅ PARKED …`.")
+            continue
+        if mapped != store_state[gid]:
+            warns.append(f"REGISTER↔STORE JOIN (advisory): `{gid}` DISAGREES — register says "
+                         f"`{word}`, `_state.json` says `{store_state[gid]}`. This is the #212 "
+                         f"finding-3 shape exactly (G3/G7/G8 read OPEN on the register for 51 "
+                         f"sessions after the store closed them). Fix the LAGGING home; the "
+                         f"closure is inscribed in its owning ledger first, then marked here.")
+    if not warns:
+        notes.append(f"REGISTER↔STORE JOIN: {len(register)} register row(s) joined against "
+                     f"{len(rows)} `_state.json` row(s) — ids and statuses AGREE "
+                     f"({len(declared_gaps)} declared gap(s)). ADVISORY at birth; promotion to "
+                     f"blocking is Dave's.")
+    return warns, notes
 
 
 def plan_block_check(repo):
@@ -4026,9 +4268,16 @@ def wrap_checks(repo, today, lane=False):
     _bf, _bw = plan_block_check(repo)           # B2 seam obligation — LANE wraps too: a lane
     fails += _bf                                # seam is the seam this block exists for.
     warns += _bw
-    _sf, _sw = instrument_stray_check(repo)     # #138 — runs for LANE wraps too, on purpose:
-    fails += _sf                                # a lane session renders like any other.
+    _sf, _sw, _sn = instrument_stray_check(repo)  # #138 — runs for LANE wraps too, on purpose:
+    fails += _sf                                  # a lane session renders like any other.
     warns += _sw
+    notes += _sn                                  # ★ #218: the s217-D1 committed-surface note
+    # ★ #218 — the register↔store join (#212 finding 3). ADVISORY AT BIRTH: it appends to WARNS,
+    # never to FAILS. ⛔ Promotion to blocking is DAVE'S WORD, not an agent's — the line below is
+    # the only place that changes, and it does not change here.
+    _jw, _jn = governing_records_join_check(repo)
+    warns += _jw
+    notes += _jn
     targets = [("_LIVE-STATE.md", '"Last refreshed"'), ("GOOD-MORNING.md", "header date")]
     if lane:
         targets = targets[:1]
@@ -6822,6 +7071,312 @@ def selftest_plan_block_check():
     return failures
 
 
+def selftest_governing_join():
+    """★ #218 — THE REGISTER↔STORE JOIN, DRIVEN IN BOTH DIRECTIONS, on the #212 rows by name.
+
+    ⚠ The fixture reproduces the SHAPE of the real drift (`G3` closed in the store, OPEN on the
+    register) rather than a toy, because the thing under test is a prose-vs-vocabulary join and
+    a toy fixture would not carry the register's habit of QUOTING the word OPEN inside a CLOSED
+    cell — which is precisely how a first-word-wins reader would lie.
+    """
+    failures = []
+
+    def tree(td, rows, store_states, tail=""):
+        os.makedirs(os.path.join(td, "knowledge"), exist_ok=True)
+        with open(os.path.join(td, "knowledge", "_GOVERNING-RECORDS.md"), "w",
+                  encoding="utf-8") as f:
+            f.write("| id | Item | closes_when | status |\n|---|---|---|---|\n")
+            for gid, status in rows:
+                f.write(f"| {gid} | a live value | Dave's word | {status} |\n")
+            f.write("\n" + tail + "\n")
+        with open(os.path.join(td, "knowledge", "_state.json"), "w", encoding="utf-8") as f:
+            json.dump({"items": [{"id": gid, "state": st}
+                                 for gid, st in store_states]}, f)
+        return governing_records_join_check(td)
+
+    agree = [("G1", "✅ **PARKED #212** — `s212-D5`, conditional park."),
+             ("G3", "✅ **CLOSED #161** — `s161-D2`. ⚠ This row read OPEN for 51 sessions."),
+             ("G4", "OPEN — remedy RULED OFFLOAD (`s212-D6`), enactment rowed `W-99b`.")]
+    agree_store = [("G1", "parked"), ("G3", "done"), ("G4", "open")]
+
+    # ---- GREEN CONTROL, and it doubles as the first-word-wins bite: G3's CLOSED cell contains
+    # the word OPEN. A reader that scanned for it would call this a disagreement.
+    with tempfile.TemporaryDirectory() as td:
+        w_, n_ = tree(td, agree, agree_store)
+        if w_:
+            failures.append(f"join: an AGREEING register+store warned — {w_[0][:140]}")
+        if not any("AGREE" in x for x in n_):
+            failures.append("join: agreement was not stated — a silent green cannot be audited")
+
+    # ---- ARM 1 (#212 finding 3, verbatim shape): store closed, register still OPEN.
+    with tempfile.TemporaryDirectory() as td:
+        w_, _n = tree(td, [("G3", "OPEN — Dave rules warn vs block")], [("G3", "done")])
+        if not any("`G3` DISAGREES" in x for x in w_):
+            failures.append(f"join: register OPEN vs store done did NOT warn — the #212 drift "
+                            f"would ride again: {w_}")
+
+    # ---- ARM 2: a store row with no register row, UNDECLARED (the G18 shape before the note).
+    with tempfile.TemporaryDirectory() as td:
+        w_, _n = tree(td, [("G3", "✅ **CLOSED #161**")], [("G3", "done"), ("G18", "done")])
+        if not any("G18" in x and "NO ROW" in x for x in w_):
+            failures.append(f"join: an unregistered store row passed silently: {w_}")
+
+    # ---- ARM 3 (the other direction): the SAME gap, DECLARED in the register's own prose, must
+    # pass as a NOTE. A declared gap passes, a silent one does not (#111-D1).
+    with tempfile.TemporaryDirectory() as td:
+        w_, n_ = tree(td, [("G3", "✅ **CLOSED #161**")], [("G3", "done"), ("G18", "done")],
+                      tail=("⚠ **FOUND AT THE #212 WRAP AND REPORTED, NOT REPAIRED:** `G18` "
+                            "exists as a row in `knowledge/_state.json` and has **no row\n"
+                            "here**, so the register has never carried it."))
+        if any("G18" in x for x in w_):
+            failures.append(f"join: a DECLARED gap still warned — declaration must discharge it: "
+                            f"{w_}")
+        if not any("G18" in x and "DECLARED" in x for x in n_):
+            failures.append(f"join: a declared gap was passed SILENTLY rather than named: {n_}")
+
+    # ---- ARM 4: a register row with no store item.
+    with tempfile.TemporaryDirectory() as td:
+        w_, _n = tree(td, [("G3", "✅ **CLOSED #161**"), ("G99", "OPEN")], [("G3", "done")])
+        if not any("G99" in x and "no item" in x for x in w_):
+            failures.append(f"join: a register row absent from the store passed silently: {w_}")
+
+    # ---- ARM 5: an illegible status cell is UNKNOWN, never defaulted to agreement.
+    with tempfile.TemporaryDirectory() as td:
+        w_, _n = tree(td, [("G3", "probably fine, ask Dave")], [("G3", "done")])
+        if not any("no legal verdict" in x for x in w_):
+            failures.append(f"join: an unreadable status cell was treated as agreement: {w_}")
+
+    # ---- ARM 6: absent inputs ⇒ a DECLARED skip, never a green.
+    with tempfile.TemporaryDirectory() as td:
+        w_, n_ = governing_records_join_check(td)
+        if w_ or not any("SKIPPED" in x and "NOT a pass" in x for x in n_):
+            failures.append(f"join: a tree with no register/store must SKIP out loud — "
+                            f"warns={w_} notes={n_}")
+
+    # ---- ARM 7 (tier pin, the M10 pattern): this gate is ADVISORY AT BIRTH. It must reach the
+    # wrap's WARNS and never its FAILS — promotion is Dave's, and a silent promotion by an agent
+    # is exactly what this pin exists to catch.
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "notes"))
+        tree(td, [("G3", "OPEN — Dave rules warn vs block")], [("G3", "done")])
+        with open(os.path.join(td, "_LIVE-STATE.md"), "w", encoding="utf-8") as f:
+            f.write("Last refreshed: 2026-07-27\n")
+        f_, w_, _n = wrap_checks(td, datetime.date(2026, 7, 27), lane=True)
+        if any("REGISTER↔STORE JOIN" in x for x in f_):
+            failures.append("join: the check reached the wrap's FAILS — it is ADVISORY at birth "
+                            "and its promotion is Dave's word, not an edit")
+        if not any("REGISTER↔STORE JOIN" in x for x in w_):
+            failures.append(f"join: the check is not wired into wrap_checks at all — an "
+                            f"instrument with no consumer cannot fail: {w_[:2]}")
+    return failures
+
+
+def selftest_boot_delta_parse():
+    """★ #218 — A DELTA BESIDE `boot` IS NOT A READING. Fixtures are the #215 and #218 lines
+    VERBATIM from `notes/_GAUGE-LOG.md`, plus the two POTHOLE forms those lines were written
+    around. The last arm drives `boot_constant_drift_check` on a real fixture log, because the
+    clause being tested is "the delta does not enter the mean" — an arithmetic claim, not a
+    classification one [[mutation-tests-the-clause-not-the-feature]].
+    """
+    failures = []
+
+    def parse(s):
+        g_, r_, d_ = _parse_boot_samples(s)
+        return [tk for _, tk in g_], r_, [n for _, n in d_]
+
+    # ---- VERBATIM, notes/_GAUGE-LOG.md #215 post-mortem: a READING with a delta elsewhere.
+    line215 = ("> **post-mortem #215:** ★ **THREE MOMENTS, STATED SEPARATELY AND NEVER ROUNDED "
+               "INTO ONE ANOTHER** [[measure-dont-convert-units]]: **boot 60,248 real** — ⛔ "
+               "**OUT of the `s208-D1` band (56,749 ± 1,154 → 55,595–57,903) by 2,345, DECLARED "
+               "at the opener and NOT corrected into the constant**")
+    g_, r_, d_ = parse(line215)
+    if g_ != [60248] or r_:
+        failures.append(f"boot parse: the #215 post-mortem line VERBATIM must read 60,248 and "
+                        f"refuse nothing — got good={g_} refused={len(r_)}")
+
+    # ---- VERBATIM, the #215 premises line — the phrasing the author had to REACH FOR.
+    line215b = ("> the brief declared boot drift of 2,345 over the band — **band read at "
+                "source**, `knowledge/_gauge_tokens.py:178-179`")
+    g_, r_, d_ = parse(line215b)
+    if g_ or r_ or d_ != [2345]:
+        failures.append(f"boot parse: `boot drift of 2,345` must be a DELTA and nothing else — "
+                        f"got good={g_} refused={len(r_)} deltas={d_}")
+
+    # ---- VERBATIM, notes/_GAUGE-LOG.md #218 declaration.
+    line218 = ("> ⚠ #218's own boot — 66,845 real, a boot drift of 8,942 — is NOT in this mean: "
+               "it reaches this log when #218's stratum rolls at the #219 wrap.")
+    g_, r_, d_ = parse(line218)
+    if d_ != [8942] or r_:
+        failures.append(f"boot parse: the #218 line's `boot drift of 8,942` must be a DELTA and "
+                        f"refuse nothing — got deltas={d_} refused={len(r_)}")
+
+    # ---- THE POTHOLE, both halves. These are the shapes the briefs told humans to avoid; the
+    # rule now lives here instead. (a) the LOUD half: a small delta used to be REFUSED, which
+    # fails the whole gate on an honest line.
+    g_, r_, d_ = parse("> the brief declared boot 2,345 over the band")
+    if r_ or d_ != [2345] or g_:
+        failures.append(f"boot parse: `boot 2,345 over the band` must be a DELTA, not a refusal "
+                        f"— got good={g_} refused={r_} deltas={d_}")
+    # (b) THE QUIET HALF, and it is the dangerous one: a delta big enough to look like a boot
+    # used to be counted as a SAMPLE and the band read GREEN over it.
+    g_, r_, d_ = parse("> boot 12,345 over the band, DECLARED and not corrected")
+    if g_ or d_ != [12345]:
+        failures.append(f"boot parse: `boot 12,345 over the band` was counted as a READING — "
+                        f"a delta is in the band's sample set: good={g_} deltas={d_}")
+    # (c) a signed number beside boot is a movement whatever the words say.
+    g_, r_, d_ = parse("> boot +8,942 against the s208-D1 band")
+    if g_ or d_ != [8942]:
+        failures.append(f"boot parse: `boot +8,942` must be a DELTA — got good={g_} deltas={d_}")
+
+    # ---- CONTROLS (attribute-the-diff): every historical READING shape still reads, including
+    # the `vs` shape, which is TWO readings compared and must NOT be swallowed by the tail rule.
+    for src, want in (("- **boot #95 = 65,657 real** (`message.usage` first turn; n=1)", 65657),
+                      ("> **pre-flight #100 (declared):** boot 64,940 real + job", 64940),
+                      ("> **pre-flight:** boot 26,897 (disk 6,897 **measured**, real", 26897),
+                      ("> boot 65,041 real (n=12; the post-break cluster)", 65041),
+                      ("> **Boot 53,681 real** — the #129 case, sentence-initial", 53681),
+                      ("> **★ measurement banked, free:** #112 boot 55,025 vs #111 55,733", 55025)):
+        g_, r_, d_ = parse(src)
+        if want not in g_ or r_ or d_:
+            failures.append(f"boot parse: CONTROL `{src[:44]}…` no longer reads as {want:,} — "
+                            f"good={g_} refused={len(r_)} deltas={d_}; the split has eaten a "
+                            f"real sample shape")
+    # ---- and a genuine unparseable reading must STILL refuse (the #129 guarantee).
+    g_, r_, d_ = parse("> **pre-flight #9:** boot 999 real")
+    if not r_ or g_ or d_:
+        failures.append(f"boot parse: an out-of-range `boot 999` must still REFUSE — got "
+                        f"good={g_} refused={r_} deltas={d_}")
+
+    # ---- THE ARITHMETIC ARM: drive the real check. Six readings ON the constant = green; the
+    # same log plus a fat delta line must STAY green, because the delta is not a sample.
+    try:
+        sys.path.insert(0, HERE)
+        import _gauge_tokens as gt
+        const = gt.BOOT_FIRSTTURN_TK
+    except Exception as e:                                            # noqa: BLE001
+        SELFTEST_REFUSALS.append(f"boot-delta arithmetic arm: _gauge_tokens unreadable ({e})")
+        return failures
+    readings = "\n".join(f"> **pre-flight #{n}:** boot {const:,} real" for n in range(300, 306))
+    for extra, label in (("", "six readings on the constant"),
+                         (f"\n> ⚠ boot {const * 2:,} over the band, DECLARED", "…plus a DELTA"),
+                         ("\n> ⚠ a boot drift of 99,999 was declared at the opener",
+                          "…plus a drift-of line")):
+        with tempfile.TemporaryDirectory() as td:
+            os.makedirs(os.path.join(td, "notes"))
+            with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+                f.write(readings + extra + "\n")
+            f_, n_ = boot_constant_drift_check(td)
+            if f_:
+                failures.append(f"boot-drift arithmetic ({label}): the gate FAILED on a log whose "
+                                f"only readings sit exactly on the constant — {f_[0][:150]}")
+            if extra and not any("state a DRIFT beside" in x for x in n_):
+                failures.append(f"boot-drift arithmetic ({label}): the delta was skipped SILENTLY "
+                                f"— a number this gate declines to count must be named")
+    return failures
+
+
+def selftest_instrument_stray():
+    """★ #218 — THE INSTRUMENT-STRAY GATE, DRIVEN. It had NO selftest for eighty sessions:
+    built #138, wired the same day, and never once proven to bite in a test
+    [[instrument-without-a-consumer]]. Every arm below runs the REAL `instrument_stray_check`
+    against a REAL git repo — a fixture tree with no `.git` only proves the refusal path.
+
+    The `s217-D1` re-scope is driven in BOTH directions (the two-way rule): a ruled product
+    must NOT fail, and an instrument signature in the SAME directory must STILL fail.
+    """
+    failures = []
+    surface = "knowledge/assets/photography-web"
+    with tempfile.TemporaryDirectory() as td:
+        git = ["git", "-C", td, "-c", "user.email=t@t", "-c", "user.name=t"]
+        try:
+            if subprocess.run(git[:3] + ["init", "-q"], capture_output=True,
+                              timeout=30).returncode != 0:
+                raise RuntimeError("git init failed")
+        except Exception as e:                                        # noqa: BLE001
+            SELFTEST_REFUSALS.append(f"instrument-stray: git unavailable in this checkout ({e})")
+            return failures
+
+        def put(rel, body="x"):
+            p = os.path.join(td, rel)
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(body)
+            return p
+
+        def drive():
+            return instrument_stray_check(td)
+
+        # A committed derivative + a committed control file: the surface must exist as a
+        # TRACKED directory, or "untracked" is not the thing being tested.
+        put(f"{surface}/already-w1600.jpg")
+        put("knowledge/assets/fonts/README.md")
+        subprocess.run(git + ["add", "-A"], capture_output=True, timeout=30)
+        subprocess.run(git + ["commit", "-qm", "fixture"], capture_output=True, timeout=30)
+
+        # ---- GREEN CONTROL (attribute-the-diff): a clean tree fails nothing and notes nothing.
+        f_, w_, n_ = drive()
+        if f_ or n_:
+            failures.append(f"instrument-stray: a CLEAN tree was not silent — fails={f_[:1]} "
+                            f"notes={n_[:1]}; every red below would be unattributable")
+
+        # ---- ARM 1 (#138's original catch, unchanged): a fontconfig stray anywhere under assets.
+        p = put("knowledge/assets/fonts/.uuid")
+        f_, _w, _n = drive()
+        if not any("INSTRUMENT STRAY" in x for x in f_):
+            failures.append("instrument-stray: `.uuid` under knowledge/assets did NOT fail — "
+                            "the #138 catch is dead")
+        os.remove(p)
+
+        # ---- ARM 2 (the re-scope, direction A): ruled products are NOT strays, and say so.
+        put(f"{surface}/gettyimages-999-w1600.jpg")
+        put(f"{surface}/eyeem-100014108-97994792-w800.webp")
+        f_, _w, n_ = drive()
+        if f_:
+            failures.append(f"instrument-stray: s217-D1 derivatives still FAIL — the re-scope "
+                            f"does not bite: {f_}")
+        if not any("s217-D1" in x and "COMMITTED SURFACE" in x for x in n_):
+            failures.append(f"instrument-stray: the products were exempted SILENTLY — the note "
+                            f"must name the ruling and the generator, got {n_}")
+
+        # ---- ARM 3 (the re-scope, direction B — THE ONE THAT MATTERS): an instrument signature
+        # inside the committed surface is STILL a fail. A path exemption would swallow this.
+        p = put(f"{surface}/.uuid")
+        f_, _w, _n = drive()
+        if not any("INSTRUMENT STRAY" in x for x in f_):
+            failures.append("instrument-stray: `.uuid` INSIDE the committed surface passed — "
+                            "the re-scope has become a path exemption, which is the defect")
+        os.remove(p)
+
+        # ---- ARM 4: a NON-product under the surface is still a stray. The pattern IS the spec.
+        for rel, why in ((f"{surface}/scratch.txt", "wrong extension"),
+                         (f"{surface}/photo.jpg", "no -wNNN size suffix")):
+            p = put(rel)
+            f_, _w, _n = drive()
+            if not any("INSTRUMENT STRAY" in x for x in f_):
+                failures.append(f"instrument-stray: `{rel}` ({why}) passed — the product pattern "
+                                f"is not being applied, the whole directory is")
+            os.remove(p)
+
+        # ---- ARM 5 (pass 2, unblinded): a .gitignore CANNOT silence a signature, committed
+        # surface or not. This is the #137 refusal made structural, re-driven on the new scope.
+        put(".gitignore", ".uuid*\n")
+        p = put(f"{surface}/.uuid.LCK")
+        f_, _w, _n = drive()
+        if not any("INSTRUMENT STRAY" in x for x in f_):
+            failures.append("instrument-stray: a gitignored `.uuid.LCK` under the committed "
+                            "surface passed — pass 2 has been blinded by .gitignore")
+        os.remove(p)
+        os.remove(os.path.join(td, ".gitignore"))
+
+    # ---- ARM 6: no git at all ⇒ LOUD UNKNOWN, never a green it did not measure.
+    with tempfile.TemporaryDirectory() as td:
+        f_, w_, _n = instrument_stray_check(td)
+        if f_ or not any("DID NOT RUN" in x for x in w_):
+            failures.append(f"instrument-stray: a non-repo tree must warn UNKNOWN, not pass "
+                            f"silently — fails={f_} warns={w_}")
+    return failures
+
+
 def _carry_gm(latest_items, prior_items, latest_no=189, prior_no=188):
     """A two-banner GOOD-MORNING fixture whose residual lines carry exactly what is asked."""
     def resid(n, items):
@@ -6933,6 +7488,10 @@ SELFTEST_REFUSALS: list = []
 def _selftest_body():
     SELFTEST_REFUSALS.clear()
     failures = (selftest_carry_gate()          # ★ s188-D2 — the 2c carve-out, both directions
+                + selftest_instrument_stray()    # ★ #218 — #138's gate, driven at last + s217-D1
+                + selftest_argv_contract()       # ★ #218 — the #158 write-by-default class
+                + selftest_boot_delta_parse()    # ★ #218 — a delta beside `boot` is not a boot
+                + selftest_governing_join()      # ★ #218 — #212 finding 3, ADVISORY at birth
                 + selftest_plan_block_check()    # B2 seam obligation, s179-D1 — wired at write
                 + selftest_real_tier_reachable()
                 + selftest_preflight() + selftest_preflight_tokens()
@@ -7015,12 +7574,145 @@ def _selftest_body():
     return 0
 
 
-if __name__ == "__main__":
-    if "--selftest" in sys.argv:
-        sys.exit(selftest())
-    if "--rehearse" in sys.argv:
+# ---------------------------------------------------------------- the argv contract (#218)
+# ★★ THE #158 WRITE-BY-DEFAULT CLASS, BOTH ITS LEGS, CLOSED ON THIS SCRIPT.
+#
+# ⛔ WHAT WAS ACTUALLY MEASURED, because the carried finding named the wrong door and a wrong
+# premise is worth more corrected than repeated [[premise-ages-faster-than-rule]]. The #218 wrap
+# recorded "`--selftest` WRITES `_CAPTURE-GATE.md`". DRIVEN at #218's gates wave with a CONTENT
+# CANARY in the report file: `--selftest`, `--rehearse` and `--wrap` all left the canary intact —
+# none of them writes. `--selftest` passes `report=None` explicitly and both wrap-shaped modes are
+# nulled inside `run()` by `S-D3`. THE REAL DOOR IS ARGV ITSELF, and it is two doors:
+#   (a) THE BARE RUN. `python3 knowledge/_capture_gate.py` with no argument at all fell through
+#       to build mode and rewrote the committed report. A bare run is not a stated intention —
+#       #158 residual ⑤, the no-args leg, and the same shape that let `_audit_props_axes.py`
+#       overwrite a dated review artefact.
+#   (b) THE UNKNOWN FLAG, which is the wider half and had never been named: argv carried NO
+#       CONTRACT, so ANY unrecognised token — `--check`, `--dry-run`, a typo'd `--warp` — was
+#       silently taken as "build mode" and WROTE. That is #157's gen_showroom defect exactly
+#       (an unrecognised argv entry taken as a filter because nothing parsed argv).
+# ⇒ The write now lives behind ONE explicitly-named flag, `--build`, and every other argv shape
+# either does something read-shaped or REFUSES loud and named. Marker strings are stable so a
+# test can assert them: `REFUSED (write-gate)` (the no-args leg, the project's own #158 marker)
+# and `REFUSED (argv contract)` (the unknown/ambiguous leg).
+CG_MODES = ("--build", "--wrap", "--rehearse", "--selftest")
+CG_MODIFIERS = ("--lane",)
+CG_FLAGS = CG_MODES + CG_MODIFIERS
+CG_USAGE = ("legal argv: `--build` (the ONLY writing mode — regenerates knowledge/_CAPTURE-GATE.md) "
+            "· `--wrap [--lane]` (stdout only, S-D3) · `--rehearse [--lane]` (stdout + the "
+            "rehearsal log) · `--selftest` · `--help`")
+ARGV_REFUSAL_MARKER = "REFUSED (argv contract)"
+
+
+def argv_refusal(argv):
+    """The contract, as a pure function so it can be TESTED rather than trusted.
+
+    Returns a refusal string for an argv this script must not act on, or None to proceed.
+    ⚠ Order matters and is deliberate: an UNKNOWN flag is named before anything else, because
+    the unknown flag is the one that used to be silently absorbed into a write.
+    """
+    if any(a in ("-h", "--help", "--usage") for a in argv):
+        return None            # help_gate owns those and has already exited 0 in a real run
+    args = list(argv)
+    unknown = [a for a in args if a not in CG_FLAGS]
+    if unknown:
+        return (f"✖ {ARGV_REFUSAL_MARKER}: unrecognised argument(s) "
+                f"{', '.join(repr(a) for a in unknown)}. This script used to treat ANY "
+                f"unrecognised argv as build mode and WRITE the committed report (#158 "
+                f"write-by-default class, unknown-flag leg; #157's gen_showroom defect). "
+                f"Refusing instead. {CG_USAGE}")
+    if not args:
+        return (f"✖ REFUSED (write-gate): _capture_gate.py WRITES {REPORT} in build mode and was "
+                f"invoked with NO ARGUMENTS. A bare run is not a stated intention (#158 "
+                f"write-by-default class, no-args leg). Pass `--build` to confirm the write, or "
+                f"`--wrap` / `--rehearse` / `--selftest` for the read-shaped runs. {CG_USAGE}")
+    modes = [a for a in CG_MODES if a in args]
+    if not modes:
+        return (f"✖ {ARGV_REFUSAL_MARKER}: `--lane` is a MODIFIER, not a mode — on its own it "
+                f"would have fallen through to build mode and written {REPORT}. Say which run "
+                f"you mean. {CG_USAGE}")
+    if len(modes) > 1:
+        return (f"✖ {ARGV_REFUSAL_MARKER}: more than one mode asked for "
+                f"({', '.join(modes)}) — refusing rather than picking one silently. {CG_USAGE}")
+    if "--lane" in args and modes[0] not in ("--wrap", "--rehearse"):
+        return (f"✖ {ARGV_REFUSAL_MARKER}: `--lane` modifies the WRAP seam (S-D2) and means "
+                f"nothing beside `{modes[0]}`. {CG_USAGE}")
+    return None
+
+
+def main(argv):
+    """The single entry point. Every write this script can perform is downstream of here."""
+    refusal = argv_refusal(argv)
+    if refusal:
+        sys.stderr.write(refusal + "\n")
+        return 2
+    lane = "--lane" in argv
+    if "--selftest" in argv:
+        return selftest()
+    if "--rehearse" in argv:
         # #92: the wrap gate run EARLY, mid-window, where a fix is cheap. Same seam as --wrap;
         # only classification, terseness and the log differ. Consumer: _checkin.py.
-        sys.exit(run(rehearse=True, lane="--lane" in sys.argv))
-    sys.exit(run(mode="wrap" if "--wrap" in sys.argv else "build",
-                 lane="--lane" in sys.argv))
+        return run(rehearse=True, lane=lane)
+    if "--wrap" in argv:
+        return run(mode="wrap", lane=lane)
+    return run(mode="build")     # `--build`, and ONLY `--build`, reaches the report writer
+
+
+def selftest_argv_contract():
+    """★ #218 — THE ARGV CONTRACT, DRIVEN, AND THE WRITE PROVEN NOT TO HAPPEN.
+
+    ⛔ Not a string check: each read-shaped argv is run against a REAL fixture repo with a
+    CONTENT CANARY in the report path, and the canary is re-read afterwards. A gate that only
+    asserted `report is None` would be grading its own bookkeeping, not the file on disk
+    [[mutation-tests-the-clause-not-the-feature]].
+    """
+    failures = []
+    # ---- the refusal half: every shape that used to reach a write must now refuse.
+    for argv, marker, why in (
+            ([], "REFUSED (write-gate)", "the bare run (no-args leg)"),
+            (["--check"], ARGV_REFUSAL_MARKER, "an unknown flag (the silent-absorb leg)"),
+            (["--warp"], ARGV_REFUSAL_MARKER, "a typo'd mode"),
+            (["--lane"], ARGV_REFUSAL_MARKER, "a modifier with no mode"),
+            (["--build", "--wrap"], ARGV_REFUSAL_MARKER, "two modes at once"),
+            (["--build", "--lane"], ARGV_REFUSAL_MARKER, "--lane on a non-wrap mode"),
+            (["--wrap", "--nope"], ARGV_REFUSAL_MARKER, "a good flag beside a bad one")):
+        got = argv_refusal(argv)
+        if not got or marker not in got:
+            failures.append(f"argv contract: {why} ({argv}) was NOT refused with `{marker}` — "
+                            f"got {got!r}. This argv reaches the report writer.")
+    # ---- the proceed half (mutation control): the legal shapes must NOT be refused.
+    for argv in ([ "--build"], ["--wrap"], ["--wrap", "--lane"], ["--rehearse"],
+                 ["--rehearse", "--lane"], ["--selftest"], ["--help"], ["--wrap", "--help"]):
+        if argv_refusal(argv):
+            failures.append(f"argv contract: legal argv {argv} was REFUSED "
+                            f"({argv_refusal(argv)[:90]}) — the contract is too tight")
+    # ---- the canary half: prove the read-shaped modes leave the report file untouched.
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "notes"))
+        with open(os.path.join(td, "_LIVE-STATE.md"), "w", encoding="utf-8") as f:
+            f.write("Last refreshed: 2026-07-25\n")
+        with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+            f.write("header dated 2026-07-25 (stale)\n")
+        canary_path = os.path.join(td, "_CG-CANARY.md")
+        stale = datetime.date(2026, 7, 27)
+        for kwargs, label in ((dict(mode="wrap"), "--wrap"),
+                              (dict(rehearse=True), "--rehearse")):
+            with open(canary_path, "w", encoding="utf-8") as f:
+                f.write("CANARY\n")
+            run(repo=td, report=canary_path, today=stale, **kwargs)
+            if open(canary_path, encoding="utf-8").read().strip() != "CANARY":
+                failures.append(f"argv contract: `{label}` OVERWROTE the report file — S-D3 "
+                                f"regressed and a transient verdict is sitting in a committed "
+                                f"report")
+        # and the write path must actually write, or the flag is a lie
+        with open(canary_path, "w", encoding="utf-8") as f:
+            f.write("CANARY\n")
+        run(mode="build", repo=td, report=canary_path, today=stale)
+        if open(canary_path, encoding="utf-8").read().strip() == "CANARY":
+            failures.append("argv contract: `--build` did NOT write the report — the one "
+                            "explicit write path is dead, so the build's own report will rot")
+    return failures
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

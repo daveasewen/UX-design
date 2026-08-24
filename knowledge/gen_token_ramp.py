@@ -101,29 +101,12 @@ def strip_block(html):
     return AUTO_RX.sub("", html)
 
 
-COMMENT_OPEN, COMMENT_CLOSE = "<!--", "-->"
-
-
-def mask_comments(html):
-    """Blank every HTML comment's bytes, PRESERVING LENGTH and newlines (#211).
-
-    Returned string is index-for-index aligned with the input, so an offset found in
-    the mask addresses the same byte in the original. An UNTERMINATED `<!--` masks to
-    EOF, which is what a browser does — a generator that stopped at the missing `-->`
-    would be guessing (ds-025).
-    """
-    out = list(html)
-    i = 0
-    while True:
-        a = html.find(COMMENT_OPEN, i)
-        if a < 0:
-            return "".join(out)
-        b = html.find(COMMENT_CLOSE, a + len(COMMENT_OPEN))
-        end = len(html) if b < 0 else b + len(COMMENT_CLOSE)
-        for k in range(a, end):
-            if out[k] != "\n":
-                out[k] = " "
-        i = end
+# ★ #218 (W-92 residual, "prefer the helper"): the comment mask lived HERE and, byte-identical,
+# in `gen_component_partials.py`, with no gate comparing the two. One implementation now, in
+# `_htmlmask.py` — a side-effect-free module, so neither generator imports the other. The
+# selftest below asserts this name still comes FROM there, so a re-introduced local copy is RED.
+from _htmlmask import COMMENT_OPEN, COMMENT_CLOSE, mask_comments  # noqa: E402,F401
+from _htmlmask import selftest_mask as _htmlmask_selftest  # noqa: E402
 
 
 def in_comment(html, offset):
@@ -202,6 +185,15 @@ def run(write):
 
 def selftest():
     fails = []
+    # ---- ★ #218 (W-92): ONE mask implementation, and this arm is the gate that keeps it one.
+    # A local re-definition of `mask_comments` — the exact regression this de-duplication
+    # closes — makes `__module__` this file and turns the arm RED
+    # [[dangling-dataviz-var-renders-silent-black]] is the same shape: green tests over a copy.
+    if mask_comments.__module__ != "_htmlmask":
+        fails.append(f"mask_comments came from `{mask_comments.__module__}`, not `_htmlmask` — "
+                     f"a second copy of the comment mask is back, and no gate compares copies "
+                     f"(W-92). Import it, never re-implement it.")
+    fails += [f"shared mask: {x}" for x in _htmlmask_selftest()]
     css = ("x{}\n/* ===== TOKENS alpha START ===== */\n  --alpha-60: 0.6;\n/* ===== TOKENS alpha END ===== */\n"
            "/* ===== TOKENS marks START ===== */\n  --mark-error: #FFF;\n  --mark: var(--mark-error);\n/* ===== TOKENS marks END ===== */\n"
            "/* ===== TOKENS mark-carriers START ===== */\n.is-error{--mark:var(--mark-error);}\n/* ===== TOKENS mark-carriers END ===== */\n")
