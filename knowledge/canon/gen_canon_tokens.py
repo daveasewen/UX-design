@@ -45,7 +45,14 @@ MODE_LEAVES = {"light", "dark"}
 FONT_STACK = '"Univers Next for HSBC", "Helvetica Neue", Arial, Helvetica, sans-serif'
 UNITLESS = ("weight", "opacity", "z-index", "line-height-ratio",
             "press-travel", "press-darken", "motion-press",
-            "alpha")  # number tokens that take no px (incl. ADR-0013/B-D7 press physics + DV-D07 data/*/alpha slots)
+            "alpha",
+            # A COUNT IS NOT A LENGTH (#217). `columns` is a track count consumed by
+            # repeat(N, …) — as `12px` it is not merely cosmetic, it is unusable, and it
+            # shipped that way (--layout-web-columns: 12px, --layout-app-columns: 12px)
+            # because nothing consumed it so nothing failed. Fixed at the CLASS here rather
+            # than special-cased at the new bento token: s217-D2's --layout-bento-columns
+            # goes through the same branch. Logged as a DS defect in _DS-IMPROVEMENTS.md.
+            "columns")  # number tokens that take no px (incl. ADR-0013/B-D7 press physics + DV-D07 data/*/alpha slots)
 
 def fmt_value(var, val, ttype, node=None):
     """Render a DTCG value as a CSS value string, by $type and path.
@@ -134,6 +141,20 @@ def walk(node, path, out):
             if css is not None:
                 out.append((var, mode, css))
             return
+        # CSS-KEYWORD CARRIER (s217-D4, ds-051). A CSS keyword — `row dense`, and every
+        # future one — has NO legal W3C DTCG $type, so it cannot be a token: `$type:"string"`
+        # is a guaranteed DTCG-001 failure and there is no honest numeric stand-in. Per the
+        # s141-D1 (B) precedent the value is preserved VERBATIM under $extensions
+        # ["com.apollo.sds"], and the node carries no $value — which makes it a GROUP that the
+        # DTCG gate has no opinion about. It still has to REACH CSS, so it is read here.
+        # Fixed at the CLASS, not special-cased at layout/bento/packing: any node with a
+        # `cssKeyword` carrier emits its var, so the next keyword needs no code.
+        ext = node.get("$extensions", {})
+        if isinstance(ext, dict):
+            sds = ext.get("com.apollo.sds", {})
+            if isinstance(sds, dict) and isinstance(sds.get("cssKeyword"), str):
+                out.append(("--" + "-".join(path), None, sds["cssKeyword"]))
+                return
         for k, v in node.items():
             if k.startswith("$"):
                 continue

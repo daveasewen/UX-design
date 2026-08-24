@@ -2410,3 +2410,649 @@ Recording, not proposing; adoption is Dave's.
    two off, **the separator kept**. Because the `.tag` outline is genuinely ambiguous as "chrome",
    both readings are offered (tags kept / tags plain) rather than one being picked. Row markup,
    hover, press, focus ring and geometry are untouched.
+
+---
+
+## ds-044 — two image components tell a real deployment to use `<img>`, and neither styles one
+
+**Status:** LOGGED 2026-08-22 (#217, photography build sub). **Canon NOT edited** — the fix is a
+canon change and canon is Dave's; both specimens carry the rule locally and declare it in their
+own head comments.
+
+**Finding.** `knowledge/snippets/Image-block.reference.html` states in its own head comment:
+*"A real deployment replaces the svg with a real img element (with alt text)"*. Its CSS then
+styles `.imgblock .media svg{ display:block; width:100%; height:100% }` and **has no rule for
+`img` at all**. A deployment that follows the instruction literally gets an image that is not
+positioned inside `.media`, so **every one of the four aspect-ratio variants is silently
+ignored** — the component's headline feature. `knowledge/snippets/Carousel.reference.html` has
+the same shape one step worse: `.cr-slide .ph{ display:block; width:100%; height:220px }` is
+correct for an SVG carrying `preserveAspectRatio="none"` and **stretches a real photograph**,
+which is a visible distortion rather than a silent one.
+
+**Evidence (measured #217, not asserted).** Wiring 12 committed derivatives from
+`knowledge/assets/photography-web/` into copies of both snippets. With the two rules added, the
+measured boxes are 225×126 / 225×169 / 225×225 / 225×300 against declared 16:9 / 4:3 / 1:1 / 3:4,
+and `object-fit` computes to `cover` on all 12 images; without them the ratio variants have
+nothing to constrain. Specimens: `knowledge/_fitness-test/photography-image-block-v1.html` ·
+`knowledge/_fitness-test/photography-carousel-v1.html` (render-proofed light + dark, two widths
+each; probe output in the #217 sub report).
+
+**The rules the specimens carry, verbatim:**
+```css
+.imgblock .media img{ position:absolute; inset:0; display:block; width:100%; height:100%;
+  object-fit:cover; background:var(--ph-fill); }   /* Image block */
+.cr-slide img.ph{ object-fit:cover; background:var(--ph-fill); }   /* Carousel */
+```
+
+**Blast radius if adopted:** additive only — both selectors match elements that do not exist in
+the current snippets, so no existing rendering can change. The `background:var(--ph-fill)` keeps
+the placeholder token doing the work while an image loads, so no new token is minted.
+
+**Third, smaller finding in the same pass:** the Image-block demo grid stretches every figure to
+the tallest in its row (`align-items` defaults to `stretch`). With equal-height SVG placeholders
+this was invisible; with photographs of different ratios it leaves dead surface under the shorter
+cards. `align-items:start` on the demo grid fixes it. ⚠ This is DEMO SCAFFOLD, not component CSS
+— worth mentioning only because it is the same class of defect: **a placeholder that is uniform
+by construction hides a layout question that real content asks immediately.**
+
+## ds-045 — the two ON-DARK identifier logo exports carry no identifier label
+
+**Status:** LOGGED 2026-08-22 #217, from the logos-into-the-library build. **Carried, not
+repaired** — the fix is a re-export from Figma, and the SVGs were fenced from edit in this lane.
+
+**Finding.** `knowledge/assets/logos/masterbrand-identifier-dark-colour.svg` and
+`…-dark-mono.svg` are the **plain masterbrand artwork** sitting on a 795-unit viewBox. The
+"Example identifier" label paths are absent, so 480 of the 795 units — 60% of the box — render
+empty, and the two dark files are indistinguishable from the plain masterbrand except that they
+reserve twice the width.
+
+**Evidence (measured, re-runnable).**
+
+| file | bytes | path starts with x > 315 (the label lives past x=404) |
+|---|---|---|
+| `masterbrand-identifier-light-colour.svg` | 7,634 | **1** (the label is one compound path) |
+| `masterbrand-identifier-light-mono.svg` | 7,535 | **1** |
+| `masterbrand-identifier-dark-colour.svg` | **2,584** | **0** |
+| `masterbrand-identifier-dark-mono.svg` | **2,493** | **0** |
+
+`diff <(sed 's/795/315/g' masterbrand-identifier-dark-colour.svg) masterbrand-dark-colour.svg`
+returns a **single line** differing by one rounding digit (`236.375` vs `236.374`) — the dark
+identifier file *is* the dark masterbrand file. The light pair carries ~5,000 extra bytes, which
+is the label.
+
+**Reading.** The likeliest cause is in the exporter's node table:
+`knowledge/assets/logos/_export-logos.py` maps `2384:92925` → `…-identifier-dark-colour` and
+`2384:92910` → `…-identifier-dark-mono`. Either those two node ids point at masterbrand frames on
+the "Gaps and edits" branch, or the label layer was hidden in the dark frames at export time. Both
+readings are **unverified** — neither was probed, because probing needs a Figma token this lane
+did not have.
+
+**Recommendation (unpromoted).** Re-export the two dark identifier variants against verified node
+ids and diff the result against the light pair; if the dark frames genuinely have no identifier,
+retire the two files rather than shipping empty boxes. Either way the exporter deserves a
+post-export assertion — *every `-identifier-*` file must be materially larger than its
+non-identifier sibling* — so a silently wrong node id fails loud at export instead of six
+weeks later on a review page.
+
+**Blast radius:** two asset files and `_export-logos.py`. No component consumes them today —
+`knowledge/components/app-shell-top-nav.meta.json` already carries the measured verdict
+*"ASSET-ONLY: 12 official SVGs exist under knowledge/assets/logos/ … and NO component binds
+them"*, with its own probe (`grep -rl 'assets/logos' knowledge/snippets/` → zero of 108
+snippets). Re-run today: the only files naming `masterbrand-identifier` outside the assets
+directory are that meta, its snippet and canon copies of the same note, this file, the #217
+brief, `knowledge/_memento-index.json`, and two retired 2026-07-18 snapshots. So a re-export
+breaks nothing.
+
+**Artifacts:** `reviews/LOGOS-2026-08-22-v1.html` §"Masterbrand with identifier" states the
+measurement on the face of the page, beside the two files rendering.
+
+## ds-046 — a themed element that also CONSUMES its own token can resolve the wrong value
+
+**Status:** LOGGED 2026-08-22 #217, found while render-proving the logos page in all four themes.
+**Worked around on the one page; the class is unrepaired.**
+
+**Finding.** `body` is where `data-theme` lives, so `body` is where the theme's custom properties
+are declared. A page that then writes `body{color:var(--text-default)}` is declaring and consuming
+the same property on the same element — and in the one theme+mode where two matching rules disagree
+about that property, Chromium resolved the *other* rule's value.
+
+**Evidence (headless chromium, `#theme=supercharge&m=dark`, page settled):**
+
+| read | value |
+|---|---|
+| `getComputedStyle(body).getPropertyValue('--text-default')` | `#F7F6F4` (supercharge dark) |
+| `getComputedStyle(body).color` | **`rgb(255, 255, 255)`** (the generic `[data-theme="dark"]` value) |
+| a fresh child of `body` with inline `color:var(--text-default)` | `rgb(247, 246, 244)` ✓ |
+| the same page in mono / legacy / console dark | consistent — both candidates are `#FFFFFF`, so nothing diverges |
+
+A rule scan found exactly **one** `color` declaration matching `body` (the page's own), so this is
+not a losing cascade; the substitution and the reported computed value disagree. Forcing layout did
+not change it. Supercharge is simply the only theme where the two candidate values differ, which is
+why no earlier page has surfaced it.
+
+**Why it matters.** The failure is *silent and plausible* — both values are legible on `#1A1A1A`
+(17.40:1 and 16.71:1), so nothing looks broken; the page merely stops obeying its own theme. Same
+species as the dangling-var class: no gate parses for it, and an eyeball cannot catch a
+one-token-off ink.
+
+**Workaround used (page-local, in `reviews/LOGOS-2026-08-22-v1.html`):** consume the token on
+CHILDREN of the themed element — `header.app, main{color:var(--text-default,#1A1A1A);}` — which
+resolved correctly in all eight theme×mode states probed. The `body` declaration is left in place
+as the canvas fallback.
+
+**Recommendation (unpromoted).** Two candidates, both cheap: (a) a house rule that the element
+carrying `data-theme` never consumes theme tokens directly — it only declares them and paints the
+canvas — with a gate that greps page chrome for `body{…var(--text-*)…}`; or (b) a per-theme probe
+in the render harness that asserts `getComputedStyle(el).color` equals the element's own
+`--text-default` in every theme×mode, which is what caught this one. **Unproven by scope:** this
+was measured on one browser build in one sandbox; whether it reproduces in Dave's Chrome is
+untested, and a failed reproduction would demote this from a defect to a headless-shell artefact
+without touching the workaround.
+
+---
+
+## ds-047 — a custom property declared ONLY in a `style=""` attribute is invisible to every var-resolution instrument
+
+**Status:** LOGGED 2026-08-22 #217, found by the Foundations render-probe
+(`knowledge/_render/verify_foundations_217.py`) on its first run. **Fixed on the two pages that
+raised it; the class is unrepaired and the gate that would catch it does not exist.**
+
+**Finding.** The bento grid took its column count and row height from two page-local names,
+`--bx-cols` and `--bx-row`, read in the stylesheet as `var(--bx-cols,4)` and set on the grid
+element as `style="--bx-cols:4; --bx-row:180px;"`. Every existing var instrument — the dataviz
+var-resolution gate, `_validate_property_resolves.py`, and this page's own probe — derives the
+set of DECLARED properties by parsing **stylesheets**. An inline declaration is in the DOM and
+not in any stylesheet, so the property reads as *undeclared* to the instrument while resolving
+perfectly in the browser.
+
+**Evidence (headless chromium, `showroom/_foundations/photography.html`, 8 theme×mode states):**
+
+| read | value |
+|---|---|
+| `getComputedStyle(document.body).getPropertyValue('--bx-row')` | `""` — **empty in all 8 states** |
+| the same property on the grid element itself | `180px` ✓ |
+| the rendered layout | correct — the page never looked wrong |
+
+**Why it matters, and why it is not merely cosmetic.** This is the *inverse* of the silent-black
+class ([[dangling-dataviz-var-renders-silent-black]]): there, a property that fails to resolve
+paints black and no gate sees it; here, a property that resolves fine is invisible to the gate.
+Both leave the instrument unable to answer "does this var resolve?", and both fail in the same
+direction — **towards a green that could not have gone red.** An inline-only property also cannot
+be themed, cannot be overridden by a media or container query, and cannot be found by grepping
+the stylesheet, so it is a poor home for a value on any page.
+
+**Repair used (page-local, in `knowledge/_render/gen_foundations_217.py`):** the two dials moved
+out of the `style=""` attribute into declared rules keyed by a data attribute —
+`.bx-grid[data-kind="photo"]{--bx-cols:4; --bx-row:180px;}` — after which the probe resolves them
+and the responsive overrides can reach them. No behaviour changed; the values are identical.
+
+**Recommendation (unpromoted, PROPOSED-FOR-DAVE).** One cheap gate, one honest caveat.
+**(a)** Extend the var-resolution instruments with a *declaration-site* check: any `--*` set in a
+`style=""` attribute in generated HTML is reported, because it is a value that no theme can reach
+and no gate can see. Priced S — it is a regex over the emitted markup, in the generators that
+already parse it. **(b) Unproven by scope:** this was found on one page pair; whether other
+generated surfaces carry inline custom properties was **not** surveyed, and that survey is the
+first thing the gate would answer. Naming the class is not the same as measuring its population.
+
+---
+
+## ds-048 — the leading-trim scaffold and `-webkit-line-clamp` slice descenders together, and ds-005's fix is scoped to one class
+
+*(#217, found in the render of `knowledge/_fitness-test/bento-tuner-v1.html`. Addition only —
+ds-005 stands as written.)*
+
+**The shape.** The review scaffold carried by every recent specimen declares
+
+```css
+.<scope> :is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){
+  text-box-trim:trim-both; text-box-edge:cap alphabetic;
+}
+```
+
+`cap alphabetic` trims the box to the alphabetic baseline, which is *above* the descender. On a
+single-line label that is the point of the rule. On a label that is also `-webkit-line-clamp`ed,
+the clamp establishes its own overflow box and **the last visible line loses its descenders** —
+measured on the first mono/light render of the tuner: *"talking"*, *"Hong"* and *"young"* all
+rendered with their tails cut.
+
+**Why the existing fix does not reach it.** ds-005 prescribed exactly this override, and it is
+present in the showcases — but scoped to a single class:
+
+```css
+.bx-rows .bx-r-name{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text;}
+```
+
+That is a rule about *one* truncating label in *one* component. A clamped caption in a different
+block matches the trim and not the override, so the defect returns silently on the next page that
+copies the scaffold — a recurring cross-file fix, which is the shape that wants a gate rather than
+a patch.
+
+**⚠ THE POPULATION WAS MEASURED, NOT ASSUMED.** `showroom/_foundations/photography.html` clamps
+the same caption (`.px-desc`, `-webkit-line-clamp:2`) and is **NOT** affected: grepped
+2026-08-22, that page and `logos.html` and their generator declare **no** `text-box-trim` or
+`text-box-edge` at all. **The defect is in the PAIRING**, not in either rule alone, and it bites
+any page that adopts the review scaffold's trim block *and* clamps a label.
+
+**Repair used (page-local):** `.bt-cap .bt-desc, .bt-cap .bt-lic{text-box-edge:text text;}`, plus a
+probe leg (`L9` in `knowledge/_render/verify_bento_tuner_217.py`) that reads the computed
+`text-box-edge` of the clamped caption and fails if `cap` survives.
+
+**Recommendation (unpromoted, PROPOSED-FOR-DAVE).**
+**(a)** Widen the ds-005 override from a class to the *condition*: any element that is
+`-webkit-line-clamp`ed, `text-overflow:ellipsis`ed, or `overflow:hidden` on a text box should
+carry `text-box-edge:text text`. Written once in the scaffold, that is one selector, not a per-page
+remembering.
+**(b)** Gate it — a rule that pairs the trim selector against clamp/ellipsis declarations in the
+same stylesheet and reports the intersection. Priced S; it is a CSS parse in the grammar the
+consumer actually uses, which is the first-gate-parses-the-artefact rule.
+**⬛ Unproven by scope, declared:** only the tuner page was rendered for this. The specimen
+population that carries BOTH the scaffold and a clamp was **not** surveyed, and that survey is the
+first thing the gate would answer.
+
+---
+
+## ds-049 — an INLINE custom property silently beats a container query, so a responsive band can be inert while the value looks correct
+
+*(#217, found while building `knowledge/_fitness-test/bento-tuner-v1.html`. Addition only —
+ds-047 stands, and this is its behavioural twin.)*
+
+**ds-047 recorded that a custom property set in a `style=""` attribute is invisible to every
+var-resolution instrument.** This is the *other* half of the same fact, and it is worse, because
+it changes what the page DOES rather than what an instrument can see.
+
+`element.style.setProperty('--cols', 4)` writes an inline declaration. Inline declarations sit
+above every rule in the origin's cascade, **including rules inside `@container` and `@media`
+blocks**. So a grid whose column count is driven inline and whose responsive collapse is written
+as a container query has a responsive collapse that **can never fire** — and nothing looks wrong:
+the value resolves, the grid draws, the number in any readout is correct, and the only symptom is
+that the layout does not change at the width where it should.
+
+| what | reading |
+|---|---|
+| `--cols` set inline, band rule in `@container` | band **inert**, no error, correct-looking value |
+| `--cols` set in a generated `<style>` rule, band rule in `@container` | band fires ✓ |
+
+**Repair used:** the tuner writes **every** dialled value into a generated `<style>` element as a
+real rule (`baseCSS()` in the page), never with `element.style`. That fixes ds-047's invisibility
+and this inertness in one move, which is the argument for making it the default shape.
+
+**Recommendation (unpromoted, PROPOSED-FOR-DAVE).** Fold this into ds-047(a) rather than gating it
+separately: the same declaration-site check catches both, and the *reason* to report an inline
+custom property should be stated as **"it cannot be themed, cannot be queried, and cannot be
+seen"** — three consequences, one condition. ⛔ The gate is still **not built**; naming the class
+is not the same as measuring its population, and a gate that does not run cannot fail.
+
+---
+
+## ds-050 — a token that is a COUNT was emitted as a LENGTH, and nothing failed because nothing consumed it
+
+**Found #217, 2026-08-23**, while minting the bento parameters (`s217-D2`). `layout/web/columns`
+and `layout/app/columns` (both `$value: 12`, `$type: "number"`) were compiling to:
+
+```css
+--layout-web-columns: 12px;
+--layout-app-columns: 12px;
+```
+
+**A track count is not a length.** As `12px` the value is not merely cosmetically wrong, it is
+unusable — `repeat(var(--layout-web-columns), …)` is invalid, and so is any arithmetic on it.
+
+**Why it survived:** `gen_canon_tokens.fmt_value()` appends `px` to every `number` whose var name
+does not match its `UNITLESS` list, and **no rule anywhere consumed either property**. This is the
+[[instrument-without-a-consumer]] shape inverted: not a gate that never runs, but an OUTPUT that
+nothing reads, so its wrongness has no way to surface. It has presumably shipped since the layout
+store was first compiled.
+
+**Fixed at the class, not at the new token** (#217): `"columns"` was added to
+`gen_canon_tokens.UNITLESS`, and mirrored into `gen_theme_cascade.css_value()` so the two
+formatters cannot disagree the first time a theme overrides a count. The mirror is a **proven
+no-op on the emitted CSS today** (no theme overrides a column count) — it is there so the
+divergence cannot open silently later. Blast radius of the fix: the two properties above change
+from `12px` to `12`; nothing consumed either, so nothing else moves.
+
+**⬛ NOT fixed, and it is the general form:** the unit decision is still a **substring match on the
+var name**. Any future count, ratio or multiplier whose name is not on that list gets `px`
+appended, silently. The honest fix is for the token to carry its own unit intent (DTCG has
+`$type: "number"` vs `"dimension"` for exactly this, and the store already distinguishes them —
+`fmt_value` simply does not trust the distinction for `number`). **PROPOSED-FOR-DAVE, unpromoted:
+stop guessing from the name and read the `$type`.** That is a change to how every numeric token
+compiles, so it is a promotion decision, not a repair. ⛔ No gate exists for this class; naming it
+is not measuring it.
+
+## ds-051 — a CSS KEYWORD token has no legal DTCG type, and the bento mint shipped one red
+
+**Found #217, 2026-08-23**, by running the ordered regen serial after the squaring-pass build.
+`knowledge/_validate_dtcg.py` (build step, BLOCKING) fails:
+
+```
+FAIL DTCG-001   layout.json :: layout.bento.packing :: $type "string" is not a W3C DTCG type
+```
+
+`layout/bento/packing` is `$value: "row dense"` — a `grid-auto-flow` keyword, minted with
+`s217-D2`. **`"string"` is not in the W3C DTCG type set**, which stops at `color`, `dimension`,
+`fontFamily`, `fontWeight`, `duration`, `cubicBezier`, `number`, `strokeStyle`, `border`,
+`transition`, `shadow`, `gradient`, `typography`. There is no keyword type in the spec, and there
+is no honest numeric or dimensional stand-in for `row dense`.
+
+**Measured, not inferred:** the whole 128-step serial is otherwise green — integrity lint PASS
+(0 errors, 19 warnings), both contrast audits rc=0, help-gate 185/185. This one check is the only
+red, and it is red on an UNCOMMITTED token-store edit, so CI has never seen it.
+
+**⬛ NOT FIXED, DELIBERATELY — it is a governance decision, not a repair.** The three shapes are:
+⑴ a **named deferral** in `_validate_dtcg.DEFERRED_PATHS` (the file's own words: *"a deferral is
+not an exemption… each one names a decision that belongs to Dave"*) — which means minting a new
+deferral CLASS for CSS keywords; ⑵ the **`s141-D1` precedent** — carry a legal `$type` and preserve
+the real content verbatim under `$extensions["com.apollo.sds"]`, which is how `DEF-LAYOUT-SCALE`
+was retired rather than silenced; ⑶ drop the parameter from the store and hard-code `row dense` in
+the generator, which trades a red gate for a second source of truth and should probably lose.
+**⑵ looks right and is not mine to take** — it changes what the store's shape means for every
+future keyword token. ⚠ Until it is ruled, `python3 knowledge/_build_all.py` ends **`❌ build gate
+failed`** on a clean tree with the bento mint in it. That is a real blocker for the commit seam,
+not a cosmetic lint.
+
+**✅ RESOLVED #217, 2026-08-23 by `s217-D4` (Dave) — shape ⑵, the `s141-D1` precedent.** *(Added by
+addition; everything above is the finding as written and stands unedited.)* `layout/bento/packing`
+now carries **no `$value` and no `$type`**: the keyword is preserved verbatim as
+`$extensions["com.apollo.sds"].cssKeyword = "row dense"` (with `property: "grid-auto-flow"`),
+matching how `s141-D1` (B) preserved the scale breakpoint sets. With no `$value` the node is a
+GROUP, so no DTCG check applies — **no deferral was minted, no path exempted, nothing silenced**,
+and a keyword re-minted as a `$type:"string"` TOKEN still fails DTCG-001. `canon/gen_canon_tokens.py`
+gained a **CSS-KEYWORD CARRIER** branch — fixed at the CLASS, so the next keyword needs no code —
+which emits `--layout-bento-packing: row dense;` exactly where it sat before. **PROVEN BYTE-IDENTICAL:**
+`canon.css` (and its AUTO-BENTO block, md5 `238b59b8ee28eb237ebaeb6477108bc9`) diffs clean across the
+move — the storage changed, the output did not. Gates: `_validate_dtcg.py` **PASS, 0 failures / 61
+declared deferrals** (was 1 failure), and `_build_all.py` composed 1-128 ends **`✅ all generators ran
+and the integrity + contrast gates passed`** — the former `❌ build gate failed` is cleared. ⚠ ds-052
+(the fork-ban gate cannot tell a TOKEN from a DIAL) is untouched and still open.
+
+---
+
+## ds-052 — the fork-ban gate reads a documented PER-INSTANCE DIAL as if it were a spine token
+
+**Found #217, 2026-08-23**, by running the ordered regen serial after the `s217-D3` role mint.
+`knowledge/_validate_token_forks.py` went **GATE RED: 2 fork(s) not in the ledger**:
+
+```
+FORK  --bento-gutter  theme=mono mode=any
+   .c-bento                                  --bento-gutter: var(--layout-bento-gutter) -> 0
+   .c-bento[data-bento-role="dashboard"]     --bento-gutter: 1px                        -> 1px
+FORK  --bento-radius  theme=mono mode=any
+   .c-bento                                  --bento-radius: var(--border-radius-container) -> 0
+   .c-bento[data-bento-role="brochureware"]  --bento-radius: 0px                            -> 0px
+```
+
+**The gate is reading correctly and the code is behaving as ruled.** `s217-D3` says the ROLE
+decides the spacing and the radius placement, so the divergence is carried by the role attribute
+— a SCOPE, not one of the three sanctioned axes. The gate's own definition of a fork
+("divergence carried by component scope … a token NAME is not an ADDRESS") catches it exactly.
+
+**But `--bento-gutter` is not a token.** It is the bento's declared PARAMETER SURFACE: canon
+emits it precisely so an instance can override it, and s217-D2's nesting ruling ("three
+1px-gutter bentos inside a 40px-gutter outer") is a per-instance divergence *by design*. A
+mechanism whose whole purpose is per-instance divergence cannot also be a name that must resolve
+uniformly within a theme.
+
+**Done now (repair, not promotion):** both names are declared in `_TOKEN-FORK-LEDGER.json` with
+`status: "RULED-s217-D3"` and a note — deliberately NOT the file's `UNRULED-BASELINE-s139`
+status, because these two are the opposite case: ruled, and not awaiting Dave.
+
+**⬛ NOT FIXED, and it is the class: the gate cannot tell a TOKEN from a DIAL.** Every future
+bento instance dial, and every parameter surface built on the same shape, will land here. The
+shapes are ⑴ let the gate recognise a declared parameter surface (a naming convention, or a
+manifest of dial prefixes, exempted from the fork rule while still being audited); ⑵ keep
+ledgering each one by hand, which grows an entry per ruling and quietly turns the ledger into a
+list of things that are fine; ⑶ rename dials out of token-space so the gate never sees them.
+**⑴ looks right and is not mine to take** — it changes what the fork-ban gate means. ⛔ No gate
+exists for the distinction; naming the class is not measuring its population.
+
+
+## ds-053 — the lightest-grey and white surface tokens COLLAPSE to one value in dark mode, so a two-colour palette silently becomes one
+
+**Found #217, 2026-08-24**, while building the `s217-D5` bento matrix explorer
+(`showroom/_foundations/bento.html`). The ruling gives page, bento and caption backgrounds
+**two colour options — the lightest grey and white — plus transparent**, with the constraint that
+a white caption needs a grey ground and the inverse. The explorer resolves those to the semantic
+tokens rather than to literals: lightest grey is `--surface-subtle`, white is `--surface-raised`.
+
+**MEASURED IN THE LIVE DOCUMENT, all 8 states** (headless Chromium, `getComputedStyle(body)` on
+`showroom/_foundations/bento.html` in four themes × light/dark — read from the resolved cascade,
+never from a `canon.css` line, because a token's value is what the cascade says it is) — in dark
+mode the two resolve to the SAME value in every theme:
+
+| theme | mode | `--surface-raised` | `--surface-subtle` |
+|---|---|---|---|
+| base (mono/legacy/console) | light | `#FFFFFF` | `#F0F0F0` |
+| base (mono/legacy/console) | dark  | `#1F1F1F` | `#1F1F1F` |
+| supercharge | light | `#F7F6F4` | `#DFDEDC` |
+| supercharge | dark  | `#2A2621` | `#2A2621` |
+
+⇒ **in dark mode the palette the ruling describes has one member, not two**, and the inversion
+constraint it carries ("white captions require a grey ground and the inverse") is unsatisfiable
+there: every opaque caption is same-on-same by value while the rule — which compares the CHOICE,
+not the resolved colour — reports it legal. The explorer therefore refuses grey-on-grey and
+white-on-white **by name**, which is the honest rule, and says on its face that the distinction
+collapses in dark. **Nothing was swapped**: the page authors no colour, and choosing a second dark
+surface value is a TOKEN decision, not a page's.
+
+**⬛ PROPOSED-FOR-DAVE, unpromoted.** Either (a) dark mode gains a genuine second surface step so
+the ruled two-colour palette exists in both modes, or (b) `s217-D5`'s palette is ruled as
+light-mode-only with a named dark equivalent, or (c) the collapse is accepted and recorded. ⛔ No
+gate exists for this class — no instrument compares two semantic surface tokens for equality
+per theme × mode, so the population beyond these two names is UNMEASURED, not zero
+([[unmatched-grep-is-not-an-absence]]).
+
+## ds-054 — a comparison presented SIDE BY SIDE changes the thing it compares, because the halved container trips a container query
+
+**Found #217, 2026-08-24**, in Dave's first sitting on the bento matrix explorer
+(`showroom/_foundations/bento.html`). His words: *"I expected display-tight to just be like standard
+and generous but just loosing the big padding. it seems to align to two columns."*
+
+**THE CAUSE, MEASURED.** Canon's bento declares `container-type:inline-size` on every `.c-bento`
+(deliberately — it is what makes the responsive bands answer the WALL rather than the window, and
+what makes a bento work as a tile of another bento, `s217-D2`). The page drew P4's two radius walls
+in a two-column grid so they could be compared. At a 1280px viewport each wall then measured
+**571px**, which is under the **820px** band, so both collapsed to **2 columns** — while Display at
+standard and generous rendered **4 columns at 1166px**. The tight state therefore read as a
+DIFFERENT COMPOSITION rather than the same composition at 1px, which is not what the dial changes
+and not what P4 compares.
+
+⚠ **THE GENERAL SHAPE, AND IT IS NOT SPECIFIC TO THIS PAGE.** *Any* side-by-side of a component
+that is its own query container compares two components at a width neither will ever have in
+production. The narrower the comparison pane, the more of the component's own responsive behaviour
+the comparison silently exercises — and every symptom reads as a property of the option being
+compared. Nothing about it looks like a layout bug from a screenshot; it looks like the option
+behaving differently, which is exactly what Dave read.
+
+**FIXED HERE, AND AS A RULE RATHER THAN A CORRECTION.** The P4 comparison is **STACKED, both walls
+full width**, so the same band is in force on both and the only variable left is the radius. The
+invariant is now asserted in two places: `verify_bento_matrix_217.py` requires the tight wall's
+resolved column count AND container width to equal the standard wall's at the same viewport, and
+every wall in a comparison to share both; `gen_bento_matrix_217.py --selftest` refuses any
+multi-track column axis holding a `.bm-wall`. `--break-layout` / `--layout-mutation` puts the
+side-by-side back and **both assertions go red by name**.
+
+**⬛ PRICED, NOT BUILT — THE GATE FOR THE CLASS.** No instrument anywhere checks whether a review
+or showroom page places a `container-type:inline-size` component inside a track narrower than the
+component's own widest band. The bento explorer now carries its own local fence; **the class is
+open everywhere else** — `reviews/*.html`, the showroom harnesses and any future comparison page.
+The candidate is a build-time check over generated pages: for each declared query container, walk
+its ancestor grid/flex declarations and refuse a multi-track column axis whose implied track width
+falls under the container's widest compiled band. ⛔ Population UNMEASURED, not zero
+([[unmatched-grep-is-not-an-absence]]).
+
+## ds-055 — canon STRETCHED a nested bento without letting its grid grow, so the container painted past its own content (rounded top, FLAT BOTTOM)
+
+**Found #217, 2026-08-24**, from Dave's screenshot of the dashboard pane: *"Dashboard seems to be
+rendered oddly, we have gaps and the bottom of the first one is flat."*
+
+**THE CAUSE, MEASURED IN THE LIVE DOCUMENT.** Canon carries
+`.c-bento__tile.c-bento{height:100%}` so a bento that is a tile of another bento fills its cell —
+correct, and it is what makes a row of dashboard groups read as one band. But the nested bento's
+own grid declares `grid-auto-rows:var(--bento-row-unit)` — **fixed rows** (also deliberate: with
+intrinsic rows the tallest content sizes every row and the span vocabulary renders invisible,
+measured #217) — and is top-aligned. So the stretch and the fill were **half a fix**: the instant
+two nested bentos in the same outer row had different natural heights, the shorter one became a
+rounded, clipped container **taller than its content**. Measured on the explorer: a **360px** box
+holding a **240px** grid — **120px of dead band** under its last tile. The visible block (the
+tiles) therefore stopped at 240px with square corners while the container's rounded bottom sat at
+360px, so the group read with **a rounded top and a flat bottom**, and the dead band read as
+another gap.
+
+⚠ **AND IT WAS INVISIBLE IN THE DEMO THAT SHOULD HAVE CAUGHT IT.** `gen_bento_roles_217.py`'s
+dashboard section has nested walls of **equal height**, so the free space is zero and the defect
+never paints. Its `--bento-row-unit:auto` on the OUTER wall is **a different fix for a different
+symptom** (the outer row being SHORTER than the inner wall and clipping it); the two are easy to
+conflate and conflating them would have guaranteed the recurrence
+([[conflated-fix-guarantees-recurrence]]).
+
+**FIXED IN CANON, WHERE THE STRETCH LIVES** — in the generator `knowledge/canon/gen_canon_bento.py`,
+never by hand in `canon.css`, minimal and named beside the rule it completes:
+
+```
+.c-bento__tile.c-bento{height:100%; display:flex; flex-direction:column;}
+.c-bento__tile.c-bento > .c-bento__grid{flex:1 1 auto;
+  grid-auto-rows:minmax(var(--bento-row-unit),1fr);}
+```
+
+`minmax(<unit>,1fr)` keeps the row unit as the **FLOOR**, so the fixed-row discipline is untouched
+and rows only grow into slack the parent has already created. Ordered regen serial run: canon
+selftest 12 bites → canon write → `gen_snippet_tokens --check` 0 changes → `gen_theme_cascade
+--check` in sync → `gen_showroom` 0 written → thumbs → library index. Measured after: dead band
+`[0,0,0]`, all four corners `20px` in console.
+
+**⬛ PRICED, NOT BUILT — THE GATE FOR THE CLASS.** The class is *a rule that stretches a box must
+also make its content grow, or the box paints beyond its content* — and no gate catches it,
+because nothing renders empty and no property resolves to nothing. It is only visible as a
+DIFFERENCE between an element's box and its own content box, in a state where a sibling is taller.
+The candidate is a render-time assertion, cheap and general: for every element carrying both a
+clip and a non-zero radius, refuse a content box shorter than its padding box by more than 1px.
+⛔ Population beyond the bento is UNMEASURED, not zero.
+
+## ds-056 — a RULED build-time pass was skipped by a literal in the markup, and no gate can see it
+
+**Found #217, 2026-08-24**, as the other cause behind Dave's dashboard screenshot — the orphan gaps.
+
+**THE CAUSE.** `s217-D3` ratifies the squaring pass for the dashboard and brochureware roles (Dave:
+*"is very cool"*). The bento matrix explorer honoured it for Display — it calls
+`square_wall_for_role(…, "brochureware", …)` — and then wrote the DASHBOARD's three groups straight
+into the markup with a literal `data-c="1"` on each. `square_wall_for_role` was **never asked** for
+that wall. Three 1×1 groups at two columns leave the second row half empty, which is precisely the
+orphan the ratified pass exists to close. Asked properly, it promotes the third group to `(2,1)` and
+the wall closes: **0 empty cells of 4**, measured on the resolved grid tracks.
+
+⚠ **THE CLASS: A MINT-TIME RULING IS SKIPPABLE BY OMISSION, AND OMISSION LEAVES NO TRACE.** The
+squaring policy *cannot* be expressed in CSS — it rewrites `data-c`/`data-r` before the wall is
+written, and canon says so in a comment. That makes it a rule enforced only by every author
+remembering to call it. A page that forgets renders perfectly valid markup, resolves every token,
+passes every existing gate, and is simply **not squared**. There is no red anywhere; the only
+symptom is a screenshot, which is how this one was found.
+
+**FIXED HERE**, and asserted at both ends: `gen_bento_matrix_217.py --selftest` requires the
+dashboard report to say `squared` and `not exempt`, to have MOVED at least one span, and — driven
+through canon's own `place()` simulator — to leave **zero holes** at the wall's column count; and
+`verify_bento_matrix_217.py` counts empty cells off the RESOLVED tracks in the browser, which is
+the honest question because a mint report is not evidence that the wall rendered.
+`--break-layout` restores the literal and the assertion goes red by name.
+
+**⬛ PRICED, NOT BUILT — THE GATE FOR THE CLASS.** The candidate is a **parse-in-the-consumer's-
+grammar** gate ([[no-gate-parses-the-artefact]]): for every generated page containing a
+`data-bento-role` whose `role_policy(role)['squaring']` is ON, parse the emitted `data-c`/`data-r`
+out of the wall's own markup, run `is_rectangular()` at that wall's compiled ladder, and refuse a
+wall the ratified pass would have closed. It is cheap — canon already exposes `is_rectangular`,
+`band_ladder` and `place` — and it would have caught this one at build time rather than at Dave's
+eye. ⛔ Population UNMEASURED: `grep -rn 'data-bento-role' showroom reviews` is the survey and it
+has not been run against this question.
+
+## ds-057 — a CLIPPED, RADIUSED container whose EDGE LINE is drawn by its tiles crops the line at every corner
+
+**Found #217, 2026-08-24**, from Dave's third dashboard reading: *"on – dashboard-keylines on – the
+corners are cropped so that the keylines are also cropped."*
+
+**THE CAUSE.** The dashboard role puts the theme radius on the CONTAINER and clips it
+(`s217-D2`/`s217-D3`, `overflow:hidden` — the clip is what makes the radius read at all). The
+explorer's keylines were drawn by the TILES: at 1px flush as `inset` right/bottom hairlines, at the
+open stops as a full border box. Either way the tiles at the last column and last row painted the
+GROUP'S OUTER EDGE with a straight line arriving at a curve. An inset line sits *inside* the tile
+where the clip cannot reach it, so it ran into the corner and stopped dead; a square border box at
+the edge had its own corners sliced. **The only line that can follow a rounded corner is the rounded
+box's own border.**
+
+⚠ **THE CLASS: WHOEVER OWNS THE RADIUS MUST OWN THE EDGE LINE.** It generalises past the bento —
+any clipped, radiused container (card, panel, group, table wrapper) whose visible edge is painted by
+a CHILD will crop that edge at its corners, and it is invisible in three of the four themes because
+their `--border-radius-container` is 0 and a straight line meeting a square corner looks correct.
+**FIXED HERE** in `knowledge/_render/gen_bento_matrix_217.py`: with keylines ON the group takes a
+1px border of its own; at 1px the gutter stays and each tile paints it with an OUTSET shadow that
+the clip removes where it reaches the border band; at the open stops the group's outer padding is
+set to the gutter so every tile's keyline box sits inset from the border.
+
+⛔ **AND A SECOND DEFECT FELL OUT OF IT, SAME FAMILY AS CANON'S SPAN VOCABULARY.** The wall-level
+keyline rules were written as DESCENDANT selectors (`.bm-wall .bm-tile`) and `.bm-outer` is also a
+`.bm-wall` — so a rule about the display wall reached every tile of every NESTED dashboard group and
+out-specified the dashboard's own rules by one attribute. Canon already carries this lesson on
+`.c-bento__grid > .c-bento__tile` ("would reach a NESTED bento's tiles and re-span them"); the
+explorer's own rules had not learned it. All four were re-scoped to
+`.bm-wall > .c-bento__grid > .bm-tile`. **THE CLASS: in a component that can nest inside itself,
+every rule about "my children" must be a CHILD combinator — a descendant selector is a rule about
+every level below you.**
+
+**⬛ PRICED, NOT BUILT — THE GATE FOR THE CLASS.** A selftest bite over any generated page whose
+CSS declares a rule for a self-nesting component: for each selector naming the component's tile
+class, refuse a descendant combinator between the wall class and the tile class. It is a text check
+on the generated stylesheet, so it is cheap. ⛔ Population UNMEASURED — the survey is
+`grep -rn "bm-wall \|c-bento__grid " knowledge/_render` plus the same question asked of every other
+`.c-*` component that can contain itself, and it has not been run.
+
+## ds-058 — a hairline suppressed by an AUTHORED ASSUMPTION about the layout ("one row: no horizontal gutter") is a rule that only holds at one responsive band
+
+**Found #217, 2026-08-24**, from Dave's narrow-viewport dashboard screenshot: between vertically
+stacked tiles the gutter showed *"two thin grey bands separated by white"* instead of one centred
+hairline. The lane went looking for a stranded line, and found one — in the main-wall
+counter-example rather than on the live wall.
+
+**THE CAUSE, NAMED.** Treatment C hangs a pair of 1px line elements on every cell (one for the
+gutter to its right, one for the gutter below). The main-wall counter-example turned the horizontal
+one off with
+
+```css
+.bm-mw-cell > .bm-gapline[data-axis="h"]{display:none;}   /* one row: no horizontal gutter */
+```
+
+and **the comment was true at exactly one band.** Canon's narrow band (520px, `s217-D2`) collapses
+that wall to a single column; its two cells then STACK, the horizontal gutter the rule declared
+impossible is the only gutter left, and the counter-example drew **no line at all** precisely where
+its whole argument is that it draws one. Measured at a 500px viewport: zero lines in the one
+internal gutter of `.bm-mw-wall`, against one at 1280 / 1000 / 700.
+
+⚠ **THE CLASS: A LINE MUST BE STOPPED BY GEOMETRY, NEVER BY AN AUTHORED ASSUMPTION ABOUT HOW MANY
+ROWS OR COLUMNS A BAND LEAVES.** Any responsive construction where an author suppresses an element
+because "there is only one row / column / item here" carries this defect: the suppression is a
+snapshot of one band written into a stylesheet that survives all of them. It is invisible at the
+authoring width, which is the width everything is verified at.
+
+**FIXED HERE** in `knowledge/_render/gen_bento_matrix_217.py`: both axes are emitted at every band
+and the overshoot is eaten by the clip — the wall already pads **zero** and the dashboard role
+already clips at its own radius, so a line with no gutter to sit in lands outside the padding box
+and is never painted. That is the SAME construction the live wall's treatment C already uses, so
+the fix removes a second construction rather than adding one.
+
+⛔ **AND THE GATE, BECAUSE THE COVERAGE GAP WAS DECLARED AND THEN LEFT OPEN.** The prior pass wrote
+that C was *unmeasured below the 1100px band* — and the defect lived exactly there. Every assertion
+in `verify_bento_matrix_217.py` drove ONE viewport (1280px), where every wall sits at its widest
+ladder rung, so no band change could ever fail anything. The probe now drives **1000 / 700 / 500**
+(the 3 / 2 / 1-column bands) in all four themes: for every pair of tile boxes that actually face
+each other across a gap — reconstructed from RENDERED geometry, never from `data-c`/`data-r` —
+exactly one 1px line, centred within ±1px, counted only where it survives the wall's clip. Plus a
+pixel arm at 500px in console (one painted run per gutter, ≤2px, nothing outside the curve) and a
+named refusal if the live wall renders no hairline at all, so the probe cannot pass by finding
+nothing. The pre-fix declaration is the sixth symptom of `--break-layout`, and the arm goes red on
+its own name.
+
+⬛ **STILL OPEN, AND IT IS DAVE'S TO RULE, NOT A DEFECT TO FIX.** What Dave most likely photographed
+is a *different* pair of bands: at the collapsed band the outer wall stacks the three groups, and
+each group draws its own 1px border (`s217`, "the rounded group draws its own outer edge"). So the
+main gutter renders **border · space · border** while every gutter around it renders one centred
+hairline — and when main spacing and sub-bento spacing are both 24px the two gutters are the same
+width, so the eye compares them directly and the border pair reads as a doubled hairline. That is
+the ruled construction working as specified, not a stranded line; changing it is a decision about
+whether the main wall may share a gutter width with the sub-bento wall.

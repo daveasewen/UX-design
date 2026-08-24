@@ -128,8 +128,54 @@ PATTERN_DEFINITION = ("Pattern here means an assembly — a component built out 
                       "several elements and shipped as one thing. It is not the GOV.UK "
                       "sense of a pattern (a recipe for solving a user task).")
 
-LEVEL_NOTE = ("Foundations and Tokens are ladder tiers with no component entries in the "
-              "store yet — they are not drawn until they have members.")
+LEVEL_NOTE = ("Tokens is a ladder tier with no entries yet — it is not drawn until it has "
+              "members. Foundations gained its first two entries at #217.")
+
+# ---------------------------------------------------------------------------
+# #217 — THE FOUNDATIONS TIER, FILLED. Dave, 2026-08-22, verbatim:
+#   "so we need a foundations section in the library with images and logos displayed like
+#    the photography bento"
+# The Foundations rung of the s215-D4 ladder existed and drew empty (a rung with nothing on it
+# is not drawn). These two entries are the first members. They are NOT components: they have no
+# snippet, no meta, and no showroom page — which is exactly why they cannot be discovered the
+# way component rows are, and why they are declared here.
+#
+# ⛔ THIS IS THE ONE LIST. knowledge/_render/gen_foundations_217.py IMPORTS it to decide what to
+#    build, and knowledge/_render/gen_thumbs.py imports it to decide what to shoot. A second copy
+#    anywhere would fork.
+#
+# ⚠ THE PAGES LIVE IN showroom/_foundations/, AND THE DIRECTORY IS LOAD-BEARING. `collect()`
+#    below globs `showroom/*.html` — non-recursive — and so does gen_showroom.py's orphan prune,
+#    which DELETES any page in showroom/ with no snippet behind it. A foundation page in
+#    showroom/ would be counted as a component by the first and deleted by the second.
+#
+# ⚠ THESE ROWS ARE ADDITIVE, NOT DERIVED. Every other row in this file is measured off the
+#    store; these two are declared. That is a real difference and it is marked on each row as
+#    `foundation: True`, so a reader of showroom/index.json can tell them apart.
+# ---------------------------------------------------------------------------
+FOUNDATIONS = [
+    {"slug": "foundation-photography", "label": "Photography",
+     "file": "photography.html", "usage": "content",
+     "purpose": ("The photography foundation — the committed web derivatives of the "
+                 "photography library, laid out as a bento, each opening a zero-JavaScript "
+                 "lightbox carrying its EXIF description and licence source. The full set of "
+                 "originals stays non-repo; derivatives are minted on demand (s217-D1).")},
+    {"slug": "foundation-logos", "label": "Logos",
+     "file": "logos.html", "usage": "content",
+     "purpose": ("The logo foundation — the exported HSBC lockups in colour and monotone, each "
+                 "on the ground its artwork requires. Every fill in every file is hardcoded, so "
+                 "no logo follows a theme and each tile is pinned to its own ground.")},
+    # #217 — the third entry, and the first Foundations page that is an INSTRUMENT. Ruled home:
+    # s217-D5 puts the bento system in Foundations/Layout as a matrix of options over three types.
+    {"slug": "foundation-bento", "label": "Bento",
+     "file": "bento.html", "usage": "content",
+     "purpose": ("The bento foundation — the s217-D5 option matrix, live: three types (Display, "
+                 "Gallery, Dashboard) with their ruled spacing, keyline, mode, rounding and "
+                 "background dials over real content, in four themes and both modes, exporting "
+                 "the chosen combination as concrete values. PROPOSED beyond the ruling's own "
+                 "words; nothing on it is promoted.")},
+]
+FOUNDATION_DIR = "_foundations"
 
 # ---------------------------------------------------------------------------
 # s215-D5 (2) — STATUS. Release phase, derived at ONE point from TWO mechanical signals:
@@ -429,6 +475,7 @@ def collect():
 
     rows, residuals = [], {"no_meta": [], "unfiled": [], "no_behaviour": [], "dead_alias": [],
                            "usage_other": [], "no_thumb": [], "dead_related": [],
+                           "no_foundation_page": [],
                            "itinerary": "read" if gated is not None else "MISSING"}
     for page in sorted(glob.glob(os.path.join(SHOWROOM, "*.html"))):
         slug = os.path.basename(page)[:-5]
@@ -466,7 +513,28 @@ def collect():
             "aliases": sorted(alias_by_slug.get(slug, [])),
             "thumb": thumb,
             "page": slug + ".html",
+            "foundation": False,          # #217 — component rows are DERIVED, foundations declared
         })
+    # #217 — the Foundations tier's declared members, appended AFTER the derived component rows
+    # so `residuals` above counts components only and the two populations never blur.
+    for f in FOUNDATIONS:
+        page_rel = "%s/%s" % (FOUNDATION_DIR, f["file"])
+        if not os.path.exists(os.path.join(SHOWROOM, FOUNDATION_DIR, f["file"])):
+            residuals["no_foundation_page"].append(f["slug"])
+        thumb = THUMB_REL % f["slug"]
+        if not os.path.exists(os.path.join(SHOWROOM, thumb)):
+            residuals["no_thumb"].append(f["slug"])
+        rows.append({
+            "slug": f["slug"], "label": f["label"], "cat": "Foundations",
+            "level": "foundation", "usage": f["usage"],
+            # Not in the itinerary measurement and carrying no meta, so status_of derives
+            # "beta" — stated by the same derivation as every other row, not asserted here.
+            "status": status_of(f["slug"], None, gated),
+            "js": 0, "purpose": f["purpose"][:240], "blurb": first_sentence(f["purpose"]),
+            "aliases": sorted(alias_by_slug.get(f["slug"], [])),
+            "thumb": thumb, "page": page_rel, "foundation": True,
+        })
+
     have = {r["slug"] for r in rows}
     by_slug = {r["slug"]: r for r in rows}
     residuals["dead_alias"] = sorted({s for s in ALIASES.values() if s not in have})
@@ -770,7 +838,8 @@ __SENTINEL__
 <body>
 <header class="app">
   <h1>Apollo component library</h1>
-  <span class="count"><strong>__COUNT__</strong> components</span>
+  <span class="count"><strong>__COUNT__</strong> components &middot;
+    <strong>__FCOUNT__</strong> foundations</span>
   <span class="now" id="now" aria-live="polite"></span>
   <span class="spacer"></span>
   <button class="btn" id="all" type="button" hidden>&#8592; All components</button>
@@ -907,7 +976,10 @@ __SECTIONS_USAGE__
     p.push('chrome=0');                       // library view: no second bar, no review overlay
     return '#'+p.join('&');
   }
-  function pageURL(slug){ return slug+'.html'+frag(); }
+  // #217 — the row OWNS its page address. Component rows say "<slug>.html"; Foundations rows
+  // say "_foundations/<name>.html", a directory deeper. Reconstructing the URL from the slug
+  // (which this did until #217) would send every Foundations pane to a 404.
+  function pageURL(slug){ return BY[slug].page+frag(); }
   function retheme(){
     if(!state.slug) return;
     // same document + new fragment => the showroom page's hashchange handler re-themes
@@ -1122,7 +1194,7 @@ __SECTIONS_USAGE__
     wv.textContent=full?'full':wIn.value+'px'; retheme(); setHash();
   });
   openBtn.addEventListener('click',function(){
-    if(state.slug) window.open(state.slug+'.html'+frag().replace('&chrome=0',''));
+    if(state.slug) window.open(BY[state.slug].page+frag().replace('&chrome=0',''));
   });
   replayBtn.addEventListener('click',function(){
     // the pane owns its motion; re-mounting the fragment is the library's only lever
@@ -1252,6 +1324,10 @@ def build():
     tiers_drawn = len({r["level"] for r in rows})
     usage_drawn = len({r["usage"] for r in rows})
     js_count = len([r for r in rows if r["js"] > 0])
+    # #217 — the two populations are counted APART on the face of the page. A Foundations entry
+    # is not a component and the header must not imply it is.
+    comp_count = len([r for r in rows if not r["foundation"]])
+    found_count = len(rows) - comp_count
 
     data = json.dumps({"rows": rows, "aliases": ALIASES,
                        "levelLabels": lvl_label, "usageLabels": use_label,
@@ -1259,7 +1335,8 @@ def build():
     page = (TMPL
             .replace("__CSS__", CSS)
             .replace("__SENTINEL__", INDEX_SENTINEL)
-            .replace("__COUNT__", str(len(rows)))
+            .replace("__COUNT__", str(comp_count))
+            .replace("__FCOUNT__", str(found_count))
             .replace("__STAT_TIERS__", str(tiers_drawn))
             .replace("__STAT_USAGE__", str(usage_drawn))
             .replace("__STAT_JS__", str(js_count))
@@ -1274,8 +1351,10 @@ def build():
     # rows sorted by slug, keys sorted, no timestamp.
     index = {
         "$generated_by": "knowledge/_render/gen_library_214.py",
-        "$ruling": "s215-D4 + s215-D5",
+        "$ruling": "s215-D4 + s215-D5 + #217 Foundations",
         "$count": len(rows),
+        "$component_count": comp_count,
+        "$foundation_count": found_count,
         "$levels": [{"key": lv["key"], "label": lv["label"]} for lv in LEVELS],
         "$usage_groups": [{"key": u["key"], "label": u["label"]} for u in USAGE_GROUPS],
         "$statuses": [{"key": s["key"], "label": s["label"]} for s in STATUSES],
@@ -1287,6 +1366,7 @@ def build():
              "aliases": r["aliases"],
              "related": [x["slug"] for x in r["related"]],
              "thumbnail": r["thumb"], "page": r["page"],
+             "foundation": r["foundation"],     # #217 — declared entry, not a derived component
              "ships_behaviour": r["js"] > 0,
              "blurb": r["blurb"]}
             for r in sorted(rows, key=lambda r: r["slug"])
@@ -1323,10 +1403,12 @@ def selftest():
     bite("7 · levels are derived, never hand-tagged — no literal level in a row",
          sorted({r["level"] for r in rows}) ==
          sorted({lv["key"] for lv in LEVELS if any(x["level"] == lv["key"] for x in rows)}), True)
-    bite("8 · one row per showroom page",
+    bite("8 · one COMPONENT row per showroom page (#217: foundations are counted apart)",
          # ⚠ basename equality, NOT endswith: template-list-index.html ends with "index.html"
-         len(rows), len([p for p in glob.glob(os.path.join(SHOWROOM, "*.html"))
-                         if os.path.basename(p) != "index.html"]))
+         # ⚠ the glob is NON-RECURSIVE, which is what keeps showroom/_foundations/*.html out.
+         len([r for r in rows if not r["foundation"]]),
+         len([p for p in glob.glob(os.path.join(SHOWROOM, "*.html"))
+              if os.path.basename(p) != "index.html"]))
     bite("9 · the embed mode this page depends on exists in gen_showroom",
          "h.chrome==='0'" in showroom.PAGE_TMPL, True)
     # ---- s215-D4 / s215-D5 ----
@@ -1341,7 +1423,7 @@ def selftest():
     nav_groups = re.findall(r"<summary>(.*?)<span", type_tree + usage_tree)
     bite("11 · s215-D4 · the ruled ladder words are the tiers the Type tab draws",
          re.findall(r"<summary>(.*?)<span", type_tree),
-         ["Element", "Pattern", "Block", "Shell", "Template"])
+         ["Foundations", "Element", "Pattern", "Block", "Shell", "Template"])
     bite("12 · s215-D4 · 'lock-up' is not public navigation (it stays a store signal)",
          [g for g in nav_groups if "ock-up" in g], [])
     bite("13 · s215-D4 · the assembly-sense Pattern definition is on the Type tab",
@@ -1399,6 +1481,28 @@ def selftest():
                     css, re.I)),
          [".label::before"])
 
+    # ---- #217 FOUNDATIONS. Each bite probes the page/index the generator actually ships.
+    fnd = [r for r in rows if r["foundation"]]
+    bite("28 · #217 · the Foundations tier is DRAWN, with the declared entries as its members",
+         (sorted(r["slug"] for r in fnd), sorted(f["slug"] for f in FOUNDATIONS),
+          "Foundations" in type_tree),
+         (sorted(f["slug"] for f in FOUNDATIONS), sorted(f["slug"] for f in FOUNDATIONS), True))
+    bite("29 · #217 · a Foundations pane is addressed by its OWN page, not by <slug>.html",
+         sorted(r["page"] for r in fnd),
+         sorted("%s/%s" % (FOUNDATION_DIR, f["file"]) for f in FOUNDATIONS))
+    # ⛔ THE DIRECTORY IS THE FENCE, and this is the bite that keeps it. If a foundation page
+    # were ever emitted into showroom/ it would be counted as a component here AND deleted by
+    # gen_showroom.py's orphan prune — both non-recursive globs over showroom/*.html.
+    bite("30 · #217 · no foundation page sits in showroom/ where the orphan prune would eat it",
+         [f["file"] for f in FOUNDATIONS
+          if os.path.exists(os.path.join(SHOWROOM, f["file"]))], [])
+    bite("31 · #217 · components and foundations are counted APART on the face of the page",
+         ('<strong>%d</strong> components' % len([r for r in rows if not r["foundation"]]) in page,
+          '<strong>%d</strong> foundations' % len(fnd) in page), (True, True))
+    bite("32 · #217 · the JSON index marks which rows are declared, not derived",
+         sorted(c["slug"] for c in idx["components"] if c["foundation"]),
+         sorted(f["slug"] for f in FOUNDATIONS))
+
     if fails:
         print("gen_library_214 --selftest: %d BITE(S) FAILED" % len(fails))
         for f in fails:
@@ -1408,7 +1512,9 @@ def selftest():
     print("   residual · no meta.json: %s" % (residuals["no_meta"] or "none"))
     print("   residual · unfiled level: %s" % (residuals["unfiled"] or "none"))
     print("   residual · usage group 'Other': %s" % (residuals["usage_other"] or "none"))
-    print("   residual · missing thumbnail: %d component(s)" % len(residuals["no_thumb"]))
+    print("   residual · missing thumbnail: %d entry(s)" % len(residuals["no_thumb"]))
+    print("   residual · foundation page not on disk: %s"
+          % (residuals["no_foundation_page"] or "none"))
     print("   residual · ships no behaviour script: %d component(s)"
           % len(residuals["no_behaviour"]))
 
@@ -1422,6 +1528,7 @@ def report(rows, residuals):
     print("   no meta.json:      %s" % (residuals["no_meta"] or "none"))
     print("   unfiled level:     %s" % (residuals["unfiled"] or "none"))
     print("   usage 'Other':     %s" % (residuals["usage_other"] or "none"))
+    print("   foundation page missing: %s" % (residuals["no_foundation_page"] or "none"))
     print("   missing thumbnail: %d — %s"
           % (len(residuals["no_thumb"]), ", ".join(residuals["no_thumb"][:8]) or "none"))
     print("   no behaviour JS:   %d — %s"
@@ -1450,8 +1557,10 @@ def main():
         print("gen_library_214 --check OK — %d component(s), index + index.json + stub in sync."
               % len(rows))
         return
-    print("gen_library_214: %d component(s) -> %s + %s (%d file(s) written)"
-          % (len(rows), os.path.relpath(OUT, ROOT), os.path.relpath(JSON_OUT, ROOT), len(stale)))
+    print("gen_library_214: %d component(s) + %d foundation(s) -> %s + %s (%d file(s) written)"
+          % (len([r for r in rows if not r["foundation"]]),
+             len([r for r in rows if r["foundation"]]),
+             os.path.relpath(OUT, ROOT), os.path.relpath(JSON_OUT, ROOT), len(stale)))
     report(rows, residuals)
 
 

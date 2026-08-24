@@ -109,6 +109,83 @@
         "$value": 12,
         "$type": "number"
       }
+    },
+    "bento": {
+      "$description": "BENTO — the canon structural grammar (MINTED s217-D2, #217, Dave, 2026-08-23, from Dave's four per-theme tuner exports off knowledge/_fitness-test/bento-tuner-v1.html). One grammar serves all four bento types: presets, gallery (incl. aspect-mapped photography spans), container-query full-scale, and snap-designer output. GUTTER IS THE ONLY PER-THEME DIVERGENCE — supercharge + mono 0px (this base), legacy + console 24px (their override sets). Everything else is SHARED across the four themes and lives here once. The RADIUS is deliberately NOT here: s217-D2 puts the theme radius on the bento's OUTER CONTAINER, and that role already has a home — border-radius/container. Consumed by canon/gen_canon_bento.py, which compiles this group into the AUTO-BENTO block of canon/canon.css (concrete container-query literals; s200-D1 mint-time derivation — nothing resolved at runtime that a container query cannot read).",
+      "columns": {
+        "$value": 6,
+        "$type": "number",
+        "$note": "MINTED s217-D2. Track count at the widest band. Per-instance overridable via --bento-columns (that is how a nested bento carries its own parameter set)."
+      },
+      "gutter": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s217-D2 — BASE tier (mono is the base theme; supercharge inherits it). ⚠ THE ONLY PER-THEME BENTO DIVERGENCE: legacy and console override this to 24px in their own override sets. A theme override that never lands leaves THIS value silently in force, so the gutter is measured in every theme, never inferred from one (#217 probe)."
+      },
+      "outer-padding": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s217-D2 — shared across all four themes (all four tuner exports read 0). Padding INSIDE the bento container, between the container edge and the grid."
+      },
+      "row-unit": {
+        "$value": "320px",
+        "$type": "dimension",
+        "$note": "MINTED s217-D2 — shared. grid-auto-rows. ⚠ FIXED rows, not intrinsic: with intrinsic rows the tallest content sizes every row and the span vocabulary renders invisible (MEASURED #217 on the Foundations photography bento)."
+      },
+      "packing": {
+        "$description": "grid-auto-flow: row dense.",
+        "$extensions": {
+          "com.apollo.sds": {
+            "cssKeyword": "row dense",
+            "property": "grid-auto-flow"
+          }
+        },
+        "$note": "MINTED s217-D2 — dense packing ON, shared. grid-auto-flow. Per-instance `--bento-packing: row` turns it off without a new class. ⚠ ENCODED s217-D4 (ds-051) ON THE s141-D1 PRECEDENT: `row dense` is a CSS KEYWORD and there is no W3C DTCG type for one — carrying `$type:\"string\"` made this a token the DTCG gate had to fail (DTCG-001), and there is no honest numeric stand-in. So the value is preserved VERBATIM under $extensions[\"com.apollo.sds\"] exactly as s141-D1 (B) preserved the scale breakpoint sets, and the $value is GONE: with no $value this node is a GROUP, not a token, so no DTCG check applies to it. THE EMITTED CSS IS UNCHANGED — gen_canon_tokens.py reads the cssKeyword carrier and still emits `--layout-bento-packing: row dense;` in the same place. Storage moved; output did not."
+      },
+      "caption-space": {
+        "$value": "86px",
+        "$type": "dimension",
+        "$note": "MINTED s217-D3 — the GALLERY role's caption block, ruled 'more generous' (Dave, #217: 'lets be more generous with the caption space'). ⚠ NOT A TASTE PICK — DERIVED, and every term is an existing number measured off the shipped page. TODAY the gallery caption measures 62px: padding-block 8 + 8, a description on `.t-ed-caption` (12/16) clamped to TWO lines = 32, a 2px gap, and a licence line on `.t-cm-legal` (12px, line-height 1) = 12. THE GENEROUS BLOCK buys ONE MORE DESCRIPTION LINE (32 → 48) and steps the padding one rung up the 4px spacing ladder (8 → 12): 12 + 48 + 2 + 12 + 12 = 86px, i.e. +24px / +38.7%. The LINE ALLOWANCE IS DERIVED BACK OUT OF THIS NUMBER at mint time (s200-D1) — (86 − 24 − 2 − 12) ÷ 16 = 3 — never carried as a second token, so the space and the clamp cannot disagree. Applies to role=gallery only; dashboard and brochureware captions are unchanged."
+      },
+      "$bands": {
+        "$description": "Responsive collapse, as CONTAINER queries against the bento's own inline size (the WALL decides, not the window — that is what makes nesting work). ⚠ BUILD-TIME LITERALS BY NECESSITY: a container-query condition cannot read a custom property, so these numbers are compiled into canon.css by gen_canon_bento.py rather than emitted as vars. Dave unified the 800/820 export discrepancy: 'Make them all 820' (s217-D2).",
+        "wide": 1100,
+        "mid": 820,
+        "narrow": 520
+      },
+      "$spanDerivation": {
+        "$description": "BUILD-TIME span derivation — read by generators (canon/gen_canon_bento.py exposes span_for/emphasise), never by CSS, so these are metadata keys and emit no custom property. ⚠ THE ASPECT THRESHOLDS APPLY TO THE PHOTOGRAPHY BENTO ONLY (s217-D2 in as many words): card spans are AUTHORED. Wiring thresholds onto cards would silently re-lay-out every card wall. The emphasis rhythm applies to both — it is POSITION, not preference.",
+        "aspectThreeColumn": 6.0,
+        "aspectTwoColumn": 2.6,
+        "aspectTwoRow": 1.15,
+        "emphasisEvery": 6,
+        "emphasisFrom": 1,
+        "emphasisShape": "2x2"
+      },
+      "$roles": {
+        "$description": "BENTO ROLES — MINTED s217-D3 (#217, Dave, 2026-08-23). A bento instance carries a role, and the ROLE decides where the radius sits, what the spacing is, and whether the squaring pass runs. Read by generators (canon/gen_canon_bento.py exposes role_policy()) AND compiled into canon.css as `[data-bento-role=…]` rules — metadata keys, no custom property of their own. ⚠ THE GRAMMAR IS IDENTICAL IN ALL FOUR THEMES; console is only the theme where the difference is VISIBLE, because its radius token is non-zero. Where a theme's radius is 0 the same rules resolve to 0 and nothing moves. ⚠ ROLE DOES NOT TOUCH THE SPAN DERIVATION: the aspect thresholds above (incl. the portrait two-row mapping) apply to every photography bento whatever its role — squaring and aspect mapping are DIFFERENT MECHANISMS and gallery relaxes only the first.",
+        "$default": "dashboard",
+        "dashboard": {
+          "$description": "Sectioned app, bento-of-bentos. The s217-D2 model: the theme radius sits on each inner bento's CONTAINER and the tiles inside are square, at 1px spacing. ⚠ THE 1px IS INSIDE THE INNER BENTOS. A dashboard bento whose tiles are THEMSELVES bentos is the outer wall and keeps the theme gutter — Dave's own example is tight inner walls inside a generously spaced outer, so a blanket 1px would collapse exactly the structure the role exists to describe.",
+          "radius": "container",
+          "spacing": "tight",
+          "tightSpacing": "1px",
+          "squaring": true
+        },
+        "brochureware": {
+          "$description": "Sectioned marketing page. The tiles THEMSELVES carry the radius and the spacing; the container is square and does not clip.",
+          "radius": "tile",
+          "spacing": "theme",
+          "squaring": true
+        },
+        "gallery": {
+          "$description": "Page-level photography. Radius and spacing as brochureware, but the SQUARING PASS RELAXES — orphans are acceptable, the requirement is only a layout appropriate to portrait and landscape images. Carries the generous caption space above.",
+          "radius": "tile",
+          "spacing": "theme",
+          "squaring": false,
+          "caption": "generous"
+        }
+      }
     }
   },
   "border-radius": {

@@ -43,11 +43,7 @@ _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
 while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
     _hg_d = _hg_os.path.dirname(_hg_d)
 _hg_sys.path.insert(0, _hg_d)
-try:
-    from _helpgate import help_gate as _help_gate
-    _help_gate(__doc__, __name__, __file__)
-except Exception:
-    pass
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 
 import glob, os, sys
 

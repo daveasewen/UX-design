@@ -62,9 +62,29 @@ FONT_PROBE = """() => {
 }"""
 
 
+def pages():
+    """slug -> page path RELATIVE to showroom/, for everything the library index addresses.
+
+    #217 — the library gained a Foundations tier whose entries are NOT components: they have no
+    snippet and their pages live in `showroom/_foundations/` (a subdirectory, deliberately, so
+    gen_showroom.py's non-recursive orphan prune cannot delete them). They carry `_thumbs/<slug>.png`
+    like every other card, so they are shot here. The list of them is imported from
+    gen_library_214.FOUNDATIONS — ONE list, never a second copy.
+    ⚠ They sort into the middle of the slug list, so a `--range` chunk boundary from a run before
+    #217 no longer covers the same pages. Ranges were always ad-hoc; this is the caveat.
+    """
+    out = {os.path.basename(p)[:-5]: os.path.basename(p)
+           for p in glob.glob(os.path.join(SHOWROOM, "*.html"))
+           if os.path.basename(p) != "index.html"}
+    sys.path.insert(0, HERE)
+    import gen_library_214 as library
+    for f in library.FOUNDATIONS:
+        out[f["slug"]] = "%s/%s" % (library.FOUNDATION_DIR, f["file"])
+    return out
+
+
 def slugs():
-    return sorted(os.path.basename(p)[:-5] for p in glob.glob(os.path.join(SHOWROOM, "*.html"))
-                  if os.path.basename(p) != "index.html")
+    return sorted(pages())
 
 
 def shell_path():
@@ -101,7 +121,7 @@ def main():
     if "--list" in argv:
         ss = slugs()
         print("\n".join(ss))
-        print("# %d component page(s)" % len(ss))
+        print("# %d page(s) the library index addresses (components + foundations)" % len(ss))
         return
     lo, hi = 0, None
     for a in argv:
@@ -112,6 +132,7 @@ def main():
             hi = int(h) if h else None
     resume = "--resume" in argv
 
+    PAGES = pages()
     todo = slugs()[lo:hi]
     if resume:
         todo = [s for s in todo if not os.path.exists(os.path.join(THUMBS, s + ".png"))]
@@ -129,7 +150,7 @@ def main():
         pg = b.new_page(viewport={"width": WIDTH, "height": HEIGHT}, device_scale_factor=SCALE)
         probed = False
         for slug in todo:
-            url = ("file://" + os.path.join(SHOWROOM, slug + ".html")
+            url = ("file://" + os.path.join(SHOWROOM, PAGES[slug])
                    + "#theme=mono&m=light&chrome=0")
             try:
                 pg.goto(url)                            # goto file:// ONLY — never set_content

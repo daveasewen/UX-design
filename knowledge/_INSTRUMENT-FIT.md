@@ -69,6 +69,7 @@
 | `knowledge/_validate_dark_surfaces.py` | I0-STATIC |
 | `knowledge/_validate_dataviz.py` | I0-STATIC |
 | `knowledge/_validate_descender_clip.py` | I0-STATIC |
+| `knowledge/_validate_descender_computed.py` | I2-RENDER |
 | `knowledge/_validate_dtcg.py` | I0-STATIC |
 | `knowledge/_validate_edge_extremity.py` | I0-STATIC |
 | `knowledge/_validate_evidence.py` | I0-STATIC |

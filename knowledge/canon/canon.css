@@ -529,10 +529,16 @@
   --breakpoint-m: 960px;
   --breakpoint-l: 1280px;
   --breakpoint-xl: 1600px;
-  --layout-web-columns: 12px;
+  --layout-web-columns: 12;
   --layout-app-margin: 16px;
   --layout-app-gutter: 16px;
-  --layout-app-columns: 12px;
+  --layout-app-columns: 12;
+  --layout-bento-columns: 6;
+  --layout-bento-gutter: 0;
+  --layout-bento-outer-padding: 0;
+  --layout-bento-row-unit: 320px;
+  --layout-bento-packing: row dense;
+  --layout-bento-caption-space: 86px;
   --border-radius-default: 0;
   --border-radius-control: var(--border-radius-default);
   --border-radius-surface: var(--border-radius-default);
@@ -1033,6 +1039,178 @@
 .c-tabbar__item svg{ width:22px; height:22px; fill:currentColor; }
 .c-tabbar__item:focus-visible{ outline:2px solid var(--focus); outline-offset:-2px; }
 
+
+/* ===== AUTO-BENTO START =====
+   Generated from knowledge/tokens/layout.json (layout/bento) by canon/gen_canon_bento.py.
+   MINTED s217-D2 (#217, Dave, 2026-08-23) from Dave's four per-theme tuner exports.
+   Do NOT hand-edit between the AUTO-BENTO markers — edit the token store and re-run.
+
+   THE PARAMETER SURFACE is custom properties on the CONTAINER, seeded from the theme-
+   minted token vars. Per-instance values override them, and that is exactly how NESTING
+   carries a different parameter set per level (s217-D2: 'three 1px-gutter bentos inside a
+   40px-gutter outer'). Prefer a DECLARED rule over a style="" attribute: an inline
+   custom property is invisible to every instrument that reads the document, and an
+   inline name beats container queries outright.
+
+   ⚠ TWO NAMES FOR THE COLUMN COUNT, ON PURPOSE. `--bento-columns` is the INSTANCE dial;
+   `--bento-cols-now` is what the grid actually reads and what the bands rewrite. If the
+   bands rewrote the instance dial, a per-instance column count set inline would make
+   every band inert — silently, at one viewport, in one theme. */
+.c-bento{
+  /* every parameter is RE-DECLARED here, never inherited: a nested bento must start from
+     its theme's values, not from whatever its parent bento was tuned to. */
+  --bento-columns:       var(--layout-bento-columns);
+  --bento-gutter:        var(--layout-bento-gutter);        /* THE ONLY per-theme divergence */
+  --bento-outer-padding: var(--layout-bento-outer-padding);
+  --bento-row-unit:      var(--layout-bento-row-unit);
+  --bento-packing:       var(--layout-bento-packing);
+  /* s217-D2: the theme radius sits on the CONTAINER, never the tiles. */
+  --bento-radius:        var(--border-radius-container);
+
+  /* the wall is its own container, so the bands below answer the WALL, not the window —
+     which is also what makes a bento work as a tile of another bento. */
+  container-type:inline-size; container-name:bento;
+  padding:var(--bento-outer-padding);
+  border-radius:var(--bento-radius);
+  /* ⛔ NOT decoration. Without the clip the square tile corners poke through the rounded
+     container edge and the console treatment does not read. Probe the CLIP, not the radius. */
+  overflow:hidden;
+  min-width:0;
+}
+.c-bento__grid{
+  --bento-cols-now:var(--bento-columns);   /* re-declared so a band above cannot inherit down */
+  display:grid;
+  grid-template-columns:repeat(var(--bento-cols-now),minmax(0,1fr));
+  /* ⚠ FIXED rows. With intrinsic rows the tallest content sizes every row and the span
+     vocabulary renders invisible (MEASURED #217, Foundations photography bento). */
+  grid-auto-rows:var(--bento-row-unit);
+  gap:var(--bento-gutter);
+  grid-auto-flow:var(--bento-packing);
+  min-width:0;
+}
+/* THE SPAN VOCABULARY. Child-combinator throughout: `.c-bento__grid .c-bento__tile`
+   would reach a NESTED bento's tiles from the outer grid and re-span them. */
+.c-bento__grid > .c-bento__tile{grid-column:span 1; grid-row:span 1; min-width:0; margin:0;}
+.c-bento__grid > .c-bento__tile[data-c="1"]{grid-column:span 1;}
+.c-bento__grid > .c-bento__tile[data-c="2"]{grid-column:span 2;}
+.c-bento__grid > .c-bento__tile[data-c="3"]{grid-column:span 3;}
+.c-bento__grid > .c-bento__tile[data-c="4"]{grid-column:span 4;}
+.c-bento__grid > .c-bento__tile[data-c="5"]{grid-column:span 5;}
+.c-bento__grid > .c-bento__tile[data-c="6"]{grid-column:span 6;}
+.c-bento__grid > .c-bento__tile[data-r="1"]{grid-row:span 1;}
+.c-bento__grid > .c-bento__tile[data-r="2"]{grid-row:span 2;}
+.c-bento__grid > .c-bento__tile[data-r="3"]{grid-row:span 3;}
+/* a bento that is a tile of another bento: both classes, each level with its own dials */
+/* ⛔ THE STRETCH AND THE FILL ARE ONE FIX, AND SHIPPING HALF OF IT IS THE DEFECT.
+   `height:100%` makes a nested bento fill its cell, so a row of groups reads as one band.
+   But its OWN grid has FIXED rows, is top-aligned, and does not grow with it — so the
+   moment two nested bentos in the same row have different natural heights, the shorter
+   one is a rounded container with a DEAD BAND under its last row. The tiles stop, the
+   container carries on: the group reads with a rounded top and a FLAT BOTTOM, and the
+   dead band reads as an orphan gap. MEASURED #217 in the matrix explorer's dashboard —
+   a 360px cell holding a 240px grid — and INVISIBLE in the roles demo, whose nested walls
+   happen to be the same height. So: flex the nested bento, let its grid take the slack,
+   and let the rows grow into it. `minmax(<unit>,1fr)` keeps the row unit as the FLOOR —
+   the fixed-row discipline that makes the span vocabulary visible is untouched, rows only
+   grow when the parent has already stretched the container past its content. */
+.c-bento__tile.c-bento{height:100%; display:flex; flex-direction:column;}
+.c-bento__tile.c-bento > .c-bento__grid{
+  flex:1 1 auto;
+  grid-auto-rows:minmax(var(--bento-row-unit),1fr);
+}
+
+/* RESPONSIVE BANDS — the CONTAINER decides. Concrete literals: a container-query
+   condition cannot read a custom property, so these numbers are compiled from
+   layout/bento/$bands rather than referenced. Dave unified the 800/820 export
+   discrepancy to 820 for all four themes (s217-D2). */
+@container bento (max-width:1100px){
+  .c-bento__grid{--bento-cols-now:3;}
+  .c-bento__grid > .c-bento__tile[data-c="4"], .c-bento__grid > .c-bento__tile[data-c="5"], .c-bento__grid > .c-bento__tile[data-c="6"]{grid-column:span 3;}
+}
+@container bento (max-width:820px){
+  .c-bento__grid{--bento-cols-now:2;}
+  .c-bento__grid > .c-bento__tile[data-c="3"], .c-bento__grid > .c-bento__tile[data-c="4"], .c-bento__grid > .c-bento__tile[data-c="5"], .c-bento__grid > .c-bento__tile[data-c="6"]{grid-column:span 2;}
+}
+@container bento (max-width:520px){
+  .c-bento__grid{--bento-cols-now:1;}
+  .c-bento__grid > .c-bento__tile[data-c="2"], .c-bento__grid > .c-bento__tile[data-c="3"], .c-bento__grid > .c-bento__tile[data-c="4"], .c-bento__grid > .c-bento__tile[data-c="5"], .c-bento__grid > .c-bento__tile[data-c="6"]{grid-column:span 1;}
+  .c-bento__grid > .c-bento__tile[data-r]{grid-row:span 1;}
+}
+
+/* SPAN DERIVATION is BUILD-TIME, not runtime — canon/gen_canon_bento.py exposes it as
+   span_for(w,h) / emphasise(span,i). ⚠ PHOTOGRAPHY ONLY for the aspect rules:
+     aspect >= 6.00 -> 3 columns
+     aspect >= 2.60 -> 2 columns
+     inverse aspect >= 1.15 -> 2 rows
+     otherwise -> 1 x 1
+   then every 6th tile from tile 1 is promoted to 2x2 (position, not preference).
+   CARD SPANS ARE AUTHORED — only the rhythm applies to them (s217-D2). */
+
+/* ---- ROLES (s217-D3) --------------------------------------------------------------
+   The role decides WHERE THE RADIUS SITS, WHAT THE SPACING IS, and (build-time) whether
+   the squaring pass runs. `data-bento-role` on the instance — an attribute, not a class,
+   so an instance can carry its own dials and its role independently. No JavaScript.
+   ⚠ THE GRAMMAR IS THE SAME IN ALL FOUR THEMES. Console is only where you can SEE it,
+   because its radius token is non-zero; elsewhere the same rules resolve to 0.
+   ⚠ SPECIFICITY: these rules are (0,2,0). A per-instance dial written as a bare class is
+   (0,1,0) and the role would beat it — declare instance dials as `.c-bento.my-wall{…}`.
+   ⛔ THE SQUARING POLICY IS NOT HERE and cannot be: it rewrites spans at mint time.
+   Ask canon/gen_canon_bento.role_policy(role)['squaring']. */
+
+/* DASHBOARD — s217-D2's model. Radius on the CONTAINER, tiles square, tiles at 1px. */
+.c-bento[data-bento-role="dashboard"]{
+  --bento-radius:var(--border-radius-container);
+  --bento-gutter:1px;
+  overflow:hidden;   /* the clip is what makes the container radius read at all */
+}
+/* ⛔ THERE IS NO `border-radius:0` RULE FOR DASHBOARD TILES, DELIBERATELY, and it took two
+   gates to learn why. Canon gives a tile no radius in the first place, so 'tiles stay
+   square' needs no declaration — and writing one would (a) trip the radius gate, whose
+   whole reason is that a literal `border-radius:0` freezes a component square in every
+   theme (ADR-0010), and (b) out-specify `.c-bento{border-radius:var(--bento-radius)}` for
+   a tile that is ALSO a bento, squaring off exactly the inner containers whose radius IS
+   the dashboard role. MEASURED #217, both ways. */
+/* ⚠ THE OUTER WALL OF A BENTO-OF-BENTOS KEEPS THE THEME GUTTER. Dave's dashboard is tight
+   inner walls inside a generously spaced outer, so `1px everywhere` would collapse exactly
+   the structure the role exists to describe. The condition is STRUCTURAL, not a second
+   role name: a dashboard whose tiles are themselves bentos IS the outer wall. */
+.c-bento[data-bento-role="dashboard"]:has(> .c-bento__grid > .c-bento){
+  --bento-gutter:var(--layout-bento-gutter);
+}
+
+/* BROCHUREWARE + GALLERY — the TILES carry the radius and the spacing (s217-D3). */
+.c-bento[data-bento-role="brochureware"],
+.c-bento[data-bento-role="gallery"]{
+  --bento-radius:0px;
+  --bento-gutter:var(--layout-bento-gutter);
+  /* ⛔ NO CLIP HERE. With the radius on the tiles there is nothing to clip, and a clip
+     would silently crop anything a tile paints outside its own box. */
+  overflow:visible;
+}
+.c-bento[data-bento-role="brochureware"] > .c-bento__grid > .c-bento__tile,
+.c-bento[data-bento-role="gallery"] > .c-bento__grid > .c-bento__tile{
+  border-radius:var(--border-radius-container);
+  overflow:hidden;   /* the tile is the rounded box now, so the tile does the clipping */
+}
+
+/* GALLERY CAPTION SPACE (s217-D3, ruled 'more generous'). SPACE ONLY — canon declares no
+   face, no size and no colour here; typography is out of scope (s217-D2's not_in_scope).
+   DERIVED AT MINT TIME (s200-D1) from layout/bento/caption-space = 86px:
+     12 padding-block x2 + 3 description line(s) x 16 + 2 gap + 12 licence line = 86px
+   The clamp is DERIVED FROM THE SPACE, never carried as a second token, so the two
+   cannot disagree. */
+.c-bento[data-bento-role="gallery"] .c-bento__caption{
+  --bento-caption-space:var(--layout-bento-caption-space);
+  --bento-caption-lines:3;
+  min-height:var(--bento-caption-space);
+  padding-block:12px;
+  box-sizing:border-box;
+}
+
+/* SQUARING is a BUILD-TIME policy of the role (s217-D3) and cannot be expressed in CSS —
+   it rewrites data-c/data-r before the wall is written. dashboard: ON · brochureware: ON ·
+   gallery: OFF (ragged-tolerant). Ask role_policy(role)['squaring']. */
+/* ===== AUTO-BENTO END ===== */
 
 /* ===== AUTO-COMPONENTS START =====
    Generated from knowledge/snippets/*.reference.html by gen_canon_components.py.
@@ -19482,7 +19660,7 @@
    edit the override sets and re-run. Theme attr goes on <html> or any
    ancestor of the [data-theme] element; Mono is the base (no block).
    Attrs: legacy=apollo-legacy, mono=apollo-mono, console=apollo-console, supercharge=apollo-supercharge */
-/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (42 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
+/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (43 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
 [data-apollo-theme="legacy"]{
   --badge-background: #DB0011;
   --border-radius-default: 0;
@@ -19498,6 +19676,7 @@
   --button-tertiary-label-default: #333333;
   --component-type-button-family-press-darken: 1;
   --component-type-button-family-press-travel: 0;
+  --layout-bento-gutter: 24px;
   --mark-error: #FFFFFF;
   --mark-info: #FFFFFF;
   --mark-success: #FFFFFF;
@@ -21604,7 +21783,7 @@
   --text: #FFFFFF;
 }
 
-/* ---- Apollo Console  [data-apollo-theme="console"]  (43 override path(s), 4 mark(s), apollo-console.overrides) ---- */
+/* ---- Apollo Console  [data-apollo-theme="console"]  (44 override path(s), 4 mark(s), apollo-console.overrides) ---- */
 [data-apollo-theme="console"]{
   --badge-background: #B92F1E;
   --border-radius-container: 20px;
@@ -21620,6 +21799,7 @@
   --border-radius-segmented-thumb-s: 2px;
   --border-radius-segmented-thumb-xs: 0;
   --border-radius-surface: 20px;
+  --layout-bento-gutter: 24px;
   --mark-error: #FFFFFF;
   --mark-info: #1A1A1A;
   --mark-success: #1A1A1A;

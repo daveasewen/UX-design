@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 135 components · 1033 tokens defined · 131 tokens referenced by components · compliance: 38 rules x 133 components (38 SCs).
+**Totals:** 135 components · 1038 tokens defined · 131 tokens referenced by components · compliance: 38 rules x 133 components (38 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -94,7 +94,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-902 of 1033 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+907 of 1038 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
@@ -123,6 +123,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `divider/` | 8 |
 | `border/` | 7 |
 | `breakpoint/` | 6 |
+| `layout/` | 6 |
 | `table/` | 6 |
 | `tooltip/` | 6 |
 | `blur/` | 4 |
@@ -137,7 +138,6 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `badge/` | 2 |
 | `border-width/` | 2 |
 | `focus/` | 2 |
-| `layout/` | 1 |
 | `radius/` | 1 |
 | `spacing/` | 1 |
 

@@ -203,7 +203,10 @@ def css_value(path, val):
     # overrides for every theme that merely restates the base value.
     val = px_number(val)
     if isinstance(val, (int, float)):
-        if path.startswith("motion/press/") or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken", "alpha"):
+        # `columns` mirrors gen_canon_tokens.UNITLESS (#217): a track count is not a length.
+        # No theme overrides a column count today, so this is a no-op on the emitted CSS —
+        # it is here so the two formatters cannot disagree the first time one does.
+        if path.startswith("motion/press/") or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken", "alpha", "columns"):
             return str(val)
         return "0" if val == 0 else f"{val}px"
     return str(val)

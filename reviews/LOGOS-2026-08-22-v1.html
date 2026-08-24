@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logos — Apollo library (Foundations)</title>
+<!-- APOLLO-LOGOS-LIBRARY v1 · #217 · 2026-08-22
+     WHAT THIS IS: the twelve exported HSBC logo variants presented as a library Foundations
+     page, each on the ground its artwork requires.
+
+     ⛔ NOTHING IS RE-DRAWN [[specimen-starts-from-reference]]. Every mark is an <img> at the
+     exported SVG in knowledge/assets/logos/. No SVG was renamed, edited, or derived from.
+
+     ⛔ NO POLICY IS AUTHORED HERE. Clearspace, minimum sizes, co-branding and placement are
+     Dave's and the create.hsbc standard's; this page carries only what
+     knowledge/guidelines/logos.md already says, plus facts MEASURED off the files.
+
+     TILE GROUNDS ARE FIXED, AND THAT IS DELIBERATE. Measured 2026-08-22: every fill in all
+     twelve files is HARDCODED (#DB0011 / white / black / #333333) — not one references a
+     token, so no logo can follow a theme. The on-light artwork therefore always sits on a
+     light tile and the on-dark artwork always on a dark tile, in every theme and in both
+     modes. The page CHROME follows the four themes and light/dark; the tiles do not, because
+     the artwork cannot.
+
+     THEME/MODE: html[data-apollo-theme] + body[data-theme], the same broadcast the showroom
+     and library use. Deep-link with #theme=legacy&m=dark.
+
+     NO ACCENT COLOUR IS SPENT. The two-red law (s151-D1) and the mono error-ink camp (s149-D1)
+     are settled law about UI ink; this page uses no accent at all, so neither is reached.
+     Chrome is ink + greys, values taken from canon primitives and restated concretely so
+     nothing can dangle (an undefined var renders silent black and no gate catches it).
+
+     Built by a NON-REPO scratchpad script (s191-D2, declared): every viewBox, natural size,
+     byte count and fill count below was read off the SVG files at build time, never typed.
+-->
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{
+    --pg-line:#D7D8D6;      /* --color-grey-300 */
+    --pg-mute:#545454;      /* --color-grey-700 — 7.57:1 on white */
+    --pg-wash:#F3F3F3;      /* --color-grey-100 */
+  }
+  [data-theme="dark"]{
+    --pg-line:#404040;      /* --color-grey-dark-mode-400 */
+    --pg-mute:#B7B7B7;      /* --color-grey-400 — 8.98:1 on #1A1A1A */
+    --pg-wash:#212121;      /* --color-grey-dark-mode-500 */
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--background-default,#FFFFFF);
+    color:var(--text-default,#1A1A1A);
+    font-family:var(--uf,"Univers Next HSBC","Helvetica Neue",Arial,sans-serif);
+    -webkit-font-smoothing:antialiased;
+  }
+  header.app{
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+    padding:12px 32px; border-bottom:1px solid var(--pg-line);
+    background:var(--background-default,#FFFFFF);
+    position:sticky; top:0; z-index:10;
+  }
+  header.app h1{margin:0; white-space:nowrap;}
+  header.app .spacer{flex:1 1 auto;}
+  .ctl{display:flex; align-items:center; gap:8px; color:var(--pg-mute);}
+  .seg{display:inline-flex; border:1px solid var(--text-default,#1A1A1A);
+       color:var(--text-default,#1A1A1A);}
+  .seg button{
+    font-family:inherit; font-size:12px; font-weight:500; letter-spacing:0.06em;
+    text-transform:uppercase; padding:7px 12px; border:0; background:transparent;
+    color:inherit; cursor:pointer; border-right:1px solid var(--pg-line);
+  }
+  .seg button:last-child{border-right:0;}
+  .seg button[aria-pressed="true"]{
+    background:var(--text-default,#1A1A1A); color:var(--background-default,#FFFFFF);
+  }
+  .seg button:focus-visible{outline:2px solid currentColor; outline-offset:2px;}
+
+  /* ⚠ MEASURED 2026-08-22, and the reason the ink is restated on the two children.
+     `body` is the element that CARRIES data-theme, and it is also the element that consumed
+     `var(--text-default)`. In supercharge dark — the only theme+mode where two matching rules
+     disagree about that property — getComputedStyle(body) reported the custom property as
+     #F7F6F4 while body's own `color` resolved to #FFFFFF; a child element reading the same
+     property in the same state resolved correctly to #F7F6F4. Substituting on a CHILD of the
+     themed element is deterministic in every state probed, so the two page regions restate it.
+     Both values are legible on #1A1A1A (17.40:1 and 16.71:1) — this is about determinism. */
+  header.app, main{color:var(--text-default,#1A1A1A);}
+
+  main{padding:32px; max-width:1400px;}
+  section{margin:0 0 56px; scroll-margin-top:80px;}  /* clears the sticky header on an anchor jump */
+  h2{margin:0 0 4px;}
+  p.lede{margin:0 0 24px; color:var(--pg-mute); max-width:62ch;}
+  .sublabel{
+    color:var(--pg-mute); text-transform:uppercase; letter-spacing:0.14em;
+    margin:0 0 12px; display:flex; align-items:center; gap:8px;
+  }
+  .sublabel::before{content:''; width:20px; height:1px; background:var(--pg-line);}
+  .groundrow{margin:0 0 32px;}
+  .grid{display:grid; gap:24px; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+  .grid.wide{grid-template-columns:repeat(auto-fit,minmax(460px,1fr));}
+
+  figure.spec{margin:0;}
+  /* ⛔ TILE GROUNDS ARE LITERAL, NOT TOKENS — see the header comment. A dark mark must never
+     float on a light ground to "show" it, and vice versa. */
+  .tile{
+    display:flex; align-items:center; justify-content:center;
+    min-height:150px; padding:32px; border:1px solid var(--pg-line);
+  }
+  .tile.on-light{background:#FFFFFF;}
+  .tile.on-dark{background:#1A1A1A;}
+  .tile img{display:block; height:42px; width:auto; max-width:100%;}
+  figcaption{padding:10px 0 0;}
+  .capname{margin:0 0 2px;}
+  .file{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    color:var(--text-default,#1A1A1A); word-break:break-all;
+  }
+  .meta{color:var(--pg-mute);}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0;}
+  .chip{
+    display:inline-flex; align-items:center; gap:5px; font-size:11px; line-height:16px;
+    color:var(--pg-mute); border:1px solid var(--pg-line); padding:1px 6px;
+  }
+  .chip i{width:10px; height:10px; display:inline-block; border:1px solid var(--pg-line);}
+  .chip b{font-weight:500; color:var(--text-default,#1A1A1A);}
+
+  .finding{border:1px solid var(--pg-line); border-left-width:4px; padding:16px 20px; margin:8px 0 0;}
+  .finding p{margin:8px 0 0; color:var(--pg-mute); max-width:82ch;}
+  .finding code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px;}
+  .finding b{color:var(--text-default,#1A1A1A); font-weight:500;}
+
+  .tablewrap{overflow-x:auto; border:1px solid var(--pg-line);}
+  table{border-collapse:collapse; width:100%; font-size:12px; line-height:16px;}
+  th,td{text-align:left; padding:8px 12px; border-bottom:1px solid var(--pg-line); white-space:nowrap;}
+  thead th{background:var(--pg-wash); font-weight:500; text-transform:uppercase; letter-spacing:0.08em;}
+  tbody tr:last-child td{border-bottom:0;}
+  td.num{font-variant-numeric:tabular-nums;}
+  td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+
+  .notes{max-width:78ch;}
+  .notes p, .notes ul{color:var(--pg-mute);}
+  .notes a{color:inherit;}
+  .notes ul{padding-left:1.2em;}
+  .notes li{margin:0 0 8px;}
+  .notes b, .notes code{color:var(--text-default,#1A1A1A);}
+  .notes code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{transition-duration:.01ms !important; animation-duration:.01ms !important;}
+  }
+</style>
+</head>
+<body data-theme="light">
+<header class="app">
+  <h1 class="t-ed-heading-4">Logos</h1>
+  <span class="t-ed-caption meta">Foundations &middot; 12 variants &middot; exported 2026-06-17</span>
+  <span class="spacer"></span>
+  <div class="ctl"><span class="t-ed-caption">Theme</span>
+    <div class="seg" id="themes" role="group" aria-label="Theme">
+      <button type="button" data-theme-attr="mono" aria-pressed="true">Mono</button>
+      <button type="button" data-theme-attr="legacy" aria-pressed="false">Legacy</button>
+      <button type="button" data-theme-attr="console" aria-pressed="false">Console</button>
+      <button type="button" data-theme-attr="supercharge" aria-pressed="false">Supercharge</button>
+    </div>
+  </div>
+  <div class="ctl"><span class="t-ed-caption">Mode</span>
+    <div class="seg" id="modes" role="group" aria-label="Light or dark">
+      <button type="button" data-mode="light" aria-pressed="true">Light</button>
+      <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="intro">
+    <p class="t-ed-body lede" style="max-width:80ch">
+      Three lockups, each in <b>Colour</b> and <b>Monotone</b>, each in an <b>On light</b> and an
+      <b>On dark</b> treatment &mdash; the on-dark artwork is the reverse cut, drawn for dark
+      surfaces. Twelve files in all, in <code>knowledge/assets/logos/</code>.
+      Every fill in every file is hardcoded, so <b>no logo follows a theme</b>: each tile below is
+      fixed to the ground its artwork was drawn for, in all four themes and in both modes. The page
+      chrome follows the theme; the tiles deliberately do not.
+    </p>
+  </section>
+
+
+    <section id="hexagon">
+      <h2 class="t-ed-heading-3">Hexagon</h2>
+      <p class="t-ed-body lede">The HSBC hexagon mark alone.</p>
+      
+      <div class="groundrow">
+        <div class="sublabel t-ed-caption em">On light &mdash; tile ground #FFFFFF</div>
+        <div class="grid ">
+        <figure class="spec">
+          <div class="tile on-light">
+            <img src="../knowledge/assets/logos/hexagon-light-colour.svg" alt="Hexagon &mdash; colour, on light">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Colour &middot; On light</div>
+            <div class="t-ed-caption file">hexagon-light-colour.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 170 85 &middot; natural 170&times;85 &middot; 619 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #FFFFFF</div>
+            <div class="chips"><span class="chip"><i style="background:#DB0011"></i>#DB0011 <b>&times;4</b></span><span class="chip"><i style="background:#FFFFFF"></i>white <b>&times;1</b></span></div>
+          </figcaption>
+        </figure>
+        <figure class="spec">
+          <div class="tile on-light">
+            <img src="../knowledge/assets/logos/hexagon-light-mono.svg" alt="Hexagon &mdash; monotone, on light">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Monotone &middot; On light</div>
+            <div class="t-ed-caption file">hexagon-light-mono.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 170 85 &middot; natural 170&times;85 &middot; 520 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #FFFFFF</div>
+            <div class="chips"><span class="chip"><i style="background:#000000"></i>black <b>&times;4</b></span></div>
+          </figcaption>
+        </figure></div>
+      </div>
+      <div class="groundrow">
+        <div class="sublabel t-ed-caption em">On dark &mdash; tile ground #1A1A1A</div>
+        <div class="grid ">
+        <figure class="spec">
+          <div class="tile on-dark">
+            <img src="../knowledge/assets/logos/hexagon-dark-colour.svg" alt="Hexagon &mdash; colour, on dark">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Colour &middot; On dark</div>
+            <div class="t-ed-caption file">hexagon-dark-colour.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 170 85 &middot; natural 170&times;85 &middot; 619 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #1A1A1A</div>
+            <div class="chips"><span class="chip"><i style="background:#DB0011"></i>#DB0011 <b>&times;4</b></span><span class="chip"><i style="background:#FFFFFF"></i>white <b>&times;1</b></span></div>
+          </figcaption>
+        </figure>
+        <figure class="spec">
+          <div class="tile on-dark">
+            <img src="../knowledge/assets/logos/hexagon-dark-mono.svg" alt="Hexagon &mdash; monotone, on dark">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Monotone &middot; On dark</div>
+            <div class="t-ed-caption file">hexagon-dark-mono.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 170 85 &middot; natural 170&times;85 &middot; 520 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #1A1A1A</div>
+            <div class="chips"><span class="chip"><i style="background:#FFFFFF"></i>white <b>&times;4</b></span></div>
+          </figcaption>
+        </figure></div>
+      </div>
+      
+    </section>
+    <section id="masterbrand">
+      <h2 class="t-ed-heading-3">Masterbrand</h2>
+      <p class="t-ed-body lede">Hexagon + the HSBC wordmark.</p>
+      
+      <div class="groundrow">
+        <div class="sublabel t-ed-caption em">On light &mdash; tile ground #FFFFFF</div>
+        <div class="grid ">
+        <figure class="spec">
+          <div class="tile on-light">
+            <img src="../knowledge/assets/logos/masterbrand-light-colour.svg" alt="Masterbrand &mdash; colour, on light">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Colour &middot; On light</div>
+            <div class="t-ed-caption file">masterbrand-light-colour.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 315 85 &middot; natural 315&times;85 &middot; 2,586 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #FFFFFF</div>
+            <div class="chips"><span class="chip"><i style="background:#DB0011"></i>#DB0011 <b>&times;4</b></span><span class="chip"><i style="background:#000000"></i>black <b>&times;4</b></span><span class="chip"><i style="background:#FFFFFF"></i>white <b>&times;1</b></span></div>
+          </figcaption>
+        </figure>
+        <figure class="spec">
+          <div class="tile on-light">
+            <img src="../knowledge/assets/logos/masterbrand-light-mono.svg" alt="Masterbrand &mdash; monotone, on light">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Monotone &middot; On light</div>
+            <div class="t-ed-caption file">masterbrand-light-mono.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 315 85 &middot; natural 315&times;85 &middot; 2,487 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #FFFFFF</div>
+            <div class="chips"><span class="chip"><i style="background:#000000"></i>black <b>&times;8</b></span></div>
+          </figcaption>
+        </figure></div>
+      </div>
+      <div class="groundrow">
+        <div class="sublabel t-ed-caption em">On dark &mdash; tile ground #1A1A1A</div>
+        <div class="grid ">
+        <figure class="spec">
+          <div class="tile on-dark">
+            <img src="../knowledge/assets/logos/masterbrand-dark-colour.svg" alt="Masterbrand &mdash; colour, on dark">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Colour &middot; On dark</div>
+            <div class="t-ed-caption file">masterbrand-dark-colour.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 315 85 &middot; natural 315&times;85 &middot; 2,584 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #1A1A1A</div>
+            <div class="chips"><span class="chip"><i style="background:#FFFFFF"></i>white <b>&times;5</b></span><span class="chip"><i style="background:#DB0011"></i>#DB0011 <b>&times;4</b></span></div>
+          </figcaption>
+        </figure>
+        <figure class="spec">
+          <div class="tile on-dark">
+            <img src="../knowledge/assets/logos/masterbrand-dark-mono.svg" alt="Masterbrand &mdash; monotone, on dark">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Monotone &middot; On dark</div>
+            <div class="t-ed-caption file">masterbrand-dark-mono.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 315 85 &middot; natural 315&times;85 &middot; 2,496 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #1A1A1A</div>
+            <div class="chips"><span class="chip"><i style="background:#FFFFFF"></i>white <b>&times;8</b></span></div>
+          </figcaption>
+        </figure></div>
+      </div>
+      
+    </section>
+    <section id="masterbrand-identifier">
+      <h2 class="t-ed-heading-3">Masterbrand with identifier</h2>
+      <p class="t-ed-body lede">The masterbrand plus an “Example identifier” label (a business or division name), set in Univers Next Light.</p>
+      
+      <div class="groundrow">
+        <div class="sublabel t-ed-caption em">On light &mdash; tile ground #FFFFFF</div>
+        <div class="grid wide">
+        <figure class="spec">
+          <div class="tile on-light">
+            <img src="../knowledge/assets/logos/masterbrand-identifier-light-colour.svg" alt="Masterbrand with identifier &mdash; colour, on light">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Colour &middot; On light</div>
+            <div class="t-ed-caption file">masterbrand-identifier-light-colour.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 795 85 &middot; natural 795&times;85 &middot; 7,634 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #FFFFFF</div>
+            <div class="chips"><span class="chip"><i style="background:#DB0011"></i>#DB0011 <b>&times;4</b></span><span class="chip"><i style="background:#000000"></i>black <b>&times;4</b></span><span class="chip"><i style="background:#333333"></i>#333333 <b>&times;1</b></span><span class="chip"><i style="background:#FFFFFF"></i>white <b>&times;1</b></span></div>
+          </figcaption>
+        </figure>
+        <figure class="spec">
+          <div class="tile on-light">
+            <img src="../knowledge/assets/logos/masterbrand-identifier-light-mono.svg" alt="Masterbrand with identifier &mdash; monotone, on light">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Monotone &middot; On light</div>
+            <div class="t-ed-caption file">masterbrand-identifier-light-mono.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 795 85 &middot; natural 795&times;85 &middot; 7,535 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #FFFFFF</div>
+            <div class="chips"><span class="chip"><i style="background:#000000"></i>black <b>&times;8</b></span><span class="chip"><i style="background:#333333"></i>#333333 <b>&times;1</b></span></div>
+          </figcaption>
+        </figure></div>
+      </div>
+      <div class="groundrow">
+        <div class="sublabel t-ed-caption em">On dark &mdash; tile ground #1A1A1A</div>
+        <div class="grid wide">
+        <figure class="spec">
+          <div class="tile on-dark">
+            <img src="../knowledge/assets/logos/masterbrand-identifier-dark-colour.svg" alt="Masterbrand with identifier &mdash; colour, on dark">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Colour &middot; On dark</div>
+            <div class="t-ed-caption file">masterbrand-identifier-dark-colour.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 795 85 &middot; natural 795&times;85 &middot; 2,584 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #1A1A1A</div>
+            <div class="chips"><span class="chip"><i style="background:#FFFFFF"></i>white <b>&times;5</b></span><span class="chip"><i style="background:#DB0011"></i>#DB0011 <b>&times;4</b></span></div>
+          </figcaption>
+        </figure>
+        <figure class="spec">
+          <div class="tile on-dark">
+            <img src="../knowledge/assets/logos/masterbrand-identifier-dark-mono.svg" alt="Masterbrand with identifier &mdash; monotone, on dark">
+          </div>
+          <figcaption>
+            <div class="t-ed-body-small em capname">Monotone &middot; On dark</div>
+            <div class="t-ed-caption file">masterbrand-identifier-dark-mono.svg</div>
+            <div class="t-ed-caption meta">viewBox 0 0 795 85 &middot; natural 795&times;85 &middot; 2,493 bytes &middot; vector</div>
+            <div class="t-ed-caption meta">tile ground #1A1A1A</div>
+            <div class="chips"><span class="chip"><i style="background:#FFFFFF"></i>white <b>&times;8</b></span></div>
+          </figcaption>
+        </figure></div>
+      </div>
+      
+      <div class="finding">
+        <div class="t-ed-body-small em">&#9888; Measured, not fixed &mdash; the two ON-DARK identifier exports carry no identifier label.</div>
+        <p class="t-ed-body-small">Both dark files are the plain masterbrand artwork on a 795-unit viewBox: the label
+        paths are absent, so 480 units (60&#37; of the box) render empty. Counting path starts whose x exceeds
+        the masterbrand&rsquo;s own 315-unit width (the label is a single compound path) &mdash;
+        <b>light-colour 1</b> &middot; <b>light-mono 1</b> &middot;
+        <b>dark-colour 0</b> &middot; <b>dark-mono 0</b>.
+        <code>masterbrand-identifier-dark-colour.svg</code> is byte-identical to
+        <code>masterbrand-dark-colour.svg</code> apart from the viewBox width and one rounding digit.
+        Logged as <code>ds-045</code> in <code>knowledge/_DS-IMPROVEMENTS.md</code>; re-exporting is the fix
+        and it is not this page&rsquo;s to make.</p>
+      </div>
+    </section>
+
+  <section id="inventory">
+    <h2 class="t-ed-heading-3">Measured inventory</h2>
+    <p class="t-ed-body lede">Read off the twelve files at build time &mdash; viewBox, natural size,
+      byte count and fill inventory. Nothing in this table is typed.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>File</th><th>Lockup</th><th>Ground</th><th>Ink</th><th>viewBox</th>
+          <th>Natural</th><th>Bytes</th><th>Fills</th><th>Content</th></tr></thead>
+        <tbody><tr><td>hexagon-light-colour.svg</td><td>Hexagon</td><td>On light</td><td>Colour</td><td>0 0 170 85</td><td class='num'>170&times;85</td><td class='num'>619</td><td>#DB0011&times;4 &middot; white&times;1</td><td>vector</td></tr><tr><td>hexagon-light-mono.svg</td><td>Hexagon</td><td>On light</td><td>Monotone</td><td>0 0 170 85</td><td class='num'>170&times;85</td><td class='num'>520</td><td>black&times;4</td><td>vector</td></tr><tr><td>hexagon-dark-colour.svg</td><td>Hexagon</td><td>On dark</td><td>Colour</td><td>0 0 170 85</td><td class='num'>170&times;85</td><td class='num'>619</td><td>#DB0011&times;4 &middot; white&times;1</td><td>vector</td></tr><tr><td>hexagon-dark-mono.svg</td><td>Hexagon</td><td>On dark</td><td>Monotone</td><td>0 0 170 85</td><td class='num'>170&times;85</td><td class='num'>520</td><td>white&times;4</td><td>vector</td></tr><tr><td>masterbrand-light-colour.svg</td><td>Masterbrand</td><td>On light</td><td>Colour</td><td>0 0 315 85</td><td class='num'>315&times;85</td><td class='num'>2,586</td><td>#DB0011&times;4 &middot; black&times;4 &middot; white&times;1</td><td>vector</td></tr><tr><td>masterbrand-light-mono.svg</td><td>Masterbrand</td><td>On light</td><td>Monotone</td><td>0 0 315 85</td><td class='num'>315&times;85</td><td class='num'>2,487</td><td>black&times;8</td><td>vector</td></tr><tr><td>masterbrand-dark-colour.svg</td><td>Masterbrand</td><td>On dark</td><td>Colour</td><td>0 0 315 85</td><td class='num'>315&times;85</td><td class='num'>2,584</td><td>white&times;5 &middot; #DB0011&times;4</td><td>vector</td></tr><tr><td>masterbrand-dark-mono.svg</td><td>Masterbrand</td><td>On dark</td><td>Monotone</td><td>0 0 315 85</td><td class='num'>315&times;85</td><td class='num'>2,496</td><td>white&times;8</td><td>vector</td></tr><tr><td>masterbrand-identifier-light-colour.svg</td><td>Masterbrand with identifier</td><td>On light</td><td>Colour</td><td>0 0 795 85</td><td class='num'>795&times;85</td><td class='num'>7,634</td><td>#DB0011&times;4 &middot; black&times;4 &middot; #333333&times;1 &middot; white&times;1</td><td>vector</td></tr><tr><td>masterbrand-identifier-light-mono.svg</td><td>Masterbrand with identifier</td><td>On light</td><td>Monotone</td><td>0 0 795 85</td><td class='num'>795&times;85</td><td class='num'>7,535</td><td>black&times;8 &middot; #333333&times;1</td><td>vector</td></tr><tr><td>masterbrand-identifier-dark-colour.svg</td><td>Masterbrand with identifier</td><td>On dark</td><td>Colour</td><td>0 0 795 85</td><td class='num'>795&times;85</td><td class='num'>2,584</td><td>white&times;5 &middot; #DB0011&times;4</td><td>vector</td></tr><tr><td>masterbrand-identifier-dark-mono.svg</td><td>Masterbrand with identifier</td><td>On dark</td><td>Monotone</td><td>0 0 795 85</td><td class='num'>795&times;85</td><td class='num'>2,493</td><td>white&times;8</td><td>vector</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="notes" class="notes">
+    <h2 class="t-ed-heading-3">What the record says</h2>
+    <p class="t-ed-body">Everything in this list is quoted or paraphrased from
+      <code>knowledge/guidelines/logos.md</code>. No usage policy is authored here.</p>
+    <ul class="t-ed-body-small">
+      <li>The detailed logo standard &mdash; usage, structure, behaviours, placement, clear space,
+        minimum sizes &mdash; lives on <b>create.hsbc</b>
+        (<a href="https://create.hsbc/foundations-and-identity/Logos.html">Foundations and identity &rsaquo; Logos</a>).
+        The Figma page is a sticker sheet of artwork.</li>
+      <li>Source: HSBC Common Toolkit (MCP), &ldquo;Gaps and edits&rdquo; branch, Foundations &rsaquo; Logos
+        page (node 29:1009). Exported 2026-06-17 by
+        <code>knowledge/assets/logos/_export-logos.py</code>.</li>
+      <li>The identifier label is set in <b>Univers Next Light</b>.</li>
+      <li><b>No design tokens.</b> The Figma logos page carries none, and none of the twelve files
+        references one.</li>
+      <li>Per the icons sourcing rule, these exports are <b>internal prototype assets</b>. For
+        production and dev handoff, source official logo artwork from create.hsbc / the UI Centre.</li>
+      <li>The crescent is an <b>Apollo-only</b> brand mark and is not part of this set.</li>
+    </ul>
+
+    <h2 class="t-ed-heading-4" style="margin-top:36px">Open to Dave &mdash; surfaced, not ruled</h2>
+    <ul class="t-ed-body-small">
+      <li>The two <b>on-dark identifier</b> exports carry no identifier label (measured above).
+        Re-export or retire &mdash; a policy call, not this page&rsquo;s.</li>
+      <li>The monotone on-light artwork fills with <b>pure <code>black</code></b>, which is not the
+        project ink (<code>#1A1A1A</code>, blackest-never-pure-black). It is brand artwork, so it is
+        surfaced, never swapped.</li>
+      <li>The hexagon red is <b><code>#DB0011</code></b> &mdash; the brand primitive, not the two-red
+        law&rsquo;s UI ink. Stated so the difference is not read as a defect.</li>
+      <li>Wiring this page into the library&rsquo;s empty <b>Foundations</b> ladder tier needs a store
+        entry and a generator pass; it was left alone deliberately.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function(){
+  var THEMES=['mono','legacy','console','supercharge'];
+  var state={theme:'mono',mode:'light'};
+  function apply(){
+    document.documentElement.setAttribute('data-apollo-theme',state.theme);
+    document.body.setAttribute('data-theme',state.mode);
+    document.querySelectorAll('#themes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.themeAttr===state.theme)); });
+    document.querySelectorAll('#modes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.mode===state.mode)); });
+    history.replaceState(null,'','#theme='+state.theme+'&m='+state.mode);
+  }
+  document.getElementById('themes').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.theme=b.dataset.themeAttr; apply(); });
+  document.getElementById('modes').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.mode=b.dataset.mode; apply(); });
+  // Deep-link + LIVE re-theming. A fragment-only navigation does NOT re-run this script, so
+  // without the hashchange listener a #theme=/&m= change silently does nothing (measured
+  // 2026-08-22: the second render came back mode=light with m=dark in the address).
+  function fromHash(){
+    var h={};
+    location.hash.replace(/^#/,'').split('&').forEach(function(kv){
+      var p=kv.split('='); if(p[0]) h[p[0]]=decodeURIComponent(p[1]||''); });
+    if(THEMES.indexOf(h.theme)>=0) state.theme=h.theme;
+    if(h.m==='light'||h.m==='dark') state.mode=h.m;
+    apply();
+  }
+  window.addEventListener('hashchange',fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>

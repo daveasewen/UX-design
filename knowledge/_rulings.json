@@ -4142,6 +4142,126 @@
    "chat #216 2026-08-22 — Dave: 'we will publish the results of generated as dev ready code, it needs to be a set of primitives that can be wired to a stylesheet' then 'lets go with your recommendation for now' with the structural-divergence caveat 'not now though, worth noting the potential'"
   ],
   "status": "ruled"
+ },
+ {
+  "id": "s217-D1",
+  "ruled": "W-93 PHOTOGRAPHY PIPELINE: HYBRID — ORIGINALS NON-REPO, COMMITTED MANIFEST + WEB-SIZED DERIVATIVES OF USED PHOTOS ONLY",
+  "date": "2026-08-22",
+  "by": "Dave",
+  "says": "Photography originals (251 licensed Getty/EyeEm JPEGs, 2.5 GB at knowledge/assets/photography/) stay NON-REPO — the #211 .gitignore fence stands. Committed surface: a manifest (filename · dimensions · EXIF description · licence source) covering all originals, plus web-sized derivatives ONLY for photos actually consumed by the library, each derivative carrying a manifest row. This unblocks the W-93 manifest/KG/tagging work. NOTED FOR THE FUTURE, not ruled: Dave: 'ultimately Apollo will need an image store, but this will probably be hosted cloud storage' — a hosted store would supersede committed derivatives when it exists; nothing about it is decided today.",
+  "governs": [
+   "knowledge/assets/photography",
+   ".gitignore"
+  ],
+  "evidence": [
+   "chat #217 2026-08-22 — Dave: 'So option one for now but ultimately Apollo will need an image store, but this will probably be hosted cloud storage' after the three-option consequence replay (hybrid / git-LFS / strict non-repo)"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s217-D2",
+  "ruled": "BENTO PROMOTED TO CANON WITH PER-THEME TUNINGS — GUTTER IS THE ONLY DIVERGENCE; BENTOS NEST; CONSOLE RADIUS SITS ON THE BENTO CONTAINER, NOT THE TILES",
+  "date": "2026-08-23",
+  "by": "Dave",
+  "says": "All bento types (presets, gallery, container-query full-scale, snap designer) are promoted to canon structural components. Per-theme tunings, from Dave's tuner exports (#217): supercharge and mono gutter 0px; legacy and console gutter 24px; ALL other parameters shared across the four themes — 6 columns, outer padding 0, row unit 320px, dense packing on, aspect thresholds (photography bento only, card spans are authored) 3-col at >=6:1 / 2-col at >=2.6:1 / 2-row at >=1:1.15, emphasis rhythm every 6th tile from tile 1 promoted to 2x2, responsive bands 1100px->3 / 820px->2 / 520px->1 (Dave unified the 800/820 export discrepancy to 820 for all themes when asked). NESTING IS CANON BEHAVIOUR: a bento may be a tile of another bento, each instance carrying its own parameter set (Dave's example: three 1px-gutter bentos inside a 40px-gutter outer). RADIUS MODEL: the theme radius token applies to each bento's OUTER CONTAINER, never the individual tiles — Dave: 'in console for instance we would have the corner radius only on the outer container of each bento rather than the individual blocks'; tiles stay square inside a clipped container. OUT OF SCOPE per the exports' own not_in_scope: component radii incl. segmented-switch carve-out, surface/ink token choice, typography.",
+  "governs": [
+   "knowledge/canon",
+   "knowledge/tokens/themes"
+  ],
+  "evidence": [
+   "chat #217 2026-08-23 - Dave pasted four per-theme tuner exports ('Supercharge would be this... Mono would be teh same as supercharge'), asked for the bento-of-bentos ('like a page section that had three bentos each with 1px spacing within a larger one that had 40px spacing'), ruled the console container radius, and picked 'Make them all 820' for the middle band"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s217-D3",
+  "ruled": "BENTO ROLES — DASHBOARD / BROCHUREWARE / GALLERY DECIDE RADIUS PLACEMENT, SPACING AND SQUARING; REFINES s217-D2, NOT REVERSED",
+  "date": "2026-08-23",
+  "by": "Dave",
+  "says": "A bento instance carries a ROLE, and the role decides where radius and spacing sit (console named as the example because its radius token is non-zero; the grammar is identical in all four themes, radius simply resolves to 0 where the theme says square). DASHBOARD (sectioned app, bento-of-bentos): the theme radius sits on each inner bento's CONTAINER (the s217-D2 model), tiles inside at 1px spacing. BROCHUREWARE (sectioned marketing page): the tiles THEMSELVES carry the radius and the spacing. GALLERY (page-level, photography): tiles carry radius and spacing like brochureware, and the squaring pass RELAXES — orphans are acceptable, the requirement is only an appropriate layout for portrait and landscape images. SQUARING PASS RATIFIED for dashboard and brochureware roles (Dave: 'is very cool', with gallery exempted in the same breath). GALLERY ADDITIONS: more generous caption space (ruled); and a TRIAL, NOT RULED - keylines dropped entirely, nothing but a 1px gutter and row space - Dave's word was 'lets... try', so it lands as a specimen for his eye.",
+  "governs": [
+   "knowledge/canon",
+   "knowledge/tokens/layout.json"
+  ],
+  "evidence": [
+   "chat #217 2026-08-23 - Dave: 'there might be a difference between a page level bento - like a gallery and one that is sectioned, like a dashboard and one that sectioned like a brochureware website' followed by the three numbered console cases, 'the same would be true for the other themes its just that teh corner radii are not concern', and 'lets be more generous with the caption space and can we try dropping the keylines and just have a 1px gutter and row space'"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s217-D4",
+  "ruled": "ds-051 RESOLVED: THE BENTO PACKING TOKEN MOVES TO THE $extensions SLOT — THE s141-D1 PRECEDENT, NOT A VALIDATOR EXCEPTION",
+  "date": "2026-08-23",
+  "by": "Dave",
+  "says": "The layout/bento packing value ('row dense', a CSS keyword with no W3C DTCG type) is stored under the token's $extensions slot per the established s141-D1 precedent for non-standard values, rather than as a typed token, a dropped token, or a logged validator exception. This clears the _validate_dtcg.py red that was blocking the build gate at the commit seam.",
+  "governs": [
+   "knowledge/tokens/layout.json",
+   "knowledge/_validate_dtcg.py"
+  ],
+  "evidence": [
+   "chat #217 2026-08-23 - Dave: 'I'll go with your recommenation' then 'extensions', answering the priced three-way (named deferral / $extensions precedent / drop the token) with the recommended $extensions option"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s217-D5",
+  "ruled": "BENTO TYPES AND THE OPTION MATRIX — DISPLAY / GALLERY / DASHBOARD, EACH WITH RULED OPTION SETS; REFINES s217-D3 (ROLES RENAMED TO TYPES, GALLERY SQUARING BECOMES A PER-INSTANCE OPTION)",
+  "date": "2026-08-23",
+  "by": "Dave",
+  "says": "The bento system lives in the showroom's Foundations/Layout section as a MATRIX of options over three TYPES (renaming s217-D3's roles; brochureware becomes DISPLAY). Background selectors exist for page background and bento background. DISPLAY: spacing tight/standard/generous = 1px/24px/40px; console tile radii as standard; keylines on/off; tight has no keylines by default - the bento or page background shows through the 1px gap. GALLERY: same three spacings; keylines on/off; caption background colour on/off; tight as per Display; mode is 'Justified rows' OR 'Gallery bento', the bento mode carrying a sub-option ragged or square bottom (this turns s217-D3's gallery squaring exemption into a per-instance choice); console image rounding options - '4 corners of image' or the full capsule of caption + image; backgrounds for page, bento and captions have two colour options - the lightest grey and white (dark-mode equivalents) - with the constraint that white captions require a grey ground and the inverse, and a third option, transparent. DASHBOARD: main layout bento spacing standard/generous only, NEVER tight; console keeps the established container-rounding rules on groupings; keylines on/off; sub-bentos have all three spacing options. OPEN POINTS, surfaced by the conductor and NOT resolved by this ruling: (1) tight+keylines-on proposed as flush tiles with hairline separators (inset-group pattern) since 1px cannot hold gap and line; (2) the caption inversion rule read as judged against the caption's immediate ground, transparent always legal; (3) capsule rounding proposed to require caption background or keylines; (4) console tile radius at tight spacing may pinch - a stepped-down radius shown as an alternative; (5) the grey/white/transparent palette applied to Display and Dashboard selectors by extension, proposed. Dave: 'lets see this for now. this is a lot, you might want to check my logic'.",
+  "governs": [
+   "knowledge/canon",
+   "knowledge/tokens/layout.json",
+   "showroom"
+  ],
+  "evidence": [
+   "chat #217 2026-08-23 - Dave's full matrix message: 'I think we split these into Display Gallery and Dashboard as types. We have options for each type... were going to create a matrix of options' with the per-type option lists verbatim, ending 'lets see thins for now. this is a lot, you might want to check my logic'"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s217-D6",
+  "ruled": "MATRIX CORRECTIONS FROM DAVE'S FIRST SITTING — GALLERY-CONSOLE EXCLUDES KEYLINES; SUB-BENTO SPACING IS A SNAPPING SLIDER; AMENDS s217-D5",
+  "date": "2026-08-23",
+  "by": "Dave",
+  "says": "Two option-space changes from Dave's first sitting on the matrix explorer. (1) The gallery type in the CONSOLE theme excludes keylines completely - the option is absent there, not disabled (conductor's reading: rounded imagery and keylines conflict; square-cornered themes keep the control - Dave to correct if he meant all themes). (2) Dashboard sub-bento spacing is a SLIDER that snaps to 1, 2, 4, 8, 12, 16, 20, 24 px, replacing the three-stop control. Recorded in the same sitting as two DEFECTS, not rulings: Display tight must keep the same composition as standard/generous (the P4 side-by-side comparison halved the container and collapsed the bands - the comparison presentation is the defect); the dashboard wall rendered with orphan gaps and a flat-bottomed first group (squaring not running on the outer wall + bottom corners clipped).",
+  "governs": [
+   "showroom/_foundations/bento.html",
+   "knowledge/_render/gen_bento_matrix_217.py"
+  ],
+  "evidence": [
+   "chat #217 2026-08-23 - Dave with screenshots: 'I expected display-tight to just be like standard and generous but just loosing the big padding. it seems to align to two columns. gallery-console should exclude keylines completely. Dashboard seems to be rendered oddly, we have gaps and the bottom of the first one is flat. Sub bento spacing should be a slider that snaps to 1,2,4,8,12, 16, 20, 24,'"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s217-D7",
+  "ruled": "INNER BENTOS RUN THE SQUARING PASS — EXTENDS THE s217-D3 RATIFICATION TO NESTED WALLS",
+  "date": "2026-08-23",
+  "by": "Dave",
+  "says": "Nested (inner) bentos in a dashboard run the squaring pass, the same mint-time orphan-elimination ratified for top-level dashboard and display walls at s217-D3. Dave: 'BTW inner bentos should run the squaring pass, when you are ready.' Gallery walls remain exempt per s217-D3/D5 (ragged-or-square is a per-instance option there).",
+  "governs": [
+   "knowledge/canon/gen_canon_bento.py"
+  ],
+  "evidence": [
+   "chat #217 2026-08-23 - Dave: 'oh and this... BTW inner bentos should run the squaring pass., when you are ready'"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s217-D8",
+  "ruled": "KEYLINES HUG THE MODULES — NO LINE EVER RUNS DOWN THE MIDDLE OF THE SPACING; SUPERSEDES THE TREATMENT-C CENTRED-GUTTER CONSTRUCTION",
+  "date": "2026-08-24",
+  "by": "Dave",
+  "says": "With keylines ON in a dashboard bento, the keyline goes tight around each module (tile) - a 1px border on the tile box at every spacing stop - never a line centred in the gutter. Dave, rejecting the centred construction at open spacing twice: 'the keylines are still running down the middle of the of the spacing' then 'the keylines should stay, but they should go round tight to the modules not run down the middle of the spacing'. Enactment detail (conductor's, to avoid re-creating the double frame Dave rejected earlier this session): at open spacing the group's outer border steps back and the tiles carry their own edges; at the 1px flush stop, where tiles cannot carry lines, the rounded group border + flush hairline construction of s217-D6-era remains. The centred-gutter 'treatment C' construction is retired for dashboards.",
+  "governs": [
+   "knowledge/canon/gen_canon_bento.py",
+   "knowledge/_render/gen_bento_matrix_217.py"
+  ],
+  "evidence": [
+   "chat #217 2026-08-24 - Dave: 'the keylines should stay, but they should go round tight to the modules not run down the middle of the spacing'"
+  ],
+  "status": "ruled"
  }
 ]
 }

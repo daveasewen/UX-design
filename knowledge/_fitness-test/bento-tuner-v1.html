@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bento parameter tuner &mdash; v1 decision controller (fitness-test, NOT gated, NOTHING RULED)</title>
+<link rel="stylesheet" href="../canon/type.css">
+<link rel="stylesheet" href="../canon/canon.css">
+<!--
+  ============================================================================
+  BENTO PARAMETER TUNER v1 — A DECISION CONTROLLER, NOT A PROMOTION.
+  ============================================================================
+  Dave #217 verbatim: "We need to promote all the various types of bento to canon, i just need to
+  decide on some of the parameters like gutters etc".
+
+  ⛔ THIS PAGE MINTS NOTHING. It edits no token, no canon.css rule, no theme, no component. It is
+  the instrument Dave turns to DECIDE the numbers; the promotion is his ruling and it happens
+  AFTER he exports, somewhere else. Every value the page arrives with is the value that is in force
+  today on showroom/_foundations/photography.html and in the #216 showcases, and every one of them
+  is PROPOSED, NOT RULED.
+
+  PRECEDENT COPIED, NOT INVENTED (#202: hand-rolling a scaffold invents defects):
+    - head order (type.css before canon.css), the single scoped wrapper class binding page-local
+      names to canon's OWN custom properties, the leading-trim block, the reduced-motion block and
+      the `.rv-*` sticky controller chrome are carried from
+      knowledge/_fitness-test/bento-gallery-showcase-v4.html (#216).
+    - the controls layout / live readout / on-page export affordance follow the radius-corner tuner
+      (reviews/RADIUS-CORNER-TUNER-2026-08-18-v4.html, BUILT+RULED #199): dial, live number beside
+      the dial, an export block rendered on the page as a $proposed draft — "Dave tunes; Dave rules".
+    - the span vocabulary, the `1fr auto` photo tile and the fixed-row grid are copied from
+      showroom/_foundations/photography.html, which is itself AWAITING SIGN-OFF.
+
+  ONE STATE OBJECT, TWO CONSUMERS. The preview and the export are both rendered from `STATE` inside
+  the same `apply()` call. There is no second copy of the numbers anywhere in this file. That is
+  structural, and it is also PROBED: a tuner whose export disagrees with the preview it showed is
+  worse than no tuner at all.
+
+  MINT-TIME DERIVATION (s200-D1). The export is CONCRETE VALUES. It contains no `var()` chain and
+  no live reference: where a dial is left on "theme token", the exporter reads the RESOLVED pixel
+  value out of the live document in each of the four themes × light/dark and writes those numbers
+  down, labelled with the state they were read in.
+
+  ⛔ SCOPE OF THE RADIUS DIAL. The dial on this page is the BENTO TILE radius only. Component-level
+  radii — and in particular the segmented-switch carve-out — are radius-tuner-v2 territory
+  (`live-radius-corner-tuner`, ⬛ v2 owed) and are NOT touched, NOT dialled and NOT exported here.
+
+  COLOUR. No colour value is authored on this page. Every surface, ink, border and radius resolves
+  through a canon token, so all four themes and both light/dark are canon.css's own cascade. The
+  controller chrome is NEUTRAL only — no red and no yellow anywhere in it, deliberately, because
+  those hues are unstable for Dave; the photographs are the content and are untouched.
+
+  TYPOGRAPHY. Every text element carries a canon composite (`.t-cm-*` / `.t-ed-*`). This file
+  declares ZERO font-size and ZERO font-weight. `<pre>`/`<code>` keep the UA monospace default so
+  the export block reads as code without this page authoring a font declaration.
+
+  IMAGES. The twelve committed web derivatives in knowledge/assets/photography-web/. Nothing is
+  fetched from any external host; every caption and pixel size is copied from
+  knowledge/_PHOTOGRAPHY-MANIFEST.json, not typed.
+  ============================================================================
+-->
+<style>
+/* ============================================================================
+   PAGE + REVIEW CHROME  (.rv-* — demo-chrome scope, matching the type gate's own
+   CHROME_SEL convention: \.demo|\bdemo-|harness|\.dossier|\.swatch|\.spec-|#rv-|\.rv-)
+   Carried from bento-gallery-showcase-v4.html.
+   ============================================================================ */
+.btx{
+  /* page-local names bound to canon's OWN properties — nothing here is a copied literal, so the
+     four-theme cascade below is canon.css's cascade rather than a re-typed snapshot. */
+  --page:      var(--background-default);
+  --surface:   var(--surface-raised);
+  --surface-2: var(--surface-subtle);
+  --surface-3: var(--tertiary-background-default);
+  --line:      var(--border-subtle);
+  --line-2:    var(--border-strong);
+  --ink:       var(--text-default);
+  --ink-2:     var(--text-secondary);
+  --focus:     var(--focus-ring);
+  --focus-w:   var(--focus-ring-width);
+  --radius:    var(--border-radius-surface);
+  --radius-ctl:var(--border-radius-control);
+  --gutter:    var(--layout-app-gutter);
+  --margin:    var(--layout-app-margin);
+  --tap:       var(--target-min);
+  --ease:      160ms cubic-bezier(.4,0,.2,1);
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+  background:var(--page); color:var(--ink);
+  margin:0; padding:0;
+  -webkit-font-smoothing:antialiased;
+}
+.btx *{box-sizing:border-box;}
+.btx :is(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){
+  text-box-trim:trim-both; text-box-edge:cap alphabetic;
+}
+.btx :focus-visible{outline:var(--focus-w) solid var(--focus); outline-offset:2px;}
+html,body{margin:0;}
+body{background:var(--background-default);}
+/* ⚠ carried from showroom/_foundations/photography.html, where it was MEASURED: `body` both
+   carries data-theme and consumes var(--text-default), and in supercharge dark the two disagreed.
+   Substituting on a CHILD of the themed element is deterministic in every state probed. */
+.btx, .rv-bar{color:var(--text-default);}
+
+/* ---- sticky controller bar ---- */
+.rv-bar{
+  position:sticky; top:0; z-index:40;
+  background:var(--page); border-bottom:1px solid var(--line-2);
+  padding:var(--sp-3) var(--sp-5);
+  display:flex; flex-wrap:wrap; gap:var(--sp-4) var(--sp-5); align-items:flex-end;
+}
+.rv-grp{display:flex; flex-direction:column; gap:var(--sp-1); min-width:0;}
+.rv-grp > .rv-legend{color:var(--ink-2); text-transform:uppercase; letter-spacing:.06em;}
+.rv-seg{display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--line-2); border-radius:var(--radius-ctl); overflow:hidden;}
+.rv-seg button{
+  appearance:none; font:inherit; border:0; border-right:1px solid var(--line-2);
+  background:var(--surface); color:var(--ink); cursor:pointer;
+  min-height:var(--tap); padding:0 var(--sp-3); display:inline-flex; align-items:center; justify-content:center;
+  transition:background var(--ease), color var(--ease);
+}
+.rv-seg button:last-child{border-right:0;}
+.rv-seg button:hover{background:var(--surface-2);}
+.rv-seg button[aria-pressed="true"]{background:var(--ink); color:var(--page);}
+.rv-seg button[disabled]{opacity:.45; cursor:not-allowed;}
+.rv-num{display:flex; align-items:center; gap:var(--sp-2);}
+/* accent-color is NEUTRAL ink — the controller chrome carries no hue at all */
+.rv-num input[type=range]{accent-color:var(--ink); max-width:150px;}
+.rv-out{color:var(--ink-2); min-width:6ch; font-variant-numeric:tabular-nums;}
+.rv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+  clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+/* ---- page body / prose ---- */
+.rv-main{padding:var(--sp-6) var(--sp-5) var(--sp-7);}
+.rv-lede{max-width:74ch; display:flex; flex-direction:column; gap:var(--sp-4); margin:0 0 var(--sp-6);}
+.rv-lede p{margin:0;}
+.rv-note{border-left:3px solid var(--line-2); padding:var(--sp-2) 0 var(--sp-2) var(--sp-3);
+  margin:0 0 var(--sp-5); max-width:74ch;}
+.rv-sec{margin:0 0 var(--sp-7); scroll-margin-top:110px;}
+.rv-sec > h2{margin:0 0 var(--sp-2);}
+.rv-sec > .rv-sub{margin:0 0 var(--sp-5); max-width:74ch; color:var(--ink-2);}
+.rv-h3{margin:var(--sp-6) 0 var(--sp-3);}
+.rv-caption{color:var(--ink-2); margin:var(--sp-2) 0 0; max-width:74ch;}
+.btx code{background:var(--surface-2); padding:0 .3em; border-radius:var(--radius-ctl);}
+.btx details{border:1px solid var(--line); border-radius:var(--radius); padding:var(--sp-3) var(--sp-4); max-width:82ch;}
+.btx details summary{cursor:pointer; color:var(--ink-2);}
+.btx details > *:not(summary){margin-top:var(--sp-3);}
+
+/* ---- THE DIAL PANEL ---------------------------------------------------- */
+.tn-panel{
+  border:1px solid var(--line-2); border-radius:var(--radius);
+  padding:var(--sp-4) var(--sp-5) var(--sp-5); margin:0 0 var(--sp-6);
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:var(--sp-4) var(--sp-5);
+  background:var(--surface-2);
+}
+.tn-panel > h3{grid-column:1/-1; margin:0; color:var(--ink-2);
+  text-transform:uppercase; letter-spacing:.06em;}
+.tn-dial{display:flex; flex-direction:column; gap:var(--sp-1); min-width:0;}
+.tn-dial .tn-row{display:flex; justify-content:space-between; align-items:baseline; gap:var(--sp-3);}
+.tn-dial label{color:var(--ink);}
+.tn-dial .tn-sub{color:var(--ink-2); display:block;}
+.tn-dial .tn-val{color:var(--ink); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.tn-dial[data-dirty="yes"] .tn-val::after{content:" \00b7 changed"; color:var(--ink-2);}
+.tn-dial input[type=range]{width:100%; accent-color:var(--ink); margin:0;}
+.tn-actions{grid-column:1/-1; display:flex; flex-wrap:wrap; gap:var(--sp-3); align-items:center;}
+.tn-btn{appearance:none; font:inherit; cursor:pointer; min-height:var(--tap);
+  padding:0 var(--sp-4); border-radius:var(--radius-ctl); border:1px solid var(--line-2);
+  background:var(--surface); color:var(--ink); transition:background var(--ease), opacity var(--ease);}
+.tn-btn:hover{background:var(--surface-2);}
+.tn-btn[data-kind="primary"]{background:var(--ink); color:var(--page); border-color:var(--ink);}
+.tn-btn[data-kind="primary"]:hover{opacity:.86; background:var(--ink);}
+
+/* ---- READOUTS ---------------------------------------------------------- */
+.tn-reads{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:var(--sp-3); margin:0 0 var(--sp-6);}
+.tn-read{border:1px solid var(--line); border-radius:var(--radius);
+  padding:var(--sp-3) var(--sp-4); display:flex; flex-direction:column; gap:var(--sp-1);}
+.tn-read .tn-k{color:var(--ink-2); text-transform:uppercase; letter-spacing:.06em;}
+.tn-read .tn-v{color:var(--ink); font-variant-numeric:tabular-nums;}
+.tn-read .tn-n{color:var(--ink-2);}
+/* the pass mark is TEXT, never a hue — no colour is minted to carry a verdict on this page */
+.tn-read[data-pass="no"]{border-color:var(--line-2); border-left-width:4px;}
+
+/* ---- THE STAGE + THE TWO BENTOS ---------------------------------------- */
+.bt-stage{
+  container-type:inline-size; container-name:btstage;
+  width:100%; max-width:var(--rv-stage-w,100%);
+  border:1px dashed var(--line); border-radius:var(--radius);
+  transition:max-width var(--ease);
+}
+.bt-wrap{padding:var(--bt-pad,32px);}
+.bt-grid{
+  display:grid;
+  grid-template-columns:repeat(var(--bt-cols,4),minmax(0,1fr));
+  grid-auto-rows:var(--bt-row,180px);
+  gap:var(--bt-gap,16px);
+}
+.bt-grid[data-dense="on"]{grid-auto-flow:dense;}
+
+/* the span vocabulary is these eight rules and nothing else — every arrangement the dials can
+   produce is already expressible as `grid-column: span N` */
+.bt-tile{min-width:0; margin:0;}
+.bt-tile[data-c="1"]{grid-column:span 1;}
+.bt-tile[data-c="2"]{grid-column:span 2;}
+.bt-tile[data-c="3"]{grid-column:span 3;}
+.bt-tile[data-c="4"]{grid-column:span 4;}
+.bt-tile[data-r="1"]{grid-row:span 1;}
+.bt-tile[data-r="2"]{grid-row:span 2;}
+.bt-tile[data-r="3"]{grid-row:span 3;}
+
+/* a photograph tile — `1fr auto`, so the picture takes the slack row and the caption its own
+   height; a flex column lets the image's intrinsic height drive the row and every span then
+   looks identical (MEASURED, #217 Foundations probe) */
+.bt-photo{
+  display:grid; grid-template-rows:1fr auto; height:100%;
+  border:1px solid var(--line); background:var(--surface);
+  border-radius:var(--bt-radius,0px); overflow:hidden;
+}
+.bt-photo img{display:block; width:100%; height:100%; min-height:0; object-fit:cover;
+  background:var(--surface-2);}
+.bt-cap{padding:var(--sp-2) var(--sp-3); color:var(--ink-2);
+  display:flex; flex-direction:column; gap:2px;}
+.bt-cap .bt-desc{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+/* ds-005 / ds-048, CAUGHT IN THE RENDER on this page: a `-webkit-line-clamp`ed label must opt out
+   of the cap/alphabetic trim declared on `.btx :is(…,span,…)` above, or its last visible line has
+   its descenders sliced — "talking", "Hong" and "young" all lost their tails in the first
+   mono/light shot. ds-005's existing override is scoped to ONE class (`.bx-r-name`), so it does
+   not reach a clamped caption. ⚠ VERIFIED, so the finding is not overstated:
+   showroom/_foundations/photography.html clamps the same caption but declares NO trim block at
+   all, so it is NOT affected — the defect is in the pairing, and it bites any page that adopts
+   the review scaffold's trim AND clamps a label. */
+.bt-cap .bt-desc, .bt-cap .bt-lic{text-box-edge:text text;}
+
+/* a card tile — the mixed-content bento, same grid, same dials */
+.bt-card{
+  background:var(--surface-2); border:1px solid var(--line);
+  border-radius:var(--bt-radius,0px); padding:var(--sp-4); overflow:hidden;
+  display:flex; flex-direction:column; gap:var(--sp-2); height:100%;
+}
+.bt-eyebrow{color:var(--ink-2); text-transform:uppercase; letter-spacing:.06em;}
+.bt-fig{margin:auto 0 0; font-variant-numeric:tabular-nums;}
+.bt-sub{color:var(--ink-2);}
+.bt-rows{list-style:none; margin:auto 0 0; padding:0; display:flex; flex-direction:column;}
+.bt-rows li{display:flex; justify-content:space-between; gap:var(--sp-3);
+  padding:var(--sp-2) 0; border-bottom:1px solid var(--line);}
+.bt-rows li:last-child{border-bottom:0;}
+/* ds-005: a truncating label must opt out of the cap/alphabetic trim or its descenders are sliced */
+.bt-rows .bt-r-name{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text;}
+.bt-rows .bt-r-amt{font-variant-numeric:tabular-nums; flex:0 0 auto;}
+.bt-spark{display:flex; align-items:flex-end; gap:3px; height:36px; margin-top:auto;}
+.bt-spark > i{flex:1; background:var(--ink); opacity:.34; border-radius:1px; height:var(--h,40%);}
+.bt-spark > i:last-child{opacity:1;}
+.bt-meter{height:8px; background:transparent; border:1px solid var(--line-2);
+  border-radius:var(--radius-ctl); overflow:hidden;}
+.bt-meter > i{display:block; height:100%; background:var(--ink); width:var(--v,50%);}
+
+.bt-block{margin:0 0 var(--sp-7);}
+.bt-block[hidden]{display:none;}
+.bt-block > .bt-title{margin:0 0 var(--sp-3); color:var(--ink-2);
+  text-transform:uppercase; letter-spacing:.06em;}
+
+/* ---- EXPORT ------------------------------------------------------------ */
+.tn-export{border:1px solid var(--line-2); border-radius:var(--radius); overflow:hidden;}
+.tn-export > .tn-exhead{display:flex; flex-wrap:wrap; gap:var(--sp-3); align-items:center;
+  padding:var(--sp-3) var(--sp-4); border-bottom:1px solid var(--line); background:var(--surface-2);}
+.tn-export pre{margin:0; padding:var(--sp-4); overflow-x:auto; background:var(--page);
+  color:var(--ink); border-bottom:1px solid var(--line);}
+.tn-export pre:last-child{border-bottom:0;}
+.tn-export code{background:transparent; padding:0;}
+
+/* ---- probe element: no transition, so a computed read of it is never an in-flight
+   interpolation (render-verify runbook, 2026-07-27 pothole) ---- */
+#btRadiusProbe{position:absolute; width:1px; height:1px; left:-9999px; top:0;
+  border-radius:var(--border-radius-surface); transition:none; animation:none;}
+
+@media (prefers-reduced-motion: reduce){
+  .btx *,.btx *::before,.btx *::after{transition-duration:.01ms !important; animation-duration:.01ms !important;}
+}
+</style>
+<!-- the responsive BANDS are generated from STATE, as concrete container queries. Empty until
+     the controller writes them, so a band that is not dialled cannot silently exist. -->
+<style id="btBands"></style>
+</head>
+<body class="btx">
+
+<div id="btRadiusProbe" aria-hidden="true"></div>
+
+<header class="rv-bar" role="region" aria-label="Tuner controls">
+  <div class="rv-grp">
+    <span class="rv-legend t-cm-legal">Apollo theme</span>
+    <div class="rv-seg" id="rvTheme" role="group" aria-label="Apollo theme">
+      <button type="button" class="t-cm-ctl-12" data-v="mono" aria-pressed="true">Mono</button>
+      <button type="button" class="t-cm-ctl-12" data-v="legacy" aria-pressed="false">Legacy</button>
+      <button type="button" class="t-cm-ctl-12" data-v="console" aria-pressed="false">Console</button>
+      <button type="button" class="t-cm-ctl-12" data-v="supercharge" aria-pressed="false">Supercharge</button>
+    </div>
+  </div>
+  <div class="rv-grp">
+    <span class="rv-legend t-cm-legal">Mode</span>
+    <div class="rv-seg" id="rvDark" role="group" aria-label="Light or dark">
+      <button type="button" class="t-cm-ctl-12" data-v="light" aria-pressed="true">Light</button>
+      <button type="button" class="t-cm-ctl-12" data-v="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+  <div class="rv-grp">
+    <span class="rv-legend t-cm-legal">Stage width</span>
+    <div class="rv-seg" id="rvWidth" role="group" aria-label="Stage width">
+      <button type="button" class="t-cm-ctl-12" data-v="full" aria-pressed="true">Full</button>
+      <button type="button" class="t-cm-ctl-12" data-v="1100" aria-pressed="false">1100</button>
+      <button type="button" class="t-cm-ctl-12" data-v="820" aria-pressed="false">820</button>
+      <button type="button" class="t-cm-ctl-12" data-v="520" aria-pressed="false">520</button>
+      <button type="button" class="t-cm-ctl-12" data-v="375" aria-pressed="false">375</button>
+    </div>
+  </div>
+  <div class="rv-grp">
+    <span class="rv-legend t-cm-legal">Preview</span>
+    <div class="rv-seg" id="rvShow" role="group" aria-label="Which bento to preview">
+      <button type="button" class="t-cm-ctl-12" data-v="both" aria-pressed="true">Both</button>
+      <button type="button" class="t-cm-ctl-12" data-v="photo" aria-pressed="false">Photography</button>
+      <button type="button" class="t-cm-ctl-12" data-v="cards" aria-pressed="false">Mixed cards</button>
+    </div>
+  </div>
+</header>
+
+<main class="rv-main">
+
+  <div class="rv-lede">
+    <h1 class="t-ed-heading-2">Bento parameter tuner</h1>
+    <p class="t-ed-body">Dave, #217: <em>&ldquo;We need to promote all the various types of bento to
+      canon, i just need to decide on some of the parameters like gutters etc&rdquo;</em>. This page is
+      how you decide them. It is <strong>not</strong> the promotion &mdash; it mints nothing, edits no
+      token and touches no canon rule. Turn the dials until the wall looks right in the themes you care
+      about, then press <em>Rebuild export</em> and take the block at the bottom.</p>
+    <p class="t-ed-body">Every dial arrives on <strong>the value that is in force today</strong> on
+      <code>showroom/_foundations/photography.html</code> and in the #216 showcases. Those values are
+      <strong>PROPOSED, NOT RULED</strong> &mdash; they are a starting position, not a recommendation, and
+      the dial marked <em>&middot; changed</em> tells you which ones you have moved off it.</p>
+    <p class="t-ed-body">One state object drives both halves of the page: the preview you are looking at
+      and the export block are rendered in the same pass from the same numbers, so the export cannot
+      describe a wall you did not see.</p>
+  </div>
+
+  <p class="rv-note t-ed-body-small"><strong>What this page does not dial.</strong> The radius dial is the
+    <strong>bento tile</strong> radius only. Component-level radii &mdash; and specifically the
+    segmented-switch carve-out that the radius/corner tuner v2 is owed for &mdash; are a different
+    decision on a different instrument, and nothing here touches them or appears in this export.</p>
+
+  <p class="rv-note t-ed-body-small"><strong>Where the aspect dials bite.</strong> The three aspect
+    thresholds derive a tile's span from <em>the photograph's own shape</em>, so they move the photography
+    bento only. The mixed-card bento carries <em>authored</em> spans, the way a dashboard does. Gutter,
+    outer padding, row height, columns, radius, dense packing, the emphasis rhythm and the responsive
+    bands move <strong>both</strong>.</p>
+
+  <!-- ============================ DIALS ============================ -->
+  <section class="rv-sec" id="dials" aria-labelledby="dials-h">
+    <h2 class="t-ed-heading-3" id="dials-h">The dials</h2>
+    <p class="rv-sub t-ed-body">Everything below is open. Nothing below is settled.</p>
+
+    <div class="tn-panel">
+      <h3 class="t-cm-legal">Grid</h3>
+
+      <div class="tn-dial" id="d-gap">
+        <div class="tn-row"><label class="t-cm-label" for="i-gap">Gutter &mdash; grid gap</label>
+          <output class="tn-val t-cm-ctl-14" id="o-gap">16px</output></div>
+        <span class="tn-sub t-cm-legal">In force: 16px (<code>--sp-4</code>) &middot; PROPOSED</span>
+        <input type="range" id="i-gap" min="0" max="48" step="2" value="16">
+      </div>
+
+      <div class="tn-dial" id="d-pad">
+        <div class="tn-row"><label class="t-cm-label" for="i-pad">Outer padding &mdash; around the wall</label>
+          <output class="tn-val t-cm-ctl-14" id="o-pad">32px</output></div>
+        <span class="tn-sub t-cm-legal">In force: 32px (<code>--sp-6</code>) &middot; PROPOSED</span>
+        <input type="range" id="i-pad" min="0" max="80" step="4" value="32">
+      </div>
+
+      <div class="tn-dial" id="d-row">
+        <div class="tn-row"><label class="t-cm-label" for="i-row">Row height &mdash; the fixed row unit</label>
+          <output class="tn-val t-cm-ctl-14" id="o-row">180px</output></div>
+        <span class="tn-sub t-cm-legal">In force: 180px photography / 210px logos &middot; PROPOSED</span>
+        <input type="range" id="i-row" min="96" max="320" step="4" value="180">
+      </div>
+
+      <div class="tn-dial" id="d-cols">
+        <div class="tn-row"><label class="t-cm-label" for="i-cols">Columns &mdash; at full width</label>
+          <output class="tn-val t-cm-ctl-14" id="o-cols">4</output></div>
+        <span class="tn-sub t-cm-legal">In force: 4 &middot; PROPOSED</span>
+        <input type="range" id="i-cols" min="2" max="6" step="1" value="4">
+      </div>
+
+      <div class="tn-dial" id="d-radius">
+        <div class="tn-row"><label class="t-cm-label" for="i-radius">Tile radius &mdash; bento tiles only</label>
+          <output class="tn-val t-cm-ctl-14" id="o-radius">theme token</output></div>
+        <span class="tn-sub t-cm-legal">In force: <code>--border-radius-surface</code>, per theme &middot; PROPOSED</span>
+        <input type="range" id="i-radius" min="0" max="28" step="1" value="0" disabled>
+        <div class="rv-seg" id="rvRadiusMode" role="group" aria-label="Where the tile radius comes from" style="margin-top:var(--sp-1);">
+          <button type="button" class="t-cm-ctl-12" data-v="token" aria-pressed="true">Theme token</button>
+          <button type="button" class="t-cm-ctl-12" data-v="explicit" aria-pressed="false">Dial it</button>
+        </div>
+      </div>
+
+      <div class="tn-dial" id="d-dense">
+        <div class="tn-row"><label class="t-cm-label" for="rvDense">Dense packing &mdash; back-fill holes</label>
+          <output class="tn-val t-cm-ctl-14" id="o-dense">on</output></div>
+        <span class="tn-sub t-cm-legal">In force: <code>grid-auto-flow:dense</code> &middot; PROPOSED</span>
+        <div class="rv-seg" id="rvDense" role="group" aria-label="Dense packing">
+          <button type="button" class="t-cm-ctl-12" data-v="on" aria-pressed="true">On</button>
+          <button type="button" class="t-cm-ctl-12" data-v="off" aria-pressed="false">Off</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tn-panel">
+      <h3 class="t-cm-legal">Aspect &rarr; span thresholds &mdash; photography bento only</h3>
+
+      <div class="tn-dial" id="d-th3">
+        <div class="tn-row"><label class="t-cm-label" for="i-th3">Three columns at or wider than</label>
+          <output class="tn-val t-cm-ctl-14" id="o-th3">4.00:1</output></div>
+        <span class="tn-sub t-cm-legal">In force: 4:1 &middot; PROPOSED</span>
+        <input type="range" id="i-th3" min="1.60" max="6.00" step="0.05" value="4.00">
+      </div>
+
+      <div class="tn-dial" id="d-th2">
+        <div class="tn-row"><label class="t-cm-label" for="i-th2">Two columns at or wider than</label>
+          <output class="tn-val t-cm-ctl-14" id="o-th2">1.45:1</output></div>
+        <span class="tn-sub t-cm-legal">In force: 1.45:1 &middot; PROPOSED</span>
+        <input type="range" id="i-th2" min="1.05" max="2.60" step="0.05" value="1.45">
+      </div>
+
+      <div class="tn-dial" id="d-thT">
+        <div class="tn-row"><label class="t-cm-label" for="i-thT">Two rows at or taller than</label>
+          <output class="tn-val t-cm-ctl-14" id="o-thT">1:1.15</output></div>
+        <span class="tn-sub t-cm-legal">In force: 1:1.15 &middot; PROPOSED</span>
+        <input type="range" id="i-thT" min="1.00" max="2.20" step="0.05" value="1.15">
+      </div>
+    </div>
+
+    <div class="tn-panel">
+      <h3 class="t-cm-legal">Emphasis rhythm &mdash; both bentos</h3>
+
+      <div class="tn-dial" id="d-rhythm">
+        <div class="tn-row"><label class="t-cm-label" for="i-rhythm">Promote every Nth tile &mdash; 0 turns it off</label>
+          <output class="tn-val t-cm-ctl-14" id="o-rhythm">every 5th</output></div>
+        <span class="tn-sub t-cm-legal">In force: every 5th &middot; PROPOSED (position, not preference)</span>
+        <input type="range" id="i-rhythm" min="0" max="9" step="1" value="5">
+      </div>
+
+      <div class="tn-dial" id="d-offset">
+        <div class="tn-row"><label class="t-cm-label" for="i-offset">Starting at tile</label>
+          <output class="tn-val t-cm-ctl-14" id="o-offset">1</output></div>
+        <span class="tn-sub t-cm-legal">In force: 1 &mdash; tiles 1, 6, 11 &middot; PROPOSED</span>
+        <input type="range" id="i-offset" min="1" max="9" step="1" value="1">
+      </div>
+
+      <div class="tn-dial" id="d-shape">
+        <div class="tn-row"><label class="t-cm-label" for="rvShape">Promoted to</label>
+          <output class="tn-val t-cm-ctl-14" id="o-shape">2&times;2</output></div>
+        <span class="tn-sub t-cm-legal">In force: 2&times;2 &middot; PROPOSED</span>
+        <div class="rv-seg" id="rvShape" role="group" aria-label="Shape a promoted tile takes">
+          <button type="button" class="t-cm-ctl-12" data-v="big"  aria-pressed="true">2&times;2</button>
+          <button type="button" class="t-cm-ctl-12" data-v="wide" aria-pressed="false">2&times;1</button>
+          <button type="button" class="t-cm-ctl-12" data-v="tall" aria-pressed="false">1&times;2</button>
+          <button type="button" class="t-cm-ctl-12" data-v="hero" aria-pressed="false">3&times;2</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tn-panel">
+      <h3 class="t-cm-legal">Responsive bands &mdash; the CONTAINER decides, not the viewport</h3>
+
+      <div class="tn-dial" id="d-b3">
+        <div class="tn-row"><label class="t-cm-label" for="i-b3">Drop to 3 columns below</label>
+          <output class="tn-val t-cm-ctl-14" id="o-b3">1100px</output></div>
+        <span class="tn-sub t-cm-legal">In force: 1100px (as a media query) &middot; PROPOSED</span>
+        <input type="range" id="i-b3" min="800" max="1400" step="20" value="1100">
+      </div>
+
+      <div class="tn-dial" id="d-b2">
+        <div class="tn-row"><label class="t-cm-label" for="i-b2">Drop to 2 columns below</label>
+          <output class="tn-val t-cm-ctl-14" id="o-b2">820px</output></div>
+        <span class="tn-sub t-cm-legal">In force: 820px &middot; PROPOSED</span>
+        <input type="range" id="i-b2" min="560" max="1000" step="20" value="820">
+      </div>
+
+      <div class="tn-dial" id="d-b1">
+        <div class="tn-row"><label class="t-cm-label" for="i-b1">Drop to 1 column below</label>
+          <output class="tn-val t-cm-ctl-14" id="o-b1">520px</output></div>
+        <span class="tn-sub t-cm-legal">In force: 520px &middot; PROPOSED</span>
+        <input type="range" id="i-b1" min="320" max="720" step="20" value="520">
+      </div>
+
+      <div class="tn-actions">
+        <button type="button" class="tn-btn t-cm-button" id="btnReset">Back to the in-force values</button>
+        <button type="button" class="tn-btn t-cm-button" data-kind="primary" id="btnExport">Rebuild export</button>
+        <span class="t-cm-legal" style="color:var(--ink-2);">The export also rebuilds on every dial move &mdash;
+          this button is here so you can prove that for yourself.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ READOUTS ============================ -->
+  <section class="rv-sec" id="readouts" aria-labelledby="reads-h">
+    <h2 class="t-ed-heading-3" id="reads-h">Live readouts</h2>
+    <p class="rv-sub t-ed-body">Measured off the live document, not restated from the dials: the
+      first three read <code>getComputedStyle</code> on the photography grid, the contrast figures read the
+      resolved inks and grounds in the theme you are currently in.</p>
+    <div class="tn-reads" id="btReads">
+      <div class="tn-read"><span class="tn-k t-cm-legal">Computed gap</span>
+        <span class="tn-v t-cm-figure-4" id="r-gap">&mdash;</span>
+        <span class="tn-n t-cm-legal">photography grid, live</span></div>
+      <div class="tn-read"><span class="tn-k t-cm-legal">Computed row unit</span>
+        <span class="tn-v t-cm-figure-4" id="r-row">&mdash;</span>
+        <span class="tn-n t-cm-legal"><code>grid-auto-rows</code></span></div>
+      <div class="tn-read"><span class="tn-k t-cm-legal">Computed columns</span>
+        <span class="tn-v t-cm-figure-4" id="r-cols">&mdash;</span>
+        <span class="tn-n t-cm-legal">tracks actually laid out</span></div>
+      <div class="tn-read"><span class="tn-k t-cm-legal">Computed tile radius</span>
+        <span class="tn-v t-cm-figure-4" id="r-radius">&mdash;</span>
+        <span class="tn-n t-cm-legal">first photo tile, this theme</span></div>
+      <div class="tn-read" id="rc-cap"><span class="tn-k t-cm-legal">Caption ink on tile ground</span>
+        <span class="tn-v t-cm-figure-4" id="r-cap">&mdash;</span>
+        <span class="tn-n t-cm-legal" id="r-cap-n">&mdash;</span></div>
+      <div class="tn-read" id="rc-card"><span class="tn-k t-cm-legal">Card ink on card ground</span>
+        <span class="tn-v t-cm-figure-4" id="r-card">&mdash;</span>
+        <span class="tn-n t-cm-legal" id="r-card-n">&mdash;</span></div>
+      <div class="tn-read" id="rc-sub"><span class="tn-k t-cm-legal">Secondary ink on card ground</span>
+        <span class="tn-v t-cm-figure-4" id="r-sub">&mdash;</span>
+        <span class="tn-n t-cm-legal" id="r-sub-n">&mdash;</span></div>
+      <div class="tn-read" id="rc-page"><span class="tn-k t-cm-legal">Body ink on page</span>
+        <span class="tn-v t-cm-figure-4" id="r-page">&mdash;</span>
+        <span class="tn-n t-cm-legal" id="r-page-n">&mdash;</span></div>
+    </div>
+    <p class="rv-caption t-ed-body-small">A ratio is reported as a number and a word. No colour is
+      minted to carry the verdict &mdash; the two-red law is not this page&rsquo;s business, and a
+      pass/fail hue would be the wrong thing for you to be reading anyway.</p>
+  </section>
+
+  <!-- ============================ PREVIEW ============================ -->
+  <section class="rv-sec" id="preview" aria-labelledby="prev-h">
+    <h2 class="t-ed-heading-3" id="prev-h">Preview &mdash; real content, one set of dials</h2>
+    <p class="rv-sub t-ed-body">The twelve committed web derivatives, and a mixed-card wall in the idiom
+      of the #216 showcases. Both sit inside one container, so the band dials collapse them together.</p>
+
+    <div class="bt-stage" id="btStage">
+
+      <div class="bt-block" id="blkPhoto">
+        <div class="bt-wrap">
+          <p class="bt-title t-cm-legal">Photography bento &mdash; spans derived from each image&rsquo;s own aspect</p>
+          <div class="bt-grid" id="gridPhoto" data-dense="on" aria-label="Photography bento preview"></div>
+        </div>
+      </div>
+
+      <div class="bt-block" id="blkCards">
+        <div class="bt-wrap">
+          <p class="bt-title t-cm-legal">Mixed-card bento &mdash; authored spans, same dials</p>
+          <div class="bt-grid" id="gridCards" data-dense="on" aria-label="Mixed card bento preview">
+
+            <div class="bt-tile" data-authored="hero" data-n="1">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Current account &middot; &bull;&bull;&bull;&bull; 4417</span>
+                <span class="bt-fig t-cm-figure-2">&pound;18,204.36</span>
+                <span class="bt-sub t-ed-body-small">Available now &middot; &pound;240.00 pending</span>
+                <div class="bt-spark" aria-hidden="true">
+                  <i style="--h:38%"></i><i style="--h:52%"></i><i style="--h:44%"></i><i style="--h:66%"></i>
+                  <i style="--h:58%"></i><i style="--h:74%"></i><i style="--h:62%"></i><i style="--h:88%"></i>
+                  <i style="--h:71%"></i><i style="--h:95%"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="big" data-n="2">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Recent activity</span>
+                <ul class="bt-rows">
+                  <li><span class="bt-r-name t-ed-body-small">Northgate Supplies Ltd</span><span class="bt-r-amt t-cm-figure-6">&minus;1,240.00</span></li>
+                  <li><span class="bt-r-name t-ed-body-small">Payroll &mdash; August</span><span class="bt-r-amt t-cm-figure-6">&minus;8,916.50</span></li>
+                  <li><span class="bt-r-name t-ed-body-small">Client invoice 20418</span><span class="bt-r-amt t-cm-figure-6">+4,500.00</span></li>
+                  <li><span class="bt-r-name t-ed-body-small">HMRC VAT quarter 2</span><span class="bt-r-amt t-cm-figure-6">&minus;2,318.72</span></li>
+                  <li><span class="bt-r-name t-ed-body-small">Card &mdash; fuel &amp; travel</span><span class="bt-r-amt t-cm-figure-6">&minus;96.40</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="tall" data-n="3">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Cash position</span>
+                <span class="bt-sub t-ed-body-small">Across four accounts</span>
+                <span class="bt-fig t-cm-figure-3">&pound;312,540</span>
+                <div class="bt-meter" aria-hidden="true"><i style="--v:72%"></i></div>
+                <span class="bt-sub t-ed-caption">72% of the quarter&rsquo;s target</span>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="unit" data-n="4">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">GBP / EUR</span>
+                <span class="bt-fig t-cm-figure-3">1.1642</span>
+                <span class="bt-sub t-ed-caption">Indicative &middot; 09:41</span>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="unit" data-n="5">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">GBP / USD</span>
+                <span class="bt-fig t-cm-figure-3">1.2718</span>
+                <span class="bt-sub t-ed-caption">Indicative &middot; 09:41</span>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="wide" data-n="6">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Payments awaiting approval</span>
+                <span class="bt-fig t-cm-figure-2">7</span>
+                <span class="bt-sub t-ed-body-small">Oldest queued 2 days ago &middot; two need a second approver</span>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="unit" data-n="7">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Beneficiaries</span>
+                <span class="bt-fig t-cm-figure-3">148</span>
+                <span class="bt-sub t-ed-caption">3 added this month</span>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="tall" data-n="8">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Upcoming</span>
+                <ul class="bt-rows">
+                  <li><span class="bt-r-name t-ed-body-small">Rent &mdash; Aldgate</span><span class="bt-r-amt t-cm-figure-6">4,100.00</span></li>
+                  <li><span class="bt-r-name t-ed-body-small">Supplier &mdash; Prasad</span><span class="bt-r-amt t-cm-figure-6">960.00</span></li>
+                  <li><span class="bt-r-name t-ed-body-small">Insurance renewal</span><span class="bt-r-amt t-cm-figure-6">1,845.00</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="unit" data-n="9">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Cards issued</span>
+                <span class="bt-fig t-cm-figure-3">26</span>
+                <span class="bt-sub t-ed-caption">4 dormant</span>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="big" data-n="10">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Spend by category &middot; August</span>
+                <div class="bt-spark" aria-hidden="true">
+                  <i style="--h:44%"></i><i style="--h:78%"></i><i style="--h:31%"></i><i style="--h:66%"></i>
+                  <i style="--h:52%"></i><i style="--h:84%"></i><i style="--h:40%"></i><i style="--h:59%"></i>
+                </div>
+                <span class="bt-sub t-ed-body-small">Payroll remains the largest line at 48% of outgoings.</span>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="unit" data-n="11">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Standing orders</span>
+                <span class="bt-fig t-cm-figure-3">19</span>
+                <span class="bt-sub t-ed-caption">Next run 01 Sep</span>
+              </div>
+            </div>
+
+            <div class="bt-tile" data-authored="wide" data-n="12">
+              <div class="bt-card">
+                <span class="bt-eyebrow t-cm-legal">Statement &middot; July</span>
+                <span class="bt-sub t-ed-body-small">Ready to download &middot; 42 pages &middot; PDF and CSV</span>
+                <span class="bt-fig t-cm-figure-3">&pound;96,412.08 out</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="rv-caption t-ed-body-small">The stage is a <code>container-type:inline-size</code> box, so the
+      band dials are answered by the <em>stage</em> width, not the window. Use the <em>Stage width</em>
+      control in the bar to cross a band without resizing anything.</p>
+  </section>
+
+  <!-- ============================ EXPORT ============================ -->
+  <section class="rv-sec" id="export" aria-labelledby="exp-h">
+    <h2 class="t-ed-heading-3" id="exp-h">Export &mdash; concrete values, mint-ready</h2>
+    <p class="rv-sub t-ed-body">Rendered from the same state object as the preview above, in the same pass.
+      Concrete numbers only &mdash; no <code>var()</code> chain, nothing that has to be resolved later
+      (<code>s200-D1</code> mint-time derivation). It is marked <code>$proposed</code> because it is: it
+      becomes a ruling when you say so, not when this page writes it.</p>
+
+    <div class="tn-export">
+      <div class="tn-exhead">
+        <span class="t-cm-legal" style="color:var(--ink-2);">JSON &mdash; the decision record</span>
+        <button type="button" class="tn-btn t-cm-button" id="copyJson" style="margin-left:auto;">Copy JSON</button>
+      </div>
+      <pre><code id="outJson">&mdash;</code></pre>
+      <div class="tn-exhead">
+        <span class="t-cm-legal" style="color:var(--ink-2);">CSS &mdash; custom properties + the derived rules</span>
+        <button type="button" class="tn-btn t-cm-button" id="copyCss" style="margin-left:auto;">Copy CSS</button>
+      </div>
+      <pre><code id="outCss">&mdash;</code></pre>
+    </div>
+
+    <details style="margin-top:var(--sp-5);">
+      <summary class="t-ed-body-small">What the export deliberately does not contain</summary>
+      <ul class="t-ed-body-small" style="margin:0; padding-left:1.2em; display:flex; flex-direction:column; gap:var(--sp-2);">
+        <li>No component radii, and no segmented-switch carve-out &mdash; a different decision on a different tuner.</li>
+        <li>No colour, no surface token choice. Which token a bento tile should paint with is a token
+          decision and it is yours; this page uses <code>surface/subtle</code> for cards and
+          <code>surface/raised</code> for photographs purely so the wall is legible on arrival.</li>
+        <li>No typography. Every text element here carries an existing canon composite.</li>
+        <li>No <code>var()</code> references. Where you left the radius on <em>Theme token</em>, the export
+          carries the resolved pixel value <em>per theme &times; mode</em>, read live out of this document.</li>
+      </ul>
+    </details>
+  </section>
+
+</main>
+
+<script>
+/* ============================================================================
+   THE CONTROLLER. One STATE object; apply() renders the preview AND the export
+   from it in a single pass. There is no second copy of these numbers.
+   ============================================================================ */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+
+  /* ---- the twelve committed derivatives, copied from _PHOTOGRAPHY-MANIFEST.json ---- */
+  var PHOTOS = [
+    {"src": "eyeem-100014108-180570836-w1600.jpg", "w": 1600, "h": 1067, "desc": "PORTRAIT OF YOUNG MAN ON STEPS", "lic": "Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH"},
+    {"src": "gettyimages-1159761634-144dpi-w1600.jpg", "w": 1600, "h": 1067, "desc": "Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office", "lic": "Getty Images"},
+    {"src": "gettyimages-1271527435-w1600.jpg", "w": 1600, "h": 1067, "desc": "Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family.", "lic": "Getty Images"},
+    {"src": "gettyimages-1394386010-144dpi-w1600.jpg", "w": 1600, "h": 1067, "desc": "Businesswoman talking on phone from office window overlooking Hong Kong cityscape", "lic": "Getty Images"},
+    {"src": "gettyimages-1498039805-w1600.jpg", "w": 1600, "h": 1067, "desc": "Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The image highlights form, function and interior space design.", "lic": "Getty Images"},
+    {"src": "gettyimages-1708273322-w1600.jpg", "w": 1600, "h": 1127, "desc": "Father and child looking out of the window, on to their garden whilst watching the sunrise", "lic": "Getty Images"},
+    {"src": "gettyimages-2179684483-w1600.jpg", "w": 1600, "h": 1067, "desc": "A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask questions or contribute to the discussion.", "lic": "Getty Images"},
+    {"src": "gettyimages-2190197969-144dpi-w1600.jpg", "w": 1600, "h": 1067, "desc": "Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night.", "lic": "Getty Images"},
+    {"src": "gettyimages-2208294966-144dpi-w1600.jpg", "w": 1600, "h": 1067, "desc": "Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background", "lic": "Getty Images"},
+    {"src": "gettyimages-653972314-w1600.jpg", "w": 1600, "h": 1065, "desc": "Jaipur, India - Hands weaving a oriental rug.", "lic": "Getty Images"},
+    {"src": "gettyimages-968890266-w1600.jpg", "w": 1600, "h": 1068, "desc": "Woman carrying baby son and cooking in kitchen", "lic": "Getty Images"},
+    {"src": "stocksy-5217047-w1600.jpg", "w": 1600, "h": 1067, "desc": "Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a roadtrip.", "lic": "Kike Arnaiz / Stocksy United"}
+  ];
+  var PHOTO_DIR = "../assets/photography-web/";
+
+  /* ---- the shapes a promotion / an authored span can take ---- */
+  var SHAPES = {
+    unit: {c: 1, r: 1, label: "1×1"},
+    wide: {c: 2, r: 1, label: "2×1"},
+    tall: {c: 1, r: 2, label: "1×2"},
+    big:  {c: 2, r: 2, label: "2×2"},
+    hero: {c: 3, r: 2, label: "3×2"}
+  };
+
+  /* ---- THE IN-FORCE VALUES. Every one of these is PROPOSED, NOT RULED. They are what
+     showroom/_foundations/photography.html and the #216 showcases do today. ---- */
+  var INFORCE = {
+    gap: 16, pad: 32, row: 180, cols: 4,
+    radiusMode: "token", radiusPx: 0,
+    dense: "on",
+    th3: 4.00, th2: 1.45, thT: 1.15,
+    rhythm: 5, offset: 1, shape: "big",
+    b3: 1100, b2: 820, b1: 520
+  };
+
+  var STATE = JSON.parse(JSON.stringify(INFORCE));
+
+  /* ---- helpers ---- */
+  function el(id) { return document.getElementById(id); }
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+
+  function seg(id, onPick) {
+    var box = el(id);
+    if (!box) { return; }
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-v]");
+      if (!b || b.disabled) { return; }
+      Array.prototype.forEach.call(box.querySelectorAll("button[data-v]"), function (o) {
+        o.setAttribute("aria-pressed", String(o === b));
+      });
+      onPick(b.getAttribute("data-v"));
+    });
+  }
+  function segSet(id, v) {
+    var box = el(id);
+    if (!box) { return; }
+    Array.prototype.forEach.call(box.querySelectorAll("button[data-v]"), function (o) {
+      o.setAttribute("aria-pressed", String(o.getAttribute("data-v") === v));
+    });
+  }
+
+  /* ---- contrast: sRGB relative luminance, WCAG 2.x ---- */
+  function parseRGB(s) {
+    var m = String(s).match(/(-?[\d.]+)/g);
+    if (!m || m.length < 3) { return null; }
+    return [parseFloat(m[0]), parseFloat(m[1]), parseFloat(m[2])];
+  }
+  function lum(c) {
+    var f = c.map(function (v) {
+      v = v / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * f[0] + 0.7152 * f[1] + 0.0722 * f[2];
+  }
+  function ratio(fg, bg) {
+    var a = parseRGB(fg), b = parseRGB(bg);
+    if (!a || !b) { return null; }
+    var la = lum(a), lb = lum(b);
+    return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+  }
+  /* the ground actually painted behind an element — walks up past transparent ancestors */
+  function groundOf(node) {
+    var n = node;
+    while (n && n !== document.documentElement) {
+      var bg = getComputedStyle(n).backgroundColor;
+      var p = parseRGB(bg);
+      var m = String(bg).match(/rgba?\([^)]*?,\s*([\d.]+)\s*\)/);
+      var alpha = m ? parseFloat(m[1]) : 1;
+      if (p && alpha > 0.999) { return bg; }
+      n = n.parentElement;
+    }
+    return getComputedStyle(document.body).backgroundColor;
+  }
+
+  /* ---- THE SPAN DERIVATION. One function. The preview uses it; the export describes it. ---- */
+  function promoted(i) {
+    if (STATE.rhythm <= 0) { return false; }
+    if (i < STATE.offset) { return false; }
+    return ((i - STATE.offset) % STATE.rhythm) === 0;
+  }
+  function spanForPhoto(i, w, h) {
+    var r = w / h, s;
+    if (r >= STATE.th3) { s = {c: 3, r: 1}; }
+    else if (r >= STATE.th2) { s = {c: 2, r: 1}; }
+    else if ((h / w) >= STATE.thT) { s = {c: 1, r: 2}; }
+    else { s = {c: 1, r: 1}; }
+    if (promoted(i)) { s = {c: SHAPES[STATE.shape].c, r: SHAPES[STATE.shape].r}; }
+    return {c: clamp(s.c, 1, STATE.cols), r: clamp(s.r, 1, 3)};
+  }
+  function spanForCard(i, authored) {
+    var a = SHAPES[authored] || SHAPES.unit;
+    var s = {c: a.c, r: a.r};
+    if (promoted(i)) { s = {c: SHAPES[STATE.shape].c, r: SHAPES[STATE.shape].r}; }
+    return {c: clamp(s.c, 1, STATE.cols), r: clamp(s.r, 1, 3)};
+  }
+
+  /* ---- build the photography tiles once; spans are re-stamped on every apply() ---- */
+  var gridPhoto = el("gridPhoto");
+  PHOTOS.forEach(function (p, idx) {
+    var fig = document.createElement("figure");
+    fig.className = "bt-tile";
+    fig.setAttribute("data-n", String(idx + 1));
+    var box = document.createElement("div");
+    box.className = "bt-photo";
+    var img = document.createElement("img");
+    img.src = PHOTO_DIR + p.src;
+    img.alt = p.desc;
+    img.width = p.w; img.height = p.h;
+    img.loading = "lazy"; img.decoding = "async";
+    var cap = document.createElement("figcaption");
+    cap.className = "bt-cap";
+    var d = document.createElement("span");
+    d.className = "bt-desc t-ed-caption";
+    d.textContent = p.desc;
+    var l = document.createElement("span");
+    l.className = "bt-lic t-cm-legal";
+    l.textContent = p.lic + " · " + p.w + "×" + p.h + " · " + (p.w / p.h).toFixed(2) + ":1";
+    cap.appendChild(d); cap.appendChild(l);
+    box.appendChild(img); box.appendChild(cap);
+    fig.appendChild(box);
+    gridPhoto.appendChild(fig);
+  });
+
+  var gridCards = el("gridCards");
+  var cardTiles = Array.prototype.slice.call(gridCards.querySelectorAll(".bt-tile"));
+
+  /* ---- the per-theme resolved tile radius, read ONCE off a transition-free probe.
+     s200-D1: the export must carry a concrete number, not a var() chain, so the number is
+     measured in each of the eight states rather than referenced. ---- */
+  var THEMES = ["mono", "legacy", "console", "supercharge"];
+  var MODES = ["light", "dark"];
+  var RADIUS_TABLE = (function () {
+    var probe = el("btRadiusProbe");
+    var t0 = root.getAttribute("data-apollo-theme");
+    var m0 = root.getAttribute("data-theme");
+    var out = {};
+    THEMES.forEach(function (t) {
+      MODES.forEach(function (m) {
+        root.setAttribute("data-apollo-theme", t);
+        root.setAttribute("data-theme", m);
+        out[t + "/" + m] = getComputedStyle(probe).borderTopLeftRadius || "";
+      });
+    });
+    root.setAttribute("data-apollo-theme", t0);
+    root.setAttribute("data-theme", m0);
+    return out;
+  }());
+
+  /* ---- the responsive bands, as CONCRETE container queries ---- */
+  /* ⚠ MEASURED CONSEQUENCE, and it is why nothing here is set with element.style: an INLINE
+     custom property beats every stylesheet rule, container queries included, so setting
+     `--bt-cols` inline would silently make the band dials inert. (It is also the shape the
+     #217 Foundations probe caught — an inline-only name resolves EMPTY to any instrument
+     reading the document, so a declared rule is the probeable form.) Every dialled value is
+     therefore written into this generated stylesheet as a real rule. */
+  function baseCSS() {
+    return "" +
+      ".bt-grid{--bt-cols:" + STATE.cols + "; --bt-gap:" + STATE.gap + "px; --bt-row:" + STATE.row + "px;}\n" +
+      ".bt-wrap{--bt-pad:" + STATE.pad + "px;}\n" +
+      ".btx{--bt-radius:" + (STATE.radiusMode === "explicit"
+        ? (STATE.radiusPx + "px")
+        : "var(--border-radius-surface)") + ";}\n";
+  }
+
+  /* ⛔ THE EXPORT MUST NOT CARRY THIS PAGE'S PRIVATE NAMES. The first draft emitted the band
+     rules with `--bt-cols` in them, which is the tuner's own custom property — pasted anywhere
+     else the bands would have been silently inert, and the export would have described a
+     responsive behaviour it could not produce. The selector, the property and the container
+     name are therefore all parameters, and the probe asserts no `--bt-`/`.bt-` survives. */
+  function bandCSS(gridSel, tileSel, colDecl, containerName) {
+    var s = gridSel, tsel = tileSel, cn = containerName;
+    return "" +
+      "@container " + cn + " (max-width:" + STATE.b3 + "px){\n" +
+      "  " + s + "{" + colDecl(Math.min(3, STATE.cols)) + "}\n" +
+      "  " + tsel + "[data-c=\"4\"]{grid-column:span 3;}\n" +
+      "}\n" +
+      "@container " + cn + " (max-width:" + STATE.b2 + "px){\n" +
+      "  " + s + "{" + colDecl(2) + "}\n" +
+      "  " + tsel + "[data-c=\"3\"], " + tsel + "[data-c=\"4\"]{grid-column:span 2;}\n" +
+      "}\n" +
+      "@container " + cn + " (max-width:" + STATE.b1 + "px){\n" +
+      "  " + s + "{" + colDecl(1) + "}\n" +
+      "  " + tsel + "[data-c]{grid-column:span 1;}\n" +
+      "}\n";
+  }
+  /* the LIVE page drives the column count through a page-local property; the EXPORT writes the
+     track list out concretely, so the pasted block needs no custom property to work at all */
+  function liveBandCSS() {
+    return bandCSS(".bt-grid", ".bt-tile", function (n) { return "--bt-cols:" + n + ";"; }, "btstage");
+  }
+  function exportBandCSS() {
+    return bandCSS(".bento-grid", ".bento-grid .bento-tile",
+      function (n) { return "grid-template-columns:repeat(" + n + ",minmax(0,1fr));"; }, "bento");
+  }
+
+  /* ---- readouts ---- */
+  function fmtRatio(x) { return x === null ? "—" : x.toFixed(2) + ":1"; }
+  function mark(x, large) {
+    if (x === null) { return "unreadable"; }
+    var aaa = large ? 4.5 : 7, aa = large ? 3 : 4.5;
+    if (x >= aaa) { return "AAA"; }
+    if (x >= aa) { return "AA"; }
+    return "below AA";
+  }
+  function readout(cardId, valId, noteId, fgNode, prop, groundNode, large) {
+    var fg = getComputedStyle(fgNode)[prop || "color"];
+    var bg = groundOf(groundNode || fgNode);
+    var x = ratio(fg, bg);
+    el(valId).textContent = fmtRatio(x);
+    var m = mark(x, large);
+    el(noteId).textContent = m + " · " + fg + " on " + bg;
+    el(cardId).setAttribute("data-pass", (x !== null && x >= (large ? 3 : 4.5)) ? "yes" : "no");
+  }
+
+  function refreshReadouts() {
+    var cs = getComputedStyle(gridPhoto);
+    el("r-gap").textContent = cs.columnGap || cs.gap || "—";
+    el("r-row").textContent = cs.gridAutoRows || "—";
+    var tracks = (cs.gridTemplateColumns || "").trim().split(/\s+/).filter(Boolean);
+    el("r-cols").textContent = String(tracks.length);
+    var firstPhoto = gridPhoto.querySelector(".bt-photo");
+    el("r-radius").textContent = firstPhoto ? getComputedStyle(firstPhoto).borderTopLeftRadius : "—";
+
+    var capDesc = gridPhoto.querySelector(".bt-cap .bt-desc");
+    var capBox = gridPhoto.querySelector(".bt-photo");
+    if (capDesc && capBox) { readout("rc-cap", "r-cap", "r-cap-n", capDesc, "color", capBox, false); }
+    var cardFig = gridCards.querySelector(".bt-fig");
+    var cardBox = gridCards.querySelector(".bt-card");
+    if (cardFig && cardBox) { readout("rc-card", "r-card", "r-card-n", cardFig, "color", cardBox, true); }
+    var cardSub = gridCards.querySelector(".bt-eyebrow");
+    if (cardSub && cardBox) { readout("rc-sub", "r-sub", "r-sub-n", cardSub, "color", cardBox, false); }
+    var lede = document.querySelector(".rv-lede p");
+    if (lede) { readout("rc-page", "r-page", "r-page-n", lede, "color", lede, false); }
+  }
+
+  /* ---- THE EXPORT. Same pass, same STATE, no second copy of any number. ---- */
+  function radiusForExport() {
+    if (STATE.radiusMode === "explicit") {
+      var out = {};
+      THEMES.forEach(function (t) {
+        MODES.forEach(function (m) { out[t + "/" + m] = STATE.radiusPx + "px"; });
+      });
+      return {source: "dialled", resolved_px: out};
+    }
+    return {source: "theme-token (border-radius/surface)", resolved_px: RADIUS_TABLE};
+  }
+
+  function exportObject() {
+    var r = radiusForExport();
+    return {
+      "$proposed": true,
+      "$not_ruled": "Dave tunes; Dave rules. These are the numbers the tuner was showing when the export was built — they become a ruling only when he says so.",
+      "minted_by": "knowledge/_fitness-test/bento-tuner-v1.html (#217)",
+      "read_in_state": root.getAttribute("data-apollo-theme") + "/" + root.getAttribute("data-theme"),
+      "starting_position": "the values in force on showroom/_foundations/photography.html and the #216 showcases",
+      "grid": {
+        "columns": STATE.cols,
+        "gutter_px": STATE.gap,
+        "outer_padding_px": STATE.pad,
+        "row_unit_px": STATE.row,
+        "dense_packing": STATE.dense === "on"
+      },
+      "tile_radius": r,
+      "aspect_thresholds": {
+        "applies_to": "photography bento only — card spans are authored",
+        "three_columns_at_or_wider_than": Number(STATE.th3.toFixed(2)),
+        "two_columns_at_or_wider_than": Number(STATE.th2.toFixed(2)),
+        "two_rows_at_or_taller_than": Number(STATE.thT.toFixed(2))
+      },
+      "emphasis_rhythm": {
+        "every_nth": STATE.rhythm,
+        "enabled": STATE.rhythm > 0,
+        "starting_at_tile": STATE.offset,
+        "promoted_to": SHAPES[STATE.shape].label,
+        "promoted_columns": SHAPES[STATE.shape].c,
+        "promoted_rows": SHAPES[STATE.shape].r
+      },
+      "responsive_bands": [
+        {"container_max_width_px": STATE.b3, "columns": Math.min(3, STATE.cols)},
+        {"container_max_width_px": STATE.b2, "columns": 2},
+        {"container_max_width_px": STATE.b1, "columns": 1}
+      ],
+      "not_in_scope": [
+        "component radii, including the segmented-switch carve-out (radius/corner tuner v2)",
+        "surface / ink token choice",
+        "typography"
+      ]
+    };
+  }
+
+  function exportCSS() {
+    var r = radiusForExport();
+    var here = root.getAttribute("data-apollo-theme") + "/" + root.getAttribute("data-theme");
+    var radiusHere = r.resolved_px[here] || "0px";
+    var lines = [];
+    lines.push("/* BENTO PARAMETERS — $proposed, NOT RULED. Minted " + new Date().toISOString().slice(0, 10) +
+               " by knowledge/_fitness-test/bento-tuner-v1.html (#217). */");
+    lines.push("/* Concrete values only — s200-D1 mint-time derivation: no var() chain, nothing resolved later. */");
+    lines.push(".bento{");
+    lines.push("  --bento-columns:" + STATE.cols + ";");
+    lines.push("  --bento-gutter:" + STATE.gap + "px;");
+    lines.push("  --bento-outer-padding:" + STATE.pad + "px;");
+    lines.push("  --bento-row-unit:" + STATE.row + "px;");
+    lines.push("  --bento-tile-radius:" + radiusHere + ";   /* " + r.source + ", resolved in " + here + " */");
+    lines.push("}");
+    lines.push("");
+    lines.push("/* per-theme resolved tile radius, measured live in all eight states */");
+    Object.keys(r.resolved_px).forEach(function (k) {
+      var parts = k.split("/");
+      lines.push("[data-apollo-theme=\"" + parts[0] + "\"][data-theme=\"" + parts[1] + "\"] .bento{--bento-tile-radius:" + r.resolved_px[k] + ";}");
+    });
+    lines.push("");
+    lines.push("/* the wall is its own container, so the bands below answer the WALL, not the window */");
+    lines.push(".bento{container-type:inline-size; container-name:bento; padding:" + STATE.pad + "px;}");
+    lines.push("");
+    lines.push(".bento-grid{");
+    lines.push("  display:grid;");
+    lines.push("  grid-template-columns:repeat(" + STATE.cols + ",minmax(0,1fr));");
+    lines.push("  grid-auto-rows:" + STATE.row + "px;");
+    lines.push("  gap:" + STATE.gap + "px;");
+    if (STATE.dense === "on") { lines.push("  grid-auto-flow:dense;"); }
+    lines.push("}");
+    lines.push("");
+    lines.push("/* the span vocabulary — every arrangement these dials produce is one of these */");
+    lines.push(".bento-tile[data-c=\"1\"]{grid-column:span 1;}");
+    lines.push(".bento-tile[data-c=\"2\"]{grid-column:span 2;}");
+    lines.push(".bento-tile[data-c=\"3\"]{grid-column:span 3;}");
+    lines.push(".bento-tile[data-c=\"4\"]{grid-column:span 4;}");
+    lines.push(".bento-tile[data-r=\"1\"]{grid-row:span 1;}");
+    lines.push(".bento-tile[data-r=\"2\"]{grid-row:span 2;}");
+    lines.push(".bento-tile[data-r=\"3\"]{grid-row:span 3;}");
+    lines.push("");
+    lines.push("/* responsive bands — the CONTAINER decides */");
+    lines.push(exportBandCSS());
+    lines.push("/* SPAN DERIVATION (build-time, not runtime) — for photographs, in order:");
+    lines.push("     aspect >= " + STATE.th3.toFixed(2) + "        -> 3 columns");
+    lines.push("     aspect >= " + STATE.th2.toFixed(2) + "        -> 2 columns");
+    lines.push("     inverse aspect >= " + STATE.thT.toFixed(2) + " -> 2 rows");
+    lines.push("     otherwise                -> 1 x 1");
+    if (STATE.rhythm > 0) {
+      lines.push("   then every " + STATE.rhythm + "th tile from tile " + STATE.offset +
+                 " is promoted to " + SHAPES[STATE.shape].label + " (position, not preference).");
+    } else {
+      lines.push("   the emphasis rhythm is OFF.");
+    }
+    lines.push("   Card spans are AUTHORED; only the rhythm applies to them. */");
+    return lines.join("\n");
+  }
+
+  /* ---- APPLY: preview and export, one pass, one source ---- */
+  function apply() {
+    /* ---- every dialled value, and the bands, as DECLARED rules (see baseCSS) ---- */
+    el("btBands").textContent = baseCSS() + liveBandCSS();
+    [gridPhoto, gridCards].forEach(function (g) { g.setAttribute("data-dense", STATE.dense); });
+
+    /* ---- spans ---- */
+    Array.prototype.forEach.call(gridPhoto.querySelectorAll(".bt-tile"), function (t, idx) {
+      var p = PHOTOS[idx];
+      var s = spanForPhoto(idx + 1, p.w, p.h);
+      t.setAttribute("data-c", String(s.c));
+      t.setAttribute("data-r", String(s.r));
+    });
+    cardTiles.forEach(function (t, idx) {
+      var s = spanForCard(idx + 1, t.getAttribute("data-authored"));
+      t.setAttribute("data-c", String(s.c));
+      t.setAttribute("data-r", String(s.r));
+    });
+
+    /* ---- dial labels + dirty marks ---- */
+    el("o-gap").textContent = STATE.gap + "px";
+    el("o-pad").textContent = STATE.pad + "px";
+    el("o-row").textContent = STATE.row + "px";
+    el("o-cols").textContent = String(STATE.cols);
+    el("o-dense").textContent = STATE.dense;
+    el("o-radius").textContent = STATE.radiusMode === "explicit" ? STATE.radiusPx + "px" : "theme token";
+    el("o-th3").textContent = STATE.th3.toFixed(2) + ":1";
+    el("o-th2").textContent = STATE.th2.toFixed(2) + ":1";
+    el("o-thT").textContent = "1:" + STATE.thT.toFixed(2);
+    el("o-rhythm").textContent = STATE.rhythm > 0 ? "every " + STATE.rhythm + (STATE.rhythm === 1 ? "st" : (STATE.rhythm === 2 ? "nd" : (STATE.rhythm === 3 ? "rd" : "th"))) : "off";
+    el("o-offset").textContent = String(STATE.offset);
+    el("o-shape").textContent = SHAPES[STATE.shape].label;
+    el("o-b3").textContent = STATE.b3 + "px";
+    el("o-b2").textContent = STATE.b2 + "px";
+    el("o-b1").textContent = STATE.b1 + "px";
+
+    var dirty = {
+      "d-gap": STATE.gap !== INFORCE.gap, "d-pad": STATE.pad !== INFORCE.pad,
+      "d-row": STATE.row !== INFORCE.row, "d-cols": STATE.cols !== INFORCE.cols,
+      "d-dense": STATE.dense !== INFORCE.dense,
+      "d-radius": STATE.radiusMode !== INFORCE.radiusMode,
+      "d-th3": STATE.th3 !== INFORCE.th3, "d-th2": STATE.th2 !== INFORCE.th2,
+      "d-thT": STATE.thT !== INFORCE.thT,
+      "d-rhythm": STATE.rhythm !== INFORCE.rhythm, "d-offset": STATE.offset !== INFORCE.offset,
+      "d-shape": STATE.shape !== INFORCE.shape,
+      "d-b3": STATE.b3 !== INFORCE.b3, "d-b2": STATE.b2 !== INFORCE.b2, "d-b1": STATE.b1 !== INFORCE.b1
+    };
+    Object.keys(dirty).forEach(function (k) {
+      var n = el(k);
+      if (n) { n.setAttribute("data-dirty", dirty[k] ? "yes" : "no"); }
+    });
+
+    /* ---- export, from the SAME state, in the SAME pass ---- */
+    el("outJson").textContent = JSON.stringify(exportObject(), null, 2);
+    el("outCss").textContent = exportCSS();
+
+    refreshReadouts();
+  }
+
+  /* ---- wire the dials ---- */
+  function dial(inputId, key, parse) {
+    var i = el(inputId);
+    i.addEventListener("input", function () {
+      STATE[key] = parse ? parse(i.value) : parseFloat(i.value);
+      apply();
+    });
+  }
+  dial("i-gap", "gap", parseFloat);
+  dial("i-pad", "pad", parseFloat);
+  dial("i-row", "row", parseFloat);
+  dial("i-cols", "cols", parseFloat);
+  dial("i-radius", "radiusPx", parseFloat);
+  dial("i-th3", "th3", parseFloat);
+  dial("i-th2", "th2", parseFloat);
+  dial("i-thT", "thT", parseFloat);
+  dial("i-rhythm", "rhythm", parseFloat);
+  dial("i-offset", "offset", parseFloat);
+  dial("i-b3", "b3", parseFloat);
+  dial("i-b2", "b2", parseFloat);
+  dial("i-b1", "b1", parseFloat);
+
+  seg("rvTheme", function (v) { root.setAttribute("data-apollo-theme", v); apply(); });
+  seg("rvDark", function (v) { root.setAttribute("data-theme", v); apply(); });
+  /* ⚠ CAUGHT IN THE RENDER: `.bt-stage` carries `transition:max-width`, so a readout taken in the
+     same task as a stage-width change is the PRE-transition value — the panel showed "1 column"
+     while the wall in front of it was drawing four. A computed value read in the same task as the
+     change that caused it is always the old one (render-verify runbook, 2026-07-27). The readouts
+     are therefore refreshed again when the transition ENDS, and once more past its duration in
+     case the browser coalesces the event away. */
+  seg("rvWidth", function (v) {
+    document.body.style.setProperty("--rv-stage-w", v === "full" ? "100%" : v + "px");
+    apply();
+    setTimeout(refreshReadouts, 240);
+  });
+  el("btStage").addEventListener("transitionend", function (e) {
+    if (e.propertyName === "max-width") { refreshReadouts(); }
+  });
+  seg("rvShow", function (v) {
+    el("blkPhoto").hidden = (v === "cards");
+    el("blkCards").hidden = (v === "photo");
+    apply();
+  });
+  seg("rvDense", function (v) { STATE.dense = v; apply(); });
+  seg("rvShape", function (v) { STATE.shape = v; apply(); });
+  seg("rvRadiusMode", function (v) {
+    STATE.radiusMode = v;
+    el("i-radius").disabled = (v !== "explicit");
+    apply();
+  });
+
+  el("btnExport").addEventListener("click", apply);
+  el("btnReset").addEventListener("click", function () {
+    STATE = JSON.parse(JSON.stringify(INFORCE));
+    el("i-gap").value = STATE.gap; el("i-pad").value = STATE.pad;
+    el("i-row").value = STATE.row; el("i-cols").value = STATE.cols;
+    el("i-radius").value = STATE.radiusPx; el("i-radius").disabled = true;
+    el("i-th3").value = STATE.th3; el("i-th2").value = STATE.th2; el("i-thT").value = STATE.thT;
+    el("i-rhythm").value = STATE.rhythm; el("i-offset").value = STATE.offset;
+    el("i-b3").value = STATE.b3; el("i-b2").value = STATE.b2; el("i-b1").value = STATE.b1;
+    segSet("rvDense", STATE.dense); segSet("rvShape", STATE.shape);
+    segSet("rvRadiusMode", STATE.radiusMode);
+    apply();
+  });
+
+  function copier(btnId, srcId) {
+    var b = el(btnId);
+    b.addEventListener("click", function () {
+      var txt = el(srcId).textContent;
+      var done = function () {
+        var was = b.textContent;
+        b.textContent = "Copied";
+        setTimeout(function () { b.textContent = was; }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done, function () {});
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); done(); } catch (err) {}
+        ta.remove();
+      }
+    });
+  }
+  copier("copyJson", "outJson");
+  copier("copyCss", "outCss");
+
+  /* expose for the render-verify probe — the probe must be able to drive a dial and read the
+     SAME state object the preview and export are rendered from, or it proves nothing */
+  window.__BENTO_TUNER__ = {
+    state: function () { return STATE; },
+    inforce: INFORCE,
+    set: function (k, v) { STATE[k] = v; var i = el("i-" + k); if (i) { i.value = v; } apply(); },
+    apply: apply,
+    exportObject: exportObject,
+    radiusTable: RADIUS_TABLE
+  };
+
+  apply();
+}());
+</script>
+</body>
+</html>

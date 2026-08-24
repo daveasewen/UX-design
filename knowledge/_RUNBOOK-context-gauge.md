@@ -354,6 +354,30 @@ work. That single fact resolves the posture in both directions and neither extre
 ⇒ **So: SIZE JOBS TO FIT A WINDOW so the fee is paid rarely; and when a job genuinely will not fit, pay
 it rather than burn the session.**
 
+### ★★ THE `s214-D4` CONDITIONAL ADVISORY — ~190,000 on delegated-wrap days (ARMED #217, by ADDITION)
+
+**Ruling (read it from `knowledge/_rulings.json` § `s214-D4`, never from a paraphrase):** the advisory
+stop line is re-derived for the **delegated-wrap ritual**: advisory = 200,000 − the measured hand-over
+reserve (**~190,000** at the n=3 hand-over measurements of 3,622–9,948 real), **CONDITIONAL on the wrap
+being delegated.** The staging condition — the `s214-D5` wrap-cost field carrying n≥2 fresh delegated
+wraps — was **MET at #215** (hand-over row written by the #215 wrap; the #216 band was exercised clean,
+probe GREEN 4/4 at ~251K on the separate `s214-D1..D6` mechanical band).
+
+**STATUS: ARMED — announced at the #217 opener (chat, 2026-08-22) and inscribed here in the same
+session, closing #216's carry ⑤ ("announced but uninscribed").**
+
+- **In force on a delegated-wrap session:** advisory ~190,000. **REVERSION, per the ruling:** on a
+  quota-bound day the wrap runs inline (#110 precedent) and the old arithmetic (200,000 − 49,071 =
+  **150,929**) returns *for that session*, **announced at the opener**.
+- **The outer lines are UNTOUCHED:** 200,000 working and 256,000 hard hold exactly where the #58b
+  sourcing put them (`s214-D1`/`s214-D2`). The 200–256K MECHANICAL-only band with its recall probe is
+  a **separate instrument** (`s214-D1..D6`) and is not this advisory.
+- ⚠ **Generated consumers lag by design:** `_CHAIN.md`'s `STOP` line renders whatever
+  `CHAIN_STOP_RE` finds; until its source is regenerated it may still print 150,929. The figure in
+  force is the one this section states for the session type, declared at the opener — a DECLARED gap
+  passes, a SILENT one fails.
+- Derivation and pitfalls: `notes/_briefs/2026-08-21-214-context-territory-strategy-v1.md` (row `W-99x`).
+
 ### ★★ THE THIRD TIER — the weekly allowance is PERISHABLE, and it inverts the objective
 
 **⚠ CORRECTION, inscribed as loudly as the claim it replaces (2026-07-27, same window).** This section

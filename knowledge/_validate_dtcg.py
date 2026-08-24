@@ -56,6 +56,17 @@ RULED AND ENACTED — s141-D1 (Dave, #141). Two deferrals were retired here, not
                              cannot silently regress: a NEW unitless number token
                              holding a px quantity is now a failure, not a note.
 
+CSS KEYWORDS ARE NOT TOKENS — s217-D4 (Dave, #217), ds-051. `row dense` (grid-auto-flow) has
+    NO legal W3C DTCG type, and there is no honest numeric or dimensional stand-in; minted as
+    $type:"string" it was a guaranteed DTCG-001 failure (it blocked the build gate at the #217
+    commit seam). Dave ruled the s141-D1 (B) PRECEDENT rather than a new deferral class or a
+    validator exception: the keyword is preserved VERBATIM under $extensions["com.apollo.sds"]
+    ["cssKeyword"] and the node carries NO $value — so it is a GROUP, and this gate correctly
+    has no opinion about it. ⚠ NOTHING IS SILENCED HERE: no deferral was added, no path was
+    exempted, and a keyword re-minted as a $type:"string" TOKEN still fails DTCG-001 exactly
+    as before. The keyword still reaches CSS — canon/gen_canon_tokens.py reads the cssKeyword
+    carrier and emits the var (canon.css was byte-identical across the move).
+
 CHECKS (continued)
   DTCG-006  a $type:"number" token holding an integer px quantity (same conservative
             detector as before: named non-px exclusions only) is a FAILURE — s141-D1 (A).

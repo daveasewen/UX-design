@@ -393,6 +393,34 @@ eats the hex digit. **The document was right; the instrument was wrong** — the
 one more time. Query `r.cells[n].textContent`, and prefer `re.fullmatch` over `findall` so a malformed
 scrape fails loud instead of returning a plausible number.
 
+## ★ Two potholes banked 2026-08-24 (#217) — WHEN THE ASSERTION IS ON THE PIXELS, THE FRAME LIES FIRST
+
+Both were found building a pixel arm that walks a rounded container's own edge (`verify_bento_
+matrix_217.py`, the cropped-keyline probe). Both reported a **defect that was not on the page**.
+
+- **`element.screenshot()` ROUNDS ITS FRAME TO WHOLE PIXELS, AND THE LAST BORDER ROW FALLS OUT.**
+  The measured box sat at `y = 892.171875`; the element shot captured 365 rows and the 1px bottom
+  border, painted at `1255.17…1256.17`, was **not in any of them**. The arm read a missing bottom
+  edge on a page that draws one. **Use a clipped full-page shot with an integer origin and a small
+  margin** (`page.screenshot(full_page=True, clip={x: floor(x)-M, y: floor(y)-M, …})`) and carry the
+  fractional part as an offset into the sampling maths. The margin is also where "nothing is painted
+  outside the curve" is looked for.
+- **THE FIRST `full_page` SHOT REFLOWS THE PAGE.** Chromium resizes the viewport to the document
+  height to capture it; on this page that moved the subject **5px** — so a box measured *before* the
+  first capture addressed a raster that no longer matched, and every sample landed 5px high.
+  **Take one throwaway `full_page` shot first**, then measure, then capture — and **re-measure the
+  box after the capture and refuse if it moved** ([[a-crash-is-not-a-fail]]: a mis-registered
+  raster must be a named refusal, never a quiet red).
+
+⚠ **AND THE COLOUR TEST NEEDS A CONTROL LIKE ANY OTHER.** "Equals the line colour" reports a clean
+**rounded** corner as missing, because a curve is antialiased — it read **76%** of an edge that is
+provably whole. Measure **distance from the GROUND** (the image's own most common colour) with a
+fraction of the ground→line delta as the threshold, and **set the page ground to the same colour as
+the subject's ground first**: on grey, the page showing through outside a rounded corner is
+`#F0F0F0`, which sits between white and a `#E1E1E1` hairline and reads as paint. The control is the
+subject's own top-left pixel — outside the curve, so it must BE the ground, or the arm cannot
+discriminate and must say so.
+
 ## Fallback — real-browser loop (Claude-in-Chrome on Dave's Mac)
 
 If in-sandbox rendering is down, or a true-browser check is wanted: Dave starts a **THREADING**

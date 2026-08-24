@@ -1951,6 +1951,399 @@
       "condition": "stated"
     },
     {
+      "links": [
+        "W-93"
+      ],
+      "home": "knowledge/_PHOTOGRAPHY-MANIFEST.md",
+      "id": "W-108",
+      "title": "#217 photography MANIFEST + web derivatives - the committed surface for 251 NON-REPO originals (s217-D1)",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 217,
+      "closes_when": "a committed manifest covers all 251 originals with dimensions, EXIF description and licence source, web-sized derivatives exist for the photos the library actually uses, and no original is git-trackable",
+      "closed_by": "#217 2026-08-22 - 251 rows, 245/251 EXIF descriptions, 251/251 licence sources, 12 derivatives all <=300KB; generator --check and --selftest green; git ls-files over the originals folder returns 0",
+      "provenance": "#217 build sub, under s217-D1 (Dave: originals NON-REPO, committed manifest + derivatives of USED photos only)",
+      "body": "Generator knowledge/_build_photo_manifest.py (--manifest / --derivatives / --check / --selftest). Machine surface knowledge/_PHOTOGRAPHY-MANIFEST.json, human surface .md, derivatives knowledge/assets/photography-web/ (sRGB, max edge 1600px, <=300KB, deterministic <stem>-w1600.jpg names). Absent EXIF fields are null, never defaulted. NOT done: tagging taxonomy (unruled, #211 item 3) and the KG mapping (priced in _PHOTOGRAPHY-KG-NOTE.md). The --check gate is DECLARED UNROUTED - it is not wired into _build_all.py or the commit seam, so it cannot yet fail in CI.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-93",
+        "W-108"
+      ],
+      "home": "knowledge/_PHOTOGRAPHY-KG-NOTE.md",
+      "id": "W-109",
+      "title": "#217 photography KG mapping - PRICED, NOT BUILT: five open questions, node identity the load-bearing one",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave answers node identity (original vs derivative vs manifest row) and the tagging approach, after which the mapping is a projection off the existing manifest",
+      "provenance": "#217 build sub - the sub was fenced from KG schema decisions, so the requirement was recorded and priced instead of built",
+      "body": "Records what a photography KG mapping would need. Q1 node identity, Q2 edge vocabulary to consumers (component vs versioned specimen page), Q3 tagging (UNRULED), Q4 licence as node vs string, Q5 whether the existing graph builders can carry 251 asset nodes - unchecked, part of the price. A hosted cloud image store (NOTED-FUTURE in s217-D1) would answer Q1 from outside and supersede most of the note.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-108"
+      ],
+      "home": "knowledge/_fitness-test/photography-image-block-v1.html",
+      "id": "W-110",
+      "title": "#217 Image-block specimen wired to REAL photography - the reference snippet copied, placeholders swapped for licensed stock",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 217,
+      "closes_when": "the four aspect-ratio variants, both caption-slot shapes, the loading state and the broken state all render with real committed derivatives, light and dark, with every image proven loaded",
+      "closed_by": "#217 2026-08-22 - render-proof at 900px and 1180px, light + dark: 12/12 images naturalWidth>0, object-fit cover on all, measured boxes 225x126 / 225x169 / 225x225 / 225x300 matching 16:9 / 4:3 / 1:1 / 3:4; font probe 347 vs DejaVu 375 vs nonexistent 301",
+      "provenance": "#217 build sub, copying knowledge/snippets/Image-block.reference.html [[specimen-starts-from-reference]]",
+      "body": "Alt text is the EXIF description VERBATIM - nothing summarised or tagged (tagging is unruled). Attribution slot carries the manifest licence source. TWO added CSS rules, both declared in the page head and raised in _DS-IMPROVEMENTS.md: an img rule for the media area (canon styles .media svg only) and align-items:start on the demo grid. NOT canon, NOT gated, nothing ruled; canon was not edited.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-108"
+      ],
+      "home": "knowledge/_fitness-test/photography-carousel-v1.html",
+      "id": "W-111",
+      "title": "#217 Carousel specimen wired to REAL photography - standard + peek variants, APG semantics and wiring carried across verbatim",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 217,
+      "closes_when": "both variants render real committed derivatives with the reference's dots/arrows/aria-live wiring unchanged, light and dark, at two viewport widths",
+      "closed_by": "#217 2026-08-22 - render-proof at 1180px and 420px, light + dark: 7/7 images loaded, hidden slides measure 0x0 as the standard variant intends, visible slides 558x220 (1180px) and 210x220 (420px), object-fit cover",
+      "provenance": "#217 build sub, copying knowledge/snippets/Carousel.reference.html [[specimen-starts-from-reference]]",
+      "body": "One added CSS rule (object-fit:cover on img.ph - the reference sizes .ph 100%x220px, right for an SVG with preserveAspectRatio=none and wrong for a photograph), declared in the head and raised in _DS-IMPROVEMENTS.md. The PEEK variant's demo copy was re-written from a transaction list to a featured-stories rail because no photograph honestly illustrates 'Bristol Water, paid 9 Aug'; the STANDARD variant keeps the reference's offer copy. No autoplay - the reference's PROPOSED default is untouched.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-108"
+      ],
+      "home": "reviews/LOGOS-2026-08-22-v1.html",
+      "id": "W-112",
+      "title": "#217 LOGOS INTO THE LIBRARY — reviews/LOGOS-2026-08-22-v1.html, all 12 brand SVGs on correct grounds, four themes render-proved",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has looked at the page live and either signed it off or ruled the changes he wants; and he has ruled whether it is wired into the library's Foundations tier",
+      "body": "The logos half of Dave's #216 lane (\"sort out the logos and photography and get them into the library\"). A standalone Foundations page presenting all 12 exported HSBC logo variants — hexagon / masterbrand / masterbrand-with-identifier x colour|mono x on-light|on-dark — each on the ground its artwork requires, colour and mono side by side, filenames and a measured inventory (viewBox, natural size, bytes, fill census) on the face of the page. NO POLICY IS AUTHORED: clearspace, minimum sizes and co-branding stay Dave's and create.hsbc's; the notes section carries only what knowledge/guidelines/logos.md already says. NO SVG was renamed, edited or derived from. Render-proved in all four themes x light/dark (8 states) plus 480px, real HSBC face asserted against two controls, 12/12 images loaded in every state, every custom property resolved. Two findings logged by addition: ds-045 (both on-dark identifier exports carry no identifier label — they are the plain masterbrand on a 795-unit box) and ds-046 (a themed element that also consumes its own token resolved the wrong value in supercharge dark). NOT committed, NOT pushed.",
+      "provenance": "#217 2026-08-22 - Opus build sub, brief notes/_briefs/2026-08-22-217-logos-library-brief.md; rowed at creation (forgotten-document class)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-110",
+        "W-111"
+      ],
+      "home": "knowledge/_render/verify_photography_specimens.py",
+      "id": "W-113",
+      "title": "#217 render-proof probe for the real-photography specimens - asserts every <img> LOADED before it shoots anything",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 217,
+      "closes_when": "the probe drives both specimen pages, asserts image load / measured ratio / object-fit / a three-control font probe, and has been proven able to FAIL",
+      "closed_by": "#217 2026-08-22 - --all green over both pages at 1180 light, 1180 dark and 420 light (12/12 and 7/7 images loaded, font probe 347 vs DejaVu 375 vs nonexistent 301); mutation arm driven: a page with one dead src and one real derivative returned 'broken 1' and exit 1 with the control passing in the same run",
+      "provenance": "#217 build sub - s191-D2 home-or-declare: the probe was written to a repo home rather than left in /var/tmp",
+      "body": "A screenshot cannot tell a loaded photograph from a grey box, so the numbers come first. Hidden Carousel slides legitimately measure 0x0 box, which is why box size and naturalWidth are asserted separately. ENVIRONMENT CAVEAT, declared: #217 drove it on FOREIGN-SESSION /var/tmp farms (pylibs-s213e2, pw-browsers-215, chromelibs-s213e2) which a later sandbox is not guaranteed to have - re-extract per _RUNBOOK-render-verify.md, do not assume.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-108",
+        "W-110",
+        "W-112"
+      ],
+      "home": "knowledge/_render/gen_foundations_217.py",
+      "id": "W-114",
+      "title": "#217 THE FOUNDATIONS TIER, FILLED — Photography + Logos as generated library pages in the bento idiom, wired into gen_library_214's empty Foundations rung",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has opened the library, clicked into both Foundations entries, and either signed them off or ruled the changes he wants — including whether the position-based emphasis rhythm (every fifth photograph promoted to a 2×2 block) is the bento he meant",
+      "body": "Dave #217 verbatim: \"so we need a foundations section in the library with images and logos displayed like the photography bento\". NEW GENERATOR knowledge/_render/gen_foundations_217.py writes showroom/_foundations/{photography,logos}.html; gen_library_214.py gains a FOUNDATIONS list (the ONE list — the foundations generator and gen_thumbs.py both import it) and appends two declared rows to the derived component rows, so the s215-D4 Foundations rung draws for the first time. THE SUBDIRECTORY IS LOAD-BEARING: gen_showroom.py's orphan prune and gen_library_214.collect() both glob showroom/*.html non-recursively, so a foundation page in showroom/ would be counted as a component AND deleted — selftest bites 30 / 1-2 keep it out. ⛛ BENTO STAYS UN-MINTED (Dave parked structural bento components at #216): every rule is page-local, scoped .fx, declared in the page head; no canon component, no canon.css edit, no token. Nothing re-drawn — photographs are <img> at the committed derivatives, marks are <img> at the exported SVGs, and the span vocabulary + zero-JS popover lightbox are copied from knowledge/_fitness-test/bento-gallery-showcase-v2.html (#216) — WHICH IS ITSELF AWAITING SIGN-OFF, so this copies a layout Dave pointed at rather than certifying it. Render-proof: 16 states (2 pages × 4 themes × light/dark), real HSBC face asserted against two controls (347 vs DejaVu 375 vs nonexistent 301), every foreign custom property resolved non-empty in every state, light≠dark ground in all four themes, popover lightbox driven open in all 8 photography states. Selftests: gen_foundations_217 20 bites, gen_library_214 23→32 bites. NOT committed, NOT pushed.",
+      "provenance": "#217 2026-08-22 - Opus build sub, brief notes/_briefs/2026-08-22-217-foundations-bento-brief.md; rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-114"
+      ],
+      "home": "knowledge/_render/verify_foundations_217.py",
+      "id": "W-115",
+      "title": "#217 the Foundations render-probe — resolves every FOREIGN custom property live, in four themes × light/dark, and drives the popover lightbox open",
+      "project": "apollo",
+      "state": "done",
+      "opened": 217,
+      "owner": "claude",
+      "closes_when": "the probe drives both Foundations pages in all 8 states, refuses on a font probe that cannot discriminate, fails on an empty custom property, and has been seen to FAIL",
+      "closed_by": "#217 2026-08-22 - 16/16 states green after two real catches: (a) --bx-cols/--bx-row were declared INLINE and resolved EMPTY in all 8 states, which is why they are now declared rules; (b) the earlier flex tile let the photograph's intrinsic height drive the grid row, so every span looked identical",
+      "provenance": "#217 build sub - s191-D2 home-or-declare: written to a repo home, not left in /var/tmp",
+      "body": "A fallback is a FENCE and a TRAP: with var(--x,#FFFFFF) nothing renders silent black, but if the canon property ever stopped resolving the page would quietly serve the LIGHT fallback in a DARK theme and no gate would fire. So the probe resolves every property the stylesheet reads but does not declare, live, per theme×mode, and treats an empty resolution as a failure; it also asserts light≠dark ground per theme, which is what would catch a page that 'works' only because everything fell back. ENVIRONMENT CAVEAT, declared: driven on FOREIGN-SESSION /var/tmp farms (pylibs, pw-browsers-215, chromelibs-s213e2) plus a FRESH font symlink farm (fonts-s217found) - re-stage per _RUNBOOK-render-verify.md, do not assume.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-114",
+        "W-115"
+      ],
+      "home": "knowledge/_fitness-test/bento-tuner-v1.html",
+      "id": "W-116",
+      "title": "#217 THE BENTO PARAMETER TUNER — a live decision controller for the open bento numbers (gutter, padding, row unit, columns, aspect→span thresholds, emphasis rhythm, tile radius, responsive bands), with a mint-ready export",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has turned the dials in the themes he cares about and either exported a set of values he means to rule, or said what the tuner is missing before he will",
+      "body": "Dave #217 verbatim: \"We need to promote all the various types of bento to canon, i just need to decide on some of the parameters like gutters etc\". THIS IS THE INSTRUMENT, NOT THE PROMOTION — it mints nothing, edits no token, no canon.css rule, no theme and no component; the promotion is Dave's ruling and it happens after he exports. Dials: gutter 0-48 / outer padding 0-80 / row unit 96-320 / columns 2-6 / tile radius (theme token or 0-28 dialled) / dense packing / three aspect→span thresholds / emphasis rhythm N + offset + promoted shape / three container-query band widths. Preview is REAL CONTENT — the 12 committed web derivatives and a 12-tile mixed-card wall — side by side inside ONE container, so a dial moves both and the band dials collapse both. Four themes x light/dark switchable in-page with live WCAG readouts on four ink-on-ground pairs. EXPORT: JSON + CSS rendered on the page, generated from the SAME state object as the preview in the SAME pass (the briefed pitfall), concrete values only per s200-D1 — where the radius is left on the theme token the exporter reads the RESOLVED pixel value in each of the eight states rather than emitting a var() chain. Every dial arrives on the value in force today and is labelled PROPOSED-NOT-RULED, with a per-dial 'changed' mark. ⛛ The radius dial is the BENTO TILE radius only — component radii and the segmented-switch carve-out are radius-tuner-v2 territory and are neither dialled nor exported; the page says so. Controller chrome is NEUTRAL only (no red, no yellow) and no colour value is authored anywhere on the page; zero font-size and zero font-weight declared. NOT committed, NOT pushed.",
+      "provenance": "#217 2026-08-22 - Opus build sub, brief notes/_briefs/2026-08-22-217-bento-tuner-brief.md; rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-116"
+      ],
+      "home": "knowledge/_render/verify_bento_tuner_217.py",
+      "id": "W-117",
+      "title": "#217 the bento-tuner render-probe — drives the dials and MEASURES the grid, proves export parity against the computed preview, and sweeps eight states for dangling vars",
+      "project": "apollo",
+      "state": "done",
+      "opened": 217,
+      "owner": "claude",
+      "closes_when": "the probe drives every class of dial, measures the consequence on the live grid rather than restating the input, proves the on-page export against getComputedStyle, and has been seen to FAIL",
+      "closed_by": "#217 2026-08-22 - 55/55 assertions green across ten legs, after THREE real catches the probe or the render made: (a) the CSS export carried the tuner's own --bt-cols/.bt-tile names, so the pasted block's responsive bands would have been inert; (b) the readout panel read the stage width in the same task as the max-width transition and reported 1 column over a four-column wall; (c) the clamped photo captions had their descenders sliced by the scaffold's cap/alphabetic trim (ds-048). A fourth red was the INSTRUMENT, not the artefact: the no-var() assertion scraped the export's own explanatory comment, which contains the words it forbids.",
+      "body": "Ten legs. L1 font asserted against TWO controls (347 target vs 375 DejaVu vs 301 nonexistent), never a boolean. L2 fifteen FOREIGN custom properties resolve non-empty in all 8 states, with a negative control that resolves EMPTY so the leg can fail. L3 light != dark ground per theme. L4 dial-drive MEASURED: gap 16px->34px, grid-auto-rows 180px->244px, tracks 4->6, tile radius 0px->18px, all read off getComputedStyle after the change. L5 export parity: the JSON rendered on the page is byte-identical to the live state's export AND agrees with the measured gap/row/track-count; the CSS declarations carry no var() chain in either radius mode and no page-private name. L6 bands answered by the CONTAINER at 1100/820/520, plus a leg that MOVES a band dial and proves the collapse point moved with it. L7 emphasis rhythm 5->[1,6,11], 3->[1,4,7,10], 0->[]. L8 all twelve photographs decode (naturalWidth>0) - the first shot was twelve grey boxes because lazy tiles never scrolled into view. L9 clamped captions are not cap-trimmed. L10 the readout panel agrees with the wall after a band transition settles. MEASURED AND WORTH DAVE'S EYE: the per-theme resolved tile radius is 0px everywhere EXCEPT console, which is 20px in both light and dark. ENVIRONMENT CAVEAT, declared: driven on FOREIGN-SESSION /var/tmp farms (pylibs, pw-browsers-215, chromelibs-s213e2) plus a FRESH font symlink farm (fonts-s217tuner); zero .uuid strays left in the TTF directory. Re-stage per _RUNBOOK-render-verify.md, do not assume.",
+      "provenance": "#217 build sub - s191-D2 home-or-declare: written to a repo home, not left in /var/tmp",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-116",
+        "W-117"
+      ],
+      "home": "knowledge/canon/gen_canon_bento.py",
+      "id": "W-118",
+      "title": "#217 THE BENTO, PROMOTED TO CANON — the s217-D2 grammar minted into the token store and compiled into canon.css",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 217,
+      "closes_when": "the ruled parameters live in the token store with the gutter as the only per-theme override, the grammar is GENERATED into canon.css rather than hand-kept, nesting carries an independent parameter set per level, and every ruled number has been MEASURED live in all four themes x light/dark",
+      "closed_by": "#217 2026-08-23 - probe green first drive, 8/8 states: gutter 0/0/24/24 (mono/supercharge/legacy/console), container radius 20 in console and 0 in the other three, TILE radius 0 in all eight, overflow clip present in all eight, nested outer gutter 40 with three inner gutters at 1, band collapse 3/2/1 measured on one page at one viewport, zero dangling properties.",
+      "body": "Ruling s217-D2 (Dave, 2026-08-23) minted. STORE: knowledge/tokens/layout.json gains layout/bento — columns 6, gutter 0px (BASE), outer-padding 0px, row-unit 320px, packing 'row dense', plus $bands (1100/820/520) and $spanDerivation (6.0 / 2.6 / 1:1.15, every 6th from tile 1) as BUILD-TIME metadata that emits no CSS var. PER-THEME: gutter 24 in apollo-legacy.overrides.json and apollo-console.overrides.json — the ONLY divergence; mono and supercharge take the base 0. RADIUS: no new token — s217-D2's container radius consumes the existing border-radius/container role (console 20, others follow the base alias to 0), applied to .c-bento with overflow:hidden. GENERATOR: knowledge/canon/gen_canon_bento.py compiles the AUTO-BENTO block of canon/canon.css and exposes span_for/emphasise as the ONE build-time span derivation; it exists because the container-query band widths CANNOT be var()s, so hand-typing them would have made the stylesheet a second source for a number the store already owns. Grammar: .c-bento / .c-bento__grid / .c-bento__tile, data-c 1-6 and data-r 1-3, all span rules CHILD-scoped so an outer bento cannot re-span a nested one's tiles. Two names for the column count on purpose: --bento-columns is the instance dial, --bento-cols-now is what the bands rewrite. ALSO FIXED AT THE CLASS: 'columns' added to gen_canon_tokens.UNITLESS — --layout-web-columns had been shipping as '12px', a track count as a length, invisible because nothing consumed it. NOT committed, NOT pushed.",
+      "provenance": "#217 2026-08-23 - Opus build sub, brief notes/_briefs/2026-08-23-217-bento-canon-mint-brief.md; rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-118"
+      ],
+      "home": "reviews/BENTO-CANON-2026-08-23-v2.html",
+      "id": "W-119",
+      "title": "#217 THE BENTO-CANON DEMO — the bento-of-bentos Dave described, four themes x light/dark, for his eye",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has looked at the four themes and either signed the grammar off or named what is wrong with it",
+      "body": "Dave #217 verbatim: 'like a page section that had three bentos each with 1px spacing within a larger one that had 40px spacing'. Built: three 1px-gutter bentos inside a 40px-gutter outer, each level carrying its own declared parameter set, no JavaScript and no new classes — an inner bento is a tile that is also a bento. Four sections: the grammar at its ruled defaults over the twelve committed photography derivatives (spans DERIVED, rhythm visible); the same grammar with AUTHORED card spans; the bento-of-bentos; and three fixed-width walls (1000/780/460) that collapse to 3/2/1 on one page at one viewport, which is the proof the bands answer the WALL. The page DECLARES NO GRID, NO GAP AND NO BENTO RADIUS — selftest bite 1 refuses to build one that does, so the page is a test of the canon grammar as well as a demo of it. Generator knowledge/_render/gen_bento_canon_217.py (4 bites), probe knowledge/_render/verify_bento_canon_217.py. AWAITING DAVE'S EYE. NOT committed, NOT pushed. ⟨v2, #217⟩ Dave asked two things mid-session and v2 answers both. PORTRAIT: three portrait derivatives were minted (gettyimages-1336692652, stocksy-6629948, gettyimages-ca60828-144dpi) and land as two-row tiles — s217-D2's 1:1.15 threshold already ruled it, so nothing was decided, only PROVEN (probe measures data-r=2 on every portrait tile in 8 states x 4 widths). SQUARING: a new section shows eleven deliberately awkward tiles ragged and squared side by side, marked PROPOSED-NOT-RULED. Page is now reviews/BENTO-CANON-2026-08-23-v2.html; v1 stays on disk untouched.",
+      "provenance": "#217 2026-08-23 - Opus build sub; rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-118",
+        "W-119"
+      ],
+      "home": "knowledge/_render/verify_bento_canon_217.py",
+      "id": "W-120",
+      "title": "#217 the bento-canon render-probe — measures the per-theme gutter, the container radius AND its clip, the nested parameter sets and the band collapse in eight states",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 217,
+      "closes_when": "every clause of s217-D2 that can be wrong is measured on the live document in all four themes and both modes, including the clip rather than only the radius",
+      "closed_by": "#217 2026-08-23 - ALL GREEN, 8/8 states, first drive. Six measurements per state: per-theme gutter (never inferred from one theme), container radius, TILE radius (0 — a rounded tile would mean the ruling was inverted), overflow clip, nested outer/inner gutters and inner radii, band collapse; plus the dangling sweep over 10 foreign properties and the six --bento-* dials, which carry no literal fallback by design.",
+      "body": "Font asserted with controls per the render runbook (347 target = both aliases, DejaVu 375, nonexistent 301) — document.fonts.check cannot discriminate. goto file:// only; set_content would leave canon inert. Env: PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-215, PYTHONPATH=/var/tmp/pylibs, LD_LIBRARY_PATH=/var/tmp/chromelibs-s213e2/..., FONTCONFIG_FILE=/var/tmp/fonts-s217bento.conf (fresh symlink farm), TMPDIR=/var/tmp. Tree asserted clean after the render. NOT committed, NOT pushed.",
+      "provenance": "#217 2026-08-23 - Opus build sub; rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-118"
+      ],
+      "home": "knowledge/_render/gen_foundations_217.py",
+      "id": "W-121",
+      "title": "#217 the Foundations pages RE-POINTED from page-local bento styles to the canon grammar",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 217,
+      "closes_when": "both Foundations pages consume .c-bento from canon.css, keep no private copy of the structure it replaced, and still render green in eight states",
+      "closed_by": "#217 2026-08-23 - page-local structural CSS 19 declaration lines -> 4 (two instance-dial rules, one tile-content rule, one chrome media query). verify_foundations_217 --page photography green in 8/8 states, no dangling property, light != dark in all four themes, lightbox still opens. gen_foundations_217 --selftest 20 bites.",
+      "body": "s217-D2 SUPERSEDES the #216 'bento stays un-minted' posture this generator was built under, and the file now says so. Removed: .bx-grid / .bx-tile / the four data-span rules / the two data-kind dials / three viewport band media queries. Added: .fx-wall-photo and .fx-wall-logo instance dials plus one tile-content rule. The span derivation now IMPORTS from canon/gen_canon_bento rather than keeping its own copy, so the ruled thresholds (6.0 / 2.6 / 1:1.15, every 6th from tile 1) replace the page's own (4.0 / 1.45, every 5th) and the on-page prose is GENERATED from the store so it cannot describe a rule that did not run. TWO BEHAVIOUR CHANGES, both named in the file: the bands are now CONTAINER queries against the bento's own wall, so a narrow library pane collapses the wall rather than needing the window to move; and the tile arrangement changed because the thresholds did. Selftest bite 6 was INVERTED — it used to assert the bento stayed un-minted, it now asserts the re-point AND that no private structural rule survived underneath. NOT committed, NOT pushed.",
+      "provenance": "#217 2026-08-23 - Opus build sub; rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-118",
+        "W-119"
+      ],
+      "home": "knowledge/canon/gen_canon_bento.py",
+      "id": "W-122",
+      "title": "#217 THE SQUARING PASS — orphaned compartments, PROPOSED not ruled; Dave's to ratify",
+      "project": "apollo",
+      "state": "done",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has ruled the mechanism in or out — whether tile spans may be adjusted at mint time at all, whether only the tail may move, and what a photograph may be re-cropped into",
+      "body": "Dave #217 verbatim: 'Is there a way to avoid orphaned compartments so the bento is always cohesively rectangular? see image' (screenshot: a lone tile hanging below an otherwise straight bottom edge). BUILT AS A PROPOSAL, NOT ENACTED AS A RULING: canon/gen_canon_bento.square_wall() simulates the browser's own dense placement, tests whether every cell down to the last row is filled AT EVERY COLUMN COUNT THE BANDS PRODUCE (6/3/2/1, or the instance's own shorter ladder), and re-spans the LAST few tiles until it is. Deterministic, mint-time, no JS and no CSS hack. It emits NOTHING into canon.css — it only rewrites the data-c/data-r a generator was about to write, so removing it is a one-line change. Cost-ordered so a portrait is not laid on its side to square a wall. Refuses BY NAME when a wall cannot be rectangular at every band (three tiles at six columns cannot). Consumers so far: gen_bento_canon_217.py (all 9 walls) and gen_foundations_217.py (photography, ladder 4/3/2/1). Measured: 352 wall measurements green (11 walls x 4 widths x 8 states), mutation arm red by name. — RATIFIED s217-D3 (Dave: 'is very cool', dashboard+brochureware roles; gallery exempt per the same ruling). Closed by the conductor at #217; a sub may not close Dave's open item.",
+      "provenance": "#217 2026-08-23 - Opus build sub (continuation lane); rowed at creation (forgotten-document class, #185)",
+      "condition": "stated",
+      "closed_by": "s217-D3"
+    },
+    {
+      "links": [
+        "W-118",
+        "W-122"
+      ],
+      "home": "knowledge/canon/gen_canon_bento.py",
+      "id": "W-123",
+      "title": "#217 BENTO ROLES — s217-D3 dashboard / brochureware / gallery minted into canon, with the ruled caption space",
+      "project": "apollo",
+      "state": "done",
+      "owner": "claude",
+      "opened": 217,
+      "closes_when": "the three roles are a compiled part of the canon grammar (attribute on the instance, no JS), each role's radius placement and spacing are MEASURED per theme, squaring runs where s217-D3 ratified it and is off where it exempted it, and the ruled caption space reaches the page from the store",
+      "closed_by": "#217 2026-08-23 - verify_bento_roles_217.py ALL GREEN, 8 states x 4 widths: dashboard container radius 20 (console) / 0 (mono, legacy, supercharge) with tiles square, inner walls at 1px and the OUTER wall keeping the theme gutter (0/0/24/24); brochureware + gallery container 0 with TILE radius 20 in console; caption min-height 86px and --bento-caption-lines 3 measured on 360 caption blocks; squared-role holes 0 at every width; gallery holes 4/3/2/0 counted and TOLERATED; portrait two-row survives the exemption. Mutation arm (--mutate, every role rewritten to brochureware) went RED 6 ways.",
+      "body": "Ruling s217-D3 (Dave, 2026-08-23) minted. STORE: knowledge/tokens/layout.json gains layout/bento/$roles (dashboard radius=container spacing=tight 1px squaring on; brochureware radius=tile spacing=theme squaring on; gallery radius=tile spacing=theme squaring OFF) and layout/bento/caption-space = 86px. CANON: canon/gen_canon_bento.py gains roles() / role_policy() / caption_space() / square_wall_for_role() and compiles a [data-bento-role=...] block into canon.css - role is an ATTRIBUTE on the instance, no JS, no new class. The dashboard 1px is INSIDE the inner walls: a :has(> .c-bento__grid > .c-bento) carve-out gives the outer wall of a bento-of-bentos the theme gutter back, because a blanket 1px would collapse the structure the role describes. The caption space is DERIVED, not picked: 62px shipped -> 86px = 12 padding-block x2 + 3 description lines x 16 + 2 gap + 12 licence line, and the 3-line clamp is derived BACK from the number so space and clamp cannot disagree. TWO DEFECTS FOUND BY THE PROBE AND FIXED AT THE CLASS: (1) an unterminated /* in the generator silently swallowed the dashboard role's radius and gutter while the stylesheet still parsed - a comment-balance bite now gates it; (2) the dashboard tile rule out-specified the container radius on a tile that is ALSO a bento, squaring off the inner walls the role exists to round - the rule was removed entirely, since canon gives a tile no radius anyway and a literal border-radius:0 also trips the radius gate. Foundations photography RE-POINTED to role=gallery. NOT committed, NOT pushed. ds-051 UNTOUCHED and still the build gate's only red.",
+      "provenance": "#217 2026-08-23 - Opus build sub; rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-123",
+        "W-119"
+      ],
+      "home": "reviews/BENTO-CANON-2026-08-23-v3.html",
+      "id": "W-124",
+      "title": "#217 THE BENTO-ROLES DEMO + THE KEYLINE TRIAL - three roles side by side, and the keyline-less gallery for Dave's eye",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has looked at the three role sections in console and either signed them off or named what is wrong, AND has ruled the keyline trial in or out",
+      "body": "reviews/BENTO-CANON-2026-08-23-v3.html - one section per role, console as the opening theme because it is the only theme whose radius token is non-zero and therefore the only one where the roles look different. Four themes x light/dark switchable. TWO THINGS ARE FOR DAVE: (1) the three roles as rendered; (2) the KEYLINE TRIAL, PROPOSED NOT RULED - his words were 'lets be more generous with the caption space and can we try dropping the keylines and just have a 1px gutter and row space'. The caption space is RULED and built (86px, three description lines). The keyline drop is a TRIAL specimen shown directly beneath the ruled keylined gallery with the same photographs and the same derived spans, so he rules by eye. Every trial declaration names .dx-trial in its selector and a selftest bite enforces that, so the trial cannot leak into the ruled variant. Say the word and it becomes a ruling; say no and the trial block comes out in three lines.",
+      "provenance": "#217 2026-08-23 - Opus build sub; rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-124",
+        "W-123"
+      ],
+      "home": "reviews/GALLERY-COMPARE-2026-08-23-v1.html",
+      "id": "W-125",
+      "title": "#217 GALLERY: SPAN GRID or JUSTIFIED ROWS - the decision page, PROPOSED not ruled",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has looked at candidates A and B on the same photographs and ruled which layout the gallery role uses - span grid with orphan tolerance (the ruled s217-D3 behaviour, unchanged if he says nothing) or justified rows with a widow switch",
+      "body": "Dave #217 verbatim: \"'whether gallery stays a span grid with orphan tolerance, or becomes justified rows with a widow switch' would this be visually different, id like to see these two side by side if so\". ANSWER: yes, and the difference is CROPPING. reviews/GALLERY-COMPARE-2026-08-23-v1.html (generator knowledge/_render/gen_gallery_compare_217.py, probe knowledge/_render/verify_gallery_compare_217.py) shows both candidates stacked full width on the same 15 committed derivatives in the same order, read through the SAME function as the ruled roles page (gen_bento_roles_217.read_photos - two data paths would make the comparison a lie). A = the ruled gallery role exactly as canon renders it, at canon's default 6 columns AND at the 4-column dial the roles page used (the crop cost is mostly the dial, so showing only the harsh one would be a strawman), plus the s217-D3 keyline-less trial. B = justified rows packed at MINT TIME (s200-D1) at the ruled 320px row unit, which is also Flickr's own default target; rows justify flush by proportional flex-grow so nothing is cropped; the short last row are WIDOWS, unscaled, counted, and switchable with a checkbox and CSS - no JS. MEASURED: A crops 44% of image area on average at 6 columns (worst 50%) and 13% at 4 columns (worst 24%), 15/15 photographs cropped; A's holes 6/3/2/0 by band at 6 columns, tolerated per s217-D3. B crops NOTHING (every rendered box within 1% of its manifest ratio in 8 states at 3 widths), rows 285/350/290/285px at 1336px - a 65px spread around the 320 target - and 3 widows. DECLARED COST OF B: mint-time packing fixes row membership, so B's rows stay flush but get shorter as the container narrows instead of re-packing; A re-flows at the bands for free. NOTHING IS RULED - s217-D3 stands until Dave picks. No canon, token or ruling touched.",
+      "provenance": "#217 2026-08-24 - Opus build sub (bento lane); rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-124",
+        "W-125",
+        "W-123"
+      ],
+      "home": "showroom/_foundations/bento.html",
+      "id": "W-126",
+      "title": "#217 THE BENTO MATRIX EXPLORER - the s217-D5 option matrix live in Foundations, with five PROPOSED resolutions for Dave",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has driven the three types in the explorer and either ruled the five open points of s217-D5 (P1 tight+keylines, P2 the caption ground, P3 the capsule's edge, P4 the stepped radius at tight, P5 one palette) or named what is wrong with the proposed resolutions",
+      "body": "showroom/_foundations/bento.html - the s217-D5 option matrix as a LIVE Foundations entry, beside Photography and Logos, drawn by the library index. Generator body knowledge/_render/gen_bento_matrix_217.py, written by knowledge/_render/gen_foundations_217.py (ONE writer, ONE shell), wired through the FOUNDATIONS list in knowledge/_render/gen_library_214.py; probe knowledge/_render/verify_bento_matrix_217.py. THREE TYPES with their ruled dials over real content (the 15 committed photography derivatives + the mixed cards and panels, all read through gen_bento_roles_217 - ONE data path; justified rows through gen_gallery_compare_217.pack_rows - ONE packing maths). 837 reachable combinations, ENUMERATED at build time rather than claimed: display 54, gallery 675 (after the legality refusals), dashboard 108. The types render as CANON'S ROLES under s217-D5's new names (display->brochureware), so no ruled behaviour is restated. FIVE THINGS ARE PROPOSED, NOT RULED, one per open point, each labelled PROPOSED on the page: P1 tight+keylines ON = flush tiles with inset hairlines, tight+keylines OFF = the ruled 1px show-through; P2 a caption is judged against its IMMEDIATE ground and same-on-same is refused with a reason printed beside the control; P3 the full capsule requires a caption background or keylines; P4 at Display tight the standard radius and a stepped-down concentric alternative are drawn side by side; P5 one grey/white/transparent palette on all three types. A SIXTH PROPOSAL was forced by measurement and is declared on the page: a gallery tile paints no ground of its own, because with the tile painted a white caption on a grey bento rendered white-on-white while P2 called it legal. RULED-OUT IS ABSENT, NOT DISABLED: the dashboard main-spacing control has no tight button at all. Every reachable combination renders. MEASURED, four themes x light/dark: three types driven, seven dials measured in pixels (display 40/24/1 and the flush-at-tight collapse to 0, gallery mode and the ragged/square span swap and both roundings at console 20px, dashboard outer 40/24 against inner 24/1), both legality rules refused WITH reasons and the refused click proven inert, export parity green over 8 dials + 11 resolved values, zero dangling properties, light != dark ground in all four themes. MUTATION ARM RED BY NAME: with the legality function stubbed out, 5 refusal assertions fail and nothing else does. NOT committed, NOT pushed. Nothing ruled - s217-D5's five open points are still open and this page exists to close them by eye. ⬛ AMENDED BY ADDITION #217 2026-08-24 (s217-D6, Dave's first sitting) — the row above is the record of the FIRST build and TWO of its figures are now SUPERSEDED: the 837 total and 'P4 drawn side by side'. (1) DISPLAY TIGHT was a DIFFERENT COMPOSITION and the cause was the PRESENTATION, not the spacing: every .c-bento is container-type:inline-size, so P4's two walls in a two-column grid each measured 571px at a 1280px viewport, tripped the 820px band and collapsed to 2 columns while standard rendered 4 at 1166px. FIXED by STACKING both walls full width, and fenced as a class rule - nothing in the explorer may present a comparison by shrinking a container a band responds to (ds-054). (2) THE DASHBOARD had TWO causes: the ruled s217-D3 squaring pass was never asked for the outer wall (a literal data-c=1 in the markup, ds-056), and canon STRETCHED a nested bento without letting its grid grow, so a group beside a taller sibling was a rounded container 120px taller than its content - rounded top, FLAT BOTTOM (ds-055). The second fix lives in canon (gen_canon_bento.py, minimal and named, ordered serial run). Measured after: 0 empty cells of 4, dead band [0,0,0], all four corners 20px in console. (3) s217-D6 GALLERY-IN-CONSOLE EXCLUDES KEYLINES - the control node LEAVES the document there and is present in the other three; the reachable count is THEME-DEPENDENT as a result and the page prints both: 1017 in mono/legacy/supercharge (display 54, gallery 675, dashboard 288) and 639 in console (gallery 297). (4) s217-D6 SUB-BENTO SPACING IS A SNAPPING SLIDER over 1,2,4,8,12,16,20,24 replacing the three-stop control, driven in PIXELS with the export carrying the SNAPPED value (7->8, 13->12, 22->20, 40->24, 0->1 all driven green). A SECOND MUTATION ARM (--break-layout / --layout-mutation) puts all three of Dave's symptoms back and 4 assertions go red by name with 0 collateral. NOTHING RULED, nothing committed; s217-D5's five open points are still open and s217-D6's conductor's reading (square-cornered themes keep the keyline control) is still Dave's to correct.",
+      "provenance": "#217 2026-08-24 - Opus build sub; rowed at creation (forgotten-document class, #185)",
+      "condition": "stated"
+    },
+    {
+      "links": [],
+      "home": "notes/_briefs/2026-08-22-217-photography-manifest-brief.md",
+      "id": "W-127",
+      "title": "#217 BRIEF - the photography manifest + web-derivative pipeline, the sub brief that enacted s217-D1",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has read the manifest surface or the brief is superseded by the KG mapping work (W-109)",
+      "body": "Sub brief written during #217 and committed at the #217 wrap. Rowed here because the doc-row gate REFUSED the wrap with it unrowed - the forgotten-document class (#185): a document with no store row is invisible to every carry. This row records the brief's existence and its close condition; it rules nothing, closes nothing, and schedules nothing.",
+      "condition": "stated"
+    },
+    {
+      "links": [],
+      "home": "notes/_briefs/2026-08-22-217-logos-library-brief.md",
+      "id": "W-128",
+      "title": "#217 BRIEF - the logos into the library sub brief (produced reviews/LOGOS-2026-08-22-v1.html and ds-045/ds-046)",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has ruled the ds-045 Figma re-export or parked the logos lane",
+      "body": "Sub brief written during #217 and committed at the #217 wrap. Rowed here because the doc-row gate REFUSED the wrap with it unrowed - the forgotten-document class (#185): a document with no store row is invisible to every carry. This row records the brief's existence and its close condition; it rules nothing, closes nothing, and schedules nothing.",
+      "condition": "stated"
+    },
+    {
+      "links": [],
+      "home": "notes/_briefs/2026-08-22-217-foundations-bento-brief.md",
+      "id": "W-129",
+      "title": "#217 BRIEF - the Foundations tier sub brief (photography, logos and bento as library pages)",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has sat with the Foundations tier or it is superseded by a later library IA change",
+      "body": "Sub brief written during #217 and committed at the #217 wrap. Rowed here because the doc-row gate REFUSED the wrap with it unrowed - the forgotten-document class (#185): a document with no store row is invisible to every carry. This row records the brief's existence and its close condition; it rules nothing, closes nothing, and schedules nothing.",
+      "condition": "stated"
+    },
+    {
+      "links": [],
+      "home": "notes/_briefs/2026-08-22-217-bento-tuner-brief.md",
+      "id": "W-130",
+      "title": "#217 BRIEF - the bento parameter tuner sub brief (the live decision controller behind W-116/W-117)",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has driven the tuner and ruled or parked the open bento numbers",
+      "body": "Sub brief written during #217 and committed at the #217 wrap. Rowed here because the doc-row gate REFUSED the wrap with it unrowed - the forgotten-document class (#185): a document with no store row is invisible to every carry. This row records the brief's existence and its close condition; it rules nothing, closes nothing, and schedules nothing.",
+      "condition": "stated"
+    },
+    {
+      "links": [],
+      "home": "notes/_briefs/2026-08-23-217-bento-canon-mint-brief.md",
+      "id": "W-131",
+      "title": "#217 BRIEF - the bento canon mint sub brief, the brief that enacted s217-D2 into the token store",
+      "project": "apollo",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has ratified the minted bento grammar or a later ruling supersedes s217-D2",
+      "body": "Sub brief written during #217 and committed at the #217 wrap. Rowed here because the doc-row gate REFUSED the wrap with it unrowed - the forgotten-document class (#185): a document with no store row is invisible to every carry. This row records the brief's existence and its close condition; it rules nothing, closes nothing, and schedules nothing.",
+      "condition": "stated"
+    },
+    {
       "id": "G1",
       "title": "Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…",
       "project": "memento",
@@ -2344,6 +2737,19 @@
       "closes_when": "the #214 wrap lands committed and the conductor has relayed both title lines to Dave",
       "body": "The dated brief the #214 Opus wrap sub runs from. First wrap under today's own rulings: wrap-handover cost line (s214-D5) and banner-discipline clause (s214-D6) both binding on it. Memory step 3 + compaction already done by conductor in-session and fenced from the sub. Rowed at creation (forgotten-document class).",
       "provenance": "#214 2026-08-21 - doc-row gate blocking; rowed like W-99w at #213",
+      "condition": "stated"
+    },
+    {
+      "links": [],
+      "home": "notes/_briefs/2026-08-23-217-bento-research-v1.md",
+      "id": "W-99zi",
+      "title": "#217 bento research brief v1: Dave three-role taxonomy tested against practice (Apple tile CSS measured 18px radius, Flickr justified-layout widows + fullWidthBreakoutRowCadence, concentricity WWDC25, dense-flow a11y trap)",
+      "project": "memento",
+      "state": "open",
+      "owner": "dave",
+      "opened": 217,
+      "closes_when": "Dave has read the verdict and ruled on the three bends: GALLERY role vs justified-row family, the flush/container-radius dashboard signature having no bento precedent (only Apple concentricity + inset-grouped lists), and whether orphan/squaring policy is a role property or an orthogonal parameter",
+      "body": "Opus research sub, web sweep. Verdict: BROCHUREWARE confirmed hard (Apple .tile-rounded{border-radius:18px}, white ground, per-tile shadow, one uniform 16-24px gutter is universal practice). DASHBOARD role confirmed but the near-zero internal spacing has NO published bento precedent - mainstream dashboard guidance warns below ~12px gutters cards merge; the real precedent is Apple concentricity (inner radius = parent radius - padding, WWDC25 verbatim) plus inset-grouped lists, and the standards-track CSS gap decorations (row-rule/column-rule, css-gaps-1). GALLERY bends: real photo walls run Flickr justified-layout, not spans - rows justify flush to both edges, only the last row is ragged, and orphans are a named first-class concept (widowCount, showWidows). Every-Nth rhythm and aspect-driven spans have strong precedent: fullWidthBreakoutRowCadence with an aspect-ratio>=1 guard. Biggest live risk: grid-auto-flow dense reorders visually while focus follows DOM (WCAG 2.4.3/1.3.2) - the built mint-time squaring pass AVOIDS this and that is an advantage over industry practice. Missing: no algorithmic bento generator published anywhere; no prefers-reduced-motion guidance in any bento source; nesting essentially undiscussed. 13 primary sources fetched, secondary ones marked UNVERIFIED in the doc.",
       "condition": "stated"
     }
   ]
