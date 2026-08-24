@@ -24,6 +24,20 @@ WARNING - TWO POTHOLES BANKED HERE, 30s of timeout each, 2026-08-22:
     reach into it (the card resolves, then "element is not visible" forever). Narrow with
     the search box first, then click.
 
+⛔ THREE TYPED CONSTANTS REMOVED 2026-08-24 (#218) — all three were ALREADY RED at this seat
+before #218 touched anything, and each was red for the same reason: a fact about the library was
+typed here instead of read from the library.
+  · the REPO path was the absolute mount of the session that wrote this file, so the drive died
+    with ERR_FILE_NOT_FOUND at every later seat. Derived from `__file__` now.
+  · the ROW COUNT ("135 of 135 shown", and 135 again in checks I and O) predated #217's
+    Foundations tier. Read from `showroom/index.json` now — the string is still asserted
+    character for character, the number just is not typed.
+  · the TIER LADDER was the five #215 tiers and #217 drew a sixth. Derived the way the page
+    derives it: the tiers in LEVELS order that actually have a row.
+And the screenshot path was a fixed `/var/tmp` file, which a foreign session already owned —
+PermissionError AFTER all 33 checks ran, the whole drive lost to a shot. `LIB_SHOT` overrides it.
+DRIVEN 2026-08-24 after the change: 33/33 green.
+
 REPO HOME per s191-D2: the working copy lives at /var/tmp during a session; THIS is the
 canonical copy. Copy it out, never retype it.
 """
@@ -34,10 +48,27 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 
-import sys, json
+import sys, json, os
 from playwright.sync_api import sync_playwright
-REPO="/sessions/sweet-blissful-albattani/mnt/UX-design"
+# ⛔ #218 — DERIVED FROM THIS FILE, never typed. What was here was the absolute path of the
+# SESSION THAT WROTE IT (`/sessions/sweet-blissful-albattani/mnt/UX-design`), so the drive could
+# only ever run at that one seat and died with ERR_FILE_NOT_FOUND everywhere else — an instrument
+# in the repo that no later session can re-drive is a claim, not an instrument (s191-D2's whole
+# point). The mount name changes every session; the file's position in the tree does not.
+REPO=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 URL="file://"+REPO+"/"+(sys.argv[1] if len(sys.argv)>1 else "showroom/index.html")
+# ⛔ AND THE COUNT COMES FROM THE ARTEFACT. It was typed as "135 of 135 shown", so the check went
+# red the moment the library gained a row — #218 added four and it did. The number the result line
+# must print is the number of rows the index actually ships.
+_IDX=os.path.join(REPO,"showroom","index.json")
+_I=json.load(open(_IDX,encoding="utf-8")) if os.path.exists(_IDX) else {"components":[],"$levels":[]}
+_N=len(_I["components"])
+# ⛔ AND THE LADDER COMES FROM THE ARTEFACT TOO. It was typed as the five #215 tiers, so it went
+# red the moment #217 filled the Foundations rung — a tier with members is DRAWN, and the check
+# was asserting a word-set from before that. Derived here the way the page derives it: the tiers
+# in LEVELS order that actually have a row. A drawn rung is now proof, not a surprise.
+_LADDER=[lv["label"] for lv in _I.get("$levels",[])
+         if any(c["level"]==lv["key"] for c in _I["components"])]
 res=[]
 def ck(n,g,w): res.append((g==w,n,g,w))
 with sync_playwright() as p:
@@ -45,11 +76,11 @@ with sync_playwright() as p:
     pg=b.new_page(viewport={"width":1500,"height":950})
     errs=[]; pg.on("pageerror",lambda e: errs.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(700)
-    ck("A · full count at load", pg.inner_text("#rc").lower(), "135 of 135 shown")
+    ck("A · full count at load", pg.inner_text("#rc").lower(), "%d of %d shown"%(_N,_N))
     ck("B · Type tab is the default", pg.get_attribute("#tab-type","aria-selected"), "true")
     ck("C · Type tab draws the ruled ladder",
        pg.eval_on_selector_all("#tree-type summary","e=>e.map(x=>x.firstChild.textContent)"),
-       ["Element","Pattern","Block","Shell","Template"])
+       _LADDER)
     ck("D · Pattern definition visible on Type tab",
        "assembly" in pg.inner_text("#tabnote-type") and pg.locator("#tabnote-type").is_visible(), True)
     ck("E · Usage tree hidden while Type is selected", pg.locator("#tree-usage").is_visible(), False)
@@ -62,7 +93,7 @@ with sync_playwright() as p:
         "Content and media","Commerce and money","Structure and layout"])
     ck("I · every component appears exactly once in each tree",
        [pg.eval_on_selector_all("#tree-type a[data-slug]","e=>e.length"),
-        pg.eval_on_selector_all("#tree-usage a[data-slug]","e=>e.length")], [135,135])
+        pg.eval_on_selector_all("#tree-usage a[data-slug]","e=>e.length")], [_N,_N])
     pg.click("#tab-type"); pg.wait_for_timeout(200)
     # search + aliases
     pg.fill("#q","spinner"); pg.wait_for_timeout(250)
@@ -73,7 +104,7 @@ with sync_playwright() as p:
     ck("L · the gallery filters with the search",
        pg.eval_on_selector_all(".card:not([hidden])","e=>e.map(x=>x.dataset.slug)"), ["loading-indicator"])
     pg.click("#qclear"); pg.wait_for_timeout(250)
-    ck("M · clear restores", pg.inner_text("#rc").lower(), "135 of 135 shown")
+    ck("M · clear restores", pg.inner_text("#rc").lower(), "%d of %d shown"%(_N,_N))
     # cmd-K
     pg.keyboard.press("Control+k"); pg.wait_for_timeout(150)
     ck("N · cmd/ctrl-K focuses the search box", pg.evaluate("document.activeElement.id"), "q")
@@ -82,7 +113,7 @@ with sync_playwright() as p:
     pg.click(".chip[data-status='beta']"); pg.wait_for_timeout(250)
     nb=int(pg.inner_text("#rc").split()[0])
     ck("O · status facet filters to beta only",
-       (0<nb<135, sorted(set(pg.eval_on_selector_all(".card:not([hidden]) .pill","e=>e.map(x=>x.dataset.status)")))),
+       (0<nb<_N, sorted(set(pg.eval_on_selector_all(".card:not([hidden]) .pill","e=>e.map(x=>x.dataset.status)")))),
        (True, ["beta"]))
     ck("P · the status facet filters INSIDE the tab too",
        pg.eval_on_selector_all("#tree-type a[data-slug]:not([hidden])","e=>e.length"), nb)
@@ -137,7 +168,12 @@ with sync_playwright() as p:
          const b=getComputedStyle(l,'::before'); const s=getComputedStyle(l);
          return [b.backgroundColor,b.width,s.textTransform,s.color];}"""),
        ["rgb(218, 26, 0)", "20px", "uppercase", "rgb(218, 26, 0)"])
-    pg.screenshot(path="/var/tmp/library-215-gallery.png")
+    # ⛔ #218 — OVERRIDABLE, and it is the same shared-/var/tmp class as the mutant dirs. This was
+    # a fixed /var/tmp path: the file already existed, owned by the session that first ran this,
+    # and every later session died on PermissionError AFTER all 33 checks had run — the whole
+    # drive lost to a screenshot. /var/tmp is shared; a fixed path in it is a foreign artefact
+    # waiting to happen. Pass LIB_SHOT to put it somewhere this session owns.
+    pg.screenshot(path=os.environ.get("LIB_SHOT", "/var/tmp/library-215-gallery.png"))
     b.close()
 bad=[r for r in res if not r[0]]
 for ok,n,g,w in res: print(("  ✅ " if ok else "  ❌ ")+n+("" if ok else "\n       got %r want %r"%(g,w)))

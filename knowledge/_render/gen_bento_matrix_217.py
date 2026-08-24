@@ -232,6 +232,107 @@ def esc(s):
     return htmlmod.escape(str(s if s is not None else ""), quote=True)
 
 
+# --------------------------------------------------------------- ⬛ #218 CORNER KEYLINES
+# Dave, #218: "each tile must have it's own keyline, but the radii should only apply to the
+# 4 corners of each sub bento (a collection of tiles)". The corner a tile holds depends on the
+# band's column count, so the assignment is computed from the browser's own dense placement —
+# tile identity kept — and emitted per band. Never read off data-c: the bands rewrite spans.
+
+# (cols, max-width literal) — the literals mirror canon's compiled $bands (a @container
+# condition cannot read a custom property; same reason canon compiles them). None = base.
+CORNER_BANDS = ((INNER_COLS, None), (2, 820), (1, 520))
+
+
+def _band_clamp(spans, cols):
+    """Canon's band clamp: spans capped at the band's columns; the 1-column band flattens BOTH
+    axes (canon's 520 rule rewrites data-r to span 1 as well)."""
+    if cols == 1:
+        return [(1, 1)] * len(spans)
+    return [(max(1, min(int(c), cols)), max(1, int(r))) for c, r in spans]
+
+
+def _tile_cells(spans, cols):
+    """Dense placement with TILE IDENTITY — the same rows-then-columns scan `place()` runs, but
+    recording WHICH tile fills each cell, so a corner is read off the occupancy the browser will
+    actually render. `spans` must already be band-clamped."""
+    occ = []
+
+    def ensure(r):
+        while len(occ) <= r:
+            occ.append([None] * cols)
+
+    def fits(r, c, cs, rs):
+        for rr in range(r, r + rs):
+            ensure(rr)
+            for cc in range(c, c + cs):
+                if occ[rr][cc] is not None:
+                    return False
+        return True
+
+    for i, (cs, rs) in enumerate(spans):
+        cs, rs = max(1, min(int(cs), cols)), max(1, int(rs))
+        r, placed = 0, False
+        while not placed:
+            ensure(r)
+            for c0 in range(0, cols - cs + 1):
+                if fits(r, c0, cs, rs):
+                    for rr in range(r, r + rs):
+                        for cc in range(c0, c0 + cs):
+                            occ[rr][cc] = i
+                    placed = True
+                    break
+            r += 1
+    while occ and all(x is None for x in occ[-1]):
+        occ.pop()
+    return occ
+
+
+_CORNER_KEYS = ("top-left", "top-right", "bottom-right", "bottom-left")
+
+
+def corner_map(spans, cols):
+    """-> {tile_index: set(corner keys)} for one band. A corner cell left empty by a ragged wall
+    assigns nothing — honest absence, not a guess (the live groups are squared, so in practice
+    all four assign)."""
+    occ = _tile_cells(_band_clamp(spans, cols), cols)
+    out = {i: set() for i in range(len(spans))}
+    if occ:
+        last = len(occ) - 1
+        for key, (rr, cc) in (("top-left", (0, 0)), ("top-right", (0, cols - 1)),
+                              ("bottom-right", (last, cols - 1)), ("bottom-left", (last, 0))):
+            if occ[rr][cc] is not None:
+                out[occ[rr][cc]].add(key)
+    return out
+
+
+def corner_rules(dash_inner):
+    """-> the generated CSS block replacing __CORNER_RULES__. Per group, per band, an EXPLICIT
+    all-four-corners declaration for EVERY tile — the group's radius (`--bento-radius`, canon's
+    own container token, 20 console / 0 elsewhere) on the outer corner a tile holds, 0 on every
+    corner it does not. Explicit everywhere so the band blocks never depend on source order or
+    specificity to override one another. Scoped to keylines ON at the OPEN stops on the LIVE
+    wall only (`.bm-outer >`): the 1px stop keeps the container-border construction, and the
+    sweep/main-wall exhibits keep their own rules."""
+    scope = '.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"])'
+    blocks = ["/* ⬛ #218 CORNER KEYLINES — the four corner tiles of each sub-bento carry the "
+              "group's radius on their OUTER corner; minted per band from dense placement. */"]
+    for gi, spans in enumerate(dash_inner, 1):
+        sel_g = ("%s .bm-outer > .c-bento__grid > .bm-inner:nth-child(%d)" % (scope, gi))
+        for cols, band in CORNER_BANDS:
+            cm = corner_map(spans, cols)
+            rules = []
+            for i in range(len(spans)):
+                decl = "; ".join(
+                    "border-%s-radius:%s" % (k, "var(--bento-radius,0px)" if k in cm[i] else "0")
+                    for k in _CORNER_KEYS)
+                rules.append("%s > .c-bento__grid > .bm-tile:nth-child(%d){%s;}"
+                             % (sel_g, i + 1, decl))
+            body = "\n".join(rules)
+            blocks.append(body if band is None
+                          else "@container bento (max-width:%dpx){\n%s\n}" % (band, body))
+    return "\n".join(blocks)
+
+
 # ---------------------------------------------------------------------------- LEGALITY
 # ⛔ THE ONE STATEMENT OF THE RULES, IN PYTHON, MIRRORED INTO THE PAGE'S JS BELOW. The count on
 # the page and the refusals in the browser must be the same rules or the page lies about its own
@@ -674,10 +775,20 @@ __SUB_SPACING_RULES__
    treatment-C centred-gutter construction is RETIRED for dashboards. What the wall draws now:
      · ABOVE 1px — every TILE wears its own tight 1px keyline box, and the GROUP'S OUTER BORDER
        STEPS BACK. That is not a preference: with the tiles carrying edges, a group border would
-       re-create the DOUBLE FRAME Dave rejected earlier this session. The group still expresses
-       itself — its background and its clipped radius are untouched — and the tiles are INSET from
-       the container by the gutter (`--bento-outer-padding`), so no straight tile edge ever arrives
-       at the curve and nothing can be cropped.
+       re-create the DOUBLE FRAME Dave rejected earlier this session.
+       ⬛ AMENDED #218 (2026-08-24), DAVE'S WORDS: "each tile must have it's own keyline, but the
+       radii should only apply to the 4 corners of each sub bento (a collection of tiles)". The
+       gutter-inset construction is RETIRED — he read it as "all that happens is that you add
+       padding to the main bento and we loose the corner radii". What draws now: outer padding
+       returns to 0, and the FOUR CORNER TILES of each group carry the group's own radius
+       (`--bento-radius`) on their OUTER corner alone, so the tiles' keylines DRAW the rounded
+       silhouette themselves — concentric with the container's clip, nothing straight ever meets
+       the curve, and the radius is VISIBLE again on any ground (the padding construction hid it:
+       border 0 + unpainted ground left the radius as a clip on an invisible box).
+       ⛔ THE CORNER ASSIGNMENT IS MINTED PER BAND from the same dense placement the browser runs
+       (`place()`-semantics, tile identity kept) — the responsive bands re-seat which tile holds
+       a corner, so a single static assignment would round the wrong tile at 2 and 1 columns.
+       See `corner_rules()`; the literals 820/520 mirror canon's compiled $bands.
      · AT 1px — UNCHANGED. Flush tiles cannot carry their own boxes without doubling every seam,
        so the s217-D6-era construction stands: the group keeps its 1px rounded border, the gutter
        is the hairline, and the container's own `overflow:hidden` stops it ALONG THE CURVE. This
@@ -701,7 +812,7 @@ __SUB_SPACING_RULES__
    is (0,4,0) on the group and (0,5,0) on the tile so both beat canon's role and tile rules. */
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"])
   .bm-inner.c-bento[data-bento-role="dashboard"]{
-  border:0; --bento-outer-padding:var(--bento-gutter,24px);}
+  border:0; --bento-outer-padding:0px;}
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-inner
   > .c-bento__grid > .bm-tile{
   border:1px solid var(--bm-line,#D7D8D6); box-shadow:none; overflow:hidden; position:relative;}
@@ -709,6 +820,7 @@ __SUB_SPACING_RULES__
    every card tile (one mint, three consumers historically); above 1px it renders nowhere. */
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-inner
   > .c-bento__grid > .bm-tile > .bm-gapline{display:none;}
+__CORNER_RULES__
 /* ⛔ THE MAIN WALL'S GUTTERS STAY LINE-FREE — PROPOSED (#217), and DECLARED rather than left as an
    absence. `.bm-outer`'s tiles ARE the groups, and a group is a clipped bento, so a line hung on
    one would be eaten by its own clip before it reached the main gutter. Space separates groups;
@@ -1451,12 +1563,15 @@ def body(c):
                 answer.</p>
             </div>
             <p class="bm-sp-open t-cm-legal">⬛ <b>ABOVE 1px &mdash; EVERY TILE WEARS ITS OWN TIGHT
-              1px BOX, AND NO GUTTER CARRIES ANYTHING.</b> The group's outer border <b>steps
-              back</b>: with the tiles carrying edges, a group frame would re-create the double
-              frame rejected earlier in the same sitting. The group still expresses itself &mdash;
-              its background and its clipped radius are untouched &mdash; and the tiles sit inset
-              from the container by the gutter, so no straight tile edge ever arrives at the curve
-              and nothing is cropped.</p>
+              1px BOX, AND THE FOUR CORNER TILES CARRY THE SUB-BENTO'S RADIUS ON THEIR OUTER
+              CORNER (#218, Dave's words: <i>&ldquo;the radii should only apply to the 4 corners
+              of each sub bento&rdquo;</i>).</b> The group's outer border <b>steps back</b>: with
+              the tiles carrying edges, a group frame would re-create the double frame rejected
+              at #217. The tiles' own keylines draw the rounded silhouette &mdash; concentric with
+              the container's clip, so nothing straight ever meets the curve, nothing is cropped,
+              and the radius reads on any ground. No gutter carries anything, and the corner
+              assignment moves with the responsive bands (minted per band from the browser's own
+              placement).</p>
             <p class="bm-sp-note t-cm-legal">⛔ <b>AT THE 1px STOP, UNCHANGED.</b> 1px cannot hold a
               gap <i>and</i> a line, so flush tiles cannot carry their own boxes without doubling
               every seam. The group keeps its curved 1px border, the tiles sit flush, and the
@@ -1646,6 +1761,12 @@ def page(shell, c=None):
     css = (CSS.replace("__PHOTO_RULES__", photo_rules(c["photos"]))
               .replace("__SUB_SPACING_RULES__", sub_rules)
               .replace("__SWEEP_STOP_RULES__", sweep_rules)
+              # ⬛ #218 — corner keylines; the layout arm ships the block EMPTY so the corner
+              # assertion in verify_bento_matrix_217.py goes RED by name (Dave's symptom back:
+              # square boxes everywhere, the radius invisible).
+              .replace("__CORNER_RULES__",
+                       "/* ⛔ ARM: #218 corner rules STRIPPED */" if BREAK_LAYOUT
+                       else corner_rules(c["dash_inner"]))
               .replace("__GALLERY_COLS__", str(GALLERY_COLS))
               .replace("__DISPLAY_COLS__", str(DISPLAY_COLS))
               .replace("__DASH_COLS__", str(DASH_COLS))
@@ -1942,13 +2063,39 @@ def selftest():
                     '.bm-inner.c-bento[data-bento-role="dashboard"]')
     _flush_tile = ('.bm-stage[data-keylines="on"][data-sub-spacing="1"] .bm-inner '
                    '> .c-bento__grid > .bm-tile')
-    bite("20c · ⬛ s217-D8 ABOVE 1px — the TILE wears the box, the GROUP border steps back, and "
-         "the tiles are inset from the container by the gutter",
+    bite("20c · ⬛ s217-D8 + #218 ABOVE 1px — the TILE wears the box, the GROUP border steps "
+         "back, and the outer padding is GONE (#218: the corner tiles carry the radius, so the "
+         "gutter-inset that protected the curve is retired)",
          ("border:1px solid" in _decl.get(_open_tile, ""),
           "border:0" in _decl.get(_open_group, ""),
-          "--bento-outer-padding:var(--bento-gutter,24px)" in _decl.get(_open_group, ""),
+          "--bento-outer-padding:0px" in _decl.get(_open_group, ""),
+          "--bento-outer-padding:var(--bento-gutter" not in _decl.get(_open_group, ""),
           "display:none" in _decl.get(_open_tile + " > .bm-gapline", "")),
-         (True, True, True, True))
+         (True, True, True, True, True))
+    # ⬛ #218 · CORNER KEYLINES — hand-computed fixture, never the generator's own output as its
+    # own expectation. Fixture wall: [(2,1),(1,1),(1,1)] at 3 cols places t0 across the top,
+    # t1 top-right, t2 alone on row 2 (ragged on purpose: the empty BR cell must assign NOTHING).
+    # At 1 col everything stacks: t0 takes both top corners, t2 both bottom corners.
+    _cm3 = corner_map([(2, 1), (1, 1), (1, 1)], 3)
+    _cm1 = corner_map([(2, 1), (1, 1), (1, 1)], 1)
+    bite("20c2 · ⬛ #218 corner assignment — 3-col fixture: t0 TL, t1 TR, t2 BL, BR unassigned "
+         "(ragged hole assigns nothing)",
+         (_cm3[0], _cm3[1], _cm3[2]),
+         ({"top-left"}, {"top-right"}, {"bottom-left"}))
+    bite("20c3 · ⬛ #218 corner assignment — 1-col band re-seats the corners: t0 both top, "
+         "t2 both bottom (a static assignment would round the wrong tile here)",
+         (_cm1[0], _cm1[1], _cm1[2]),
+         ({"top-left", "top-right"}, set(), {"bottom-left", "bottom-right"}))
+    _cr = corner_rules([[(2, 1), (1, 1), (1, 1)]])
+    bite("20c4 · ⬛ #218 corner CSS — per-band blocks emitted (base + 820 + 520 mirroring "
+         "canon's compiled $bands), every declaration explicit, radius from canon's own token, "
+         "scoped to the LIVE wall at open stops only",
+         ("@container bento (max-width:820px)" in _cr,
+          "@container bento (max-width:520px)" in _cr,
+          "border-top-left-radius:var(--bento-radius,0px)" in _cr,
+          ':not([data-sub-spacing="1"])' in _cr and ".bm-outer > " in _cr,
+          _cr.count("border-bottom-right-radius:0")),
+         (True, True, True, True, 7))
     bite("20d · ⬛ s217-D8 AT 1px — unchanged: the group keeps its border, the tiles go bare and "
          "the gutter IS the hairline",
          ("border:1px solid" in _decl.get(_flush_group, ""),
@@ -2068,7 +2215,7 @@ def main():
         # ⬛ THE FOURTH MUTATION ARM (s217-D8). NON-REPO by construction, same discipline as the
         # other three. ONLY the dashboard keyline construction is reverted to the retired centred
         # gutter line, so the s217-D8 assertions must go red ON THEIR OWN NAME.
-        outdir = "/var/tmp"
+        outdir = os.environ.get("BM_MUTANT_DIR", "/var/tmp")  # #218: shared-/var/tmp class fix
         for i, a in enumerate(argv):
             if a == "--out":
                 outdir = argv[i + 1]
@@ -2088,7 +2235,7 @@ def main():
         # other two. ONLY the nested pass is disabled — the outer wall stays squared, so the
         # inner-group assertions must go red ON THEIR OWN NAME and cannot be credited to the
         # outer-wall defect.
-        outdir = "/var/tmp"
+        outdir = os.environ.get("BM_MUTANT_DIR", "/var/tmp")  # #218: shared-/var/tmp class fix
         for i, a in enumerate(argv):
             if a == "--out":
                 outdir = argv[i + 1]
@@ -2105,7 +2252,7 @@ def main():
         return 0
     if "--break-layout" in argv:
         # ⬛ THE SECOND MUTATION ARM. NON-REPO by construction, same discipline as the first.
-        outdir = "/var/tmp"
+        outdir = os.environ.get("BM_MUTANT_DIR", "/var/tmp")  # #218: shared-/var/tmp class fix
         for i, a in enumerate(argv):
             if a == "--out":
                 outdir = argv[i + 1]
@@ -2124,7 +2271,7 @@ def main():
         # ⬛ THE MUTATION ARM. NON-REPO by construction: the file is written outside the repo and
         # its asset addresses are rewritten to absolute paths, so it can never be mistaken for a
         # shipped artefact and never needs deleting from a tree.
-        outdir = "/var/tmp"
+        outdir = os.environ.get("BM_MUTANT_DIR", "/var/tmp")  # #218: shared-/var/tmp class fix
         for i, a in enumerate(argv):
             if a == "--out":
                 outdir = argv[i + 1]

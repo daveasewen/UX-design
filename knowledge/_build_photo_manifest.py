@@ -34,6 +34,18 @@ USAGE
   python3 knowledge/_build_photo_manifest.py --derivatives-from knowledge/_PHOTOGRAPHY-USED.txt
       Mint web derivatives for the named originals only (s217-D1: USED photos only).
 
+  python3 knowledge/_build_photo_manifest.py --mint-range 0:40 [--remint]
+      ✅ #218 — THE CHUNKED, RESUMABLE MINT. Mints originals[A:B] in `originals_in_order()`,
+      SKIPPING any derivative already on disk, printing one line per file, and writing NO
+      manifest. Dave ruled all 251 photographs onto the Foundations page at #218; 251 mints do
+      not survive one sandbox bash call (the wall is ~45 s), so the mint is driven in ranges and
+      a killed call costs at most its own range. `--remint` re-cuts files that already exist.
+
+  python3 knowledge/_build_photo_manifest.py --manifest --adopt
+      The ONE reconciliation pass after a chunked mint: every row whose deterministic derivative
+      is on disk takes it, MEASURED off the file (name, pixels, bytes); every row naming a file
+      that is NOT there loses the claim. The manifest JSON is never hand-edited.
+
   python3 knowledge/_build_photo_manifest.py --check
       GATE (no writes, no originals needed): every file in the derivatives dir must carry a row
       in the committed manifest, and no original JPEG may be git-trackable. Exit 1 on either.
@@ -235,13 +247,38 @@ def derivative_name(original):
     return "%s-w%d.jpg" % (stem, MAX_EDGE)
 
 
-def mint(names, originals=ORIGINALS, out_dir=DERIV_DIR):
-    """-> (minted, failures). sRGB JPEG, max edge MAX_EDGE, quality stepped down until <= TARGET_KB."""
+def mint(names, originals=ORIGINALS, out_dir=DERIV_DIR, skip_existing=False, progress=False):
+    """-> (minted, failures). sRGB JPEG, max edge MAX_EDGE, quality stepped down until <= TARGET_KB.
+
+    ⛔ `skip_existing` IS WHAT MAKES A KILLED RUN RESUMABLE (#218). A sandbox bash call dies near
+    45 s wall and 251 originals do not fit in one; the mint is therefore driven in RANGES, and a
+    range that lands twice must be cheap rather than wrong. An already-present derivative is
+    ADOPTED (re-measured off the file), never silently counted — `reused: True` says which.
+    """
     from PIL import Image, ImageCms
     os.makedirs(out_dir, exist_ok=True)
     minted, failures = [], []
     for name in names:
         src = os.path.join(originals, name)
+        if skip_existing:
+            done = os.path.join(out_dir, derivative_name(name))
+            if os.path.isfile(done) and os.path.getsize(done) > 0:
+                try:
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore")
+                        dw, dh = Image.open(done).size
+                except Exception as exc:                         # noqa: BLE001 — loud, named
+                    failures.append((name, "existing derivative unreadable: %r" % exc))
+                    continue
+                size = os.path.getsize(done)
+                minted.append({"original": name, "derivative": os.path.basename(done),
+                               "width": dw, "height": dh, "bytes": size,
+                               "kb": round(size / 1024.0, 1), "quality": None,
+                               "over_target": size > TARGET_KB * 1024, "reused": True})
+                if progress:
+                    print("  = %-46s %5d x %-5d %6.1f KB (already minted)"
+                          % (os.path.basename(done), dw, dh, size / 1024.0), flush=True)
+                continue
         if not os.path.isfile(src):
             failures.append((name, "original absent (NON-REPO fence: is the folder present?)"))
             continue
@@ -274,10 +311,60 @@ def mint(names, originals=ORIGINALS, out_dir=DERIV_DIR):
                 minted.append({"original": name, "derivative": os.path.basename(out),
                                "width": im.size[0], "height": im.size[1],
                                "bytes": size, "kb": round(size / 1024.0, 1), "quality": q,
-                               "over_target": size > TARGET_KB * 1024})
+                               "over_target": size > TARGET_KB * 1024, "reused": False})
+                if progress:
+                    print("  + %-46s %5d x %-5d %6.1f KB q%d%s"
+                          % (os.path.basename(out), im.size[0], im.size[1], size / 1024.0, q,
+                             "  ⚠ OVER TARGET" if size > TARGET_KB * 1024 else ""), flush=True)
         except Exception as exc:                                 # noqa: BLE001
             failures.append((name, repr(exc)))
     return minted, failures
+
+
+def originals_in_order(originals=ORIGINALS):
+    """THE ONE ORDER a range is cut against — sorted filenames, exactly `scan()`'s order.
+
+    A range is only resumable if `--mint-range 0:40` means the same forty files on every call.
+    Two sorts in two places is how it would stop meaning that."""
+    if not os.path.isdir(originals):
+        raise ManifestError(
+            "originals folder absent: %s — originals are NON-REPO by s217-D1." % originals)
+    return sorted(n for n in os.listdir(originals)
+                  if n.lower().endswith((".jpg", ".jpeg")) and not n.startswith("."))
+
+
+def adopt_from_disk(rows, out_dir=DERIV_DIR):
+    """✅ #218 — RECONCILE THE MANIFEST WITH WHAT IS ACTUALLY ON DISK, through the generator.
+
+    The chunked mint writes FILES; this is the single pass that writes the manifest's
+    `derivative` fields from them, so no range's rows can be lost when a call is killed and no
+    JSON is ever hand-edited. Every field is MEASURED off the derivative, not carried over from
+    a claim: a row whose named file is gone loses the claim rather than keeping it.
+
+    -> (adopted, dropped) counts."""
+    from PIL import Image
+    adopted = dropped = 0
+    for r in rows:
+        cand = os.path.join(out_dir, derivative_name(r["filename"]))
+        if os.path.isfile(cand) and os.path.getsize(cand) > 0:
+            try:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    w, h = Image.open(cand).size
+            except Exception:                                    # noqa: BLE001
+                continue                                         # left to --check to flag
+            r["derivative"] = os.path.basename(cand)
+            r["derivative_px"] = "%dx%d" % (w, h)
+            r["derivative_bytes"] = os.path.getsize(cand)
+            adopted += 1
+        elif r.get("derivative"):
+            # ⛔ A CLAIM WITH NO FILE IS NOT A DERIVATIVE. Carrying it forward is how the
+            # manifest and the disk drift apart silently.
+            r["derivative"] = None
+            r.pop("derivative_px", None)
+            r.pop("derivative_bytes", None)
+            dropped += 1
+    return adopted, dropped
 
 
 # ---------------------------------------------------------------- emit
@@ -419,12 +506,46 @@ def main(argv=None):
     ap.add_argument("--manifest", action="store_true")
     ap.add_argument("--derivatives", nargs="*", default=None)
     ap.add_argument("--derivatives-from", default=None)
+    ap.add_argument("--mint-range", default=None)
+    ap.add_argument("--remint", action="store_true")
+    ap.add_argument("--adopt", action="store_true")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args(argv)
 
     if args.selftest:
         return _selftest()
+
+    # ✅ #218 — THE CHUNKED MINT. Files only; no manifest is written here, so a call killed at
+    # the 45 s wall costs at most the range it was in. `--manifest --adopt` is the ONE pass that
+    # turns what landed on disk into manifest rows.
+    if args.mint_range is not None:
+        names = originals_in_order()
+        try:
+            a, b = args.mint_range.split(":", 1)
+            lo = int(a) if a.strip() else 0
+            hi = int(b) if b.strip() else len(names)
+        except ValueError:
+            print("--mint-range takes A:B over the sorted originals (e.g. 0:40, 240:).",
+                  file=sys.stderr)
+            return 2
+        chunk = names[lo:hi]
+        print("mint range [%d:%d] of %d originals — %d file(s)%s"
+              % (lo, hi, len(names), len(chunk),
+                 "" if args.remint else ", skipping any already minted"), flush=True)
+        minted, fails = mint(chunk, skip_existing=not args.remint, progress=True)
+        fresh = sum(1 for m in minted if not m.get("reused"))
+        on_disk = len([n for n in os.listdir(DERIV_DIR)
+                       if n.lower().endswith((".jpg", ".jpeg"))]) if os.path.isdir(DERIV_DIR) else 0
+        over = [m["derivative"] for m in minted if m["over_target"]]
+        print("range done: %d minted fresh, %d reused, %d failed · %d derivative file(s) on disk"
+              % (fresh, len(minted) - fresh, len(fails), on_disk), flush=True)
+        if over:
+            print("⚠ %d over the %d KB target (declared, not hidden): %s"
+                  % (len(over), TARGET_KB, ", ".join(over[:8])), flush=True)
+        for n, e in fails:
+            print("✖ NOT minted: %s — %s" % (n, e), file=sys.stderr)
+        return 1 if fails else 0
 
     if args.check:
         orphans, missing, tracked = check()
@@ -450,8 +571,8 @@ def main(argv=None):
         wanted = list(args.derivatives)
 
     if not args.manifest and wanted is None:
-        print("nothing asked for — pass --manifest, --derivatives, --check or --selftest "
-              "(--help for the contract).", file=sys.stderr)
+        print("nothing asked for — pass --manifest, --derivatives, --mint-range, --check or "
+              "--selftest (--help for the contract).", file=sys.stderr)
         return 2
 
     rows, failures = scan()
@@ -484,6 +605,10 @@ def main(argv=None):
             print("✖ derivative NOT minted: %s — %s" % (n, e), file=sys.stderr)
             failures.append((n, "derivative: " + e))
 
+    adopted = dropped = None
+    if args.adopt:
+        adopted, dropped = adopt_from_disk(rows)
+
     payload = {
         "_README": ("Committed manifest for the NON-REPO photography originals (W-93, s217-D1). "
                     "Generated by knowledge/_build_photo_manifest.py — do not hand-edit. "
@@ -513,6 +638,10 @@ def main(argv=None):
     print("          %s" % os.path.relpath(MD_OUT, ROOT))
     print("EXIF description present: %d/%d" % (payload["counts"]["exif_description_present"], len(rows)))
     print("licence source derived  : %d/%d" % (payload["counts"]["licence_source_derived"], len(rows)))
+    if adopted is not None:
+        print("adopted from disk       : %d row(s) carry a measured derivative, %d claim(s) "
+              "dropped (named file absent)" % (adopted, dropped))
+    print("derivatives on rows     : %d/%d" % (payload["counts"]["derivatives"], len(rows)))
     for m in minted:
         print("derivative: %-46s %5d x %-5d %6.1f KB q%d%s"
               % (m["derivative"], m["width"], m["height"], m["kb"], m["quality"],

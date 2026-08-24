@@ -7,8 +7,8 @@ WHY IT EXISTS — Dave, 2026-08-22, verbatim:
    photography bento"
 
 WHAT IT WRITES
-  showroom/_foundations/photography.html   — the 12 minted web derivatives, bento-laid, each
-                                             opening a ZERO-JS popover lightbox
+  showroom/_foundations/photography.html   — ALL 251 minted web derivatives (#218), bento-laid,
+                                             lazy-loaded, each opening a ZERO-JS popover lightbox
   showroom/_foundations/logos.html         — the 12 exported HSBC marks, each on the ground its
                                              artwork requires
 Both are addressed by knowledge/_render/gen_library_214.py, whose Foundations ladder tier
@@ -77,10 +77,34 @@ THEME + MODE — the same broadcast the showroom and the library use
   ([[dangling-dataviz-var-renders-silent-black]]). Every `var()` on both pages carries a literal
   fallback, and --selftest bite 7 asserts it over the emitted CSS.
 
+✅ #218 — THE PHOTOGRAPHY PAGE CARRIES PER-THEME GALLERY SETTINGS AND ALL 251 PHOTOGRAPHS
+  Dave drove the s217-D5 matrix explorer's Gallery dials in each theme and exported four states
+  — "can we have this as the settings for the photography section on the library" — then asked
+  for "all the images we have on file, with a lazy loader" and option-selected the full mint at
+  the unchanged s217-D1 spec. Both are enacted here:
+    · `GALLERY_SETTINGS` + `MONO_CAPTION_RIDER` hold the four export STATE blocks. Every dial
+      word is CHECKED at mint time against `gen_bento_matrix_217`'s own ruled option sets and
+      the P2/P3 legality rules — never re-typed, never self-certified.
+    · `settings_css()` compiles them to concrete declarations under one scope per theme
+      (s200-D1: minted values, not a live controller), between `/* @gallery-settings:start */`
+      and `:end` so a gate can address exactly that region.
+    · The wall is every derivative the manifest carries, and EVERY `<img>` on the page — the
+      251 tiles AND the 251 lightbox pictures — is `loading="lazy" decoding="async"`.
+  ⚠ `edge: square` is RECORDED AND NOT ENACTED, and the page says so: all four exports carry it,
+  but this wall is role=gallery and s217-D3 exempts a gallery from the squaring pass. Enacting
+  the dial would overturn that ruling. Bite 29 holds both facts together.
+  ⚠ The receipts are `notes/_receipts/2026-08-24-218-photography-theme-settings.md`, and TWO of
+  the four `resolved` blocks are labelled `legacy` because they were exported from that tab. The
+  `state` blocks are the ruling; the `resolved` blocks are receipts about the tab they were taken
+  in (`RECEIPT_RESOLVED_THEME`).
+
 REGENERATE
   python3 knowledge/_render/gen_foundations_217.py
   python3 knowledge/_render/gen_foundations_217.py --check      # in-sync gate
   python3 knowledge/_render/gen_foundations_217.py --selftest
+  BM_MUTANT_DIR=/var/tmp/mut-<session> \
+    python3 knowledge/_render/gen_foundations_217.py --break-settings   # ⬛ the #218 arm
+  python3 knowledge/_render/verify_photography_218.py [--static|--themes a,b|--settings-mutation]
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -107,6 +131,7 @@ LOGO_DIR = os.path.join(KNOW, "assets", "logos")
 sys.path.insert(0, HERE)
 import gen_library_214 as library          # FOUNDATIONS — ONE list, not a second copy
 import gen_bento_matrix_217 as matrix      # #217 — the s217-D5 option matrix, its own module
+import gen_grids_218 as grids             # #218 — the Grids group's four bodies, its own module
 
 # Relative prefix from showroom/_foundations/<page>.html back to the repo root.
 UP = "../../"
@@ -145,15 +170,244 @@ SPAN_NOTE = ("Tile spans are derived from each image's own aspect ratio, not arr
              "(ruling s217-D2), read from knowledge/tokens/layout.json."
              % (_BP["aspect3"], _BP["aspect2"], _BP["aspect_tall"]))
 
-# ⚠ MEASURED, and it is why a second rule exists: all twelve committed derivatives are 1600×1067
-# — one aspect ratio, so the aspect rule alone assigns every tile the SAME span and the "bento"
-# renders as a plain two-up grid. A bento's whole character is mixed emphasis. The emphasis is
-# therefore taken from POSITION in the sorted list, which is mechanical (the list is sorted by
-# derivative filename) rather than a picked arrangement. The rhythm is now Dave's ruled one.
-EMPHASIS_NOTE = ("All twelve derivatives share one aspect ratio, so the aspect rule alone would "
-                 "draw a plain grid. Emphasis is taken from position instead — every %dth tile "
-                 "in filename order, from tile %d, is promoted to a 2×2 block (s217-D2). "
-                 "Position, not preference." % (_BP["emph_every"], _BP["emph_from"]))
+# ⚠ MEASURED ON THE POPULATION THAT ACTUALLY SHIPS, never asserted. At #217 the wall was twelve
+# derivatives at ONE aspect ratio, and the note said so; at #218 Dave ruled ALL 251 photographs
+# onto this page, so the aspect spread is a different number and a sentence carried forward from
+# twelve pictures would be a confident false statement about 251. It is counted here every run.
+def emphasis_note(rows):
+    """-> the position-rhythm sentence, with the aspect spread COUNTED off `rows`."""
+    ars = {round((r["w"] / float(r["h"])), 2) for r in rows if r.get("w") and r.get("h")}
+    return ("%d derivative(s) on the wall carry %d distinct aspect ratio(s), so the aspect rule "
+            "alone would leave long runs of identical tiles. Emphasis is taken from POSITION as "
+            "well — every %dth tile in filename order, from tile %d, is promoted to a 2×2 block "
+            "(s217-D2). Position, not preference."
+            % (len(rows), len(ars), _BP["emph_every"], _BP["emph_from"]))
+
+
+# ---------------------------------------------------------------------------
+# ⬛ THE GALLERY SETTINGS, RULED PER THEME BY DAVE (#218, 2026-08-24)
+# ---------------------------------------------------------------------------
+# He drove the s217-D5 matrix explorer's Gallery dials in each theme and pasted FOUR export
+# blocks — "can we have this as the settings for the photography section on the library". The
+# verbatim exports are stored untrimmed at
+# `notes/_receipts/2026-08-24-218-photography-theme-settings.md`; the tables below are the STATE
+# blocks from those exports and nothing else.
+#
+# ⚠ PARSED, NOT SMOOTHED. Two of the four exports carry `resolved.theme: "legacy"` because they
+# were exported from the legacy tab — the `resolved` blocks are that tab's own readback and are
+# RECEIPTS, not settings. Dave's prose labels plus the `state` blocks are the ruling, and this
+# file compiles the `state` blocks.
+#
+# ⛔ NO DIAL WORD IS TYPED TWICE. Every word below is checked at mint time against
+# `gen_bento_matrix_217`'s OWN ruled option sets (`SPACINGS`, `ONOFF`, `GALLERY_MODES`,
+# `BOTTOM_EDGE`, `ROUNDINGS`, `BACKGROUNDS`), against `keylines_for("gallery", theme)`, and
+# against the P2/P3 legality rules — the same module the explorer compiles its controls from.
+# A settings table that quietly held a word the ruling no longer knows would render a wall
+# nobody ruled, and no gate would fire.
+#
+# ⛔ COMPILED AT MINT TIME, NOT DIALLED LIVE (s200-D1). The explorer is a decision surface; this
+# page is the DECISION. Each theme's dials become concrete declarations under that theme's own
+# scope, so the page needs no controller and no state object.
+# ⬛ THE MUTATION HANDLE for the settings block. Never written over the real page — see
+# `write_settings_mutant()`, whose destination is BM_MUTANT_DIR.
+BREAK_SETTINGS = False
+
+GALLERY_SETTINGS = {
+    "supercharge": {"spacing": "1", "keylines": "off", "mode": "bento", "edge": "square",
+                    "rounding": "corners", "pageBg": "white", "bentoBg": "white",
+                    "capBg": "transparent"},
+    "console": {"spacing": "24", "keylines": "off", "mode": "bento", "edge": "square",
+                "rounding": "corners", "pageBg": "white", "bentoBg": "white",
+                "capBg": "transparent"},
+    "legacy": {"spacing": "24", "keylines": "off", "mode": "bento", "edge": "square",
+               "rounding": "corners", "pageBg": "white", "bentoBg": "white",
+               "capBg": "transparent"},
+    "mono": {"spacing": "24", "keylines": "off", "mode": "bento", "edge": "square",
+             "rounding": "corners", "pageBg": "white", "bentoBg": "white",
+             "capBg": "transparent"},
+}
+
+# ⬛ THE MONO CAPTION RIDER — Dave's words, verbatim: "But with the darkest grey for the captions
+# and white for the text." It sits ON TOP of the mono export, whose `capBg` state word is
+# `transparent`; the two do not disagree, because the rider asks for something the explorer's
+# background dial CANNOT SAY. Its palette is grey / white / transparent (`matrix.BACKGROUNDS`)
+# and none of the three is a dark ground — so this is an ADDITION to the ruled vocabulary, not a
+# selection from it, and it is named as one rather than filed as a fourth dial word.
+# ⛔ TOKENS, NEVER A RAW HEX. `--surface-digital-black` is #1A1A1A in mono in BOTH modes (measured
+# in canon.css: `:root` and `[data-theme="dark"]` both declare it), which is what a caption ground
+# ruled by eye needs — a ground that inverted with the mode would stop being the thing he ruled.
+# `--text-reverse` is #FFFFFF in mono in both modes for the same reason. The literals below are
+# FALLBACKS ONLY, required by the silent-black fence.
+# ⚠ PARSED, NOT SMOOTHED — WHICH TAB EACH `resolved` BLOCK WAS ACTUALLY MEASURED IN.
+# The supercharge and mono exports carry `resolved.theme: "legacy"`: Dave exported them from the
+# legacy tab, so their pixel readbacks (`pageBackground: rgb(255, 255, 255)` and the rest) are
+# LEGACY'S paint, not that theme's. The `state` blocks are the ruling; the `resolved` blocks are
+# receipts, and a receipt is only evidence about the theme it was taken in.
+# ⛔ THIS IS NOT PEDANTRY — IT IS A LIVE MEASUREMENT. `white` is the dial's word for
+# `--surface-raised`, and supercharge resolves that to **#F7F6F4**, a warm off-white, not
+# #FFFFFF. Cross-checking every theme against the receipt's literal 255-white would have failed
+# a page behaving exactly as ruled, and "fixing" it would have pinned supercharge to a white it
+# does not own. The probe therefore asserts the TOKEN everywhere and the LITERAL only where the
+# receipt was taken in the theme it is labelled with.
+RECEIPT_RESOLVED_THEME = {"supercharge": "legacy", "console": "console",
+                          "legacy": "legacy", "mono": "legacy"}
+
+MONO_CAPTION_RIDER = {
+    "theme": "mono",
+    "words": "But with the darkest grey for the captions and white for the text.",
+    "ground_token": "--surface-digital-black", "ground_hex": "#1A1A1A",
+    "ink_token": "--text-reverse", "ink_hex": "#FFFFFF",
+}
+
+# The literal fallback for each background token the dial can name. Values read off canon.css's
+# `:root`; they exist so a var() cannot dangle to silent black, not as a second source of truth.
+BG_FALLBACK = {"--surface-subtle": "#F0F0F0", "--surface-raised": "#FFFFFF"}
+
+
+def ruled_words():
+    """-> {dial: [ruled values]} taken from the matrix module's OWN option sets, never re-typed."""
+    bg = [b[0] for b in matrix.BACKGROUNDS]
+    return {"spacing": [s[0] for s in matrix.SPACINGS],
+            "keylines": [o[0] for o in matrix.ONOFF],
+            "mode": [m[0] for m in matrix.GALLERY_MODES],
+            "edge": [e[0] for e in matrix.BOTTOM_EDGE],
+            "rounding": [r[0] for r in matrix.ROUNDINGS],
+            "pageBg": bg, "bentoBg": bg, "capBg": bg}
+
+
+def validate_settings(settings=None):
+    """-> [complaints]. Empty means every ruled word is a member of its ruled set, reachable in
+    its theme, and legal under P2/P3. LOUD AND NAMED — a settings table is not self-certifying."""
+    settings = settings or GALLERY_SETTINGS
+    words, bad = ruled_words(), []
+    for theme in matrix.THEMES:
+        s = settings.get(theme)
+        if s is None:
+            bad.append("%s — no settings ruled for this theme" % theme)
+            continue
+        for dial, allowed in words.items():
+            if s.get(dial) not in allowed:
+                bad.append("%s.%s = %r, which is not a ruled value (%s)"
+                           % (theme, dial, s.get(dial), "/".join(allowed)))
+        reachable = matrix.keylines_for("gallery", theme)
+        if s.get("keylines") not in reachable:
+            bad.append("%s.keylines = %r is UNREACHABLE in this theme (s217-D6 allows %s)"
+                       % (theme, s.get("keylines"), "/".join(reachable)))
+        if not matrix.caption_legal(s.get("capBg"), s.get("bentoBg")):
+            bad.append("%s — P2: caption ground equals the bento ground (%s)"
+                       % (theme, s.get("capBg")))
+        if not matrix.capsule_legal(s.get("rounding"), s.get("capBg"), s.get("keylines")):
+            bad.append("%s — P3: a capsule with a transparent caption and no keylines has no "
+                       "edge to be a capsule of" % theme)
+    return bad
+
+
+def spacing_px(word):
+    for value, _label, px in matrix.SPACINGS:
+        if value == word:
+            return px
+    raise KeyError("spacing %r is not a ruled stop" % word)
+
+
+def bg_decl(word):
+    """-> the CSS value for a background dial word, with its literal fallback. `transparent` has
+    no token — the explorer's own palette says `(none)` — so it compiles to the keyword."""
+    for value, _label, token in matrix.BACKGROUNDS:
+        if value == word:
+            if token == "(none)":
+                return "transparent"
+            return "var(%s,%s)" % (token, BG_FALLBACK[token])
+    raise KeyError("background %r is not a ruled dial word" % word)
+
+
+# The wall's own selector, written ONCE. `.c-bento.` is deliberate for the reason the instance
+# dial carries it (s217-D3): canon's role rules are (0,2,0) and a bare class would lose to them.
+WALL = ".fx .c-bento.fx-wall-photo"
+TILE = WALL + " > .c-bento__grid > .c-bento__tile"
+
+
+def settings_css(settings=None, rider=MONO_CAPTION_RIDER):
+    """-> the per-theme settings block, concrete, one scope per theme (s200-D1).
+
+    ⛔ EVERY THEME EMITS EVERY DIAL, even where all four agree. A block that emitted only the
+    differences would read as "supercharge is the special one" and would go silently wrong the
+    day one theme's word changed — and a per-theme probe could not find a per-theme rule to
+    read. Repetition here is what makes the page answerable."""
+    settings = settings or GALLERY_SETTINGS
+    bad = validate_settings(settings)
+    if bad:
+        raise SystemExit("gen_foundations_217: the ruled gallery settings do not validate "
+                         "against gen_bento_matrix_217's option sets:\n  - " + "\n  - ".join(bad))
+    L = ["/* @gallery-settings:start */",
+         "/* ==========================================================================",
+         "   THE GALLERY SETTINGS — RULED PER THEME by Dave, #218 (2026-08-24), compiled",
+         "   from his four s217-D5 export STATE blocks at MINT TIME (s200-D1). Receipts:",
+         "   notes/_receipts/2026-08-24-218-photography-theme-settings.md",
+         "   ⛔ Every dial word was checked against gen_bento_matrix_217's own ruled option",
+         "   sets before this block was written. Every var() carries a literal fallback.",
+         "   ========================================================================== */"]
+    for theme in matrix.THEMES:
+        s = settings[theme]
+        sel = '[data-apollo-theme="%s"] ' % theme
+        gutter = spacing_px(s["spacing"])
+        page, bento, cap = bg_decl(s["pageBg"]), bg_decl(s["bentoBg"]), bg_decl(s["capBg"])
+        L.append("")
+        L.append("/* ---- %s · spacing %s (%s) · keylines %s · %s · %s edge · rounding %s · "
+                 "page %s · bento %s · caption %s ---- */"
+                 % (theme, s["spacing"], gutter, s["keylines"], s["mode"], s["edge"],
+                    s["rounding"], s["pageBg"], s["bentoBg"], s["capBg"]))
+        # pageBg — the ground the wall sits on.
+        L.append("%sbody.fx{background:%s;}" % (sel, page))
+        # bentoBg + the ruled gutter, on the wall itself.
+        L.append("%s%s{--bento-gutter:%s; background:%s;}" % (sel, WALL, gutter, bento))
+        # keylines OFF — no tile edge, and NO element that could draw one. ⛔ And the TILE PAINTS
+        # NO GROUND: a gallery caption's immediate ground must be the BENTO background or the
+        # capBg dial is comparing itself against a colour it never touches (measured #217).
+        L.append("%s%s .px-open{border:0; box-shadow:none; background:transparent;}"
+                 % (sel, TILE))
+        L.append("%s%s .px-open:hover{border-color:transparent;}" % (sel, TILE))
+        # rounding = 4 corners of the image: the PICTURE takes the container radius, the tile
+        # stays square and unclipped. (capsule would move the radius onto the tile.)
+        if s["rounding"] == "corners":
+            L.append("%s%s{border-radius:0;}" % (sel, TILE))
+            L.append("%s%s .px-open{border-radius:0; overflow:visible;}" % (sel, TILE))
+            L.append("%s%s .px-img{border-radius:var(--border-radius-container,0px); "
+                     "overflow:hidden;}" % (sel, TILE))
+        else:
+            L.append("%s%s{border-radius:var(--border-radius-container,0px);}" % (sel, TILE))
+            L.append("%s%s .px-open{border-radius:inherit; overflow:hidden;}" % (sel, TILE))
+        # capBg — the caption ground.
+        L.append("%s%s .px-cap{background:%s;}" % (sel, TILE, cap))
+        if rider and rider["theme"] == theme:
+            L.append("/* ⬛ THE RIDER, Dave's words: “%s” — a dark ground the explorer's"
+                     % rider["words"])
+            L.append("   grey/white/transparent palette cannot say, so it is an ADDITION to the")
+            L.append("   ruled vocabulary and is named as one. Mode-stable tokens, because a")
+            L.append("   ground ruled by eye must not invert when the mode flips. */")
+            L.append("%s%s .px-cap{background:var(%s,%s); color:var(%s,%s);}"
+                     % (sel, TILE, rider["ground_token"], rider["ground_hex"],
+                        rider["ink_token"], rider["ink_hex"]))
+            L.append("%s%s .px-cap .px-desc, %s%s .px-cap .px-lic{color:var(%s,%s);}"
+                     % (sel, TILE, sel, TILE, rider["ink_token"], rider["ink_hex"]))
+    L.append("/* @gallery-settings:end */")
+    return "\n".join(L)
+
+
+# The markers above are a PROBEABLE TOKEN, not decoration: bite 6 has to be able to take the
+# settings block OUT of the "declares no bento structure" question and bite 6b has to be able to
+# ask its own question of exactly that region. A region a gate cannot address is a region no gate
+# is really asking about.
+SETTINGS_MARKERS = ("/* @gallery-settings:start */", "/* @gallery-settings:end */")
+
+
+def split_settings(css):
+    """-> (css_without_the_settings_block, the_settings_block). Both empty-safe."""
+    start, end = SETTINGS_MARKERS
+    if start not in css or end not in css:
+        return css, ""
+    head, rest = css.split(start, 1)
+    block, tail = rest.split(end, 1)
+    return head + tail, block
 
 
 def span_attrs(span):
@@ -482,6 +736,7 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   .fx *,.fx *::before,.fx *::after{transition-duration:.01ms !important;
     animation-duration:.01ms !important;}
 }
+__PHOTO_SETTINGS__
 """
 
 SCRIPT = """
@@ -577,7 +832,8 @@ def esc(s):
     return htmlmod.escape(str(s if s is not None else ""), quote=True)
 
 
-def shell(title, h1, subtitle, body, extra_css="", extra_script="", extra_class=""):
+def shell(title, h1, subtitle, body, extra_css="", extra_script="", extra_class="",
+          photo_settings=""):
     """THE ONE PAGE SHELL for every Foundations entry.
 
     ⚠ `extra_css` / `extra_script` / `extra_class` exist for ONE reason (#217, the bento matrix
@@ -589,7 +845,15 @@ def shell(title, h1, subtitle, body, extra_css="", extra_script="", extra_class=
              .replace("__TITLE__", esc(title))
              .replace("__SENTINEL__", SENTINEL)
              .replace("__UP__", UP)
-             .replace("__CSS__", CSS)
+             # ⛔ THE SETTINGS BLOCK RIDES INSIDE THE ONE `<style>`, NOT A SECOND ONE. The
+             # zero-JavaScript-lightbox bite counts script tags and the blast-radius bite counts
+             # style tags on all three pages; an `extra_css` here would have moved a number that
+             # is asserted about a different page's instrument. A page with no settings resolves
+             # the slot to nothing, so logos.html and bento.html are byte-identical to before.
+             # ⚠ the NEWLINE is part of the slot: without it an empty settings block would leave
+             # a blank line and rewrite two signed-off pages for an addition that misses them.
+             .replace("__CSS__", CSS.replace("__PHOTO_SETTINGS__\n",
+                                             (photo_settings + "\n") if photo_settings else ""))
              .replace("__EXTRA_CSS__",
                       ("\n<style>%s</style>" % extra_css) if extra_css.strip() else "")
              .replace("__H1__", esc(h1))
@@ -615,30 +879,44 @@ def photography_page(rows, meta, residuals):
     derivs = counts.get("derivatives", len(rows))
     spec = (meta or {}).get("derivative_spec", {})
     tiles, boxes = [], []
+    # ⚠ COUNTED, NOT ASSUMED: the manifest's `exif_description` is null where the field is ABSENT
+    # on the file. Those captions render the LICENCE LINE ONLY and the page says how many — the
+    # #217 page printed the literal word UNKNOWN in the caption, which at 251 tiles would put a
+    # column of invented-looking placeholder text on the wall. Absent is declared, never faked.
+    no_desc = [r for r in rows if r["description"] == "UNKNOWN"]
     for i, r in enumerate(rows, 1):
         lid = "lb-photo-%d" % i
         desc = r["description"]
+        has_desc = desc != "UNKNOWN"
         short = desc if len(desc) <= 96 else desc[:95].rsplit(" ", 1)[0] + "…"
         tiles.append(
             '<figure class="c-bento__tile"%s>'
             '<button class="px-open" type="button" command="show-popover" commandfor="%s">'
+            # ⛔ EVERY <img> ON THIS PAGE IS LAZY AND ASYNC-DECODED (Dave, #218: "Can I have all
+            # the images we have on file, with a lazy loader"). At 251 tiles plus 251 lightbox
+            # pictures the eager page would ask for ~84 MB up front.
             '<img class="px-img" src="%sknowledge/assets/photography-web/%s" alt="%s"'
-            ' loading="lazy" width="%s" height="%s">'
+            ' loading="lazy" decoding="async" width="%s" height="%s">'
             '<figcaption class="c-bento__caption px-cap">'
-            '<span class="t-ed-caption px-desc">%s</span>'
+            '%s'
             '<span class="t-cm-legal px-lic">%s &middot; %s</span>'
             '</figcaption></button></figure>'
             % (span_attrs(r["span"]), lid,
-               UP, esc(r["file"]), esc(short if desc != "UNKNOWN" else "Photograph"),
+               UP, esc(r["file"]), esc(short if has_desc else "Photograph"),
                esc(r["w"] or ""), esc(r["h"] or ""),
-               esc(short), esc(r["licence"]), esc(r["w"] and "%s×%s" % (r["w"], r["h"]) or "")))
+               ('<span class="t-ed-caption px-desc">%s</span>' % esc(short)) if has_desc else "",
+               esc(r["licence"]), esc(r["w"] and "%s×%s" % (r["w"], r["h"]) or "")))
         boxes.append(
             '<div id="%s" popover class="px-lb fx" aria-label="%s">'
             '<div class="px-lb-head">'
             '<span class="t-ed-body-small">%s</span>'
             '<button class="px-lb-x t-cm-ctl-14" type="button" command="hide-popover"'
             ' commandfor="%s">Close</button></div>'
-            '<img src="%sknowledge/assets/photography-web/%s" alt="%s">'
+            # ⛔ THE LIGHTBOX PICTURE IS LAZY TOO, and it is the half that matters most: there
+            # are 251 of these and every one of them is a SECOND full-size request for a picture
+            # already on the wall. Eager, they load whether or not a popover is ever opened.
+            '<img src="%sknowledge/assets/photography-web/%s" alt="%s"'
+            ' loading="lazy" decoding="async">'
             '<dl class="t-ed-caption">'
             '<dt>Description</dt><dd>%s</dd>'
             '<dt>Basis</dt><dd><code>%s</code></dd>'
@@ -655,20 +933,75 @@ def photography_page(rows, meta, residuals):
                esc(round((r["bytes"] or 0) / 1024))))
 
     missing = residuals.get("missing_derivative_file") or []
+    sq = (residuals or {}).get("squaring") or {}
+
+    # THE SETTINGS TABLE, generated from the SAME dict the stylesheet is compiled from — so the
+    # page cannot describe one wall and render another.
+    srows = "".join(
+        "<tr><td>%s</td><td class='num'>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
+        "<td>%s</td><td>%s</td><td>%s</td></tr>"
+        % (t, esc(spacing_px(GALLERY_SETTINGS[t]["spacing"])),
+           esc(GALLERY_SETTINGS[t]["keylines"]), esc(GALLERY_SETTINGS[t]["mode"]),
+           esc(GALLERY_SETTINGS[t]["edge"]), esc(GALLERY_SETTINGS[t]["rounding"]),
+           esc(GALLERY_SETTINGS[t]["pageBg"]), esc(GALLERY_SETTINGS[t]["bentoBg"]),
+           ("%s + %s ink (rider)" % (MONO_CAPTION_RIDER["ground_hex"],
+                                     MONO_CAPTION_RIDER["ink_hex"]))
+           if t == MONO_CAPTION_RIDER["theme"] else esc(GALLERY_SETTINGS[t]["capBg"]))
+        for t in matrix.THEMES)
+
     body = """
   <section id="intro">
     <h2 class="t-ed-heading-3">Photography</h2>
     <p class="t-ed-body lede">A Foundations tier entry, not a component. The %d photographs below
       are the <b>committed web derivatives</b> in <code>knowledge/assets/photography-web/</code> —
       the whole set is <b>%s originals</b>, which stay NON-REPO behind the #211 <code>.gitignore</code>
-      fence; a derivative is minted on demand for the photograph a page actually uses
-      (ruling <code>s217-D1</code>). Derivative spec: max edge %s px, target %s KB, %s, %s.
+      fence (ruling <code>s217-D1</code>). <b>Every original now carries a derivative</b>: Dave
+      ruled the whole library onto this page at #218 — <i>&ldquo;Can I have all the images we have
+      on file, with a lazy loader&rdquo;</i> — with the download consequence named and accepted.
+      Derivative spec, unchanged from <code>s217-D1</code>: max edge %s px, target %s KB, %s, %s.
       Every caption is the photograph's own EXIF description and its derived licence source,
       copied verbatim from <code>knowledge/_PHOTOGRAPHY-MANIFEST.json</code> — nothing is inferred
-      and nothing is typed here. <code>UNKNOWN</code> means the field is absent on the file.</p>
+      and nothing is typed here.</p>
     <p class="t-ed-body-small lede">%s Open any tile for the full description, both bases, and the
       measured sizes. <span id="cap"></span></p>
     <p class="t-ed-body-small lede">%s</p>
+  </section>
+
+  <section id="settings">
+    <h2 class="t-ed-heading-4">The gallery settings are ruled PER THEME</h2>
+    <p class="t-ed-body-small lede">Dave drove the <code>s217-D5</code> matrix explorer's Gallery
+      dials in each of the four themes and exported the state — <i>&ldquo;can we have this as the
+      settings for the photography section on the library&rdquo;</i> (#218, 2026-08-24). The four
+      exports are stored verbatim at
+      <code>notes/_receipts/2026-08-24-218-photography-theme-settings.md</code>. They are
+      <b>compiled into this page's stylesheet at mint time</b> (<code>s200-D1</code>), one scope
+      per theme: there is no controller here and nothing to dial. Switch the theme in the header
+      to see them.</p>
+    <div class="tablewrap"><table class="t-cm-legal">
+      <thead><tr><th>theme</th><th>gutter</th><th>keylines</th><th>mode</th><th>edge</th>
+        <th>rounding</th><th>page ground</th><th>bento ground</th><th>caption ground</th></tr></thead>
+      <tbody>%s</tbody>
+    </table></div>
+    <div class="finding">
+      <b>The mono caption is a RIDER, not a dial value.</b> Dave's words: &ldquo;%s&rdquo; The
+      explorer's background palette is lightest-grey / white / transparent and none of the three
+      is a dark ground, so this is an <b>addition</b> to the ruled vocabulary rather than a
+      selection from it. It is drawn from <code>%s</code> (%s) with <code>%s</code> (%s) ink —
+      both mode-stable in mono, because a ground ruled by eye must not invert when the mode
+      flips. <b>His eye rules the shade on the render.</b>
+      <p>&ldquo;Page ground&rdquo; and &ldquo;bento ground&rdquo; read <code>white</code> because
+      that is the dial's word for <code>--surface-raised</code>, which is what the explorer paints
+      — it resolves to white in light mode and to the theme's raised dark surface in dark mode.
+      The dial name is not a promise of the hex.</p>
+    </div>
+    <div class="finding">
+      <b>&ldquo;Edge: square&rdquo; is RECORDED AND NOT ENACTED, and this page says so rather
+      than quietly doing one or the other.</b> All four of Dave's exports carry
+      <code>edge: square</code>, which in the explorer runs the squaring pass. This wall is
+      <code>role=gallery</code>, and <code>s217-D3</code> makes a gallery <b>exempt</b> from
+      squaring — orphans are acceptable here. Enacting the dial would overturn that ruling, which
+      is not this build's to do. Measured on the wall as it ships: %s
+    </div>
   </section>
 
   <section id="bento">
@@ -686,14 +1019,19 @@ def photography_page(rows, meta, residuals):
         from <code>knowledge/_fitness-test/bento-gallery-showcase-v2.html</code> (#216) &mdash;
         <b>which is itself awaiting Dave's sign-off</b>. Copying a layout he pointed at is not a
         certification of it.</li>
-      <li><b>No preference ordering.</b> The %d photographs carrying derivatives are specimen
-        picks for the Image-block and Carousel pages; picking a specimen is not a ruling and
-        Dave swaps by eye. Tile order is the derivative filename, ascending.</li>
+      <li><b>Every picture is lazy.</b> All %d wall images <i>and</i> all %d lightbox images carry
+        <code>loading="lazy" decoding="async"</code>. Eagerly, the page would ask for roughly
+        %s MB before a single tile was on screen.</li>
+      <li><b>%d photograph(s) carry no EXIF description</b>, and their captions render the
+        <b>licence line only</b>. The field is absent on the file; a plausible sentence is never
+        invented to fill it, and the lightbox says <code>UNKNOWN</code> with the basis that
+        proves it.</li>
+      <li><b>No preference ordering.</b> Tile order is the derivative filename, ascending —
+        mechanical, not curated. Emphasis is position, not preference.</li>
       <li><b>No tags, keywords or categories.</b> The tagging approach is unruled (#211 owed
         item 3) and no meaning is inferred from the description text.</li>
-      <li><b>Page-local styles only.</b> Dave parked structural bento components at #216, so this
-        page mints no canon component and edits no canon rule. Every rule it ships is in its own
-        head, scoped to <code>.fx</code>.</li>
+      <li><b>Page-local styles only.</b> This page mints no canon component and edits no canon
+        rule. Every rule it ships is in its own head, scoped to <code>.fx</code>.</li>
       <li><b>The lightbox ships no JavaScript.</b> It is the platform's <code>popover</code>
         driven by <code>command</code> / <code>commandfor</code> on the button. The only script
         on the page is the theme/mode chrome.</li>
@@ -702,13 +1040,25 @@ def photography_page(rows, meta, residuals):
   </section>
 """ % (len(rows), esc(total), esc(spec.get("max_edge_px", "UNKNOWN")),
        esc(spec.get("target_kb", "UNKNOWN")), esc(spec.get("colour", "UNKNOWN")),
-       esc(spec.get("format", "UNKNOWN")), esc(SPAN_NOTE), esc(EMPHASIS_NOTE), len(rows),
-       "\n".join("      " + t for t in tiles), len(rows),
+       esc(spec.get("format", "UNKNOWN")), esc(SPAN_NOTE), esc(emphasis_note(rows)),
+       srows, esc(MONO_CAPTION_RIDER["words"]),
+       esc(MONO_CAPTION_RIDER["ground_token"]), esc(MONO_CAPTION_RIDER["ground_hex"]),
+       esc(MONO_CAPTION_RIDER["ink_token"]), esc(MONO_CAPTION_RIDER["ink_hex"]),
+       esc(sq.get("reason") or ("the wall is an exact rectangle at %d columns anyway."
+                               % (sq.get("at_cols") or PHOTO_LADDER[0]))),
+       len(rows), "\n".join("      " + t for t in tiles),
+       len(rows), len(rows),
+       esc(round(sum(r["bytes"] or 0 for r in rows) * 2 / 1048576.0, 1)),
+       len(no_desc),
        ("<li>⚠ <b>%d manifest row(s) name a derivative that is not on disk</b>: %s. Reported, "
         "not hidden, and not drawn.</li>" % (len(missing), esc(", ".join(missing)))) if missing else "")
     return shell("Photography — Apollo library (Foundations)", "Photography",
                  "Foundations &middot; %d derivatives of %s originals" % (len(rows), esc(total)),
-                 body + "\n" + "\n".join(boxes) + "\n")
+                 body + "\n" + "\n".join(boxes) + "\n",
+                 # ⬛ THE ARM. `BREAK_SETTINGS` ships the page with the compiled block ABSENT, so
+                 # the live probe can be SEEN to go red by name. A gate that has never been seen
+                 # to fail is not a gate ([[instrument-without-a-consumer]]).
+                 photo_settings="" if BREAK_SETTINGS else settings_css())
 
 
 # ---------------------------------------------------------------------------- logos
@@ -834,6 +1184,19 @@ def build():
         "logos.html": logos_page(lrows, lresid),
         "bento.html": matrix.page(shell, mrows),
     }
+    # #218 — THE GRIDS GROUP, four pages, written through the SAME shell. Dave, 2026-08-24:
+    # "we should have a section called grids with subsections – the 12 col grid and these 3
+    # types, I'd like to keep the controls so the designer can use them."
+    # ⛔ The bodies live in gen_grids_218.py — same arrangement as the matrix explorer, and for
+    # the same reason: a controller-sized body would drown this file. The WRITE stays here, so
+    # showroom/_foundations/ keeps exactly ONE writer and ONE shell.
+    # ⛔ AND IT CONSUMES THE EXPLORER, IT DOES NOT COPY IT. `matrix_assets` captures the CSS and
+    # JS out of `matrix.page()` itself, and `mrows` — one content pass — is shared with the
+    # explorer's own page above, so the four type pages and the explorer cannot disagree about
+    # a span, a photograph, a packing row or a corner rule.
+    gassets = grids.matrix_assets(mrows)
+    for kind, fname in grids.PAGES:
+        pages[fname] = grids.page(shell, kind, mrows, gassets)
     return (pages,
             {"photography": prows, "logos": lrows, "bento": mrows["photos"]},
             {"photography": presid, "logos": lresid, "bento": mrows["residuals"]})
@@ -871,7 +1234,13 @@ def selftest():
     # that only checked for the canon class would pass with the old rules still shipping
     # underneath, which is the way a re-point silently becomes an addition.
     css = photo.split("<style>", 1)[1].split("</style>", 1)[0]
-    _cssbody = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    # ⛔ THE SETTINGS BLOCK IS ADDRESSED SEPARATELY, and that is not an exemption — it gets its
+    # OWN bite (6b) with a HARDER question. Bite 6 asks "did this page keep a private copy of the
+    # bento structure canon replaced?"; the settings block declares no structure, it enacts the
+    # s217-D5 DIALS, and one of those dials is a radius. Folding it into bite 6 would have made
+    # the ruled rounding dial indistinguishable from the defect the bite exists to catch.
+    css_wo_settings, settings_block = split_settings(css)
+    _cssbody = re.sub(r"/\*.*?\*/", "", css_wo_settings, flags=re.S)
     # ⚠ Scoped to rules that TARGET a bento — the lightbox's own `display:grid` definition list
     # is not bento structure, and a blanket ban on the grid properties would have said so
     # falsely (caught on the first run of this bite).
@@ -886,6 +1255,63 @@ def selftest():
           _bento_structure,
           bool(re.search(r"@container", _cssbody))),
          (True, False, [], False))
+    # ---- #218 · THE PER-THEME GALLERY SETTINGS, and the 251-photograph wall ------------------
+    _sb = re.sub(r"/\*.*?\*/", "", settings_block, flags=re.S)
+    _sb_radii = sorted({v.strip() for v in re.findall(r"border-radius\s*:\s*([^;]+);", _sb)})
+    bite("6b · the SETTINGS block enacts the s217-D5 DIALS and declares no structure of its own",
+         (bool(settings_block),
+          bool(re.search(r"grid-template-columns|grid-auto-rows|grid-auto-flow|(^|[;{])\s*gap\s*:",
+                         _sb)),
+          bool(re.search(r"--bento-columns|--bento-row-unit", _sb)),
+          _sb_radii),
+         (True, False, False, ["0", "var(--border-radius-container,0px)"]))
+    bite("23 · every ruled dial word is a member of gen_bento_matrix_217's OWN option sets "
+         "(P2/P3 legality included)", validate_settings(), [])
+    bite("24 · every theme carries its own compiled scope, and the ruled gutters are "
+         "1/24/24/24 px",
+         ([t for t in matrix.THEMES if '[data-apollo-theme="%s"] ' % t not in settings_block],
+          [spacing_px(GALLERY_SETTINGS[t]["spacing"])
+           for t in ("supercharge", "console", "legacy", "mono")]),
+         ([], ["1px", "24px", "24px", "24px"]))
+    # ⛔ THE RIDER IS TOKEN-BORNE AND MONO-ONLY. A raw hex would be invisible to a theme change
+    # and a rider that reached a second theme would be a ruling nobody made.
+    bite("25 · the mono caption rider is minted from TOKENS with literal fallbacks, in mono ONLY",
+         (("var(--surface-digital-black,#1A1A1A)" in settings_block),
+          ("var(--text-reverse,#FFFFFF)" in settings_block),
+          sorted({m for m in re.findall(r'\[data-apollo-theme="([a-z]+)"\][^{}]*\.px-cap\{'
+                                        r'background:var\(--surface-digital-black', _sb)})),
+         (True, True, ["mono"]))
+    _imgs = re.findall(r"<img[^>]*>", photo)
+    bite("26 · EVERY image on the page is lazy and async-decoded (Dave, #218 — 'with a lazy "
+         "loader'), the wall and the lightboxes alike",
+         (len(_imgs),
+          [i for i in _imgs
+           if 'loading="lazy"' not in i or 'decoding="async"' not in i]),
+         (len(rows["photography"]) * 2, []))
+    bite("27 · every tile src names a file that is ON DISK, and the count is the manifest's",
+         (photo.count('class="c-bento__tile"'),
+          len({s for s in re.findall(r'src="\.\./\.\./(knowledge/assets/[^"]+)"', photo)}),
+          sorted({s for s in re.findall(r'src="\.\./\.\./(knowledge/assets/[^"]+)"', photo)
+                  if not os.path.exists(os.path.join(ROOT, s))})),
+         (len(rows["photography"]), len(rows["photography"]), []))
+    # ⚠ ABSENT IS DECLARED, NEVER FAKED. A caption with no description must carry NO description
+    # span at all — the #217 page printed the literal word UNKNOWN, which at this scale would be
+    # a column of placeholder text that reads as content.
+    _nodesc = [r for r in rows["photography"] if r["description"] == "UNKNOWN"]
+    bite("28 · a photograph with no EXIF description renders the LICENCE LINE ONLY, and the page "
+         "declares how many",
+         (photo.count('class="t-ed-caption px-desc"'),
+          ("<b>%d photograph(s) carry no EXIF description</b>" % len(_nodesc)) in photo),
+         (len(rows["photography"]) - len(_nodesc), True))
+    # ⬛ THE ONE DIAL THIS BUILD RECORDED AND DID NOT ENACT. Dave's four exports all say
+    # `edge: square`; s217-D3 exempts a gallery from squaring. The page must say BOTH, or it is
+    # either overturning a ruling in silence or dropping one in silence.
+    bite("29 · edge=square is RECORDED and NOT ENACTED, and the page says so",
+         (sorted({GALLERY_SETTINGS[t]["edge"] for t in matrix.THEMES}),
+          (resid["photography"] or {}).get("squaring", {}).get("exempt"),
+          "RECORDED AND NOT ENACTED" in photo),
+         (["square"], True, True))
+
     pbody = photo.split("</style>", 1)[1]
     lbody = logos.split("</style>", 1)[1]
     # ⛔ THE DANGLING-VAR FENCE, and the SCOPE of it is the point. A page-local name declared in
@@ -1009,9 +1435,46 @@ def selftest():
     print("   logos:       %d variant(s) drawn" % len(rows["logos"]))
 
 
+def write_settings_mutant():
+    """⬛ #218 — THE SETTINGS ARM. The photography page, built through the ONE writer and the ONE
+    shell, with the compiled per-theme settings block ABSENT and nothing else changed.
+
+    ⛔ NON-REPO by construction: the destination is `BM_MUTANT_DIR`, never showroom/. ⚠ /var/tmp
+    is SHARED ACROSS SESSIONS — a foreign mutant is unwritable AND stale, and a stale mutant
+    silently proves yesterday's clause (#218 measured that). Pass a session-suffixed dir.
+    ⛔ AND ITS ASSET ADDRESSES ARE MADE ABSOLUTE. Written with the shipped `../../knowledge/…`
+    hrefs, a mutant outside showroom/_foundations/ resolves canon.css NOWHERE — every token
+    dangles, every ground reads white, and a settings assertion would then "fail" for the wrong
+    reason or "pass" by comparing a default to a default. The arm must differ from the real page
+    in the ARM and in nothing else.
+    """
+    global BREAK_SETTINGS
+    mdir = os.environ.get("BM_MUTANT_DIR", "/var/tmp")
+    os.makedirs(mdir, exist_ok=True)
+    BREAK_SETTINGS = True
+    try:
+        prows, pmeta, presid = read_photos()
+        html = photography_page(prows, pmeta, presid)
+    finally:
+        BREAK_SETTINGS = False
+    html = (html.replace('href="../../knowledge/', 'href="file://%s/knowledge/' % ROOT)
+                .replace('src="../../knowledge/', 'src="file://%s/knowledge/' % ROOT))
+    dest = os.path.join(mdir, "photography-SETTINGS-BROKEN.html")
+    open(dest, "w", encoding="utf-8").write(html)
+    if SETTINGS_MARKERS[0] in html:
+        raise SystemExit("gen_foundations_217 --break-settings: the arm did NOT arm — the "
+                         "settings block is still in the mutant. An arm that does not arm is a "
+                         "green light over an untested clause.")
+    print("gen_foundations_217 --break-settings: wrote %s (%d bytes) — the per-theme gallery "
+          "settings block is STRIPPED" % (dest, os.path.getsize(dest)))
+    return dest
+
+
 def main():
     if "--selftest" in sys.argv:
         return selftest()
+    if "--break-settings" in sys.argv:
+        return write_settings_mutant()
     pages, rows, resid = build()
     check = "--check" in sys.argv
     stale = []

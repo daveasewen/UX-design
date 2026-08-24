@@ -325,10 +325,20 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
    treatment-C centred-gutter construction is RETIRED for dashboards. What the wall draws now:
      · ABOVE 1px — every TILE wears its own tight 1px keyline box, and the GROUP'S OUTER BORDER
        STEPS BACK. That is not a preference: with the tiles carrying edges, a group border would
-       re-create the DOUBLE FRAME Dave rejected earlier this session. The group still expresses
-       itself — its background and its clipped radius are untouched — and the tiles are INSET from
-       the container by the gutter (`--bento-outer-padding`), so no straight tile edge ever arrives
-       at the curve and nothing can be cropped.
+       re-create the DOUBLE FRAME Dave rejected earlier this session.
+       ⬛ AMENDED #218 (2026-08-24), DAVE'S WORDS: "each tile must have it's own keyline, but the
+       radii should only apply to the 4 corners of each sub bento (a collection of tiles)". The
+       gutter-inset construction is RETIRED — he read it as "all that happens is that you add
+       padding to the main bento and we loose the corner radii". What draws now: outer padding
+       returns to 0, and the FOUR CORNER TILES of each group carry the group's own radius
+       (`--bento-radius`) on their OUTER corner alone, so the tiles' keylines DRAW the rounded
+       silhouette themselves — concentric with the container's clip, nothing straight ever meets
+       the curve, and the radius is VISIBLE again on any ground (the padding construction hid it:
+       border 0 + unpainted ground left the radius as a clip on an invisible box).
+       ⛔ THE CORNER ASSIGNMENT IS MINTED PER BAND from the same dense placement the browser runs
+       (`place()`-semantics, tile identity kept) — the responsive bands re-seat which tile holds
+       a corner, so a single static assignment would round the wrong tile at 2 and 1 columns.
+       See `corner_rules()`; the literals 820/520 mirror canon's compiled $bands.
      · AT 1px — UNCHANGED. Flush tiles cannot carry their own boxes without doubling every seam,
        so the s217-D6-era construction stands: the group keeps its 1px rounded border, the gutter
        is the hairline, and the container's own `overflow:hidden` stops it ALONG THE CURVE. This
@@ -352,7 +362,7 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
    is (0,4,0) on the group and (0,5,0) on the tile so both beat canon's role and tile rules. */
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"])
   .bm-inner.c-bento[data-bento-role="dashboard"]{
-  border:0; --bento-outer-padding:var(--bento-gutter,24px);}
+  border:0; --bento-outer-padding:0px;}
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-inner
   > .c-bento__grid > .bm-tile{
   border:1px solid var(--bm-line,#D7D8D6); box-shadow:none; overflow:hidden; position:relative;}
@@ -360,6 +370,46 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
    every card tile (one mint, three consumers historically); above 1px it renders nowhere. */
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-inner
   > .c-bento__grid > .bm-tile > .bm-gapline{display:none;}
+/* ⬛ #218 CORNER KEYLINES — the four corner tiles of each sub-bento carry the group's radius on their OUTER corner; minted per band from dense placement. */
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(1) > .c-bento__grid > .bm-tile:nth-child(1){border-top-left-radius:var(--bento-radius,0px); border-top-right-radius:0; border-bottom-right-radius:0; border-bottom-left-radius:var(--bento-radius,0px);}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(1) > .c-bento__grid > .bm-tile:nth-child(2){border-top-left-radius:0; border-top-right-radius:var(--bento-radius,0px); border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(1) > .c-bento__grid > .bm-tile:nth-child(3){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:var(--bento-radius,0px); border-bottom-left-radius:0;}
+@container bento (max-width:820px){
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(1) > .c-bento__grid > .bm-tile:nth-child(1){border-top-left-radius:var(--bento-radius,0px); border-top-right-radius:var(--bento-radius,0px); border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(1) > .c-bento__grid > .bm-tile:nth-child(2){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:0; border-bottom-left-radius:var(--bento-radius,0px);}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(1) > .c-bento__grid > .bm-tile:nth-child(3){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:var(--bento-radius,0px); border-bottom-left-radius:0;}
+}
+@container bento (max-width:520px){
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(1) > .c-bento__grid > .bm-tile:nth-child(1){border-top-left-radius:var(--bento-radius,0px); border-top-right-radius:var(--bento-radius,0px); border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(1) > .c-bento__grid > .bm-tile:nth-child(2){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(1) > .c-bento__grid > .bm-tile:nth-child(3){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:var(--bento-radius,0px); border-bottom-left-radius:var(--bento-radius,0px);}
+}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(2) > .c-bento__grid > .bm-tile:nth-child(1){border-top-left-radius:var(--bento-radius,0px); border-top-right-radius:0; border-bottom-right-radius:0; border-bottom-left-radius:var(--bento-radius,0px);}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(2) > .c-bento__grid > .bm-tile:nth-child(2){border-top-left-radius:0; border-top-right-radius:var(--bento-radius,0px); border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(2) > .c-bento__grid > .bm-tile:nth-child(3){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:var(--bento-radius,0px); border-bottom-left-radius:0;}
+@container bento (max-width:820px){
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(2) > .c-bento__grid > .bm-tile:nth-child(1){border-top-left-radius:var(--bento-radius,0px); border-top-right-radius:var(--bento-radius,0px); border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(2) > .c-bento__grid > .bm-tile:nth-child(2){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:0; border-bottom-left-radius:var(--bento-radius,0px);}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(2) > .c-bento__grid > .bm-tile:nth-child(3){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:var(--bento-radius,0px); border-bottom-left-radius:0;}
+}
+@container bento (max-width:520px){
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(2) > .c-bento__grid > .bm-tile:nth-child(1){border-top-left-radius:var(--bento-radius,0px); border-top-right-radius:var(--bento-radius,0px); border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(2) > .c-bento__grid > .bm-tile:nth-child(2){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(2) > .c-bento__grid > .bm-tile:nth-child(3){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:var(--bento-radius,0px); border-bottom-left-radius:var(--bento-radius,0px);}
+}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(3) > .c-bento__grid > .bm-tile:nth-child(1){border-top-left-radius:var(--bento-radius,0px); border-top-right-radius:0; border-bottom-right-radius:0; border-bottom-left-radius:var(--bento-radius,0px);}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(3) > .c-bento__grid > .bm-tile:nth-child(2){border-top-left-radius:0; border-top-right-radius:var(--bento-radius,0px); border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(3) > .c-bento__grid > .bm-tile:nth-child(3){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:var(--bento-radius,0px); border-bottom-left-radius:0;}
+@container bento (max-width:820px){
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(3) > .c-bento__grid > .bm-tile:nth-child(1){border-top-left-radius:var(--bento-radius,0px); border-top-right-radius:var(--bento-radius,0px); border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(3) > .c-bento__grid > .bm-tile:nth-child(2){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:0; border-bottom-left-radius:var(--bento-radius,0px);}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(3) > .c-bento__grid > .bm-tile:nth-child(3){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:var(--bento-radius,0px); border-bottom-left-radius:0;}
+}
+@container bento (max-width:520px){
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(3) > .c-bento__grid > .bm-tile:nth-child(1){border-top-left-radius:var(--bento-radius,0px); border-top-right-radius:var(--bento-radius,0px); border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(3) > .c-bento__grid > .bm-tile:nth-child(2){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:0; border-bottom-left-radius:0;}
+.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-outer > .c-bento__grid > .bm-inner:nth-child(3) > .c-bento__grid > .bm-tile:nth-child(3){border-top-left-radius:0; border-top-right-radius:0; border-bottom-right-radius:var(--bento-radius,0px); border-bottom-left-radius:var(--bento-radius,0px);}
+}
 /* ⛔ THE MAIN WALL'S GUTTERS STAY LINE-FREE — PROPOSED (#217), and DECLARED rather than left as an
    absence. `.bm-outer`'s tiles ARE the groups, and a group is a clipped bento, so a line hung on
    one would be eaten by its own clip before it reached the main gutter. Space separates groups;
@@ -808,12 +858,15 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
                 answer.</p>
             </div>
             <p class="bm-sp-open t-cm-legal">⬛ <b>ABOVE 1px &mdash; EVERY TILE WEARS ITS OWN TIGHT
-              1px BOX, AND NO GUTTER CARRIES ANYTHING.</b> The group's outer border <b>steps
-              back</b>: with the tiles carrying edges, a group frame would re-create the double
-              frame rejected earlier in the same sitting. The group still expresses itself &mdash;
-              its background and its clipped radius are untouched &mdash; and the tiles sit inset
-              from the container by the gutter, so no straight tile edge ever arrives at the curve
-              and nothing is cropped.</p>
+              1px BOX, AND THE FOUR CORNER TILES CARRY THE SUB-BENTO'S RADIUS ON THEIR OUTER
+              CORNER (#218, Dave's words: <i>&ldquo;the radii should only apply to the 4 corners
+              of each sub bento&rdquo;</i>).</b> The group's outer border <b>steps back</b>: with
+              the tiles carrying edges, a group frame would re-create the double frame rejected
+              at #217. The tiles' own keylines draw the rounded silhouette &mdash; concentric with
+              the container's clip, so nothing straight ever meets the curve, nothing is cropped,
+              and the radius reads on any ground. No gutter carries anything, and the corner
+              assignment moves with the responsive bands (minted per band from the browser's own
+              placement).</p>
             <p class="bm-sp-note t-cm-legal">⛔ <b>AT THE 1px STOP, UNCHANGED.</b> 1px cannot hold a
               gap <i>and</i> a line, so flush tiles cannot carry their own boxes without doubling
               every seam. The group keeps its curved 1px border, the tiles sit flush, and the

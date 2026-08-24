@@ -191,6 +191,12 @@ def main():
                           radius: px(getComputedStyle(w).borderTopLeftRadius),
                           overflow: getComputedStyle(w).overflowX,
                           tileRadius: t ? px(getComputedStyle(t).borderTopLeftRadius) : -1,
+                          // ⬛ #218 — the ruled `rounding: corners` dial moves the radius one
+                          // step further in, onto the PICTURE. Measured here so the assertion
+                          // can follow it instead of being deleted.
+                          imgRadius: t && t.querySelector('.px-img')
+                              ? px(getComputedStyle(t.querySelector('.px-img')).borderTopLeftRadius)
+                              : -1,
                           gutter: g ? px(getComputedStyle(g).columnGap) : -1,
                           capMin: cap ? px(getComputedStyle(cap).minHeight) : -1,
                           capH: cap ? Math.round(cap.getBoundingClientRect().height) : -1,
@@ -231,9 +237,22 @@ def main():
                             fails.append("%s — gallery CONTAINER radius %dpx, expected 0: "
                                          "s217-D3 puts this role's radius on the TILES"
                                          % (state, bt["radius"]))
-                        if bt["tileRadius"] != EXPECT_RADIUS[theme]:
-                            fails.append("%s — gallery TILE radius %dpx, expected %dpx"
-                                         % (state, bt["tileRadius"], EXPECT_RADIUS[theme]))
+                        # ⬛ RE-POINTED AT #218, NOT WEAKENED. s217-D3 moved this role's radius
+                        # from the container to the TILE; Dave then ruled the s217-D5 `rounding`
+                        # dial to `4 corners of the image` for this page (#218), which moves it
+                        # one step further in — the PICTURE is rounded and the tile stays square
+                        # and unclipped, so the caption is not cut. The assertion FOLLOWS the
+                        # radius rather than being dropped: it still needs the theme's own number
+                        # to appear somewhere it can be told apart from zero (console = 20px), and
+                        # it now also pins the tile to 0, which the old single check could not.
+                        if bt["tileRadius"] != 0:
+                            fails.append("%s — gallery TILE radius %dpx, expected 0: #218 rules "
+                                         "`rounding: corners`, which rounds the PICTURE and "
+                                         "leaves the tile square" % (state, bt["tileRadius"]))
+                        if bt["imgRadius"] != EXPECT_RADIUS[theme]:
+                            fails.append("%s — gallery PICTURE radius %dpx, expected %dpx "
+                                         "(#218 `rounding: corners`)"
+                                         % (state, bt["imgRadius"], EXPECT_RADIUS[theme]))
                         if bt["capMin"] != CAPTION_SPACE:
                             fails.append("%s — caption min-height %dpx, expected %dpx (s217-D3). "
                                          "The ruled number did not reach the page from the store."

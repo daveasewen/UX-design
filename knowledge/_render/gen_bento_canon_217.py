@@ -67,7 +67,18 @@ def esc(s):
 
 # ---------------------------------------------------------------------------- photographs
 def read_photos():
-    """The manifest's own rows that carry a committed derivative. Spans DERIVED."""
+    """The manifest's own rows that carry a committed derivative. Spans DERIVED.
+
+    ⬛ #218 CONSEQUENCE — DECLARED. Dave ruled ALL 251 photographs onto the Foundations
+    photography page, so every manifest row now carries a derivative. This page is a #217 DEMO
+    surface built and ratified against the fifteen committed derivatives of that day, and it
+    calls `square_wall`, whose exhaustive tail search is instant at 15 tiles and MEASURED at
+    ~45 minutes at 251 — the page becomes unbuildable, not merely slow.
+    ⛔ THIS IS ALSO THE PRICE OF A SECOND READER. `gen_bento_roles_217.read_photos()` is the ONE
+    data path and it took the specimen cap in one place; this private copy did not, and had to be
+    told separately. The cap SIZE is imported from there so there is at least one number, not two.
+    """
+    from gen_bento_roles_217 import SPECIMEN_N
     if not os.path.exists(PHOTO_MANIFEST):
         return [], {"manifest": "MISSING"}
     d = json.load(open(PHOTO_MANIFEST, encoding="utf-8"))
@@ -92,10 +103,25 @@ def read_photos():
                      "orient": r.get("orientation") or "UNKNOWN",
                      "desc": desc if len(desc) <= 90 else desc[:89].rsplit(" ", 1)[0] + "…"})
     rows.sort(key=lambda r: r["file"])
+    population = len(rows)
+    specimen = None
+    if population > SPECIMEN_N:
+        # ⛔ #218 CORRECTION, SAME SITTING — PINNED BY NAME, with the ONE data path's own list.
+        # The first cut sliced by filename order and MEASURED against the ratified set that swap
+        # replaced 14 of 15 photographs on the live decision surfaces; this page then also needed
+        # a portrait extension the pinned set makes unnecessary — the RATIFIED s217-D1 set
+        # already carries the three portrait derivatives the portrait proof (bite 5a) needs,
+        # because #217 minted them FOR that proof. [[specimen-starts-from-reference]]
+        from gen_bento_roles_217 import SPECIMEN_FILES
+        rows = [r for r in rows if r["file"] in SPECIMEN_FILES]
+        specimen = {"shown": len(rows), "population": population,
+                    "basis": "the RATIFIED s217-D1 specimen set, PINNED BY NAME (#218) — "
+                             "includes the three portrait derivatives bite 5a needs",
+                    "missing_pinned": sorted(set(SPECIMEN_FILES) - {r["file"] for r in rows})}
     p = params()
     for i, r in enumerate(rows, 1):
         r["span"] = emphasise(span_for(r["w"], r["h"], p), i, p)
-    return rows, {"missing_derivative_file": missing}
+    return rows, {"missing_derivative_file": missing, "specimen": specimen}
 
 
 # ---------------------------------------------------------------------------- the squaring pass

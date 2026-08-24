@@ -167,10 +167,16 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 PAGE = os.path.join(ROOT, "showroom", "_foundations", "bento.html")
-MUTANT = "/var/tmp/bento-matrix-BROKEN.html"
-MUTANT_LAYOUT = "/var/tmp/bento-matrix-LAYOUT-BROKEN.html"
-MUTANT_INNER = "/var/tmp/bento-matrix-INNER-BROKEN.html"      # ⬛ s217-D7's own arm
-MUTANT_KEYLINE = "/var/tmp/bento-matrix-KEYLINE-BROKEN.html"  # ⬛ s217-D8's own arm
+# ⛔ #218 — THE MUTANT DIR IS OVERRIDABLE, AND THAT IS A CLASS FIX, NOT A CONVENIENCE. /var/tmp
+# is SHARED ACROSS SESSIONS (runbook #129 pothole): a fixed path meant a fresh session could not
+# overwrite a foreign session's mutant (PermissionError) and `--layout-mutation` then silently
+# drove the STALE mutant — a mutation arm proving yesterday's clause. Generator and verifier read
+# the SAME env var, so they cannot disagree about where the mutant lives.
+MUT_DIR = os.environ.get("BM_MUTANT_DIR", "/var/tmp")
+MUTANT = os.path.join(MUT_DIR, "bento-matrix-BROKEN.html")
+MUTANT_LAYOUT = os.path.join(MUT_DIR, "bento-matrix-LAYOUT-BROKEN.html")
+MUTANT_INNER = os.path.join(MUT_DIR, "bento-matrix-INNER-BROKEN.html")      # ⬛ s217-D7's arm
+MUTANT_KEYLINE = os.path.join(MUT_DIR, "bento-matrix-KEYLINE-BROKEN.html")  # ⬛ s217-D8's arm
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(ROOT, "knowledge", "canon"))
 import gen_bento_matrix_217 as matrix  # noqa: E402  the types→roles map, never a second copy
@@ -517,6 +523,10 @@ KEYLINE_EDGE = """() => {
         const ts = getComputedStyle(t), r = t.getBoundingClientRect();
         return {border: [px(ts.borderTopWidth), px(ts.borderRightWidth),
                          px(ts.borderBottomWidth), px(ts.borderLeftWidth)],
+                // ⬛ #218 — the tile's OWN corners, [tl, tr, br, bl]: the four corner tiles of a
+                // sub-bento carry the group's radius on their outer corner, all else 0.
+                radius: [px(ts.borderTopLeftRadius), px(ts.borderTopRightRadius),
+                         px(ts.borderBottomRightRadius), px(ts.borderBottomLeftRadius)],
                 // ⚠ THE TILE'S OWN BORDER COLOUR. s217-D8 moves the keyline onto the TILE, so a
                 // pixel arm that took its reference from the GROUP's `borderTopColor` would be
                 // measuring `currentColor` (near-black) against a #D7D8D6 line and report a
@@ -1241,11 +1251,39 @@ def main():
                                  "no line is ever seen to be stopped at the edge and the clip "
                                  "assertion proves nothing" % where, layout=True)
                     else:
-                        if g["padding"] != [sub] * 4:
-                            fail("⛔ s217-D8 (%s) — the group pads %r at a %dpx gutter; the tile "
-                                 "boxes must sit INSET from the container by the gutter, or a "
-                                 "square tile corner meets the curve and the clip slices it"
+                        # ⬛ #218 (Dave: "the radii should only apply to the 4 corners of each
+                        # sub bento") — the gutter-inset is RETIRED: padding 0, and the corner
+                        # tiles carry the group's radius on their outer corner, so the tiles'
+                        # own keylines draw the rounded silhouette.
+                        if g["padding"] != [0, 0, 0, 0]:
+                            fail("⛔ #218 (%s) — the group pads %r at a %dpx gutter; the inset "
+                                 "construction is retired ('all that happens is that you add "
+                                 "padding to the main bento and we loose the corner radii')"
                                  % (where, g["padding"], sub), layout=True)
+                        # corner tiles from RENDERED boxes, never data-c — the bands rewrite
+                        # spans, and the corner assignment must be judged where the browser put
+                        # the tiles, exactly as the generator minted it.
+                        eps = 2
+                        wl = min(t["rect"]["l"] for t in g["tiles"])
+                        wr = max(t["rect"]["r"] for t in g["tiles"])
+                        wt = min(t["rect"]["t"] for t in g["tiles"])
+                        wb = max(t["rect"]["b"] for t in g["tiles"])
+                        for ti, t in enumerate(g["tiles"]):
+                            at_l = abs(t["rect"]["l"] - wl) <= eps
+                            at_r = abs(t["rect"]["r"] - wr) <= eps
+                            at_t = abs(t["rect"]["t"] - wt) <= eps
+                            at_b = abs(t["rect"]["b"] - wb) <= eps
+                            want = [want_radius if (at_l and at_t) else 0,
+                                    want_radius if (at_r and at_t) else 0,
+                                    want_radius if (at_r and at_b) else 0,
+                                    want_radius if (at_l and at_b) else 0]
+                            if t["radius"] != want:
+                                fail("⛔ #218 · CORNER KEYLINE (%s, tile %d) — corners [tl,tr,"
+                                     "br,bl] resolved %r, want %r from the rendered position "
+                                     "(l/r/t/b flags %r) and %s's container token %dpx"
+                                     % (where, ti + 1, t["radius"], want,
+                                        (at_l, at_r, at_t, at_b), theme, want_radius),
+                                     layout=True)
                         for t in g["tiles"]:
                             if t["border"] != [1, 1, 1, 1]:
                                 fail("⛔ s217-D8 (%s) — a tile's box is %r, not a tight 1px "

@@ -64,6 +64,14 @@ REGENERATE
   python3 knowledge/_render/gen_library_214.py
   python3 knowledge/_render/gen_library_214.py --check      # in-sync gate
   python3 knowledge/_render/gen_library_214.py --selftest
+  BM_MUTANT_DIR=/var/tmp/mut-<session> \
+    python3 knowledge/_render/gen_library_214.py --break-groups
+      ⬛ #218 — the MUTATION HANDLE over the new tier-nav GROUPING (the Foundations "Grids"
+      group). Writes a NON-REPO copy of the index + index.json with the grouping stripped, so
+      verify_grids_218.py --group-mutation can drive the group assertions RED BY NAME. It never
+      writes over the real index and never writes inside the repo. ⚠ BM_MUTANT_DIR defaults to
+      /var/tmp, which is SHARED ACROSS SESSIONS — a foreign mutant is unwritable AND stale, and a
+      stale mutant silently proves yesterday's clause. Pass a session-suffixed directory.
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -95,6 +103,15 @@ ITINERARY = os.path.join(ROOT, "reviews", "ITINERARY-STATUS-2026-08-21-v3.json")
 # The sentinel gen_showroom.py's --check bites on: proof the index it is looking at is the
 # LIBRARY index and not a resurrected v1.
 INDEX_SENTINEL = "<!-- APOLLO-LIBRARY-INDEX v2 (gen_library_214.py) -->"
+
+# ⬛ #218 — THE MUTATION ARM over the new nav grouping. Set by `--break-groups`, which writes a
+# NON-REPO copy of the index whose tier nav is drawn FLAT: no group label, no `.grp` wrapper, no
+# `group` field in the JSON index. verify_grids_218.py --group-mutation drives that copy and
+# REQUIRES the group assertions to fail, by name. A gate that has never been seen to fail is not
+# a gate ([[instrument-without-a-consumer]]). It never writes over the real index and never
+# writes inside the repo — the destination is BM_MUTANT_DIR (default /var/tmp), which is SHARED
+# ACROSS SESSIONS, so a session-suffixed dir is the caller's job.
+BREAK_GROUPS = False
 
 sys.path.insert(0, KNOW)
 sys.path.insert(0, os.path.join(KNOW, "canon"))
@@ -174,8 +191,48 @@ FOUNDATIONS = [
                  "background dials over real content, in four themes and both modes, exporting "
                  "the chosen combination as concrete values. PROPOSED beyond the ruling's own "
                  "words; nothing on it is promoted.")},
+    # ---------------------------------------------------------------------------
+    # #218 — THE GRIDS GROUP. Dave, 2026-08-24, verbatim:
+    #   "I think I'd like this added to the library under foundations, we should have a section
+    #    called grids with subsections – the 12 col grid and these 3 types, I'd like to keep the
+    #    controls so the designer can use them."
+    # FOUR SEPARATE PAGES (Dave's own structure pick at the same sitting), each with its type's
+    # working dials. `group` is the ONLY new field and it does ONE thing: it puts a label over
+    # these four in the tier nav.
+    # ⛔ IT IS NOT A NESTING SYSTEM. The library IA v2 word-set is still Dave's OPEN ruling
+    #    (_state.json row W-99zg); a general hierarchy built here would pre-empt it. A group is a
+    #    flat label over consecutive entries of one tier — nothing else in the file changes shape.
+    # ⛔ AND THESE PAGES CARRY NO `PROPOSED` SURFACE. The s217-D5 open points P1–P5 stay on
+    #    `bento.html`, which is their LIVE decision surface (row W-126). These four ship the ruled
+    #    behaviour plus the working dials, and nothing else.
+    # ---------------------------------------------------------------------------
+    {"slug": "foundation-grids-12col", "label": "The 12-column grid", "group": "Grids",
+     "file": "grids-12col.html", "usage": "structure",
+     "purpose": ("The 12-column grid — the RULED layout/web and layout/app tokens rendered "
+                 "live: 12 columns, the three web margin/gutter scales and the app pair, over "
+                 "canon's own .l-cols / .l-span-* utilities with a column overlay. The scale "
+                 "switch is a VIEW control; nothing on this page tunes a token.")},
+    {"slug": "foundation-grids-display", "label": "Display grid", "group": "Grids",
+     "file": "grids-display.html", "usage": "structure",
+     "purpose": ("The Display bento type, live, with its ruled dials — spacing, keylines, page "
+                 "and bento background — over the same content and the same maths as the matrix "
+                 "explorer, exporting concrete resolved values.")},
+    {"slug": "foundation-grids-gallery", "label": "Gallery grid", "group": "Grids",
+     "file": "grids-gallery.html", "usage": "structure",
+     "purpose": ("The Gallery bento type, live, with its ruled dials — spacing, keylines (absent "
+                 "in console), justified-rows or gallery-bento mode, ragged or square bottom "
+                 "edge, console image rounding, and the page/bento/caption background palette.")},
+    {"slug": "foundation-grids-dashboard", "label": "Dashboard grid", "group": "Grids",
+     "file": "grids-dashboard.html", "usage": "structure",
+     "purpose": ("The Dashboard bento type, live — a bento of bentos, with the main-wall spacing "
+                 "(never tight), the s217-D6 snapping sub-bento slider, and the s217-D8 / #218 "
+                 "keyline construction: every module boxed, the corner tiles carrying the "
+                 "sub-bento's radius on their outer corner, and no line in any gutter.")},
 ]
 FOUNDATION_DIR = "_foundations"
+# #218 — the group labels, in the order they are drawn under their tier. Ungrouped entries are
+# drawn FIRST, in their existing order; a group is a labelled run beneath them.
+FOUNDATION_GROUPS = ["Grids"]
 
 # ---------------------------------------------------------------------------
 # s215-D5 (2) — STATUS. Release phase, derived at ONE point from TWO mechanical signals:
@@ -514,6 +571,7 @@ def collect():
             "thumb": thumb,
             "page": slug + ".html",
             "foundation": False,          # #217 — component rows are DERIVED, foundations declared
+            "group": None,                # #218 — a component row carries no group label
         })
     # #217 — the Foundations tier's declared members, appended AFTER the derived component rows
     # so `residuals` above counts components only and the two populations never blur.
@@ -533,6 +591,9 @@ def collect():
             "js": 0, "purpose": f["purpose"][:240], "blurb": first_sentence(f["purpose"]),
             "aliases": sorted(alias_by_slug.get(f["slug"], [])),
             "thumb": thumb, "page": page_rel, "foundation": True,
+            # #218 — declared on the entry, carried here, drawn by sections_html(). None = no
+            # label, which is what every entry before #218 has and keeps.
+            "group": f.get("group"),
         })
 
     have = {r["slug"] for r in rows}
@@ -726,7 +787,15 @@ nav.tree a[aria-current="true"]{border-left-color:var(--ink); font-weight:500; b
 nav.tree a .lvl{margin-left:auto; font-size:12px; letter-spacing:0.06em; color:var(--grey-7);
   white-space:nowrap;}
 nav.tree a .why{font-size:12px; color:var(--grey-7);}
-nav.tree a[hidden], nav.tree details[hidden], .treepane[hidden]{display:none;}
+/* #218 — a GROUP inside a tier: one label over a run of entries. Indented one step past the
+   tier's own links so the relationship reads without a second disclosure widget. */
+nav.tree .grp{border-top:1px solid var(--line);}
+nav.tree .grpl{display:flex; align-items:baseline; gap:var(--s1); font-size:12px; font-weight:500;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--grey-7);
+  padding:10px var(--s2) 6px var(--s3);}
+nav.tree .grpl .c{margin-left:auto; letter-spacing:0.06em; font-variant-numeric:tabular-nums;}
+nav.tree .grp a{padding-left:var(--s5);}
+nav.tree a[hidden], nav.tree details[hidden], nav.tree .grp[hidden], .treepane[hidden]{display:none;}
 .recent{padding:var(--s2); border-bottom:1px solid var(--line);}
 .recent h2{margin:0 0 var(--s1);}
 .recent a{display:block; font-size:14px; color:var(--ink); text-decoration:none; padding:2px 0;}
@@ -1105,6 +1174,13 @@ __SECTIONS_USAGE__
       a.hidden=!pass;
       a.querySelector('.why').textContent=why[a.dataset.slug]||'';
     });
+    // #218 — a group label with nothing under it is a lie about the filter. The group hides
+    // with its last visible member, and its own count follows the filter like the tier's does.
+    document.querySelectorAll('nav.tree .grp').forEach(function(g){
+      var vis=g.querySelectorAll('a[data-slug]:not([hidden])').length;
+      g.hidden=(vis===0);
+      var c=g.querySelector('.grpl .c'); if(c) c.textContent=vis;
+    });
     document.querySelectorAll('nav.tree details').forEach(function(d){
       var vis=d.querySelectorAll('a[data-slug]:not([hidden])').length;
       d.hidden=(vis===0);
@@ -1274,8 +1350,25 @@ addressing, ADR-0017). It is written by
 """
 
 
+def _tree_link(r, lvl_label):
+    return ('<a data-slug="%s" href="#c=%s" aria-current="false" title="%s">'
+            '<span class="nm">%s</span><span class="why"></span>'
+            '<span class="lvl">%s</span></a>'
+            % (r["slug"], r["slug"],
+               htmlmod.escape((r["purpose"][:110] or r["label"]), quote=True),
+               htmlmod.escape(r["label"]), htmlmod.escape(lvl_label[r["level"]])))
+
+
 def sections_html(rows, groups, key, lvl_label):
-    """One <details> per group, in the config's order. Empty groups are not drawn."""
+    """One <details> per group, in the config's order. Empty groups are not drawn.
+
+    #218 — GROUPS INSIDE A TIER. An entry may carry a `group` label (today only the Foundations
+    Grids four). Ungrouped entries are drawn first, exactly as before; each group is then drawn
+    as a labelled run beneath them. ⛔ The mechanism is one level deep on purpose — the library
+    IA v2 word-set is Dave's open ruling (W-99zg) and a general nesting system built here would
+    pre-empt it. ⚠ BREAK_GROUPS is the #218 mutation arm: the labels and their wrappers are
+    stripped and every entry is drawn flat, so the group assertion in verify_grids_218.py can be
+    seen to go RED by name. It writes NON-REPO only (--break-groups)."""
     out = []
     by = {}
     for r in rows:
@@ -1284,14 +1377,20 @@ def sections_html(rows, groups, key, lvl_label):
         items = sorted(by.get(g["key"], []), key=lambda r: r["label"])
         if not items:
             continue
-        links = "".join(
-            '<a data-slug="%s" href="#c=%s" aria-current="false" title="%s">'
-            '<span class="nm">%s</span><span class="why"></span>'
-            '<span class="lvl">%s</span></a>'
-            % (r["slug"], r["slug"],
-               htmlmod.escape((r["purpose"][:110] or r["label"]), quote=True),
-               htmlmod.escape(r["label"]), htmlmod.escape(lvl_label[r["level"]]))
-            for r in items)
+        flat = [r for r in items if not r.get("group")] if not BREAK_GROUPS else items
+        links = "".join(_tree_link(r, lvl_label) for r in flat)
+        if not BREAK_GROUPS:
+            seen = []
+            for r in items:
+                if r.get("group") and r["group"] not in seen:
+                    seen.append(r["group"])
+            for gname in seen:
+                members = [r for r in items if r.get("group") == gname]
+                links += ('<div class="grp" data-group="%s">'
+                          '<span class="grpl">%s<span class="c">%d</span></span>%s</div>'
+                          % (htmlmod.escape(gname, quote=True), htmlmod.escape(gname),
+                             len(members),
+                             "".join(_tree_link(r, lvl_label) for r in members)))
         out.append('<details open><summary>%s<span class="c">%d</span></summary>%s</details>'
                    % (htmlmod.escape(g["label"]), len(items), links))
     return "\n".join(out)
@@ -1356,6 +1455,9 @@ def build():
         "$component_count": comp_count,
         "$foundation_count": found_count,
         "$levels": [{"key": lv["key"], "label": lv["label"]} for lv in LEVELS],
+        # #218 — the group word-set, ONE list, so a reader of the index can tell a group label
+        # from a free-text field. Absent under the mutation arm.
+        **({} if BREAK_GROUPS else {"$foundation_groups": list(FOUNDATION_GROUPS)}),
         "$usage_groups": [{"key": u["key"], "label": u["label"]} for u in USAGE_GROUPS],
         "$statuses": [{"key": s["key"], "label": s["label"]} for s in STATUSES],
         "$status_derivation": STATUS_NOTE,
@@ -1367,6 +1469,9 @@ def build():
              "related": [x["slug"] for x in r["related"]],
              "thumbnail": r["thumb"], "page": r["page"],
              "foundation": r["foundation"],     # #217 — declared entry, not a derived component
+             # #218 — the group label, or null. ⚠ Absent under the --break-groups arm, which is
+             # how the JSON half of the group assertion is seen to go red.
+             **({} if BREAK_GROUPS else {"group": r.get("group")}),
              "ships_behaviour": r["js"] > 0,
              "blurb": r["blurb"]}
             for r in sorted(rows, key=lambda r: r["slug"])
@@ -1503,6 +1608,51 @@ def selftest():
          sorted(c["slug"] for c in idx["components"] if c["foundation"]),
          sorted(f["slug"] for f in FOUNDATIONS))
 
+    # ---- #218 THE GRIDS GROUP. Probed on the SHIPPED nav markup and the SHIPPED index, never
+    # on the config list alone — a group that is declared and not drawn is the whole failure.
+    grp_members = [f for f in FOUNDATIONS if f.get("group") == "Grids"]
+    bite("33 · #218 · the Grids group is declared with FOUR members, all in Foundations",
+         (len(grp_members),
+          sorted(f["slug"] for f in grp_members),
+          sorted({r["level"] for r in rows if r.get("group") == "Grids"})),
+         (4,
+          ["foundation-grids-12col", "foundation-grids-dashboard",
+           "foundation-grids-display", "foundation-grids-gallery"],
+          ["foundation"]))
+    bite("34 · #218 · the group LABEL and its wrapper reach the tier nav, with its own count",
+         ('<div class="grp" data-group="Grids">' in type_tree,
+          '<span class="grpl">Grids<span class="c">4</span></span>' in type_tree),
+         (True, True))
+    bite("35 · #218 · every grouped entry's link sits INSIDE its group wrapper, not beside it",
+         sorted(re.findall(r'data-slug="(foundation-grids-[a-z0-9]+)"',
+                           type_tree.split('<div class="grp" data-group="Grids">', 1)[-1]
+                           .split("</div>", 1)[0])),
+         ["foundation-grids-12col", "foundation-grids-dashboard",
+          "foundation-grids-display", "foundation-grids-gallery"])
+    bite("36 · #218 · the group is ONE level deep — no group carries a nested group (W-99zg)",
+         '<div class="grp"' in type_tree.split('<div class="grp"', 1)[-1], False)
+    bite("37 · #218 · the JSON index round-trips the group on the same four slugs, and null else",
+         (sorted(c["slug"] for c in idx["components"] if c.get("group") == "Grids"),
+          sorted({str(c.get("group")) for c in idx["components"] if not c.get("group")}),
+          idx.get("$foundation_groups")),
+         (["foundation-grids-12col", "foundation-grids-dashboard",
+           "foundation-grids-display", "foundation-grids-gallery"],
+          ["None"], ["Grids"]))
+    # ⛔ THE ARM IS BITTEN TOO. A mutation handle that never gets built is an instrument without a
+    # consumer; this proves the flag really strips what the assertions above look for.
+    global BREAK_GROUPS
+    BREAK_GROUPS = True
+    try:
+        mpage, mjson, _mrows, _mres = build()
+    finally:
+        BREAK_GROUPS = False
+    bite("38 · #218 · --break-groups really strips the grouping (the arm can go red)",
+         ('<div class="grp"' in mpage,
+          any("group" in c for c in json.loads(mjson)["components"]),
+          sorted(re.findall(r'data-slug="(foundation-grids-[a-z0-9]+)"', mpage)) ==
+          sorted(re.findall(r'data-slug="(foundation-grids-[a-z0-9]+)"', page))),
+         (False, False, True))
+
     if fails:
         print("gen_library_214 --selftest: %d BITE(S) FAILED" % len(fails))
         for f in fails:
@@ -1538,6 +1688,23 @@ def report(rows, residuals):
 def main():
     if "--selftest" in sys.argv:
         return selftest()
+    if "--break-groups" in sys.argv:
+        # ⬛ #218 MUTATION ARM. NON-REPO by construction: the destination is BM_MUTANT_DIR, never
+        # showroom/. ⚠ /var/tmp IS SHARED ACROSS SESSIONS and a foreign mutant is both unwritable
+        # and STALE — a stale mutant silently proves yesterday's clause. Pass a session-suffixed
+        # BM_MUTANT_DIR; the write below is checked and refused loudly if it cannot land.
+        global BREAK_GROUPS
+        BREAK_GROUPS = True
+        mdir = os.environ.get("BM_MUTANT_DIR", "/var/tmp")
+        os.makedirs(mdir, exist_ok=True)
+        page, index_json, _rows, _resid = build()
+        for name, content in (("library-index-GROUPS-BROKEN.html", page),
+                              ("library-index-GROUPS-BROKEN.json", index_json)):
+            dest = os.path.join(mdir, name)
+            open(dest, "w").write(content)
+            print("gen_library_214 --break-groups: wrote %s (%d bytes)"
+                  % (dest, os.path.getsize(dest)))
+        return
     page, index_json, rows, residuals = build()
     check = "--check" in sys.argv
     targets = [(OUT, page), (JSON_OUT, index_json), (STUB_OUT, STUB_TMPL)]

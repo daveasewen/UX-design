@@ -99,8 +99,59 @@ def role_attr(role):
 
 
 # ---------------------------------------------------------------------------- photographs
-def read_photos():
-    """The manifest's own rows that carry a committed derivative. Spans DERIVED."""
+# ⬛ #218 CONSEQUENCE — DECLARED, NOT A DESIGN DECISION. THE CONDUCTOR OWNS WHETHER IT STAYS.
+# Dave ruled ALL 251 photographs onto the Foundations *photography* page at #218, so every
+# manifest row now carries a committed derivative. This function is THE ONE DATA PATH for four
+# PREVIEW surfaces — the roles demo, the s217-D5 matrix explorer (and through it the four #218
+# Grids pages) and the gallery comparison — every one of which was composed and ratified at #217
+# against the FIFTEEN committed derivatives of that day.
+# ⛔ TWO THINGS BREAK IF THE FULL POPULATION ARRIVES HERE, and the first one is not cosmetic:
+#   · `square_wall` is an EXHAUSTIVE tail search (5^6 assignments, each running the placement
+#     simulation over the whole wall). At 15 tiles it is instant; MEASURED at 251 it had not
+#     finished after 35 s of pure `place()` and extrapolates to ~45 minutes. The explorer becomes
+#     unbuildable, not merely slow.
+#   · a decision-surface preview pane is not a gallery. 251 photographs in an explorer pane
+#     answers a question about scale while claiming to answer one about a dial.
+# So the ONE data path serves a SPECIMEN of the population to the preview surfaces, sized to the
+# count those surfaces were ratified at. The Foundations photography page has its OWN reader
+# (`gen_foundations_217.read_photos`) and is NOT capped: it gets all 251, which is what Dave
+# ruled. `limit=None` returns the full population for a caller that wants it.
+#
+# ⛔ #218 CORRECTION, SAME SITTING — THE SPECIMEN IS PINNED BY NAME, NOT SLICED BY SORT ORDER.
+# The first cut took "first 15 in filename order", and MEASURED against the ratified set that
+# swapped out 14 of the 15 photographs on every live decision surface (explorer, grids-display,
+# grids-gallery, roles demo) — the surfaces Dave ruled on would have silently redrawn under him
+# [[specimen-starts-from-reference]]. The pinned names below ARE the ratified set: the 15
+# derivatives committed under s217-D1 (the exact `git ls-files knowledge/assets/photography-web`
+# set at the #217 wrap), which is what every one of those pages was built and signed off on.
+# It already contains the three portrait derivatives the canon demo's portrait proof needs.
+# A pinned name whose file is missing lands in the residual dict, loud — never silently refilled.
+SPECIMEN_N = 15
+SPECIMEN_FILES = (
+    "eyeem-100014108-180570836-w1600.jpg",
+    "gettyimages-1159761634-144dpi-w1600.jpg",
+    "gettyimages-1271527435-w1600.jpg",
+    "gettyimages-1336692652-w1600.jpg",
+    "gettyimages-1394386010-144dpi-w1600.jpg",
+    "gettyimages-1498039805-w1600.jpg",
+    "gettyimages-1708273322-w1600.jpg",
+    "gettyimages-2179684483-w1600.jpg",
+    "gettyimages-2190197969-144dpi-w1600.jpg",
+    "gettyimages-2208294966-144dpi-w1600.jpg",
+    "gettyimages-653972314-w1600.jpg",
+    "gettyimages-968890266-w1600.jpg",
+    "gettyimages-ca60828-144dpi-w1600.jpg",
+    "stocksy-5217047-w1600.jpg",
+    "stocksy-6629948-w1600.jpg",
+)
+
+
+def read_photos(limit=SPECIMEN_N):
+    """The manifest's own rows that carry a committed derivative. Spans DERIVED.
+
+    `limit` caps the preview specimen (see the block above); pass None for the whole population.
+    ⚠ The residual dict carries `specimen` whenever the cap actually bit, so a page reporting its
+    own content cannot claim to be showing everything."""
     if not os.path.exists(PHOTO_MANIFEST):
         return [], {"manifest": "MISSING"}
     d = json.load(open(PHOTO_MANIFEST, encoding="utf-8"))
@@ -126,10 +177,21 @@ def read_photos():
                      "licence": r.get("licence_source") or "UNKNOWN",
                      "desc": desc if len(desc) <= 130 else desc[:129].rsplit(" ", 1)[0] + "…"})
     rows.sort(key=lambda r: r["file"])
+    population = len(rows)
+    specimen = None
+    missing_specimen = []
+    if limit is not None and population > limit:
+        pinned = [r for r in rows if r["file"] in SPECIMEN_FILES]
+        missing_specimen = sorted(set(SPECIMEN_FILES) - {r["file"] for r in pinned})
+        rows = pinned
+        specimen = {"shown": len(rows), "population": population,
+                    "basis": "the RATIFIED s217-D1 specimen set, PINNED BY NAME (#218) — the "
+                             "decision surfaces must not redraw under the population",
+                    "missing_pinned": missing_specimen}
     p = params()
     for i, r in enumerate(rows, 1):
         r["span"] = emphasise(span_for(r["w"], r["h"], p), i, p)
-    return rows, {"missing_derivative_file": missing}
+    return rows, {"missing_derivative_file": missing, "specimen": specimen}
 
 
 def wall(spans, role, columns=None):
