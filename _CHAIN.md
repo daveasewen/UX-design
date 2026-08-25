@@ -105,11 +105,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **239 items · 160 live · 84 Dave's · 76 mine · 225 carry a stated close condition · **14 UNCONDITIONED**.**
+> **241 items · 162 live · 85 Dave's · 77 mine · 227 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (84) — 84 with a ratified `closes_when`, 0 with NONE:**
+> **DAVE'S (85) — 85 with a ratified `closes_when`, 0 with NONE:**
 > - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
 > - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…** — *closes when:* Dave ratifies or reverses
 > - `W-104` **#215 taxonomy research v2 - Carbon deep-dive, 135-component ladder map, lifecycle vocabulary, name distribution, nav screenshots** — *closes when:* Dave has ruled on the 12 PROPOSED-FOR-DAVE placements in section 2.3 and on Map A vs Map B (whether a Primitives tier is used), and gen_library_214.py LEVELS + level_of() have been changed to match, with the section 2.2 table regenerated from the changed derivation
@@ -151,6 +151,7 @@
 > - `W-175` **#219 lane-4 filed sub-report (DV-D16 chart-expansion): wording-1 retired at cause, 2 of 3 stacked surfaces carrying wording 2, 5 findings, 4 ruling-shaped** — *closes when:* Dave answers or parks the report's four ruling-shaped questions (stacked-area conversion, the back-port direction, whether DV-D16c's cap ships before the expandable Other, and the WORDING-1 gate promotion)
 > - `W-176` **knowledge/_proforma/DataViz-interactive.html is AHEAD of its own generator: a blind regenerate deletes ~7KB of body and flips the dark page ground to pure #000000** — *closes when:* the back-port direction is ruled per line (artefact vs generator on colour, type and the .h .tag rename) and _gen_dataviz_charts.py regenerates the artefact with no unintended diff
 > - `W-179` **#219 lane 6 filed report — package delta RETURNED (ruling-shaped), _gm_usage red diagnosed at cause, [hidden] sweep built, W-92 already closed** — *closes when:* Dave rules Q1 (how the memento-package mirror stays in sync: s114-D7 live-mirror vs s193-D1(b) authorized-once) and Q2 (how a session that wrapped TWICE testifies — #218 has two differing section-usage lines in GOOD-MORNING.md); Q3 (dv-empty-frame repair + gate promotion) is carried by W-178
+> - `W-181` **#219 sitting index - one review page indexing all 34 calls open to Dave today, grouped rule-by-eye / one-word / record, each with its live-page link and what a ruling would mint** — *closes when:* Dave has worked the sitting from the page (or parked it explicitly), or a later sitting index supersedes it
 > - `W-38` **Size-ramp + per-theme size modes proposal (FLOATED, Dave's instinct, #200)** — *closes when:* Dave rules the pair semantics and the per-theme mode mapping, or drops the shape
 > - `W-41` **#203 delegated-wrap brief (DO-NOT-RULE list + session facts for the Opus wrap sub)** — *closes when:* the #203 wrap commit is pushed by the conductor under s203-D1 AND the CI read-back is relayed to Dave in chat - both limbs, per the ruling's own words
 > - `W-51` **#207 addendum: Dave's critique of the #206 record (promotion vocabulary open; candidature homed)** — *closes when:* Dave rules the twice-caught vocabulary question (does a mined historical occasion count as a 'catch' toward s204-D1's bar?) AND rules promote/wait/park on the three candidates; the candidature record in knowledge/_DS-IMPROVEMENTS.md then carries the outcome
@@ -195,14 +196,14 @@
 > - `W-99zk` **#219 lane 5 unconsumed-mints decision surface (PROPOSED): the six genuine orphans, the two consequential ones rendered live per theme, light and dark** — *closes when:* Dave has ruled the five questions on the page: (1) does the inactive tab keep its fade, (2) which surfaces are 'the card' and does the base card-padding mint, (3) should the cascade emit an alias-shadow at all, (4) do reserved slots get a $reserved declaration, (5) the ratified-but-fenced pair --tabs-badge-background and --pri-icon
 > - `W-99zl` **#219 lane 5 filed report - every genuine unconsumed per-theme mint disposed (0 class-a wirings, 3 class-b, 3 class-c) plus the advisory consumption gate** — *closes when:* the conductor has replayed the REPLAY-THESE items and Dave has ruled the report's five ruling-shaped questions, or parked them explicitly
 >
-> **MINE (76), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `W-165` · `W-169` · `W-171` · `W-173` · `W-174` · `W-177` · `W-178` · `W-180` · `G4` · `W-99za` · `W-99zh`
+> **MINE (77), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `W-165` · `W-169` · `W-171` · `W-173` · `W-174` · `W-177` · `W-178` · `W-180` · `W-182` · `G4` · `W-99za` · `W-99zh`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **42,781 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **42,899 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 89,695 real and stays whole for retrieval; you have paid for
 48% of it, and that is the intended figure, not a shortfall.)*
