@@ -107,6 +107,17 @@
   /* ---- empty result set ---- */
   .cp-empty{display:flex; flex-direction:column; gap:4px; padding:28px 16px; color:var(--muted);}
 
+  /* ★ s218-D5 (3) — THE HIDDEN FIX, AT CAUSE. Every one of these classes carries an author
+     `display` rule above, and an AUTHOR rule beats the UA sheet's `[hidden]{display:none}` at any
+     specificity — so the hidden ATTRIBUTE alone did not hide them. #218 drove the consequence:
+     `#cp2-o1` ships `hidden` in the markup and was PAINTED anyway, a phantom option sitting in the
+     a11y tree of a listbox the page calls empty. The behaviour script had been compensating with an
+     inline `style.display` beside every attribute write; that compensation is belt-and-braces now,
+     not the mechanism. ONE LINE, and it must stay AFTER the display rules it corrects.
+     ⬛ The repo-wide `[hidden]`-vs-author-display sweep is a GATES BACKLOG class candidate
+     (s218-D5) — this file is the instance, not the class. */
+  .cp[hidden],.cp-opt[hidden],.cp-empty[hidden],.cp-group[hidden]{display:none}
+
   /* ---- footer hint bar ---- */
   .cp-foot{display:flex; align-items:center; gap:16px; flex-wrap:wrap; min-height:40px;
            padding:8px 16px; border-top:1px solid var(--cp-rule); color:var(--muted);}
@@ -262,7 +273,7 @@
       "OVERLAP WITH THE GATED MASTHEAD SEARCH FLYOUT (Navigations meta, flyout=search) is real: both are a modal search surface opened from the global chrome. This component additionally searches ACTIONS and is keyboard-reachable. Whether the flyout becomes a placement of this component or stays separate is a component-promotion question and is NOT resolved here.",
       "44px MIN HIT AREA enforced by hand — no gate reads target/min. Every .cp-opt is min-height:44px; the field is 48px. The keycap hints are non-interactive labels, not targets.",
       "A FOUR-THEME MEASUREMENT CHANGED THIS FILE. The first draft bound the field's focus-within stroke to form/border/default, which the MONO-only snippet gate passed at 3.95:1 light / 4.17:1 dark. Measured against the real canon.css in all four themes it is 1.69:1 in SUPERCHARGE DARK (#524842 on #2A2621) — under the 3:1 non-text floor, on the only visible focus affordance the field had. Rebound to form/border/active (INK: 21.00/19.44 light, 16.48/13.91 dark, all four themes). The failing token is the SAME #524842 that #203 Lane D measured at 1.96:1 as the Supercharge-dark elevation hairline — one theme-level seam, found twice from two directions. Queued for _DS-IMPROVEMENTS.md via the receipt; not fixed here, the token files are fenced.",
-      "SHORTCUT BINDING NOT RULED. The footer shows Ctrl+K as the reopen hint. The platform-correct pairing (Ctrl on Windows, Command on macOS) and whether the product claims this chord at all are PROPOSED #203, Dave's.",
+      "SHORTCUT BINDING RULED s218-D4 — THE CHORD IS CLAIMED. Command+K on macOS / Ctrl+K elsewhere is the product's documented chord for this component; it is no longer PROPOSED #203. The wiring was already this pair (metaKey OR ctrlKey, Alt excluded) — s218-D4 changed the STATUS, not the behaviour. The footer keycap hint shows the Ctrl leg only; a visible trigger and a platform-aware hint MAY FOLLOW AS MARKUP (s218-D4's own words) and are not built here.",
       "The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css."
     ],
     "requiredAria": ["role=\"dialog\"", "aria-modal=\"true\"", "role=\"combobox\"", "aria-expanded", "aria-controls", "aria-activedescendant", "role=\"listbox\"", "role=\"group\"", "role=\"option\"", "aria-selected", "role=\"status\"", "aria-label"]
@@ -294,14 +305,15 @@
   (function(){
     'use strict';
 
-    /* .cp, .cp-opt and .cp-empty each carry an AUTHOR `display` rule, and an author rule beats
-       the UA sheet's [hidden]{display:none} whatever the specificity. So the hidden ATTRIBUTE
-       alone does not hide them — visibility is set as an inline style beside it. ARIA state
-       stays on the attribute; the pixels follow.
-       (Pre-existing consequence, found by driving: #cp2-o1 ships `hidden` in the markup and is
-       nonetheless PAINTED. The honest fix is one line in this file's <style> —
-       `.cp-opt[hidden],.cp-empty[hidden],.cp[hidden]{display:none;}` — CSS is fenced for this
-       lane, so it is raised in the report instead of patched silently.) */
+    /* .cp, .cp-opt, .cp-empty and .cp-group each carry an AUTHOR `display` rule, and an author
+       rule beats the UA sheet's [hidden]{display:none} whatever the specificity. ARIA state stays
+       on the attribute; the pixels follow.
+       ✅ s218-D5 (3): the CAUSE is now fixed in this file's own <style> — one rule,
+       `.cp[hidden],.cp-opt[hidden],.cp-empty[hidden],.cp-group[hidden]{display:none}`. The inline
+       `style.display` written here is kept as belt-and-braces (it also covers a consumer who
+       copies the markup without the stylesheet), but it is no longer the thing doing the hiding.
+       ⛔ Do not "simplify" show() back to `el.hidden = !on` alone AND delete the CSS rule: that
+       pair is exactly the defect — #cp2-o1 ships `hidden` in the markup and was painted anyway. */
     function show(el, on){
       if(!el) return;
       el.hidden = !on;
@@ -444,9 +456,9 @@
         if(p && p.isOpen()){ e.preventDefault(); p.close(); }
         return;
       }
-      /* ⚠ THE CHORD IS NOT RULED — this file's own manifest says so ("SHORTCUT BINDING NOT
-         RULED", PROPOSED #203, Dave's). Both Ctrl+K and Cmd+K are honoured so the demo answers
-         on either platform; picking one is a decision and is not taken here. */
+      /* ★ THE CHORD IS CLAIMED — s218-D4: Command+K on macOS / Ctrl+K elsewhere is the product's
+         documented chord. The wiring below is UNCHANGED (it already honoured both legs, with Alt
+         excluded so Ctrl+Alt+K stays free); s218-D4 moved it from PROPOSED #203 to ruled. */
       if((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')){
         e.preventDefault();
         var t = lastClosed || active || palettes[0];

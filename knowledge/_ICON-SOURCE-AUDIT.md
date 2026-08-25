@@ -84,7 +84,7 @@
 | 76 | Modal-lightbox | 3 | 3 | 0 | 0 | yes | ✅ verified |
 | 77 | Modals | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 78 | Multi-select | 13 | 5 | 8 | 0 | yes | ✅ verified · 8 bespoke |
-| 79 | Navigations | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 79 | Navigations | 4 | 4 | 0 | 0 | — | ✅ verified |
 | 80 | Notifications | 9 | 9 | 0 | 0 | yes | ✅ verified |
 | 81 | Page-header-lockup | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 82 | Pagination | 2 | 2 | 0 | 0 | — | ✅ verified |

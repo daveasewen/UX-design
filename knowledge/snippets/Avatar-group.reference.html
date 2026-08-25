@@ -104,11 +104,14 @@
     --surface:#F0F0F0; --avg-ring:#E1E1E1; --text:#1A1A1A; --icon:#1A1A1A; --focus:#305A85;
     --page:#FFFFFF; --card:#FFFFFF; --card-border:#E1E1E1;
     --stack-ring:#FFFFFF; --border-radius-surface:0;
+    /* PROPOSED (s218-D4) overflow panel — Dropdown's elevation recipe via Card-header-lockup, verbatim */
+    --menu-surface:#FFFFFF; --menu-border:#FFFFFF00; --shadow:#00000033;
   }
   [data-theme="dark"]{
     --surface:#232323; --avg-ring:#808080; --text:#FFFFFF; --icon:#FFFFFF; --focus:#4587A7;   /* rebound — see light block */
     --page:#1A1A1A; --card:#1F1F1F; --card-border:#808080;
     --stack-ring:#1A1A1A; --border-radius-surface:0;
+    --menu-surface:#1A1A1A; --menu-border:#808080; --shadow:#000000D9;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
@@ -156,6 +159,25 @@
     color:var(--text);}
   .avg-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 
+  /* ---- PROPOSED (s218-D4) · THE OVERFLOW SURFACE -------------------------------------------
+     #218 W3 found "+N" and the group-as-one-target promising a surface the DOM did not contain
+     (the phantom-affordance class). Dave ruled the CLASS — build them. This is the proposed
+     reading and it is a DISCLOSURE, not a menu: the panel holds NAMES, which are content, not
+     actions, so role="menu"/"menuitem" would be a lie about what the surface is. The panel skin is
+     Dropdown's floating-panel recipe via Card-header-lockup (shadow in light, grey OUTLINE in
+     dark), copied — nothing new is drawn.
+     ⚠ [hidden] IS FORCED, not assumed: #218 W3 finding F1 — an author `display:` beats the UA
+     [hidden] sheet, and a markup-hidden panel then renders while telling AT it is gone. */
+  .avg-popwrap{position:relative; display:inline-block;}
+  .avg-pop[hidden]{display:none;}
+  .avg-pop{position:absolute; left:0; top:calc(100% + 8px); z-index:20; min-width:200px;
+    padding:8px 0; background:var(--menu-surface); border:1px solid var(--menu-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 4px 16px var(--shadow);}
+  .avg-pop ul{list-style:none; margin:0; padding:0;}
+  .avg-pop li{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 12px;
+    color:var(--text); white-space:nowrap;}
+  .avg-pop .avg-face{width:32px; height:32px; box-shadow:none;}   /* a roster disc, not a stack disc: no separator ring */
+
   /* ---- roster variant: the real list, when the individuals ARE the content ---- */
   ul.avg-roster{list-style:none; margin:0; padding:0; display:inline-flex; align-items:center;}
   ul.avg-roster li{display:inline-flex;}
@@ -201,23 +223,46 @@
   </p>
 
   <h2 class="t-cm-caption demo-h">Interactive members — medium and large only (44px min-hit-area)</h2>
-  <p class="avg md" style="margin:0">
-    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
-    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
-    <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
-    <button type="button" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers">+3</button>
-  </p>
-  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum.</p>
+  <div class="avg-popwrap">
+    <p class="avg md" style="margin:0">
+      <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+      <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Priya Anand's profile">PA</a>
+      <a class="avg-face t-cm-ctl-14" href="#" aria-label="Open Sam Okafor's profile">SO</a>
+      <!-- PROPOSED (s218-D4): "+3" now names the surface it opens. It opened nothing before #218. -->
+      <button type="button" id="avgMoreTrig" class="avg-face avg-more t-cm-ctl-14" aria-label="Show the other 3 approvers" aria-expanded="false" aria-controls="avgMorePop">+3</button>
+    </p>
+    <div class="avg-pop" id="avgMorePop" hidden>
+      <ul aria-label="The other 3 approvers">
+        <li><span class="avg-face t-cm-ctl-12" aria-hidden="true">RM</span><span class="t-cm-label">Rosa Mbeki</span></li>
+        <li><span class="avg-face t-cm-ctl-12" aria-hidden="true">TC</span><span class="t-cm-label">Tomas Cruz</span></li>
+        <li><span class="avg-face t-cm-ctl-12" aria-hidden="true">AH</span><span class="t-cm-label">Aisha Haddad</span></li>
+      </ul>
+    </div>
+  </div>
+  <p class="demo-note t-ed-body-small">Each disc is its own 44px target, so the group carries no single name here — the individual names are the content. A 32px disc is never made interactive: it would breach the ruled minimum. PROPOSED (s218-D4): "+3" opens the overflow list — a DISCLOSURE holding names, not a menu holding actions. The names are plain text and link to nothing, deliberately: a row of "open profile" links would promise six more surfaces this artefact does not contain, which is the very class #218 is closing.</p>
 
   <h2 class="t-cm-caption demo-h">Group as one target — the answer for small stacks</h2>
-  <button type="button" class="avg-btn" aria-label="Show all 6 approvers">
-    <span class="avg sm" aria-hidden="true">
-      <span class="avg-face t-cm-ctl-12">JL</span>
-      <span class="avg-face t-cm-ctl-12">PA</span>
-      <span class="avg-face t-cm-ctl-12">SO</span>
-      <span class="avg-face avg-more t-cm-ctl-12">+3</span>
-    </span>
-  </button>
+  <div class="avg-popwrap">
+    <button type="button" id="avgAllTrig" class="avg-btn" aria-label="Show all 6 approvers" aria-expanded="false" aria-controls="avgAllPop">
+      <span class="avg sm" aria-hidden="true">
+        <span class="avg-face t-cm-ctl-12">JL</span>
+        <span class="avg-face t-cm-ctl-12">PA</span>
+        <span class="avg-face t-cm-ctl-12">SO</span>
+        <span class="avg-face avg-more t-cm-ctl-12">+3</span>
+      </span>
+    </button>
+    <div class="avg-pop" id="avgAllPop" hidden>
+      <ul aria-label="All 6 approvers">
+        <li><span class="avg-face t-cm-ctl-12" aria-hidden="true">JL</span><span class="t-cm-label">Jordan Lee</span></li>
+        <li><span class="avg-face t-cm-ctl-12" aria-hidden="true">PA</span><span class="t-cm-label">Priya Anand</span></li>
+        <li><span class="avg-face t-cm-ctl-12" aria-hidden="true">SO</span><span class="t-cm-label">Sam Okafor</span></li>
+        <li><span class="avg-face t-cm-ctl-12" aria-hidden="true">RM</span><span class="t-cm-label">Rosa Mbeki</span></li>
+        <li><span class="avg-face t-cm-ctl-12" aria-hidden="true">TC</span><span class="t-cm-label">Tomas Cruz</span></li>
+        <li><span class="avg-face t-cm-ctl-12" aria-hidden="true">AH</span><span class="t-cm-label">Aisha Haddad</span></li>
+      </ul>
+    </div>
+  </div>
+  <p class="demo-note t-ed-body-small">PROPOSED (s218-D4): the one-target form lists the WHOLE set, because its accessible name says "all 6" — the +N form lists only the ones the stack could not show. Two triggers, two different truthful contents; whether the product wants both is Dave's.</p>
 
   <h2 class="t-cm-caption demo-h">Roster variant — when the individuals ARE the content</h2>
   <ul class="avg-roster avg md" aria-label="Approvers">
@@ -245,16 +290,66 @@
     "vars": { "--surface": "tertiary/background/hover", "--avg-ring": "border/subtle", "--text": "text/default",
               "--icon": "icon/default", "--focus": "focus/ring", "--page": "background/default",
               "--stack-ring": "background/default", "--card": "tertiary/background/default",
-              "--card-border": "border/subtle", "--border-radius-surface": "border-radius/surface" },
+              "--card-border": "border/subtle", "--border-radius-surface": "border-radius/surface",
+              "--menu-surface": "background/default", "--menu-border": "elevation/border", "--shadow": "elevation/functional" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
-      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" }
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "background/default", "context": "text" }
     ],
     "icons": {},
-    "requiredAria": ["role=\"img\"", "aria-label", "aria-hidden=\"true\"", "<ul", "<li"],
+    "requiredAria": ["role=\"img\"", "aria-label", "aria-hidden=\"true\"", "<ul", "<li", "aria-expanded", "aria-controls"],
+    "$s218D4": "⬛ PROPOSED (s218-D4), Dave's eye owed on the DESIGN: '+3' and the group-as-one-target were phantom affordances — controls promising an overflow surface absent from the DOM (#218 W3, the 7-instance class). Dave ruled the CLASS (build them). The surface is a DISCLOSURE, not a menu: it holds NAMES (content), and role='menu'/'menuitem' would misdescribe it. Panel skin copied from Dropdown via Card-header-lockup. The listed names are PLAIN TEXT and link nowhere on purpose — 'open profile' links would promise six further surfaces, re-opening the very class this ruling closes. The +N trigger lists only the hidden members; the one-target trigger lists all six, because its own accessible name says 'all 6'. Both readings are Dave's to confirm.",
     "reuses": ["Avatar (the disc, verbatim — surface, ring, round exemption, size ramp)"],
     "$note": "PROPOSED #203 (Wave 3b Lane K). Row 57, verified absent first-hand. Adds NOTHING to the gated Avatar disc — the disc, its tokens and its round exemption are copied verbatim; what this adds is the ARRANGEMENT (overlap, separator ring, display cap, overflow counter, one name for the set). One person = Avatar; a countable set = Avatar group; a list of people you act on individually = List-items. A11Y IS THE LIVE QUESTION: the default form gives the GROUP the accessible name and hides the discs, because a stack read out disc-by-disc is noise; the 'roster' variant does the opposite for the case where the individuals are the content. Two accessible shapes for one component is Dave's decision, flagged not resolved. INTERACTIVE MEMBERS AT MEDIUM AND LARGE ONLY — a 32px interactive disc breaches the ruled 44px min-hit-area and no gate reads that token, so it is enforced by not building it; small stacks that must be clickable become ONE 44px target. KNOWN DEFECT, SHOWN NOT HIDDEN: --stack-ring binds background/default, so the stack only separates correctly on the page; on a card or hover wash the ring is the wrong colour (visible in the specimen's on-card block, worst in dark where page #1A1A1A meets card #1F1F1F). A surface-keyed token or a consumer-set ring would fix it; both are Dave's. Large disc uses .t-cm-section-label (20px) where Avatar uses a raw off-ramp 24px — a PROPOSED divergence from the parent, declared. Class is avg-face not avatar: type.css binds .avatar to a 14px composite that would silently beat the per-size composite on the large disc."
   }
+  </script>
+
+  <script>
+    // BEHAVIOUR — ⬛ PROPOSED (s218-D4). THE OVERFLOW SURFACE.
+    // A DISCLOSURE (APG): the trigger owns aria-expanded, the panel is plain content, and focus
+    // STAYS on the trigger — there is nothing focusable inside to move to, and moving focus into
+    // static text would strand a keyboard user. Escape closes; a click outside closes; opening one
+    // panel closes the other, because two overflow lists open at once is two answers to one
+    // question. No polling, no network, no external source (the #218 W3 inline-script contract).
+    (function(){
+      var pairs = [
+        ['avgMoreTrig', 'avgMorePop'],
+        ['avgAllTrig',  'avgAllPop']
+      ].map(function(p){ return { trig: document.getElementById(p[0]), pop: document.getElementById(p[1]) }; })
+       .filter(function(p){ return p.trig && p.pop; });
+      if (!pairs.length) return;
+
+      function setOpen(p, open){
+        p.pop.hidden = !open;
+        p.trig.setAttribute('aria-expanded', String(open));
+      }
+      function closeAll(except){
+        pairs.forEach(function(p){ if (p !== except) setOpen(p, false); });
+      }
+
+      pairs.forEach(function(p){
+        p.trig.addEventListener('click', function(){
+          var open = p.pop.hidden;      // hidden now => this click opens it
+          closeAll(p);
+          setOpen(p, open);
+        });
+        p.trig.addEventListener('keydown', function(e){
+          if (e.key === 'Escape' && !p.pop.hidden){ setOpen(p, false); }
+        });
+      });
+
+      document.addEventListener('click', function(e){
+        if (!(e.target.closest && e.target.closest('.avg-popwrap'))) closeAll(null);
+      });
+      document.addEventListener('keydown', function(e){
+        if (e.key !== 'Escape') return;
+        var open = pairs.filter(function(p){ return !p.pop.hidden; });
+        if (!open.length) return;
+        closeAll(null);
+        open[0].trig.focus();          // Escape returns focus to the control that opened the panel
+      });
+    })();
   </script>
   </body>
 </html>

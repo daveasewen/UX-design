@@ -207,9 +207,12 @@ jobs:
   # Render job — added #155 (Dave ruled: "keep the ubuntu solution", on #153-A ⑨).
   # BLOCKING: the state-contrast selftest (57 arms incl. the s152-D1 mutation
   # control) — this is the proof that had no runner outside the sandbox.
-  # ADVISORY (continue-on-error): the full 75-snippet sweep — its exit is 1
-  # today on the KNOWN-OPEN Banner hover-wash 8 (#151); blocking on a declared
-  # open item would make every unrelated push red. When Banner lands, flip it.
+  # BLOCKING since s218-D4: the full contrast sweep. It WAS advisory while the
+  # KNOWN-OPEN Banner hover-wash 8 (#151) kept its exit at 1 — blocking on a
+  # declared open item would have made every unrelated push red. #218 MEASURED
+  # the sweep at 0 text failures over 135 snippets, and Dave option-selected
+  # "Promote to blocking" (s218-D4): `continue-on-error` came off. A regression
+  # in ANY snippet's contrast now fails the render job, which is the point.
   render:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -253,8 +256,7 @@ jobs:
       - name: State-contrast selftest — every arm, mutation controls included (BLOCKING)
         run: python3 knowledge/_validate_state_contrast.py --selftest
 
-      - name: Full state-contrast sweep — ADVISORY until the Banner 8 clear (#151 open)
-        continue-on-error: true
+      - name: Full state-contrast sweep — BLOCKING (s218-D4; 0 text failures over 135)
         run: python3 knowledge/_validate_state_contrast.py
 
       # #208 — W-45 IN CI, AND IT BELONGS IN *THIS* JOB, DECLARED. The registry holds 5 probes;

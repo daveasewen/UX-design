@@ -144,6 +144,9 @@
     --spark-flat:#1A1A1A;   /* standing ink on light — s182-D3, Dave: "the default ink near-black" */
     --grid-alpha:.10;
     --border-radius-surface:0;
+    /* PROPOSED (s218-D4) — the DRAWN table panel specimen. Table.reference.html's own four cell
+       seats, copied verbatim so the specimen is the gated Table and not a re-drawing of one. */
+    --tbl-header:#F0F0F0; --tbl-colhdr:#F0F0F0; --tbl-cell:#FFFFFF; --tbl-border:#E1E1E1;
   }
   [data-theme="dark"]{
     --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --page:#1A1A1A; --focus:#4587A7;
@@ -155,6 +158,7 @@
     --spark-flat:#FFFFFF;   /* Dave, s182-D3 verbatim: "white on dark" */
     --grid-alpha:.16;
     --border-radius-surface:0;
+    --tbl-header:#1F1F1F; --tbl-colhdr:#1F1F1F; --tbl-cell:#1A1A1A; --tbl-border:#808080;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; background:var(--page); color:var(--text);
@@ -203,6 +207,34 @@
   .kpi-cta:hover{opacity:var(--alpha-96);}
   .kpi-cta:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
   .kpi-tile.has-cta .lbl16{padding-right:40px;}
+
+  /* ---- PROPOSED (s218-D4) · THE TABLE PANEL, DRAWN AS A SPECIMEN AND WIRED TO NOTHING --------
+     This file's own header forbids inventing the panel, verbatim: "The PANEL it would open is NOT
+     built: s116-D2's table molecule is a composition-level artefact and inventing one here would be
+     canon by improvisation." That prohibition STANDS. What #218 adds is not a panel wired to the
+     CTA — it is a DRAWING of what the panel would contain, placed BESIDE the tile and marked, so
+     Dave can rule the thing by eye instead of from a description. The CTA remains inert; no
+     aria-controls, no aria-expanded, no script in this file at all.
+     The table is Table.reference.html's markup and cell seats, copied: caption + <th scope> +
+     focusable role="region", passive, no sort. Cell padding goes through vars (Table's own idiom)
+     rather than literals. ---- */
+  :root{ --tbl-cell-py:12px; --tbl-cell-px:12px; }
+  .kpi-panel-spec{max-width:800px; margin-top:16px;}
+  .kpi-panel-spec .spec-mark{display:inline-flex; align-items:center; min-height:24px; padding:0 8px;
+    margin-bottom:8px; border:1px solid var(--tbl-border); color:var(--text);}
+  .kpi-panel-spec .scroll{overflow-x:auto;}
+  .kpi-panel-spec table{border-collapse:collapse; width:100%; background:var(--tbl-cell);
+    border:1px solid var(--tbl-border); border-radius:var(--border-radius-surface);}
+  .kpi-panel-spec caption{text-align:left; padding:0 0 8px; color:var(--text);}
+  .kpi-panel-spec th, .kpi-panel-spec td{padding:var(--tbl-cell-py) var(--tbl-cell-px);
+    border:1px solid var(--tbl-border); text-align:left; color:var(--text); white-space:nowrap;}
+  /* NO raw font-weight here — the 500 arrives on-ramp via .t-cm-ctl-14 in the markup. Table's own
+     header rules carry a raw font-weight:500 that counts against the shrink-only TYPE-002 debt;
+     the geometry and the colour are copied, the raw type declaration deliberately is not. */
+  .kpi-panel-spec thead th{background:var(--tbl-header);}
+  .kpi-panel-spec tbody th[scope="row"]{background:var(--tbl-colhdr);}
+  .kpi-panel-spec td.num{text-align:right; font-variant-numeric:tabular-nums;}
+  .kpi-panel-spec .scroll:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
@@ -330,6 +362,41 @@
   </div>
   <p class="t-cm-chart-label demo-h">The button is 44×44 (the ruled min-hit-area, enforced by hand — no gate reads the token) and opens nothing: the table panel is a composition-level artefact and is deliberately not invented here.</p>
 
+  <!-- S218-D4-KPI-SPECIMEN START -->
+  <h2 class="t-cm-caption demo-h">Proposed (s218-D4) — the table panel, drawn as a specimen and wired to nothing</h2>
+  <p class="t-cm-chart-label demo-h">This file's own header forbids inventing the panel, and the prohibition stands. Quoted verbatim: “The PANEL it would open is NOT built: s116-D2's table molecule is a composition-level artefact and inventing one here would be canon by improvisation.” Dave ruled the phantom-affordance CLASS at s218-D4 — build the missing surfaces — so what is added here is the panel's DESIGN, placed beside the tile so it can be ruled by eye, and <strong>nothing is wired</strong>: the CTA above keeps no aria-controls, no aria-expanded, and this file still carries no behaviour script. The drawing is Table.reference.html's markup and cell seats, copied — a passive data table with a caption, real <code>th scope</code> headers and a focusable scroll region. The twelve figures are the series the sparkline already draws (invented copy, consistent with the tile's +£2,450.00 and +12.4% vs February).</p>
+  <div class="kpi-panel-spec">
+    <span class="spec-mark t-cm-legal">SPECIMEN — not wired, not a panel, not ruled</span>
+    <div class="scroll" role="region" aria-label="Net cash flow, twelve months to March, table specimen" tabindex="0">
+      <table>
+        <caption class="t-cm-caption">Net cash flow — twelve months to March</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="t-cm-ctl-14">Month</th>
+            <th scope="col" class="num t-cm-ctl-14">Net cash flow</th>
+            <th scope="col" class="num t-cm-ctl-14">Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row" class="t-cm-ctl-14">April</th><td class="num t-cm-figure-6">£390.00</td><td class="num t-cm-figure-6">—</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">May</th><td class="num t-cm-figure-6">£180.00</td><td class="num t-cm-figure-6">−£210.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">June</th><td class="num t-cm-figure-6">£708.00</td><td class="num t-cm-figure-6">+£528.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">July</th><td class="num t-cm-figure-6">£492.00</td><td class="num t-cm-figure-6">−£216.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">August</th><td class="num t-cm-figure-6">£1,020.00</td><td class="num t-cm-figure-6">+£528.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">September</th><td class="num t-cm-figure-6">£1,230.00</td><td class="num t-cm-figure-6">+£210.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">October</th><td class="num t-cm-figure-6">£912.00</td><td class="num t-cm-figure-6">−£318.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">November</th><td class="num t-cm-figure-6">£1,440.00</td><td class="num t-cm-figure-6">+£528.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">December</th><td class="num t-cm-figure-6">£1,752.00</td><td class="num t-cm-figure-6">+£312.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">January</th><td class="num t-cm-figure-6">£1,548.00</td><td class="num t-cm-figure-6">−£204.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">February</th><td class="num t-cm-figure-6">£2,180.00</td><td class="num t-cm-figure-6">+£632.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">March</th><td class="num t-cm-figure-6">£2,450.00</td><td class="num t-cm-figure-6">+£270.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="t-cm-chart-label demo-h">For Dave, three questions this drawing exists to answer: does the panel belong to the TILE at all, or to a composition above it (s116-D2's table molecule)? does it open in place, in a Drawer, or in a Modal? and does the CTA survive at all — s182-D2 kept it optional, and Dave's own words there were "a sparkline shows a trend beside a headline figure, it is not an analysis tool". Nothing here answers any of the three; it only makes them lookable-at.</p>
+  <!-- S218-D4-KPI-SPECIMEN END -->
+
   <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
        are kept OUT of the contrastPairs list below and belong to the RENDERING gate
        (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
@@ -344,7 +411,9 @@
               "--page": "background/default", "--focus": "focus/ring",
               "--up": "rag/success", "--down": "rag/error",
               "--spark-up": "rag/success-ink", "--spark-down": "rag/error-ink", "--spark-flat": "text/default",
-              "--border-radius-surface": "border-radius/surface" },
+              "--border-radius-surface": "border-radius/surface",
+              "--tbl-header": "table/header/background", "--tbl-colhdr": "table/column/background",
+              "--tbl-cell": "background/default", "--tbl-border": "table/border" },
     "contrastPairs": [
       { "fg": "text/default",     "bg": "tertiary/background/default", "context": "text" },
       { "fg": "rag/error",        "bg": "tertiary/background/default", "context": "ui" },
@@ -352,7 +421,8 @@
       { "fg": "rag/success-ink",  "bg": "tertiary/background/default", "context": "ui" }
     ],
     "icons": { "arrow-up": "arrows-and-chevrons/arrow-up.svg", "arrow-down": "arrows-and-chevrons/arrow-down.svg", "view-grid": "global-controls/view-grid.svg" },
-    "requiredAria": ["role=\"group\"", "aria-label", "aria-hidden=\"true\""],
+    "requiredAria": ["role=\"group\"", "aria-label", "aria-hidden=\"true\"", "role=\"region\"", "scope=\"col\"", "scope=\"row\"", "<caption"],
+    "$s218D4": "⬛ PROPOSED (s218-D4), and the PROHIBITION IN THIS FILE'S HEADER IS UNTOUCHED. The table CTA is one of the seven phantom affordances #218 W3 found (a control promising a surface absent from the DOM), but this one is the instance where the file itself forbids the obvious fix: 'The PANEL it would open is NOT built: s116-D2's table molecule is a composition-level artefact and inventing one here would be canon by improvisation.' So Dave's class ruling (build the surfaces) is enacted here as a DRAWING, not a wiring: the panel's DESIGN is added as a marked SPECIMEN beside the tile, the CTA stays inert (no aria-controls, no aria-expanded), and this file still contains NO behaviour script. The specimen copies Table.reference.html's passive markup and its four cell seats; the twelve figures are the series the sparkline already draws, invented copy consistent with the tile's own +£2,450.00 and +12.4% vs February. Three questions for Dave are printed under the specimen: does the panel belong to the tile or to a composition; does it open in place, in a Drawer or in a Modal; and does the CTA survive at all (s182-D2 kept it optional, Dave verbatim: 'a sparkline shows a trend beside a headline figure, it is not an analysis tool').",
     "$note": "PROPOSED #203 (Wave 3b Lane K). DIFFERENCE FROM THE GATED Stat-card: Stat card is a passive ATOM (label/value/delta/period) and already carries full delta semantics — arrow + sign + wording — so 'metric + delta' was never the gap. KPI tile is a MOLECULE composing Stat card's anatomy VERBATIM with the Chart-sparkline atom at its inline scale (.spark-inline, the scale that atom's own source already calls 'the KPI / Stat-card scale', with .spark-kpi-slot standing in for this tile). The one real difference: Stat card states the CHANGE, KPI tile states the SHAPE of the change. A KPI tile with no series should be a Stat card. ⛔ TWO SEATS, DELIBERATELY UNRESOLVED: the delta ARROW inherits Stat card's FILL seat (rag/success 1.980:1 on white, measured #203) while the SPARK inherits the INK seat that s182-D3 RULES for this atom and says the trend card inherits (rag/success-ink 5.090:1 on white). Both bindings inherited unchanged per the lane brief; the seam is visible on one tile in light mode and invisible in dark (both seats resolve to #66CC8D). Rebinding a ruled colour seat is Dave's — surface, never swap. Stat card and KPI tile must move together. OPTIONAL table CTA enacts s182-D2's standing direction (icon-button form, no label, aria-label only, 44x44 by hand); the table panel itself is composition-level and not invented here. Not registered in component-types.json (shared file, outside this lane's fence) so no AUTO-BEHAVIOUR partial is injected and the spark is baked static — declared."
   }
   </script>

@@ -82,7 +82,17 @@
     --grow:760ms cubic-bezier(.22,.61,.36,1);
     /* the SAME 760ms as --grow, exposed alone: the DV-D16 stacked float needs a per-animation
        timing function, so it cannot use the duration+easing shorthand. Change both together. */
-    --grow-dur:760ms; }
+    --grow-dur:760ms;
+    /* ★ s218-D5 (1) — THE STACKED TRIO'S CURVES ARE THE HOUSE FAMILY, NOT THE CSS KEYWORDS.
+       The DV-D16 float used the literal `ease-in` / `linear` / `ease-out` keywords, which are
+       nobody's curve: the file's own gesture is --grow's cubic-bezier(.22,.61,.36,1). These two
+       tokens carry that gesture to the two curved positions. --grow-ease-out IS --grow's curve;
+       --grow-ease-in is its exact reversal (1−x2, 1−y2, 1−x1, 1−y1), so the bottom segment reads
+       the same gesture backwards. The intermediates stay `linear` — DV-D16's positional rule is
+       unchanged, only the two curves joined the family. Keep --grow-ease-out === --grow's curve;
+       verify_dv_d16_render.py asserts both the pairing and the reversal (arm: ease-token-value). */
+    --grow-ease-out:cubic-bezier(.22,.61,.36,1);
+    --grow-ease-in:cubic-bezier(.64,0,.78,.39); }
   [data-theme="light"]{
     --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
     --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
@@ -165,8 +175,10 @@
   @keyframes dvFade{from{opacity:0;} to{opacity:1;}}
 
   /* ★ DV-D16 (wording ②, RULED 2026-07-27) — STACKED FLOAT. Every segment grows SIMULTANEOUSLY on
-     ONE shared 760ms timeline, each on its OWN curve: first (bottom) ease-in · all intermediates
-     linear · last (top) ease-out. Because a stack's upper segments sit on the segment below, growing
+     ONE shared 760ms timeline, each on its OWN curve: first (bottom) --grow-ease-in · all
+     intermediates linear · last (top) --grow-ease-out (s218-D5 (1) moved the two curved positions
+     off the CSS keywords onto the house family; the POSITIONAL rule is DV-D16's and is unchanged).
+     Because a stack's upper segments sit on the segment below, growing
      them all at once makes them FLOAT upward while growing — that float IS the effect, and the stack
      must never gap open mid-flight. NOT the donut's serial look (wording ① was reversed same session).
      ⚠ WHY NOT THE OBVIOUS `translateY(--below × (1 − own progress))`: the segments below grow on
@@ -183,7 +195,7 @@
      column, plus `--self` = its own progress var. The ruled ≥2px dv-004 boundaries cancel out of the
      algebra: they stay EXACTLY 2px at every frame, not just at rest.
      N > 3 (cap 6, DV-D16c): add --dvf4…--dvf6, their keyframes, their --b terms; the curve rule is
-     positional — first ease-in, last ease-out, everything between linear. */
+     positional — first var(--grow-ease-in), last var(--grow-ease-out), everything between linear. */
   @property --dvf1{syntax:"<number>"; inherits:true; initial-value:1;}
   @property --dvf2{syntax:"<number>"; inherits:true; initial-value:1;}
   @property --dvf3{syntax:"<number>"; inherits:true; initial-value:1;}
@@ -192,13 +204,22 @@
   @keyframes dvStackF3{from{--dvf3:0;} to{--dvf3:1;}}
   @media (prefers-reduced-motion:no-preference){
     figure.dv-animate[data-dv-type="stacked-column"] svg.dv-svg{
-      animation:dvStackF1 var(--grow-dur) ease-in both,
+      animation:dvStackF1 var(--grow-dur) var(--grow-ease-in) both,
                 dvStackF2 var(--grow-dur) linear both,
-                dvStackF3 var(--grow-dur) ease-out both;}
+                dvStackF3 var(--grow-dur) var(--grow-ease-out) both;}
     figure.dv-animate[data-dv-type="stacked-column"] rect.dv-series[data-grow="up"]{
       animation:none; transform-box:fill-box; transform-origin:bottom;
       transform:translateY(calc(var(--b1,0px) * (1 - var(--dvf1)) + var(--b2,0px) * (1 - var(--dvf2))))
                 scaleY(var(--self,1));}
+    /* ★ s218-D5 (2) — THE ON-SEGMENT LETTER KEYS WAIT FOR THE GROWTH TO LAND.
+       A stacked key is drawn ON its segment, and mid-flight that segment is BOTH scaling and
+       floating — so a key faded in on the generic 160ms --ease sat adrift of the fill it labels
+       (measured 12/12 at #218). The delay is exactly one growth: the key's fade only ever starts
+       on a settled segment. This is a LONGHAND after the generic `animation:` shorthand above —
+       the shorthand resets animation-delay to 0s, so this rule must stay AFTER it in source
+       order (and it is higher-specificity). The grouped keys of cb4 sit on page air beside their
+       bars, are never adrift, and keep the undelayed fade. */
+    figure.dv-animate[data-dv-type="stacked-column"] text.dv-barkey{animation-delay:var(--grow-dur);}
   }
   text.dv-barkey{transition:opacity var(--ease), visibility var(--ease);}
 

@@ -181,7 +181,27 @@
   /* ===== AUTO-PARTIAL press-physics END ===== */
   /* s134-D4: `border-width:0;` retired from this rule — the shell carries no border to collapse
      now (tint-only). */
-  .alert.removing{ max-height:0 !important; opacity:0; margin-top:0; margin-bottom:0;
+  /* ⛔ max-height is DELIBERATELY NOT declared here and MUST NOT be re-added.
+     MEASURED #218 wave-3 lane β: `max-height:0 !important` in this rule STOPPED the
+     max-height transition from ever starting (transitionrun fired for opacity/margin/padding
+     and NEVER for max-height — the before-change value was an author-NORMAL inline
+     declaration, the after-change an author-IMPORTANT one, and Chromium does not transition
+     across that importance change). transitionend('max-height') therefore never fired, the
+     `n.remove()` it gated never ran, and the dismiss × REMOVED NOTHING in any theme, any
+     mode, at any motion setting — 7 alerts in, 7 alerts out. The collapse is now driven
+     INLINE-TO-INLINE by the script below (72px → 0px on the element's own style), which
+     transitions correctly; the counter-experiment in the same run fired transitionrun AND
+     transitionend for max-height.
+     ⚠ AND THE IMPORTANCE WAS NOT THE WHOLE STORY. Driving the mutation arms turned up the
+     bigger half: the old listener was
+         n.addEventListener('transitionend', ev=>{ if(ev.propertyName==='max-height') …}, {once:true})
+     and this element transitions FIVE properties. opacity finishes at 200ms, max-height at
+     300ms. The 200ms opacity event reached the one-shot listener first, failed the
+     propertyName guard, did nothing — and `{once:true}` had ALREADY unsubscribed it. The
+     max-height event 100ms later had nothing listening. `{once:true}` counts DELIVERIES, not
+     matches, so a guarded one-shot handler on a multi-property transition is a bug by
+     construction. The handler below unsubscribes itself only when its own property arrives. */
+  .alert.removing{ opacity:0; margin-top:0; margin-bottom:0;
     padding-top:0; padding-bottom:0; }
 
   @media (prefers-reduced-motion: reduce){
@@ -200,20 +220,20 @@
   </svg>
 
   
-  <div class="awrap" id="awrap">
+  <div class="awrap" id="awrap" tabindex="-1">
 
     <h2>Dismissible — title · description · link</h2>
-    <div class="alert err" role="alert" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-error"/></svg></span><p class="main t-ed-body"><strong class="em">Payment failed.</strong> The payment could not be processed. <a href="#">Review payment details</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
-    <div class="alert warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Statement overdue.</strong> Your March statement is ready to review. <a href="#">Open March statement</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
-    <div class="alert ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-success"/></svg></span><p class="main t-ed-body"><strong class="em">Payment sent.</strong> The transfer has been completed. <a href="#">View receipt</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
-    <div class="alert info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-info"/></svg></span><p class="main t-ed-body"><strong class="em">Planned maintenance.</strong> Some services pause briefly on Sunday morning. <a href="#">See affected services</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert err" role="alert" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-error"/></svg></span><p class="main t-ed-body"><strong class="em">Payment failed.</strong> The payment could not be processed. <a href="#">Review payment details</a></p><button class="x" type="button" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Statement overdue.</strong> Your March statement is ready to review. <a href="#">Open March statement</a></p><button class="x" type="button" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-success"/></svg></span><p class="main t-ed-body"><strong class="em">Payment sent.</strong> The transfer has been completed. <a href="#">View receipt</a></p><button class="x" type="button" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-info"/></svg></span><p class="main t-ed-body"><strong class="em">Planned maintenance.</strong> Some services pause briefly on Sunday morning. <a href="#">See affected services</a></p><button class="x" type="button" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
 
     <h2>Static — no dismiss (message persists with the task)</h2>
     <div class="alert err" role="alert" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-error"/></svg></span><p class="main t-ed-body"><strong class="em">Session expiring.</strong> Save your work before continuing.</p></div>
     <div class="alert info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-info"/></svg></span><p class="main t-ed-body">A single-line informational callout with no title.</p></div>
 
     <h2>Wrapping — icon and dismiss hold the first line</h2>
-    <div class="alert warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Verify your details.</strong> We could not confirm the mobile number saved to this profile. Confirm the number is still active, or update it, so security codes reach the right device. <a href="#">Update contact details</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Verify your details.</strong> We could not confirm the mobile number saved to this profile. Confirm the number is still active, or update it, so security codes reach the right device. <a href="#">Update contact details</a></p><button class="x" type="button" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
 
   </div>
 
@@ -246,10 +266,37 @@
     
     
     
+    /* DISMISS — collapse then remove, then MOVE FOCUS (both halves are load-bearing).
+       (a) COLLAPSE is driven inline→inline. See the ⛔ note on .alert.removing: routing the
+           zero through an `!important` stylesheet declaration silently killed the transition
+           and with it the removal. Never re-introduce it.
+       (b) FOCUS. Removing the element that holds focus strands activeElement on BODY —
+           measured here at HEAD on the sibling Toast — which throws a keyboard user back to
+           the top of the document (2.4.3). Focus moves to the NEXT remaining dismiss in the
+           group, or to the group itself when the last alert goes.
+       (c) The transitionend handler is NOT `{once:true}` and must never become so — the
+           one-shot listener was eaten by the earlier `opacity` event, which is what actually
+           stopped the removal at HEAD. See the ⛔ note above.
+       (d) The removal is ALSO gated on a fallback timer: transitionend is the fast path, not
+           a guarantee, and a dismiss that depends on an event that may not fire is the exact
+           defect this repair exists to close. */
+    const awrap=document.getElementById('awrap');
     document.querySelectorAll('.alert .x').forEach(x=> x.addEventListener('click', ()=>{
-      const n=x.closest('.alert'); n.style.maxHeight=n.offsetHeight+'px';
-      requestAnimationFrame(()=> n.classList.add('removing'));
-      n.addEventListener('transitionend', ev=>{ if(ev.propertyName==='max-height') n.remove(); }, {once:true});
+      const n=x.closest('.alert');
+      if(n.dataset.going) return; n.dataset.going='1';
+      const rest=[...document.querySelectorAll('.alert .x')].filter(b=> b!==x && !b.closest('.alert').dataset.going);
+      const nextFocus = rest[0] || awrap;
+      let done=false;
+      const finish=()=>{ if(done) return; done=true; n.remove();
+        if(document.body.contains(nextFocus)) nextFocus.focus(); };
+      n.style.maxHeight=n.offsetHeight+'px';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        n.classList.add('removing'); n.style.maxHeight='0px';
+      }));
+      const onEnd=ev=>{ if(ev.target!==n || ev.propertyName!=='max-height') return;   /* NOT {once:true} — see the ⛔ note */
+        n.removeEventListener('transitionend', onEnd); finish(); };
+      n.addEventListener('transitionend', onEnd);
+      setTimeout(finish, 600);                                   /* fallback — never orphan the control */
     }));
   </script>
 </body>

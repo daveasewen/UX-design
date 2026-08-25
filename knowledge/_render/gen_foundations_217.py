@@ -90,9 +90,12 @@ THEME + MODE — the same broadcast the showroom and the library use
       and `:end` so a gate can address exactly that region.
     · The wall is every derivative the manifest carries, and EVERY `<img>` on the page — the
       251 tiles AND the 251 lightbox pictures — is `loading="lazy" decoding="async"`.
-  ⚠ `edge: square` is RECORDED AND NOT ENACTED, and the page says so: all four exports carry it,
-  but this wall is role=gallery and s217-D3 exempts a gallery from the squaring pass. Enacting
-  the dial would overturn that ruling. Bite 29 holds both facts together.
+  ★ `edge: square` is ENACTED on THIS wall — s218-D6 (4), Dave: "Reopen — square it". The
+  ratified squaring pass runs on the photography wall and its last rows re-span to close the
+  holes. SCOPE: role=gallery's s217-D3 exemption stands everywhere else — canon, `role_policy`
+  and the roles pages are untouched, and the role's own answer (still "exempt") is carried on the
+  report so the override is visible as an override. Bites 29 + 29b hold both facts together, and
+  `PHOTO_TAIL_CAP` carries the MEASURED reason the tail cap is 5 and not the default 6.
   ⚠ The receipts are `notes/_receipts/2026-08-24-218-photography-theme-settings.md`, and TWO of
   the four `resolved` blocks are labelled `legacy` because they were exported from that tab. The
   `state` blocks are the ruling; the `resolved` blocks are receipts about the tab they were taken
@@ -153,9 +156,11 @@ from gen_canon_bento import (params as bento_params, span_for, emphasise,  # noq
                              square_wall, square_wall_for_role, band_ladder, is_rectangular)
 
 # ⚠ THE PHOTOGRAPHY WALL IS ROLE=GALLERY (s217-D3, #217). It is a page-level photography wall,
-# which is the role's own definition — so it takes tile radius, tile spacing, the generous
-# caption space, and NO SQUARING. The wall is now ragged where the pictures make it ragged, and
-# that is the ruling rather than a regression. ⚠ The LOGO wall is deliberately left with NO role
+# which is the role's own definition — so it takes tile radius, tile spacing and the generous
+# caption space. ★ THE ROLE'S "NO SQUARING" IS OVERRIDDEN ON THIS WALL ONLY (s218-D6 (4)): the
+# page's own instance dial says `edge: square` in all four of Dave's exports and he reopened it —
+# so `square_wall` runs here while `role_policy("gallery")` keeps saying "exempt" for every other
+# gallery. Read `read_photos()` before changing either half. ⚠ The LOGO wall is deliberately left with NO role
 # attribute: no role has been ruled for it, and a role is a decision, not a default. A bento
 # with no role attribute matches no role rule and keeps the s217-D2 grammar exactly.
 PHOTO_ROLE = "gallery"
@@ -164,6 +169,22 @@ _BP = bento_params()
 # The photography wall's INSTANCE column count (`.fx-wall-photo{--bento-columns:4}`) — its
 # ladder, not canon's. A wall never renders wider than its own dial.
 PHOTO_LADDER = band_ladder(dict(_BP, columns=4))
+
+# ★ s218-D6 (4) — THE TAIL CAP FOR THIS WALL, AND IT IS A MEASURED BUDGET, NOT A PREFERENCE.
+# `square_wall` is EXHAUSTIVE: for each tail size k it tries every assignment of the last k tiles
+# (pool of 5 spans each) and tests each trial for rectangularity at all four bands. On THIS wall
+# one rectangularity test over 251 tiles costs ~13ms, so the k-th stage costs ~5^k x 13ms:
+#     k<=3  2.5s (REFUSES — 1 hole left at 4 columns)
+#     k=4   11s  (REFUSES)
+#     k=5   55s  (SQUARES — 4 tail tiles re-spanned, crop cost 10)   <- the cap
+#     k=6   ~250s, and it CANNOT COMPLETE inside this seat's ~178s tool-call wall.
+# A pass that can only be driven on some other machine is the [[gate-cannot-pass-in-one-
+# environment]] class, so the cap is set where the pass both SUCCEEDS and RUNS. ⚠ The price is
+# real and is declared on the page: every run of this generator (including `--check`) now spends
+# ~55s here that the exempt wall spent nothing on. ⬛ OPEN, Dave's: k=6 might find a cheaper crop
+# than cost-10 (which lays ONE portrait on its side at tile 247); buying that answer means either
+# a longer wall-clock budget or a mint-time cache, and neither is this build's to rule.
+PHOTO_TAIL_CAP = 5
 SPAN_NOTE = ("Tile spans are derived from each image's own aspect ratio, not arranged by eye: "
              "wider than %.0f:1 spans three columns, wider than %.1f:1 spans two, taller than "
              "1:%.2f spans two rows, everything else is a single cell. The thresholds are canon "
@@ -174,6 +195,34 @@ SPAN_NOTE = ("Tile spans are derived from each image's own aspect ratio, not arr
 # derivatives at ONE aspect ratio, and the note said so; at #218 Dave ruled ALL 251 photographs
 # onto this page, so the aspect spread is a different number and a sentence carried forward from
 # twelve pictures would be a confident false statement about 251. It is counted here every run.
+# ★ s218-D6 (4) — WHAT THE SQUARING PASS ACTUALLY DID, counted off its own report every run.
+# ⛔ A REFUSAL MUST PRINT (`square_wall`'s own docstring): a wall believed square and shipped
+# ragged is the defect recurring with a green banner over it. So both branches are written, and
+# the crop the pass paid is named tile by tile rather than summarised as "squared".
+def squaring_note(sq):
+    """-> one measured sentence about the squaring pass, for the page's finding block."""
+    if not sq:
+        return "UNKNOWN — the squaring pass filed no report."
+    if not sq.get("squared"):
+        return "⛔ NOT SQUARED — %s" % (sq.get("reason") or "no reason was reported.")
+    changed = sq.get("changed") or []
+    if not changed:
+        return ("the wall is already an exact rectangle at every band in its ladder (%s), so the "
+                "pass moved nothing." % "/".join(str(c) for c in (sq.get("ladder") or ())))
+    where = "; ".join("tile %d %s→%s" % (i + 1, "×".join(map(str, a)),
+                                              "×".join(map(str, b)))
+                      for i, a, b in changed)
+    rows_at = sq.get("rows") or {}
+    return ("SQUARED — the pass re-spanned %d tile(s) in the last %d (%s), and the wall is now an "
+            "exact rectangle at every band in its ladder %s (%s). Crop cost %s on the pass's own "
+            "scale, where 0 is 'nothing moved'."
+            % (len(changed), sq.get("adjusted") or len(changed), where,
+               "/".join(str(c) for c in (sq.get("ladder") or ())),
+               ", ".join("%d cols = %d rows" % (c, r) for c, r in sorted(rows_at.items(),
+                                                                        reverse=True)),
+               (sq.get("cost") or ("?",))[0]))
+
+
 def emphasis_note(rows):
     """-> the position-rhythm sentence, with the aspect spread COUNTED off `rows`."""
     ars = {round((r["w"] / float(r["h"])), 2) for r in rows if r.get("w") and r.get("h")}
@@ -530,20 +579,47 @@ def read_photos():
     rows.sort(key=lambda r: r["file"])
     for i, r in enumerate(rows, 1):
         r["span"] = emphasise(r["span"], i)
-    # THE SQUARING PASS — RATIFIED s217-D3, and this wall is EXEMPT from it. The policy is
-    # ASKED, never re-decided here: `square_wall_for_role` reads role=gallery out of the store
-    # and returns the wall untouched, reporting its raggedness as acceptable rather than as a
-    # failure. An `if role == "gallery"` in this file would be a second source for a ruled fact.
+    # ★ THE SQUARING PASS — s218-D6 (4): THIS WALL IS SQUARED, BY ITS OWN INSTANCE DIAL.
+    #
+    # Dave reopened the edge on the page his four exports already marked `edge: square`:
+    # "Reopen — square it". So the pass RUNS here, and the two facts stay separate:
+    #   • THE ROLE POLICY is still asked, and still answers "exempt" — `square_wall_for_role` is
+    #     the only place role=gallery's s217-D3 exemption is read, and s218-D6 explicitly leaves
+    #     that exemption standing FOR EVERY OTHER GALLERY. Its report is kept and printed, so the
+    #     page shows the default it is overriding rather than pretending it never existed.
+    #   • THE INSTANCE DIAL wins on THIS wall. `square_wall` is the role-blind pass — the same
+    #     ratified maths the explorer runs when its edge dial says `square`.
+    # ⛔ SCOPE, AND IT IS NARROW: nothing in canon changes, `role_policy` is untouched, the roles
+    # pages are untouched. A gallery elsewhere is still ragged-tolerant. Widening this is Dave's.
+    # ⛔ AND THE DIAL IS READ, NOT ASSUMED: if the four exports ever disagree on `edge`, or say
+    # anything but `square`, the pass does NOT run and the reason says so — one wall has one
+    # geometry, so four themes that disagree cannot all be honoured and the build must not pick.
     # ⚠ The wall is dialled to 4 columns (`.fx-wall-photo`), so its LADDER is 4/3/2/1 — a wall
     # never renders wider than its own dial.
-    # ⚠ EXEMPT FROM SQUARING IS NOT EXEMPT FROM THE ASPECT MAPPING. `span_for`/`emphasise` above
-    # still run, so portraits are still two rows tall — that mapping IS the "appropriate layout
-    # for portrait and landscape images" the gallery role asks for. Different mechanisms.
-    squared, srep = square_wall_for_role([r["span"] for r in rows], PHOTO_ROLE,
-                                         ladder=PHOTO_LADDER)
-    if srep["squared"] and not srep.get("exempt"):
-        for r, s in zip(rows, squared):
-            r["span"] = s
+    # ⚠ SQUARING IS NOT THE ASPECT MAPPING. `span_for`/`emphasise` above still run, so portraits
+    # are still two rows tall; squaring only re-spans the TAIL to close the holes.
+    spans = [r["span"] for r in rows]
+    _, role_rep = square_wall_for_role(spans, PHOTO_ROLE, ladder=PHOTO_LADDER)
+    edges = sorted({GALLERY_SETTINGS[t]["edge"] for t in GALLERY_SETTINGS})
+    if edges == ["square"]:
+        squared, srep = square_wall(spans, ladder=PHOTO_LADDER, tail_cap=PHOTO_TAIL_CAP)
+        # `exempt` is written EXPLICITLY rather than left absent: every consumer of this report
+        # branches on it, and an absent key reads as None — neither True nor False — which is how
+        # a "was it exempt?" question gets answered with a shrug.
+        srep["exempt"] = False
+        srep["enacted_by"] = "s218-D6 (4) — instance dial edge=square on all four exports"
+        srep["role_default"] = {"role": role_rep.get("role"), "exempt": role_rep.get("exempt"),
+                                "holes": role_rep.get("holes"),
+                                "at_cols": role_rep.get("at_cols")}
+        if srep["squared"]:
+            for r, s in zip(rows, squared):
+                r["span"] = s
+    else:
+        srep = dict(role_rep)
+        srep["enacted_by"] = None
+        srep["reason"] = ("the four exports do not agree on one edge (%s), so the squaring dial "
+                          "was NOT enacted — one wall has one geometry and this build does not "
+                          "choose between Dave's four states." % ", ".join(edges))
     return rows, d, {"missing_derivative_file": missing, "squaring": srep}
 
 
@@ -995,12 +1071,14 @@ def photography_page(rows, meta, residuals):
       The dial name is not a promise of the hex.</p>
     </div>
     <div class="finding">
-      <b>&ldquo;Edge: square&rdquo; is RECORDED AND NOT ENACTED, and this page says so rather
-      than quietly doing one or the other.</b> All four of Dave's exports carry
-      <code>edge: square</code>, which in the explorer runs the squaring pass. This wall is
-      <code>role=gallery</code>, and <code>s217-D3</code> makes a gallery <b>exempt</b> from
-      squaring — orphans are acceptable here. Enacting the dial would overturn that ruling, which
-      is not this build's to do. Measured on the wall as it ships: %s
+      <b>&ldquo;Edge: square&rdquo; is ENACTED on this wall &mdash; <code>s218-D6</code>.</b>
+      All four of Dave's exports carry <code>edge: square</code>, and at #218 he reopened it on
+      this page: <i>&ldquo;Reopen &mdash; square it&rdquo;</i>. So the ratified squaring pass runs
+      here and the last-row photographs re-span to close the holes. <b>The scope is this wall
+      only.</b> <code>role=gallery</code> is still <b>exempt</b> under <code>s217-D3</code>
+      everywhere else — the role policy is unchanged, canon is unchanged, and the roles pages are
+      unchanged; what overrides it here is this page's own instance dial. Measured on the wall as
+      it ships: %s
     </div>
   </section>
 
@@ -1044,8 +1122,7 @@ def photography_page(rows, meta, residuals):
        srows, esc(MONO_CAPTION_RIDER["words"]),
        esc(MONO_CAPTION_RIDER["ground_token"]), esc(MONO_CAPTION_RIDER["ground_hex"]),
        esc(MONO_CAPTION_RIDER["ink_token"]), esc(MONO_CAPTION_RIDER["ink_hex"]),
-       esc(sq.get("reason") or ("the wall is an exact rectangle at %d columns anyway."
-                               % (sq.get("at_cols") or PHOTO_LADDER[0]))),
+       esc(squaring_note(sq)),
        len(rows), "\n".join("      " + t for t in tiles),
        len(rows), len(rows),
        esc(round(sum(r["bytes"] or 0 for r in rows) * 2 / 1048576.0, 1)),
@@ -1303,14 +1380,31 @@ def selftest():
          (photo.count('class="t-ed-caption px-desc"'),
           ("<b>%d photograph(s) carry no EXIF description</b>" % len(_nodesc)) in photo),
          (len(rows["photography"]) - len(_nodesc), True))
-    # ⬛ THE ONE DIAL THIS BUILD RECORDED AND DID NOT ENACT. Dave's four exports all say
-    # `edge: square`; s217-D3 exempts a gallery from squaring. The page must say BOTH, or it is
-    # either overturning a ruling in silence or dropping one in silence.
-    bite("29 · edge=square is RECORDED and NOT ENACTED, and the page says so",
+    # ★ s218-D6 (4) — THE DIAL IS NOW ENACTED, AND THE BITE FLIPPED WITH IT. It used to assert
+    # the opposite ("RECORDED and NOT ENACTED", exempt=True): left alone it would have gone red on
+    # the enactment and green on a regression, which is worse than having no bite at all. Four
+    # clauses, because three of them would each pass on a different half-done state:
+    #   • all four exports still say `square` (the dial the pass is driven BY);
+    #   • the pass RAN and SQUARED (not the exempt/untouched report);
+    #   • it says WHICH ruling enacted it, so the override is never anonymous;
+    #   • the page prints the enactment rather than the old refusal sentence.
+    _sq = (resid["photography"] or {}).get("squaring", {})
+    bite("29 · edge=square is ENACTED on this wall (s218-D6) and the page says so",
          (sorted({GALLERY_SETTINGS[t]["edge"] for t in matrix.THEMES}),
-          (resid["photography"] or {}).get("squaring", {}).get("exempt"),
+          bool(_sq.get("squared")), _sq.get("exempt"),
+          "s218-D6" in (_sq.get("enacted_by") or ""),
+          "is ENACTED on this wall" in photo,
           "RECORDED AND NOT ENACTED" in photo),
-         (["square"], True, True))
+         (["square"], True, False, True, True, False))
+    # ⛔ AND THE SCOPE OF IT. s218-D6 squares THIS wall and leaves role=gallery's s217-D3 exemption
+    # standing everywhere else. The role policy is therefore asked SEPARATELY and its answer —
+    # still "exempt" — is carried on the report, so a later reader can see that the page overrode
+    # a default rather than that the default changed. If this ever reads False, the exemption was
+    # widened somewhere upstream and s218-D6's scope line has been broken.
+    bite("29b · the ROLE's own answer is still EXEMPT — the override is this page's, not canon's",
+         ((_sq.get("role_default") or {}).get("exempt"),
+          (_sq.get("role_default") or {}).get("role")),
+         (True, PHOTO_ROLE))
 
     pbody = photo.split("</style>", 1)[1]
     lbody = logos.split("</style>", 1)[1]
@@ -1383,19 +1477,35 @@ def selftest():
          ('data-bento-role="gallery"' in photo,
           "data-bento-role" in logos),
          (True, False))
-    bite("21b · the gallery wall is NOT squared, and its raggedness is REPORTED not repaired",
-         ((resid["photography"] or {}).get("squaring", {}).get("exempt"),
-          len((resid["photography"] or {}).get("squaring", {}).get("changed") or [])),
-         (True, 0))
-    # ⚠ THE POSITIVE HALF. Squaring OFF and aspect-mapping ON are DIFFERENT MECHANISMS, and the
-    # failure mode of turning one off is quietly taking the other with it. A portrait derivative
-    # must still reach the page as a two-row tile.
-    bite("21c · portraits are STILL two rows tall — the squaring exemption did not take the "
-         "aspect mapping with it",
-         (any(r["orientation"] == "portrait" for r in rows["photography"]),
-          all(r["span"] == (1, 2) for r in rows["photography"]
-              if r["orientation"] == "portrait")),
-         (True, True))
+    # ★ s218-D6 (4) FLIPPED THIS BITE FROM "not squared" TO ZERO HOLES — and it does NOT read the
+    # pass's own report for the verdict. `is_rectangular` is re-run over THE SPANS THAT WERE
+    # EMITTED, at every band in the wall's ladder: a report saying "squared" while the emitted
+    # spans still hole is precisely the failure `square_wall`'s docstring warns about, and a bite
+    # that trusted the report could not see it.
+    _sq21 = (resid["photography"] or {}).get("squaring", {})
+    _emitted = [r["span"] for r in rows["photography"]]
+    _rect, _at_cols, _holes = is_rectangular(_emitted, PHOTO_LADDER)
+    bite("21b · the wall as it SHIPS is an exact rectangle at every band — zero holes, "
+         "re-measured off the emitted spans (s218-D6)",
+         (_rect, _holes, _sq21.get("exempt")),
+         (True, 0, False))
+    # ⚠ THE POSITIVE HALF, AND IT IS SHARPER NOW. Squaring and aspect-mapping are DIFFERENT
+    # MECHANISMS: the failure mode is one of them quietly eating the other. So every portrait
+    # OUTSIDE the squared tail must still be a two-row tile, and the pass must only ever have
+    # touched the TAIL — a re-span in the middle of the wall would mean the aspect mapping had
+    # been overruled wholesale rather than trimmed at the end.
+    # ⬛ DECLARED, NOT HIDDEN: the pass DID re-span one portrait inside the tail (it is the
+    # cheapest assignment that closes the holes at this cap) — that tile is a crop, and it is
+    # Dave's eye to accept or send back. See PHOTO_TAIL_CAP.
+    _changed_ix = {i for i, _a, _b in (_sq21.get("changed") or [])}
+    _n = len(rows["photography"])
+    _portraits = [i for i, r in enumerate(rows["photography"]) if r["orientation"] == "portrait"]
+    bite("21c · portraits are STILL two rows tall everywhere the squaring TAIL did not reach",
+         (bool(_portraits),
+          all(rows["photography"][i]["span"] == (1, 2)
+              for i in _portraits if i not in _changed_ix),
+          all(i >= _n - PHOTO_TAIL_CAP for i in _changed_ix)),
+         (True, True, True))
     # the caption's ruled numbers must come from canon, never be restated here
     bite("21d · the caption block height and clamp are canon's, not this page's",
          ("min-height" in rules.split(".px-cap{", 1)[1].split("}", 1)[0],
@@ -1497,9 +1607,11 @@ def main():
           % (len(pages), len(stale)))
     sq = (resid["photography"] or {}).get("squaring")
     if sq:
-        # RATIFIED s217-D3 — and this wall is EXEMPT (role=gallery). Printed every run: an exempt
-        # wall's raggedness is REPORTED as acceptable, and a non-exempt wall that could not be
-        # squared is a DECLARED RESIDUAL, never a silent ragged edge.
+        # Printed every run. An EXEMPT wall's raggedness is REPORTED as acceptable; a wall that
+        # ran the pass and could not be squared is a DECLARED RESIDUAL, never a silent ragged
+        # edge. ★ s218-D6 (4): this wall now RUNS the pass by its own instance dial, so the
+        # normal line is the enacting one and the exempt branch is kept for the day the dial
+        # changes — not deleted, because deleting it would make a reverted dial print nothing.
         if sq.get("exempt"):
             state = ("EXEMPT (role=%s, s217-D3) — %s" %
                      (PHOTO_ROLE, "rectangular anyway" if sq["squared"]
@@ -1507,9 +1619,9 @@ def main():
                            % (sq["holes"], sq["at_cols"] or PHOTO_LADDER[0])))
         else:
             state = ("squared" if sq["squared"] else "⛔ NOT SQUARE: %s" % sq["reason"])
-        print("   squaring pass (RATIFIED s217-D3): %s — ladder %s, rows %s, %d tile(s) re-spanned"
-              % (state, sq["ladder"], " / ".join(str(sq["rows"][c]) for c in sq["ladder"]),
-                 len(sq["changed"])))
+        print("   squaring pass (%s): %s — ladder %s, rows %s, %d tile(s) re-spanned"
+              % (sq.get("enacted_by") or "EXEMPT under s217-D3", state, sq["ladder"],
+                 " / ".join(str(sq["rows"][c]) for c in sq["ladder"]), len(sq["changed"])))
     print("   photography: %d derivative(s), residual missing-file: %s"
           % (len(rows["photography"]),
              resid["photography"].get("missing_derivative_file") or "none"))

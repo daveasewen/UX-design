@@ -170,16 +170,16 @@
 
   <h2>Anatomy — statuses (static specimens)</h2>
   <div class="spec">
-    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
-    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
-    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
-    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" type="button" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" type="button" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" type="button" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" type="button" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
   </div>
 
   <h2>With action — the action must also live somewhere persistent (never toast-only)</h2>
   <div class="spec">
-    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
-    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast ok" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" type="button" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" type="button" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
   </div>
 
   <h2>Live region — spawn from the controls above; hover pauses the 6s timer</h2>
@@ -207,11 +207,11 @@
   <script>
     const region=document.getElementById('toastRegion');
     const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    function spawn(status, msg, glyph){
+    function spawn(status, msg, glyph, origin){
       const t=document.createElement('div'); t.className='toast '+status; t.setAttribute('role','status');
       t.innerHTML=(glyph?'<span class="ic"><svg aria-hidden="true"><use href="#'+glyph+'"/></svg></span>':'')+
         '<p class="msg t-ed-body">'+msg+'</p>'+
-        '<button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button>';
+        '<button class="x" type="button" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button>';
       region.appendChild(t);
       let remain=6000, started=Date.now(), timer=setTimeout(leave, remain), paused=false;
       function leave(){ if(RM){ t.remove(); return; } t.classList.add('leaving'); t.addEventListener('transitionend', ()=>t.remove(), {once:true}); }
@@ -219,10 +219,20 @@
       function resume(){ if(!paused) return; paused=false; started=Date.now(); timer=setTimeout(leave, Math.max(remain,1000)); }
       t.addEventListener('mouseenter', pause); t.addEventListener('mouseleave', resume);
       t.addEventListener('focusin', pause); t.addEventListener('focusout', resume);
-      t.querySelector('.x').addEventListener('click', ()=>{ clearTimeout(timer); leave(); });
+      /* WCAG 2.4.3 — MEASURED at HEAD #218 wave-3 lane β: dismissing a toast from the keyboard
+         removed the element holding focus and left document.activeElement on BODY, throwing the
+         user back to the top of the document. Focus now moves to the next live toast's dismiss,
+         or back to the control that spawned this one. `origin` is captured at SPAWN time: by the
+         time the toast leaves, activeElement is the × that is about to be destroyed. */
+      const self=t.querySelector('.x');
+      const handOff=()=>{ const nxt=[...region.querySelectorAll('.toast:not(.leaving) .x')].filter(b=>b!==self)[0];
+        const home = nxt || origin;
+        if(home && document.body.contains(home)) home.focus(); };
+      self.addEventListener('click', ()=>{ clearTimeout(timer); leave(); handOff(); });
     }
-    document.getElementById('spawnOk').addEventListener('click', ()=>spawn('ok','Payment sent.','to-success'));
-    document.getElementById('spawnInfo').addEventListener('click', ()=>spawn('info','Draft saved automatically.','to-info'));
+    const bOk=document.getElementById('spawnOk'), bInfo=document.getElementById('spawnInfo');
+    bOk.addEventListener('click', ()=>spawn('ok','Payment sent.','to-success', bOk));
+    bInfo.addEventListener('click', ()=>spawn('info','Draft saved automatically.','to-info', bInfo));
   </script>
 </body>
 </html>

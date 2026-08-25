@@ -178,12 +178,27 @@
   </script>
   <script>
     
-    let openWrap=null;
+    let openWrap=null, openPlace=null, trackRaf=0;
+    /* TRACKING — MEASURED at HEAD #218 wave-3 lane β: .pop is position:fixed and was placed ONCE,
+       on open, off the trigger's viewport rect. Scrolling the page then left the popover pinned to
+       the VIEWPORT while its trigger scrolled away underneath it — a 300px scroll measured 300px of
+       drift, i.e. total detachment, with the tail pointing at unrelated content and aria-expanded
+       still true. A fixed-position surface anchored to a scrolling trigger has to be re-placed for
+       as long as it is open. ONE listener pair, installed on open and REMOVED on close (never a
+       page-lifetime listener for a transient surface), rAF-debounced so a scroll cannot queue work
+       per event. */
+    function track(){ if(trackRaf) return;
+      trackRaf=requestAnimationFrame(()=>{ trackRaf=0; if(openPlace) openPlace(); }); }
+    function startTracking(fn){ openPlace=fn;
+      addEventListener('scroll', track, {passive:true, capture:true}); addEventListener('resize', track); }
+    function stopTracking(){ openPlace=null;
+      if(trackRaf){ cancelAnimationFrame(trackRaf); trackRaf=0; }
+      removeEventListener('scroll', track, {capture:true}); removeEventListener('resize', track); }
     function closePop(w){
       if(!w) return;
       const trg=w.querySelector('.pop-trigger'), pop=w.querySelector('.pop');
       pop.classList.remove('show'); trg.setAttribute('aria-expanded','false');
-      if(openWrap===w) openWrap=null;
+      if(openWrap===w){ openWrap=null; stopTracking(); }
     }
     document.querySelectorAll('.popwrap').forEach(w=>{
       const trg=w.querySelector('.pop-trigger'), pop=w.querySelector('.pop');
@@ -204,7 +219,7 @@
       trg.addEventListener('click', ()=>{
         const isOpen=pop.classList.contains('show');
         closePop(openWrap);
-        if(!isOpen){ place(); trg.setAttribute('aria-expanded','true'); openWrap=w;
+        if(!isOpen){ place(); trg.setAttribute('aria-expanded','true'); openWrap=w; startTracking(place);
           const f=pop.querySelector('a,button'); if(f) f.focus(); }
         else trg.focus();
       });

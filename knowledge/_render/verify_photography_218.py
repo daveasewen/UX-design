@@ -49,6 +49,11 @@ WHAT IT DRIVES
  5 · THE 251-PHOTOGRAPH LAZY WALL — 251 tiles; every `src` on the page resolves to a file ON
      DISK; every one of the 502 images carries `loading="lazy"` AND `decoding="async"`; and the
      count of tiles equals the manifest's own derivative count.
+     ★ AND, SINCE s218-D6 (4), THE WALL IS SQUARED: zero holes at every band of its 4/3/2/1
+     ladder, re-derived from the `data-c`/`data-r` PARSED BACK OUT OF THE SHIPPED MARKUP. This
+     expectation FLIPPED — the wall was ragged-tolerant under s217-D3 (role=gallery) and holes
+     were acceptable; Dave reopened the edge on this page ("Reopen — square it"), so ragged is
+     now a failure HERE. The gallery ROLE's exemption elsewhere is untouched.
 
  ⬛ 6 · THE MUTATION ARM. `--settings-mutation` drives the NON-REPO copy written by
      `gen_foundations_217.py --break-settings`, whose compiled settings block is ABSENT. The
@@ -228,6 +233,33 @@ def static_checks(src):
                      % src.count("<script"))
     if 'command="show-popover"' not in src:
         fails.append("LIGHTBOX — the popover invoker command is gone")
+    # ★ s218-D6 (4) — THE WALL IS SQUARED, AND THE HOLE TOLERANCE IS NOW ZERO.
+    # This wall used to be RAGGED-TOLERANT (role=gallery, s217-D3): holes were acceptable and
+    # nothing here asked about them. Dave reopened the edge on this page — "Reopen — square it" —
+    # so the expectation flips: ZERO holes at EVERY band of the wall's own ladder.
+    # ⛔ MEASURED OFF THE SHIPPED MARKUP, not off the generator's report and not off its selftest:
+    # the spans are parsed back out of each tile's `data-c`/`data-r` and re-placed with canon's
+    # own `is_rectangular`. A generator that reported "squared" and emitted something else is
+    # exactly the failure `square_wall`'s docstring names, and only a parse of the artefact can
+    # see it ([[no-gate-parses-the-artefact]]).
+    # ⚠ SCOPE: this asserts THE PHOTOGRAPHY PAGE'S wall. s217-D3's gallery-role exemption is
+    # untouched elsewhere and no other wall is asked this question.
+    spans = [(int(c), int(r)) for c, r in
+             re.findall(r'class="c-bento__tile" data-c="(\d+)" data-r="(\d+)"', src)]
+    if len(spans) != tiles:
+        fails.append("SPAN PARSE — %d tiles but %d parsed data-c/data-r pairs: the zero-hole "
+                     "assertion below would be measuring a different wall" % (tiles, len(spans)))
+    else:
+        rect, at_cols, holes = foundations.is_rectangular(spans, foundations.PHOTO_LADDER)
+        if not rect:
+            fails.append("SQUARED — the shipped wall is NOT an exact rectangle: %d hole(s) at %d "
+                         "columns (ladder %s). s218-D6 squares this wall; ragged is no longer "
+                         "tolerated here"
+                         % (holes, at_cols or foundations.PHOTO_LADDER[0],
+                            foundations.PHOTO_LADDER))
+        lines.append("  squared (s218-D6): %d hole(s) over ladder %s — %d tile(s) parsed from the "
+                     "shipped markup" % (holes, foundations.PHOTO_LADDER, len(spans)))
+
     # the settings block is IN the shipped file, between its own markers
     _, block = foundations.split_settings(src)
     if not block:

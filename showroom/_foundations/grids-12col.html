@@ -230,7 +230,22 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 .gx-frame{position:relative;}
 /* the overlay and the demo row are BOTH canon's `.l-cols`, stacked, so the
    demo's spans are read against the very grid the overlay draws */
-.gx-overlay{position:absolute; inset:0; pointer-events:none;}
+/* ★ s218-D6 (2) — THE OVERLAY PAINTS BEHIND THE DEMO CONTENT. Dave: "Behind the content".
+   WHY IT WAS IN FRONT, and why source order was never going to fix it: `.gx-overlay` is
+   POSITIONED and `.gx-rows` is not, and a positioned element paints in a later stacking step
+   than in-flow content no matter which comes first in the markup. So the 10% accent wash was
+   laid OVER the demo cards' own opaque surface and tinted every one of them.
+   THE FIX IS A PAIR, and both halves are needed: the overlay is pinned at z-index:0 and the
+   demo stack is given a position + z-index:1 so it paints above it, INSIDE .gx-frame's own
+   stacking context. ⛔ NOT `z-index:-1` on the overlay — a negative index would drop it behind
+   the frame's ancestors' backgrounds too, and on a themed ground the columns would simply
+   disappear. Scoped to `.gx-frame >` so nothing else that uses .gx-rows gains a stacking
+   context it did not ask for. PROVEN IN PIXELS, not by reading this rule back:
+   verify_grids_218.py --page 12col samples one pixel inside a demo card (must be the card's own
+   untinted surface) and one in the gap between rows (must still carry the wash — "behind" must
+   not quietly become "gone"). */
+.gx-overlay{position:absolute; inset:0; pointer-events:none; z-index:0;}
+.gx-frame > .gx-rows{position:relative; z-index:1;}
 .gx-overlay > i{display:block; background:var(--gx-col,rgba(218,26,0,0.10));
   border-radius:var(--radius-ctl,0px);}
 .gx-demo > *{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
@@ -361,7 +376,9 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
       <li><b>Nothing is re-drawn.</b> The overlay is <code>.l-cols</code> and twelve
         <code>.l-span-1</code> children; the demonstration rows are the same utility with the
         spans a consumer would write. A page-local grid would be a second grammar, and it would
-        agree with canon right up until canon changed.</li>
+        agree with canon right up until canon changed. The column wash paints <b>behind</b> the
+        demonstration rows (s218-D6), so a card shows its own surface and the columns read in the
+        gutters and the gaps.</li>
       <li>⛔ <b>The collapse below <code>breakpoint/ms</code> is canon's, and it is real.</b>
         Under 760px every <code>.l-span-*</code> goes full width &mdash; a media query in
         canon.css, written as a literal because a CSS query condition cannot consume a custom

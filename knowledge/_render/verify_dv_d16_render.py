@@ -13,8 +13,23 @@ Two halves, and BOTH are meant to be run:
              reversed serial wording ①), and whether each segment is really on its own curve.
 
   --mutate <arm>   applies ONE break to an in-memory/temp copy and expects the named check to FIRE.
-                   Arms: b-value · self-swap · curve-drop · translate-term · rect-count
+                   Arms (9): b-value · self-swap · curve-drop · ease-token-swap · ease-token-value ·
+                   key-delay-drop · translate-term · rest-scale · rect-count
                    (`--mutate all` runs every arm.) A probe that cannot go red proves nothing.
+
+s218-D5 UPDATED THE EXPECTATIONS THIS PROBE ASSERTS — it did not merely add to them:
+  (1) the two curved positions are the HOUSE tokens `var(--grow-ease-in)` / `var(--grow-ease-out)`,
+      NOT the CSS keywords `ease-in` / `ease-out`. The old keyword expectation is GONE: a file that
+      still says `ease-out` there is now RED (arm: ease-token-swap). The token VALUES are asserted
+      too — --grow-ease-out must be --grow's own curve and --grow-ease-in its exact reversal, so a
+      token that drifts out of the family cannot pass by merely existing (arm: ease-token-value).
+      The render half no longer hard-codes the curve maths: it READS the two beziers out of the
+      file it is about to render, so the measurement and the artefact can never disagree by
+      staleness.
+  (2) the on-segment letter keys are DELAYED by one full growth. Statically that is an
+      animation-delay longhand AFTER the generic shorthand (arm: key-delay-drop); in the render
+      half it is MEASURED — every key is at opacity 0 while the stack is still moving, and every
+      key HAS arrived once the fade completes (a key that never appears is not a fix).
 
 ⚠ SCOPE, DECLARED: the render half measures GEOMETRY only, so it does not stand up the HSBC font
 farm (_RUNBOOK-render-verify.md § 5) — no assertion here depends on the face. It is not a substitute
@@ -39,7 +54,24 @@ def _bez(p1x, p1y, p2x, p2y):
             else: hi = mid
         return by((lo+hi)/2)
     return f
-CURVES = {"ease-in": _bez(.42, 0, 1, 1), "linear": lambda x: x, "ease-out": _bez(0, 0, .58, 1)}
+
+# s218-D5 (1): the curved positions are TOKENS now, and the maths is READ OFF THE ARTEFACT.
+# `linear` stays a keyword because linear is linear — there is no house kin for it.
+FIRST_CURVE = "var(--grow-ease-in)"
+LAST_CURVE  = "var(--grow-ease-out)"
+
+def _bez_decl(html, name):
+    """the four numbers of a `--<name>:cubic-bezier(a,b,c,d)` declaration, or None."""
+    m = re.search(r'--%s:\s*cubic-bezier\(\s*([-\d.]+)\s*,\s*([-\d.]+)\s*,\s*([-\d.]+)\s*,\s*([-\d.]+)\s*\)'
+                  % re.escape(name), html)
+    return tuple(float(g) for g in m.groups()) if m else None
+
+def house_curves(html):
+    """{position-keyword -> easing fn} built from the FILE's own tokens. No hard-coded maths."""
+    ein, eout = _bez_decl(html, "grow-ease-in"), _bez_decl(html, "grow-ease-out")
+    return {FIRST_CURVE: _bez(*ein) if ein else None,
+            "linear":    lambda x: x,
+            LAST_CURVE:  _bez(*eout) if eout else None}
 
 # ---------------------------------------------------------------- parsing
 def figure_block(html):
@@ -130,11 +162,12 @@ def static_checks(html, verbose=True):
             for pos, (idx, curve) in enumerate(parsed, start=1):
                 if idx != pos:
                     F.append("TIMELINE-ORDER: item %d animates dvStackF%d" % (pos, idx))
-                want = "ease-in" if pos == 1 else ("ease-out" if pos == len(parsed) else "linear")
+                want = FIRST_CURVE if pos == 1 else (LAST_CURVE if pos == len(parsed) else "linear")
                 if curve != want:
-                    F.append("CURVE: segment %d of %d is `%s`, DV-D16 rules `%s` "
-                             "(first ease-in - intermediates linear - last ease-out)"
-                             % (pos, len(parsed), curve, want))
+                    F.append("CURVE: segment %d of %d is `%s`, DV-D16's positional rule + s218-D5's "
+                             "house family rule `%s` (first %s - intermediates linear - last %s; "
+                             "the bare CSS keywords were retired at s218-D5)"
+                             % (pos, len(parsed), curve, want, FIRST_CURVE, LAST_CURVE))
             say("curves: " + " - ".join("seg%d %s" % p for p in parsed) + "  (one shared var(--grow-dur))")
         # one shared duration, and it is the file's own 760ms
         dm = re.search(r'--grow-dur:\s*([0-9.]+)ms', html)
@@ -146,6 +179,53 @@ def static_checks(html, verbose=True):
         if gm and dm and gm.group(1) != dm.group(1):
             F.append("DURATION-DRIFT: --grow is %sms but --grow-dur is %sms — one gesture, one number"
                      % (gm.group(1), dm.group(1)))
+
+    # -- (b2) s218-D5 (1): the two curve tokens ARE the house family, not merely present ----------
+    #    Declared-and-wrong is the failure mode a presence check cannot see, so the VALUES are
+    #    asserted: --grow-ease-out is --grow's own curve, --grow-ease-in is its exact reversal
+    #    (1-x2, 1-y2, 1-x1, 1-y1). Both are re-derived from the file, never from a memory of them.
+    house = re.search(r'--grow:\s*[0-9.]+ms\s+cubic-bezier\(\s*([-\d.]+)\s*,\s*([-\d.]+)\s*,'
+                      r'\s*([-\d.]+)\s*,\s*([-\d.]+)\s*\)', html)
+    ein, eout = _bez_decl(html, "grow-ease-in"), _bez_decl(html, "grow-ease-out")
+    if not house:
+        F.append("TOKEN: --grow carries no cubic-bezier — the house curve the family is named for "
+                 "cannot be read, so nothing can be checked against it")
+    for nm, val in (("--grow-ease-in", ein), ("--grow-ease-out", eout)):
+        if val is None:
+            F.append("TOKEN: %s is not declared as a cubic-bezier(...) — s218-D5 moved the stacked "
+                     "curves onto the house tokens; a missing token means the animation falls back "
+                     "to the initial `ease` and the family claim is false" % nm)
+    if house and eout is not None:
+        h = tuple(float(g) for g in house.groups())
+        if any(abs(a - b) > 1e-9 for a, b in zip(h, eout)):
+            F.append("TOKEN: --grow-ease-out is cubic-bezier%s but --grow's own curve is "
+                     "cubic-bezier%s — the token has drifted OUT of the house family" % (eout, h))
+        if ein is not None:
+            rev = (1 - h[2], 1 - h[3], 1 - h[0], 1 - h[1])
+            if any(abs(a - b) > 1e-9 for a, b in zip(rev, ein)):
+                F.append("TOKEN: --grow-ease-in is cubic-bezier%s, the exact reversal of the house "
+                         "curve is cubic-bezier%s — the two ends are no longer one gesture read "
+                         "forwards and backwards" % (ein, rev))
+        say("house family: --grow-ease-out=cubic-bezier%s (= --grow), --grow-ease-in=cubic-bezier%s"
+            % (eout, ein))
+
+    # -- (b3) s218-D5 (2): the stacked letter keys wait one full growth ---------------------------
+    #    The delay is a LONGHAND that must sit AFTER the generic `animation:` shorthand (which
+    #    resets animation-delay to 0s) and INSIDE the no-preference block. Order is load-bearing,
+    #    so it is asserted by POSITION, not merely by presence.
+    kd = re.search(r'figure\.dv-animate\[data-dv-type="stacked-column"\]\s*text\.dv-barkey\s*\{'
+                   r'[^}]*animation-delay:\s*var\(--grow-dur\)[^}]*\}', html)
+    gen = re.search(r'\.dv-animate\s+text\.dv-barkey\s*\{[^}]*animation:\s*dvFade[^}]*\}', html)
+    if not kd:
+        F.append("KEY-DELAY: no `figure.dv-animate[data-dv-type=\"stacked-column\"] text.dv-barkey` "
+                 "rule delaying the fade by var(--grow-dur) — s218-D5 (2) retired the mid-flight "
+                 "adrift key; without the delay a key fades in ON a segment that is still scaling "
+                 "AND floating, and labels a fill that is not there yet")
+    elif gen and gen.start() > kd.start():
+        F.append("KEY-DELAY-ORDER: the generic `animation:dvFade` shorthand is declared AFTER the "
+                 "stacked delay longhand, so it resets animation-delay to 0s and the delay is dead")
+    else:
+        say("stacked letter keys delayed by var(--grow-dur), after the generic dvFade shorthand")
 
     # -- registrations + keyframes, and the transform composition -------------------------------
     for n in range(1, depth + 1):
@@ -200,8 +280,20 @@ MUTATIONS = {
  "b-value":       (lambda h: h.replace("--b1:42.1px", "--b1:41.1px", 1), "BELOW-VALUE"),
  "self-swap":     (lambda h: h.replace("--b1:42.1px; --b2:73.6px; --self:var(--dvf3)",
                                        "--b1:42.1px; --b2:73.6px; --self:var(--dvf2)", 1), "SELF-INDEX"),
- "curve-drop":    (lambda h: h.replace("dvStackF3 var(--grow-dur) ease-out both",
+ # ⚠ s218-D5 re-pointed this arm's TEXT: the old literal ("... ease-out both") no longer exists in
+ # the file, so left alone the arm would have changed nothing and reported itself a DANGLE.
+ "curve-drop":    (lambda h: h.replace("dvStackF3 var(--grow-dur) var(--grow-ease-out) both",
                                        "dvStackF3 var(--grow-dur) linear both", 1), "CURVE"),
+ # s218-D5 (1) — the REGRESSION arm: the keyword the ruling retired, put back.
+ "ease-token-swap":(lambda h: h.replace("dvStackF1 var(--grow-dur) var(--grow-ease-in) both",
+                                        "dvStackF1 var(--grow-dur) ease-in both", 1), "CURVE"),
+ # s218-D5 (1) — the token DECLARED BUT WRONG arm: still a cubic-bezier, no longer the family.
+ "ease-token-value":(lambda h: h.replace("--grow-ease-in:cubic-bezier(.64,0,.78,.39)",
+                                         "--grow-ease-in:cubic-bezier(.42,0,1,1)", 1), "TOKEN"),
+ # s218-D5 (2) — the delay removed: statically KEY-DELAY, and in the render half KEY-EARLY.
+ "key-delay-drop":(lambda h: h.replace(
+                     'figure.dv-animate[data-dv-type="stacked-column"] text.dv-barkey'
+                     '{animation-delay:var(--grow-dur);}', "", 1), "KEY-DELAY"),
  "translate-term":(lambda h: h.replace(" + var(--b2,0px) * (1 - var(--dvf2))", "", 1), "COMPOSE"),
  # render-only arm: proves the REST probes (end frame, reduced motion, JS-off) can go red at all.
  "rest-scale":    (lambda h: h.replace("scaleY(var(--self,1))", "scaleY(calc(var(--self,1) * 0.8))", 1),
@@ -228,7 +320,11 @@ PROBE = r"""
   }
   for (const k in cols) cols[k].sort((p,q)=>q.top-p.top);   // bottom-first
   const base = svg.querySelector('line.dv-axis').getBoundingClientRect().top;
-  return {cols, base:+base.toFixed(3),
+  // s218-D5 (2): the letter keys' RENDERED opacity at this frame. Measured, not inferred from
+  // the rule — animation-delay + fill-mode `both` is exactly the pair that is easy to get wrong.
+  const keys = [...svg.querySelectorAll('text.dv-barkey')]
+                 .map(t => ({ch:t.textContent.trim(), o:+(+getComputedStyle(t).opacity).toFixed(3)}));
+  return {cols, base:+base.toFixed(3), keys,
           dvf:[1,2,3].map(n=>getComputedStyle(svg).getPropertyValue('--dvf'+n).trim())};
 }
 """
@@ -252,6 +348,9 @@ REST = r"""
 def render_checks(path, verbose=True):
     sys.path.insert(0, "/var/tmp/pylibs")
     from playwright.sync_api import sync_playwright
+    # s218-D5 (1): the curve maths comes from the FILE ABOUT TO BE RENDERED (the mutant included),
+    # so the expectation can never be a stale memory of what the tokens used to say.
+    CURVES = house_curves(open(path, encoding="utf-8").read())
     shell = glob.glob(os.environ.get("DVD16_SHELL",
         "/var/tmp/pw-browsers-*/chromium_headless_shell-*/chrome-linux/headless_shell"))
     F = []
@@ -268,6 +367,15 @@ def render_checks(path, verbose=True):
             if r.get("error"):
                 F.append("PROBE: " + r["error"]); break
             growing = 0
+            # ⑦ s218-D5 (2) — NO KEY IS PAINTED WHILE THE STACK IS STILL MOVING. Sampled at every
+            #    mid-flight frame, including t=1.00: the fade STARTS at var(--grow-dur), so at the
+            #    instant growth lands the keys are still at zero. (KEY-LATE below proves they do
+            #    arrive — "always invisible" would satisfy this half alone and is not the fix.)
+            lit = [k for k in r.get("keys", []) if k["o"] > 0.02]
+            if lit:
+                F.append("KEY-EARLY t=%.2f: %d letter key(s) painted before the growth lands "
+                         "(e.g. `%s` at opacity %s) — the adrift key s218-D5 (2) retired"
+                         % (frac, len(lit), lit[0]["ch"], lit[0]["o"]))
             for x, col in sorted(r["cols"].items(), key=lambda kv: float(kv[0])):
                 if len(col) < 3:
                     F.append("RENDER-COUNT: column x=%s rendered %d segments" % (x, len(col)))
@@ -292,8 +400,14 @@ def render_checks(path, verbose=True):
                 # ③ PER-SEGMENT CURVES, measured off the rendered heights
                 if 0.0 < frac < 1.0:
                     for i, c in enumerate(col):
-                        want = CURVES["ease-in" if i == 0 else
-                                      ("ease-out" if i == len(col)-1 else "linear")](frac)
+                        fn = CURVES[FIRST_CURVE if i == 0 else
+                                    (LAST_CURVE if i == len(col)-1 else "linear")]
+                        if fn is None:
+                            F.append("CURVE-RENDER t=%.2f: the house curve token for position %d is "
+                                     "not declared in the file — nothing to measure against"
+                                     % (frac, i+1))
+                            continue
+                        want = fn(frac)
                         got = c["h"] / c["H"]
                         if abs(got - want) > 0.04:
                             F.append("CURVE-RENDER t=%.2f: %s grew to %.3f of its height, its ruled "
@@ -309,7 +423,24 @@ def render_checks(path, verbose=True):
                         if abs(c["h"] - c["H"]) > 0.6:
                             F.append("END t=1.00: %s rendered %.2fpx of its %.1fpx height"
                                      % (c["label"], c["h"], c["H"]))
-            say("t=%.2f  dvf=%s  columns fully-growing: %d" % (frac, r.get("dvf"), growing))
+            say("t=%.2f  dvf=%s  columns fully-growing: %d  keys lit: %d/%d"
+                % (frac, r.get("dvf"), growing, len(lit), len(r.get("keys", []))))
+
+        # ⑧ s218-D5 (2), the OTHER half — the keys DO arrive. Sampled one --ease (160ms) past the
+        #    delay, with generous slack: a "fix" that simply never shows the keys is not the ruling.
+        if not any(f.startswith("PROBE") for f in F):
+            r = pg.evaluate(PROBE, DUR_MS + 400)
+            dark = [k for k in r.get("keys", []) if k["o"] < 0.98]
+            if not r.get("keys"):
+                F.append("KEY-LATE: no text.dv-barkey found in the stacked figure at all — the "
+                         "opacity assertions above were vacuous")
+            elif dark:
+                F.append("KEY-LATE t=grow+400ms: %d letter key(s) still not painted (e.g. `%s` at "
+                         "opacity %s) — the delayed fade never completes"
+                         % (len(dark), dark[0]["ch"], dark[0]["o"]))
+            else:
+                say("t=grow+400ms  all %d letter keys at full opacity on settled segments"
+                    % len(r["keys"]))
 
         # ⑤ REDUCED MOTION and ⑥ JS-OFF (DEF-003) — both must REST ON THE FINAL FRAME.
         #    "Reduced" is not "none": the honest form is the finished chart, rendered immediately.

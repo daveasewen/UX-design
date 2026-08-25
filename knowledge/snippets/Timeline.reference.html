@@ -45,6 +45,21 @@
   so AT gets both the count and the order for free. Entries are not focusable (nothing to do);
   the only focus stop is the optional "Load older activity" control, at 44px.
 
+  ⬛ PROPOSED (s218-D4) — "LOAD OLDER ACTIVITY" NOW LOADS SOMETHING. Until #218 it was a control
+  promising a surface with nothing behind it (the phantom-affordance class, seven instances
+  library-wide). Dave ruled the CLASS — build them — and the DESIGN below is his to sign:
+    · the older activity is a DECLARED DEMO DATASET living in a readable JSON island in this file
+      (#tl-older-demo), the Video-player precedent for a declared demo clock. A reference artefact
+      may not reach the network, and a faked fetch would be a worse invention than declared copy.
+    · two batches, then the record is exhausted: the button is REPLACED by an end note rather than
+      disabled, because a disabled control still asserts there is something behind it. The focus
+      the vanishing button held is moved onto that note.
+    · ⛔ THE PROHIBITIONS ABOVE STAND AND ARE HONOURED: this behaviour adds NO aria-current and NO
+      role="progressbar", and the appended entries stay as passive and as unfocusable as the
+      authored ones. A Timeline has no current step and no total to be part-way through.
+    · ⬛ Whether the real product paginates by DATE GROUP (drawn here) or by a fixed entry count is
+      a product rule, not a component one — Dave's, named in the receipt.
+
   TYPE: composites only — date group heading .t-cm-caption · entry title .t-cm-ctl-14 ·
   meta/description .t-ed-body-small (it WRAPS, so Editorial, per the deciding rule) ·
   timestamp .t-cm-legal · amount .t-cm-figure-6 (tabular) · status chip .t-cm-legal.
@@ -170,6 +185,13 @@
   .tl-more:hover{background:var(--avatar);}
   .tl-more:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 
+  /* ---- PROPOSED (s218-D4): what replaces the control when the feed is exhausted. NOT a disabled
+     button — a disabled control still says "there is a thing here you cannot have", and the truthful
+     statement is that the record has ended. It takes tabindex="-1" so focus can be MOVED to it when
+     the button it replaced was the focused element; it never enters the tab order. ---- */
+  .tl-end{margin:16px 0 0; color:var(--muted); opacity:var(--alpha-60); text-align:center;}
+  .tl-end:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
       animation-iteration-count:1 !important; scroll-behavior:auto !important; }
@@ -251,8 +273,36 @@
       </ol>
     </div>
 
-    <button type="button" class="tl-more t-cm-button">Load older activity</button>
+    <button type="button" class="tl-more t-cm-button" id="tlMore">Load older activity</button>
+    <p class="sr-only" id="tlLive" role="status"></p>
   </section>
+
+  <!-- ⬛ PROPOSED (s218-D4) · THE DEMO DATASET, DECLARED IN THE OPEN ————————————————————
+       #218 W3 found "Load older activity" promising a surface with nothing behind it (the
+       phantom-affordance class). Dave ruled the CLASS — build them. A real feed loads from a
+       server; a reference artefact must not, and no snippet here is allowed to touch the network
+       (the W3 inline-script contract). So the older activity is INVENTED COPY carried in the file
+       itself, exactly as Video-player carries a declared demo clock rather than a real <video>.
+       It is written here as readable data rather than buried in the script, so what the button
+       loads is visible to anyone reading the markup. Two batches, then the feed is exhausted. -->
+  <script type="application/json" id="tl-older-demo">
+  {
+    "$declared": "PROPOSED (s218-D4). Demo data — invented copy standing in for a real feed, never fetched.",
+    "batches": [
+      { "heading": "Sunday, 17 August",
+        "entries": [
+          { "state": "ok",  "title": "Card payment — Ridgeway Cafe", "amount": "−£18.40", "at": "2026-08-17T13:26", "time": "13:26", "status": "Completed" },
+          { "state": "inf", "title": "Transfer from savings", "amount": "+£500.00", "at": "2026-08-17T09:02", "time": "09:02", "status": "Submitted" }
+        ] },
+      { "heading": "Saturday, 16 August",
+        "entries": [
+          { "state": "ok",   "title": "Standing order — Wrenfield Property Ltd", "amount": "−£2,150.00", "at": "2026-08-16T06:00", "time": "06:00", "status": "Completed" },
+          { "state": "warn", "title": "Card payment — Ashcroft Tools", "amount": "−£312.75", "at": "2026-08-16T16:41", "time": "16:41", "status": "Pending",
+            "desc": "Held while the merchant confirms the final amount. Nothing has left your account yet." }
+        ] }
+    ]
+  }
+  </script>
 
   <h2 class="t-cm-caption demo-h">Activity feed — the actor avatar replaces the status node</h2>
   <section class="tl" aria-labelledby="tl2-h">
@@ -315,10 +365,90 @@
       { "fg": "text/default",   "bg": "tertiary/background/hover", "context": "text" }
     ],
     "icons": {},
-    "requiredAria": ["<ol", "<li", "aria-labelledby", "aria-label", "aria-hidden=\"true\"", "role=\"img\""],
+    "requiredAria": ["<ol", "<li", "aria-labelledby", "aria-label", "aria-hidden=\"true\"", "role=\"img\"", "role=\"status\""],
+    "$s218D4": "⬛ PROPOSED (s218-D4), Dave's eye owed: 'Load older activity' was a phantom affordance — a control promising a surface with nothing behind it (#218 W3, the 7-instance class). Dave ruled the CLASS (build them). The older activity is a DECLARED DEMO DATASET carried in the file as a readable JSON island (#tl-older-demo), the Video-player precedent: a reference artefact may not fetch, and inventing a network call would be worse than inventing copy. Two batches, then the feed is exhausted and the button is REPLACED by an end note rather than disabled — a disabled control still claims there is something there. Each load is announced through role='status'. ⛔ THE HEADER'S PROHIBITIONS STAND AND WERE HONOURED: no aria-current and no role='progressbar' is added by this behaviour — a Timeline has no current step, no total and no completion, and the appended entries are as PASSIVE as the authored ones (no press states, no focus stops). The only focus move is onto the end note when the button that was focused ceases to exist.",
     "reuses": ["List items (status chip form B + avatar atom, verbatim)", "Progress-tracker (rail mechanism, rotated vertical; semantics deliberately NOT inherited)", "Amount-display (tabular figure composite)"],
     "$note": "PROPOSED #203 (Wave 3b Lane K). Row 56, verified absent first-hand. THE PASSIVE ORDERED RECORD — the time axis IS the structure. Differs from List-items (interactive, unordered, every row a button — use it when entries must open); from Progress-tracker (finite forward process with done/current/upcoming, aria-current + progressbar — a Timeline has no current step, no total, no completion, and must never carry those roles even though it borrows the rail mechanism); and from Notifications (persistent, awaiting action — a Timeline asks nothing). Two forms, one grammar: transaction history (status node + amount) and activity feed (actor avatar). Colour never alone — every RAG dot travels with its word, per s151-D1 clause 4. PROPOSED and unresolved: the 8px/12px node dot is round, which is a reading of the angular rule rather than a ruled exemption (Avatar and Badge are the two documented ones); the newest-first order is asserted, not ruled; the 90-day empty-state window is invented copy standing in for a real product rule. Only one focus stop exists (Load older activity, 44px by hand — no gate reads the min-hit-area token)."
   }
+  </script>
+
+  <script>
+    // BEHAVIOUR — ⬛ PROPOSED (s218-D4). THE LOAD SURFACE.
+    // "Load older activity" now loads older activity: the batches declared in the #tl-older-demo
+    // JSON island above are appended as further date groups, newest-first order preserved.
+    // ⛔ WHAT THIS DELIBERATELY DOES NOT DO, because the header forbids it: no aria-current, no
+    // role="progressbar", no focusable entries. A Timeline is the passive ordered record — it has
+    // no current step and no total to be part-way through. The appended markup is a copy of the
+    // authored entry shape, so a loaded entry and an authored one are indistinguishable to AT.
+    // No polling, no network, no external source (the #218 W3 inline-script contract).
+    (function(){
+      var btn = document.getElementById('tlMore');
+      var island = document.getElementById('tl-older-demo');
+      if (!btn || !island) return;
+      var section = btn.closest('.tl');
+      var live = document.getElementById('tlLive');
+      var batches;
+      try { batches = JSON.parse(island.textContent).batches || []; }
+      catch (e) { return; }               // malformed demo data: leave the authored page untouched
+      var next = 0;
+
+      function el(tag, cls, text){
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text != null) n.textContent = text;
+        return n;
+      }
+
+      function entry(e){
+        var li = el('li', e.state || '');
+        li.appendChild(el('span', 'tl-node')).setAttribute('aria-hidden', 'true');
+
+        var line = el('span', 'tl-line');
+        line.appendChild(el('span', 'tl-title t-cm-ctl-14', e.title));
+        line.appendChild(el('span', 'tl-amount t-cm-figure-6', e.amount));
+        li.appendChild(line);
+
+        var meta = el('span', 'tl-meta');
+        var t = el('time', 't-cm-legal', e.time);
+        t.setAttribute('datetime', e.at);
+        meta.appendChild(t);
+        var chip = el('span', 'status ' + (e.state || '') + ' t-cm-legal');
+        chip.appendChild(el('span', 'dot')).setAttribute('aria-hidden', 'true');
+        chip.appendChild(document.createTextNode(e.status));   // the WORD travels with the dot, always
+        meta.appendChild(chip);
+        li.appendChild(meta);
+
+        if (e.desc) li.appendChild(el('p', 'tl-desc t-ed-body-small', e.desc));
+        return li;
+      }
+
+      function group(b){
+        var g = el('div', 'tl-group');
+        g.appendChild(el('h3', 't-cm-caption', b.heading));
+        var ol = el('ol', 'tl-list');
+        (b.entries || []).forEach(function(e){ ol.appendChild(entry(e)); });
+        g.appendChild(ol);
+        return g;
+      }
+
+      btn.addEventListener('click', function(){
+        if (next >= batches.length) return;
+        var b = batches[next++];
+        section.insertBefore(group(b), btn);
+        var n = (b.entries || []).length;
+        if (live) live.textContent = n + ' older ' + (n === 1 ? 'entry' : 'entries') + ' added, ' + b.heading + '.';
+
+        if (next >= batches.length){
+          // The record has ended. Say so, and REPLACE the control rather than disabling it — then
+          // rescue the focus the vanishing button was holding (#218 W3's pagination lesson).
+          var endNote = el('p', 'tl-end t-ed-body-small', 'No older activity.');
+          endNote.setAttribute('tabindex', '-1');
+          var hadFocus = (document.activeElement === btn);
+          btn.parentNode.replaceChild(endNote, btn);
+          if (hadFocus) endNote.focus();
+        }
+      });
+    })();
   </script>
   </body>
 </html>

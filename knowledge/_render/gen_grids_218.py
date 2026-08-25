@@ -277,7 +277,22 @@ __VIEW_RULES__
 .gx-frame{position:relative;}
 /* the overlay and the demo row are BOTH canon's `.l-cols`, stacked, so the
    demo's spans are read against the very grid the overlay draws */
-.gx-overlay{position:absolute; inset:0; pointer-events:none;}
+/* ★ s218-D6 (2) — THE OVERLAY PAINTS BEHIND THE DEMO CONTENT. Dave: "Behind the content".
+   WHY IT WAS IN FRONT, and why source order was never going to fix it: `.gx-overlay` is
+   POSITIONED and `.gx-rows` is not, and a positioned element paints in a later stacking step
+   than in-flow content no matter which comes first in the markup. So the 10% accent wash was
+   laid OVER the demo cards' own opaque surface and tinted every one of them.
+   THE FIX IS A PAIR, and both halves are needed: the overlay is pinned at z-index:0 and the
+   demo stack is given a position + z-index:1 so it paints above it, INSIDE .gx-frame's own
+   stacking context. ⛔ NOT `z-index:-1` on the overlay — a negative index would drop it behind
+   the frame's ancestors' backgrounds too, and on a themed ground the columns would simply
+   disappear. Scoped to `.gx-frame >` so nothing else that uses .gx-rows gains a stacking
+   context it did not ask for. PROVEN IN PIXELS, not by reading this rule back:
+   verify_grids_218.py --page 12col samples one pixel inside a demo card (must be the card's own
+   untinted surface) and one in the gap between rows (must still carry the wash — "behind" must
+   not quietly become "gone"). */
+.gx-overlay{position:absolute; inset:0; pointer-events:none; z-index:0;}
+.gx-frame > .gx-rows{position:relative; z-index:1;}
 .gx-overlay > i{display:block; background:var(--gx-col,rgba(218,26,0,0.10));
   border-radius:var(--radius-ctl,0px);}
 .gx-demo > *{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
@@ -512,7 +527,9 @@ def twelve_col_body(store):
       <li><b>Nothing is re-drawn.</b> The overlay is <code>.l-cols</code> and twelve
         <code>.l-span-1</code> children; the demonstration rows are the same utility with the
         spans a consumer would write. A page-local grid would be a second grammar, and it would
-        agree with canon right up until canon changed.</li>
+        agree with canon right up until canon changed. The column wash paints <b>behind</b> the
+        demonstration rows (s218-D6), so a card shows its own surface and the columns read in the
+        gutters and the gaps.</li>
       <li>⛔ <b>The collapse below <code>breakpoint/ms</code> is canon's, and it is real.</b>
         Under 760px every <code>.l-span-*</code> goes full width &mdash; a media query in
         canon.css, written as a literal because a CSS query condition cannot consume a custom
@@ -621,9 +638,27 @@ def type_page(shell, kind, c, assets):
                  extra_class=assets["cls"])
 
 
+# ⬛ s218-D6 (2) — THE OVERLAY ARM'S HANDLE. Set by `--break-overlay`, never at build time. It
+# removes EXACTLY the pair of declarations that put the wash behind the content, so the mutant is
+# the page as it was BEFORE the ruling and differs from the shipped page in nothing else.
+BREAK_OVERLAY = False
+_OVERLAY_PAIR = (
+    (".gx-overlay{position:absolute; inset:0; pointer-events:none; z-index:0;}",
+     ".gx-overlay{position:absolute; inset:0; pointer-events:none;}"),
+    (".gx-frame > .gx-rows{position:relative; z-index:1;}", ""),
+)
+
+
 def twelve_col_page(shell):
     store = layout_store()
     css = GRIDS_CSS.replace("__VIEW_RULES__", view_rules(store))
+    if BREAK_OVERLAY:
+        for before, after in _OVERLAY_PAIR:
+            if before not in css:
+                raise SystemExit("gen_grids_218 --break-overlay: the arm's literal is not in the "
+                                 "stylesheet any more (%r) — a mutation that changes nothing is a "
+                                 "DANGLE and would prove the clause green by accident" % before)
+            css = css.replace(before, after, 1)
     js = GRIDS_SCRIPT.replace("__VIEWS__", json.dumps(
         [{"key": v["key"], "source": v["source"], "range": v["range"]} for v in views(store)]))
     return shell("The 12-column grid — Apollo library (Foundations)", "The 12-column grid",
@@ -803,9 +838,37 @@ def write_mutant(shell):
     return dest
 
 
+def write_overlay_mutant(shell):
+    """⬛ s218-D6 (2) — THE OVERLAY ARM. The 12-column page composed with `BREAK_OVERLAY` on, so
+    the column wash paints OVER the demo content again, exactly as it did before the ruling.
+
+    ⛔ NON-REPO: BM_MUTANT_DIR, never showroom/. ⚠ session-suffix it — /var/tmp is shared, and a
+    foreign mutant is stale as well as unwritable. ⛔ The asset hrefs are made ABSOLUTE for the
+    same reason the dashboard arm does it: a mutant that cannot load canon resolves every token to
+    nothing, and a paint assertion then compares one fallback against another.
+    """
+    global BREAK_OVERLAY
+    mdir = os.environ.get("BM_MUTANT_DIR", "/var/tmp")
+    os.makedirs(mdir, exist_ok=True)
+    BREAK_OVERLAY = True
+    try:
+        html = page(shell, "12col")
+    finally:
+        BREAK_OVERLAY = False
+    html = html.replace('href="../../knowledge/', 'href="file://%s/knowledge/' % ROOT)
+    dest = os.path.join(mdir, "grids-12col-OVERLAY-BROKEN.html")
+    open(dest, "w", encoding="utf-8").write(html)
+    print("gen_grids_218 --break-overlay: wrote %s (%d bytes) — the s218-D6 paint-order pair is "
+          "STRIPPED, the wash paints OVER the content" % (dest, os.path.getsize(dest)))
+    return dest
+
+
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         selftest()
+    elif "--break-overlay" in sys.argv:
+        import gen_foundations_217 as foundations
+        write_overlay_mutant(foundations.shell)
     elif "--break-dash" in sys.argv:
         # the ONE shell, borrowed from the ONE writer, so the mutant differs from the real page
         # in exactly the arm and in nothing else.

@@ -78,6 +78,16 @@
         accessible name. Alternatives: a text button ("Manage"), a whole-row link with the
         actions on the detail page, or a real Dropdown menu. The icon-only form follows the
         Icon-button atom and the Document-row precedent for label-less trailing affordances.
+    P10 ⬛ NEW AT s218-D4 — THE SURFACE THE CONTROL OPENS. Until #218 it opened nothing: the
+        phantom-affordance class, seven instances library-wide. Dave ruled the CLASS (build
+        them); the DESIGN below is PROPOSED. It is an INLINE DISCLOSURE inside the row carrying
+        the three actions line 22 already names (pause / amend / cancel), NOT a floating menu —
+        because `ul.mdlist` carries `overflow:hidden` and an anchored panel is clipped by the
+        list shell, so the menu reading needs `position:fixed` + placement maths (Popover's
+        machinery) to escape its own container. The cheaper honest reading is drawn; the
+        expensive one is priced in the receipt. Pause/Resume and Cancel ENACT this file's own
+        drawn states as a declared demo — a real product confirms a cancellation first
+        (Popconfirm / Modals), and that step is deliberately not invented here.
     P6  WHETHER THE PAYEE'S ACCOUNT DETAIL ("Sort 40-12-08 · Account ending 3391") belongs on
         the row or only on the mandate detail page. Drawn on the row for standing orders and
         replaced by the service-user reference for Direct Debits.
@@ -173,7 +183,10 @@
   ul.mdlist li + li{border-top:1px solid var(--divider);}
 
   /* ---- the row. PASSIVE container; two independent targets live inside it. ---- */
-  .mrow{position:relative; display:flex; align-items:center; gap:16px; width:100%;
+  /* PROPOSED (s218-D4): `flex-wrap` added so the manage surface can claim its own line inside the
+     row when it opens (flex:1 1 100%). With the panel closed nothing else wraps — the body is the
+     only flexible child and the money block is flex:none, exactly as before. */
+  .mrow{position:relative; display:flex; flex-wrap:wrap; align-items:center; gap:16px; width:100%;
     min-height:var(--row-h,76px); padding:var(--som-row-pad,16px); color:var(--text);
     transition:background var(--ease);}
   .mrow:hover{background:var(--hover);}
@@ -240,6 +253,29 @@
   .mr-manage svg{width:18px; height:18px; display:block; fill:currentColor;}
   .mr-manage:hover{opacity:var(--alpha-96);}
   .mr-manage:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
+
+  /* ---- PROPOSED (s218-D4) · THE MANAGE SURFACE ---------------------------------------------
+     #218 W3 found "Manage" promising a surface absent from the DOM (the phantom-affordance class,
+     7 instances). Dave ruled the CLASS — build them — and left each DESIGN to his sitting.
+     ⬛ TWO HONEST READINGS EXISTED AND THE CHEAPER ONE IS DRAWN HERE: an INLINE DISCLOSURE that
+     opens inside the row, versus a FLOATING role="menu" panel (Card-header-lockup's form, which
+     Headers and Navigations both take at s218-D4). The floating panel is the more expensive
+     reading in THIS component for a reason that is structural, not stylistic: `ul.mdlist` carries
+     `overflow:hidden` (inherited from Document-row, flagged there), so a panel anchored inside a
+     row is CLIPPED by the list shell — it would need `position:fixed` plus placement maths to
+     escape its own container, which is Popover's machinery, not a row's. The inline disclosure
+     needs none of it, reflows for free at 340px, and keeps the actions inside the row they belong
+     to. ⬛ Dave's call; the menu reading is priced in the receipt, not built.
+     The panel sits ABOVE the stretched link (z-index) exactly as the manage button does. */
+  .mr-actions[hidden]{display:none;}   /* #218 W3 finding F1: an author display rule beats the UA [hidden] sheet */
+  .mr-actions{flex:1 1 100%; position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:8px;
+    padding-top:12px; border-top:1px solid var(--divider);}
+  .mr-act{display:inline-flex; align-items:center; min-height:44px; padding:0 12px;
+    border:1px solid var(--border); border-radius:var(--border-radius-indicator);
+    background:transparent; color:var(--text); text-decoration:none; cursor:pointer;
+    transition:background var(--ease);}
+  .mr-act:hover{background:var(--hover);}
+  .mr-act:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 
   /* ---- cancelled row ----
      ⛔⛔ CORRECTED AFTER LOOKING AT THE RENDER (#209) — AND THE CORRECTION IS THE FINDING.
@@ -311,9 +347,16 @@
           <span class="amount t-cm-figure-6"><span>£</span><span>2,150.00</span></span>
           <span class="mr-when t-cm-legal">Next 1 July</span>
         </span>
-        <button type="button" class="mr-manage" aria-label="Manage the standing order to Wrenfield Property Ltd, 2,150 pounds monthly">
+        <button type="button" class="mr-manage" aria-expanded="false" aria-controls="mrAct-mandate-rent" aria-label="Manage the standing order to Wrenfield Property Ltd, 2,150 pounds monthly">
           <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
         </button>
+        <!-- PROPOSED (s218-D4): the surface "Manage" had always promised. Inline disclosure —
+             see the CSS note for why the floating menu reading is the expensive one HERE. -->
+        <div class="mr-actions" id="mrAct-mandate-rent" hidden>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="pause">Pause</button>
+          <a class="mr-act t-cm-button" href="#mandate-rent">Amend</a>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="cancel">Cancel mandate</button>
+        </div>
       </li>
 
       <!-- 2 · ACTIVE DIRECT DEBIT, VARIABLE AMOUNT. The amount is not known in advance and the
@@ -331,9 +374,16 @@
           <span class="amount t-cm-figure-6"><span>£</span><span>486.20</span></span>
           <span class="mr-when t-cm-legal">Last taken 14 June</span>
         </span>
-        <button type="button" class="mr-manage" aria-label="Manage the Direct Debit to Severn Energy Business, amount varies">
+        <button type="button" class="mr-manage" aria-expanded="false" aria-controls="mrAct-mandate-energy" aria-label="Manage the Direct Debit to Severn Energy Business, amount varies">
           <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
         </button>
+        <!-- PROPOSED (s218-D4): the surface "Manage" had always promised. Inline disclosure —
+             see the CSS note for why the floating menu reading is the expensive one HERE. -->
+        <div class="mr-actions" id="mrAct-mandate-energy" hidden>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="pause">Pause</button>
+          <a class="mr-act t-cm-button" href="#mandate-energy">Amend</a>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="cancel">Cancel mandate</button>
+        </div>
       </li>
 
       <!-- 3 · PAUSED. The word carries it; the row is not greyed, because a paused mandate is
@@ -352,9 +402,16 @@
           <span class="amount t-cm-figure-6"><span>£</span><span>44.00</span></span>
           <span class="mr-when t-cm-legal">No payment due</span>
         </span>
-        <button type="button" class="mr-manage" aria-label="Manage the paused Direct Debit to Harbour Fitness, 44 pounds monthly">
+        <button type="button" class="mr-manage" aria-expanded="false" aria-controls="mrAct-mandate-gym" aria-label="Manage the paused Direct Debit to Harbour Fitness, 44 pounds monthly">
           <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
         </button>
+        <!-- PROPOSED (s218-D4): the surface "Manage" had always promised. Inline disclosure —
+             see the CSS note for why the floating menu reading is the expensive one HERE. -->
+        <div class="mr-actions" id="mrAct-mandate-gym" hidden>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="resume">Resume</button>
+          <a class="mr-act t-cm-button" href="#mandate-gym">Amend</a>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="cancel">Cancel mandate</button>
+        </div>
       </li>
 
       <!-- 4 · LAST PAYMENT FAILED. ⛔ NO RED. The chip carries the WORD on the warning seat and
@@ -374,9 +431,16 @@
           <span class="amount t-cm-figure-6"><span>£</span><span>780.00</span></span>
           <span class="mr-when t-cm-legal">Retry 19 June</span>
         </span>
-        <button type="button" class="mr-manage" aria-label="Manage the standing order to Bristol Trade Supplies, last payment failed">
+        <button type="button" class="mr-manage" aria-expanded="false" aria-controls="mrAct-mandate-supplier" aria-label="Manage the standing order to Bristol Trade Supplies, last payment failed">
           <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
         </button>
+        <!-- PROPOSED (s218-D4): the surface "Manage" had always promised. Inline disclosure —
+             see the CSS note for why the floating menu reading is the expensive one HERE. -->
+        <div class="mr-actions" id="mrAct-mandate-supplier" hidden>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="pause">Pause</button>
+          <a class="mr-act t-cm-button" href="#mandate-supplier">Amend</a>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="cancel">Cancel mandate</button>
+        </div>
       </li>
 
       <!-- 5 · ENDING SOON — a mandate with an end condition (P2). -->
@@ -394,9 +458,16 @@
           <span class="amount t-cm-figure-6"><span>£</span><span>1,204.55</span></span>
           <span class="mr-when t-cm-legal">Next 20 July</span>
         </span>
-        <button type="button" class="mr-manage" aria-label="Manage the standing order to Kestrel Asset Finance, 2 payments left">
+        <button type="button" class="mr-manage" aria-expanded="false" aria-controls="mrAct-mandate-loan" aria-label="Manage the standing order to Kestrel Asset Finance, 2 payments left">
           <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
         </button>
+        <!-- PROPOSED (s218-D4): the surface "Manage" had always promised. Inline disclosure —
+             see the CSS note for why the floating menu reading is the expensive one HERE. -->
+        <div class="mr-actions" id="mrAct-mandate-loan" hidden>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="pause">Pause</button>
+          <a class="mr-act t-cm-button" href="#mandate-loan">Amend</a>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="cancel">Cancel mandate</button>
+        </div>
       </li>
 
       <!-- 6 · CANCELLED. Non-interactive; the reason is in text and in the button's name. -->
@@ -439,9 +510,16 @@
           <span class="amount t-cm-figure-6"><span>£</span><span>2,150.00</span></span>
           <span class="mr-when t-cm-legal">Next 1 July</span>
         </span>
-        <button type="button" class="mr-manage" aria-label="Manage the standing order to Wrenfield Property Ltd">
+        <button type="button" class="mr-manage" aria-expanded="false" aria-controls="mrAct-mandate-rent-n" aria-label="Manage the standing order to Wrenfield Property Ltd">
           <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
         </button>
+        <!-- PROPOSED (s218-D4): the surface "Manage" had always promised. Inline disclosure —
+             see the CSS note for why the floating menu reading is the expensive one HERE. -->
+        <div class="mr-actions" id="mrAct-mandate-rent-n" hidden>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="pause">Pause</button>
+          <a class="mr-act t-cm-button" href="#mandate-rent-n">Amend</a>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="cancel">Cancel mandate</button>
+        </div>
       </li>
       <li class="mrow">
         <span class="mr-glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#mr-mandate"/></svg></span>
@@ -456,12 +534,23 @@
           <span class="amount t-cm-figure-6"><span>£</span><span>44.00</span></span>
           <span class="mr-when t-cm-legal">No payment due</span>
         </span>
-        <button type="button" class="mr-manage" aria-label="Manage the paused Direct Debit to Harbour Fitness">
+        <button type="button" class="mr-manage" aria-expanded="false" aria-controls="mrAct-mandate-gym-n" aria-label="Manage the paused Direct Debit to Harbour Fitness">
           <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#mr-more"/></svg>
         </button>
+        <!-- PROPOSED (s218-D4): the surface "Manage" had always promised. Inline disclosure —
+             see the CSS note for why the floating menu reading is the expensive one HERE. -->
+        <div class="mr-actions" id="mrAct-mandate-gym-n" hidden>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="resume">Resume</button>
+          <a class="mr-act t-cm-button" href="#mandate-gym-n">Amend</a>
+          <button type="button" class="mr-act t-cm-button" data-mr-action="cancel">Cancel mandate</button>
+        </div>
       </li>
     </ul>
   </div>
+
+  <!-- PROPOSED (s218-D4): one polite live region for the whole page. A state change made by a
+       control that then DISAPPEARS (Cancel disables its own row's button) is silent otherwise. -->
+  <p class="sr-only" id="mrLive" role="status"></p>
 
   <!-- ⚠ CONTRAST DECLARATION. The chip DOT fill (rag/success 1.98:1, rag/warning 2.18:1 on
        white — measured #204 with the repo's own _contrast_utils.contrast_ratio) is NOT declared
@@ -508,7 +597,8 @@
       { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
       { "fg": "text/default", "bg": "rag/information-tint", "context": "text" }
     ],
-    "requiredAria": ["<ul", "<li", "<button", "aria-label", "aria-hidden", "aria-disabled", "role=\"status\""],
+    "requiredAria": ["<ul", "<li", "<button", "aria-label", "aria-hidden", "aria-disabled", "role=\"status\"", "aria-expanded", "aria-controls"],
+    "$s218D4": "⬛ PROPOSED (s218-D4), Dave's eye owed on the DESIGN: 'Manage' was a phantom affordance — a control promising an action surface absent from the DOM (#218 W3, the 7-instance class). Dave ruled the CLASS (build them). TWO honest readings existed; the CHEAPER one is drawn: an INLINE DISCLOSURE inside the row (Pause/Resume · Amend · Cancel mandate — the three actions this file's own header already names at line 22). The floating role='menu' reading that Headers and Navigations take at s218-D4 is structurally expensive HERE: ul.mdlist carries overflow:hidden (inherited from Document-row), so an anchored panel is clipped by the list shell and would need position:fixed plus placement maths to escape — Popover's machinery inside a row. Priced in the receipt, not built. ⬛ THE DEMO ENACTMENTS ARE DECLARED, NOT DISGUISED: Pause/Resume moves the row's own status chip, and Cancel puts the row into the CANCELLED state this file already draws (chip word + disabled control + aria-disabled), so the specimen's documented end state is reachable by hand. A real product must confirm a cancellation first (Popconfirm/Modals); that confirmation step is deliberately NOT invented here, and whether the destructive action belongs in this surface at all is Dave's.",
     "reuses": [
       "Document-row (the two-action ROW SHAPE: passive li + stretched-link primary + sibling button; the list shell and its declared radius departure; the disabled-glyph correction) — copied, not edited",
       "List-items (row shell, two-line body, density tokens, hover-glyph trick) — copied via Document-row",
@@ -532,6 +622,113 @@
       "NOT registered in component-types.json, CATEGORIES, MIGRATED_SNIPPETS or canon.css (shared files, the conductor's serial set). ⛔ _validate_binds_resolve.py check D (canon block presence) WILL FAIL for this snippet until a .cn-standing-order-mandate-row block is projected. Declared, not hidden."
     ]
   }
+  </script>
+
+  <script>
+    // BEHAVIOUR — ⬛ PROPOSED (s218-D4). THE MANAGE SURFACE.
+    // A DISCLOSURE, not a menu (see the CSS note: this list shell clips floating panels, and the
+    // inline reading is the cheaper honest one). The trigger owns aria-expanded/aria-controls;
+    // Escape closes and returns focus; opening one row's actions closes any other, because two
+    // open mandates is two answers to "which one am I managing?".
+    //
+    // ⬛ THE ENACTMENTS ARE A DECLARED DEMO, not a product claim. Pause/Resume moves this row's own
+    // status chip; Cancel puts the row into the CANCELLED state this file already draws, so the
+    // documented end state is reachable by hand instead of only being described. Nothing is
+    // persisted, nothing is fetched, and a real product must CONFIRM a cancellation first
+    // (Popconfirm / Modals) — that step is deliberately not invented here.
+    (function(){
+      var live = document.getElementById('mrLive');
+
+      function say(msg){ if (live) live.textContent = msg; }
+
+      function chip(li, cls, word){
+        var line = li.querySelector('.mr-line');
+        if (!line) return;
+        var el = line.querySelector('.status');
+        if (!word){ if (el) el.remove(); return; }
+        if (!el){
+          el = document.createElement('span');
+          el.innerHTML = '<span class="dot" aria-hidden="true"></span><span class="t-cm-legal"></span>';
+          line.appendChild(el);
+        }
+        el.className = 'status ' + cls;
+        el.querySelector('.t-cm-legal').textContent = word;
+      }
+
+      function payeeName(li){
+        var a = li.querySelector('.mr-payee');
+        return a ? a.textContent.trim() : 'this mandate';
+      }
+
+      var triggers = Array.prototype.slice.call(document.querySelectorAll('.mr-manage[aria-controls]'));
+
+      function panelOf(trig){ return document.getElementById(trig.getAttribute('aria-controls')); }
+
+      function setOpen(trig, open){
+        var panel = panelOf(trig);
+        if (!panel) return;
+        panel.hidden = !open;
+        trig.setAttribute('aria-expanded', String(open));
+      }
+      function closeAll(except){
+        triggers.forEach(function(t){ if (t !== except) setOpen(t, false); });
+      }
+
+      triggers.forEach(function(trig){
+        var panel = panelOf(trig);
+        if (!panel) return;
+        var li = trig.closest('li');
+
+        trig.addEventListener('click', function(e){
+          e.preventDefault();                    // the row is a stretched link; managing is not opening
+          var open = panel.hidden;
+          closeAll(trig);
+          setOpen(trig, open);
+          if (open){ var first = panel.querySelector('.mr-act'); if (first) first.focus(); }
+        });
+
+        panel.addEventListener('keydown', function(e){
+          if (e.key === 'Escape'){ setOpen(trig, false); trig.focus(); }
+        });
+        trig.addEventListener('keydown', function(e){
+          if (e.key === 'Escape' && !panel.hidden){ setOpen(trig, false); }
+        });
+
+        panel.addEventListener('click', function(e){
+          var act = e.target.closest && e.target.closest('[data-mr-action]');
+          if (!act) return;                      // "Amend" is a real link out — left alone
+          var what = act.getAttribute('data-mr-action');
+          var name = payeeName(li);
+
+          if (what === 'pause'){
+            chip(li, 'warn', 'Paused');
+            act.textContent = 'Resume';
+            act.setAttribute('data-mr-action', 'resume');
+            say(name + ' paused. No payments will be taken until you resume it.');
+          } else if (what === 'resume'){
+            chip(li, '', '');
+            act.textContent = 'Pause';
+            act.setAttribute('data-mr-action', 'pause');
+            say(name + ' resumed.');
+          } else if (what === 'cancel'){
+            chip(li, 'inf', 'Cancelled');
+            li.classList.add('is-cancelled');
+            li.setAttribute('aria-disabled', 'true');
+            setOpen(trig, false);
+            trig.disabled = true;
+            trig.removeAttribute('aria-expanded');       // a disabled control expands nothing
+            trig.setAttribute('aria-label', name + ' was cancelled and cannot be managed');
+            var link = li.querySelector('.mr-payee');
+            if (link && link.focus) link.focus();        // focus is RESCUED, never stranded on a control that just disabled itself
+            say(name + ' cancelled. No further payments.');
+          }
+        });
+      });
+
+      document.addEventListener('click', function(e){
+        if (!(e.target.closest && e.target.closest('.mrow'))) closeAll(null);
+      });
+    })();
   </script>
 </body>
 </html>

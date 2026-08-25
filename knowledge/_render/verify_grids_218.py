@@ -84,6 +84,18 @@ Chunked, because sandbox bash calls die near 45 s wall:
       BREAK_LAYOUT handle, so the corner rules are stripped through the one path that composes
       them). The #218 corner assertions in 5 MUST fail there, BY NAME — bucketed on the name, so
       "something failed" cannot be mistaken for the clause failing. Exit code inverted.
+  BM_MUTANT_DIR=/var/tmp/mut-s218g \
+    python3 knowledge/_render/verify_grids_218.py --overlay-mutation
+      ⬛ THE THIRD ARM (s218-D6 (2)), over `gen_grids_218.py --break-overlay`: the 12-column
+      page composed WITHOUT the paint-order pair, i.e. the column wash back on top of the demo
+      cards. The `12col overlay` assertions MUST fail there, by that name. Exit code inverted.
+
+ ★ s218-D6 (2) · THE PAINT ORDER, IN PIXELS. On the 12-column page the column overlay paints
+     BEHIND the demonstration content ("Behind the content"). It is asserted with a real
+     screenshot and two sampled pixels — one inside a demo card (must be the card's own untinted
+     surface) and one in the gap between rows (must still carry the wash). Neither a hit test
+     (`elementFromPoint` skips `pointer-events:none`) nor a z-index read-back can discriminate;
+     see `overlay_paint_order`.
 
 Env: the render runbook's staging — PLAYWRIGHT_BROWSERS_PATH · PYTHONPATH · LD_LIBRARY_PATH ·
 FONTCONFIG_FILE (the /var/tmp SYMLINK FARM, never the repo TTF dir — #138) · TMPDIR.
@@ -100,6 +112,7 @@ import json
 import os
 import re
 import sys
+import tempfile                              # s218-D6 (2): the paint-order screenshot lands here
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -109,6 +122,8 @@ MUT_DIR = os.environ.get("BM_MUTANT_DIR", "/var/tmp")
 MUTANT_INDEX = os.path.join(MUT_DIR, "library-index-GROUPS-BROKEN.html")
 MUTANT_JSON = os.path.join(MUT_DIR, "library-index-GROUPS-BROKEN.json")
 MUTANT_DASH = os.path.join(MUT_DIR, "grids-dashboard-LAYOUT-BROKEN.html")
+# ⬛ s218-D6 (2) — the 12-column page with the paint-order pair stripped (`--break-overlay`).
+MUTANT_OVERLAY = os.path.join(MUT_DIR, "grids-12col-OVERLAY-BROKEN.html")
 
 sys.path.insert(0, HERE)
 import gen_grids_218 as grids               # the STORE values, through the generator's own read
@@ -378,7 +393,7 @@ def library_checks(mutation):
 
 
 # ---------------------------------------------------------------------------- the driven half
-def drive(name, shots, dash_mutation=False):
+def drive(name, shots, dash_mutation=False, overlay_mutation=False):
     src = os.path.join(FOUND, PAGE_FILE[name])
     if dash_mutation:
         src = MUTANT_DASH
@@ -386,6 +401,12 @@ def drive(name, shots, dash_mutation=False):
             sys.exit("verify_grids_218: no mutant at %s — run\n"
                      "  BM_MUTANT_DIR=%s python3 knowledge/_render/gen_grids_218.py --break-dash"
                      % (src, MUT_DIR))
+    if overlay_mutation:
+        src = MUTANT_OVERLAY
+        if not os.path.exists(src):
+            sys.exit("verify_grids_218: no mutant at %s — run\n"
+                     "  BM_MUTANT_DIR=%s python3 knowledge/_render/gen_grids_218.py "
+                     "--break-overlay" % (src, MUT_DIR))
     if not os.path.exists(src):
         sys.exit("verify_grids_218: no such page — %s" % src)
     props = foreign_props(open(src, encoding="utf-8").read())
@@ -529,6 +550,89 @@ def twelve_col_drive(pg, views, store, lines):
     lines.append("  below breakpoint/ms (%dpx): .l-span-6 resolves %r" % (ms, narrow))
     pg.set_viewport_size({"width": 1280, "height": 960})
     pg.wait_for_timeout(200)
+    fails += overlay_paint_order(pg, lines)
+    return fails
+
+
+# ✅ s218-D6 (2) — THE OVERLAY PAINTS BEHIND THE DEMO CONTENT, MEASURED IN PIXELS.
+#
+# ⛔ WHY NOT A HIT TEST: `elementFromPoint`/`elementsFromPoint` SKIP `pointer-events:none`, and
+#    the overlay has always carried it — so a hit-test "proof" returns the demo card whether the
+#    wash is in front or behind. It cannot discriminate, and it would have read green on the
+#    defect. ⛔ WHY NOT READING BACK `z-index`: that asserts the rule the generator just wrote,
+#    which is the document-vs-document trap this file exists to avoid.
+# So: one real screenshot, two sampled pixels, and BOTH directions asserted —
+#    (a) a pixel inside a demo card must be the card's OWN resolved background. Under the defect
+#        the 10% accent wash composites over it and the pixel is measurably red-shifted.
+#    (b) a pixel in the gap BETWEEN two demo rows must still be washed. "Behind" must not have
+#        quietly become "gone" — a `display:none` or a negative z-index behind an opaque ancestor
+#        would satisfy (a) perfectly and destroy the page.
+PAINT_POINTS = """() => {
+  const frame = document.querySelector('.gx-frame');
+  const bars = [...document.querySelectorAll('.gx-overlay > i')];
+  const rows = [...document.querySelectorAll('.gx-frame > .gx-rows > .gx-demo')];
+  if (!frame || bars.length < 2 || rows.length < 2) return {error: 'frame/bars/rows not found'};
+  frame.scrollIntoView({block: 'center'});
+  const card = rows[0].firstElementChild;      // the .l-span-12 row: it covers every bar
+  const c = card.getBoundingClientRect(), b0 = bars[0].getBoundingClientRect();
+  const r0 = rows[0].getBoundingClientRect(), r1 = rows[1].getBoundingClientRect();
+  // ⛔ THE SAMPLE X IS A BAR'S CENTRE, NOT THE CARD'S. MEASURED: the card's own centre lands on
+  // the boundary between column 6 and column 7 — a GUTTER, where no bar is painted in either
+  // arm. Sampled there the probe read pure white with the fix in AND with it stripped, and the
+  // mutation arm refused to go red. A pixel proof must sample where the two states differ.
+  const x = Math.round(b0.left + b0.width / 2);
+  return {
+    card: [x, Math.round(c.top + c.height / 2)],
+    cardBg: getComputedStyle(card).backgroundColor,
+    overBar: x >= Math.round(c.left) && x <= Math.round(c.right),
+    gap: [x, Math.round((r0.bottom + r1.top) / 2)],
+    gapPx: +(r1.top - r0.bottom).toFixed(1),
+  };
+}"""
+
+
+def overlay_paint_order(pg, lines):
+    fails = []
+    try:
+        from PIL import Image
+    except ImportError:                      # named refusal, never a silent skip
+        return ["12col overlay — ⛔ COULD-NOT-ASK: pillow is not importable, so the s218-D6 "
+                "paint-order proof was never driven (it is a PIXEL assertion by construction)"]
+    p = pg.evaluate(PAINT_POINTS)
+    if p.get("error"):
+        return ["12col overlay — %s" % p["error"]]
+    if not p.get("overBar"):
+        return ["12col overlay — the sampled column bar does not lie inside the demo card, so the "
+                "card pixel could not tell 'wash behind' from 'no wash here at all'"]
+    if p["gapPx"] < 4:
+        return ["12col overlay — the row gap measured %.1fpx, too thin to sample a pixel in: the "
+                "wash half of the proof would be vacuous" % p["gapPx"]]
+    pg.wait_for_timeout(150)
+    shot = os.path.join(tempfile.mkdtemp(dir=os.environ.get("TMPDIR", "/var/tmp")), "12col.png")
+    pg.screenshot(path=shot)                 # viewport, scale 1 — CSS px map 1:1 to image px
+    im = Image.open(shot).convert("RGB")
+    card_px, gap_px = im.getpixel(tuple(p["card"])), im.getpixel(tuple(p["gap"]))
+    want = parse_rgb(p["cardBg"])
+    if not want:
+        return ["12col overlay — the demo card resolved no opaque background (%r); the sample "
+                "point proves nothing" % p["cardBg"]]
+    want = tuple(int(round(v)) for v in want)
+    if max(abs(a - b) for a, b in zip(card_px, want)) > 2:
+        fails.append("12col overlay — a pixel INSIDE a demo card measured rgb%s but the card's own "
+                     "background is rgb%s: the column wash is painting ON TOP of the content "
+                     "(s218-D6 rules it BEHIND)" % (card_px, want))
+    if card_px == gap_px:
+        fails.append("12col overlay — the pixel in the row gap rgb%s is identical to the pixel "
+                     "inside the card: the overlay is not painting at all, so 'behind' has become "
+                     "'gone'" % (gap_px,))
+    elif gap_px[0] <= max(gap_px[1], gap_px[2]):
+        fails.append("12col overlay — the pixel in the row gap rgb%s carries no accent wash "
+                     "(red is not the dominant channel): the columns stopped being drawn"
+                     % (gap_px,))
+    # ⚠ the line REPORTS, it does not assert — it prints in the mutant arm too, so it must not
+    # word itself as a verdict ("== its own surface" would be a lie on the arm that just failed).
+    lines.append("  paint order: card pixel rgb%s (card surface rgb%s) · row-gap pixel rgb%s "
+                 "(washed) · gap %.1fpx" % (card_px, want, gap_px, p["gapPx"]))
     return fails
 
 
@@ -746,10 +850,29 @@ def main():
     dash_mutation = "--dash-mutation" in argv
     if dash_mutation:
         name = "dashboard"
+    overlay_mutation = "--overlay-mutation" in argv
+    if overlay_mutation:
+        name = "12col"
     if name not in PAGE_FILE:
         sys.exit("verify_grids_218: --page must be one of %s (or use --library)"
                  % ", ".join(sorted(PAGE_FILE)))
-    fails = drive(name, shots, dash_mutation)
+    fails = drive(name, shots, dash_mutation, overlay_mutation)
+    if overlay_mutation:
+        # ⬛ INVERTED, AND BUCKETED BY NAME. The arm strips the s218-D6 paint-order pair, so the
+        # wash goes back OVER the demo cards. What must fail is the PAINT-ORDER clause on its own
+        # name — "something failed" would also be satisfied by a mutant that simply failed to
+        # load ([[mutation-tests-the-clause-not-the-feature]]).
+        named = [f_ for f_ in fails if f_.startswith("12col overlay")]
+        if not named:
+            print("\n⛔ MUTATION ARM DID NOT GO RED — the s218-D6 z-index pair was stripped and "
+                  "the paint-order assertion still passed. A gate that cannot fail is not a gate. "
+                  "(%d other failure(s): %s)" % (len(fails), fails[:1]))
+            sys.exit(1)
+        print("\n✅ MUTATION ARM RED AS REQUIRED — %d paint-order assertion(s) by name "
+              "(of %d total failures):" % (len(named), len(fails)))
+        for f_ in named:
+            print("  ❌ " + f_)
+        return
     if dash_mutation:
         # ⬛ INVERTED. Green here means the #218 corner assertions went RED as required. ⚠ Bucketed
         # BY NAME: the arm also puts back other #217 defects, so "something failed" is not the

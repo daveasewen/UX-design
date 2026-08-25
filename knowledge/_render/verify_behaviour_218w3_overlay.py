@@ -30,6 +30,15 @@ THE --break ARM (a verifier that cannot fail proves nothing)
   the AUTHORED markup arrived. Controls must be GREEN IN BOTH ARMS; a red control in the break
   arm means the arm proved nothing and the run is reported FAILED.
 
+s218-D5 (3) MOVED TWO ASSERTIONS FROM `check` TO `control`, AND THE MOVE IS PART OF THE ENACTMENT.
+  The hidden-option defect is now fixed AT CAUSE in the snippet's own <style>, so the two
+  assertions that used to depend on the SCRIPT hiding those elements now hold with the script
+  stripped: `palette/authored-hidden-option-is-not-painted` and `palette/empty-result-set-appears`.
+  Left as checks they would have passed in the break arm and reported the ARM broken. As controls
+  they say the true thing — this holds in both arms — and the break arm goes on measuring only
+  what behaviour actually carries. Each moved assertion carries its own note; the second one also
+  DECLARES the coverage that no arm can prove against the shipped markup.
+
 ENVIRONMENT (headless, proven this session)
   export TMPDIR=/var/tmp PYTHONPATH=/var/tmp/pylibs \
          PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-215 \
@@ -353,10 +362,23 @@ def _(page):
     assert visible() == 5, f"clearing the query left {visible()} of 5 options visible"
 
 
-@check("palette/empty-result-set-appears", "palette")
+@control("control/palette/empty-result-set-appears", "palette")
 def _(page):
     """Specimen 2 authors the empty block VISIBLE; drive specimen 2's own field to zero matches
-    and require the block to still be the thing on screen while every option stays hidden."""
+    and require the block to still be the thing on screen while every option stays hidden.
+
+    ⚠ DEMOTED FROM `check` TO `control` AT s218-D5 (3), AND THE REASON IS MEASURED, NOT ASSUMED.
+    This check only ever went red in the --break arm through ONE clause — `left == 0` — and the
+    only thing that made an option paint there was #cp2-o1, the authored-hidden scaffolding row.
+    s218-D5 (3) hides that row in CSS, so with the script stripped this assertion now passes: the
+    run reported it by name as "passed WITHOUT behaviour, so it was never proving it". It is a
+    LOAD assertion now, and this file bans those as checks.
+    ⬛ COVERAGE LOST, DECLARED (not papered over): the empty-block TOGGLE — block hidden while
+    matches exist, block back when they do not — is unprovable against the shipped markup, because
+    specimen 2's only option is authored `hidden` and is therefore excluded from the filter pool;
+    no query can ever give it a match to hide the block. Proving the toggle needs a specimen whose
+    pool is non-empty AND which owns a .cp-empty (specimen 1 owns no empty block at all). That is
+    a MARKUP change to the reference, is not ruled, and is priced in the #218 return."""
     page.fill(S2 + " input[role='combobox']", "nothing matches this")
     assert painted(page, S2 + " .cp-empty"), "the empty-result message did not survive a filter"
     left = page.eval_on_selector_all(
@@ -366,10 +388,19 @@ def _(page):
     assert left == 0, f"{left} option(s) painted under a zero-match query"
 
 
-@check("palette/authored-hidden-option-is-not-painted", "palette")
+@control("control/palette/authored-hidden-option-is-not-painted", "palette")
 def _(page):
-    """#cp2-o1 ships `hidden` in the markup, but .cp-opt{display:flex} is an AUTHOR rule and beats
-    the UA [hidden] rule — so it painted. The script enacts the author's declared intent."""
+    """#cp2-o1 ships `hidden` in the markup, and .cp-opt{display:flex} is an AUTHOR rule that beats
+    the UA [hidden] rule — so it PAINTED, a phantom option in the a11y tree of an empty listbox.
+
+    ⚠ THIS MOVED FROM `check` TO `control` AT s218-D5 (3), AND THE MOVE IS THE POINT.
+    It was a behaviour check while the SCRIPT was the only thing hiding the option (an inline
+    style.display written beside the attribute). s218-D5 (3) fixed it AT CAUSE in the snippet's own
+    <style> — `.cp[hidden],.cp-opt[hidden],.cp-empty[hidden],.cp-group[hidden]{display:none}` — so
+    the option is now hidden by CSS, WITH OR WITHOUT the behaviour script. Left as a `check` it
+    would stay GREEN in the --break arm and report the arm broken; as a `control` it asserts the
+    honest thing: this now holds in BOTH arms, and a regression that deleted the CSS rule would
+    fail the run in both arms rather than passing quietly in one."""
     d = page.eval_on_selector("#cp2-o1", "e => getComputedStyle(e).display")
     assert d == "none", f"a markup-hidden option is still painted (display:{d})"
 
