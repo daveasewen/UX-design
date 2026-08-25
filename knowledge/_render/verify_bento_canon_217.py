@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-verify_bento_canon_217.py — drives reviews/BENTO-CANON-2026-08-23-v2.html in FOUR THEMES ×
+verify_bento_canon_217.py — drives the BENTO-CANON canon demo (its generator's own OUT — #219: v4) in FOUR THEMES ×
 LIGHT/DARK and measures the eight things s217-D2 (and the #217 squaring proposal) can be wrong
 about. Live document, computed styles and measured geometry, never a read of the source.
 
@@ -81,8 +81,14 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 KNOW = os.path.dirname(HERE)
 ROOT = os.path.dirname(KNOW)
-PAGE = os.path.join(ROOT, "reviews", "BENTO-CANON-2026-08-23-v2.html")
-MUTANT = os.path.join(ROOT, "reviews", "BENTO-CANON-2026-08-23-v2-NOSQUARE.html")
+# ⛔ #219 — THE PAGE IS THE GENERATOR'S OWN `OUT`, IMPORTED, NEVER RE-TYPED.
+# The #219 re-cut emitted a successor beside the #217 page ([[feedback-version-dont-
+# overwrite]]); a probe carrying its own copy of the filename would have gone on
+# measuring the stale page and reporting green about a file nobody was looking at.
+# One source for the name means the probe cannot address the wrong document.
+sys.path.insert(0, HERE)
+from gen_bento_canon_217 import OUT as PAGE  # noqa: E402
+MUTANT = PAGE.replace(".html", "-NOSQUARE.html")
 GEN = os.path.join(HERE, "gen_bento_canon_217.py")
 # The viewport widths the wall assertions are measured at. `main` is capped at 1400 with 32px
 # padding each side, so a full-width wall measures viewport-64 (or 1336 at the top) — which puts
@@ -101,6 +107,19 @@ EXPECT_RADIUS = {"mono": 0, "legacy": 0, "supercharge": 0, "console": 20}
 # the per-instance sets the demo declares
 EXPECT_OUTER_GUTTER = 40
 EXPECT_INNER_GUTTER = 1
+
+# ⬛ #219 — the ruled caption block, READ FROM THE STORE, never typed. `caption_space()` derives the
+# line allowance back out of the same number, so the probe cannot assert a space and a clamp that
+# disagree.
+sys.path.insert(0, os.path.join(KNOW, "canon"))
+from gen_canon_bento import caption_space  # noqa: E402
+CAPTION_SPACE, CAPTION_LINES = caption_space()
+# s218-D6 (1): --surface-digital-black / --text-reverse, resolved in mono in BOTH modes. ⚠ The
+# expectation is written as the RESOLVED rgb because that is what a computed style returns; the
+# page declares the token, and a page that declared the hex directly would still be caught by the
+# dangling sweep, which requires the token to be present and resolvable.
+MONO_CAP_GROUND = "rgb(26, 26, 26)"
+MONO_CAP_INK = "rgb(255, 255, 255)"
 EXPECT_BANDS = [("dx-w1000", 3), ("dx-w780", 2), ("dx-w460", 1)]
 
 FONT_PROBE = """() => {
@@ -125,6 +144,21 @@ STATE_PROBE = """(props) => {
     const g = document.querySelector('.' + c + ' .c-bento__grid');
     return g ? getComputedStyle(g).gridTemplateColumns.trim().split(/\\s+/).length : -1;
   });
+  // ⬛ #219 — THE RULED CAPTION BLOCK, MEASURED. v2's captions never consumed
+  // layout/bento/caption-space (Dave: "we've also missed the extra space for captions"), so v4
+  // reads the token directly. THREE readings, because two of them can each be right while the
+  // page is wrong: the RENDERED height proves the block is not collapsed; the computed
+  // min-height proves the number came from the token rather than from tall content; and the
+  // RESOLVED token proves the cascade delivered it rather than a fallback literal standing in.
+  const caps = Array.from(document.querySelectorAll('.dx-photo .dx-cap')).map(c => ({
+    h: Math.round(c.getBoundingClientRect().height),
+    minH: Math.round(parseFloat(getComputedStyle(c).minHeight) || 0),
+    clamp: (getComputedStyle(c).getPropertyValue('-webkit-line-clamp') || '').trim(),
+    ground: getComputedStyle(c).backgroundColor,
+    ink: getComputedStyle(c).color
+  }));
+  const capToken = Math.round(parseFloat(
+    getComputedStyle(document.body).getPropertyValue('--layout-bento-caption-space')) || 0);
   const cs = getComputedStyle(bento);
   const dials = ['--bento-gutter','--bento-columns','--bento-row-unit','--bento-outer-padding',
                  '--bento-packing','--bento-radius'];
@@ -146,6 +180,8 @@ STATE_PROBE = """(props) => {
       return g ? px(getComputedStyle(g).columnGap) : -1; }),
     innerRadii: inners.map(i => px(getComputedStyle(i).borderTopLeftRadius)),
     bands: bands,
+    caps: caps,
+    capToken: capToken,
     ground: getComputedStyle(document.body).backgroundColor,
     unresolved: emptyProps.concat(emptyDials)
   };
@@ -260,6 +296,7 @@ def main():
 
     from playwright.sync_api import sync_playwright
     fails, lines, grounds = [], [], {}
+    caps_seen = 0
     with sync_playwright() as p:
         b = p.chromium.launch(executable_path=shell_path(), headless=True,
                               args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"])
@@ -320,6 +357,45 @@ def main():
                     fails.append("%s — inner bento radii %r, expected %d each (each nested bento "
                                  "is a container in its own right)"
                                  % (state, r["innerRadii"], EXPECT_RADIUS[theme]))
+                # 4b · #219 — THE RULED CAPTION SPACE, AND THE MONO GROUND ON TOP OF IT
+                if not r["caps"]:
+                    fails.append("%s — no photo caption blocks found, so the ruled caption space "
+                                 "reaches nothing. That is the v2 defect Dave named, unrepaired."
+                                 % state)
+                if r["capToken"] != CAPTION_SPACE:
+                    fails.append("%s — --layout-bento-caption-space resolves to %dpx, expected "
+                                 "%dpx. The page is reading a fallback, not the token."
+                                 % (state, r["capToken"], CAPTION_SPACE))
+                for c in r["caps"]:
+                    caps_seen += 1
+                    if c["minH"] != CAPTION_SPACE:
+                        fails.append("%s — caption min-height %dpx, expected the ruled %dpx "
+                                     "(s217-D3, layout/bento/caption-space)"
+                                     % (state, c["minH"], CAPTION_SPACE))
+                    if c["h"] < CAPTION_SPACE:
+                        fails.append("%s — caption block RENDERS %dpx, below the ruled %dpx: "
+                                     "authored and collapsed is not enacted"
+                                     % (state, c["h"], CAPTION_SPACE))
+                    if c["clamp"] and c["clamp"] not in ("none", str(CAPTION_LINES)):
+                        fails.append("%s — caption clamp %r, expected the DERIVED %d line(s) — "
+                                     "the space and the clamp have drifted apart"
+                                     % (state, c["clamp"], CAPTION_LINES))
+                    # ⛔ s218-D6 (1) — MONO ONLY, AND IN BOTH MODES. Asserting it only in mono
+                    # would pass a page that painted every theme's captions black; asserting the
+                    # other three keeps the scope honest.
+                    if theme == "mono":
+                        if c["ground"] != MONO_CAP_GROUND:
+                            fails.append("%s — mono caption ground %s, expected %s "
+                                         "(s218-D6(1), --surface-digital-black)"
+                                         % (state, c["ground"], MONO_CAP_GROUND))
+                        if c["ink"] != MONO_CAP_INK:
+                            fails.append("%s — mono caption ink %s, expected %s "
+                                         "(s218-D6(1), --text-reverse)"
+                                         % (state, c["ink"], MONO_CAP_INK))
+                    elif c["ground"] == MONO_CAP_GROUND:
+                        fails.append("%s — a NON-mono caption took the mono ground %s: "
+                                     "s218-D6(1) is scoped to mono and this page widened it"
+                                     % (state, c["ground"]))
                 # 5 · dangling
                 if r["unresolved"]:
                     fails.append("%s — ⛔ DANGLING: %s resolved EMPTY (silent-black class)"
@@ -383,6 +459,10 @@ def main():
 
     print("page: %s" % os.path.relpath(PAGE, ROOT))
     print("foreign properties probed per state (%d): %s" % (len(props), ", ".join(props)))
+    print("caption space: %dpx -> %d line(s); %d caption block(s) MEASURED across 8 states "
+          "(rendered height + computed min-height + resolved token); mono ground %s / ink %s "
+          "asserted in mono and REFUSED in the other three (s218-D6(1))"
+          % (CAPTION_SPACE, CAPTION_LINES, caps_seen, MONO_CAP_GROUND, MONO_CAP_INK))
     print("\n".join(lines))
     print("bottom edge (mono/light shown; measured in all 8 states at each width):")
     print("\n".join(wall_lines))

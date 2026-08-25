@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-verify_gallery_compare_217.py — drives `reviews/GALLERY-COMPARE-2026-08-23-v1.html` and measures
+verify_gallery_compare_217.py — drives the GALLERY-COMPARE page (its generator's own OUT — #219: v2) and measures
 the things candidate B can be WRONG about, in four themes x light/dark. Live document, computed
 styles and measured geometry, never a read of the source.
 
@@ -82,8 +82,14 @@ sys.path.insert(0, HERE)
 from gen_canon_bento import caption_space  # noqa: E402
 from gen_gallery_compare_217 import assemble  # noqa: E402
 
-PAGE = os.path.join(ROOT, "reviews", "GALLERY-COMPARE-2026-08-23-v1.html")
-MUTANT = os.path.join(ROOT, "reviews", "GALLERY-COMPARE-2026-08-23-v1-BROKEN.html")
+# ⛔ #219 — THE PAGE IS THE GENERATOR'S OWN `OUT`, IMPORTED, NEVER RE-TYPED.
+# The #219 re-cut emitted a successor beside the #217 page ([[feedback-version-dont-
+# overwrite]]); a probe carrying its own copy of the filename would have gone on
+# measuring the stale page and reporting green about a file nobody was looking at.
+# One source for the name means the probe cannot address the wrong document.
+sys.path.insert(0, HERE)
+from gen_gallery_compare_217 import OUT as PAGE  # noqa: E402
+MUTANT = PAGE.replace(".html", "-BROKEN.html")
 GEN = os.path.join(HERE, "gen_gallery_compare_217.py")
 
 THEMES = ["mono", "legacy", "console", "supercharge"]

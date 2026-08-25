@@ -80,6 +80,16 @@ TOKENS = """  :root{
     --fw-regular:400; --fw-medium:500; --fw-bold:700;
     --fs-5:16px; --fs-6:14px; --fs-7:12px; --fs-display:40px;
     --ease:160ms cubic-bezier(.4,0,.2,1); --grow:760ms cubic-bezier(.22,.61,.36,1);
+    /* the SAME 760ms as --grow, exposed alone: the DV-D16 stacked float needs a per-animation
+       timing function, so it cannot use the duration+easing shorthand. Change both together. */
+    --grow-dur:760ms;
+    /* ★ s218-D5 (1) — THE STACKED TRIO'S CURVES ARE THE HOUSE FAMILY, NOT THE CSS KEYWORDS.
+       --grow-ease-out IS --grow's curve; --grow-ease-in is its exact reversal (1-x2, 1-y2,
+       1-x1, 1-y1), so the bottom segment reads the same gesture backwards. Intermediates stay
+       `linear` — DV-D16's positional rule is unchanged, only the two curves joined the family.
+       Same two tokens, same values, as the ENACTED Chart-bar.reference.html. */
+    --grow-ease-out:cubic-bezier(.22,.61,.36,1);
+    --grow-ease-in:cubic-bezier(.64,0,.78,.39);
     --draw:1000ms cubic-bezier(.22,.61,.36,1); --draw-slow:2400ms cubic-bezier(.33,0,.3,1);
   }
   [data-theme="light"]{
@@ -258,6 +268,70 @@ ANIM_CSS = """
     font:500 12px/1.35 var(--font); padding:var(--space-6) var(--space-10); border-radius:var(--radius);
     max-width:240px; box-shadow:0 2px 10px var(--shadow);}
   .dv-tip.on{opacity:1; transform:translateY(0);}
+"""
+
+# ---------------- DV-D16 wording ② — the stacked float (CSS only, DEF-003) ----------------
+# ⚠⚠ WORDING ① IS REVERSED AND MUST NOT COME BACK. Until #219 this generator emitted the
+# SERIAL shape Dave ruled and then rejected the same session — per-rect `animation-delay:
+# seq*420ms` + `animation-duration:400ms` + the literal `ease-in`/`linear`/`ease-out` keywords,
+# i.e. "segment 2 starts when segment 1 lands". Dave's second wording, IN FORCE:
+#   "they all grow at the same time, so they are floating and growing, rather than growing and
+#    'handing off' to the next."
+# Every segment animates SIMULTANEOUSLY on ONE shared timeline; because a stack's upper segments
+# sit on the segment below, growing them all at once makes the upper ones FLOAT upward while
+# growing — that float IS the effect, and the stack must never gap open mid-flight.
+#
+# ⚠ WHY NOT THE OBVIOUS `translateY(--below × (1 − own progress))`: the segments below grow on
+# DIFFERENT curves, so a translate driven by a segment's OWN curve tracks a height nothing has.
+# DRIVEN at #218, not reasoned (knowledge/_render/verify_dv_d16_render.py): that shape opens the
+# ruled dv-004 boundaries to 8.6–30.5px mid-flight. The float therefore rides the CUMULATIVE
+# ANIMATED height below: N registered progress numbers animate ONCE on the chart, and every rect
+# composes translateY(Σ belowⱼ × (1 − fⱼ)) · scaleY(f_own) out of them.
+#
+# EMISSION CONTRACT (generation time, from the EMITTED geometry — never the data values): each
+# rect carries `--b1…--b(i−1)` = the `height` attributes of the segments BELOW it in its own
+# column, plus `--self` = its own progress var. This page separates segments with a 2px
+# page-coloured STROKE on contiguous rects (the other half of dv-004's ≥2px rule; the snippet
+# uses geometric gaps instead) — either way the boundary is preserved exactly at every frame,
+# because the algebra is exact.
+#
+# The curve rule is POSITIONAL and is DV-D16's: first var(--grow-ease-in), last
+# var(--grow-ease-out), everything between `linear` (s218-D5 (1) moved the two curved positions
+# off the bare CSS keywords onto the house family; the POSITIONAL rule is untouched).
+# DV-D16c caps a stack at 6 segments, so 2 ≤ STACK_DEPTH ≤ 6.
+STACK_DEPTH = 4          # the one stacked figure on this page carries 4 series; guarded in build_stacked()
+
+def stack_css(n):
+    """The whole float mechanism for a stack n deep. Nothing here is dead: n is the page's own
+    stack depth, and build_stacked() refuses to emit a stack of any other depth."""
+    props = "".join('  @property --dvf%d{syntax:"<number>"; inherits:true; initial-value:1;}\n' % i
+                    for i in range(1, n + 1))
+    frames = "".join('  @keyframes dvStackF%d{from{--dvf%d:0;} to{--dvf%d:1;}}\n' % (i, i, i)
+                     for i in range(1, n + 1))
+    def curve(i):
+        return "var(--grow-ease-in)" if i == 1 else ("var(--grow-ease-out)" if i == n else "linear")
+    anim = (",\n" + " " * 16).join("dvStackF%d var(--grow-dur) %s both" % (i, curve(i))
+                                   for i in range(1, n + 1))
+    terms = " + ".join("var(--b%d,0px) * (1 - var(--dvf%d))" % (i, i) for i in range(1, n))
+    return f"""
+  /* ---- DV-D16 wording ② · the stacked float. See the block above _gen_dataviz_charts.head(). ---- */
+{props}{frames}  @media (prefers-reduced-motion:no-preference){{
+    .dv-animate figure[data-dv-type="stacked"] svg.dv-svg{{
+      animation:{anim};}}
+    .dv-animate figure[data-dv-type="stacked"] rect.dv-series[data-grow="up"]{{
+      animation:none; transform-box:fill-box; transform-origin:bottom;
+      transform:translateY(calc({terms}))
+                scaleY(var(--self,1));}}
+    /* ★ s218-D5 (2) — THE ON-SEGMENT LETTER KEYS WAIT FOR THE GROWTH TO LAND. A stacked key is
+       drawn ON its segment, and mid-flight that segment is BOTH scaling and floating, so a key
+       faded in on the generic --ease sat adrift of the fill it labels. The delay is exactly one
+       growth. This is a LONGHAND after the generic `animation:` shorthand in ANIM_CSS (which
+       resets animation-delay to 0s), so it must stay AFTER it in source order AND out-specify
+       it — hence the same :not() pair. The grouped letters of the grouped column ride the bar
+       on --rise and are never adrift; they keep the undelayed fade. */
+    .dv-animate figure[data-dv-type="stacked"] text.dv-key-el:not([data-rise]):not(.dv-anno){{
+      animation-delay:var(--grow-dur);}}
+  }}
 """
 
 def head(title, extra_css=""):
@@ -640,21 +714,34 @@ def build_stacked(cid, title, caption, cats, series, chevron_idx=None):
         defs = (f'<defs><pattern id="chevron-{chevron_idx+1}" width="8" height="8" patternUnits="userSpaceOnUse" '
                 f'patternTransform="rotate(45)"><rect width="8" height="8" fill="var(--data-series-{chevron_idx+1})"/>'
                 f'<rect width="4" height="8" fill="var(--page)" opacity="0.35"/></pattern></defs>')
+    # ⛔ DV-D16c caps a stack at 6, and stack_css() is built for exactly STACK_DEPTH progress vars.
+    #    A silent mismatch would emit --self:var(--dvfN) for an N that is never registered or
+    #    animated, and the segment would sit at its initial value 1 — a chart that simply never
+    #    animates, green in every static check. Fail LOUD and NAMED instead.
+    if n != STACK_DEPTH:
+        raise SystemExit("DV-D16: build_stacked(%r) has %d series but stack_css() is built for "
+                         "STACK_DEPTH=%d — update STACK_DEPTH (DV-D16c caps stacks at 6) so the "
+                         "@property registrations, the keyframes, the shared-timeline curve list "
+                         "and the translate terms all follow the depth." % (cid, n, STACK_DEPTH))
     segs, xlabels, keys = [], [], []
     for i, c in enumerate(cats):
         x = PL + band * i + (band - bw) / 2
         acc = 0.0
+        # DV-D16 ② EMISSION CONTRACT: the heights of the segments BELOW this one, in this column,
+        # to the same 1dp the `height` attribute is emitted at, so a probe can re-derive every
+        # --b from the artefact's own geometry rather than from the data.
+        below = []
         for j, (name, vs) in enumerate(series):
             v = vs[i]
             h = v / top * plotH
             y = BASE_Y - (acc + v) / top * plotH
             fill = f'url(#chevron-{chevron_idx+1})' if (chevron_idx is not None and j == chevron_idx) else f'var(--data-series-{j+1})'
-            # #4: sequential from the BOTTOM segment up — series 0 (baseline) first, each waits for the one below
-            seq = j
-            # batch7 #3: same easing as the donut — ease-IN on the first (bottom) segment, ease-OUT on the last (top), middle linear
-            tf = "ease-in" if j == 0 else ("ease-out" if j == n - 1 else "linear")
+            # DV-D16 wording ② (in force): NO per-segment delay, NO per-segment duration, NO
+            # per-segment timing function — one shared timeline lives on the <svg>, and each rect
+            # only declares WHICH progress number is its own and WHAT is stacked beneath it.
+            bvars = "".join(f'--b{k+1}:{hb:.1f}px; ' for k, hb in enumerate(below))
             segs.append(f'<rect class="dv-series" data-grow="up" data-series-group="{j+1}" '
-                        f'style="animation-delay:{seq*420}ms; animation-duration:400ms; animation-timing-function:{tf}" '
+                        f'style="{bvars}--self:var(--dvf{j+1})" '
                         f'data-fx="{fx(x):.4f}" data-fw="{bw/plotW:.4f}" '
                         f'data-tip="{LETTERS[j]} · {name} · {c}: £{fmt(v)}" '
                         f'fill="{fill}" '
@@ -663,6 +750,7 @@ def build_stacked(cid, title, caption, cats, series, chevron_idx=None):
             if h > 14:
                 keys.append(f'<text class="dv-key-el" data-series-group="{j+1}" data-fx="{fx(x+bw/2):.4f}" fill="var(--page)" '
                             f'x="{x+bw/2:.1f}" y="{y+h/2+4:.1f}" text-anchor="middle">{LETTERS[j]}</text>')
+            below.append(h)
             acc += v
         xlabels.append(f'<text class="dv-label" data-fx="{fx(x+bw/2):.4f}" x="{x+bw/2:.1f}" y="{BASE_Y+16}" text-anchor="middle">{c}</text>')
     svg = (svg_open(f"{title}, stacked columns.") + defs + y_axis(top, step)
@@ -885,7 +973,7 @@ def main():
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     savings12 = [82, 80, 85, 83, 88, 90, 87, 92, 95, 93, 98, 104]
 
-    h = head("Apollo DataViz · Round-one kit", extra_css=KPI_CSS + ANIM_CSS)
+    h = head("Apollo DataViz · Round-one kit", extra_css=KPI_CSS + ANIM_CSS + stack_css(STACK_DEPTH))
     h += ('<section style="border-top:0"><div class="h"><h2>Round-one chart kit</h2>'
           '<span class="tag">4 types · gate-first</span></div>'
           '<p class="sub">The whole round-one kit on one page: KPI stat card, bar &amp; column, line, and donut. '

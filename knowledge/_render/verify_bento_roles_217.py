@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-verify_bento_roles_217.py — drives reviews/BENTO-CANON-2026-08-23-v3.html in FOUR THEMES ×
+verify_bento_roles_217.py — drives the BENTO-CANON roles demo (its generator's own OUT — #219: v5) in FOUR THEMES ×
 LIGHT/DARK and measures the things `s217-D3` can be wrong about. Live document, computed styles
 and measured geometry, never a read of the source.
 
@@ -94,8 +94,14 @@ ROOT = os.path.dirname(KNOW)
 sys.path.insert(0, os.path.join(KNOW, "canon"))
 from gen_canon_bento import caption_space, role_policy, roles  # noqa: E402
 
-PAGE = os.path.join(ROOT, "reviews", "BENTO-CANON-2026-08-23-v3.html")
-MUTANT = os.path.join(ROOT, "reviews", "BENTO-CANON-2026-08-23-v3-WRONGROLE.html")
+# ⛔ #219 — THE PAGE IS THE GENERATOR'S OWN `OUT`, IMPORTED, NEVER RE-TYPED.
+# The #219 re-cut emitted a successor beside the #217 page ([[feedback-version-dont-
+# overwrite]]); a probe carrying its own copy of the filename would have gone on
+# measuring the stale page and reporting green about a file nobody was looking at.
+# One source for the name means the probe cannot address the wrong document.
+sys.path.insert(0, HERE)
+from gen_bento_roles_217 import OUT as PAGE  # noqa: E402
+MUTANT = PAGE.replace(".html", "-WRONGROLE.html")
 GEN = os.path.join(HERE, "gen_bento_roles_217.py")
 
 # ⚠ DERIVED FROM THE PAGE, not picked. `main` is capped at 1400 with 32px padding each side, so a

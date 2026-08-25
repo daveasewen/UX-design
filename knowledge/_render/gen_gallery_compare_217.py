@@ -2,14 +2,19 @@
 """
 gen_gallery_compare_217.py — THE GALLERY DECISION PAGE (#217). For Dave's eye.
 
-Builds `reviews/GALLERY-COMPARE-2026-08-23-v1.html`: Dave's question, answered by showing it —
+Dave's #217 question, answered by showing it —
 
     "whether gallery stays a span grid with orphan tolerance, or becomes justified rows with a
      widow switch — would this be visually different, id like to see these two side by side"
 
-⬛ EVERYTHING ON THE PAGE IS **PROPOSED, NOT RULED**. `s217-D3` stands untouched: the gallery role
-is a span grid with orphan tolerance until Dave says otherwise. CANDIDATE B IS A SPECIMEN. This
-generator writes ONE review file and touches no canon, no token and no ruling.
+⛔ #219 RE-CUT — AND THIS PAGE'S OWN QUESTION IS THE ONE THAT WAS ANSWERED. It now writes
+`reviews/GALLERY-COMPARE-2026-08-25-v2.html`. `s217-D5` settled A-or-B with a third answer:
+*"mode is 'Justified rows' OR 'Gallery bento', the bento mode carrying a sub-option ragged or
+square bottom"* — BOTH, as a per-instance dial. `s218-D3` then set the Foundations photography
+page's instance (bento mode, keylines off, all four themes) and `s218-D6 (4)` squared that page's
+wall. So A and B are no longer candidates: they are the two positions of a ruled dial, and what is
+still open is narrower and named. Ledger: `_bento_recut_219.py`. ⚠ v1 is untouched on disk. This
+generator still writes ONE review file and touches no canon, no token and no ruling.
 
 THE TWO CANDIDATES, ON THE SAME 15 PHOTOGRAPHS IN THE SAME ORDER
   A · THE RULED GALLERY ROLE — `.c-bento[data-bento-role="gallery"]` exactly as canon renders it:
@@ -64,12 +69,15 @@ ROOT = os.path.dirname(KNOW)
 sys.path.insert(0, os.path.join(KNOW, "canon"))
 sys.path.insert(0, HERE)
 from gen_canon_bento import (store, params, caption_space, band_ladder,  # noqa: E402
-                             band_clamp, place, role_policy)
+                             band_clamp, place, role_policy, square_wall, is_rectangular)
 from gen_bento_roles_217 import read_photos  # noqa: E402  ⚠ THE SINGLE DATA PATH
+import _bento_recut_219 as recut  # noqa: E402  ⚠ THE ONE HOME for the decision ledger
 
-OUT = os.path.join(ROOT, "reviews", "GALLERY-COMPARE-2026-08-23-v1.html")
+# ⚠ v2, NOT an overwrite. `GALLERY-COMPARE-2026-08-23-v1.html` stays on disk exactly as Dave saw
+# it; this is its #219 successor ([[feedback-version-dont-overwrite]]).
+OUT = os.path.join(ROOT, "reviews", "GALLERY-COMPARE-%s-v2.html" % recut.RECUT_DATE)
 UP = "../"
-SENTINEL = "<!-- APOLLO GALLERY COMPARE (gen_gallery_compare_217.py) — PROPOSED, NOT RULED -->"
+SENTINEL = "<!-- APOLLO GALLERY COMPARE (gen_gallery_compare_217.py) — RE-CUT #219 -->"
 
 # ⚠ THE NOMINAL PACKING WIDTH. Derived from the page's own chrome (main is capped at 1400 with
 # 32px padding each side), not picked: packing against a width the page never renders at would
@@ -296,6 +304,8 @@ table.gc-diff td:first-child{color:var(--ink); width:22%;}
 .gc-desc{display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,3);
   -webkit-box-orient:vertical; overflow:hidden; text-box-edge:text text;}
 .gc-lic{color:var(--ink-2,#545454);}
+__MONOCAP__
+__RECUT__
 .gc-img{display:block; width:100%; height:100%; min-height:0;
   background:var(--surface-2,#F3F3F3);}
 
@@ -428,10 +438,21 @@ def build(photos, rows, widows, reps):
     A = S.append
     r6, r4 = reps["a6"], reps["a4"]
     heights = [(NOMINAL_W - (len(r) - 1) * PACK_GUTTER) / sum(p["ar"] for p in r) for r in rows]
+    # ⬛ #219 — `s218-D6 (4)`: the photography page's INSTANCE edge dial at SQUARE, minted with the
+    # ratified role-blind pass (`square_wall`), which is the same pass `gen_foundations_217` runs on
+    # that wall. ⚠ `square_wall_for_role` is NOT used here on purpose: it would answer "exempt" for
+    # every gallery, which is still true of the ROLE and is exactly the fact this wall is not about.
+    sq_spans, sq_rep = square_wall([p["span"] for p in photos],
+                                   ladder=band_ladder(dict(params(), columns=4)))
 
-    # ---- 0 · the question ----------------------------------------------------------------
+    # ---- 0 · #219 — WHAT IS ALREADY DECIDED ------------------------------------------------
+    A(recut.ledger_html("compare"))
+
+    # ---- 0b · the question, and the answer it already got ----------------------------------
     A('<section id="intro">')
-    A('<p class="badge t-cm-legal">Proposed &mdash; not ruled</p>')
+    # ⛔ #219 — THE BADGE IS GONE. v1 badged the whole page "Proposed — not ruled" and s217-D5 had
+    # already answered the question the page was built to put.
+    A('<p class="badge t-cm-legal">Ruled &mdash; s217-D5 &middot; Q5</p>')
     A('<h2 class="t-ed-heading-3">Is a justified gallery visually different from a span gallery?</h2>')
     A('<p class="lede t-ed-body">You asked whether the gallery should stay a <b>span grid with '
       'orphan tolerance</b> or become <b>justified rows with a widow switch</b>, and whether that '
@@ -442,9 +463,15 @@ def build(photos, rows, widows, reps):
       'order</b>, read from the same manifest rows, with the same %dpx caption space and the same '
       'per-theme gutter. Only the layout differs. The page opens in <b>console</b>; the theme and '
       'mode switches are above and everything is live in all four.</p>' % (len(photos), space))
-    A('<p class="lede t-ed-body"><b>Nothing here is ruled.</b> <code>s217-D3</code> stands: the '
-      'gallery role is a span grid with orphans tolerated, and it stays that way until you say '
-      'otherwise. This page is the decision surface, not the decision.</p>')
+    A('<p class="lede t-ed-body"><b>And you answered it &mdash; with a third option.</b> '
+      '<code>s217-D5</code>: <i>&ldquo;mode is &lsquo;Justified rows&rsquo; OR &lsquo;Gallery '
+      'bento&rsquo;, the bento mode carrying a sub-option ragged or square bottom&rdquo;</i>. '
+      'Neither A nor B won; <b>both became positions of a per-instance dial</b>. Then at #218 you '
+      'set the first instance: the Foundations photography page ships <b>bento mode</b>, keylines '
+      'off, in all four themes (<code>s218-D3</code>), and its wall is <b>squared</b> '
+      '(<code>s218-D6&nbsp;(4)</code>). <b>This page is now a reference for what each position '
+      'looks like, not a choice waiting on you</b> &mdash; the two questions still open are marked '
+      'as such, in their own boxes, and there are only two.</p>')
     A('</section>')
 
     # ---- A -------------------------------------------------------------------------------
@@ -490,17 +517,63 @@ def build(photos, rows, widows, reps):
       'the amount depends on a dial rather than on the picture.</p>'
       % (round(r6["mean"] * 100), round(r4["mean"] * 100), round(r4["worst"] * 100)))
 
-    A('<div class="sublabel t-ed-caption">A3 &mdash; the keyline trial (s217-D3, also proposed): no '
-      'borders, 1px gutter</div>')
+    # ⬛ #219 — A4, NEW. `s218-D6 (4)` squares the Foundations photography page's wall, and none of
+    # v1's walls showed what that looks like. It is drawn at the SAME 4-column dial as A2 so the
+    # only variable between them is the squaring pass.
+    # ⛔ SCOPED EXACTLY AS THE RULING SCOPES ITSELF: this is the photography page's INSTANCE, not
+    # the gallery ROLE. A1/A2/A3 above stay ragged, because `s217-D3`'s role exemption is untouched
+    # ("until he says wider") and squaring them here would enact a widening nobody ruled.
+    A('<div class="sublabel t-ed-caption">A4 &mdash; the same 4-column wall with the edge dial at '
+      'SQUARE, as the Foundations photography page now ships it (s218-D6&nbsp;(4))</div>')
+    A('<div class="c-bento gc-a4" data-bento-role="gallery"><div class="c-bento__grid">')
+    for p, s in zip(photos, sq_spans):
+        A(a_tile(dict(p, span=s)))
+    A('</div></div>')
+    A('<p class="note t-ed-body-small"><b>This is the ruled instance, not a proposal.</b> Your '
+      'four #218 exports all carried <code>edge: square</code> and you reopened it in as many '
+      'words &mdash; <i>&ldquo;Reopen &mdash; square it&rdquo;</i>. <b>%d of %d photographs were '
+      're-spanned</b> to close the wall; A2 above, the same wall with the dial at ragged, leaves '
+      '<b>%s</b>. <b>The scope is the ruling&rsquo;s own:</b> <i>&ldquo;this enacts edge:square for '
+      'the photography page&rsquo;s wall; the GALLERY ROLE&rsquo;s s217-D3 exemption elsewhere is '
+      'untouched until he says wider&rdquo;</i> &mdash; which is why A1, A2 and A3 are still '
+      'ragged, and still correct.</p>'
+      % (len(sq_rep["changed"]), len(photos),
+         esc(" &middot; ".join("%d col: %d hole(s)" % (c, hv[0])
+                               for c, hv in r4["holes"].items())).replace("&amp;", "&")))
+    # ⚠ NAMED, NOT SUMMARISED. "2 tiles re-spanned" hides whether one of them was a PORTRAIT
+    # squashed into a single row to close a hole — which is precisely the cost Q3 is about. The
+    # pass is cost-ordered to avoid it and it can still happen; if it did, it says so here.
+    moved = []
+    for i, (old, new) in enumerate(zip([p["span"] for p in photos], sq_spans), 1):
+        if old != new:
+            p = photos[i - 1]
+            moved.append("%s (%s) %d&times;%d &rarr; %d&times;%d"
+                         % (esc(p["file"]), esc(p["orient"]), old[0], old[1], new[0], new[1]))
+    if moved:
+        squashed = [m for m in moved if "(portrait)" in m and m.endswith("&times;1")]
+        A('<p class="note t-ed-body-small"><b>What the squaring cost, tile by tile:</b> %s. %s</p>'
+          % ("; ".join(moved),
+             ("<b>&#9888; %d of those is a PORTRAIT flattened to one row</b> to close a hole "
+              "&mdash; the pass is cost-ordered to avoid exactly that and it still happened here. "
+              "That is the open question below, seen rather than argued." % len(squashed))
+             if squashed else "No portrait was flattened to close a hole on this set."))
+    A(recut.open_control_html("Q6"))
+
+    A('<div class="sublabel t-ed-caption">A5 &mdash; the keyline dial at OFF: no borders, 1px '
+      'gutter (s217-D5; the photography page&rsquo;s ruled setting, s218-D3)</div>')
     A('<div class="c-bento gc-atrial" data-bento-role="gallery"><div class="c-bento__grid">')
     for p in photos:
         A(a_tile(p))
     A('</div></div>')
-    A('<p class="note t-ed-body-small">Your &ldquo;let&rsquo;s try dropping the keylines&rdquo; '
-      'variant, carried forward from the roles page so the two open questions can be looked at '
-      'together. <b>Still proposed, still not ruled.</b> Note what it does to the crop question: '
-      'nothing. Removing the keylines makes the wall read as one surface, which arguably makes '
-      'the inconsistent cropping <i>more</i> visible, not less.</p>')
+    # ⛔ #219 — v1 called this "still proposed, still not ruled". It is not: `s217-D5` made
+    # keylines a per-instance dial and `s218-D3` set the photography instance to OFF.
+    A('<p class="note t-ed-body-small">Your #217 &ldquo;let&rsquo;s try dropping the '
+      'keylines&rdquo; wall &mdash; <b>and you ruled it in, as a dial</b> (<code>s217-D5</code>: '
+      '&ldquo;keylines on/off&rdquo;), then set the photography page to OFF in all four themes '
+      '(<code>s218-D3</code>). Note what it does to the crop question: nothing. Removing the '
+      'keylines makes the wall read as one surface, which arguably makes the inconsistent '
+      'cropping <i>more</i> visible, not less.</p>')
+    A(recut.open_control_html("Q3"))
     A('</section>')
 
     # ---- B -------------------------------------------------------------------------------
@@ -557,6 +630,10 @@ def build(photos, rows, widows, reps):
       'instead of re-packing. Flickr re-packs at runtime. A shipped B would need either a packing '
       'per responsive band or a runtime pass; <b>A re-flows for free</b>. Narrow your window and '
       'you will see both behaviours.</p>' % int(NOMINAL_W))
+    # ⬛ THE TWO GENUINELY-OPEN QUESTIONS ON THIS PAGE. v1 declared both costs in prose and put
+    # neither as a question, so both were invisible as decisions.
+    A(recut.open_control_html("Q11"))
+    A(recut.open_control_html("Q12"))
     A('</section>')
 
     # ---- the differences, side by side ----------------------------------------------------
@@ -590,11 +667,17 @@ def build(photos, rows, widows, reps):
     ]:
         A('<tr><td>%s</td><td>%s</td><td>%s</td></tr>' % (k, a, b))
     A('</tbody></table>')
-    A('<p class="note t-ed-body-small"><b>What is actually being decided.</b> Not "which is '
-      'prettier" &mdash; whether a gallery of licensed photography may crop the photographs. If '
-      'the answer is no, A cannot do it at any dial and B is the layout. If cropping is '
-      'acceptable, A is already ruled, already responsive, already nests, and B buys a flush '
-      'bottom edge you have already said you do not need.</p>')
+    # ⛔ #219 — v1 closed this table by re-putting the whole A-or-B question ("If the answer is no,
+    # A cannot do it at any dial and B is the layout"). `s217-D5` had already answered it. The
+    # replacement states the ruling and points at what a real instance chooses.
+    A('<p class="note t-ed-body-small"><b>What this table is now for.</b> Not choosing between A '
+      'and B &mdash; <code>s217-D5</code> made both of them positions of a per-instance <b>mode</b> '
+      'dial, so the table is what an instance is choosing between when somebody sets that dial. '
+      'The real question underneath, and it is a per-instance one, is whether <i>that</i> gallery '
+      'of licensed photography may crop its photographs: where the answer is no, A cannot do it at '
+      'any column count and B is the mode. The Foundations photography page&rsquo;s answer is '
+      'already recorded &mdash; <b>bento mode, squared</b> (<code>s218-D3</code>, '
+      '<code>s218-D6&nbsp;(4)</code>).</p>')
     A('</section>')
 
     # ---- provenance -----------------------------------------------------------------------
@@ -620,7 +703,13 @@ def build(photos, rows, widows, reps):
 
 
 def page(photos, rows, widows, reps):
-    css = CSS_HEAD + photo_rules(photos) + "\n"
+    # ⚠ THE RE-CUT BLOCKS GO IN THE HEAD, before the minted per-photograph rules: the s218-D6(1)
+    # mono ground is tile CONTENT and must not out-order the per-photograph geometry.
+    css = (CSS_HEAD
+           .replace("__MONOCAP__",
+                    recut.mono_caption_css([(".gc-cap", [".gc-cap .gc-desc", ".gc-cap .gc-lic"])]))
+           .replace("__RECUT__", recut.RECUT_CSS)
+           + photo_rules(photos) + "\n")
     return ((HEAD
              .replace("__TITLE__", "Apollo &mdash; gallery: span grid or justified rows")
              .replace("__SENTINEL__", SENTINEL)
@@ -779,6 +868,35 @@ def selftest():
     assert "c-bento__caption" in asec and "c-bento__caption" in bsec, \
         "bite 7d FAIL: one candidate is not using canon's caption slot, so the two are being " \
         "compared with different caption regimes"
+
+    # --- bite 7e (#219): the ledger, the mono ground, and nothing settled offered as a control --
+    dsec = h.split('<section id="decided">', 1)[1].split("</section>", 1)[0]
+    assert "<s>" in dsec, "bite 7e FAIL: no question is struck — the re-cut did nothing"
+    assert "not ruled" not in h.split('<section id="intro">', 1)[1].split("</section>", 1)[0].lower(), \
+        "bite 7f FAIL: the intro still calls this page unruled. s217-D5 answered A-or-B with a " \
+        "per-instance dial; re-putting it is the #219 defect"
+    assert "surface-digital-black" in body and "text-reverse" in body, \
+        "bite 7g FAIL: the s218-D6(1) mono caption ground is not on the page"
+    assert "s218-D6" in asec, \
+        "bite 7h FAIL: candidate A does not show the ruled squared instance — the page would " \
+        "still be showing a ragged edge as the only thing a gallery wall can do"
+    for r in recut.rows_for("compare"):
+        if r["state"] == recut.RULED:
+            assert 'Open &middot; %s' % r["key"] not in h, \
+                "bite 7i FAIL: %s is RULED and is being offered as a live control" % r["key"]
+    # ⚠ THE SCOPE ASSERTION. A4 is the photography page's INSTANCE. A1/A2/A3/A5 must stay ragged,
+    # or this page would have widened s218-D6(4) to the gallery ROLE by drawing it that way.
+    p4 = params()
+    a_walls = re.findall(r'<div class="c-bento gc-a\w*" data-bento-role="gallery">'
+                         r'<div class="c-bento__grid">(.*?)</div></div>', asec, re.S)
+    assert len(a_walls) == 4, "bite 7j FAIL: expected four A walls, found %d" % len(a_walls)
+    ragged = [w for w in (a_walls[0], a_walls[1], a_walls[3])]
+    for i, w in enumerate(ragged):
+        sp = [(int(a), int(b)) for a, b in re.findall(r'data-c="(\d)" data-r="(\d)"', w)]
+        assert sp == [p["span"] for p in photos], \
+            "bite 7k FAIL: A wall %d was squared. s218-D6(4) scopes itself to the photography " \
+            "page's wall and leaves the GALLERY ROLE's s217-D3 exemption untouched — squaring " \
+            "these would enact a widening nobody ruled" % (i + 1)
 
     # --- bite 8: the mutation handle actually mutates ------------------------------------------
     try:

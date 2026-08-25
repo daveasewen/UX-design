@@ -2,7 +2,16 @@
 """
 gen_bento_roles_217.py — the BENTO ROLES demo page (s217-D3, #217). For Dave's eye.
 
-Builds `reviews/BENTO-CANON-2026-08-23-v3.html`: one section per ROLE — dashboard,
+⛔ #219 RE-CUT. This generator now writes `reviews/BENTO-CANON-2026-08-25-v5.html`. Dave opened v3
+and said *"we've already decided all of this in previous sessions"*. He was right: v3's keyline
+TRIAL was still badged "Proposed — not ruled" after `s217-D5` had already turned keylines into a
+per-instance dial (on/off), and `s218-D3` had already recorded the photography page's own answer
+(off, all four themes). v5 STRIKES the settled questions with their receipts, bakes in the
+`s218-D6 (1)` mono caption ground, records `s218-D1`'s DASHBOARD-ONLY scope so nothing here can be
+read as re-opening it, and leaves only the genuine residue live. Ledger: `_bento_recut_219.py`.
+⚠ v3 is untouched on disk.
+
+Builds one section per ROLE — dashboard,
 brochureware, gallery — in four themes x light/dark, with **console as the opening theme**
 because console is the only theme whose radius token is non-zero and therefore the only one
 where the difference between the three roles is VISIBLE. (The grammar is identical in all
@@ -22,11 +31,13 @@ WHAT EACH SECTION SHOWS (s217-D3, Dave's own three cases)
   3 · GALLERY — radius and spacing as brochureware, the generous caption space, and the
       squaring pass RELAXED: orphans are acceptable here.
 
-⬛ THE KEYLINE-LESS GALLERY IS A TRIAL — **PROPOSED, NOT RULED**. Dave's word was "lets… try":
-keylines dropped entirely, nothing but a 1px gutter and row space. It is shown SIDE BY SIDE
-with the ruled keylined gallery so he can rule by eye. Every declaration that belongs to the
-trial names `.dx-trial` in its selector, and `--selftest` bite 6 enforces that — a trial that
-leaks its styles into the ruled variant would be a decision taken by accident.
+✅ THE KEYLINE-LESS GALLERY IS NO LONGER A TRIAL (#219). Dave's word at #217 was "lets… try", and
+v3 badged it PROPOSED. `s217-D5` then ANSWERED it, with a third option neither wall offered:
+keylines became a **per-instance dial**, on/off. `s218-D3` then set one instance — the Foundations
+photography page ships keylines OFF in all four themes. So those two walls are the dial's two
+POSITIONS, not a proposal beside an incumbent. The `.dx-trial` scoping is unchanged and bite 6
+still enforces it: the off wall must not restyle the on wall, or the comparison is of a thing with
+itself.
 
 ⛔ THE PAGE MINTS NOTHING. Every structural rule comes from canon.css's AUTO-BENTO block. The
 page-local stylesheet styles TILE CONTENT and chrome, declares no grid, no gap, no bento radius
@@ -67,12 +78,18 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 KNOW = os.path.dirname(HERE)
 ROOT = os.path.dirname(KNOW)
 sys.path.insert(0, os.path.join(KNOW, "canon"))
+sys.path.insert(0, HERE)
 from gen_canon_bento import (params, span_for, emphasise, roles, role_policy,  # noqa: E402
                              caption_space, square_wall_for_role, is_rectangular,
                              band_ladder, place, band_clamp, square_nested_wall,
                              inner_ladder)
+import _bento_recut_219 as recut  # noqa: E402  ⚠ THE ONE HOME for the decision ledger
 
-OUT = os.path.join(ROOT, "reviews", "BENTO-CANON-2026-08-23-v3.html")
+# ⚠ v5, NOT an overwrite. `BENTO-CANON-2026-08-23-v3.html` stays on disk exactly as Dave saw it;
+# this is its #219 successor ([[feedback-version-dont-overwrite]]). v4 is the s217-D2 canon demo's
+# successor, written by `gen_bento_canon_217.py` — the two pages share the BENTO-CANON series and
+# the series number is what keeps them from colliding.
+OUT = os.path.join(ROOT, "reviews", "BENTO-CANON-%s-v5.html" % recut.RECUT_DATE)
 # The inner instances' column dial, declared ONCE. ⚠ It must agree with `.dx-dash-inner`'s
 # `--bento-columns` in the stylesheet below, or the pass squares a wall the page never renders.
 DASH_INNER_COLS = 3
@@ -350,6 +367,8 @@ p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
      line loses its descenders. */
   text-box-edge:text text;}
 .dx-lic{color:var(--ink-2,#545454);}
+__MONOCAP__
+__RECUT__
 .dx-card{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
   padding:var(--sp-4); overflow:hidden; display:flex; flex-direction:column; gap:var(--sp-1);}
 .dx-panel{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
@@ -478,7 +497,10 @@ def build(photos, residuals):
     S = []
     A = S.append
 
-    # ---- 0 · what a role is -------------------------------------------------------------
+    # ---- 0 · #219 — WHAT IS ALREADY DECIDED ---------------------------------------------
+    A(recut.ledger_html("roles"))
+
+    # ---- 0b · what a role is ------------------------------------------------------------
     A('<section id="intro">')
     A('<h2 class="t-ed-heading-3">Three roles, one grammar</h2>')
     A('<p class="lede t-ed-body">You said a page-level bento and a sectioned one are not the '
@@ -537,6 +559,17 @@ def build(photos, residuals):
       'three sections a full gutter apart. <b>The two spacings are the role, not a per-instance '
       'tweak</b> &mdash; canon works out which wall is which by whether its tiles are themselves '
       'bentos.</p>')
+    # ⛔ #219 — s218-D1 RECORDED, NOT RE-DRAWN. The corner-keyline construction is enacted in
+    # `gen_bento_matrix_217.py`, which owns it; this page states the ruling and its DASHBOARD-ONLY
+    # scope so nothing on it can be read as re-opening either half.
+    A('<p class="note t-ed-body-small"><b>What you ruled after this page was first built '
+      '(<code>s218-D1</code>).</b> Your words: <i>&ldquo;each tile must have it&rsquo;s own '
+      'keyline, but the radii should only apply to the 4 corners of each sub bento (a collection '
+      'of tiles)&rdquo;</i>, and you signed the render off: <i>&ldquo;Yay it works. very happy '
+      'with this.&rdquo;</i> You scoped it in the same sitting: <b>dashboard only for now</b> '
+      '&mdash; brochureware and gallery keep their <code>s217-D3</code> radius behaviour below, '
+      'untouched, until you extend it. The construction itself lives in the matrix explorer, '
+      'which owns it; this page carries the ruling, not a second copy of the drawing.</p>')
     A('</section>')
 
     # ---- 2 · BROCHUREWARE ----------------------------------------------------------------
@@ -581,17 +614,42 @@ def build(photos, residuals):
     else:
         A('<p class="note t-ed-body-small">This wall happens to come out rectangular on its own. '
           'The squaring pass is <b>off</b> here either way &mdash; nothing straightened it.</p>')
+    # ⛔ #219 — THE RAGGED/SQUARE QUESTION IS NO LONGER AN EITHER/OR. `s217-D5` made it a
+    # per-instance dial and `s218-D6 (4)` set one instance. Both facts are stated, and the SCOPE
+    # sentence is quoted rather than paraphrased, because the role default is what is still open.
+    A('<p class="note t-ed-body-small"><b>&#9989; Since this page was first built, the edge became '
+      'a dial and one instance was set.</b> <code>s217-D5</code> turned <code>s217-D3</code>&rsquo;s '
+      'gallery squaring exemption into a per-instance choice &mdash; <i>&ldquo;the bento mode '
+      'carrying a sub-option ragged or square bottom&rdquo;</i>. Then <code>s218-D6 (4)</code>: '
+      '<i>&ldquo;Reopen &mdash; square it&rdquo;</i> &mdash; the squaring pass now runs on <b>the '
+      'Foundations photography page&rsquo;s</b> gallery wall and its last-row photographs may '
+      're-span to close holes. That ruling scopes itself in its own words: <i>&ldquo;the GALLERY '
+      'ROLE&rsquo;s s217-D3 exemption elsewhere is untouched until he says wider&rdquo;</i> '
+      '&mdash; which is why the wall above is <b>still ragged</b>, and why that is still correct.</p>')
+    A(recut.open_control_html("Q6"))
     A('</section>')
 
     # ---- 3b · THE KEYLINE TRIAL ----------------------------------------------------------
     A('<section id="trial">')
-    A('<h2 class="t-ed-heading-3">The keyline trial, beside the ruled gallery</h2>')
-    A('<p class="badge t-cm-legal">Proposed &mdash; not ruled</p>')
-    A('<p class="lede t-ed-body">Your words were &ldquo;<i>can we try dropping the keylines and '
-      'just have a 1px gutter and row space</i>&rdquo;. Here it is, with the same photographs and '
-      'the same derived spans, directly under the ruled variant so you can rule by eye. '
-      '<b>Nothing about the trial has been adopted</b> &mdash; it is a specimen with its own '
-      'styles, and none of them touch the wall above.</p>')
+    A('<h2 class="t-ed-heading-3">Keylines on, keylines off &mdash; the two positions of a dial '
+      'you already ruled</h2>')
+    # ⛔ #219 — THE BADGE IS GONE. v3 badged this "Proposed — not ruled"; `s217-D5` had ALREADY
+    # answered it, and with the third option (a dial) rather than either of the two the trial
+    # offered. Leaving the badge up would have invited Dave to re-rule it, and a click either way
+    # would have quietly narrowed his own ruling to one position.
+    A('<p class="badge t-cm-legal">Ruled &mdash; s217-D5 &middot; Q4</p>')
+    A('<p class="lede t-ed-body">Your words at #217 were &ldquo;<i>can we try dropping the '
+      'keylines and just have a 1px gutter and row space</i>&rdquo;, and this page put it to you '
+      'as a trial. <b>You then answered it, and you answered it with the third option:</b> '
+      '<code>s217-D5</code> makes keylines a <b>per-instance dial</b> &mdash; '
+      '<i>&ldquo;GALLERY: same three spacings; keylines on/off&rdquo;</i>. Neither wall below is a '
+      'proposal any more; they are the two positions of that dial, shown together so the '
+      'difference stays visible.</p>')
+    A('<p class="lede t-ed-body"><b>And one instance is already set.</b> At #218 you drove the '
+      'gallery dials in each theme and pasted the exports for the Foundations photography page '
+      '(<code>s218-D3</code>): <b>keylines OFF in all four themes</b>, spacing 1 in supercharge and '
+      '24 in the other three. So the lower wall is not a specimen &mdash; it is the setting the '
+      'library&rsquo;s photography page ships.</p>')
     A('<div class="dx-2up">')
     A('<div><div class="sublabel t-ed-caption">Ruled &mdash; keylines and theme spacing</div>')
     A('<div class="c-bento dx-gal dx-gal-b"%s><div class="c-bento__grid">' % role_attr("gallery"))
@@ -600,7 +658,8 @@ def build(photos, residuals):
     A('</div></div>')
     A('<span class="dx-caption t-cm-legal">Keylines on every tile; tiles spaced at the theme '
       'gutter; caption block %dpx.</span></div>' % space)
-    A('<div><div class="sublabel t-ed-caption">Trial &mdash; no keylines, 1px gutter and row space</div>')
+    A('<div><div class="sublabel t-ed-caption">Keylines OFF &mdash; 1px gutter and row space '
+      '(s217-D5&rsquo;s off position; the photography page&rsquo;s ruled setting, s218-D3)</div>')
     A('<div class="c-bento dx-trial"%s><div class="c-bento__grid">' % role_attr("gallery"))
     for r, s in zip(gal, gspans):
         A(photo_tile(dict(r, span=s)))
@@ -609,9 +668,12 @@ def build(photos, residuals):
       '%dpx caption block, because the caption space is ruled and the trial is not about '
       'that.</span></div>' % space)
     A('</div>')
-    A('<p class="note t-ed-body-small"><b>What is yours to decide.</b> Whether the gallery keeps '
-      'its keylines, drops them for the 1px gutter, or gets both as a dial. Say the word and it '
-      'becomes a ruling; say no and the trial block comes out in three lines.</p>')
+    A('<p class="note t-ed-body-small"><b>Nothing here is asking you anything.</b> The wall above '
+      'is the dial ON, the wall below is the dial OFF, and <code>s217-D5</code> ruled that both '
+      'positions exist. <code>s217-D8</code> then ruled <i>how</i> an ON keyline is drawn &mdash; '
+      '<i>&ldquo;the keyline goes tight around each module (tile) &hellip; never a line centred in '
+      'the gutter&rdquo;</i> &mdash; so the upper wall&rsquo;s borders hug their tiles by ruling, '
+      'not by preference, and the centred-gutter construction is retired.</p>')
     A('</section>')
 
     # ---- 4 · provenance ------------------------------------------------------------------
@@ -635,15 +697,27 @@ def build(photos, residuals):
     return "\n".join(S)
 
 
+def recut_css():
+    """The page stylesheet with the #219 re-cut baked in: the `s218-D6 (1)` mono caption ground and
+    the ledger's chrome. ⚠ THE CAPTION SPACE IS NOT RESTATED HERE — this page's gallery walls carry
+    `data-bento-role="gallery"`, so canon's own rule supplies the ruled block, and bite 5a forbids a
+    second copy."""
+    return (CSS
+            .replace("__DASH_INNER_COLS__", str(DASH_INNER_COLS))
+            .replace("__MONOCAP__",
+                     recut.mono_caption_css([(".dx-cap", [".dx-cap .dx-desc", ".dx-cap .dx-lic"])]))
+            .replace("__RECUT__", recut.RECUT_CSS))
+
+
 def page(photos, residuals):
     return ((HEAD
              .replace("__TITLE__", "Apollo &mdash; bento roles")
              .replace("__SENTINEL__", SENTINEL)
              .replace("__UP__", UP)
-             .replace("__CSS__", CSS.replace("__DASH_INNER_COLS__", str(DASH_INNER_COLS)))
+             .replace("__CSS__", recut_css())
              .replace("__H1__", "Bento roles")
              .replace("__SUBTITLE__",
-                      "s217-D3 &middot; dashboard / brochureware / gallery &middot; four themes"))
+                      "s217-D3 &middot; re-cut #219 &middot; dashboard / brochureware / gallery"))
             + build(photos, residuals) + TAIL.replace("__SCRIPT__", SCRIPT))
 
 
@@ -770,8 +844,16 @@ def selftest():
                 "bite 6b FAIL: %r drops a keyline OUTSIDE the trial — the keyline-less variant " \
                 "is PROPOSED, and leaking it into the ruled gallery is a decision by accident" % sel.strip()
     tsec = h.split('<section id="trial">', 1)[1].split("</section>", 1)[0]
-    assert "not ruled" in tsec.lower(), \
-        "bite 6c FAIL: the trial is PROPOSED — the page must say so where Dave reads it"
+    # ⛔ #219 REVERSED THIS BITE. It used to require the words "not ruled" here. `s217-D5` made
+    # keylines a per-instance dial and `s218-D3` set the photography instance, so the old assertion
+    # was a gate PINNING A SETTLED QUESTION OPEN. It now requires the receipts instead, and forbids
+    # the page describing the off wall as unruled.
+    assert "s217-D5" in tsec and "s218-D3" in tsec, \
+        "bite 6c FAIL: the keyline section does not carry the rulings that closed it — a wall " \
+        "shown without its receipt reads as a choice still waiting on Dave"
+    assert "not ruled" not in tsec.lower(), \
+        "bite 6c2 FAIL: keylines are RULED as a dial (s217-D5) and this section still says they " \
+        "are not — re-putting a settled ruling as an option is the #219 defect"
     assert 'class="c-bento dx-gal dx-gal-b"' in tsec and 'class="c-bento dx-trial"' in tsec, \
         "bite 6d FAIL: the trial must sit BESIDE the ruled gallery — one wall alone is not a " \
         "comparison and cannot be ruled on by eye"
@@ -795,6 +877,19 @@ def selftest():
     bad = [i for i, rep in enumerate(SQUARE_REPORTS, 1)
            if not rep.get("exempt") and not rep["squared"]]
     assert not bad, "bite 8 FAIL: wall(s) %r shipped ragged in a role that is squared" % bad
+
+    # --- bite 8b (#219): the ledger, the mono ground, and no settled question as a control ----
+    dsec = h.split('<section id="decided">', 1)[1].split("</section>", 1)[0]
+    assert "<s>" in dsec, "bite 8b FAIL: no question is struck — the re-cut did nothing"
+    assert "surface-digital-black" in body and "text-reverse" in body, \
+        "bite 8c FAIL: the s218-D6(1) mono caption ground is not on the page"
+    assert 's218-D1' in h, \
+        "bite 8d FAIL: s218-D1's DASHBOARD-ONLY scope is unstated, so the gallery and " \
+        "brochureware walls below read as if nobody had ruled on corner keylines at all"
+    for r in recut.rows_for("roles"):
+        if r["state"] == recut.RULED:
+            assert 'Open &middot; %s' % r["key"] not in h, \
+                "bite 8e FAIL: %s is RULED and is being offered as a live control" % r["key"]
 
     # --- bite 9: the role mutation handle actually mutates ------------------------------------
     try:

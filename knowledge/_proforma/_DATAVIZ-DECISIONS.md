@@ -489,6 +489,30 @@ below has been built, and nothing below has been render-verified.***
   emitted at generation time), so **no JS enters physics** and B-D7 / DEF-003 hold.
   Edges: relates(DV-D14) — DV-D14 already moves segment geometry, so the animation must animate the
   ENACTED heights, not the true ones, or the two rulings will fight.
+  **✅ ENACTED IN TWO PASSES, AND THE SECOND ONE FOUND THE REVERSAL STILL BEING GENERATED — added
+  2026-08-25 (#219), by ADDITION; nothing above is amended.**
+  **(1) #218 — Chart-bar's `stacked-column`:** both remaining deltas built CSS-only (per-rect
+  `--b1…--b(i−1)` + `--self`, three registered `@property` progress numbers on one shared
+  `var(--grow-dur)` timeline, the float riding the CUMULATIVE ANIMATED height below). `s218-D5` then
+  moved the two curved positions onto the house tokens `--grow-ease-in`/`--grow-ease-out` and delayed
+  the on-segment keys by one full growth.
+  **(2) #219 — the pro-forma's `stacked` figure, AT CAUSE in `_review/_gen_dataviz_charts.py`.**
+  ⚠ **The generator was still emitting WORDING ①** — `animation-delay:seq*420ms` +
+  `animation-duration:400ms` + the literal `ease-in`/`linear`/`ease-out` keywords, under a comment
+  reading *"each waits for the one below"* — **eighteen sessions after the reversal**. Retired;
+  wording ② + `s218-D5` enacted for a 4-deep stack (seg1 ease-in · seg2 linear · seg3 linear ·
+  seg4 ease-out, the positional rule). Chart-bar's own inert 45ms/rect residue was stripped at the
+  same time, which is the `#218` receipt's owed generator item discharged.
+  ⚠ **The one-word correction the `#218` receipt filed against the SCOPE MEASURED paragraph above is
+  now MOOT** — the stagger it named is gone from both surfaces. The paragraph is left untouched
+  ([[header-wins-over-audit]]); this note is the correction's receipt.
+  **The gate that keeps it gone:** `knowledge/_render/verify_dv_d16_render.py` is now **profiled over
+  every stacked surface** (`--target snippet|proforma|all`) and carries a `WORDING-1` check —
+  a stacked rect that declares its own `animation-delay` / `-duration` / `-timing-function` is RED by
+  name, with a `wording-1` mutation arm on each profile. Both surfaces static + render GREEN at #219.
+  ⬛ **STILL DAVE'S, and the reason DV-D16b is not finished:** `Chart-stacked-area` — the third and
+  last stacked surface — animates by FADE, and converting it is a motion call, not a mechanical
+  extension. Receipt: `notes/_subreports/2026-08-25-219-lane4-dv16.md` (row `W-175`).
 
 - **DV-D17 · The isolated key must NOT stay active once other series are checked back on.**
   Dave, verbatim: *"the legend behaviour, the isolated key item stays active when I check others on."*

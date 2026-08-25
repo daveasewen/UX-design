@@ -2,7 +2,16 @@
 """
 gen_bento_canon_217.py — the BENTO CANON demo page (s217-D2, #217). For Dave's eye.
 
-Builds `reviews/BENTO-CANON-2026-08-23-v2.html`: the canon bento grammar rendered as itself,
+⛔ #219 RE-CUT. This generator now writes `reviews/BENTO-CANON-2026-08-25-v4.html`. Dave opened v2
+and said *"we've already decided all of this in previous sessions"* and *"we've also missed the
+extra space for captions."* Both were true of v2: its squaring section still badged a RATIFIED
+mechanism "Proposed — not ruled" (`s217-D3`), and its captions never consumed the ruled
+`layout/bento/caption-space`. v4 STRIKES the settled questions with their receipts (never drops
+them), BAKES IN the ruled caption block and the `s218-D6 (1)` mono caption ground, and leaves only
+the genuinely open residue as a live control. The ledger is `_bento_recut_219.py` — one home, three
+pages. ⚠ v2 is untouched on disk.
+
+Builds the canon bento grammar rendered as itself,
 in four themes x light/dark, with the bento-of-bentos Dave described in as many words —
 "a page section that had three bentos each with 1px spacing within a larger one that had
 40px spacing".
@@ -52,13 +61,19 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 KNOW = os.path.dirname(HERE)
 ROOT = os.path.dirname(KNOW)
 sys.path.insert(0, os.path.join(KNOW, "canon"))
+sys.path.insert(0, HERE)
 from gen_canon_bento import (params, span_for, emphasise,  # noqa: E402
-                             square_wall, is_rectangular, band_ladder, place, band_clamp)
+                             square_wall, is_rectangular, band_ladder, place, band_clamp,
+                             caption_space)
+import _bento_recut_219 as recut  # noqa: E402  ⚠ THE ONE HOME for the decision ledger
 
-OUT = os.path.join(ROOT, "reviews", "BENTO-CANON-2026-08-23-v2.html")
+# ⚠ v4, NOT an overwrite. `BENTO-CANON-2026-08-23-v2.html` stays on disk exactly as Dave saw it;
+# this is its #219 successor, re-cut against the rulings that landed after v2 was built
+# ([[feedback-version-dont-overwrite]]).
+OUT = os.path.join(ROOT, "reviews", "BENTO-CANON-%s-v4.html" % recut.RECUT_DATE)
 PHOTO_MANIFEST = os.path.join(KNOW, "_PHOTOGRAPHY-MANIFEST.json")
 UP = "../"
-SENTINEL = "<!-- APOLLO BENTO-CANON DEMO (gen_bento_canon_217.py) — s217-D2 -->"
+SENTINEL = "<!-- APOLLO BENTO-CANON DEMO (gen_bento_canon_217.py) — s217-D2, RE-CUT #219 -->"
 
 
 def esc(s):
@@ -125,7 +140,9 @@ def read_photos():
 
 
 # ---------------------------------------------------------------------------- the squaring pass
-# ⬛ PROPOSED, NOT RULED (#217). SQUARE is a MUTATION HANDLE, not a preference: the probe
+# ✅ RATIFIED s217-D3 for dashboard + brochureware (#219 correction: it was still labelled
+# "PROPOSED, NOT RULED" here after the ruling landed). SQUARE is a MUTATION HANDLE, not a
+# preference: the probe
 # regenerates this page with --no-square and requires its bottom-edge assertion to go RED. A
 # gate that has never been seen to fail is not a gate ([[instrument-without-a-consumer]]).
 SQUARE = True
@@ -158,7 +175,7 @@ def photo_tile(r, extra_class=""):
     return ('<figure class="c-bento__tile dx-photo %s" data-c="%d" data-r="%d">'
             '<img class="dx-img" src="%sknowledge/assets/photography-web/%s" alt="%s"'
             ' loading="lazy" width="%s" height="%s">'
-            '<figcaption class="dx-cap t-cm-legal">%s</figcaption></figure>'
+            '<figcaption class="c-bento__caption dx-cap t-cm-legal">%s</figcaption></figure>'
             % (extra_class, c, rw, UP, esc(r["file"]), esc(r["desc"]),
                r["w"] or "", r["h"] or "", esc(r["desc"])))
 
@@ -279,11 +296,26 @@ p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
   background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);}
 .dx-img{display:block; width:100%; height:100%; min-height:0; object-fit:cover;
   background:var(--surface-2,#F3F3F3);}
-.dx-cap{padding:var(--sp-2) var(--sp-3); color:var(--ink-2,#545454);
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+/* ⬛ #219 — THE RULED CAPTION BLOCK, WHICH v2 MISSED. Dave: "we've also missed the extra space
+   for captions." `s217-D3` ruled the gallery caption more generous and it was DERIVED into
+   `layout/bento/caption-space`; canon exposes it as `--layout-bento-caption-space`. v2's photo
+   captions consumed neither the token nor canon's `.c-bento__caption` slot, so they rendered at
+   whatever the two clamped lines happened to be.
+   ⛔ THE TOKEN, NEVER THE NUMBER. The literal in the fallback is MINTED HERE at build time from
+   `caption_space()` (s200-D1), not typed — so this page cannot become a second source for a
+   ruled number. Same for the line allowance, which canon derives back out of the same figure.
+   ⚠ Canon's own `min-height` rule is scoped to `[data-bento-role="gallery"]`; this page's walls
+   carry no role (it is the s217-D2 defaults demo and giving them one would change what it
+   demonstrates), so the token is consumed directly here instead. */
+.dx-cap{padding:var(--sp-3); color:var(--ink-2,#545454);
+  min-height:var(--layout-bento-caption-space,__CAPSPACE__px);
+  display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,__CAPLINES__);
+  -webkit-box-orient:vertical; overflow:hidden;
   /* ds-005/ds-048: a clamped label must opt out of the cap/alphabetic trim or its last
      visible line loses its descenders. */
   text-box-edge:text text;}
+__MONOCAP__
+__RECUT__
 .dx-card{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
   padding:var(--sp-4); overflow:hidden; display:flex; flex-direction:column; gap:var(--sp-1);}
 .dx-eyebrow{color:var(--ink,#1A1A1A);}
@@ -413,6 +445,12 @@ def build(photos, residuals):
     S = []
     A = S.append
 
+    # ---- 0 · #219 — WHAT IS ALREADY DECIDED ---------------------------------------------
+    # ⛔ FIRST ON THE PAGE, deliberately. v2 opened with a demo and buried a settled question in a
+    # "Proposed — not ruled" badge four sections down. A decision surface has to say what it is NOT
+    # asking before it shows anything, or the reader re-derives the answers to find out.
+    A(recut.ledger_html("canon"))
+
     # ---- 1 · the grammar at its ruled defaults -----------------------------------------
     A('<section id="defaults">')
     A('<h2 class="t-ed-heading-3">The bento, at the parameters you ruled</h2>')
@@ -497,12 +535,19 @@ def build(photos, residuals):
     sq_spans, sq_rep = wall(rag_spans)
     A('<section id="squaring">')
     A('<h2 class="t-ed-heading-3">No orphaned compartments</h2>')
-    A('<p class="badge t-cm-legal">Proposed &mdash; not ruled</p>')
-    A('<p class="lede t-ed-body">Your second question: <i>&ldquo;Is there a way to avoid orphaned '
-      'compartments so the bento is always cohesively rectangular?&rdquo;</i> Yes &mdash; and it '
-      'has to be decided when the wall is built, not patched afterwards. CSS can back-fill holes '
+    # ⛔ #219 — THE BADGE IS GONE, AND IT HAD TO GO. v2 badged this section "Proposed — not ruled".
+    # `s217-D3` RATIFIED the pass for dashboard and brochureware in the same sitting v2 was built,
+    # so the badge was inviting Dave to re-decide something he had decided
+    # ([[feedback-dont-launder-a-premise-into-a-ruling]]). What remains open is narrower and named.
+    A('<p class="badge t-cm-legal">Ruled &mdash; s217-D3 (%s)</p>' % esc("Q1"))
+    A('<p class="lede t-ed-body">Your second question at #217: <i>&ldquo;Is there a way to avoid '
+      'orphaned compartments so the bento is always cohesively rectangular?&rdquo;</i> Yes, and '
+      '<b>you ratified it</b> &mdash; <code>s217-D3</code>: <i>&ldquo;SQUARING PASS RATIFIED for '
+      'dashboard and brochureware roles&rdquo;</i>, with gallery exempted in the same breath. It '
+      'has to be decided when the wall is built, not patched afterwards: CSS can back-fill holes '
       'but it cannot resize a tile, so no stylesheet and no script can straighten that bottom '
-      'edge. <b>This is a mechanism for you to rule on, not a decision already taken.</b></p>')
+      'edge. <b>The mechanism below is ruled. What is still yours is narrower, and it is stated '
+      'underneath rather than implied by a badge over the whole thing.</b></p>')
     A('<div class="dx-2up">')
     A('<div><div class="sublabel t-ed-caption">Eleven tiles, as authored</div>'
       '<div class="c-bento dx-awkward dx-ragged"><div class="c-bento__grid">')
@@ -528,10 +573,11 @@ def build(photos, residuals):
       'give the same wall &mdash; and when a wall genuinely cannot be a rectangle at every band '
       '(three tiles at six columns cannot) it <b>says so by name</b> rather than shipping a '
       'ragged edge quietly.</p>')
-    A('<p class="note t-ed-body-small"><b>What is yours to decide.</b> Whether spans may be '
-      'adjusted at all; whether only the tail may move or the whole wall; and what a picture is '
-      'allowed to be re-cropped into. Say the word and it becomes a ruling; say no and the pass '
-      'comes out in one line.</p>')
+    # ⬛ THE TWO GENUINELY-OPEN RESIDUES, each carrying its owner and what an answer would mint.
+    # v2 asked three things here in one paragraph; one of the three was already ruled and the
+    # other two were buried behind it.
+    A(recut.open_control_html("Q2"))
+    A(recut.open_control_html("Q3"))
     A('</section>')
 
     # ---- 3 · the bento of bentos -------------------------------------------------------
@@ -614,14 +660,26 @@ def build(photos, residuals):
     return "\n".join(S)
 
 
+def recut_css():
+    """The page stylesheet with the #219 re-cut baked in: the ruled caption block (token, with a
+    MINT-TIME literal fallback), the `s218-D6 (1)` mono caption ground, and the ledger's chrome."""
+    space, lines = caption_space()
+    return (CSS
+            .replace("__CAPSPACE__", str(space))
+            .replace("__CAPLINES__", str(lines))
+            .replace("__MONOCAP__", recut.mono_caption_css([(".dx-cap", [])]))
+            .replace("__RECUT__", recut.RECUT_CSS))
+
+
 def page(photos, residuals):
     return ((HEAD
              .replace("__TITLE__", "Apollo &mdash; the bento, promoted to canon")
              .replace("__SENTINEL__", SENTINEL)
              .replace("__UP__", UP)
-             .replace("__CSS__", CSS)
+             .replace("__CSS__", recut_css())
              .replace("__H1__", "The bento, promoted to canon")
-             .replace("__SUBTITLE__", "s217-D2 &middot; four themes &times; light/dark"))
+             .replace("__SUBTITLE__",
+                      "s217-D2 &middot; re-cut #219 &middot; four themes &times; light/dark"))
             + build(photos, residuals) + TAIL.replace("__SCRIPT__", SCRIPT))
 
 
@@ -648,7 +706,7 @@ def main():
     print("Wrote %s  (%d photo tiles — %d portrait, %d card tiles)"
           % (out, len(photos), len(ports), len(CARDS)))
     print("  squaring pass: %s" % ("DISABLED (--no-square, mutation arm)" if not SQUARE
-                                   else "ON — PROPOSED, NOT RULED"))
+                                   else "ON — RATIFIED s217-D3 (dashboard + brochureware)"))
     for i, rep in enumerate(SQUARE_REPORTS, 1):
         print("    wall %d  ladder %-12s rows %-16s %s"
               % (i, str(rep["ladder"]),
@@ -716,8 +774,20 @@ def selftest():
     assert "dx-ragged" in ssec and "dx-square" in ssec, \
         "bite 6a FAIL: the squaring section must show BOTH the ragged control and the squared " \
         "wall — one wall on its own proves nothing"
-    assert "not ruled" in ssec.lower(), \
-        "bite 6b FAIL: the squaring pass is PROPOSED — the page must say so where Dave reads it"
+    # ⛔ #219 REVERSED THIS BITE, AND THE REVERSAL IS THE POINT. It used to require the words
+    # "not ruled" in this section. `s217-D3` RATIFIED the pass, so the old assertion was pinning a
+    # settled question open — a gate enforcing the laundering defect. It now requires the RECEIPT,
+    # and forbids the page re-putting the ruled mechanism as a choice.
+    assert "s217-D3" in ssec, \
+        "bite 6b FAIL: the squaring section does not carry the ruling that closed it — a struck " \
+        "question with no receipt beside it reads as a question somebody forgot to ask"
+    assert "not ruled" not in ssec.lower(), \
+        "bite 6b2 FAIL: the squaring pass is RULED (s217-D3) and this section still says it is " \
+        "not — re-putting a settled ruling as an option is the defect the #219 re-cut exists to fix"
+    for k in ("Q2", "Q3"):
+        assert 'rcut-tag-o t-cm-legal">Open &middot; %s' % k in ssec, \
+            "bite 6b3 FAIL: the open residue %s lost its live control, so the part that IS still " \
+            "Dave's would disappear along with the part that is not" % k
     rag = [(int(a), int(b)) for a, b in
            _re.findall(r'data-c="(\d)" data-r="(\d)"',
                        ssec.split('dx-ragged', 1)[1].split("</div></div>", 1)[0])]
@@ -736,6 +806,31 @@ def selftest():
     unsq = [i for i, rep in enumerate(SQUARE_REPORTS, 1) if not rep["squared"]]
     assert not unsq, "bite 7 FAIL: wall(s) %r shipped ragged — a wall believed square and " \
                      "rendered ragged is the defect with a green banner over it" % unsq
+
+    # --- bite 7b (#219): THE RULED CAPTION BLOCK IS CONSUMED, AND AS A TOKEN -------------------
+    # ⚠ THE GAP DAVE NAMED. v2 rendered captions that read the ruled number from nowhere.
+    space, lines = caption_space()
+    capdecls = body.split(".dx-cap{", 1)[1].split("}", 1)[0]
+    assert "min-height:var(--layout-bento-caption-space" in capdecls.replace(" ", ""), \
+        "bite 7b FAIL: the caption block does not consume layout/bento/caption-space — the ruled " \
+        "space reaches nothing, which is exactly what Dave caught on v2"
+    assert "var(--bento-caption-lines" in capdecls, \
+        "bite 7c FAIL: the clamp is not reading the DERIVED line allowance, so the space and the " \
+        "clamp can disagree"
+    assert "%dpx" % space in capdecls and str(lines) in capdecls, \
+        "bite 7d FAIL: the fallbacks were not minted from caption_space() at build time"
+    assert 'class="c-bento__caption dx-cap' in h, \
+        "bite 7e FAIL: the photo captions are not in canon's caption slot"
+    assert "surface-digital-black" in body and "text-reverse" in body, \
+        "bite 7f FAIL: the s218-D6(1) mono caption ground is not on the page"
+
+    # --- bite 7g (#219): the ledger is present, struck, and nothing settled is a live control --
+    dsec = h.split('<section id="decided">', 1)[1].split("</section>", 1)[0]
+    assert "<s>" in dsec, "bite 7g FAIL: no question is struck — the re-cut did nothing"
+    for r in recut.rows_for("canon"):
+        if r["state"] == recut.RULED:
+            assert 'Open &middot; %s' % r["key"] not in h, \
+                "bite 7h FAIL: %s is RULED and is being offered as a live control" % r["key"]
 
     # --- bite 8: the mutation handle actually mutates ----------------------------------------
     global SQUARE
