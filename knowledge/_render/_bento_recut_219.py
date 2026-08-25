@@ -19,10 +19,24 @@ it. Where a #217 question is only PARTIALLY covered, the entry carries BOTH the 
 copies of "what is still open" is three chances for the pages to disagree with each other in front of
 Dave, which is the failure this whole re-cut exists to repair.
 
-Consumed by:
-  · knowledge/_render/gen_bento_canon_217.py    -> reviews/BENTO-CANON-2026-08-25-v4.html
-  · knowledge/_render/gen_bento_roles_217.py    -> reviews/BENTO-CANON-2026-08-25-v5.html
-  · knowledge/_render/gen_gallery_compare_217.py-> reviews/GALLERY-COMPARE-2026-08-25-v2.html
+⛔ #219 SEAM 5 — THE LEDGER WENT STALE INSIDE ONE DAY, and that is the point of the file, not a
+defect in it. `s219-D1` and `s219-D2` were inscribed the same afternoon the enact lanes ran, and
+lane B's finding 12 caught this module still stating `s218-D6 (1)` as ruled law and still painting
+its retired dark caption ground on all three pages it feeds. Updated FROM THE STORE:
+  · Q6  PARTIAL -> RULED   (`s219-D2 (2)` — square is the gallery-ROLE default, in all four themes)
+  · Q7  re-struck          (`s219-D2 (1)` supersedes `s218-D6 (1)`; the ground goes LIGHT GREY)
+  · Q4  `also` re-pointed  (`s219-D2 (4)` supersedes s218-D3's "keylines off in all four themes")
+  · Q3  scope widened, residue EXPRESSLY still open (`s219-D2 (2)` declines the crop bound by name)
+  · Q13 NEW, struck        (`s219-D2 (3)` — console gallery rounding defaults CAPSULE, P3 resolved)
+  · Q14 NEW, struck        (`s219-D1 (4)` — the six ruled spacing stops)
+⚠ Nothing was rounded UP. Q3's residue is quoted from the ruling that refused to close it, and the
+refuses-a-ruled-question-as-a-control discipline is unchanged — it is what made the Q6 flip cost a
+page edit rather than pass silently.
+
+Consumed by (versions bumped at #219 seam 5 — the pre-supersession pages stay on disk untouched):
+  · knowledge/_render/gen_bento_canon_217.py    -> reviews/BENTO-CANON-2026-08-25-v6.html
+  · knowledge/_render/gen_bento_roles_217.py    -> reviews/BENTO-CANON-2026-08-25-v7.html
+  · knowledge/_render/gen_gallery_compare_217.py-> reviews/GALLERY-COMPARE-2026-08-25-v3.html
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -66,18 +80,31 @@ LEDGER = [
         mints="a ruling on the squaring pass's mutation scope: tail-only, or the whole wall.",
     ),
     dict(
-        key="Q3", pages=("canon", "compare"), state=PARTIAL, receipt="s218-D6 (4)",
+        key="Q3", pages=("canon", "compare"), state=PARTIAL, receipt="s219-D2 (2)",
         question="What may a photograph be re-cropped into when a wall is squared?",
         asked_as="BENTO-CANON v2, § “What is yours to decide”.",
-        clause="THE PHOTOGRAPHY GALLERY WALL IS SQUARED — Dave reopened the edge on the page his "
-               "exports already marked edge:square: the squaring pass runs on the photography "
-               "page's gallery wall and last-row photos may re-span to close holes.",
-        residue="Ruled for the photography page's wall ONLY, and only for LAST-ROW photographs. "
-                "What a photograph anywhere else may be re-spanned into — and whether a portrait "
-                "may ever be laid on its side to close a hole — is untouched.",
+        # ⛔ #219 — THE SCOPE WIDENED AND THE RESIDUE DID NOT CLOSE. s219-D2 (2) makes square the
+        # gallery-ROLE default, so the squaring pass now reaches every gallery wall rather than one
+        # page — and in the SAME sentence it declines to bound the crop. Rounding that to "ruled"
+        # would be the laundering this ledger exists to refuse.
+        clause="SQUARE IS THE GALLERY-ROLE DEFAULT in all four themes - widening s218-D6(4) beyond "
+               "the photography wall; the s217-D3 exemption yields as a default. … The "
+               "orphan/flattening refinement (the W-99zi third bend, incl. the stocksy-6629948 "
+               "case) is expressly NOT ruled here.",
+        residue="EXPRESSLY still yours, in the ruling's own words. The wall may now be squared "
+                "everywhere in the gallery role, and there is still no bound on what a photograph "
+                "may be re-spanned INTO — nor any rule against flattening a portrait to close a "
+                "hole. The #219 squaring pass did exactly that to tile 247 "
+                "(`stocksy-6629948-w1600.jpg`, 1067×1600 portrait, re-spanned 1×2 → 3×1), rendered "
+                "before and after at `reviews/SQUARING-PORTRAIT-2026-08-25-v1.html`.",
+        also=[("s218-D6 (4)",
+               "THE PHOTOGRAPHY GALLERY WALL IS SQUARED — the squaring pass runs on the "
+               "photography page's gallery wall and last-row photos may re-span to close holes.",
+               "…which is the ruling s219-D2 (2) widened; it stands as frozen history of the "
+               "one-page scope.")],
         owner="Dave",
-        mints="a bound on the crop a squaring pass may pay, applying to every wall rather than to "
-              "one page.",
+        mints="a bound on the crop a squaring pass may pay — the W-99zi third bend that s219-D2 (2) "
+              "expressly left open.",
     ),
     dict(
         key="Q4", pages=("roles", "compare"), state=RULED, receipt="s217-D5",
@@ -86,10 +113,21 @@ LEDGER = [
         asked_as="BENTO-CANON v3, § “The keyline trial” — badged “Proposed — not ruled”; "
                  "and GALLERY-COMPARE v1, wall A3.",
         clause="GALLERY: same three spacings; keylines on/off; caption background colour on/off",
-        also=("s218-D3", "supercharge spacing 1, console/legacy/mono spacing 24, keylines off, "
-              "bento mode, white grounds, transparent captions"),
-        also_note="…so the photography page's own answer is already recorded too: keylines OFF in "
-                  "all four themes.",
+        # ⛔ #219 — BOTH HALVES OF THE OLD `also` WENT STALE IN ONE DAY, and neither is deleted.
+        # s218-D3's "keylines off in all four themes" is superseded by s219-D2 (4) (legacy carries
+        # them); "same three spacings" is superseded by s219-D1 (4)'s six ruled stops.
+        also=[("s219-D2 (4)",
+               "Keyline defaults are as exported: on only in legacy display and legacy gallery, "
+               "off elsewhere including all dashboards; the switch is available everywhere in edit "
+               "mode per s219-D1(2), with s218-D1's corner-keyline construction unchanged for "
+               "dashboards.",
+               "…so the photography page's own answer moved: keylines are ON in LEGACY and off in "
+               "the other three, superseding s218-D3's “off in all four themes”, which stands as "
+               "frozen #218 history."),
+              ],
+        # ⚠ The clause's OTHER half — "same three spacings" — is superseded by s219-D1 (4) and is
+        # struck in its own row (Q14) rather than restated here. One home per fact (ADR-0017).
+        see_also="Q14",
     ),
     dict(
         key="Q5", pages=("compare",), state=RULED, receipt="s217-D5",
@@ -100,34 +138,64 @@ LEDGER = [
         clause="mode is 'Justified rows' OR 'Gallery bento', the bento mode carrying a sub-option "
                "ragged or square bottom (this turns s217-D3's gallery squaring exemption into a "
                "per-instance choice)",
-        also=("s218-D3", "bento mode"),
-        also_note="…and the photography page's mode is recorded as BENTO in all four of Dave's "
-                  "exports. A or B was answered “both, as a dial, per instance”.",
+        also=[("s218-D3", "bento mode",
+               "…and the photography page's mode is recorded as BENTO in all four of Dave's "
+               "exports, at #218 and again in the twelve #219 exports. A or B was answered "
+               "“both, as a dial, per instance”.")],
     ),
     dict(
-        key="Q6", pages=("roles", "compare"), state=PARTIAL, receipt="s217-D5",
+        # ⛔ #219 — THIS ROW CLOSED. It was PARTIAL, and its residue was in as many words "whether
+        # the ROLE's default flips from ragged to square". `s219-D2 (2)` flips it, in all four
+        # themes. The row is now RULED and STRUCK, its live control is gone from both pages, and
+        # `open_control_html("Q6")` now REFUSES — which is the discipline working, not a break.
+        key="Q6", pages=("roles", "compare"), state=RULED, receipt="s219-D2 (2)",
         question="Ragged or square bottom edge on a gallery wall?",
         asked_as="BENTO-CANON v3, § Gallery (“This wall is ragged, and that is the ruling”); "
-                 "GALLERY-COMPARE v1, A's hole counts.",
-        clause="the bento mode carrying a sub-option ragged or square bottom (this turns s217-D3's "
+                 "GALLERY-COMPARE v1, A's hole counts. Carried as PART RULED on the #219 re-cut "
+                 "until s219-D2 closed it.",
+        clause="SQUARE IS THE GALLERY-ROLE DEFAULT in all four themes - widening s218-D6(4) beyond "
+               "the photography wall; the s217-D3 exemption yields as a default. Edge remains an "
+               "edit-pass dial per s219-D1.",
+        also=[("s217-D5",
+               "the bento mode carrying a sub-option ragged or square bottom (this turns s217-D3's "
                "gallery squaring exemption into a per-instance choice)",
-        residue="The DIAL is ruled and one instance is set — `s218-D6 (4)` squares the photography "
-                "page's wall and scopes itself: “the GALLERY ROLE's s217-D3 exemption elsewhere is "
-                "untouched until he says wider.” Whether the ROLE's default flips from ragged to "
-                "square is the part still open.",
-        owner="Dave",
-        mints="an amendment to `s217-D3`'s gallery squaring exemption — the role default, not one "
-              "page's dial.",
+               "…so the DIAL was already ruled; what s219-D2 (2) settled is which way it points "
+               "when nobody has touched it.")],
+        baked="⚠ NOT YET BAKED INTO THIS PAGE, and the gap is declared rather than hidden. The "
+              "ruling moved the DEFAULT; the token store's role policy "
+              "(`layout/bento/$roles/gallery/squaring` in `knowledge/tokens/layout.json`) still "
+              "reads `false`, so `role_policy(\"gallery\")` still answers EXEMPT and the gallery "
+              "walls below are still ragged. Flipping the store is a canon regeneration and it "
+              "changes every gallery bento anywhere, including surfaces nobody has looked at — it "
+              "is filed for you as Q1 of "
+              "`notes/_subreports/2026-08-25-219-enactB-defaults.md`. What a squaring pass may CROP "
+              "is a different question again, and is still open — see Q3.",
     ),
     dict(
-        key="Q7", pages=("canon", "roles", "compare"), state=RULED, receipt="s218-D6 (1)",
+        # ⛔ #219 — SUPERSEDED, NOT REVERSED. The row stays RULED and stays struck; what changed is
+        # WHICH ruling closes it. Dave, asked which of the two grounds governs: "I changed my mind
+        # just go with the latest and change in the library." s218-D6 (1) is kept below as frozen
+        # history so the page can tell a superseded decision from one nobody ever took.
+        key="Q7", pages=("canon", "roles", "compare"), state=RULED, receipt="s219-D2 (1)",
         question="What ground and ink does a mono caption take?",
-        asked_as="Carried as the conductor's PROPOSED shade at #218 (`s218-D3`), Dave's eye owed.",
-        clause="The mono caption ground is RATIFIED at the proposed shade: #1A1A1A via "
-               "--surface-digital-black with --text-reverse white ink - 'Yes - that's the one'. "
-               "The s218-D3 PROPOSED marker on the shade is discharged.",
-        baked="Baked into this page: switch the theme to MONO and every caption takes the ruled "
-              "ground and the reverse ink, in light and dark alike.",
+        asked_as="Carried as the conductor's PROPOSED shade at #218 (`s218-D3`), ratified dark at "
+                 "`s218-D6 (1)`, and re-answered LIGHT by Dave's #219 mono gallery export.",
+        clause="MONO CAPTION SUPERSESSION: the mono gallery caption ground is light grey "
+               "rgb(240,240,240) per the #219 mono gallery export, SUPERSEDING s218-D6(1)'s "
+               "#1A1A1A/white ground - Dave, asked which governs: 'I changed my mind just go with "
+               "the latest and change in the library.' Applies to the gallery role including the "
+               "library photography surfaces; the dark ground retires there.",
+        also=[("s218-D6 (1)",
+               "The mono caption ground is RATIFIED at the proposed shade: #1A1A1A via "
+               "--surface-digital-black with --text-reverse white ink - 'Yes - that's the one'.",
+               "…FROZEN HISTORY. s219-D2 (1) says in its own words that s218-D6 (1) “stands as "
+               "frozen history”; it is shown here so a superseded decision cannot be mistaken for "
+               "one nobody took.")],
+        baked="Baked into this page: switch the theme to MONO and every caption takes "
+              "`--surface-subtle` (rgb(240, 240, 240) in mono — the exact pixel Dave's own export "
+              "resolved) with the caption's standing `--text-secondary` ink, in light and dark "
+              "alike. The construction is COPIED from `gen_foundations_217.settings_css`, which is "
+              "the ratified enactment — not re-derived here.",
     ),
     dict(
         key="Q8", pages=("canon", "roles", "compare"), state=RULED, receipt="s217-D3",
@@ -190,6 +258,46 @@ LEDGER = [
              "landscape pictures.",
         mints="a ruling on whether justified rows get an emphasis rhythm, and what guards it.",
     ),
+    # -----------------------------------------------------------------------------------------
+    # ⬛ #219 ADDITIONS. Neither of these was ASKED on these pages — they are recorded on the same
+    # footing as Q9/Q10, so that a rounding or a spacing shown here cannot be read as re-opening a
+    # question `s219-D1` / `s219-D2` closed this morning. [[feedback-dont-launder-a-premise-into-a-ruling]]
+    # -----------------------------------------------------------------------------------------
+    dict(
+        key="Q13", pages=("roles", "compare"), state=RULED, receipt="s219-D2 (3)",
+        question="What corner rounding does a gallery tile take, per theme?",
+        asked_as="Not asked on these pages. `s217-D5` left it open as proposal P3 and the #217 "
+                 "pages simply showed one rounding; recorded here so nothing shown below can be "
+                 "read as re-opening P3.",
+        clause="CONSOLE GALLERY ROUNDING DEFAULTS CAPSULE - resolving s217-D5's open P3 as the "
+               "shipped default by Dave's own export; rounding remains an edit-pass dial.",
+        baked="Enacted in `gen_foundations_217.settings_css`, which owns the construction: the "
+              "CAPSULE branch puts canon's container radius on the TILE and squares the picture "
+              "inside it — measured live on the photography page at a console tile radius of "
+              "20px, picture 0, and 0/0 in the other three themes. This page records the ruling; "
+              "it does not re-draw it.",
+    ),
+    dict(
+        key="Q14", pages=("canon", "roles", "compare"), state=RULED, receipt="s219-D1 (4)",
+        question="What spacings may a bento wall be set to — and who may widen the set?",
+        asked_as="Not asked on these pages as a question; STATED on BENTO-CANON v5 as settled fact "
+                 "in `s217-D5`'s words, “GALLERY: same three spacings”. That sentence is what went "
+                 "stale, so the row exists to strike it rather than to re-put it.",
+        clause="Spacing rails are the ruled stop set {1, 2, 4, 16, 24, 40} - the edit pass picks "
+               "among stops, never free values; widening the set is a ruling.",
+        also=[("s219-D1 (5)",
+               "The dashboard grammar carries the two-dial spacing split mainSpacing/subSpacing "
+               "per the exports (main 24/40/40/24, sub 4/4/4/2 in legacy/mono/console/supercharge "
+               "order).",
+               "…so a dashboard's outer wall and its sub-bentos draw from the SAME rail through "
+               "two dials, rather than from two ladders.")],
+        baked="Enacted in `gen_bento_matrix_217`, which owns the option grammar: the rail is typed "
+              "ONCE as `RULED_SPACING_RAIL` and every dial, CSS rule and manifest entry is derived "
+              "from it. `s217-D6`'s eight-stop sub-bento ladder (8/12/20) is superseded by the six "
+              "ruled stops — a supersession by implication rather than by name, and it is flagged "
+              "for Dave's confirmation in `notes/_subreports/2026-08-25-219-enactA-rails.md` (Q3 "
+              "there). This page records the rail; it does not re-draw the dial.",
+    ),
 ]
 
 # ⬛ UNPROVEN, not open — declared so it is not mistaken for a decision waiting on Dave.
@@ -233,8 +341,11 @@ def ledger_html(page, title="What was already decided"):
     S = ['<section id="decided">']
     S.append('<h2 class="t-ed-heading-3">%s</h2>' % esc(title))
     S.append('<p class="lede t-ed-body">These pages were built at <b>#217</b>, before '
-             '<code>s217-D5</code>, <code>s217-D8</code>, <code>s218-D1</code> and '
-             '<code>s218-D6</code>. Everything <s>struck through</s> below is <b>a question this '
+             '<code>s217-D5</code>, <code>s217-D8</code>, <code>s218-D1</code>, '
+             '<code>s218-D6</code> &mdash; and now before <code>s219-D1</code> and '
+             '<code>s219-D2</code>, which closed four more of them and <b>superseded</b> two '
+             'answers that were settled law a day ago. Everything <s>struck through</s> below is '
+             '<b>a question this '
              'page used to ask you and no longer does</b>, with the ruling that closed it. '
              '<b>%d struck, %d still live.</b> A struck question is shown, not deleted: a decision '
              'surface that quietly drops what it answered cannot be told apart from one that '
@@ -266,10 +377,17 @@ def ledger_html(page, title="What was already decided"):
         else:
             cell.append('<span class="rcut-tag rcut-tag-o t-cm-legal">Open &middot; yours</span>')
             cell.append('<span class="rcut-res t-ed-body-small">%s</span>' % esc(r.get("note", "")))
-        if r.get("also"):
+        # ⚠ `also` is a LIST of (ruling, clause, note) since #219: one row can be answered, and
+        # then RE-answered, by more than one later ruling — Q4 alone carries a #218 record and a
+        # #219 supersession of it. A single slot would have forced one of them to be dropped, and
+        # the dropped one is always the older, which is the frozen history a reader needs most.
+        for _a in r.get("also") or []:
             cell.append('<span class="rcut-clause t-ed-body-small"><b>%s</b> also records: '
                         '&ldquo;%s&rdquo; %s</span>'
-                        % (esc(r["also"][0]), esc(r["also"][1]), esc(r.get("also_note", ""))))
+                        % (esc(_a[0]), esc(_a[1]), esc(_a[2] if len(_a) > 2 else "")))
+        if r.get("see_also"):
+            cell.append('<span class="rcut-res t-ed-body-small">Another part of the same clause is '
+                        'struck separately &mdash; see <b>%s</b>.</span>' % esc(r["see_also"]))
         if r.get("baked"):
             cell.append('<span class="rcut-baked t-ed-body-small">%s</span>' % esc(r["baked"]))
         if r.get("enacted_in"):
@@ -346,32 +464,68 @@ table.rcut s{color:var(--ink-2,#545454);}
 """
 
 
+# ⬛ s219-D2 (1) — THE MONO CAPTION GROUND AND ITS INK, RE-POINTED. These two pairs are ADDRESSED
+# out of `gen_foundations_217`, the ratified enactment, rather than re-typed here: that module owns
+# the construction and this one only mirrors it onto three review pages. A second typing of the
+# token names is a second thing to keep in step, and it is always the copy that goes stale
+# ([[read-chain-is-where-staleness-is-free]] — which is exactly how these three pages came to be
+# painting the retired #218 ground the morning after it was retired).
+def _cap_tokens():
+    """-> ((ground_token, ground_fallback), (ink_token, ink_fallback)) from the enactment itself.
+
+    ⛔ FAILS LOUD if the address moves. A silent fallback to hard-typed names would put the review
+    pages back where finding 12 found them: confidently painting last week's ruling."""
+    import importlib
+    f = importlib.import_module("gen_foundations_217")
+    ground = "--surface-subtle"
+    if ground not in f.BG_FALLBACK:
+        raise KeyError("gen_foundations_217.BG_FALLBACK no longer carries %r — the s219-D2 (1) "
+                       "caption ground moved and this mirror did not" % ground)
+    return (ground, f.BG_FALLBACK[ground]), tuple(f.CAP_INK)
+
+
+# ⬛ FROZEN #218 HISTORY, kept BY NAME so the supersession is legible in the source too. It is not
+# called anywhere; it exists because deleting it would leave a reader unable to tell a ground that
+# was superseded from one that was never ruled. Its ledger row is Q7's `also`.
+RETIRED_MONO_CAPTION_218 = {
+    "ruling": "s218-D6 (1)", "superseded_by": "s219-D2 (1)",
+    "ground": ("--surface-digital-black", "#1A1A1A"), "ink": ("--text-reverse", "#FFFFFF"),
+    "dave": "But with the darkest grey for the captions and white for the text.",
+    "retired_by": "I changed my mind just go with the latest and change in the library.",
+}
+
+
 def mono_caption_css(pairs):
-    """The `s218-D6 (1)` mono caption ground, per page.
+    """The `s219-D2 (1)` mono caption ground, per page — LIGHT GREY, superseding `s218-D6 (1)`.
 
     `pairs` is a list of (caption-selector, [ink-child-selectors]). ⛔ TOKENS, NEVER A RAW HEX as the
-    operative value: `--surface-digital-black` is #1A1A1A in mono in BOTH modes and `--text-reverse`
-    is #FFFFFF in both, which is the point — a ground Dave ruled by eye must not invert when the mode
-    flips. The literals are FALLBACKS only ([[dangling-dataviz-var-renders-silent-black]]).
-    ⚠ The construction is COPIED from `gen_foundations_217.settings_css`'s rider, which is the
-    ratified enactment ([[specimen-starts-from-reference]]) — not re-derived here."""
+    operative value: `--surface-subtle` resolves rgb(240, 240, 240) in mono — the exact pixel Dave's
+    own #219 export measured — and the ink is the caption's standing `--text-secondary`. The
+    literals are FALLBACKS only ([[dangling-dataviz-var-renders-silent-black]]).
+    ⚠ The construction and both token names are COPIED from `gen_foundations_217.settings_css`,
+    which is the ratified enactment ([[specimen-starts-from-reference]]) — not re-derived here."""
+    (g_tok, g_hex), (i_tok, i_hex) = _cap_tokens()
     sel = '[data-apollo-theme="mono"] '
-    L = ["/* ---- s218-D6 (1) — THE MONO CAPTION GROUND, RATIFIED (Dave: “Yes — that's the one”).",
-         "   Dave's words at #218: “But with the darkest grey for the captions and white for the",
-         "   text.” Mode-stable tokens, both modes, mono only. */"]
+    L = ["/* ---- s219-D2 (1) — THE MONO CAPTION GROUND, LIGHT GREY. Dave, asked which of the two",
+         "   grounds governs: “I changed my mind just go with the latest and change in the",
+         "   library.” The #219 mono gallery export says capBg: grey, which is the dial's word for",
+         "   %s. ⛔ SUPERSEDES s218-D6 (1)'s %s / %s ground, which is frozen"
+         % (g_tok, RETIRED_MONO_CAPTION_218["ground"][0], RETIRED_MONO_CAPTION_218["ink"][0]),
+         "   history and is NOT painted anywhere on this page. Both modes, mono only. */"]
     for cap, inks in pairs:
-        L.append("%s%s{background:var(--surface-digital-black,#1A1A1A); "
-                 "color:var(--text-reverse,#FFFFFF);}" % (sel, cap))
+        L.append("%s%s{background:var(%s,%s); color:var(%s,%s);}"
+                 % (sel, cap, g_tok, g_hex, i_tok, i_hex))
         if inks:
-            L.append("%s{color:var(--text-reverse,#FFFFFF);}"
-                     % ", ".join("%s%s" % (sel, i) for i in inks))
+            L.append("%s{color:var(%s,%s);}"
+                     % (", ".join("%s%s" % (sel, i) for i in inks), i_tok, i_hex))
     return "\n".join(L)
 
 
 def selftest():
-    """5 bites: every row states verbatim · no settled row can be re-put as a control ·
+    """8 bites: every row states verbatim · no settled row can be re-put as a control ·
     every open row names an owner and what it mints · every page carries rows · the ledger
-    renders."""
+    renders · the caption mirror carries the ENACTED tokens, paints none of the RETIRED ones,
+    and agrees with Q7's receipt (#219 seam 5, the finding-12 class)."""
     ids = [r["key"] for r in LEDGER]
     assert len(ids) == len(set(ids)), "bite 1 FAIL: duplicate ledger keys — %r" % ids
     for r in LEDGER:
@@ -403,8 +557,27 @@ def selftest():
     for r in LEDGER:
         if r["state"] in (OPEN, PARTIAL):
             open_control_html(r["key"])
+    # ⬛ BITE 6 (#219 seam 5) — THE CAPTION MIRROR AGREES WITH THE ENACTMENT, and the retired ground
+    # is nowhere in the paint. This is the gate for the class that produced finding 12: three review
+    # pages went on painting `s218-D6 (1)`'s ground the morning after `s219-D2 (1)` retired it,
+    # because the mirror was hand-typed and nothing compared it to its source
+    # ([[read-chain-is-where-staleness-is-free]], [[gate-dont-patch]] — gate the condition).
+    css = mono_caption_css([(".zz-cap", [".zz-cap .zz-desc"])])
+    (g_tok, _g), (i_tok, _i) = _cap_tokens()
+    assert "var(%s," % g_tok in css and "var(%s," % i_tok in css, \
+        "bite 6 FAIL: the mono caption mirror does not carry the enacted tokens %r/%r" \
+        % (g_tok, i_tok)
+    for dead in (RETIRED_MONO_CAPTION_218["ground"][0], RETIRED_MONO_CAPTION_218["ink"][0]):
+        assert "var(%s," % dead not in css, \
+            "bite 6b FAIL: the RETIRED %s is still painted by the caption mirror — s219-D2 (1) " \
+            "retired it and a review page must not put a superseded ground to Dave" % dead
+    # and the ledger must AGREE with the mirror: Q7's receipt is the ruling the paint enacts.
+    q7 = next(r for r in LEDGER if r["key"] == "Q7")
+    assert q7["receipt"] == "s219-D2 (1)", \
+        "bite 6c FAIL: Q7 is struck with %r but the paint enacts s219-D2 (1) — the ledger and the " \
+        "stylesheet disagree in front of Dave" % q7["receipt"]
     c = {pg: counts_for(pg) for pg in ("canon", "roles", "compare")}
-    print("_bento_recut_219 selftest OK (5 bites) — struck/open per page: %s"
+    print("_bento_recut_219 selftest OK (8 bites) — struck/open per page: %s"
           % " · ".join("%s %d/%d" % (k, v["struck"], v["open"]) for k, v in c.items()))
 
 

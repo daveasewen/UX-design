@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-verify_bento_roles_217.py — drives the BENTO-CANON roles demo (its generator's own OUT — #219: v5) in FOUR THEMES ×
+verify_bento_roles_217.py — drives the BENTO-CANON roles demo (its generator's own OUT — #219 seam 5: v7) in FOUR THEMES ×
 LIGHT/DARK and measures the things `s217-D3` can be wrong about. Live document, computed styles
 and measured geometry, never a read of the source.
 

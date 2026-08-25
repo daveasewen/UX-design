@@ -37,7 +37,9 @@ WHAT IT DRIVES
                    back as a CHANGE IN A TILE'S RESOLVED grid-column span.
        dashboard · main spacing on the outer wall AND the s217-D6 snapping slider driven in
                    PIXELS with an OFF-SNAP value, the snap read back off the resolved inner
-                   gutter. Plus the ruled ABSENCE: no Tight button on main spacing.
+                   gutter (the stop is computed by `matrix.snap()`, never typed). Plus the
+                   dial's OPTION SET compared against `matrix.DASH_MAIN` — s219-D1(2) emptied
+                   s217-D5's tight exclusion, so an absence can no longer be hard-typed here.
      And the type is PINNED: each page renders exactly one pane, and offers no type dial.
 
  ⬛ 5 · THE DASHBOARD PAGE CARRIES THE #218 CLAUSE, ASSERTED FROM RENDERED POSITIONS.
@@ -127,6 +129,10 @@ MUTANT_OVERLAY = os.path.join(MUT_DIR, "grids-12col-OVERLAY-BROKEN.html")
 
 sys.path.insert(0, HERE)
 import gen_grids_218 as grids               # the STORE values, through the generator's own read
+# ⬛ #219 seam 5 — the RULED SPACING RAIL and its snapping rule, ADDRESSED not re-typed. `s219-D1(4)`
+# widened the stop set and the eight-stop s217-D6 ladder this probe used to assert is superseded;
+# `matrix.snap()` is the one home for "which stop does this pixel land on".
+import gen_bento_matrix_217 as matrix
 import gen_library_214 as library           # FOUNDATIONS + FOUNDATION_GROUPS — one list
 
 THEMES = ["mono", "legacy", "console", "supercharge"]
@@ -716,13 +722,33 @@ def gallery_drive(pg, lines):
 def dashboard_drive(pg, lines):
     """⬛ s217-D8 + #218, driven at the ruled stops in the theme where the radius is non-zero."""
     fails = []
-    # ⛔ THE RULED ABSENCE. Dashboard main spacing has NO Tight button — ruled out, not disabled.
-    tight = pg.evaluate("""() => {
+    # ⛔ #219 seam 5 — THIS ASSERTION WAS A SECOND TYPING OF A RULED SET, AND THE SET MOVED.
+    # It read: "dashboard main spacing has NO Tight button (s217-D5 rules tight out)" — a hard-typed
+    # ABSENCE. `s219-D1 (2)` puts every option on every dial in every theme and role, and lane A
+    # enacted that by emptying the exclusion, so `1` is now a member of `DASH_MAIN` and the button
+    # is present. The old assertion would have redded the RULING, not the page.
+    # ⬛ AND IT IS NOT THE PROBE'S PLACE TO SETTLE WHICH READING GOVERNS. Whether "never tight"
+    # survives s219-D1(2) as a ROLE rule is expressly Dave's — it is Q2 of
+    # `notes/_subreports/2026-08-25-219-enactA-rails.md` and it is OPEN. So the assertion is
+    # re-pointed AT CAUSE: the dial must offer EXACTLY the option space `gen_bento_matrix_217`
+    # defines, no more and no less. That statement is true under either reading, because whichever
+    # way Dave rules, the ruling lands in `DASH_MAIN` and this probe follows it without an edit.
+    want_main = [v[0] for v in matrix.DASH_MAIN]
+    got_main = pg.evaluate("""() => {
       const g = document.querySelector('.bm-group[data-dial="mainSpacing"]');
-      return g ? g.querySelectorAll('button[data-value="1"]').length : -1; }""")
-    if tight != 0:
-        fails.append("dashboard main spacing — %d Tight button(s) present; s217-D5 rules tight "
-                     "OUT of the main wall, so it must be ABSENT, not disabled" % tight)
+      return g ? Array.from(g.querySelectorAll('button[data-value]'))
+                      .map(b => b.getAttribute('data-value')) : null; }""")
+    if got_main is None:
+        fails.append("dashboard main spacing — the mainSpacing dial is not on the page at all")
+    elif got_main != want_main:
+        fails.append("dashboard main spacing — the dial offers %r but the ruled option space "
+                     "(gen_bento_matrix_217.DASH_MAIN, s219-D1(2)/(4)) is %r: the control and the "
+                     "grammar disagree" % (got_main, want_main))
+    else:
+        lines.append("  dashboard mainSpacing dial offers exactly the ruled set %s "
+                     "(s219-D1(2) emptied s217-D5's tight EXCLUSION — ⬛ whether \"never tight\" "
+                     "survives as a ROLE rule is OPEN, enact-A Q2, and this probe does not "
+                     "prejudge it)" % "/".join(want_main))
     for value, want in (("40", 40), ("24", 24)):
         pg.evaluate(CLICK, ["mainSpacing", value])
         pg.wait_for_timeout(200)
@@ -732,7 +758,15 @@ def dashboard_drive(pg, lines):
                          % (value, w["gutter"], want))
     # ⬛ s217-D6 — the SNAP, driven in PIXELS with an OFF-SNAP value so the snap is a real
     # operation the probe can land, not an unfalsifiable claim about indices.
-    for raw, want in ((7, 8), (13, 12), (22, 20), (40, 24), (1, 1)):
+    # ⛔ #219 seam 5 — THE EXPECTATIONS WERE HARD-TYPED AND THEY WENT STALE. This list read
+    # ((7,8),(13,12),(22,20),(40,24),(1,1)) — the s217-D6 eight-stop ladder 1·2·4·8·12·16·20·24.
+    # `s219-D1 (4)` rules SIX stops, 1·2·4·16·24·40: 8, 12 and 20 leave and 40 arrives, so three of
+    # those five pairs asserted a stop that no longer exists. A hard-typed expectation cannot tell
+    # a page that broke from a ruling that moved, and this one would have redded the RULING.
+    # The RAW values stay (they are the off-snap probes — the whole point is landing between stops);
+    # the WANTED stop is now computed by `gen_bento_matrix_217.snap()`, the one home for the rule.
+    for raw in (7, 13, 22, 40, 1):
+        want = matrix.snap(raw)
         pg.evaluate(SLIDER_DRIVE, raw)
         pg.wait_for_timeout(260)
         got = pg.evaluate("""() => {

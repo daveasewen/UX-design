@@ -2,14 +2,20 @@
 """
 gen_bento_canon_217.py — the BENTO CANON demo page (s217-D2, #217). For Dave's eye.
 
-⛔ #219 RE-CUT. This generator now writes `reviews/BENTO-CANON-2026-08-25-v4.html`. Dave opened v2
+⛔ #219 RE-CUT. This generator now writes `reviews/BENTO-CANON-2026-08-25-v6.html`. Dave opened v2
 and said *"we've already decided all of this in previous sessions"* and *"we've also missed the
 extra space for captions."* Both were true of v2: its squaring section still badged a RATIFIED
 mechanism "Proposed — not ruled" (`s217-D3`), and its captions never consumed the ruled
-`layout/bento/caption-space`. v4 STRIKES the settled questions with their receipts (never drops
-them), BAKES IN the ruled caption block and the `s218-D6 (1)` mono caption ground, and leaves only
+`layout/bento/caption-space`. The re-cut STRIKES the settled questions with their receipts (never
+drops them), BAKES IN the ruled caption block and the ruled mono caption ground, and leaves only
 the genuinely open residue as a live control. The ledger is `_bento_recut_219.py` — one home, three
 pages. ⚠ v2 is untouched on disk.
+
+⛔ v6, AND WHY IT EXISTS THE SAME DAY AS v4. `s219-D1` and `s219-D2` were inscribed hours after v4
+was written, and `s219-D2 (1)` RETIRED the `s218-D6 (1)` dark mono caption ground this page was
+painting. v4 therefore shows Dave a superseded ground beside a ledger calling it settled law
+(lane B's finding 12). v6 is that page rebuilt off the updated ledger; **v4 stays on disk exactly
+as it was written** ([[feedback-version-dont-overwrite]]).
 
 Builds the canon bento grammar rendered as itself,
 in four themes x light/dark, with the bento-of-bentos Dave described in as many words —
@@ -67,10 +73,13 @@ from gen_canon_bento import (params, span_for, emphasise,  # noqa: E402
                              caption_space)
 import _bento_recut_219 as recut  # noqa: E402  ⚠ THE ONE HOME for the decision ledger
 
-# ⚠ v4, NOT an overwrite. `BENTO-CANON-2026-08-23-v2.html` stays on disk exactly as Dave saw it;
-# this is its #219 successor, re-cut against the rulings that landed after v2 was built
+# ⚠ v6, NOT an overwrite. `BENTO-CANON-2026-08-23-v2.html` (Dave's #217 page) and
+# `BENTO-CANON-2026-08-25-v4.html` (the pre-s219 re-cut) both stay on disk exactly as they were
+# written; this is the #219 seam-5 successor, re-cut against `s219-D1` / `s219-D2`
 # ([[feedback-version-dont-overwrite]]).
-OUT = os.path.join(ROOT, "reviews", "BENTO-CANON-%s-v4.html" % recut.RECUT_DATE)
+# ⚠ THE VERSION SERIES IS SHARED with gen_bento_roles_217 — both write BENTO-CANON-<date>-vN, so
+# the next free numbers are taken in pairs (v4/v5 at the re-cut, v6/v7 at seam 5).
+OUT = os.path.join(ROOT, "reviews", "BENTO-CANON-%s-v6.html" % recut.RECUT_DATE)
 PHOTO_MANIFEST = os.path.join(KNOW, "_PHOTOGRAPHY-MANIFEST.json")
 UP = "../"
 SENTINEL = "<!-- APOLLO BENTO-CANON DEMO (gen_bento_canon_217.py) — s217-D2, RE-CUT #219 -->"
@@ -662,7 +671,7 @@ def build(photos, residuals):
 
 def recut_css():
     """The page stylesheet with the #219 re-cut baked in: the ruled caption block (token, with a
-    MINT-TIME literal fallback), the `s218-D6 (1)` mono caption ground, and the ledger's chrome."""
+    MINT-TIME literal fallback), the `s219-D2 (1)` mono caption ground, and the ledger's chrome."""
     space, lines = caption_space()
     return (CSS
             .replace("__CAPSPACE__", str(space))
@@ -821,8 +830,18 @@ def selftest():
         "bite 7d FAIL: the fallbacks were not minted from caption_space() at build time"
     assert 'class="c-bento__caption dx-cap' in h, \
         "bite 7e FAIL: the photo captions are not in canon's caption slot"
-    assert "surface-digital-black" in body and "text-reverse" in body, \
-        "bite 7f FAIL: the s218-D6(1) mono caption ground is not on the page"
+    # ⬛ #219 seam 5 — BITE 7f FLIPPED WITH THE RULING, and it now asserts BOTH halves: the enacted
+    # ground is present AND the retired one is nowhere. Asserting only the presence of the new
+    # ground would have passed a page that painted both and let the cascade decide which Dave saw.
+    _g, _i = recut._cap_tokens()
+    assert "var(%s," % _g[0] in body and "var(%s," % _i[0] in body, \
+        "bite 7f FAIL: the s219-D2(1) mono caption ground (%s / %s) is not on the page" \
+        % (_g[0], _i[0])
+    for _dead in (recut.RETIRED_MONO_CAPTION_218["ground"][0],
+                  recut.RETIRED_MONO_CAPTION_218["ink"][0]):
+        assert "var(%s," % _dead not in body, \
+            "bite 7f2 FAIL: the RETIRED %s is still painted — s219-D2 (1) superseded it and a " \
+            "review page may not put a superseded ground to Dave" % _dead
 
     # --- bite 7g (#219): the ledger is present, struck, and nothing settled is a live control --
     dsec = h.split('<section id="decided">', 1)[1].split("</section>", 1)[0]

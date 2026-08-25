@@ -20,14 +20,16 @@ WHAT IT DRIVES AND MEASURES
 
  3 · AT LEAST ONE DIAL PER TYPE, WITH ITS EFFECT MEASURED IN PIXELS — not "the attribute
      changed", which is a tautology over a page that writes its own attributes:
-       display   · spacing 40 → 24 → tight, read back as the grid's resolved column-gap, plus the
-                   P1 reading: tight+keylines ON collapses the gap to 0 and moves the line into
-                   the tiles as an inset hairline.
+       display   · EVERY stop on the s219-D1(4) rail (1/2/4/16/24/40), read back as the grid's
+                   resolved column-gap, plus the P1 reading: 1px+keylines ON collapses the gap to
+                   0 and moves the line into the tiles as an inset hairline.
        gallery   · mode (justified vs bento: which container renders), and the ragged/square dial
                    read back as a CHANGE IN A TILE'S RESOLVED grid-column span.
        dashboard · main spacing on the outer wall and sub-bento spacing on an inner wall, measured
-                   separately, because the whole point of the type is that they differ. AND the
-                   ruled absence: the main-spacing control must carry NO tight button at all.
+                   separately, because the whole point of the type is that they differ (the
+                   s219-D1(5) split). AND s219-D1(2): BOTH dials must offer the WHOLE six-stop
+                   rail — s217-D5's missing Tight button is retired, and its absence would now be
+                   the defect.
 
  4 · A LEGALITY RULE, DRIVEN — an illegal caption combination is SELECTED (grey caption on a grey
      bento). The assertion is not that the page looks unhappy: the control must be DISABLED, it
@@ -60,18 +62,21 @@ WHAT IT DRIVES AND MEASURES
          grow, so a group beside a taller sibling read with a rounded top and a FLAT BOTTOM), and
          all four corners of every inner group at the console container radius.
 
- ⬛ 8 · s217-D6, THE TWO OPTION-SPACE CHANGES, DRIVEN:
-     · GALLERY IN CONSOLE EXCLUDES KEYLINES COMPLETELY — asserted on the NODE, in all four
-       themes. `hidden`/`disabled` cannot tell exclusion from a collapsed control, and the rule
-       must be shown to be an exclusion (console only) rather than a deletion (everywhere).
-       The reachable count is theme-dependent as a result, and the page must print both totals.
-     · SUB-BENTO SPACING IS A SNAPPING SLIDER over 1·2·4·8·12·16·20·24. Driven in PIXELS with
-       off-snap values (7→8, 13→12, 22→20, 40→24): the thumb, the state object, the RESOLVED
+ ⬛ 8 · THE OPTION-SPACE CHANGES, DRIVEN (s217-D6, RE-RULED BY s219-D1/s219-D2):
+     · EVERY DIAL IS AVAILABLE IN EVERY THEME (s219-D1(2)) — asserted on the NODE, in all four
+       themes, because `hidden`/`disabled` cannot tell an absent control from a collapsed one.
+       ⛔ THIS ARM IS THE INVERSE OF THE ONE IT REPLACES: it used to assert s217-D6's
+       gallery-in-console keyline EXCLUSION; `s219-D2(4)` retires it ("the switch is available
+       everywhere in edit mode"), so the control must now be PRESENT with both buttons in all
+       four, and the reachable count must AGREE across the themes it used to differ between.
+     · SUB-BENTO SPACING IS A SNAPPING SLIDER over the s219-D1(4) rail 1·2·4·16·24·40.
+       Driven in PIXELS with
+       off-snap values (7→4, 13→16, 22→24, 99→40): the thumb, the state object, the RESOLVED
        inner gutter and the EXPORT must all land on the same stop.
 
  ⬛ 10 · s217-D8 · KEYLINES HUG THE MODULES — THE RULED CONSTRUCTION, DRIVEN IN FOUR THEMES.
      Dave (#217, 2026-08-24): "the keylines should stay, but they should go round tight to the
-     modules not run down the middle of the spacing." Driven at 1 · 4 · 12 · 24 off the ruled
+     modules not run down the middle of the spacing." Driven at 1 · 4 · 16 · 24 off the ruled
      ladder, in every theme, on every inner dashboard wall the page lays out:
        ABOVE 1px — every tile's border is [1,1,1,1]; the GROUP'S border is [0,0,0,0] (the tiles
          carry the edges, and a group frame beside them is the double frame Dave rejected); the
@@ -90,7 +95,7 @@ WHAT IT DRIVES AND MEASURES
      strip at all. Zero nodes of the retired A/B/C spread may remain in the document.
 
  ⬛ 11 · #217 · THE SLIDER, THE SWEEP AND THE MAIN WALL, all driven in ALL FOUR THEMES:
-     · THE LIVE WALL, at four representative stops off the ruled ladder (1 · 4 · 12 · 24) — the
+     · THE LIVE WALL, at four representative stops off the ruled rail (1 · 4 · 16 · 24) — the
        two regimes above, measured on rendered geometry, group by group and tile by tile.
      · THE SWEEP STRIP — one group per RULED stop, every row shown and labelled with its pixel
        value, every row resolving the gutter its stop names, all rows sharing a column count and a
@@ -300,8 +305,9 @@ SLIDER_DRIVE = """([dial, raw]) => {
           valuetext: r.getAttribute('aria-valuetext')};
 }"""
 
-# ⬛ s217-D6 — is the keyline control NODE in the document at all? `hidden` is not the question:
-# the ruling says ABSENT, and only a node count can tell exclusion from a collapsed control.
+# ⬛ is the keyline control NODE in the document at all? `hidden` is not the question: under
+# s219-D1(2) the control must be THERE in every theme, and only a node count can tell a present
+# control from a collapsed one — or, if a theme lock is ever ruled again, an absent one.
 KEYLINE_NODES = """() => {
   return {theme: document.documentElement.getAttribute('data-apollo-theme'),
           groups: Array.from(document.querySelectorAll('.bm-group[data-dial="keylines"]'))
@@ -837,6 +843,14 @@ def main():
     src = (MUTANT_KEYLINE if keyline_mutation else
            MUTANT_INNER if inner_mutation else
            MUTANT_LAYOUT if layout_mutation else (MUTANT if mutation else PAGE))
+    # ⬛ #219 — `--src <path>` DRIVES A NON-REPO BUILD OF THE SAME PAGE. Added because the shipped
+    # page is written by `gen_foundations_217.py`, and a lane that owns the matrix module but not
+    # the writer could otherwise only prove its work by regenerating another lane's artefact — or
+    # not at all. The named mutation arms keep their own paths; this is an explicit override and
+    # the run PRINTS which file it read, so a green can never be attributed to the wrong page.
+    for i, a in enumerate(argv):
+        if a == "--src":
+            src = os.path.abspath(argv[i + 1])
     if not os.path.exists(src):
         sys.exit("verify_bento_matrix_217: no such page — %s%s"
                  % (src, "  (run gen_bento_matrix_217.py --break-%s first)"
@@ -920,8 +934,18 @@ def main():
         # ------------------------------------------------- 3a · DISPLAY spacing + the P1 reading
         click("type", "display")
         click("keylines", "off")
+        # ⬛ s219-D1(4) — EVERY RULED STOP IS DRIVEN, not a representative three. The rail is the
+        # whole vocabulary and two of its stops (2 and 16) are NEW: they are exactly the values the
+        # #218 exports could not say, so driving only 40/24/1 would pass a page that had not
+        # widened at all. The control must offer the six and each must resolve to its own pixels.
+        _rail = [str(s) for s in matrix.SPACING_STOPS]
+        _gsp = pg.evaluate(GROUP, "spacing")
+        if _gsp is None or (_gsp["options"] or []) != _rail:
+            fail("⛔ s219-D1(4) — display spacing must offer the whole ruled rail %r; the control "
+                 "offers %r" % (_rail, _gsp and _gsp["options"]))
         seen = {}
-        for sp, want in (("40", 40), ("24", 24), ("1", 1)):
+        for want in matrix.SPACING_STOPS:
+            sp = str(want)
             click("spacing", sp)
             m = measure()
             seen[sp] = m["gutterPx"]
@@ -950,8 +974,8 @@ def main():
         click("keylines", "off")
         if measure()["tileBorderPx"] != 0:
             fail("keylines OFF must draw NO tile border")
-        lines.append("  display gutter 40/24/1 -> %s · tight+keylines gap %s (inset hairline) "
-                     "· tight bare gap %s" % (seen, m_tight_on["gutterPx"],
+        lines.append("  display gutter, every ruled stop -> %s · 1px+keylines gap %s (inset "
+                     "hairline) · 1px bare gap %s" % (seen, m_tight_on["gutterPx"],
                                               m_tight_off["gutterPx"]))
 
         # ---- ⛔ DAVE'S DEFECT 1, AND IT IS AN INVARIANT, NOT A FIXUP ------------------------
@@ -1055,20 +1079,29 @@ def main():
 
         # --------------------------------------------------------- 3c · DASHBOARD, two spacings
         click("type", "dashboard")
+        # ⛔ INVERTED BY s219-D1(2), AND THE RETIRED ASSERTION IS NAMED: this used to be
+        # "TIGHT must be ABSENT from the control (s217-D5 rules it out)". s219-D1(2) puts every
+        # option on every dial in every theme and role — "I basically want all the options
+        # available for edit mode but these are the defaults" — so the main dial must carry the
+        # WHOLE ruled rail, 1px included. "Never tight" now lives in the shipped DEFAULT, which is
+        # gen_foundations_217's to compile and not this control's to withhold.
+        _rail = [str(s) for s in matrix.SPACING_STOPS]
         g = pg.evaluate(GROUP, "mainSpacing")
-        if g is None or "1" in (g["options"] or []):
-            fail("dashboard main spacing — TIGHT must be ABSENT from the control (s217-D5 rules "
-                 "it out; a disabled button would read as 'not right now'). options=%r"
-                 % (g and g["options"]))
+        if g is None or (g["options"] or []) != _rail:
+            fail("⛔ s219-D1(2)/(4) — dashboard MAIN spacing must offer the whole ruled rail %r; "
+                 "the control offers %r" % (_rail, g and g["options"]))
         # ⬛ s217-D6 — THE SUB-BENTO CONTROL IS A SNAPPING SLIDER NOW. Driven in pixels, so the
         # snap is a real operation with an off-snap input to land, not arithmetic over an index.
+        # ⛔ THE LADDER UNDER IT IS s219-D1(4)'s SIX-STOP RAIL, not s217-D6's eight stops: 8, 12
+        # and 20 leave the ladder (they are not on the ruled rail) and 40px arrives on it.
         sl = pg.evaluate(SLIDER_REPORT, "subSpacing")
         if not sl:
             fail("dashboard sub-bento spacing — s217-D6 rules a SLIDER and there is none")
-        elif sl["stops"] != [1, 2, 4, 8, 12, 16, 20, 24]:
-            fail("dashboard sub-bento spacing — the slider's ladder is %r, s217-D6 rules "
-                 "1,2,4,8,12,16,20,24" % sl["stops"])
-        elif not (sl["min"] == 1 and sl["max"] == 24 and sl["step"] == 1):
+        elif sl["stops"] != list(matrix.SUB_STOPS):
+            fail("dashboard sub-bento spacing — the slider's ladder is %r; s219-D1(4) rules the "
+                 "stop set %r for every spacing dial" % (sl["stops"], list(matrix.SUB_STOPS)))
+        elif not (sl["min"] == matrix.SUB_STOPS[0] and sl["max"] == matrix.SUB_STOPS[-1]
+                  and sl["step"] == 1):
             fail("dashboard sub-bento spacing — the slider is not driven in PIXELS (min %r max "
                  "%r step %r); an index-only slider has no off-snap value to land, so 'snaps to' "
                  "would be unfalsifiable" % (sl["min"], sl["max"], sl["step"]))
@@ -1082,8 +1115,11 @@ def main():
                  "page (options=%r); s217-D6 says the slider REPLACES it" % old["options"])
         # THE SNAP, DRIVEN: an off-snap pixel value is written to the control and the assertion is
         # that the THUMB, the STATE, the RESOLVED GUTTER and the EXPORT all land on the same stop.
-        # ⛔ 40px is checked too: it is no longer on the ladder, so it must be pulled back to 24.
-        for raw, want in ((7, 8), (13, 12), (22, 20), (3, 2), (40, 24), (0, 1)):
+        # ⛔ HAND-COMPUTED AGAINST THE RAIL AND ITS DECLARED TIE-BREAK (ties go to the LOWER stop):
+        # 7→4, 13→16, 22→24, 3→2 (a tie), 99→40 (off the top of the ladder), 0→1. ⚠ 40 is no
+        # longer an off-ladder value to pull back — s219-D1(4) puts it ON the sub-bento ladder —
+        # so the off-the-end case is driven at 99 instead.
+        for raw, want in ((7, 4), (13, 16), (22, 24), (3, 2), (99, 40), (0, 1)):
             s = pg.evaluate(SLIDER_DRIVE, ["subSpacing", raw])
             pg.wait_for_timeout(120)
             if int(s["thumb"]) != want or s["state"] != str(want):
@@ -1095,13 +1131,13 @@ def main():
             if s["readout"] != "%dpx" % want:
                 fail("s217-D6 SNAP — the read-out says %r, the snapped value is %dpx"
                      % (s["readout"], want))
-            # the gutter is the CSS's answer, and only the eight declared stops have a rule.
+            # the gutter is the CSS's answer, and only the declared ruled stops have a rule.
             # ⚠ at 1px + keylines ON the ruled P1 reading collapses the gap to 0 deliberately.
             if s["gutter"] != want and not (want == 1 and s["keylines"] == "on"):
                 fail("s217-D6 SNAP — %dpx snapped to %dpx but the inner grid resolved %rpx: a "
                      "stop with no declared rule renders nothing" % (raw, want, s["gutter"]))
-        lines.append("  s217-D6 slider · %s · 7→8 13→12 22→20 3→2 40→24 0→1, thumb + state + "
-                     "gutter + export agree" % (sl and sl["stops"]))
+        lines.append("  s219-D1(4) rail · slider %s · 7→4 13→16 22→24 3→2 99→40 0→1, thumb + "
+                     "state + gutter + export agree" % (sl and sl["stops"]))
         click("mainSpacing", "40")
         pg.evaluate(SLIDER_DRIVE, ["subSpacing", 24])
         pg.wait_for_timeout(140)
@@ -1177,7 +1213,7 @@ def main():
             pg.evaluate("h => { location.hash = h; }", "#theme=%s&m=light" % theme)
             pg.wait_for_timeout(380)
             want_radius = None
-            for sub in (1, 4, 12, 24):
+            for sub in (1, 4, 16, 24):
                 pg.evaluate(SLIDER_DRIVE, ["subSpacing", sub])
                 pg.wait_for_timeout(200)
                 groups = pg.evaluate(KEYLINE_EDGE)
@@ -1538,7 +1574,7 @@ def main():
         # ---- ⬛ s217-D8 · KEYLINES HUG THE MODULES — THE RULED CONSTRUCTION, DRIVEN ---------
         # Dave, #217: "the keylines should stay, but they should go round tight to the modules not
         # run down the middle of the spacing." Driven at three OPEN stops off the ruled ladder
-        # (4 · 12 · 24) and at the 1px stop, in ALL FOUR THEMES, because the claim is one grammar
+        # (4 · 16 · 24) and at the 1px stop, in ALL FOUR THEMES, because the claim is one grammar
         # over four themes.
         #   ABOVE 1px · every tile's border is [1,1,1,1]; the GROUP'S border is [0,0,0,0]; the
         #     group pads by the gutter so no square tile edge meets the curve; the group is still
@@ -1570,7 +1606,7 @@ def main():
                 fail("⛔ KEYLINE NOTE (%s) — %d node(s) of the RETIRED A/B/C decision spread are "
                      "still in the document; a settled question keeps no decision surface"
                      % (theme, gate["cases"]))
-            for stop in (4, 12, 24):
+            for stop in (4, 16, 24):
                 pg.evaluate(SLIDER_DRIVE, ["subSpacing", stop])
                 pg.wait_for_timeout(200)
                 g = pg.evaluate(SPREAD_GATE)
@@ -1586,7 +1622,7 @@ def main():
                          % (theme, stop, len(g["paneLines"]), sorted(set(g["paneLines"]))),
                          layout=True)
                 # ⚠ THE PER-TILE / PER-GROUP GEOMETRY IS NOT RE-MEASURED HERE — the keyline
-                # edge section above already drives KEYLINE_EDGE at 1 · 4 · 12 · 24 in all four
+                # edge section above already drives KEYLINE_EDGE at 1 · 4 · 16 · 24 in all four
                 # themes and asserts the box, the stepped-back group border, the inset padding and
                 # the clip. What this section adds is the NOTE gating and the ABSENCE across the
                 # whole pane.
@@ -1649,7 +1685,7 @@ def main():
             click("keylines", "on")
             pg.evaluate(SLIDER_DRIVE, ["subSpacing", 24])
             pg.wait_for_timeout(200)
-            lines.append("  ⬛ keyline note (%s) · in-pane · open note at 4/12/24, flush note at "
+            lines.append("  ⬛ keyline note (%s) · in-pane · open note at 4/16/24, flush note at "
                          "1px (live border %r, gutter %dpx, %d bare tile(s) + %d hairline(s)) · "
                          "keylines OFF strip absent · retired spread nodes %d"
                          % (theme, g1["liveBorder"], g1["liveGutter"], g1["liveTiles"],
@@ -1785,14 +1821,24 @@ def main():
         # the live console pixel arm above: at an open stop the gutter interiors must carry NO
         # line-coloured pixel at all, and the tile boxes must be painted beside that absence.
 
-        # ---- ⬛ s217-D6 · GALLERY IN CONSOLE EXCLUDES KEYLINES — ABSENT, NOT DISABLED ---------
-        # ⛔ THE ASSERTION IS ON THE NODE, NOT ON `hidden` OR `disabled`. Those two would report
-        # the same thing for a control that is merely out of view, and the ruling's word is
-        # "exclude … completely" — the same discipline the dashboard's missing Tight button
-        # already carries. Driven in ALL FOUR THEMES, because a rule that only ever runs in the
-        # theme it excludes cannot be shown to be an exclusion rather than a deletion.
+        # ---- ⬛ s219-D1(2) · EVERY DIAL IS AVAILABLE IN EVERY THEME — THE KEYLINE CONTROL IS
+        #      PRESENT IN ALL FOUR ---------------------------------------------------------------
+        # ⛔ THIS ARM IS INVERTED, AND THE ASSERTION IT REPLACES IS NAMED. It used to drive
+        # `s217-D6`'s exclusion — gallery-in-console must carry NO keyline control, absent rather
+        # than disabled. `s219-D2(4)`: "the switch is available everywhere in edit mode per
+        # s219-D1(2)". So the exclusion retires and what is driven now is its opposite: the control
+        # must be PRESENT, with both buttons, in all four themes. Still driven in all four, and
+        # still asserted ON THE NODE rather than on `hidden`/`disabled`, because "available" is
+        # only an honest word if the node is really there.
+        # ⚠ `matrix.KEYLINE_EXCLUDED` is still read rather than assumed empty: it is the one place
+        # a theme lock could be expressed, so the probe follows the module instead of a memory of
+        # it — and asserts separately that it IS empty, which is the enactment.
         click("type", "gallery")
         kl_seen = {}
+        if [tuple(x) for x in matrix.KEYLINE_EXCLUDED]:
+            fail("⛔ s219-D1(2) — the module still declares a theme lock (%r). All dials are "
+                 "available in every theme and role; a lock here is a ruling, not a build "
+                 "decision." % (matrix.KEYLINE_EXCLUDED,))
         for theme in ("mono", "legacy", "console", "supercharge"):
             pg.evaluate("h => { location.hash = h; }", "#theme=%s&m=light" % theme)
             pg.wait_for_timeout(380)
@@ -1800,48 +1846,52 @@ def main():
             kl_seen[theme] = k
             excluded = ("gallery", theme) in [tuple(x) for x in matrix.KEYLINE_EXCLUDED]
             if k["theme"] != theme:
-                fail("s217-D6 keylines — the theme did not land (%r)" % k["theme"])
+                fail("s219-D1(2) keylines — the theme did not land (%r)" % k["theme"])
             if excluded and (k["gallery"] or k["galleryButtons"]):
-                fail("⛔ s217-D6 — GALLERY IN %s STILL CARRIES A KEYLINE CONTROL (%d button(s)). "
-                     "The ruling excludes it completely: the node must be ABSENT, not hidden or "
-                     "disabled." % (theme.upper(), k["galleryButtons"]))
-            if excluded and k["state"] != "off":
-                fail("⛔ s217-D6 — the keyline control is gone in %s but the state object still "
-                     "says %r, so the export would carry a dial the page no longer offers"
-                     % (theme, k["state"]))
+                fail("⛔ the module declares gallery-in-%s excluded but the control is still on "
+                     "the page (%d button(s)) — an exclusion is a node that LEAVES the document."
+                     % (theme.upper(), k["galleryButtons"]))
             if not excluded and not k["gallery"]:
-                fail("⛔ s217-D6 — GALLERY IN %s LOST ITS KEYLINE CONTROL. The exclusion is "
-                     "console-only; removing it everywhere is a deletion, not an exclusion."
-                     % theme.upper())
-        if not any(kl_seen[t]["gallery"] for t in kl_seen) or \
-           all(kl_seen[t]["gallery"] for t in kl_seen):
-            fail("⛔ s217-D6 — the keyline control is %s in all four themes, so the theme-"
-                 "dependence the ruling creates cannot be seen at all"
-                 % ("absent" if not any(kl_seen[t]["gallery"] for t in kl_seen) else "present"))
-        lines.append("  ⬛ s217-D6 gallery keylines · %s"
-                     % " · ".join("%s %s" % (t, "ABSENT" if not kl_seen[t]["gallery"] else "present")
+                fail("⛔ s219-D2(4) — GALLERY IN %s HAS NO KEYLINE CONTROL. The switch is "
+                     "available everywhere in edit mode (s219-D1(2)); the s217-D6 console "
+                     "exclusion is RETIRED, so an absent control here is the retired construction "
+                     "back on the page." % theme.upper())
+            if not excluded and k["galleryButtons"] != 2:
+                fail("⛔ s219-D2(4) — gallery keylines in %s offers %d button(s), not the ruled "
+                     "on/off pair" % (theme, k["galleryButtons"]))
+        if not all(kl_seen[t]["gallery"] for t in kl_seen):
+            fail("⛔ s219-D1(2) — the keyline control is missing in at least one theme (%s); "
+                 "every dial is available in every theme"
+                 % ", ".join(t for t in kl_seen if not kl_seen[t]["gallery"]))
+        lines.append("  ⬛ s219-D1(2) gallery keylines · %s"
+                     % " · ".join("%s %s" % (t, "present" if kl_seen[t]["gallery"] else "ABSENT")
                                   for t in ("mono", "legacy", "console", "supercharge")))
-        # the reachable count is theme-dependent now, and the page must PRINT both numbers
+        # ⛔ AND THE COUNT FOLLOWS. It used to be theme-DEPENDENT and the page had to print two
+        # numbers; with no theme lock left, the four themes must AGREE — and the page still prints
+        # both, so the agreement is a reading rather than a claim.
         src_txt = open(src, encoding="utf-8").read()
         base_total = sum(matrix.matrix_counts("mono").values())
         con_total = sum(matrix.matrix_counts("console").values())
-        if base_total == con_total:
-            fail("s217-D6 — the enumeration reports the SAME total for console and mono; the "
-                 "keyline exclusion is not reaching the count")
+        if base_total != con_total:
+            fail("⛔ s219-D1(2) — the enumeration reports %d for mono and %d for console; with "
+                 "every dial available in every theme the totals must agree"
+                 % (base_total, con_total))
         for n in (base_total, con_total):
             if str(n) not in src_txt:
-                fail("s217-D6 — the page does not print the reachable total %d, so its count "
-                     "line cannot be stating the theme-dependence honestly" % n)
-        lines.append("  ⬛ s217-D6 counts · mono/legacy/supercharge %d · console %d — both "
-                     "printed on the page" % (base_total, con_total))
+                fail("s219-D1(2) — the page does not print the reachable total %d, so its count "
+                     "line cannot be stating the theme-independence honestly" % n)
+        lines.append("  ⬛ s219-D1(2) counts · all four themes %d — printed on the page"
+                     % base_total)
         pg.evaluate("h => { location.hash = h; }", "#theme=console&m=light")
         pg.wait_for_timeout(380)
 
         # ------------------------------------------------------------ 4 · THE LEGALITY RULES
-        # ⚠ DRIVEN IN MONO, DELIBERATELY, AND THE REASON IS THE RULING ABOVE. P3 turns the gallery
-        # keyline control on and off to show the capsule needs an edge — and s217-D6 REMOVES that
-        # control in console. Driving P3 in console would report "NO SUCH GROUP" and read as a
-        # legality failure, which would be a false red over a ruled absence.
+        # ⚠ DRIVEN IN MONO. The reason USED to be s217-D6's console exclusion — P3 turns the
+        # gallery keyline control on and off, and in console there was no control to turn, so a
+        # console run would have reported "NO SUCH GROUP" as a legality failure. s219-D2(4)
+        # retires that exclusion, so the reason is now only that one theme is enough for a rule
+        # about legality, which is theme-independent. Kept in mono so the arm is comparable with
+        # every earlier run of it.
         pg.evaluate("h => { location.hash = h; }", "#theme=mono&m=light")
         pg.wait_for_timeout(380)
         click("type", "gallery")
@@ -1913,6 +1963,36 @@ def main():
                      "options, not this combination")
             lines.append("  export parity · %d dial(s) + %d resolved value(s) agree with the "
                          "document" % (len(exp.get("state") or {}), len(res)))
+        # ---- ⛔ #219 · THE RESOLVER'S VOCABULARY, DRIVEN IN EVERY TYPE -----------------------
+        # THE DEFECT, MEASURED IN DAVE'S OWN EXPORTS: every DISPLAY export in the #219 receipt
+        # resolved `"role": "brochureware"` — the word s217-D5 renamed to DISPLAY — because the
+        # exporter wrote down canon's DOM attribute. Fixed at cause in the resolver, and asserted
+        # here on all three types, because a rename that is right in two of three is not a rename.
+        # ⚠ THE CANON ATTRIBUTE IS ASSERTED TOO, under its own name: if `canonRole` stopped saying
+        # `brochureware` the markup would have stopped speaking canon's grammar, which is the
+        # opposite defect and would silently un-resolve every role rule.
+        role_seen = {}
+        for t in ("display", "gallery", "dashboard"):
+            click("type", t)
+            pg.wait_for_timeout(140)
+            try:
+                e2 = json.loads(measure()["exportText"])
+            except Exception as e:
+                fail("EXPORT ROLE — the export is not parseable at type=%s (%s)" % (t, e))
+                continue
+            r2 = (e2.get("resolved") or {})
+            role_seen[t] = (r2.get("role"), r2.get("canonRole"))
+            if r2.get("role") != t:
+                fail("⛔ s217-D5 RENAME — the export resolves role %r for type %r. DISPLAY is the "
+                     "ruled name; `brochureware` is canon's attribute and belongs under "
+                     "`canonRole`, never in `role`." % (r2.get("role"), t))
+            if r2.get("canonRole") != matrix.TYPE_ROLE[t]:
+                fail("⛔ the export's canonRole is %r for type %r; the wall must still carry "
+                     "canon's own attribute %r or the role rules stop resolving"
+                     % (r2.get("canonRole"), t, matrix.TYPE_ROLE[t]))
+        lines.append("  ⛔ resolver vocabulary · %s"
+                     % " · ".join("%s → role %s / canonRole %s" % (t, a, b)
+                                  for t, (a, b) in sorted(role_seen.items())))
 
         # ---- ✅ s217-D7 · THE NESTED SQUARING PASS, AT THE RENDERED GEOMETRY, FOUR THEMES -----
         # Dave: "BTW inner bentos should run the squaring pass." The ratified pass was reaching the

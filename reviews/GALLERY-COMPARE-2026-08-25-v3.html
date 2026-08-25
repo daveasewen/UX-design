@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en" data-apollo-theme="console">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo &mdash; gallery: span grid or justified rows</title>
+<!-- APOLLO GALLERY COMPARE (gen_gallery_compare_217.py) — RE-CUT #219 -->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+/* ===========================================================================
+   GALLERY COMPARE — page-local styles, scoped to `.gc`.
+   ⬛ EVERYTHING HERE IS PROPOSED. CANDIDATE A declares NO structure of its own —
+   its grid, spans, bands, role rules and caption space all come from canon.css's
+   AUTO-BENTO block, which is the point: A must be canon's own output or the
+   comparison is against a drawing of A rather than A.
+   ⚠ CANDIDATE B DOES declare structure, unavoidably: justified rows are not a
+   grid and canon has no grammar for them. Every such declaration is named
+   `.gc-b…`, and the selftest enforces that none of them can reach a `.c-bento__grid`
+   — a proposal that quietly restyled the ruled variant beside it would make the
+   side-by-side a comparison of a thing with itself.
+   =========================================================================== */
+.gc{
+  --page:      var(--background-default,#FFFFFF);
+  --surface:   var(--tertiary-background-default,#FFFFFF);
+  --surface-2: var(--tertiary-background-hover,#F3F3F3);
+  --line:      var(--border-subtle,#D7D8D6);
+  --line-2:    var(--border-strong,#767676);
+  --ink:       var(--text-default,#1A1A1A);
+  --ink-2:     var(--text-secondary,#545454);
+  --focus:     var(--focus-ring,#1A1A1A);
+  --focus-w:   var(--focus-ring-width,2px);
+  --radius-ctl:var(--border-radius-control,0px);
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+  background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;
+}
+.gc *{box-sizing:border-box;}
+.gc :focus-visible{outline:var(--focus-w) solid var(--focus); outline-offset:2px;}
+html,body{margin:0;}
+body{background:var(--background-default,#FFFFFF);}
+/* ⚠ the ink is restated on a CHILD of the themed element — measured #217: an element that BOTH
+   carries data-theme and reads --text-default disagreed with its own children in supercharge. */
+.gc, header.app{color:var(--text-default,#1A1A1A);}
+
+header.app{display:flex; flex-wrap:wrap; gap:var(--sp-4); align-items:center;
+  padding:var(--sp-3) var(--sp-6); border-bottom:1px solid var(--line);
+  background:var(--page); position:sticky; top:0; z-index:10;}
+body[data-chrome="0"] header.app{display:none;}
+header.app h1{margin:0; white-space:nowrap;}
+header.app .spacer{flex:1 1 auto;}
+.ctl{display:flex; align-items:center; gap:var(--sp-2); color:var(--ink-2);}
+.seg{display:inline-flex; border:1px solid var(--ink); color:var(--ink);
+  border-radius:var(--radius-ctl); overflow:hidden;}
+.seg button{font-family:inherit; font-size:12px; font-weight:500; letter-spacing:0.06em;
+  text-transform:uppercase; padding:7px 12px; border:0; background:transparent; color:inherit;
+  cursor:pointer; border-right:1px solid var(--line);}
+.seg button:last-child{border-right:0;}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--page);}
+
+main{padding:var(--sp-6); max-width:1400px;}   /* 1400 - 2x32 = the 1336px packing width */
+section{margin:0 0 var(--sp-7); scroll-margin-top:80px;}
+h2{margin:0 0 var(--sp-1);}
+h3{margin:var(--sp-6) 0 var(--sp-2);}
+p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
+.sublabel{color:var(--ink-2); text-transform:uppercase; letter-spacing:0.14em;
+  margin:var(--sp-5) 0 var(--sp-3); display:flex; align-items:center; gap:var(--sp-2);}
+.sublabel::before{content:''; width:20px; height:1px; background:var(--line);}
+.gc a{color:inherit;}
+.gc code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px;
+  background:var(--surface-2,#F3F3F3); padding:0 .3em;}
+.note{margin:var(--sp-3) 0 0; color:var(--ink-2); max-width:74ch;}
+.note b{color:var(--ink);}
+.badge{display:inline-block; border:1px solid var(--line-2,#767676); color:var(--ink,#1A1A1A);
+  padding:2px 8px; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 var(--sp-3);}
+.gc-tag{display:inline-block; border:1px solid var(--ink,#1A1A1A); color:var(--page,#FFFFFF);
+  background:var(--ink,#1A1A1A); padding:2px 10px; letter-spacing:0.12em;
+  text-transform:uppercase; margin:0 var(--sp-2) var(--sp-2) 0;}
+table.gc-diff{border-collapse:collapse; margin:var(--sp-4) 0 0; width:100%; max-width:960px;}
+table.gc-diff th, table.gc-diff td{border-bottom:1px solid var(--line,#D7D8D6);
+  padding:var(--sp-3) var(--sp-4); text-align:left; vertical-align:top; color:var(--ink-2);}
+table.gc-diff th{color:var(--ink); white-space:nowrap;}
+table.gc-diff td:first-child{color:var(--ink); width:22%;}
+
+/* ---- shared tile CONTENT (both candidates), so only LAYOUT differs -----------------------
+   ⚠ The caption's SPACE is canon's (`.c-bento__caption`, s217-D3, 86px). What is here is only
+   its inline padding, its colour and its clamp. Restating the ruled height would let the two
+   drift, and the whole page would be comparing two different caption regimes. */
+.gc-cap{padding-inline:var(--sp-3); color:var(--ink-2,#545454); display:flex;
+  flex-direction:column; gap:2px; justify-content:center;}
+.gc-desc{display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,3);
+  -webkit-box-orient:vertical; overflow:hidden; text-box-edge:text text;}
+.gc-lic{color:var(--ink-2,#545454);}
+/* ---- s219-D2 (1) — THE MONO CAPTION GROUND, LIGHT GREY. Dave, asked which of the two
+   grounds governs: “I changed my mind just go with the latest and change in the
+   library.” The #219 mono gallery export says capBg: grey, which is the dial's word for
+   --surface-subtle. ⛔ SUPERSEDES s218-D6 (1)'s --surface-digital-black / --text-reverse ground, which is frozen
+   history and is NOT painted anywhere on this page. Both modes, mono only. */
+[data-apollo-theme="mono"] .gc-cap{background:var(--surface-subtle,#F0F0F0); color:var(--text-secondary,#545454);}
+[data-apollo-theme="mono"] .gc-cap .gc-desc, [data-apollo-theme="mono"] .gc-cap .gc-lic{color:var(--text-secondary,#545454);}
+
+/* ---- #219 RE-CUT — the decision ledger's own chrome. Page chrome only. --------------------- */
+table.rcut{border-collapse:collapse; margin:var(--sp-4) 0 0; width:100%;}
+table.rcut th, table.rcut td{border-bottom:1px solid var(--line,#D7D8D6);
+  padding:var(--sp-3) var(--sp-4); text-align:left; vertical-align:top; color:var(--ink-2,#545454);}
+table.rcut th{color:var(--ink,#1A1A1A); white-space:nowrap;}
+table.rcut td:first-child{color:var(--ink,#1A1A1A); width:38%;}
+table.rcut s{color:var(--ink-2,#545454);}
+.rcut-key{display:inline-block; border:1px solid var(--line-2,#767676); color:var(--ink,#1A1A1A);
+  padding:1px 6px; margin-right:var(--sp-2); letter-spacing:0.1em;}
+.rcut-asked{display:block; margin-top:var(--sp-2); color:var(--ink-2,#545454);}
+.rcut-clause{display:block; margin-top:var(--sp-2); color:var(--ink-2,#545454);}
+.rcut-res, .rcut-baked, .rcut-mints{display:block; margin-top:var(--sp-2);
+  color:var(--ink-2,#545454);}
+.rcut-mints{color:var(--ink,#1A1A1A);}
+.rcut-tag{display:inline-block; padding:2px 8px; letter-spacing:0.12em; text-transform:uppercase;}
+.rcut-tag-r{border:1px solid var(--line-2,#767676); color:var(--ink-2,#545454);}
+.rcut-tag-p{border:1px solid var(--ink,#1A1A1A); color:var(--ink,#1A1A1A);}
+.rcut-tag-o{border:1px solid var(--ink,#1A1A1A); background:var(--ink,#1A1A1A);
+  color:var(--page,#FFFFFF);}
+.rcut-live{border:1px solid var(--ink,#1A1A1A); padding:var(--sp-4) var(--sp-5);
+  margin:var(--sp-5) 0 0; max-width:74ch;}
+.rcut-live-q{margin:var(--sp-2) 0 0; color:var(--ink,#1A1A1A);}
+.rcut-live-b{margin:var(--sp-2) 0 0; color:var(--ink-2,#545454);}
+
+.gc-img{display:block; width:100%; height:100%; min-height:0;
+  background:var(--surface-2,#F3F3F3);}
+
+/* ---- CANDIDATE A · tile chrome only. NO GRID, NO GAP, NO SPAN, NO ROLE RULE. ------------- */
+.gc-atile{margin:0; display:grid; grid-template-rows:1fr auto;
+  background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);}
+/* ⛔ THE CROP LIVES HERE, and it is A's whole cost: the compartment is decided by the span
+   vocabulary, so the picture has to be cut to fit it. */
+.gc-atile .gc-img{object-fit:cover;}
+/* instance dials — `.c-bento` in the selector so they out-specify canon's (0,2,0) role rules */
+.c-bento.gc-a6{}                                   /* canon's own default: 6 columns, 320px rows */
+.c-bento.gc-a4{--bento-columns:4;}
+.c-bento.gc-atrial{--bento-columns:4; --bento-gutter:1px;}
+.gc-atrial .gc-atile{border:0;}
+.gc-atrial .gc-cap{padding-inline:var(--sp-2);}
+
+/* ---- CANDIDATE B · JUSTIFIED ROWS — ⬛ PROPOSED, NOT RULED --------------------------------
+   The container is still a `.c-bento` carrying the gallery role, so it takes the SAME per-theme
+   gutter and the SAME ruled caption space as A. What it does not take is the grid: there is no
+   `.c-bento__grid` here, and that is exactly the proposal. */
+.c-bento.gc-b{display:flex; flex-direction:column; gap:var(--bento-gutter);}
+.gc-brow{display:flex; gap:var(--bento-gutter); align-items:flex-start; min-width:0;}
+/* flex-basis 0 + grow proportional to aspect = the row justifies flush and every box in it lands
+   on one height. `min-width:0` or a long caption would push the row past the container. */
+.gc-btile{margin:0; flex:0 1 0; min-width:0; display:flex; flex-direction:column;
+  background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);}
+.gc-box{display:block; width:100%; aspect-ratio:var(--gc-ar); overflow:hidden;}
+/* ⛔ NOT `cover`. The box already carries the picture's own aspect, so there is nothing to crop —
+   this is the one line that states B's claim, and `contain` makes a broken aspect VISIBLE as
+   letterboxing instead of hiding it behind a silent crop. */
+.gc-box .gc-img{object-fit:contain;}
+/* THE WIDOWS. Flickr's word, and Flickr's rule: they are NOT blown up to justify. Each keeps the
+   target row height, so a short last row simply ends where it ends. */
+.gc-brow--widow .gc-btile{flex:0 1 auto;
+  width:calc(var(--layout-bento-row-unit) * var(--gc-arn));}
+/* the no-JavaScript widow switch: a checkbox and a sibling combinator, nothing else */
+.gc-switch{width:16px; height:16px; margin:0; accent-color:var(--ink,#1A1A1A);}
+.gc-switchrow{display:flex; align-items:center; gap:var(--sp-2); margin:0 0 var(--sp-4);
+  color:var(--ink);}
+.gc-switch:not(:checked) ~ .gc-b .gc-brow--widow{display:none;}
+.gc-switch:not(:checked) ~ .gc-switchrow .gc-when-on{display:none;}
+.gc-switch:checked ~ .gc-switchrow .gc-when-off{display:none;}
+.gc-switchrow label{cursor:pointer;}
+
+@media (prefers-reduced-motion: reduce){
+  .gc *,.gc *::before,.gc *::after{transition-duration:.01ms !important;
+    animation-duration:.01ms !important;}
+}
+
+/* ---- MINTED PER-PHOTOGRAPH RULES (s200-D1: the value is decided here, not resolved live) --- */
+.gc-p1{--gc-ar:1.499531; --gc-arn:1.499531; flex-grow:1.499531;}
+.gc-p2{--gc-ar:1.499531; --gc-arn:1.499531; flex-grow:1.499531;}
+.gc-p3{--gc-ar:1.499531; --gc-arn:1.499531; flex-grow:1.499531;}
+.gc-p4{--gc-ar:0.665625; --gc-arn:0.665625; flex-grow:0.665625;}
+.gc-p5{--gc-ar:1.499531; --gc-arn:1.499531; flex-grow:1.499531;}
+.gc-p6{--gc-ar:1.499531; --gc-arn:1.499531; flex-grow:1.499531;}
+.gc-p7{--gc-ar:1.419698; --gc-arn:1.419698; flex-grow:1.419698;}
+.gc-p8{--gc-ar:1.499531; --gc-arn:1.499531; flex-grow:1.499531;}
+.gc-p9{--gc-ar:1.499531; --gc-arn:1.499531; flex-grow:1.499531;}
+.gc-p10{--gc-ar:1.499531; --gc-arn:1.499531; flex-grow:1.499531;}
+.gc-p11{--gc-ar:1.502347; --gc-arn:1.502347; flex-grow:1.502347;}
+.gc-p12{--gc-ar:1.498127; --gc-arn:1.498127; flex-grow:1.498127;}
+.gc-p13{--gc-ar:0.691250; --gc-arn:0.691250; flex-grow:0.691250;}
+.gc-p14{--gc-ar:1.499531; --gc-arn:1.499531; flex-grow:1.499531;}
+.gc-p15{--gc-ar:0.666875; --gc-arn:0.666875; flex-grow:0.666875;}
+</style>
+</head>
+<body data-theme="light" data-chrome="1" class="gc canon">
+<header class="app">
+  <h1 class="t-ed-heading-4">Gallery &mdash; A or B</h1>
+  <span class="t-ed-caption">PROPOSED &middot; span grid vs justified rows &middot; four themes</span>
+  <span class="spacer"></span>
+  <div class="ctl"><span class="t-ed-caption">Theme</span>
+    <div class="seg" id="themes" role="group" aria-label="Theme">
+      <button type="button" data-theme-attr="mono" aria-pressed="false">Mono</button>
+      <button type="button" data-theme-attr="legacy" aria-pressed="false">Legacy</button>
+      <button type="button" data-theme-attr="console" aria-pressed="true">Console</button>
+      <button type="button" data-theme-attr="supercharge" aria-pressed="false">Supercharge</button>
+    </div>
+  </div>
+  <div class="ctl"><span class="t-ed-caption">Mode</span>
+    <div class="seg" id="modes" role="group" aria-label="Light or dark">
+      <button type="button" data-mode="light" aria-pressed="true">Light</button>
+      <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+<main>
+<section id="decided">
+<h2 class="t-ed-heading-3">What was already decided</h2>
+<p class="lede t-ed-body">These pages were built at <b>#217</b>, before <code>s217-D5</code>, <code>s217-D8</code>, <code>s218-D1</code>, <code>s218-D6</code> &mdash; and now before <code>s219-D1</code> and <code>s219-D2</code>, which closed four more of them and <b>superseded</b> two answers that were settled law a day ago. Everything <s>struck through</s> below is <b>a question this page used to ask you and no longer does</b>, with the ruling that closed it. <b>9 struck, 3 still live.</b> A struck question is shown, not deleted: a decision surface that quietly drops what it answered cannot be told apart from one that forgot to ask.</p>
+<table class="rcut t-ed-body-small"><thead><tr><th>The question</th><th>Where it stands</th></tr></thead><tbody>
+<tr class="rcut-part">
+<td><span class="rcut-key t-cm-legal">Q3</span> What may a photograph be re-cropped into when a wall is squared?<span class="rcut-asked t-cm-legal">BENTO-CANON v2, § “What is yours to decide”.</span></td>
+<td><span class="rcut-tag rcut-tag-p t-cm-legal">Part ruled &middot; s219-D2 (2)</span><span class="rcut-clause t-ed-body-small">&ldquo;SQUARE IS THE GALLERY-ROLE DEFAULT in all four themes - widening s218-D6(4) beyond the photography wall; the s217-D3 exemption yields as a default. … The orphan/flattening refinement (the W-99zi third bend, incl. the stocksy-6629948 case) is expressly NOT ruled here.&rdquo;</span><span class="rcut-res t-ed-body-small"><b>Residue, still yours:</b> EXPRESSLY still yours, in the ruling&#x27;s own words. The wall may now be squared everywhere in the gallery role, and there is still no bound on what a photograph may be re-spanned INTO — nor any rule against flattening a portrait to close a hole. The #219 squaring pass did exactly that to tile 247 (`stocksy-6629948-w1600.jpg`, 1067×1600 portrait, re-spanned 1×2 → 3×1), rendered before and after at `reviews/SQUARING-PORTRAIT-2026-08-25-v1.html`.</span><span class="rcut-clause t-ed-body-small"><b>s218-D6 (4)</b> also records: &ldquo;THE PHOTOGRAPHY GALLERY WALL IS SQUARED — the squaring pass runs on the photography page&#x27;s gallery wall and last-row photos may re-span to close holes.&rdquo; …which is the ruling s219-D2 (2) widened; it stands as frozen history of the one-page scope.</span><span class="rcut-mints t-ed-body-small"><b>Owner: Dave.</b> An answer mints a bound on the crop a squaring pass may pay — the W-99zi third bend that s219-D2 (2) expressly left open.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q4</span> <s>Does the gallery keep its keylines, drop them for the 1px gutter, or get both as a dial?</s><span class="rcut-asked t-cm-legal">BENTO-CANON v3, § “The keyline trial” — badged “Proposed — not ruled”; and GALLERY-COMPARE v1, wall A3.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s217-D5</span><span class="rcut-clause t-ed-body-small">&ldquo;GALLERY: same three spacings; keylines on/off; caption background colour on/off&rdquo;</span><span class="rcut-clause t-ed-body-small"><b>s219-D2 (4)</b> also records: &ldquo;Keyline defaults are as exported: on only in legacy display and legacy gallery, off elsewhere including all dashboards; the switch is available everywhere in edit mode per s219-D1(2), with s218-D1&#x27;s corner-keyline construction unchanged for dashboards.&rdquo; …so the photography page&#x27;s own answer moved: keylines are ON in LEGACY and off in the other three, superseding s218-D3&#x27;s “off in all four themes”, which stands as frozen #218 history.</span><span class="rcut-res t-ed-body-small">Another part of the same clause is struck separately &mdash; see <b>Q14</b>.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q5</span> <s>Does the gallery stay a span grid with orphan tolerance, or become justified rows with a widow switch?</s><span class="rcut-asked t-cm-legal">GALLERY-COMPARE v1 — the whole page. This was THE question the page was built to put.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s217-D5</span><span class="rcut-clause t-ed-body-small">&ldquo;mode is &#x27;Justified rows&#x27; OR &#x27;Gallery bento&#x27;, the bento mode carrying a sub-option ragged or square bottom (this turns s217-D3&#x27;s gallery squaring exemption into a per-instance choice)&rdquo;</span><span class="rcut-clause t-ed-body-small"><b>s218-D3</b> also records: &ldquo;bento mode&rdquo; …and the photography page&#x27;s mode is recorded as BENTO in all four of Dave&#x27;s exports, at #218 and again in the twelve #219 exports. A or B was answered “both, as a dial, per instance”.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q6</span> <s>Ragged or square bottom edge on a gallery wall?</s><span class="rcut-asked t-cm-legal">BENTO-CANON v3, § Gallery (“This wall is ragged, and that is the ruling”); GALLERY-COMPARE v1, A&#x27;s hole counts. Carried as PART RULED on the #219 re-cut until s219-D2 closed it.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s219-D2 (2)</span><span class="rcut-clause t-ed-body-small">&ldquo;SQUARE IS THE GALLERY-ROLE DEFAULT in all four themes - widening s218-D6(4) beyond the photography wall; the s217-D3 exemption yields as a default. Edge remains an edit-pass dial per s219-D1.&rdquo;</span><span class="rcut-clause t-ed-body-small"><b>s217-D5</b> also records: &ldquo;the bento mode carrying a sub-option ragged or square bottom (this turns s217-D3&#x27;s gallery squaring exemption into a per-instance choice)&rdquo; …so the DIAL was already ruled; what s219-D2 (2) settled is which way it points when nobody has touched it.</span><span class="rcut-baked t-ed-body-small">⚠ NOT YET BAKED INTO THIS PAGE, and the gap is declared rather than hidden. The ruling moved the DEFAULT; the token store&#x27;s role policy (`layout/bento/$roles/gallery/squaring` in `knowledge/tokens/layout.json`) still reads `false`, so `role_policy(&quot;gallery&quot;)` still answers EXEMPT and the gallery walls below are still ragged. Flipping the store is a canon regeneration and it changes every gallery bento anywhere, including surfaces nobody has looked at — it is filed for you as Q1 of `notes/_subreports/2026-08-25-219-enactB-defaults.md`. What a squaring pass may CROP is a different question again, and is still open — see Q3.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q7</span> <s>What ground and ink does a mono caption take?</s><span class="rcut-asked t-cm-legal">Carried as the conductor&#x27;s PROPOSED shade at #218 (`s218-D3`), ratified dark at `s218-D6 (1)`, and re-answered LIGHT by Dave&#x27;s #219 mono gallery export.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s219-D2 (1)</span><span class="rcut-clause t-ed-body-small">&ldquo;MONO CAPTION SUPERSESSION: the mono gallery caption ground is light grey rgb(240,240,240) per the #219 mono gallery export, SUPERSEDING s218-D6(1)&#x27;s #1A1A1A/white ground - Dave, asked which governs: &#x27;I changed my mind just go with the latest and change in the library.&#x27; Applies to the gallery role including the library photography surfaces; the dark ground retires there.&rdquo;</span><span class="rcut-clause t-ed-body-small"><b>s218-D6 (1)</b> also records: &ldquo;The mono caption ground is RATIFIED at the proposed shade: #1A1A1A via --surface-digital-black with --text-reverse white ink - &#x27;Yes - that&#x27;s the one&#x27;.&rdquo; …FROZEN HISTORY. s219-D2 (1) says in its own words that s218-D6 (1) “stands as frozen history”; it is shown here so a superseded decision cannot be mistaken for one nobody took.</span><span class="rcut-baked t-ed-body-small">Baked into this page: switch the theme to MONO and every caption takes `--surface-subtle` (rgb(240, 240, 240) in mono — the exact pixel Dave&#x27;s own export resolved) with the caption&#x27;s standing `--text-secondary` ink, in light and dark alike. The construction is COPIED from `gen_foundations_217.settings_css`, which is the ratified enactment — not re-derived here.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q8</span> <s>How much space does a gallery caption get?</s><span class="rcut-asked t-cm-legal">Ruled at #217 and DERIVED to 86px — but `BENTO-CANON v2` never consumed it, which is the gap Dave named: “we&#x27;ve also missed the extra space for captions.”</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s217-D3</span><span class="rcut-clause t-ed-body-small">&ldquo;GALLERY ADDITIONS: more generous caption space (ruled)&rdquo;</span><span class="rcut-baked t-ed-body-small">Baked into this page from `layout/bento/caption-space` in `knowledge/tokens/layout.json` — the token, never a literal. The three-line clamp is derived back out of the same number at mint time, so the space and the clamp cannot disagree.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q10</span> <s>May a keyline run down the middle of the spacing?</s><span class="rcut-asked t-cm-legal">Not asked on these pages — recorded so no keyline treatment shown here can be read as re-opening it.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s217-D8</span><span class="rcut-clause t-ed-body-small">&ldquo;With keylines ON in a dashboard bento, the keyline goes tight around each module (tile) - a 1px border on the tile box at every spacing stop - never a line centred in the gutter. … The centred-gutter &#x27;treatment C&#x27; construction is retired for dashboards.&rdquo;</span></td>
+</tr>
+<tr class="rcut-open">
+<td><span class="rcut-key t-cm-legal">Q11</span> If justified rows are used, do the rows RE-PACK as the container narrows, or keep their mint-time membership and simply shorten?<span class="rcut-asked t-cm-legal">GALLERY-COMPARE v1 declared the cost but never put the question.</span></td>
+<td><span class="rcut-tag rcut-tag-o t-cm-legal">Open &middot; yours</span><span class="rcut-res t-ed-body-small">`s217-D5` rules the MODE into existence and says nothing about re-packing. Today&#x27;s wall is minted once at the page&#x27;s own content width: the rows stay flush at every width, but they stay THE SAME ROWS. Flickr re-packs at runtime. Narrow the window on candidate B below and both behaviours are visible.</span><span class="rcut-mints t-ed-body-small"><b>Owner: Dave.</b> An answer mints a ruling on justified-row responsiveness: mint-per-band, a runtime pass, or shortening accepted.</span></td>
+</tr>
+<tr class="rcut-open">
+<td><span class="rcut-key t-cm-legal">Q12</span> Do justified rows carry an emphasis rhythm at all?<span class="rcut-asked t-cm-legal">GALLERY-COMPARE v1 named it in the comparison table as “a separate question if you go this way”. It stayed separate.</span></td>
+<td><span class="rcut-tag rcut-tag-o t-cm-legal">Open &middot; yours</span><span class="rcut-res t-ed-body-small">The span grid promotes every 6th tile to 2×2 (`s217-D2`). Justified rows have no equivalent here; Flickr&#x27;s is a full-width breakout every n rows, guarded to landscape pictures.</span><span class="rcut-mints t-ed-body-small"><b>Owner: Dave.</b> An answer mints a ruling on whether justified rows get an emphasis rhythm, and what guards it.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q13</span> <s>What corner rounding does a gallery tile take, per theme?</s><span class="rcut-asked t-cm-legal">Not asked on these pages. `s217-D5` left it open as proposal P3 and the #217 pages simply showed one rounding; recorded here so nothing shown below can be read as re-opening P3.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s219-D2 (3)</span><span class="rcut-clause t-ed-body-small">&ldquo;CONSOLE GALLERY ROUNDING DEFAULTS CAPSULE - resolving s217-D5&#x27;s open P3 as the shipped default by Dave&#x27;s own export; rounding remains an edit-pass dial.&rdquo;</span><span class="rcut-baked t-ed-body-small">Enacted in `gen_foundations_217.settings_css`, which owns the construction: the CAPSULE branch puts canon&#x27;s container radius on the TILE and squares the picture inside it — measured live on the photography page at a console tile radius of 20px, picture 0, and 0/0 in the other three themes. This page records the ruling; it does not re-draw it.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q14</span> <s>What spacings may a bento wall be set to — and who may widen the set?</s><span class="rcut-asked t-cm-legal">Not asked on these pages as a question; STATED on BENTO-CANON v5 as settled fact in `s217-D5`&#x27;s words, “GALLERY: same three spacings”. That sentence is what went stale, so the row exists to strike it rather than to re-put it.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s219-D1 (4)</span><span class="rcut-clause t-ed-body-small">&ldquo;Spacing rails are the ruled stop set {1, 2, 4, 16, 24, 40} - the edit pass picks among stops, never free values; widening the set is a ruling.&rdquo;</span><span class="rcut-clause t-ed-body-small"><b>s219-D1 (5)</b> also records: &ldquo;The dashboard grammar carries the two-dial spacing split mainSpacing/subSpacing per the exports (main 24/40/40/24, sub 4/4/4/2 in legacy/mono/console/supercharge order).&rdquo; …so a dashboard&#x27;s outer wall and its sub-bentos draw from the SAME rail through two dials, rather than from two ladders.</span><span class="rcut-baked t-ed-body-small">Enacted in `gen_bento_matrix_217`, which owns the option grammar: the rail is typed ONCE as `RULED_SPACING_RAIL` and every dial, CSS rule and manifest entry is derived from it. `s217-D6`&#x27;s eight-stop sub-bento ladder (8/12/20) is superseded by the six ruled stops — a supersession by implication rather than by name, and it is flagged for Dave&#x27;s confirmation in `notes/_subreports/2026-08-25-219-enactA-rails.md` (Q3 there). This page records the rail; it does not re-draw the dial.</span></td>
+</tr>
+</tbody></table>
+<p class="note t-ed-body-small"><b>&#11036; Unproven, and not waiting on you:</b> Whether candidate B NESTS. B is a flex column, not a grid, so it is not known whether it can be a tile of another bento. That is a measurement nobody has taken, not a call anybody is waiting on.</p>
+<p class="note t-ed-body-small">Every quotation above is a verbatim slice of the named ruling in <code>knowledge/_rulings.json</code>. Nothing on this page rules anything, and no control below offers a choice that one of those rulings has already made.</p>
+</section>
+<section id="intro">
+<p class="badge t-cm-legal">Ruled &mdash; s217-D5 &middot; Q5</p>
+<h2 class="t-ed-heading-3">Is a justified gallery visually different from a span gallery?</h2>
+<p class="lede t-ed-body">You asked whether the gallery should stay a <b>span grid with orphan tolerance</b> or become <b>justified rows with a widow switch</b>, and whether that would even look different. <b>It looks very different, and the difference has one name: cropping.</b> A decides the compartment first and cuts the photograph to fit it. B decides the photograph first and builds the compartment around it.</p>
+<p class="lede t-ed-body">Both walls below hold the <b>same 15 photographs in the same order</b>, read from the same manifest rows, with the same 86px caption space and the same per-theme gutter. Only the layout differs. The page opens in <b>console</b>; the theme and mode switches are above and everything is live in all four.</p>
+<p class="lede t-ed-body"><b>And you answered it &mdash; with a third option.</b> <code>s217-D5</code>: <i>&ldquo;mode is &lsquo;Justified rows&rsquo; OR &lsquo;Gallery bento&rsquo;, the bento mode carrying a sub-option ragged or square bottom&rdquo;</i>. Neither A nor B won; <b>both became positions of a per-instance dial</b>. Then at #218 you set the first instance: the Foundations photography page ships <b>bento mode</b>, keylines off, in all four themes (<code>s218-D3</code>), and its wall is <b>squared</b> (<code>s218-D6&nbsp;(4)</code>). <b>This page is now a reference for what each position looks like, not a choice waiting on you</b> &mdash; the two questions still open are marked as such, in their own boxes, and there are only two.</p>
+</section>
+<section id="candidate-a">
+<p class="gc-tag t-cm-legal">Candidate A</p>
+<h2 class="t-ed-heading-3">The ruled gallery role &mdash; span grid, orphans tolerated</h2>
+<p class="lede t-ed-body">Canon exactly as it renders today: each photograph&rsquo;s aspect ratio picks a compartment (3 columns at 6:1 and wider, 2 columns at 2.6:1, 2 rows for portraits), every 6th tile is promoted to 2&times;2, and the squaring pass is <b>off</b> so the bottom edge may be ragged. The picture is then fitted to the compartment with <code>object-fit: cover</code> &mdash; which means it is <b>cut</b>.</p>
+<div class="sublabel t-ed-caption">A1 &mdash; canon&rsquo;s own default: 6 columns, 320px row unit</div>
+<div class="c-bento gc-a6" data-bento-role="gallery"><div class="c-bento__grid">
+<figure class="c-bento__tile gc-atile" data-c="2" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="gc-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family." loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">a person is climbing the stairs towards a modern building during winter</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1394386010-144dpi-w1600.jpg" alt="Businesswoman talking on phone from office window overlooking Hong Kong cityscape" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Businesswoman talking on phone from office window overlooking Hong Kong cityscape</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1498039805-w1600.jpg" alt="Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="2" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1708273322-w1600.jpg" alt="Father and child looking out of the window, on to their garden whilst watching the sunrise" loading="lazy" width="1600" height="1127"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Father and child looking out of the window, on to their garden whilst watching the sunrise</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2179684483-w1600.jpg" alt="A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2190197969-144dpi-w1600.jpg" alt="Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night." loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2208294966-144dpi-w1600.jpg" alt="Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-653972314-w1600.jpg" alt="Jaipur, India - Hands weaving a oriental rug." loading="lazy" width="1600" height="1065"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Jaipur, India - Hands weaving a oriental rug.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-968890266-w1600.jpg" alt="Woman carrying baby son and cooking in kitchen" loading="lazy" width="1600" height="1068"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Woman carrying baby son and cooking in kitchen</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-ca60828-144dpi-w1600.jpg" alt="An older woman with warm sun on her face" loading="lazy" width="1106" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">An older woman with warm sun on her face</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…</span><span class="gc-lic t-cm-legal">Kike Arnaiz / Stocksy United</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan." loading="lazy" width="1067" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan.</span><span class="gc-lic t-cm-legal">Gemma Can Fly / Stocksy United</span></figcaption></figure>
+</div></div>
+<p class="note t-ed-body-small"><b>Where the cropping happens: everywhere.</b> At six columns a 1&times;1 compartment is taller than it is wide, so a 3:2 landscape loses roughly <b>42%</b> of its area (mean across the set <b>44%</b>, worst <b>50%</b>, <b>15 of 15</b> pictures cropped by more than 2%). Portraits are cut too, in the other direction. Nothing on this wall is showing you the whole photograph.</p>
+<p class="note t-ed-body-small"><b>Where the ragged edge sits:</b> at the bottom, and also <i>inside</i> the wall &mdash; a tall portrait leaves a hole beside it that dense packing may or may not backfill. Measured on this set: 6 col: 6 empty cell(s) over 5 rows &middot; 3 col: 3 empty cell(s) over 9 rows &middot; 2 col: 2 empty cell(s) over 13 rows &middot; 1 col: 0 empty cell(s) over 15 rows. That is the ruled tolerance doing exactly what you exempted it for.</p>
+<div class="sublabel t-ed-caption">A2 &mdash; the same role dialled to 4 columns (what the roles page used)</div>
+<div class="c-bento gc-a4" data-bento-role="gallery"><div class="c-bento__grid">
+<figure class="c-bento__tile gc-atile" data-c="2" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="gc-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family." loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">a person is climbing the stairs towards a modern building during winter</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1394386010-144dpi-w1600.jpg" alt="Businesswoman talking on phone from office window overlooking Hong Kong cityscape" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Businesswoman talking on phone from office window overlooking Hong Kong cityscape</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1498039805-w1600.jpg" alt="Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="2" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1708273322-w1600.jpg" alt="Father and child looking out of the window, on to their garden whilst watching the sunrise" loading="lazy" width="1600" height="1127"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Father and child looking out of the window, on to their garden whilst watching the sunrise</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2179684483-w1600.jpg" alt="A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2190197969-144dpi-w1600.jpg" alt="Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night." loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2208294966-144dpi-w1600.jpg" alt="Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-653972314-w1600.jpg" alt="Jaipur, India - Hands weaving a oriental rug." loading="lazy" width="1600" height="1065"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Jaipur, India - Hands weaving a oriental rug.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-968890266-w1600.jpg" alt="Woman carrying baby son and cooking in kitchen" loading="lazy" width="1600" height="1068"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Woman carrying baby son and cooking in kitchen</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-ca60828-144dpi-w1600.jpg" alt="An older woman with warm sun on her face" loading="lazy" width="1106" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">An older woman with warm sun on her face</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…</span><span class="gc-lic t-cm-legal">Kike Arnaiz / Stocksy United</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan." loading="lazy" width="1067" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan.</span><span class="gc-lic t-cm-legal">Gemma Can Fly / Stocksy United</span></figcaption></figure>
+</div></div>
+<p class="note t-ed-body-small"><b>The dial is most of A&rsquo;s crop cost, so both are here.</b> At four columns the compartment is much closer to 3:2 and the mean crop falls from <b>44%</b> to <b>13%</b> (worst <b>24%</b>). Judging A on the six-column wall alone would be judging a strawman &mdash; but note that even at its kindest, A still crops, and the amount depends on a dial rather than on the picture.</p>
+<div class="sublabel t-ed-caption">A4 &mdash; the same 4-column wall with the edge dial at SQUARE, as the Foundations photography page now ships it (s218-D6&nbsp;(4))</div>
+<div class="c-bento gc-a4" data-bento-role="gallery"><div class="c-bento__grid">
+<figure class="c-bento__tile gc-atile" data-c="2" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="gc-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family." loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">a person is climbing the stairs towards a modern building during winter</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1394386010-144dpi-w1600.jpg" alt="Businesswoman talking on phone from office window overlooking Hong Kong cityscape" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Businesswoman talking on phone from office window overlooking Hong Kong cityscape</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1498039805-w1600.jpg" alt="Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="2" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1708273322-w1600.jpg" alt="Father and child looking out of the window, on to their garden whilst watching the sunrise" loading="lazy" width="1600" height="1127"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Father and child looking out of the window, on to their garden whilst watching the sunrise</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2179684483-w1600.jpg" alt="A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2190197969-144dpi-w1600.jpg" alt="Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night." loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2208294966-144dpi-w1600.jpg" alt="Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-653972314-w1600.jpg" alt="Jaipur, India - Hands weaving a oriental rug." loading="lazy" width="1600" height="1065"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Jaipur, India - Hands weaving a oriental rug.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-968890266-w1600.jpg" alt="Woman carrying baby son and cooking in kitchen" loading="lazy" width="1600" height="1068"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Woman carrying baby son and cooking in kitchen</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-ca60828-144dpi-w1600.jpg" alt="An older woman with warm sun on her face" loading="lazy" width="1106" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">An older woman with warm sun on her face</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…</span><span class="gc-lic t-cm-legal">Kike Arnaiz / Stocksy United</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan." loading="lazy" width="1067" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan.</span><span class="gc-lic t-cm-legal">Gemma Can Fly / Stocksy United</span></figcaption></figure>
+</div></div>
+<p class="note t-ed-body-small"><b>This is the ruled instance, not a proposal.</b> Your four #218 exports all carried <code>edge: square</code> and you reopened it in as many words &mdash; <i>&ldquo;Reopen &mdash; square it&rdquo;</i>. <b>2 of 15 photographs were re-spanned</b> to close the wall; A2 above, the same wall with the dial at ragged, leaves <b>4 col: 4 hole(s) &middot; 3 col: 3 hole(s) &middot; 2 col: 2 hole(s) &middot; 1 col: 0 hole(s)</b>. <b>The scope is the ruling&rsquo;s own:</b> <i>&ldquo;this enacts edge:square for the photography page&rsquo;s wall; the GALLERY ROLE&rsquo;s s217-D3 exemption elsewhere is untouched until he says wider&rdquo;</i> &mdash; which is why A1, A2 and A3 are still ragged, and still correct.</p>
+<p class="note t-ed-body-small"><b>What the squaring cost, tile by tile:</b> gettyimages-968890266-w1600.jpg (landscape) 1&times;1 &rarr; 1&times;2; stocksy-6629948-w1600.jpg (portrait) 1&times;2 &rarr; 1&times;1. <b>&#9888; 1 of those is a PORTRAIT flattened to one row</b> to close a hole &mdash; the pass is cost-ordered to avoid exactly that and it still happened here. That is the open question below, seen rather than argued.</p>
+<p class="note t-ed-body-small"><b>&#9989; Ruled since this page was built &mdash; <code>s219-D2 (2)</code>: square is the gallery-role default, in all four themes.</b> <code>s218-D6 (4)</code> squared one wall and scoped itself &mdash; <i>&ldquo;untouched until he says wider&rdquo;</i>; <code>s219-D2 (2)</code> is the widening. <b>&#9888; The A walls above are still ragged where canon leaves them ragged</b>, because the default lives in the token store and <code>layout/bento/$roles/gallery/squaring</code> still reads <code>false</code>. Flipping it is a canon regeneration reaching every gallery bento anywhere, so it is put to you rather than taken here &mdash; Q1 of the enact-B report. <b>A declared divergence, not the ruling.</b> What a squaring pass may CROP is a different question and <code>s219-D2 (2)</code> expressly leaves it open &mdash; that is Q3, still live below.</p>
+<div class="sublabel t-ed-caption">A5 &mdash; the keyline dial at OFF: no borders, 1px gutter (s217-D5; the photography page&rsquo;s ruled setting in mono, console and supercharge &mdash; s219-D2 (4), superseding s218-D3)</div>
+<div class="c-bento gc-atrial" data-bento-role="gallery"><div class="c-bento__grid">
+<figure class="c-bento__tile gc-atile" data-c="2" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="gc-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family." loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">a person is climbing the stairs towards a modern building during winter</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1394386010-144dpi-w1600.jpg" alt="Businesswoman talking on phone from office window overlooking Hong Kong cityscape" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Businesswoman talking on phone from office window overlooking Hong Kong cityscape</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1498039805-w1600.jpg" alt="Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="2" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1708273322-w1600.jpg" alt="Father and child looking out of the window, on to their garden whilst watching the sunrise" loading="lazy" width="1600" height="1127"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Father and child looking out of the window, on to their garden whilst watching the sunrise</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2179684483-w1600.jpg" alt="A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2190197969-144dpi-w1600.jpg" alt="Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night." loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2208294966-144dpi-w1600.jpg" alt="Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-653972314-w1600.jpg" alt="Jaipur, India - Hands weaving a oriental rug." loading="lazy" width="1600" height="1065"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Jaipur, India - Hands weaving a oriental rug.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-968890266-w1600.jpg" alt="Woman carrying baby son and cooking in kitchen" loading="lazy" width="1600" height="1068"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Woman carrying baby son and cooking in kitchen</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-ca60828-144dpi-w1600.jpg" alt="An older woman with warm sun on her face" loading="lazy" width="1106" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">An older woman with warm sun on her face</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="1"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…</span><span class="gc-lic t-cm-legal">Kike Arnaiz / Stocksy United</span></figcaption></figure>
+<figure class="c-bento__tile gc-atile" data-c="1" data-r="2"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan." loading="lazy" width="1067" height="1600"><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan.</span><span class="gc-lic t-cm-legal">Gemma Can Fly / Stocksy United</span></figcaption></figure>
+</div></div>
+<p class="note t-ed-body-small">Your #217 &ldquo;let&rsquo;s try dropping the keylines&rdquo; wall &mdash; <b>and you ruled it in, as a dial</b> (<code>s217-D5</code>: &ldquo;keylines on/off&rdquo;), then set the photography page to OFF in all four themes (<code>s218-D3</code>) &mdash; <b>superseded by <code>s219-D2 (4)</code></b>, which turns legacy&rsquo;s keylines back ON and leaves the other three off. Note what it does to the crop question: nothing. Removing the keylines makes the wall read as one surface, which arguably makes the inconsistent cropping <i>more</i> visible, not less.</p>
+<div class="rcut-live"><span class="rcut-tag rcut-tag-o t-cm-legal">Open &middot; Q3 &middot; yours to rule</span><p class="rcut-live-q t-ed-body"><b>What may a photograph be re-cropped into when a wall is squared?</b></p><p class="rcut-live-b t-ed-body-small">EXPRESSLY still yours, in the ruling&#x27;s own words. The wall may now be squared everywhere in the gallery role, and there is still no bound on what a photograph may be re-spanned INTO — nor any rule against flattening a portrait to close a hole. The #219 squaring pass did exactly that to tile 247 (`stocksy-6629948-w1600.jpg`, 1067×1600 portrait, re-spanned 1×2 → 3×1), rendered before and after at `reviews/SQUARING-PORTRAIT-2026-08-25-v1.html`.</p><p class="rcut-live-b t-ed-body-small"><b>Answering it mints</b> a bound on the crop a squaring pass may pay — the W-99zi third bend that s219-D2 (2) expressly left open.</p></div>
+</section>
+<section id="candidate-b">
+<p class="gc-tag t-cm-legal">Candidate B</p>
+<h2 class="t-ed-heading-3">Justified rows &mdash; Flickr-style, with a widow switch</h2>
+<p class="lede t-ed-body">Photographs are taken in order into a row until the row would drop below the <b>target height of 320px</b>, then the whole row is scaled so it ends flush at both edges. <b>Row height varies; row width never does.</b> Every box carries its picture&rsquo;s own aspect ratio, so <b>nothing is cropped anywhere on this wall</b>.</p>
+<p class="lede t-ed-body">The target is not a taste pick: <b>320px is the ruled row unit</b> (<code>layout/bento/row-unit</code>, s217-D2) and it is also Flickr&rsquo;s own default target row height. The two agree by coincidence, and the coincidence is worth knowing.</p>
+<p class="lede t-ed-body">The last 3 photographs cannot fill a row at that height. Flickr calls them <b>widows</b>, counts them, and gives you a switch. They are <b>not blown up</b> to justify &mdash; they keep the target height and the row simply ends where it ends.</p>
+<input type="checkbox" id="gc-widows" class="gc-switch" checked>
+<p class="gc-switchrow t-ed-body"><label for="gc-widows"><b>Widow count: 3</b> &mdash; <span class="gc-when-on">showing the short last row; untick to hide it</span><span class="gc-when-off">hidden, so every visible row is justified; tick to show it</span></label></p>
+<div class="c-bento gc-b" data-bento-role="gallery">
+<div class="gc-brow">
+<figure class="gc-btile gc-p1" data-ar="1.499531" data-file="eyeem-100014108-180570836-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="gc-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+<figure class="gc-btile gc-p2" data-ar="1.499531" data-file="gettyimages-1159761634-144dpi-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="gc-btile gc-p3" data-ar="1.499531" data-file="gettyimages-1271527435-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family." loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+</div>
+<div class="gc-brow">
+<figure class="gc-btile gc-p4" data-ar="0.665625" data-file="gettyimages-1336692652-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">a person is climbing the stairs towards a modern building during winter</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="gc-btile gc-p5" data-ar="1.499531" data-file="gettyimages-1394386010-144dpi-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1394386010-144dpi-w1600.jpg" alt="Businesswoman talking on phone from office window overlooking Hong Kong cityscape" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Businesswoman talking on phone from office window overlooking Hong Kong cityscape</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="gc-btile gc-p6" data-ar="1.499531" data-file="gettyimages-1498039805-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1498039805-w1600.jpg" alt="Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+</div>
+<div class="gc-brow">
+<figure class="gc-btile gc-p7" data-ar="1.419698" data-file="gettyimages-1708273322-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-1708273322-w1600.jpg" alt="Father and child looking out of the window, on to their garden whilst watching the sunrise" loading="lazy" width="1600" height="1127"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Father and child looking out of the window, on to their garden whilst watching the sunrise</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="gc-btile gc-p8" data-ar="1.499531" data-file="gettyimages-2179684483-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2179684483-w1600.jpg" alt="A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="gc-btile gc-p9" data-ar="1.499531" data-file="gettyimages-2190197969-144dpi-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2190197969-144dpi-w1600.jpg" alt="Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night." loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+</div>
+<div class="gc-brow">
+<figure class="gc-btile gc-p10" data-ar="1.499531" data-file="gettyimages-2208294966-144dpi-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-2208294966-144dpi-w1600.jpg" alt="Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="gc-btile gc-p11" data-ar="1.502347" data-file="gettyimages-653972314-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-653972314-w1600.jpg" alt="Jaipur, India - Hands weaving a oriental rug." loading="lazy" width="1600" height="1065"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Jaipur, India - Hands weaving a oriental rug.</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="gc-btile gc-p12" data-ar="1.498127" data-file="gettyimages-968890266-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-968890266-w1600.jpg" alt="Woman carrying baby son and cooking in kitchen" loading="lazy" width="1600" height="1068"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Woman carrying baby son and cooking in kitchen</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+</div>
+<div class="gc-brow gc-brow--widow">
+<figure class="gc-btile gc-p13 gc-widow" data-ar="0.691250" data-file="gettyimages-ca60828-144dpi-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/gettyimages-ca60828-144dpi-w1600.jpg" alt="An older woman with warm sun on her face" loading="lazy" width="1106" height="1600"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">An older woman with warm sun on her face</span><span class="gc-lic t-cm-legal">Getty Images</span></figcaption></figure>
+<figure class="gc-btile gc-p14 gc-widow" data-ar="1.499531" data-file="stocksy-5217047-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…</span><span class="gc-lic t-cm-legal">Kike Arnaiz / Stocksy United</span></figcaption></figure>
+<figure class="gc-btile gc-p15 gc-widow" data-ar="0.666875" data-file="stocksy-6629948-w1600.jpg"><span class="gc-box"><img class="gc-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan." loading="lazy" width="1067" height="1600"></span><figcaption class="c-bento__caption gc-cap"><span class="gc-desc t-ed-caption">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan.</span><span class="gc-lic t-cm-legal">Gemma Can Fly / Stocksy United</span></figcaption></figure>
+</div>
+</div>
+<p class="note t-ed-body-small"><b>Where the row heights vary:</b> 4 justified rows at 286px / 351px / 291px / 286px &mdash; a range of <b>65px</b> around the 320px target (11% either side). The row holding the portrait is the tall one: a portrait eats far less width per unit of height, so its row has to grow to fill the container. <b>That variation is the mechanism, not a defect</b> &mdash; it is what buys the flush edges.</p>
+<p class="note t-ed-body-small"><b>Where the ragged edge sits:</b> in one place only, the last row, and it is switchable. There are no holes anywhere else &mdash; that is the whole point of justification, and it is the sharpest visible difference from A.</p>
+<p class="note t-ed-body-small"><b>The honest cost of doing this at mint time.</b> The row membership is decided here, in the generator, against the page&rsquo;s own 1336px content width. The rows stay flush at every width &mdash; the browser redistributes the space &mdash; but they stay <i>the same rows</i>, so they get shorter as the window narrows instead of re-packing. Flickr re-packs at runtime. A shipped B would need either a packing per responsive band or a runtime pass; <b>A re-flows for free</b>. Narrow your window and you will see both behaviours.</p>
+<div class="rcut-live"><span class="rcut-tag rcut-tag-o t-cm-legal">Open &middot; Q11 &middot; yours to rule</span><p class="rcut-live-q t-ed-body"><b>If justified rows are used, do the rows RE-PACK as the container narrows, or keep their mint-time membership and simply shorten?</b></p><p class="rcut-live-b t-ed-body-small">`s217-D5` rules the MODE into existence and says nothing about re-packing. Today&#x27;s wall is minted once at the page&#x27;s own content width: the rows stay flush at every width, but they stay THE SAME ROWS. Flickr re-packs at runtime. Narrow the window on candidate B below and both behaviours are visible.</p><p class="rcut-live-b t-ed-body-small"><b>Answering it mints</b> a ruling on justified-row responsiveness: mint-per-band, a runtime pass, or shortening accepted.</p></div>
+<div class="rcut-live"><span class="rcut-tag rcut-tag-o t-cm-legal">Open &middot; Q12 &middot; yours to rule</span><p class="rcut-live-q t-ed-body"><b>Do justified rows carry an emphasis rhythm at all?</b></p><p class="rcut-live-b t-ed-body-small">The span grid promotes every 6th tile to 2×2 (`s217-D2`). Justified rows have no equivalent here; Flickr&#x27;s is a full-width breakout every n rows, guarded to landscape pictures.</p><p class="rcut-live-b t-ed-body-small"><b>Answering it mints</b> a ruling on whether justified rows get an emphasis rhythm, and what guards it.</p></div>
+</section>
+<section id="differences">
+<h2 class="t-ed-heading-3">The differences, as measured</h2>
+<table class="gc-diff t-ed-body-small"><thead><tr><th></th><th>A &mdash; span grid (ruled)</th><th>B &mdash; justified rows (proposed)</th></tr></thead><tbody>
+<tr><td>Cropping</td><td>Every picture, 44% of area on average at 6 columns and 13% at 4 &mdash; worst tile 50%.</td><td>None. The compartment is minted from the picture&rsquo;s own ratio.</td></tr>
+<tr><td>Side edges</td><td>Flush &mdash; the grid guarantees it.</td><td>Flush &mdash; the scaling guarantees it.</td></tr>
+<tr><td>Bottom edge</td><td>Ragged, and holes may also appear mid-wall beside a tall portrait. Ruled acceptable (s217-D3).</td><td>Ragged in the last row only, never mid-wall, and hideable with the switch.</td></tr>
+<tr><td>Row height</td><td>Fixed &mdash; the 320px row unit for every row.</td><td>Varies: 286px / 351px / 291px / 286px on this set.</td></tr>
+<tr><td>Portraits</td><td>Two rows tall, cropped to a 1&times;2 compartment.</td><td>Full height, uncropped, and they make their row taller.</td></tr>
+<tr><td>Emphasis rhythm</td><td>Every 6th tile promoted to 2&times;2 (s217-D2).</td><td>None here. Flickr&rsquo;s equivalent is a full-width breakout every n rows, guarded to landscape pictures &mdash; a separate question if you go this way.</td></tr>
+<tr><td>Responsive</td><td>Re-flows at the 1100 / 820 / 520 bands for free.</td><td>Rows keep their membership and shorten; a per-band mint or a runtime pass would be owed.</td></tr>
+<tr><td>Nesting</td><td>Works &mdash; it is a bento, so it can be a tile of another bento.</td><td>Untested. B is a flex column, not a grid; whether it nests is an open question.</td></tr>
+</tbody></table>
+<p class="note t-ed-body-small"><b>What this table is now for.</b> Not choosing between A and B &mdash; <code>s217-D5</code> made both of them positions of a per-instance <b>mode</b> dial, so the table is what an instance is choosing between when somebody sets that dial. The real question underneath, and it is a per-instance one, is whether <i>that</i> gallery of licensed photography may crop its photographs: where the answer is no, A cannot do it at any column count and B is the mode. The Foundations photography page&rsquo;s answer is already recorded &mdash; <b>bento mode, squared</b> (<code>s218-D3</code>, <code>s218-D6&nbsp;(4)</code>).</p>
+</section>
+<section id="provenance">
+<h2 class="t-ed-heading-3">What is canon here and what is proposed</h2>
+<p class="lede t-ed-body"><b>Canon, untouched:</b> candidate A&rsquo;s container, grid, span vocabulary, responsive bands, gallery role rule and the 86px caption space all come from <code>knowledge/canon/canon.css</code>. This page declares no grid, no span and no role rule for A. <b>Proposed:</b> everything in candidate B, whose rows are a page-local flex layout because canon has no grammar for justified rows &mdash; that is what the decision would create.</p>
+<p class="note t-ed-body-small">Both candidates read the same manifest rows through the same function as the ruled roles page (<code>gen_bento_roles_217.read_photos</code>), so the photographs, their order and their derived spans cannot differ between them. Photographs are the committed web derivatives (s217-D1); licences are on every caption.</p>
+<p class="note t-ed-body-small">Probe: <code>knowledge/_render/verify_gallery_compare_217.py</code> &mdash; drives this page in all four themes &times; light/dark, measures every B row flush to the container at several widths, checks every rendered box against its manifest ratio, drives the widow switch, and has a mutation arm that breaks the justify maths and must go red.</p>
+</section></main>
+<script>
+(function(){
+  var THEMES=['mono','legacy','console','supercharge'];
+  var state={theme:'console',mode:'light',chrome:'1'};
+  function apply(){
+    document.documentElement.setAttribute('data-apollo-theme',state.theme);
+    document.body.setAttribute('data-theme',state.mode);
+    document.body.setAttribute('data-chrome',state.chrome);
+    document.querySelectorAll('#themes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.themeAttr===state.theme)); });
+    document.querySelectorAll('#modes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.mode===state.mode)); });
+  }
+  var t=document.getElementById('themes'), m=document.getElementById('modes');
+  if(t) t.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.theme=b.dataset.themeAttr; apply(); });
+  if(m) m.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.mode=b.dataset.mode; apply(); });
+  function fromHash(){
+    var h={};
+    location.hash.replace(/^#/,'').split('&').forEach(function(kv){
+      var p=kv.split('='); if(p[0]) h[p[0]]=decodeURIComponent(p[1]||''); });
+    if(THEMES.indexOf(h.theme)>=0) state.theme=h.theme;
+    if(h.m==='light'||h.m==='dark') state.mode=h.m;
+    if(h.chrome==='0'||h.chrome==='1') state.chrome=h.chrome;
+    apply();
+  }
+  window.addEventListener('hashchange',fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>

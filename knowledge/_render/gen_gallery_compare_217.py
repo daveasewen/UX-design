@@ -8,13 +8,22 @@ Dave's #217 question, answered by showing it —
      widow switch — would this be visually different, id like to see these two side by side"
 
 ⛔ #219 RE-CUT — AND THIS PAGE'S OWN QUESTION IS THE ONE THAT WAS ANSWERED. It now writes
-`reviews/GALLERY-COMPARE-2026-08-25-v2.html`. `s217-D5` settled A-or-B with a third answer:
+`reviews/GALLERY-COMPARE-2026-08-25-v3.html`. `s217-D5` settled A-or-B with a third answer:
 *"mode is 'Justified rows' OR 'Gallery bento', the bento mode carrying a sub-option ragged or
 square bottom"* — BOTH, as a per-instance dial. `s218-D3` then set the Foundations photography
 page's instance (bento mode, keylines off, all four themes) and `s218-D6 (4)` squared that page's
 wall. So A and B are no longer candidates: they are the two positions of a ruled dial, and what is
 still open is narrower and named. Ledger: `_bento_recut_219.py`. ⚠ v1 is untouched on disk. This
 generator still writes ONE review file and touches no canon, no token and no ruling.
+
+⛔ v3 (#219 SEAM 5) — THREE OF THIS PAGE'S RECEIPTS WENT STALE THE SAME AFTERNOON:
+  · `s219-D2 (1)` retired the `s218-D6 (1)` DARK mono caption ground this page painted → light grey.
+  · `s219-D2 (2)` closed Q6 — square is the gallery-ROLE default now, not one page's dial. The live
+    Q6 control is struck. ⚠ The A walls below are STILL RAGGED where canon leaves them ragged,
+    because `layout/bento/$roles/gallery/squaring` has not been flipped — a canon regeneration, and
+    Dave's call (lane B's Q1). The page says so instead of pretending the store agrees.
+  · `s219-D2 (4)` superseded `s218-D3`'s "keylines OFF in all four themes" — legacy carries them.
+**v2 stays on disk exactly as it was written** ([[feedback-version-dont-overwrite]]).
 
 THE TWO CANDIDATES, ON THE SAME 15 PHOTOGRAPHS IN THE SAME ORDER
   A · THE RULED GALLERY ROLE — `.c-bento[data-bento-role="gallery"]` exactly as canon renders it:
@@ -73,9 +82,10 @@ from gen_canon_bento import (store, params, caption_space, band_ladder,  # noqa:
 from gen_bento_roles_217 import read_photos  # noqa: E402  ⚠ THE SINGLE DATA PATH
 import _bento_recut_219 as recut  # noqa: E402  ⚠ THE ONE HOME for the decision ledger
 
-# ⚠ v2, NOT an overwrite. `GALLERY-COMPARE-2026-08-23-v1.html` stays on disk exactly as Dave saw
-# it; this is its #219 successor ([[feedback-version-dont-overwrite]]).
-OUT = os.path.join(ROOT, "reviews", "GALLERY-COMPARE-%s-v2.html" % recut.RECUT_DATE)
+# ⚠ v3, NOT an overwrite. `GALLERY-COMPARE-2026-08-23-v1.html` (Dave's #217 page) and
+# `GALLERY-COMPARE-2026-08-25-v2.html` (the pre-s219 re-cut) both stay on disk exactly as written;
+# this is the #219 seam-5 successor ([[feedback-version-dont-overwrite]]).
+OUT = os.path.join(ROOT, "reviews", "GALLERY-COMPARE-%s-v3.html" % recut.RECUT_DATE)
 UP = "../"
 SENTINEL = "<!-- APOLLO GALLERY COMPARE (gen_gallery_compare_217.py) — RE-CUT #219 -->"
 
@@ -557,20 +567,36 @@ def build(photos, rows, widows, reps):
               "&mdash; the pass is cost-ordered to avoid exactly that and it still happened here. "
               "That is the open question below, seen rather than argued." % len(squashed))
              if squashed else "No portrait was flattened to close a hole on this set."))
-    A(recut.open_control_html("Q6"))
+    # ⛔ #219 SEAM 5 — Q6 CLOSED and its live control is gone; `open_control_html("Q6")` would now
+    # REFUSE. What replaces it is the ruling plus the ONE fact that keeps the wall above ragged.
+    A('<p class="note t-ed-body-small"><b>&#9989; Ruled since this page was built &mdash; '
+      '<code>s219-D2 (2)</code>: square is the gallery-role default, in all four themes.</b> '
+      '<code>s218-D6 (4)</code> squared one wall and scoped itself &mdash; <i>&ldquo;untouched '
+      'until he says wider&rdquo;</i>; <code>s219-D2 (2)</code> is the widening. '
+      '<b>&#9888; The A walls above are still ragged where canon leaves them ragged</b>, because '
+      'the default lives in the token store and <code>layout/bento/$roles/gallery/squaring</code> '
+      'still reads <code>false</code>. Flipping it is a canon regeneration reaching every gallery '
+      'bento anywhere, so it is put to you rather than taken here &mdash; Q1 of the enact-B '
+      'report. <b>A declared divergence, not the ruling.</b> What a squaring pass may CROP is a '
+      'different question and <code>s219-D2 (2)</code> expressly leaves it open &mdash; that is '
+      'Q3, still live below.</p>')
 
     A('<div class="sublabel t-ed-caption">A5 &mdash; the keyline dial at OFF: no borders, 1px '
-      'gutter (s217-D5; the photography page&rsquo;s ruled setting, s218-D3)</div>')
+      'gutter (s217-D5; the photography page&rsquo;s ruled setting in mono, console and '
+      'supercharge &mdash; s219-D2 (4), superseding s218-D3)</div>')
     A('<div class="c-bento gc-atrial" data-bento-role="gallery"><div class="c-bento__grid">')
     for p in photos:
         A(a_tile(p))
     A('</div></div>')
     # ⛔ #219 — v1 called this "still proposed, still not ruled". It is not: `s217-D5` made
-    # keylines a per-instance dial and `s218-D3` set the photography instance to OFF.
+    # keylines a per-instance dial and `s218-D3` set the photography instance to OFF — which
+    # `s219-D2 (4)` then superseded at seam 5 (legacy carries the edge). Both are stated.
     A('<p class="note t-ed-body-small">Your #217 &ldquo;let&rsquo;s try dropping the '
       'keylines&rdquo; wall &mdash; <b>and you ruled it in, as a dial</b> (<code>s217-D5</code>: '
       '&ldquo;keylines on/off&rdquo;), then set the photography page to OFF in all four themes '
-      '(<code>s218-D3</code>). Note what it does to the crop question: nothing. Removing the '
+      '(<code>s218-D3</code>) &mdash; <b>superseded by <code>s219-D2 (4)</code></b>, which turns '
+      'legacy&rsquo;s keylines back ON and leaves the other three off. Note what it does to the '
+      'crop question: nothing. Removing the '
       'keylines makes the wall read as one surface, which arguably makes the inconsistent '
       'cropping <i>more</i> visible, not less.</p>')
     A(recut.open_control_html("Q3"))
@@ -703,7 +729,7 @@ def build(photos, rows, widows, reps):
 
 
 def page(photos, rows, widows, reps):
-    # ⚠ THE RE-CUT BLOCKS GO IN THE HEAD, before the minted per-photograph rules: the s218-D6(1)
+    # ⚠ THE RE-CUT BLOCKS GO IN THE HEAD, before the minted per-photograph rules: the s219-D2(1)
     # mono ground is tile CONTENT and must not out-order the per-photograph geometry.
     css = (CSS_HEAD
            .replace("__MONOCAP__",
@@ -875,8 +901,16 @@ def selftest():
     assert "not ruled" not in h.split('<section id="intro">', 1)[1].split("</section>", 1)[0].lower(), \
         "bite 7f FAIL: the intro still calls this page unruled. s217-D5 answered A-or-B with a " \
         "per-instance dial; re-putting it is the #219 defect"
-    assert "surface-digital-black" in body and "text-reverse" in body, \
-        "bite 7g FAIL: the s218-D6(1) mono caption ground is not on the page"
+    # ⬛ #219 seam 5 — FLIPPED WITH s219-D2 (1), and asserting BOTH halves: the enacted light-grey
+    # ground is present AND the retired dark one is nowhere on the page.
+    _g, _i = recut._cap_tokens()
+    assert "var(%s," % _g[0] in body and "var(%s," % _i[0] in body, \
+        "bite 7g FAIL: the s219-D2(1) mono caption ground (%s / %s) is not on the page" \
+        % (_g[0], _i[0])
+    for _dead in (recut.RETIRED_MONO_CAPTION_218["ground"][0],
+                  recut.RETIRED_MONO_CAPTION_218["ink"][0]):
+        assert "var(%s," % _dead not in body, \
+            "bite 7g2 FAIL: the RETIRED %s is still painted — s219-D2 (1) superseded it" % _dead
     assert "s218-D6" in asec, \
         "bite 7h FAIL: candidate A does not show the ruled squared instance — the page would " \
         "still be showing a ragged edge as the only thing a gallery wall can do"

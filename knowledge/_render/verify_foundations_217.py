@@ -73,6 +73,13 @@ MODES = ["light", "dark"]
 # is exactly why an accidental inversion would hide in the other three.
 EXPECT_RADIUS = {"mono": 0, "legacy": 0, "supercharge": 0, "console": 20}
 
+# ⬛ #219 — WHERE THAT RADIUS SITS IS A PER-THEME DEFAULT NOW (s219-D2 (3)). Read from the
+# generator's own settings table rather than restated, so this probe and the page cannot hold two
+# opinions about the console gallery's rounding.
+sys.path.insert(0, HERE)
+import gen_foundations_217 as _foundations  # noqa: E402
+ROUNDING = {t: _foundations.GALLERY_SETTINGS[t]["rounding"] for t in THEMES}
+
 FONT_PROBE = """() => {
   const c = document.createElement('canvas').getContext('2d');
   const m = f => { c.font = '40px ' + f; return Math.round(c.measureText('Handgloves 12345').width); };
@@ -237,22 +244,25 @@ def main():
                             fails.append("%s — gallery CONTAINER radius %dpx, expected 0: "
                                          "s217-D3 puts this role's radius on the TILES"
                                          % (state, bt["radius"]))
-                        # ⬛ RE-POINTED AT #218, NOT WEAKENED. s217-D3 moved this role's radius
-                        # from the container to the TILE; Dave then ruled the s217-D5 `rounding`
-                        # dial to `4 corners of the image` for this page (#218), which moves it
-                        # one step further in — the PICTURE is rounded and the tile stays square
-                        # and unclipped, so the caption is not cut. The assertion FOLLOWS the
-                        # radius rather than being dropped: it still needs the theme's own number
-                        # to appear somewhere it can be told apart from zero (console = 20px), and
-                        # it now also pins the tile to 0, which the old single check could not.
-                        if bt["tileRadius"] != 0:
-                            fails.append("%s — gallery TILE radius %dpx, expected 0: #218 rules "
-                                         "`rounding: corners`, which rounds the PICTURE and "
-                                         "leaves the tile square" % (state, bt["tileRadius"]))
-                        if bt["imgRadius"] != EXPECT_RADIUS[theme]:
-                            fails.append("%s — gallery PICTURE radius %dpx, expected %dpx "
-                                         "(#218 `rounding: corners`)"
-                                         % (state, bt["imgRadius"], EXPECT_RADIUS[theme]))
+                        # ⬛ RE-POINTED AT #219, AND IT IS NOW READ OFF THE RULED DIAL. s217-D3
+                        # moved this role's radius from the container to the TILE; #218 ruled the
+                        # `rounding` dial to `4 corners of the image` — the PICTURE is rounded and
+                        # the tile stays square — and s219-D2 (3) makes CONSOLE's gallery default
+                        # `capsule`, which moves canon's container radius back onto the TILE in
+                        # that theme alone. A probe with one expectation for four themes would now
+                        # red the ruling; the pair below follows whichever the theme's default is,
+                        # and asserts BOTH halves, because either alone passes where radius is 0.
+                        rounding = ROUNDING[theme]
+                        want_tile = EXPECT_RADIUS[theme] if rounding == "capsule" else 0
+                        want_img = 0 if rounding == "capsule" else EXPECT_RADIUS[theme]
+                        if bt["tileRadius"] != want_tile:
+                            fails.append("%s — gallery TILE radius %dpx, expected %dpx: the ruled "
+                                         "rounding here is `%s`"
+                                         % (state, bt["tileRadius"], want_tile, rounding))
+                        if bt["imgRadius"] != want_img:
+                            fails.append("%s — gallery PICTURE radius %dpx, expected %dpx: the "
+                                         "ruled rounding here is `%s`"
+                                         % (state, bt["imgRadius"], want_img, rounding))
                         if bt["capMin"] != CAPTION_SPACE:
                             fails.append("%s — caption min-height %dpx, expected %dpx (s217-D3). "
                                          "The ruled number did not reach the page from the store."

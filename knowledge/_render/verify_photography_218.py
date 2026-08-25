@@ -94,6 +94,10 @@ PAGE = os.path.join(ROOT, "showroom", "_foundations", "photography.html")
 MANIFEST = os.path.join(ROOT, "knowledge", "_PHOTOGRAPHY-MANIFEST.json")
 MUT_DIR = os.environ.get("BM_MUTANT_DIR", "/var/tmp")
 MUTANT = os.path.join(MUT_DIR, "photography-SETTINGS-BROKEN.html")
+# ⬛ #219 — THE MINTED-DEFAULT ARM'S subject. The settings block is INTACT in this one and exactly
+# one ruled default is wrong (mono's caption ground), so only an assertion that asks whether the
+# CAPTION GROUND IS THE TOKEN THE DIAL NAMES can see it.
+MUTANT_DEFAULT = os.path.join(MUT_DIR, "photography-DEFAULT-BROKEN.html")
 
 sys.path.insert(0, HERE)
 import gen_foundations_217 as foundations   # the RULED settings, through the generator's own read
@@ -138,7 +142,8 @@ STATE_PROBE = """(props) => {
   const tiles = grid ? Array.from(grid.children).filter(t => t.classList.contains('c-bento__tile')) : [];
   const cs = e => getComputedStyle(e);
   const borders = new Set(), shadows = new Set(), tileRadii = new Set(),
-        imgRadii = new Set(), capBg = new Set(), capInk = new Set(), capMin = new Set();
+        imgRadii = new Set(), capBg = new Set(), capInk = new Set(), capMin = new Set(),
+        edgeInk = new Set();
   tiles.forEach(t => {
     const o = t.querySelector('.px-open'), i = t.querySelector('.px-img'),
           c = t.querySelector('.px-cap');
@@ -146,7 +151,10 @@ STATE_PROBE = """(props) => {
     borders.add(px(cs(t).borderTopWidth));
     if (o) { borders.add(px(cs(o).borderTopWidth)); borders.add(px(cs(o).borderRightWidth));
              borders.add(px(cs(o).borderBottomWidth)); borders.add(px(cs(o).borderLeftWidth));
-             shadows.add(cs(o).boxShadow || 'none'); }
+             shadows.add(cs(o).boxShadow || 'none');
+             // ⬛ #219 — the keyline's own COLOUR, so `keylines: on` can be asserted as a line
+             // that RENDERS rather than as a width that is merely declared.
+             if (px(cs(o).borderTopWidth)) edgeInk.add(cs(o).borderTopColor); }
     if (i) imgRadii.add(px(cs(i).borderTopLeftRadius));
     if (c) { capBg.add(cs(c).backgroundColor); capInk.add(cs(c).color);
              capMin.add(px(cs(c).minHeight)); }
@@ -155,11 +163,20 @@ STATE_PROBE = """(props) => {
   // what 'keylines: off' means, and 'no such class in the markup' is not the same claim.
   const lines = wall ? Array.from(wall.querySelectorAll('.bm-gapline, .c-bento__keyline'))
                             .filter(l => cs(l).display !== 'none') : [];
+  // ⬛ #219 — THE TOKENS THE RULED DIALS NAME, RESOLVED IN THIS STATE. The assertions compare the
+  // paint against THESE, never against a literal: `grey` is a token, and a token's value is a
+  // property of the theme and the mode. A probe that compared against #F0F0F0 would fail
+  // supercharge (which resolves its own warm grey) for behaving exactly as ruled.
+  const tok = {};
+  ['--surface-subtle', '--surface-raised', '--background-default', '--text-secondary',
+   '--text-default', '--border-subtle'].forEach(n => {
+     tok[n] = cs(b).getPropertyValue(n).trim(); });
   return {theme: document.documentElement.getAttribute('data-apollo-theme'),
           mode: b.getAttribute('data-theme'),
           pageGround: cs(b).backgroundColor,
           bentoGround: wall ? cs(wall).backgroundColor : null,
           surfaceRaised: cs(b).getPropertyValue('--surface-raised').trim(),
+          tokens: tok,
           containerRadius: px(cs(b).getPropertyValue('--border-radius-container') || '0'),
           gutter: grid ? px(cs(grid).columnGap) : -1,
           gutterVar: wall ? cs(wall).getPropertyValue('--bento-gutter').trim() : '',
@@ -169,6 +186,7 @@ STATE_PROBE = """(props) => {
           tileRadii: Array.from(tileRadii).sort((x, y) => x - y),
           imgRadii: Array.from(imgRadii).sort((x, y) => x - y),
           capBg: Array.from(capBg), capInk: Array.from(capInk),
+          edgeInk: Array.from(edgeInk),
           capMin: Array.from(capMin).sort((x, y) => x - y),
           lines: lines.length,
           unresolved: props.filter(p => !cs(b).getPropertyValue(p).trim()),
@@ -299,7 +317,6 @@ def drive(path, themes, shots=None):
         for theme in themes:
             ruled = foundations.GALLERY_SETTINGS[theme]
             want_gutter = int(foundations.spacing_px(ruled["spacing"]).replace("px", ""))
-            rider = foundations.MONO_CAPTION_RIDER
             for mode in MODES:
                 pg.goto("%s#theme=%s&m=%s" % (url, theme, mode))
                 pg.wait_for_timeout(120)
@@ -317,71 +334,120 @@ def drive(path, themes, shots=None):
                 grounds.setdefault(theme, {})[mode] = s["pageGround"]
 
                 # ---- 4 · THE RULED SETTINGS, LIVE ------------------------------------------
+                # ⛔ EVERY EXPECTATION BELOW IS READ OFF THE RULED DIAL, never typed. At #218 this
+                # block asserted one shape for all four themes (white grounds, corners, keylines
+                # off, transparent captions bar the mono rider). s219-D1/D2 make the defaults
+                # DIFFER BY THEME — capsule in console, keylines on in legacy, grey captions in
+                # two — so a probe built from one shape would red the ruling rather than the page.
                 if s["gutter"] != want_gutter:
                     fails.append("%s GUTTER — %s: resolved column-gap %dpx, ruled %dpx"
                                  % (SETTINGS_BUCKET, tag, s["gutter"], want_gutter))
-                if s["borders"] != [0]:
-                    fails.append("%s KEYLINES — %s: keylines are ruled OFF but resolved border "
-                                 "widths across %d tiles are %s"
-                                 % (SETTINGS_BUCKET, tag, s["tiles"], s["borders"]))
+                if ruled["keylines"] == "off":
+                    if s["borders"] != [0]:
+                        fails.append("%s KEYLINES — %s: keylines are ruled OFF but resolved border "
+                                     "widths across %d tiles are %s"
+                                     % (SETTINGS_BUCKET, tag, s["tiles"], s["borders"]))
+                    if s["edgeInk"]:
+                        fails.append("%s KEYLINES — %s: a tile edge renders in %s with keylines "
+                                     "ruled OFF" % (SETTINGS_BUCKET, tag, s["edgeInk"]))
+                else:
+                    # ⬛ s219-D2 (4) — ON in legacy. The export resolves `tileBorderPx: 1`, so the
+                    # widths across all 251 tiles must be exactly {0 (the tile), 1 (the opener)},
+                    # and the line must RENDER — a 1px border in a transparent colour is a width
+                    # nobody can see, which a width-only assertion cannot tell from a keyline.
+                    if s["borders"] != [0, 1]:
+                        fails.append("%s KEYLINES — %s: keylines are ruled ON (tileBorderPx 1) but "
+                                     "resolved border widths across %d tiles are %s"
+                                     % (SETTINGS_BUCKET, tag, s["tiles"], s["borders"]))
+                    if not s["edgeInk"] or any(_rgb_a(c) == 0 for c in s["edgeInk"]):
+                        fails.append("%s KEYLINES — %s: keylines are ruled ON but no visible edge "
+                                     "colour renders (%s)" % (SETTINGS_BUCKET, tag, s["edgeInk"]))
                 if s["shadows"] != ["none"]:
                     fails.append("%s KEYLINES — %s: an opener carries a box-shadow: %s"
                                  % (SETTINGS_BUCKET, tag, s["shadows"]))
                 if s["lines"]:
                     fails.append("%s KEYLINES — %s: %d line element(s) render on the wall"
                                  % (SETTINGS_BUCKET, tag, s["lines"]))
-                if s["tileRadii"] != [0]:
-                    fails.append("%s ROUNDING — %s: rounding is ruled `corners`, so the TILE must "
-                                 "be square; resolved tile radii %s"
-                                 % (SETTINGS_BUCKET, tag, s["tileRadii"]))
-                if s["imgRadii"] != [s["containerRadius"]]:
-                    fails.append("%s ROUNDING — %s: the PICTURE must carry canon's container "
-                                 "radius (%dpx); resolved image radii %s"
-                                 % (SETTINGS_BUCKET, tag, s["containerRadius"], s["imgRadii"]))
-                raised = s["surfaceRaised"]
-                for what, got in (("PAGE", s["pageGround"]), ("BENTO", s["bentoGround"])):
-                    if not _same_colour(got, raised):
-                        fails.append("%s %s GROUND — %s: ruled `white` (= --surface-raised, %s), "
-                                     "resolved %s" % (SETTINGS_BUCKET, what, tag, raised, got))
-                    # ⚠ THE LITERAL CROSS-CHECK IS ASKED ONLY WHERE THE RECEIPT CAN ANSWER IT.
-                    # Two of Dave's four exports were taken from the legacy tab, so their pixel
-                    # readbacks are legacy's paint. Asking supercharge to match legacy's white
-                    # failed a page behaving exactly as ruled (measured: --surface-raised is
-                    # #F7F6F4 there, not #FFFFFF).
-                    receipt_in = foundations.RECEIPT_RESOLVED_THEME.get(theme)
-                    if (mode == "light" and receipt_in == theme
-                            and _rgb(got) != (255, 255, 255)):
-                        fails.append("%s %s GROUND — %s: the export receipt measured "
-                                     "rgb(255, 255, 255) in light mode; resolved %s"
-                                     % (SETTINGS_BUCKET, what, tag, got))
-                if theme == rider["theme"]:
-                    if s["capBg"] != [_css_rgb(rider["ground_hex"])]:
-                        fails.append("%s CAPTION — %s: the mono rider grounds the caption in %s "
-                                     "(%s); resolved %s"
-                                     % (SETTINGS_BUCKET, tag, rider["ground_token"],
-                                        rider["ground_hex"], s["capBg"]))
-                    if s["capInk"] != [_css_rgb(rider["ink_hex"])]:
-                        fails.append("%s CAPTION — %s: the mono rider inks the caption %s (%s); "
-                                     "resolved %s" % (SETTINGS_BUCKET, tag, rider["ink_token"],
-                                                      rider["ink_hex"], s["capInk"]))
+                # ⬛ s219-D2 (3) — ROUNDING IS PER THEME NOW. `corners` rounds the PICTURE and
+                # leaves the tile square; `capsule` moves canon's container radius onto the TILE
+                # and the picture stays square inside it. Both halves are asserted, because either
+                # one alone passes in a theme whose radius is 0.
+                if ruled["rounding"] == "corners":
+                    want_tile, want_img = [0], [s["containerRadius"]]
                 else:
-                    if s["capBg"] != ["rgba(0, 0, 0, 0)"]:
-                        fails.append("%s CAPTION — %s: capBg is ruled `transparent`; resolved %s"
-                                     % (SETTINGS_BUCKET, tag, s["capBg"]))
+                    want_tile, want_img = [s["containerRadius"]], [0]
+                if s["tileRadii"] != want_tile:
+                    fails.append("%s ROUNDING — %s: rounding is ruled `%s`, so the TILE radius must "
+                                 "be %s; resolved %s"
+                                 % (SETTINGS_BUCKET, tag, ruled["rounding"], want_tile,
+                                    s["tileRadii"]))
+                if s["imgRadii"] != want_img:
+                    fails.append("%s ROUNDING — %s: rounding is ruled `%s`, so the PICTURE radius "
+                                 "must be %s (canon's container radius is %dpx); resolved %s"
+                                 % (SETTINGS_BUCKET, tag, ruled["rounding"], want_img,
+                                    s["containerRadius"], s["imgRadii"]))
+                # ---- the three grounds, each against the TOKEN ITS OWN DIAL NAMES ------------
+                for what, dial, got in (("PAGE", "pageBg", s["pageGround"]),
+                                        ("BENTO", "bentoBg", s["bentoGround"]),
+                                        ("CAPTION", "capBg", (s["capBg"] or [None])[0])):
+                    word = ruled[dial]
+                    want, why = _want_ground(what, word, s["tokens"])
+                    if what == "CAPTION" and len(set(s["capBg"])) > 1:
+                        fails.append("%s CAPTION — %s: the 251 captions do not share one ground "
+                                     "(%s)" % (SETTINGS_BUCKET, tag, s["capBg"]))
+                    if not _same_colour(got, want):
+                        fails.append("%s %s GROUND — %s: dial says `%s` (%s), resolved %s"
+                                     % (SETTINGS_BUCKET, what, tag, word, why, got))
+                # ⚠ THE LITERAL CROSS-CHECK, ASKED WHERE THE RECEIPT CAN ANSWER IT. The twelve #219
+                # exports were each taken in the theme they name (unlike two of the #218 four), so
+                # the light-mode readback IS evidence here — for every ground EXCEPT a transparent
+                # page, where this page deliberately compiles the document ground instead of the
+                # keyword (a page body that paints nothing falls through to the UA canvas). That
+                # divergence is DECLARED, not skipped in silence.
+                rec = foundations.RECEIPT_RESOLVED["gallery"][theme]
+                if mode == "light":
+                    if ruled["pageBg"] != "transparent":
+                        if not _same_colour(s["pageGround"], rec["pageBackground"]):
+                            fails.append("%s PAGE GROUND — %s: Dave's export resolved %s; the page "
+                                         "resolves %s" % (SETTINGS_BUCKET, tag,
+                                                          rec["pageBackground"], s["pageGround"]))
+                    else:
+                        lines.append("     ⚠ %s: the export resolved pageBackground %s "
+                                     "(transparent); this page compiles the DOCUMENT ground "
+                                     "instead — declared divergence, %s"
+                                     % (theme, rec["pageBackground"], s["pageGround"]))
+                    if not _same_colour((s["capBg"] or [None])[0], rec["captionBackground"]):
+                        fails.append("%s CAPTION — %s: Dave's export resolved captionBackground "
+                                     "%s; the page resolves %s"
+                                     % (SETTINGS_BUCKET, tag, rec["captionBackground"],
+                                        (s["capBg"] or [None])[0]))
+                # ---- the caption INK, and its CONTRAST — the sweep is BLOCKING (#219) --------
+                want_ink = s["tokens"].get(foundations.CAP_INK[0])
+                if len(set(s["capInk"])) != 1 or not _same_colour(s["capInk"][0], want_ink):
+                    fails.append("%s CAPTION INK — %s: the ruled ink is %s (%s); resolved %s"
+                                 % (SETTINGS_BUCKET, tag, foundations.CAP_INK[0], want_ink,
+                                    s["capInk"]))
+                # The caption's EFFECTIVE ground: its own, unless that is transparent — in which
+                # case the ink sits on whatever is behind it (the bento ground, itself possibly
+                # transparent, then the page). Measured through the same fallback chain the eye
+                # sees, never assumed to be the caption's own declaration.
+                eff = _effective_ground([(s["capBg"] or [None])[0], s["bentoGround"],
+                                         s["pageGround"]])
+                cr = ratio(_rgb(s["capInk"][0]), _rgb(eff)) if (s["capInk"] and eff) else None
+                if cr is not None and cr < 4.5:
+                    fails.append("%s CONTRAST — %s: caption ink %s on %s is %.2f:1, below WCAG AA "
+                                 "4.5:1 for body text" % (SETTINGS_BUCKET, tag, s["capInk"][0],
+                                                          eff, cr))
                 if s["capMin"] != [86]:
                     fails.append("%s CAPTION SPACE — %s: canon's ruled gallery caption block is "
                                  "86px (s217-D3); resolved %s"
                                  % (SETTINGS_BUCKET, tag, s["capMin"]))
-                if mode == "light" and foundations.RECEIPT_RESOLVED_THEME.get(theme) != theme:
-                    lines.append("     ⚠ %s: the export receipt's `resolved` block was taken in "
-                                 "the %s tab, so its literal rgb() readback is NOT evidence about "
-                                 "this theme — the token is asserted, the literal is not."
-                                 % (theme, foundations.RECEIPT_RESOLVED_THEME.get(theme)))
                 lines.append("  %-22s gutter %3dpx (var %-5s) · tiles %3d · borders %s · "
-                             "tileR %s · imgR %s · page %s · bento %s · cap %s ink %s · space %s"
+                             "tileR %s · imgR %s · page %s · bento %s · cap %s ink %s · "
+                             "contrast %s · space %s"
                              % (tag, s["gutter"], s["gutterVar"] or "-", s["tiles"], s["borders"],
                                 s["tileRadii"], s["imgRadii"], s["pageGround"], s["bentoGround"],
-                                s["capBg"], s["capInk"], s["capMin"]))
+                                s["capBg"], s["capInk"], cr, s["capMin"]))
                 if shots:
                     pg.screenshot(path=os.path.join(shots, "photography-%s-%s.png"
                                                     % (theme, mode)), full_page=False)
@@ -399,6 +465,59 @@ def drive(path, themes, shots=None):
 def _rgb(s):
     n = [int(float(x)) for x in re.findall(r"[\d.]+", s or "")[:3]]
     return tuple(n) if len(n) == 3 else None
+
+
+def _rgb_a(s):
+    """-> the alpha channel of an rgb()/rgba() paint; 1 when none is stated. A 1px border in a
+    fully transparent colour is a WIDTH, not a keyline, and only alpha can tell them apart."""
+    n = re.findall(r"[\d.]+", s or "")
+    return float(n[3]) if len(n) >= 4 else 1.0
+
+
+def _effective_ground(chain):
+    """-> the first paint in `chain` that is not fully transparent, i.e. what the eye actually sees
+    behind the ink. ⛔ NOT the caption's own declaration: a transparent caption's ink sits on the
+    bento ground, and on the page ground when that is transparent too. Asking the declaration
+    would score the contrast of a colour nothing renders in."""
+    for c in chain:
+        if c and _rgb_a(c) > 0:
+            return c
+    return None
+
+
+def lum(rgb):
+    def ch(v):
+        v /= 255.0
+        return v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
+    return 0.2126 * ch(rgb[0]) + 0.7152 * ch(rgb[1]) + 0.0722 * ch(rgb[2])
+
+
+def ratio(a, b):
+    """-> WCAG 2.1 contrast ratio, computed here rather than imported so the probe carries no
+    dependency a CI runner might not have. Cross-checked against knowledge/_contrast_utils.py."""
+    if not a or not b:
+        return None
+    la, lb = lum(a), lum(b)
+    hi, lo = max(la, lb), min(la, lb)
+    return round((hi + 0.05) / (lo + 0.05), 2)
+
+
+# The token behind each background dial word — the explorer's OWN palette, read from the module
+# that owns it, so this probe cannot hold a fourth opinion about what `grey` means.
+# ⚠ `transparent` has no token; on the PAGE it compiles to the document ground (see
+# gen_foundations_217.page_bg_decl) and everywhere else it stays the keyword.
+def _want_ground(what, word, tokens):
+    """-> (expected colour, why) for one ground in one state."""
+    if word == "transparent":
+        if what == "PAGE":
+            return (tokens.get("--background-default"),
+                    "a transparent PAGE ground compiles to --background-default: a body that "
+                    "paints nothing falls through to the UA canvas")
+        return ("rgba(0, 0, 0, 0)", "transparent")
+    for value, _label, token in foundations.matrix.BACKGROUNDS:
+        if value == word:
+            return (tokens.get(token), token)
+    raise KeyError("background %r is not a ruled dial word" % word)
 
 
 def _css_rgb(hexs):
@@ -419,6 +538,7 @@ def _same_colour(a, b):
 def main():
     argv = sys.argv[1:]
     mutation = "--settings-mutation" in argv
+    default_mutation = "--default-mutation" in argv
     themes = THEMES
     if "--themes" in argv:
         themes = [t.strip() for t in argv[argv.index("--themes") + 1].split(",") if t.strip()]
@@ -435,6 +555,13 @@ def main():
                      "--break-settings" % (MUTANT, MUT_DIR))
         print("verify_photography_218 — ⬛ MUTATION ARM, driving %s" % MUTANT)
         fails, lines = drive(MUTANT, themes, shots)
+    elif default_mutation:
+        if not os.path.exists(MUTANT_DEFAULT):
+            sys.exit("verify_photography_218: no mutant at %s — run\n"
+                     "  BM_MUTANT_DIR=%s python3 knowledge/_render/gen_foundations_217.py "
+                     "--break-default" % (MUTANT_DEFAULT, MUT_DIR))
+        print("verify_photography_218 — ⬛ MINTED-DEFAULT ARM, driving %s" % MUTANT_DEFAULT)
+        fails, lines = drive(MUTANT_DEFAULT, themes, shots)
     elif "--static" in argv:
         print("verify_photography_218 — static half, over the SHIPPED file")
         fails, lines = static_checks(open(PAGE, encoding="utf-8").read())
@@ -444,6 +571,26 @@ def main():
 
     for l in lines:
         print(l)
+
+    if default_mutation:
+        # ⛔ THE SHARPER ARM. The block is intact and ONE ruled default is wrong, so the required
+        # red is not "a SETTINGS assertion" but specifically the CAPTION one, in the theme that was
+        # mutated. Anything else failing means the arm changed something it should not have; the
+        # caption assertion NOT failing means the probe is measuring "a block exists"
+        # ([[mutation-tests-the-clause-not-the-feature]]).
+        named = [f for f in fails if f.startswith("%s CAPTION" % SETTINGS_BUCKET)]
+        print()
+        for f in fails:
+            print("  %s %s" % ("⬛" if f in named else "·", f))
+        if not named:
+            print("\n❌ MINTED-DEFAULT ARM DID NOT GO RED — mono's caption ground was moved off the "
+                  "ruled token and not one %s CAPTION assertion failed. The probe is testing that "
+                  "a settings block exists, not that the RULED DEFAULT reached the paint."
+                  % SETTINGS_BUCKET)
+            return 1
+        print("\n✅ MINTED-DEFAULT ARM RED AS REQUIRED — %d %s CAPTION assertion(s) failed by name"
+              % (len(named), SETTINGS_BUCKET))
+        return 0
 
     if mutation:
         # ⛔ THE ARM MUST GO RED FOR THE RIGHT REASON. Bucketed on the name: "something failed" in

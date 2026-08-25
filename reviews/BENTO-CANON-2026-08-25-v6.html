@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo &mdash; the bento, promoted to canon</title>
+<!-- APOLLO BENTO-CANON DEMO (gen_bento_canon_217.py) — s217-D2, RE-CUT #219 -->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+/* ===========================================================================
+   BENTO CANON DEMO — page-local styles, scoped to `.dx`.
+   ⛔ STRUCTURE IS NOT DECLARED HERE. The bento container, the grid, the span
+   vocabulary and the responsive bands all come from canon.css's AUTO-BENTO
+   block. This file styles TILE CONTENT and page chrome only — which is why
+   the page is a test of the canon grammar and not a re-drawing of it.
+   ⚠ Every var() below carries a literal fallback, EXCEPT the --bento-* dials
+   in the instance blocks: a fallback there would mask the very failure the
+   probe is looking for (a theme override that never landed).
+   =========================================================================== */
+.dx{
+  --page:      var(--background-default,#FFFFFF);
+  --surface:   var(--tertiary-background-default,#FFFFFF);
+  --surface-2: var(--tertiary-background-hover,#F3F3F3);
+  --line:      var(--border-subtle,#D7D8D6);
+  --line-2:    var(--border-strong,#767676);
+  --ink:       var(--text-default,#1A1A1A);
+  --ink-2:     var(--text-secondary,#545454);
+  --focus:     var(--focus-ring,#1A1A1A);
+  --focus-w:   var(--focus-ring-width,2px);
+  --radius-ctl:var(--border-radius-control,0px);
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+  background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;
+}
+.dx *{box-sizing:border-box;}
+.dx :focus-visible{outline:var(--focus-w) solid var(--focus); outline-offset:2px;}
+html,body{margin:0;}
+body{background:var(--background-default,#FFFFFF);}
+/* ⚠ the ink is restated on a CHILD of the themed element — measured #217 on the Foundations
+   pages: an element that BOTH carries data-theme and reads --text-default disagreed with its
+   own children in supercharge dark. */
+.dx, header.app{color:var(--text-default,#1A1A1A);}
+
+header.app{display:flex; flex-wrap:wrap; gap:var(--sp-4); align-items:center;
+  padding:var(--sp-3) var(--sp-6); border-bottom:1px solid var(--line);
+  background:var(--page); position:sticky; top:0; z-index:10;}
+body[data-chrome="0"] header.app{display:none;}
+header.app h1{margin:0; white-space:nowrap;}
+header.app .spacer{flex:1 1 auto;}
+.ctl{display:flex; align-items:center; gap:var(--sp-2); color:var(--ink-2);}
+.seg{display:inline-flex; border:1px solid var(--ink); color:var(--ink);
+  border-radius:var(--radius-ctl); overflow:hidden;}
+.seg button{font-family:inherit; font-size:12px; font-weight:500; letter-spacing:0.06em;
+  text-transform:uppercase; padding:7px 12px; border:0; background:transparent; color:inherit;
+  cursor:pointer; border-right:1px solid var(--line);}
+.seg button:last-child{border-right:0;}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--page);}
+
+main{padding:var(--sp-6); max-width:1400px;}
+section{margin:0 0 var(--sp-7); scroll-margin-top:80px;}
+h2{margin:0 0 var(--sp-1);}
+p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
+.sublabel{color:var(--ink-2); text-transform:uppercase; letter-spacing:0.14em;
+  margin:0 0 var(--sp-3); display:flex; align-items:center; gap:var(--sp-2);}
+.sublabel::before{content:''; width:20px; height:1px; background:var(--line);}
+.dx a{color:inherit;}
+.dx code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px;
+  background:var(--surface-2,#F3F3F3); padding:0 .3em;}
+.note{margin:var(--sp-3) 0 0; color:var(--ink-2); max-width:74ch;}
+.note b{color:var(--ink);}
+
+/* ---- the ONE thing that makes the container radius visible: a ground behind the bento ---- */
+/* ⚠ The bento container paints nothing of its own in canon — a structural component must not
+   decide a surface (that is out of scope per s217-D2). So the DEMO gives it a ground, which is
+   also what lets a rounded container read as rounded at all. */
+.dx .c-bento{background:var(--surface-2,#F3F3F3);}
+
+/* ---- tile content ---- */
+.dx-photo{margin:0; display:grid; grid-template-rows:1fr auto; overflow:hidden;
+  background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);}
+.dx-img{display:block; width:100%; height:100%; min-height:0; object-fit:cover;
+  background:var(--surface-2,#F3F3F3);}
+/* ⬛ #219 — THE RULED CAPTION BLOCK, WHICH v2 MISSED. Dave: "we've also missed the extra space
+   for captions." `s217-D3` ruled the gallery caption more generous and it was DERIVED into
+   `layout/bento/caption-space`; canon exposes it as `--layout-bento-caption-space`. v2's photo
+   captions consumed neither the token nor canon's `.c-bento__caption` slot, so they rendered at
+   whatever the two clamped lines happened to be.
+   ⛔ THE TOKEN, NEVER THE NUMBER. The literal in the fallback is MINTED HERE at build time from
+   `caption_space()` (s200-D1), not typed — so this page cannot become a second source for a
+   ruled number. Same for the line allowance, which canon derives back out of the same figure.
+   ⚠ Canon's own `min-height` rule is scoped to `[data-bento-role="gallery"]`; this page's walls
+   carry no role (it is the s217-D2 defaults demo and giving them one would change what it
+   demonstrates), so the token is consumed directly here instead. */
+.dx-cap{padding:var(--sp-3); color:var(--ink-2,#545454);
+  min-height:var(--layout-bento-caption-space,86px);
+  display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,3);
+  -webkit-box-orient:vertical; overflow:hidden;
+  /* ds-005/ds-048: a clamped label must opt out of the cap/alphabetic trim or its last
+     visible line loses its descenders. */
+  text-box-edge:text text;}
+/* ---- s219-D2 (1) — THE MONO CAPTION GROUND, LIGHT GREY. Dave, asked which of the two
+   grounds governs: “I changed my mind just go with the latest and change in the
+   library.” The #219 mono gallery export says capBg: grey, which is the dial's word for
+   --surface-subtle. ⛔ SUPERSEDES s218-D6 (1)'s --surface-digital-black / --text-reverse ground, which is frozen
+   history and is NOT painted anywhere on this page. Both modes, mono only. */
+[data-apollo-theme="mono"] .dx-cap{background:var(--surface-subtle,#F0F0F0); color:var(--text-secondary,#545454);}
+
+/* ---- #219 RE-CUT — the decision ledger's own chrome. Page chrome only. --------------------- */
+table.rcut{border-collapse:collapse; margin:var(--sp-4) 0 0; width:100%;}
+table.rcut th, table.rcut td{border-bottom:1px solid var(--line,#D7D8D6);
+  padding:var(--sp-3) var(--sp-4); text-align:left; vertical-align:top; color:var(--ink-2,#545454);}
+table.rcut th{color:var(--ink,#1A1A1A); white-space:nowrap;}
+table.rcut td:first-child{color:var(--ink,#1A1A1A); width:38%;}
+table.rcut s{color:var(--ink-2,#545454);}
+.rcut-key{display:inline-block; border:1px solid var(--line-2,#767676); color:var(--ink,#1A1A1A);
+  padding:1px 6px; margin-right:var(--sp-2); letter-spacing:0.1em;}
+.rcut-asked{display:block; margin-top:var(--sp-2); color:var(--ink-2,#545454);}
+.rcut-clause{display:block; margin-top:var(--sp-2); color:var(--ink-2,#545454);}
+.rcut-res, .rcut-baked, .rcut-mints{display:block; margin-top:var(--sp-2);
+  color:var(--ink-2,#545454);}
+.rcut-mints{color:var(--ink,#1A1A1A);}
+.rcut-tag{display:inline-block; padding:2px 8px; letter-spacing:0.12em; text-transform:uppercase;}
+.rcut-tag-r{border:1px solid var(--line-2,#767676); color:var(--ink-2,#545454);}
+.rcut-tag-p{border:1px solid var(--ink,#1A1A1A); color:var(--ink,#1A1A1A);}
+.rcut-tag-o{border:1px solid var(--ink,#1A1A1A); background:var(--ink,#1A1A1A);
+  color:var(--page,#FFFFFF);}
+.rcut-live{border:1px solid var(--ink,#1A1A1A); padding:var(--sp-4) var(--sp-5);
+  margin:var(--sp-5) 0 0; max-width:74ch;}
+.rcut-live-q{margin:var(--sp-2) 0 0; color:var(--ink,#1A1A1A);}
+.rcut-live-b{margin:var(--sp-2) 0 0; color:var(--ink-2,#545454);}
+
+.dx-card{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
+  padding:var(--sp-4); overflow:hidden; display:flex; flex-direction:column; gap:var(--sp-1);}
+.dx-eyebrow{color:var(--ink,#1A1A1A);}
+.dx-sub{color:var(--ink-2,#545454);}
+.dx-fig{margin-top:auto; font-variant-numeric:tabular-nums;}
+
+/* ---- INSTANCE PARAMETER SETS — declared rules, never a style="" attribute -------------- */
+/* ⚠ DECLARED, and the reason is measured (#217 Foundations): an inline custom property is
+   invisible to every instrument that resolves the stylesheet against the document, so an
+   inline-only dial reads EMPTY in all eight states. It also beats container queries outright.
+   Declared rules are probeable AND cascade correctly. This block is the whole per-instance
+   override surface — four names, no new classes. */
+.dx-outer{--bento-gutter:40px; --bento-columns:6; --bento-row-unit:auto; --bento-outer-padding:24px;}
+.dx-inner{--bento-gutter:1px; --bento-columns:3; --bento-row-unit:150px; --bento-outer-padding:0px;}
+/* the portrait wall runs at three columns so three tall tiles can sit side by side and be read
+   against their landscape neighbours at a glance */
+.dx-portrait{--bento-columns:3; --bento-row-unit:150px;}
+.dx-awkward{--bento-row-unit:110px;}
+
+/* ---- the squaring comparison: two walls, same eleven tiles, side by side ---------------- */
+/* ⚠ STACKED, NOT SIDE BY SIDE, and the reason is measured. Two half-width walls sit BELOW the
+   820 band, so both render at two columns — where eleven tiles happen to be rectangular anyway,
+   and the control came out square. A control that cannot show the defect is worse than no
+   control. Full width puts both walls at six columns, which is where the ragged edge lives.
+   Flex, not grid: the page's own selftest bans every grid declaration in this stylesheet. */
+.dx-2up{display:flex; flex-direction:column; gap:var(--sp-5);}
+.dx-2up > div{min-width:0;}
+/* ⚠ a MARKER class only — it declares no structure. It exists so the probe can tell the
+   deliberately ragged control apart from the walls that must be square, by name rather than by
+   position. A probe that identifies its control by document order breaks the day a section moves. */
+.dx-ragged{}
+.dx-square{}
+.badge{display:inline-block; border:1px solid var(--line-2,#767676); color:var(--ink,#1A1A1A);
+  padding:2px 8px; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 var(--sp-3);}
+
+/* the band demonstration — three bento walls at fixed widths, so the CONTAINER queries fire
+   at 1100 / 820 / 520 without moving the window */
+.dx-band-row{display:flex; flex-wrap:wrap; gap:var(--sp-5); align-items:flex-start;}
+.dx-w1000{width:1000px; max-width:100%;}
+.dx-w780{width:780px; max-width:100%;}
+.dx-w460{width:460px; max-width:100%;}
+.dx-band-row .c-bento{--bento-row-unit:120px;}
+.dx-caption{color:var(--ink-2,#545454); margin:var(--sp-2) 0 0; display:block;}
+
+@media (prefers-reduced-motion: reduce){
+  .dx *,.dx *::before,.dx *::after{transition-duration:.01ms !important;
+    animation-duration:.01ms !important;}
+}
+</style>
+</head>
+<body data-theme="light" data-chrome="1" class="dx canon">
+<header class="app">
+  <h1 class="t-ed-heading-4">The bento, promoted to canon</h1>
+  <span class="t-ed-caption">s217-D2 &middot; re-cut #219 &middot; four themes &times; light/dark</span>
+  <span class="spacer"></span>
+  <div class="ctl"><span class="t-ed-caption">Theme</span>
+    <div class="seg" id="themes" role="group" aria-label="Theme">
+      <button type="button" data-theme-attr="mono" aria-pressed="true">Mono</button>
+      <button type="button" data-theme-attr="legacy" aria-pressed="false">Legacy</button>
+      <button type="button" data-theme-attr="console" aria-pressed="false">Console</button>
+      <button type="button" data-theme-attr="supercharge" aria-pressed="false">Supercharge</button>
+    </div>
+  </div>
+  <div class="ctl"><span class="t-ed-caption">Mode</span>
+    <div class="seg" id="modes" role="group" aria-label="Light or dark">
+      <button type="button" data-mode="light" aria-pressed="true">Light</button>
+      <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+<main>
+<section id="decided">
+<h2 class="t-ed-heading-3">What was already decided</h2>
+<p class="lede t-ed-body">These pages were built at <b>#217</b>, before <code>s217-D5</code>, <code>s217-D8</code>, <code>s218-D1</code>, <code>s218-D6</code> &mdash; and now before <code>s219-D1</code> and <code>s219-D2</code>, which closed four more of them and <b>superseded</b> two answers that were settled law a day ago. Everything <s>struck through</s> below is <b>a question this page used to ask you and no longer does</b>, with the ruling that closed it. <b>6 struck, 3 still live.</b> A struck question is shown, not deleted: a decision surface that quietly drops what it answered cannot be told apart from one that forgot to ask.</p>
+<table class="rcut t-ed-body-small"><thead><tr><th>The question</th><th>Where it stands</th></tr></thead><tbody>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q1</span> <s>May tile spans be adjusted at mint time at all — i.e. does the squaring pass exist?</s><span class="rcut-asked t-cm-legal">BENTO-CANON v2, § “No orphaned compartments” — badged “Proposed — not ruled”.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s217-D3</span><span class="rcut-clause t-ed-body-small">&ldquo;SQUARING PASS RATIFIED for dashboard and brochureware roles (Dave: &#x27;is very cool&#x27;, with gallery exempted in the same breath).&rdquo;</span></td>
+</tr>
+<tr class="rcut-open">
+<td><span class="rcut-key t-cm-legal">Q2</span> When the pass runs, may only the TAIL of a wall move, or the whole wall?<span class="rcut-asked t-cm-legal">BENTO-CANON v2, § “What is yours to decide”.</span></td>
+<td><span class="rcut-tag rcut-tag-o t-cm-legal">Open &middot; yours</span><span class="rcut-res t-ed-body-small">No ruling reaches this. The shipped pass moves the last few tiles only (`tail_cap=6` in `canon/gen_canon_bento.square_wall`) — that is an IMPLEMENTATION choice standing in for a decision, and it is still standing in.</span><span class="rcut-mints t-ed-body-small"><b>Owner: Dave.</b> An answer mints a ruling on the squaring pass&#x27;s mutation scope: tail-only, or the whole wall.</span></td>
+</tr>
+<tr class="rcut-part">
+<td><span class="rcut-key t-cm-legal">Q3</span> What may a photograph be re-cropped into when a wall is squared?<span class="rcut-asked t-cm-legal">BENTO-CANON v2, § “What is yours to decide”.</span></td>
+<td><span class="rcut-tag rcut-tag-p t-cm-legal">Part ruled &middot; s219-D2 (2)</span><span class="rcut-clause t-ed-body-small">&ldquo;SQUARE IS THE GALLERY-ROLE DEFAULT in all four themes - widening s218-D6(4) beyond the photography wall; the s217-D3 exemption yields as a default. … The orphan/flattening refinement (the W-99zi third bend, incl. the stocksy-6629948 case) is expressly NOT ruled here.&rdquo;</span><span class="rcut-res t-ed-body-small"><b>Residue, still yours:</b> EXPRESSLY still yours, in the ruling&#x27;s own words. The wall may now be squared everywhere in the gallery role, and there is still no bound on what a photograph may be re-spanned INTO — nor any rule against flattening a portrait to close a hole. The #219 squaring pass did exactly that to tile 247 (`stocksy-6629948-w1600.jpg`, 1067×1600 portrait, re-spanned 1×2 → 3×1), rendered before and after at `reviews/SQUARING-PORTRAIT-2026-08-25-v1.html`.</span><span class="rcut-clause t-ed-body-small"><b>s218-D6 (4)</b> also records: &ldquo;THE PHOTOGRAPHY GALLERY WALL IS SQUARED — the squaring pass runs on the photography page&#x27;s gallery wall and last-row photos may re-span to close holes.&rdquo; …which is the ruling s219-D2 (2) widened; it stands as frozen history of the one-page scope.</span><span class="rcut-mints t-ed-body-small"><b>Owner: Dave.</b> An answer mints a bound on the crop a squaring pass may pay — the W-99zi third bend that s219-D2 (2) expressly left open.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q7</span> <s>What ground and ink does a mono caption take?</s><span class="rcut-asked t-cm-legal">Carried as the conductor&#x27;s PROPOSED shade at #218 (`s218-D3`), ratified dark at `s218-D6 (1)`, and re-answered LIGHT by Dave&#x27;s #219 mono gallery export.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s219-D2 (1)</span><span class="rcut-clause t-ed-body-small">&ldquo;MONO CAPTION SUPERSESSION: the mono gallery caption ground is light grey rgb(240,240,240) per the #219 mono gallery export, SUPERSEDING s218-D6(1)&#x27;s #1A1A1A/white ground - Dave, asked which governs: &#x27;I changed my mind just go with the latest and change in the library.&#x27; Applies to the gallery role including the library photography surfaces; the dark ground retires there.&rdquo;</span><span class="rcut-clause t-ed-body-small"><b>s218-D6 (1)</b> also records: &ldquo;The mono caption ground is RATIFIED at the proposed shade: #1A1A1A via --surface-digital-black with --text-reverse white ink - &#x27;Yes - that&#x27;s the one&#x27;.&rdquo; …FROZEN HISTORY. s219-D2 (1) says in its own words that s218-D6 (1) “stands as frozen history”; it is shown here so a superseded decision cannot be mistaken for one nobody took.</span><span class="rcut-baked t-ed-body-small">Baked into this page: switch the theme to MONO and every caption takes `--surface-subtle` (rgb(240, 240, 240) in mono — the exact pixel Dave&#x27;s own export resolved) with the caption&#x27;s standing `--text-secondary` ink, in light and dark alike. The construction is COPIED from `gen_foundations_217.settings_css`, which is the ratified enactment — not re-derived here.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q8</span> <s>How much space does a gallery caption get?</s><span class="rcut-asked t-cm-legal">Ruled at #217 and DERIVED to 86px — but `BENTO-CANON v2` never consumed it, which is the gap Dave named: “we&#x27;ve also missed the extra space for captions.”</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s217-D3</span><span class="rcut-clause t-ed-body-small">&ldquo;GALLERY ADDITIONS: more generous caption space (ruled)&rdquo;</span><span class="rcut-baked t-ed-body-small">Baked into this page from `layout/bento/caption-space` in `knowledge/tokens/layout.json` — the token, never a literal. The three-line clamp is derived back out of the same number at mint time, so the space and the clamp cannot disagree.</span></td>
+</tr>
+<tr class="rcut-part">
+<td><span class="rcut-key t-cm-legal">Q9</span> Where does the corner radius sit when every tile is keylined?<span class="rcut-asked t-cm-legal">Not asked on these pages at all — recorded here so nothing on them can be read as re-opening it.</span></td>
+<td><span class="rcut-tag rcut-tag-p t-cm-legal">Part ruled &middot; s218-D1</span><span class="rcut-clause t-ed-body-small">&ldquo;each tile must have it&#x27;s own keyline, but the radii should only apply to the 4 corners of each sub bento (a collection of tiles) … Scope option-selected by Dave the same sitting: DASHBOARD ONLY for now - brochureware/gallery keep their s217-D3 radius behaviour until he extends it.&rdquo;</span><span class="rcut-res t-ed-body-small"><b>Residue, still yours:</b> DASHBOARD ONLY. Brochureware and gallery keep their `s217-D3` radius behaviour until Dave extends it — so nothing on these pages carries the corner-keyline construction outside a dashboard.</span><span class="rcut-res t-ed-body-small">The construction itself lives in `knowledge/_render/gen_bento_matrix_217.py` (the matrix explorer), which owns it. This page records the ruling and its scope; it does not re-draw it.</span><span class="rcut-mints t-ed-body-small"><b>Owner: Dave.</b> An answer mints a widening of `s218-D1`&#x27;s scope to brochureware and/or gallery.</span></td>
+</tr>
+<tr class="rcut-ruled">
+<td><span class="rcut-key t-cm-legal">Q14</span> <s>What spacings may a bento wall be set to — and who may widen the set?</s><span class="rcut-asked t-cm-legal">Not asked on these pages as a question; STATED on BENTO-CANON v5 as settled fact in `s217-D5`&#x27;s words, “GALLERY: same three spacings”. That sentence is what went stale, so the row exists to strike it rather than to re-put it.</span></td>
+<td><span class="rcut-tag rcut-tag-r t-cm-legal">Ruled &middot; s219-D1 (4)</span><span class="rcut-clause t-ed-body-small">&ldquo;Spacing rails are the ruled stop set {1, 2, 4, 16, 24, 40} - the edit pass picks among stops, never free values; widening the set is a ruling.&rdquo;</span><span class="rcut-clause t-ed-body-small"><b>s219-D1 (5)</b> also records: &ldquo;The dashboard grammar carries the two-dial spacing split mainSpacing/subSpacing per the exports (main 24/40/40/24, sub 4/4/4/2 in legacy/mono/console/supercharge order).&rdquo; …so a dashboard&#x27;s outer wall and its sub-bentos draw from the SAME rail through two dials, rather than from two ladders.</span><span class="rcut-baked t-ed-body-small">Enacted in `gen_bento_matrix_217`, which owns the option grammar: the rail is typed ONCE as `RULED_SPACING_RAIL` and every dial, CSS rule and manifest entry is derived from it. `s217-D6`&#x27;s eight-stop sub-bento ladder (8/12/20) is superseded by the six ruled stops — a supersession by implication rather than by name, and it is flagged for Dave&#x27;s confirmation in `notes/_subreports/2026-08-25-219-enactA-rails.md` (Q3 there). This page records the rail; it does not re-draw the dial.</span></td>
+</tr>
+</tbody></table>
+<p class="note t-ed-body-small">Every quotation above is a verbatim slice of the named ruling in <code>knowledge/_rulings.json</code>. Nothing on this page rules anything, and no control below offers a choice that one of those rulings has already made.</p>
+</section>
+<section id="defaults">
+<h2 class="t-ed-heading-3">The bento, at the parameters you ruled</h2>
+<p class="lede t-ed-body">Six columns, 320px row unit, dense packing, outer padding 0 &mdash; shared by all four themes. <b>The gutter is the only thing that moves between themes</b>: 0 in mono and supercharge, 24 in legacy and console. Switch the theme above and watch the space between tiles open and close while nothing else does.</p>
+<div class="sublabel t-ed-caption">Photography &mdash; 15 committed derivatives, spans derived</div>
+<div class="c-bento dx-square"><div class="c-bento__grid">
+<figure class="c-bento__tile dx-photo " data-c="2" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">PORTRAIT OF YOUNG MAN ON STEPS</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="Cropped shot of a diverse group of businesspeople sitting and having a meeting in a…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Cropped shot of a diverse group of businesspeople sitting and having a meeting in a…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="Close-up of a mother putting her daughter into car seat, getting ready to go to school.…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Close-up of a mother putting her daughter into car seat, getting ready to go to school.…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"><figcaption class="c-bento__caption dx-cap t-cm-legal">a person is climbing the stairs towards a modern building during winter</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1394386010-144dpi-w1600.jpg" alt="Businesswoman talking on phone from office window overlooking Hong Kong cityscape" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Businesswoman talking on phone from office window overlooking Hong Kong cityscape</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1498039805-w1600.jpg" alt="Interior view of a stairway within a building, showing architectural design, structural…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Interior view of a stairway within a building, showing architectural design, structural…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="2" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1708273322-w1600.jpg" alt="Father and child looking out of the window, on to their garden whilst watching the sunrise" loading="lazy" width="1600" height="1127"><figcaption class="c-bento__caption dx-cap t-cm-legal">Father and child looking out of the window, on to their garden whilst watching the sunrise</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-2179684483-w1600.jpg" alt="A diverse group of people actively participates in a business conference, with several…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">A diverse group of people actively participates in a business conference, with several…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-2190197969-144dpi-w1600.jpg" alt="Selective focus on taxi sign on roof of car on city street illuminated by neon lights at…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Selective focus on taxi sign on roof of car on city street illuminated by neon lights at…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="2" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-2208294966-144dpi-w1600.jpg" alt="Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="2" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-653972314-w1600.jpg" alt="Jaipur, India - Hands weaving a oriental rug." loading="lazy" width="1600" height="1065"><figcaption class="c-bento__caption dx-cap t-cm-legal">Jaipur, India - Hands weaving a oriental rug.</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="2" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-968890266-w1600.jpg" alt="Woman carrying baby son and cooking in kitchen" loading="lazy" width="1600" height="1068"><figcaption class="c-bento__caption dx-cap t-cm-legal">Woman carrying baby son and cooking in kitchen</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-ca60828-144dpi-w1600.jpg" alt="An older woman with warm sun on her face" loading="lazy" width="1106" height="1600"><figcaption class="c-bento__caption dx-cap t-cm-legal">An older woman with warm sun on her face</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="2" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Shot from a car window of sunset rays peaking through two big mountain walls in a valley…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima…" loading="lazy" width="1067" height="1600"><figcaption class="c-bento__caption dx-cap t-cm-legal">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima…</figcaption></figure>
+</div></div>
+<p class="note t-ed-body-small"><b>Nothing here is arranged by eye.</b> Every derivative is 1600&times;1067 (1.50:1), which is below the 2.60:1 two-column threshold, so the aspect rule alone would draw a plain grid. The mixed emphasis you can see is the <b>rhythm</b>: every 6th tile from tile 1 is promoted to 2&times;2. Position, not preference. <b>The aspect thresholds are photography-only</b> &mdash; card spans below are authored.</p>
+<p class="note t-ed-body-small">This wall has also been through the <b>squaring pass</b> (below): 4 of its 15 tiles were re-spanned so the bottom edge is straight at every band. It fills exactly 5 / 10 / 15 / 15 rows at 6, 3, 2 and 1 columns.</p>
+</section>
+<section id="portrait">
+<h2 class="t-ed-heading-3">A portrait photograph gets a taller compartment</h2>
+<p class="lede t-ed-body">You asked whether a portrait could default to a taller compartment. <b>It already does, and you ruled it</b> &mdash; <code>s217-D2</code> carries a two-row threshold at <b>taller than 1:1.15</b>. Nothing was decided to make this wall; three portrait derivatives were minted from the library and the derivation put them where you can see them. Portrait tiles are <b>two rows tall</b>, landscape tiles one.</p>
+<div class="c-bento dx-portrait dx-square"><div class="c-bento__grid">
+<figure class="c-bento__tile dx-photo dx-shot-portrait" data-c="1" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="PORTRAIT · a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"><figcaption class="c-bento__caption dx-cap t-cm-legal">PORTRAIT · a person is climbing the stairs towards a modern building during winter</figcaption></figure>
+<figure class="c-bento__tile dx-photo dx-shot-landscape" data-c="2" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="LANDSCAPE · PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">LANDSCAPE · PORTRAIT OF YOUNG MAN ON STEPS</figcaption></figure>
+<figure class="c-bento__tile dx-photo dx-shot-portrait" data-c="1" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-ca60828-144dpi-w1600.jpg" alt="PORTRAIT · An older woman with warm sun on her face" loading="lazy" width="1106" height="1600"><figcaption class="c-bento__caption dx-cap t-cm-legal">PORTRAIT · An older woman with warm sun on her face</figcaption></figure>
+<figure class="c-bento__tile dx-photo dx-shot-landscape" data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="LANDSCAPE · Cropped shot of a diverse group of businesspeople sitting and having a meeting in a…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">LANDSCAPE · Cropped shot of a diverse group of businesspeople sitting and having a meeting in a…</figcaption></figure>
+<figure class="c-bento__tile dx-photo dx-shot-portrait" data-c="1" data-r="2"><img class="dx-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="PORTRAIT · Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima…" loading="lazy" width="1067" height="1600"><figcaption class="c-bento__caption dx-cap t-cm-legal">PORTRAIT · Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima…</figcaption></figure>
+<figure class="c-bento__tile dx-photo dx-shot-landscape" data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="LANDSCAPE · Close-up of a mother putting her daughter into car seat, getting ready to go to school.…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">LANDSCAPE · Close-up of a mother putting her daughter into car seat, getting ready to go to school.…</figcaption></figure>
+</div></div>
+<p class="note t-ed-body-small"><b>Measured, not asserted.</b> 3 of these 6 photographs are portrait (1065&times;1600, 1106&times;1600, 1067&times;1600), and each resolves to <code>data-r="2"</code>. The threshold is read from <code>tokens/layout.json</code>, so it is the same number the stylesheet comment quotes.</p>
+</section>
+<section id="cards">
+<h2 class="t-ed-heading-3">The same grammar, mixed cards</h2>
+<p class="lede t-ed-body">One grammar covers all four bento types. These spans are <b>authored</b> &mdash; <code>data-c</code> / <code>data-r</code> on the tile &mdash; which is what a preset or a snap-designer export produces.</p>
+<div class="c-bento dx-square"><div class="c-bento__grid">
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Balance</span><span class="dx-sub t-cm-legal">Current account</span><span class="dx-fig t-ed-heading-4">£18,420.66</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Runway</span><span class="dx-sub t-cm-legal">at today’s burn</span><span class="dx-fig t-ed-heading-4">7.4 months</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Payments due</span><span class="dx-sub t-cm-legal">next 30 days</span><span class="dx-fig t-ed-heading-4">14</span></div>
+<div class="c-bento__tile dx-card " data-c="2" data-r="2"><span class="dx-eyebrow t-cm-legal">FX exposure</span><span class="dx-sub t-cm-legal">GBP / USD / EUR</span><span class="dx-fig t-ed-heading-4">3 pairs</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Approvals</span><span class="dx-sub t-cm-legal">waiting on you</span><span class="dx-fig t-ed-heading-4">5</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Cards</span><span class="dx-sub t-cm-legal">active</span><span class="dx-fig t-ed-heading-4">27</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Invoices</span><span class="dx-sub t-cm-legal">overdue</span><span class="dx-fig t-ed-heading-4">2</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Sweep</span><span class="dx-sub t-cm-legal">nightly</span><span class="dx-fig t-ed-heading-4">on</span></div>
+</div></div>
+</section>
+<section id="squaring">
+<h2 class="t-ed-heading-3">No orphaned compartments</h2>
+<p class="badge t-cm-legal">Ruled &mdash; s217-D3 (Q1)</p>
+<p class="lede t-ed-body">Your second question at #217: <i>&ldquo;Is there a way to avoid orphaned compartments so the bento is always cohesively rectangular?&rdquo;</i> Yes, and <b>you ratified it</b> &mdash; <code>s217-D3</code>: <i>&ldquo;SQUARING PASS RATIFIED for dashboard and brochureware roles&rdquo;</i>, with gallery exempted in the same breath. It has to be decided when the wall is built, not patched afterwards: CSS can back-fill holes but it cannot resize a tile, so no stylesheet and no script can straighten that bottom edge. <b>The mechanism below is ruled. What is still yours is narrower, and it is stated underneath rather than implied by a badge over the whole thing.</b></p>
+<div class="dx-2up">
+<div><div class="sublabel t-ed-caption">Eleven tiles, as authored</div><div class="c-bento dx-awkward dx-ragged"><div class="c-bento__grid">
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Sterling</span><span class="dx-sub t-cm-legal">cleared</span><span class="dx-fig t-ed-heading-4">£4.1m</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Euro</span><span class="dx-sub t-cm-legal">cleared</span><span class="dx-fig t-ed-heading-4">€2.7m</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Dollar</span><span class="dx-sub t-cm-legal">cleared</span><span class="dx-fig t-ed-heading-4">$3.3m</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Yen</span><span class="dx-sub t-cm-legal">cleared</span><span class="dx-fig t-ed-heading-4">¥310m</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Breaks</span><span class="dx-sub t-cm-legal">unmatched</span><span class="dx-fig t-ed-heading-4">6</span></div>
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Nostro</span><span class="dx-sub t-cm-legal">reconciled</span><span class="dx-fig t-ed-heading-4">99.2%</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Cut-off</span><span class="dx-sub t-cm-legal">London</span><span class="dx-fig t-ed-heading-4">16:00</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Cut-off</span><span class="dx-sub t-cm-legal">New York</span><span class="dx-fig t-ed-heading-4">17:30</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Holidays</span><span class="dx-sub t-cm-legal">next 14 days</span><span class="dx-fig t-ed-heading-4">3</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Alerts</span><span class="dx-sub t-cm-legal">open</span><span class="dx-fig t-ed-heading-4">1</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="2"><span class="dx-eyebrow t-cm-legal">Settlement</span><span class="dx-sub t-cm-legal">T+1 queue</span><span class="dx-fig t-ed-heading-4">38</span></div>
+</div></div><span class="dx-caption t-cm-legal">Ragged &mdash; 10 empty cell(s) at 6 columns, and the last row is short at every band.</span></div>
+<div><div class="sublabel t-ed-caption">The same eleven tiles, squared</div><div class="c-bento dx-awkward dx-square"><div class="c-bento__grid">
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Sterling</span><span class="dx-sub t-cm-legal">cleared</span><span class="dx-fig t-ed-heading-4">£4.1m</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Euro</span><span class="dx-sub t-cm-legal">cleared</span><span class="dx-fig t-ed-heading-4">€2.7m</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Dollar</span><span class="dx-sub t-cm-legal">cleared</span><span class="dx-fig t-ed-heading-4">$3.3m</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Yen</span><span class="dx-sub t-cm-legal">cleared</span><span class="dx-fig t-ed-heading-4">¥310m</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Breaks</span><span class="dx-sub t-cm-legal">unmatched</span><span class="dx-fig t-ed-heading-4">6</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Nostro</span><span class="dx-sub t-cm-legal">reconciled</span><span class="dx-fig t-ed-heading-4">99.2%</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Cut-off</span><span class="dx-sub t-cm-legal">London</span><span class="dx-fig t-ed-heading-4">16:00</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Cut-off</span><span class="dx-sub t-cm-legal">New York</span><span class="dx-fig t-ed-heading-4">17:30</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Holidays</span><span class="dx-sub t-cm-legal">next 14 days</span><span class="dx-fig t-ed-heading-4">3</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Alerts</span><span class="dx-sub t-cm-legal">open</span><span class="dx-fig t-ed-heading-4">1</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Settlement</span><span class="dx-sub t-cm-legal">T+1 queue</span><span class="dx-fig t-ed-heading-4">38</span></div>
+</div></div><span class="dx-caption t-cm-legal">Square &mdash; 2 / 4 / 6 / 11 rows at 6 / 3 / 2 / 1 columns, no empty cell in any of them. 2 tile(s) re-spanned.</span></div>
+</div>
+<p class="note t-ed-body-small"><b>How it works, in one breath.</b> The generator simulates the browser&rsquo;s own dense placement, asks whether every cell down to the last row is filled, and if not re-spans the <b>last few tiles</b> until it is &mdash; testing every column count the responsive bands produce, not just the wide one. A wall that is square at six columns and ragged at three is the same defect, later. Photographs get a say: laying a portrait on its side to square a wall costs more than nudging a card, so the pass avoids it. It is deterministic &mdash; the same tiles always give the same wall &mdash; and when a wall genuinely cannot be a rectangle at every band (three tiles at six columns cannot) it <b>says so by name</b> rather than shipping a ragged edge quietly.</p>
+<div class="rcut-live"><span class="rcut-tag rcut-tag-o t-cm-legal">Open &middot; Q2 &middot; yours to rule</span><p class="rcut-live-q t-ed-body"><b>When the pass runs, may only the TAIL of a wall move, or the whole wall?</b></p><p class="rcut-live-b t-ed-body-small">No ruling reaches this. The shipped pass moves the last few tiles only (`tail_cap=6` in `canon/gen_canon_bento.square_wall`) — that is an IMPLEMENTATION choice standing in for a decision, and it is still standing in.</p><p class="rcut-live-b t-ed-body-small"><b>Answering it mints</b> a ruling on the squaring pass&#x27;s mutation scope: tail-only, or the whole wall.</p></div>
+<div class="rcut-live"><span class="rcut-tag rcut-tag-o t-cm-legal">Open &middot; Q3 &middot; yours to rule</span><p class="rcut-live-q t-ed-body"><b>What may a photograph be re-cropped into when a wall is squared?</b></p><p class="rcut-live-b t-ed-body-small">EXPRESSLY still yours, in the ruling&#x27;s own words. The wall may now be squared everywhere in the gallery role, and there is still no bound on what a photograph may be re-spanned INTO — nor any rule against flattening a portrait to close a hole. The #219 squaring pass did exactly that to tile 247 (`stocksy-6629948-w1600.jpg`, 1067×1600 portrait, re-spanned 1×2 → 3×1), rendered before and after at `reviews/SQUARING-PORTRAIT-2026-08-25-v1.html`.</p><p class="rcut-live-b t-ed-body-small"><b>Answering it mints</b> a bound on the crop a squaring pass may pay — the W-99zi third bend that s219-D2 (2) expressly left open.</p></div>
+</section>
+<section id="nested">
+<h2 class="t-ed-heading-3">A bento of bentos</h2>
+<p class="lede t-ed-body">Your example, built: <b>three bentos at 1px gutter inside one outer bento at 40px</b>. Each level carries its own parameter set &mdash; the inner walls are not inheriting the outer’s tuning, and the outer is not inheriting the theme’s. No JavaScript, no new classes: an inner bento is a tile that is also a bento.</p>
+<div class="c-bento dx-outer dx-square"><div class="c-bento__grid">
+<div class="c-bento__tile c-bento dx-inner dx-square" data-c="3" data-r="1"><div class="c-bento__grid">
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">PORTRAIT OF YOUNG MAN ON STEPS</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="Cropped shot of a diverse group of businesspeople sitting and having a meeting in a…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Cropped shot of a diverse group of businesspeople sitting and having a meeting in a…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="Close-up of a mother putting her daughter into car seat, getting ready to go to school.…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Close-up of a mother putting her daughter into car seat, getting ready to go to school.…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"><figcaption class="c-bento__caption dx-cap t-cm-legal">a person is climbing the stairs towards a modern building during winter</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1394386010-144dpi-w1600.jpg" alt="Businesswoman talking on phone from office window overlooking Hong Kong cityscape" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Businesswoman talking on phone from office window overlooking Hong Kong cityscape</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1498039805-w1600.jpg" alt="Interior view of a stairway within a building, showing architectural design, structural…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Interior view of a stairway within a building, showing architectural design, structural…</figcaption></figure>
+</div></div>
+<div class="c-bento__tile c-bento dx-inner dx-square" data-c="3" data-r="1"><div class="c-bento__grid">
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Balance</span><span class="dx-sub t-cm-legal">Current account</span><span class="dx-fig t-ed-heading-4">£18,420.66</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Runway</span><span class="dx-sub t-cm-legal">at today’s burn</span><span class="dx-fig t-ed-heading-4">7.4 months</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Payments due</span><span class="dx-sub t-cm-legal">next 30 days</span><span class="dx-fig t-ed-heading-4">14</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">FX exposure</span><span class="dx-sub t-cm-legal">GBP / USD / EUR</span><span class="dx-fig t-ed-heading-4">3 pairs</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Approvals</span><span class="dx-sub t-cm-legal">waiting on you</span><span class="dx-fig t-ed-heading-4">5</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Cards</span><span class="dx-sub t-cm-legal">active</span><span class="dx-fig t-ed-heading-4">27</span></div>
+</div></div>
+<div class="c-bento__tile c-bento dx-inner dx-square" data-c="6" data-r="1"><div class="c-bento__grid">
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-1708273322-w1600.jpg" alt="Father and child looking out of the window, on to their garden whilst watching the sunrise" loading="lazy" width="1600" height="1127"><figcaption class="c-bento__caption dx-cap t-cm-legal">Father and child looking out of the window, on to their garden whilst watching the sunrise</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-2179684483-w1600.jpg" alt="A diverse group of people actively participates in a business conference, with several…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">A diverse group of people actively participates in a business conference, with several…</figcaption></figure>
+<figure class="c-bento__tile dx-photo " data-c="1" data-r="1"><img class="dx-img" src="../knowledge/assets/photography-web/gettyimages-2190197969-144dpi-w1600.jpg" alt="Selective focus on taxi sign on roof of car on city street illuminated by neon lights at…" loading="lazy" width="1600" height="1067"><figcaption class="c-bento__caption dx-cap t-cm-legal">Selective focus on taxi sign on roof of car on city street illuminated by neon lights at…</figcaption></figure>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Payments due</span><span class="dx-sub t-cm-legal">next 30 days</span><span class="dx-fig t-ed-heading-4">14</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">FX exposure</span><span class="dx-sub t-cm-legal">GBP / USD / EUR</span><span class="dx-fig t-ed-heading-4">3 pairs</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Approvals</span><span class="dx-sub t-cm-legal">waiting on you</span><span class="dx-fig t-ed-heading-4">5</span></div>
+</div></div>
+</div></div>
+<p class="note t-ed-body-small"><b>What to look at in console.</b> The corner radius is on each bento’s <b>outer container</b> &mdash; four rounded containers (the outer, plus the three inner walls), and every tile inside them square. That is your ruling rendered: <i>&ldquo;the corner radius only on the outer container of each bento rather than the individual blocks&rdquo;</i>. The container clips, which is why the square tile corners do not poke through the curve.</p>
+</section>
+<section id="bands">
+<h2 class="t-ed-heading-3">The bands answer the wall, not the window</h2>
+<p class="lede t-ed-body">Three identical bentos at three fixed widths, on one page at one viewport. They collapse at <b>1100 &rarr; 3</b>, <b>820 &rarr; 2</b> and <b>520 &rarr; 1</b> because each bento is its own container &mdash; which is also the reason nesting works.</p>
+<div class="dx-band-row">
+<div class="dx-w1000"><div class="c-bento dx-square"><div class="c-bento__grid">
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Balance</span><span class="dx-sub t-cm-legal">Current account</span><span class="dx-fig t-ed-heading-4">£18,420.66</span></div>
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Runway</span><span class="dx-sub t-cm-legal">at today’s burn</span><span class="dx-fig t-ed-heading-4">7.4 months</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Payments due</span><span class="dx-sub t-cm-legal">next 30 days</span><span class="dx-fig t-ed-heading-4">14</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">FX exposure</span><span class="dx-sub t-cm-legal">GBP / USD / EUR</span><span class="dx-fig t-ed-heading-4">3 pairs</span></div>
+</div></div><span class="dx-caption t-cm-legal">1000px wall &mdash; below 1100, so 3 columns</span></div>
+<div class="dx-w780"><div class="c-bento dx-square"><div class="c-bento__grid">
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Balance</span><span class="dx-sub t-cm-legal">Current account</span><span class="dx-fig t-ed-heading-4">£18,420.66</span></div>
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Runway</span><span class="dx-sub t-cm-legal">at today’s burn</span><span class="dx-fig t-ed-heading-4">7.4 months</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Payments due</span><span class="dx-sub t-cm-legal">next 30 days</span><span class="dx-fig t-ed-heading-4">14</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">FX exposure</span><span class="dx-sub t-cm-legal">GBP / USD / EUR</span><span class="dx-fig t-ed-heading-4">3 pairs</span></div>
+</div></div><span class="dx-caption t-cm-legal">780px wall &mdash; below 820, so 2 columns</span></div>
+<div class="dx-w460"><div class="c-bento dx-square"><div class="c-bento__grid">
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Balance</span><span class="dx-sub t-cm-legal">Current account</span><span class="dx-fig t-ed-heading-4">£18,420.66</span></div>
+<div class="c-bento__tile dx-card " data-c="2" data-r="1"><span class="dx-eyebrow t-cm-legal">Runway</span><span class="dx-sub t-cm-legal">at today’s burn</span><span class="dx-fig t-ed-heading-4">7.4 months</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">Payments due</span><span class="dx-sub t-cm-legal">next 30 days</span><span class="dx-fig t-ed-heading-4">14</span></div>
+<div class="c-bento__tile dx-card " data-c="1" data-r="1"><span class="dx-eyebrow t-cm-legal">FX exposure</span><span class="dx-sub t-cm-legal">GBP / USD / EUR</span><span class="dx-fig t-ed-heading-4">3 pairs</span></div>
+</div></div><span class="dx-caption t-cm-legal">460px wall &mdash; below 520, so 1 column</span></div>
+</div>
+</section>
+<section id="provenance">
+<h2 class="t-ed-heading-3">What is canon here, and what is this page</h2>
+<p class="lede t-ed-body">Canon: the container, the grid, the span vocabulary, the bands and the radius model &mdash; all of it generated into <code>knowledge/canon/canon.css</code> by <code>canon/gen_canon_bento.py</code> from <code>tokens/layout.json</code> (<code>layout/bento</code>). The gutter override lives in the legacy and console override sets. This page declares <b>no grid, no gap and no bento radius of its own</b> &mdash; it styles tile content and its own chrome, and nothing else.</p>
+</section></main>
+<script>
+(function(){
+  var THEMES=['mono','legacy','console','supercharge'];
+  var state={theme:'mono',mode:'light',chrome:'1'};
+  function apply(){
+    document.documentElement.setAttribute('data-apollo-theme',state.theme);
+    document.body.setAttribute('data-theme',state.mode);
+    document.body.setAttribute('data-chrome',state.chrome);
+    document.querySelectorAll('#themes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.themeAttr===state.theme)); });
+    document.querySelectorAll('#modes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.mode===state.mode)); });
+  }
+  var t=document.getElementById('themes'), m=document.getElementById('modes');
+  if(t) t.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.theme=b.dataset.themeAttr; apply(); });
+  if(m) m.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.mode=b.dataset.mode; apply(); });
+  // a fragment-only navigation does not re-run this script — the probe drives the page by hash
+  function fromHash(){
+    var h={};
+    location.hash.replace(/^#/,'').split('&').forEach(function(kv){
+      var p=kv.split('='); if(p[0]) h[p[0]]=decodeURIComponent(p[1]||''); });
+    if(THEMES.indexOf(h.theme)>=0) state.theme=h.theme;
+    if(h.m==='light'||h.m==='dark') state.mode=h.m;
+    if(h.chrome==='0'||h.chrome==='1') state.chrome=h.chrome;
+    apply();
+  }
+  window.addEventListener('hashchange',fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-verify_bento_canon_217.py — drives the BENTO-CANON canon demo (its generator's own OUT — #219: v4) in FOUR THEMES ×
+verify_bento_canon_217.py — drives the BENTO-CANON canon demo (its generator's own OUT — #219 seam 5: v6) in FOUR THEMES ×
 LIGHT/DARK and measures the eight things s217-D2 (and the #217 squaring proposal) can be wrong
 about. Live document, computed styles and measured geometry, never a read of the source.
 
@@ -114,12 +114,26 @@ EXPECT_INNER_GUTTER = 1
 sys.path.insert(0, os.path.join(KNOW, "canon"))
 from gen_canon_bento import caption_space  # noqa: E402
 CAPTION_SPACE, CAPTION_LINES = caption_space()
-# s218-D6 (1): --surface-digital-black / --text-reverse, resolved in mono in BOTH modes. ⚠ The
-# expectation is written as the RESOLVED rgb because that is what a computed style returns; the
-# page declares the token, and a page that declared the hex directly would still be caught by the
-# dangling sweep, which requires the token to be present and resolvable.
-MONO_CAP_GROUND = "rgb(26, 26, 26)"
-MONO_CAP_INK = "rgb(255, 255, 255)"
+# ⬛ #219 seam 5 — THE PROBE WAS RE-POINTED, NOT WEAKENED. It asserted `s218-D6 (1)`'s DARK mono
+# caption as two hard-typed rgb strings, mode-stable. `s219-D2 (1)` retired that ground, so the old
+# assertion would have REDDED THE RULING rather than the page (the same re-point lane B made on
+# `verify_photography_218`). Three things changed and each is a deliberate choice:
+#   1 · The expectation is now READ OFF THE TOKEN, live, in each state — the caption's computed
+#       ground must EQUAL the state's own `--surface-subtle`, which is what "the dial says grey"
+#       means. Hard-typing a dark-mode rgb would have invented a value nobody ruled.
+#   2 · It is NO LONGER MODE-STABLE, and that is a real consequence of the supersession: the #218
+#       rider resolved #1A1A1A in mono light AND dark; `--surface-subtle` resolves rgb(240,240,240)
+#       in mono light and rgb(31,31,31) in mono dark. Dark falls out of the tokens; nothing here
+#       chose it.
+#   3 · Mono LIGHT is additionally pinned to the pixel DAVE'S OWN EXPORT measured, so the token
+#       identification cannot drift off the colour he actually saw and approved.
+# ⚠ DECLARED, and it is lane B's finding 9: in mono DARK, `--surface-subtle` and `--surface-raised`
+# both resolve #1F1F1F, so this assertion is honest there but not DISCRIMINATING — a page painted
+# with the wrong one of the two would pass in dark and only red in light.
+MONO_CAP_GROUND_TOKEN = "--surface-subtle"
+MONO_CAP_INK_TOKEN = "--text-secondary"
+RECEIPT_MONO_LIGHT_GROUND = "rgb(240, 240, 240)"   # s219-D2 (1), the #219 mono gallery export
+UNPAINTED = "rgba(0, 0, 0, 0)"                      # what a NON-mono caption must stay
 EXPECT_BANDS = [("dx-w1000", 3), ("dx-w780", 2), ("dx-w460", 1)]
 
 FONT_PROBE = """() => {
@@ -159,6 +173,17 @@ STATE_PROBE = """(props) => {
   }));
   const capToken = Math.round(parseFloat(
     getComputedStyle(document.body).getPropertyValue('--layout-bento-caption-space')) || 0);
+  // ⬛ s219-D2 (1) — THE RULED CAPTION TOKENS, RESOLVED IN THIS STATE. A scratch element is used
+  // rather than reading the custom property text, because a custom property returns its DECLARED
+  // text ("var(--x)" or a hex) while a background-color returns the RESOLVED rgb — and only the
+  // resolved value is comparable with what the caption actually paints.
+  const _probe = document.createElement('div');
+  _probe.style.cssText = 'position:absolute;left:-9999px;top:-9999px;' +
+    'background-color:var(--surface-subtle);color:var(--text-secondary)';
+  document.body.appendChild(_probe);
+  const capTokens = {ground: getComputedStyle(_probe).backgroundColor,
+                     ink: getComputedStyle(_probe).color};
+  _probe.remove();
   const cs = getComputedStyle(bento);
   const dials = ['--bento-gutter','--bento-columns','--bento-row-unit','--bento-outer-padding',
                  '--bento-packing','--bento-radius'];
@@ -182,6 +207,7 @@ STATE_PROBE = """(props) => {
     bands: bands,
     caps: caps,
     capToken: capToken,
+    capTokens: capTokens,
     ground: getComputedStyle(document.body).backgroundColor,
     unresolved: emptyProps.concat(emptyDials)
   };
@@ -380,22 +406,30 @@ def main():
                         fails.append("%s — caption clamp %r, expected the DERIVED %d line(s) — "
                                      "the space and the clamp have drifted apart"
                                      % (state, c["clamp"], CAPTION_LINES))
-                    # ⛔ s218-D6 (1) — MONO ONLY, AND IN BOTH MODES. Asserting it only in mono
-                    # would pass a page that painted every theme's captions black; asserting the
+                    # ⛔ s219-D2 (1) — MONO ONLY, AND IN BOTH MODES. Asserting it only in mono
+                    # would pass a page that painted every theme's captions grey; asserting the
                     # other three keeps the scope honest.
+                    tok = r.get("capTokens") or {}
                     if theme == "mono":
-                        if c["ground"] != MONO_CAP_GROUND:
-                            fails.append("%s — mono caption ground %s, expected %s "
-                                         "(s218-D6(1), --surface-digital-black)"
-                                         % (state, c["ground"], MONO_CAP_GROUND))
-                        if c["ink"] != MONO_CAP_INK:
-                            fails.append("%s — mono caption ink %s, expected %s "
-                                         "(s218-D6(1), --text-reverse)"
-                                         % (state, c["ink"], MONO_CAP_INK))
-                    elif c["ground"] == MONO_CAP_GROUND:
-                        fails.append("%s — a NON-mono caption took the mono ground %s: "
-                                     "s218-D6(1) is scoped to mono and this page widened it"
-                                     % (state, c["ground"]))
+                        if c["ground"] != tok.get("ground"):
+                            fails.append("%s — mono caption ground %s, expected this state's %s "
+                                         "= %s (s219-D2(1))"
+                                         % (state, c["ground"], MONO_CAP_GROUND_TOKEN,
+                                            tok.get("ground")))
+                        if c["ink"] != tok.get("ink"):
+                            fails.append("%s — mono caption ink %s, expected this state's %s = %s "
+                                         "(s219-D2(1))"
+                                         % (state, c["ink"], MONO_CAP_INK_TOKEN, tok.get("ink")))
+                        # …and in LIGHT, against the pixel Dave's own export resolved.
+                        if mode == "light" and c["ground"] != RECEIPT_MONO_LIGHT_GROUND:
+                            fails.append("%s — mono/light caption ground %s, but the #219 mono "
+                                         "gallery export Dave approved resolved %s: the token "
+                                         "identification has drifted off the colour he saw"
+                                         % (state, c["ground"], RECEIPT_MONO_LIGHT_GROUND))
+                    elif c["ground"] != UNPAINTED:
+                        fails.append("%s — a NON-mono caption is painted %s and should be %s: "
+                                     "s219-D2(1) is scoped to mono and this page widened it"
+                                     % (state, c["ground"], UNPAINTED))
                 # 5 · dangling
                 if r["unresolved"]:
                     fails.append("%s — ⛔ DANGLING: %s resolved EMPTY (silent-black class)"
@@ -461,8 +495,10 @@ def main():
     print("foreign properties probed per state (%d): %s" % (len(props), ", ".join(props)))
     print("caption space: %dpx -> %d line(s); %d caption block(s) MEASURED across 8 states "
           "(rendered height + computed min-height + resolved token); mono ground %s / ink %s "
-          "asserted in mono and REFUSED in the other three (s218-D6(1))"
-          % (CAPTION_SPACE, CAPTION_LINES, caps_seen, MONO_CAP_GROUND, MONO_CAP_INK))
+          "READ OFF THE TOKEN in each state, pinned in mono/light to Dave's own export pixel %s, "
+          "and the other three REFUSED as unpainted (s219-D2(1), superseding s218-D6(1))"
+          % (CAPTION_SPACE, CAPTION_LINES, caps_seen, MONO_CAP_GROUND_TOKEN, MONO_CAP_INK_TOKEN,
+             RECEIPT_MONO_LIGHT_GROUND))
     print("\n".join(lines))
     print("bottom edge (mono/light shown; measured in all 8 states at each width):")
     print("\n".join(wall_lines))

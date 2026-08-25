@@ -101,12 +101,42 @@ THEME + MODE — the same broadcast the showroom and the library use
   `state` blocks are the ruling; the `resolved` blocks are receipts about the tab they were taken
   in (`RECEIPT_RESOLVED_THEME`).
 
+✅ #219 — THE SETTINGS ARE THE TWELVE SHIPPED DEFAULTS, AND THREE GALLERY DIALS CHANGED
+  s219-D1 closes a role setting as a DEFAULT plus the EDIT-PASS OPTION SET Apollo exposes, and
+  names Dave's twelve #219 tuner exports (dashboard/display/gallery x four themes) as the shipped
+  defaults. They are PARSED from his receipt by `role_defaults_219.py` — ONE home, no re-typing —
+  and this file's LIVE gallery settings are now that module's `gallery` slice. ⛔ THE #218 EXPORTS
+  ARE FROZEN HISTORY in their own receipt; they are not this generator's settings any more.
+  s219-D2 supersedes three of them, and each one is enacted below rather than described:
+    (1) MONO CAPTION GROUND IS LIGHT GREY. `capBg: grey` = `--surface-subtle`, which resolves
+        rgb(240, 240, 240) in mono — the exact pixel Dave's export measured. The #218 RIDER
+        (`--surface-digital-black` ground, `--text-reverse` ink) is RETIRED here, by his own
+        words: "I changed my mind just go with the latest and change in the library." The ink
+        goes back to the caption's standing token, `--text-secondary` (see `CAP_INK`).
+    (2) EDGE=SQUARE IS THE GALLERY-ROLE DEFAULT in all four themes, widening s218-D6 (4) beyond
+        this wall. ⚠ WHAT DID NOT CHANGE: `layout/bento/$roles/gallery/squaring` is still `false`
+        in the token store, so `role_policy("gallery")` still answers EXEMPT. Flipping the store
+        is a canon regen (the ordered serial) and it is NOT this lane's to run — the default lives
+        in the settings table and the role's own answer is still asked, kept and printed.
+    (3) CONSOLE GALLERY ROUNDING IS CAPSULE, which puts canon's container radius on the TILE in
+        that theme — s217-D5's open P3, resolved as the shipped default by Dave's own export.
+    (4) KEYLINES: ON only in legacy display and legacy gallery, off everywhere else. This page is
+        a gallery, so LEGACY now ships a 1px tile edge and the other three do not — the compiled
+        block carries both constructions and `--selftest` bite 24b asserts the split.
+  ⚠ AND A CONSEQUENCE THAT IS NOT COSMETIC: three of the four gallery defaults say
+  `pageBg: transparent`. A standalone page whose BODY paints nothing would show the UA canvas —
+  white, in every theme, in dark mode too. So the page ground moved onto `html` (`--background-
+  default`), and a transparent body now reveals the THEME's document ground, which is what
+  "transparent" means on a wall that is a whole page. Named, not silent: PROPOSED for Dave's eye.
+
 REGENERATE
   python3 knowledge/_render/gen_foundations_217.py
   python3 knowledge/_render/gen_foundations_217.py --check      # in-sync gate
   python3 knowledge/_render/gen_foundations_217.py --selftest
   BM_MUTANT_DIR=/var/tmp/mut-<session> \
     python3 knowledge/_render/gen_foundations_217.py --break-settings   # ⬛ the #218 arm
+  BM_MUTANT_DIR=/var/tmp/mut-<session> \
+    python3 knowledge/_render/gen_foundations_217.py --break-default    # ⬛ the #219 arm
   python3 knowledge/_render/verify_photography_218.py [--static|--themes a,b|--settings-mutation]
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
@@ -135,6 +165,8 @@ sys.path.insert(0, HERE)
 import gen_library_214 as library          # FOUNDATIONS — ONE list, not a second copy
 import gen_bento_matrix_217 as matrix      # #217 — the s217-D5 option matrix, its own module
 import gen_grids_218 as grids             # #218 — the Grids group's four bodies, its own module
+import role_defaults_219 as defaults219   # #219 — the TWELVE shipped defaults, parsed from the
+                                          #        receipt; ONE home, no re-typing (s219-D1)
 
 # Relative prefix from showroom/_foundations/<page>.html back to the repo root.
 UP = "../../"
@@ -234,128 +266,184 @@ def emphasis_note(rows):
 
 
 # ---------------------------------------------------------------------------
-# ⬛ THE GALLERY SETTINGS, RULED PER THEME BY DAVE (#218, 2026-08-24)
+# ⬛ THE ROLE SETTINGS — THE TWELVE SHIPPED DEFAULTS (s219-D1, #219, 2026-08-25)
 # ---------------------------------------------------------------------------
-# He drove the s217-D5 matrix explorer's Gallery dials in each theme and pasted FOUR export
-# blocks — "can we have this as the settings for the photography section on the library". The
-# verbatim exports are stored untrimmed at
-# `notes/_receipts/2026-08-24-218-photography-theme-settings.md`; the tables below are the STATE
-# blocks from those exports and nothing else.
+# ⛔ THEY ARE NOT TYPED HERE, AND THEY ARE NOT #218's ANY MORE. `role_defaults_219.py` PARSES the
+# twelve verbatim tuner exports out of Dave's own receipt
+# (`notes/_receipts/2026-08-25-219-role-defaults-exports.md`) — three types x four themes, the
+# shipped defaults per s219-D1 (3), minted as concrete values at mint time per s200-D1. That
+# module imports nothing of the render stack precisely so the explorer can boot from the SAME
+# twelve without a cycle; a second table that agrees today is the copy that goes stale
+# ([[write-once-principle-floated-192]]).
+# ⚠ THE #218 EXPORTS ARE FROZEN HISTORY. They stay in their own receipt, and s218-D6 (1) stays
+# ratified as the record of what was true then. What this generator COMPILES is the #219 set.
 #
-# ⚠ PARSED, NOT SMOOTHED. Two of the four exports carry `resolved.theme: "legacy"` because they
-# were exported from the legacy tab — the `resolved` blocks are that tab's own readback and are
-# RECEIPTS, not settings. Dave's prose labels plus the `state` blocks are the ruling, and this
-# file compiles the `state` blocks.
-#
-# ⛔ NO DIAL WORD IS TYPED TWICE. Every word below is checked at mint time against
-# `gen_bento_matrix_217`'s OWN ruled option sets (`SPACINGS`, `ONOFF`, `GALLERY_MODES`,
-# `BOTTOM_EDGE`, `ROUNDINGS`, `BACKGROUNDS`), against `keylines_for("gallery", theme)`, and
-# against the P2/P3 legality rules — the same module the explorer compiles its controls from.
-# A settings table that quietly held a word the ruling no longer knows would render a wall
-# nobody ruled, and no gate would fire.
+# ⛔ NO DIAL WORD IS TAKEN ON TRUST. Every word is checked at mint time against
+# `gen_bento_matrix_217`'s OWN ruled option sets (`ONOFF`, `GALLERY_MODES`, `BOTTOM_EDGE`,
+# `ROUNDINGS`, `BACKGROUNDS`), against `keylines_for(type, theme)`, against the P2/P3 legality
+# rules, and — for spacing — against the s219-D1 (4) RAILS, which are wider than the explorer's
+# three-stop control. A settings table that quietly held a word the ruling no longer knows would
+# render a wall nobody ruled, and no gate would fire.
 #
 # ⛔ COMPILED AT MINT TIME, NOT DIALLED LIVE (s200-D1). The explorer is a decision surface; this
 # page is the DECISION. Each theme's dials become concrete declarations under that theme's own
 # scope, so the page needs no controller and no state object.
-# ⬛ THE MUTATION HANDLE for the settings block. Never written over the real page — see
-# `write_settings_mutant()`, whose destination is BM_MUTANT_DIR.
+# ⬛ THE MUTATION HANDLES. `BREAK_SETTINGS` ships the page with the whole compiled block ABSENT;
+# `BREAK_DEFAULT` ships it with ONE MINTED DEFAULT WRONG (the mono caption ground). Neither is
+# ever written over the real page — see `write_settings_mutant()` / `write_default_mutant()`,
+# whose destination is BM_MUTANT_DIR.
 BREAK_SETTINGS = False
+BREAK_DEFAULT = None          # (type, theme, dial, wrong_value) when armed
 
-GALLERY_SETTINGS = {
-    "supercharge": {"spacing": "1", "keylines": "off", "mode": "bento", "edge": "square",
-                    "rounding": "corners", "pageBg": "white", "bentoBg": "white",
-                    "capBg": "transparent"},
-    "console": {"spacing": "24", "keylines": "off", "mode": "bento", "edge": "square",
-                "rounding": "corners", "pageBg": "white", "bentoBg": "white",
-                "capBg": "transparent"},
-    "legacy": {"spacing": "24", "keylines": "off", "mode": "bento", "edge": "square",
-               "rounding": "corners", "pageBg": "white", "bentoBg": "white",
-               "capBg": "transparent"},
-    "mono": {"spacing": "24", "keylines": "off", "mode": "bento", "edge": "square",
-             "rounding": "corners", "pageBg": "white", "bentoBg": "white",
-             "capBg": "transparent"},
-}
+ROLE_DEFAULTS = defaults219.DEFAULTS
+# The LIVE gallery settings this page compiles. The name is kept so every consumer that already
+# addresses it keeps working; what changed is where the values come from.
+GALLERY_SETTINGS = ROLE_DEFAULTS["gallery"]
 
-# ⬛ THE MONO CAPTION RIDER — Dave's words, verbatim: "But with the darkest grey for the captions
-# and white for the text." It sits ON TOP of the mono export, whose `capBg` state word is
-# `transparent`; the two do not disagree, because the rider asks for something the explorer's
-# background dial CANNOT SAY. Its palette is grey / white / transparent (`matrix.BACKGROUNDS`)
-# and none of the three is a dark ground — so this is an ADDITION to the ruled vocabulary, not a
-# selection from it, and it is named as one rather than filed as a fourth dial word.
-# ⛔ TOKENS, NEVER A RAW HEX. `--surface-digital-black` is #1A1A1A in mono in BOTH modes (measured
-# in canon.css: `:root` and `[data-theme="dark"]` both declare it), which is what a caption ground
-# ruled by eye needs — a ground that inverted with the mode would stop being the thing he ruled.
-# `--text-reverse` is #FFFFFF in mono in both modes for the same reason. The literals below are
-# FALLBACKS ONLY, required by the silent-black fence.
-# ⚠ PARSED, NOT SMOOTHED — WHICH TAB EACH `resolved` BLOCK WAS ACTUALLY MEASURED IN.
-# The supercharge and mono exports carry `resolved.theme: "legacy"`: Dave exported them from the
-# legacy tab, so their pixel readbacks (`pageBackground: rgb(255, 255, 255)` and the rest) are
-# LEGACY'S paint, not that theme's. The `state` blocks are the ruling; the `resolved` blocks are
-# receipts, and a receipt is only evidence about the theme it was taken in.
-# ⛔ THIS IS NOT PEDANTRY — IT IS A LIVE MEASUREMENT. `white` is the dial's word for
-# `--surface-raised`, and supercharge resolves that to **#F7F6F4**, a warm off-white, not
-# #FFFFFF. Cross-checking every theme against the receipt's literal 255-white would have failed
-# a page behaving exactly as ruled, and "fixing" it would have pinned supercharge to a white it
-# does not own. The probe therefore asserts the TOKEN everywhere and the LITERAL only where the
-# receipt was taken in the theme it is labelled with.
-RECEIPT_RESOLVED_THEME = {"supercharge": "legacy", "console": "console",
-                          "legacy": "legacy", "mono": "legacy"}
-
-MONO_CAPTION_RIDER = {
+# ⬛ s219-D2 (1) — THE MONO CAPTION RIDER IS RETIRED, and it is kept here as a NAMED SUPERSESSION
+# rather than deleted. Dave, asked which of the two grounds governs: "I changed my mind just go
+# with the latest and change in the library." The #219 export says `capBg: grey`, which is the
+# dial's word for `--surface-subtle` — rgb(240, 240, 240) in mono, the exact pixel his own export
+# resolved. The dark ground and its reverse ink retire ON THE GALLERY ROLE, this page included.
+# ⛔ IT IS RETIRED, NOT INVERTED: s218-D6 (1) stands as frozen history of what was ratified at
+# #218, and the page says so rather than pretending the dark ground never existed.
+MONO_CAPTION_RIDER = None
+RETIRED_MONO_RIDER = {
     "theme": "mono",
+    "ruling": "s218-D6 (1)",
+    "superseded_by": "s219-D2 (1)",
     "words": "But with the darkest grey for the captions and white for the text.",
     "ground_token": "--surface-digital-black", "ground_hex": "#1A1A1A",
     "ink_token": "--text-reverse", "ink_hex": "#FFFFFF",
+    "dave": "I changed my mind just go with the latest and change in the library.",
 }
+
+# ⚠ WHICH TAB EACH #218 `resolved` BLOCK WAS MEASURED IN — kept because the probes still
+# cross-check literals only where the receipt can answer for the theme it names. ⛔ THE #219
+# EXPORTS ARE SELF-CONSISTENT: every one of the twelve resolves the theme its heading names
+# (asserted by `role_defaults_219`'s parse), so this map is now #218 history plus the honest
+# answer for #219 — `defaults219.RECEIPT_RESOLVED_THEME["gallery"]`, which is the identity.
+RECEIPT_RESOLVED_THEME = dict(defaults219.RECEIPT_RESOLVED_THEME["gallery"])
+# The receipt's own `resolved` blocks, by type and theme — the pixels Dave approved. Probes
+# cross-check the minted paint against these; nothing is ever DECLARED from them.
+RECEIPT_RESOLVED = defaults219.RESOLVED
 
 # The literal fallback for each background token the dial can name. Values read off canon.css's
 # `:root`; they exist so a var() cannot dangle to silent black, not as a second source of truth.
 BG_FALLBACK = {"--surface-subtle": "#F0F0F0", "--surface-raised": "#FFFFFF"}
 
+# ⬛ s219-D2 (1) — THE CAPTION INK, AND WHICH TOKEN IT IS. The supersession moves the mono caption
+# onto a LIGHT ground, so the ink flips from `--text-reverse` back to the caption's own standing
+# ink: `--text-secondary`, the token `.px-cap` has always used through the page's `--ink-2`.
+# ⚠ TWO CANDIDATES EXISTED and the choice is DECLARED rather than silent: `--text-default` and
+# `--text-secondary` resolve to the SAME value (#1A1A1A) in both themes that ship a grey caption
+# ground — mono and console inherit canon's `:root` tier, where the two are equal — so today the
+# choice is invisible in the paint. `--text-secondary` is enacted because it is the token the
+# caption already used and because it keeps caption ink one decision across all four themes; the
+# pair diverges only in legacy (#545454 vs #333333), whose caption ground is transparent. ⬛ THE
+# CHOICE IS FILED for Dave (report `notes/_subreports/2026-08-25-219-enactB-defaults.md`).
+CAP_INK = ("--text-secondary", "#545454")
+# The keyline's own colour, when a theme's default says `keylines: on` (legacy, here). Canon's
+# subtle border, matching the page's `--line`; the literal is the dangle fence, not a second
+# source. ⚠ TILE BORDER WIDTH IS THE EXPORT'S OWN `tileBorderPx: 1`, not a preference.
+KEYLINE = ("--border-subtle", "#D7D8D6", "1px")
 
-def ruled_words():
-    """-> {dial: [ruled values]} taken from the matrix module's OWN option sets, never re-typed."""
+
+def ruled_words(type_="gallery"):
+    """-> {dial: [ruled values]} for ONE type, taken from the matrix module's OWN option sets,
+    never re-typed. ⛔ SPACING IS THE EXCEPTION AND IT IS NAMED: s219-D1 (4) rules six stops
+    {1,2,4,16,24,40} and the explorer's `SPACINGS` control still carries three, so spacing is
+    validated against the RULED RAILS (`role_defaults_219.SPACING_STOPS`) and the gap between
+    rails and control is reported separately by `control_gap()`. Validating Dave's own ruled
+    default against a control that has not caught up would red the ruling, not the build."""
     bg = [b[0] for b in matrix.BACKGROUNDS]
-    return {"spacing": [s[0] for s in matrix.SPACINGS],
-            "keylines": [o[0] for o in matrix.ONOFF],
-            "mode": [m[0] for m in matrix.GALLERY_MODES],
-            "edge": [e[0] for e in matrix.BOTTOM_EDGE],
-            "rounding": [r[0] for r in matrix.ROUNDINGS],
-            "pageBg": bg, "bentoBg": bg, "capBg": bg}
+    words = {"keylines": [o[0] for o in matrix.ONOFF],
+             "pageBg": bg, "bentoBg": bg}
+    if type_ == "gallery":
+        words.update({"spacing": defaults219.SPACING_STOPS,
+                      "mode": [m[0] for m in matrix.GALLERY_MODES],
+                      "edge": [e[0] for e in matrix.BOTTOM_EDGE],
+                      "rounding": [r[0] for r in matrix.ROUNDINGS],
+                      "capBg": bg})
+    elif type_ == "display":
+        words["spacing"] = defaults219.SPACING_STOPS
+    elif type_ == "dashboard":
+        # ⛔ THE DASHBOARD MAIN SPACING HAS NO TIGHT MEMBER — "never tight" is ruled (s217-D5), so
+        # `1` is not a legal main gutter even though it is a ruled rail elsewhere.
+        words["mainSpacing"] = [s for s in defaults219.SPACING_STOPS if s != "1"]
+        words["subSpacing"] = [str(s) for s in matrix.SUB_STOPS]
+    else:
+        raise KeyError("unknown bento type %r" % type_)
+    return words
 
 
-def validate_settings(settings=None):
+def control_gap():
+    """-> [complaints] about RULED STOPS NO CONTROL CAN REACH (s219-D1 (2): all dials available in
+    edit mode). REPORTED, never repaired here — widening the explorer's control is that module's
+    build, and this generator may not reach into it."""
+    missing = defaults219.unreachable_stops([s[0] for s in matrix.SPACINGS])
+    if not missing:
+        return []
+    return ["the ruled spacing rails %s include %s, which gen_bento_matrix_217.SPACINGS cannot "
+            "reach (it carries %s) — an edit-pass value the designer cannot return to"
+            % ("/".join(defaults219.SPACING_STOPS), "/".join(missing),
+               "/".join(s[0] for s in matrix.SPACINGS))]
+
+
+def validate_settings(settings=None, type_="gallery"):
     """-> [complaints]. Empty means every ruled word is a member of its ruled set, reachable in
     its theme, and legal under P2/P3. LOUD AND NAMED — a settings table is not self-certifying."""
-    settings = settings or GALLERY_SETTINGS
-    words, bad = ruled_words(), []
+    settings = settings if settings is not None else ROLE_DEFAULTS[type_]
+    words, bad = ruled_words(type_), []
     for theme in matrix.THEMES:
         s = settings.get(theme)
         if s is None:
-            bad.append("%s — no settings ruled for this theme" % theme)
+            bad.append("%s/%s — no settings ruled for this theme" % (type_, theme))
             continue
         for dial, allowed in words.items():
             if s.get(dial) not in allowed:
-                bad.append("%s.%s = %r, which is not a ruled value (%s)"
-                           % (theme, dial, s.get(dial), "/".join(allowed)))
-        reachable = matrix.keylines_for("gallery", theme)
+                bad.append("%s/%s.%s = %r, which is not a ruled value (%s)"
+                           % (type_, theme, dial, s.get(dial), "/".join(allowed)))
+        reachable = matrix.keylines_for(type_, theme)
         if s.get("keylines") not in reachable:
-            bad.append("%s.keylines = %r is UNREACHABLE in this theme (s217-D6 allows %s)"
-                       % (theme, s.get("keylines"), "/".join(reachable)))
-        if not matrix.caption_legal(s.get("capBg"), s.get("bentoBg")):
-            bad.append("%s — P2: caption ground equals the bento ground (%s)"
-                       % (theme, s.get("capBg")))
-        if not matrix.capsule_legal(s.get("rounding"), s.get("capBg"), s.get("keylines")):
-            bad.append("%s — P3: a capsule with a transparent caption and no keylines has no "
-                       "edge to be a capsule of" % theme)
+            bad.append("%s/%s.keylines = %r is UNREACHABLE in this theme (s217-D6 allows %s)"
+                       % (type_, theme, s.get("keylines"), "/".join(reachable)))
+        if type_ == "gallery":
+            if not matrix.caption_legal(s.get("capBg"), s.get("bentoBg")):
+                bad.append("%s/%s — P2: caption ground equals the bento ground (%s)"
+                           % (type_, theme, s.get("capBg")))
+            if not matrix.capsule_legal(s.get("rounding"), s.get("capBg"), s.get("keylines")):
+                bad.append("%s/%s — P3: a capsule with a transparent caption and no keylines has "
+                           "no edge to be a capsule of" % (type_, theme))
+    return bad
+
+
+def validate_all():
+    """-> [complaints] over ALL THREE TYPES. s219-D1 (3) ships twelve defaults, not four; a
+    validator that only ever looked at the type this page renders would leave eight of them
+    self-certified ([[green-tests-cannot-see-scope]])."""
+    bad = []
+    for type_ in defaults219.TYPES:
+        bad += validate_settings(type_=type_)
+    # ⛔ THE RAILS HAVE ONE HOME PER SIDE AND THEY MUST AGREE. The defaults module quotes
+    # s219-D1 (4); the explorer derives every spacing dial from its own rail. Equality is asserted
+    # HERE, where both are in scope — neither module may import the other's rail.
+    live = [s[0] for s in matrix.SPACINGS]
+    if sorted(live, key=int) != sorted(defaults219.SPACING_STOPS, key=int):
+        bad.append("the ruled rails %s and gen_bento_matrix_217.SPACINGS %s disagree — s219-D1 (4) "
+                   "has one stop set, and a dial built from the other one is a wider or narrower "
+                   "option space than Dave ruled"
+                   % ("/".join(defaults219.SPACING_STOPS), "/".join(live)))
     return bad
 
 
 def spacing_px(word):
+    """-> the CSS length for a ruled spacing stop. THE RAILS ARE s219-D1 (4)'s six stops; the
+    explorer's label table is consulted only to keep the two agreeing where they overlap."""
     for value, _label, px in matrix.SPACINGS:
         if value == word:
             return px
-    raise KeyError("spacing %r is not a ruled stop" % word)
+    return defaults219.spacing_px(word)
 
 
 def bg_decl(word):
@@ -369,54 +457,112 @@ def bg_decl(word):
     raise KeyError("background %r is not a ruled dial word" % word)
 
 
+# ⬛ #219 — WHAT `pageBg: transparent` MEANS ON A WHOLE-PAGE WALL, and it is MEASURED, not
+# preferred. Three of the four #219 gallery defaults say `transparent`. In the explorer that word
+# means "the stage's own ground shows through"; on this page the wall IS the page, and a body that
+# paints nothing falls through to the UA CANVAS — white, in every theme, in dark mode too. So a
+# transparent page ground compiles to the DOCUMENT GROUND (`--background-default`), which is the
+# surface beneath a page body and the exact value this page painted before any settings block
+# existed.
+# ⛔ AND IT MUST STAY ON THE BODY. canon declares the dark tier on `[data-theme="dark"]`, which is
+# the BODY element — painting `html` instead would resolve the LIGHT token in dark mode, silently,
+# in all four themes (measured in canon.css: the dark block's selector is the body's).
+# ⬛ PROPOSED, and named on the page: the other reading is that a transparent gallery should sit on
+# `--surface-raised`. Nothing here decides that — it is Dave's eye.
+def page_bg_decl(word):
+    if word == "transparent":
+        return "var(--background-default,#FFFFFF)"
+    return bg_decl(word)
+
+
 # The wall's own selector, written ONCE. `.c-bento.` is deliberate for the reason the instance
 # dial carries it (s217-D3): canon's role rules are (0,2,0) and a bare class would lose to them.
 WALL = ".fx .c-bento.fx-wall-photo"
 TILE = WALL + " > .c-bento__grid > .c-bento__tile"
 
 
-def settings_css(settings=None, rider=MONO_CAPTION_RIDER):
+def live_settings():
+    """-> the gallery settings this build compiles, with the DEFAULT MUTATION applied if armed.
+
+    ⬛ THE ARM IS HERE AND NOWHERE ELSE, so a mutant differs from the shipped page in exactly one
+    minted default and in nothing else. `BREAK_DEFAULT` is never set at build time."""
+    settings = {t: dict(s) for t, s in GALLERY_SETTINGS.items()}
+    if BREAK_DEFAULT:
+        type_, theme, dial, wrong = BREAK_DEFAULT
+        if type_ != "gallery":
+            raise SystemExit("gen_foundations_217: only the gallery defaults reach this page; "
+                             "arming %r here would change nothing and prove nothing" % type_)
+        if settings[theme][dial] == wrong:
+            raise SystemExit("gen_foundations_217 --break-default: %s/%s already IS %r — a "
+                             "mutation that changes nothing is a DANGLE and would prove the "
+                             "clause green by accident" % (theme, dial, wrong))
+        settings[theme][dial] = wrong
+    return settings
+
+
+def settings_css(settings=None):
     """-> the per-theme settings block, concrete, one scope per theme (s200-D1).
 
     ⛔ EVERY THEME EMITS EVERY DIAL, even where all four agree. A block that emitted only the
     differences would read as "supercharge is the special one" and would go silently wrong the
     day one theme's word changed — and a per-theme probe could not find a per-theme rule to
     read. Repetition here is what makes the page answerable."""
-    settings = settings or GALLERY_SETTINGS
+    settings = settings if settings is not None else live_settings()
     bad = validate_settings(settings)
     if bad:
         raise SystemExit("gen_foundations_217: the ruled gallery settings do not validate "
                          "against gen_bento_matrix_217's option sets:\n  - " + "\n  - ".join(bad))
     L = ["/* @gallery-settings:start */",
          "/* ==========================================================================",
-         "   THE GALLERY SETTINGS — RULED PER THEME by Dave, #218 (2026-08-24), compiled",
-         "   from his four s217-D5 export STATE blocks at MINT TIME (s200-D1). Receipts:",
-         "   notes/_receipts/2026-08-24-218-photography-theme-settings.md",
-         "   ⛔ Every dial word was checked against gen_bento_matrix_217's own ruled option",
-         "   sets before this block was written. Every var() carries a literal fallback.",
+         "   THE GALLERY ROLE'S SHIPPED DEFAULTS — Dave's own #219 tuner exports, four",
+         "   of the twelve ruled by s219-D1 (3), compiled at MINT TIME (s200-D1) from",
+         "   notes/_receipts/2026-08-25-219-role-defaults-exports.md via role_defaults_219.",
+         "   ⛔ s219-D2 supersedes three #218 settings and all three are BELOW, not in a",
+         "   comment: mono captions on light grey (the #218 dark rider is RETIRED), the",
+         "   console rounding capsule, and keylines ON in legacy only. Edge stays square",
+         "   in all four. Every dial word was checked against gen_bento_matrix_217's own",
+         "   ruled option sets; every var() carries a literal fallback.",
+         "   ⚠ Every dial here remains an EDIT-PASS OPTION (s219-D1 (1)/(2)) — what is",
+         "   compiled is the DEFAULT the page ships in, not the only reachable state.",
          "   ========================================================================== */"]
     for theme in matrix.THEMES:
         s = settings[theme]
         sel = '[data-apollo-theme="%s"] ' % theme
         gutter = spacing_px(s["spacing"])
-        page, bento, cap = bg_decl(s["pageBg"]), bg_decl(s["bentoBg"]), bg_decl(s["capBg"])
+        page = page_bg_decl(s["pageBg"])
+        bento, cap = bg_decl(s["bentoBg"]), bg_decl(s["capBg"])
         L.append("")
         L.append("/* ---- %s · spacing %s (%s) · keylines %s · %s · %s edge · rounding %s · "
                  "page %s · bento %s · caption %s ---- */"
                  % (theme, s["spacing"], gutter, s["keylines"], s["mode"], s["edge"],
                     s["rounding"], s["pageBg"], s["bentoBg"], s["capBg"]))
-        # pageBg — the ground the wall sits on.
+        # pageBg — the ground the wall sits on. ⚠ `transparent` on a WHOLE-PAGE wall means the
+        # document ground shows through, not that the page paints nothing: `html` carries
+        # --background-default so a transparent body cannot fall through to the UA canvas (which
+        # is white in every theme and would make dark mode read white).
         L.append("%sbody.fx{background:%s;}" % (sel, page))
         # bentoBg + the ruled gutter, on the wall itself.
         L.append("%s%s{--bento-gutter:%s; background:%s;}" % (sel, WALL, gutter, bento))
-        # keylines OFF — no tile edge, and NO element that could draw one. ⛔ And the TILE PAINTS
-        # NO GROUND: a gallery caption's immediate ground must be the BENTO background or the
-        # capBg dial is comparing itself against a colour it never touches (measured #217).
-        L.append("%s%s .px-open{border:0; box-shadow:none; background:transparent;}"
-                 % (sel, TILE))
-        L.append("%s%s .px-open:hover{border-color:transparent;}" % (sel, TILE))
+        # ⛔ THE TILE PAINTS NO GROUND, in both keyline constructions: a gallery caption's
+        # immediate ground must be the BENTO background, or the capBg dial is comparing itself
+        # against a colour it never touches (measured #217).
+        if s["keylines"] == "off":
+            # keylines OFF — no tile edge, and NO element that could draw one.
+            L.append("%s%s .px-open{border:0; box-shadow:none; background:transparent;}"
+                     % (sel, TILE))
+            L.append("%s%s .px-open:hover{border-color:transparent;}" % (sel, TILE))
+        else:
+            # ⬛ s219-D2 (4) — KEYLINES ON. Legacy is the border-carrying theme (the s135-D1 echo)
+            # and its #219 gallery export resolves `tileBorderPx: 1`. The edge is the tile's, drawn
+            # on the opener because the opener is what fills the tile; the ground stays unpainted.
+            L.append("%s%s .px-open{border:%s solid var(%s,%s); box-shadow:none; "
+                     "background:transparent;}"
+                     % (sel, TILE, KEYLINE[2], KEYLINE[0], KEYLINE[1]))
+            L.append("%s%s .px-open:hover{border-color:var(--border-strong,#767676);}"
+                     % (sel, TILE))
         # rounding = 4 corners of the image: the PICTURE takes the container radius, the tile
-        # stays square and unclipped. (capsule would move the radius onto the tile.)
+        # stays square and unclipped. CAPSULE moves the radius onto the TILE itself — s219-D2 (3)
+        # makes that the console gallery's default, resolving s217-D5's open P3.
         if s["rounding"] == "corners":
             L.append("%s%s{border-radius:0;}" % (sel, TILE))
             L.append("%s%s .px-open{border-radius:0; overflow:visible;}" % (sel, TILE))
@@ -425,19 +571,15 @@ def settings_css(settings=None, rider=MONO_CAPTION_RIDER):
         else:
             L.append("%s%s{border-radius:var(--border-radius-container,0px);}" % (sel, TILE))
             L.append("%s%s .px-open{border-radius:inherit; overflow:hidden;}" % (sel, TILE))
-        # capBg — the caption ground.
-        L.append("%s%s .px-cap{background:%s;}" % (sel, TILE, cap))
-        if rider and rider["theme"] == theme:
-            L.append("/* ⬛ THE RIDER, Dave's words: “%s” — a dark ground the explorer's"
-                     % rider["words"])
-            L.append("   grey/white/transparent palette cannot say, so it is an ADDITION to the")
-            L.append("   ruled vocabulary and is named as one. Mode-stable tokens, because a")
-            L.append("   ground ruled by eye must not invert when the mode flips. */")
-            L.append("%s%s .px-cap{background:var(%s,%s); color:var(%s,%s);}"
-                     % (sel, TILE, rider["ground_token"], rider["ground_hex"],
-                        rider["ink_token"], rider["ink_hex"]))
-            L.append("%s%s .px-cap .px-desc, %s%s .px-cap .px-lic{color:var(%s,%s);}"
-                     % (sel, TILE, sel, TILE, rider["ink_token"], rider["ink_hex"]))
+            L.append("%s%s .px-img{border-radius:0;}" % (sel, TILE))
+        # capBg — the caption ground — AND ITS INK, named per theme rather than inherited.
+        # ⬛ s219-D2 (1): mono's ground is `grey` (= --surface-subtle, rgb(240,240,240) in mono,
+        # which is what Dave's export measured) and the ink is the caption's standing
+        # --text-secondary. The #218 dark rider is retired; nothing here names it.
+        L.append("%s%s .px-cap{background:%s; color:var(%s,%s);}"
+                 % (sel, TILE, cap, CAP_INK[0], CAP_INK[1]))
+        L.append("%s%s .px-cap .px-desc, %s%s .px-cap .px-lic{color:var(%s,%s);}"
+                 % (sel, TILE, sel, TILE, CAP_INK[0], CAP_INK[1]))
     L.append("/* @gallery-settings:end */")
     return "\n".join(L)
 
@@ -607,7 +749,13 @@ def read_photos():
         # branches on it, and an absent key reads as None — neither True nor False — which is how
         # a "was it exempt?" question gets answered with a shrug.
         srep["exempt"] = False
-        srep["enacted_by"] = "s218-D6 (4) — instance dial edge=square on all four exports"
+        # ★ s219-D2 (2) WIDENED THE ENACTMENT: square is now the gallery-role DEFAULT in all four
+        # themes, not this wall's local override. The dial that drives the pass is unchanged (all
+        # four exports still say `square`); what changed is that it is no longer an exception.
+        # ⚠ THE ROLE POLICY IS STILL EXEMPT in the token store, and that is DECLARED rather than
+        # assumed away — see `role_default` below and the page's own finding.
+        srep["enacted_by"] = ("s219-D2 (2) — square is the gallery-role default in all four "
+                              "themes (widening s218-D6 (4), which scoped it to this wall)")
         srep["role_default"] = {"role": role_rep.get("role"), "exempt": role_rep.get("exempt"),
                                 "holes": role_rep.get("holes"),
                                 "at_cols": role_rep.get("at_cols")}
@@ -660,6 +808,10 @@ CSS = """
 .fx *{box-sizing:border-box;}
 .fx :focus-visible{outline:var(--focus-w) solid var(--focus); outline-offset:2px;}
 html,body{margin:0;}
+/* ⚠ THE BASE PAGE GROUND. The compiled #219 settings block overrides this per theme; where a
+   theme's `pageBg` dial says `transparent` it compiles to THIS SAME TOKEN rather than to the
+   keyword, because a page body that paints nothing falls through to the UA canvas (white, in
+   every theme and in dark mode). See `page_bg_decl`. */
 body{background:var(--background-default,#FFFFFF);}
 
 /* ⚠ MEASURED 2026-08-22 on reviews/LOGOS-2026-08-22-v1.html and carried here rather than
@@ -1020,9 +1172,18 @@ def photography_page(rows, meta, residuals):
            esc(GALLERY_SETTINGS[t]["keylines"]), esc(GALLERY_SETTINGS[t]["mode"]),
            esc(GALLERY_SETTINGS[t]["edge"]), esc(GALLERY_SETTINGS[t]["rounding"]),
            esc(GALLERY_SETTINGS[t]["pageBg"]), esc(GALLERY_SETTINGS[t]["bentoBg"]),
-           ("%s + %s ink (rider)" % (MONO_CAPTION_RIDER["ground_hex"],
-                                     MONO_CAPTION_RIDER["ink_hex"]))
-           if t == MONO_CAPTION_RIDER["theme"] else esc(GALLERY_SETTINGS[t]["capBg"]))
+           esc(GALLERY_SETTINGS[t]["capBg"]))
+        for t in matrix.THEMES)
+    # The RECEIPT's own pixel readback beside each dial word, so the token identification is on
+    # the page rather than in a comment: `grey` is `--surface-subtle`, and the mono row is the
+    # rgb(240, 240, 240) Dave's export measured.
+    rres = defaults219.RESOLVED["gallery"]
+    rrows = "".join(
+        "<tr><td>%s</td><td class='num'>%spx</td><td class='num'>%s</td><td class='num'>%s</td>"
+        "<td>%s</td><td>%s</td><td class='num'>%s</td></tr>"
+        % (t, esc(rres[t].get("gutterPx")), esc(rres[t].get("tileRadiusPx")),
+           esc(rres[t].get("tileBorderPx")), esc(rres[t].get("pageBackground")),
+           esc(rres[t].get("captionBackground")), esc(rres[t].get("captionSpacePx")))
         for t in matrix.THEMES)
 
     body = """
@@ -1044,41 +1205,72 @@ def photography_page(rows, meta, residuals):
   </section>
 
   <section id="settings">
-    <h2 class="t-ed-heading-4">The gallery settings are ruled PER THEME</h2>
-    <p class="t-ed-body-small lede">Dave drove the <code>s217-D5</code> matrix explorer's Gallery
-      dials in each of the four themes and exported the state — <i>&ldquo;can we have this as the
-      settings for the photography section on the library&rdquo;</i> (#218, 2026-08-24). The four
-      exports are stored verbatim at
-      <code>notes/_receipts/2026-08-24-218-photography-theme-settings.md</code>. They are
-      <b>compiled into this page's stylesheet at mint time</b> (<code>s200-D1</code>), one scope
-      per theme: there is no controller here and nothing to dial. Switch the theme in the header
-      to see them.</p>
+    <h2 class="t-ed-heading-4">The gallery settings are the SHIPPED DEFAULTS, per theme</h2>
+    <p class="t-ed-body-small lede">Dave drove the <code>s217-D5</code> matrix explorer's dials in
+      each of the four themes and exported twelve states — three types &times; four themes — at
+      #219 (2026-08-25). <code>s219-D1</code> rules that a role setting closes as a
+      <b>default plus the edit-pass option set</b> Apollo exposes in the end product
+      (<i>&ldquo;I basically want all the options available for edit mode but these are the
+      defaults&rdquo;</i>), and that those twelve exports are the shipped defaults. The four
+      GALLERY defaults are the table below; they are <b>compiled into this page's stylesheet at
+      mint time</b> (<code>s200-D1</code>) from the verbatim receipt
+      <code>notes/_receipts/2026-08-25-219-role-defaults-exports.md</code>, one scope per theme.
+      There is no controller here and nothing to dial &mdash; <b>this page is the decision, not
+      the decision surface</b>. Switch the theme in the header to see them.</p>
     <div class="tablewrap"><table class="t-cm-legal">
       <thead><tr><th>theme</th><th>gutter</th><th>keylines</th><th>mode</th><th>edge</th>
         <th>rounding</th><th>page ground</th><th>bento ground</th><th>caption ground</th></tr></thead>
       <tbody>%s</tbody>
     </table></div>
+    <p class="t-ed-body-small lede">And what Dave's own tuner <b>resolved</b> for those four
+      states &mdash; the pixels he approved, carried from the receipt rather than re-measured
+      here. This is how the dial word <code>grey</code> is identified as
+      <code>--surface-subtle</code>: it reads <code>rgb(240, 240, 240)</code> in mono and
+      <code>rgb(223, 222, 220)</code> in supercharge, which is that theme's own warm grey.</p>
+    <div class="tablewrap"><table class="t-cm-legal">
+      <thead><tr><th>theme</th><th>gutter</th><th>tile radius</th><th>tile border</th>
+        <th>page background</th><th>caption background</th><th>caption space</th></tr></thead>
+      <tbody>%s</tbody>
+    </table></div>
     <div class="finding">
-      <b>The mono caption is a RIDER, not a dial value.</b> Dave's words: &ldquo;%s&rdquo; The
-      explorer's background palette is lightest-grey / white / transparent and none of the three
-      is a dark ground, so this is an <b>addition</b> to the ruled vocabulary rather than a
-      selection from it. It is drawn from <code>%s</code> (%s) with <code>%s</code> (%s) ink —
-      both mode-stable in mono, because a ground ruled by eye must not invert when the mode
-      flips. <b>His eye rules the shade on the render.</b>
-      <p>&ldquo;Page ground&rdquo; and &ldquo;bento ground&rdquo; read <code>white</code> because
-      that is the dial's word for <code>--surface-raised</code>, which is what the explorer paints
-      — it resolves to white in light mode and to the theme's raised dark surface in dark mode.
-      The dial name is not a promise of the hex.</p>
+      <b>The mono caption ground is LIGHT GREY now &mdash; <code>s219-D2 (1)</code> supersedes
+      <code>s218-D6 (1)</code>.</b> At #218 this wall's mono captions were ratified on the darkest
+      grey (<code>%s</code>, %s) with white ink, from Dave's own rider: &ldquo;%s&rdquo; At #219 his
+      gallery export says <code>capBg: grey</code>, and asked which governs he said:
+      <i>&ldquo;%s&rdquo;</i> So the dark ground <b>retires on the gallery role, this page
+      included</b>, and the caption takes <code>--surface-subtle</code> with the caption's standing
+      <code>--text-secondary</code> ink. <code>s218-D6 (1)</code> stands as frozen history of what
+      was true at #218; it is superseded, not deleted.
+      <p>A dial word is not a promise of a hex: <code>grey</code> is
+      <code>--surface-subtle</code>, <code>white</code> is <code>--surface-raised</code>, and each
+      resolves to that <i>theme's</i> value in that <i>mode</i>.</p>
     </div>
     <div class="finding">
-      <b>&ldquo;Edge: square&rdquo; is ENACTED on this wall &mdash; <code>s218-D6</code>.</b>
-      All four of Dave's exports carry <code>edge: square</code>, and at #218 he reopened it on
-      this page: <i>&ldquo;Reopen &mdash; square it&rdquo;</i>. So the ratified squaring pass runs
-      here and the last-row photographs re-span to close the holes. <b>The scope is this wall
-      only.</b> <code>role=gallery</code> is still <b>exempt</b> under <code>s217-D3</code>
-      everywhere else — the role policy is unchanged, canon is unchanged, and the roles pages are
-      unchanged; what overrides it here is this page's own instance dial. Measured on the wall as
-      it ships: %s
+      <b>&ldquo;Edge: square&rdquo; is the GALLERY-ROLE DEFAULT now &mdash;
+      <code>s219-D2 (2)</code>.</b> All four exports carry <code>edge: square</code> and Dave
+      ruled it the default in all four themes, widening <code>s218-D6 (4)</code>, which had scoped
+      squaring to this wall alone. So the ratified squaring pass runs here and the last-row
+      photographs re-span to close the holes. <b>Two things did NOT change and are named rather
+      than assumed away:</b> edge remains an <b>edit-pass dial</b> (<code>s219-D1</code>), and the
+      token store still records <code>role=gallery</code> as <b>squaring: false</b> &mdash; the
+      role policy is asked on every run and its answer is carried on the report, so the default
+      and the role's own rule can be told apart. Whether the store's role policy follows is a
+      canon change and is <b>not ruled here</b>. Measured on the wall as it ships: %s
+      <p>⬛ <b>Expressly unruled:</b> the orphan / flattened-portrait refinement (the W-99zi third
+      bend). The squaring pass buys its rectangle by re-spanning tail tiles, and one of them lays a
+      portrait on its side. That tile is rendered before and after at
+      <code>reviews/SQUARING-PORTRAIT-2026-08-25-v1.html</code> as a PROPOSED evidence page, for
+      Dave's eye. Nothing about it is decided by this build.</p>
+    </div>
+    <div class="finding">
+      <b>Three of the four page grounds say <code>transparent</code>, and on a whole-page wall
+      that needs a reading.</b> In the explorer, transparent means the stage's own ground shows
+      through. Here the wall <i>is</i> the page: a body that paints nothing falls through to the
+      browser canvas, which is white in every theme and in dark mode too. So a transparent page
+      ground compiles to the <b>document ground</b> (<code>--background-default</code>) &mdash;
+      the surface beneath a page body, and exactly what this page painted before any settings
+      existed. <b>PROPOSED</b>: the other reading is that a transparent gallery should sit on
+      <code>--surface-raised</code>. That is Dave's eye, not this build's.
     </div>
   </section>
 
@@ -1119,9 +1311,9 @@ def photography_page(rows, meta, residuals):
 """ % (len(rows), esc(total), esc(spec.get("max_edge_px", "UNKNOWN")),
        esc(spec.get("target_kb", "UNKNOWN")), esc(spec.get("colour", "UNKNOWN")),
        esc(spec.get("format", "UNKNOWN")), esc(SPAN_NOTE), esc(emphasis_note(rows)),
-       srows, esc(MONO_CAPTION_RIDER["words"]),
-       esc(MONO_CAPTION_RIDER["ground_token"]), esc(MONO_CAPTION_RIDER["ground_hex"]),
-       esc(MONO_CAPTION_RIDER["ink_token"]), esc(MONO_CAPTION_RIDER["ink_hex"]),
+       srows, rrows,
+       esc(RETIRED_MONO_RIDER["ground_token"]), esc(RETIRED_MONO_RIDER["ground_hex"]),
+       esc(RETIRED_MONO_RIDER["words"]), esc(RETIRED_MONO_RIDER["dave"]),
        esc(squaring_note(sq)),
        len(rows), "\n".join("      " + t for t in tiles),
        len(rows), len(rows),
@@ -1341,23 +1533,50 @@ def selftest():
                          _sb)),
           bool(re.search(r"--bento-columns|--bento-row-unit", _sb)),
           _sb_radii),
-         (True, False, False, ["0", "var(--border-radius-container,0px)"]))
+         # ⬛ `inherit` JOINED THE SET AT #219, and it is the capsule's own radius: s219-D2 (3)
+         # makes console-gallery rounding CAPSULE, which puts canon's container radius on the TILE
+         # and lets the opener inherit it. Three values, not two, and the third is the ruling.
+         (True, False, False, ["0", "inherit", "var(--border-radius-container,0px)"]))
     bite("23 · every ruled dial word is a member of gen_bento_matrix_217's OWN option sets "
-         "(P2/P3 legality included)", validate_settings(), [])
-    bite("24 · every theme carries its own compiled scope, and the ruled gutters are "
-         "1/24/24/24 px",
+         "(P2/P3 legality included), for ALL THREE TYPES — s219-D1 (3) ships twelve defaults",
+         validate_all(), [])
+    bite("24 · every theme carries its own compiled scope, and the ruled #219 gutters are "
+         "1/40/24/40 px",
          ([t for t in matrix.THEMES if '[data-apollo-theme="%s"] ' % t not in settings_block],
           [spacing_px(GALLERY_SETTINGS[t]["spacing"])
            for t in ("supercharge", "console", "legacy", "mono")]),
-         ([], ["1px", "24px", "24px", "24px"]))
-    # ⛔ THE RIDER IS TOKEN-BORNE AND MONO-ONLY. A raw hex would be invisible to a theme change
-    # and a rider that reached a second theme would be a ruling nobody made.
-    bite("25 · the mono caption rider is minted from TOKENS with literal fallbacks, in mono ONLY",
-         (("var(--surface-digital-black,#1A1A1A)" in settings_block),
-          ("var(--text-reverse,#FFFFFF)" in settings_block),
-          sorted({m for m in re.findall(r'\[data-apollo-theme="([a-z]+)"\][^{}]*\.px-cap\{'
-                                        r'background:var\(--surface-digital-black', _sb)})),
-         (True, True, ["mono"]))
+         ([], ["1px", "40px", "24px", "40px"]))
+    # ⬛ s219-D2 (4) — KEYLINES SPLIT BY THEME ON THIS ROLE, so the compiled block must carry BOTH
+    # constructions and exactly one theme may carry the edge. A block that emitted one construction
+    # for all four would pass every "keylines off" assertion ever written here.
+    _kl_on = sorted({m for m in re.findall(
+        r'\[data-apollo-theme="([a-z]+)"\][^{}]*\.px-open\{border:1px solid', _sb)})
+    _kl_off = sorted({m for m in re.findall(
+        r'\[data-apollo-theme="([a-z]+)"\][^{}]*\.px-open\{border:0;', _sb)})
+    bite("24b · keylines are ON in legacy only and OFF in the other three (s219-D2 (4))",
+         (_kl_on, _kl_off), (["legacy"], ["console", "mono", "supercharge"]))
+    # ⬛ s219-D2 (1) — THE SUPERSESSION, AND THE BITE FLIPPED WITH IT. It used to assert the #218
+    # RIDER was minted (dark ground, reverse ink, mono only); left alone it would go red on the
+    # enactment and green on a regression, which is worse than no bite at all. Four clauses:
+    #   • the caption ground is the TOKEN the dial names (`grey` = --surface-subtle), in mono;
+    #   • the retired rider's ground and ink tokens appear NOWHERE in the compiled block;
+    #   • the ink is the caption's standing token, with its literal fallback;
+    #   • the two themes Dave grounded in grey are exactly mono and console.
+    _grey = sorted({m for m in re.findall(r'\[data-apollo-theme="([a-z]+)"\][^{}]*\.px-cap\{'
+                                          r'background:var\(--surface-subtle', _sb)})
+    bite("25 · the mono caption ground is LIGHT GREY by token (s219-D2 (1) supersedes the #218 "
+         "dark rider, which appears nowhere)",
+         (("var(--surface-subtle,#F0F0F0)" in settings_block),
+          ("--surface-digital-black" in settings_block or "--text-reverse" in settings_block),
+          ("var(--text-secondary,#545454)" in settings_block),
+          _grey),
+         (True, False, True, ["console", "mono"]))
+    # ⬛ AND THE PIXEL DAVE ACTUALLY APPROVED. The dial word is checked against his own receipt's
+    # resolved readback, so the token identification cannot quietly drift off the colour he saw.
+    bite("25b · the mono caption token is the one his export RESOLVED — rgb(240, 240, 240)",
+         (defaults219.RESOLVED["gallery"]["mono"]["captionBackground"],
+          BG_FALLBACK["--surface-subtle"]),
+         ("rgb(240, 240, 240)", "#F0F0F0"))
     _imgs = re.findall(r"<img[^>]*>", photo)
     bite("26 · EVERY image on the page is lazy and async-decoded (Dave, #218 — 'with a lazy "
          "loader'), the wall and the lightboxes alike",
@@ -1389,19 +1608,21 @@ def selftest():
     #   • it says WHICH ruling enacted it, so the override is never anonymous;
     #   • the page prints the enactment rather than the old refusal sentence.
     _sq = (resid["photography"] or {}).get("squaring", {})
-    bite("29 · edge=square is ENACTED on this wall (s218-D6) and the page says so",
+    bite("29 · edge=square is the GALLERY-ROLE DEFAULT (s219-D2 (2)) and this wall enacts it",
          (sorted({GALLERY_SETTINGS[t]["edge"] for t in matrix.THEMES}),
           bool(_sq.get("squared")), _sq.get("exempt"),
-          "s218-D6" in (_sq.get("enacted_by") or ""),
-          "is ENACTED on this wall" in photo,
+          "s219-D2" in (_sq.get("enacted_by") or ""),
+          "is the GALLERY-ROLE DEFAULT now" in photo,
           "RECORDED AND NOT ENACTED" in photo),
          (["square"], True, False, True, True, False))
-    # ⛔ AND THE SCOPE OF IT. s218-D6 squares THIS wall and leaves role=gallery's s217-D3 exemption
-    # standing everywhere else. The role policy is therefore asked SEPARATELY and its answer —
-    # still "exempt" — is carried on the report, so a later reader can see that the page overrode
-    # a default rather than that the default changed. If this ever reads False, the exemption was
-    # widened somewhere upstream and s218-D6's scope line has been broken.
-    bite("29b · the ROLE's own answer is still EXEMPT — the override is this page's, not canon's",
+    # ⛔ AND WHAT THE RULING DID NOT MOVE. s219-D2 (2) makes square the gallery-role DEFAULT; the
+    # token store still records `layout/bento/$roles/gallery/squaring: false`, because flipping it
+    # is a canon regen and this lane does not run the serial. The role policy is therefore still
+    # asked, and its answer — still "exempt" — is carried on the report, so a reader can tell the
+    # DEFAULT from the ROLE RULE. ⬛ Whether the store follows is a ruling-shaped question, filed.
+    # If this ever reads False, the store moved and this bite's prose is the thing to re-point.
+    bite("29b · the ROLE POLICY in the token store is UNCHANGED (still exempt) and the report "
+         "carries its answer beside the enactment",
          ((_sq.get("role_default") or {}).get("exempt"),
           (_sq.get("role_default") or {}).get("role")),
          (True, PHOTO_ROLE))
@@ -1580,11 +1801,56 @@ def write_settings_mutant():
     return dest
 
 
+def write_default_mutant(arm=("gallery", "mono", "capBg", "white")):
+    """⬛ #219 — THE MINTED-DEFAULT ARM, and it is a SHARPER question than `--break-settings`.
+
+    That arm removes the whole block, which proves the block is load-bearing. This one ships the
+    block INTACT with ONE MINTED DEFAULT WRONG — mono's caption ground moved off `grey`
+    (`--surface-subtle`, the s219-D2 (1) supersession) onto `white`. Every other declaration is
+    byte-identical, the page still validates, and the only thing that can catch it is a probe that
+    asks whether the CAPTION GROUND IS THE TOKEN THE RULED DIAL NAMES. A settings assertion that
+    survives this is measuring "a settings block exists", not "the ruled default reached the
+    paint" ([[mutation-tests-the-clause-not-the-feature]]).
+    ⛔ NON-REPO by construction: the destination is `BM_MUTANT_DIR`, never showroom/. ⚠ /var/tmp is
+    SHARED ACROSS SESSIONS — pass a session-suffixed dir, or a stale mutant proves yesterday's
+    clause. ⛔ And its asset addresses are made absolute for the same reason `--break-settings`
+    does it: outside showroom/_foundations/ the relative canon.css href resolves nowhere, every
+    token dangles, and the arm would go red for the wrong reason."""
+    global BREAK_DEFAULT
+    mdir = os.environ.get("BM_MUTANT_DIR", "/var/tmp")
+    os.makedirs(mdir, exist_ok=True)
+    BREAK_DEFAULT = arm
+    try:
+        prows, pmeta, presid = read_photos()
+        html = photography_page(prows, pmeta, presid)
+    finally:
+        BREAK_DEFAULT = None
+    html = (html.replace('href="../../knowledge/', 'href="file://%s/knowledge/' % ROOT)
+                .replace('src="../../knowledge/', 'src="file://%s/knowledge/' % ROOT))
+    dest = os.path.join(mdir, "photography-DEFAULT-BROKEN.html")
+    open(dest, "w", encoding="utf-8").write(html)
+    _, block = split_settings(html)
+    ruled = bg_decl(GALLERY_SETTINGS[arm[1]][arm[2]])
+    wrong = bg_decl(arm[3])
+    sel = '[data-apollo-theme="%s"] %s .px-cap{background:%s;' % (arm[1], TILE, wrong)
+    if not block or sel not in block:
+        raise SystemExit("gen_foundations_217 --break-default: the arm did NOT arm — %r is not in "
+                         "the compiled block. A mutation that changes nothing is a green light "
+                         "over an untested clause." % sel)
+    print("gen_foundations_217 --break-default: wrote %s (%d bytes) — %s/%s %s is %r (%s) instead "
+          "of the ruled %r (%s)"
+          % (dest, os.path.getsize(dest), arm[0], arm[1], arm[2], arm[3], wrong,
+             GALLERY_SETTINGS[arm[1]][arm[2]], ruled))
+    return dest
+
+
 def main():
     if "--selftest" in sys.argv:
         return selftest()
     if "--break-settings" in sys.argv:
         return write_settings_mutant()
+    if "--break-default" in sys.argv:
+        return write_default_mutant()
     pages, rows, resid = build()
     check = "--check" in sys.argv
     stale = []

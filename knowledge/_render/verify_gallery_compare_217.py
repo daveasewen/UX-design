@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-verify_gallery_compare_217.py — drives the GALLERY-COMPARE page (its generator's own OUT — #219: v2) and measures
+verify_gallery_compare_217.py — drives the GALLERY-COMPARE page (its generator's own OUT — #219 seam 5: v3) and measures
 the things candidate B can be WRONG about, in four themes x light/dark. Live document, computed
 styles and measured geometry, never a read of the source.
 

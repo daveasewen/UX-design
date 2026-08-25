@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squaring &amp; the flattened portrait — PROPOSED (#219)</title>
+<!-- EVIDENCE PAGE for s219-D2 (2)'s expressly unruled orphan/flattening refinement.
+     Copied from showroom/_foundations/photography.html; rules nothing. -->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+
+/* ===========================================================================
+   FOUNDATIONS PAGE — page-local styles, declared here, scoped to `.fx`.
+   ⛔ NO BENTO STRUCTURE IS DECLARED HERE. The bento was promoted to canon at
+   s217-D2 (#217); the container, grid, span vocabulary and responsive bands
+   come from canon.css's AUTO-BENTO block. What remains below is TILE CONTENT
+   and page chrome, plus two instance dials per wall. The popover +
+   invoker-command lightbox is still COPIED from the approved reference
+   knowledge/_fitness-test/bento-gallery-showcase-v2.html, not re-drawn.
+   ⛔ EVERY var() CARRIES A LITERAL FALLBACK. A custom property that fails to
+   resolve renders silent black and no gate catches it — the fallbacks are the
+   fence, and --selftest bite 7 is what keeps them there.
+   =========================================================================== */
+.fx{
+  --page:      var(--background-default,#FFFFFF);
+  --surface:   var(--surface-raised,#FFFFFF);
+  --surface-2: var(--surface-subtle,#F3F3F3);
+  --line:      var(--border-subtle,#D7D8D6);
+  --line-2:    var(--border-strong,#767676);
+  --ink:       var(--text-default,#1A1A1A);
+  --ink-2:     var(--text-secondary,#545454);
+  --focus:     var(--focus-ring,#1A1A1A);
+  --focus-w:   var(--focus-ring-width,2px);
+  --radius:    var(--border-radius-surface,0px);
+  --radius-ctl:var(--border-radius-control,0px);
+  --tap:       var(--target-min,44px);
+  --ease:160ms cubic-bezier(.4,0,.2,1);
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+  background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;
+}
+.fx *{box-sizing:border-box;}
+.fx :focus-visible{outline:var(--focus-w) solid var(--focus); outline-offset:2px;}
+html,body{margin:0;}
+/* ⚠ THE BASE PAGE GROUND. The compiled #219 settings block overrides this per theme; where a
+   theme's `pageBg` dial says `transparent` it compiles to THIS SAME TOKEN rather than to the
+   keyword, because a page body that paints nothing falls through to the UA canvas (white, in
+   every theme and in dark mode). See `page_bg_decl`. */
+body{background:var(--background-default,#FFFFFF);}
+
+/* ⚠ MEASURED 2026-08-22 on reviews/LOGOS-2026-08-22-v1.html and carried here rather than
+   re-derived: `body` both CARRIES data-theme and consumed var(--text-default), and in
+   supercharge dark the two disagreed (body resolved #FFFFFF, a child resolved #F7F6F4).
+   Substituting on a CHILD of the themed element is deterministic in every state probed,
+   so the page regions restate the ink. */
+.fx, header.app{color:var(--text-default,#1A1A1A);}
+
+/* ---- header: theme + mode, hidden under the library's #chrome=0 embed contract ---- */
+header.app{display:flex; flex-wrap:wrap; gap:var(--sp-4); align-items:center;
+  padding:var(--sp-3) var(--sp-6); border-bottom:1px solid var(--line);
+  background:var(--page); position:sticky; top:0; z-index:10;}
+body[data-chrome="0"] header.app{display:none;}
+header.app h1{margin:0; white-space:nowrap;}
+header.app .spacer{flex:1 1 auto;}
+.ctl{display:flex; align-items:center; gap:var(--sp-2); color:var(--ink-2);}
+.seg{display:inline-flex; border:1px solid var(--ink); color:var(--ink);
+  border-radius:var(--radius-ctl); overflow:hidden;}
+.seg button{font-family:inherit; font-size:12px; font-weight:500; letter-spacing:0.06em;
+  text-transform:uppercase; padding:7px 12px; border:0; background:transparent; color:inherit;
+  cursor:pointer; border-right:1px solid var(--line);}
+.seg button:last-child{border-right:0;}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--page);}
+
+main{padding:var(--sp-6); max-width:1400px;}
+section{margin:0 0 var(--sp-7); scroll-margin-top:80px;}
+h2{margin:0 0 var(--sp-1);}
+p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
+.sublabel{color:var(--ink-2); text-transform:uppercase; letter-spacing:0.14em;
+  margin:0 0 var(--sp-3); display:flex; align-items:center; gap:var(--sp-2);}
+.sublabel::before{content:''; width:20px; height:1px; background:var(--line);}
+.fx a{color:inherit;}
+.fx code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px;
+  background:var(--surface-2); padding:0 .3em; border-radius:var(--radius-ctl);}
+
+/* ---- THE BENTO GRID — ⛔ NOT DECLARED HERE ANY MORE (s217-D2, #217) ---------------------
+   The bento was PROMOTED TO CANON at #217. The container, the grid, the span vocabulary
+   (`data-c` / `data-r`), the responsive bands and the container-radius model all come from
+   canon.css's AUTO-BENTO block, generated by canon/gen_canon_bento.py out of
+   tokens/layout.json (`layout/bento`). ~24 lines of page-local grid left this file and were
+   not replaced: the two lines below are the whole remainder, and they are INSTANCE DIALS,
+   not structure.
+   ⚠ The dials are declared as RULES, never a `style=""` attribute, and the reason is
+   measured: the live probe (knowledge/_render/verify_foundations_217.py) resolves every
+   property the stylesheet reads against the document, and an inline-only name is invisible
+   to it — it read EMPTY in all eight states. An inline custom property also beats container
+   queries outright, which would make the canon bands silently inert on this page. */
+/* ⚠ `.c-bento.` IN THE SELECTOR IS DELIBERATE (s217-D3). Canon's role rules are (0,2,0); a
+   bare `.fx-wall-photo` is (0,1,0) and a role rule would beat it — silently, in one theme, at
+   one width. Matching the role's specificity and loading after canon.css settles it on source
+   order. The logo wall keeps its bare class because it carries no role. */
+.c-bento.fx-wall-photo{--bento-columns:4; --bento-row-unit:180px;}
+.fx-wall-logo {--bento-columns:4; --bento-row-unit:210px;}
+/* the tiles keep their own content layout — a column, so caption and picture stack */
+.fx .c-bento__tile{display:flex; flex-direction:column;}
+
+/* ---- a photograph tile: the whole tile is the lightbox opener ---- */
+/* the picture takes the slack row, the caption takes its own height — `1fr auto` rather than a
+   flex column, so the image can never push the tile past its grid row */
+.px-open{display:grid; grid-template-rows:1fr auto; width:100%; height:100%; padding:0;
+  border:1px solid var(--line); background:var(--surface);
+  /* s217-D3: under role=gallery the TILE carries the ruled radius, so the opener follows it
+     rather than declaring a second, different one. */
+  border-radius:inherit;
+  overflow:hidden; cursor:pointer; color:inherit; font:inherit; text-align:left;
+  transition:transform var(--ease), border-color var(--ease);}
+.px-open:hover{transform:scale(1.008); border-color:var(--line-2);}
+.px-open:active{transform:scale(.996);}
+.px-img{display:block; width:100%; height:100%; min-height:0; object-fit:cover;
+  background:var(--surface-2);}
+/* ⚠ THE CAPTION'S BLOCK HEIGHT IS CANON'S NOW (s217-D3, `.c-bento__caption` under
+   role=gallery): 86px, and the line allowance derived from it. What is left here is the inline
+   padding, the colour and the clamp — the ruled numbers are NOT restated, or this page and the
+   store would be two sources for one decision. The `,2` fallback is the pre-ruling value, so a
+   caption outside a gallery wall still reads sensibly. */
+.px-cap{padding-inline:var(--sp-3); color:var(--ink-2); display:flex;
+  flex-direction:column; justify-content:center; gap:2px;}
+.px-cap .px-desc{display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,2);
+  -webkit-box-orient:vertical; overflow:hidden;}
+.px-cap .px-lic{color:var(--ink-2);}
+
+/* ---- LIGHTBOX — popover + invoker commands. ZERO JavaScript in this component. ---- */
+.px-lb{border:1px solid var(--line-2); border-radius:var(--radius); background:var(--page);
+  color:var(--ink); padding:var(--sp-4); margin:auto; inset:0;
+  max-width:min(92vw,1100px); max-height:92vh; overflow:auto;}
+.px-lb::backdrop{background:rgba(0,0,0,.62);}
+.px-lb-head{display:flex; justify-content:space-between; align-items:flex-start;
+  gap:var(--sp-4); margin-bottom:var(--sp-3);}
+.px-lb-x{font:inherit; font-family:inherit; cursor:pointer; min-width:var(--tap);
+  min-height:var(--tap); border:1px solid var(--line-2); border-radius:var(--radius-ctl);
+  background:transparent; color:var(--ink); padding:0 var(--sp-3);}
+.px-lb-x:hover{background:var(--surface-2);}
+.px-lb img{display:block; width:100%; height:auto; max-height:66vh; object-fit:contain;
+  background:var(--surface-2);}
+.px-lb dl{display:grid; grid-template-columns:max-content 1fr; gap:var(--sp-2) var(--sp-4);
+  margin:var(--sp-4) 0 0;}
+.px-lb dt{color:var(--ink-2); text-transform:uppercase; letter-spacing:0.08em;}
+.px-lb dd{margin:0;}
+
+/* ---- a logo tile: the ground is FIXED to the artwork, never themed ---- */
+.lg-tile{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+  display:grid; grid-template-rows:1fr auto;}
+/* ⛔ TILE GROUNDS ARE LITERAL, NOT TOKENS. Measured 2026-08-22: every fill in all twelve SVGs
+   is hardcoded, so no logo can follow a theme. A dark mark must never float on a light ground
+   to "show" it, and vice versa — so the tile is pinned to the ground its artwork was drawn for,
+   in every theme and in both modes. The page chrome follows the theme; the tiles do not. */
+.lg-art{display:flex; align-items:center; justify-content:center; min-height:0;
+  padding:var(--sp-5);}
+.lg-art[data-ground="light"]{background:#FFFFFF;}
+.lg-art[data-ground="dark"]{background:#1A1A1A;}
+.lg-art img{display:block; max-width:100%; max-height:56px; width:auto; height:auto;}
+.lg-cap{padding:var(--sp-3); color:var(--ink-2); display:flex; flex-direction:column; gap:2px;
+  border-top:1px solid var(--line); background:var(--surface);}
+.lg-cap .lg-name{color:var(--ink);}
+.lg-file{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; word-break:break-all;}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0;}
+.chip{display:inline-flex; align-items:center; gap:5px; color:var(--ink-2);
+  border:1px solid var(--line); border-radius:var(--radius-ctl); padding:1px 6px;}
+.chip i{width:10px; height:10px; display:inline-block; border:1px solid var(--line);}
+.chip b{font-weight:500; color:var(--ink);}
+
+/* ---- findings + tables ---- */
+.finding{border:1px solid var(--line); border-left-width:4px; padding:var(--sp-4) var(--sp-5);
+  margin:var(--sp-4) 0 0; border-radius:var(--radius);}
+.finding p{margin:var(--sp-2) 0 0; color:var(--ink-2); max-width:82ch;}
+.finding b{color:var(--ink); font-weight:500;}
+.tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius);}
+table{border-collapse:collapse; width:100%;}
+th,td{text-align:left; padding:8px 12px; border-bottom:1px solid var(--line); white-space:nowrap;}
+thead th{background:var(--surface-2); font-weight:500; text-transform:uppercase;
+  letter-spacing:0.08em;}
+tbody tr:last-child td{border-bottom:0;}
+td.num{font-variant-numeric:tabular-nums;}
+td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+.notes{max-width:80ch;}
+.notes p, .notes ul{color:var(--ink-2);}
+.notes ul{padding-left:1.2em;}
+.notes li{margin:0 0 var(--sp-2);}
+.notes b{color:var(--ink); font-weight:500;}
+
+/* ---- responsive ------------------------------------------------------------------------
+   ⛔ THE BENTO BANDS ARE GONE FROM THIS FILE. They are canon now, and they are CONTAINER
+   queries against the bento's own wall (1100 / 820 / 520, s217-D2) rather than the three
+   viewport media queries that used to sit here. That is a behaviour change as well as a
+   deletion: inside a narrow library pane the wall is what collapses, which is what the pane
+   embed always wanted. What remains is page chrome, which the VIEWPORT does decide. */
+@media (max-width:820px){ main{padding:var(--sp-5) var(--sp-4);} }
+@media (prefers-reduced-motion: reduce){
+  .fx *,.fx *::before,.fx *::after{transition-duration:.01ms !important;
+    animation-duration:.01ms !important;}
+}
+/* @gallery-settings:start */
+/* ==========================================================================
+   THE GALLERY ROLE'S SHIPPED DEFAULTS — Dave's own #219 tuner exports, four
+   of the twelve ruled by s219-D1 (3), compiled at MINT TIME (s200-D1) from
+   notes/_receipts/2026-08-25-219-role-defaults-exports.md via role_defaults_219.
+   ⛔ s219-D2 supersedes three #218 settings and all three are BELOW, not in a
+   comment: mono captions on light grey (the #218 dark rider is RETIRED), the
+   console rounding capsule, and keylines ON in legacy only. Edge stays square
+   in all four. Every dial word was checked against gen_bento_matrix_217's own
+   ruled option sets; every var() carries a literal fallback.
+   ⚠ Every dial here remains an EDIT-PASS OPTION (s219-D1 (1)/(2)) — what is
+   compiled is the DEFAULT the page ships in, not the only reachable state.
+   ========================================================================== */
+
+/* ---- mono · spacing 40 (40px) · keylines off · bento · square edge · rounding corners · page transparent · bento transparent · caption grey ---- */
+[data-apollo-theme="mono"] body.fx{background:var(--background-default,#FFFFFF);}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo{--bento-gutter:40px; background:transparent;}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:0; box-shadow:none; background:transparent;}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:transparent;}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:0;}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:0; overflow:visible;}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:var(--surface-subtle,#F0F0F0); color:var(--text-secondary,#545454);}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
+
+/* ---- legacy · spacing 24 (24px) · keylines on · bento · square edge · rounding corners · page white · bento transparent · caption transparent ---- */
+[data-apollo-theme="legacy"] body.fx{background:var(--surface-raised,#FFFFFF);}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo{--bento-gutter:24px; background:transparent;}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:1px solid var(--border-subtle,#D7D8D6); box-shadow:none; background:transparent;}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:var(--border-strong,#767676);}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:0;}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:0; overflow:visible;}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:transparent; color:var(--text-secondary,#545454);}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
+
+/* ---- console · spacing 40 (40px) · keylines off · bento · square edge · rounding capsule · page transparent · bento transparent · caption grey ---- */
+[data-apollo-theme="console"] body.fx{background:var(--background-default,#FFFFFF);}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo{--bento-gutter:40px; background:transparent;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:0; box-shadow:none; background:transparent;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:transparent;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:var(--border-radius-container,0px);}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:inherit; overflow:hidden;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:0;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:var(--surface-subtle,#F0F0F0); color:var(--text-secondary,#545454);}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
+
+/* ---- supercharge · spacing 1 (1px) · keylines off · bento · square edge · rounding corners · page transparent · bento transparent · caption transparent ---- */
+[data-apollo-theme="supercharge"] body.fx{background:var(--background-default,#FFFFFF);}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo{--bento-gutter:1px; background:transparent;}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:0; box-shadow:none; background:transparent;}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:transparent;}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:0;}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:0; overflow:visible;}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:transparent; color:var(--text-secondary,#545454);}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
+/* @gallery-settings:end */
+
+
+/* ---- evidence-page chrome only. No bento structure, no colour authored. ---- */
+.ev-pair{display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-6); align-items:start;}
+@media (max-width:900px){ .ev-pair{grid-template-columns:1fr;} }
+.ev-half > p{color:var(--ink-2); max-width:52ch;}
+.ev-label{text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-2);
+  margin:var(--sp-5) 0 var(--sp-2);}
+.ev-solo{--bento-columns:3;}
+.c-bento__tile.ev-mark{outline:2px dashed var(--line-2); outline-offset:2px;}
+
+</style>
+</head>
+<body data-theme="light" data-chrome="1" class="fx">
+<header class="app">
+  <h1 class="t-ed-heading-4">Squaring &mdash; the flattened portrait</h1>
+  <span class="t-ed-caption">PROPOSED &middot; #219 &middot; s219-D2 (2) leaves this expressly unruled</span>
+  <span class="spacer"></span>
+  <div class="ctl"><span class="t-ed-caption">Theme</span>
+    <div class="seg" id="themes" role="group" aria-label="Theme">
+      <button type="button" data-theme-attr="mono" aria-pressed="true">Mono</button>
+      <button type="button" data-theme-attr="legacy" aria-pressed="false">Legacy</button>
+      <button type="button" data-theme-attr="console" aria-pressed="false">Console</button>
+      <button type="button" data-theme-attr="supercharge" aria-pressed="false">Supercharge</button>
+    </div>
+  </div>
+  <div class="ctl"><span class="t-ed-caption">Mode</span>
+    <div class="seg" id="modes" role="group" aria-label="Light or dark">
+      <button type="button" data-mode="light" aria-pressed="true">Light</button>
+      <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+<main>
+
+  <section id="intro">
+    <h2 class="t-ed-heading-3">The flattened portrait</h2>
+    <p class="t-ed-body lede"><b>PROPOSED &mdash; nothing here is ruled.</b> <code>s219-D2 (2)</code>
+      makes <code>edge: square</code> the gallery-role default in all four themes, and says in its
+      own words that <i>the orphan / flattening refinement (the W-99zi third bend, incl. the
+      stocksy-6629948 case) is expressly NOT ruled here</i>. This page exists so that the case can
+      be <b>seen</b> rather than described. It decides nothing and proposes no fix.</p>
+    <p class="t-ed-body-small lede">The squaring pass buys an exact rectangle by re-spanning the
+      LAST few tiles. On the 251-photograph wall at its 4/3/2/1 ladder it re-spanned <b>4 tiles
+      in the last 5</b> (tile 247 1&times;2&rarr;3&times;1; tile 248 1&times;1&rarr;2&times;1; tile 249 1&times;1&rarr;2&times;1; tile 251 1&times;1&rarr;3&times;1), for a crop cost of <b>10</b> on the pass's own ordinal scale, where
+      0 is &ldquo;nothing moved&rdquo;. The wall is then an exact rectangle at every band
+      (4 cols = 96 rows / 3 cols = 128 rows / 2 cols = 191 rows / 1 cols = 251 rows). <b>One of those re-spans lays a portrait on its side</b>, and that is the tile below.</p>
+  </section>
+
+  <section id="tile">
+    <div class="sublabel t-ed-caption">The tile &mdash; <code>stocksy-6629948-w1600.jpg</code>, 1067&times;1600
+      (portrait, 1:1.50)</div>
+    <div class="ev-pair">
+      <div class="ev-half">
+        <div class="ev-label t-cm-ctl-14">BEFORE &mdash; the aspect mapping's own answer,
+          <b>1&times;2</b></div>
+        <div class="c-bento fx-wall-photo ev-solo" data-bento-role="gallery">
+          <div class="c-bento__grid"><figure class="c-bento__tile ev-mark" data-c="1" data-r="2"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island,…" loading="lazy" decoding="async" width="1067" height="1600"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island,…</span><span class="t-cm-legal px-lic">Gemma Can Fly / Stocksy United &middot; 1067&times;1600</span></figcaption></div></figure></div></div>
+        <p class="t-ed-body-small">Canon's span derivation (<code>s217-D2</code>) reads the
+          picture's own aspect: taller than 1:1.15 spans <b>two rows</b>. The tile is portrait, the
+          photograph is portrait, and <code>object-fit: cover</code> crops almost nothing.</p>
+      </div>
+      <div class="ev-half">
+        <div class="ev-label t-cm-ctl-14">AFTER &mdash; what the squaring pass shipped,
+          <b>3&times;1</b></div>
+        <div class="c-bento fx-wall-photo ev-solo" data-bento-role="gallery">
+          <div class="c-bento__grid"><figure class="c-bento__tile ev-mark" data-c="3" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island,…" loading="lazy" decoding="async" width="1067" height="1600"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island,…</span><span class="t-cm-legal px-lic">Gemma Can Fly / Stocksy United &middot; 1067&times;1600</span></figcaption></div></figure></div></div>
+        <p class="t-ed-body-small">The same photograph in a three-wide, one-tall cell. The cover
+          crop now keeps a horizontal band out of the middle of a portrait and discards the top and
+          bottom. <b>Nothing is wrong with the maths</b> &mdash; this is the cheapest assignment
+          that closes the last hole at the ruled tail cap. It is a question about whether the wall
+          should be allowed to buy its rectangle with this particular crop.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tail">
+    <div class="sublabel t-ed-caption">The tail in context &mdash; the last 12 tiles, before and
+      after</div>
+    <p class="t-ed-body-small lede">The re-spanned tiles carry a marker. Everything above the tail
+      is untouched by the pass: the aspect mapping and the position rhythm are different mechanisms
+      and the squaring pass only ever re-spans the end of the wall.</p>
+    <div class="ev-label t-cm-ctl-14">BEFORE &mdash; derived spans, one hole at 4 columns</div>
+    <div class="c-bento fx-wall-photo" data-bento-role="gallery"><div class="c-bento__grid"><figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-3657449-w1600.jpg" alt="View through airplane window of plane wing and dense fluffy clouds in dark evening sky" loading="lazy" decoding="async" width="1600" height="1068"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">View through airplane window of plane wing and dense fluffy clouds in dark evening sky</span><span class="t-cm-legal px-lic">Chris Zielecki / Stocksy United &middot; 1600&times;1068</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="2" data-r="2"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-4728123-w1600.jpg" alt="shadow of group of people carrying their carry-on trolley luggage in airport terminal in…" loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">shadow of group of people carrying their carry-on trolley luggage in airport terminal in…</span><span class="t-cm-legal px-lic">Jimena Roquero / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in…" loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in…</span><span class="t-cm-legal px-lic">Kike Arnaiz / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-5763914-w1600.jpg" alt="A view over docks with containers seen through fishing net in early morning in India." loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">A view over docks with containers seen through fishing net in early morning in India.</span><span class="t-cm-legal px-lic">Oxana Pervomay / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-5896824-w1600.jpg" alt="A young girl is traveling somewhere alone on a bus. She is a little sad and looks out the…" loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">A young girl is traveling somewhere alone on a bus. She is a little sad and looks out the…</span><span class="t-cm-legal px-lic">Anna Malkova / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-613297-w1600.jpg" alt="a professional man and businesswoman discuss finance projects inside their company lobby" loading="lazy" decoding="async" width="1600" height="1068"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">a professional man and businesswoman discuss finance projects inside their company lobby</span><span class="t-cm-legal px-lic">Aila Images / Stocksy United &middot; 1600&times;1068</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6491644-w1600.jpg" alt="Abstract motion blur of light trails and people on a busy city street in Edinburgh, Scotland" loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Abstract motion blur of light trails and people on a busy city street in Edinburgh, Scotland</span><span class="t-cm-legal px-lic">Giada Canu / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile ev-mark" data-c="1" data-r="2"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island,…" loading="lazy" decoding="async" width="1067" height="1600"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island,…</span><span class="t-cm-legal px-lic">Gemma Can Fly / Stocksy United &middot; 1067&times;1600</span></figcaption></div></figure>
+<figure class="c-bento__tile ev-mark" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6729142-w1600.jpg" alt="Hands making a bird-shaped shadow on a sunlit orange wall." loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Hands making a bird-shaped shadow on a sunlit orange wall.</span><span class="t-cm-legal px-lic">Michela Ravasio / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile ev-mark" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6797657-w1600.jpg" alt="A stunning view of Dubaiâs skyline from a rooftop infinity pool, with the shimmering water…" loading="lazy" decoding="async" width="1600" height="1070"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">A stunning view of Dubaiâs skyline from a rooftop infinity pool, with the shimmering water…</span><span class="t-cm-legal px-lic">Ayuna Production / Stocksy Unite &middot; 1600&times;1070</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6901906-w1600.jpg" alt="The sun&#x27;s rays pierce through thick clouds, casting a dazzling glow upon the sea. A woman is…" loading="lazy" decoding="async" width="1600" height="1000"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">The sun&#x27;s rays pierce through thick clouds, casting a dazzling glow upon the sea. A woman is…</span><span class="t-cm-legal px-lic">JIE MA / Stocksy United &middot; 1600&times;1000</span></figcaption></div></figure>
+<figure class="c-bento__tile ev-mark" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6968340-w1600.jpg" alt="Airplane wing view through window during colorful sunset flight above clouds. Kodak gold 200…" loading="lazy" decoding="async" width="1600" height="1072"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Airplane wing view through window during colorful sunset flight above clouds. Kodak gold 200…</span><span class="t-cm-legal px-lic">Gemma Can Fly / Stocksy United &middot; 1600&times;1072</span></figcaption></div></figure></div></div>
+    <div class="ev-label t-cm-ctl-14">AFTER &mdash; as shipped, zero holes at every band</div>
+    <div class="c-bento fx-wall-photo" data-bento-role="gallery"><div class="c-bento__grid"><figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-3657449-w1600.jpg" alt="View through airplane window of plane wing and dense fluffy clouds in dark evening sky" loading="lazy" decoding="async" width="1600" height="1068"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">View through airplane window of plane wing and dense fluffy clouds in dark evening sky</span><span class="t-cm-legal px-lic">Chris Zielecki / Stocksy United &middot; 1600&times;1068</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="2" data-r="2"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-4728123-w1600.jpg" alt="shadow of group of people carrying their carry-on trolley luggage in airport terminal in…" loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">shadow of group of people carrying their carry-on trolley luggage in airport terminal in…</span><span class="t-cm-legal px-lic">Jimena Roquero / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in…" loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in…</span><span class="t-cm-legal px-lic">Kike Arnaiz / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-5763914-w1600.jpg" alt="A view over docks with containers seen through fishing net in early morning in India." loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">A view over docks with containers seen through fishing net in early morning in India.</span><span class="t-cm-legal px-lic">Oxana Pervomay / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-5896824-w1600.jpg" alt="A young girl is traveling somewhere alone on a bus. She is a little sad and looks out the…" loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">A young girl is traveling somewhere alone on a bus. She is a little sad and looks out the…</span><span class="t-cm-legal px-lic">Anna Malkova / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-613297-w1600.jpg" alt="a professional man and businesswoman discuss finance projects inside their company lobby" loading="lazy" decoding="async" width="1600" height="1068"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">a professional man and businesswoman discuss finance projects inside their company lobby</span><span class="t-cm-legal px-lic">Aila Images / Stocksy United &middot; 1600&times;1068</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6491644-w1600.jpg" alt="Abstract motion blur of light trails and people on a busy city street in Edinburgh, Scotland" loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Abstract motion blur of light trails and people on a busy city street in Edinburgh, Scotland</span><span class="t-cm-legal px-lic">Giada Canu / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile ev-mark" data-c="3" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island,…" loading="lazy" decoding="async" width="1067" height="1600"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island,…</span><span class="t-cm-legal px-lic">Gemma Can Fly / Stocksy United &middot; 1067&times;1600</span></figcaption></div></figure>
+<figure class="c-bento__tile ev-mark" data-c="2" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6729142-w1600.jpg" alt="Hands making a bird-shaped shadow on a sunlit orange wall." loading="lazy" decoding="async" width="1600" height="1067"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Hands making a bird-shaped shadow on a sunlit orange wall.</span><span class="t-cm-legal px-lic">Michela Ravasio / Stocksy United &middot; 1600&times;1067</span></figcaption></div></figure>
+<figure class="c-bento__tile ev-mark" data-c="2" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6797657-w1600.jpg" alt="A stunning view of Dubaiâs skyline from a rooftop infinity pool, with the shimmering water…" loading="lazy" decoding="async" width="1600" height="1070"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">A stunning view of Dubaiâs skyline from a rooftop infinity pool, with the shimmering water…</span><span class="t-cm-legal px-lic">Ayuna Production / Stocksy Unite &middot; 1600&times;1070</span></figcaption></div></figure>
+<figure class="c-bento__tile" data-c="1" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6901906-w1600.jpg" alt="The sun&#x27;s rays pierce through thick clouds, casting a dazzling glow upon the sea. A woman is…" loading="lazy" decoding="async" width="1600" height="1000"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">The sun&#x27;s rays pierce through thick clouds, casting a dazzling glow upon the sea. A woman is…</span><span class="t-cm-legal px-lic">JIE MA / Stocksy United &middot; 1600&times;1000</span></figcaption></div></figure>
+<figure class="c-bento__tile ev-mark" data-c="3" data-r="1"><div class="px-open"><img class="px-img" src="../knowledge/assets/photography-web/stocksy-6968340-w1600.jpg" alt="Airplane wing view through window during colorful sunset flight above clouds. Kodak gold 200…" loading="lazy" decoding="async" width="1600" height="1072"><figcaption class="c-bento__caption px-cap"><span class="t-ed-caption px-desc">Airplane wing view through window during colorful sunset flight above clouds. Kodak gold 200…</span><span class="t-cm-legal px-lic">Gemma Can Fly / Stocksy United &middot; 1600&times;1072</span></figcaption></div></figure></div></div>
+  </section>
+
+  <section id="notes" class="notes">
+    <h2 class="t-ed-heading-4">What this page is, and is not</h2>
+    <ul class="t-ed-body-small">
+      <li><b>It rules nothing.</b> <code>s219-D2 (2)</code> ruled the default and expressly left
+        the orphan / flattening refinement open. No option is recommended here, and no third bend
+        of W-99zi is closed.</li>
+      <li><b>Nothing is re-drawn.</b> The stylesheet, the header, the theme script and the tile
+        markup are copied out of the shipped
+        <code>showroom/_foundations/photography.html</code>. Two edits, declared: the tile's
+        opener is a <code>&lt;div&gt;</code> rather than a <code>&lt;button&gt;</code> (there is no
+        lightbox on this page), and the asset paths are one directory shallower.</li>
+      <li><b>Every number is the generator's.</b> Spans, the changed list, the crop cost and the
+        rectangle check come from <code>gen_foundations_217.read_photos()</code> and canon's
+        <code>square_wall</code> &mdash; not from a reading of the picture.</li>
+      <li><b>The crop is geometry, not theme.</b> The theme switcher is live so the tile can be
+        seen in all four; the flattening is identical in every one.</li>
+    </ul>
+  </section>
+
+</main>
+<script>
+(function(){
+  var THEMES=['mono','legacy','console','supercharge'];
+  var state={theme:'mono',mode:'light',chrome:'1'};
+  function apply(){
+    document.documentElement.setAttribute('data-apollo-theme',state.theme);
+    document.body.setAttribute('data-theme',state.mode);
+    document.body.setAttribute('data-chrome',state.chrome);
+    document.querySelectorAll('#themes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.themeAttr===state.theme)); });
+    document.querySelectorAll('#modes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.mode===state.mode)); });
+  }
+  var t=document.getElementById('themes'), m=document.getElementById('modes');
+  if(t) t.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.theme=b.dataset.themeAttr; apply(); });
+  if(m) m.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.mode=b.dataset.mode; apply(); });
+  // A fragment-only navigation does NOT re-run this script, so without the hashchange listener
+  // the library pane's theme buttons would silently do nothing (measured on the LOGOS page,
+  // 2026-08-22: the second render came back mode=light with m=dark in the address).
+  function fromHash(){
+    var h={};
+    location.hash.replace(/^#/,'').split('&').forEach(function(kv){
+      var p=kv.split('='); if(p[0]) h[p[0]]=decodeURIComponent(p[1]||''); });
+    if(THEMES.indexOf(h.theme)>=0) state.theme=h.theme;
+    if(h.m==='light'||h.m==='dark') state.mode=h.m;
+    if(h.chrome==='0'||h.chrome==='1') state.chrome=h.chrome;
+    apply();
+  }
+  window.addEventListener('hashchange',fromHash);
+  fromHash();
+  // Capability read, REPORTED not asserted: the lightbox is the platform's popover driven by
+  // command/commandfor. If this browser lacks either, the note says so rather than the page
+  // pretending the control works.
+  var cap=document.getElementById('cap');
+  if(cap){
+    var pop=HTMLElement.prototype.hasOwnProperty('popover');
+    var cmd=HTMLButtonElement.prototype.hasOwnProperty('commandForElement');
+    cap.textContent = (pop&&cmd) ? 'popover + invoker commands \u2014 supported in this browser'
+      : 'popover ' + (pop?'yes':'no') + ' \u00b7 invoker commands ' + (cmd?'yes':'no')
+        + ' \u2014 the lightbox needs both';
+  }
+})();
+</script>
+</body>
+</html>

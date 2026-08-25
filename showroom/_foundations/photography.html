@@ -40,6 +40,10 @@
 .fx *{box-sizing:border-box;}
 .fx :focus-visible{outline:var(--focus-w) solid var(--focus); outline-offset:2px;}
 html,body{margin:0;}
+/* ⚠ THE BASE PAGE GROUND. The compiled #219 settings block overrides this per theme; where a
+   theme's `pageBg` dial says `transparent` it compiles to THIS SAME TOKEN rather than to the
+   keyword, because a page body that paints nothing falls through to the UA canvas (white, in
+   every theme and in dark mode). See `page_bg_decl`. */
 body{background:var(--background-default,#FFFFFF);}
 
 /* ⚠ MEASURED 2026-08-22 on reviews/LOGOS-2026-08-22-v1.html and carried here rather than
@@ -194,58 +198,61 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 /* @gallery-settings:start */
 /* ==========================================================================
-   THE GALLERY SETTINGS — RULED PER THEME by Dave, #218 (2026-08-24), compiled
-   from his four s217-D5 export STATE blocks at MINT TIME (s200-D1). Receipts:
-   notes/_receipts/2026-08-24-218-photography-theme-settings.md
-   ⛔ Every dial word was checked against gen_bento_matrix_217's own ruled option
-   sets before this block was written. Every var() carries a literal fallback.
+   THE GALLERY ROLE'S SHIPPED DEFAULTS — Dave's own #219 tuner exports, four
+   of the twelve ruled by s219-D1 (3), compiled at MINT TIME (s200-D1) from
+   notes/_receipts/2026-08-25-219-role-defaults-exports.md via role_defaults_219.
+   ⛔ s219-D2 supersedes three #218 settings and all three are BELOW, not in a
+   comment: mono captions on light grey (the #218 dark rider is RETIRED), the
+   console rounding capsule, and keylines ON in legacy only. Edge stays square
+   in all four. Every dial word was checked against gen_bento_matrix_217's own
+   ruled option sets; every var() carries a literal fallback.
+   ⚠ Every dial here remains an EDIT-PASS OPTION (s219-D1 (1)/(2)) — what is
+   compiled is the DEFAULT the page ships in, not the only reachable state.
    ========================================================================== */
 
-/* ---- mono · spacing 24 (24px) · keylines off · bento · square edge · rounding corners · page white · bento white · caption transparent ---- */
-[data-apollo-theme="mono"] body.fx{background:var(--surface-raised,#FFFFFF);}
-[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo{--bento-gutter:24px; background:var(--surface-raised,#FFFFFF);}
+/* ---- mono · spacing 40 (40px) · keylines off · bento · square edge · rounding corners · page transparent · bento transparent · caption grey ---- */
+[data-apollo-theme="mono"] body.fx{background:var(--background-default,#FFFFFF);}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo{--bento-gutter:40px; background:transparent;}
 [data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:0; box-shadow:none; background:transparent;}
 [data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:transparent;}
 [data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:0;}
 [data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:0; overflow:visible;}
 [data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}
-[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:transparent;}
-/* ⬛ THE RIDER, Dave's words: “But with the darkest grey for the captions and white for the text.” — a dark ground the explorer's
-   grey/white/transparent palette cannot say, so it is an ADDITION to the
-   ruled vocabulary and is named as one. Mode-stable tokens, because a
-   ground ruled by eye must not invert when the mode flips. */
-[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:var(--surface-digital-black,#1A1A1A); color:var(--text-reverse,#FFFFFF);}
-[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-reverse,#FFFFFF);}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:var(--surface-subtle,#F0F0F0); color:var(--text-secondary,#545454);}
+[data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="mono"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
 
-/* ---- legacy · spacing 24 (24px) · keylines off · bento · square edge · rounding corners · page white · bento white · caption transparent ---- */
+/* ---- legacy · spacing 24 (24px) · keylines on · bento · square edge · rounding corners · page white · bento transparent · caption transparent ---- */
 [data-apollo-theme="legacy"] body.fx{background:var(--surface-raised,#FFFFFF);}
-[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo{--bento-gutter:24px; background:var(--surface-raised,#FFFFFF);}
-[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:0; box-shadow:none; background:transparent;}
-[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:transparent;}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo{--bento-gutter:24px; background:transparent;}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:1px solid var(--border-subtle,#D7D8D6); box-shadow:none; background:transparent;}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:var(--border-strong,#767676);}
 [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:0;}
 [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:0; overflow:visible;}
 [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}
-[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:transparent;}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:transparent; color:var(--text-secondary,#545454);}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
 
-/* ---- console · spacing 24 (24px) · keylines off · bento · square edge · rounding corners · page white · bento white · caption transparent ---- */
-[data-apollo-theme="console"] body.fx{background:var(--surface-raised,#FFFFFF);}
-[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo{--bento-gutter:24px; background:var(--surface-raised,#FFFFFF);}
+/* ---- console · spacing 40 (40px) · keylines off · bento · square edge · rounding capsule · page transparent · bento transparent · caption grey ---- */
+[data-apollo-theme="console"] body.fx{background:var(--background-default,#FFFFFF);}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo{--bento-gutter:40px; background:transparent;}
 [data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:0; box-shadow:none; background:transparent;}
 [data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:transparent;}
-[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:0;}
-[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:0; overflow:visible;}
-[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}
-[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:transparent;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:var(--border-radius-container,0px);}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:inherit; overflow:hidden;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:0;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:var(--surface-subtle,#F0F0F0); color:var(--text-secondary,#545454);}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
 
-/* ---- supercharge · spacing 1 (1px) · keylines off · bento · square edge · rounding corners · page white · bento white · caption transparent ---- */
-[data-apollo-theme="supercharge"] body.fx{background:var(--surface-raised,#FFFFFF);}
-[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo{--bento-gutter:1px; background:var(--surface-raised,#FFFFFF);}
+/* ---- supercharge · spacing 1 (1px) · keylines off · bento · square edge · rounding corners · page transparent · bento transparent · caption transparent ---- */
+[data-apollo-theme="supercharge"] body.fx{background:var(--background-default,#FFFFFF);}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo{--bento-gutter:1px; background:transparent;}
 [data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:0; box-shadow:none; background:transparent;}
 [data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:transparent;}
 [data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:0;}
 [data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:0; overflow:visible;}
 [data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}
-[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:transparent;}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:transparent; color:var(--text-secondary,#545454);}
+[data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="supercharge"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
 /* @gallery-settings:end */
 </style>
 </head>
@@ -289,41 +296,72 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   </section>
 
   <section id="settings">
-    <h2 class="t-ed-heading-4">The gallery settings are ruled PER THEME</h2>
-    <p class="t-ed-body-small lede">Dave drove the <code>s217-D5</code> matrix explorer's Gallery
-      dials in each of the four themes and exported the state — <i>&ldquo;can we have this as the
-      settings for the photography section on the library&rdquo;</i> (#218, 2026-08-24). The four
-      exports are stored verbatim at
-      <code>notes/_receipts/2026-08-24-218-photography-theme-settings.md</code>. They are
-      <b>compiled into this page's stylesheet at mint time</b> (<code>s200-D1</code>), one scope
-      per theme: there is no controller here and nothing to dial. Switch the theme in the header
-      to see them.</p>
+    <h2 class="t-ed-heading-4">The gallery settings are the SHIPPED DEFAULTS, per theme</h2>
+    <p class="t-ed-body-small lede">Dave drove the <code>s217-D5</code> matrix explorer's dials in
+      each of the four themes and exported twelve states — three types &times; four themes — at
+      #219 (2026-08-25). <code>s219-D1</code> rules that a role setting closes as a
+      <b>default plus the edit-pass option set</b> Apollo exposes in the end product
+      (<i>&ldquo;I basically want all the options available for edit mode but these are the
+      defaults&rdquo;</i>), and that those twelve exports are the shipped defaults. The four
+      GALLERY defaults are the table below; they are <b>compiled into this page's stylesheet at
+      mint time</b> (<code>s200-D1</code>) from the verbatim receipt
+      <code>notes/_receipts/2026-08-25-219-role-defaults-exports.md</code>, one scope per theme.
+      There is no controller here and nothing to dial &mdash; <b>this page is the decision, not
+      the decision surface</b>. Switch the theme in the header to see them.</p>
     <div class="tablewrap"><table class="t-cm-legal">
       <thead><tr><th>theme</th><th>gutter</th><th>keylines</th><th>mode</th><th>edge</th>
         <th>rounding</th><th>page ground</th><th>bento ground</th><th>caption ground</th></tr></thead>
-      <tbody><tr><td>mono</td><td class='num'>24px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>white</td><td>white</td><td>#1A1A1A + #FFFFFF ink (rider)</td></tr><tr><td>legacy</td><td class='num'>24px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>white</td><td>white</td><td>transparent</td></tr><tr><td>console</td><td class='num'>24px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>white</td><td>white</td><td>transparent</td></tr><tr><td>supercharge</td><td class='num'>1px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>white</td><td>white</td><td>transparent</td></tr></tbody>
+      <tbody><tr><td>mono</td><td class='num'>40px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>transparent</td><td>transparent</td><td>grey</td></tr><tr><td>legacy</td><td class='num'>24px</td><td>on</td><td>bento</td><td>square</td><td>corners</td><td>white</td><td>transparent</td><td>transparent</td></tr><tr><td>console</td><td class='num'>40px</td><td>off</td><td>bento</td><td>square</td><td>capsule</td><td>transparent</td><td>transparent</td><td>grey</td></tr><tr><td>supercharge</td><td class='num'>1px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>transparent</td><td>transparent</td><td>transparent</td></tr></tbody>
+    </table></div>
+    <p class="t-ed-body-small lede">And what Dave's own tuner <b>resolved</b> for those four
+      states &mdash; the pixels he approved, carried from the receipt rather than re-measured
+      here. This is how the dial word <code>grey</code> is identified as
+      <code>--surface-subtle</code>: it reads <code>rgb(240, 240, 240)</code> in mono and
+      <code>rgb(223, 222, 220)</code> in supercharge, which is that theme's own warm grey.</p>
+    <div class="tablewrap"><table class="t-cm-legal">
+      <thead><tr><th>theme</th><th>gutter</th><th>tile radius</th><th>tile border</th>
+        <th>page background</th><th>caption background</th><th>caption space</th></tr></thead>
+      <tbody><tr><td>mono</td><td class='num'>40px</td><td class='num'>0</td><td class='num'>0</td><td>rgba(0, 0, 0, 0)</td><td>rgb(240, 240, 240)</td><td class='num'>86</td></tr><tr><td>legacy</td><td class='num'>24px</td><td class='num'>0</td><td class='num'>1</td><td>rgb(255, 255, 255)</td><td>rgba(0, 0, 0, 0)</td><td class='num'>86</td></tr><tr><td>console</td><td class='num'>40px</td><td class='num'>20</td><td class='num'>0</td><td>rgba(0, 0, 0, 0)</td><td>rgb(240, 240, 240)</td><td class='num'>86</td></tr><tr><td>supercharge</td><td class='num'>1px</td><td class='num'>0</td><td class='num'>0</td><td>rgba(0, 0, 0, 0)</td><td>rgba(0, 0, 0, 0)</td><td class='num'>86</td></tr></tbody>
     </table></div>
     <div class="finding">
-      <b>The mono caption is a RIDER, not a dial value.</b> Dave's words: &ldquo;But with the darkest grey for the captions and white for the text.&rdquo; The
-      explorer's background palette is lightest-grey / white / transparent and none of the three
-      is a dark ground, so this is an <b>addition</b> to the ruled vocabulary rather than a
-      selection from it. It is drawn from <code>--surface-digital-black</code> (#1A1A1A) with <code>--text-reverse</code> (#FFFFFF) ink —
-      both mode-stable in mono, because a ground ruled by eye must not invert when the mode
-      flips. <b>His eye rules the shade on the render.</b>
-      <p>&ldquo;Page ground&rdquo; and &ldquo;bento ground&rdquo; read <code>white</code> because
-      that is the dial's word for <code>--surface-raised</code>, which is what the explorer paints
-      — it resolves to white in light mode and to the theme's raised dark surface in dark mode.
-      The dial name is not a promise of the hex.</p>
+      <b>The mono caption ground is LIGHT GREY now &mdash; <code>s219-D2 (1)</code> supersedes
+      <code>s218-D6 (1)</code>.</b> At #218 this wall's mono captions were ratified on the darkest
+      grey (<code>--surface-digital-black</code>, #1A1A1A) with white ink, from Dave's own rider: &ldquo;But with the darkest grey for the captions and white for the text.&rdquo; At #219 his
+      gallery export says <code>capBg: grey</code>, and asked which governs he said:
+      <i>&ldquo;I changed my mind just go with the latest and change in the library.&rdquo;</i> So the dark ground <b>retires on the gallery role, this page
+      included</b>, and the caption takes <code>--surface-subtle</code> with the caption's standing
+      <code>--text-secondary</code> ink. <code>s218-D6 (1)</code> stands as frozen history of what
+      was true at #218; it is superseded, not deleted.
+      <p>A dial word is not a promise of a hex: <code>grey</code> is
+      <code>--surface-subtle</code>, <code>white</code> is <code>--surface-raised</code>, and each
+      resolves to that <i>theme's</i> value in that <i>mode</i>.</p>
     </div>
     <div class="finding">
-      <b>&ldquo;Edge: square&rdquo; is ENACTED on this wall &mdash; <code>s218-D6</code>.</b>
-      All four of Dave's exports carry <code>edge: square</code>, and at #218 he reopened it on
-      this page: <i>&ldquo;Reopen &mdash; square it&rdquo;</i>. So the ratified squaring pass runs
-      here and the last-row photographs re-span to close the holes. <b>The scope is this wall
-      only.</b> <code>role=gallery</code> is still <b>exempt</b> under <code>s217-D3</code>
-      everywhere else — the role policy is unchanged, canon is unchanged, and the roles pages are
-      unchanged; what overrides it here is this page's own instance dial. Measured on the wall as
-      it ships: SQUARED — the pass re-spanned 4 tile(s) in the last 5 (tile 247 1×2→3×1; tile 248 1×1→2×1; tile 249 1×1→2×1; tile 251 1×1→3×1), and the wall is now an exact rectangle at every band in its ladder 4/3/2/1 (4 cols = 96 rows, 3 cols = 128 rows, 2 cols = 191 rows, 1 cols = 251 rows). Crop cost 10 on the pass&#x27;s own scale, where 0 is &#x27;nothing moved&#x27;.
+      <b>&ldquo;Edge: square&rdquo; is the GALLERY-ROLE DEFAULT now &mdash;
+      <code>s219-D2 (2)</code>.</b> All four exports carry <code>edge: square</code> and Dave
+      ruled it the default in all four themes, widening <code>s218-D6 (4)</code>, which had scoped
+      squaring to this wall alone. So the ratified squaring pass runs here and the last-row
+      photographs re-span to close the holes. <b>Two things did NOT change and are named rather
+      than assumed away:</b> edge remains an <b>edit-pass dial</b> (<code>s219-D1</code>), and the
+      token store still records <code>role=gallery</code> as <b>squaring: false</b> &mdash; the
+      role policy is asked on every run and its answer is carried on the report, so the default
+      and the role's own rule can be told apart. Whether the store's role policy follows is a
+      canon change and is <b>not ruled here</b>. Measured on the wall as it ships: SQUARED — the pass re-spanned 4 tile(s) in the last 5 (tile 247 1×2→3×1; tile 248 1×1→2×1; tile 249 1×1→2×1; tile 251 1×1→3×1), and the wall is now an exact rectangle at every band in its ladder 4/3/2/1 (4 cols = 96 rows, 3 cols = 128 rows, 2 cols = 191 rows, 1 cols = 251 rows). Crop cost 10 on the pass&#x27;s own scale, where 0 is &#x27;nothing moved&#x27;.
+      <p>⬛ <b>Expressly unruled:</b> the orphan / flattened-portrait refinement (the W-99zi third
+      bend). The squaring pass buys its rectangle by re-spanning tail tiles, and one of them lays a
+      portrait on its side. That tile is rendered before and after at
+      <code>reviews/SQUARING-PORTRAIT-2026-08-25-v1.html</code> as a PROPOSED evidence page, for
+      Dave's eye. Nothing about it is decided by this build.</p>
+    </div>
+    <div class="finding">
+      <b>Three of the four page grounds say <code>transparent</code>, and on a whole-page wall
+      that needs a reading.</b> In the explorer, transparent means the stage's own ground shows
+      through. Here the wall <i>is</i> the page: a body that paints nothing falls through to the
+      browser canvas, which is white in every theme and in dark mode too. So a transparent page
+      ground compiles to the <b>document ground</b> (<code>--background-default</code>) &mdash;
+      the surface beneath a page body, and exactly what this page painted before any settings
+      existed. <b>PROPOSED</b>: the other reading is that a transparent gallery should sit on
+      <code>--surface-raised</code>. That is Dave's eye, not this build's.
     </div>
   </section>
 
