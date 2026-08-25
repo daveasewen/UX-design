@@ -461,9 +461,17 @@
       render();
       const target = grid.querySelector('[tabindex="0"]'); if (target) target.focus();
     }
+    /* ⛔ FOCUS (WCAG 2.4.3) — MEASURED #218 lane cB by driving a SYNTHETIC outside pointerdown
+       (which moves no focus of its own, so the reading is the component's and not the
+       browser's): the panel is display:none when closed, so closing it while a day button
+       held focus stranded document.activeElement on BODY. A dismissal the user did not aim
+       at the panel must still not throw them to the top of the document. The rescue fires
+       only when focus actually lived inside the panel; on a real outside click the browser's
+       own focus change lands after this handler and wins, which is what we want. */
     function close(returnFocus){
+      const stranded = panel.contains(document.activeElement);
       panel.classList.remove('is-open'); openBtn.setAttribute('aria-expanded','false');
-      if (returnFocus) openBtn.focus();
+      if (returnFocus || stranded) openBtn.focus();
     }
     function select(date){
       selected = date; input.value = fmt(date);

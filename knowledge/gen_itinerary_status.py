@@ -50,6 +50,16 @@ family ladder (see LAYER2_FAMILIES), and the Layer-2 note is GENERATED from the 
 rather than typed. A hand-carried premise inside the instrument built to catch hand-carried
 premises is still a hand-carried premise [[premise-ages-faster-than-rule]].
 
+THE FOURTH DEFECT, fixed #218 — THE COLUMN'S NAME. Every emission carries TWO status columns per
+row and they disagree: the frozen 2026-07-14 CELL and the MEASURED `derived`. The cell was called
+`itinerary_status`, which reads as *the status of the itinerary*, and it has been read as live and
+briefed off TWICE (#203's six-lane wave; #218's wave-3 divvy, which opened "From the measured v3
+(78 Gap)" — 78 was the frozen cell, the measured count was 1). Fixed at the WRITER, not in a
+caveat a reader may skip: the field is now `itinerary_status_2026_07_14_FROZEN` — the date of the
+snapshot plus the word FROZEN, so quoting it says what it is. See `FROZEN_STATUS_KEY` below.
+⛔ v1-v3 keep the old name: they are frozen dated snapshots (ADR-0017) and are NOT rewritten;
+`frozen_status()` is the reader that spans both eras.
+
 Outputs (both deterministic — no timestamps, so `--check` is meaningful). STAMP names a NEW
 dated pair each re-measurement; earlier snapshots are WRITE-ONCE and stay on disk:
   reviews/ITINERARY-STATUS-<STAMP>.html   Dave's surface: drift table + TRUE-gap list
@@ -92,11 +102,54 @@ ITIN = os.path.join(ROOT, "reviews", "ITINERARY-2026-07-14-apollo-component-libr
 # ⛔ WRITE-ONCE (ADR-0017 / `s192-D1`). Bumping STAMP is how this generator re-measures: v1
 # (#203) and v2 (#213) stay on disk as frozen snapshots and a NEW dated pair is written beside
 # them. NEVER point STAMP back at an existing snapshot.
-STAMP = "2026-08-21-v3"
-SESSION = "#214"
-MEASURED = "2026-08-21"
-PRIOR = ("reviews/ITINERARY-STATUS-2026-08-21-v2.json (session #213 re-measurement with the "
-         "UNFIXED Layer-2 shortcut, superseded by this run, NOT overwritten)")
+STAMP = "2026-08-25-v4"
+SESSION = "#218"
+MEASURED = "2026-08-25"
+PRIOR = ("reviews/ITINERARY-STATUS-2026-08-21-v3.json (session #214 re-measurement, the last "
+         "emission that named the frozen spreadsheet cell `itinerary_status` — superseded by "
+         "this run, NOT overwritten)")
+
+# ---------------------------------------------------------------------------
+# ★ #218 — THE FROZEN COLUMN GETS A NAME THAT CANNOT BE READ AS LIVE.
+#
+# THE CLASS, FIFTH SURFACE. Every emission of this file carries TWO status columns per row: the
+# 2026-07-14 spreadsheet CELL, and `derived` — what the five probes MEASURED. They disagree
+# violently (78 "Gap" vs 1 GAP at v3). The cell was named `itinerary_status`, a name that reads
+# as *the status of the itinerary*, and it has now been read as live TWICE and briefed off:
+#   · #203 — a six-lane wave briefed off the frozen column; 18 of 18 "P1 gaps" already existed.
+#   · #218 — the wave-3 crank divvy opened "From the measured v3 (78 Gap)". 78 IS THE FROZEN
+#     COLUMN. The measured column said 1 (`notes/_receipts/2026-08-25-wave3-gamma.md`).
+# The instrument built to stop the class emitted the field the class keeps tripping over.
+#
+# THE FIX IS AT THE WRITER, not in a caveat a reader may skip (Dave #215: "always real fixes
+# never patches, they just get lost"). The field name now carries its own fence — the DATE of
+# the snapshot it came from, plus the word FROZEN — so a reader who types it has already been
+# told what it is, and a brief that quotes a count off it says so in its own prose.
+#
+# ⚠ THE DATE IN THE NAME IS THE FENCE, SO IT IS THE SNAPSHOT'S OWN DATE. The #218 brief and the
+# lane-α receipt that proposed this both wrote `itinerary_status_1907_FROZEN`; the source
+# workbook is `reviews/ITINERARY-2026-07-14-apollo-component-library.xlsx` and this file's own
+# docstring records "It was written 2026-07-14", so `1907` names a day the column does not come
+# from. A fence whose date is wrong is the same defect one level down, so the emitted name uses
+# the full, unambiguous snapshot date. ⬛ DECLARED, NOT RULED: if #218 wants the literal string
+# from the brief, this ONE constant is the only place that changes.
+FROZEN_STATUS_KEY = "itinerary_status_2026_07_14_FROZEN"
+LEGACY_STATUS_KEY = "itinerary_status"   # v1-v3 only — frozen snapshots, never rewritten
+
+
+def frozen_status(row):
+    """The 2026-07-14 spreadsheet cell out of a row of ANY emission of this generator.
+
+    v4+ names it `itinerary_status_2026_07_14_FROZEN`; v1-v3 are WRITE-ONCE snapshots that
+    predate the rename and carry the bare name. A reader must therefore accept both — and REFUSE
+    loudly if neither is present, because a `.get()` returning None here reads as "no status"
+    and would be the same silent misread in a new costume [[a-crash-is-not-a-fail]].
+    """
+    for k in (FROZEN_STATUS_KEY, LEGACY_STATUS_KEY):
+        if k in row:
+            return row[k]
+    raise KeyError("row %s carries neither %r nor %r — this is not an ITINERARY-STATUS row"
+                   % (row.get("n", "?"), FROZEN_STATUS_KEY, LEGACY_STATUS_KEY))
 OUT_HTML = os.path.join(ROOT, "reviews", "ITINERARY-STATUS-%s.html" % STAMP)
 OUT_JSON = os.path.join(ROOT, "reviews", "ITINERARY-STATUS-%s.json" % STAMP)
 
@@ -577,7 +630,7 @@ def derive_row(row, idx):
     slugs, basis, extra = resolve(row, idx)
     rec = {
         "n": row["n"], "name": row["name"], "category": row["category"], "layer": row["layer"],
-        "priority": row["priority"], "itinerary_status": row["status"], "notes": row["notes"],
+        "priority": row["priority"], FROZEN_STATUS_KEY: row["status"], "notes": row["notes"],
         "basis": basis, "why": extra.get("why", ""), "class": extra.get("class", "component"),
         "slugs": slugs, "artefacts": [], "related": [],
         "unresolved_reason": None,
@@ -723,7 +776,7 @@ ITIN_RANK = {"Gap": 0, "Partial": 2, "Gated": 4}
 
 
 def _with_drift(rec):
-    d, i = RANK.get(rec["derived"], -1), ITIN_RANK.get(rec["itinerary_status"], -1)
+    d, i = RANK.get(rec["derived"], -1), ITIN_RANK.get(frozen_status(rec), -1)
     if rec["derived"] == "UNRESOLVED":
         rec["drift"] = "UNRESOLVED"
     # ⛔ #214: there used to be a `class == "layer-2"` branch here that hard-coded
@@ -807,9 +860,31 @@ def build():
         "$orphan_snippets": orph,
         "$radius_ratchet_advisory": sorted(
             {s for r in records for s in (r.get("radius_ratchet_missing") or [])}),
+        "$columns": {
+            FROZEN_STATUS_KEY: ("THE FROZEN 2026-07-14 SPREADSHEET CELL — history, not a "
+                                "measurement. Hand-typed on 2026-07-14 and never re-statused. "
+                                "⛔ NOT A WORKLIST: counting 'Gap' here counts a photograph of "
+                                "July, not the store."),
+            "derived": ("THE MEASURED COLUMN — five probes per slug (snippet · meta · showroom "
+                        "· radius ratchet · canon .cn- rules) taken at $measured. This is the "
+                        "live fact. Brief off THIS."),
+            "drift": "the two columns compared; STALE means the frozen cell UNDERSTATES the store",
+        },
         "$caveat": ("A snapshot of a LIVE working tree. Rows measured PARTIAL with only a snippet "
                     "present are mid-route, not half-built: showroom pages and canon .cn- scopes "
-                    "are generated surfaces. Re-run after the generator pass."),
+                    "are generated surfaces. Re-run after the generator pass. "
+                    "⛔ THE FROZEN-COLUMN CLASS (renamed at #218, the fix at the writer): this "
+                    "file carries TWO status columns per row and they do not agree. `%s` is the "
+                    "HAND-TYPED cell from the 2026-07-14 spreadsheet — dated history under "
+                    "ADR-0017, never re-statused, and read as live TWICE: #203 briefed a "
+                    "six-lane wave off it (18 of 18 'P1 gaps' already existed, gated) and #218's "
+                    "wave-3 divvy opened 'From the measured v3 (78 Gap)' when 78 was that frozen "
+                    "cell and the MEASURED count was 1. The field used to be called "
+                    "`itinerary_status`, a name that reads as live; the date and the word FROZEN "
+                    "are now IN the name so no reader can quote it without saying what it is. "
+                    "The live fact is `derived`. Emissions v1-v3 keep the old name — they are "
+                    "frozen snapshots and are not rewritten."
+                    % FROZEN_STATUS_KEY),
         "rows": records,
     }
     return data, idx, records, true_gaps, orph, comp
@@ -912,12 +987,14 @@ def render_html(data, records, true_gaps, orph):
     A("<h2>1 &middot; Drift — where the frozen column and the store disagree</h2>")
     A("<p class='note'>%d rows agree. The rows below are the reason the #203 wave misfired.</p>"
       % d.get("AGREES", 0))
-    A("<table><tr><th>#</th><th>Component</th><th>Pri</th><th>Itinerary says</th>"
-      "<th>Store says</th><th>Direction</th><th>Evidence</th></tr>")
+    A("<table><tr><th>#</th><th>Component</th><th>Pri</th>"
+      "<th>FROZEN 2026-07-14 cell<br><span class='mono'>%s</span></th>"
+      "<th>MEASURED<br><span class='mono'>derived</span></th><th>Direction</th>"
+      "<th>Evidence</th></tr>" % FROZEN_STATUS_KEY)
     for r in stale + over + unres:
         A("<tr><td class='mono'>%s</td><td>%s</td><td class='mono'>%s</td><td class='mono'>%s</td>"
           "<td><span class='tag'>%s</span></td><td class='drift'>%s</td><td>%s</td></tr>"
-          % (r["n"], esc(r["name"]), esc(r["priority"]), esc(r["itinerary_status"]),
+          % (r["n"], esc(r["name"]), esc(r["priority"]), esc(frozen_status(r)),
              esc(r["derived"]), esc(r["drift"].split("—")[0].strip()), esc(r["evidence_line"])))
     A("</table>")
 
@@ -949,15 +1026,17 @@ def render_html(data, records, true_gaps, orph):
         A("</div>")
 
     A("<h2>3 &middot; Every row, measured</h2>")
-    A("<table><tr><th>#</th><th>Component</th><th>Layer</th><th>Pri</th><th>Itinerary</th>"
-      "<th>Derived</th><th>Resolved via</th><th>Slug(s)</th><th>Evidence</th></tr>")
+    A("<table><tr><th>#</th><th>Component</th><th>Layer</th><th>Pri</th>"
+      "<th>FROZEN cell<br><span class='mono'>(2026-07-14)</span></th>"
+      "<th>MEASURED<br><span class='mono'>derived</span></th>"
+      "<th>Resolved via</th><th>Slug(s)</th><th>Evidence</th></tr>")
     for r in records:
         cls = "gap" if r["derived"] in ("GAP", "ASSET-ONLY") else ("unres" if r["derived"] == "UNRESOLVED" else "")
         dr = "ok" if r["drift"] == "AGREES" else "drift"
         A("<tr><td class='mono'>%s</td><td>%s</td><td class='mono'>%s</td><td class='mono'>%s</td>"
           "<td class='mono %s'>%s</td><td><span class='tag %s'>%s</span></td><td class='mono'>%s</td>"
           "<td class='mono'>%s</td><td>%s</td></tr>"
-          % (r["n"], esc(r["name"]), esc(r["layer"]), esc(r["priority"]), dr, esc(r["itinerary_status"]),
+          % (r["n"], esc(r["name"]), esc(r["layer"]), esc(r["priority"]), dr, esc(frozen_status(r)),
              cls, esc(r["derived"]), esc(r["basis"]), esc(", ".join(r["slugs"]) or "&mdash;"),
              esc(r["evidence_line"])))
     A("</table>")
@@ -1237,13 +1316,53 @@ def selftest():
     elif a109["basis"] != "layer-2-ambiguous":
         fails.append("arm6d refusal: expected basis layer-2-ambiguous, got %s" % a109["basis"])
 
+    # arm 7 — ★ #218, THE FROZEN COLUMN'S NAME, BOTH DIRECTIONS. The point of the rename is that
+    # the bare name can no longer be quoted off a fresh emission, so the arm asserts the ABSENCE
+    # as hard as the presence: a matched name is not the whole test [[unmatched-grep-is-not-an-absence]].
+    html_txt, json_txt, data, recs = _emit()
+    if FROZEN_STATUS_KEY not in json_txt:
+        fails.append("arm7: the emitted JSON does not carry %r — the frozen column has no fence"
+                     % FROZEN_STATUS_KEY)
+    bare = re.findall(r'"itinerary_status"\s*:', json_txt)
+    if bare:
+        fails.append("arm7: the emitted JSON still carries %d bare `\"itinerary_status\":` "
+                     "field(s) — the #218 rename is incomplete and the class survives" % len(bare))
+    if not all(FROZEN_STATUS_KEY in r for r in recs):
+        fails.append("arm7: some records do not carry %r" % FROZEN_STATUS_KEY)
+    if any(LEGACY_STATUS_KEY in r for r in recs):
+        fails.append("arm7: a record still carries the bare %r key" % LEGACY_STATUS_KEY)
+    if "$columns" not in data or FROZEN_STATUS_KEY not in data.get("$columns", {}):
+        fails.append("arm7: $columns does not name the frozen field — a reader has no contract")
+    if "FROZEN" not in data["$caveat"] or "derived" not in data["$caveat"]:
+        fails.append("arm7: $caveat does not name the class and the live column")
+    # the HTML surface must say FROZEN where it used to say 'Itinerary'
+    if "FROZEN 2026-07-14 cell" not in html_txt:
+        fails.append("arm7: the HTML drift table no longer labels the frozen column")
+    # and the READER must span both eras — v1-v3 are write-once and keep the old name.
+    if frozen_status({"n": 1, LEGACY_STATUS_KEY: "Gap"}) != "Gap":
+        fails.append("arm7: frozen_status() cannot read a v1-v3 snapshot row — the frozen "
+                     "history became unreadable, which is a worse defect than the name")
+    if frozen_status({"n": 1, FROZEN_STATUS_KEY: "Gated"}) != "Gated":
+        fails.append("arm7: frozen_status() cannot read a v4 row")
+    try:
+        frozen_status({"n": 1})
+        fails.append("arm7: frozen_status() returned for a row carrying NEITHER key — a silent "
+                     "None here is the same misread in a new costume")
+    except KeyError:
+        pass
+    # the write-once fence: STAMP must not point at a snapshot already on disk.
+    if os.path.exists(OUT_JSON) and open(OUT_JSON, encoding="utf-8").read() != json_txt:
+        fails.append("arm7: STAMP %s names an EXISTING snapshot whose bytes differ — that is an "
+                     "overwrite of history (ADR-0017). Bump STAMP." % STAMP)
+
     for f in fails:
         print("SELFTEST FAIL — %s" % f)
     if fails:
         return 1
-    print("SELFTEST OK — 6 arms: pass(6 rows) · fail(row 86 + derived gap mutation) · "
+    print("SELFTEST OK — 7 arms: pass(6 rows) · fail(row 86 + derived gap mutation) · "
           "mutation-store · mutation-clause · fail-loud · layer-2(probe · store-mutation · "
-          "mapping-mutation · ambiguity-refusal · gap-reachable)")
+          "mapping-mutation · ambiguity-refusal · gap-reachable) · frozen-column-name(present "
+          "+ bare name ABSENT + reader spans v1-v3 and v4 + refuses on neither)")
     return 0
 
 

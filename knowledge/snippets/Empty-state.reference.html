@@ -105,7 +105,13 @@
   }
   /* ===== AUTO-PARTIAL press-physics END ===== */
 
-  .empty a{ color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
+  /* TYPE-002 (γ's #218 finding, enacted lane cB). The raw font-weight:500 is now carried by a
+     composite on the anchor itself. .t-cm-link is the 400 step and would have SILENTLY LIGHTENED
+     this link; canon's existing home for a 16/500 anchor is the .t-cm-button group, whose bind
+     list already contains `nav.main a` and `.hero .cta`. Measured identical, 16px/w500. That the
+     honest choice for a text link is a class called "button" is a canon gap, not a fix — it is
+     filed as a _DS-IMPROVEMENTS row and a ruling-shaped question, NOT decided here. */
+  .empty a{ color:inherit; text-decoration:underline; text-underline-offset:3px;
     text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease); }
   .empty a:hover, .empty a:active{ text-decoration-thickness:2px; }
   .empty a:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
@@ -138,7 +144,7 @@
     <h3 class="t-ed-heading-4 em" id="es2">No transactions match</h3>
     <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
     <span class="gap"></span>
-    <a href="#">Clear the search</a>
+    <a class="t-cm-button" href="#">Clear the search</a>
   </section>
 
   <h2>Quiet — legitimately nothing to do, no action</h2>

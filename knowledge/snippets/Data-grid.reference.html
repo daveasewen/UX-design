@@ -122,12 +122,19 @@
      label (0.00px measured). 28px = 1.75rem, the repo's demo-chrome-above-a-section-label value
      (Button, Split-button, Toast all measure 28px for the same relationship); on-grid. */
   .dgseg{display:inline-flex; border:1px solid var(--fborder); margin:0 0 28px;}
-  .dgseg button{font:inherit; padding:8px 12px; border:0; border-left:1px solid var(--fborder);
+  /* TYPE-002 (γ's #218 finding, enacted lane cB). `font:inherit` is EXEMPT from the gate, but
+     it also out-specifies (0,1,1) any composite class put on the element, so it had to go for
+     the composite to be anything but inert decoration — the Skeleton lesson. The two states
+     now name their own ramp step instead of overriding weight raw: unpressed = .t-cm-ctl-16
+     (16/400), pressed = .t-cm-button (16/500) — the SAME size and weight the raw rules
+     produced, measured before and after. The classes are toggled by the handler that already
+     toggles aria-pressed, so state has exactly one writer. */
+  .dgseg button{padding:8px 12px; border:0; border-left:1px solid var(--fborder);
     background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
   .dgseg button:first-child{border-left:0;}
   .dgseg button:hover{background:var(--hover);}
   .dgseg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-  .dgseg button[aria-pressed="true"]{background:var(--header); font-weight:500;}
+  .dgseg button[aria-pressed="true"]{background:var(--header);}
   .dgseg button:disabled{cursor:default;}
 
   .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
@@ -313,9 +320,9 @@
   </svg>
 
   <div class="dgseg" role="group" aria-label="Grid state">
-    <button type="button" data-state="live" aria-pressed="true" disabled>Live</button>
-    <button type="button" data-state="loading" aria-pressed="false">Loading</button>
-    <button type="button" data-state="empty" aria-pressed="false">Empty</button>
+    <button type="button" class="t-cm-button" data-state="live" aria-pressed="true" disabled>Live</button>
+    <button type="button" class="t-cm-ctl-16" data-state="loading" aria-pressed="false">Loading</button>
+    <button type="button" class="t-cm-ctl-16" data-state="empty" aria-pressed="false">Empty</button>
   </div>
 
   <div class="dg" id="dg">
@@ -725,6 +732,8 @@
       state.mode = b.dataset.state;
       document.querySelectorAll('.dgseg button').forEach(x => {
         const on = x === b; x.setAttribute('aria-pressed', String(on)); x.disabled = on;
+        x.classList.toggle('t-cm-button', on);      /* 16/500 — pressed */
+        x.classList.toggle('t-cm-ctl-16', !on);     /* 16/400 — rest   */
       });
       if (state.mode === 'empty'){ state.filters = ['no such payee']; renderChips(); }
       else if (state.filters.length === 1 && state.filters[0] === 'no such payee'){ state.filters = []; renderChips(); }

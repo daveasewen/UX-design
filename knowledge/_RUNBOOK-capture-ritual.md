@@ -592,6 +592,38 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    ⚠ Do NOT promote a spec/ledger to Polaroid duty in compensation (A-D3: the spec stays the single
    source); the beat only makes the record SAY the source changed.
 
+## ★ FILED SUB-REPORTS — what every sub brief must now say (`s218-D7`, 2026-08-25)
+
+*Ruled by Dave at #218; the ruling's own body lives in `knowledge/_rulings.json` § `s218-D7` and
+is not restated here. This section is the OPERATIONAL half: what a brief must contain, what the
+sub owes, and what the conductor owes at reconcile.*
+
+**In the brief.** Every sub brief — build, research, wrap, lane — carries these four lines
+alongside the existing DO-NOT-RULE list:
+
+1. **The file:** `notes/_subreports/YYYY-MM-DD-<session no>-<sub index>-<slug>.md`, written to
+   the skeleton at `notes/_subreports/_TEMPLATE.md`. **One writer per file** — the window and
+   the sub index are in the name so two parallel subs can never collide on one path.
+2. **The stub:** what comes back to chat is VERDICT + the COUNTS line + the file pointer + token
+   spend + REPLAY-THESE, and nothing else. Every figure in the stub is **copied off the file**,
+   never retyped — the file is the sole authority.
+3. **Evidence beside the report:** `notes/_subreports/assets/<report-stem>/`. ⛔ Never session
+   scratch (`/tmp`, `/var/tmp`): scratch dies with the window and a report whose evidence has
+   evaporated is a claim, not a receipt.
+4. **RULING-SHAPED QUESTIONS is a mandatory section**, even when the answer is "none". It is
+   what stops a sub's generated prose from arriving as a decision.
+
+**At reconcile, the conductor CITES EACH REPORT BY PATH** in the session receipt (or the ★
+LATEST banner). This is not bookkeeping — a stub hands the window a pointer, and an uncited
+pointer is an unread one: the window closes believing the lane reported and the finding set goes
+into history unread. Reports are **dated history** (ADR-0017 / `s192-D1`): live facts flow OUT of
+a report to their one home at reconcile, and the report keeps the reading it took on the day.
+
+**Two gates enforce it** (both listed under "The gate" below): the doc-row gate's glob now covers
+`notes/_subreports/*.md`, so a filed report with no `_state.json` row fails exactly like a brief;
+and the wrap's citation check warns on any report filed since the last wrap that this session's
+own record does not name by path.
+
 ## What "done" looks like
 
 All steps complete = the session is safely captured. The transcript never has to be the source
@@ -621,6 +653,20 @@ One script (D3), two modes:
   ⚠️ **Failure text names the runbook step and nothing else.** No advice list, no "now do X" — that prose
   ages while the exit code doesn't, and a stale `print()` inside a gate has already sent one session to
   redo finished work (2026-07-27 #7). **The exit code is the evidence; this file is the advice.**
+- **★ Filed sub-reports (`s218-D7`, added #218) — two checks, two scripts:**
+  - **`knowledge/_gate_doc_rows.py --check`** — its glob now covers `notes/_subreports/*.md`
+    (flat, `.md` only; `_TEMPLATE.md` exempt by name, `assets/**` is evidence not a document).
+    A filed report with no `_state.json` row FAILS exactly as an unrowed brief does. One
+    directory home, `notes/_subreports/`, rows every report beneath it — that is the intended
+    shape for a busy conductor window.
+  - **Wrap mode's `subreport_citation_check`** — a report filed since the last capture-ritual
+    commit (`after #<n>`) that this session's own record does not name **by path** warns. The
+    citation surface is scoped to this session: the ★ LATEST banner regions of `GOOD-MORNING.md`
+    / `_CHAIN.md` and the receipts changed since that commit — a prior session's receipt does not
+    cite anything for this one. It also PARSES each report's `COUNTS:` / `REPLAY-THESE:` lines
+    and its `RULING-SHAPED QUESTIONS` heading, because the stub's figures are copied off them.
+    ⛔ **ADVISORY AT BIRTH** — it warns, it does not fail. Promotion to blocking is **Dave's
+    word**; the tier is the one line `SUBREPORT_CITE_BLOCKING` in `_capture_gate.py`.
 - **Honest scope (D1a):** the memory store is invisible to the shell and to every gate (step 3)
   — dangling `MEMORY.md` pointers and memory-file fields are checked *by the session, by hand,
   at step 3*. The script prints this as an explicit SKIP so the boundary can't silently blur.

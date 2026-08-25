@@ -9,7 +9,12 @@ WHAT THIS LANE ACTUALLY PRODUCED, AND WHY IT IS A VERIFIER AND NOT EIGHT SNIPPET
 
   That draft read the WRONG COLUMN of reviews/ITINERARY-STATUS-2026-08-21-v3.json.
 
-    · `itinerary_status`  is the 2026-07-14 planning spreadsheet's frozen status column.
+    · the FROZEN column   is the 2026-07-14 planning spreadsheet's frozen status column.
+                          ★ #218: the generator now emits it as
+                          `itinerary_status_2026_07_14_FROZEN` — the date and the word FROZEN
+                          are in the name because the bare `itinerary_status` was read as live
+                          twice. v1-v3 are write-once snapshots and keep the old name, so this
+                          script reads it through `gen_itinerary_status.frozen_status()`.
                           Counter over 124 rows: {Gap: 78, Gated: 39, Partial: 7}   <- the 78
     · `derived`           is what the generator MEASURED against the working tree.
                           Counter over 124 rows: {GATED: 121, ASSET-SYSTEM: 1,
@@ -64,6 +69,11 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 REGISTER = REPO / "reviews" / "ITINERARY-STATUS-2026-08-21-v3.json"
+# ★ #218 — ONE reader for the frozen column, imported rather than re-typed. It spans both eras
+# (v1-v3 carry the bare `itinerary_status`; v4+ carry the FROZEN name) and REFUSES on a row that
+# carries neither, so repointing REGISTER at a newer snapshot cannot silently zero these counts.
+sys.path.insert(0, str(REPO / "knowledge"))
+from gen_itinerary_status import frozen_status  # noqa: E402
 MUTANT = Path(os.environ.get("AW_MUTANT_DIR", "/var/tmp/218w3a-alpha-s218wa"))
 
 # itinerary row -> (row name, store slug).  Slugs are the register's OWN `slugs` field, not guesses.
@@ -160,11 +170,12 @@ def main():
     # ---- the DRIFT claims: about the register, so green in both arms ------------------
     if reg:
         rows = reg["rows"]
-        itin = Counter(r["itinerary_status"] for r in rows)
+        itin = Counter(frozen_status(r) for r in rows)
         der = Counter(r["derived"] if isinstance(r["derived"], str) else r["derived"].get("verdict")
                       for r in rows)
         check("drift/itinerary-column-says-78-gap", itin.get("Gap") == 78,
-              "itinerary_status Gap=%s (the figure the wave-3 draft quoted)" % itin.get("Gap"))
+              "FROZEN 2026-07-14 column Gap=%s (the figure the wave-3 draft quoted)"
+              % itin.get("Gap"))
         check("drift/derived-column-says-1-gap", der.get("GAP") == 1,
               "derived GAP=%s GATED=%s" % (der.get("GAP"), der.get("GATED")))
         check("drift/true-gaps-is-row-86-only", reg.get("$true_gaps") == [86],
@@ -175,8 +186,8 @@ def main():
             r = rows[row - 1]
             d = r["derived"] if isinstance(r["derived"], str) else r["derived"].get("verdict")
             check("drift/row-%d-derived-GATED-not-Gap" % row,
-                  r["itinerary_status"] == "Gap" and d == "GATED" and r["drift"] == STALE,
-                  "%s | itinerary=%s derived=%s" % (name, r["itinerary_status"], d))
+                  frozen_status(r) == "Gap" and d == "GATED" and r["drift"] == STALE,
+                  "%s | FROZEN=%s derived=%s" % (name, frozen_status(r), d))
 
     # ---- the STORE claims: probe the tree; MUST go red under --break ------------------
     try:                                        # a crash is not a fail — name it, never default it

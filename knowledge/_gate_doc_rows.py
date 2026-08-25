@@ -5,8 +5,19 @@ THE CLASS: a document with no `_state.json` row is invisible to every carry — 
 lived weeks unseen (#185). This gate makes the PRESENCE of a row a checked condition for
 new tracked documents, per [[gate-inside-the-growth-loop]]: gate the presence, not the drift.
 
-POPULATION: git-tracked files matching notes/_briefs/* or _BRIEF-* whose first-add date
-(git log --diff-filter=A, one pass, no --follow) is >= BASELINE_DATE.
+POPULATION: git-tracked files matching notes/_briefs/*, _BRIEF-* or notes/_subreports/*.md
+whose first-add date (git log --diff-filter=A, one pass, no --follow) is >= BASELINE_DATE.
+
+★ #218 — THE GLOB WIDENED TO FILED SUB-REPORTS (`s218-D7`). A filed sub-report is a document in
+exactly the sense this gate means: it carries a lane's whole finding set, the conductor cites it
+by path, and with no `_state.json` row it is invisible to every carry the moment its window
+closes — the #185 class, one level down. So it fails here exactly as a brief does. ONE name is
+exempt, `notes/_subreports/_TEMPLATE.md` (EXEMPT_BASENAMES): it is the skeleton, not a report,
+and rowing it would teach that a store row is bookkeeping rather than a carry.
+⚠ Directory homes still apply (the #215 clause): a single `notes/_subreports/` home in the store
+rows every report beneath it. That is the intended shape for a busy conductor window — the row
+still carries owner/state/close-condition, and per-report rows remain legal for reports that
+need their own close condition.
 BASELINE_DATE = "2026-08-15" is PICKED, not derived — it is the earliest date covering both
 known offenders of the class; Dave may rule his own number. Earlier docs are a frozen legacy
 set by date, exempt exactly as _state.LEGACY_IDS is.
@@ -46,7 +57,27 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STORE = os.path.join(ROOT, "knowledge", "_state.json")
 BASELINE_DATE = "2026-08-15"  # PICKED, not derived — Dave may rule (see docstring)
 PATTERNS = ["notes/_briefs", "_BRIEF-"]
+SUBREPORT_DIR = "notes/_subreports"          # ★ #218, `s218-D7` — filed sub-reports
+SUBREPORT_EXT = ".md"                        # the glob is `notes/_subreports/*.md`, nothing else
+EXEMPT_BASENAMES = {"_TEMPLATE.md"}          # the skeleton is not a report [[gate-glob-scope-rule]]
 FAIL_ARM_COMMIT = "6b98be3"  # #186 — the offender's pre-row store state
+GIT_PATHSPEC = ("notes/_briefs", "_BRIEF-*", SUBREPORT_DIR)
+
+
+def in_population(p):
+    """Is this repo-relative path a document this gate grades? ONE definition, used by both the
+    committed scan and the staged scan — two copies of a membership test drift, and the drift
+    would show up as a silently NARROWER population, which is this gate failing open."""
+    p = p.strip()
+    if not p:
+        return False
+    base = os.path.basename(p)
+    if p.startswith(SUBREPORT_DIR + "/"):
+        # the glob is FLAT and `.md` only: assets/ live under this directory and are not documents
+        return (base not in EXEMPT_BASENAMES
+                and base.endswith(SUBREPORT_EXT)
+                and p.count("/") == SUBREPORT_DIR.count("/") + 1)
+    return any(p.startswith(t) for t in PATTERNS) or base.startswith("_BRIEF-")
 
 def _git(*args):
     return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, check=True).stdout
@@ -69,7 +100,7 @@ def staged_adds():
     from datetime import date
     try:
         out = _git("diff", "--cached", "--diff-filter=A", "--name-only",
-                   "--", "notes/_briefs", "_BRIEF-*")
+                   "--", *GIT_PATHSPEC)
     except subprocess.CalledProcessError:
         # No HEAD to diff against (a virgin repo). NOT silently treated as "nothing staged" —
         # said out loud, because a silent empty here would restore the exact blindspot.
@@ -87,20 +118,19 @@ def population(staged=None):
     `staged` is injectable so the selftest can plant one without touching the real index.
     """
     out = _git("log", "--diff-filter=A", "--format=C %as", "--name-only",
-               "--", "notes/_briefs", "_BRIEF-*")
+               "--", *GIT_PATHSPEC)
     date, first_seen = None, {}
     for line in out.splitlines():
         if line.startswith("C "):
             date = line[2:].strip()
         elif line.strip():
             p = line.strip()
-            if any(p.startswith(t) or os.path.basename(p).startswith("_BRIEF-") for t in PATTERNS):
+            if in_population(p):
                 first_seen[p] = date  # log is newest-first; last write wins = oldest = first add
     tracked = set(_git("ls-files").splitlines())
     pop = {p: d for p, d in first_seen.items() if p in tracked and d >= BASELINE_DATE}
     for d, p in (staged_adds() if staged is None else staged):
-        if any(p.startswith(t) or os.path.basename(p).startswith("_BRIEF-") for t in PATTERNS) \
-                and d >= BASELINE_DATE:
+        if in_population(p) and d >= BASELINE_DATE:
             pop.setdefault(p, d)   # a committed first-add date WINS over today's stamp
     return sorted((d, p) for p, d in pop.items())
 
@@ -182,6 +212,38 @@ def selftest():
         return 1
     print(f"✅ staged-arm: a doc present ONLY in the index is seen and flagged "
           f"({len(staged_adds())} real staged add(s) in this tree right now).")
+    # ---- SUB-REPORT ARM (★ #218, `s218-D7`), driven BOTH WAYS on the same planted set. The
+    # widened glob is worthless if it only ever says yes: the template and the evidence
+    # directory must be proven OUT of the population by the same call that proves a report IN
+    # [[mutation-tests-the-clause-not-the-feature]].
+    from datetime import date as _date2
+    _today = _date2.today().isoformat()
+    sr = f"{SUBREPORT_DIR}/9999-99-99-000-zz-not-a-real-report.md"
+    must_be_out = [
+        (f"{SUBREPORT_DIR}/_TEMPLATE.md", "the skeleton — EXEMPT BY NAME"),
+        (f"{SUBREPORT_DIR}/assets/9999-99-99-000-zz/screenshot.png", "evidence, not a document"),
+        (f"{SUBREPORT_DIR}/assets/9999-99-99-000-zz/notes.md", "an .md UNDER assets/ is evidence"),
+        (f"{SUBREPORT_DIR}/README.txt", "not `.md` — the glob is `*.md`"),
+    ]
+    if not in_population(sr):
+        print(f"⛔ SELFTEST SUB-REPORT ARM: {sr} is NOT in the population — the s218-D7 glob "
+              f"widening does not bite; a filed report can ship with no store row.")
+        return 1
+    for path, why in must_be_out:
+        if in_population(path):
+            print(f"⛔ SELFTEST SUB-REPORT ARM: {path} entered the population ({why}) — the "
+                  f"glob is wider than the rule it enforces.")
+            return 1
+    pop_sr = population(staged=[(_today, sr), (_today, f"{SUBREPORT_DIR}/_TEMPLATE.md")])
+    if not any(p == sr for _, p in unrowed(live, pop_sr)):
+        print("⛔ SELFTEST SUB-REPORT ARM: a staged filed report was not flagged unrowed — the "
+              "gate sees it and says nothing.")
+        return 1
+    if any(p.endswith("_TEMPLATE.md") for _, p in pop_sr):
+        print("⛔ SELFTEST SUB-REPORT ARM: the template reached the population even when staged.")
+        return 1
+    print(f"✅ sub-report arm: `{SUBREPORT_DIR}/*.md` is graded like a brief; `_TEMPLATE.md`, "
+          f"`assets/**` and non-`.md` files are proven OUT (4 negative controls).")
     # mutation-arm: delete one known reference from the live text; gate must flag it.
     # The victim must be a CURRENTLY-ROWED doc: picking pop[-1] blindly could pick an unrowed
     # one (e.g. a staged add), and then the arm passes without deleting anything — vacuous.

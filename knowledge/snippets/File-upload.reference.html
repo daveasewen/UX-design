@@ -405,20 +405,46 @@
           '</div>' +
           '<button type="button" class="fu-remove" aria-label="Remove ' + f.name + '"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button>';
         list.appendChild(li);
-        li.querySelector('.fu-remove').addEventListener('click', () => {
-          li.remove(); announce.textContent = f.name + ' removed.';
+        const rm = li.querySelector('.fu-remove');
+        rm.addEventListener('click', () => {
+          /* ⛔ FOCUS (WCAG 2.4.3) — MEASURED #218 lane cB: removing the row that holds focus
+             stranded document.activeElement on BODY, both with sibling rows still staged and
+             on the last row. Alert's wave-3 repair idiom: the next remaining control, else
+             the control that adds files. */
+          const rest = [...list.querySelectorAll('.fu-remove')].filter(b => b !== rm);
+          const nextFocus = rest[0] || browse;
+          li.remove();
+          announce.textContent = f.name + ' removed.';
+          syncInvalid();
+          if (document.body.contains(nextFocus)) nextFocus.focus();
         });
         if (tooBig){
           li.classList.add('is-error');
           li.querySelector('.fmain').insertAdjacentHTML('beforeend',
             '<div class="fmsg"><span class="ic fstate" aria-hidden="true" style="color:var(--error)"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body-small">This file is over 10MB. Remove it and try a smaller version.</p></div>');
           announce.textContent = f.name + ' could not be added: over 10MB.';
+          syncInvalid();
           return;
         }
         announce.textContent = f.name + ' added, uploading.';
         simulate(li, f.name);
       });
+      syncInvalid();
     }
+
+    /* aria-invalid — α's #218 question ("file-upload 0 against siblings 2-7"), ANSWERED BY
+       DRIVING the error state rather than by reading the markup. A rejected file painted
+       .is-error, rendered the message and announced it politely — and the page carried ZERO
+       aria-invalid attributes throughout, so nothing in the accessibility tree ever said the
+       control was in an invalid state. It is a real gap, not a correct-for-a-dropzone
+       exemption: the dropzone is decoration (it has no widget role), but #fu-input IS the
+       labelled form control — <label for="fu-input">Supporting documents</label> — and that
+       is where the family's other seven components put it. Set when any staged row is
+       rejected, lifted when the last rejected row is removed. */
+    function syncInvalid(){
+      fileInput.setAttribute('aria-invalid', list.querySelector('.fu-row.is-error') ? 'true' : 'false');
+    }
+    syncInvalid();
 
     function simulate(li, name){
       const bar = li.querySelector('.fu-bar'), fill = bar.querySelector('b');

@@ -4217,6 +4217,181 @@ def governing_records_join_check(repo):
     return warns, notes
 
 
+# ------------------------------------------- ★ #218 — FILED SUB-REPORTS, THE CITATION CHECK
+# `s218-D7`: every sub writes its full report to `notes/_subreports/` and returns a STUB. The
+# stub is the ONLY thing the conductor sees in chat, which imports one specific failure mode —
+# THE UNREAD POINTER. A report filed and never opened is worse than no report: the window closes
+# believing the lane reported, and the finding set goes into history unread. So the wrap REFUSES
+# to close over a filed report that this session's own record does not name BY PATH.
+#
+# ⚠ WHAT "NEWER THAN THE LAST WRAP" MEANS HERE, MECHANICALLY. The last wrap is the most recent
+# commit whose subject opens `after #<n>` — the capture-ritual commit convention (`git log`
+# confirms it: `after #218 …`, `after #215 …`). Population = every `notes/_subreports/*.md` that
+# has CHANGED against that commit (tracked: `git diff`) or does not exist in it at all
+# (untracked: `git ls-files --others`). No wrap commit, or no git ⇒ LOUD UNKNOWN, never a pass:
+# a check that cannot bound its own window has not measured anything [[a-crash-is-not-a-fail]].
+#
+# ⚠ AND THE CITATION SURFACE IS SCOPED THE SAME WAY, which is the half that keeps this honest.
+# If any file anywhere counted as a citation, the check would be nearly always-true — the report
+# itself would satisfy it. The surface is THIS SESSION'S record only: the ★ LATEST banner regions
+# of `GOOD-MORNING.md` / `_CHAIN.md`, plus the receipts that are themselves new or changed since
+# the last wrap. A receipt untouched since the last wrap is a PRIOR session's record and does not
+# cite anything for this one [[gate-glob-scope-rule]].
+#
+# ⛔ ADVISORY AT BIRTH. It appends to WARNS, never to FAILS. Promotion to blocking is DAVE'S
+# WORD, not an agent's — the one line below is the only place that changes, and it does not
+# change here (the #111/#161/#163 pattern: warn provisionally, ratify, then flip).
+SUBREPORT_CITE_BLOCKING = False
+SUBREPORT_DIR = os.path.join("notes", "_subreports")
+SUBREPORT_TEMPLATE = "_TEMPLATE.md"
+SUBREPORT_RECEIPTS = os.path.join("notes", "_receipts")
+# The two PARSED lines of the skeleton (`notes/_subreports/_TEMPLATE.md`). Quoted exactly as the
+# template writes them, per [[gate-must-quote-what-it-forbids]] — and parsed rather than
+# eyeballed because the stub's figures are COPIED from these lines: an unparseable COUNTS line
+# means the stub's numbers came from somewhere else [[no-gate-parses-the-artefact]].
+SUBREPORT_COUNTS_RE = re.compile(
+    r"^COUNTS:\s*findings\s+(\d+)\s*·\s*ruling-shaped\s+(\d+)\s*·\s*UNPROVEN\s+(\d+)\s*$", re.M)
+SUBREPORT_REPLAY_RE = re.compile(r"^REPLAY-THESE:\s*(\S.*)$", re.M)
+SUBREPORT_QUESTIONS_RE = re.compile(r"^#{1,6}\s*RULING-SHAPED QUESTIONS\s*$", re.M)
+WRAP_COMMIT_SUBJECT_RE = re.compile(r"^after\s+#\d+\b")
+
+
+def _git_out(repo, *args):
+    """stdout of a git call under `repo`, or None if git could not answer. Never a silent ''."""
+    try:
+        r = subprocess.run(["git", "-C", repo, *args], capture_output=True, text=True, timeout=30)
+    except Exception:                                                 # noqa: BLE001
+        return None
+    return r.stdout if r.returncode == 0 else None
+
+
+def _last_wrap_commit(repo, limit=400):
+    """(sha, subject) of the most recent capture-ritual commit, or None if none is visible."""
+    out = _git_out(repo, "log", "-n", str(limit), "--format=%H%x09%s")
+    if out is None:
+        return None
+    for line in out.splitlines():
+        sha, _tab, subj = line.partition("\t")
+        if WRAP_COMMIT_SUBJECT_RE.match(subj.strip()):
+            return sha, subj.strip()
+    return None
+
+
+def _is_subreport(rel):
+    """A repo-relative path that is a FILED REPORT — flat, `.md`, and not the skeleton.
+    `assets/<stem>/…` sits under the same directory and is EVIDENCE, never a document."""
+    rel = rel.strip().replace("\\", "/")
+    d = SUBREPORT_DIR.replace("\\", "/")
+    if not rel.startswith(d + "/"):
+        return False
+    tail = rel[len(d) + 1:]
+    return "/" not in tail and tail.endswith(".md") and tail != SUBREPORT_TEMPLATE
+
+
+def _changed_since(repo, sha, pathspec):
+    """Repo-relative paths under `pathspec` that differ from `sha` OR are untracked. None if git
+    could not answer either half — a partial answer here would silently narrow the population."""
+    tracked = _git_out(repo, "diff", "--name-only", sha, "--", pathspec)
+    others = _git_out(repo, "ls-files", "--others", "--exclude-standard", "--", pathspec)
+    if tracked is None or others is None:
+        return None
+    return sorted({p.strip() for p in (tracked + "\n" + others).splitlines() if p.strip()})
+
+
+def subreport_citation_check(repo):
+    """`s218-D7` — a filed sub-report newer than the last wrap must be CITED BY PATH in this
+    session's own record. Returns (warns, notes). ADVISORY at birth."""
+    warns, notes = [], []
+    sub_abs = os.path.join(repo, SUBREPORT_DIR)
+    if not os.path.isdir(sub_abs):
+        return warns, [f"FILED SUB-REPORTS: no `{SUBREPORT_DIR}/` under {repo} — nothing filed "
+                       f"here, so nothing to cite. NOT a pass: the check did not run."]
+    wrap = _last_wrap_commit(repo)
+    if wrap is None:
+        return ([f"FILED SUB-REPORTS: the citation check DID NOT RUN — no commit whose subject "
+                 f"opens `after #<n>` is visible under {repo} (no git, or no capture-ritual "
+                 f"commit in the last 400). This is UNKNOWN, not agreement: list "
+                 f"`{SUBREPORT_DIR}/` by hand and check every report is named in the receipt."],
+                notes)
+    sha, subj = wrap
+    changed = _changed_since(repo, sha, SUBREPORT_DIR)
+    if changed is None:
+        return ([f"FILED SUB-REPORTS: the citation check DID NOT RUN — `git diff`/`git ls-files` "
+                 f"gave no answer under {repo}. UNKNOWN, not agreement."], notes)
+    population = [p for p in changed if _is_subreport(p) and os.path.exists(os.path.join(repo, p))]
+    if not population:
+        return warns, [f"FILED SUB-REPORTS: none filed since the last wrap "
+                       f"(`{sha[:7]} {subj[:60]}`) — nothing to cite."]
+
+    # ---- the citation surface, scoped to THIS session's record (see the header comment).
+    surfaces, surface_names = [], []
+    for fname in ("GOOD-MORNING.md", "_CHAIN.md"):
+        p = os.path.join(repo, fname)
+        if os.path.exists(p):
+            try:
+                with open(p, encoding="utf-8") as f:
+                    region = _latest_banner_region(f.read())
+            except OSError:
+                region = None
+            if region:
+                surfaces.append(region)
+                surface_names.append(f"{fname} ★ LATEST banner")
+    receipts = _changed_since(repo, sha, SUBREPORT_RECEIPTS) or []
+    for rel in receipts:
+        p = os.path.join(repo, rel)
+        if rel.endswith(".md") and os.path.exists(p):
+            try:
+                with open(p, encoding="utf-8") as f:
+                    surfaces.append(f.read())
+                surface_names.append(rel)
+            except OSError:
+                pass
+    blob = "\n".join(surfaces)
+
+    uncited = [p for p in population if p not in blob]
+    for p in uncited:
+        warns.append(
+            f"FILED SUB-REPORT UNCITED (advisory): `{p}` was filed since the last wrap "
+            f"(`{sha[:7]}`) and NO path citation for it exists in this session's record "
+            f"({', '.join(surface_names) or 'no receipt or banner found at all'}). `s218-D7` "
+            f"hands the conductor a STUB and makes the FILE the authority — a filed report the "
+            f"session record never names is the unread pointer, and it goes into history unread. "
+            f"Cite it by path in the receipt (or the ★ LATEST banner), or say in the receipt why "
+            f"it is deliberately not carried. ⛔ ADVISORY at birth; promotion is Dave's.")
+
+    # ---- the PARSE half: the stub's figures are copied off these two lines, so they must parse.
+    for p in population:
+        try:
+            with open(os.path.join(repo, p), encoding="utf-8") as f:
+                text = f.read()
+        except OSError as e:                                          # noqa: BLE001
+            warns.append(f"FILED SUB-REPORT UNREADABLE (advisory): `{p}` — {e}")
+            continue
+        if not SUBREPORT_COUNTS_RE.search(text):
+            warns.append(
+                f"FILED SUB-REPORT COUNTS (advisory): `{p}` carries no parseable COUNTS line. "
+                f"The skeleton's form is exactly `COUNTS: findings <N> · ruling-shaped <N> · "
+                f"UNPROVEN <N>` on its own line — parsed, not prose, because the stub's figures "
+                f"are copied off it and a stub figure that was retyped is the defect `s218-D7` "
+                f"exists to stop. Template: `{SUBREPORT_DIR}/{SUBREPORT_TEMPLATE}`.")
+        if not SUBREPORT_REPLAY_RE.search(text):
+            warns.append(
+                f"FILED SUB-REPORT REPLAY (advisory): `{p}` carries no `REPLAY-THESE:` line. A "
+                f"deferral must be DECLARED and PRICED — write the paths with their token "
+                f"prices, or exactly `REPLAY-THESE: none — the stub carries everything.`")
+        if not SUBREPORT_QUESTIONS_RE.search(text):
+            warns.append(
+                f"FILED SUB-REPORT QUESTIONS (advisory): `{p}` has no `RULING-SHAPED QUESTIONS` "
+                f"heading. The section is mandatory even when the answer is 'none' — it is what "
+                f"stops a sub's generated prose from arriving as a decision.")
+    if not warns:
+        notes.append(f"FILED SUB-REPORTS: {len(population)} report(s) filed since `{sha[:7]}`, "
+                     f"every one cited by path in this session's record and carrying a parseable "
+                     f"COUNTS / REPLAY-THESE / RULING-SHAPED QUESTIONS skeleton. Surfaces read: "
+                     f"{', '.join(surface_names)}. ADVISORY at birth; promotion is Dave's.")
+    return warns, notes
+
+
 def plan_block_check(repo):
     """B2 SEAM OBLIGATION AT THE WRAP SEAM (brief `_BRIEF-borrowed-instruments-…-v2.md` §2,
     ruled s179-D1). Returns (fails, warns).
@@ -4278,6 +4453,12 @@ def wrap_checks(repo, today, lane=False):
     _jw, _jn = governing_records_join_check(repo)
     warns += _jw
     notes += _jn
+    # ★ #218 `s218-D7` — the filed-sub-report citation check. Runs for LANE wraps too, on purpose:
+    # a lane delegates subs like any other session, and its receipt is its record. ADVISORY AT
+    # BIRTH — the tier lives at SUBREPORT_CITE_BLOCKING and promotion is DAVE'S WORD.
+    _cw, _cn = subreport_citation_check(repo)
+    (fails if SUBREPORT_CITE_BLOCKING else warns).extend(_cw)
+    notes += _cn
     targets = [("_LIVE-STATE.md", '"Last refreshed"'), ("GOOD-MORNING.md", "header date")]
     if lane:
         targets = targets[:1]
@@ -7377,6 +7558,163 @@ def selftest_instrument_stray():
     return failures
 
 
+def selftest_subreport_citation():
+    """★ #218 `s218-D7` — THE FILED-REPORT CITATION CHECK, DRIVEN ON A REAL GIT REPO.
+
+    ⛔ Every arm runs the REAL `subreport_citation_check` against a real repo with a real
+    `after #NNN` wrap commit in its history. A fixture tree with no `.git` only proves the
+    refusal path, and an advisory check that has never been seen to fire is an instrument
+    without a consumer [[instrument-without-a-consumer]].
+
+    The two clauses that could quietly become always-true both get a NEGATIVE control:
+      · the POPULATION — the template and an `assets/**` file must never enter it;
+      · the CITATION SURFACE — a citation in a receipt UNCHANGED since the last wrap must NOT
+        count, or the surface is "the whole repo" and the check can never fire.
+    """
+    failures = []
+    GOOD = ("# r\n\nCOUNTS: findings 3 · ruling-shaped 1 · UNPROVEN 2\n\n"
+            "## RULING-SHAPED QUESTIONS\n\nnone\n\nREPLAY-THESE: none — the stub carries everything.\n")
+    with tempfile.TemporaryDirectory() as td:
+        git = ["git", "-C", td, "-c", "user.email=t@t", "-c", "user.name=t"]
+        try:
+            if subprocess.run(git[:3] + ["init", "-q"], capture_output=True,
+                              timeout=30).returncode != 0:
+                raise RuntimeError("git init failed")
+        except Exception as e:                                        # noqa: BLE001
+            SELFTEST_REFUSALS.append(f"subreport citation: git unavailable in this checkout ({e})")
+            return failures
+
+        def put(rel, body="x\n"):
+            p = os.path.join(td, rel)
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(body)
+            return p
+
+        def rm(rel):
+            os.remove(os.path.join(td, rel))
+
+        def commit(subject):
+            subprocess.run(git + ["add", "-A"], capture_output=True, timeout=30)
+            subprocess.run(git + ["commit", "-qm", subject], capture_output=True, timeout=30)
+
+        REPORT_REL = "notes/_subreports/2026-08-25-218-cZ-fixture.md"
+        STALE_RECEIPT = "notes/_receipts/2026-08-01-100-prior-session.md"
+
+        # ---- the pre-wrap history: a receipt that ALREADY names the report path (the surface
+        # control), the template, and then the wrap commit itself.
+        put("notes/_subreports/_TEMPLATE.md", "skeleton\n")
+        put(STALE_RECEIPT, f"a PRIOR session's receipt, naming {REPORT_REL} in passing\n")
+        commit("#217 2026-08-24 — work")
+        put("_LIVE-STATE.md", "Last refreshed: 2026-08-24\n")   # ⚠ a second commit needs a diff
+        commit("after #217 2026-08-24 — capture ritual")
+        if _last_wrap_commit(td) is None:
+            SELFTEST_REFUSALS.append("subreport citation: the fixture repo took no commits in "
+                                     "this checkout — every arm below would be vacuous")
+            return failures
+
+        # ---- ARM 0, GREEN CONTROL (attribute-the-diff): nothing filed ⇒ no warns, and the
+        # note SAYS nothing was filed rather than reporting a clean pass it did not measure.
+        w_, n_ = subreport_citation_check(td)
+        if w_ or not any("none filed since the last wrap" in x for x in n_):
+            failures.append(f"subreport cite: an empty population was not reported as empty — "
+                            f"warns={w_[:1]} notes={n_[:1]}; every red below is unattributable")
+
+        # ---- ARM 1, THE RED: a filed report nobody cites. This is the whole check.
+        put(REPORT_REL, GOOD)
+        w_, _n = subreport_citation_check(td)
+        if not any("FILED SUB-REPORT UNCITED" in x and REPORT_REL in x for x in w_):
+            failures.append(f"subreport cite: an UNCITED filed report did not warn — the "
+                            f"unread-pointer check is dead: {w_}")
+
+        # ---- ARM 2, THE SURFACE CONTROL (the one that matters): the stale receipt names the
+        # path VERBATIM and has not changed since the wrap. It must NOT satisfy the citation,
+        # or the surface is the whole repo and the check can never fire.
+        if REPORT_REL not in open(os.path.join(td, STALE_RECEIPT), encoding="utf-8").read():
+            failures.append("subreport cite: ARM 2 fixture is broken — the stale receipt does "
+                            "not name the path, so the arm proves nothing")
+        elif not any("FILED SUB-REPORT UNCITED" in x for x in subreport_citation_check(td)[0]):
+            failures.append("subreport cite: a citation in a receipt UNCHANGED since the last "
+                            "wrap satisfied the check — the surface is unscoped, so a PRIOR "
+                            "session's prose can green a report this session never opened")
+
+        # ---- ARM 3, THE PASS: a receipt written THIS session, citing by path.
+        put("notes/_receipts/2026-08-25-218-crank.md",
+            f"this session's receipt · filed report `{REPORT_REL}` read at reconcile\n")
+        w_, n_ = subreport_citation_check(td)
+        if any("FILED SUB-REPORT UNCITED" in x for x in w_):
+            failures.append(f"subreport cite: a report cited by path in THIS session's receipt "
+                            f"still warned — the pass path does not exist: {w_}")
+        if not any("every one cited by path" in x for x in n_):
+            failures.append(f"subreport cite: the clean case left no note naming its surfaces: {n_}")
+        rm("notes/_receipts/2026-08-25-218-crank.md")
+
+        # ---- ARM 4: the ★ LATEST banner is a citation surface too, and only the LATEST region.
+        put("GOOD-MORNING.md",
+            f"> ## ★ LATEST — 2026-08-25 (**#218**, wrap)\n> filed: `{REPORT_REL}`\n\n"
+            f"> ## ★ PRIOR — 2026-08-24 (**#217**, wrap)\n> prose\n")
+        if any("FILED SUB-REPORT UNCITED" in x for x in subreport_citation_check(td)[0]):
+            failures.append("subreport cite: a path cited in the ★ LATEST banner still warned")
+        put("GOOD-MORNING.md",
+            f"> ## ★ LATEST — 2026-08-25 (**#218**, wrap)\n> prose\n\n"
+            f"> ## ★ PRIOR — 2026-08-24 (**#217**, wrap)\n> filed: `{REPORT_REL}`\n")
+        if not any("FILED SUB-REPORT UNCITED" in x for x in subreport_citation_check(td)[0]):
+            failures.append("subreport cite: a citation in the ★ PRIOR banner counted — the "
+                            "banner surface is not scoped to ★ LATEST")
+        rm("GOOD-MORNING.md")
+
+        # ---- ARM 5, POPULATION CONTROLS: neither the skeleton nor evidence is a report.
+        rm(REPORT_REL)
+        put("notes/_subreports/_TEMPLATE.md", "skeleton, EDITED since the wrap\n")
+        put("notes/_subreports/assets/2026-08-25-218-cZ-fixture/probe.md", "evidence\n")
+        put("notes/_subreports/assets/2026-08-25-218-cZ-fixture/shot.png", "binary-ish\n")
+        w_, n_ = subreport_citation_check(td)
+        if w_ or not any("none filed" in x for x in n_):
+            failures.append(f"subreport cite: the template and `assets/**` entered the "
+                            f"population — the glob is wider than the rule: {w_}")
+
+        # ---- ARM 6, THE PARSE HALF, one bite per clause. Control: GOOD warns none of the three.
+        for body, marker, why in (
+                (GOOD.replace("COUNTS: findings 3 · ruling-shaped 1 · UNPROVEN 2",
+                              "COUNTS: three findings, one ruling-shaped, two unproven"),
+                 "FILED SUB-REPORT COUNTS", "a PROSE counts line"),
+                (GOOD.replace("COUNTS: findings 3 · ruling-shaped 1 · UNPROVEN 2", ""),
+                 "FILED SUB-REPORT COUNTS", "no counts line at all"),
+                (GOOD.replace("REPLAY-THESE: none — the stub carries everything.", ""),
+                 "FILED SUB-REPORT REPLAY", "no REPLAY-THESE line"),
+                (GOOD.replace("## RULING-SHAPED QUESTIONS", "## Questions"),
+                 "FILED SUB-REPORT QUESTIONS", "the mandatory section renamed away")):
+            put(REPORT_REL, body)
+            w_, _n = subreport_citation_check(td)
+            if not any(marker in x for x in w_):
+                failures.append(f"subreport cite: {why} did not warn `{marker}` — the gate does "
+                                f"not parse the artefact it grades: {w_}")
+        put(REPORT_REL, GOOD)
+        w_, _n = subreport_citation_check(td)
+        if any(m in x for m in ("COUNTS", "REPLAY", "QUESTIONS") for x in w_):
+            failures.append(f"subreport cite: the well-formed skeleton warned on a parse clause "
+                            f"— the parser is refusing its own template: {w_}")
+
+        # ---- ARM 7: no `after #<n>` commit in history ⇒ LOUD UNKNOWN, never a silent pass.
+        with tempfile.TemporaryDirectory() as td2:
+            subprocess.run(["git", "-C", td2, "init", "-q"], capture_output=True, timeout=30)
+            os.makedirs(os.path.join(td2, SUBREPORT_DIR))
+            with open(os.path.join(td2, REPORT_REL), "w", encoding="utf-8") as f:
+                f.write(GOOD)
+            w_, _n = subreport_citation_check(td2)
+            if not any("DID NOT RUN" in x for x in w_):
+                failures.append(f"subreport cite: a repo with no capture-ritual commit must "
+                                f"declare UNKNOWN, not pass silently — warns={w_}")
+
+    # ---- ARM 8: no `notes/_subreports/` at all ⇒ DECLARED skip, not a pass.
+    with tempfile.TemporaryDirectory() as td:
+        w_, n_ = subreport_citation_check(td)
+        if w_ or not any("NOT a pass" in x for x in n_):
+            failures.append(f"subreport cite: a tree with no sub-report directory must DECLARE "
+                            f"the skip — warns={w_} notes={n_}")
+    return failures
+
+
 def _carry_gm(latest_items, prior_items, latest_no=189, prior_no=188):
     """A two-banner GOOD-MORNING fixture whose residual lines carry exactly what is asked."""
     def resid(n, items):
@@ -7492,6 +7830,7 @@ def _selftest_body():
                 + selftest_argv_contract()       # ★ #218 — the #158 write-by-default class
                 + selftest_boot_delta_parse()    # ★ #218 — a delta beside `boot` is not a boot
                 + selftest_governing_join()      # ★ #218 — #212 finding 3, ADVISORY at birth
+                + selftest_subreport_citation()  # ★ #218 `s218-D7` — the unread-pointer check
                 + selftest_plan_block_check()    # B2 seam obligation, s179-D1 — wired at write
                 + selftest_real_tier_reachable()
                 + selftest_preflight() + selftest_preflight_tokens()

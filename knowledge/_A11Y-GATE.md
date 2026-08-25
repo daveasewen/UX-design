@@ -551,9 +551,9 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 
 ## Data-grid
 - 🟡 warn — `button.dgs-clear` — 24x24 is under the 44 default (aid-009)
-- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-ctl-16` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-ctl-16` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
@@ -600,7 +600,7 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - ⚪ note — `li.opt` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 
 ## Empty-state
-- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## File-upload
 - 🟡 warn — `button.fu-remove` — ::before hit-expander 36x36 — under the 44 default

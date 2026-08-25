@@ -351,14 +351,34 @@
     wire('otp', 'otp-msg', '123456', 'Code verified.');
     wire('pin', 'pin-msg', '1234', 'PIN accepted.');
 
-    // resend countdown
+    /* ---------- resend countdown ----------
+       ⛔ TWO DEFECTS MEASURED #218 lane cB, both in this block, both by DRIVING it:
+       (a) FOCUS STRANDING (WCAG 2.4.3). `btn.disabled = true` fires on the button that is
+           holding focus, and a disabled control cannot hold focus — document.activeElement
+           went to BODY, throwing a keyboard user to the top of the document. Same class β
+           repaired on Alert and Toast at wave-3. Focus now moves FIRST, to the thing the
+           resend exists to serve: the first cell of the code the user is about to re-enter.
+       (b) THE COUNTDOWN NEVER RESTARTED. `const tick` was created once and cleared at zero,
+           so the click handler's `left = 30` counted down against a dead interval: the
+           button was disabled FOREVER after the first resend and the "in 30s" text never
+           moved. Measured 30s+ with left stuck at 30. The interval is now (re)armed by
+           countdown(), which is the same call the first arming uses — one code path. */
     const btn = document.getElementById('resend'), wait = document.getElementById('resend-wait'), n = document.getElementById('resend-count');
-    let left = 30;
-    const tick = setInterval(() => {
-      left -= 1; n.textContent = left;
-      if (left <= 0){ clearInterval(tick); btn.disabled = false; wait.hidden = true; }
-    }, 1000);
-    btn.addEventListener('click', () => { btn.disabled = true; wait.hidden = false; left = 30; n.textContent = left; });
+    let left = 30, tick = null;
+    function countdown(){
+      clearInterval(tick);
+      tick = setInterval(() => {
+        left -= 1; n.textContent = left;
+        if (left <= 0){ clearInterval(tick); tick = null; btn.disabled = false; wait.hidden = true; }
+      }, 1000);
+    }
+    countdown();
+    btn.addEventListener('click', () => {
+      const first = document.querySelector('#otp .se-cell');
+      if (first) first.focus();                       /* BEFORE the control goes away — 2.4.3 */
+      btn.disabled = true; wait.hidden = false; left = 30; n.textContent = left;
+      countdown();
+    });
   </script>
 </body>
 </html>

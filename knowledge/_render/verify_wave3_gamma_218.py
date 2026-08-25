@@ -16,8 +16,12 @@ THE DEFECT CLASS THIS GATE EXISTS FOR (why it is in the repo, not a scratch file
 
   reviews/ITINERARY-STATUS-*.json carries TWO status columns per row and they do not agree:
 
-    `itinerary_status`  the status CELL from the FROZEN 2026-07-14 spreadsheet snapshot.
+    the FROZEN column   the status CELL from the FROZEN 2026-07-14 spreadsheet snapshot.
                         124 rows, of which 78 read "Gap". It is a 2026-07 photograph.
+                        ★ #218: emitted as `itinerary_status_2026_07_14_FROZEN` from v4 on —
+                        the bare `itinerary_status` was read as live twice. v1-v3 are
+                        write-once and keep the old name, so this gate reads the column
+                        through `gen_itinerary_status.frozen_status()`, which spans both.
     `derived`           what the generator MEASURED in the store, five probes deep
                         (snippet · meta · showroom · MIGRATED_SNIPPETS · canon .cn- rules).
                         121 GATED · 1 ASSET-SYSTEM · 1 ASSET-ONLY · 1 GAP.
@@ -67,6 +71,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # knowledge/_render/<this file> -> up three to the repo root.
 ROOT = os.path.dirname(os.path.dirname(HERE))
 REVIEWS = os.path.join(ROOT, "reviews")
+# ★ #218 — ONE reader for the frozen column, imported rather than re-typed. This gate reads the
+# NEWEST register by design, so it was the consumer the rename would have broken first: a
+# `.get("itinerary_status")` against v4 returns None, frozen_gap falls to 0 and G4 reports
+# "the columns no longer disagree" — a false green in the shape of a red.
+sys.path.insert(0, os.path.join(ROOT, "knowledge"))
+from gen_itinerary_status import frozen_status  # noqa: E402
 
 # The lane's four itinerary rows, by number and by the name the frozen snapshot gives them.
 LANE_ROWS = {
@@ -179,7 +189,7 @@ def drive(root, reviews_dir):
             continue
         d = r.get("derived")
         line = "  row %-3d %-34s frozen=%-8s derived=%-6s" % (
-            n, r["name"][:34], r.get("itinerary_status"), d)
+            n, r["name"][:34], frozen_status(r), d)
         if d != "GATED":
             fails.append("G1 REGISTER-DERIVED — row %d (%s) derives %s, not GATED"
                          % (n, r["name"], d))
@@ -227,7 +237,7 @@ def drive(root, reviews_dir):
     else:
         print("  ✅ measured GAP total = 1 (row 124, Layer-2 variant matrices); "
               "$true_gaps = %s" % doc.get("$true_gaps"))
-    frozen_gap = sum(1 for r in rows.values() if r.get("itinerary_status") == "Gap")
+    frozen_gap = sum(1 for r in rows.values() if frozen_status(r) == "Gap")
     drifted = sum(1 for r in rows.values() if "UNDERSTATES" in (r.get("drift") or ""))
     print("  ·  frozen column reads Gap on %d rows; %d rows stamped "
           "'itinerary UNDERSTATES the store'" % (frozen_gap, drifted))
@@ -238,7 +248,7 @@ def drive(root, reviews_dir):
         print("  ❌ columns agree — gate has outlived its defect")
     for n in LANE_ROWS:
         r = rows.get(n) or {}
-        if r.get("itinerary_status") == "Gap" and r.get("derived") == "GATED":
+        if r and frozen_status(r) == "Gap" and r.get("derived") == "GATED":
             print("  ·  row %d: frozen 'Gap' vs measured 'GATED' — a brief reading the frozen "
                   "column would have commissioned this build" % n)
     return fails

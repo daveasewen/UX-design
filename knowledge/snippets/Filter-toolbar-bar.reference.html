@@ -275,7 +275,7 @@
               </div>
             </div>
           </div>
-          <div class="ftb-chips filterbar">
+          <div class="ftb-chips filterbar" id="ftb-chips" tabindex="-1">
             <div class="row" style="display:flex; flex-wrap:wrap;">
               <span class="tag t-cm-caption"><span class="lbl">GBP</span><button class="x" aria-label="Remove filter: GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
               <span class="tag t-cm-caption"><span class="lbl">Last 30 days</span><button class="x" aria-label="Remove filter: Last 30 days"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
@@ -377,11 +377,40 @@
     addEventListener('resize', placeAll);
     placeAll();
 
-    /* ===== Tags.reference.html JS, unedited ===== */
+    /* ===== Tags.reference.html JS — kept in step with Tags, repaired there first ===== */
+    /* ⛔ THE DISMISS REMOVED NOTHING — MEASURED #218 lane cB by driving it. 3 chips in, 3 chips out — the chip stayed CONNECTED at max-width:0,
+       an invisible ghost still in the tab order and the accessibility tree.
+       Alert's wave-3 defect (β/R1), reproduced here verbatim, both halves:
+       (a) `{once:true}` COUNTS DELIVERIES, NOT MATCHES. This element transitions many
+           properties; `end:border-bottom-width` arrived first, failed the propertyName guard, did
+           nothing — and the one-shot listener had ALREADY unsubscribed. `end:max-width` landed
+           later with nothing listening, so the `.remove()` it gated never ran. `end:max-width` DID arrive here (run and end both observed);
+           only the listening was gone, which isolates half (a) on its own.
+       (b) `max-width:0 !important` in the .removing rule routes the zero through an
+           author-IMPORTANT declaration. The collapse is now ALSO driven inline->inline so the
+           removal can never depend on that importance change starting a transition.
+       The handler below unsubscribes only when its OWN property arrives, and a fallback timer
+       guarantees the removal: a dismiss that depends on an event that may not fire is the
+       exact defect this repair exists to close. FOCUS (2.4.3): removing the element that
+       holds focus strands activeElement on BODY, so focus moves to the next remaining
+       dismiss in the same group, or to the group itself when the last one goes. */
     document.querySelectorAll('.tag .x').forEach(x=> x.addEventListener('click', ()=>{
-      const c=x.closest('.tag'); c.style.maxWidth=c.offsetWidth+'px';
-      requestAnimationFrame(()=> c.classList.add('removing'));
-      c.addEventListener('transitionend', ev=>{ if(ev.propertyName==='max-width') c.remove(); }, {once:true});
+      const c=x.closest('.tag');
+      if(c.dataset.going) return; c.dataset.going='1';
+      const group=x.closest('.ftb-chips') || c.parentElement;
+      const rest=[...group.querySelectorAll('.tag .x')].filter(b=> b!==x && !b.closest('.tag').dataset.going);
+      const nextFocus = rest[0] || group;
+      let done=false;
+      const finish=()=>{ if(done) return; done=true; c.remove();
+        if(document.body.contains(nextFocus)) nextFocus.focus(); };
+      c.style.maxWidth=c.offsetWidth+'px';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        c.classList.add('removing'); c.style.maxWidth='0px';
+      }));
+      const onEnd=ev=>{ if(ev.target!==c || ev.propertyName!=='max-width') return;   /* NOT {once:true} — see the ⛔ note */
+        c.removeEventListener('transitionend', onEnd); finish(); };
+      c.addEventListener('transitionend', onEnd);
+      setTimeout(finish, 600);                                   /* fallback — never orphan the control */
     }));
   </script>
 </body>

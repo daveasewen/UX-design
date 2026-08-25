@@ -1,0 +1,61 @@
+=== 1 · knowledge/_gate_doc_rows.py --selftest  (gate A) ===
+✅ pass-arm: live store clean
+✅ staged-arm: a doc present ONLY in the index is seen and flagged (0 real staged add(s) in this tree right now).
+✅ sub-report arm: `notes/_subreports/*.md` is graded like a brief; `_TEMPLATE.md`, `assets/**` and non-`.md` files are proven OUT (4 negative controls).
+✅ mutation-arm: deleting the notes/_briefs/2026-08-25-218-wave3-lanes-brief.md reference is flagged.
+✅ directory-arm: notes/_briefs/assets-215-nav/nav-shadcn.png covered by notes/_briefs/assets-215-nav/; deleting that home is flagged.
+✅ SELFTEST PASS — the green can fail (both non-green arms shown above).
+rc=0
+
+=== 2 · knowledge/_gate_doc_rows.py --check ===
+doc-row gate: population 64 (added >= 2026-08-15, PICKED) · of which staged-in-THIS-commit 0 (#207 postscript: the single-commit blindspot) · unrowed 0
+✅ PASS — every in-scope document has a store row.
+rc=0
+
+=== 3 · gate B, all 9 arms (selftest_subreport_citation on a real git fixture repo) ===
+arms failed: 0 | refusals: []
+
+=== 4 · knowledge/gen_itinerary_status.py --selftest ===
+SELFTEST OK — 7 arms: pass(6 rows) · fail(row 86 + derived gap mutation) · mutation-store · mutation-clause · fail-loud · layer-2(probe · store-mutation · mapping-mutation · ambiguity-refusal · gap-reachable) · frozen-column-name(present + bare name ABSENT + reader spans v1-v3 and v4 + refuses on neither)
+rc=0
+
+=== 5 · MUTATION — FROZEN_STATUS_KEY reverted to the pre-#218 name; arm 7 MUST go red ===
+SELFTEST FAIL — arm7: the emitted JSON still carries 125 bare `"itinerary_status":` field(s) — the #218 rename is incomplete and the class survives
+SELFTEST FAIL — arm7: a record still carries the bare 'itinerary_status' key
+SELFTEST FAIL — arm7: STAMP 2026-08-25-v4 names an EXISTING snapshot whose bytes differ — that is an overwrite of history (ADR-0017). Bump STAMP.
+mutated rc = 1 (1 = the arm can fail)
+
+=== 6 · FINDING 4 — the one capture-gate red is PRE-EXISTING and outside this brief's regions ===
+the failing arm:
+  ❌ #70/#71 non-catch: _gen_chain.py --selftest is NOT green
+its cause, chased into _gen_chain's own bite list:
+    ✗ is materially smaller than GOOD-MORNING.md (30,494 vs 75,342 tape, <40%)
+proof it is not this lane's: GM / _LIVE-STATE / _CHAIN / _gen_chain.py are all UNMODIFIED
+(empty above = unmodified)
+
+=== 7 · the whole uncommitted surface of this lane ===
+ M knowledge/_RUNBOOK-capture-ritual.md
+ M knowledge/_capture_gate.py
+ M knowledge/_gate_doc_rows.py
+ M knowledge/_render/verify_wave3_alpha_218.py
+ M knowledge/_render/verify_wave3_gamma_218.py
+ M knowledge/_rulings.json
+ M knowledge/gen_itinerary_status.py
+ M knowledge/snippets/Data-grid.reference.html
+ M knowledge/snippets/Date-picker.reference.html
+ M knowledge/snippets/Date-range-picker.reference.html
+ M knowledge/snippets/Empty-state.reference.html
+ M knowledge/snippets/File-upload.reference.html
+ M knowledge/snippets/Filter-toolbar-bar.reference.html
+ M knowledge/snippets/Notifications.reference.html
+ M knowledge/snippets/Secure-entry.reference.html
+ M knowledge/snippets/Tags.reference.html
+ M knowledge/snippets/Time-picker.reference.html
+ M notes/_REHEARSAL-LOG.jsonl
+ M notes/_receipts/2026-08-24-crank-charts.md
+?? knowledge/_render/verify_quality_forms_218.py
+?? notes/_briefs/2026-08-25-218-filed-reports-and-column-brief.md
+?? notes/_briefs/2026-08-25-218-quality-wave-forms-brief.md
+?? notes/_subreports/
+?? reviews/ITINERARY-STATUS-2026-08-25-v4.html
+?? reviews/ITINERARY-STATUS-2026-08-25-v4.json

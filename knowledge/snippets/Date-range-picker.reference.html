@@ -462,7 +462,18 @@
         fromInput.value = fmt(date); toInput.value = '';
         setError('from', false); setError('to', false);
         announce.textContent = 'Start of range ' + say(date) + '. Choose an end date.';
+        /* ⛔ THE RANGE WAS UNPICKABLE FROM THE KEYBOARD — MEASURED #218 lane cB.
+           render() rebuilds the grid with gridEl.innerHTML = '', which destroys the very
+           button the user just pressed Enter on; document.activeElement fell to BODY, the
+           grid's keydown handler then bailed on every subsequent arrow (it requires a
+           .dr-day activeElement), and NO end date could be chosen at all — driven: start
+           lands 25/08/2026, then ArrowRight+Enter leaves #f-to EMPTY. The panel also stays
+           open by design after the start pick, which suppressed the blur validator too, so
+           the keyboard user had no route to a range by ANY path. Re-seat focus on the day
+           just picked, exactly as the arrow handlers already do after their own render(). */
+        focusDay = date.getDate();
         render();
+        focusGrid();
       } else {
         end = date;
         toInput.value = fmt(date);
@@ -481,10 +492,18 @@
       render();
       const t = grid.querySelector('[tabindex="0"]'); if (t) t.focus();
     }
+    /* ⛔ FOCUS (WCAG 2.4.3) — MEASURED #218 lane cB by driving a SYNTHETIC outside pointerdown
+       (which moves no focus of its own, so the reading is the component's and not the
+       browser's): the panel is display:none when closed, so closing it while a day button
+       held focus stranded document.activeElement on BODY. A dismissal the user did not aim
+       at the panel must still not throw them to the top of the document. The rescue fires
+       only when focus actually lived inside the panel; on a real outside click the browser's
+       own focus change lands after this handler and wins, which is what we want. */
     function close(returnFocus){
+      const stranded = panel.contains(document.activeElement);
       panel.classList.remove('is-open');
       fromBtn.setAttribute('aria-expanded', 'false'); toBtn.setAttribute('aria-expanded', 'false');
-      if (returnFocus && openedFrom) openedFrom.focus();
+      if ((returnFocus || stranded) && openedFrom) openedFrom.focus();
     }
     fromBtn.addEventListener('click', () => panel.classList.contains('is-open') ? close(true) : open(fromBtn));
     toBtn.addEventListener('click', () => panel.classList.contains('is-open') ? close(true) : open(toBtn));

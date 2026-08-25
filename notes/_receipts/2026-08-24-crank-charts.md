@@ -33,6 +33,23 @@ Gauge: boot 67,152 · FILL at receipt-cut 164,619 real (stop 190,000, seam CLEAR
 - **#185 class:** `knowledge/_render/verify_dv_d16_render.py` has no `_state.json` store row — store is fenced; row owed at reconcile.
 - **Shared-tree observation:** Window 3's edits (Sidebar-nav, Command-palette, Navigations, Pagination, Video-player, Payment-card-visual + showroom pages, `?? …crank-behaviour.md`, 3 `verify_behaviour_218w3_*.py`) were visible in this tree throughout. Untouched by this window; regions held disjoint.
 
+## ⬛ PROPOSAL FOR DAVE + CONDUCTOR — filed sub-reports (the "receipt discipline one level down")
+
+*Raised by Dave in this window's chat (2026-08-24, post-receipt); he wants it worked when the other lane closes. PROPOSAL, not ruled — nothing here is enacted. Origin: his multi-window-vs-tree question; the answer that landed: a sub cannot spawn subs (depth caps at 1), so worker windows ARE the domain-boss tier; this discipline is ORTHOGONAL to topology — adopt in both, it moves the threshold at which a second window is needed, and it buys NO headroom past one window's stop line.*
+
+**The shape:** every sub writes its full report to a repo file and returns only a STUB to chat (verdict + counts + pointer + token spend). The file is the compression boundary at the sub seam, exactly what worker receipts are at the window seam. Buys: FILL rent stops accruing on report detail (~1.5K/sub resident today, measured on this window's one sub); durability (chat reports die with the window; replay needs the artefact); Dave-visible evidence.
+
+**Pitfall map, each with its design-against (consequences named up front, #165):**
+1. **Unread pointer** ([[roll-pointer]] class) — stub carries COUNTS ("3 findings · 2 ruling-shaped · 1 UNPROVEN"): nonzero forces the read. Gate: conductor wrap REFUSED if a filed report exists uncited by path in the receipt (grep-able).
+2. **Stub/file truth drift** (banner-figures class) — the FILE is sole authority; stub claims are parsed from it, never retyped; ADR-0016 vocabulary (CLAIMED/UNPROVEN) mandatory in the skeleton.
+3. **Invisible documents** (#185) — store row per report, minted at reconcile (store fenced from subs); widen the existing doc-row gate's glob to the sub-report path.
+4. **Write-by-default door** (#158) — ONE fenced directory; filenames carry window + sub index (collision-proof, version-don't-overwrite); one writer per file; DO-NOT-RULE fence unchanged; skeleton has a RULING-SHAPED QUESTIONS section so generated prose can't later read as decided.
+5. **Deferred replay → no replay** (conclusions-are-debt) — stub carries a priced REPLAY-THESE line (bounded, s172-D3 shape); the deferral is declared, never silent.
+6. **Report read as live state** (ADR-0017) — reports are dated HISTORY; live facts flow to their one home at reconcile; never cite a report as current state.
+7. **Evidence stranding** — live instance THIS SESSION: the DV-D16 sub's proof PNGs landed in session outputs, invisible to every other window; rescued by hand. Rule: subs write evidence BESIDE the report in-repo, never in session scratch. Stub carries sub token spend so `subs N (n=…)` accounting survives.
+
+**Deliverable shape when taken up:** report-file skeleton + stub contract + two gate extensions (doc-row glob · uncited-report refusal), runbook-inscribed — gate the condition, not the memory. All Dave's to rule; conductor's to inscribe.
+
 ## Wave-3 lane-brief draft (strand (b), paper only — conductor's to adopt)
 
 From the measured v3 (78 Gap): **lane α — Inputs & forms P1** (8: form layout+validation · date · date-range · time · number/currency · file upload · OTP · textarea — one family idiom, heavy a11y surface) · **lane β — Feedback & status P1** (5: alert · toast · drawer · popover · skeleton — overlay/announce idioms shared) · **lane γ — Data display P1** (4: data grid · stat/metric card · empty state · charts-kit gap row is a register artefact, verify before briefing) + Partial repairs (Modal/Dialog P1 · Account selector P1). ⛔ Navigation family (5 gaps incl. sidebar/nav-rail + command palette) COLLIDES with Window 3's live lane — do not brief in parallel; sequence after their reconcile. Layer-2 (shells 7 · templates 11 · lock-ups 10) → hold for strand (c)'s ADR. Serial set unchanged (registry · MIGRATED_SNIPPETS · CATEGORIES · spine · ONE conductor commit).

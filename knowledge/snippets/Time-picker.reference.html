@@ -166,9 +166,19 @@
     background:var(--page); border:1px solid var(--menu-border); border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow);   /* elevation/functional: X0 Y0 blur16 */
     max-height:248px; overflow-y:auto;
-    opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
-  .tp-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
-  .tp-menu.is-static{position:static; opacity:1; transform:none; pointer-events:auto; margin-top:8px;}
+    /* ⛔ visibility IS NOT DECORATION HERE — MEASURED #218 lane cB. The closed menu was
+       opacity:0 + pointer-events:none only, so it stayed display:block / visibility:visible:
+       248px tall, and its 48 role="option" children remained in the accessibility tree and
+       programmatically focusable while #tp-open reported aria-expanded="false". Driven: after
+       a close, document.activeElement was still an .tp-opt inside an invisible listbox.
+       Same class as the [hidden]-vs-author-display defect. visibility:hidden removes it from
+       both trees; the 0s-delay transition keeps the fade-out playing before it goes. */
+    --tp-fade:200ms;   /* declared HERE so nothing dangles — matches --ease's duration */
+    opacity:0; visibility:hidden; transform:translateY(-6px); pointer-events:none;
+    transition:opacity var(--ease), transform var(--ease), visibility 0s linear var(--tp-fade);}
+  .tp-menu[data-open="true"]{opacity:1; visibility:visible; transform:none; pointer-events:auto;
+    transition:opacity var(--ease), transform var(--ease), visibility 0s;}
+  .tp-menu.is-static{position:static; opacity:1; visibility:visible; transform:none; pointer-events:auto; margin-top:8px;}
   .tp-opt{display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:44px; padding:0 12px;
     color:var(--text); cursor:pointer;}
   .tp-opt:hover{background:var(--field-bg-hover);}
@@ -183,6 +193,7 @@
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; scroll-behavior:auto !important; }
+    .tp-menu{--tp-fade:0s;}   /* the blanket rule kills DURATION, not DELAY — the hide must not linger */
   }
   @media (max-width:480px){
     body{padding:1.25rem;}
@@ -350,9 +361,12 @@
       if (target){ target.scrollIntoView({ block:'center' }); target.focus(); }
     }
     function close(returnFocus){
+      /* focus rescue, 2.4.3 — see the ⛔ note on .tp-menu: the options go visibility:hidden,
+         and focus must not go with them. Fires only when focus was inside the menu. */
+      const stranded = menu.contains(document.activeElement);
       delete menu.dataset.open;
       openBtn.setAttribute('aria-expanded','false'); input.setAttribute('aria-expanded','false');
-      if (returnFocus) openBtn.focus();
+      if (returnFocus || stranded) openBtn.focus();
     }
     function select(t){
       input.value = t; setError(false); close(true);
