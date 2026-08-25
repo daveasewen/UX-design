@@ -105,11 +105,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **220 items · 141 live · 73 Dave's · 68 mine · 206 carry a stated close condition · **14 UNCONDITIONED**.**
+> **227 items · 148 live · 77 Dave's · 71 mine · 213 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (73) — 73 with a ratified `closes_when`, 0 with NONE:**
+> **DAVE'S (77) — 77 with a ratified `closes_when`, 0 with NONE:**
 > - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
 > - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…** — *closes when:* Dave ratifies or reverses
 > - `W-104` **#215 taxonomy research v2 - Carbon deep-dive, 135-component ladder map, lifecycle vocabulary, name distribution, nav screenshots** — *closes when:* Dave has ruled on the 12 PROPOSED-FOR-DAVE placements in section 2.3 and on Map A vs Map B (whether a Primitives tier is used), and gen_library_214.py LEVELS + level_of() have been changed to match, with the section 2.2 table regenerated from the changed derivation
@@ -143,6 +143,10 @@
 > - `W-154` **#218 phantom-surfaces receipt - six PROPOSED surfaces + the Confirmation finding** — *closes when:* Dave signs/amends the six and rules Confirmation
 > - `W-159` **#218 filed-report cA: s218-D7 machinery built + frozen column renamed (v4 emitted); questions 2-4 Dave's** — *closes when:* Dave rules the citation-gate promotion, the build-wiring option, and the doc-row untracked scope; Q1 field name ACCEPTED (a) by the conductor
 > - `W-160` **#218 filed-report cB: quality-forms lane - 8 live defects fixed at cause incl. Date-range keyboard-broken; 3 questions Dave's** — *closes when:* Dave rules the link-composite step, the Empty-state tightening, and the report's third question; the fixes survive his eye
+> - `W-166` **#219 filed-report lane1: segmented radii + s201-D1 dimension grammar wired, 32 cells green; 9 findings incl. the never-enacted s202-D1 base SIZE mint and 47 orphan minted vars; 5 questions Dave's** — *closes when:* Dave rules the five ruling-shaped questions (legacy .lg mapping, minted-scale type ramp, the 8/12/16/20 label inset, the two 44px hit-area names, the shared _token_router refactor)
+> - `W-167` **#219 filed-report lane2: the four CI drifts were one refusing generator plus its backlog — ds-039 sniff made grammar-aware, boot-delta comparatives closed, [115] premise disproven by measurement** — *closes when:* Dave rules the three ruling-shaped questions (what the [115] chain-size gate should assert, whether the three @property registrations belong in canon.css globally, and the gen_canon_components --selftest wiring)
+> - `W-168` **#219 filed-report lane3: the three bento review pages were never stale — 15/15 pinned specimen by name, regeneration byte-identical, zero working-tree changes; residual ③ discharged by measurement** — *closes when:* Dave (or the conductor on his word) rules how _LIVE-STATE.md residual ③ is discharged — the report recommends an addition-only discharge line citing this report
+> - `W-170` **#219 SEGMENTED-ADOPTION review v1 — PROPOSED: four themes x light/dark, minted + legacy tiers, BEFORE rows, live A/B for the legacy .lg radius mapping** — *closes when:* Dave has looked at the page and ruled the legacy->minted radius mapping (reading A ordinal lg->m vs reading B nearest-height lg->s)
 > - `W-38` **Size-ramp + per-theme size modes proposal (FLOATED, Dave's instinct, #200)** — *closes when:* Dave rules the pair semantics and the per-theme mode mapping, or drops the shape
 > - `W-41` **#203 delegated-wrap brief (DO-NOT-RULE list + session facts for the Opus wrap sub)** — *closes when:* the #203 wrap commit is pushed by the conductor under s203-D1 AND the CI read-back is relayed to Dave in chat - both limbs, per the ruling's own words
 > - `W-51` **#207 addendum: Dave's critique of the #206 record (promotion vocabulary open; candidature homed)** — *closes when:* Dave rules the twice-caught vocabulary question (does a mined historical occasion count as a 'catch' toward s204-D1's bar?) AND rules promote/wait/park on the three candidates; the candidature record in knowledge/_DS-IMPROVEMENTS.md then carries the outcome
@@ -184,14 +188,14 @@
 > - `W-99zg` **#214 LIBRARY v2 BUILT: true header (theme/dark/width), overlay off component pages (#chrome=0 opt-out), search+68 aliases+cmd-K, level facet chips (config swap point, word-set UNPICKED), 135 components, driven headless 24/25** — *closes when:* Dave's eye on the page + two calls: does v2 REPLACE showroom/index.html, and which level word-set fills the LEVELS config (three candidates commented beside it)
 > - `W-99zi` **#217 bento research brief v1: Dave three-role taxonomy tested against practice (Apple tile CSS measured 18px radius, Flickr justified-layout widows + fullWidthBreakoutRowCadence, concentricity WWDC25, dense-flow a11y trap)** — *closes when:* Dave has read the verdict and ruled on the three bends: GALLERY role vs justified-row family, the flush/container-radius dashboard signature having no bento precedent (only Apple concentricity + inset-grouped lists), and whether orphan/squaring policy is a role property or an orthogonal parameter
 >
-> **MINE (68), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `G4` · `W-99za` · `W-99zh`
+> **MINE (71), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `W-165` · `W-169` · `W-171` · `G4` · `W-99za` · `W-99zh`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **40,863 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **41,497 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 89,695 real and stays whole for retrieval; you have paid for
 46% of it, and that is the intended figure, not a shortfall.)*

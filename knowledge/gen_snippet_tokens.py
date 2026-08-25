@@ -81,8 +81,18 @@ def resolve(path, mode):
     knowledge/component-types.json, everything else to semantic-colour.json."""
     if path.startswith("color/"):
         src = "colour.json"
-    elif path.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/", "target/")):
+    elif path.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/",
+                          "target/", "size/")):
+        # `size/` added #219: s202-D1 mints size/segmented-control/* in the BASE layout store.
+        # canon/gen_theme_cascade.py::_store_for already carried this route; THIS router did not,
+        # so a manifest binding to a dimension token resolved into semantic-colour.json and
+        # KeyError'd — the ds-018 silent-lookup class again, one file over (s121-D1, #121).
         src = "layout.json"
+    elif path.startswith(("padding/", "gap/")):
+        # `padding/`+`gap/` added #219, same class: the spacing store is a real manifest target
+        # (s202-D1 mints padding/segmented-control/* there) and without this route the lookup
+        # fell through to semantic-colour.json.
+        src = "spacing.json"
     elif path.startswith("motion/"):
         src = "motion.json"
     elif path.startswith("component-type/"):

@@ -11,6 +11,31 @@ Polaroid failure. **Every step below was run and OBSERVED working 2026-07-23** i
 (contrast maths, `node --check`, gates). **HTML is what Dave reviews, never PNGs.** A standing
 "render-verify OWED" note clears only when a render has been *seen*, not when the pipeline exists.
 
+⛔ **FIFTH STRATUM 2026-08-25 (#219) — `/var/tmp/chromelibs` IS NOW A HOLLOW SHELL, AND A HOLLOW LIB
+DIR FAILS LIKE A BROKEN RECIPE.** The `#136`/`#138` strata below name
+`/var/tmp/chromelibs/root/usr/lib/aarch64-linux-gnu` as the reusable foreign-session lib dir. As of
+today `/var/tmp/chromelibs/` **still exists and is completely empty** — a partial sandbox reclaim
+([[stale-mount-corroborates-a-stale-premise]]). Pointing `LD_LIBRARY_PATH` at it produces
+`headless_shell: error while loading shared libraries: libXdamage.so.1: cannot open shared object
+file`, which reads as *"the recipe is broken"* rather than *"your lib dir is hollow"* — the
+[[refusal-names-the-first-obstacle]] shape, one directory over.
+**`/var/tmp/chromelibs-s213e2` (the fourth stratum's dir) is INTACT** and carries the one lib the
+shell actually needs (`libXdamage.so.1`, `libXdamage.so.1.1.0`) — re-confirmed first-hand at the
+`#219` crank seam, both by lane 3 and again at the reconcile.
+**THE MOVE: `ls` the lib dir before trusting it, and confirm with `ldd`, never with a launch attempt.**
+
+```
+ls -A /var/tmp/chromelibs-s213e2/root/usr/lib/aarch64-linux-gnu     # empty output = HOLLOW, stop here
+LD_LIBRARY_PATH=/var/tmp/chromelibs-s213e2/root/usr/lib/aarch64-linux-gnu \
+  ldd /var/tmp/pw-browsers-215/chromium_headless_shell-1234/chrome-linux/headless_shell \
+  | grep "not found"                                                # MUST print nothing
+```
+
+A launch attempt tells you a lib is missing; `ldd` tells you **which**, and `ls` tells you whether
+the dir you were told to trust has anything in it at all. ⚠ Both dirs are FOREIGN-session artefacts
+on a shared `/var/tmp` — the fourth stratum's "re-extract, don't rely" still stands; this stratum is
+what "don't rely" looks like when it comes true.
+
 ⚠ **FOURTH STRATUM 2026-08-22 (#215) — THE #125 TLS READING IS ENVIRONMENT-DEPENDENT, AND TODAY'S
 ENVIRONMENT WAS THE BLOCKED ONE.** The research sub's install failed 5× across 3 CDN hosts on
 `UNABLE_TO_GET_ISSUER_CERT_LOCALLY` — the exact reading #129 could not reproduce — and was

@@ -24,8 +24,22 @@
        - shape:  square only (Mono). 2px inset track padding + a floating indicator (the pill's padding
          applied to all — Dave 2026-07-24). The rounded PILL SHAPE is deferred to a mobile variant.
        - content: label segments (text) · .icons (icon-only, accessible names required)
-       - size:   the mini ramp (T-D15, RULED): .sm = 12/500 · .md = 14/500 (default) · .lg = 16/400 —
-         bound in canon/type.css (.t-cm-ctl-12/-14/-16 via .seg.sm/.md/.lg button). Heights 28/32/36.
+       - size:   TWO TIERS, deliberately, and both are live (#219):
+           · MINTED SCALE GRAMMAR (s201-D1, dimension-first) — .xs / .s / .m / .l at total outer
+             heights 24 / 36 / 44 / 48, track insets 2 / 2 / 4 / 4, container radius from
+             border-radius/segmented-container/<scale> and the sliding thumb from
+             border-radius/segmented-thumb/<scale>. Every number is a MINTED token read at render
+             time; nothing is derived live (s200-D1 clause a). Square themes (mono, legacy,
+             supercharge) resolve both radii to 0 from the base tier and stay square (s201-D5);
+             console resolves its own tuned 6/8/10/12 containers and 0/2/4/6 thumbs (s202-D1/D2).
+           · LEGACY MINI RAMP (T-D15, RULED, and its consumers are live) — .sm = 12/500 ·
+             .md = 14/500 (default) · .lg = 16/400, bound in canon/type.css
+             (.t-cm-ctl-12/-14/-16 via .seg.sm/.md/.lg button). Button heights 28/32/36, UNMOVED.
+             These three now ALIAS the minted radii ordinally (sm→xs · md→s · lg→m) so a console
+             page stops rendering square corners, and NOTHING ELSE about them changes — no pixel
+             moves, no type binding is touched. ⚠ The ordinal-vs-nearest-height mapping is a
+             TASTE call and is PROPOSED, not ruled: reviews/SEGMENTED-ADOPTION-2026-08-25-v1.html
+             shows both readings side by side for Dave's eye.
        - HIT AREA: every segment carries an invisible ::before target >= var(--hit)=target/min(44) so a small
          VISIBLE segment still meets the 44 target (HSBC default; WCAG 2.5.5 AAA). The target ANCHORS
          within the segment via .hit-* (9-point matrix) so the visible control stays aligned to its
@@ -37,8 +51,18 @@
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:200ms cubic-bezier(.4,0,.2,1); }
-  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F0F0F0; --sel:#000000; --on-sel:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A; --border:#808080; --focus:#305A85; --page:#FFFFFF; --hit:44px; }
-  [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A; --hit:44px; }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F0F0F0; --sel:#000000; --on-sel:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A; --border:#808080; --focus:#305A85; --page:#FFFFFF; --hit:44px;
+    --seg-h-xs:24px; --seg-h-s:36px; --seg-h-m:44px; --seg-h-l:48px;
+    --seg-pad-xs:2px; --seg-pad-s:2px; --seg-pad-m:4px; --seg-pad-l:4px;
+    --seg-rad-xs:0; --seg-rad-s:0; --seg-rad-m:0; --seg-rad-l:0;
+    --seg-thumb-xs:0; --seg-thumb-s:0; --seg-thumb-m:0; --seg-thumb-l:0;
+    --seg-inset-xs:8px; --seg-inset-s:12px; --seg-inset-m:16px; --seg-inset-l:20px; }
+  [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A; --hit:44px;
+    --seg-h-xs:24px; --seg-h-s:36px; --seg-h-m:44px; --seg-h-l:48px;
+    --seg-pad-xs:2px; --seg-pad-s:2px; --seg-pad-m:4px; --seg-pad-l:4px;
+    --seg-rad-xs:0; --seg-rad-s:0; --seg-rad-m:0; --seg-rad-l:0;
+    --seg-thumb-xs:0; --seg-thumb-s:0; --seg-thumb-m:0; --seg-thumb-l:0;
+    --seg-inset-xs:8px; --seg-inset-s:12px; --seg-inset-m:16px; --seg-inset-l:20px; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-note{font-size:12px; color:#767676; max-width:60ch; margin:.6rem 0 0;}   /* demo-chrome — advisory-exempt */
@@ -49,9 +73,18 @@
      PILL PADDING FOR ALL (Dave 2026-07-24): the inset track + floating indicator — once the pill's
      alone — is now the BASE for every variant. The active fill floats inside a 2px gutter (Dave
      2026-07-24: 2px, not 4) instead of touching the frame. */
-  .seg{position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top;}
-  .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0;
-    transition:left var(--ease), width var(--ease);}                          /* the active fill — floats in the 2px inset, slides */
+  /* THE CONCENTRIC PAIR IS TOKEN-DRIVEN (#219, enacting s199-D3 · s200-D1 · s201-D1 · s201-D5 ·
+     s202-D1 · s202-D2). Four SCALE-SELECTED locals carry one scale's minted numbers to the two
+     boxes that need them; the size classes below just repoint the locals. The defaults are scale
+     `s`, whose minted inset is 2px — byte-identical to the literal that stood here before, so an
+     unsized .seg does not move. ⛔ NEVER hardcode a radius here: the whole point of the mint-time
+     derivation (s200-D1) is that the disk carries concrete numbers and the CSS only READS them. */
+  .seg{--seg-pad:var(--seg-pad-s); --seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s); --seg-inset:var(--seg-inset-s);
+    position:relative; display:inline-flex; box-sizing:border-box; padding:var(--seg-pad);
+    border:1px solid var(--border); background:var(--surface); border-radius:var(--seg-rad); vertical-align:top;}
+  .seg .ind{position:absolute; top:var(--seg-pad); bottom:var(--seg-pad); left:var(--seg-pad); width:0; background:var(--sel); z-index:0;
+    border-radius:var(--seg-thumb);
+    transition:left var(--ease), width var(--ease);}                          /* the active fill — floats in the minted inset, slides */
   .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
     /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
@@ -63,7 +96,36 @@
   .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
   .seg svg{width:16px; height:16px; fill:currentColor;}
 
-  /* size — geometry + the mini ramp step (bound in type.css): sm 12 · md 14 · lg 16 */
+  /* ===== SIZE, TIER 1 — THE MINTED SCALE GRAMMAR (s201-D1, dimension-first) =====
+     `--seg-h-*` is the TOTAL OUTER height (border box), so the track carries it and the buttons
+     fill it — no calc, no derivation, nothing to drift. box-sizing is set explicitly on .seg
+     above because the harness `*{box-sizing}` rule is DROPPED on the way into canon.css. */
+  .seg.xs{--seg-h:var(--seg-h-xs); --seg-pad:var(--seg-pad-xs); --seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs); --seg-inset:var(--seg-inset-xs); height:var(--seg-h);}
+  .seg.s {--seg-h:var(--seg-h-s);  --seg-pad:var(--seg-pad-s);  --seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);  --seg-inset:var(--seg-inset-s);  height:var(--seg-h);}
+  .seg.m {--seg-h:var(--seg-h-m);  --seg-pad:var(--seg-pad-m);  --seg-rad:var(--seg-rad-m);  --seg-thumb:var(--seg-thumb-m);  --seg-inset:var(--seg-inset-m);  height:var(--seg-h);}
+  .seg.l {--seg-h:var(--seg-h-l);  --seg-pad:var(--seg-pad-l);  --seg-rad:var(--seg-rad-l);  --seg-thumb:var(--seg-thumb-l);  --seg-inset:var(--seg-inset-l);  height:var(--seg-h);}
+  .seg.xs button, .seg.s button, .seg.m button, .seg.l button{height:100%; padding:0 var(--seg-inset);}
+  /* HIT ZONE, s201-D2 + s201-D3, stated as the ruled geometry: max(44, VISUAL HEIGHT of the control).
+     ⚠ Reconciled with the ::before machinery below, NOT duplicated — this rule only widens that same
+     pseudo-element's floor. The base ::before already yields max(44, button height); the button is
+     INSIDE the track, so for scale `l` (48) its own 100% is 38 and a bare min-height:44 would hand
+     back 44 where Dave ruled the box NATURAL above the floor ('natural for anything bigger than 44').
+     Reading the control's own minted height is what makes xs and s expand to 44, m sit AT 44, and l
+     keep 48. Enforcement is still ABSENT — no gate reads the 44 (s201-D2/D3 both say so). */
+  .seg.xs button::before, .seg.s button::before, .seg.m button::before, .seg.l button::before{
+    min-height:max(var(--hit), var(--seg-h));}
+
+  /* ===== SIZE, TIER 2 — THE LEGACY MINI RAMP (T-D15, RULED; live consumers) =====
+     geometry + the mini ramp step (bound in type.css): sm 12 · md 14 · lg 16. Heights and insets
+     are UNCHANGED — the chart view switch (.seg.sm) and every other consumer keep their pixels.
+     What is NEW is the radius alias: each legacy step borrows the minted radii of a scale so a
+     console page stops rendering square. ⚠ ORDINAL map (sm→xs · md→s · lg→m), PROPOSED not ruled —
+     the nearest-HEIGHT reading collapses md and lg onto the same scale (32→36 and 36→36), which is
+     why it was not taken silently. Both readings are drawn in
+     reviews/SEGMENTED-ADOPTION-2026-08-25-v1.html for Dave to point at. */
+  .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
+  .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}
+  .seg.lg{--seg-rad:var(--seg-rad-m);  --seg-thumb:var(--seg-thumb-m);}
   .seg.sm button{height:28px; padding:0 8px;}
   .seg.md button{height:32px; padding:0 12px;}
   .seg.lg button{height:36px; padding:0 16px;}
@@ -126,6 +188,39 @@
   <p class="demo-note">The sm segments are 28px visible, but each carries an
     invisible <code>::before</code> target &ge; 44px — the whole control clears the HSBC 44 default without looking heavy.</p>
 
+  <div class="section-head-row"><h2>Minted scale grammar (s201-D1) · xs 24 — hit zone expands to 44</h2></div>
+  <div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div>
+
+  <div class="section-head-row"><h2>Minted scale grammar · s 36 — hit zone expands to 44</h2></div>
+  <div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div>
+
+  <div class="section-head-row"><h2>Minted scale grammar · m 44 — visual height and hit zone coincide</h2></div>
+  <div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div>
+
+  <div class="section-head-row"><h2>Minted scale grammar · l 48 — hit box natural above the floor (s201-D3)</h2></div>
+  <div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div>
+  <p class="demo-note">All four scales render square here — this file is the mono (base) theme, and
+    s201-D5 floors the square themes at zero. The concentric pair only appears under
+    <code>[data-apollo-theme="console"]</code>, which is a canon.css layer, not a snippet one.</p>
+
   <div class="section-head-row"><h2>Icon-only · square · md (44px cells, accessible names)</h2></div>
   <div class="seg md icons" role="group" aria-label="View as">
     <span class="ind" aria-hidden="true"></span>
@@ -136,7 +231,12 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Segmented control",
-    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--sel": "secondary/background/default", "--on-sel": "text/on-inverse", "--text": "text/default", "--icon": "icon/default", "--border": "form/border/default", "--focus": "focus/ring", "--page": "background/default", "--hit": "target/min" },
+    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--sel": "secondary/background/default", "--on-sel": "text/on-inverse", "--text": "text/default", "--icon": "icon/default", "--border": "form/border/default", "--focus": "focus/ring", "--page": "background/default", "--hit": "target/min",
+      "--seg-h-xs": "size/segmented-control/xs", "--seg-h-s": "size/segmented-control/s", "--seg-h-m": "size/segmented-control/m", "--seg-h-l": "size/segmented-control/l",
+      "--seg-pad-xs": "padding/segmented-control/xs", "--seg-pad-s": "padding/segmented-control/s", "--seg-pad-m": "padding/segmented-control/m", "--seg-pad-l": "padding/segmented-control/l",
+      "--seg-rad-xs": "border-radius/segmented-container/xs", "--seg-rad-s": "border-radius/segmented-container/s", "--seg-rad-m": "border-radius/segmented-container/m", "--seg-rad-l": "border-radius/segmented-container/l",
+      "--seg-thumb-xs": "border-radius/segmented-thumb/xs", "--seg-thumb-s": "border-radius/segmented-thumb/s", "--seg-thumb-m": "border-radius/segmented-thumb/m", "--seg-thumb-l": "border-radius/segmented-thumb/l",
+      "--seg-inset-xs": "gap/fixed/content/small", "--seg-inset-s": "padding/fixed/small", "--seg-inset-m": "padding/fixed/medium", "--seg-inset-l": "padding/fixed/large" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
       { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },

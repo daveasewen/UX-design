@@ -87,6 +87,7 @@ TOK = os.path.join(ROOT, "tokens")
 
 sem = json.load(open(os.path.join(TOK, "semantic-colour.json")))
 layout = json.load(open(os.path.join(TOK, "layout.json")))
+spacing = json.load(open(os.path.join(TOK, "spacing.json")))   # #219: padding/* + gap/* manifest route
 motion_store = json.load(open(os.path.join(TOK, "motion.json")))
 opacity_store = json.load(open(os.path.join(TOK, "opacity.json")))  # #99-D1 alpha/* primitives
 ctypes_store = json.load(open(os.path.join(ROOT, "component-types.json")))  # ADR-0013 registry
@@ -125,8 +126,13 @@ def resolve(token, mode):
     to a CSS-formatted string ('0' / '8px') so snippets can bind radius via manifest.
     motion/* + component-type/* (ADR-0013) resolve to UNITLESS number strings —
     the scale-factor namespace (matches gen_snippet_tokens._fmt)."""
-    if token.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/", "target/")):
-        n = layout
+    if token.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/",
+                         "target/", "size/", "padding/", "gap/")):
+        # `size/` (layout.json) and `padding/`+`gap/` (spacing.json) added #219 — s202-D1 mints the
+        # segmented DIMENSION grammar across those two stores, and this gate's router only knew the
+        # layout namespaces. An unrouted path returned None, which reads as "unresolvable" and would
+        # have failed the fidelity check on a perfectly well-minted token (ds-018 class, third router).
+        n = spacing if token.startswith(("padding/", "gap/")) else layout
         for k in token.split("/"):
             n = n.get(k) if isinstance(n, dict) else None
             if n is None:

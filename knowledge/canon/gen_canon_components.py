@@ -200,6 +200,30 @@ def root_vars(style):
         out += [(v, val.strip()) for v, val in re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", blk)]
     return out
 
+# ds-039, THIRD SPECIES (#219): THE MARKUP SNIFFER DID NOT KNOW CSS'S OWN GRAMMAR.
+#
+# The guard below asks "is there a literal '<' left in the harvested <style> once CSS comments are
+# gone?" — its intent is "markup leaked into what I am about to inject into canon.css". But '<' is
+# also ORDINARY CSS: an @property descriptor names its type inside a QUOTED STRING —
+#
+#     @property --dvf1{syntax:"<number>"; inherits:true; initial-value:1;}
+#
+# — and there is no way to write @property without it. `Chart-bar.reference.html` gained three such
+# registrations at #218 (crank seam 2, 8247c52) and from that commit on the generator REFUSED every
+# run, so `gen_canon_components.py` and `--check` both exited 1 in CI and locally. Nothing was
+# stale: the canon regen simply never got to run. This is the "no gate parses the artefact" class
+# again (#122 ds-039) — the fix is to sniff in the CONSUMER'S grammar, so a '<' inside a CSS string
+# is not markup, exactly as a '<' inside a CSS comment already was not.
+#
+# ⛔ Do NOT widen this to "strip everything in quotes anywhere" — the strings are stripped only for
+# the SNIFF; the harvested CSS itself is still carried verbatim, quotes and all.
+_CSS_STRING = re.compile(r'"(?:\\.|[^"\\])*"' + r"|'(?:\\.|[^'\\])*'")
+
+def strip_css_noise(style):
+    """The harvested <style> with CSS comments and CSS strings blanked — for the ds-039 sniff only."""
+    no_comments = re.sub(r"/\*.*?\*/", "", style, flags=re.S)
+    return _CSS_STRING.sub('""', no_comments)
+
 def gen_one(path):
     html = open(path).read()
     name = os.path.basename(path).replace(".reference.html", "")
@@ -210,9 +234,10 @@ def gen_one(path):
     # silently dropping EVERY rule after it (the whole AUTO-THEMES block included).
     html_nc = re.sub(r"<!--.*?-->", "", html, flags=re.S)
     style = re.search(r"<style>(.*?)</style>", html_nc, re.S).group(1)
-    if "<" in re.sub(r"/\*.*?\*/", "", style, flags=re.S):
+    if "<" in strip_css_noise(style):
         raise SystemExit(f"gen_canon_components: HARVEST NOT CSS — literal '<' outside comments "
-                         f"in harvested <style> of {os.path.basename(path)}; refusing to inject markup into canon.css (ds-039)")
+                         f"or CSS strings in harvested <style> of {os.path.basename(path)}; "
+                         f"refusing to inject markup into canon.css (ds-039)")
     mm = re.search(r'id="token-manifest">(.*?)</script>', html, re.S)
     manifest = json.loads(mm.group(1)) if mm else {}
     vars_map = manifest.get("vars", {})

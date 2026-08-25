@@ -3682,8 +3682,22 @@ BOOT_SIGNED_RE = re.compile(r"\bboot\b\s*(?:#\d+\s*=\s*)?([+-][\d,]*\d)", re.I)
 # …and the qualifier AFTER the number that turns it into a comparison against the band.
 # ⚠ `vs` and `against` are deliberately NOT here: "#112 boot 55,025 vs #111 55,733" is two
 # READINGS compared, a shape live in this log — the list is the specification, measured on it.
+#
+# ✅ #219 — THE QUIET HALF WAS STILL OPEN FOR VOCABULARY OUTSIDE THE LIST, AND IT WAS MEASURED.
+# Driven against the parser at #219: `boot 12,345 higher than the band`, `boot 12,345 more than
+# the constant` and `boot 12,345 away from the band` ALL came back as READINGS — i.e. the exact
+# #218 failure mode (a delta entering the band's sample set and reading green), reached by three
+# ordinary English phrasings the list did not name. The comparative forms are added below.
+# ⛔ THE ADDITIONS ARE TIGHT ON PURPOSE, AND THAT IS THE WHOLE DESIGN. `higher/lower/more/less`
+# only count when `than` follows, and `away` only when `from` follows, because a BARE preposition
+# after a reading is ordinary prose about a real boot — `boot 55,025 from the first turn` is a
+# READING, and a loose `from` in this list would eat it. That control is asserted in the selftest.
+# ⚠ MEASURED NO-OP ON THE LIVE WINDOW, which is why this is not a band move: against the whole of
+# `notes/_GAUGE-LOG.md` the reading count is 73 BEFORE and 73 AFTER, 0 readings reclassified. It
+# hardens the shape the parser will meet NEXT; it does not re-price anything Dave has ruled.
 BOOT_DELTA_TAIL_RE = re.compile(
-    r"^[\s*_`,)\]]*(?:over|under|above|below|outside|out\s+of|past|beyond|off)\b", re.I)
+    r"^[\s*_`,)\]]*(?:over|under|above|below|outside|out\s+of|past|beyond|off"
+    r"|(?:higher|lower|more|less)\s+than|away\s+from|adrift)\b", re.I)
 
 
 def _parse_boot_samples(text):
@@ -7422,6 +7436,36 @@ def selftest_boot_delta_parse():
             failures.append(f"boot parse: CONTROL `{src[:44]}…` no longer reads as {want:,} — "
                             f"good={g_} refused={len(r_)} deltas={d_}; the split has eaten a "
                             f"real sample shape")
+    # ---- ✅ #219, THE QUIET HALF, COMPARATIVE PHRASINGS. Each of these came back as a READING
+    # before the tail list was widened — the #218 failure mode reached by ordinary English the
+    # list did not name. Both directions are asserted: the comparison is EXCLUDED here, and the
+    # bare-preposition CONTROLS below prove the widening did not eat a real reading with it.
+    for src in ("> boot 12,345 higher than the band, DECLARED at the opener",
+                "> boot 12,345 lower than the s208-D1 constant",
+                "> boot 12,345 more than the band allows",
+                "> boot 12,345 less than the published floor",
+                "> boot 12,345 away from the band",
+                "> boot 12,345 adrift of the band"):
+        g_, r_, d_ = parse(src)
+        if g_ or d_ != [12345]:
+            failures.append(f"boot parse: `{src[:46]}…` is a COMPARISON, not a reading — it "
+                            f"entered the band's sample set: good={g_} deltas={d_}")
+    # ---- THE OVER-WIDENING CONTROLS (attribute-the-diff, the other direction). A bare
+    # preposition after a real reading is prose ABOUT a boot, not a comparison against a band —
+    # if `from`/`more`/`away` were in the list unqualified these would silently stop being samples.
+    # ⚠ THE QUALIFIER WORD MUST TOUCH THE NUMBER or the control is blind: the tail regex only
+    # scans punctuation and whitespace after the digits, so an intervening word (`… 55,025 real,
+    # from …`) shields the line from ANY tail list and the arm proves nothing. Measured #219: the
+    # first draft of these controls put `real` in the gap and stayed green under a deliberately
+    # over-widened list [[mutation-tests-the-clause-not-the-feature]].
+    for src, want in (("> **pre-flight #301:** boot 55,025 from the first turn", 55025),
+                      ("> boot 55,025, more of the same story", 55025),
+                      ("> boot 55,025 away in the archive stratum", 55025)):
+        g_, r_, d_ = parse(src)
+        if want not in g_ or d_:
+            failures.append(f"boot parse: OVER-WIDENING — CONTROL `{src[:46]}…` stopped reading "
+                            f"as {want:,}: good={g_} deltas={d_}; the tail list is eating prose")
+
     # ---- and a genuine unparseable reading must STILL refuse (the #129 guarantee).
     g_, r_, d_ = parse("> **pre-flight #9:** boot 999 real")
     if not r_ or g_ or d_:

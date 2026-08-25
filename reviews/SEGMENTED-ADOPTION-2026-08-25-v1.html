@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Segmented control &mdash; radius + scale adoption (#219), PROPOSED</title>
+<!-- Specimen markup HARVESTED from knowledge/snippets/Segmented-control.reference.html; the styling
+     comes from the built canon.css through .cn-segmented-control + [data-apollo-theme]. Nothing on
+     this page is re-drawn by hand. -->
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+ body{margin:0;padding:24px;background:#f4f4f5;color:#1a1a1a;line-height:1.5;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+ header,footer,section.theme,.controls,#asserts{max-width:1180px;margin-left:auto;margin-right:auto}
+ header{margin-bottom:20px}
+ h1{font-size:24px;margin:0 0 6px}
+ .meta{font-size:12px;color:#555;font-family:ui-monospace,Menlo,monospace}
+ .banner{border:2px solid #DA1A00;padding:12px 16px;margin:16px 0;background:#fff}
+ .banner b{color:#DA1A00}
+ .note{background:#fff;border:1px solid #ccc;padding:14px 16px;margin:14px 0;font-size:14px}
+ .note h4{margin:0 0 6px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#555}
+ .controls{position:sticky;top:0;z-index:50;margin-bottom:20px;padding:12px 16px;background:#fff;
+           border:1px solid #ccc;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font-size:13px}
+ .controls label{display:flex;gap:7px;align-items:center;cursor:pointer}
+ #asserts{background:#fff;border:2px solid #999;padding:12px 16px;margin-bottom:22px;
+          font-family:ui-monospace,Menlo,monospace;font-size:12px;overflow-x:auto}
+ #asserts h3{margin:0 0 8px;font-size:13px;letter-spacing:.05em;text-transform:uppercase}
+ #asserts table{border-collapse:collapse;width:100%}
+ #asserts td,#asserts th{padding:2px 10px 2px 0;text-align:left;border-bottom:1px solid #eee}
+ #asserts .pass{color:#0a6b2d;font-weight:700}
+ #asserts .fail{color:#DA1A00;font-weight:700}
+ #asserts tr.bad td{background:rgba(218,26,0,.08)}
+ section.theme{margin-bottom:18px;padding:20px;border:1px solid #ccc;box-sizing:border-box;
+               background:var(--background-default);color:var(--text-default)}
+ section.theme[data-theme="dark"]{border-color:#333}
+ section.theme h2{font-size:17px;margin:0 0 14px}
+ .mode{font-size:12px;font-weight:400;opacity:.6;text-transform:uppercase;letter-spacing:.08em}
+ .tier{margin:0 0 18px;padding-top:12px;border-top:1px dashed rgba(127,127,127,.4)}
+ .tier h3{font-size:12px;letter-spacing:.05em;text-transform:uppercase;opacity:.7;margin:0 0 4px}
+ .tier .sub{font-size:12px;opacity:.65;margin:0 0 10px;max-width:78ch}
+ .row{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end}
+ .spec .lab{font-size:11px;font-family:ui-monospace,Menlo,monospace;opacity:.6;margin-bottom:6px}
+ .spec .section-head-row,.spec .demo-note{display:none}
+ .before-tier{opacity:.9}
+ .before .cn-segmented-control .seg{--seg-rad:0 !important;--seg-thumb:0 !important}
+ body[data-legacy-map="nearest"] .cn-segmented-control .seg.lg{
+   --seg-rad:var(--seg-rad-s);--seg-thumb:var(--seg-thumb-s)}
+ body[data-hide-before="1"] .before-tier{display:none}
+</style>
+</head>
+<body data-legacy-map="ordinal">
+<header>
+  <h1>Segmented control &mdash; the minted radii and the scale grammar, wired</h1>
+  <p class="meta">reviews/SEGMENTED-ADOPTION-2026-08-25-v1.html &middot; #219 lane 1 &middot;
+     2026-08-25 &middot; <b>PROPOSED &mdash; nothing here is ruled</b></p>
+  <div class="banner">
+    <p><b>What was wrong.</b> The radius tokens for this control were minted at #200&ndash;#202 and
+       have sat in <code>canon.css</code> ever since &mdash; console at 6/8/10/12 outside and
+       0/2/4/6 inside. <b>No rule ever read them.</b> The component set no
+       <code>border-radius</code> at all, so segmented controls rendered square in every theme,
+       console included. The bottom row of each panel is that state.</p>
+    <p><b>What is new.</b> The track now reads
+       <code>--border-radius-segmented-container-&lt;scale&gt;</code> and the sliding thumb reads
+       <code>--border-radius-segmented-thumb-&lt;scale&gt;</code>. Square themes resolve both to 0
+       from the base tier and stay square, exactly as s201-D5 says. Nothing is calculated live.</p>
+  </div>
+  <div class="note">
+    <h4>The one thing that needs your eye</h4>
+    <p>The four minted sizes are <b>xs / s / m / l</b>. The three sizes every existing page actually
+       uses are the older <b>sm / md / lg</b>, and their type is bound to those names (T-D15), so
+       they cannot simply be renamed. They now borrow a minted corner instead. Two readings of
+       which corner &mdash; and the two agree everywhere except <code>.lg</code>:</p>
+    <p><b>Reading A &mdash; ordinal.</b> sm&rarr;xs, md&rarr;s, <b>lg&rarr;m</b>. Three distinct
+       corners, a ladder that keeps growing. <i>This is what is wired today.</i></p>
+    <p><b>Reading B &mdash; nearest height.</b> sm&rarr;xs, md&rarr;s, <b>lg&rarr;s</b>. lg's 36px
+       matches scale s's 36 exactly, so it borrows the same corner as md and the two look alike.</p>
+    <p>Flip the switch below and watch the third control in the legacy row. Point at the one that
+       looks right &mdash; console is where you will see it.</p>
+  </div>
+</header>
+
+<div class="controls">
+  <b>Legacy map:</b>
+  <label><input type="radio" name="map" value="ordinal" checked> A &mdash; ordinal (lg&rarr;m)</label>
+  <label><input type="radio" name="map" value="nearest"> B &mdash; nearest height (lg&rarr;s)</label>
+  <label><input type="checkbox" id="hideBefore"> hide the before rows</label>
+  <span class="meta" id="stamp"></span>
+</div>
+
+<div id="asserts"><h3>Read back from the live document</h3><div id="atbl">measuring&hellip;</div></div>
+
+<section class="theme" data-apollo-theme="mono" data-theme="light"><h2>Mono (base) <span class="mode">light</span></h2><div class="tier"><h3>Minted scale grammar &mdash; s201-D1 &middot; xs/s/m/l</h3><div class="row"><div class="spec"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier"><h3>Legacy mini ramp &mdash; T-D15 &middot; the live consumers</h3><p class="sub">Heights unmoved. Only the corner is new. The A/B switch at the top repoints <code>.lg</code> &mdash; that is the whole disagreement.</p><div class="row"><div class="spec"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier before-tier"><h3>Before &mdash; canon as it shipped until today</h3><p class="sub">Same markup, radius forced to 0: what every page renders right now, console included.</p><div class="row"><div class="spec before"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec before"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec before"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div><div class="spec before"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec before"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div></section><section class="theme" data-apollo-theme="mono" data-theme="dark"><h2>Mono (base) <span class="mode">dark</span></h2><div class="tier"><h3>Minted scale grammar &mdash; s201-D1 &middot; xs/s/m/l</h3><div class="row"><div class="spec"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier"><h3>Legacy mini ramp &mdash; T-D15 &middot; the live consumers</h3><p class="sub">Heights unmoved. Only the corner is new. The A/B switch at the top repoints <code>.lg</code> &mdash; that is the whole disagreement.</p><div class="row"><div class="spec"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier before-tier"><h3>Before &mdash; canon as it shipped until today</h3><p class="sub">Same markup, radius forced to 0: what every page renders right now, console included.</p><div class="row"><div class="spec before"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec before"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec before"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div><div class="spec before"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec before"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div></section><section class="theme" data-apollo-theme="legacy" data-theme="light"><h2>Legacy <span class="mode">light</span></h2><div class="tier"><h3>Minted scale grammar &mdash; s201-D1 &middot; xs/s/m/l</h3><div class="row"><div class="spec"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier"><h3>Legacy mini ramp &mdash; T-D15 &middot; the live consumers</h3><p class="sub">Heights unmoved. Only the corner is new. The A/B switch at the top repoints <code>.lg</code> &mdash; that is the whole disagreement.</p><div class="row"><div class="spec"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier before-tier"><h3>Before &mdash; canon as it shipped until today</h3><p class="sub">Same markup, radius forced to 0: what every page renders right now, console included.</p><div class="row"><div class="spec before"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec before"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec before"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div><div class="spec before"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec before"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div></section><section class="theme" data-apollo-theme="legacy" data-theme="dark"><h2>Legacy <span class="mode">dark</span></h2><div class="tier"><h3>Minted scale grammar &mdash; s201-D1 &middot; xs/s/m/l</h3><div class="row"><div class="spec"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier"><h3>Legacy mini ramp &mdash; T-D15 &middot; the live consumers</h3><p class="sub">Heights unmoved. Only the corner is new. The A/B switch at the top repoints <code>.lg</code> &mdash; that is the whole disagreement.</p><div class="row"><div class="spec"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier before-tier"><h3>Before &mdash; canon as it shipped until today</h3><p class="sub">Same markup, radius forced to 0: what every page renders right now, console included.</p><div class="row"><div class="spec before"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec before"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec before"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div><div class="spec before"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec before"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div></section><section class="theme" data-apollo-theme="console" data-theme="light"><h2>Apollo Console <span class="mode">light</span></h2><div class="tier"><h3>Minted scale grammar &mdash; s201-D1 &middot; xs/s/m/l</h3><div class="row"><div class="spec"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier"><h3>Legacy mini ramp &mdash; T-D15 &middot; the live consumers</h3><p class="sub">Heights unmoved. Only the corner is new. The A/B switch at the top repoints <code>.lg</code> &mdash; that is the whole disagreement.</p><div class="row"><div class="spec"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier before-tier"><h3>Before &mdash; canon as it shipped until today</h3><p class="sub">Same markup, radius forced to 0: what every page renders right now, console included.</p><div class="row"><div class="spec before"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec before"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec before"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div><div class="spec before"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec before"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div></section><section class="theme" data-apollo-theme="console" data-theme="dark"><h2>Apollo Console <span class="mode">dark</span></h2><div class="tier"><h3>Minted scale grammar &mdash; s201-D1 &middot; xs/s/m/l</h3><div class="row"><div class="spec"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier"><h3>Legacy mini ramp &mdash; T-D15 &middot; the live consumers</h3><p class="sub">Heights unmoved. Only the corner is new. The A/B switch at the top repoints <code>.lg</code> &mdash; that is the whole disagreement.</p><div class="row"><div class="spec"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier before-tier"><h3>Before &mdash; canon as it shipped until today</h3><p class="sub">Same markup, radius forced to 0: what every page renders right now, console included.</p><div class="row"><div class="spec before"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec before"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec before"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div><div class="spec before"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec before"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div></section><section class="theme" data-apollo-theme="supercharge" data-theme="light"><h2>Supercharge <span class="mode">light</span></h2><div class="tier"><h3>Minted scale grammar &mdash; s201-D1 &middot; xs/s/m/l</h3><div class="row"><div class="spec"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier"><h3>Legacy mini ramp &mdash; T-D15 &middot; the live consumers</h3><p class="sub">Heights unmoved. Only the corner is new. The A/B switch at the top repoints <code>.lg</code> &mdash; that is the whole disagreement.</p><div class="row"><div class="spec"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier before-tier"><h3>Before &mdash; canon as it shipped until today</h3><p class="sub">Same markup, radius forced to 0: what every page renders right now, console included.</p><div class="row"><div class="spec before"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec before"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec before"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div><div class="spec before"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec before"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div></section><section class="theme" data-apollo-theme="supercharge" data-theme="dark"><h2>Supercharge <span class="mode">dark</span></h2><div class="tier"><h3>Minted scale grammar &mdash; s201-D1 &middot; xs/s/m/l</h3><div class="row"><div class="spec"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier"><h3>Legacy mini ramp &mdash; T-D15 &middot; the live consumers</h3><p class="sub">Heights unmoved. Only the corner is new. The A/B switch at the top repoints <code>.lg</code> &mdash; that is the whole disagreement.</p><div class="row"><div class="spec"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div><div class="tier before-tier"><h3>Before &mdash; canon as it shipped until today</h3><p class="sub">Same markup, radius forced to 0: what every page renders right now, console included.</p><div class="row"><div class="spec before"><div class="lab">xs &middot; 24</div><div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div></div></div><div class="spec before"><div class="lab">s &middot; 36</div><div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div></div></div><div class="spec before"><div class="lab">m &middot; 44</div><div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">l &middot; 48</div><div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div><div class="spec before"><div class="lab">sm &middot; 28</div><div class="cn-segmented-control"><div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div></div></div><div class="spec before"><div class="lab">md &middot; 32</div><div class="cn-segmented-control"><div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div></div></div><div class="spec before"><div class="lab">lg &middot; 36</div><div class="cn-segmented-control"><div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div></div></div></div></div></section>
+
+<footer class="note">
+  <h4>Declared, so it is not mistaken for settled</h4>
+  <p>&bull; The minted scales carry <b>no mini-ramp type step</b> &mdash; T-D15 binds 12/14/16 to
+     sm/md/lg only, and that binding is yours, not this lane's. xs/s/m/l inherit the default control
+     face. A step per minted scale is a ruling-shaped question, not an oversight to patch.</p>
+  <p>&bull; The label inset on the minted scales (8/12/16/20) is read from the fixed spacing ramp.
+     It was never tuned on the corner tuner &mdash; PROPOSED.</p>
+  <p>&bull; The 44 hit zone is honoured as ruled: max(44, visual height), so xs and s expand to 44,
+     m sits at 44, l keeps its natural 48. <b>Still no gate reads the 44</b> &mdash; unchanged since
+     #200, and saying so here is not a fix.</p>
+  <p>&bull; The nine other snippets that carry their own copy of <code>.seg</code> still render
+     square. Fixing those is a separate motion and is named in the lane report, not done here.</p>
+</footer>
+
+<script>
+document.querySelectorAll('input[name=map]').forEach(function(r){
+  r.addEventListener('change', function(){ document.body.dataset.legacyMap = r.value; measure(); });
+});
+document.getElementById('hideBefore').addEventListener('change', function(e){
+  document.body.dataset.hideBefore = e.target.checked ? '1' : '0'; });
+
+function moveInd(seg){ var ind=seg.querySelector('.ind'); if(!ind) return;
+  var a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
+  var sr=seg.getBoundingClientRect(), br=a.getBoundingClientRect();
+  ind.style.left=(br.left - sr.left - seg.clientLeft)+'px'; ind.style.width=br.width+'px'; }
+function placeAll(){ document.querySelectorAll('.seg').forEach(moveInd); }
+document.querySelectorAll('.seg').forEach(function(seg){
+  seg.querySelectorAll('button').forEach(function(b){ b.addEventListener('click', function(){
+    seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+    moveInd(seg); }); });
+});
+addEventListener('resize', placeAll);
+
+var EXPECT = { console:{xs:'6px',s:'8px',m:'10px',l:'12px'},
+               mono:{xs:'0px',s:'0px',m:'0px',l:'0px'},
+               legacy:{xs:'0px',s:'0px',m:'0px',l:'0px'},
+               supercharge:{xs:'0px',s:'0px',m:'0px',l:'0px'} };
+function measure(){
+  var rows='<table><tr><th>theme</th><th>mode</th><th>scale</th><th>track radius</th>'
+         + '<th>thumb radius</th><th>track height</th><th>hit floor</th><th></th></tr>';
+  var bad=0, n=0;
+  document.querySelectorAll('section.theme').forEach(function(sec){
+    var th=sec.dataset.apolloTheme, md=sec.dataset.theme;
+    ['xs','s','m','l'].forEach(function(sc){
+      var seg=sec.querySelector('.tier:not(.before-tier) .seg.'+sc); if(!seg) return;
+      var cs=getComputedStyle(seg), r=cs.borderTopLeftRadius, h=cs.height;
+      var ind=seg.querySelector('.ind');
+      var t=ind?getComputedStyle(ind).borderTopLeftRadius:'-';
+      var btn=seg.querySelector('button');
+      var hit=btn?getComputedStyle(btn,'::before').minHeight:'-';
+      var ok=(r===EXPECT[th][sc]); n++; if(!ok) bad++;
+      rows+='<tr class="'+(ok?'':'bad')+'"><td>'+th+'</td><td>'+md+'</td><td>'+sc+'</td><td>'+r
+           +'</td><td>'+t+'</td><td>'+h+'</td><td>'+hit+'</td><td class="'+(ok?'pass':'fail')+'">'
+           +(ok?'OK':'expected '+EXPECT[th][sc])+'</td></tr>';
+    });
+  });
+  rows+='</table><p class="'+(bad?'fail':'pass')+'">'+(n-bad)+'/'+n
+       +' track radii match the minted token for their theme'+(bad?' &mdash; '+bad+' MISMATCH':'')+'</p>';
+  document.getElementById('atbl').innerHTML=rows;
+}
+placeAll(); measure();
+document.getElementById('stamp').textContent='measured live in your browser';
+</script>
+</body></html>
