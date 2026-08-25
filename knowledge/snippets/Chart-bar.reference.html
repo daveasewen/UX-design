@@ -79,7 +79,10 @@
 }
 /* ===== AUTO-TOKENS END ===== */
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1);
-    --grow:760ms cubic-bezier(.22,.61,.36,1); }
+    --grow:760ms cubic-bezier(.22,.61,.36,1);
+    /* the SAME 760ms as --grow, exposed alone: the DV-D16 stacked float needs a per-animation
+       timing function, so it cannot use the duration+easing shorthand. Change both together. */
+    --grow-dur:760ms; }
   [data-theme="light"]{
     --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
     --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
@@ -160,6 +163,43 @@
   @keyframes dvGrowY{from{transform:scaleY(0);}}
   @keyframes dvGrowX{from{transform:scaleX(0);}}
   @keyframes dvFade{from{opacity:0;} to{opacity:1;}}
+
+  /* ★ DV-D16 (wording ②, RULED 2026-07-27) — STACKED FLOAT. Every segment grows SIMULTANEOUSLY on
+     ONE shared 760ms timeline, each on its OWN curve: first (bottom) ease-in · all intermediates
+     linear · last (top) ease-out. Because a stack's upper segments sit on the segment below, growing
+     them all at once makes them FLOAT upward while growing — that float IS the effect, and the stack
+     must never gap open mid-flight. NOT the donut's serial look (wording ① was reversed same session).
+     ⚠ WHY NOT THE OBVIOUS `translateY(--below × (1 − own progress))`: the segments below grow on
+     DIFFERENT curves, so a translate driven by the segment's OWN curve tracks a height nothing has.
+     DRIVEN, not reasoned (knowledge/_render/verify_dv_d16_render.py): that shape opens its ruled 2px
+     boundaries to 8.6-21.8px at t=0.25 and 9.8-30.5px at t=0.50 — a hole, not a stack.
+     The float therefore rides the CUMULATIVE ANIMATED height below: three registered progress numbers
+     animate ONCE on the chart, and every rect composes translateY(Σ belowⱼ × (1 − fⱼ)) · scaleY(fown)
+     out of them. Pure CSS, zero JS in the physics (DEF-003, B-D7) — the baked SVG survives JS-off, and
+     if @property is unsupported the transform is invalid-at-computed-value and the chart simply lands
+     on its final frame.
+     EMISSION CONTRACT (generation-time, from the ENACTED geometry — DV-D14 — never the data values):
+     each rect carries `--b1…--b(i−1)` = the `height` attributes of the segments BELOW it in its own
+     column, plus `--self` = its own progress var. The ruled ≥2px dv-004 boundaries cancel out of the
+     algebra: they stay EXACTLY 2px at every frame, not just at rest.
+     N > 3 (cap 6, DV-D16c): add --dvf4…--dvf6, their keyframes, their --b terms; the curve rule is
+     positional — first ease-in, last ease-out, everything between linear. */
+  @property --dvf1{syntax:"<number>"; inherits:true; initial-value:1;}
+  @property --dvf2{syntax:"<number>"; inherits:true; initial-value:1;}
+  @property --dvf3{syntax:"<number>"; inherits:true; initial-value:1;}
+  @keyframes dvStackF1{from{--dvf1:0;} to{--dvf1:1;}}
+  @keyframes dvStackF2{from{--dvf2:0;} to{--dvf2:1;}}
+  @keyframes dvStackF3{from{--dvf3:0;} to{--dvf3:1;}}
+  @media (prefers-reduced-motion:no-preference){
+    figure.dv-animate[data-dv-type="stacked-column"] svg.dv-svg{
+      animation:dvStackF1 var(--grow-dur) ease-in both,
+                dvStackF2 var(--grow-dur) linear both,
+                dvStackF3 var(--grow-dur) ease-out both;}
+    figure.dv-animate[data-dv-type="stacked-column"] rect.dv-series[data-grow="up"]{
+      animation:none; transform-box:fill-box; transform-origin:bottom;
+      transform:translateY(calc(var(--b1,0px) * (1 - var(--dvf1)) + var(--b2,0px) * (1 - var(--dvf2))))
+                scaleY(var(--self,1));}
+  }
   text.dv-barkey{transition:opacity var(--ease), visibility var(--ease);}
 
   /* on-chart series letter keys (DV-D08 700 emphasis) — ink, not series hue.
@@ -660,18 +700,18 @@
         <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
         <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">200</text>
         <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
-        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="86.9" y="187.9" width="48.7" height="42.1" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="A, Current, Q1: 40" data-tip="A · Current · Q1: 40"></rect>
-        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-2)" x="86.9" y="112.3" width="48.7" height="73.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="B, Savings, Q1: 70" data-tip="B · Savings · Q1: 70"></rect>
-        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-3)" x="86.9" y="78.8" width="48.7" height="31.5" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="C, Investments, Q1: 30" data-tip="C · Investments · Q1: 30"></rect>
-        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-1)" x="217.4" y="182.6" width="48.7" height="47.4" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="A, Current, Q2: 45" data-tip="A · Current · Q2: 45"></rect>
-        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-2)" x="217.4" y="102.6" width="48.7" height="78.0" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="B, Savings, Q2: 74" data-tip="B · Savings · Q2: 74"></rect>
-        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-3)" x="217.4" y="64.8" width="48.7" height="35.8" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="C, Investments, Q2: 34" data-tip="C · Investments · Q2: 34"></rect>
-        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:270ms" fill="var(--data-series-1)" x="347.9" y="177.2" width="48.7" height="52.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="A, Current, Q3: 50" data-tip="A · Current · Q3: 50"></rect>
-        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:315ms" fill="var(--data-series-2)" x="347.9" y="90.7" width="48.7" height="84.5" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="B, Savings, Q3: 80" data-tip="B · Savings · Q3: 80"></rect>
-        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:360ms" fill="var(--data-series-3)" x="347.9" y="48.6" width="48.7" height="40.1" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="C, Investments, Q3: 38" data-tip="C · Investments · Q3: 38"></rect>
-        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:405ms" fill="var(--data-series-1)" x="478.4" y="168.6" width="48.7" height="61.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="A, Current, Q4: 58" data-tip="A · Current · Q4: 58"></rect>
-        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:450ms" fill="var(--data-series-2)" x="478.4" y="73.4" width="48.7" height="93.2" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="B, Savings, Q4: 88" data-tip="B · Savings · Q4: 88"></rect>
-        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:495ms" fill="var(--data-series-3)" x="478.4" y="24.8" width="48.7" height="46.6" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="C, Investments, Q4: 44" data-tip="C · Investments · Q4: 44"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:0ms; --self:var(--dvf1)" fill="var(--data-series-1)" x="86.9" y="187.9" width="48.7" height="42.1" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="A, Current, Q1: 40" data-tip="A · Current · Q1: 40"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:45ms; --b1:42.1px; --self:var(--dvf2)" fill="var(--data-series-2)" x="86.9" y="112.3" width="48.7" height="73.6" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="B, Savings, Q1: 70" data-tip="B · Savings · Q1: 70"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:90ms; --b1:42.1px; --b2:73.6px; --self:var(--dvf3)" fill="var(--data-series-3)" x="86.9" y="78.8" width="48.7" height="31.5" data-fx="0.0784" data-fw="0.0933" tabindex="0" role="img" aria-label="C, Investments, Q1: 30" data-tip="C · Investments · Q1: 30"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:135ms; --self:var(--dvf1)" fill="var(--data-series-1)" x="217.4" y="182.6" width="48.7" height="47.4" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="A, Current, Q2: 45" data-tip="A · Current · Q2: 45"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:180ms; --b1:47.4px; --self:var(--dvf2)" fill="var(--data-series-2)" x="217.4" y="102.6" width="48.7" height="78.0" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="B, Savings, Q2: 74" data-tip="B · Savings · Q2: 74"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:225ms; --b1:47.4px; --b2:78.0px; --self:var(--dvf3)" fill="var(--data-series-3)" x="217.4" y="64.8" width="48.7" height="35.8" data-fx="0.3284" data-fw="0.0933" tabindex="0" role="img" aria-label="C, Investments, Q2: 34" data-tip="C · Investments · Q2: 34"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:270ms; --self:var(--dvf1)" fill="var(--data-series-1)" x="347.9" y="177.2" width="48.7" height="52.8" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="A, Current, Q3: 50" data-tip="A · Current · Q3: 50"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:315ms; --b1:52.8px; --self:var(--dvf2)" fill="var(--data-series-2)" x="347.9" y="90.7" width="48.7" height="84.5" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="B, Savings, Q3: 80" data-tip="B · Savings · Q3: 80"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:360ms; --b1:52.8px; --b2:84.5px; --self:var(--dvf3)" fill="var(--data-series-3)" x="347.9" y="48.6" width="48.7" height="40.1" data-fx="0.5784" data-fw="0.0933" tabindex="0" role="img" aria-label="C, Investments, Q3: 38" data-tip="C · Investments · Q3: 38"></rect>
+        <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:405ms; --self:var(--dvf1)" fill="var(--data-series-1)" x="478.4" y="168.6" width="48.7" height="61.4" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="A, Current, Q4: 58" data-tip="A · Current · Q4: 58"></rect>
+        <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:450ms; --b1:61.4px; --self:var(--dvf2)" fill="var(--data-series-2)" x="478.4" y="73.4" width="48.7" height="93.2" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="B, Savings, Q4: 88" data-tip="B · Savings · Q4: 88"></rect>
+        <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:495ms; --b1:61.4px; --b2:93.2px; --self:var(--dvf3)" fill="var(--data-series-3)" x="478.4" y="24.8" width="48.7" height="46.6" data-fx="0.8284" data-fw="0.0933" tabindex="0" role="img" aria-label="C, Investments, Q4: 44" data-tip="C · Investments · Q4: 44"></rect>
         <text class="dv-barkey t-cm-chart-key" data-series-group="1" fill="var(--data-text-on-series)" x="111.2" y="213.0" text-anchor="middle" data-fx="0.1250">A</text>
         <text class="dv-barkey t-cm-chart-key" data-series-group="2" fill="var(--data-text-on-series)" x="111.2" y="153.1" text-anchor="middle" data-fx="0.1250">B</text>
         <text class="dv-barkey t-cm-chart-key" data-series-group="3" fill="var(--data-text-on-series)" x="111.2" y="98.6" text-anchor="middle" data-fx="0.1250">C</text>

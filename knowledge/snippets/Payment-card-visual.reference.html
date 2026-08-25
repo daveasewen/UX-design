@@ -415,5 +415,73 @@
     }
   }
   </script>
+
+  <script>
+  /* ==========================================================================================
+     REVEAL BEHAVIOUR — #218 behaviour wave. Added to a file that carried ZERO behaviour JS.
+
+     WHY THIS ONE CONTROL AND NOTHING ELSE ON THE CARD. Everything else here is passive anatomy.
+     The reveal button is the only affordance on this component that PROMISES AN IN-PAGE STATE
+     CHANGE — "Show number" says the number will appear — and it already carries aria-pressed in
+     the markup, so the state channel was chosen by the author, not by this script.
+
+     ⛔ NOTHING IS INVENTED. Both PAN forms are HARVESTED FROM THE SPECIMENS THIS FILE ALREADY
+     DRAWS: the masked face on unit 1 and the ISO/IEC 7812 test-range face on unit 2, paired by
+     their shared last four. If a card has no drawn counterpart (the compact and unusable
+     specimens), its button — if it ever gets one — is left alone rather than given a made-up
+     number. No new markup, no new CSS, no new copy: every string written below already appears
+     verbatim in the file above.
+
+     ⚠ MANIFEST DEBT, DECLARED AND OUTSIDE THIS LANE'S FENCE. knownFindings still says the
+     toggle is "drawn as two static states rather than scripted - declared". That sentence is
+     now STALE. The token-manifest is not this lane's to edit; the correction is reported, owed,
+     and named in the lane receipt rather than silently made here.
+
+     ⚠ SECURITY POSTURE IS DAVE'S, UNCHANGED. This script draws the state the file already drew.
+     It is not an endorsement of revealing a PAN in production UI — the header says so and this
+     changes nothing about that.
+     ========================================================================================== */
+  (function(){
+    /* pair the DRAWN faces by last-four: masked form <-> revealed form */
+    var maskedBy = {}, shownBy = {};
+    Array.prototype.forEach.call(document.querySelectorAll('.pcv-pan'), function(el){
+      var s = el.textContent.trim(), k = s.slice(-4);
+      if (s.length <= 8) { return; }                    /* the compact face (···4821) is not a full form */
+      if (s.indexOf('·') < 0) { shownBy[k] = s; } else { maskedBy[k] = s; }
+    });
+
+    var RE_TAIL = /Card number (?:hidden|shown)\./;
+    var RE_PAN  = /ending \d{4}|number (?:\d{4} ){3}\d{4}/;
+
+    Array.prototype.forEach.call(document.querySelectorAll('.pcv-reveal'), function(btn){
+      var unit = btn.closest('.unit');
+      var pan  = unit && unit.querySelector('.pcv-pan');
+      if (!pan) { return; }
+
+      var last4  = pan.textContent.trim().slice(-4);
+      var masked = maskedBy[last4], shown = shownBy[last4];
+      if (!masked || !shown) { return; }                /* no drawn pair — leave the control as it shipped */
+
+      var name = document.getElementById(btn.getAttribute('aria-describedby'));
+
+      function setRevealed(on){
+        btn.setAttribute('aria-pressed', String(on));
+        btn.textContent = on ? 'Hide number' : 'Show number';
+        pan.textContent = on ? shown : masked;
+        /* the accessible name follows the face — otherwise AT and the eye disagree about
+           whether the number is showing. Both phrasings below are the file's own copy. */
+        if (name) {
+          name.textContent = name.textContent
+            .replace(RE_PAN, on ? ('number ' + shown) : ('ending ' + last4))
+            .replace(RE_TAIL, 'Card number ' + (on ? 'shown' : 'hidden') + '.');
+        }
+      }
+
+      btn.addEventListener('click', function(){
+        setRevealed(btn.getAttribute('aria-pressed') !== 'true');
+      });
+    });
+  }());
+  </script>
   </body>
 </html>

@@ -96,5 +96,78 @@
     "requiredAria": ["<nav", "aria-current", "aria-label"]
   }
   </script>
+
+  <script>
+    // BEHAVIOUR. The current page is STATE: aria-current="page" moves, its "Page N, current page"
+    // name moves with it, and prev/next disable AT THE BOUNDS. The border carrier is bound to
+    // [aria-current="page"] in CSS above and the disabled treatment to .ctrl[disabled], so both
+    // follow the attributes rather than being painted a second time here.
+    // The … ellipsis is aria-hidden and not a page: the numbered links present in the DOM are the
+    // whole sequence prev/next steps through, so "prev from 12" lands on 4, as the row reads.
+    (function(){
+      var nav = document.querySelector('nav.pg');
+      if (!nav) return;
+      var pages = Array.prototype.slice.call(nav.querySelectorAll('a'));
+      var prev = nav.querySelector('.ctrl[aria-label="Previous page"]');
+      var next = nav.querySelector('.ctrl[aria-label="Next page"]');
+
+      function currentIndex(){
+        var c = nav.querySelector('a[aria-current="page"]');
+        return c ? pages.indexOf(c) : 0;
+      }
+
+      // Bounds are expressed with `disabled`, not by hiding: the control keeps its place in the
+      // row, and disabled is what AT announces.
+      function syncBounds(){
+        var i = currentIndex();
+        if (prev) prev.disabled = (i <= 0);
+        if (next) next.disabled = (i >= pages.length - 1);
+      }
+
+      function go(i){
+        if (i < 0 || i >= pages.length) return;
+        pages.forEach(function(a, j){
+          if (j === i){
+            a.setAttribute('aria-current','page');
+            a.setAttribute('aria-label','Page ' + a.textContent.trim() + ', current page');
+          } else {
+            a.removeAttribute('aria-current');
+            a.removeAttribute('aria-label');   // the link text is the accessible name again
+          }
+        });
+        syncBounds();
+      }
+
+      nav.addEventListener('click', function(e){
+        var a = e.target.closest && e.target.closest('a');
+        if (a){ e.preventDefault(); go(pages.indexOf(a)); return; }
+        var b = e.target.closest && e.target.closest('.ctrl');
+        if (!b || b.disabled) return;
+        go(currentIndex() + (b === next ? 1 : -1));
+        // A control that disables itself under the pointer would drop focus to the body and
+        // strand a keyboard user at the end of the run — hand focus to its opposite instead.
+        if (b.disabled){
+          var other = (b === next) ? prev : next;
+          if (other && !other.disabled) other.focus();
+        }
+      });
+
+      nav.addEventListener('keydown', function(e){
+        var a = e.target.closest && e.target.closest('a');
+        if (!a) return;
+        // Enter activates natively (it fires click). Space does not, so it is added by hand.
+        if (e.key === ' ' || e.key === 'Spacebar'){ e.preventDefault(); go(pages.indexOf(a)); return; }
+        // Arrow keys walk the row — FOCUS ONLY, no roving tabindex: every page stays tabbable.
+        var i = pages.indexOf(a), n = null;
+        if (e.key === 'ArrowRight') n = i + 1;
+        else if (e.key === 'ArrowLeft') n = i - 1;
+        else if (e.key === 'Home') n = 0;
+        else if (e.key === 'End') n = pages.length - 1;
+        if (n !== null && n >= 0 && n < pages.length){ e.preventDefault(); pages[n].focus(); }
+      });
+
+      syncBounds();
+    })();
+  </script>
   </body>
 </html>

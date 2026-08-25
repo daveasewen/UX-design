@@ -268,5 +268,192 @@
     "requiredAria": ["role=\"dialog\"", "aria-modal=\"true\"", "role=\"combobox\"", "aria-expanded", "aria-controls", "aria-activedescendant", "role=\"listbox\"", "role=\"group\"", "role=\"option\"", "aria-selected", "role=\"status\"", "aria-label"]
   }
   </script>
+
+  <script>
+  /* ------------------------------------------------------------------------------------------
+     BEHAVIOUR — Command palette. Self-contained, vanilla, no external src, no network, no timer.
+
+     HOUSE IDIOM, copied not invented:
+       • Drawer.reference.html — scrim click closes, Esc closes, focus RETURNS to where it came
+         from, background goes inert, and the OPEN ORDER is 1 show · 2 wait two frames ·
+         3 focus in · 4 only then inert. (Setting inert first blurs asynchronously and wipes an
+         earlier focus(); that is the #210/#211 lesson and it is not re-derived here.)
+       • App-shell-side-nav.reference.html — the Escape listener lives on the DOCUMENT, never on
+         the surface, because a surface listener is deaf in every moment before focus lands.
+       • Tabs.reference.html — wrap-around arrow traversal over a list of roles.
+
+     STATE LIVES IN ARIA FIRST: aria-expanded on the combobox, aria-activedescendant on the
+     combobox, aria-selected on the option. Classes are not used to carry state at all.
+
+     ⚠ AT-REST RENDER IS DELIBERATELY UNTOUCHED. Both specimens ship OPEN with their query
+     already typed and their result set already narrowed by hand — that is the whole point of
+     the "STILL-VISIBLE BY CONSTRUCTION" note at the top of this file. init() therefore does NOT
+     re-run the filter over the markup's value, so the screenshot, the showroom thumbnail and the
+     review pane are identical with and without this script.
+     ------------------------------------------------------------------------------------------ */
+  (function(){
+    'use strict';
+
+    /* .cp, .cp-opt and .cp-empty each carry an AUTHOR `display` rule, and an author rule beats
+       the UA sheet's [hidden]{display:none} whatever the specificity. So the hidden ATTRIBUTE
+       alone does not hide them — visibility is set as an inline style beside it. ARIA state
+       stays on the attribute; the pixels follow.
+       (Pre-existing consequence, found by driving: #cp2-o1 ships `hidden` in the markup and is
+       nonetheless PAINTED. The honest fix is one line in this file's <style> —
+       `.cp-opt[hidden],.cp-empty[hidden],.cp[hidden]{display:none;}` — CSS is fenced for this
+       lane, so it is raised in the report instead of patched silently.) */
+    function show(el, on){
+      if(!el) return;
+      el.hidden = !on;
+      el.style.display = on ? '' : 'none';
+    }
+
+    var palettes = [], active = null, lastClosed = null;
+
+    function paletteOf(node){
+      for(var i = 0; i < palettes.length; i++){
+        if(node && palettes[i].stage.contains(node)) return palettes[i];
+      }
+      return null;
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('.cp-stage'), function(stage){
+      var panel = stage.querySelector('.cp[role="dialog"]');
+      if(!panel) return;
+      var scrim  = stage.querySelector('.cp-scrim');
+      var mock   = stage.querySelector('.cp-stage-mock');
+      var input  = panel.querySelector('input[role="combobox"]');
+      var empty  = panel.querySelector('.cp-empty');
+      var live   = panel.querySelector('[role="status"]:not(.cp-empty)');
+      var groups = Array.prototype.slice.call(panel.querySelectorAll('.cp-group'));
+      var all    = Array.prototype.slice.call(panel.querySelectorAll('[role="option"]'));
+      if(!input) return;
+
+      /* an option the author shipped `hidden` is scaffolding, not a result — never filtered
+         back into view, and enacted as hidden so it stops being painted. */
+      var pool = all.filter(function(o){ return !o.hasAttribute('hidden'); });
+      all.forEach(function(o){ if(o.hasAttribute('hidden')) show(o, false); });
+
+      stage.tabIndex = -1;                 /* the fallback focus home — no trigger exists here */
+      var returnTo = null;
+      var P = { stage: stage, panel: panel, input: input };
+
+      function isOpen(){ return panel.hidden !== true; }
+      function shown(){ return pool.filter(function(o){ return !o.hidden; }); }
+      function activeOpt(){
+        var id = input.getAttribute('aria-activedescendant');
+        return id ? panel.querySelector('#' + id) : null;
+      }
+
+      function setActive(opt){
+        pool.forEach(function(o){ o.setAttribute('aria-selected', String(o === opt)); });
+        input.setAttribute('aria-activedescendant', opt ? opt.id : '');
+        if(opt && opt.scrollIntoView) opt.scrollIntoView({ block: 'nearest' });
+      }
+
+      function move(delta){
+        var v = shown();
+        if(!v.length){ setActive(null); return; }
+        var i = v.indexOf(activeOpt());
+        var n = (i < 0) ? (delta > 0 ? 0 : v.length - 1) : (i + delta + v.length) % v.length;
+        setActive(v[n]);
+      }
+
+      function filter(q){
+        var s = String(q || '').trim().toLowerCase();
+        pool.forEach(function(o){
+          var t = (o.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+          show(o, s === '' || t.indexOf(s) !== -1);
+        });
+        groups.forEach(function(g){
+          show(g, g.querySelectorAll('[role="option"]:not([hidden])').length > 0);
+        });
+        var n = shown().length;
+        if(empty) show(empty, n === 0);
+        if(live) live.textContent = n + (n === 1 ? ' result' : ' results');
+        var a = activeOpt();
+        if(!a || a.hidden) setActive(shown()[0] || null);
+      }
+
+      function open(){
+        if(isOpen()){ input.focus(); active = P; return; }
+        var prev = document.activeElement;
+        returnTo = (prev && prev !== document.body && !stage.contains(prev)) ? prev : null;
+        show(panel, true); show(scrim, true);                                    /* 1 SHOW      */
+        stage.setAttribute('data-cp-open', 'true');
+        input.setAttribute('aria-expanded', 'true');
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){      /* 2 TWO FRAMES*/
+          input.focus();                                                         /* 3 FOCUS IN  */
+          if(mock) mock.inert = true;                                            /* 4 THEN INERT*/
+        }); });
+        active = P;
+        if(lastClosed === P) lastClosed = null;
+      }
+
+      function close(){
+        if(!isOpen()) return;
+        show(panel, false); show(scrim, false);
+        stage.setAttribute('data-cp-open', 'false');
+        input.setAttribute('aria-expanded', 'false');
+        if(mock) mock.inert = false;
+        lastClosed = P; active = P;
+        var back = (returnTo && document.contains(returnTo)) ? returnTo : stage;
+        back.focus();
+      }
+
+      P.open = open; P.close = close; P.isOpen = isOpen;
+
+      input.addEventListener('input', function(){ filter(input.value); });
+
+      /* Roving is by aria-activedescendant, per THIS file's markup: focus never leaves the
+         combobox, the options keep tabindex="-1" and only aria-selected moves. Home/End are
+         deliberately NOT claimed — in a text field they belong to the caret, and the footer
+         advertises only ↑ ↓ and Enter. */
+      input.addEventListener('keydown', function(e){
+        if(e.key === 'ArrowDown'){ e.preventDefault(); move(1); }
+        else if(e.key === 'ArrowUp'){ e.preventDefault(); move(-1); }
+        else if(e.key === 'Enter'){
+          e.preventDefault();
+          var o = activeOpt();
+          if(o && !o.hidden){ panel.setAttribute('data-cp-activated', o.id); close(); }
+        }
+      });
+
+      pool.forEach(function(o){
+        o.addEventListener('click', function(){
+          setActive(o);
+          panel.setAttribute('data-cp-activated', o.id);
+          close();
+        });
+      });
+
+      if(scrim) scrim.addEventListener('click', close);
+      stage.addEventListener('focusin', function(){ active = P; });
+
+      /* INIT — assert the invariants the markup already claims, and nothing more. */
+      panel.hidden = false;
+      stage.setAttribute('data-cp-open', 'true');
+      if(mock) mock.inert = true;
+      palettes.push(P);
+      if(!active) active = P;
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        var p = paletteOf(document.activeElement) || active;
+        if(p && p.isOpen()){ e.preventDefault(); p.close(); }
+        return;
+      }
+      /* ⚠ THE CHORD IS NOT RULED — this file's own manifest says so ("SHORTCUT BINDING NOT
+         RULED", PROPOSED #203, Dave's). Both Ctrl+K and Cmd+K are honoured so the demo answers
+         on either platform; picking one is a decision and is not taken here. */
+      if((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')){
+        e.preventDefault();
+        var t = lastClosed || active || palettes[0];
+        if(t) t.open();
+      }
+    });
+  })();
+  </script>
   </body>
 </html>

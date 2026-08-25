@@ -278,5 +278,74 @@
     "requiredAria": ["<nav", "aria-label", "aria-current=\"page\"", "aria-expanded", "aria-controls", "aria-labelledby"]
   }
   </script>
+
+  <script>
+    // BEHAVIOUR. "You are here" is a STATE, not an authored fact: the measured defect was a static
+    // aria-current that no interaction could move. Selection now moves the attribute, and both
+    // visual carriers (the 3px leading bar, the surface change) are bound to [aria-current="page"]
+    // in CSS above — so they follow the attribute rather than being set a second time in script.
+    // Each <nav class="sn"> is its own scope: the two specimens do not share a current location.
+    document.querySelectorAll('nav.sn').forEach(function(nav){
+      var links = function(){ return Array.prototype.slice.call(nav.querySelectorAll('.sn-link')); };
+
+      function setCurrent(link){
+        links().forEach(function(l){
+          if (l === link){ l.setAttribute('aria-current','page'); }
+          else { l.removeAttribute('aria-current'); }
+        });
+      }
+
+      nav.addEventListener('click', function(e){
+        var link = e.target.closest && e.target.closest('.sn-link');
+        if (!link) return;
+        e.preventDefault();            // href="#" is a specimen stub, not a destination
+        setCurrent(link);
+      });
+
+      nav.addEventListener('keydown', function(e){
+        var link = e.target.closest && e.target.closest('.sn-link');
+        if (!link) return;
+        // Enter already activates a link natively (it fires click, handled above). Space does not,
+        // so it is added by hand — a destination row reads as a control and users press both.
+        if (e.key === ' ' || e.key === 'Spacebar'){ e.preventDefault(); setCurrent(link); return; }
+        // Arrow keys walk the column. FOCUS ONLY — no roving tabindex: a nav list is not a
+        // composite widget, and taking its destinations out of the tab order would be a
+        // regression for anyone who tabs. Hidden rows (a collapsed group) are skipped.
+        var visible = links().filter(function(l){ return l.offsetParent !== null; });
+        var i = visible.indexOf(link), n = null;
+        if (e.key === 'ArrowDown') n = (i + 1) % visible.length;
+        else if (e.key === 'ArrowUp') n = (i - 1 + visible.length) % visible.length;
+        else if (e.key === 'Home') n = 0;
+        else if (e.key === 'End') n = visible.length - 1;
+        if (n !== null && visible.length){ e.preventDefault(); visible[n].focus(); }
+      });
+
+      // Collapsible group — Accordion.reference.html's disclosure, ARIA first: aria-expanded on
+      // the button, `hidden` on the list it already names through aria-controls. The chevron
+      // rotation is CSS on [aria-expanded="true"], so it follows the attribute too.
+      nav.querySelectorAll('.sn-group-toggle').forEach(function(btn){
+        var sub = document.getElementById(btn.getAttribute('aria-controls'));
+        btn.addEventListener('click', function(){
+          var open = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!open));
+          if (sub) sub.hidden = open;
+        });
+      });
+
+      // Collapse to the rail — mechanics copied from App-shell-side-nav.reference.html, scoped to
+      // this column instead of a shell. The labels are hidden, never removed, so the accessible
+      // names survive the collapse; only the width, the chevron and the nav's own name change.
+      var toggle = nav.querySelector('.sn-toggle');
+      if (toggle) toggle.addEventListener('click', function(){
+        var toRail = !nav.classList.contains('is-rail');
+        nav.classList.toggle('is-rail', toRail);
+        toggle.setAttribute('aria-expanded', String(!toRail));
+        toggle.setAttribute('aria-label', toRail ? 'Expand navigation' : 'Collapse navigation');
+        nav.setAttribute('aria-label', toRail ? 'Main, collapsed' : 'Main');
+        var use = toggle.querySelector('use');
+        if (use) use.setAttribute('href', toRail ? '#ic-chevron-right' : '#ic-chevron-left');
+      });
+    });
+  </script>
   </body>
 </html>

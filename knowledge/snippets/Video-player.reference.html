@@ -92,5 +92,183 @@
     "requiredAria": ["aria-label", "role=\"slider\""]
   }
   </script>
+
+  <script>
+  /* ==========================================================================================
+     TRANSPORT BEHAVIOUR — #218 behaviour wave. Added to a file that carried ZERO behaviour JS.
+
+     ⚠⚠ HONESTY NOTE, LOAD-BEARING — THERE IS NO <video> AND NO src IN THIS SNIPPET.
+     `.player` is a CSS gradient standing in for a frame, so there is nothing to play. What
+     follows drives a DEMO CLOCK: a requestAnimationFrame-stepped counter SEEDED FROM THE TWO
+     TIMES ALREADY PRINTED IN THE MARKUP ("1:12 / 3:24"). Nothing here pretends to be a media
+     stream — no <video>, no network, no autoplay. The demo starts PAUSED, exactly as the markup
+     is drawn (aria-label="Play video", .played at 35%). Wiring a real element is the consumer's
+     job; the point of this script is that the CONTROLS' STATES are now real and reviewable.
+
+     ⛔ NO MARKUP OR CSS WAS CHANGED. The one hook the slider needed — tabindex, without which a
+     role="slider" is not keyboard-reachable — is applied AT RUNTIME below, so a JS-off reader
+     sees exactly the file that shipped rather than a focus stop that does nothing.
+
+     GLYPHS ARE BYTE-MATCHED, NEVER INVENTED (_validate_icons.py byte-matches inline paths against
+     assets/icons/). The two alternate paths below are copied verbatim from the library set the
+     drawn glyphs already come from:
+       assets/icons/volume-and-audio/control-pause.svg   (swaps in for control-play.svg)
+       assets/icons/volume-and-audio/volume-off.svg      (swaps in for volume-high.svg)
+     The OUTGOING paths are read off the DOM rather than restated, so they cannot drift.
+
+     ARIA STATE FIRST, CLASSES SECOND — and the state CHANNEL differs per control, on purpose:
+       · play / pause  ACCESSIBLE NAME swap. APG: a play button is not a toggle button — its
+                       label IS its state. aria-pressed here would announce "Pause, pressed".
+       · mute          aria-pressed (mute genuinely IS a toggle) + name swap + glyph swap.
+       · seek          aria-valuenow + aria-valuetext on the role="slider" the markup already has.
+     `data-playing` on .player is the class-second channel and carries no meaning of its own.
+
+     MOTION / dv-animate: the Replay idiom governs snippets whose motion RUNS ON LOAD. This one
+     starts paused and animates nothing until a user acts, so no Replay control is owed and no
+     dv-animate machinery is wired here — named as a finding, not enacted.
+     ========================================================================================== */
+  (function(){
+    var player  = document.querySelector('.player');
+    var bar     = player.querySelector('.bar');
+    var bigplay = player.querySelector('.bigplay');
+    var playBtn = bar.querySelector('button[aria-label="Play"]');
+    var muteBtn = bar.querySelector('button[aria-label="Mute"]');
+    var fsBtn   = bar.querySelector('button[aria-label="Fullscreen"]');
+    var scrub   = player.querySelector('.scrub');
+    var played  = scrub.querySelector('.played');
+    var timeEl  = bar.querySelector('.time');
+
+    var bigGlyph  = bigplay.querySelector('path');
+    var playGlyph = playBtn.querySelector('path');
+    var muteGlyph = muteBtn.querySelector('path');
+
+    var D_PLAY   = playGlyph.getAttribute('d');            /* control-play.svg, off the DOM */
+    var D_VOLUME = muteGlyph.getAttribute('d');            /* volume-high.svg, off the DOM */
+    var D_PAUSE  = 'M14.4004 1.2V16.8H13.2004V1.2H14.4004ZM4.80039 1.2V16.8H3.60039V1.2H4.80039ZM15.6004 0H12.0004V18H15.6004V0ZM6.00039 0H2.40039V18H6.00039V0Z';
+    var D_MUTED  = 'M0 5V13H5L10 18V0L5 5H0ZM8.8 2.897V15.103L5.497 11.8H1.2V6.2H5.497L8.8 2.897ZM17.746 6.924L16.897 6.076L14.821 8.152L12.745 6.076L11.896 6.924L13.974 9L11.898 11.076L12.747 11.924L14.823 9.848L16.899 11.924L17.748 11.076L15.67 9L17.746 6.924Z';
+
+    /* ---- the clock is SEEDED FROM THE MARKUP, so no duration is invented here ---- */
+    function toSec(s){ var p = String(s).trim().split(':'); return (+p[0]) * 60 + (+p[1]); }
+    var halves   = timeEl.textContent.split('/');
+    var DURATION = toSec(halves[1]);                        /* 3:24 -> 204 */
+    var t        = toSec(halves[0]);                        /* 1:12 ->  72 */
+
+    function fmt(s){
+      s = Math.max(0, Math.min(DURATION, Math.round(s)));
+      var m = Math.floor(s / 60), r = s - m * 60;
+      return m + ':' + (r < 10 ? '0' : '') + r;
+    }
+
+    function render(){
+      var pct = DURATION ? (t / DURATION) * 100 : 0;
+      played.style.width = pct.toFixed(2) + '%';
+      scrub.setAttribute('aria-valuenow', String(Math.round(pct)));
+      scrub.setAttribute('aria-valuetext', fmt(t) + ' of ' + fmt(DURATION));
+      timeEl.textContent = fmt(t) + ' / ' + fmt(DURATION);
+    }
+
+    /* ---- play / pause ---- */
+    var playing = false, raf = 0, last = 0;
+
+    function step(ts){
+      if (!playing) { return; }
+      if (!last) { last = ts; }
+      t += (ts - last) / 1000; last = ts;
+      if (t >= DURATION) { t = DURATION; render(); setPlaying(false); return; }
+      render();
+      raf = requestAnimationFrame(step);
+    }
+
+    function setPlaying(on){
+      playing = on; last = 0;
+      cancelAnimationFrame(raf);
+      bigplay.setAttribute('aria-label', on ? 'Pause video' : 'Play video');
+      playBtn.setAttribute('aria-label', on ? 'Pause' : 'Play');
+      bigGlyph.setAttribute('d',  on ? D_PAUSE : D_PLAY);
+      playGlyph.setAttribute('d', on ? D_PAUSE : D_PLAY);
+      player.setAttribute('data-playing', String(on));
+      if (on) {
+        if (t >= DURATION) { t = 0; render(); }             /* replay from the top */
+        raf = requestAnimationFrame(step);
+      }
+    }
+
+    function toggle(){ setPlaying(!playing); }
+    bigplay.addEventListener('click', toggle);
+    playBtn.addEventListener('click', toggle);
+    /* Space / Enter reach both of these natively — they are real <button>s, and re-binding the
+       keys would double-fire. Verified by driving the keys, not by assuming. */
+
+    /* ---- mute. The markup carries no aria-pressed; the BEHAVIOUR adds it, so a JS-off reader
+            is never shown a toggle state that nothing can change. ---- */
+    var muted = false;
+    function setMuted(on){
+      muted = on;
+      muteBtn.setAttribute('aria-pressed', String(on));
+      muteBtn.setAttribute('aria-label', on ? 'Unmute' : 'Mute');
+      muteGlyph.setAttribute('d', on ? D_MUTED : D_VOLUME);
+    }
+    setMuted(false);
+    muteBtn.addEventListener('click', function(){ setMuted(!muted); });
+
+    /* ---- seek. role="slider" is already in the markup; it was never focusable. ---- */
+    scrub.setAttribute('tabindex', '0');
+
+    function seekTo(sec){ t = Math.max(0, Math.min(DURATION, sec)); render(); }
+
+    function seekFromPointer(ev){
+      var r = scrub.getBoundingClientRect();
+      if (!r.width) { return; }
+      seekTo(Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width)) * DURATION);
+    }
+
+    var dragging = false;
+    scrub.addEventListener('pointerdown', function(ev){
+      dragging = true; scrub.focus();
+      try { scrub.setPointerCapture(ev.pointerId); } catch (e) {}
+      seekFromPointer(ev); ev.preventDefault();
+    });
+    scrub.addEventListener('pointermove', function(ev){ if (dragging) { seekFromPointer(ev); } });
+    scrub.addEventListener('pointerup', function(ev){
+      dragging = false;
+      try { scrub.releasePointerCapture(ev.pointerId); } catch (e) {}
+    });
+
+    scrub.addEventListener('keydown', function(ev){
+      var STEP = 5, PAGE = 30, k = ev.key, next;
+      if (k === 'ArrowRight' || k === 'ArrowUp') { next = t + STEP; }
+      else if (k === 'ArrowLeft' || k === 'ArrowDown') { next = t - STEP; }
+      else if (k === 'PageUp')   { next = t + PAGE; }
+      else if (k === 'PageDown') { next = t - PAGE; }
+      else if (k === 'Home')     { next = 0; }
+      else if (k === 'End')      { next = DURATION; }
+      else { return; }
+      ev.preventDefault();
+      seekTo(next);
+    });
+
+    /* ---- fullscreen. Wired to the REAL Fullscreen API and reflected ONLY from the
+            fullscreenchange event — NEVER optimistically on click. Setting aria-pressed on click
+            would claim a state the browser is free to refuse (sandboxed and headless contexts
+            routinely do). That refusal is exactly why the verify script asserts nothing here:
+            DECLARED UNVERIFIED rather than quietly faked. ---- */
+    fsBtn.setAttribute('aria-pressed', 'false');
+    fsBtn.addEventListener('click', function(){
+      try {
+        var p;
+        if (document.fullscreenElement === player) { p = document.exitFullscreen && document.exitFullscreen(); }
+        else if (player.requestFullscreen) { p = player.requestFullscreen(); }
+        if (p && p.catch) { p.catch(function(){}); }
+      } catch (e) {}
+    });
+    document.addEventListener('fullscreenchange', function(){
+      var on = document.fullscreenElement === player;
+      fsBtn.setAttribute('aria-pressed', String(on));
+      fsBtn.setAttribute('aria-label', on ? 'Exit fullscreen' : 'Fullscreen');
+    });
+
+    render();
+  }());
+  </script>
   </body>
 </html>

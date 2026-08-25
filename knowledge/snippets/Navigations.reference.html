@@ -60,5 +60,49 @@
     "requiredAria": ["<nav", "aria-current", "aria-label"]
   }
   </script>
+
+  <script>
+    // BEHAVIOUR. Masthead destination selection: aria-current="page" is STATE and moves with the
+    // click. The 3px underline carrier is bound to a[aria-current="page"] in CSS above, so it
+    // follows the attribute and is never set a second time here.
+    // NOT WIRED, deliberately: the Search and Account buttons in .actions promise surfaces (a
+    // search field, an account menu) that this artefact does not contain. Toggling aria-expanded
+    // on a button that controls nothing would be a false promise to AT, and authoring the missing
+    // surfaces is component invention, not behaviour.
+    (function(){
+      var nav = document.querySelector('nav.main');
+      if (!nav) return;
+      var items = Array.prototype.slice.call(nav.querySelectorAll('a'));
+
+      function setCurrent(a){
+        items.forEach(function(x){
+          if (x === a){ x.setAttribute('aria-current','page'); }
+          else { x.removeAttribute('aria-current'); }
+        });
+      }
+
+      nav.addEventListener('click', function(e){
+        var a = e.target.closest && e.target.closest('a');
+        if (!a) return;
+        e.preventDefault();            // href="#" is a specimen stub, not a destination
+        setCurrent(a);
+      });
+
+      nav.addEventListener('keydown', function(e){
+        var a = e.target.closest && e.target.closest('a');
+        if (!a) return;
+        // Enter activates natively (it fires click). Space does not, so it is added by hand.
+        if (e.key === ' ' || e.key === 'Spacebar'){ e.preventDefault(); setCurrent(a); return; }
+        // Arrow keys walk the row — FOCUS ONLY, no roving tabindex: these are links in a nav
+        // landmark, and every one of them must stay reachable by Tab.
+        var i = items.indexOf(a), n = null;
+        if (e.key === 'ArrowRight') n = (i + 1) % items.length;
+        else if (e.key === 'ArrowLeft') n = (i - 1 + items.length) % items.length;
+        else if (e.key === 'Home') n = 0;
+        else if (e.key === 'End') n = items.length - 1;
+        if (n !== null){ e.preventDefault(); items[n].focus(); }
+      });
+    })();
+  </script>
   </body>
 </html>
