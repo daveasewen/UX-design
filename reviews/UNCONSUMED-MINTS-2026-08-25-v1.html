@@ -1,0 +1,271 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Unconsumed mints — #219 lane 5 — PROPOSED</title>
+<!-- reviews/UNCONSUMED-MINTS-2026-08-25-v1.html — #219 lane 5.
+     EVERY specimen below is the REAL canon.css, linked, with the REAL [data-apollo-theme]
+     attribute. Nothing here is hand-drawn and no value is invented: the "wired" column is a
+     page-local projection of what consuming the minted token WOULD paint, scoped to .proj so
+     it cannot leak. The contrast figures are MEASURED IN THE BROWSER off getComputedStyle at
+     load — they are not typed, and not computed by a script that emulated the cascade. -->
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{ --pg:#FFFFFF; --pgink:#1A1A1A; --pgmut:#626262; --pgline:#E1E1E1; --pgsoft:#F5F5F5; }
+  body{margin:0; padding:40px 32px 96px; background:var(--pg); color:var(--pgink);
+       font-family:var(--typography-font-family, system-ui, -apple-system, "Segoe UI", sans-serif);
+       -webkit-font-smoothing:antialiased; line-height:1.5;}
+  .wrap{max-width:1180px; margin:0 auto;}
+  h1{font-size:28px; line-height:1.2; margin:0 0 6px; letter-spacing:-.01em;}
+  h2{font-size:20px; margin:56px 0 4px; letter-spacing:-.01em;}
+  h3{font-size:15px; margin:28px 0 8px; text-transform:uppercase; letter-spacing:.08em; color:var(--pgmut);}
+  p{margin:8px 0 14px; max-width:76ch;}
+  .lede{font-size:16px; color:var(--pgmut);}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.9em;
+       background:var(--pgsoft); padding:1px 5px; border-radius:4px;}
+  .tag{display:inline-block; font-size:11px; font-weight:700; letter-spacing:.09em;
+       text-transform:uppercase; padding:3px 8px; border-radius:4px; vertical-align:2px;}
+  .tag.prop{background:#1A1A1A; color:#FFFFFF;}
+  .tag.b{background:#FFF0E6; color:#8A4B10; border:1px solid #E8C6A8;}
+  .tag.c{background:#EEF2F7; color:#3B5570; border:1px solid #C9D6E4;}
+  .tag.fp{background:#F0F0F0; color:#555555; border:1px solid #DDDDDD;}
+  .tag.none{background:#E8F3EC; color:#1F5C38; border:1px solid #BEDCC9;}
+  table{border-collapse:collapse; width:100%; margin:14px 0 8px; font-size:14px;}
+  th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--pgline); vertical-align:top;}
+  th{font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--pgmut); font-weight:700;}
+  .note{border-left:3px solid var(--pgline); padding:2px 0 2px 14px; color:var(--pgmut); font-size:14px; margin:14px 0;}
+  .warn{border-left-color:#C25A18; color:#7A3A0E;}
+  .grid{display:grid; gap:14px; margin:18px 0 6px;
+        grid-template-columns:repeat(auto-fill, minmax(268px, 1fr));}
+  .cell{border:1px solid var(--pgline); border-radius:10px; overflow:hidden; background:#FFF;}
+  .cap{display:flex; justify-content:space-between; gap:8px; align-items:baseline;
+       padding:8px 11px; font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+       color:var(--pgmut); border-bottom:1px solid var(--pgline); background:var(--pgsoft);}
+  .cap b{color:var(--pgink); letter-spacing:0; text-transform:none; font-size:12px;}
+  .stage{padding:16px;}
+  .stage[data-theme="dark"]{background:#141414;}
+  .readout{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11.5px;
+           padding:7px 11px; border-top:1px solid var(--pgline); color:var(--pgmut); background:#FFF;}
+  .readout .bad{color:#8A2400; font-weight:700;}
+  .readout .down{color:#8A4B10; font-weight:700;}
+  .ruler{position:relative; display:inline-block;}
+  /* ---- PROJECTION LAYER: what consuming the token WOULD paint. Scoped to .proj only. ---- */
+  .proj .cn-tabs .tab{ color:var(--tabs-inactive); opacity:1; }
+  .proj .cn-tabs .tab[aria-selected="true"]{ color:var(--text-default); }
+  .proj .cn-cards .card.opt{ padding:var(--padding-card-internal); }
+  ul{max-width:76ch;} li{margin:5px 0;}
+</style>
+<div class="wrap">
+
+<h1>Unconsumed mints — the disposition <span class="tag prop">Proposed</span></h1>
+<p class="lede">#219 lane 5 · 2026-08-25 · nothing here is enacted, nothing is committed, no ruling was
+written. Every row below is a question for your eye.</p>
+
+<h2>What was measured, and the counts</h2>
+<p>A minted token that nothing consumes is invisible to every gate we have: each of them asks
+<em>“does this use resolve?”</em> and none asks <em>“is this mint read?”</em>. The segmented radii you
+caught this morning had sat unread for seventeen sessions for exactly that reason.</p>
+
+<table>
+  <tr><th>measure</th><th>count</th><th>what it means</th></tr>
+  <tr><td>custom properties declared in <code>canon.css</code></td><td><b>973</b></td><td>base tier 972 · theme tier 394</td></tr>
+  <tr><td>minted <em>per theme</em> with zero <code>var()</code> consumers</td><td><b>47</b></td><td>reproduces lane 1’s figure exactly</td></tr>
+  <tr><td>— of those, <span class="tag fp">Alias-target</span></td><td><b>17</b></td><td>consumed at <em>mint time</em>, in Python, never as CSS</td></tr>
+  <tr><td>— of those, <span class="tag fp">Alias-shadow</span></td><td><b>24</b></td><td>emitted by alias expansion — <em>nobody authored them</em></td></tr>
+  <tr><td>— <b>genuine orphans</b></td><td><b>6</b></td><td>the whole real population: 3 taste calls, 3 for the park</td></tr>
+  <tr><td>ruled-but-unwired consumers found (the segmented shape)</td><td><b>0</b></td><td>nothing to wire — see below, and it is a <em>good</em> result</td></tr>
+</table>
+
+<h3>Why 47 became 6 — the two subtractions, proved</h3>
+<p><b>Alias-target.</b> Supercharge overrides <code>color/neutral/15</code>. In the store,
+<code>background/default</code> carries <code>"$alias": {"light": "color/neutral/15"}</code>. In the built
+file, base <code>:root</code> reads <code>--color-neutral-15:#FFFFFF</code> and
+<code>--background-default:#FFFFFF</code>; the supercharge block reads <code>--color-neutral-15:#F7F6F4</code>
+and <code>--background-default:#F7F6F4</code>. The second value can only have arrived down the alias edge —
+and the name <code>--color-neutral-15</code> is never used in a <code>var()</code> anywhere. The primitive
+<em>is</em> consumed; the consumption happens in the generator, not in the browser.</p>
+<p><b>Alias-shadow.</b> Twenty of the twenty-four are not in supercharge’s override file at all.
+<code>tooltip/background</code>, <code>primary/border/hover</code>, <code>tertiary/text/pressed</code> and
+their kin are <em>alias-reachable</em> from the neutral rungs supercharge does override, so the cascade
+materialises an effective override for each. Nobody chose them. Reporting these as “forgotten wires”
+would be twenty findings where there is one generator-scope question — asked at the end.</p>
+
+<h2>The six, disposed</h2>
+<table>
+  <tr><th>var</th><th>where</th><th>class</th><th>disposition</th></tr>
+  <tr><td><code>--tabs-inactive</code></td><td>base · legacy · supercharge</td>
+      <td><span class="tag b">B — ruled, consumer ambiguous</span></td>
+      <td>Row A. Wiring it <b>lowers</b> supercharge-dark contrast. Your call.</td></tr>
+  <tr><td><code>--padding-card-internal</code></td><td>console only — <b>no base declaration</b></td>
+      <td><span class="tag b">B — ruled, consumer ambiguous</span></td>
+      <td>Row B. Five card surfaces are candidates; three themes have no token at all.</td></tr>
+  <tr><td><code>--size-segmented-control-min-hit-area</code></td><td>base · console</td>
+      <td><span class="tag b">B — ruled, consumer ambiguous</span></td>
+      <td>Already yours as lane 1’s question 4 (<code>target/min</code> vs this name). Not re-put here.</td></tr>
+  <tr><td><code>--color-neutral-2</code></td><td>supercharge</td>
+      <td><span class="tag c">C — no ruling names a consumer</span></td><td rowspan="3">
+      Park. ADR-0014 clause 1 makes the DNA tier a <em>complete</em> 15-step index —
+      “a theme swaps its entire neutral substrate by overriding <code>neutral/1–15</code>” — so a rung
+      with no semantic alias pointing at it is the design working, not a gap. Recommend marking them
+      <code>$reserved</code> so the instrument stops re-finding them.</td></tr>
+  <tr><td><code>--color-neutral-3</code></td><td>supercharge</td>
+      <td><span class="tag c">C — no ruling names a consumer</span></td></tr>
+  <tr><td><code>--color-neutral-raise-3</code></td><td>supercharge</td>
+      <td><span class="tag c">C — no ruling names a consumer</span></td></tr>
+</table>
+
+<!-- ============================= ROW A ============================= -->
+<h2>Row A · <code>--tabs-inactive</code> — the fade versus the colour</h2>
+<p>R-D23 and ADR-0014 clause 4 rule the state mechanism as a <em>theme property</em>: mono and console
+fade with opacity, supercharge uses <b>colour</b> (“a fade drags the hue off-ramp”), legacy has
+<b>no</b> operational fade. The token <code>tabs/inactive</code> is the seat that mechanism would paint
+from — supercharge’s dark leg was even re-picked to <code>warm/11 #AA9B92</code> to clear 4.5:1.</p>
+<p>The tab snippet paints every theme the same way: <code>color:var(--text-default);
+opacity:var(--alpha-72)</code>. The colour mechanism is minted and unread.</p>
+<div class="note warn"><b>Do not read this as a defect to fix.</b> I measured the consequence before
+proposing the wire, and it does not point one way. Legacy and supercharge-light get markedly better
+(5.25→12.63, 7.32→9.47); <b>supercharge-dark gets worse</b> (7.93→5.59). Nothing is below 4.5 today,
+so there is no live accessibility breach to repair — which is exactly why this is your call and not
+a repair. The readings under each cell are taken live in your browser, not typed here.</div>
+<p class="note">The last two pairs — <b>mono</b> and <b>console</b> — are shown for completeness only.
+ADR-0014 clause 4 rules those two onto the <em>opacity</em> mechanism, so their right-hand cell is
+what the seat holds, not a proposal. Both go slightly <em>down</em> if read (6.90→6.10, 9.06→8.22).</p>
+<div class="grid" id="rowA"></div>
+
+<!-- ============================= ROW B ============================= -->
+<h2>Row B · <code>--padding-card-internal</code> — ruled formula, no home</h2>
+<p>s201-D4 ratified the formula <code>max(border-radius/surface, 8)</code> snapped to 2px, and s200-D3
+narrowed the mint to <b>console only</b>. Console’s 20 is on disk. Every card in the library is still
+padded with a hand-typed <code>16px</code>.</p>
+<div class="note warn"><b>The mechanical blocker, first.</b> <code>--padding-card-internal</code> has
+<b>no base declaration</b> — it exists only inside the console block. It is the only one of the 394
+per-theme mints in that position. A component wired to it renders <em>with no padding at all</em> in
+mono, legacy and supercharge, because an unresolvable custom property is invalid at computed-value time
+and the property falls back to its initial value. The third cell below is that, rendered, not
+described. Wiring therefore needs either a base mint (yours, s200-D3 says nothing mints for the other
+three) or a declared fallback token.</div>
+<div class="grid" id="rowB"></div>
+<p class="note"><b>And which card?</b> Five snippets carry a card surface and three different paddings:
+<code>Cards</code> (16 body, 12 action, 16 media, 16 option), <code>Account-card</code>,
+<code>Stat-card</code>, <code>Card-header-lockup</code>, <code>Payment-card-visual</code>. The ruling
+names a formula and a value; it does not name a surface. Picking the set is the taste call.</p>
+
+<!-- ============================= the shadow class ============================= -->
+<h2>The twenty-four nobody authored</h2>
+<p>These have no visual row because there is nothing to show: no component names them, in any theme,
+and no override file declares them. They exist because supercharge overrides the neutral DNA and the
+cascade expands every alias edge that reaches it.</p>
+<p><code>--tooltip-background</code> · <code>--tooltip-border</code> ·
+<code>--primary-border-{hover,pressed,disabled}</code> · <code>--secondary-border-{hover,pressed,disabled}</code> ·
+<code>--tertiary-{background-active,pressed,text-disabled,text-pressed}</code> ·
+<code>--tabs-{badge-background,hover,pressed}</code> ·
+<code>--data-vis-border-on-{dark,light}-{baseline-2,gridline}</code> ·
+<code>--divider-border-subsectioninset</code> · <code>--form-border-pressed</code> ·
+<code>--badge-host</code> · <code>--drop</code> · <code>--pri-icon</code></p>
+<p class="note">Two are worth your eye on their own terms, and both are recorded as questions rather
+than acted on: <code>--tabs-badge-background</code> carries a value you ratified at s123-D4 (“SC badge
+is fine”) which s149-D1 then fenced supercharge’s badge <em>off</em> — so a ratified colour paints
+nothing. <code>--pri-icon</code> carries s170-D4’s ruled white for the legacy primary button icon, and
+the Button snippet contains no icon at all.</p>
+
+<h2>The questions, plainly</h2>
+<ol>
+  <li><b>Does the inactive tab keep its fade?</b> Row A. Wiring the ruled colour mechanism moves
+  supercharge dark down; leaving it means <code>tabs/inactive</code> stays a value with no picture.</li>
+  <li><b>Which surfaces are “the card”?</b> Row B — and does the other three themes’ card padding mint,
+  or does the consumer carry a declared fallback?</li>
+  <li><b>Should the cascade emit an alias-shadow at all?</b> Twenty-four declarations no one authored
+  and no one reads. Suppressing unconsumed shadows is a generator-scope change, not a repair.</li>
+  <li><b>Do reserved slots get to say so?</b> A <code>$reserved</code> / <code>$consumer</code> field on
+  a token is the only thing that can tell a forgotten wire from a deliberate one. It is also the only
+  thing that would let the new inventory gate be promoted from advisory to blocking.</li>
+  <li><b>The ratified-but-fenced pair</b> — <code>--tabs-badge-background</code> (s123-D4 vs s149-D1)
+  and <code>--pri-icon</code> (s170-D4, no icon exists). Stand, retire, or build the consumer?</li>
+</ol>
+
+<p class="note">Instrument: <code>python3 knowledge/_gate_minted_consumption.py --orphans</code> —
+advisory, wired into the build’s advisory tier, ten selftest arms including a mutant for each
+subtraction. It is advisory <em>on purpose</em>: promotion needs question 4 answered.</p>
+</div>
+
+<script>
+// ---- specimen builders. Markup COPIED from the reference snippets, never re-drawn. -------
+const TABS = t => `
+<div class="cn-tabs"><div class="tabs" style="--demo-width:100%">
+  <div class="tablist" role="tablist">
+    <button class="tab" role="tab" aria-selected="true"  tabindex="0">Overview</button>
+    <button class="tab" role="tab" aria-selected="false" tabindex="-1">Transactions</button>
+    <button class="tab" role="tab" aria-selected="false" tabindex="-1">Statements</button>
+  </div><span class="indicator" style="left:0;width:96px"></span>
+</div></div>`;
+const CARD = () => `
+<div class="cn-cards"><div class="card opt" style="display:flex;gap:12px;align-items:flex-start">
+  <div><h3 style="margin:0 0 4px;font-size:15px">Current account</h3>
+  <p style="margin:0;font-size:13px;opacity:.75">Everyday spending with a contactless debit card.</p></div>
+</div></div>`;
+
+function cell(host, theme, mode, label, proj, body, meter){
+  const c = document.createElement('div'); c.className = 'cell';
+  const themeAttr = theme === 'mono' ? '' : ` data-apollo-theme="${theme}"`;
+  c.innerHTML = `<div class="cap"><span>${theme} · ${mode}</span><b>${label}</b></div>
+    <div class="stage${proj ? ' proj' : ''}"${themeAttr} data-theme="${mode}">${body}</div>
+    <div class="readout">measuring…</div>`;
+  host.appendChild(c);
+  requestAnimationFrame(() => meter(c.querySelector('.stage'), c.querySelector('.readout')));
+  return c;
+}
+// ---- MEASURED, not typed: read the resolved paint out of the live page. -----------------
+const rgb = s => (s.match(/[\d.]+/g) || []).slice(0,3).map(Number);
+const alphaOf = s => { const m = s.match(/[\d.]+/g); return m && m.length > 3 ? +m[3] : 1; };
+const lum = ([r,g,b]) => { const f = v => (v/=255) <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4);
+  return 0.2126*f(r) + 0.7152*f(g) + 0.0722*f(b); };
+const ratio = (a,b) => { const [x,y] = [lum(a), lum(b)].sort((p,q) => q-p); return (x+0.05)/(y+0.05); };
+const mix = (f,b,a) => f.map((v,i) => Math.round(v*a + b[i]*(1-a)));
+const hex = c => '#' + c.map(v => v.toString(16).padStart(2,'0').toUpperCase()).join('');
+
+function groundOf(el){
+  for (let n = el; n; n = n.parentElement){
+    const bg = getComputedStyle(n).backgroundColor;
+    if (bg && alphaOf(bg) > 0.99 && rgb(bg).length === 3) return rgb(bg);
+  }
+  return [255,255,255];
+}
+function meterTab(stage, out){
+  const tab = stage.querySelectorAll('.tab')[1];        // an INACTIVE tab
+  const cs = getComputedStyle(tab);
+  const ink = rgb(cs.color), op = parseFloat(cs.opacity) || 1, bg = groundOf(tab);
+  const eff = mix(ink, bg, op * alphaOf(cs.color));
+  const r = ratio(eff, bg);
+  out.innerHTML = `ink ${hex(ink)} @ opacity ${op} → ${hex(eff)} on ${hex(bg)}<br>` +
+    `contrast <b class="${r < 4.5 ? 'bad' : ''}">${r.toFixed(2)}:1</b>` +
+    (r < 4.5 ? ' — below 4.5' : '');
+  out.dataset.ratio = r.toFixed(2);
+}
+function meterPad(stage, out){
+  const card = stage.querySelector('.card.opt');
+  const cs = getComputedStyle(card);
+  const p = cs.paddingTop;
+  const zero = parseFloat(p) === 0;
+  out.innerHTML = `resolved padding <b class="${zero ? 'bad' : ''}">${p}</b>` +
+    (zero ? ' — token undeclared in this theme, property invalid, padding collapsed' : '');
+  out.dataset.pad = p;
+}
+
+const A = document.getElementById('rowA'), B = document.getElementById('rowB');
+// legacy + supercharge are the two the ruling actually reaches (legacy: no fade; supercharge:
+// colour mechanism). mono + console are shown for completeness ONLY — ADR-0014 clause 4 rules
+// them onto opacity, so their right-hand cell is what the seat HOLDS, not what is proposed.
+[['legacy','light','proposed'],['legacy','dark','proposed'],
+ ['supercharge','light','proposed'],['supercharge','dark','proposed'],
+ ['mono','light','seat only'],['console','dark','seat only']].forEach(([t,m,kind]) => {
+  cell(A, t, m, 'today — fade', false, TABS(t), meterTab);
+  cell(A, t, m, (kind === 'proposed' ? 'wired — colour' : 'seat value — NOT proposed'),
+       true, TABS(t), meterTab);
+});
+[['console','light'],['console','dark']].forEach(([t,m]) => {
+  cell(B, t, m, 'today — 16px', false, CARD(), meterPad);
+  cell(B, t, m, 'wired — token', true,  CARD(), meterPad);
+});
+[['mono','light'],['legacy','light'],['supercharge','light']].forEach(([t,m]) => {
+  cell(B, t, m, 'wired, NO base mint', true, CARD(), meterPad);
+});
+</script>

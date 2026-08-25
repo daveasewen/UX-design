@@ -399,6 +399,30 @@ STEPS = [
      "_gate_dataviz_vars.py"),
     ("dataviz var-resolution gate selftest — 8 arms incl. alias chain + missing target (ds-0NN)",
      "_gate_dataviz_vars.py", ["--selftest"]),
+    # THE MIRROR OF THE TWO ABOVE (built #219 lane 5). C2 and the dataviz gate both ask "does
+    # this USE resolve?". Nothing asked "is this MINT read?" — so a token minted with a value
+    # Dave ruled, consumed by nothing, was invisible to all 13+ gates. #219 found two live cases
+    # by hand (the s202-D1 segmented radii, dark for 17 sessions; --padding-card-internal).
+    # ADVISORY ON PURPOSE and it must stay so: a forgotten wire and a deliberately-reserved slot
+    # wear the same shape, and no presence test can separate them. Promotion needs a
+    # $consumer/$reserved declaration on the token, and is DAVE'S WORD, not a builder's pick.
+    ("minted-token consumption inventory — declared-but-never-read (ADVISORY, built #219)",
+     "_gate_minted_consumption.py"),
+    ("minted-consumption selftest — 10 arms incl. both false-positive mutants (#219)",
+     "_gate_minted_consumption.py", ["--selftest"]),
+    # THE SAME CLASS FROM THE OTHER END (built #219 lane 6, wired at the #219 seam-3 reconcile).
+    # The UA sheet's `[hidden]{display:none}` is specificity (0,1,0); any author `display:` rule
+    # that matches the same element and is not beaten WINS, so the element PAINTS while `hidden`
+    # tells assistive tech it is gone. #218 W3 F1 drove the consequence in a real snippet and
+    # s218-D5 cl.3 fixed that ONE instance while putting the repo-wide sweep on the gates backlog.
+    # This is the sweep. ADVISORY ON PURPOSE: the matcher grades subject compounds and IGNORES
+    # combinators, so it can name a pair that cannot collide in the rendered DOM — the correct
+    # bias for triage, and the exact reason its findings are TRIAGE INPUT and not repairs.
+    # Promotion to blocking is DAVE'S WORD (ADR-0005 §5 — it must survive real use first).
+    ("hidden-attr vs author-display sweep — painted while hidden (ADVISORY, built #219)",
+     "_validate_hidden_display.py"),
+    ("hidden-attr display selftest — 16 bites incl. the real #218 mutant (#219)",
+     "_validate_hidden_display.py", ["--selftest"]),
     ("reverse-text edge-extremity check {#col26-020} (advisory)", "_validate_edge_extremity.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
@@ -778,6 +802,18 @@ ROUTE_ROWS = [
     ("dataviz var-resolution gate — markup fill/stroke var() per theme (BLOCKING s191-D3, ds-0NN #184)", GATE,
      "\n❌ dataviz var-resolution gate failed (exit {code}) — a chart colour var() resolves in NO theme and would render SILENT BLACK (s191-D3, promoted from advisory on Dave's word #191). Run: python3 knowledge/_gate_dataviz_vars.py"),
     ("dataviz var-resolution gate selftest — 8 arms incl. alias chain + missing target (ds-0NN)", ABORT, None),
+    # ADVISORY, deliberately — the inventory always exits 0; only an unrunnable inventory (exit 2)
+    # would surface here. The SELFTEST is ABORT like its siblings: an inventory whose mutants stop
+    # going red is a measuring tool that has quietly stopped measuring.
+    ("minted-token consumption inventory — declared-but-never-read (ADVISORY, built #219)", ADVISORY, None),
+    ("minted-consumption selftest — 10 arms incl. both false-positive mutants (#219)", ABORT, None),
+    # ADVISORY, deliberately — the sweep always exits 0 and writes nothing; it is a triage
+    # reader, not a repair. The SELFTEST is ABORT like its siblings: this one's mutant arm is
+    # driven on the REAL #218 instance (delete Dave's ruled one-liner from Command-palette and
+    # the original phantom option is re-named), so a green that stops going red on removal means
+    # the instrument has quietly stopped measuring the clause it was built for.
+    ("hidden-attr vs author-display sweep — painted while hidden (ADVISORY, built #219)", ADVISORY, None),
+    ("hidden-attr display selftest — 16 bites incl. the real #218 mutant (#219)", ABORT, None),
     ("reverse-text edge-extremity check {#col26-020} (advisory)", ADVISORY, None),
     ("compliance verification edges — applies_to vs verified_by (advisory)", ADVISORY, None),
     ("external automatable-check refs — axe-core import (advisory)", ADVISORY, None),
