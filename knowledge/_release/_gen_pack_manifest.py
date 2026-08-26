@@ -996,16 +996,15 @@ OPEN_QUESTIONS = [
                   "designer's project should not be in the zip at all",
                   "Ship them anyway — 57 gates, so the pack's roster matches Apollo's, and let "
                   "the evidence linter refuse with its honest 77 in the designer's run"],
-         # #219 seam 9. Dave answered this card in the session itself, not off a later page, so
-         # the source is the CHAT and it is cited as the chat — see `answered_in`. ⚠ The clause
-         # is NOT yet inscribed in _rulings.json: s219-D5 carries Q1..Q5 and the naming clause
-         # and stops there. Writing that clause is the conductor's act, not this generator's,
-         # and until it lands `inscription="OWED"` keeps the card honest about which register
-         # this answer sits in [[memento-three-registers]] [[dont-launder-a-premise-into-a-ruling]].
+         # #219 seam 9. Dave answered this card in the session, and at stage 2 the conductor
+         # INSCRIBED the clause as `s219-D9` — so the OWED register comes off the card and the
+         # receipt cites the store entry that actually carries it. The card carried
+         # `inscription="OWED"` + a chat citation for the interval between his word and the
+         # written clause; that machinery stays below for any future uninscribed answer, and
+         # the selftest now verifies this citation against the STORE itself, not this dict's
+         # own text [[memento-three-registers]] [[memento-framing]].
          answered=dict(
-             ruling="s219-D5 (Q6) — clause OWED, not yet inscribed",
-             answered_in="chat #219 2026-08-26 — Dave: '55 gates'",
-             inscription="OWED",
+             ruling="s219-D9",
              position="The first reading: 55 gates. The ship list carries only the gates that "
                       "can actually tell a designer something about their own work, and a "
                       "check whose whole subject is this repo's session evidence is not one of "
@@ -1343,6 +1342,18 @@ GROUP_LEAD = {
         "packed gates on a designer's own work, and reads the verdicts back honestly."),
 }
 
+# The order the group cards render in — the THIRD copy of the group set, hoisted at #219
+# seam 9 stage 2 for the same reason GROUP_LEAD was at stage 1: as a typed local inside
+# render_page it silently omitted N3's `gumdrop` group, so the lede counted seven groups,
+# GROUP_LEAD carried the lead, the manifest carried the files — and Dave's page rendered
+# six cards, with the clean-cut lead promising "the group below" above a card that never
+# came. No KeyError this time, which is worse: the page lied quietly instead of dying.
+# Bitten both directions in the selftest, plus the lede correspondence — the prose says
+# "the last two are Memento … and the day-one walk-in", so the order must END with that
+# pair. [[green-tests-cannot-see-scope]] [[no-gate-parses-the-artefact]]
+GROUP_ORDER = ["engine-canon", "gates", "runbooks", "library", "skills",
+               "memento-clean-cut", "gumdrop"]
+
 
 def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
     G = {}
@@ -1422,7 +1433,7 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
 
     # ---- the groups, one card each
     A('<h2>What goes in — one card per group</h2>')
-    for gk in ["engine-canon", "gates", "runbooks", "library", "memento-clean-cut", "skills"]:
+    for gk in GROUP_ORDER:
         entries = G.get(gk, [])
         if not entries:
             continue
@@ -1943,11 +1954,13 @@ def selftest():
              "an answered card must name the ruling that settles it")
         bite("questions/answered-states-a-position:%s" % q["id"],
              len(a.get("position", "").strip()) > 40, True)
-        # ⚠ AN UNINSCRIBED ANSWER MUST SAY SO. Q6 was answered by Dave in the session, and the
-        # matching clause has not been written into _rulings.json — that is the conductor's act
-        # and no generator's. A card that cites a ruling id whose store entry does not carry
-        # the clause is a confident FALSE inscription [[memento-framing]], so any card flagged
-        # OWED has to cite the chat it actually came from, in the repo's own evidence grammar.
+        # ⚠ AN UNINSCRIBED ANSWER MUST SAY SO. Writing a clause into _rulings.json is the
+        # conductor's act and no generator's — so between Dave's word in chat and the store
+        # entry, a card carries `inscription="OWED"` and cites the chat it came from, in the
+        # repo's own evidence grammar. A card that cites a ruling id whose store entry does
+        # not carry the clause is a confident FALSE inscription [[memento-framing]]. Q6 lived
+        # in this register for exactly one stage (seam 9 stage 1 → the s219-D9 inscription);
+        # the guard stays armed for the next answer that arrives by chat.
         if a.get("inscription") == "OWED":
             bite("questions/owed-clause-cites-the-chat:%s" % q["id"],
                  bool(re.match(r"^chat #\d+ \d{4}-\d{2}-\d{2} — Dave: ",
@@ -1977,6 +1990,21 @@ def selftest():
     bite("page/no-orphan-leads",
          [gk for gk in GROUP_LEAD if gk not in _declared_groups], [],
          "a lead for a group that no longer exists is prose describing a cut that did not happen")
+    # ---- AND EVERY GROUP IS A CARD (#219 seam 9 stage 2). The render loop's order list was
+    # a typed local too — the gumdrop group had a lead, a manifest entry and a lede counting
+    # seven, and NO card, because nothing iterated it. A group absent from GROUP_ORDER fails
+    # here instead of vanishing from Dave's page. [[green-tests-cannot-see-scope]]
+    bite("page/every-group-is-a-card",
+         [gk for gk in _declared_groups if gk not in GROUP_ORDER], [],
+         "a group missing from GROUP_ORDER renders no card — the lede counts it, the page "
+         "never shows it")
+    bite("page/no-orphan-card-slots",
+         [gk for gk in GROUP_ORDER if gk not in _declared_groups], [],
+         "an order slot for a group that no longer exists")
+    bite("page/order-ends-with-the-memento-pair",
+         GROUP_ORDER[-2:], ["memento-clean-cut", "gumdrop"],
+         "the lede says 'the last two are Memento … and the day-one walk-in', and the "
+         "clean-cut lead says 'the group below' — the order must make both true")
 
     # ---- THE DEAD CUT-LEVEL CLAIM CANNOT COME BACK (#219 seam 9, on N3's HANDOFF 1). Until
     # this seam, the pack README, _PACK.json and this generator all said Memento — Gumdrop ships
@@ -2056,6 +2084,25 @@ def selftest():
              "Dave answered the roster card at #219; the card must carry his answer")
         bite("questions/Q6-receipt-names-the-count", "55" in _a6.get("position", ""), True,
              "the receipt must state the roster he ruled")
+        # #219 seam 9 stage 2: the conductor inscribed the Q6 clause as s219-D9, so the OWED
+        # register comes OFF this card — a card still saying OWED after the clause lands tells
+        # Dave his written ruling is unwritten, the inverse lie of the one OWED prevents. And
+        # the citation is proved against the STORE, not against this file's own dict: citing a
+        # ruling whose entry does not carry the clause is the false-inscription class
+        # [[memento-framing]] [[no-gate-parses-the-artefact]].
+        bite("questions/Q6-inscription-flag-is-off", "inscription" in _a6, False,
+             "s219-D9 is in the store; the card must no longer carry the OWED register")
+        bite("questions/Q6-cites-the-inscribed-ruling", _a6.get("ruling"), "s219-D9",
+             "the receipt cites the clause the conductor inscribed, not the chat")
+        _store = json.load(open(os.path.join(ROOT, "knowledge", "_rulings.json"),
+                                encoding="utf-8"))
+        _d9 = [r for r in _store.get("rulings", []) if r.get("id") == "s219-D9"]
+        bite("questions/Q6-cited-ruling-is-in-the-store", len(_d9), 1,
+             "the card cites s219-D9 — the store must actually hold it")
+        bite("questions/Q6-cited-ruling-carries-the-count",
+             bool(_d9) and "55" in _d9[0].get("says", ""), True,
+             "the cited entry must itself carry the 55-gate clause — cite-without-clause is "
+             "the confident FALSE inscription this page exists to refuse")
         bite("questions/no-card-is-still-asking",
              [q["id"] for q in OPEN_QUESTIONS if not q.get("answered")], [],
              "every card on the pre-bake page is answered; a page that still asks is not ready "

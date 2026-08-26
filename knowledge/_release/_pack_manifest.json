@@ -2,10 +2,10 @@
   "carries": {
     "name": "Memento — Gumdrop",
     "version": "v1.0.0",
-    "what": "A clean cut of Memento: machinery only, no record. Its version line is its own; the pack's version does not move it."
+    "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version line is its own; the pack's version does not move it."
   },
-  "commit": "416e1a6d3a07b24425280d2186dac9a886179ca8",
-  "commit_date": "2026-08-26T18:32:50+01:00",
+  "commit": "2f7c47bb904bd55c6ce94d0fecd81711bc79c5e4",
+  "commit_date": "2026-08-26T19:37:29+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -104,12 +104,16 @@
       "reason": "MEASURED, not assumed: 9 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
     },
     {
+      "path": "knowledge/_validate_evidence.py, knowledge/_claimtable.py",
+      "reason": "THE TWO THAT TOOK THE ROSTER FROM 57 TO 55, named because Dave's answer to Q6 was 55 gates on the condition the drop is visible. _validate_evidence.py runs, but its verdict is about notes/_claims, which the pack does not ship — and _claimtable.py is its only local helper, so it travels with it. Neither is missing by accident and neither is broken: a check whose subject the pack does not carry has nothing to say in a designer's project."
+    },
+    {
       "path": "knowledge/ (everything else)",
       "reason": "The audit files, build scripts, session machinery and working documents that make up the rest of knowledge/ — the workshop, not the engine."
     }
   ],
   "gate_probe": {
-    "commit": "416e1a6d3a07b24425280d2186dac9a886179ca8",
+    "commit": "2f7c47bb904bd55c6ce94d0fecd81711bc79c5e4",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -2303,7 +2307,7 @@
       "title": "Desktop fonts"
     },
     {
-      "bytes": 122362,
+      "bytes": 125865,
       "files": 7,
       "group": "memento-clean-cut",
       "key": "memento",
@@ -2332,7 +2336,7 @@
       "title": "Memento docs"
     },
     {
-      "bytes": 133480,
+      "bytes": 136983,
       "files": 11,
       "group": "memento-clean-cut",
       "key": "memento.plugin",
@@ -2351,6 +2355,34 @@
       ],
       "plain": "The packaged plugin — the boot skill and its reference.",
       "title": "Memento Claude plugin"
+    },
+    {
+      "bytes": 211313,
+      "files": 18,
+      "group": "gumdrop",
+      "key": "gumdrop",
+      "paths": [
+        "apollo-spider/.github/copilot-instructions.md",
+        "apollo-spider/.github/prompts/check-against-design-system.prompt.md",
+        "apollo-spider/.github/prompts/check-with-gates.prompt.md",
+        "apollo-spider/.github/prompts/draft-a-new-pattern.prompt.md",
+        "apollo-spider/.github/prompts/generate-from-canon.prompt.md",
+        "apollo-spider/.github/prompts/usability-review.prompt.md",
+        "apollo-spider/FIRST-SESSION.md",
+        "apollo-spider/gumdrop/_CHAIN.md",
+        "apollo-spider/gumdrop/_GUMDROP-MANIFEST.md",
+        "apollo-spider/gumdrop/_governs.py",
+        "apollo-spider/gumdrop/_helpgate.py",
+        "apollo-spider/gumdrop/_inscribe_ruling.py",
+        "apollo-spider/gumdrop/_rulings.json",
+        "apollo-spider/gumdrop/_state.json",
+        "apollo-spider/gumdrop/_state.py",
+        "apollo-spider/gumdrop/machinery/_could_not_ask.py",
+        "apollo-spider/gumdrop/runbooks/_RUNBOOK-capture-ritual.md",
+        "apollo-spider/gumdrop/runbooks/_RUNBOOK-context-gauge.md"
+      ],
+      "plain": "What a designer meets on day one: the guided first session, the Copilot boot instructions, an empty task store and an empty rulings store with the shapes already right, a starter chain that explains the first move, and the two Memento runbooks rewritten for VS Code + Copilot. The stores ship EMPTY on purpose — the shape is machinery, the contents are the designer's record.",
+      "title": "Memento — Gumdrop cold start"
     },
     {
       "bytes": 31987,
@@ -2441,6 +2473,11 @@
       "title": "Four of the packed gates are RED the day the pack is unzipped. Ship them anyway, or clear them first?"
     },
     {
+      "answered": {
+        "enacted": "Measured at this commit, not asserted. The gates group is assembled from the probe's own verdicts — the gates it classified RUNNABLE or NEEDS-DEP, plus the helper modules and data files they import — so the file count on the group card is read out of the tree and nothing on this page types the number 55. And the two that fell out are named, by filename and with the probe's own reason, in their own row of the exclusion table: the drop is stated on the same page as the count it changed.",
+        "position": "The first reading: 55 gates. The ship list carries only the gates that can actually tell a designer something about their own work, and a check whose whole subject is this repo's session evidence is not one of them. The two that fall out are NOT hidden by falling out — they are named, with their reason, in the exclusion table below, which is where a designer looks to find out what is deliberately absent.",
+        "ruling": "s219-D9"
+      },
       "body": "This one is a consequence, not a proposal, and that is why it is on this page. Fixing the four red gates at cause meant classifying _validate_evidence.py honestly: it RUNS fine away from this repo, but everything it has an opinion about lives in notes/_claims — your session evidence — which s219-D4(1) permanently excludes from the pack. A gate whose subject the pack does not carry is REPO-BOUND, and REPO-BOUND gates do not ship.||So it falls out, and it takes its only local helper, _claimtable.py, with it. The gate group above is measured at 55 files where the earlier proposal said 57. Nothing broke and nothing is hidden: the pack's own runner is 35 pass, 0 fail, 0 could-not-ask, exit 0, from a directory that is not this repo.||The honest refusal did not disappear — it MOVED, from runtime to the ship list. Before, a designer ran the linter and it refused with a 77 that said “I cannot answer this here”. Now they never see it at all.||Which is better depends on what you want the roster to mean. If the roster is “checks that can tell you something about your work”, 55 is correct and the two were noise. If the roster is “the same gates Apollo runs”, then 57 with one of them refusing honestly is the truthful picture, and the refusal is a feature — it tells a designer the check exists and why it has nothing to say to them.||This is the same seam as two other open questions: the pack runner has three verdicts where the repo has four (there is no ADVISORY), and notes/_claims is named in three places. All three are the same argument about what an honest “cannot answer” looks like in a designer's project, and they want answering together.",
       "id": "Q6",
       "options": [
@@ -2465,12 +2502,16 @@
         "bytes": 799319,
         "files": 55
       },
+      "gumdrop": {
+        "bytes": 211313,
+        "files": 18
+      },
       "library": {
         "bytes": 22202706,
         "files": 344
       },
       "memento-clean-cut": {
-        "bytes": 263494,
+        "bytes": 270500,
         "files": 20
       },
       "runbooks": {
@@ -2482,8 +2523,8 @@
         "files": 5
       }
     },
-    "bytes": 33853171,
-    "files": 1592
+    "bytes": 34071490,
+    "files": 1610
   },
   "version": "v1.0.0"
 }
