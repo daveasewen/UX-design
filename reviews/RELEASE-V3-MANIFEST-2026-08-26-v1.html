@@ -74,13 +74,13 @@
 <p>You said you wanted designers to get <em>as close to what you use as possible, without the review files and the extras, even a clean cut of Memento</em>. This is that list. It is six groups. Five of them are things you already work in; the sixth is Memento with its memory emptied out.</p>
 <p>The list is not typed by hand. It is worked out from one named commit, so the pack and the repo can never quietly disagree — and building the same commit twice gives a file that is <b>identical down to the byte</b>, which is what makes it possible to see exactly what changed between two releases.</p>
 <div class="head">
-<div><b>1,590</b><span>files in the pack</span></div>
-<div><b>33.8 MB</b><span>on disk</span></div>
+<div><b>1,594</b><span>files in the pack</span></div>
+<div><b>33.9 MB</b><span>on disk</span></div>
 <div><b>13.3 MB</b><span>zipped — the download</span></div>
 <div><b>39</b><span>gates that run anywhere</span></div>
-<div><b>4</b><span>questions for you</span></div>
+<div><b>5</b><span>questions for you</span></div>
 </div>
-<p class="note">Read from commit <code>71bb2f77ff59</code> (2026-08-26) — nothing has been baked. Manifest fingerprint <code>ad0d985534457a1b</code>. Version <code>v3.0.0</code>.</p>
+<p class="note">Read from commit <code>801fe7cc2296</code> (2026-08-26) — nothing has been baked. Manifest fingerprint <code>2e8fdd02e4481ba7</code>. Version <code>v3.0.0</code>.</p>
 <h2>What goes in — one card per group</h2>
 <div class="card">
 <h3>The engine itself <span class="tag in">In</span></h3>
@@ -101,9 +101,9 @@
 <div class="card">
 <h3>The gates <span class="tag in">In</span></h3>
 <p class="plain">The checks that make Apollo a system rather than a folder of files. Every gate below was actually RUN inside a copy of this pack, on its own, outside your repo. The verdicts are measurements, not opinions — and the ones that only work here are named, with the reason, and left out.</p>
-<div class="metrics"><div><b>54</b>files in this group</div><div><b>821 KB</b>on disk</div></div>
+<div class="metrics"><div><b>57</b>files in this group</div><div><b>837 KB</b>on disk</div></div>
 <div class="tw"><table><tr><th>part</th><th>what it is</th><th class="num">files</th><th class="num">size</th></tr>
-<tr><td><b>Runnable gates</b></td><td>The executable checks. Each one below was RUN in an isolated copy of this pack to find out whether it works away from this repo — the verdicts are measured, not guessed.</td><td class="num">54</td><td class="num">821 KB</td></tr>
+<tr><td><b>Runnable gates</b></td><td>The executable checks. Each one below was RUN in an isolated copy of this pack to find out whether it works away from this repo — the verdicts are measured, not guessed.</td><td class="num">57</td><td class="num">837 KB</td></tr>
 </table></div>
 <h3 style="text-transform:none;letter-spacing:0;color:#1A1A1A;font-size:15px;margin-top:22px">Every gate, and whether it works away from home</h3>
 <p style="font-size:14.5px;max-width:70ch">Each one was copied into a bare directory holding only the pack, and run. Three answers: it works; it works but needs something installed first; or it only makes sense inside your repo, in which case it stays here and the reason is written down.</p>
@@ -157,7 +157,8 @@
 <tr><td><code>_validate_wiring.py</code></td><td><span class="tag out">REPO-BOUND</span></td><td>reaches for knowledge/_build_all.py, which the pack does not ship</td><td>won’t run here</td></tr>
 </table></div>
 <p class="note">Three gates want <code>playwright</code> installed because they drive a real browser. They ship anyway and say so themselves when you run them without it. The ones marked <em>nothing to grade yet</em> run perfectly — they simply have no work of the designer’s to look at until the designer makes some.</p>
-<details><summary>Every path in this group (54)</summary><div class="paths">knowledge/_ASSERTIONS.md<br>knowledge/_TOKEN-FORK-LEDGER.json<br>knowledge/_a11y_target.py<br>knowledge/_assertions.json<br>knowledge/_binds-ratchet.json<br>knowledge/_claimtable.py<br>knowledge/_contrast_utils.py<br>knowledge/_could_not_ask.py<br>knowledge/_dtcg_units.py<br>knowledge/_gate_dataviz_vars.py<br>knowledge/_gate_minted_consumption.py<br>knowledge/_helpgate.py<br>knowledge/_htmlmask.py<br>knowledge/_type_ratchet.json<br>knowledge/_validate_a11y.py<br>knowledge/_validate_advisory.py<br>knowledge/_validate_behaviour.py<br>knowledge/_validate_binds_ratchet.py<br>knowledge/_validate_binds_resolve.py<br>knowledge/_validate_compose.py<br>knowledge/_validate_coverage.py<br>knowledge/_validate_css_governed.py<br>knowledge/_validate_dark_surfaces.py<br>knowledge/_validate_dataviz.py<br>knowledge/_validate_descender_clip.py<br>knowledge/_validate_descender_computed.py<br>knowledge/_validate_dtcg.py<br>knowledge/_validate_edge_extremity.py<br>knowledge/_validate_evidence.py<br>knowledge/_validate_grid.py<br>knowledge/_validate_help_gate.py<br>knowledge/_validate_hidden_display.py<br>knowledge/_validate_hit_area.py<br>knowledge/_validate_icons.py<br>knowledge/_validate_intent_resolve.py<br>knowledge/_validate_legacy_leak.py<br>knowledge/_validate_no_hardcode.py<br>knowledge/_validate_palette_tier.py<br>knowledge/_validate_partials.py<br>knowledge/_validate_proforma.py<br>knowledge/_validate_property_resolves.py<br>knowledge/_validate_radius.py<br>knowledge/_validate_screen.py<br>knowledge/_validate_snippets.py<br>knowledge/_validate_state_contrast.py<br>knowledge/_validate_state_snap.py<br>knowledge/_validate_theme_provenance.py<br>knowledge/_validate_token_forks.py<br>knowledge/_validate_token_tiers.py<br>knowledge/_validate_type_blast_radius.py<br>knowledge/_validate_type_composites.py<br>knowledge/chart-intents.json<br>knowledge/component-types.json<br>knowledge/gen_snippet_tokens.py</div></details>
+<p class="note"><b>The pack ships a CI workflow too.</b> 3 file(s) at <code>ci-template/</code> in the pack root (their repo home is <code>designer-skills-v3/ci-template/</code>): a GitHub Actions workflow a designer copies into their own repo, the runner it calls, and a README that says what blocks, what only advises, and how to turn a check off honestly (delete the step — never hide it behind continue-on-error).</p>
+<details><summary>Every path in this group (57)</summary><div class="paths">designer-skills-v3/ci-template/README.md<br>designer-skills-v3/ci-template/gates.yml<br>designer-skills-v3/ci-template/run-gates.py<br>knowledge/_ASSERTIONS.md<br>knowledge/_TOKEN-FORK-LEDGER.json<br>knowledge/_a11y_target.py<br>knowledge/_assertions.json<br>knowledge/_binds-ratchet.json<br>knowledge/_claimtable.py<br>knowledge/_contrast_utils.py<br>knowledge/_could_not_ask.py<br>knowledge/_dtcg_units.py<br>knowledge/_gate_dataviz_vars.py<br>knowledge/_gate_minted_consumption.py<br>knowledge/_helpgate.py<br>knowledge/_htmlmask.py<br>knowledge/_type_ratchet.json<br>knowledge/_validate_a11y.py<br>knowledge/_validate_advisory.py<br>knowledge/_validate_behaviour.py<br>knowledge/_validate_binds_ratchet.py<br>knowledge/_validate_binds_resolve.py<br>knowledge/_validate_compose.py<br>knowledge/_validate_coverage.py<br>knowledge/_validate_css_governed.py<br>knowledge/_validate_dark_surfaces.py<br>knowledge/_validate_dataviz.py<br>knowledge/_validate_descender_clip.py<br>knowledge/_validate_descender_computed.py<br>knowledge/_validate_dtcg.py<br>knowledge/_validate_edge_extremity.py<br>knowledge/_validate_evidence.py<br>knowledge/_validate_grid.py<br>knowledge/_validate_help_gate.py<br>knowledge/_validate_hidden_display.py<br>knowledge/_validate_hit_area.py<br>knowledge/_validate_icons.py<br>knowledge/_validate_intent_resolve.py<br>knowledge/_validate_legacy_leak.py<br>knowledge/_validate_no_hardcode.py<br>knowledge/_validate_palette_tier.py<br>knowledge/_validate_partials.py<br>knowledge/_validate_proforma.py<br>knowledge/_validate_property_resolves.py<br>knowledge/_validate_radius.py<br>knowledge/_validate_screen.py<br>knowledge/_validate_snippets.py<br>knowledge/_validate_state_contrast.py<br>knowledge/_validate_state_snap.py<br>knowledge/_validate_theme_provenance.py<br>knowledge/_validate_token_forks.py<br>knowledge/_validate_token_tiers.py<br>knowledge/_validate_type_blast_radius.py<br>knowledge/_validate_type_composites.py<br>knowledge/chart-intents.json<br>knowledge/component-types.json<br>knowledge/gen_snippet_tokens.py</div></details>
 </div>
 <div class="card">
 <h3>The runbooks <span class="tag in">In</span></h3>
@@ -193,13 +194,12 @@
 </div>
 <div class="card">
 <h3>The skills <span class="tag in">In</span></h3>
-<p class="plain">The four skills from v2, carried across word for word so they can be refreshed against the new knowledge base. The fifth — the gate-runner that runs the packed gates on a designer's own work — is a named empty slot, not a promise.</p>
-<div class="metrics"><div><b>4</b>files in this group</div><div><b>9 KB</b>on disk</div></div>
+<p class="plain">Five, and they are written. Four rewritten against this knowledge base — the library is 135 components now, not 40, and the red law they quoted was three rulings out of date. The fifth is new: the gate-runner that actually runs the packed gates on a designer's own work, and reads the verdicts back honestly.</p>
+<div class="metrics"><div><b>5</b>files in this group</div><div><b>32 KB</b>on disk</div></div>
 <div class="tw"><table><tr><th>part</th><th>what it is</th><th class="num">files</th><th class="num">size</th></tr>
-<tr><td><b>Skills</b></td><td>The four skills carried forward from v2 for refresh against the new KB.</td><td class="num">4</td><td class="num">9 KB</td></tr>
+<tr><td><b>Skills</b></td><td>The five v3 skills: four refreshed against this knowledge base and the new gate-runner that runs the packed gates on a designer's own work.</td><td class="num">5</td><td class="num">32 KB</td></tr>
 </table></div>
-<p class="note warn"><b>Empty slot, named:</b> PLACEHOLDER — R3 writes it — <code>designer-skills-v3/skills/run-apollo-gates/SKILL.md</code>. The new gate-runner skill: runs the packed gates on a designer's own work and reads the verdicts back. s219-D4(4).</p>
-<details><summary>Every path in this group (4)</summary><div class="paths">designer-skills-v2/check-against-design-system/SKILL.md<br>designer-skills-v2/draft-a-new-pattern/SKILL.md<br>designer-skills-v2/generate-from-canon/SKILL.md<br>designer-skills-v2/usability-review/SKILL.md</div></details>
+<details><summary>Every path in this group (5)</summary><div class="paths">designer-skills-v3/skills/check-against-design-system/SKILL.md<br>designer-skills-v3/skills/check-with-gates/SKILL.md<br>designer-skills-v3/skills/draft-a-new-pattern/SKILL.md<br>designer-skills-v3/skills/generate-from-canon/SKILL.md<br>designer-skills-v3/skills/usability-review/SKILL.md</div></details>
 </div>
 <h2>What stays out, and why <span class="tag out">Out</span></h2>
 <p>Every line below is a deliberate exclusion, not an oversight. Three reasons cover nearly all of it: it is your working paperwork, it is your session record, or we do not hold a licence that lets us pass it on.</p>
@@ -226,11 +226,11 @@
 <tr><td><code>knowledge/_SESSIONS.jsonl</code></td><td>Session state.</td></tr>
 <tr><td><code>knowledge/_memento-index.json</code></td><td>Generated from Apollo's own record; adopters regenerate (memento-package machinery manifest says so verbatim).</td></tr>
 <tr><td><code>designer-skills-v1/</code></td><td>FROZEN release, s114-D4.</td></tr>
-<tr><td><code>designer-skills-v2/</code></td><td>FROZEN release, s114-D4 — except the four SKILL.md, which the skills group copies forward for refresh.</td></tr>
+<tr><td><code>designer-skills-v2/</code></td><td>FROZEN release, s114-D4. Its four SKILL.md were the REFERENCE for the v3 refresh, not the source — v3 ships its own five from designer-skills-v3/skills/ (#219 R3).</td></tr>
 <tr><td><code>knowledge/_validate_* (repo-bound subset)</code></td><td>MEASURED, not assumed: 8 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table.</td></tr>
 <tr><td><code>knowledge/ (everything else)</code></td><td>The audit files, build scripts, session machinery and working documents that make up the rest of knowledge/ — the workshop, not the engine.</td></tr>
 </table></div>
-<h2>Four things only you can settle <span class="tag ask">Ask</span></h2>
+<h2>Five things only you can settle <span class="tag ask">Ask</span></h2>
 <p>None of these are blocked on work. They are all judgement calls about where a line sits. Nothing is pre-selected.</p>
 <div class="card q">
 <h3>Q1. Memento ships machinery with no store — does v3 hand designers an EMPTY record to fill?</h3>
@@ -271,9 +271,24 @@
 <li><label><input type="radio" name="Q4" value="1"><span>Send capture-ritual across with the Memento half<span class="rec">recommended</span></span></label></li>
 <li><label><input type="radio" name="Q4" value="2"><span>Send capture-ritual and context-gauge across</span></label></li>
 </ul></div>
+<div class="card q">
+<h3>Q5. Four of the packed gates are RED the day the pack is unzipped. Ship them anyway, or clear them first?</h3>
+<p class="plain">Measured, not guessed — the gates were run out of an extracted pack from a directory that is not this repo, twice, by two different lanes: 32 pass, 4 fail. None of the four has anything to do with a designer's work. They are Apollo's own open reds at the commit the pack is cut from.</p>
+<p class="plain">_validate_evidence.py — exits 2, which is bad arguments rather than a verdict. It needs a rows file handed to it and the pack's runner gives it none, so as the pack invokes it, it can never pass.</p>
+<p class="plain">_validate_token_forks.py — three token forks are not in the ledger.</p>
+<p class="plain">_validate_type_blast_radius.py — one selector, .search input, has escaped its declared radius.</p>
+<p class="plain">_validate_type_composites.py — 664 composite violations inside the pack, 1,091 in this repo. That is the standing type-composite debt, which by your own ratchet may only ever shrink.</p>
+<p class="plain">Why it matters more than the number looks: a designer unzips the pack, runs the gates exactly as the README and the new gate-runner skill tell them to, and is met with hundreds of violations they did not cause. The likely conclusion is that the gates are noise — and that conclusion is formed on day one and does not get revisited.</p>
+<p class="plain">The middle option exists and works: a baseline file records today's reds so only the DIFFERENCE is the designer's, and the reds are still printed rather than hidden. It is built and mutation-tested, and it is deliberately NOT wired on, because switching it on is a decision about what the pack claims, not a mechanical default.</p>
+<ul class="opts">
+<li><label><input type="radio" name="Q5" value="0"><span>Fix the four before the bake — cut v3 from a commit whose own gates are green</span></label></li>
+<li><label><input type="radio" name="Q5" value="1"><span>Ship them with the baseline switched on — reds recorded, printed, and only new ones fail the designer's build</span></label></li>
+<li><label><input type="radio" name="Q5" value="2"><span>Ship them red and documented — the pack README names the four, the skill tells designers to subtract them</span></label></li>
+</ul></div>
 <h2>How it gets built, once you say yes</h2>
 <p>One command, from a commit you name. It refuses to run on a messy working tree, it refuses to run without a commit, and it refuses to cut a release at all while this page still says <em>Proposed</em>. That last refusal is the one that matters: the release is your word, not the script's.</p>
+<p class="note"><b>What unzipping looks like.</b> The zip opens into one folder, <code>Apollo-designer-skills-v3.0.0/</code>, and everything sits directly inside it: <code>skills/</code>, <code>knowledge/</code>, <code>ci-template/</code>, <code>showroom/</code>, <code>memento-package/</code>, <code>_MANIFEST.json</code>, <code>README.md</code>. The skills and the CI template live under <code>designer-skills-v3/</code> in this repo, but the bake flattens that prefix away — a designer must find <code>skills/</code> the moment the zip opens, not two folders down. The pack checker verifies the zip through the same mapping.</p>
 <details><summary>The commands</summary><div class="paths">bash designer-skills-v3/build-designer-pack.sh --manifest --commit &lt;sha&gt;<br>bash designer-skills-v3/build-designer-pack.sh --dry-run --out-dir /var/tmp/x --commit &lt;sha&gt;<br>bash designer-skills-v3/build-designer-pack.sh --release --commit &lt;sha&gt;<br>bash designer-skills-v3/build-designer-pack.sh --check &lt;zip&gt; --commit &lt;sha&gt;</div></details>
-<p class="note">Proved today on a throwaway copy: built twice, into two different directories, and both files came out with the same fingerprint <code>5288358d07aa8945</code>. Then checked back against the commit, file by file — green; and with one byte changed in one token file — red, naming the file.</p>
+<p class="note">Proved today on a throwaway copy: built twice, into two different directories, and both files came out with the same fingerprint <code>93121befb9983904</code>. Then checked back against the commit, file by file — green; and with one byte changed in one token file — red, naming the file.</p>
 <p class="note warn"><b>Nothing here is enacted.</b> <code>designer-skills-v3/</code> holds the build script and nothing else. No pack has been baked, no zip exists in <code>dist/</code>, and no ruling was written. v1 and v2 are untouched.</p>
 </div>

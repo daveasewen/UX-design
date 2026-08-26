@@ -11,8 +11,8 @@ put it elsewhere, change `APOLLO_PACK` at the top of `gates.yml`.
 Try it locally first:
 
 ```
-python3 apollo/designer-skills-v3/ci-template/run-gates.py --list
-python3 apollo/designer-skills-v3/ci-template/run-gates.py
+python3 apollo-pack/ci-template/run-gates.py --list
+python3 apollo-pack/ci-template/run-gates.py
 ```
 
 ## What runs
@@ -62,7 +62,7 @@ You have two honest options. Fix them, which is what the gate is asking for. Or 
 baseline and fix them over time:
 
 ```
-python3 apollo/designer-skills-v3/ci-template/run-gates.py --write-baseline gate-baseline.json
+python3 apollo-pack/ci-template/run-gates.py --write-baseline gate-baseline.json
 ```
 
 Commit that file, and add `--baseline gate-baseline.json` to the workflow step. Every gate still
@@ -91,9 +91,9 @@ owner and an end is a decision. An unlabelled `continue-on-error` is a leak.
 ## Running it by hand
 
 ```
-python3 apollo/designer-skills-v3/ci-template/run-gates.py            # the fast ones
-python3 apollo/designer-skills-v3/ci-template/run-gates.py --browser  # the three browser ones
-python3 apollo/designer-skills-v3/ci-template/run-gates.py --pack path/to/pack
+python3 apollo-pack/ci-template/run-gates.py            # the fast ones
+python3 apollo-pack/ci-template/run-gates.py --browser  # the three browser ones
+python3 apollo-pack/ci-template/run-gates.py --pack path/to/pack
 ```
 
 The runner finds the pack by looking for `_MANIFEST.json` beside it and then upwards. If it

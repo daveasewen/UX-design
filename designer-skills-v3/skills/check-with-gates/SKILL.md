@@ -17,9 +17,9 @@ you what to do.
 The pack ships one command that runs the whole set and counts the verdicts for you:
 
 ```
-python3 apollo/designer-skills-v3/ci-template/run-gates.py --list   # what will run
-python3 apollo/designer-skills-v3/ci-template/run-gates.py          # run them
-python3 apollo/designer-skills-v3/ci-template/run-gates.py --browser  # + the playwright three
+python3 apollo-pack/ci-template/run-gates.py --list   # what will run
+python3 apollo-pack/ci-template/run-gates.py          # run them
+python3 apollo-pack/ci-template/run-gates.py --browser  # + the playwright three
 ```
 
 It reads the pack's own `_MANIFEST.json` to know which gates travel, so it never runs one

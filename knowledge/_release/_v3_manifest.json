@@ -1,6 +1,6 @@
 {
-  "commit": "71bb2f77ff59d1968ece927f352c8bb0ece9779d",
-  "commit_date": "2026-08-26T13:47:06+01:00",
+  "commit": "801fe7cc22968b3f0f8eaf5bf172bcad850830c5",
+  "commit_date": "2026-08-26T17:00:34+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -92,7 +92,7 @@
     },
     {
       "path": "designer-skills-v2/",
-      "reason": "FROZEN release, s114-D4 — except the four SKILL.md, which the skills group copies forward for refresh."
+      "reason": "FROZEN release, s114-D4. Its four SKILL.md were the REFERENCE for the v3 refresh, not the source — v3 ships its own five from designer-skills-v3/skills/ (#219 R3)."
     },
     {
       "path": "knowledge/_validate_* (repo-bound subset)",
@@ -104,7 +104,7 @@
     }
   ],
   "gate_probe": {
-    "commit": "71bb2f77ff59d1968ece927f352c8bb0ece9779d",
+    "commit": "801fe7cc22968b3f0f8eaf5bf172bcad850830c5",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -1380,17 +1380,25 @@
       "title": "Design guidelines"
     },
     {
-      "bytes": 821470,
+      "bytes": 837419,
+      "ci_template": [
+        "designer-skills-v3/ci-template/README.md",
+        "designer-skills-v3/ci-template/gates.yml",
+        "designer-skills-v3/ci-template/run-gates.py"
+      ],
       "counts": {
         "empty_population": 3,
         "needs_dep": 3,
         "repo_bound": 8,
         "runnable": 36
       },
-      "files": 54,
+      "files": 57,
       "group": "gates",
       "key": "gates",
       "paths": [
+        "designer-skills-v3/ci-template/README.md",
+        "designer-skills-v3/ci-template/gates.yml",
+        "designer-skills-v3/ci-template/run-gates.py",
         "knowledge/_ASSERTIONS.md",
         "knowledge/_TOKEN-FORK-LEDGER.json",
         "knowledge/_a11y_target.py",
@@ -2338,25 +2346,19 @@
       "title": "Memento Claude plugin"
     },
     {
-      "bytes": 9413,
-      "files": 4,
+      "bytes": 32029,
+      "files": 5,
       "group": "skills",
       "key": "skills",
       "paths": [
-        "designer-skills-v2/check-against-design-system/SKILL.md",
-        "designer-skills-v2/draft-a-new-pattern/SKILL.md",
-        "designer-skills-v2/generate-from-canon/SKILL.md",
-        "designer-skills-v2/usability-review/SKILL.md"
+        "designer-skills-v3/skills/check-against-design-system/SKILL.md",
+        "designer-skills-v3/skills/check-with-gates/SKILL.md",
+        "designer-skills-v3/skills/draft-a-new-pattern/SKILL.md",
+        "designer-skills-v3/skills/generate-from-canon/SKILL.md",
+        "designer-skills-v3/skills/usability-review/SKILL.md"
       ],
-      "placeholders": [
-        {
-          "path": "designer-skills-v3/skills/run-apollo-gates/SKILL.md",
-          "plain": "The new gate-runner skill: runs the packed gates on a designer's own work and reads the verdicts back. s219-D4(4).",
-          "status": "PLACEHOLDER — R3 writes it"
-        }
-      ],
-      "plain": "The four skills carried forward from v2 for refresh against the new KB.",
-      "status": "for-refresh (R3) — carried forward from v2 verbatim",
+      "plain": "The five v3 skills: four refreshed against this knowledge base and the new gate-runner that runs the packed gates on a designer's own work.",
+      "status": "refreshed at #219 R3 — four rewritten against this KB, one new",
       "title": "Skills"
     }
   ],
@@ -2398,6 +2400,16 @@
         "Send capture-ritual and context-gauge across"
       ],
       "title": "Which runbooks are design-facing and which are yours?"
+    },
+    {
+      "body": "Measured, not guessed — the gates were run out of an extracted pack from a directory that is not this repo, twice, by two different lanes: 32 pass, 4 fail. None of the four has anything to do with a designer's work. They are Apollo's own open reds at the commit the pack is cut from.||_validate_evidence.py — exits 2, which is bad arguments rather than a verdict. It needs a rows file handed to it and the pack's runner gives it none, so as the pack invokes it, it can never pass.||_validate_token_forks.py — three token forks are not in the ledger.||_validate_type_blast_radius.py — one selector, .search input, has escaped its declared radius.||_validate_type_composites.py — 664 composite violations inside the pack, 1,091 in this repo. That is the standing type-composite debt, which by your own ratchet may only ever shrink.||Why it matters more than the number looks: a designer unzips the pack, runs the gates exactly as the README and the new gate-runner skill tell them to, and is met with hundreds of violations they did not cause. The likely conclusion is that the gates are noise — and that conclusion is formed on day one and does not get revisited.||The middle option exists and works: a baseline file records today's reds so only the DIFFERENCE is the designer's, and the reds are still printed rather than hidden. It is built and mutation-tested, and it is deliberately NOT wired on, because switching it on is a decision about what the pack claims, not a mechanical default.",
+      "id": "Q5",
+      "options": [
+        "Fix the four before the bake — cut v3 from a commit whose own gates are green",
+        "Ship them with the baseline switched on — reds recorded, printed, and only new ones fail the designer's build",
+        "Ship them red and documented — the pack README names the four, the skill tells designers to subtract them"
+      ],
+      "title": "Four of the packed gates are RED the day the pack is unzipped. Ship them anyway, or clear them first?"
     }
   ],
   "ruling": "s219-D4",
@@ -2410,8 +2422,8 @@
         "files": 1157
       },
       "gates": {
-        "bytes": 821470,
-        "files": 54
+        "bytes": 837419,
+        "files": 57
       },
       "library": {
         "bytes": 22201050,
@@ -2426,12 +2438,12 @@
         "files": 11
       },
       "skills": {
-        "bytes": 9413,
-        "files": 4
+        "bytes": 32029,
+        "files": 5
       }
     },
-    "bytes": 33847120,
-    "files": 1590
+    "bytes": 33885685,
+    "files": 1594
   },
   "version": "v3.0.0"
 }

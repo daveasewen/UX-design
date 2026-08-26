@@ -611,6 +611,39 @@ def extract(sha, paths, dest, tolerant=False):
             raise RuntimeError("tar failed: " + tr.stderr.decode()[:400])
 
 
+PACK_SURFACE_PREFIX = "designer-skills-v3/"
+
+
+def pack_path(p):
+    """Repo path -> path inside the pack root.
+
+    #219 stage 2, conductor-authorised (R3 Q2 + seam 7's stage-1 flag). The pack's OWN
+    surfaces — skills/, ci-template/ — live under designer-skills-v3/ in the REPO, but a
+    designer who unzips the pack must find skills/ at the root, not nested two levels down
+    as Apollo-designer-skills-v3.0.0/designer-skills-v3/skills/. R3's consequence note:
+    "most will not find the skills at all. That is a silent failure of the whole release."
+    So the bake's stage flattens that ONE prefix, and check_pack verifies through the SAME
+    mapping — one function, both directions, so the stager and the checker cannot disagree
+    about the layout. Everything else (knowledge/, showroom/, memento-package/) already
+    sits at the root and passes through unchanged.
+    """
+    return p[len(PACK_SURFACE_PREFIX):] if p.startswith(PACK_SURFACE_PREFIX) else p
+
+
+def flatten_stage(stage):
+    """Move the stage's designer-skills-v3/ contents to the stage root (the pack_path layout).
+    Refuses on a name collision rather than silently overwriting either side."""
+    nested = os.path.join(stage, PACK_SURFACE_PREFIX.rstrip("/"))
+    if not os.path.isdir(nested):
+        return
+    for entry in sorted(os.listdir(nested)):
+        dst = os.path.join(stage, entry)
+        if os.path.exists(dst):
+            raise RuntimeError("flatten collision: %r already exists at the stage root" % entry)
+        os.rename(os.path.join(nested, entry), dst)
+    os.rmdir(nested)
+
+
 # ---------------------------------------------------------------------------------------------
 # THE MANIFEST
 # ---------------------------------------------------------------------------------------------
@@ -1039,8 +1072,9 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
             # are actually in the commit the manifest was built from, so this page can never
             # promise a designer a workflow that is not in the zip.
             if gates.get("ci_template"):
-                A('<p class="note"><b>The pack ships a CI workflow too.</b> %d file(s) under '
-                  '<code>designer-skills-v3/ci-template/</code>: a GitHub Actions workflow a '
+                A('<p class="note"><b>The pack ships a CI workflow too.</b> %d file(s) at '
+                  '<code>ci-template/</code> in the pack root (their repo home is '
+                  '<code>designer-skills-v3/ci-template/</code>): a GitHub Actions workflow a '
                   'designer copies into their own repo, the runner it calls, and a README that '
                   'says what blocks, what only advises, and how to turn a check off honestly '
                   '(delete the step — never hide it behind continue-on-error).</p>'
@@ -1100,6 +1134,15 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
       'refuses to run without a commit, and it refuses to cut a release at all while this page '
       'still says <em>Proposed</em>. That last refusal is the one that matters: the release is '
       'your word, not the script\'s.</p>')
+    # #219 stage 2 — the layout, stated so the page shows the TRUE shape a designer meets.
+    A('<p class="note"><b>What unzipping looks like.</b> The zip opens into one folder, '
+      '<code>Apollo-designer-skills-v3.0.0/</code>, and everything sits directly inside it: '
+      '<code>skills/</code>, <code>knowledge/</code>, <code>ci-template/</code>, '
+      '<code>showroom/</code>, <code>memento-package/</code>, <code>_MANIFEST.json</code>, '
+      '<code>README.md</code>. The skills and the CI template live under '
+      '<code>designer-skills-v3/</code> in this repo, but the bake flattens that prefix away '
+      '— a designer must find <code>skills/</code> the moment the zip opens, not two folders '
+      'down. The pack checker verifies the zip through the same mapping.</p>')
     A('<details><summary>The commands</summary><div class="paths">'
       'bash designer-skills-v3/build-designer-pack.sh --manifest --commit &lt;sha&gt;<br>'
       'bash designer-skills-v3/build-designer-pack.sh --dry-run --out-dir /var/tmp/x '
@@ -1206,8 +1249,17 @@ def check_pack(zip_path, man, sha):
     fails = []
     with zipfile.ZipFile(zip_path) as z:
         names = set(z.namelist())
-        want = set(all_paths(man))
-        # the pack root is <pack>/<repo path>; strip the single root component
+        # #219 stage 2: the pack layout is pack_path(repo path) — the stager flattens
+        # designer-skills-v3/ to the root, and this check verifies through the SAME mapping.
+        repo_by_pack = {}
+        for p in all_paths(man):
+            q = pack_path(p)
+            if q in repo_by_pack:
+                fails.append("flatten collision: %r and %r both land at pack path %r"
+                             % (repo_by_pack[q], p, q))
+            repo_by_pack[q] = p
+        want = set(repo_by_pack)
+        # the pack root is <pack>/<pack path>; strip the single root component
         roots = {n.split("/")[0] for n in names}
         if len(roots) != 1:
             fails.append("pack has %d roots, expected 1: %s" % (len(roots), sorted(roots)[:5]))
@@ -1227,13 +1279,15 @@ def check_pack(zip_path, man, sha):
         if extra:
             fails.append("%d path(s) in the pack that the manifest does not name, first: %s"
                          % (len(extra), extra[:5]))
-        # byte fidelity against the commit
-        want_sha = blob_shas(sha, sorted(want & got))
+        # byte fidelity against the commit — the blob lives at the REPO path, the bytes in the
+        # zip live at the PACK path; repo_by_pack is the bridge.
+        want_sha = blob_shas(sha, sorted(repo_by_pack[p] for p in (want & got)))
         bad = []
         for p in sorted(want & got):
             data = z.read(root + "/" + p)
             oid = hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
-            if want_sha.get(p) and oid != want_sha[p]:
+            rp = repo_by_pack[p]
+            if want_sha.get(rp) and oid != want_sha[rp]:
                 bad.append(p)
         if bad:
             fails.append("%d file(s) differ from the commit's blobs, first: %s"
@@ -1353,6 +1407,57 @@ def selftest():
               "designer-skills-v2/generate-from-canon/SKILL.md"]:
         hits = [g["key"] for g in tbl if g["match"](p)]
         bite("groups/excludes:%s" % p, hits, [], "an EXCLUDED path was claimed by %s" % hits)
+
+    # ---- the flatten (#219 stage 2, R3 Q2): pack layout is pack_path(repo path)
+    bite("packpath/skills-flatten",
+         pack_path("designer-skills-v3/skills/usability-review/SKILL.md"),
+         "skills/usability-review/SKILL.md")
+    bite("packpath/ci-template-flatten",
+         pack_path("designer-skills-v3/ci-template/run-gates.py"),
+         "ci-template/run-gates.py")
+    bite("packpath/engine-passes-through", pack_path("knowledge/canon/canon.css"),
+         "knowledge/canon/canon.css")
+    mapped = [pack_path(p) for p in probe_paths]
+    bite("packpath/injective-on-probe-set", len(set(mapped)), len(mapped),
+         "two shipped repo paths may not land on one pack path")
+    # driven, not just mapped: a real stage, flattened, and the collision refusal
+    tmp = tempfile.mkdtemp(prefix="v3flatten-", dir="/var/tmp")
+    try:
+        os.makedirs(os.path.join(tmp, "designer-skills-v3", "skills", "x"))
+        os.makedirs(os.path.join(tmp, "knowledge"))
+        open(os.path.join(tmp, "designer-skills-v3", "skills", "x", "SKILL.md"), "w").write("s\n")
+        open(os.path.join(tmp, "knowledge", "y.css"), "w").write("c\n")
+        flatten_stage(tmp)
+        bite("flatten/skills-at-root",
+             os.path.exists(os.path.join(tmp, "skills", "x", "SKILL.md")), True)
+        bite("flatten/nested-dir-gone",
+             os.path.exists(os.path.join(tmp, "designer-skills-v3")), False)
+        bite("flatten/engine-untouched",
+             os.path.exists(os.path.join(tmp, "knowledge", "y.css")), True)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    # the collision refusal, on its OWN stage — reusing the last one made a no-op mutant die
+    # by FileExistsError instead of by a named bite [[a-crash-is-not-a-fail]]
+    tmp = tempfile.mkdtemp(prefix="v3flatten-", dir="/var/tmp")
+    try:
+        os.makedirs(os.path.join(tmp, "designer-skills-v3"))
+        # file vs file: the one shape os.rename would SILENTLY overwrite if the guard went
+        open(os.path.join(tmp, "designer-skills-v3", "README.md"), "w").write("pack side\n")
+        open(os.path.join(tmp, "README.md"), "w").write("root side\n")
+        try:
+            flatten_stage(tmp)
+            verdict = "no error"
+        except RuntimeError:
+            verdict = "RuntimeError"
+        except OSError as e:
+            verdict = "OSError: %s" % type(e).__name__
+        bite("flatten/collision-refused", verdict, "RuntimeError",
+             "a colliding name must refuse, never overwrite")
+        bite("flatten/collision-nothing-clobbered",
+             open(os.path.join(tmp, "README.md")).read(), "root side\n",
+             "the refusal must fire BEFORE the overwrite")
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
     # ---- the open questions (#219 seam 7). Dave's decision surface is generated from this list,
     # so the list is what has to be checked — the page cannot be trusted to police itself.
@@ -1515,7 +1620,9 @@ def main():
                   % (man["commit"][:12], sha[:12]), file=sys.stderr)
             sys.exit(2)
         extract(sha, all_paths(man), a.stage)
-        print("staged %d paths -> %s" % (len(all_paths(man)), a.stage))
+        flatten_stage(a.stage)
+        print("staged %d paths -> %s (pack surfaces flattened to the root — see pack_path)"
+              % (len(all_paths(man)), a.stage))
         return
 
     if a.zip:

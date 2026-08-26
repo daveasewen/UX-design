@@ -427,3 +427,107 @@ minting: `unrowed 0`.
 threshold · `knowledge/_release/_v3_manifest.json` and `_v3_gate_probe.json` and the two
 `reviews/RELEASE-V3-MANIFEST-*.html` (NOT regenerated, NOT hand-edited — stage 2's job) ·
 R2's and R3's own files. No commit, no push.
+
+---
+---
+
+# STAGE 2 — baked at the landing commit, and the flatten (conductor-authorised)
+
+**Landing commit:** `801fe7cc22968b3f0f8eaf5bf172bcad850830c5` · **Date:** 2026-08-26
+**Authorisation:** the conductor's stage-2 continuation — the flatten cites **R3 Q2** plus this
+report's own stage-1 REPLAY flag ("*most will not find the skills at all. That is a silent
+failure of the whole release.*").
+
+## ① THE BAKE AT THE LANDING COMMIT — the stage-1 red clears exactly as priced
+
+`--probe`, `--manifest`, `--page` all re-driven at `801fe7c` (probe re-run in full, 42 gates,
+against a fresh `git archive` full-tree stage — 39s):
+
+| | verdict |
+|---|---|
+| `--manifest` | **1,594 files** — the stage-1 arithmetic (1590 − 4 + 5 + 3) lands to the digit · manifest sha256 `2e8fdd02e4481ba7` |
+| `_gate_release_audit.py --check` | ✅ **PASS — byte-identical to a fresh generation at 801fe7cc2296** (was the designed stage-1 red; it cleared on the regeneration, nothing else) |
+| `_gate_release_audit.py --selftest` | ✅ 8 bites, 0 fail |
+| probe reds | the same four, by name: `_validate_evidence` · `_validate_token_forks` · `_validate_type_blast_radius` · `_validate_type_composites` — the fifth card's list is still true at this commit |
+
+**Page, verified after regeneration (grepped on the artefact, not the source):** ci-template
+note present · `check-with-gates` in the skills group · zero `designer-skills-v2/` paths outside
+the EXCLUDED table's own FROZEN line · fifth card present, four gates named, three dispositions ·
+"Five things only you can settle" (derived count) · **0 radio inputs carry `checked`** ·
+**0 `recommended` flags on Q5** (the three that exist sit on Q1/Q3/Q4, R1's own).
+
+## ② THE FLATTEN — one mapping, both directions
+
+The zip nested everything as `Apollo-designer-skills-v3.0.0/designer-skills-v3/skills/…`. Ruled
+flat: pack contents sit directly under the single root. Enacted in
+`knowledge/_release/_gen_v3_manifest.py` — **not** one line in the .sh, and deliberately: the
+stager and the checker must share the mapping or they can disagree about the layout.
+
+- `pack_path(p)` — repo path → pack path; strips the ONE prefix `designer-skills-v3/`,
+  everything else passes through.
+- `flatten_stage(stage)` — the `--stage` command flattens after `extract`; **refuses on a name
+  collision** rather than overwriting either side.
+- `check_pack` — verifies through `repo_by_pack` (the same `pack_path`): membership on pack
+  paths, blob fidelity bridged pack-path → repo-path, plus a flatten-collision fail arm.
+
+**Proved:**
+
+| proof | result |
+|---|---|
+| double dry-run bake (two out-dirs) | **identical sha256 `93121befb9983904cb0ac0503556f067be48e59f2f9bc2f75a8bd6eddf8f64d7`**, 13M |
+| zip layout, measured | 1,597 entries, **0** `designer-skills-v3` path components; root holds `skills/` (5) · `ci-template/` (3) · `knowledge/` · `showroom/` · `memento-package/` · `_MANIFEST.json` · `PROVENANCE.json` · `README.md` |
+| `build --check` on the baked zip | ✅ CHECK GREEN |
+| tamper T1 (one byte in `tokens/colour.json`) | ✅ CHECK RED, names the file |
+| tamper T2 (skills re-nested to the OLD layout) | ✅ CHECK RED — 5 missing + 5 unnamed, both lists the skills. The checker checks the FLAT shape, not either shape |
+| **R2's runner, driven from inside the flat pack** | ✅ `ci-template/run-gates.py --list` → "36 to run, from _MANIFEST.json", pack root found. `find_pack` walks upward for `_MANIFEST.json`, so the geometry change is survived by construction — but it was DRIVEN, not deduced |
+| selftest | **78 bites, 0 fail** (+9: four `packpath/`, five `flatten/`) |
+| mutations M1 (`pack_path` unmapped) · M2 (`flatten_stage` no-op) · M3 (collision refusal removed) | all three RED **by named bites**, control green before and after |
+
+⚠ **Two selftest arms were rebuilt mid-drive because mutants died by CRASH, not by bite**
+[[a-crash-is-not-a-fail]]: M2 first tripped `FileExistsError` in the fixture (collision arm now
+has its own stage), and M3 died by `IsADirectoryError` from `os.rename` (fixture switched to
+file-vs-file — the one shape `os.rename` silently overwrites, i.e. the exact hazard the guard
+exists for; a second bite asserts nothing was clobbered).
+
+**The page states the layout** ("What unzipping looks like" note in the bake section, plus the
+ci-template note now gives the in-pack path with the repo home in brackets) — Dave rules on the
+true shape. The dry-run folded the measured zip sha/size into the page, and
+`_make_review.py` was re-run after (stage-1 item 5) — the review pair is re-stamped.
+
+## ③ CONSEQUENCE FOUND, NOT FIXED — literal doc paths inside the pack are now one level off
+
+`ci-template/README.md` (5 places), `ci-template/gates.yml` (2), and
+`skills/check-with-gates/SKILL.md` (3) tell the designer to run
+`python3 apollo/designer-skills-v3/ci-template/run-gates.py` — after the flatten the in-pack
+path is `ci-template/run-gates.py`. **The runner itself works from anywhere** (driven above;
+`find_pack` + `APOLLO_PACK` env), so this is wrong PROSE, not a broken tool — but it is R2's and
+R3's tracked files, outside this stage's authorisation, and editing the working tree would not
+reach a zip baked at `801fe7c` anyway. ~10 mechanical line edits across 3 files, for the
+conductor's second commit + a re-cut. Priced, not taken. (Same class, milder: the pack README's
+"What is in here" section never mentions `skills/` or `ci-template/` — R1's stager heredoc,
+same second-commit fix.)
+
+## ④ THE TREE — for the conductor's second commit
+
+```
+ M knowledge/_release/_gen_v3_manifest.py          (+115/−8 — pack_path, flatten_stage, check_pack mapping, page layout note, 9 bites)
+ M knowledge/_release/_v3_gate_probe.json          (1/1 — re-probed at 801fe7c)
+ M knowledge/_release/_v3_manifest.json            (+39/−27 — regenerated at 801fe7c, 1,594 paths)
+ M reviews/RELEASE-V3-MANIFEST-2026-08-26-v1.html  (regenerated: bake sha folded in, layout note)
+ M reviews/RELEASE-V3-MANIFEST-2026-08-26-v1.REVIEW.html  (re-stamped via _make_review.py)
+ M notes/_REHEARSAL-LOG.jsonl                      (⚠ NOT MINE — +1 line, already modified before this stage opened; conductor attributes)
+ M notes/_subreports/2026-08-26-219-seam7-reconcile.md    (this addendum)
+```
+
+`_gen_chain.py --check` ✅ FRESH (no regen needed — this stage minted no store rows; the
+addendum extends the already-rowed `W-187` report, not a new document). Nothing committed,
+nothing pushed. All bake artefacts under `/var/tmp/s2-bake*` are throwaways.
+
+## UNPROVEN, stage 2
+
+1. R2's UNPROVEN 1–2 stand: no GitHub Actions run exists.
+2. The baked zip in `/var/tmp` is a dry-run, not a release — `dist/` is still empty and the
+   manifest still reads PROPOSED, so `--pack` still answers COULD-NOT-ASK (77), by design.
+3. The probe stage mirrors the REPO layout, not the flattened pack layout (extract is shared
+   with the probe and was left alone). No probed gate reads `skills/` or `ci-template/`, so no
+   verdict can differ — asserted from the gate list, not measured.

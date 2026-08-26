@@ -3,9 +3,9 @@
 
 This is the runner the CI template calls. You can also run it by hand:
 
-    python3 apollo/designer-skills-v3/ci-template/run-gates.py
-    python3 apollo/designer-skills-v3/ci-template/run-gates.py --browser   # the playwright ones
-    python3 apollo/designer-skills-v3/ci-template/run-gates.py --list
+    python3 apollo-pack/ci-template/run-gates.py
+    python3 apollo-pack/ci-template/run-gates.py --browser   # the playwright ones
+    python3 apollo-pack/ci-template/run-gates.py --list
 
 WHICH GATES RUN. The pack ships `_MANIFEST.json`, and every gate in it carries a verdict that
 was MEASURED by running it outside the design system's own repo:
