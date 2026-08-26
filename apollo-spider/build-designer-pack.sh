@@ -188,7 +188,7 @@ dryrun|release)
   "carries": {
     "name": "Memento — Gumdrop",
     "version": "v1.0.0",
-    "what": "A clean cut of Memento: machinery only, no record. Its version line is its own — the pack's version does not move it."
+    "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version line is its own — the pack's version does not move it."
   },
   "commit": "$COMMIT",
   "commit_date": "$COMMIT_DATE",
@@ -247,9 +247,19 @@ between two packs is a real difference and can be audited.
 - \`knowledge/_RUNBOOK-*.md\` — the procedures: compose from canon, take a component through its
   gates, render and verify, write a criteria contract, onboard an existing code library.
 - \`showroom/\` — the live library, including the foundations pages.
-- \`memento-package/\` — **Memento — Gumdrop v1.0.0**: Memento's machinery, and only the
-  machinery. No chain, no rulings, no record of any kind. Your project grows its own memory from
-  nothing, which is the point. Its version line is its own — this pack's version does not move
+- \`FIRST-SESSION.md\` — **start here.** A guided first session with Memento: what it is in three
+  sentences, then your first capture, your first ruling written through the machinery with every
+  field explained, and your first wrap.
+- \`.github/\` — the VS Code + Copilot bridge. \`copilot-instructions.md\` is loaded automatically
+  and indexes the five skills with the phrases that should trigger each one; \`prompts/\` makes
+  each skill a slash command. Without this the skills sit in the pack and never fire.
+- \`memento-package/\` — **Memento — Gumdrop v1.0.0**: Memento's machinery, plus the cold start.
+  The machinery is the engine this design system runs on. The record it ships is **empty on
+  purpose**: an empty task store, an empty rulings store — both with the shapes already right and
+  driven against those shapes before shipping — and a starter \`_CHAIN.md\` that explains the
+  first move and is replaced the first time you wrap. Nothing in it is anyone else's history.
+  Your project grows its own memory from nothing, which is the point: the shapes are machinery,
+  the contents are your record. Its version line is its own — this pack's version does not move
   it, and a later Apollo release may carry the same Gumdrop or a newer cut.
 
 ## The canon generators, and one warning

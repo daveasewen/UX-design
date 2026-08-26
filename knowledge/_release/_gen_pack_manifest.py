@@ -330,6 +330,34 @@ def groups():
              match=lambda p: p.startswith("memento-package/claude-plugin/")
                              and "__pycache__" not in p and not p.endswith(".zip")),
 
+        # ---- THE COLD START (#219 N3, s219-D5 Q1 + Q4) ----------------------------------------
+        # ⚠ ITS OWN GROUP, DECIDED AND DECLARED. These files could have been folded into
+        # `memento-clean-cut`, and that was the alternative considered. They are not, for two
+        # reasons. (1) The memento cards say "machinery only, no record: every adopting project
+        # grows its own chain" — which s219-D5(Q1) has now made FALSE for this cut, since the
+        # empty stores and a starter chain DO ship. Hiding the change inside a card that states
+        # the opposite is how a release ships a contradiction. (2) The cold start is one
+        # deliverable answering one clause of one ruling, and a named group is what makes it
+        # visible on Dave's page and auditable if it ever silently drops out of the cut
+        # [[forgotten-document-class]].
+        # ⚠ ORDER: this sits BEFORE `skills` and matches only its own three prefixes, so it can
+        # never swallow `apollo-spider/skills/`. It sits AFTER the memento groups so nothing it
+        # claims was already owned.
+        dict(key="gumdrop", group="gumdrop", title="Memento — Gumdrop cold start",
+             plain="What a designer meets on day one: the guided first session, the Copilot "
+                   "boot instructions, an empty task store and an empty rulings store with the "
+                   "shapes already right, a starter chain that explains the first move, and the "
+                   "two Memento runbooks rewritten for VS Code + Copilot. The stores ship EMPTY "
+                   "on purpose — the shape is machinery, the contents are the designer's record.",
+             match=lambda p: (p.startswith("apollo-spider/gumdrop/")
+                              or p == "apollo-spider/FIRST-SESSION.md"
+                              # `.github/` whole, not just copilot-instructions.md: the five
+                              # prompt-file shims under `.github/prompts/` are the BRIDGE that
+                              # makes the skills reachable in VS Code (#219 N3 dialect check).
+                              # Naming one file here and adding the shims later is how half a
+                              # bridge ships.
+                              or p.startswith("apollo-spider/.github/"))),
+
         # #219 seam 7, on R3's Q1: the skills group ships R3's OWN five, not v2's four. Until this
         # was repointed the pack shipped v2's skills and none of the refreshed set — the whole
         # point of s219-D4(4). ⚠ FUNCTION OF THE COMMIT like every other path: at a commit before
@@ -693,6 +721,29 @@ def extract(sha, paths, dest, tolerant=False):
 
 PACK_SURFACE_PREFIX = "apollo-spider/"
 
+# ---------------------------------------------------------------------------------------------
+# THE SEED MAP (#219 N3, s219-D5(Q1)). One prefix, and it exists because of a MEASUREMENT, not
+# a preference: every piece of Memento machinery resolves its own homes from where the FILE sits.
+#
+#   _gen_chain.py    writes `_CHAIN.md` into `dirname(dirname(__file__))`
+#   _state.py        reads `_state.json` from its OWN dir, and resolves `home` against the parent
+#   _inscribe_ruling reads `_rulings.json` from its OWN dir
+#   _governs.py      resolves an evidence PATH against `dirname(dirname(__file__))`
+#
+# The Gumdrop cut's chain root is therefore `memento-package/` (that is where the shipped
+# `_gen_chain.py` will write), and the record machinery has to sit ONE level above `machinery/`
+# so its parent is the PACK ROOT — otherwise a designer's ruling that cites a real file
+# (`knowledge/tokens/…`, `showroom/…`) is refused as "path does not exist", because the
+# resolver would be looking inside `memento-package/`. Measured, this session, both ways.
+#
+# The repo keeps these files under `apollo-spider/gumdrop/` — they are RELEASE surface, and the
+# repo's own `memento-package/` is a separate, frozen package whose delta gate fails loud on any
+# file it does not know (`_validate_package_delta.py`, arm 4). So the stage MOVES them, and
+# `pack_path` is still the ONE function both the stager and `--check` read, exactly as the
+# flatten is. Order matters: the seed map is consulted BEFORE the flatten, or `apollo-spider/`
+# would claim these paths first and land them at the pack root.
+SEED_PREFIXES = (("apollo-spider/gumdrop/", "memento-package/"),)
+
 
 def pack_path(p):
     """Repo path -> path inside the pack root.
@@ -707,7 +758,33 @@ def pack_path(p):
     about the layout. Everything else (knowledge/, showroom/, memento-package/) already
     sits at the root and passes through unchanged.
     """
+    for src, dst in SEED_PREFIXES:
+        if p.startswith(src):
+            return dst + p[len(src):]
     return p[len(PACK_SURFACE_PREFIX):] if p.startswith(PACK_SURFACE_PREFIX) else p
+
+
+def apply_seed_map(stage):
+    """Move the seed-mapped subtrees into place, BEFORE the flatten.
+
+    Merges into a destination directory that already exists (the Gumdrop cut lands beside the
+    frozen `memento-package/` files, which is the whole point) but REFUSES on a file collision
+    rather than overwriting either side — same discipline as `flatten_stage`."""
+    for src, dst in SEED_PREFIXES:
+        s_root = os.path.join(stage, src.rstrip("/"))
+        if not os.path.isdir(s_root):
+            continue
+        for root, _dirs, files in os.walk(s_root):
+            for name in files:
+                sp = os.path.join(root, name)
+                rel = os.path.relpath(sp, s_root)
+                dp = os.path.join(stage, dst.rstrip("/"), rel)
+                if os.path.exists(dp):
+                    raise RuntimeError("seed collision: %r already exists at the stage"
+                                       % os.path.join(dst, rel))
+                os.makedirs(os.path.dirname(dp), exist_ok=True)
+                os.rename(sp, dp)
+        shutil.rmtree(s_root)
 
 
 def flatten_stage(stage):
@@ -918,7 +995,30 @@ OPEN_QUESTIONS = [
          options=["Correct as it stands — 55 gates. A check with nothing to measure in a "
                   "designer's project should not be in the zip at all",
                   "Ship them anyway — 57 gates, so the pack's roster matches Apollo's, and let "
-                  "the evidence linter refuse with its honest 77 in the designer's run"]),
+                  "the evidence linter refuse with its honest 77 in the designer's run"],
+         # #219 seam 9. Dave answered this card in the session itself, not off a later page, so
+         # the source is the CHAT and it is cited as the chat — see `answered_in`. ⚠ The clause
+         # is NOT yet inscribed in _rulings.json: s219-D5 carries Q1..Q5 and the naming clause
+         # and stops there. Writing that clause is the conductor's act, not this generator's,
+         # and until it lands `inscription="OWED"` keeps the card honest about which register
+         # this answer sits in [[memento-three-registers]] [[dont-launder-a-premise-into-a-ruling]].
+         answered=dict(
+             ruling="s219-D5 (Q6) — clause OWED, not yet inscribed",
+             answered_in="chat #219 2026-08-26 — Dave: '55 gates'",
+             inscription="OWED",
+             position="The first reading: 55 gates. The ship list carries only the gates that "
+                      "can actually tell a designer something about their own work, and a "
+                      "check whose whole subject is this repo's session evidence is not one of "
+                      "them. The two that fall out are NOT hidden by falling out — they are "
+                      "named, with their reason, in the exclusion table below, which is where a "
+                      "designer looks to find out what is deliberately absent.",
+             enacted="Measured at this commit, not asserted. The gates group is assembled from "
+                     "the probe's own verdicts — the gates it classified RUNNABLE or NEEDS-DEP, "
+                     "plus the helper modules and data files they import — so the file count on "
+                     "the group card is read out of the tree and nothing on this page types the "
+                     "number 55. And the two that fell out are named, by filename and with the "
+                     "probe's own reason, in their own row of the exclusion table: the drop is "
+                     "stated on the same page as the count it changed.")),
 ]
 
 # The two gates that fell OUT of the ship list when Q5 was answered at cause (#219 seam 8 § ⑨
@@ -1023,6 +1123,22 @@ def build_manifest(sha, probe):
         reason="MEASURED, not assumed: %d validators crashed reaching for something the pack "
                "does not carry. Each is named with its reason in the gates group's verdict "
                "table." % len(repobound)))
+    # #219 seam 9, enacting Dave's Q6 answer. He ruled the 55-gate roster, and the condition he
+    # ruled it under is that the two that fell out are STATED rather than silently absent. So
+    # they get their own row, spelled by name, with the reason read out of the probe — not a
+    # sentence pointing at another table [[premise-ages-faster-than-rule]].
+    _q6_why = {r["gate"]: r["why"] for r in probe["gates"]}
+    excluded.append(dict(
+        path=", ".join("knowledge/%s" % g for g in Q6_DROPPED_GATES),
+        reason="THE TWO THAT TOOK THE ROSTER FROM 57 TO 55, named because Dave's answer to Q6 "
+               "was 55 gates on the condition the drop is visible. %s — and _claimtable.py is "
+               "its only local helper, so it travels with it. Neither is missing by accident "
+               "and neither is broken: a check whose subject the pack does not carry has "
+               "nothing to say in a designer's project."
+               % _q6_why.get("_validate_evidence.py",
+                             "_validate_evidence.py is REPO-BOUND").replace(
+                   "runs, but its verdict is about",
+                   "_validate_evidence.py runs, but its verdict is about")))
     excluded.append(dict(
         path="knowledge/ (everything else)",
         reason="The audit files, build scripts, session machinery and working documents that "
@@ -1037,9 +1153,18 @@ def build_manifest(sha, probe):
         # (s219-D8). It is stamped here, in the pack README and in PROVENANCE.json — the three
         # places the pack states where it came from — and NOWHERE inside memento-package/, which
         # is the repo's own machinery and not this release's to sign.
+        # ⚠ #219 seam 9, on N3's HANDOFF 1. This line USED to read "machinery only, no record",
+        # which s219-D5(Q1) made FALSE the moment the empty stores and the starter chain joined
+        # the cut. It is stated in three places (here, _PACK.json, the pack README) and all
+        # three were corrected together — a pack whose own provenance line contradicts its own
+        # contents is the [[gate-dont-patch]] class, so `cut/no-record-claim-is-dead` below
+        # greps for the dead phrasing in this file AND in the bake script.
         carries=dict(name=MEMENTO_CUT_NAME, version=MEMENTO_CUT_VERSION,
-                     what="A clean cut of Memento: machinery only, no record. Its version line "
-                          "is its own; the pack's version does not move it."),
+                     what="A clean cut of Memento: the machinery, plus a cold start whose "
+                          "record is EMPTY on purpose — an empty task store and an empty "
+                          "rulings store with the shapes already right, and a starter "
+                          "_CHAIN.md that the first wrap replaces. Its version line is its "
+                          "own; the pack's version does not move it."),
         status="PROPOSED — awaiting Dave's word (s219-D4(2): release = his word)",
         commit=sha,
         commit_date=commit_date(sha),
@@ -1080,6 +1205,16 @@ def all_paths(man):
 
 def esc(s):
     return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+
+
+def _words(n):
+    """Small counts read as words in Dave's prose, and the count is still DERIVED.
+
+    #219 seam 9: the lede said "six groups" while the manifest carried seven. Spelling the
+    number is a house habit in running text; the point of this helper is that the digit comes
+    from the data either way [[banner-figures-are-parsed-not-prose]]."""
+    return {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven",
+            8: "eight", 9: "nine", 10: "ten"}.get(n, str(n))
 
 
 def mb(n):
@@ -1154,6 +1289,61 @@ PAGE_CSS = """
 """
 
 
+# The lead-in prose for each group card, one entry per group declared in groups().
+# ⚠ MODULE SCOPE at #219 seam 9 so the selftest can assert it is COMPLETE: the
+# lookup below is a bare subscript, so a group declared without a lead takes the
+# whole page down with a KeyError at render time — which is exactly what the new
+# `gumdrop` group did, and no bite could see it while this dict was a local.
+GROUP_LEAD = {
+    "engine-canon": (
+        "The engine itself",
+        "This is the part you actually work in every day. Tokens, the contract for every "
+        "component, the reference markup, the canon stylesheets, the compliance map, the "
+        "real icons and the written guidelines. Nothing here is a summary of Apollo — it "
+        "is Apollo."),
+    "gates": (
+        "The gates",
+        "The checks that make Apollo a system rather than a folder of files. Every gate "
+        "below was actually RUN inside a copy of this pack, on its own, outside your repo. "
+        "The verdicts are measurements, not opinions — and the ones that only work here "
+        "are named, with the reason, and left out."),
+    "runbooks": (
+        "The runbooks",
+        "The written procedures. How to compose from canon. How to take a component "
+        "through its gates. How to render a page and actually look at it. How to write a "
+        "criteria contract before you build. How to bring an existing code library in."),
+    "library": (
+        "The library",
+        "The showroom, alive — every component page, the foundations pages, the thumbnails, "
+        "the index. Plus the rails file the library, the editor and the generator all read, "
+        "and the render script so a designer can see their own work the way you do."),
+    "memento-clean-cut": (
+        "A clean cut of Memento — the machinery",
+        "The chain generator, retrieval, the graph edges, the gauge shim, the lexicon. "
+        "These files carry no record: not one line of this project's history travels in "
+        "them. What a designer starts from is the group below."),
+    # #219 seam 9 (N3's region 6). Its OWN lead, and it must exist: `GROUP_LEAD[gk]` is a
+    # bare subscript, so a group declared without a lead takes the page down with a
+    # KeyError at render — measured, not assumed [[no-gate-parses-the-artefact]].
+    "gumdrop": (
+        "Day one — the cold start",
+        "The machinery above can hold a record; this is the empty record it holds it in, "
+        "and the walkthrough that gets a designer to their first entry. An empty task "
+        "store and an empty rulings store, both with the shapes already right and both "
+        "DRIVEN against the empty shape rather than eyeballed. A starter chain that says "
+        "what the first move is and is replaced the first time they wrap. A guided first "
+        "session. And the two Memento runbooks — capture at wrap, and the context gauge — "
+        "rewritten for VS Code and Copilot, honest about the one thing that environment "
+        "cannot measure."),
+    "skills": (
+        "The skills",
+        "Five, and they are written. Four rewritten against this knowledge base — the "
+        "library is 135 components now, not 40, and the red law they quoted was three "
+        "rulings out of date. The fifth is new: the gate-runner that actually runs the "
+        "packed gates on a designer's own work, and reads the verdicts back honestly."),
+}
+
+
 def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
     G = {}
     for g in man["groups"]:
@@ -1161,42 +1351,6 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
     gates = [g for g in man["groups"] if g["key"] == "gates"][0]
     c = gates["counts"]
 
-    GROUP_LEAD = {
-        "engine-canon": (
-            "The engine itself",
-            "This is the part you actually work in every day. Tokens, the contract for every "
-            "component, the reference markup, the canon stylesheets, the compliance map, the "
-            "real icons and the written guidelines. Nothing here is a summary of Apollo — it "
-            "is Apollo."),
-        "gates": (
-            "The gates",
-            "The checks that make Apollo a system rather than a folder of files. Every gate "
-            "below was actually RUN inside a copy of this pack, on its own, outside your repo. "
-            "The verdicts are measurements, not opinions — and the ones that only work here "
-            "are named, with the reason, and left out."),
-        "runbooks": (
-            "The runbooks",
-            "The written procedures. How to compose from canon. How to take a component "
-            "through its gates. How to render a page and actually look at it. How to write a "
-            "criteria contract before you build. How to bring an existing code library in."),
-        "library": (
-            "The library",
-            "The showroom, alive — every component page, the foundations pages, the thumbnails, "
-            "the index. Plus the rails file the library, the editor and the generator all read, "
-            "and the render script so a designer can see their own work the way you do."),
-        "memento-clean-cut": (
-            "A clean cut of Memento",
-            "The machinery only. The chain generator, retrieval, the graph edges, the gauge "
-            "shim, the lexicon — and no record of any kind. No chain, no rulings, no state. "
-            "Every project that adopts it grows its own memory from nothing, which is the "
-            "point."),
-        "skills": (
-            "The skills",
-            "Five, and they are written. Four rewritten against this knowledge base — the "
-            "library is 135 components now, not 40, and the red law they quoted was three "
-            "rulings out of date. The fifth is new: the gate-runner that actually runs the "
-            "packed gates on a designer's own work, and reads the verdicts back honestly."),
-    }
 
     out = []
     A = out.append
@@ -1229,10 +1383,16 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
          esc(MEMENTO_CUT_VERSION)))
 
     A('<h2>The short version</h2>')
+    # ⚠ DERIVED, not typed. This sentence said "six groups" while the manifest carried seven —
+    # the cold start had been added as its own group and the prose beside it had not moved.
+    # A count on Dave's decision surface is read out of the thing it counts, always.
+    _n_groups = len(G)
+    _n_engine = len([k for k in G if not k.startswith(("memento", "gumdrop"))])
     A('<p>You said you wanted designers to get <em>as close to what you use as possible, '
       'without the review files and the extras, even a clean cut of Memento</em>. This is that '
-      'list. It is six groups. Five of them are things you already work in; the sixth is '
-      'Memento with its memory emptied out.</p>')
+      'list. It is %s groups. %s of them are things you already work in; the last two are '
+      'Memento with its memory emptied out, and the day-one walk-in that goes with it.</p>'
+      % (_words(_n_groups), _words(_n_engine).capitalize()))
     A('<p>The list is not typed by hand. It is worked out from one named commit, so the pack '
       'and the repo can never quietly disagree — and building the same commit twice gives a '
       'file that is <b>identical down to the byte</b>, which is what makes it possible to see '
@@ -1365,8 +1525,20 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
             ans = q["answered"]
             A('<div class="card">')
             A('<h3>%s. %s</h3>' % (esc(q["id"]), esc(q["title"])))
-            A('<p class="ruled"><span class="tag in">Ruled</span> <b>%s</b> — %s</p>'
-              % (esc(ans["ruling"]), esc(ans["position"])))
+            # #219 seam 9: an answer Dave gave in the session, whose clause is not yet in the
+            # rulings store, must NOT paint the same "Ruled" tag as one that is. Same three
+            # registers as everywhere else — what he said, and what has been written down, are
+            # different facts and the page says which is which.
+            if ans.get("inscription") == "OWED":
+                A('<p class="ruled"><span class="tag prop">Your answer</span> <b>%s</b> — %s</p>'
+                  % (esc(ans.get("answered_in", "")), esc(ans["position"])))
+                A('<p class="note warn"><b>Not written down yet.</b> You settled this in the '
+                  'session and the pack already reflects it, but the clause is not in the '
+                  'rulings store — <code>%s</code>. Inscribing it is the last step, and until '
+                  'it happens this card is your word, not a record.</p>' % esc(ans["ruling"]))
+            else:
+                A('<p class="ruled"><span class="tag in">Ruled</span> <b>%s</b> — %s</p>'
+                  % (esc(ans["ruling"]), esc(ans["position"])))
             if ans.get("enacted"):
                 A('<p class="note"><b>What the pack does now.</b> %s</p>' % esc(ans["enacted"]))
             A('<details><summary>The question as it was put to you, and the options</summary>')
@@ -1386,7 +1558,8 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
     # #219 stage 2 — the layout, stated so the page shows the TRUE shape a designer meets.
     A('<p class="note"><b>What unzipping looks like.</b> The zip opens into one folder, '
       '<code>Apollo-Spider-v1.0.0/</code>, and everything sits directly inside it: '
-      '<code>skills/</code>, <code>knowledge/</code>, <code>ci-template/</code>, '
+      '<code>FIRST-SESSION.md</code>, <code>skills/</code>, <code>.github/</code>, '
+      '<code>knowledge/</code>, <code>ci-template/</code>, '
       '<code>showroom/</code>, <code>memento-package/</code>, <code>_MANIFEST.json</code>, '
       '<code>README.md</code>. The skills and the CI template live under '
       '<code>apollo-spider/</code> in this repo, but the bake flattens that prefix away '
@@ -1640,7 +1813,11 @@ def selftest():
                    "memento-package/machinery/_gen_chain.py",
                    "apollo-spider/skills/generate-from-canon/SKILL.md",
                    "apollo-spider/skills/check-with-gates/SKILL.md",
-                   "knowledge/_RUNBOOK-compose-from-canon.md"]
+                   "knowledge/_RUNBOOK-compose-from-canon.md",
+                   "apollo-spider/gumdrop/_rulings.json",
+                   "apollo-spider/gumdrop/runbooks/_RUNBOOK-context-gauge.md",
+                   "apollo-spider/FIRST-SESSION.md",
+                   "apollo-spider/.github/copilot-instructions.md"]
     for p in probe_paths:
         hits = [g["key"] for g in tbl if g["match"](p)]
         bite("groups/claims:%s" % os.path.basename(p), len(hits) >= 1, True,
@@ -1666,6 +1843,49 @@ def selftest():
          "ci-template/run-gates.py")
     bite("packpath/engine-passes-through", pack_path("knowledge/canon/canon.css"),
          "knowledge/canon/canon.css")
+    # ---- the SEED MAP (#219 N3). The mapping is asserted AND driven on a real stage, because
+    # the whole reason it exists is that Memento's machinery resolves paths from where the FILE
+    # sits — a mapping that is only asserted proves nothing about where the bytes land.
+    bite("packpath/seed-chain",
+         pack_path("apollo-spider/gumdrop/_CHAIN.md"), "memento-package/_CHAIN.md")
+    bite("packpath/seed-store",
+         pack_path("apollo-spider/gumdrop/_rulings.json"), "memento-package/_rulings.json")
+    bite("packpath/seed-beats-flatten",
+         pack_path("apollo-spider/gumdrop/runbooks/_RUNBOOK-capture-ritual.md"),
+         "memento-package/runbooks/_RUNBOOK-capture-ritual.md",
+         "the seed map must be consulted BEFORE the apollo-spider flatten")
+    bite("packpath/coldstart-docs-flatten",
+         pack_path("apollo-spider/FIRST-SESSION.md"), "FIRST-SESSION.md")
+    tmp2 = tempfile.mkdtemp(prefix="packseed-", dir="/var/tmp")
+    try:
+        os.makedirs(os.path.join(tmp2, "apollo-spider", "gumdrop", "runbooks"))
+        os.makedirs(os.path.join(tmp2, "memento-package", "machinery"))
+        open(os.path.join(tmp2, "apollo-spider", "gumdrop", "_state.py"), "w").write("m\n")
+        open(os.path.join(tmp2, "apollo-spider", "gumdrop", "runbooks", "r.md"), "w").write("r\n")
+        open(os.path.join(tmp2, "memento-package", "machinery", "_gen_chain.py"), "w").write("g\n")
+        apply_seed_map(tmp2)
+        bite("seed/lands-beside-frozen-machinery",
+             os.path.exists(os.path.join(tmp2, "memento-package", "_state.py")), True)
+        bite("seed/subdir-carried",
+             os.path.exists(os.path.join(tmp2, "memento-package", "runbooks", "r.md")), True)
+        bite("seed/frozen-side-untouched",
+             open(os.path.join(tmp2, "memento-package", "machinery", "_gen_chain.py")).read(),
+             "g\n")
+        bite("seed/source-dir-gone",
+             os.path.exists(os.path.join(tmp2, "apollo-spider", "gumdrop")), False)
+        # the collision refusal — a seed file that would overwrite a frozen one must REFUSE
+        os.makedirs(os.path.join(tmp2, "apollo-spider", "gumdrop"))
+        open(os.path.join(tmp2, "apollo-spider", "gumdrop", "_state.py"), "w").write("second\n")
+        try:
+            apply_seed_map(tmp2)
+            bite("seed/collision-refused", "ACCEPTED", "refused",
+                 "a seed file silently overwrote what was already at the destination")
+        except RuntimeError as ex:
+            bite("seed/collision-refused", "collision" in str(ex), True)
+        bite("seed/collision-left-the-original",
+             open(os.path.join(tmp2, "memento-package", "_state.py")).read(), "m\n")
+    finally:
+        shutil.rmtree(tmp2, ignore_errors=True)
     mapped = [pack_path(p) for p in probe_paths]
     bite("packpath/injective-on-probe-set", len(set(mapped)), len(mapped),
          "two shipped repo paths may not land on one pack path")
@@ -1723,10 +1943,61 @@ def selftest():
              "an answered card must name the ruling that settles it")
         bite("questions/answered-states-a-position:%s" % q["id"],
              len(a.get("position", "").strip()) > 40, True)
-    bite("questions/Q2-and-Q3-are-this-lanes-clauses",
+        # ⚠ AN UNINSCRIBED ANSWER MUST SAY SO. Q6 was answered by Dave in the session, and the
+        # matching clause has not been written into _rulings.json — that is the conductor's act
+        # and no generator's. A card that cites a ruling id whose store entry does not carry
+        # the clause is a confident FALSE inscription [[memento-framing]], so any card flagged
+        # OWED has to cite the chat it actually came from, in the repo's own evidence grammar.
+        if a.get("inscription") == "OWED":
+            bite("questions/owed-clause-cites-the-chat:%s" % q["id"],
+                 bool(re.match(r"^chat #\d+ \d{4}-\d{2}-\d{2} — Dave: ",
+                               a.get("answered_in", ""))), True,
+                 "an answer not yet in the rulings store must name the chat that carried it")
+            bite("questions/owed-clause-says-owed-in-the-ruling-line:%s" % q["id"],
+                 "OWED" in a.get("ruling", ""), True,
+                 "the ruling line must not read as inscribed when it is not")
+    # ⚠ WIDENED at #219 seam 9, and still a CLOSED set. Q2/Q3 are N1's clauses; Q6 is seam 9's,
+    # and its enactment is the roster cut plus the named exclusion row measured below. The point
+    # of the bite is that a lane cannot quietly claim an enactment it did not make — so the set
+    # grows only when a seam adds one and names itself here.
+    bite("questions/enactment-claims-are-a-closed-set",
          sorted(q["id"] for q in OPEN_QUESTIONS
-                if q.get("answered", {}).get("enacted")), ["Q2", "Q3"],
-         "only the clauses #219 N1 enacted may claim an enactment on Dave's page")
+                if q.get("answered", {}).get("enacted")), ["Q2", "Q3", "Q6"],
+         "only a clause a lane actually enacted may claim an enactment on Dave's page")
+
+    # ---- EVERY GROUP HAS A LEAD, or the page does not render (#219 seam 9). `GROUP_LEAD[gk]`
+    # is a bare subscript in render_page, so a group declared in groups() with no lead is a
+    # KeyError that takes down the whole of Dave's decision surface — and the 149-bite selftest
+    # was green through it, because the dict was a local nothing could reach.
+    # [[no-gate-parses-the-artefact]] [[green-tests-cannot-see-scope]]
+    _declared_groups = sorted({g["group"] for g in groups()})
+    bite("page/every-group-has-a-lead",
+         [gk for gk in _declared_groups if gk not in GROUP_LEAD], [],
+         "a group with no GROUP_LEAD entry is a KeyError at render, not a missing paragraph")
+    bite("page/no-orphan-leads",
+         [gk for gk in GROUP_LEAD if gk not in _declared_groups], [],
+         "a lead for a group that no longer exists is prose describing a cut that did not happen")
+
+    # ---- THE DEAD CUT-LEVEL CLAIM CANNOT COME BACK (#219 seam 9, on N3's HANDOFF 1). Until
+    # this seam, the pack README, _PACK.json and this generator all said Memento — Gumdrop ships
+    # no chain, no rulings, and no record of the kind spelled below. s219-D5(Q1) made that FALSE, and it was
+    # false in three files at once — so the fix is a GATE over the phrasing, not three edits
+    # [[gate-dont-patch]]. The phrase is assembled, never typed whole, for the same reason the
+    # dead-name bites assemble theirs: a literal here would fail on this file's own text.
+    _dead_claim = "no record of any" + " kind"
+    _bake = os.path.join(ROOT, PACK_SURFACE_PREFIX, "build-designer-pack.sh")
+    _gen_src = open(os.path.abspath(__file__), encoding="utf-8").read()
+    bite("cut/no-record-claim-is-dead:generator", _dead_claim in _gen_src, False,
+         "the cut ships EMPTY stores and a starter chain — saying otherwise ships a "
+         "contradiction on the same page as the files")
+    if os.path.exists(_bake):
+        bite("cut/no-record-claim-is-dead:bake-script",
+             _dead_claim in open(_bake, encoding="utf-8").read(), False,
+             "the pack README is written by the bake script and must describe what the bake put "
+             "in the pack")
+        _bake_src = open(_bake, encoding="utf-8").read()
+        bite("cut/readme-points-at-the-cold-start", "FIRST-SESSION.md" in _bake_src, True,
+             "the README must name the file a designer is supposed to open first")
 
     # ---- THE RENAME CANNOT ROT BACK (s219-D8). The generator names the pack in DATA, and its
     # own source must carry no surviving reference to the name the release used to have. A grep
@@ -1777,8 +2048,18 @@ def selftest():
          "seam 8's roster question — 55 gates, not 57 — must be on Dave's page")
     if q6:
         body6 = q6[0]["body"]
-        bite("questions/Q6-is-open", q6[0].get("answered"), None,
-             "Q6 is the ONE unanswered card; answering it here would launder a premise")
+        # #219 seam 9: this bite USED to assert Q6 was the one unanswered card. Dave answered
+        # it — '55 gates' — so the assertion INVERTS rather than being deleted: the card must
+        # now carry a receipt, and the page must have nothing left to ask.
+        _a6 = q6[0].get("answered") or {}
+        bite("questions/Q6-is-answered", bool(_a6), True,
+             "Dave answered the roster card at #219; the card must carry his answer")
+        bite("questions/Q6-receipt-names-the-count", "55" in _a6.get("position", ""), True,
+             "the receipt must state the roster he ruled")
+        bite("questions/no-card-is-still-asking",
+             [q["id"] for q in OPEN_QUESTIONS if not q.get("answered")], [],
+             "every card on the pre-bake page is answered; a page that still asks is not ready "
+             "to bake")
         for gname in Q6_DROPPED_GATES:
             bite("questions/Q6-names:%s" % gname, gname in body6, True,
                  "the roster card must state the dropped gate by name")
@@ -2070,6 +2351,7 @@ def main():
                   % (man["commit"][:12], sha[:12]), file=sys.stderr)
             sys.exit(2)
         extract(sha, all_paths(man), a.stage)
+        apply_seed_map(a.stage)          # seed map FIRST — see pack_path
         flatten_stage(a.stage)
         print("staged %d paths -> %s (pack surfaces flattened to the root — see pack_path)"
               % (len(all_paths(man)), a.stage))

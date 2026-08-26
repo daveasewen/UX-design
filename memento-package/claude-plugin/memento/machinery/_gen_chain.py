@@ -635,17 +635,44 @@ def selftest():
         gm_lines = open(os.path.join(ROOT, "GOOD-MORNING.md"), encoding="utf-8").read().splitlines()
         gm_part, delta, _how = cg.chain_parts(ROOT, gm_lines)
         chain_tk, _d = cg.read_chain_tk(ROOT, gm_lines)
-        gm_tk = cg.measure_tokens(open(os.path.join(ROOT, "GOOD-MORNING.md"),
-                                       encoding="utf-8").read())[0]
+        gm_tk, gm_tier = cg.measure_tokens(open(os.path.join(ROOT, "GOOD-MORNING.md"),
+                                                encoding="utf-8").read())
 
         bite("carries the GM header+LATEST term VERBATIM (not a summary of it)", gm_part in text)
         bite("carries the LS ⏱ LATEST delta VERBATIM", delta is None or delta in text)
         # ★ The point of the whole exercise: the file must actually be small. A chain file that
         #   is not much smaller than GM buys nothing and would be worse than nothing, because it
         #   adds a second thing to keep fresh. Assert the CUT, not just the content.
-        out_tk = cg.measure_tokens(text)[0]
-        bite(f"is materially smaller than GOOD-MORNING.md ({out_tk:,} vs {gm_tk:,} tape, <40%)",
+        # ⛔ #219 — THE UNIT IN THIS LABEL WAS A HARDCODED LITERAL, AND IT WAS OFTEN A LIE.
+        # Both figures come from `cg.measure_tokens`, which returns whatever tier THIS environment
+        # can reach — `real` where a key or the token cache is present, the estimate tier in a bare
+        # checkout. The label said `tape` unconditionally, so a locally-measured `real` pair was
+        # printed under the wrong unit and the two environments' readings looked like the same
+        # measurement disagreeing. Naming a figure with a unit it was not measured in is the ds-021
+        # defect this very selftest asserts against the footer three bites below
+        # [[measure-dont-convert-units]]. The tier is now READ, never assumed, and the ratio is
+        # printed beside the floor so the margin is legible instead of re-derived.
+        # ⚠ WHAT THIS DOES NOT DO, DELIBERATELY: the `0.40` and the assertion are UNTOUCHED. The
+        # bite is genuinely RED at #219 and it is red in EVERY reachable unit — measured on the
+        # same bytes at HEAD 04bd5f0: real 45.56%, cl100k tape 45.83%, chars 46.10%, a spread of
+        # 0.27pp. So this is NOT the #173 stale-in-CI class and must not be dressed as one: a
+        # COULD-NOT-ASK refusal here would hide a real red behind an environment excuse, which is
+        # the #173 defect run backwards. Why it is red — and what to do about a ratio between two
+        # files that grow on different cycles — is a RULING, written up for Dave, not patched here.
+        out_tk, out_tier = cg.measure_tokens(text)
+        ratio = out_tk / gm_tk if gm_tk else float("inf")
+        bite(f"is materially smaller than GOOD-MORNING.md ({out_tk:,} vs {gm_tk:,} "
+             f"{unit_word(cg)}, {ratio:.1%} of it, floor <40%; tier measured, not assumed: "
+             f"{out_tier})",
              out_tk < 0.40 * gm_tk)
+        # ★ #219 — THE RATIO'S PRECONDITION, ASSERTED RATHER THAN ASSUMED. A ratio is only a
+        # measurement if BOTH sides came off the SAME measurer; a numerator in `real` over a
+        # denominator in the estimate tier is a number with no unit, and it would read as a
+        # ~1.6× swing that nothing in the output would explain. Nothing compares them today —
+        # which is exactly why the claim needs a bite rather than a comment [[measure-dont-convert-units]].
+        bite(f"BOTH SIDES OF THE RATIO ARE ON ONE MEASURER — chain `{out_tier}` vs "
+             f"GOOD-MORNING `{gm_tier}`, so the percentage above has a unit",
+             out_tier == gm_tier)
         # ★ #47 — RE-POINTED from the SLICE to the FILE, and STRENGTHENED while it was open.
         # The old bite asserted only that *a* measurement appeared in the text, which the slice
         # figure satisfied for three sessions while the file went unmeasured — the bite passed

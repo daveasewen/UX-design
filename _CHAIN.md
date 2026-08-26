@@ -105,11 +105,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **266 items · 187 live · 102 Dave's · 85 mine · 252 carry a stated close condition · **14 UNCONDITIONED**.**
+> **269 items · 190 live · 103 Dave's · 87 mine · 255 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (102) — 102 with a ratified `closes_when`, 0 with NONE:**
+> **DAVE'S (103) — 103 with a ratified `closes_when`, 0 with NONE:**
 > - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
 > - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…** — *closes when:* Dave ratifies or reverses
 > - `W-104` **#215 taxonomy research v2 - Carbon deep-dive, 135-component ladder map, lifecycle vocabulary, name distribution, nav screenshots** — *closes when:* Dave has ruled on the 12 PROPOSED-FOR-DAVE placements in section 2.3 and on Map A vs Map B (whether a Primitives tier is used), and gen_library_214.py LEVELS + level_of() have been changed to match, with the section 2.2 table regenerated from the changed derivation
@@ -158,6 +158,7 @@
 > - `W-191` **#219 N1 - the rename to Apollo - Spider (carrying Memento - Gumdrop): dir, zip, generator + its two artefacts, ledger row, CI and build references, page; plus the canon-generator warning that fires in a shipped pack only** — *closes when:* the conductor has committed the rename and re-run --probe/--manifest/--page at the landing commit, so that _gate_release_audit.py --check and --selftest are both green and neither the manifest nor the review page carries the pre-s219-D7 name inside it
 > - `W-192` **#219 N1 filed sub-report - the Snoopy rename, the pack-gate design and its proof, and the laundering-arm hole the rename exposed** — *closes when:* the conductor has read the report, replayed its REPLAY-THESE items (chiefly the stage-2 regeneration that clears the designed release-audit red) and answered or struck its four ruling-shaped questions
 > - `W-193` **#219 seam 8 filed sub-report - the Spider flip (s219-D8), the N1+N2+conductor reconcile, and the pack-gate defect that refused importers** — *closes when:* the conductor has read the report, landed stage 1, run its stage-2 replay at the landing commit so _gate_release_audit.py --check and --selftest are both green, and answered or struck its three ruling-shaped questions (chiefly Q1: whether the pack should still ship the evidence linter)
+> - `W-195` **Gumdrop cold start — the owed items behind the #219 N3 build** — *closes when:* Dave or the conductor has ruled on each of the three: the RUN arm, the Gumdrop copy audit, and the chain banner
 > - `W-38` **Size-ramp + per-theme size modes proposal (FLOATED, Dave's instinct, #200)** — *closes when:* Dave rules the pair semantics and the per-theme mode mapping, or drops the shape
 > - `W-41` **#203 delegated-wrap brief (DO-NOT-RULE list + session facts for the Opus wrap sub)** — *closes when:* the #203 wrap commit is pushed by the conductor under s203-D1 AND the CI read-back is relayed to Dave in chat - both limbs, per the ruling's own words
 > - `W-51` **#207 addendum: Dave's critique of the #206 record (promotion vocabulary open; candidature homed)** — *closes when:* Dave rules the twice-caught vocabulary question (does a mined historical occasion count as a 'catch' toward s204-D1's bar?) AND rules promote/wait/park on the three candidates; the candidature record in knowledge/_DS-IMPROVEMENTS.md then carries the outcome
@@ -213,14 +214,14 @@
 > - `W-99zw` **#219 R3 filed report - the five v3 skills, seven walked exercises and five ruling-shaped questions** — *closes when:* the conductor has replayed the report's REPLAY-THESE items and Dave has ruled its five ruling-shaped questions - the gate-runner's name and the manifest repoint (Q1, blocking the bake), where the skills land inside the zip (Q2), whether empty _proforma/_fitness-test dirs ship (Q3, pairs with R1's Q1), whether the gates' internal --help voice ships as-is (Q4), and whether the skills cite gate names inline (Q5) - or parked them explicitly
 > - `W-99zz` **#219 R2 filed report - release CI both halves, the frozen-release bite quoted, and five ruling-shaped questions** — *closes when:* the conductor has replayed the report's REPLAY-THESE items and Dave has ruled its five ruling-shaped questions - chiefly Q1, whether the pack ships with four gates that are red at bake - or parked them explicitly
 >
-> **MINE (85), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `W-165` · `W-169` · `W-171` · `W-173` · `W-174` · `W-177` · `W-178` · `W-180` · `W-182` · `W-185` · `W-186` · `W-187` · `W-188` · `W-189` · `G4` · `W-99za` · `W-99zh` · `W-99zv` · `W-99zx` · `W-99zy`
+> **MINE (87), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `W-165` · `W-169` · `W-171` · `W-173` · `W-174` · `W-177` · `W-178` · `W-180` · `W-182` · `W-185` · `W-186` · `W-187` · `W-188` · `W-189` · `W-194` · `W-196` · `G4` · `W-99za` · `W-99zh` · `W-99zv` · `W-99zx` · `W-99zy`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **45,455 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **45,551 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 89,695 real and stays whole for retrieval; you have paid for
 51% of it, and that is the intended figure, not a shortfall.)*

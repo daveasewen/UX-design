@@ -20,6 +20,12 @@ delta-audit gate addresses everything BY NAME (AST source-segment hashing):
                              the one DECLARED difference (optional `_gauge_tokens` import)
   - `measurement_degraded`   ★ RE-PORTED #114 — now `_tier_probe() == "estimate"`; MEANING
                              unchanged on purpose (still "is this a GUESS?", not "is this REAL?")
+  - `measurement_tier`       ★ PORTED #219 — `_gen_chain.py` has CALLED this since the #193
+                             re-sync and the shim did not have it, so the packaged chain
+                             generator died on `AttributeError` the moment it reached
+                             `unit_word()`. Found by RUNNING the packaged generator in a staged
+                             pack, not by reading either file
+                             [[mutation-tests-the-clause-not-the-feature]]
   - `dofirst_index`          (unchanged since `91d7528`; helper `chain_parts` calls internally)
   - `_heal_tiktoken`         (unchanged since `91d7528`; helper `measure_tokens` calls internally)
   - `_TIKTOKEN_HEAL_TRIED`   (unchanged since `91d7528`)
@@ -248,6 +254,17 @@ def _tier_probe():
     finally:
         _TIERS_SEEN.clear()
         _TIERS_SEEN.update(snapshot)
+
+
+def measurement_tier():
+    """`'real'` · `'cl100k'` · `'estimate'` — what a measurement taken now would be. ★ THIS is
+    the word the vocabulary lacked (#80's root cause, confirmed at source #81): the reason a
+    RULED unit sat unenacted for 26 sessions was that no function in this file could SAY 'real',
+    so `measurement_degraded()` asked *'is this an estimate?'* and cl100k answered *no, healthy*.
+    A stamp that names its tier can be checked; one that cannot, cannot.
+
+    Ported verbatim, `knowledge/_capture_gate.py` `measurement_tier`."""
+    return _tier_probe()
 
 
 def measurement_degraded():
