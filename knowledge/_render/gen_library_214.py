@@ -191,6 +191,18 @@ FOUNDATIONS = [
                  "background dials over real content, in four themes and both modes, exporting "
                  "the chosen combination as concrete values. PROPOSED beyond the ruling's own "
                  "words; nothing on it is promoted.")},
+    # ⬛ s219-D3(6) — "THE LIBRARY SURFACES THE FULL EDIT-MODE OPTION SPACE, GENERATED FROM THE
+    # RAILS MANIFEST — library, editor and generator read one generated file so none can drift."
+    # ⚠ A SIBLING OF `bento.html`, NOT A GROUP. The explorer is the INSTRUMENT (turn the dials);
+    # this is the REFERENCE (what the dials offer, and what excludes what). Grouping them would
+    # pre-empt the library IA v2 word-set, which is still Dave's open ruling (W-99zg).
+    {"slug": "foundation-bento-rails", "label": "Bento rails",
+     "file": "bento-rails.html", "usage": "structure",
+     "purpose": ("The bento edit-pass rails — every option the edit pass offers per theme and "
+                 "type, the ruled CHORDS with a live specimen each, the page-level background "
+                 "rail, and the exclusion rules in plain words. Generated from "
+                 "knowledge/_render/_bento_edit_rails.json, the one file the library, the editor "
+                 "and the generator all read (s219-D3).")},
     # ---------------------------------------------------------------------------
     # #218 — THE GRIDS GROUP. Dave, 2026-08-24, verbatim:
     #   "I think I'd like this added to the library under foundations, we should have a section

@@ -105,11 +105,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **249 items · 170 live · 92 Dave's · 78 mine · 235 carry a stated close condition · **14 UNCONDITIONED**.**
+> **252 items · 173 live · 94 Dave's · 79 mine · 238 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (92) — 92 with a ratified `closes_when`, 0 with NONE:**
+> **DAVE'S (94) — 94 with a ratified `closes_when`, 0 with NONE:**
 > - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
 > - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…** — *closes when:* Dave ratifies or reverses
 > - `W-104` **#215 taxonomy research v2 - Carbon deep-dive, 135-component ladder map, lifecycle vocabulary, name distribution, nav screenshots** — *closes when:* Dave has ruled on the 12 PROPOSED-FOR-DAVE placements in section 2.3 and on Map A vs Map B (whether a Primitives tier is used), and gen_library_214.py LEVELS + level_of() have been changed to match, with the section 2.2 table regenerated from the changed derivation
@@ -202,15 +202,17 @@
 > - `W-99zo` **#219 lane B - the TWELVE shipped bento role defaults, parsed from Dave's receipt (s219-D1(3))** — *closes when:* the eight non-gallery defaults (dashboard, display) have a surface that RENDERS them, or Dave rules that they stay a manifest until a bento editor exists - and the four gallery defaults have been seen by his eye on the photography page
 > - `W-99zp` **#219 lane B - PROPOSED evidence page: the flattened portrait the squaring pass buys (s219-D2(2) leaves this expressly unruled)** — *closes when:* Dave has looked at the before/after and either accepted the crop as the price of a square wall or ruled the orphan/flattening refinement (the W-99zi third bend)
 > - `W-99zq` **#219 lane B filed report - the twelve defaults minted and the three gallery supersessions enacted (mono caption grey, gallery square, console capsule)** — *closes when:* the conductor has replayed the report's REPLAY-THESE items and Dave has ruled its seven ruling-shaped questions, or parked them explicitly
+> - `W-99zr` **#219 lane C filed report - the s219-D3 chord/constraint layer, the pageBg re-scope and the rails library page** — *closes when:* the conductor has replayed the report's REPLAY-THESE items and Dave has ruled its five ruling-shaped questions (question 1, mono's access to the dark-caption chord, is the one s219-D3(3) expressly left him), or parked them explicitly
+> - `W-99zs` **Bento rails library page - showroom/_foundations/bento-rails.html, generated from the one rails manifest (s219-D3(6))** — *closes when:* Dave has looked at the page in all four themes and ruled the chord/exclusion surface adequate, AND the library index has been regenerated at the regen seam so the new Foundations entry is reachable from showroom/index.html
 >
-> **MINE (78), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `W-165` · `W-169` · `W-171` · `W-173` · `W-174` · `W-177` · `W-178` · `W-180` · `W-182` · `W-185` · `G4` · `W-99za` · `W-99zh`
+> **MINE (79), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `W-165` · `W-169` · `W-171` · `W-173` · `W-174` · `W-177` · `W-178` · `W-180` · `W-182` · `W-185` · `W-186` · `G4` · `W-99za` · `W-99zh`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **43,906 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **44,189 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 89,695 real and stays whole for retrieval; you have paid for
 49% of it, and that is the intended figure, not a shortfall.)*

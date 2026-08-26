@@ -1866,22 +1866,40 @@ def main():
         lines.append("  ⬛ s219-D1(2) gallery keylines · %s"
                      % " · ".join("%s %s" % (t, "present" if kl_seen[t]["gallery"] else "ABSENT")
                                   for t in ("mono", "legacy", "console", "supercharge")))
-        # ⛔ AND THE COUNT FOLLOWS. It used to be theme-DEPENDENT and the page had to print two
-        # numbers; with no theme lock left, the four themes must AGREE — and the page still prints
-        # both, so the agreement is a reading rather than a claim.
+        # ⛔ AND THE COUNT FOLLOWS — INVERTED TWICE NOW, AND BOTH INVERSIONS ARE RULINGS.
+        #   s217-D6 made the count theme-DEPENDENT (the console keyline exclusion).
+        #   s219-D2(4) retired that lock, so the four themes AGREED.
+        #   s219-D3(3) scopes the DARK CAPTION GROUND to the console gallery chord, so console is
+        #     larger again — but by a CHORD SCOPE, not a theme lock: no dial is removed anywhere,
+        #     the keyline assertion above still holds in all four themes, and the extra states are
+        #     exactly the ones the ruled chord adds.
+        # ⚠ THE TEST IS THE DIFFERENCE, NOT THE INEQUALITY. Console must be larger by the ruled
+        # chord's own arithmetic; larger for any other reason is still a red.
         src_txt = open(src, encoding="utf-8").read()
         base_total = sum(matrix.matrix_counts("mono").values())
         con_total = sum(matrix.matrix_counts("console").values())
-        if base_total != con_total:
-            fail("⛔ s219-D1(2) — the enumeration reports %d for mono and %d for console; with "
-                 "every dial available in every theme the totals must agree"
-                 % (base_total, con_total))
+        base_caps = matrix.capbg_for("gallery", "mono")
+        con_caps = matrix.capbg_for("gallery", "console")
+        if sorted(set(con_caps) - set(base_caps)) != ["darkgrey"]:
+            fail("⛔ s219-D3(3) — console's gallery caption grounds differ from the base themes by "
+                 "%r, and the ruled chord adds exactly one: the dark grey"
+                 % sorted(set(con_caps) - set(base_caps)))
+        if con_total <= base_total:
+            fail("⛔ s219-D3(3) — the console capsule chord offers a caption ground the other "
+                 "themes do not reach, so console must enumerate MORE states than mono; the "
+                 "enumeration reports %d and %d" % (con_total, base_total))
+        if matrix.matrix_counts("console")["display"] != matrix.matrix_counts("mono")["display"] \
+                or matrix.matrix_counts("console")["dashboard"] != \
+                matrix.matrix_counts("mono")["dashboard"]:
+            fail("⛔ s219-D1(2) — the difference has leaked out of the GALLERY: display and "
+                 "dashboard carry no chord and must count identically in every theme")
         for n in (base_total, con_total):
             if str(n) not in src_txt:
-                fail("s219-D1(2) — the page does not print the reachable total %d, so its count "
-                     "line cannot be stating the theme-independence honestly" % n)
-        lines.append("  ⬛ s219-D1(2) counts · all four themes %d — printed on the page"
-                     % base_total)
+                fail("s219-D3(3) — the page does not print the reachable total %d, so its count "
+                     "line cannot be stating the chord scope honestly" % n)
+        lines.append("  ⬛ s219-D3(3) counts · base themes %d · console %d (+%d, the chord's own "
+                     "dark caption ground) — both printed on the page"
+                     % (base_total, con_total, con_total - base_total))
         pg.evaluate("h => { location.hash = h; }", "#theme=console&m=light")
         pg.wait_for_timeout(380)
 
@@ -1930,6 +1948,141 @@ def main():
                  "a ban", legality=True)
         lines.append("  legality · P2 refuses same-on-same with a reason and the click is inert "
                      "· P3 refuses the edgeless capsule")
+
+        # ------------------------------------- 4b · ⬛ s219-D3 · THE CHORD/CONSTRAINT LAYER, LIVE
+        # ⛔ MEASURED IN THE BROWSER, not read off the manifest. The manifest's contrast numbers are
+        # computed from canon.css by a static resolver; this arm asks the DOCUMENT what it painted
+        # and computes the ratio from those pixels, so the two are independent readings of one
+        # decision ([[green-tests-cannot-see-scope]]).
+        def _rgb(s):
+            n = re.findall(r"[\d.]+", s or "")
+            return tuple(int(float(x)) for x in n[:3]) if len(n) >= 3 else None
+
+        def _lum(c):
+            def ch(v):
+                v /= 255.0
+                return v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
+            return 0.2126 * ch(c[0]) + 0.7152 * ch(c[1]) + 0.0722 * ch(c[2])
+
+        def _ratio(a, b):
+            if not a or not b:
+                return None
+            hi, lo = max(_lum(a), _lum(b)), min(_lum(a), _lum(b))
+            return round((hi + 0.05) / (lo + 0.05), 2)
+
+        CAP_INK_JS = """() => {
+          const cap = document.querySelector('.bm-pane[data-pane="gallery"] .bm-cap');
+          if (!cap) return null;
+          const cs = getComputedStyle(cap);
+          return {ink: cs.color, ground: cs.backgroundColor};
+        }"""
+        chord_lines = []
+        # ---- the dark caption ground: OFFERED in console, REFUSED elsewhere (X6) ----
+        for theme in ("console", "mono", "legacy", "supercharge"):
+            pg.evaluate("h => { location.hash = h; }", "#theme=%s&m=light" % theme)
+            pg.wait_for_timeout(380)
+            click("type", "gallery")
+            click("bentoBg", "transparent")
+            cg = pg.evaluate(GROUP, "capBg")
+            offered = "darkgrey" in (cg["options"] or [])
+            refused = "darkgrey" in (cg["disabled"] or [])
+            if not offered:
+                fail("⛔ s219-D3(3) — the caption-ground dial in %s does not even OFFER the dark "
+                     "grey. An option refused with a printed reason is an open question the "
+                     "designer can see; an option that is not there is a decision nobody made"
+                     % theme)
+            if theme == "console" and refused:
+                fail("⛔ s219-D3(3) — the CONSOLE gallery refuses the dark caption ground, which "
+                     "is the ruled chord's own option")
+            # ⛔ `legality=True` — X6 IS A REFUSAL, so it belongs in the falsifiability bucket the
+            # `--break-legality` arm counts. Without the flag the arm removed the rule and reported
+            # OK: the mutant proved P2/P3 falsifiable and said nothing at all about X6, which is
+            # exactly the shape of a gate that has never been seen to fail.
+            if theme != "console" and not refused:
+                fail("⛔ s219-D3(3)/X6 — %s reaches the dark caption ground. Mono's access is "
+                     "EXPRESSLY OPEN and nothing here may grant it" % theme, legality=True)
+            if theme != "console":
+                why = (cg["reason"] or "")
+                if "open question" not in why.lower():
+                    fail("⛔ X6 — the refusal in %s prints %r, which does not name the OPEN "
+                         "QUESTION. A refusal that reads as a preference reads as settled"
+                         % (theme, why[:90]), legality=True)
+        chord_lines.append("dark caption ground · console OFFERS · mono/legacy/supercharge REFUSE "
+                           "with the open question printed")
+        # ---- INK FOLLOWS GROUND, and the contrast is measured from the paint (light AND dark) ----
+        for mode in ("light", "dark"):
+            pg.evaluate("h => { location.hash = h; }", "#theme=console&m=%s" % mode)
+            pg.wait_for_timeout(380)
+            click("type", "gallery")
+            click("bentoBg", "transparent")
+            for ground in ("grey", "white", "darkgrey"):
+                click("capBg", ground)
+                click("rounding", "capsule")     # the ruled chord's other half
+                got = pg.evaluate(CAP_INK_JS)
+                if not got:
+                    fail("⛔ s219-D3(2) — no gallery caption to measure in console/%s" % mode)
+                    continue
+                r = _ratio(_rgb(got["ink"]), _rgb(got["ground"]))
+                want_tok = matrix.ink_for(ground)
+                want_hex = matrix.resolve_token(want_tok, "console", mode)
+                if _rgb(got["ink"]) != _rgb("rgb(%d,%d,%d)" % tuple(
+                        int(want_hex[i:i + 2], 16) for i in (1, 3, 5))):
+                    fail("⛔ s219-D3(2) INK DOES NOT FOLLOW GROUND — console/%s, caption ground "
+                         "%s: the ink rule says %s (%s) and the document painted %s"
+                         % (mode, ground, want_tok, want_hex, got["ink"]))
+                if r is None or r < matrix.CONTRAST_FLOOR:
+                    fail("⛔ s219-D3(3) BLOCKING CONTRAST SWEEP — console/%s, chord ground %s: "
+                         "%s on %s measures %s:1, under the %s:1 floor"
+                         % (mode, ground, got["ink"], got["ground"], r, matrix.CONTRAST_FLOOR))
+                chord_lines.append("capsule/%s %s · %s on %s = %s:1"
+                                   % (mode, ground, want_tok, got["ground"], r))
+        lines.append("  ⬛ s219-D3 chords · " + " · ".join(chord_lines))
+
+        # ------------------------------- 4c · ⬛ s219-D3(4) · THE PAGE RE-SCOPE, AND NO REGRESSION
+        # ⛔ THE PROOF IS A COMPARISON, NOT AN ASSERTION. The three gallery defaults that said
+        # `pageBg: transparent` painted the stage's fall-through, which WAS the document ground.
+        # The rail's `page` member declares that ground by name. So the pixels must be IDENTICAL —
+        # measured here by painting the page ground and reading the page body beside it.
+        PAGE_JS = """() => {
+          const g = document.querySelector('.bm-page-ground');
+          const stage = document.getElementById('bm-stage');
+          return {ground: getComputedStyle(g).backgroundColor,
+                  body: getComputedStyle(document.body).backgroundColor,
+                  attr: stage.getAttribute('data-page-bg'),
+                  groups: document.querySelectorAll('.bm-group[data-dial="pageBg"]').length,
+                  owner: (document.querySelector('.bm-group[data-dial="pageBg"]') || {})
+                           .getAttribute ? document.querySelector('.bm-group[data-dial="pageBg"]')
+                           .getAttribute('data-group') : null};
+        }"""
+        page_lines = []
+        for mode in ("light", "dark"):
+            pg.evaluate("h => { location.hash = h; }", "#theme=mono&m=%s" % mode)
+            pg.wait_for_timeout(380)
+            click("type", "gallery")
+            click("pageBg", "page")
+            p = pg.evaluate(PAGE_JS)
+            if p["groups"] != 1:
+                fail("⛔ s219-D3(4) — %d page-background control(s) on the page; the ruling makes "
+                     "it ONE page-level decision, not one per type" % p["groups"])
+            if p["owner"] != "page":
+                fail("⛔ s219-D3(4) — the page-background control is owned by %r, not by the page "
+                     "level" % p["owner"])
+            if _rgb(p["ground"]) != _rgb(p["body"]):
+                fail("⛔ s219-D3(4) REGRESSION — the rail's `page` member paints %s and the "
+                     "document ground it replaced is %s. `transparent` fell through to the body; "
+                     "`page` must land on the same pixels or the twelve defaults have moved"
+                     % (p["ground"], p["body"]))
+            page_lines.append("%s · page ground %s == body %s" % (mode, p["ground"], p["body"]))
+            # and the control SURVIVES A TYPE CHANGE — that is what "page-level" means on screen
+            click("type", "dashboard")
+            p2 = pg.evaluate(PAGE_JS)
+            if p2["groups"] != 1 or p2["attr"] != "page":
+                fail("⛔ s219-D3(4) — the page ground did not survive a type change (groups %d, "
+                     "attr %r); a page-level decision is not re-asked per type"
+                     % (p2["groups"], p2["attr"]))
+            click("type", "gallery")
+        lines.append("  ⬛ s219-D3(4) page rail · " + " · ".join(page_lines)
+                     + " · one page-level control, survives the type switch")
 
         # ------------------------------------------------------------ 5 · EXPORT PARITY
         click("bentoBg", "grey")

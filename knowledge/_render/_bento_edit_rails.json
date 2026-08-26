@@ -11,8 +11,16 @@
     "s217-D8",
     "s218-D1",
     "s219-D1",
-    "s219-D2"
+    "s219-D2",
+    "s219-D3"
   ],
+  "$permission_levels": {
+    "$what": "s219-D3(1): generation, editing and authoring are PERMISSION LEVELS on this one manifest, not three systems.",
+    "generation": "ships the minted defaults only \u2014 zero decisions up front, every generated instance lands on canon.",
+    "editing": "picks within these rails and cannot leave canon.",
+    "authoring": "the only mode that widens the rails \u2014 a new option or chord runs the gates and its promotion into this file is a governance act.",
+    "$one_file": "The library page, the editor-to-be and the generator all read THIS file, so none of the three can drift from the others (s219-D3(6))."
+  },
   "rail": {
     "spacing_stops": [
       1,
@@ -198,44 +206,18 @@
       "ruled_by": "s217-D5(P3) \u00b7 s219-D2(3)",
       "note": "Never console-only: authored in all four themes, visibly different wherever the radius token is non-zero. s219-D2(3) defaults console gallery to capsule."
     },
-    "pageBg": {
-      "kind": "enum",
-      "options": [
-        "grey",
-        "white",
-        "transparent"
-      ],
-      "labels": {
-        "grey": "Lightest grey",
-        "white": "White",
-        "transparent": "Transparent"
-      },
-      "types": [
-        "display",
-        "gallery",
-        "dashboard"
-      ],
-      "themes": "all",
-      "theme_locked": false,
-      "control": "segmented",
-      "ruled_by": "s217-D5",
-      "note": "The ground the wall sits on.",
-      "tokens": {
-        "grey": "--surface-subtle",
-        "white": "--surface-raised",
-        "transparent": "(none)"
-      }
-    },
     "bentoBg": {
       "kind": "enum",
       "options": [
         "grey",
         "white",
+        "darkgrey",
         "transparent"
       ],
       "labels": {
         "grey": "Lightest grey",
         "white": "White",
+        "darkgrey": "Dark grey",
         "transparent": "Transparent"
       },
       "types": [
@@ -246,12 +228,19 @@
       "themes": "all",
       "theme_locked": false,
       "control": "segmented",
-      "ruled_by": "s217-D5",
-      "note": "The wall's own ground \u2014 a caption's immediate ground (P2).",
+      "ruled_by": "s217-D5 \u00b7 s219-D3(5)",
+      "note": "THE SECTION GROUND (s219-D3(5)). Takes any of the light or dark greys; a caption's ink is measured against the EFFECTIVE ground, which is this one whenever the caption is transparent.",
       "tokens": {
         "grey": "--surface-subtle",
         "white": "--surface-raised",
+        "darkgrey": "--surface-digital-black",
         "transparent": "(none)"
+      },
+      "ink_rule": {
+        "white": "--text-secondary",
+        "grey": "--text-secondary",
+        "page": "--text-secondary",
+        "darkgrey": "--text-reverse"
       }
     },
     "capBg": {
@@ -259,11 +248,13 @@
       "options": [
         "grey",
         "white",
+        "darkgrey",
         "transparent"
       ],
       "labels": {
         "grey": "Lightest grey",
         "white": "White",
+        "darkgrey": "Dark grey",
         "transparent": "Transparent"
       },
       "types": [
@@ -272,15 +263,511 @@
       "themes": "all",
       "theme_locked": false,
       "control": "segmented",
-      "ruled_by": "s217-D5",
-      "note": "Caption ground. s219-D2(1) supersedes s218-D6(1): mono gallery captions resolve light grey, and the dark ground retires for the gallery role.",
+      "ruled_by": "s217-D5 \u00b7 s219-D2(1) \u00b7 s219-D3(3)",
+      "note": "Caption ground. s219-D2(1) supersedes s218-D6(1) for the DEFAULT: mono gallery captions resolve light grey. s219-D3(3) returns the dark ground as a chord OPTION, scoped console gallery \u2014 see exclusion X6, which is OPEN.",
       "tokens": {
         "grey": "--surface-subtle",
         "white": "--surface-raised",
+        "darkgrey": "--surface-digital-black",
         "transparent": "(none)"
+      },
+      "ink_rule": {
+        "white": "--text-secondary",
+        "grey": "--text-secondary",
+        "page": "--text-secondary",
+        "darkgrey": "--text-reverse"
+      },
+      "reachable_by_theme": {
+        "mono": [
+          "grey",
+          "white",
+          "transparent"
+        ],
+        "legacy": [
+          "grey",
+          "white",
+          "transparent"
+        ],
+        "console": [
+          "grey",
+          "white",
+          "darkgrey",
+          "transparent"
+        ],
+        "supercharge": [
+          "grey",
+          "white",
+          "transparent"
+        ]
       }
     },
     "$theme_locks": []
+  },
+  "page_rail": {
+    "$what": "PAGE BACKGROUND IS NOT A BENTO DIAL. s219-D3(4): 'page background is a page-level general designer decision with its own small rail (white or the light greys in light mode; dark equivalents to be derived from tokens)'.",
+    "ruled_by": "s219-D3(4)",
+    "level": "page",
+    "options": [
+      "page",
+      "white",
+      "grey"
+    ],
+    "labels": {
+      "page": "Page ground",
+      "white": "White",
+      "grey": "Lightest grey"
+    },
+    "tokens": {
+      "page": "--background-default",
+      "white": "--surface-raised",
+      "grey": "--surface-subtle"
+    },
+    "resolved": {
+      "mono": {
+        "light": {
+          "page": "#FFFFFF",
+          "white": "#FFFFFF",
+          "grey": "#F0F0F0"
+        },
+        "dark": {
+          "page": "#1A1A1A",
+          "white": "#1F1F1F",
+          "grey": "#1F1F1F"
+        }
+      },
+      "legacy": {
+        "light": {
+          "page": "#FFFFFF",
+          "white": "#FFFFFF",
+          "grey": "#F0F0F0"
+        },
+        "dark": {
+          "page": "#1A1A1A",
+          "white": "#1F1F1F",
+          "grey": "#1F1F1F"
+        }
+      },
+      "console": {
+        "light": {
+          "page": "#FFFFFF",
+          "white": "#FFFFFF",
+          "grey": "#F0F0F0"
+        },
+        "dark": {
+          "page": "#1A1A1A",
+          "white": "#1F1F1F",
+          "grey": "#1F1F1F"
+        }
+      },
+      "supercharge": {
+        "light": {
+          "page": "#F7F6F4",
+          "white": "#F7F6F4",
+          "grey": "#DFDEDC"
+        },
+        "dark": {
+          "page": "#1A1A1A",
+          "white": "#2A2621",
+          "grey": "#2A2621"
+        }
+      }
+    },
+    "$dark_equivalents": "DERIVED, not chosen: every rail member is a token that already carries its own dark value, so no dark-specific decision was needed and none is PROPOSED.",
+    "$rescope_map": {
+      "transparent": "page",
+      "grey": "grey",
+      "white": "white"
+    },
+    "$rescope_note": "The twelve shipped defaults spell the page ground grey/white/transparent. On a page body `transparent` never meant 'paint nothing' \u2014 it already compiled to --background-default (gen_foundations_217.page_bg_decl). The rail names that ground `page`; the map above sends the old word to it. Same declaration, same pixels. Receipts and exports under notes/ are FROZEN HISTORY and keep the old word.",
+    "$collapse": "`page` and `white` resolve to the SAME colour in LIGHT mode in all four themes and DIFFER in dark. Both are kept: the pair is a real distinction the tokens make. SURFACED, never swapped."
+  },
+  "constraints": {
+    "$what": "s219-D3(2): OPTIONS COME IN CHORDS, NOT FREE DIALS. A chord settles several dials as a coherent set; ink follows ground automatically and is contrast-gated.",
+    "$ink_rule": {
+      "$what": "Ink is DERIVED from the ground, never picked. s219-D3(2).",
+      "map": {
+        "white": "--text-secondary",
+        "grey": "--text-secondary",
+        "page": "--text-secondary",
+        "darkgrey": "--text-reverse"
+      },
+      "transparent": "no ground of its own \u2014 the ink follows the EFFECTIVE ground (the bento's, then the page's)",
+      "floor": 4.5
+    },
+    "chords": [
+      {
+        "id": "capsule",
+        "name": "Capsule",
+        "ruled_by": "s219-D3(3) chord one",
+        "quoted": "full capsule + caption ground from the grey ramp INCLUDING dark grey with reversed-out text",
+        "plain": [
+          "The whole tile is one capsule.",
+          "The caption sits inside it, on a ground from the grey ramp.",
+          "Dark grey is on the ramp, and its text reverses out.",
+          "You choose the ground. The text colour follows it."
+        ],
+        "scope": [
+          {
+            "theme": "console",
+            "type": "gallery"
+          }
+        ],
+        "settles": {
+          "rounding": "capsule"
+        },
+        "ranges": {
+          "capBg": [
+            "grey",
+            "white",
+            "darkgrey"
+          ]
+        },
+        "ink_follows": "capBg",
+        "members": [
+          {
+            "dials": {
+              "rounding": "capsule",
+              "capBg": "grey"
+            },
+            "ground": "grey",
+            "ink_token": "--text-secondary",
+            "contrast": {
+              "console/light": 15.27,
+              "console/dark": 16.48
+            },
+            "resolved": {
+              "console/light": {
+                "ground": "#F0F0F0",
+                "ink": "#1A1A1A"
+              },
+              "console/dark": {
+                "ground": "#1F1F1F",
+                "ink": "#FFFFFF"
+              }
+            }
+          },
+          {
+            "dials": {
+              "rounding": "capsule",
+              "capBg": "white"
+            },
+            "ground": "white",
+            "ink_token": "--text-secondary",
+            "contrast": {
+              "console/light": 17.4,
+              "console/dark": 16.48
+            },
+            "resolved": {
+              "console/light": {
+                "ground": "#FFFFFF",
+                "ink": "#1A1A1A"
+              },
+              "console/dark": {
+                "ground": "#1F1F1F",
+                "ink": "#FFFFFF"
+              }
+            }
+          },
+          {
+            "dials": {
+              "rounding": "capsule",
+              "capBg": "darkgrey"
+            },
+            "ground": "darkgrey",
+            "ink_token": "--text-reverse",
+            "contrast": {
+              "console/light": 17.4,
+              "console/dark": 17.4
+            },
+            "resolved": {
+              "console/light": {
+                "ground": "#1A1A1A",
+                "ink": "#FFFFFF"
+              },
+              "console/dark": {
+                "ground": "#1A1A1A",
+                "ink": "#FFFFFF"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "rounded",
+        "name": "Rounded",
+        "ruled_by": "s219-D3(3) chord two",
+        "quoted": "four rounded corners on images + transparent caption background",
+        "plain": [
+          "Four rounded corners on the image.",
+          "The caption has no ground of its own.",
+          "Its text sits on whatever is behind \u2014 the wall, or the page."
+        ],
+        "scope": [
+          {
+            "theme": "console",
+            "type": "gallery"
+          }
+        ],
+        "settles": {
+          "rounding": "corners",
+          "capBg": "transparent"
+        },
+        "ranges": {},
+        "ink_follows": "capBg",
+        "members": [
+          {
+            "dials": {
+              "rounding": "corners",
+              "capBg": "transparent"
+            },
+            "ground": null,
+            "ink_token": null
+          }
+        ]
+      }
+    ],
+    "exclusions": [
+      {
+        "id": "X1",
+        "was": "P2",
+        "status": "proposed",
+        "scope": "gallery",
+        "rule": "capBg may not equal bentoBg unless it is transparent",
+        "plain": "A caption cannot sit on its own colour. Grey on grey has no edge."
+      },
+      {
+        "id": "X2",
+        "was": "P3",
+        "status": "proposed",
+        "scope": "gallery",
+        "rule": "rounding=capsule requires capBg != transparent OR keylines=on",
+        "plain": "A capsule needs an edge. Give the caption a ground, or turn keylines on."
+      },
+      {
+        "id": "X3",
+        "status": "ruled",
+        "scope": "all",
+        "ruled_by": "s219-D3(2)",
+        "rule": "the caption ink must be the token its effective ground implies (INK_FOR_GROUND)",
+        "plain": "Text colour is not a dial. It follows the ground underneath it."
+      },
+      {
+        "id": "X4",
+        "status": "ruled",
+        "scope": "all",
+        "ruled_by": "s219-D3(2) \u2014 'contrast-gated'",
+        "rule": "every ground option must clear 4.5:1 against the ink its ground implies, in every theme and mode the chord is scoped to",
+        "plain": "Every ground on offer has to be readable. Anything under 4.5:1 is not offered."
+      },
+      {
+        "id": "X5",
+        "status": "ruled",
+        "scope": "gallery",
+        "ruled_by": "s219-D3(2) \u2014 'some decisions might exclude others'",
+        "rule": "the capsule and rounded chords are mutually exclusive",
+        "plain": "Capsule and Rounded are two answers to one question. Pick one."
+      },
+      {
+        "id": "X6",
+        "status": "open",
+        "scope": "gallery",
+        "ruled_by": "s219-D3(3) \u2014 Mono's access is EXPRESSLY OPEN",
+        "rule": "capBg=darkgrey is reachable only inside a chord that offers it, and today only console gallery has one",
+        "plain": "The dark caption ground belongs to the console capsule chord. Whether mono may have it is an open question for Dave \u2014 it is not refused on taste, it is simply not ruled yet.",
+        "open_question": "MONO'S ACCESS TO THE DARK-CAPTION CHORD. s219-D3(3) says it is EXPRESSLY OPEN and not ruled. Nothing here grants it: `capbg_for('gallery','mono')` does not carry `darkgrey`, and the refusal names this question as its reason rather than a preference. FOR DAVE."
+      }
+    ],
+    "$blocking_sweep": "Every ground option of every chord is measured against the ink its ground implies, in light AND dark, in every theme the chord is scoped to. A reading under the floor is a selftest FAILURE, not a note (s219-D3(3): 'the CI sweep is blocking')."
+  },
+  "intersections": {
+    "mono": {
+      "display": {
+        "chords": [],
+        "exclusions": [
+          "X3",
+          "X4"
+        ],
+        "capBg_reachable": [],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      },
+      "gallery": {
+        "chords": [],
+        "exclusions": [
+          "X1",
+          "X2",
+          "X3",
+          "X4",
+          "X5",
+          "X6"
+        ],
+        "capBg_reachable": [
+          "grey",
+          "white",
+          "transparent"
+        ],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      },
+      "dashboard": {
+        "chords": [],
+        "exclusions": [
+          "X3",
+          "X4"
+        ],
+        "capBg_reachable": [],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      }
+    },
+    "legacy": {
+      "display": {
+        "chords": [],
+        "exclusions": [
+          "X3",
+          "X4"
+        ],
+        "capBg_reachable": [],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      },
+      "gallery": {
+        "chords": [],
+        "exclusions": [
+          "X1",
+          "X2",
+          "X3",
+          "X4",
+          "X5",
+          "X6"
+        ],
+        "capBg_reachable": [
+          "grey",
+          "white",
+          "transparent"
+        ],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      },
+      "dashboard": {
+        "chords": [],
+        "exclusions": [
+          "X3",
+          "X4"
+        ],
+        "capBg_reachable": [],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      }
+    },
+    "console": {
+      "display": {
+        "chords": [],
+        "exclusions": [
+          "X3",
+          "X4"
+        ],
+        "capBg_reachable": [],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      },
+      "gallery": {
+        "chords": [
+          "capsule",
+          "rounded"
+        ],
+        "exclusions": [
+          "X1",
+          "X2",
+          "X3",
+          "X4",
+          "X5",
+          "X6"
+        ],
+        "capBg_reachable": [
+          "grey",
+          "white",
+          "darkgrey",
+          "transparent"
+        ],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      },
+      "dashboard": {
+        "chords": [],
+        "exclusions": [
+          "X3",
+          "X4"
+        ],
+        "capBg_reachable": [],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      }
+    },
+    "supercharge": {
+      "display": {
+        "chords": [],
+        "exclusions": [
+          "X3",
+          "X4"
+        ],
+        "capBg_reachable": [],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      },
+      "gallery": {
+        "chords": [],
+        "exclusions": [
+          "X1",
+          "X2",
+          "X3",
+          "X4",
+          "X5",
+          "X6"
+        ],
+        "capBg_reachable": [
+          "grey",
+          "white",
+          "transparent"
+        ],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      },
+      "dashboard": {
+        "chords": [],
+        "exclusions": [
+          "X3",
+          "X4"
+        ],
+        "capBg_reachable": [],
+        "keylines_reachable": [
+          "on",
+          "off"
+        ]
+      }
+    }
   },
   "types": {
     "display": {
@@ -288,7 +775,6 @@
       "dials": [
         "spacing",
         "keylines",
-        "pageBg",
         "bentoBg"
       ]
     },
@@ -300,7 +786,6 @@
         "mode",
         "edge",
         "rounding",
-        "pageBg",
         "bentoBg",
         "capBg"
       ]
@@ -311,7 +796,6 @@
         "mainSpacing",
         "subSpacing",
         "keylines",
-        "pageBg",
         "bentoBg"
       ]
     }
@@ -319,12 +803,14 @@
   "legality": [
     {
       "id": "P2",
+      "now": "X1",
       "status": "proposed",
       "rule": "capBg may not equal bentoBg unless it is transparent",
       "why": "a caption is judged against its IMMEDIATE ground"
     },
     {
       "id": "P3",
+      "now": "X2",
       "status": "proposed",
       "rule": "rounding=capsule requires capBg != transparent OR keylines=on",
       "why": "a capsule with no edge is not a capsule"
@@ -332,30 +818,31 @@
   ],
   "reachable": {
     "mono": {
-      "display": 108,
-      "gallery": 1350,
-      "dashboard": 648,
-      "$total": 2106
+      "display": 48,
+      "gallery": 648,
+      "dashboard": 288,
+      "$total": 984
     },
     "legacy": {
-      "display": 108,
-      "gallery": 1350,
-      "dashboard": 648,
-      "$total": 2106
+      "display": 48,
+      "gallery": 648,
+      "dashboard": 288,
+      "$total": 984
     },
     "console": {
-      "display": 108,
-      "gallery": 1350,
-      "dashboard": 648,
-      "$total": 2106
+      "display": 48,
+      "gallery": 864,
+      "dashboard": 288,
+      "$total": 1200
     },
     "supercharge": {
-      "display": 108,
-      "gallery": 1350,
-      "dashboard": 648,
-      "$total": 2106
+      "display": 48,
+      "gallery": 648,
+      "dashboard": 288,
+      "$total": 984
     }
   },
+  "$reachable_note": "The bento matrix, per theme. pageBg is NOT a factor: s219-D3(4) took it out of this grammar and it is counted on its own as `page_rail.options` (3). Console gallery is larger than the other three because s219-D3(3) scopes the dark caption ground to its capsule chord.",
   "defaults": {
     "$owner": "knowledge/_render/gen_foundations_217.py \u2014 s219-D1(3): the twelve verbatim exports are the shipped defaults, minted as concrete per-theme values at mint time (s200-D1). This module owns the OPTION SPACE, not the defaults.",
     "$receipt": "notes/_receipts/2026-08-25-219-role-defaults-exports.md",
@@ -468,6 +955,7 @@
     "complaints": []
   },
   "$open_questions": [
+    "MONO'S ACCESS TO THE DARK-CAPTION CHORD \u2014 s219-D3(3) says EXPRESSLY OPEN, not ruled. Nothing here grants it: `darkgrey` is not in mono's reachable caption grounds, exclusion X6 refuses it, and the refusal prints this question as its reason rather than a preference. FOR DAVE.",
     "s219-D1(2) rules ALL dials available in every theme and ROLE. Enacted here as: no dial is locked BY THEME (the one theme lock, gallery-in-console keylines, is retired). Whether it also means a dashboard should carry a caption-background dial is NOT enacted \u2014 Dave's own twelve exports carry 5 dials for dashboard and 4 for display, and inventing a caption dial for a role with no captions would be reading past the exports. FOR DAVE.",
     "s217-D5 ruled the dashboard main wall NEVER tight. s219-D1(2) puts every stop on every spacing dial, so 1px is now reachable there and 'never tight' survives only as the shipped default. FOR DAVE \u2014 an absence retired by implication, named rather than assumed."
   ]

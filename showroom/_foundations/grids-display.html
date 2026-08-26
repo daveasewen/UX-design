@@ -208,6 +208,10 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --bm-page:var(--background-default,#FFFFFF);
   --bm-grey:var(--surface-subtle,#F0F0F0);
   --bm-white:var(--surface-raised,#FFFFFF);
+  /* ⬛ s219-D3(5) — the ramp's dark step, and s219-D3(2)'s reverse ink beside it. Both carry a
+     literal fallback: a dangling ground var renders SILENT BLACK and no gate sees it. */
+  --bm-darkgrey:var(--surface-digital-black,#1A1A1A);
+  --bm-ink-rev:var(--text-reverse,#FFFFFF);
   --bm-radius-ctl:var(--border-radius-control,0px);
   --bm-container-radius:var(--border-radius-container,0px);}
 
@@ -253,9 +257,12 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 /* ---- the stage ---- */
 .bm-stage{border:1px solid var(--bm-line,#D7D8D6); margin-top:var(--sp-4,16px);}
 .bm-page-ground{padding:var(--sp-5,24px);}
+/* ⬛ s219-D3(4) — THE PAGE-LEVEL RAIL, three members. `page` REPLACES the old `transparent`:
+   the stage had no ground of its own, so a transparent page ground already fell through to the
+   document ground the page body paints. Declaring it is the same pixels with an honest word. */
 .bm-stage[data-page-bg="grey"] .bm-page-ground{background:var(--bm-grey,#F0F0F0);}
 .bm-stage[data-page-bg="white"] .bm-page-ground{background:var(--bm-white,#FFFFFF);}
-.bm-stage[data-page-bg="transparent"] .bm-page-ground{background:transparent;}
+.bm-stage[data-page-bg="page"] .bm-page-ground{background:var(--bm-page,#FFFFFF);}
 .bm-pane{display:none;}
 .bm-stage[data-type="display"] .bm-pane[data-pane="display"],
 .bm-stage[data-type="gallery"] .bm-pane[data-pane="gallery"],
@@ -266,7 +273,14 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
    still reads at the same weight as a role rule. ---- */
 .bm-stage[data-bento-bg="grey"] .c-bento.bm-wall{background:var(--bm-grey,#F0F0F0);}
 .bm-stage[data-bento-bg="white"] .c-bento.bm-wall{background:var(--bm-white,#FFFFFF);}
+.bm-stage[data-bento-bg="darkgrey"] .c-bento.bm-wall{background:var(--bm-darkgrey,#1A1A1A);}
 .bm-stage[data-bento-bg="transparent"] .c-bento.bm-wall{background:transparent;}
+/* ⬛ s219-D3(2)/(5) — INK FOLLOWS THE **EFFECTIVE** GROUND. A transparent caption has no ground of
+   its own, so its ink is the ink of the ground that actually paints behind it: the wall's. This is
+   the section-ground half of the rule and it is why the selector reaches through `[data-cap-bg=
+   "transparent"]` rather than styling the caption on its own. */
+.bm-stage[data-bento-bg="darkgrey"][data-cap-bg="transparent"] .bm-cap{
+  color:var(--bm-ink-rev,#FFFFFF);}
 
 /* ---- SPACING — the instance dial, per type. (0,3,0), so it beats canon's (0,2,0) role rule.
    ⬛ s219-D1(4) — ONE DECLARED RULE PER RULED STOP, GENERATED from `SPACING_STOPS`, exactly as the
@@ -467,6 +481,13 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 .bm-stage[data-cap-bg="grey"] .bm-cap{background:var(--bm-grey,#F0F0F0);}
 .bm-stage[data-cap-bg="white"] .bm-cap{background:var(--bm-white,#FFFFFF);}
 .bm-stage[data-cap-bg="transparent"] .bm-cap{background:transparent;}
+/* ⬛ s219-D3(3) — THE DARK CAPTION GROUND RETURNS AS A CHORD OPTION, and its ink comes WITH it.
+   Two declarations, one decision: the ground and the reversed-out ink are not two dials a designer
+   could set inconsistently — the second follows the first, in the stylesheet, automatically. */
+.bm-stage[data-cap-bg="darkgrey"] .bm-cap{background:var(--bm-darkgrey,#1A1A1A);
+  color:var(--bm-ink-rev,#FFFFFF);}
+.bm-stage[data-cap-bg="grey"] .bm-cap,
+.bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#545454);}
 
 /* ---- CONSOLE IMAGE ROUNDING (gallery). Both options are canon's container radius; what moves
    is WHAT IS ROUNDED. `4 corners of the image` rounds the picture and leaves the caption square
@@ -801,8 +822,8 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     <div class="bm-controls">
       <div class="bm-group" data-group="display" data-dial="spacing"><span class="bm-glabel t-cm-legal">Spacing</span><div class="bm-seg" role="group" aria-label="Spacing"><button type="button" data-value="1">1px</button><button type="button" data-value="2">2px</button><button type="button" data-value="4">4px</button><button type="button" data-value="16">16px</button><button type="button" data-value="24">24px</button><button type="button" data-value="40">40px</button></div><span class="bm-why t-cm-legal"></span></div>
       <div class="bm-group" data-group="display" data-dial="keylines"><span class="bm-glabel t-cm-legal">Keylines</span><div class="bm-seg" role="group" aria-label="Keylines"><button type="button" data-value="on">On</button><button type="button" data-value="off">Off</button></div><span class="bm-why t-cm-legal"></span></div>
-      <div class="bm-group" data-group="display" data-dial="pageBg"><span class="bm-glabel t-cm-legal">Page background</span><div class="bm-seg" role="group" aria-label="Page background"><button type="button" data-value="grey">Lightest grey</button><button type="button" data-value="white">White</button><button type="button" data-value="transparent">Transparent</button></div><span class="bm-why t-cm-legal"></span></div>
-      <div class="bm-group" data-group="display" data-dial="bentoBg"><span class="bm-glabel t-cm-legal">Bento background</span><div class="bm-seg" role="group" aria-label="Bento background"><button type="button" data-value="grey">Lightest grey</button><button type="button" data-value="white">White</button><button type="button" data-value="transparent">Transparent</button></div><span class="bm-why t-cm-legal"></span></div>
+      <div class="bm-group" data-group="page" data-dial="pageBg"><span class="bm-glabel t-cm-legal">Page background</span><div class="bm-seg" role="group" aria-label="Page background"><button type="button" data-value="page">Page ground</button><button type="button" data-value="white">White</button><button type="button" data-value="grey">Lightest grey</button></div><span class="bm-why t-cm-legal">Page-level (s219-D3(4)) — not a bento dial.</span></div>
+      <div class="bm-group" data-group="display" data-dial="bentoBg"><span class="bm-glabel t-cm-legal">Section ground</span><div class="bm-seg" role="group" aria-label="Section ground"><button type="button" data-value="grey">Lightest grey</button><button type="button" data-value="white">White</button><button type="button" data-value="darkgrey">Dark grey</button><button type="button" data-value="transparent">Transparent</button></div><span class="bm-why t-cm-legal"></span></div>
     </div>
     <p class="bm-capt t-cm-legal" id="bm-moved"></p>
 
@@ -909,13 +930,24 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 </script>
 <script>
 (function(){
+  // ⬛ s219-D3(4) — `page` IS ITS OWN LEVEL IN THE STATE OBJECT, beside the three types rather
+  // than repeated inside each of them. A page ground copied into every type would be three
+  // answers to a question the ruling says is asked once.
   var STATE = {
     type: 'display',
-    display:  {spacing:'24', keylines:'on',  pageBg:'white', bentoBg:'grey'},
+    page:     {pageBg:'white'},
+    display:  {spacing:'24', keylines:'on',  bentoBg:'grey'},
     gallery:  {spacing:'24', keylines:'on',  mode:'bento', edge:'ragged', rounding:'corners',
-               pageBg:'white', bentoBg:'grey', capBg:'white'},
-    dashboard:{mainSpacing:'24', subSpacing:'1', keylines:'on', pageBg:'grey', bentoBg:'white'}
+               bentoBg:'grey', capBg:'white'},
+    dashboard:{mainSpacing:'24', subSpacing:'1', keylines:'on', bentoBg:'white'}
   };
+  // s219-D3(3) — the theme x type intersections where the dark caption ground is reachable, and
+  // the OPEN QUESTION printed at every refusal outside them. Injected from Python's CHORDS.
+  var CAPBG_DARK_SCOPE = [["console", "gallery"]];
+  var X6_PLAIN = "The dark caption ground belongs to the console capsule chord. Whether mono may have it is an open question for Dave \u2014 it is not refused on taste, it is simply not ruled yet.";
+  // s219-D3(2) — INK FOLLOWS GROUND. Mirrored from Python's INK_FOR_GROUND so the export can say
+  // which ink a ground implies without a second opinion about it.
+  var INK_FOR_GROUND = {"darkgrey": "--text-reverse", "grey": "--text-secondary", "page": "--text-secondary", "white": "--text-secondary"};
   var stage = document.getElementById('bm-stage');
   var out   = document.getElementById('bm-export');
 
@@ -970,17 +1002,27 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   function legality(){
     var g = STATE.gallery, r = {};
     
-    // P2 — a caption colour is judged against its IMMEDIATE ground (the bento background behind
-    // the tile). Transparent is always legal: it has no ground of its own to collide with.
-    ['grey','white','transparent'].forEach(function(v){
+    var theme = document.documentElement.getAttribute('data-apollo-theme');
+    // X1 (was P2) — a caption colour is judged against its IMMEDIATE ground (the bento background
+    // behind the tile). Transparent is always legal: it has no ground of its own to collide with.
+    ['grey','white','darkgrey','transparent'].forEach(function(v){
       r['capBg:' + v] = (v !== 'transparent' && v === g.bentoBg)
-        ? ('Illegal — the caption would be ' + v + ' on ' + v + ', its own ground. '
+        ? ('X1 — the caption would be ' + v + ' on ' + v + ', its own ground. '
            + 'A white caption needs a grey ground, and the inverse (s217-D5).')
         : '';
     });
-    // P3 — the full capsule needs an edge: a caption background OR keylines.
+    // ⬛ X6, s219-D3(3) — THE DARK CAPTION GROUND IS A CHORD OPTION, SCOPED CONSOLE GALLERY. It is
+    // refused everywhere else and the refusal prints the OPEN QUESTION as its reason, because it
+    // is not refused on taste: Dave has not ruled it. An option refused with a preference reads as
+    // settled; an option refused with a question reads as open.
+    var darkScoped = false;
+    for (var i = 0; i < CAPBG_DARK_SCOPE.length; i++)
+      if (CAPBG_DARK_SCOPE[i][0] === theme && CAPBG_DARK_SCOPE[i][1] === 'gallery')
+        darkScoped = true;
+    if (!darkScoped) r['capBg:darkgrey'] = 'X6 — ' + X6_PLAIN;
+    // X2 (was P3) — the full capsule needs an edge: a caption background OR keylines.
     r['rounding:capsule'] = (g.capBg === 'transparent' && g.keylines === 'off')
-      ? 'Illegal — a capsule with a transparent caption and no keylines has no edge to round. '
+      ? 'X2 — a capsule with a transparent caption and no keylines has no edge to round. '
         + 'Turn keylines on, or give the caption a background. PROPOSED (open point 3).'
       : '';
     r['rounding:corners'] = '';
@@ -1002,6 +1044,17 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     return moved;
   }
 
+  // ⬛ s219-D3(2) — INK FOLLOWS THE EFFECTIVE GROUND, in the export as well as in the paint. The
+  // word-level twin of Python's `effective_ground_word`: the first ground in the chain that is not
+  // transparent is the one the ink is judged against.
+  function effectiveGround(){
+    var s = STATE[STATE.type];
+    var chain = [s.capBg, s.bentoBg, STATE.page.pageBg];
+    for (var i = 0; i < chain.length; i++)
+      if (chain[i] && chain[i] !== 'transparent') return chain[i];
+    return null;
+  }
+
   function resolved(){
     // s200-D1 — CONCRETE VALUES, read out of the live document in the state on screen. No var()
     // chain reaches the export; where a dial says "the theme token", the exporter writes down the
@@ -1020,11 +1073,19 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     // vocabulary) and `canonRole` is the attribute the wall actually carries (the machine's). A
     // rename enacted only in the markup is a rename that leaks through every export.
     var raw = wall ? wall.getAttribute('data-bento-role') : null;
+    var eg = effectiveGround();
     return {
       theme: document.documentElement.getAttribute('data-apollo-theme'),
       mode: document.body.getAttribute('data-theme'),
       role: (raw && ROLE_TYPE[raw]) || raw,
       canonRole: raw,
+      // ⬛ s219-D3(2)/(4) — the page ground is a PAGE-LEVEL fact and the export says so under its
+      // own name; the effective ground and the ink it implies are DERIVED and written down beside
+      // the paint, so the export can be checked against what the eye sees.
+      pageGround: STATE.page.pageBg,
+      effectiveGround: eg,
+      inkToken: eg ? (INK_FOR_GROUND[eg] || null) : null,
+      captionInk: cap ? getComputedStyle(cap).color : null,
       gutterPx: grid ? px(getComputedStyle(grid).columnGap) : null,
       containerRadiusPx: wall ? px(getComputedStyle(wall).borderTopLeftRadius) : null,
       tileRadiusPx: tile ? px(getComputedStyle(tile).borderTopLeftRadius) : null,
@@ -1068,7 +1129,8 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     var s = STATE[STATE.type], moved = repair();
     stage.setAttribute('data-type', STATE.type);
     stage.setAttribute('data-keylines', s.keylines);
-    stage.setAttribute('data-page-bg', s.pageBg);
+    // ⬛ s219-D3(4) — ONE page ground, read from the page level, not from the type.
+    stage.setAttribute('data-page-bg', STATE.page.pageBg);
     stage.setAttribute('data-bento-bg', s.bentoBg);
     if (STATE.type === 'dashboard') {
       stage.setAttribute('data-spacing', s.mainSpacing);
@@ -1097,7 +1159,9 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     Array.prototype.forEach.call(document.querySelectorAll('.bm-group'), function(g){
       var owner = g.getAttribute('data-group');
       var when = g.getAttribute('data-when');
-      var on = (owner === 'all' || owner === STATE.type);
+      // `page` is always on: it is a PAGE-LEVEL decision (s219-D3(4)) and does not belong to the
+      // type on screen.
+      var on = (owner === 'all' || owner === 'page' || owner === STATE.type);
       if (on && when) {
         var kv = when.split(':');
         on = (STATE[STATE.type][kv[0]] === kv[1]);
@@ -1110,7 +1174,8 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
         var reason = l[dial + ':' + v] || '';
         b.disabled = !!reason;
         b.setAttribute('aria-disabled', String(!!reason));
-        var cur = (dial === 'type') ? STATE.type : STATE[STATE.type][dial];
+        var cur = (dial === 'type') ? STATE.type
+                : (owner === 'page') ? STATE.page[dial] : STATE[STATE.type][dial];
         b.setAttribute('aria-pressed', String(cur === v));
         if (reason) reasons.push(reason);
       });
@@ -1129,6 +1194,7 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
       "ruling": "s217-D5",
       "type": STATE.type,
       "state": STATE[STATE.type],
+      "page": STATE.page,
       "resolved": resolved()
     };
     if (out) out.textContent = JSON.stringify(payload, null, 2);
@@ -1138,7 +1204,9 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     var b = e.target.closest ? e.target.closest('.bm-seg button[data-value]') : null;
     if (!b || b.disabled) return;
     var g = b.closest('.bm-group'), dial = g.getAttribute('data-dial');
+    var owner = g.getAttribute('data-group');
     if (dial === 'type') STATE.type = b.getAttribute('data-value');
+    else if (owner === 'page') STATE.page[dial] = b.getAttribute('data-value');
     else STATE[STATE.type][dial] = b.getAttribute('data-value');
     apply();
   });

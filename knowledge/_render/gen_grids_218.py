@@ -138,7 +138,13 @@ def controls_for(kind):
     it cannot quietly return a subset.
     """
     groups = [g for g in matrix.controls().split("\n      ") if g.strip()]
-    return "\n      ".join(g for g in groups if 'data-group="%s"' % kind in g)
+    # ⬛ s219-D3(4) — AND THE PAGE GROUP COMES WITH EVERY TYPE. The page background used to be one
+    # bento dial per type, stamped `data-group="<type>"`, so this filter picked it up for free.
+    # The ruling makes it a PAGE-LEVEL decision — one group, owned by `page` — and it is still a
+    # control the designer needs on each of these pages. Kept by naming it, so the re-scope did not
+    # silently delete a dial from four pages.
+    return "\n      ".join(g for g in groups
+                           if 'data-group="%s"' % kind in g or 'data-group="page"' in g)
 
 
 # ---------------------------------------------------------------------------- the three panes

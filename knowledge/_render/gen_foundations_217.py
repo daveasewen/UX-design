@@ -330,7 +330,13 @@ RECEIPT_RESOLVED = defaults219.RESOLVED
 
 # The literal fallback for each background token the dial can name. Values read off canon.css's
 # `:root`; they exist so a var() cannot dangle to silent black, not as a second source of truth.
-BG_FALLBACK = {"--surface-subtle": "#F0F0F0", "--surface-raised": "#FFFFFF"}
+# ⬛ s219-D3(4)/(5) — THE RAMP'S DARK STEP AND THE PAGE RAIL'S DOCUMENT GROUND JOIN THE TABLE.
+BG_FALLBACK = {"--surface-subtle": "#F0F0F0", "--surface-raised": "#FFFFFF",
+               "--surface-digital-black": "#1A1A1A", "--background-default": "#FFFFFF"}
+# ⬛ s219-D3(2) — THE INK'S OWN FALLBACK TABLE. Ink follows ground, so the ink token is DERIVED per
+# theme; its literal fence has to be derived with it or a reversed-out caption would dangle to a
+# fallback written for the other ink.
+INK_FALLBACK = {"--text-secondary": "#545454", "--text-reverse": "#FFFFFF"}
 
 # ⬛ s219-D2 (1) — THE CAPTION INK, AND WHICH TOKEN IT IS. The supersession moves the mono caption
 # onto a LIGHT ground, so the ink flips from `--text-reverse` back to the caption's own standing
@@ -356,15 +362,19 @@ def ruled_words(type_="gallery"):
     validated against the RULED RAILS (`role_defaults_219.SPACING_STOPS`) and the gap between
     rails and control is reported separately by `control_gap()`. Validating Dave's own ruled
     default against a control that has not caught up would red the ruling, not the build."""
-    bg = [b[0] for b in matrix.BACKGROUNDS]
+    bg = [b[0] for b in matrix.GROUND_RAMP]
+    # ⬛ s219-D3(4) — pageBg IS VALIDATED AGAINST THE PAGE-LEVEL RAIL, NOT THE RAMP. The receipts
+    # spell it grey/white/transparent and stay FROZEN; the rail's words are page/white/grey, and
+    # `matrix.PAGE_RAIL_WORD` is the ONE translation between them. Validating the old word against
+    # the new rail would red the receipt; validating it against the ramp would let a word the rail
+    # does not carry through.
     words = {"keylines": [o[0] for o in matrix.ONOFF],
-             "pageBg": bg, "bentoBg": bg}
+             "pageBg": sorted(matrix.PAGE_RAIL_WORD), "bentoBg": bg}
     if type_ == "gallery":
         words.update({"spacing": defaults219.SPACING_STOPS,
                       "mode": [m[0] for m in matrix.GALLERY_MODES],
                       "edge": [e[0] for e in matrix.BOTTOM_EDGE],
-                      "rounding": [r[0] for r in matrix.ROUNDINGS],
-                      "capBg": bg})
+                      "rounding": [r[0] for r in matrix.ROUNDINGS]})
     elif type_ == "display":
         words["spacing"] = defaults219.SPACING_STOPS
     elif type_ == "dashboard":
@@ -408,6 +418,16 @@ def validate_settings(settings=None, type_="gallery"):
         if s.get("keylines") not in reachable:
             bad.append("%s/%s.keylines = %r is UNREACHABLE in this theme (s217-D6 allows %s)"
                        % (type_, theme, s.get("keylines"), "/".join(reachable)))
+        # ⬛ s219-D3(3) — THE CAPTION GROUND IS THEME-DEPENDENT and is asked PER THEME, because the
+        # dark ground is a chord option scoped to the console gallery. A type-level word list
+        # could not express that, and would have let mono take the ground s219-D3(3) leaves OPEN.
+        if type_ == "gallery":
+            caps = matrix.capbg_for(type_, theme)
+            if s.get("capBg") not in caps:
+                bad.append("%s/%s.capBg = %r is not reachable in this theme (%s) — s219-D3(3) "
+                           "scopes the dark caption ground to the console capsule chord and "
+                           "leaves mono's access EXPRESSLY OPEN"
+                           % (type_, theme, s.get("capBg"), "/".join(caps)))
         if type_ == "gallery":
             if not matrix.caption_legal(s.get("capBg"), s.get("bentoBg")):
                 bad.append("%s/%s — P2: caption ground equals the bento ground (%s)"
@@ -449,12 +469,30 @@ def spacing_px(word):
 def bg_decl(word):
     """-> the CSS value for a background dial word, with its literal fallback. `transparent` has
     no token — the explorer's own palette says `(none)` — so it compiles to the keyword."""
-    for value, _label, token in matrix.BACKGROUNDS:
+    for value, _label, token in matrix.GROUND_RAMP:
         if value == word:
             if token == "(none)":
                 return "transparent"
             return "var(%s,%s)" % (token, BG_FALLBACK[token])
     raise KeyError("background %r is not a ruled dial word" % word)
+
+
+def cap_ink_decl(settings_for_theme):
+    """-> (token, css value) — THE CAPTION INK, DERIVED FROM THE GROUND (s219-D3(2)).
+
+    ⛔ NOT A DIAL AND NOT A CONSTANT. The ink is whatever the EFFECTIVE ground implies: the
+    caption's own ground if it paints, else the wall's, else the page's. `CAP_INK` survives as the
+    fallback for a chain that answers nothing, not as the answer.
+    ⚠ THE PAGE GROUND ENTERS THE CHAIN THROUGH THE RE-SCOPE MAP: the receipts still say
+    `transparent` and the rail says `page`, and only `matrix.PAGE_RAIL_WORD` translates."""
+    s = settings_for_theme
+    ground = matrix.effective_ground_word(
+        [s.get("capBg"), s.get("bentoBg"),
+         matrix.PAGE_RAIL_WORD.get(s.get("pageBg"), s.get("pageBg"))])
+    token = matrix.ink_for(ground) if ground else None
+    if token is None:
+        token = CAP_INK[0]
+    return token, "var(%s,%s)" % (token, INK_FALLBACK.get(token, CAP_INK[1]))
 
 
 # ⬛ #219 — WHAT `pageBg: transparent` MEANS ON A WHOLE-PAGE WALL, and it is MEASURED, not
@@ -469,10 +507,18 @@ def bg_decl(word):
 # in all four themes (measured in canon.css: the dark block's selector is the body's).
 # ⬛ PROPOSED, and named on the page: the other reading is that a transparent gallery should sit on
 # `--surface-raised`. Nothing here decides that — it is Dave's eye.
+# ⬛ s219-D3(4) — AND THE RE-SCOPE MADE THE READING A WORD. The page ground is now a PAGE-LEVEL
+# rail whose members are `page` (--background-default), `white` and `grey`; the receipts' old
+# `transparent` maps onto `page` through `matrix.PAGE_RAIL_WORD`. Nothing about the DECLARATION
+# changed — it was already --background-default — so the twelve minted defaults paint exactly what
+# they painted before. What changed is that the grammar now says what it means.
 def page_bg_decl(word):
-    if word == "transparent":
-        return "var(--background-default,#FFFFFF)"
-    return bg_decl(word)
+    rail_word = matrix.PAGE_RAIL_WORD.get(word, word)
+    token = matrix.PAGE_TOKEN.get(rail_word)
+    if token is None:
+        raise KeyError("page ground %r is not on the s219-D3(4) page rail (%s)"
+                       % (word, "/".join(matrix.PAGE_TOKEN)))
+    return "var(%s,%s)" % (token, BG_FALLBACK[token])
 
 
 # The wall's own selector, written ONCE. `.c-bento.` is deliberate for the reason the instance
@@ -572,14 +618,19 @@ def settings_css(settings=None):
             L.append("%s%s{border-radius:var(--border-radius-container,0px);}" % (sel, TILE))
             L.append("%s%s .px-open{border-radius:inherit; overflow:hidden;}" % (sel, TILE))
             L.append("%s%s .px-img{border-radius:0;}" % (sel, TILE))
-        # capBg — the caption ground — AND ITS INK, named per theme rather than inherited.
+        # capBg — the caption ground — AND ITS INK, DERIVED FROM THAT GROUND (s219-D3 (2)).
         # ⬛ s219-D2 (1): mono's ground is `grey` (= --surface-subtle, rgb(240,240,240) in mono,
-        # which is what Dave's export measured) and the ink is the caption's standing
-        # --text-secondary. The #218 dark rider is retired; nothing here names it.
-        L.append("%s%s .px-cap{background:%s; color:var(%s,%s);}"
-                 % (sel, TILE, cap, CAP_INK[0], CAP_INK[1]))
-        L.append("%s%s .px-cap .px-desc, %s%s .px-cap .px-lic{color:var(%s,%s);}"
-                 % (sel, TILE, sel, TILE, CAP_INK[0], CAP_INK[1]))
+        # which is what Dave's export measured). ⬛ s219-D3 (2): the ink is no longer a constant
+        # beside it — `cap_ink_decl()` walks the effective-ground chain and returns the token the
+        # ground implies, so a ground and an ink cannot be set inconsistently on this page.
+        ink_token, ink = cap_ink_decl(s)
+        L.append("%s%s .px-cap{background:%s; color:%s;}" % (sel, TILE, cap, ink))
+        L.append("%s%s .px-cap .px-desc, %s%s .px-cap .px-lic{color:%s;}"
+                 % (sel, TILE, sel, TILE, ink))
+        L.append("/* ink follows ground (s219-D3 (2)): %s -> %s */"
+                 % (matrix.effective_ground_word(
+                     [s.get("capBg"), s.get("bentoBg"),
+                      matrix.PAGE_RAIL_WORD.get(s.get("pageBg"), s.get("pageBg"))]), ink_token))
     L.append("/* @gallery-settings:end */")
     return "\n".join(L)
 
@@ -1100,6 +1151,308 @@ def shell(title, h1, subtitle, body, extra_css="", extra_script="", extra_class=
                                   if extra_script.strip() else ""))
 
 
+# ============================================================ ⬛ s219-D3(6) · THE RAILS LIBRARY
+# "THE LIBRARY SURFACES THE FULL EDIT-MODE OPTION SPACE, GENERATED FROM THE RAILS MANIFEST —
+#  library, editor and generator read one generated file so none can drift."
+#
+# ⛔ THIS PAGE READS `_bento_edit_rails.json` AND NOTHING ELSE. Not the option lists, not the chord
+# objects, not `capbg_for()` — the FILE. That is the whole point of s219-D3(6): if this page could
+# reach the Python it would be a second consumer of the source and the manifest would stop being
+# load-bearing. It reads the file, and the file's own drift gate (bite R6d in the matrix module)
+# keeps the file equal to the source.
+# ⚠ THE ONE EXCEPTION IS THE MARKUP OF A SPECIMEN, and it is a rule not a leak: a specimen COPIES
+# the approved artefact ([[specimen-starts-from-reference]]). The tiles come from
+# `matrix.photo_tile()` and the paint comes from the explorer's OWN stylesheet, captured whole —
+# so a chord card on this page is painted by the same rules the explorer and the generator use. A
+# hand-rolled swatch would look right and prove nothing.
+RAILS_MANIFEST = os.path.join(HERE, "_bento_edit_rails.json")
+
+
+def read_rails():
+    """-> the manifest, parsed. RAISES, NAMED, if it is absent: a library page that quietly
+    rendered an empty option space would be the most convincing wrong page in the repo."""
+    if not os.path.exists(RAILS_MANIFEST):
+        raise SystemExit("gen_foundations_217: %s is missing — run "
+                         "`python3 knowledge/_render/gen_bento_matrix_217.py --rails` first "
+                         "(s219-D3(6): the library reads the manifest, never the source)"
+                         % RAILS_MANIFEST)
+    with open(RAILS_MANIFEST, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+RAILS_CSS = """
+/* ---- the rails library. One card per chord, short lines, live specimens. ---- */
+.br-cards{display:grid; gap:var(--sp-5,24px);
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
+.br-card{border:1px solid var(--border-subtle,#D7D8D6); padding:var(--sp-4,16px);
+  display:flex; flex-direction:column; gap:var(--sp-3,12px);}
+.br-card h4{margin:0;}
+.br-lines{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:4px;}
+.br-lines li{max-width:44ch;}
+.br-meta{color:var(--text-secondary,#545454); display:flex; flex-wrap:wrap; gap:8px;
+  letter-spacing:0.06em; text-transform:uppercase;}
+.br-pill{border:1px solid var(--border-subtle,#D7D8D6); padding:2px 8px;}
+.br-pill--default{border-color:var(--text-default,#1A1A1A); font-weight:600;}
+.br-spec{border:1px solid var(--border-subtle,#D7D8D6);}
+/* the specimen stage is the EXPLORER'S stage — same class, same attributes, same stylesheet. */
+.br-spec .bm-stage{border:0; margin-top:0;}
+.br-spec .bm-page-ground{padding:var(--sp-4,16px);}
+.br-spec .bm-gtile{grid-column:span 1 !important; grid-row:span 1 !important;}
+.br-table{width:100%; border-collapse:collapse; margin-top:var(--sp-3,12px);}
+.br-table th, .br-table td{border-bottom:1px solid var(--border-subtle,#D7D8D6);
+  padding:6px 10px; text-align:left; vertical-align:top;}
+.br-table th{color:var(--text-secondary,#545454); text-transform:uppercase;
+  letter-spacing:0.08em; font-weight:500;}
+.br-scroll{overflow-x:auto;}
+/* ⚠ SEEN, THEN FIXED: X6's plain words are a paragraph, and an unconstrained cell pushed the
+   FROM and STATUS columns off the right edge in every theme. The wrap keeps the whole rule on
+   screen; the container still scrolls, so a narrow viewport degrades rather than clips. */
+/* ⚠ `table-layout:fixed`, because `max-width` on a cell is ADVISORY under auto layout — the first
+   attempt looked fixed in the markup and still overlapped the next two columns on screen. Only a
+   fixed layout with declared widths actually wraps the paragraph. */
+#exclusions .br-table{table-layout:fixed;}
+#exclusions .br-table th:nth-child(1), #exclusions .br-table td:nth-child(1){width:9ch;}
+#exclusions .br-table th:nth-child(3), #exclusions .br-table td:nth-child(3){width:24ch;}
+#exclusions .br-table th:nth-child(4), #exclusions .br-table td:nth-child(4){width:11ch;}
+/* ⛔ AND THE ACTUAL CAUSE, MEASURED not guessed: the shared Foundations stylesheet puts
+   `white-space:nowrap` on table cells, so a fixed layout still could not wrap. Two fixes were
+   tried before this one was measured in the browser — the lesson is the runbook's own
+   ([[unmatched-grep-is-not-an-absence]]): ask the DOCUMENT what it computed. */
+#exclusions .br-table td, #exclusions .br-table th{white-space:normal; overflow-wrap:anywhere;}
+.br-table td, .br-table th{white-space:normal;}
+.br-open{border-left:3px solid var(--text-default,#1A1A1A); padding-left:var(--sp-3,12px);}
+"""
+
+
+def _spec_vars(matrix_css):
+    """-> the explorer's `.bm{…}` variable block, RE-EMITTED under `.br-spec`.
+
+    ⛔ FOUND BY LOOKING, AND IT IS A REAL CLASS. The explorer defines `--bm-container-radius:
+    var(--border-radius-container,0px)` on `.bm`, which is the BODY — so it resolves once, against
+    the PAGE's theme. A specimen that pins its own theme on a nested element inherits the already-
+    resolved value and renders the page's theme silently: the console capsule measured a 0px radius
+    on this page while the console theme was 20px, and no gate could see it because every var
+    resolved to something.
+    ⛔ DERIVED, NEVER RETYPED. The block is lifted out of the captured stylesheet by its selector,
+    so a new `--bm-*` in the explorer arrives here on the next build. If the selector ever stops
+    matching this raises rather than silently emitting nothing."""
+    m = re.search(r"^\.bm\{(.*?)\}", matrix_css, re.S | re.M)
+    if not m:
+        raise SystemExit("gen_foundations_217: the explorer's `.bm{…}` variable block did not "
+                         "match — a specimen would silently render the page's theme instead of "
+                         "its own (s219-D3(6))")
+    return "\n.br-spec{%s}\n" % m.group(1)
+
+
+def _rails_specimen(theme, dials, page_bg, photos):
+    """-> a LIVE two-tile gallery specimen in one theme, driven by the explorer's own stage
+    attributes. ⛔ The theme is pinned ON THE CARD (`data-apollo-theme`), because a chord scoped to
+    the console gallery must be seen in console whatever the page switcher says; light/dark still
+    follows the page, so both modes are exercised."""
+    tiles = "\n".join("      " + matrix.photo_tile(p, (1, 1), (1, 1)) for p in photos)
+    attrs = ['data-type="gallery"', 'data-page-bg="%s"' % esc(page_bg),
+             'data-spacing="%s"' % esc(dials.get("spacing", "24")),
+             'data-keylines="%s"' % esc(dials.get("keylines", "off")),
+             'data-bento-bg="%s"' % esc(dials.get("bentoBg", "transparent")),
+             'data-mode="bento"', 'data-edge="square"',
+             'data-rounding="%s"' % esc(dials.get("rounding", "corners")),
+             'data-cap-bg="%s"' % esc(dials.get("capBg", "transparent"))]
+    return ('<div class="br-spec" data-apollo-theme="%s">'
+            '<div class="bm-stage" %s><div class="bm-page-ground">'
+            '<div class="bm-pane" data-pane="gallery">'
+            '<div class="c-bento bm-wall bm-gallery" data-bento-role="gallery">'
+            '<div class="c-bento__grid">\n%s\n</div></div></div></div></div></div>'
+            % (esc(theme), " ".join(attrs), tiles))
+
+
+def bento_rails_page(c, assets):
+    """The rails library (s219-D3(6)). Generated FROM the manifest, in plain words."""
+    r = read_rails()
+    # ⚠ ONE TILE PER SPECIMEN. Two stacked the card to twice the height and put the second
+    # photograph below the fold of every card — a reader comparing three chords was scrolling
+    # between them. Dave is dyslexic; one chord per card means one card you can hold in the eye.
+    photos = c["photos"][:1]
+    dflt = r["defaults"]["values"]
+    ink = r["constraints"]["$ink_rule"]
+
+    # ---- the chords, one card per CHORD MEMBER (Dave is dyslexic: one chord per card) ----
+    cards = []
+    for chord in r["constraints"]["chords"]:
+        for scope in chord["scope"]:
+            theme, type_ = scope["theme"], scope["type"]
+            base = dict(dflt.get(type_, {}).get(theme, {}))
+            page_word = r["page_rail"]["$rescope_map"].get(base.get("pageBg"), "page")
+            for member in chord["members"] or [{}]:
+                dials = dict(base)
+                dials.update(chord["settles"])
+                dials.update(member.get("dials", {}))
+                is_default = all(base.get(k) == v for k, v in dials.items() if k in base)
+                pills = ['<span class="br-pill t-cm-legal">%s %s</span>'
+                         % (esc(theme), esc(type_))]
+                if is_default:
+                    pills.append('<span class="br-pill br-pill--default t-cm-legal">'
+                                 'The default</span>')
+                if member.get("ground"):
+                    pills.append('<span class="br-pill t-cm-legal">Ground: %s</span>'
+                                 % esc(r["dials"]["capBg"]["labels"].get(member["ground"],
+                                                                        member["ground"])))
+                if member.get("ink_token"):
+                    pills.append('<span class="br-pill t-cm-legal">Ink: %s</span>'
+                                 % esc(member["ink_token"]))
+                ratios = member.get("contrast") or {}
+                if ratios:
+                    pills.append('<span class="br-pill t-cm-legal">%s</span>'
+                                 # light first: the reading order of the mode switch, not the
+                                 # alphabet
+                                 % esc(" · ".join("%s %s:1" % (m, ratios[k])
+                                                  for m in ("light", "dark")
+                                                  for k in ratios if k.endswith("/" + m))))
+                lines = "".join('<li class="t-ed-body-small">%s</li>' % esc(x)
+                                for x in chord["plain"])
+                cards.append(
+                    '<div class="br-card">'
+                    '<h4 class="t-ed-heading-5">%s</h4>'
+                    '<div class="br-meta t-cm-legal">%s</div>'
+                    '<ul class="br-lines">%s</ul>'
+                    '%s'
+                    '<p class="t-cm-legal br-meta">Ruled by %s</p>'
+                    '</div>'
+                    % (esc(chord["name"] if not member.get("ground") else
+                           "%s — %s" % (chord["name"],
+                                        r["dials"]["capBg"]["labels"].get(member["ground"],
+                                                                          member["ground"]))),
+                       "".join(pills), lines,
+                       _rails_specimen(theme, dials, page_word, photos),
+                       esc(chord["ruled_by"])))
+
+    # ---- the page-level rail, its own strip of live specimens ----
+    rail_cards = []
+    for word in r["page_rail"]["options"]:
+        base = dict(dflt["gallery"]["console"])
+        rail_cards.append(
+            '<div class="br-card"><h4 class="t-ed-heading-5">%s</h4>'
+            '<div class="br-meta t-cm-legal"><span class="br-pill">%s</span>'
+            '<span class="br-pill">light %s</span><span class="br-pill">dark %s</span></div>'
+            '%s</div>'
+            % (esc(r["page_rail"]["labels"][word]), esc(r["page_rail"]["tokens"][word]),
+               esc(r["page_rail"]["resolved"]["mono"]["light"][word]),
+               esc(r["page_rail"]["resolved"]["mono"]["dark"][word]),
+               _rails_specimen("mono", base, word, photos)))
+
+    # ---- the exclusions, in plain words ----
+    xrows = "".join(
+        "<tr><td><b>%s</b></td><td>%s</td><td class='t-cm-legal'>%s</td>"
+        "<td class='t-cm-legal'>%s</td></tr>"
+        % (esc(x["id"]), esc(x["plain"]), esc(x.get("ruled_by", x.get("was", "—"))),
+           esc(x["status"].upper()))
+        for x in r["constraints"]["exclusions"])
+
+    # ---- the full option space, per theme x type intersection ----
+    isec = []
+    for type_ in ("display", "gallery", "dashboard"):
+        rows = []
+        for theme in r["themes"]:
+            cell = r["intersections"][theme][type_]
+            d = dflt.get(type_, {}).get(theme, {})
+            dial_bits = []
+            for dial in r["types"][type_]["dials"]:
+                opts = r["dials"][dial]["options"]
+                if dial == "capBg":
+                    opts = cell["capBg_reachable"]
+                if dial == "keylines":
+                    opts = cell["keylines_reachable"]
+                shown = " · ".join(
+                    ("<b>%s</b>" % esc(o)) if str(d.get(dial)) == str(o) else esc(o)
+                    for o in opts)
+                dial_bits.append("<tr><td>%s</td><td>%s</td></tr>" % (esc(dial), shown))
+            rows.append(
+                "<tr><td><b>%s</b></td><td><table class='br-table'>%s</table></td>"
+                "<td class='t-cm-legal'>%s</td><td class='t-cm-legal'>%s</td></tr>"
+                % (esc(theme), "".join(dial_bits),
+                   esc(", ".join(cell["chords"]) or "none ruled"),
+                   esc(", ".join(cell["exclusions"]))))
+        page_default = sorted({r["page_rail"]["$rescope_map"].get(
+            dflt.get(type_, {}).get(th, {}).get("pageBg"), "?") for th in r["themes"]})
+        isec.append(
+            '<section id="space-%s"><h3 class="t-ed-heading-4">%s</h3>'
+            '<p class="t-ed-body-small lede">Bold is the shipped default. '
+            'The page ground is not here — it is a page-level decision '
+            '(%s in this type\'s defaults).</p>'
+            '<div class="br-scroll"><table class="br-table">'
+            '<thead><tr><th>Theme</th><th>Dials and their options</th><th>Chords</th>'
+            '<th>Exclusions</th></tr></thead><tbody>%s</tbody></table></div></section>'
+            % (esc(type_), esc(type_.title()), esc(" / ".join(page_default)), "".join(rows)))
+
+    body = """
+  <section id="intro">
+    <h2 class="t-ed-heading-3">Bento rails</h2>
+    <p class="t-ed-body lede">Every option the bento edit pass offers, per theme and type.</p>
+    <p class="t-ed-body lede">This page, the bento editor and the generator all read
+      <b>one file</b> &mdash; <code>knowledge/_render/_bento_edit_rails.json</code>.
+      Nothing here is typed twice, so none of the three can drift from the others
+      (<code>s219-D3(6)</code>).</p>
+    <ul class="br-lines t-ed-body-small">
+      <li><b>Generation</b> ships the defaults. No decisions up front.</li>
+      <li><b>Editing</b> picks within these rails. It cannot leave canon.</li>
+      <li><b>Authoring</b> is the only mode that widens them, and that is a governance act.</li>
+    </ul>
+  </section>
+
+  <section id="chords">
+    <h3 class="t-ed-heading-4">Chords</h3>
+    <p class="t-ed-body lede">A chord settles several dials together.</p>
+    <p class="t-ed-body-small lede">You pick the chord. The text colour follows the ground on its
+      own, and every ground on offer has been measured for contrast. The two chords below are
+      <code>s219-D3(3)</code>, scoped to the console gallery.</p>
+    <p class="t-ed-body-small lede">Ink rule: %s. Floor: %s:1.</p>
+    <div class="br-cards">%s</div>
+  </section>
+
+  <section id="page-rail">
+    <h3 class="t-ed-heading-4">Page background</h3>
+    <p class="t-ed-body lede">Not a bento dial. A page-level decision with its own small rail
+      (<code>s219-D3(4)</code>).</p>
+    <p class="t-ed-body-small lede">%s</p>
+    <p class="t-ed-body-small lede">%s</p>
+    <div class="br-cards">%s</div>
+  </section>
+
+  <section id="exclusions">
+    <h3 class="t-ed-heading-4">What excludes what</h3>
+    <p class="t-ed-body lede">Some decisions rule others out. These are the rules, in plain
+      words.</p>
+    <div class="br-scroll"><table class="br-table">
+      <thead><tr><th>Rule</th><th>In plain words</th><th>From</th><th>Status</th></tr></thead>
+      <tbody>%s</tbody></table></div>
+    <div class="br-open"><p class="t-ed-body-small"><b>Open, not ruled.</b> %s</p></div>
+  </section>
+
+  <section id="space">
+    <h3 class="t-ed-heading-4">The full option space</h3>
+    <p class="t-ed-body lede">Every dial, every theme, every type &mdash; read from the
+      manifest.</p>
+  </section>
+  %s
+""" % (esc(" · ".join("%s → %s" % (k, v) for k, v in sorted(ink["map"].items()))),
+       esc(ink["floor"]), "".join(cards),
+       esc(r["page_rail"]["$rescope_note"]), esc(r["page_rail"]["$collapse"]),
+       "".join(rail_cards), xrows,
+       esc(next((x["open_question"] for x in r["constraints"]["exclusions"]
+                 if x.get("open_question")), "—")),
+       "".join(isec))
+
+    return shell("Bento rails — Apollo library (Foundations)", "Bento rails",
+                 "Foundations &middot; the edit-pass option space, generated from the rails "
+                 "manifest &middot; <code>s219-D3</code>",
+                 # ⛔ THE EXPLORER'S CSS, AND DELIBERATELY NOT ITS JS. The specimens here are
+                 # DECLARATIVE — every state is spelled on the stage element as data attributes and
+                 # painted by the explorer's own stylesheet, so there is nothing for a controller
+                 # to do. Shipping the controller would have it hunt for `#bm-stage` and the dial
+                 # markup, find neither, and throw on a page whose whole job is to be readable.
+                 body, extra_css=assets["css"] + RAILS_CSS + _spec_vars(assets["css"]),
+                 extra_script="", extra_class=assets["cls"] + " br")
+
+
 # ---------------------------------------------------------------------------- photography
 def photography_page(rows, meta, residuals):
     counts = (meta or {}).get("counts", {})
@@ -1466,6 +1819,9 @@ def build():
     gassets = grids.matrix_assets(mrows)
     for kind, fname in grids.PAGES:
         pages[fname] = grids.page(shell, kind, mrows, gassets)
+    # ⬛ s219-D3(6) — THE RAILS LIBRARY. Same arrangement again: the body is composed from the
+    # MANIFEST, the paint is captured from the explorer, the WRITE stays here.
+    pages["bento-rails.html"] = bento_rails_page(mrows, gassets)
     return (pages,
             {"photography": prows, "logos": lrows, "bento": mrows["photos"]},
             {"photography": presid, "logos": lresid, "bento": mrows["residuals"]})

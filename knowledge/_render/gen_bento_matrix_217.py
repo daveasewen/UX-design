@@ -143,12 +143,14 @@ import html as htmlmod
 import itertools
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 KNOW = os.path.dirname(HERE)
 ROOT = os.path.dirname(KNOW)
 sys.path.insert(0, os.path.join(KNOW, "canon"))
+sys.path.insert(0, KNOW)          # `_contrast_utils` — the repo's ONE contrast implementation
 sys.path.insert(0, HERE)
 from gen_canon_bento import (params, band_ladder, square_wall,  # noqa: E402
                              square_wall_for_role, square_inner_wall, square_nested_wall,
@@ -215,9 +217,50 @@ def _rails():
 # defaults 24/40/40/24 across the four themes (s219-D1(3)) — which is where "never tight" now
 # lives: in the default, not in the option space.
 SPACINGS, DASH_MAIN, SUB_STOPS = _rails()
-BACKGROUNDS = [("grey", "Lightest grey", "--surface-subtle"),
+
+# ⬛ s219-D3(5) — THE GROUND RAMP, WIDENED TO THE FULL LIGHT **AND DARK** GREY RAMP.
+# "BENTOBG IS THE SECTION BACKGROUND DECISION: it stays in the grammar, may take any of the light
+# or dark greys, and caption/ink contrast is measured against the EFFECTIVE ground."
+# ⛔ THE RAMP IS THE TOKENS, NOT A PALETTE INVENTED HERE. Three painted steps exist as canon
+# grounds and no fourth was minted: `--surface-raised` (white), `--surface-subtle` (the lightest
+# grey) and `--surface-digital-black` (the dark grey). `transparent` is not a ramp step — it is the
+# absence of a ground, which is why the effective-ground chain exists at all.
+# ⚠ AND THE RAMP IS WHERE THE DARK CAPTION COMES BACK. s218-D6(1)'s dark caption ground was RETIRED
+# as the mono DEFAULT by s219-D2(1); s219-D3(3) returns it as an OPTION on the console gallery
+# capsule chord. Same colour, different permission level — which is s219-D1's default-vs-option
+# split working exactly as ruled.
+GROUND_RAMP = [("grey", "Lightest grey", "--surface-subtle"),
                ("white", "White", "--surface-raised"),
+               ("darkgrey", "Dark grey", "--surface-digital-black"),
                ("transparent", "Transparent", "(none)")]
+# The historical name every consumer already addresses (`gen_foundations_217.ruled_words`,
+# `bg_decl`, `verify_photography_218`). Kept pointing at the ramp so widening the ramp is what
+# widens them — one home, addressed, never a second list (ADR-0017).
+BACKGROUNDS = GROUND_RAMP
+
+# ⬛ s219-D3(4) — PAGE BACKGROUND LEAVES THE BENTO DIAL GRAMMAR. "page background is a page-level
+# general designer decision with its own small rail (white or the light greys in light mode; dark
+# equivalents to be derived from tokens)."
+# ⛔ THREE WORDS, AND THE FIRST ONE IS WHY NOTHING REGRESSES. The twelve shipped defaults spell the
+# page ground `grey` / `white` / `transparent`; on a page body `transparent` never meant "paint
+# nothing" — `gen_foundations_217.page_bg_decl()` already compiled it to the DOCUMENT GROUND,
+# `--background-default`, because a body that paints nothing falls through to the UA canvas (white,
+# in dark mode too). So the rail names that ground by what it is — `page` — and the re-scope map
+# below sends the old word to it. Same declaration, same pixels, a word that no longer lies.
+# ⚠ `page` AND `white` ARE THE SAME COLOUR IN LIGHT MODE in all four themes and DIFFER IN DARK
+# (`--background-default` is the digital black; `--surface-raised` is #1F1F1F / #2A2621). Both are
+# kept because the pair is a real distinction the tokens make — surfaced, never swapped.
+# ⛔ NO DARK EQUIVALENT WAS CHOSEN, SO NONE IS PROPOSED. Every rail member is a token that already
+# carries its own dark value; the ruling's "dark equivalents to be derived from tokens" is
+# satisfied by derivation, and a choice nobody had to make is not a decision to put to Dave.
+PAGE_RAIL = [("page", "Page ground", "--background-default"),
+             ("white", "White", "--surface-raised"),
+             ("grey", "Lightest grey", "--surface-subtle")]
+# THE RE-SCOPE MAP, TYPED ONCE. Receipts and exports in `notes/` are FROZEN HISTORY and keep the
+# old word; the RESOLVER translates at the boundary. A default that said `transparent` expresses
+# through the rail's `page` member and paints exactly what it painted before.
+PAGE_RAIL_WORD = {"transparent": "page", "grey": "grey", "white": "white"}
+
 GALLERY_MODES = [("justified", "Justified rows"), ("bento", "Gallery bento")]
 BOTTOM_EDGE = [("ragged", "Ragged"), ("square", "Square")]
 ROUNDINGS = [("corners", "4 corners of the image"), ("capsule", "Full capsule")]
@@ -426,32 +469,438 @@ def capsule_legal(rounding, cap_bg, keylines):
     return not (rounding == "capsule" and cap_bg == "transparent" and keylines == "off")
 
 
+# ============================================================ ⬛ s219-D3 · THE CONSTRAINT LAYER
+# s219-D3(2): "OPTIONS COME IN CHORDS, NOT FREE DIALS: a chord settles several dials as a coherent
+# set, ink follows ground automatically and is contrast-gated; the manifest carries a constraint
+# layer — legal chords plus exclusion rules per theme x type intersection — and the validator
+# refuses illegal combinations. Dave: 'some decisions might exclude others.'"
+#
+# ⛔ THREE THINGS LIVE HERE AND THEY ARE NOT THE SAME THING:
+#   · THE INK RULE   — ground word -> ink token. Derivation, not a dial. Nobody picks ink.
+#   · THE CHORDS     — named sets of dial values that settle together, SCOPED to theme x type.
+#   · THE EXCLUSIONS — named refusals. The two #217 legality rules (P2/P3) are folded in as X1/X2
+#                      rather than left as a second refusal system with its own vocabulary.
+# ⛔ AND THE REFUSAL MACHINERY IS EXTENDED, NOT REPLACED: `caption_legal`/`capsule_legal` above are
+# still the one statement of P2/P3 and X1/X2 CALL them. A second copy of a rule is how the two
+# drift apart.
+
+# ⬛ INK FOLLOWS GROUND — s219-D3(2)/(3), "ink follows ground automatically".
+# ⛔ THE PAIRING IS DAVE'S OWN, NOT A CONTRAST SOLVER'S. The dark ground takes reverse ink because
+# that is the pair he ruled at s218-D6(1) ("the darkest grey for the captions and white for the
+# text"); the light grounds take `--text-secondary` because that is the caption ink lane B enacted
+# at s219-D2(1) and the token `.px-cap` has always used. The contrast gate below CHECKS the pairing;
+# it does not choose it. A gate that picked the ink would be inventing taste with a formula.
+# ⚠ ONE ENTRY IS NOT A RAMP STEP: `page` is the PAGE-LEVEL rail's document ground (s219-D3(4)).
+# It is here because the effective-ground chain ends there — a transparent caption on a
+# transparent wall on a page ground still has ink, and the chain must be able to answer for it.
+# ⛔ AND ONLY `darkgrey` IS SPECIAL, FOR A REASON WORTH SAYING: the light grounds flip with the
+# mode (canon resolves `--text-secondary` to white in dark), so one token serves them in both.
+# `--surface-digital-black` is dark in BOTH modes — it does not flip — so it is the one ground
+# whose ink has to be stated, and that is exactly the pairing Dave ruled at s218-D6(1).
+INK_FOR_GROUND = {
+    "white": "--text-secondary",
+    "grey": "--text-secondary",
+    "page": "--text-secondary",
+    "darkgrey": "--text-reverse",
+    # `transparent` has no ink of its own: the ink follows whatever ground actually paints, which
+    # is what `effective_ground_word()` answers.
+}
+CONTRAST_FLOOR = 4.5          # WCAG 2.1 AA, body text. The caption is body text.
+
+
+def ink_for(ground_word):
+    """-> the ink token a ground word implies, or None for `transparent` (which has no ground of
+    its own, so no ink of its own — see `effective_ground_word`)."""
+    return INK_FOR_GROUND.get(ground_word)
+
+
+def effective_ground_word(chain):
+    """-> the first WORD in `chain` that names a ground that actually paints.
+
+    ⛔ THE WORD-LEVEL TWIN of `verify_photography_218._effective_ground`, which lane B built to do
+    this on live PAINTS in the browser. Same rule, different unit: that one walks resolved
+    `rgba()` strings and skips anything with alpha 0; this one walks dial words at mint time and
+    skips `transparent`. They are named as a pair on purpose — the browser probe stays the
+    measurement of record and this is what the generator can gate on before a browser exists."""
+    for word in chain:
+        if word and word != "transparent":
+            return word
+    return None
+
+
+# ---------------------------------------------------------------- the tokens, RESOLVED, per theme
+# ⛔ READ OUT OF canon.css, THE ARTEFACT THE PAGES ACTUALLY LOAD — not out of the token JSON, whose
+# theme overrides are alias re-bindings that only the token build resolves. Four themes x two
+# modes, by cascade: `:root` -> `[data-theme="dark"]` -> the theme's own block -> the theme's dark
+# block. mono has no theme block: it IS the base tier.
+# ⚠ AND IT IS CROSS-CHECKED, NOT TRUSTED: `selftest()` asserts these values against the pixels lane
+# B measured LIVE IN THE BROWSER at s219 (report `2026-08-25-219-enactB-defaults.md`, eight states).
+# A resolver that agreed with nothing but itself would be a second opinion about colour.
+CANON_CSS = os.path.join(KNOW, "canon", "canon.css")
+_TOKEN_CACHE = {}
+
+
+def _css_block(text, selector_re):
+    m = re.search(selector_re + r"\s*\{", text, re.M)
+    if not m:
+        return {}
+    i, depth, j = m.end(), 1, m.end()
+    while j < len(text) and depth:
+        if text[j] == "{":
+            depth += 1
+        elif text[j] == "}":
+            depth -= 1
+        j += 1
+    out = {}
+    for k, v in re.findall(r"(--[a-z0-9-]+)\s*:\s*([^;]+);", text[i:j - 1]):
+        out[k] = v.strip()
+    return out
+
+
+def theme_tokens(theme, mode="light"):
+    """-> {token: value} for one theme in one mode, by canon's own cascade."""
+    key = (theme, mode)
+    if key in _TOKEN_CACHE:
+        return _TOKEN_CACHE[key]
+    with open(CANON_CSS, encoding="utf-8") as fh:
+        text = fh.read()
+    d = dict(_css_block(text, r"^:root"))
+    if mode == "dark":
+        d.update(_css_block(text, r"^\[data-theme=\"dark\"\]"))
+    if theme != "mono":
+        d.update(_css_block(text, r"^\[data-apollo-theme=\"%s\"\]" % theme))
+        if mode == "dark":
+            d.update(_css_block(
+                text,
+                r"^\[data-apollo-theme=\"%s\"\]\[data-theme=\"dark\"\],\s*\n"
+                r"\[data-apollo-theme=\"%s\"\] \[data-theme=\"dark\"\]" % (theme, theme)))
+    _TOKEN_CACHE[key] = d
+    return d
+
+
+def resolve_token(token, theme, mode="light"):
+    """-> the concrete #RRGGBB a token resolves to, following a `var(--x)` alias one hop at a time.
+    ⛔ RAISES rather than returning a plausible black: a dangling ground var renders SILENT BLACK
+    and thirteen gates cannot see it ([[dangling-dataviz-var-renders-silent-black]])."""
+    d, seen = theme_tokens(theme, mode), []
+    v = d.get(token)
+    while v and v.startswith("var("):
+        nxt = v[4:].split(",")[0].strip().rstrip(")")
+        if nxt in seen:
+            raise KeyError("token %r loops in %s/%s" % (token, theme, mode))
+        seen.append(nxt)
+        v = d.get(nxt)
+    if not v or not v.startswith("#"):
+        raise KeyError("token %r does not resolve to a colour in %s/%s (got %r)"
+                       % (token, theme, mode, v))
+    return v.upper()
+
+
+PAGE_TOKEN = {w: tok for w, _label, tok in PAGE_RAIL}
+# The ramp AND the page rail under one address, because the effective-ground chain crosses both:
+# a transparent caption on a transparent wall is judged against the PAGE ground.
+GROUND_TOKEN = dict(PAGE_TOKEN)
+GROUND_TOKEN.update({w: tok for w, _label, tok in GROUND_RAMP})
+
+
+def contrast(ground_word, ink_token, theme, mode="light"):
+    """-> the WCAG ratio of `ink_token` on `ground_word` in this theme and mode.
+    ⛔ THE RATIO IS NOT COMPUTED HERE. `knowledge/_contrast_utils.contrast_ratio` is the repo's one
+    implementation and this addresses it; a fourth luminance function in a fourth file is how two
+    gates come to disagree about the same pair of colours."""
+    from _contrast_utils import contrast_ratio          # noqa: E402  (KNOW is on sys.path)
+    return round(contrast_ratio(resolve_token(GROUND_TOKEN[ground_word], theme, mode),
+                                resolve_token(ink_token, theme, mode)), 2)
+
+
+# ------------------------------------------------------------------------------------ THE CHORDS
+# ⬛ s219-D3(3) — THE FIRST TWO RULED CHORDS, AND THEIR SCOPE IS CONSOLE GALLERY.
+# "THE FIRST TWO RULED CHORDS, from his console example, SCOPE CONSOLE GALLERY: chord one — full
+# capsule + caption ground from the grey ramp INCLUDING dark grey with reversed-out text …; chord
+# two — four rounded corners on images + transparent caption background."
+# ⛔ TWO IS THE WHOLE SET. No third chord was inferred for the other three themes, for the other two
+# types, or for the dials the ruling did not name — a chord is a taste decision and Dave rules
+# those. `scope` is a list so a widening is data, not a rewrite.
+# ⛔ `settles` IS FIXED, `ranges` IS THE CHOICE INSIDE THE CHORD. Chord one settles rounding and
+# then RANGES over the ramp: "caption ground from the grey ramp" is a set, not a value, and
+# flattening it to one ground would have quietly picked for him.
+CHORDS = [
+    {
+        "id": "capsule",
+        "name": "Capsule",
+        "ruled_by": "s219-D3(3) chord one",
+        "scope": [("console", "gallery")],
+        "settles": {"rounding": "capsule"},
+        "ranges": {"capBg": ["grey", "white", "darkgrey"]},
+        "ink_follows": "capBg",
+        "plain": ["The whole tile is one capsule.",
+                  "The caption sits inside it, on a ground from the grey ramp.",
+                  "Dark grey is on the ramp, and its text reverses out.",
+                  "You choose the ground. The text colour follows it."],
+        "quoted": "full capsule + caption ground from the grey ramp INCLUDING dark grey with "
+                  "reversed-out text",
+    },
+    {
+        "id": "rounded",
+        "name": "Rounded",
+        "ruled_by": "s219-D3(3) chord two",
+        "scope": [("console", "gallery")],
+        "settles": {"rounding": "corners", "capBg": "transparent"},
+        "ranges": {},
+        "ink_follows": "capBg",
+        "plain": ["Four rounded corners on the image.",
+                  "The caption has no ground of its own.",
+                  "Its text sits on whatever is behind — the wall, or the page."],
+        "quoted": "four rounded corners on images + transparent caption background",
+    },
+]
+CHORDS_BY_ID = {c["id"]: c for c in CHORDS}
+
+
+def chord_members(chord):
+    """-> [ {member dial state} ] — one entry per combination the chord's ranges reach. A chord
+    with no ranges has exactly ONE member: the set it settles."""
+    fixed = dict(chord["settles"])
+    if not chord["ranges"]:
+        return [dict(fixed)]
+    out = []
+    keys = sorted(chord["ranges"])
+    for combo in itertools.product(*[chord["ranges"][k] for k in keys]):
+        m = dict(fixed)
+        m.update(dict(zip(keys, combo)))
+        out.append(m)
+    return out
+
+
+def chords_for(theme, type_):
+    """-> the chords legal at ONE theme x type intersection. Empty everywhere s219-D3(3) did not
+    reach, and that emptiness is the enactment: an intersection with no ruled chord offers none."""
+    return [c for c in CHORDS if (theme, type_) in [tuple(s) for s in c["scope"]]]
+
+
+# -------------------------------------------------------------------------------- THE EXCLUSIONS
+# ⛔ ONE VOCABULARY FOR EVERY REFUSAL. X1/X2 are the #217 legality rules P2/P3, folded in by
+# CALLING them rather than restating them. X3..X6 are what the chord layer adds. Every entry
+# carries `plain` — the words the library page prints — because a rule the designer cannot read is
+# a rule they will trip over ([[feedback-decisions-in-plain-prose]]).
+EXCLUSIONS = [
+    {"id": "X1", "was": "P2", "status": "proposed", "scope": "gallery",
+     "rule": "capBg may not equal bentoBg unless it is transparent",
+     "plain": "A caption cannot sit on its own colour. Grey on grey has no edge."},
+    {"id": "X2", "was": "P3", "status": "proposed", "scope": "gallery",
+     "rule": "rounding=capsule requires capBg != transparent OR keylines=on",
+     "plain": "A capsule needs an edge. Give the caption a ground, or turn keylines on."},
+    {"id": "X3", "status": "ruled", "scope": "all",
+     "ruled_by": "s219-D3(2)",
+     "rule": "the caption ink must be the token its effective ground implies (INK_FOR_GROUND)",
+     "plain": "Text colour is not a dial. It follows the ground underneath it."},
+    {"id": "X4", "status": "ruled", "scope": "all",
+     "ruled_by": "s219-D3(2) — 'contrast-gated'",
+     "rule": "every ground option must clear %s:1 against the ink its ground implies, in every "
+             "theme and mode the chord is scoped to" % CONTRAST_FLOOR,
+     "plain": "Every ground on offer has to be readable. Anything under 4.5:1 is not offered."},
+    {"id": "X5", "status": "ruled", "scope": "gallery",
+     "ruled_by": "s219-D3(2) — 'some decisions might exclude others'",
+     "rule": "the capsule and rounded chords are mutually exclusive",
+     "plain": "Capsule and Rounded are two answers to one question. Pick one."},
+    {"id": "X6", "status": "open", "scope": "gallery",
+     "ruled_by": "s219-D3(3) — Mono's access is EXPRESSLY OPEN",
+     "rule": "capBg=darkgrey is reachable only inside a chord that offers it, and today only "
+             "console gallery has one",
+     "plain": "The dark caption ground belongs to the console capsule chord. "
+              "Whether mono may have it is an open question for Dave — it is not refused on "
+              "taste, it is simply not ruled yet.",
+     "open_question": "MONO'S ACCESS TO THE DARK-CAPTION CHORD. s219-D3(3) says it is EXPRESSLY "
+                      "OPEN and not ruled. Nothing here grants it: `capbg_for('gallery','mono')` "
+                      "does not carry `darkgrey`, and the refusal names this question as its "
+                      "reason rather than a preference. FOR DAVE."},
+]
+EXCLUSIONS_BY_ID = {x["id"]: x for x in EXCLUSIONS}
+
+# ⬛ s219-D3(3) — WHERE THE DARK CAPTION GROUND IS REACHABLE, DERIVED FROM THE CHORDS AND NEVER
+# TYPED. The set is computed from `CHORDS`, so widening a chord's scope is what widens this; a
+# hand-kept second list is how mono would gain the dark caption by accident.
+def _chord_ground_scope(dial, word):
+    return sorted({tuple(s) for c in CHORDS for s in c["scope"]
+                   if word in c["ranges"].get(dial, []) or c["settles"].get(dial) == word})
+
+
+def capbg_for(type_, theme):
+    """-> the caption-ground words REACHABLE for this type in this theme (X6).
+
+    ⛔ THE RAMP IS NOT UNIFORMLY REACHABLE AND THAT IS THE POINT. `darkgrey` is a chord option
+    (s219-D3(3)), scoped console gallery; everywhere else it is refused with the OPEN QUESTION as
+    the printed reason. This is the one place the option space is theme-dependent, which is why
+    `counts_by_theme()` keeps its per-theme shape ([[premise-ages-faster-than-rule]])."""
+    if type_ != "gallery":
+        return []
+    scoped = _chord_ground_scope("capBg", "darkgrey")
+    return [w for w, _l, _t in GROUND_RAMP
+            if w != "darkgrey" or (theme, type_) in scoped]
+
+
+def ink_violation(state):
+    """-> a refusal string, or '' — X3. A state may carry an explicit `capInk`; if it does, it must
+    be the token its EFFECTIVE ground implies. States that carry no ink are legal by construction:
+    ink is derived, and a dial nobody can turn cannot be turned wrong."""
+    if "capInk" not in state:
+        return ""
+    ground = effective_ground_word([state.get("capBg"), state.get("bentoBg"),
+                                    state.get("pageBg")])
+    want = ink_for(ground) if ground else None
+    if want and state["capInk"] != want:
+        return ("X3 — ink does not follow ground: on %s the caption ink is %s, not the %s "
+                "declared %r" % (ground, state["capInk"], ground, want))
+    return ""
+
+
+def contrast_violations(ground_word, theme, modes=("light", "dark")):
+    """-> [refusals] — X4, for ONE ground option in ONE theme. Empty means every mode clears the
+    floor against the ink the ground implies."""
+    if ground_word == "transparent":
+        return []                      # no ground of its own: measured through the chain, not here
+    token = ink_for(ground_word)
+    if not token:
+        return ["X4 — %r has no ink rule, so its contrast cannot be gated" % ground_word]
+    out = []
+    for mode in modes:
+        r = contrast(ground_word, token, theme, mode)
+        if r < CONTRAST_FLOOR:
+            out.append("X4 — %s/%s: %s on %s is %.2f:1, under the %s:1 floor"
+                       % (theme, mode, token, ground_word, r, CONTRAST_FLOOR))
+    return out
+
+
+def chord_refusals(chord_id, theme, type_, state=None):
+    """-> [refusals] for applying a named chord at one intersection, in one state. THE VALIDATOR
+    s219-D3(2) asks for: it refuses illegal combinations BY NAME, and every name is an X-rule.
+    ⛔ BOTH DIRECTIONS ARE REAL: an empty list is a positive statement that the chord is legal here,
+    and the selftest drives legal chords as hard as it drives illegal ones."""
+    bad = []
+    chord = CHORDS_BY_ID.get(chord_id)
+    if chord is None:
+        return ["no chord named %r — the ruled chords are %s"
+                % (chord_id, "/".join(sorted(CHORDS_BY_ID)))]
+    if (theme, type_) not in [tuple(s) for s in chord["scope"]]:
+        x = EXCLUSIONS_BY_ID["X6"]
+        bad.append("%s — the %s chord is scoped to %s and %s/%s is not one of them. %s"
+                   % (x["id"], chord_id,
+                      " · ".join("%s %s" % s for s in chord["scope"]), theme, type_, x["plain"]))
+    settled = dict(chord["settles"])
+    if state:
+        settled.update({k: v for k, v in state.items() if k in chord["ranges"] or k in settled})
+    # X5 — a state cannot answer one question twice.
+    for other in CHORDS:
+        if other["id"] == chord_id or type_ not in {"gallery"}:
+            continue
+        clash = [d for d, v in other["settles"].items()
+                 if d in chord["settles"] and chord["settles"][d] != v]
+        if clash and state and all(state.get(d) == other["settles"][d] for d in clash):
+            bad.append("X5 — this state is already the %s chord (%s), and %s wants %s. %s"
+                       % (other["id"], ", ".join("%s=%s" % (d, other["settles"][d])
+                                                 for d in clash), chord_id,
+                          ", ".join("%s=%s" % (d, chord["settles"][d]) for d in clash),
+                          EXCLUSIONS_BY_ID["X5"]["plain"]))
+    cap = settled.get("capBg")
+    if cap is not None:
+        # X6 — the ground must be reachable at this intersection at all.
+        if cap not in capbg_for(type_, theme):
+            x = EXCLUSIONS_BY_ID["X6"]
+            bad.append("%s — caption ground %r is not reachable in %s %s. %s"
+                       % (x["id"], cap, theme, type_, x["plain"]))
+        # X4 — and it must be readable.
+        bad += contrast_violations(cap, theme)
+    # X1/X2 — the #217 rules, CALLED not restated.
+    if state and type_ == "gallery":
+        merged = dict(state)
+        merged.update(chord["settles"])
+        for d in chord["ranges"]:
+            if d in state:
+                merged[d] = state[d]
+        if not caption_legal(merged.get("capBg"), merged.get("bentoBg")):
+            bad.append("X1 — %s" % EXCLUSIONS_BY_ID["X1"]["plain"])
+        if not capsule_legal(merged.get("rounding"), merged.get("capBg"),
+                             merged.get("keylines")):
+            bad.append("X2 — %s" % EXCLUSIONS_BY_ID["X2"]["plain"])
+        v = ink_violation(merged)
+        if v:
+            bad.append(v)
+    return bad
+
+
+def chord_sweep():
+    """-> [(chord, theme, type, member, ground, ink token, {mode: ratio})] — EVERY ground option of
+    every ruled chord, at every intersection it is scoped to, in light AND dark.
+    ⬛ THIS IS THE BLOCKING SWEEP (s219-D3(3): 'every ground option contrast-gated, the CI sweep is
+    blocking'). `selftest()` fails on any reading under the floor."""
+    rows = []
+    for chord in CHORDS:
+        for theme, type_ in [tuple(s) for s in chord["scope"]]:
+            for member in chord_members(chord):
+                ground = effective_ground_word([member.get("capBg")])
+                if ground is None:
+                    # the rounded chord: transparent caption. Its ink follows the wall, and the
+                    # wall's own grounds are swept in their own right below.
+                    continue
+                token = ink_for(ground)
+                rows.append((chord["id"], theme, type_, member, ground, token,
+                             {m: contrast(ground, token, theme, m) for m in ("light", "dark")}))
+    # ⛔ AND THE SECTION GROUND IS SWEPT TOO (s219-D3(5)): a transparent caption is judged against
+    # the EFFECTIVE ground, which is the bento's, so every bentoBg the ramp offers is a caption
+    # ground in waiting and is gated as one.
+    for theme in THEMES:
+        for ground in [w for w, _l, _t in GROUND_RAMP if w != "transparent"]:
+            token = ink_for(ground)
+            rows.append(("$bentoBg", theme, "gallery", {"bentoBg": ground}, ground, token,
+                         {m: contrast(ground, token, theme, m) for m in ("light", "dark")}))
+    # ⛔ AND SO IS THE END OF THE CHAIN (s219-D3(4)): when caption and wall are both transparent the
+    # ink lands on the PAGE ground, so every page-rail member is gated as a caption ground too. A
+    # sweep that stopped at the wall would have left the commonest state on the page unmeasured.
+    for theme in THEMES:
+        for ground in [w for w, _l, _t in PAGE_RAIL]:
+            token = ink_for(ground)
+            rows.append(("$pageRail", theme, "page", {"pageBg": ground}, ground, token,
+                         {m: contrast(ground, token, theme, m) for m in ("light", "dark")}))
+    return rows
+
+
 def enumerate_matrix(theme="mono"):
     """-> {type: [state dicts]} FOR ONE THEME. EVERY REACHABLE COMBINATION, so the page can report
     a MEASURED dimension count instead of a claimed one. Illegal combinations are excluded here
     exactly as the controls refuse them in the browser.
-    ⚠ THEME IS A PARAMETER AND NOT A DEFAULT-AND-FORGET (s217-D6): gallery-in-console has no
-    keyline control, so the count genuinely differs by theme. A caller that does not name a theme
-    gets `mono` and the page never uses that path without saying which theme it means."""
-    bg = [b[0] for b in BACKGROUNDS]
+    ⚠ THEME IS A PARAMETER AND NOT A DEFAULT-AND-FORGET: the count genuinely differs by theme
+    again — s219-D3(3) scopes the dark caption ground to the console gallery chord, so console
+    gallery reaches one more ground than the other three. A caller that does not name a theme gets
+    `mono` and the page never uses that path without saying which theme it means.
+    ⛔ pageBg IS GONE FROM THIS ENUMERATION and its absence is the enactment of s219-D3(4): the
+    page ground is no longer a bento dial, so it is no longer a dimension of the bento matrix. It
+    is counted on its own, as `page_rail_reach()`."""
+    bg = [b[0] for b in GROUND_RAMP]
     out = {"display": [], "gallery": [], "dashboard": []}
-    for sp, kl, pb, bb in itertools.product([s[0] for s in SPACINGS],
-                                            keylines_for("display", theme), bg, bg):
-        out["display"].append({"spacing": sp, "keylines": kl, "pageBg": pb, "bentoBg": bb})
-    for sp, kl, mode, rnd, pb, bb, cb in itertools.product(
+    for sp, kl, bb in itertools.product([s[0] for s in SPACINGS],
+                                        keylines_for("display", theme), bg):
+        out["display"].append({"spacing": sp, "keylines": kl, "bentoBg": bb})
+    for sp, kl, mode, rnd, bb, cb in itertools.product(
             [s[0] for s in SPACINGS], keylines_for("gallery", theme),
             ["justified", "bento:ragged", "bento:square"],
-            [r[0] for r in ROUNDINGS], bg, bg, bg):
+            [r[0] for r in ROUNDINGS], bg, capbg_for("gallery", theme)):
         if not caption_legal(cb, bb) or not capsule_legal(rnd, cb, kl):
             continue
         out["gallery"].append({"spacing": sp, "keylines": kl, "mode": mode, "rounding": rnd,
-                               "pageBg": pb, "bentoBg": bb, "capBg": cb})
-    # ⬛ s217-D6 — the sub-bento dimension is the SNAP LADDER, eight stops, not three buttons.
-    for ms, ss, kl, pb, bb in itertools.product([s[0] for s in DASH_MAIN], SUB_STOPS,
-                                                keylines_for("dashboard", theme), bg, bg):
+                               "bentoBg": bb, "capBg": cb})
+    # ⬛ s217-D6 — the sub-bento dimension is the SNAP LADDER over the s219-D1(4) rail.
+    for ms, ss, kl, bb in itertools.product([s[0] for s in DASH_MAIN], SUB_STOPS,
+                                            keylines_for("dashboard", theme), bg):
         out["dashboard"].append({"mainSpacing": ms, "subSpacing": str(ss), "keylines": kl,
-                                 "pageBg": pb, "bentoBg": bb})
+                                 "bentoBg": bb})
     return out
+
+
+def page_rail_reach():
+    """-> how many page grounds the PAGE-LEVEL rail offers (s219-D3(4)). Counted apart from the
+    bento matrix because it is a different decision at a different level — multiplying it back in
+    would put the dial back in the grammar the ruling took it out of."""
+    return len(PAGE_RAIL)
 
 
 def matrix_counts(theme="mono"):
@@ -549,9 +998,9 @@ def option_space():
     caption background belongs to the role that has captions. See `$open_questions` in the manifest
     — whether s219-D1(2)'s "every role" reaches dials a role has nothing to apply them to is
     Dave's, and the twelve exports themselves carry 5 dials for dashboard and 4 for display."""
-    bg = [b[0] for b in BACKGROUNDS]
-    bg_labels = {v: t for v, t, _tok in BACKGROUNDS}
-    bg_tokens = {v: tok for v, _t, tok in BACKGROUNDS}
+    bg = [b[0] for b in GROUND_RAMP]
+    bg_labels = {v: t for v, t, _tok in GROUND_RAMP}
+    bg_tokens = {v: tok for v, _t, tok in GROUND_RAMP}
     stops = [str(s) for s in SPACING_STOPS]
     stop_labels = {v: px for v, _t, px in SPACINGS}
     all_types = ["display", "gallery", "dashboard"]
@@ -599,17 +1048,113 @@ def option_space():
                          "Never console-only: authored in all four themes, visibly different "
                          "wherever the radius token is non-zero. s219-D2(3) defaults console "
                          "gallery to capsule."),
-        "pageBg": dial("enum", bg, bg_labels, all_types, "segmented", "s217-D5",
-                       "The ground the wall sits on.", tokens=bg_tokens),
-        "bentoBg": dial("enum", bg, bg_labels, all_types, "segmented", "s217-D5",
-                        "The wall's own ground — a caption's immediate ground (P2).",
-                        tokens=bg_tokens),
-        "capBg": dial("enum", bg, bg_labels, ["gallery"], "segmented", "s217-D5",
-                      "Caption ground. s219-D2(1) supersedes s218-D6(1): mono gallery captions "
-                      "resolve light grey, and the dark ground retires for the gallery role.",
-                      tokens=bg_tokens),
+        # ⛔ pageBg IS NOT HERE. s219-D3(4) takes the page background OUT of the bento dial grammar
+        # and gives it its own page-level rail — `page_rail()`, a sibling of `dials` in the
+        # manifest, not a member of it. Leaving it here as a bento dial with a note saying it is
+        # not one would be the grammar disagreeing with the ruling in its own vocabulary.
+        "bentoBg": dial("enum", bg, bg_labels, all_types, "segmented",
+                        "s217-D5 · s219-D3(5)",
+                        "THE SECTION GROUND (s219-D3(5)). Takes any of the light or dark greys; "
+                        "a caption's ink is measured against the EFFECTIVE ground, which is this "
+                        "one whenever the caption is transparent.",
+                        tokens=bg_tokens, ink_rule=dict(INK_FOR_GROUND)),
+        "capBg": dial("enum", bg, bg_labels, ["gallery"], "segmented",
+                      "s217-D5 · s219-D2(1) · s219-D3(3)",
+                      "Caption ground. s219-D2(1) supersedes s218-D6(1) for the DEFAULT: mono "
+                      "gallery captions resolve light grey. s219-D3(3) returns the dark ground as "
+                      "a chord OPTION, scoped console gallery — see exclusion X6, which is OPEN.",
+                      tokens=bg_tokens, ink_rule=dict(INK_FOR_GROUND),
+                      reachable_by_theme={t: capbg_for("gallery", t) for t in THEMES}),
         "$theme_locks": locked,
     }
+
+
+def page_rail():
+    """-> the PAGE-LEVEL rail (s219-D3(4)) — a sibling of the bento dials, never one of them."""
+    return {
+        "$what": "PAGE BACKGROUND IS NOT A BENTO DIAL. s219-D3(4): 'page background is a "
+                 "page-level general designer decision with its own small rail (white or the "
+                 "light greys in light mode; dark equivalents to be derived from tokens)'.",
+        "ruled_by": "s219-D3(4)",
+        "level": "page",
+        "options": [w for w, _l, _t in PAGE_RAIL],
+        "labels": {w: l for w, l, _t in PAGE_RAIL},
+        "tokens": {w: t for w, _l, t in PAGE_RAIL},
+        "resolved": {t: {m: {w: resolve_token(tok, t, m) for w, _l, tok in PAGE_RAIL}
+                         for m in ("light", "dark")} for t in THEMES},
+        "$dark_equivalents": "DERIVED, not chosen: every rail member is a token that already "
+                             "carries its own dark value, so no dark-specific decision was "
+                             "needed and none is PROPOSED.",
+        "$rescope_map": dict(PAGE_RAIL_WORD),
+        "$rescope_note": "The twelve shipped defaults spell the page ground grey/white/"
+                         "transparent. On a page body `transparent` never meant 'paint nothing' — "
+                         "it already compiled to --background-default (gen_foundations_217."
+                         "page_bg_decl). The rail names that ground `page`; the map above sends "
+                         "the old word to it. Same declaration, same pixels. Receipts and exports "
+                         "under notes/ are FROZEN HISTORY and keep the old word.",
+        "$collapse": "`page` and `white` resolve to the SAME colour in LIGHT mode in all four "
+                     "themes and DIFFER in dark. Both are kept: the pair is a real distinction "
+                     "the tokens make. SURFACED, never swapped.",
+    }
+
+
+def chord_block():
+    """-> the CHORD + EXCLUSION layer, as the manifest carries it (s219-D3(2))."""
+    out = {"$what": "s219-D3(2): OPTIONS COME IN CHORDS, NOT FREE DIALS. A chord settles several "
+                    "dials as a coherent set; ink follows ground automatically and is "
+                    "contrast-gated.",
+           "$ink_rule": {"$what": "Ink is DERIVED from the ground, never picked. s219-D3(2).",
+                         "map": dict(INK_FOR_GROUND),
+                         "transparent": "no ground of its own — the ink follows the EFFECTIVE "
+                                        "ground (the bento's, then the page's)",
+                         "floor": CONTRAST_FLOOR},
+           "chords": [], "exclusions": EXCLUSIONS,
+           "$blocking_sweep": "Every ground option of every chord is measured against the ink its "
+                              "ground implies, in light AND dark, in every theme the chord is "
+                              "scoped to. A reading under the floor is a selftest FAILURE, not a "
+                              "note (s219-D3(3): 'the CI sweep is blocking')."}
+    for c in CHORDS:
+        members = []
+        for m in chord_members(c):
+            ground = effective_ground_word([m.get("capBg")])
+            token = ink_for(ground) if ground else None
+            row = {"dials": m, "ground": ground, "ink_token": token}
+            if token:
+                row["contrast"] = {"%s/%s" % (th, mode): contrast(ground, token, th, mode)
+                                   for th, _ty in [tuple(s) for s in c["scope"]]
+                                   for mode in ("light", "dark")}
+                row["resolved"] = {"%s/%s" % (th, mode):
+                                   {"ground": resolve_token(GROUND_TOKEN[ground], th, mode),
+                                    "ink": resolve_token(token, th, mode)}
+                                   for th, _ty in [tuple(s) for s in c["scope"]]
+                                   for mode in ("light", "dark")}
+            members.append(row)
+        out["chords"].append({
+            "id": c["id"], "name": c["name"], "ruled_by": c["ruled_by"],
+            "quoted": c["quoted"], "plain": c["plain"],
+            "scope": [{"theme": th, "type": ty} for th, ty in [tuple(s) for s in c["scope"]]],
+            "settles": c["settles"], "ranges": c["ranges"], "ink_follows": c["ink_follows"],
+            "members": members,
+        })
+    return out
+
+
+def intersections():
+    """-> {theme: {type: {chords, exclusions, capBg reachable}}} — the constraint layer AS THE
+    RULING FRAMES IT: "per theme x type intersection". Twelve cells, and the empty ones are a
+    statement, not an omission."""
+    out = {}
+    for theme in THEMES:
+        out[theme] = {}
+        for type_ in ("display", "gallery", "dashboard"):
+            out[theme][type_] = {
+                "chords": [c["id"] for c in chords_for(theme, type_)],
+                "exclusions": [x["id"] for x in EXCLUSIONS
+                               if x["scope"] in ("all", type_)],
+                "capBg_reachable": capbg_for(type_, theme),
+                "keylines_reachable": keylines_for(type_, theme),
+            }
+    return out
 
 
 def edit_rails():
@@ -625,7 +1170,19 @@ def edit_rails():
                  "closes as a DEFAULT plus the EDIT-PASS OPTION SET.",
         "$groundwork_only": "No editor is built or proposed here. This is the vocabulary such an "
                             "editor would read, minted when the vocabulary was ruled.",
-        "$rulings": ["s217-D3", "s217-D5", "s217-D6", "s217-D8", "s218-D1", "s219-D1", "s219-D2"],
+        "$rulings": ["s217-D3", "s217-D5", "s217-D6", "s217-D8", "s218-D1", "s219-D1", "s219-D2",
+                     "s219-D3"],
+        "$permission_levels": {
+            "$what": "s219-D3(1): generation, editing and authoring are PERMISSION LEVELS on this "
+                     "one manifest, not three systems.",
+            "generation": "ships the minted defaults only — zero decisions up front, every "
+                          "generated instance lands on canon.",
+            "editing": "picks within these rails and cannot leave canon.",
+            "authoring": "the only mode that widens the rails — a new option or chord runs the "
+                         "gates and its promotion into this file is a governance act.",
+            "$one_file": "The library page, the editor-to-be and the generator all read THIS "
+                         "file, so none of the three can drift from the others (s219-D3(6)).",
+        },
         "rail": {"spacing_stops": list(SPACING_STOPS),
                  "ruled_by": "s219-D1(4)",
                  "free_values_allowed": False,
@@ -635,21 +1192,33 @@ def edit_rails():
         "themes": list(THEMES),
         "all_dials_every_theme": True,
         "dials": space,
+        "page_rail": page_rail(),
+        "constraints": chord_block(),
+        "intersections": intersections(),
         "types": {t: {"canon_role": TYPE_ROLE[t],
                       "dials": [d for d in space
                                 if not d.startswith("$") and t in space[d]["types"]]}
                   for t in ("display", "gallery", "dashboard")},
         "legality": [
-            {"id": "P2", "status": "proposed",
+            {"id": "P2", "now": "X1", "status": "proposed",
              "rule": "capBg may not equal bentoBg unless it is transparent",
              "why": "a caption is judged against its IMMEDIATE ground"},
-            {"id": "P3", "status": "proposed",
+            {"id": "P3", "now": "X2", "status": "proposed",
              "rule": "rounding=capsule requires capBg != transparent OR keylines=on",
              "why": "a capsule with no edge is not a capsule"},
         ],
         "reachable": counts_by_theme(),
+        "$reachable_note": "The bento matrix, per theme. pageBg is NOT a factor: s219-D3(4) took "
+                           "it out of this grammar and it is counted on its own as "
+                           "`page_rail.options` (%d). Console gallery is larger than the other "
+                           "three because s219-D3(3) scopes the dark caption ground to its "
+                           "capsule chord." % page_rail_reach(),
         "defaults": _defaults_block(),
         "$open_questions": [
+            "MONO'S ACCESS TO THE DARK-CAPTION CHORD — s219-D3(3) says EXPRESSLY OPEN, not "
+            "ruled. Nothing here grants it: `darkgrey` is not in mono's reachable caption "
+            "grounds, exclusion X6 refuses it, and the refusal prints this question as its "
+            "reason rather than a preference. FOR DAVE.",
             "s219-D1(2) rules ALL dials available in every theme and ROLE. Enacted here as: no "
             "dial is locked BY THEME (the one theme lock, gallery-in-console keylines, is "
             "retired). Whether it also means a dashboard should carry a caption-background dial "
@@ -939,6 +1508,10 @@ CSS = """
   --bm-page:var(--background-default,#FFFFFF);
   --bm-grey:var(--surface-subtle,#F0F0F0);
   --bm-white:var(--surface-raised,#FFFFFF);
+  /* ⬛ s219-D3(5) — the ramp's dark step, and s219-D3(2)'s reverse ink beside it. Both carry a
+     literal fallback: a dangling ground var renders SILENT BLACK and no gate sees it. */
+  --bm-darkgrey:var(--surface-digital-black,#1A1A1A);
+  --bm-ink-rev:var(--text-reverse,#FFFFFF);
   --bm-radius-ctl:var(--border-radius-control,0px);
   --bm-container-radius:var(--border-radius-container,0px);}
 
@@ -984,9 +1557,12 @@ CSS = """
 /* ---- the stage ---- */
 .bm-stage{border:1px solid var(--bm-line,#D7D8D6); margin-top:var(--sp-4,16px);}
 .bm-page-ground{padding:var(--sp-5,24px);}
+/* ⬛ s219-D3(4) — THE PAGE-LEVEL RAIL, three members. `page` REPLACES the old `transparent`:
+   the stage had no ground of its own, so a transparent page ground already fell through to the
+   document ground the page body paints. Declaring it is the same pixels with an honest word. */
 .bm-stage[data-page-bg="grey"] .bm-page-ground{background:var(--bm-grey,#F0F0F0);}
 .bm-stage[data-page-bg="white"] .bm-page-ground{background:var(--bm-white,#FFFFFF);}
-.bm-stage[data-page-bg="transparent"] .bm-page-ground{background:transparent;}
+.bm-stage[data-page-bg="page"] .bm-page-ground{background:var(--bm-page,#FFFFFF);}
 .bm-pane{display:none;}
 .bm-stage[data-type="display"] .bm-pane[data-pane="display"],
 .bm-stage[data-type="gallery"] .bm-pane[data-pane="gallery"],
@@ -997,7 +1573,14 @@ CSS = """
    still reads at the same weight as a role rule. ---- */
 .bm-stage[data-bento-bg="grey"] .c-bento.bm-wall{background:var(--bm-grey,#F0F0F0);}
 .bm-stage[data-bento-bg="white"] .c-bento.bm-wall{background:var(--bm-white,#FFFFFF);}
+.bm-stage[data-bento-bg="darkgrey"] .c-bento.bm-wall{background:var(--bm-darkgrey,#1A1A1A);}
 .bm-stage[data-bento-bg="transparent"] .c-bento.bm-wall{background:transparent;}
+/* ⬛ s219-D3(2)/(5) — INK FOLLOWS THE **EFFECTIVE** GROUND. A transparent caption has no ground of
+   its own, so its ink is the ink of the ground that actually paints behind it: the wall's. This is
+   the section-ground half of the rule and it is why the selector reaches through `[data-cap-bg=
+   "transparent"]` rather than styling the caption on its own. */
+.bm-stage[data-bento-bg="darkgrey"][data-cap-bg="transparent"] .bm-cap{
+  color:var(--bm-ink-rev,#FFFFFF);}
 
 /* ---- SPACING — the instance dial, per type. (0,3,0), so it beats canon's (0,2,0) role rule.
    ⬛ s219-D1(4) — ONE DECLARED RULE PER RULED STOP, GENERATED from `SPACING_STOPS`, exactly as the
@@ -1144,6 +1727,13 @@ __CORNER_RULES__
 .bm-stage[data-cap-bg="grey"] .bm-cap{background:var(--bm-grey,#F0F0F0);}
 .bm-stage[data-cap-bg="white"] .bm-cap{background:var(--bm-white,#FFFFFF);}
 .bm-stage[data-cap-bg="transparent"] .bm-cap{background:transparent;}
+/* ⬛ s219-D3(3) — THE DARK CAPTION GROUND RETURNS AS A CHORD OPTION, and its ink comes WITH it.
+   Two declarations, one decision: the ground and the reversed-out ink are not two dials a designer
+   could set inconsistently — the second follows the first, in the stylesheet, automatically. */
+.bm-stage[data-cap-bg="darkgrey"] .bm-cap{background:var(--bm-darkgrey,#1A1A1A);
+  color:var(--bm-ink-rev,#FFFFFF);}
+.bm-stage[data-cap-bg="grey"] .bm-cap,
+.bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#545454);}
 
 /* ---- CONSOLE IMAGE ROUNDING (gallery). Both options are canon's container radius; what moves
    is WHAT IS ROUNDED. `4 corners of the image` rounds the picture and leaves the caption square
@@ -1343,13 +1933,24 @@ __PHOTO_RULES__
 # in the same pass; there is no second copy of the dial values anywhere in the page.
 SCRIPT = r"""
 (function(){
+  // ⬛ s219-D3(4) — `page` IS ITS OWN LEVEL IN THE STATE OBJECT, beside the three types rather
+  // than repeated inside each of them. A page ground copied into every type would be three
+  // answers to a question the ruling says is asked once.
   var STATE = {
     type: 'display',
-    display:  {spacing:'24', keylines:'on',  pageBg:'white', bentoBg:'grey'},
+    page:     {pageBg:'white'},
+    display:  {spacing:'24', keylines:'on',  bentoBg:'grey'},
     gallery:  {spacing:'24', keylines:'on',  mode:'bento', edge:'ragged', rounding:'corners',
-               pageBg:'white', bentoBg:'grey', capBg:'white'},
-    dashboard:{mainSpacing:'24', subSpacing:'1', keylines:'on', pageBg:'grey', bentoBg:'white'}
+               bentoBg:'grey', capBg:'white'},
+    dashboard:{mainSpacing:'24', subSpacing:'1', keylines:'on', bentoBg:'white'}
   };
+  // s219-D3(3) — the theme x type intersections where the dark caption ground is reachable, and
+  // the OPEN QUESTION printed at every refusal outside them. Injected from Python's CHORDS.
+  var CAPBG_DARK_SCOPE = __CAPBG_DARK_SCOPE__;
+  var X6_PLAIN = __X6_PLAIN__;
+  // s219-D3(2) — INK FOLLOWS GROUND. Mirrored from Python's INK_FOR_GROUND so the export can say
+  // which ink a ground implies without a second opinion about it.
+  var INK_FOR_GROUND = __INK_FOR_GROUND__;
   var stage = document.getElementById('bm-stage');
   var out   = document.getElementById('bm-export');
 
@@ -1421,6 +2022,17 @@ SCRIPT = r"""
     return moved;
   }
 
+  // ⬛ s219-D3(2) — INK FOLLOWS THE EFFECTIVE GROUND, in the export as well as in the paint. The
+  // word-level twin of Python's `effective_ground_word`: the first ground in the chain that is not
+  // transparent is the one the ink is judged against.
+  function effectiveGround(){
+    var s = STATE[STATE.type];
+    var chain = [s.capBg, s.bentoBg, STATE.page.pageBg];
+    for (var i = 0; i < chain.length; i++)
+      if (chain[i] && chain[i] !== 'transparent') return chain[i];
+    return null;
+  }
+
   function resolved(){
     // s200-D1 — CONCRETE VALUES, read out of the live document in the state on screen. No var()
     // chain reaches the export; where a dial says "the theme token", the exporter writes down the
@@ -1439,11 +2051,19 @@ SCRIPT = r"""
     // vocabulary) and `canonRole` is the attribute the wall actually carries (the machine's). A
     // rename enacted only in the markup is a rename that leaks through every export.
     var raw = wall ? wall.getAttribute('data-bento-role') : null;
+    var eg = effectiveGround();
     return {
       theme: document.documentElement.getAttribute('data-apollo-theme'),
       mode: document.body.getAttribute('data-theme'),
       role: (raw && ROLE_TYPE[raw]) || raw,
       canonRole: raw,
+      // ⬛ s219-D3(2)/(4) — the page ground is a PAGE-LEVEL fact and the export says so under its
+      // own name; the effective ground and the ink it implies are DERIVED and written down beside
+      // the paint, so the export can be checked against what the eye sees.
+      pageGround: STATE.page.pageBg,
+      effectiveGround: eg,
+      inkToken: eg ? (INK_FOR_GROUND[eg] || null) : null,
+      captionInk: cap ? getComputedStyle(cap).color : null,
       gutterPx: grid ? px(getComputedStyle(grid).columnGap) : null,
       containerRadiusPx: wall ? px(getComputedStyle(wall).borderTopLeftRadius) : null,
       tileRadiusPx: tile ? px(getComputedStyle(tile).borderTopLeftRadius) : null,
@@ -1487,7 +2107,8 @@ SCRIPT = r"""
     var s = STATE[STATE.type], moved = repair();
     stage.setAttribute('data-type', STATE.type);
     stage.setAttribute('data-keylines', s.keylines);
-    stage.setAttribute('data-page-bg', s.pageBg);
+    // ⬛ s219-D3(4) — ONE page ground, read from the page level, not from the type.
+    stage.setAttribute('data-page-bg', STATE.page.pageBg);
     stage.setAttribute('data-bento-bg', s.bentoBg);
     if (STATE.type === 'dashboard') {
       stage.setAttribute('data-spacing', s.mainSpacing);
@@ -1516,7 +2137,9 @@ SCRIPT = r"""
     Array.prototype.forEach.call(document.querySelectorAll('.bm-group'), function(g){
       var owner = g.getAttribute('data-group');
       var when = g.getAttribute('data-when');
-      var on = (owner === 'all' || owner === STATE.type);
+      // `page` is always on: it is a PAGE-LEVEL decision (s219-D3(4)) and does not belong to the
+      // type on screen.
+      var on = (owner === 'all' || owner === 'page' || owner === STATE.type);
       if (on && when) {
         var kv = when.split(':');
         on = (STATE[STATE.type][kv[0]] === kv[1]);
@@ -1529,7 +2152,8 @@ SCRIPT = r"""
         var reason = l[dial + ':' + v] || '';
         b.disabled = !!reason;
         b.setAttribute('aria-disabled', String(!!reason));
-        var cur = (dial === 'type') ? STATE.type : STATE[STATE.type][dial];
+        var cur = (dial === 'type') ? STATE.type
+                : (owner === 'page') ? STATE.page[dial] : STATE[STATE.type][dial];
         b.setAttribute('aria-pressed', String(cur === v));
         if (reason) reasons.push(reason);
       });
@@ -1548,6 +2172,7 @@ SCRIPT = r"""
       "ruling": "s217-D5",
       "type": STATE.type,
       "state": STATE[STATE.type],
+      "page": STATE.page,
       "resolved": resolved()
     };
     if (out) out.textContent = JSON.stringify(payload, null, 2);
@@ -1557,7 +2182,9 @@ SCRIPT = r"""
     var b = e.target.closest ? e.target.closest('.bm-seg button[data-value]') : null;
     if (!b || b.disabled) return;
     var g = b.closest('.bm-group'), dial = g.getAttribute('data-dial');
+    var owner = g.getAttribute('data-group');
     if (dial === 'type') STATE.type = b.getAttribute('data-value');
+    else if (owner === 'page') STATE.page[dial] = b.getAttribute('data-value');
     else STATE[STATE.type][dial] = b.getAttribute('data-value');
     apply();
   });
@@ -1586,17 +2213,27 @@ SCRIPT = r"""
 """
 
 LEGALITY_JS_REAL = """
-    // P2 — a caption colour is judged against its IMMEDIATE ground (the bento background behind
-    // the tile). Transparent is always legal: it has no ground of its own to collide with.
-    ['grey','white','transparent'].forEach(function(v){
+    var theme = document.documentElement.getAttribute('data-apollo-theme');
+    // X1 (was P2) — a caption colour is judged against its IMMEDIATE ground (the bento background
+    // behind the tile). Transparent is always legal: it has no ground of its own to collide with.
+    ['grey','white','darkgrey','transparent'].forEach(function(v){
       r['capBg:' + v] = (v !== 'transparent' && v === g.bentoBg)
-        ? ('Illegal — the caption would be ' + v + ' on ' + v + ', its own ground. '
+        ? ('X1 — the caption would be ' + v + ' on ' + v + ', its own ground. '
            + 'A white caption needs a grey ground, and the inverse (s217-D5).')
         : '';
     });
-    // P3 — the full capsule needs an edge: a caption background OR keylines.
+    // ⬛ X6, s219-D3(3) — THE DARK CAPTION GROUND IS A CHORD OPTION, SCOPED CONSOLE GALLERY. It is
+    // refused everywhere else and the refusal prints the OPEN QUESTION as its reason, because it
+    // is not refused on taste: Dave has not ruled it. An option refused with a preference reads as
+    // settled; an option refused with a question reads as open.
+    var darkScoped = false;
+    for (var i = 0; i < CAPBG_DARK_SCOPE.length; i++)
+      if (CAPBG_DARK_SCOPE[i][0] === theme && CAPBG_DARK_SCOPE[i][1] === 'gallery')
+        darkScoped = true;
+    if (!darkScoped) r['capBg:darkgrey'] = 'X6 — ' + X6_PLAIN;
+    // X2 (was P3) — the full capsule needs an edge: a caption background OR keylines.
     r['rounding:capsule'] = (g.capBg === 'transparent' && g.keylines === 'off')
-      ? 'Illegal — a capsule with a transparent caption and no keylines has no edge to round. '
+      ? 'X2 — a capsule with a transparent caption and no keylines has no edge to round. '
         + 'Turn keylines on, or give the caption a background. PROPOSED (open point 3).'
       : '';
     r['rounding:corners'] = '';
@@ -1605,7 +2242,7 @@ LEGALITY_JS_REAL = """
 LEGALITY_JS_BROKEN = """
     // ⬛ MUTATION ARM — the legality rules are GONE. Every option reports legal, so the refusals
     // the probe asserts must go RED by name. This variant is NON-REPO and never shipped.
-    ['grey','white','transparent'].forEach(function(v){ r['capBg:' + v] = ''; });
+    ['grey','white','darkgrey','transparent'].forEach(function(v){ r['capBg:' + v] = ''; });
     r['rounding:capsule'] = ''; r['rounding:corners'] = '';
 """
 
@@ -1673,10 +2310,14 @@ def controls():
     # to move. Under s219-D1(2) a label that names one theme reads as a theme lock, and this page
     # now has none.
     g.append(seg("gallery", "rounding", ROUNDINGS, "Image rounding"))
+    # ⬛ s219-D3(4) — ONE PAGE-LEVEL CONTROL, NOT THREE BENTO DIALS. The page ground was a per-type
+    # bento dial in three copies; the ruling makes it a page-level decision, so it is one group,
+    # owned by `page` rather than by a type, and it stays on screen when the type changes — which
+    # is what "page-level" means when you can see it.
+    g.append(seg("page", "pageBg", [(v, t) for v, t, _tok in PAGE_RAIL], "Page background",
+                 sub="Page-level (s219-D3(4)) — not a bento dial."))
     for t in ("display", "gallery", "dashboard"):
-        g.append(seg(t, "pageBg", bg, "Page background"))
-    for t in ("display", "gallery", "dashboard"):
-        g.append(seg(t, "bentoBg", bg, "Bento background"))
+        g.append(seg(t, "bentoBg", bg, "Section ground"))
     g.append(seg("gallery", "capBg", bg, "Caption background"))
     return "\n      ".join(g)
 
@@ -1740,14 +2381,15 @@ def body(c):
         "<tr><td>%s</td><td class='num'>%d</td><td class='num'>%d</td><td>%s</td></tr>"
         % (esc(k.title()), counts[k], console[k], dims)   # dims is authored here, not user data
         for k, dims in (
-            ("display", "spacing <b>%d</b> × keylines 2 × page background 3 × bento background 3"
-                        % len(SPACING_STOPS)),
+            ("display", "spacing <b>%d</b> × keylines 2 × section ground <b>%d</b>"
+                        % (len(SPACING_STOPS), len(GROUND_RAMP))),
             ("gallery", "spacing <b>%d</b> × keylines 2 × mode 3 (justified · bento ragged · "
-                        "bento square) × rounding 2 × page 3 × bento 3 × caption 3, MINUS the "
-                        "combinations the two legality rules refuse" % len(SPACING_STOPS)),
+                        "bento square) × rounding 2 × section ground <b>%d</b> × caption ground "
+                        "3 (4 in console), MINUS the combinations the exclusions refuse"
+                        % (len(SPACING_STOPS), len(GROUND_RAMP))),
             ("dashboard", "main spacing <b>%d</b> × sub-bento spacing <b>%d</b> × keylines 2 × "
-                          "page 3 × bento 3 — both spacing dials on the SAME s219-D1(4) rail"
-                          % (len(DASH_MAIN), len(SUB_STOPS)))))
+                          "section ground <b>%d</b> — both spacing dials on the SAME s219-D1(4) "
+                          "rail" % (len(DASH_MAIN), len(SUB_STOPS), len(GROUND_RAMP)))))
     theme_rows = "".join(
         "<tr><td>%s</td><td class='num'>%d</td><td class='num'>%d</td><td class='num'>%d</td>"
         "<td class='num'><b>%d</b></td></tr>"
@@ -1779,8 +2421,9 @@ def body(c):
 
   <section id="controls">
     <div class="sublabel t-ed-caption">The matrix &mdash; %d reachable combinations in mono, legacy
-      and supercharge, and %d in console: the same number, counted separately, because s219-D1
-      makes every dial available in every theme</div>
+      and supercharge, and %d in console: console reaches more because s219-D3(3) scopes the dark
+      caption ground to its capsule chord. The page background is NOT counted here &mdash;
+      s219-D3(4) took it out of the bento grammar and gave it its own page-level rail</div>
     <div class="bm-controls">
       %s
     </div>
@@ -2169,7 +2812,14 @@ def page(shell, c=None):
                 .replace("__ROLE_TYPE__",
                          json.dumps({v: k for k, v in TYPE_ROLE.items()}, sort_keys=True))
                 .replace("__KEYLINE_EXCLUDED__",
-                         json.dumps([list(x) for x in KEYLINE_EXCLUDED])))
+                         json.dumps([list(x) for x in KEYLINE_EXCLUDED]))
+                # ⬛ s219-D3 — the constraint layer, injected from the SAME Python objects the
+                # manifest is minted from. The page's refusals and the manifest's exclusions are
+                # one statement of one rule, not two that happen to agree today.
+                .replace("__CAPBG_DARK_SCOPE__",
+                         json.dumps([list(x) for x in _chord_ground_scope("capBg", "darkgrey")]))
+                .replace("__X6_PLAIN__", json.dumps(EXCLUSIONS_BY_ID["X6"]["plain"]))
+                .replace("__INK_FOR_GROUND__", json.dumps(INK_FOR_GROUND, sort_keys=True)))
     return shell("Bento — Apollo library (Foundations)", "Bento",
                  "Foundations &middot; the s217-D5 option matrix &middot; PROPOSED, not ruled",
                  body(c), extra_css=css, extra_script=js, extra_class="bm")
@@ -2187,6 +2837,15 @@ def selftest():
         ran.append(name)
         if got != want:
             fails.append("%s\n     got:  %r\n     want: %r" % (name, got, want))
+
+    def _raises(fn):
+        """-> the exception `fn` raised, or None. A helper that fails LOUD: an arm asserting 'this
+        raises' must be able to tell a raise from a return ([[a-crash-is-not-a-fail]])."""
+        try:
+            fn()
+        except Exception as exc:
+            return exc
+        return None
 
     c = content()
     import gen_foundations_217 as f
@@ -2248,20 +2907,25 @@ def selftest():
     # ⚠ HAND-COMPUTED FROM THE RULING'S OWN NUMBERS — the sixes below are s219-D1(4)'s six stops
     # typed out, never `len(SPACING_STOPS)`. An expectation read off the object under test cannot
     # fail when that object is wrong, which is the whole point of the rail gate.
-    bite("6 · the reachable matrix is the hand-computed one",
+    # ⛔ RE-COMPUTED FOR s219-D3, AND THE TWO CHANGES ARE NAMED RATHER THAN ABSORBED:
+    #   (4) pageBg LEAVES the bento grammar — the ×3 page factor is GONE from every line.
+    #   (5) bentoBg widens to the FULL light-and-dark ramp — the bento factor is 4, not 3.
+    bite("6 · the reachable matrix is the hand-computed one (s219-D3(4) drops the page factor, "
+         "s219-D3(5) widens the section ground to four)",
          (counts["display"], counts["dashboard"]),
-         (6 * 2 * 3 * 3, 6 * 6 * 2 * 3 * 3))
+         (6 * 2 * 4, 6 * 6 * 2 * 4))
     # gallery, computed by hand from the ruling: 6 spacing x 2 keylines x 3 modes x
-    # (rounding x caption/bento pairs, minus the two refusals) x 3 page grounds.
-    legal_pairs = sum(1 for cb in ("grey", "white", "transparent")
-                      for bb in ("grey", "white", "transparent") if caption_legal(cb, bb))
+    # (rounding x caption/bento pairs, minus the two refusals). MONO's caption ramp is three words:
+    # s219-D3(3) scopes `darkgrey` to the console chord, which is why console is counted apart.
+    _mono_caps = ("grey", "white", "transparent")
+    _grounds = ("grey", "white", "darkgrey", "transparent")
+    legal_pairs = sum(1 for cb in _mono_caps for bb in _grounds if caption_legal(cb, bb))
     illegal_capsule = sum(1 for kl in ("on", "off")
-                          for cb in ("grey", "white", "transparent")
-                          for bb in ("grey", "white", "transparent")
+                          for cb in _mono_caps for bb in _grounds
                           if caption_legal(cb, bb) and not capsule_legal("capsule", cb, kl))
     bite("7 · gallery's reachable count equals the legality rules applied by hand",
          counts["gallery"],
-         6 * 2 * 3 * (2 * legal_pairs) * 3 - 6 * 3 * 3 * illegal_capsule)
+         6 * 2 * 3 * (2 * legal_pairs) - 6 * 3 * illegal_capsule)
     # ⛔ NO STATE THAT RENDERS NOTHING: every enumerated combination must name a pane that exists
     # and a mode whose markup is on the page.
     panes = [p for p in ("display", "gallery", "dashboard")
@@ -2272,15 +2936,26 @@ def selftest():
     # (s217-D6's exclusion) and 8c asserted the console total GENUINELY DIFFERS. `s219-D2(4)` —
     # "the switch is available everywhere in edit mode per s219-D1(2)" — retires the exclusion, so
     # both assertions invert: console is counted like every other theme and the totals AGREE.
+    # ⛔ AND INVERTED AGAIN AT s219-D3(3), WHICH IS A RE-RULING NOT A REGRESSION. s219-D2(4)
+    # retired the one THEME LOCK, so the four totals agreed at s219-D1. s219-D3(3) then scopes the
+    # dark caption ground to the CONSOLE GALLERY chord — not a theme lock (no dial is removed
+    # anywhere) but a CHORD SCOPE, which is a different mechanism and makes console's gallery
+    # genuinely larger. Both facts are asserted below, separately, so neither can hide the other.
     con = matrix_counts("console")
-    bite("8b · ⬛ s219-D1(2) — console counts like every other theme; no dial is theme-locked",
+    bite("8b · ⬛ s219-D1(2) — no dial is THEME-LOCKED: the keyline switch is present in every "
+         "theme and every type, and display/dashboard count identically in all four",
          (KEYLINE_EXCLUDED, keylines_for("gallery", "console"),
-          con["gallery"] == counts["gallery"], con["display"] == counts["display"],
-          con["dashboard"] == counts["dashboard"]),
-         ([], ["on", "off"], True, True, True))
-    bite("8c · the four themes now agree, and the page prints the two counts side by side rather "
-         "than asserting the agreement in prose",
-         sum(con.values()) == sum(counts.values()), True)
+          con["display"] == counts["display"], con["dashboard"] == counts["dashboard"]),
+         ([], ["on", "off"], True, True))
+    bite("8c · ⬛ s219-D3(3) — CONSOLE GALLERY IS LARGER, and by exactly the chord's own ground: "
+         "the dark caption ground is scoped to the console capsule chord, so console reaches one "
+         "more caption ground than the other three and the difference is a CHORD SCOPE, not a "
+         "theme lock",
+         (capbg_for("gallery", "console"), capbg_for("gallery", "mono"),
+          con["gallery"] > counts["gallery"],
+          sorted({tuple(s) for s in _chord_ground_scope("capBg", "darkgrey")})),
+         (["grey", "white", "darkgrey", "transparent"], ["grey", "white", "transparent"],
+          True, [("console", "gallery")]))
     # ⛔ AND THE EXCLUSION MECHANISM IS STILL DRIVEN, with a fixture, so 'empty' is a statement
     # about the rules and not a broken instrument ([[instrument-without-a-consumer]]).
     _saved_excl = KEYLINE_EXCLUDED[:]
@@ -2297,8 +2972,11 @@ def selftest():
     bite("8d · the page PRINTS both totals, so the theme-dependence is on its face",
          (str(sum(counts.values())) in html, str(sum(con.values())) in html,
           "console" in html.split('id="matrix"', 1)[1][:2000]), (True, True, True))
-    bite("8e · ALL FOUR themes agree with one another (s219-D1(2)) — one option space",
-         len({sum(matrix_counts(t).values()) for t in THEMES}), 1)
+    bite("8e · THE THREE UNSCOPED THEMES agree with one another — one option space everywhere the "
+         "chord layer does not reach (s219-D1(2)); console differs by the chord alone",
+         (len({sum(matrix_counts(t).values()) for t in THEMES if t != "console"}),
+          sum(matrix_counts("console").values()) > sum(matrix_counts("mono").values())),
+         (1, True))
     bite("9 · both gallery modes have markup — neither can select into an empty stage",
          ("bm-just" in html and "bm-gallery" in html and "bm-jrow" in html), True)
     bite("10 · both span sets ride on every gallery tile, so the edge dial can never blank a wall",
@@ -2619,7 +3297,7 @@ def selftest():
         SPACINGS, DASH_MAIN, SUB_STOPS = _rails()
         _mut = (tuple(SPACING_STOPS) == RULED_SPACING_RAIL,
                 f.validate_settings({t: dict(_base, spacing="8") for t in THEMES}),
-                matrix_counts("mono")["display"] == 7 * 2 * 3 * 3)
+                matrix_counts("mono")["display"] == 7 * 2 * 4)
     finally:
         SPACING_STOPS = _saved_rail
         SPACINGS, DASH_MAIN, SUB_STOPS = _rails()
@@ -2672,7 +3350,9 @@ def selftest():
          [p for p in ("__SPACING_RULES__", "__MAIN_SPACING_RULES__", "__JUST_SPACING_RULES__",
                       "__SUB_SPACING_RULES__", "__SWEEP_STOP_RULES__", "__CORNER_RULES__",
                       "__PHOTO_RULES__", "__SUB_STOPS__", "__ROLE_TYPE__",
-                      "__KEYLINE_EXCLUDED__", "__LEGALITY_BODY__") if p in html], [])
+                      "__KEYLINE_EXCLUDED__", "__LEGALITY_BODY__",
+                      "__CAPBG_DARK_SCOPE__", "__X6_PLAIN__",
+                      "__INK_FOR_GROUND__") if p in html], [])
     # R6 — THE EDIT-PASS MANIFEST. GENERATED, and the file on disk must BE the generation.
     _rails_doc = edit_rails()
     bite("R6 · the manifest states the ruled rail, the dial vocabulary and NO theme lock",
@@ -2683,16 +3363,19 @@ def selftest():
            if not k.startswith("$")],
           _rails_doc["dials"]["$theme_locks"]),
          ([1, 2, 4, 16, 24, 40], False, True,
-          ["bentoBg", "capBg", "edge", "keylines", "mainSpacing", "mode", "pageBg", "rounding",
+          # ⛔ `pageBg` IS ABSENT AND THE ABSENCE IS THE ASSERTION (s219-D3(4)). It left the bento
+          # dial grammar for a page-level rail; a manifest still listing it among the bento dials
+          # would be the grammar contradicting the ruling in its own vocabulary.
+          ["bentoBg", "capBg", "edge", "keylines", "mainSpacing", "mode", "rounding",
            "spacing", "subSpacing"],
-          [False] * 10, []))
+          [False] * 9, []))
     bite("R6b · the dashboard's two-dial spacing split is in the vocabulary and BOTH dials draw "
          "from the one rail (s219-D1(5))",
          (sorted(_rails_doc["types"]["dashboard"]["dials"]),
           _rails_doc["dials"]["mainSpacing"]["options"] ==
           _rails_doc["dials"]["subSpacing"]["options"] ==
           [str(s) for s in SPACING_STOPS]),
-         (["bentoBg", "keylines", "mainSpacing", "pageBg", "subSpacing"], True))
+         (["bentoBg", "keylines", "mainSpacing", "subSpacing"], True))
     bite("R6c · the defaults are ADDRESSED, never copied — this module owns the option space and "
          "says so when lane B's table is not there to read",
          (_rails_doc["defaults"]["$owner"].startswith("knowledge/_render/gen_foundations_217.py"),
@@ -2706,6 +3389,225 @@ def selftest():
     bite("R6d · ⛔ GENERATED, NEVER HAND-KEPT — the rails file on disk IS this generation "
          "(run `--rails` after any change to the option grammar)",
          _disk == rails_json(), True)
+
+    # ================================================ ⬛ s219-D3 · THE CONSTRAINT LAYER, DRIVEN
+    # ⛔ THE TOKEN RESOLVER IS CROSS-CHECKED BEFORE ANY GATE STANDS ON IT. Every number below is a
+    # pixel lane B measured LIVE IN A BROWSER at #219 (report 2026-08-25-219-enactB-defaults.md,
+    # the eight-state contrast table). A resolver that agreed only with itself would be a second
+    # opinion about colour and every contrast gate built on it would be decoration.
+    bite("C0 · ⛔ the static token resolver AGREES WITH THE BROWSER — eight values lane B measured "
+         "live at #219, re-derived here from canon.css by canon's own cascade",
+         (resolve_token("--surface-subtle", "mono", "light"),        # rgb(240,240,240)
+          resolve_token("--surface-subtle", "mono", "dark"),         # rgb(31,31,31)
+          resolve_token("--text-secondary", "legacy", "light"),      # rgb(84,84,84)
+          resolve_token("--text-secondary", "legacy", "dark"),       # rgb(155,155,155)
+          resolve_token("--surface-raised", "supercharge", "light"),  # rgb(247,246,244)
+          resolve_token("--surface-subtle", "supercharge", "light"),  # rgb(223,222,220) — warm
+          resolve_token("--background-default", "console", "dark"),  # rgb(26,26,26), via var()
+          resolve_token("--text-reverse", "console", "dark")),       # rgb(255,255,255)
+         ("#F0F0F0", "#1F1F1F", "#545454", "#9B9B9B",
+          "#F7F6F4", "#DFDEDC", "#1A1A1A", "#FFFFFF"))
+    bite("C0b · ⛔ a dangling ground var is a NAMED RAISE, never a plausible black "
+         "([[dangling-dataviz-var-renders-silent-black]])",
+         isinstance(_raises(lambda: resolve_token("--surface-nonexistent", "mono", "light")),
+                    KeyError), True)
+
+    # ---- the chords themselves, POSITIVE direction ----
+    _cap = CHORDS_BY_ID["capsule"]
+    bite("C1 · ⬛ s219-D3(3) — TWO chords, both scoped CONSOLE GALLERY, and no third was inferred",
+         (sorted(CHORDS_BY_ID), [tuple(s) for s in _cap["scope"]],
+          [tuple(s) for s in CHORDS_BY_ID["rounded"]["scope"]],
+          _cap["settles"], CHORDS_BY_ID["rounded"]["settles"]),
+         (["capsule", "rounded"], [("console", "gallery")], [("console", "gallery")],
+          {"rounding": "capsule"},
+          {"rounding": "corners", "capBg": "transparent"}))
+    bite("C1b · the capsule chord RANGES over the grey ramp including DARK GREY (s219-D3(3)) — "
+         "three members, one per ground, and the ruling's own words are carried with them",
+         (sorted(_cap["ranges"]["capBg"]), len(chord_members(_cap)),
+          len(chord_members(CHORDS_BY_ID["rounded"])),
+          "INCLUDING dark grey" in _cap["quoted"]),
+         (["darkgrey", "grey", "white"], 3, 1, True))
+    bite("C1c · BOTH DIRECTIONS — the ruled chords are LEGAL where they are scoped, with no "
+         "refusal at all; an empty refusal list is a positive statement, driven",
+         (chord_refusals("capsule", "console", "gallery",
+                         {"capBg": "darkgrey", "bentoBg": "grey", "keylines": "off"}),
+          chord_refusals("capsule", "console", "gallery",
+                         {"capBg": "grey", "bentoBg": "white", "keylines": "off"}),
+          chord_refusals("rounded", "console", "gallery",
+                         {"bentoBg": "grey", "keylines": "on"})),
+         ([], [], []))
+
+    # ---- the exclusions, NEGATIVE direction, REFUSED BY NAME ----
+    bite("C2 · every exclusion carries PLAIN WORDS a designer can read, and X1/X2 are the #217 "
+         "rules folded in rather than restated ([[feedback-decisions-in-plain-prose]])",
+         (sorted(EXCLUSIONS_BY_ID), len(EXCLUSIONS),
+          all(x.get("plain") for x in EXCLUSIONS),
+          (EXCLUSIONS_BY_ID["X1"]["was"], EXCLUSIONS_BY_ID["X2"]["was"]),
+          EXCLUSIONS_BY_ID["X6"]["status"]),
+         (["X1", "X2", "X3", "X4", "X5", "X6"], 6, True, ("P2", "P3"), "open"))
+    bite("C2b · ⛔ X6 — MONO IS REFUSED THE DARK CAPTION GROUND, and the refusal prints the OPEN "
+         "QUESTION as its reason. s219-D3(3) says mono's access is EXPRESSLY OPEN; an option "
+         "refused with a preference reads as settled, one refused with a question reads as open",
+         ([r[:2] for r in chord_refusals("capsule", "mono", "gallery", {"capBg": "darkgrey"})],
+          "open question" in " ".join(
+              chord_refusals("capsule", "mono", "gallery", {"capBg": "darkgrey"})).lower(),
+          "darkgrey" in capbg_for("gallery", "mono")),
+         (["X6", "X6"], True, False))
+    bite("C2c · a chord applied OUTSIDE its scope is refused by name, in all three unscoped "
+         "themes and in the two types that have no chord at all",
+         ([bool(chord_refusals("capsule", t, "gallery")) for t in THEMES],
+          bool(chord_refusals("capsule", "console", "dashboard")),
+          bool(chord_refusals("rounded", "console", "display")),
+          chord_refusals("kapsule", "console", "gallery")[0][:15]),
+         ([True, True, False, True], True, True, "no chord named "))
+    bite("C2d · X1 and X2 still refuse THROUGH the chord layer — the #217 rules are CALLED, not "
+         "copied, so a rule fixed in one place is fixed in both",
+         (any(r.startswith("X1") for r in chord_refusals(
+             "capsule", "console", "gallery", {"capBg": "grey", "bentoBg": "grey"})),
+          any(r.startswith("X2") for r in chord_refusals(
+              "capsule", "console", "gallery", {"capBg": "transparent", "bentoBg": "grey",
+                                                "keylines": "off"}))),
+         (True, True))
+    bite("C2e · X5 — the two chords EXCLUDE ONE ANOTHER ('some decisions might exclude others'): "
+         "a state already settled as `rounded` refuses the capsule chord by name",
+         any(r.startswith("X5") for r in chord_refusals(
+             "capsule", "console", "gallery",
+             {"rounding": "corners", "capBg": "transparent", "bentoBg": "grey"})),
+         True)
+
+    # ---- ink follows ground, and the BLOCKING contrast sweep ----
+    bite("C3 · ⬛ s219-D3(2) — INK FOLLOWS GROUND: the dark ground takes reverse ink (the s218-D6(1)"
+         " pairing), the light grounds take the caption's standing ink, and a transparent caption "
+         "has NO ink of its own — it follows the effective ground",
+         (ink_for("darkgrey"), ink_for("grey"), ink_for("white"), ink_for("transparent"),
+          effective_ground_word(["transparent", "transparent", "grey"]),
+          effective_ground_word(["transparent", "darkgrey", "white"]),
+          effective_ground_word(["transparent", "transparent", "transparent"]),
+          ink_for("page")),
+         ("--text-reverse", "--text-secondary", "--text-secondary", None,
+          "grey", "darkgrey", None, "--text-secondary"))
+    _sweep = chord_sweep()
+    _under = ["%s %s/%s %s = %.2f" % (c, th, mode, g, r[mode])
+              for c, th, _ty, _m, g, _tok, r in _sweep
+              for mode in ("light", "dark") if r[mode] < CONTRAST_FLOOR]
+    bite("C4 · ⛔ THE BLOCKING CONTRAST SWEEP (s219-D3(3): 'every ground option contrast-gated, "
+         "the CI sweep is blocking'). Every chord ground, every SECTION ground and every PAGE "
+         "ground — the whole effective-ground chain — four themes, light and dark. A reading under "
+         "the floor is a FAILURE, not a note",
+         (_under, len(_sweep), min(min(r.values()) for *_x, r in _sweep) >= CONTRAST_FLOOR),
+         ([], 3 + 12 + 12, True))
+    bite("C4b · the sweep's own worst reading is the one lane B measured live — legacy dark, "
+         "5.93:1 — so the gate and the browser agree about where the floor is nearest",
+         min(min(r.values()) for *_x, r in _sweep), 5.93)
+
+    # ---- THE THREE MUTANTS, each RED BY NAME ----
+    # ⛔ A mutation test proves the CLAUSE, not the feature ([[mutation-tests-the-clause-not-the-
+    # feature]]) — so each arm names the exact refusal that must appear, not merely "some refusal".
+    # ⛔ A DEEP COPY, AND THE SHALLOW ONE IS WHY. `[dict(c) for c in CHORDS]` shares each chord's
+    # `ranges` object, so an arm that mutates a range would survive its own `finally` and poison
+    # every bite after it — a restored list of aliases restores nothing.
+    import copy as _copy
+    _saved_chords = _copy.deepcopy(CHORDS)
+    try:
+        # ARM 1 — AN ILLEGAL CHORD SNEAKS IN: a third chord claiming MONO GALLERY and the dark
+        # caption ground, which is exactly the thing s219-D3(3) leaves open.
+        CHORDS.append({"id": "$mutant", "name": "Mutant", "ruled_by": "NONE — mutation arm",
+                       "scope": [("mono", "gallery")], "settles": {"rounding": "capsule"},
+                       "ranges": {"capBg": ["darkgrey"]}, "ink_follows": "capBg",
+                       "plain": ["arm"], "quoted": "arm"})
+        CHORDS_BY_ID["$mutant"] = CHORDS[-1]
+        _m1 = (chord_refusals("$mutant", "mono", "gallery", {"capBg": "darkgrey"}),
+               "darkgrey" in capbg_for("gallery", "mono"))
+    finally:
+        CHORDS[:] = _copy.deepcopy(_saved_chords)   # a FRESH copy each time: the
+        # saved list is handed out, not lent — restoring to the same objects an arm
+        # just mutated restores nothing.
+        CHORDS_BY_ID.pop("$mutant", None)
+        CHORDS_BY_ID.update({c["id"]: c for c in CHORDS})
+    bite("C5 · ⬛ MUTANT ONE — AN ILLEGAL CHORD SNEAKS IN (a third chord grants mono the dark "
+         "caption ground). ⚠ AND IT MEASURED WHAT IT WAS WRITTEN TO MEASURE ONLY HALF-WAY: the "
+         "scope check passes (the arm declared its own scope), but `capbg_for` is DERIVED from "
+         "CHORDS, so the arm WIDENS mono's reachable grounds — which is the real damage, and it "
+         "is what this bite asserts. The refusal machinery cannot catch a chord that grants "
+         "itself permission; only the derivation makes the widening visible",
+         (_m1[0], _m1[1], "darkgrey" in capbg_for("gallery", "mono")),
+         ([], True, False))
+    try:
+        # ARM 2 — A CHORD VIOLATING AN EXCLUSION: the capsule chord's ground set is widened to
+        # `transparent`, which X2 (was P3) refuses — a capsule with no edge.
+        CHORDS_BY_ID["capsule"]["ranges"] = {"capBg": ["transparent"]}
+        _m2 = chord_refusals("capsule", "console", "gallery",
+                             {"capBg": "transparent", "bentoBg": "grey", "keylines": "off"})
+    finally:
+        CHORDS[:] = _copy.deepcopy(_saved_chords)   # a FRESH copy each time: the
+        # saved list is handed out, not lent — restoring to the same objects an arm
+        # just mutated restores nothing.
+        CHORDS_BY_ID.update({c["id"]: c for c in CHORDS})
+    bite("C6 · ⬛ MUTANT TWO — A CHORD VIOLATES AN EXCLUSION: the capsule chord is widened to a "
+         "transparent caption ground, and X2 refuses it BY NAME (a capsule with no edge)",
+         ([r.split(" —")[0] for r in _m2], CHORDS_BY_ID["capsule"]["ranges"]["capBg"]),
+         (["X2"], ["grey", "white", "darkgrey"]))
+    _saved_ink = dict(INK_FOR_GROUND)
+    try:
+        # ARM 3 — INK DOES NOT FOLLOW GROUND: the dark ground is re-pointed at the light ink.
+        INK_FOR_GROUND["darkgrey"] = "--text-secondary"
+        _m3 = (ink_violation({"capBg": "darkgrey", "capInk": "--text-reverse"}),
+               contrast_violations("darkgrey", "console"))
+    finally:
+        INK_FOR_GROUND.clear()
+        INK_FOR_GROUND.update(_saved_ink)
+    bite("C7 · ⬛ MUTANT THREE — INK DOES NOT FOLLOW GROUND: the dark ground is re-pointed at the "
+         "light caption ink. X3 reds by name, AND the blocking sweep reds too — in LIGHT mode "
+         "#1A1A1A on #1A1A1A is 1.0:1, which is the whole reason the ink rule is a rule. "
+         "⚠ IT REDS IN LIGHT ONLY, and that is a measurement not a gap: in DARK mode "
+         "`--text-secondary` already resolves to white, so the wrong token happens to paint the "
+         "right colour there. A gate that ran in one mode would have called this arm green",
+         (_m3[0][:2], [r.split(":")[0] for r in _m3[1]], ink_for("darkgrey")),
+         ("X3", ["X4 — console/light"], "--text-reverse"))
+
+    # ---- s219-D3(4), the page re-scope: the dial is GONE and nothing regressed ----
+    bite("C8 · ⬛ s219-D3(4) — pageBg HAS LEFT THE BENTO DIAL GRAMMAR. It is absent from every "
+         "type's dial list and from the option space, and present as a PAGE-LEVEL rail",
+         (["pageBg" in _rails_doc["types"][t]["dials"] for t in
+           ("display", "gallery", "dashboard")],
+          "pageBg" in _rails_doc["dials"],
+          _rails_doc["page_rail"]["level"],
+          _rails_doc["page_rail"]["options"]),
+         ([False, False, False], False, "page", ["page", "white", "grey"]))
+    bite("C8b · ⛔ THE TWELVE KEEP THEIR BEHAVIOUR. Every pageBg word the shipped defaults use maps "
+         "onto a rail member, `transparent` lands on the ground it ALREADY compiled to "
+         "(--background-default), and the map is the only translation anywhere",
+         (sorted(PAGE_RAIL_WORD), PAGE_RAIL_WORD["transparent"], PAGE_TOKEN["page"],
+          # every pageBg word in the twelve, translated, must be a rail member — no orphans
+          sorted({PAGE_RAIL_WORD[w]
+                  for t in ("display", "gallery", "dashboard") for th in THEMES
+                  for w in [_defaults_block()["values"][t][th].get("pageBg")] if w}
+                 ) == sorted({PAGE_RAIL_WORD[w] for w in PAGE_RAIL_WORD}
+                             & set(PAGE_TOKEN))),
+         (["grey", "transparent", "white"], "page", "--background-default", True))
+    bite("C8c · the page rail's dark equivalents are DERIVED — every member resolves in dark "
+         "without a dark-specific choice, so nothing landed PROPOSED",
+         ({w: resolve_token(tok, "mono", "dark") for w, _l, tok in PAGE_RAIL},
+          resolve_token("--background-default", "mono", "light") ==
+          resolve_token("--surface-raised", "mono", "light"),
+          resolve_token("--background-default", "mono", "dark") ==
+          resolve_token("--surface-raised", "mono", "dark")),
+         ({"page": "#1A1A1A", "white": "#1F1F1F", "grey": "#1F1F1F"}, True, False))
+    bite("C8d · the page control is ONE group at the page level, not three copies inside the "
+         "types, and the stage reads its ground from `STATE.page`",
+         ('data-group="page" data-dial="pageBg"' in html,
+          html.count('data-dial="pageBg"'),
+          "stage.setAttribute('data-page-bg', STATE.page.pageBg);" in html),
+         (True, 1, True))
+    bite("C9 · the manifest carries the constraint layer AND the twelve intersections, so the "
+         "library, the editor-to-be and the generator read ONE file (s219-D3(6))",
+         (sorted(_rails_doc["constraints"]),
+          len(_rails_doc["intersections"]) * len(_rails_doc["intersections"]["mono"]),
+          _rails_doc["intersections"]["console"]["gallery"]["chords"],
+          _rails_doc["intersections"]["mono"]["gallery"]["chords"],
+          _rails_doc["intersections"]["console"]["dashboard"]["chords"]),
+         (["$blocking_sweep", "$ink_rule", "$what", "chords", "exclusions"], 12,
+          ["capsule", "rounded"], [], []))
 
     if fails:
         print("gen_bento_matrix_217 --selftest: %d BITE(S) FAILED" % len(fails))

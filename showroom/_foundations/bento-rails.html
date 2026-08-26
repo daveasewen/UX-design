@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gallery grid — Apollo library (Foundations)</title>
+<title>Bento rails — Apollo library (Foundations)</title>
 <!-- APOLLO-FOUNDATIONS PAGE (gen_foundations_217.py) -->
 <link rel="stylesheet" href="../../knowledge/canon/type.css">
 <link rel="stylesheet" href="../../knowledge/canon/canon.css">
@@ -704,89 +704,64 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 .bm-p14{--bm-ar:1.499531; flex-grow:1.499531;}
 .bm-p15{--bm-ar:0.666875; flex-grow:0.666875;}
 
-/* ===========================================================================
-   GRIDS PAGES (#218) — page-local chrome only.
-   ⛔ NO GRID IS DECLARED HERE. The bento pages consume canon's `.c-bento` and
-   the explorer's own controller stylesheet; the 12-column page consumes
-   canon's `.l-cols` / `.l-span-*` under `.cn-layout-utilities`. What is below
-   is the ruled-behaviour note, the token read-out and the overlay's paint.
-   ⛔ EVERY var() CARRIES A LITERAL FALLBACK — an unresolved custom property
-   renders silent black and no gate catches it.
-   =========================================================================== */
-.gx-ruled{border:1px solid var(--line,#D7D8D6); padding:var(--sp-4,16px);
-  margin-top:var(--sp-5,24px);}
-.gx-ruled-title{margin:0 0 var(--sp-2,8px);}
-.gx-ruled p{margin:0 0 var(--sp-2,8px); max-width:88ch;}
-.gx-ruled p:last-child{margin-bottom:0;}
+/* ---- the rails library. One card per chord, short lines, live specimens. ---- */
+.br-cards{display:grid; gap:var(--sp-5,24px);
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
+.br-card{border:1px solid var(--border-subtle,#D7D8D6); padding:var(--sp-4,16px);
+  display:flex; flex-direction:column; gap:var(--sp-3,12px);}
+.br-card h4{margin:0;}
+.br-lines{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:4px;}
+.br-lines li{max-width:44ch;}
+.br-meta{color:var(--text-secondary,#545454); display:flex; flex-wrap:wrap; gap:8px;
+  letter-spacing:0.06em; text-transform:uppercase;}
+.br-pill{border:1px solid var(--border-subtle,#D7D8D6); padding:2px 8px;}
+.br-pill--default{border-color:var(--text-default,#1A1A1A); font-weight:600;}
+.br-spec{border:1px solid var(--border-subtle,#D7D8D6);}
+/* the specimen stage is the EXPLORER'S stage — same class, same attributes, same stylesheet. */
+.br-spec .bm-stage{border:0; margin-top:0;}
+.br-spec .bm-page-ground{padding:var(--sp-4,16px);}
+.br-spec .bm-gtile{grid-column:span 1 !important; grid-row:span 1 !important;}
+.br-table{width:100%; border-collapse:collapse; margin-top:var(--sp-3,12px);}
+.br-table th, .br-table td{border-bottom:1px solid var(--border-subtle,#D7D8D6);
+  padding:6px 10px; text-align:left; vertical-align:top;}
+.br-table th{color:var(--text-secondary,#545454); text-transform:uppercase;
+  letter-spacing:0.08em; font-weight:500;}
+.br-scroll{overflow-x:auto;}
+/* ⚠ SEEN, THEN FIXED: X6's plain words are a paragraph, and an unconstrained cell pushed the
+   FROM and STATUS columns off the right edge in every theme. The wrap keeps the whole rule on
+   screen; the container still scrolls, so a narrow viewport degrades rather than clips. */
+/* ⚠ `table-layout:fixed`, because `max-width` on a cell is ADVISORY under auto layout — the first
+   attempt looked fixed in the markup and still overlapped the next two columns on screen. Only a
+   fixed layout with declared widths actually wraps the paragraph. */
+#exclusions .br-table{table-layout:fixed;}
+#exclusions .br-table th:nth-child(1), #exclusions .br-table td:nth-child(1){width:9ch;}
+#exclusions .br-table th:nth-child(3), #exclusions .br-table td:nth-child(3){width:24ch;}
+#exclusions .br-table th:nth-child(4), #exclusions .br-table td:nth-child(4){width:11ch;}
+/* ⛔ AND THE ACTUAL CAUSE, MEASURED not guessed: the shared Foundations stylesheet puts
+   `white-space:nowrap` on table cells, so a fixed layout still could not wrap. Two fixes were
+   tried before this one was measured in the browser — the lesson is the runbook's own
+   ([[unmatched-grep-is-not-an-absence]]): ask the DOCUMENT what it computed. */
+#exclusions .br-table td, #exclusions .br-table th{white-space:normal; overflow-wrap:anywhere;}
+.br-table td, .br-table th{white-space:normal;}
+.br-open{border-left:3px solid var(--text-default,#1A1A1A); padding-left:var(--sp-3,12px);}
 
-/* ---- the 12-column page ---------------------------------------------------
-   The stage carries the VIEW dials as CONCRETE minted values (s200-D1): each
-   `data-view` sets the two names canon's layout utilities read, `--l-margin`
-   and `--l-gutter`. ⛔ It is a VIEW control — it changes which ruled pair of
-   numbers is on screen, and mints nothing.                                  */
-.gx-stage{border:1px solid var(--line,#D7D8D6); margin-top:var(--sp-4,16px);
-  background:var(--surface-2,#F3F3F3); padding:var(--sp-5,24px) 0;
-  /* ⚠ DECLARED HERE, not merely read with a fallback. MEASURED #218: a name that is only ever
-     read resolves EMPTY on every element, so the page runs on its fallback for ever and the
-     dangling sweep — rightly — calls it a dangle. A page-local dial is declared once, at the
-     top of its own scope, or it is not a dial. The wash is the ONE tint this page authors: the
-     accent at low opacity, so the columns read on any ground in any theme without asking a
-     token for a colour that has not been ruled. */
-  --gx-col:rgba(218,26,0,0.10);}
-
-.gx-frame{position:relative;}
-/* the overlay and the demo row are BOTH canon's `.l-cols`, stacked, so the
-   demo's spans are read against the very grid the overlay draws */
-/* ★ s218-D6 (2) — THE OVERLAY PAINTS BEHIND THE DEMO CONTENT. Dave: "Behind the content".
-   WHY IT WAS IN FRONT, and why source order was never going to fix it: `.gx-overlay` is
-   POSITIONED and `.gx-rows` is not, and a positioned element paints in a later stacking step
-   than in-flow content no matter which comes first in the markup. So the 10% accent wash was
-   laid OVER the demo cards' own opaque surface and tinted every one of them.
-   THE FIX IS A PAIR, and both halves are needed: the overlay is pinned at z-index:0 and the
-   demo stack is given a position + z-index:1 so it paints above it, INSIDE .gx-frame's own
-   stacking context. ⛔ NOT `z-index:-1` on the overlay — a negative index would drop it behind
-   the frame's ancestors' backgrounds too, and on a themed ground the columns would simply
-   disappear. Scoped to `.gx-frame >` so nothing else that uses .gx-rows gains a stacking
-   context it did not ask for. PROVEN IN PIXELS, not by reading this rule back:
-   verify_grids_218.py --page 12col samples one pixel inside a demo card (must be the card's own
-   untinted surface) and one in the gap between rows (must still carry the wash — "behind" must
-   not quietly become "gone"). */
-.gx-overlay{position:absolute; inset:0; pointer-events:none; z-index:0;}
-.gx-frame > .gx-rows{position:relative; z-index:1;}
-.gx-overlay > i{display:block; background:var(--gx-col,rgba(218,26,0,0.10));
-  border-radius:var(--radius-ctl,0px);}
-.gx-demo > *{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
-  border-radius:var(--radius-ctl,0px); padding:var(--sp-3,12px);
-  min-height:var(--tap,44px);}
-.gx-rows{display:flex; flex-direction:column; gap:var(--sp-4,16px);}
-.gx-readout{display:flex; flex-wrap:wrap; gap:var(--sp-5,24px);
-  border:1px solid var(--line,#D7D8D6); padding:var(--sp-4,16px);
-  margin-top:var(--sp-4,16px);}
-.gx-readout div{min-width:120px;}
-.gx-readout dt{color:var(--ink-2,#545454); text-transform:uppercase;
-  letter-spacing:0.14em; margin:0 0 var(--sp-1,4px);}
-.gx-readout dd{margin:0; font-variant-numeric:tabular-nums;}
-.gx-seg{display:inline-flex; flex-wrap:wrap; border:1px solid var(--ink,#1A1A1A);
-  color:var(--ink,#1A1A1A); border-radius:var(--radius-ctl,0px); overflow:hidden;}
-.gx-seg button{font-family:inherit; font-size:12px; font-weight:500; letter-spacing:0.06em;
-  text-transform:uppercase; padding:8px 12px; border:0; background:transparent; color:inherit;
-  cursor:pointer; border-right:1px solid var(--line,#D7D8D6); min-height:var(--tap,44px);}
-.gx-seg button:last-child{border-right:0;}
-.gx-seg button[aria-pressed="true"]{background:var(--ink,#1A1A1A); color:var(--page,#FFFFFF);}
-.gx-ctl{display:flex; flex-wrap:wrap; align-items:center; gap:var(--sp-3,12px);
-  border:1px solid var(--line,#D7D8D6); padding:var(--sp-4,16px);}
-.gx-glabel{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.14em;}
-.gx-tablewrap{overflow-x:auto; margin-top:var(--sp-4,16px);}
-.gx-tablewrap table{border-collapse:collapse; min-width:520px;}
-.gx-tablewrap th, .gx-tablewrap td{text-align:left; padding:6px var(--sp-4,16px) 6px 0;
-  border-bottom:1px solid var(--line,#D7D8D6); vertical-align:top;}
-.gx-tablewrap td.num{font-variant-numeric:tabular-nums;}
+.br-spec{--bm-line:var(--border-subtle,#D7D8D6); --bm-line-2:var(--border-strong,#767676);
+  --bm-ink:var(--text-default,#1A1A1A); --bm-ink-2:var(--text-secondary,#545454);
+  --bm-page:var(--background-default,#FFFFFF);
+  --bm-grey:var(--surface-subtle,#F0F0F0);
+  --bm-white:var(--surface-raised,#FFFFFF);
+  /* ⬛ s219-D3(5) — the ramp's dark step, and s219-D3(2)'s reverse ink beside it. Both carry a
+     literal fallback: a dangling ground var renders SILENT BLACK and no gate sees it. */
+  --bm-darkgrey:var(--surface-digital-black,#1A1A1A);
+  --bm-ink-rev:var(--text-reverse,#FFFFFF);
+  --bm-radius-ctl:var(--border-radius-control,0px);
+  --bm-container-radius:var(--border-radius-container,0px);}
 </style>
 </head>
-<body data-theme="light" data-chrome="1" class="fx bm">
+<body data-theme="light" data-chrome="1" class="fx bm br">
 <header class="app">
-  <h1 class="t-ed-heading-4">Gallery grid</h1>
-  <span class="t-ed-caption">Foundations &middot; Grids &middot; the Gallery bento type</span>
+  <h1 class="t-ed-heading-4">Bento rails</h1>
+  <span class="t-ed-caption">Foundations &middot; the edit-pass option space, generated from the rails manifest &middot; <code>s219-D3</code></span>
   <span class="spacer"></span>
   <div class="ctl"><span class="t-ed-caption">Theme</span>
     <div class="seg" id="themes" role="group" aria-label="Theme">
@@ -806,100 +781,68 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 <main>
 
   <section id="intro">
-    <h2 class="t-ed-heading-3">Gallery grid</h2>
-    <p class="t-ed-body lede">The <b>Gallery</b> grid &mdash; a page-level photography wall, in canon's <code>gallery</code> role: tile radius, the ruled caption block, and no squaring pass unless you ask for a square bottom edge. The dials below are the ruled ones for this type, working, so a
-      designer can drive them; the preview and the export block are rendered in the same pass
-      from the same state object, so the export cannot describe a combination you did not
-      see.</p>
-    <p class="t-ed-body-small lede">⛔ <b>Ruled behaviour only.</b> The five open points
-      <code>s217-D5</code> leaves unruled (P1&ndash;P5) live on the
-      <a href="bento.html">Bento matrix explorer</a>, which is their decision surface. Nothing on
-      this page is proposed, and nothing on it is promoted.</p>
-  </section>
-
-  <section id="controls">
-    <div class="sublabel t-ed-caption">The dials for this type</div>
-    <div class="bm-controls">
-      <div class="bm-group" data-group="gallery" data-dial="spacing"><span class="bm-glabel t-cm-legal">Spacing</span><div class="bm-seg" role="group" aria-label="Spacing"><button type="button" data-value="1">1px</button><button type="button" data-value="2">2px</button><button type="button" data-value="4">4px</button><button type="button" data-value="16">16px</button><button type="button" data-value="24">24px</button><button type="button" data-value="40">40px</button></div><span class="bm-why t-cm-legal"></span></div>
-      <div class="bm-group" data-group="gallery" data-dial="keylines"><span class="bm-glabel t-cm-legal">Keylines</span><div class="bm-seg" role="group" aria-label="Keylines"><button type="button" data-value="on">On</button><button type="button" data-value="off">Off</button></div><span class="bm-why t-cm-legal"></span></div>
-      <div class="bm-group" data-group="gallery" data-dial="mode"><span class="bm-glabel t-cm-legal">Mode</span><div class="bm-seg" role="group" aria-label="Mode"><button type="button" data-value="justified">Justified rows</button><button type="button" data-value="bento">Gallery bento</button></div><span class="bm-why t-cm-legal"></span></div>
-      <div class="bm-group" data-group="gallery" data-dial="edge" data-when="mode:bento"><span class="bm-glabel t-cm-legal">Bottom edge</span><div class="bm-seg" role="group" aria-label="Bottom edge"><button type="button" data-value="ragged">Ragged</button><button type="button" data-value="square">Square</button></div><span class="bm-why t-cm-legal"></span></div>
-      <div class="bm-group" data-group="gallery" data-dial="rounding"><span class="bm-glabel t-cm-legal">Image rounding</span><div class="bm-seg" role="group" aria-label="Image rounding"><button type="button" data-value="corners">4 corners of the image</button><button type="button" data-value="capsule">Full capsule</button></div><span class="bm-why t-cm-legal"></span></div>
-      <div class="bm-group" data-group="page" data-dial="pageBg"><span class="bm-glabel t-cm-legal">Page background</span><div class="bm-seg" role="group" aria-label="Page background"><button type="button" data-value="page">Page ground</button><button type="button" data-value="white">White</button><button type="button" data-value="grey">Lightest grey</button></div><span class="bm-why t-cm-legal">Page-level (s219-D3(4)) — not a bento dial.</span></div>
-      <div class="bm-group" data-group="gallery" data-dial="bentoBg"><span class="bm-glabel t-cm-legal">Section ground</span><div class="bm-seg" role="group" aria-label="Section ground"><button type="button" data-value="grey">Lightest grey</button><button type="button" data-value="white">White</button><button type="button" data-value="darkgrey">Dark grey</button><button type="button" data-value="transparent">Transparent</button></div><span class="bm-why t-cm-legal"></span></div>
-      <div class="bm-group" data-group="gallery" data-dial="capBg"><span class="bm-glabel t-cm-legal">Caption background</span><div class="bm-seg" role="group" aria-label="Caption background"><button type="button" data-value="grey">Lightest grey</button><button type="button" data-value="white">White</button><button type="button" data-value="darkgrey">Dark grey</button><button type="button" data-value="transparent">Transparent</button></div><span class="bm-why t-cm-legal"></span></div>
-    </div>
-    <p class="bm-capt t-cm-legal" id="bm-moved"></p>
-
-    <div class="bm-stage" id="bm-stage" data-type="gallery" data-spacing="24" data-keylines="on"
-         data-page-bg="white" data-bento-bg="grey">
-      <div class="bm-page-ground">
-
-        <div class="bm-pane" data-pane="gallery">
-          <p class="bm-capt t-cm-legal">GALLERY &mdash; a page-level photography wall, all 15
-            committed derivatives. <b>Gallery bento</b> uses canon's span grid with the bottom
-            edge ragged or squared; <b>Justified rows</b> uses the row packing from
-            <code>gen_gallery_compare_217.pack_rows</code> &mdash; the same arithmetic, imported.
-            The RADIUS sits on the tiles and the ruled caption block is 86px
-            (<code>s217-D3</code>). ⚠ In the <b>console</b> theme this type has no keyline
-            control at all &mdash; <code>s217-D6</code> excludes it, so the group is REMOVED from
-            the page rather than disabled.</p>
-          <div class="c-bento bm-wall bm-gallery" data-bento-role="gallery">
-            <div class="c-bento__grid">
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="2" data-r="2" data-ragged="2,2" data-square="2,2"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family." loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family.</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="2" data-ragged="1,2" data-square="1,2"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">a person is climbing the stairs towards a modern building during winter</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1394386010-144dpi-w1600.jpg" alt="Businesswoman talking on phone from office window overlooking Hong Kong cityscape" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Businesswoman talking on phone from office window overlooking Hong Kong cityscape</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1498039805-w1600.jpg" alt="Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="2" data-r="2" data-ragged="2,2" data-square="2,2"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1708273322-w1600.jpg" alt="Father and child looking out of the window, on to their garden whilst watching the sunrise" loading="lazy" width="1600" height="1127"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Father and child looking out of the window, on to their garden whilst watching the sunrise</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-2179684483-w1600.jpg" alt="A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-2190197969-144dpi-w1600.jpg" alt="Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night." loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night.</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-2208294966-144dpi-w1600.jpg" alt="Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-653972314-w1600.jpg" alt="Jaipur, India - Hands weaving a oriental rug." loading="lazy" width="1600" height="1065"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Jaipur, India - Hands weaving a oriental rug.</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,2"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-968890266-w1600.jpg" alt="Woman carrying baby son and cooking in kitchen" loading="lazy" width="1600" height="1068"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Woman carrying baby son and cooking in kitchen</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="2" data-ragged="1,2" data-square="1,2"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-ca60828-144dpi-w1600.jpg" alt="An older woman with warm sun on her face" loading="lazy" width="1106" height="1600"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">An older woman with warm sun on her face</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…</span><span class="bm-lic t-cm-legal">Kike Arnaiz / Stocksy United</span></figcaption></figure>
-        <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="2" data-ragged="1,2" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan." loading="lazy" width="1067" height="1600"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan.</span><span class="bm-lic t-cm-legal">Gemma Can Fly / Stocksy United</span></figcaption></figure>
-            </div>
-          </div>
-          <div class="c-bento bm-wall bm-just" data-bento-role="gallery">
-<div class="bm-jrow"><figure class="bm-jtile bm-p1" data-ar="1.499531"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure><figure class="bm-jtile bm-p2" data-ar="1.499531"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1159761634-144dpi-w1600.jpg" alt="Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Cropped shot of a diverse group of businesspeople sitting and having a meeting in a boardroom while in the office</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure><figure class="bm-jtile bm-p3" data-ar="1.499531"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1271527435-w1600.jpg" alt="Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family." loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Close-up of a mother putting her daughter into car seat, getting ready to go to school. Daily routine for a young family.</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure></div>
-<div class="bm-jrow"><figure class="bm-jtile bm-p4" data-ar="0.665625"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1336692652-w1600.jpg" alt="a person is climbing the stairs towards a modern building during winter" loading="lazy" width="1065" height="1600"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">a person is climbing the stairs towards a modern building during winter</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure><figure class="bm-jtile bm-p5" data-ar="1.499531"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1394386010-144dpi-w1600.jpg" alt="Businesswoman talking on phone from office window overlooking Hong Kong cityscape" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Businesswoman talking on phone from office window overlooking Hong Kong cityscape</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure><figure class="bm-jtile bm-p6" data-ar="1.499531"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1498039805-w1600.jpg" alt="Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Interior view of a stairway within a building, showing architectural design, structural lines and access between floors. The…</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure></div>
-<div class="bm-jrow"><figure class="bm-jtile bm-p7" data-ar="1.419698"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-1708273322-w1600.jpg" alt="Father and child looking out of the window, on to their garden whilst watching the sunrise" loading="lazy" width="1600" height="1127"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Father and child looking out of the window, on to their garden whilst watching the sunrise</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure><figure class="bm-jtile bm-p8" data-ar="1.499531"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-2179684483-w1600.jpg" alt="A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">A diverse group of people actively participates in a business conference, with several individuals raising their hands to ask…</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure><figure class="bm-jtile bm-p9" data-ar="1.499531"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-2190197969-144dpi-w1600.jpg" alt="Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night." loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Selective focus on taxi sign on roof of car on city street illuminated by neon lights at night.</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure></div>
-<div class="bm-jrow"><figure class="bm-jtile bm-p10" data-ar="1.499531"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-2208294966-144dpi-w1600.jpg" alt="Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Silhouette of two arab businessmen shaking hands in Dubai with Burj Khalifa in the background</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure><figure class="bm-jtile bm-p11" data-ar="1.502347"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-653972314-w1600.jpg" alt="Jaipur, India - Hands weaving a oriental rug." loading="lazy" width="1600" height="1065"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Jaipur, India - Hands weaving a oriental rug.</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure><figure class="bm-jtile bm-p12" data-ar="1.498127"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-968890266-w1600.jpg" alt="Woman carrying baby son and cooking in kitchen" loading="lazy" width="1600" height="1068"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Woman carrying baby son and cooking in kitchen</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure></div>
-<div class="bm-jrow bm-jwidows"><figure class="bm-jtile bm-widow bm-p13" data-ar="0.691250"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/gettyimages-ca60828-144dpi-w1600.jpg" alt="An older woman with warm sun on her face" loading="lazy" width="1106" height="1600"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">An older woman with warm sun on her face</span><span class="bm-lic t-cm-legal">Getty Images</span></figcaption></figure><figure class="bm-jtile bm-widow bm-p14" data-ar="1.499531"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/stocksy-5217047-w1600.jpg" alt="Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Shot from a car window of sunset rays peaking through two big mountain walls in a valley  in the desert of saudi arabia during a…</span><span class="bm-lic t-cm-legal">Kike Arnaiz / Stocksy United</span></figcaption></figure><figure class="bm-jtile bm-widow bm-p15" data-ar="0.666875"><span class="bm-jbox"><img class="bm-img" src="../../knowledge/assets/photography-web/stocksy-6629948-w1600.jpg" alt="Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan." loading="lazy" width="1067" height="1600"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">Person holding red umbrella frames torii gate at dusk in rainy landscape. Miyashima island, Hiroshima Bay, Japan.</span><span class="bm-lic t-cm-legal">Gemma Can Fly / Stocksy United</span></figcaption></figure></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="bm-export">
-      <div class="bm-exhead">
-        <span class="t-cm-legal">Export &mdash; concrete values, resolved in the theme and mode
-          on screen (<code>s200-D1</code>), no <code>var()</code> chain.</span>
-        <button class="bm-btn t-cm-ctl-14" type="button" id="bm-rebuild">Rebuild export</button>
-      </div>
-      <pre><code id="bm-export" class="t-cm-legal"></code></pre>
-    </div>
-  </section>
-
-  <section id="notes" class="notes">
-    <h2 class="t-ed-heading-4">What this page is, and is not</h2>
-    <ul class="t-ed-body-small">
-      <li><b>Nothing is re-drawn and nothing is re-derived.</b> The content, the spans, the
-        packing and the corner rules all come from
-        <code>knowledge/_render/gen_bento_matrix_217.py</code> &mdash; the same modules the
-        matrix explorer renders from, consumed rather than copied. One data path, one maths.</li>
-      <li><b>No bento structure is declared here.</b> The grid, the span vocabulary, the
-        responsive bands, the three role rules and the caption space are canon's
-        (<code>s217-D2</code> / <code>s217-D3</code>). This type renders as canon's
-        <code>gallery</code> role, which is what makes every radius and spacing decision on the page
-        canon's own rule resolving.</li>
-      <li><b>No colour is authored.</b> Every ground is <code>--surface-subtle</code>,
-        <code>--surface-raised</code> or nothing at all; the controller chrome is neutral.</li>
+    <h2 class="t-ed-heading-3">Bento rails</h2>
+    <p class="t-ed-body lede">Every option the bento edit pass offers, per theme and type.</p>
+    <p class="t-ed-body lede">This page, the bento editor and the generator all read
+      <b>one file</b> &mdash; <code>knowledge/_render/_bento_edit_rails.json</code>.
+      Nothing here is typed twice, so none of the three can drift from the others
+      (<code>s219-D3(6)</code>).</p>
+    <ul class="br-lines t-ed-body-small">
+      <li><b>Generation</b> ships the defaults. No decisions up front.</li>
+      <li><b>Editing</b> picks within these rails. It cannot leave canon.</li>
+      <li><b>Authoring</b> is the only mode that widens them, and that is a governance act.</li>
     </ul>
   </section>
+
+  <section id="chords">
+    <h3 class="t-ed-heading-4">Chords</h3>
+    <p class="t-ed-body lede">A chord settles several dials together.</p>
+    <p class="t-ed-body-small lede">You pick the chord. The text colour follows the ground on its
+      own, and every ground on offer has been measured for contrast. The two chords below are
+      <code>s219-D3(3)</code>, scoped to the console gallery.</p>
+    <p class="t-ed-body-small lede">Ink rule: darkgrey → --text-reverse · grey → --text-secondary · page → --text-secondary · white → --text-secondary. Floor: 4.5:1.</p>
+    <div class="br-cards"><div class="br-card"><h4 class="t-ed-heading-5">Capsule — Lightest grey</h4><div class="br-meta t-cm-legal"><span class="br-pill t-cm-legal">console gallery</span><span class="br-pill br-pill--default t-cm-legal">The default</span><span class="br-pill t-cm-legal">Ground: Lightest grey</span><span class="br-pill t-cm-legal">Ink: --text-secondary</span><span class="br-pill t-cm-legal">light 15.27:1 · dark 16.48:1</span></div><ul class="br-lines"><li class="t-ed-body-small">The whole tile is one capsule.</li><li class="t-ed-body-small">The caption sits inside it, on a ground from the grey ramp.</li><li class="t-ed-body-small">Dark grey is on the ramp, and its text reverses out.</li><li class="t-ed-body-small">You choose the ground. The text colour follows it.</li></ul><div class="br-spec" data-apollo-theme="console"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="grey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div><p class="t-cm-legal br-meta">Ruled by s219-D3(3) chord one</p></div><div class="br-card"><h4 class="t-ed-heading-5">Capsule — White</h4><div class="br-meta t-cm-legal"><span class="br-pill t-cm-legal">console gallery</span><span class="br-pill t-cm-legal">Ground: White</span><span class="br-pill t-cm-legal">Ink: --text-secondary</span><span class="br-pill t-cm-legal">light 17.4:1 · dark 16.48:1</span></div><ul class="br-lines"><li class="t-ed-body-small">The whole tile is one capsule.</li><li class="t-ed-body-small">The caption sits inside it, on a ground from the grey ramp.</li><li class="t-ed-body-small">Dark grey is on the ramp, and its text reverses out.</li><li class="t-ed-body-small">You choose the ground. The text colour follows it.</li></ul><div class="br-spec" data-apollo-theme="console"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="white"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div><p class="t-cm-legal br-meta">Ruled by s219-D3(3) chord one</p></div><div class="br-card"><h4 class="t-ed-heading-5">Capsule — Dark grey</h4><div class="br-meta t-cm-legal"><span class="br-pill t-cm-legal">console gallery</span><span class="br-pill t-cm-legal">Ground: Dark grey</span><span class="br-pill t-cm-legal">Ink: --text-reverse</span><span class="br-pill t-cm-legal">light 17.4:1 · dark 17.4:1</span></div><ul class="br-lines"><li class="t-ed-body-small">The whole tile is one capsule.</li><li class="t-ed-body-small">The caption sits inside it, on a ground from the grey ramp.</li><li class="t-ed-body-small">Dark grey is on the ramp, and its text reverses out.</li><li class="t-ed-body-small">You choose the ground. The text colour follows it.</li></ul><div class="br-spec" data-apollo-theme="console"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div><p class="t-cm-legal br-meta">Ruled by s219-D3(3) chord one</p></div><div class="br-card"><h4 class="t-ed-heading-5">Rounded</h4><div class="br-meta t-cm-legal"><span class="br-pill t-cm-legal">console gallery</span></div><ul class="br-lines"><li class="t-ed-body-small">Four rounded corners on the image.</li><li class="t-ed-body-small">The caption has no ground of its own.</li><li class="t-ed-body-small">Its text sits on whatever is behind — the wall, or the page.</li></ul><div class="br-spec" data-apollo-theme="console"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="corners" data-cap-bg="transparent"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div><p class="t-cm-legal br-meta">Ruled by s219-D3(3) chord two</p></div></div>
+  </section>
+
+  <section id="page-rail">
+    <h3 class="t-ed-heading-4">Page background</h3>
+    <p class="t-ed-body lede">Not a bento dial. A page-level decision with its own small rail
+      (<code>s219-D3(4)</code>).</p>
+    <p class="t-ed-body-small lede">The twelve shipped defaults spell the page ground grey/white/transparent. On a page body `transparent` never meant &#x27;paint nothing&#x27; — it already compiled to --background-default (gen_foundations_217.page_bg_decl). The rail names that ground `page`; the map above sends the old word to it. Same declaration, same pixels. Receipts and exports under notes/ are FROZEN HISTORY and keep the old word.</p>
+    <p class="t-ed-body-small lede">`page` and `white` resolve to the SAME colour in LIGHT mode in all four themes and DIFFER in dark. Both are kept: the pair is a real distinction the tokens make. SURFACED, never swapped.</p>
+    <div class="br-cards"><div class="br-card"><h4 class="t-ed-heading-5">Page ground</h4><div class="br-meta t-cm-legal"><span class="br-pill">--background-default</span><span class="br-pill">light #FFFFFF</span><span class="br-pill">dark #1A1A1A</span></div><div class="br-spec" data-apollo-theme="mono"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="grey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div><div class="br-card"><h4 class="t-ed-heading-5">White</h4><div class="br-meta t-cm-legal"><span class="br-pill">--surface-raised</span><span class="br-pill">light #FFFFFF</span><span class="br-pill">dark #1F1F1F</span></div><div class="br-spec" data-apollo-theme="mono"><div class="bm-stage" data-type="gallery" data-page-bg="white" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="grey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div><div class="br-card"><h4 class="t-ed-heading-5">Lightest grey</h4><div class="br-meta t-cm-legal"><span class="br-pill">--surface-subtle</span><span class="br-pill">light #F0F0F0</span><span class="br-pill">dark #1F1F1F</span></div><div class="br-spec" data-apollo-theme="mono"><div class="bm-stage" data-type="gallery" data-page-bg="grey" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="grey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright © 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+  </section>
+
+  <section id="exclusions">
+    <h3 class="t-ed-heading-4">What excludes what</h3>
+    <p class="t-ed-body lede">Some decisions rule others out. These are the rules, in plain
+      words.</p>
+    <div class="br-scroll"><table class="br-table">
+      <thead><tr><th>Rule</th><th>In plain words</th><th>From</th><th>Status</th></tr></thead>
+      <tbody><tr><td><b>X1</b></td><td>A caption cannot sit on its own colour. Grey on grey has no edge.</td><td class='t-cm-legal'>P2</td><td class='t-cm-legal'>PROPOSED</td></tr><tr><td><b>X2</b></td><td>A capsule needs an edge. Give the caption a ground, or turn keylines on.</td><td class='t-cm-legal'>P3</td><td class='t-cm-legal'>PROPOSED</td></tr><tr><td><b>X3</b></td><td>Text colour is not a dial. It follows the ground underneath it.</td><td class='t-cm-legal'>s219-D3(2)</td><td class='t-cm-legal'>RULED</td></tr><tr><td><b>X4</b></td><td>Every ground on offer has to be readable. Anything under 4.5:1 is not offered.</td><td class='t-cm-legal'>s219-D3(2) — &#x27;contrast-gated&#x27;</td><td class='t-cm-legal'>RULED</td></tr><tr><td><b>X5</b></td><td>Capsule and Rounded are two answers to one question. Pick one.</td><td class='t-cm-legal'>s219-D3(2) — &#x27;some decisions might exclude others&#x27;</td><td class='t-cm-legal'>RULED</td></tr><tr><td><b>X6</b></td><td>The dark caption ground belongs to the console capsule chord. Whether mono may have it is an open question for Dave — it is not refused on taste, it is simply not ruled yet.</td><td class='t-cm-legal'>s219-D3(3) — Mono&#x27;s access is EXPRESSLY OPEN</td><td class='t-cm-legal'>OPEN</td></tr></tbody></table></div>
+    <div class="br-open"><p class="t-ed-body-small"><b>Open, not ruled.</b> MONO&#x27;S ACCESS TO THE DARK-CAPTION CHORD. s219-D3(3) says it is EXPRESSLY OPEN and not ruled. Nothing here grants it: `capbg_for(&#x27;gallery&#x27;,&#x27;mono&#x27;)` does not carry `darkgrey`, and the refusal names this question as its reason rather than a preference. FOR DAVE.</p></div>
+  </section>
+
+  <section id="space">
+    <h3 class="t-ed-heading-4">The full option space</h3>
+    <p class="t-ed-body lede">Every dial, every theme, every type &mdash; read from the
+      manifest.</p>
+  </section>
+  <section id="space-display"><h3 class="t-ed-heading-4">Display</h3><p class="t-ed-body-small lede">Bold is the shipped default. The page ground is not here — it is a page-level decision (grey / page in this type's defaults).</p><div class="br-scroll"><table class="br-table"><thead><tr><th>Theme</th><th>Dials and their options</th><th>Chords</th><th>Exclusions</th></tr></thead><tbody><tr><td><b>mono</b></td><td><table class='br-table'><tr><td>spacing</td><td>1 · 2 · 4 · <b>16</b> · 24 · 40</td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X3, X4</td></tr><tr><td><b>legacy</b></td><td><table class='br-table'><tr><td>spacing</td><td>1 · 2 · 4 · 16 · <b>24</b> · 40</td></tr><tr><td>keylines</td><td><b>on</b> · off</td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X3, X4</td></tr><tr><td><b>console</b></td><td><table class='br-table'><tr><td>spacing</td><td>1 · 2 · 4 · 16 · <b>24</b> · 40</td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X3, X4</td></tr><tr><td><b>supercharge</b></td><td><table class='br-table'><tr><td>spacing</td><td>1 · <b>2</b> · 4 · 16 · 24 · 40</td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X3, X4</td></tr></tbody></table></div></section><section id="space-gallery"><h3 class="t-ed-heading-4">Gallery</h3><p class="t-ed-body-small lede">Bold is the shipped default. The page ground is not here — it is a page-level decision (page / white in this type's defaults).</p><div class="br-scroll"><table class="br-table"><thead><tr><th>Theme</th><th>Dials and their options</th><th>Chords</th><th>Exclusions</th></tr></thead><tbody><tr><td><b>mono</b></td><td><table class='br-table'><tr><td>spacing</td><td>1 · 2 · 4 · 16 · 24 · <b>40</b></td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>mode</td><td>justified · <b>bento</b></td></tr><tr><td>edge</td><td>ragged · <b>square</b></td></tr><tr><td>rounding</td><td><b>corners</b> · capsule</td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr><tr><td>capBg</td><td><b>grey</b> · white · transparent</td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X1, X2, X3, X4, X5, X6</td></tr><tr><td><b>legacy</b></td><td><table class='br-table'><tr><td>spacing</td><td>1 · 2 · 4 · 16 · <b>24</b> · 40</td></tr><tr><td>keylines</td><td><b>on</b> · off</td></tr><tr><td>mode</td><td>justified · <b>bento</b></td></tr><tr><td>edge</td><td>ragged · <b>square</b></td></tr><tr><td>rounding</td><td><b>corners</b> · capsule</td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr><tr><td>capBg</td><td>grey · white · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X1, X2, X3, X4, X5, X6</td></tr><tr><td><b>console</b></td><td><table class='br-table'><tr><td>spacing</td><td>1 · 2 · 4 · 16 · 24 · <b>40</b></td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>mode</td><td>justified · <b>bento</b></td></tr><tr><td>edge</td><td>ragged · <b>square</b></td></tr><tr><td>rounding</td><td>corners · <b>capsule</b></td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr><tr><td>capBg</td><td><b>grey</b> · white · darkgrey · transparent</td></tr></table></td><td class='t-cm-legal'>capsule, rounded</td><td class='t-cm-legal'>X1, X2, X3, X4, X5, X6</td></tr><tr><td><b>supercharge</b></td><td><table class='br-table'><tr><td>spacing</td><td><b>1</b> · 2 · 4 · 16 · 24 · 40</td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>mode</td><td>justified · <b>bento</b></td></tr><tr><td>edge</td><td>ragged · <b>square</b></td></tr><tr><td>rounding</td><td><b>corners</b> · capsule</td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr><tr><td>capBg</td><td>grey · white · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X1, X2, X3, X4, X5, X6</td></tr></tbody></table></div></section><section id="space-dashboard"><h3 class="t-ed-heading-4">Dashboard</h3><p class="t-ed-body-small lede">Bold is the shipped default. The page ground is not here — it is a page-level decision (grey in this type's defaults).</p><div class="br-scroll"><table class="br-table"><thead><tr><th>Theme</th><th>Dials and their options</th><th>Chords</th><th>Exclusions</th></tr></thead><tbody><tr><td><b>mono</b></td><td><table class='br-table'><tr><td>mainSpacing</td><td>1 · 2 · 4 · 16 · 24 · <b>40</b></td></tr><tr><td>subSpacing</td><td>1 · 2 · <b>4</b> · 16 · 24 · 40</td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X3, X4</td></tr><tr><td><b>legacy</b></td><td><table class='br-table'><tr><td>mainSpacing</td><td>1 · 2 · 4 · 16 · <b>24</b> · 40</td></tr><tr><td>subSpacing</td><td>1 · 2 · <b>4</b> · 16 · 24 · 40</td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X3, X4</td></tr><tr><td><b>console</b></td><td><table class='br-table'><tr><td>mainSpacing</td><td>1 · 2 · 4 · 16 · 24 · <b>40</b></td></tr><tr><td>subSpacing</td><td>1 · 2 · <b>4</b> · 16 · 24 · 40</td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X3, X4</td></tr><tr><td><b>supercharge</b></td><td><table class='br-table'><tr><td>mainSpacing</td><td>1 · 2 · 4 · 16 · <b>24</b> · 40</td></tr><tr><td>subSpacing</td><td>1 · <b>2</b> · 4 · 16 · 24 · 40</td></tr><tr><td>keylines</td><td>on · <b>off</b></td></tr><tr><td>bentoBg</td><td>grey · white · darkgrey · <b>transparent</b></td></tr></table></td><td class='t-cm-legal'>none ruled</td><td class='t-cm-legal'>X3, X4</td></tr></tbody></table></div></section>
 </main>
 <script>
 (function(){
@@ -945,314 +888,6 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
         + ' \u2014 the lightbox needs both';
   }
 })();
-</script>
-<script>
-(function(){
-  // ⬛ s219-D3(4) — `page` IS ITS OWN LEVEL IN THE STATE OBJECT, beside the three types rather
-  // than repeated inside each of them. A page ground copied into every type would be three
-  // answers to a question the ruling says is asked once.
-  var STATE = {
-    type: 'display',
-    page:     {pageBg:'white'},
-    display:  {spacing:'24', keylines:'on',  bentoBg:'grey'},
-    gallery:  {spacing:'24', keylines:'on',  mode:'bento', edge:'ragged', rounding:'corners',
-               bentoBg:'grey', capBg:'white'},
-    dashboard:{mainSpacing:'24', subSpacing:'1', keylines:'on', bentoBg:'white'}
-  };
-  // s219-D3(3) — the theme x type intersections where the dark caption ground is reachable, and
-  // the OPEN QUESTION printed at every refusal outside them. Injected from Python's CHORDS.
-  var CAPBG_DARK_SCOPE = [["console", "gallery"]];
-  var X6_PLAIN = "The dark caption ground belongs to the console capsule chord. Whether mono may have it is an open question for Dave \u2014 it is not refused on taste, it is simply not ruled yet.";
-  // s219-D3(2) — INK FOLLOWS GROUND. Mirrored from Python's INK_FOR_GROUND so the export can say
-  // which ink a ground implies without a second opinion about it.
-  var INK_FOR_GROUND = {"darkgrey": "--text-reverse", "grey": "--text-secondary", "page": "--text-secondary", "white": "--text-secondary"};
-  var stage = document.getElementById('bm-stage');
-  var out   = document.getElementById('bm-export');
-
-  // ⬛ s217-D6 — THE SNAP LADDER, mirrored from gen_bento_matrix_217.SUB_STOPS. ONE ladder, and
-  // the CSS carries one declared rule per member, so a value off the ladder cannot render.
-  var SUB_STOPS = [1, 2, 4, 16, 24, 40];
-  // ⛔ CANON'S ROLE ATTRIBUTE → THE RULED TYPE NAME (s217-D5). Inverted from Python's ONE
-  // `TYPE_ROLE` map at mint time, never re-typed here — a second copy of a rename is how the old
-  // word survives in one of the two places.
-  var ROLE_TYPE = {"brochureware": "display", "dashboard": "dashboard", "gallery": "gallery"};
-  function snap(px){
-    var v = parseFloat(px); if (isNaN(v)) v = SUB_STOPS[0];
-    return SUB_STOPS.reduce(function(a, b){
-      return (Math.abs(b - v) < Math.abs(a - v)) ? b : a; });
-  }
-
-  // ⬛ s217-D6 — GALLERY IN CONSOLE EXCLUDES KEYLINES. ABSENT, NOT DISABLED, and 'absent' is only
-  // an honest word if the node is really gone: the group is lifted OUT of the document and an
-  // anchor comment is left where it stood, so it can be put back exactly when the theme changes.
-  // Hiding it would leave a probe unable to tell exclusion from a collapsed control.
-  var KEYLINE_EXCLUDED = [];
-  var PARKED = {};
-  Array.prototype.forEach.call(
-    document.querySelectorAll('.bm-group[data-dial="keylines"]'), function(g){
-      var t = g.getAttribute('data-group');
-      var anchor = document.createComment('bm-keylines-' + t);
-      g.parentNode.insertBefore(anchor, g);
-      PARKED[t] = {node: g, anchor: anchor};
-    });
-  function keylinesExcluded(type){
-    var theme = document.documentElement.getAttribute('data-apollo-theme');
-    for (var i = 0; i < KEYLINE_EXCLUDED.length; i++)
-      if (KEYLINE_EXCLUDED[i][0] === type && KEYLINE_EXCLUDED[i][1] === theme) return true;
-    return false;
-  }
-  function syncExclusions(){
-    Object.keys(PARKED).forEach(function(t){
-      var e = PARKED[t], present = !!e.node.parentNode;
-      if (keylinesExcluded(t)) {
-        // ⛔ AND THE STATE MOVES WITH THE CONTROL. Leaving `keylines:'on'` in the state object
-        // while the control is gone would export a dial the page no longer offers.
-        if (STATE[t]) STATE[t].keylines = 'off';
-        if (present) e.node.parentNode.removeChild(e.node);
-      } else if (!present) {
-        e.anchor.parentNode.insertBefore(e.node, e.anchor.nextSibling);
-      }
-    });
-  }
-
-  // ⛔ THE LEGALITY RULES — the browser-side statement of the SAME two rules the page's matrix
-  // count is computed from (P2, P3). A reason string is a REFUSAL; '' is legal.
-  function legality(){
-    var g = STATE.gallery, r = {};
-    
-    var theme = document.documentElement.getAttribute('data-apollo-theme');
-    // X1 (was P2) — a caption colour is judged against its IMMEDIATE ground (the bento background
-    // behind the tile). Transparent is always legal: it has no ground of its own to collide with.
-    ['grey','white','darkgrey','transparent'].forEach(function(v){
-      r['capBg:' + v] = (v !== 'transparent' && v === g.bentoBg)
-        ? ('X1 — the caption would be ' + v + ' on ' + v + ', its own ground. '
-           + 'A white caption needs a grey ground, and the inverse (s217-D5).')
-        : '';
-    });
-    // ⬛ X6, s219-D3(3) — THE DARK CAPTION GROUND IS A CHORD OPTION, SCOPED CONSOLE GALLERY. It is
-    // refused everywhere else and the refusal prints the OPEN QUESTION as its reason, because it
-    // is not refused on taste: Dave has not ruled it. An option refused with a preference reads as
-    // settled; an option refused with a question reads as open.
-    var darkScoped = false;
-    for (var i = 0; i < CAPBG_DARK_SCOPE.length; i++)
-      if (CAPBG_DARK_SCOPE[i][0] === theme && CAPBG_DARK_SCOPE[i][1] === 'gallery')
-        darkScoped = true;
-    if (!darkScoped) r['capBg:darkgrey'] = 'X6 — ' + X6_PLAIN;
-    // X2 (was P3) — the full capsule needs an edge: a caption background OR keylines.
-    r['rounding:capsule'] = (g.capBg === 'transparent' && g.keylines === 'off')
-      ? 'X2 — a capsule with a transparent caption and no keylines has no edge to round. '
-        + 'Turn keylines on, or give the caption a background. PROPOSED (open point 3).'
-      : '';
-    r['rounding:corners'] = '';
-
-    return r;
-  }
-
-  function repair(){
-    // ⛔ NO REACHABLE STATE MAY RENDER NOTHING, and no dial may sit on a refused value. If a
-    // change makes the current selection illegal, the page MOVES the selection to the legal
-    // neighbour and SAYS SO — silence here would leave a control pressed on an option the page
-    // refuses to draw.
-    var l = legality(), moved = [];
-    if (l['capBg:' + STATE.gallery.capBg]) { STATE.gallery.capBg = 'transparent';
-      moved.push('caption background moved to Transparent'); }
-    l = legality();
-    if (l['rounding:' + STATE.gallery.rounding]) { STATE.gallery.rounding = 'corners';
-      moved.push('image rounding moved to 4 corners'); }
-    return moved;
-  }
-
-  // ⬛ s219-D3(2) — INK FOLLOWS THE EFFECTIVE GROUND, in the export as well as in the paint. The
-  // word-level twin of Python's `effective_ground_word`: the first ground in the chain that is not
-  // transparent is the one the ink is judged against.
-  function effectiveGround(){
-    var s = STATE[STATE.type];
-    var chain = [s.capBg, s.bentoBg, STATE.page.pageBg];
-    for (var i = 0; i < chain.length; i++)
-      if (chain[i] && chain[i] !== 'transparent') return chain[i];
-    return null;
-  }
-
-  function resolved(){
-    // s200-D1 — CONCRETE VALUES, read out of the live document in the state on screen. No var()
-    // chain reaches the export; where a dial says "the theme token", the exporter writes down the
-    // number the theme actually resolved.
-    var pane = stage.querySelector('.bm-pane[data-pane="' + STATE.type + '"]');
-    var wall = pane ? pane.querySelector('.c-bento') : null;
-    var grid = wall ? wall.querySelector('.c-bento__grid') : null;
-    var tile = grid ? grid.querySelector('.c-bento__tile') : null;
-    var cap  = pane ? pane.querySelector('.bm-cap') : null;
-    var ground = stage.querySelector('.bm-page-ground');
-    var px = function(v){ return Math.round(parseFloat(v) || 0); };
-    // ⛔ s217-D5's RENAME, ENACTED IN THE RESOLVER — the #219 receipt caught it: every DISPLAY
-    // export in Dave's twelve read `"role": "brochureware"`, the word s217-D5 renamed to DISPLAY,
-    // because the exporter wrote down the DOM attribute and canon's attribute keeps the old word.
-    // Both facts are true and the export now says both: `role` is the RULED name (the reader's
-    // vocabulary) and `canonRole` is the attribute the wall actually carries (the machine's). A
-    // rename enacted only in the markup is a rename that leaks through every export.
-    var raw = wall ? wall.getAttribute('data-bento-role') : null;
-    var eg = effectiveGround();
-    return {
-      theme: document.documentElement.getAttribute('data-apollo-theme'),
-      mode: document.body.getAttribute('data-theme'),
-      role: (raw && ROLE_TYPE[raw]) || raw,
-      canonRole: raw,
-      // ⬛ s219-D3(2)/(4) — the page ground is a PAGE-LEVEL fact and the export says so under its
-      // own name; the effective ground and the ink it implies are DERIVED and written down beside
-      // the paint, so the export can be checked against what the eye sees.
-      pageGround: STATE.page.pageBg,
-      effectiveGround: eg,
-      inkToken: eg ? (INK_FOR_GROUND[eg] || null) : null,
-      captionInk: cap ? getComputedStyle(cap).color : null,
-      gutterPx: grid ? px(getComputedStyle(grid).columnGap) : null,
-      containerRadiusPx: wall ? px(getComputedStyle(wall).borderTopLeftRadius) : null,
-      tileRadiusPx: tile ? px(getComputedStyle(tile).borderTopLeftRadius) : null,
-      tileBorderPx: tile ? px(getComputedStyle(tile).borderTopWidth) : null,
-      pageBackground: ground ? getComputedStyle(ground).backgroundColor : null,
-      bentoBackground: wall ? getComputedStyle(wall).backgroundColor : null,
-      captionBackground: cap ? getComputedStyle(cap).backgroundColor : null,
-      captionSpacePx: cap ? px(getComputedStyle(cap).minHeight) : null
-    };
-  }
-
-  function spans(){
-    // The ragged/square dial is a MINT-TIME span swap, not a second CSS vocabulary: it rewrites
-    // canon's own `data-c`/`data-r`, so the responsive bands keep working underneath it.
-    var want = (STATE.gallery.mode === 'bento' && STATE.gallery.edge === 'square')
-             ? 'square' : 'ragged';
-    Array.prototype.forEach.call(stage.querySelectorAll('.bm-gtile'), function(t){
-      var v = (t.getAttribute('data-' + want) || '1,1').split(',');
-      t.setAttribute('data-c', v[0]); t.setAttribute('data-r', v[1]);
-    });
-  }
-
-  function syncSlider(){
-    // ⛔ THE STATE IS THE TRUTH AND THE CONTROL IS REDRAWN FROM IT. The snap happens here, once,
-    // BEFORE the stage attribute is written — so the CSS, the thumb, the read-out and the export
-    // are four views of one snapped number and cannot disagree.
-    var v = snap(STATE.dashboard.subSpacing);
-    STATE.dashboard.subSpacing = String(v);
-    var range = document.getElementById('bm-subSpacing');
-    if (range) {
-      if (String(range.value) !== String(v)) range.value = v;
-      range.setAttribute('aria-valuetext', v + 'px');
-    }
-    var o = document.getElementById('bm-subSpacing-out');
-    if (o) o.textContent = v + 'px';
-  }
-
-  function apply(){
-    syncExclusions();
-    syncSlider();
-    var s = STATE[STATE.type], moved = repair();
-    stage.setAttribute('data-type', STATE.type);
-    stage.setAttribute('data-keylines', s.keylines);
-    // ⬛ s219-D3(4) — ONE page ground, read from the page level, not from the type.
-    stage.setAttribute('data-page-bg', STATE.page.pageBg);
-    stage.setAttribute('data-bento-bg', s.bentoBg);
-    if (STATE.type === 'dashboard') {
-      stage.setAttribute('data-spacing', s.mainSpacing);
-      stage.setAttribute('data-main-spacing', s.mainSpacing);
-      stage.setAttribute('data-sub-spacing', s.subSpacing);
-      stage.removeAttribute('data-cap-bg');
-    } else {
-      stage.setAttribute('data-spacing', s.spacing);
-      stage.removeAttribute('data-main-spacing');
-      stage.removeAttribute('data-sub-spacing');
-    }
-    if (STATE.type === 'gallery') {
-      stage.setAttribute('data-mode', STATE.gallery.mode);
-      stage.setAttribute('data-edge', STATE.gallery.edge);
-      stage.setAttribute('data-rounding', STATE.gallery.rounding);
-      stage.setAttribute('data-cap-bg', STATE.gallery.capBg);
-      spans();
-    } else {
-      stage.removeAttribute('data-mode'); stage.removeAttribute('data-edge');
-      stage.removeAttribute('data-rounding');
-    }
-    var l = legality();
-    // groups: show the ones this type owns, and the conditional ones only when their condition
-    // holds. An option removed by a RULING is absent from the markup entirely; an option refused
-    // by a legality rule is present and disabled WITH ITS REASON.
-    Array.prototype.forEach.call(document.querySelectorAll('.bm-group'), function(g){
-      var owner = g.getAttribute('data-group');
-      var when = g.getAttribute('data-when');
-      // `page` is always on: it is a PAGE-LEVEL decision (s219-D3(4)) and does not belong to the
-      // type on screen.
-      var on = (owner === 'all' || owner === 'page' || owner === STATE.type);
-      if (on && when) {
-        var kv = when.split(':');
-        on = (STATE[STATE.type][kv[0]] === kv[1]);
-      }
-      g.hidden = !on;
-      var dial = g.getAttribute('data-dial');
-      var why = g.querySelector('.bm-why'), reasons = [];
-      Array.prototype.forEach.call(g.querySelectorAll('button[data-value]'), function(b){
-        var v = b.getAttribute('data-value');
-        var reason = l[dial + ':' + v] || '';
-        b.disabled = !!reason;
-        b.setAttribute('aria-disabled', String(!!reason));
-        var cur = (dial === 'type') ? STATE.type
-                : (owner === 'page') ? STATE.page[dial] : STATE[STATE.type][dial];
-        b.setAttribute('aria-pressed', String(cur === v));
-        if (reason) reasons.push(reason);
-      });
-      if (why) why.textContent = reasons.length ? reasons[0] : '';
-    });
-    var note = document.getElementById('bm-moved');
-    if (note) note.textContent = moved.length
-      ? ('Adjusted so the combination stays legal — ' + moved.join('; ') + '.') : '';
-    render();
-  }
-
-  function render(){
-    var payload = {
-      "$proposed": true,
-      "not_ruled": "Everything beyond s217-D5's own words is PROPOSED, not ruled.",
-      "ruling": "s217-D5",
-      "type": STATE.type,
-      "state": STATE[STATE.type],
-      "page": STATE.page,
-      "resolved": resolved()
-    };
-    if (out) out.textContent = JSON.stringify(payload, null, 2);
-  }
-
-  document.addEventListener('click', function(e){
-    var b = e.target.closest ? e.target.closest('.bm-seg button[data-value]') : null;
-    if (!b || b.disabled) return;
-    var g = b.closest('.bm-group'), dial = g.getAttribute('data-dial');
-    var owner = g.getAttribute('data-group');
-    if (dial === 'type') STATE.type = b.getAttribute('data-value');
-    else if (owner === 'page') STATE.page[dial] = b.getAttribute('data-value');
-    else STATE[STATE.type][dial] = b.getAttribute('data-value');
-    apply();
-  });
-  // ⬛ s217-D6 — the slider. `input` (not `change`), so the snap lands while the thumb is moving
-  // rather than on release; the raw pixel value is snapped before anything downstream sees it.
-  document.addEventListener('input', function(e){
-    var r = e.target;
-    if (!r || !r.classList || !r.classList.contains('bm-range')) return;
-    var g = r.closest('.bm-group'), dial = g && g.getAttribute('data-dial');
-    if (!dial) return;
-    STATE[g.getAttribute('data-group')][dial] = String(snap(r.value));
-    apply();
-  });
-  var re = document.getElementById('bm-rebuild');
-  if (re) re.addEventListener('click', function(){ apply(); });
-  // the theme/mode chrome re-renders the export, because the RESOLVED half of it is theme-bound
-  window.addEventListener('hashchange', function(){ setTimeout(apply, 60); });
-  document.addEventListener('click', function(e){
-    if (e.target.closest && e.target.closest('#themes, #modes')) setTimeout(apply, 60);
-  });
-  apply();
-  window.__BM_STATE = STATE;           // the probe reads the SAME object the preview renders from
-  window.__BM_APPLY = apply;
-  window.__BM_LEGALITY = legality;
-})();
-
-/* #218 — pin this page to ONE type through the controller's exported handles. */
-(function(){ if (window.__BM_STATE && window.__BM_APPLY) { window.__BM_STATE.type = "gallery"; window.__BM_APPLY(); } })();
 </script>
 </body>
 </html>
