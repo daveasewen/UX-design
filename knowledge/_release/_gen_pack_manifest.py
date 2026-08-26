@@ -880,7 +880,51 @@ OPEN_QUESTIONS = [
                       "green”. Each at cause: a missing gate-state file in the stage is SHIPPED, "
                       "not baselined away; a real defect is repaired; no baseline plaster. The "
                       "baseline machinery stays built and stays unwired.")),
+    # ---------------------------------------------------------------------------------------
+    # #219 seam 8 § ⑨ Q1, put on Dave's surface at stage 2. Answering Q5 at cause changed WHAT
+    # THE PACK SHIPS, and the change arrived as a CONSEQUENCE rather than as a decision: the
+    # honest reclassification of `_validate_evidence.py` to REPO-BOUND drops it and its helper
+    # out of the ship list. `s219-D4(2)` makes the cut Dave's word, so a silent −2 on his own
+    # roster is exactly the thing this page exists to refuse. This card DECIDES NOTHING — no
+    # option carries `recommended`, because which way it goes is a positioning call about what
+    # the pack's gate roster CLAIMS, not a mechanical default. [[dont-launder-a-premise-into-a-ruling]]
+    # ⚠ The two dropped filenames are held in Q6_DROPPED_GATES and bitten for existence and for
+    # absence from the ship list — the card must break rather than lie if either moves.
+    dict(id="Q6", title="Answering Q5 quietly took two gates OUT of the pack. The roster is "
+                        "55, not 57 — is that the cut you want?",
+         body="This one is a consequence, not a proposal, and that is why it is on this page. "
+              "Fixing the four red gates at cause meant classifying _validate_evidence.py "
+              "honestly: it RUNS fine away from this repo, but everything it has an opinion "
+              "about lives in notes/_claims — your session evidence — which s219-D4(1) "
+              "permanently excludes from the pack. A gate whose subject the pack does not "
+              "carry is REPO-BOUND, and REPO-BOUND gates do not ship.||"
+              "So it falls out, and it takes its only local helper, _claimtable.py, with it. "
+              "The gate group above is measured at 55 files where the earlier proposal said "
+              "57. Nothing broke and nothing is hidden: the pack's own runner is 35 pass, "
+              "0 fail, 0 could-not-ask, exit 0, from a directory that is not this repo.||"
+              "The honest refusal did not disappear — it MOVED, from runtime to the ship list. "
+              "Before, a designer ran the linter and it refused with a 77 that said “I cannot "
+              "answer this here”. Now they never see it at all.||"
+              "Which is better depends on what you want the roster to mean. If the roster is "
+              "“checks that can tell you something about your work”, 55 is correct and the two "
+              "were noise. If the roster is “the same gates Apollo runs”, then 57 with one of "
+              "them refusing honestly is the truthful picture, and the refusal is a feature — "
+              "it tells a designer the check exists and why it has nothing to say to them.||"
+              "This is the same seam as two other open questions: the pack runner has three "
+              "verdicts where the repo has four (there is no ADVISORY), and notes/_claims is "
+              "named in three places. All three are the same argument about what an honest "
+              "“cannot answer” looks like in a designer's project, and they want answering "
+              "together.",
+         options=["Correct as it stands — 55 gates. A check with nothing to measure in a "
+                  "designer's project should not be in the zip at all",
+                  "Ship them anyway — 57 gates, so the pack's roster matches Apollo's, and let "
+                  "the evidence linter refuse with its honest 77 in the designer's run"]),
 ]
+
+# The two gates that fell OUT of the ship list when Q5 was answered at cause (#219 seam 8 § ⑨
+# Q1). Held as data for the same reason as Q5_RED_GATES: Q6's whole subject is these two files,
+# and a card that names a file which has since moved lies quietly on Dave's decision surface.
+Q6_DROPPED_GATES = ["_validate_evidence.py", "_claimtable.py"]
 
 # The four gates named in Q5's body. Held as data so the selftest can prove they still exist:
 # a card that names a renamed gate is the read-chain-staleness class, and it would go stale
@@ -1724,6 +1768,37 @@ def selftest():
         bite("questions/Q5-decides-nothing",
              [o for o in q5[0]["options"] if "recommended" in o], [],
              "the red-gate card must not pre-select a disposition")
+
+    # ---- Q6, the roster cut (#219 seam 8 § ⑨ Q1). Same shape of assertion as Q5's, for the
+    # same reason: the card's whole subject is two named files, and if either moves the card
+    # must BREAK rather than go on describing a repo that no longer exists.
+    q6 = [q for q in OPEN_QUESTIONS if q["id"] == "Q6"]
+    bite("questions/Q6-present", len(q6), 1,
+         "seam 8's roster question — 55 gates, not 57 — must be on Dave's page")
+    if q6:
+        body6 = q6[0]["body"]
+        bite("questions/Q6-is-open", q6[0].get("answered"), None,
+             "Q6 is the ONE unanswered card; answering it here would launder a premise")
+        for gname in Q6_DROPPED_GATES:
+            bite("questions/Q6-names:%s" % gname, gname in body6, True,
+                 "the roster card must state the dropped gate by name")
+            bite("questions/Q6-gate-exists:%s" % gname,
+                 os.path.exists(os.path.join(ROOT, "knowledge", gname)), True,
+                 "the card names a file that is no longer in the repo — re-derive it")
+        # THE CARD'S PREMISE, PROBED. Q6 exists only because the probe classified the evidence
+        # linter REPO-BOUND. If that verdict ever moves, the card is describing a cut that did
+        # not happen. [[premise-ages-faster-than-rule]]
+        _pp = os.path.join(HERE, "_pack_gate_probe.json")
+        if os.path.exists(_pp):
+            _pg = {g["gate"]: g["verdict"] for g in json.load(open(_pp))["gates"]}
+            bite("questions/Q6-premise-evidence-is-repo-bound",
+                 _pg.get("_validate_evidence.py"), "REPO-BOUND",
+                 "Q6 says the evidence linter dropped out as REPO-BOUND — the probe must agree")
+        bite("questions/Q6-two-readings", len(q6[0]["options"]), 2,
+             "correct-as-is / ship-anyway-and-refuse")
+        bite("questions/Q6-decides-nothing",
+             [o for o in q6[0]["options"] if "recommended" in o], [],
+             "the roster card must not pre-select a disposition — s219-D4(2) makes the cut Dave's")
 
     # ---- THE DECLARED INVOCATIONS (#219 N2 -> N1 handoff). A typed invocation is a claim, so
     # the gate it names must exist and the probe must be able to disown it when it does not work.

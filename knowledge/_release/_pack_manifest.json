@@ -1,6 +1,11 @@
 {
-  "commit": "801fe7cc22968b3f0f8eaf5bf172bcad850830c5",
-  "commit_date": "2026-08-26T17:00:34+01:00",
+  "carries": {
+    "name": "Memento — Gumdrop",
+    "version": "v1.0.0",
+    "what": "A clean cut of Memento: machinery only, no record. Its version line is its own; the pack's version does not move it."
+  },
+  "commit": "416e1a6d3a07b24425280d2186dac9a886179ca8",
+  "commit_date": "2026-08-26T18:32:50+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -92,11 +97,11 @@
     },
     {
       "path": "designer-skills-v2/",
-      "reason": "FROZEN release, s114-D4. Its four SKILL.md were the REFERENCE for the v3 refresh, not the source — v3 ships its own five from designer-skills-v3/skills/ (#219 R3)."
+      "reason": "FROZEN release, s114-D4. Its four SKILL.md were the REFERENCE for the Spider refresh, not the source — Spider ships its own five from apollo-spider/skills/ (#219 R3)."
     },
     {
       "path": "knowledge/_validate_* (repo-bound subset)",
-      "reason": "MEASURED, not assumed: 8 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
+      "reason": "MEASURED, not assumed: 9 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
     },
     {
       "path": "knowledge/ (everything else)",
@@ -104,7 +109,7 @@
     }
   ],
   "gate_probe": {
-    "commit": "801fe7cc22968b3f0f8eaf5bf172bcad850830c5",
+    "commit": "416e1a6d3a07b24425280d2186dac9a886179ca8",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -117,6 +122,10 @@
       {
         "gate": "_validate_assertions.py",
         "why": "crashed: AssertionError: file_contains must find a present needle"
+      },
+      {
+        "gate": "_validate_evidence.py",
+        "why": "runs, but its verdict is about notes/_claims, which the pack does not ship"
       },
       {
         "gate": "_validate_kg.py",
@@ -346,7 +355,7 @@
       "title": "Component contracts"
     },
     {
-      "bytes": 3895826,
+      "bytes": 3897069,
       "files": 137,
       "group": "engine-canon",
       "key": "engine-canon.snippets",
@@ -493,7 +502,7 @@
       "title": "Reference markup"
     },
     {
-      "bytes": 1979572,
+      "bytes": 1982301,
       "files": 11,
       "group": "engine-canon",
       "key": "engine-canon.canon",
@@ -1380,31 +1389,30 @@
       "title": "Design guidelines"
     },
     {
-      "bytes": 837419,
+      "bytes": 799319,
       "ci_template": [
-        "designer-skills-v3/ci-template/README.md",
-        "designer-skills-v3/ci-template/gates.yml",
-        "designer-skills-v3/ci-template/run-gates.py"
+        "apollo-spider/ci-template/README.md",
+        "apollo-spider/ci-template/gates.yml",
+        "apollo-spider/ci-template/run-gates.py"
       ],
       "counts": {
         "empty_population": 3,
         "needs_dep": 3,
-        "repo_bound": 8,
-        "runnable": 36
+        "repo_bound": 9,
+        "runnable": 35
       },
-      "files": 57,
+      "files": 55,
       "group": "gates",
       "key": "gates",
       "paths": [
-        "designer-skills-v3/ci-template/README.md",
-        "designer-skills-v3/ci-template/gates.yml",
-        "designer-skills-v3/ci-template/run-gates.py",
+        "apollo-spider/ci-template/README.md",
+        "apollo-spider/ci-template/gates.yml",
+        "apollo-spider/ci-template/run-gates.py",
         "knowledge/_ASSERTIONS.md",
         "knowledge/_TOKEN-FORK-LEDGER.json",
         "knowledge/_a11y_target.py",
         "knowledge/_assertions.json",
         "knowledge/_binds-ratchet.json",
-        "knowledge/_claimtable.py",
         "knowledge/_contrast_utils.py",
         "knowledge/_could_not_ask.py",
         "knowledge/_dtcg_units.py",
@@ -1427,7 +1435,6 @@
         "knowledge/_validate_descender_computed.py",
         "knowledge/_validate_dtcg.py",
         "knowledge/_validate_edge_extremity.py",
-        "knowledge/_validate_evidence.py",
         "knowledge/_validate_grid.py",
         "knowledge/_validate_help_gate.py",
         "knowledge/_validate_hidden_display.py",
@@ -1636,8 +1643,8 @@
           "population": "",
           "selftest": "green",
           "third_party": [],
-          "verdict": "RUNNABLE",
-          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: ✖ REFUSED: need at least one <rows.jsonl> (a DIRECTORY is also legal — every *.jsonl in it is linted)"
+          "verdict": "REPO-BOUND",
+          "why": "runs, but its verdict is about notes/_claims, which the pack does not ship"
         },
         {
           "gate": "_validate_grid.py",
@@ -1846,11 +1853,11 @@
         {
           "gate": "_validate_token_forks.py",
           "invocation": "",
-          "population": "",
+          "population": "graded",
           "selftest": "green",
           "third_party": [],
           "verdict": "RUNNABLE",
-          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: _validate_token_forks.py - FORK-BAN GATE (s136-D1 clause D) / glob      : knowledge/canon/*.css  (2 file(s)) / parsed    : 12009 declaration"
+          "why": "ran clean, verdict PASS"
         },
         {
           "gate": "_validate_token_tiers.py",
@@ -1864,20 +1871,20 @@
         {
           "gate": "_validate_type_blast_radius.py",
           "invocation": "",
-          "population": "",
-          "selftest": "red",
-          "third_party": [],
-          "verdict": "RUNNABLE",
-          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: [PASS] class         .btn (17) / [PASS] class         .stateLabel (12) / [PASS] scoped-element .seg button (12)"
-        },
-        {
-          "gate": "_validate_type_composites.py",
-          "invocation": "",
-          "population": "",
+          "population": "graded",
           "selftest": "green",
           "third_party": [],
           "verdict": "RUNNABLE",
-          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: selftest OK — ramp from type.css: sizes [12.0, 14.0, 16.0, 20.0, 24.0, 28.0, 32.0, 40.0, 52.0] weights [250, 300, 350, 400, 500, 700]; catch"
+          "why": "ran clean, verdict PASS"
+        },
+        {
+          "gate": "_validate_type_composites.py",
+          "invocation": "--check",
+          "population": "graded",
+          "selftest": "green",
+          "third_party": [],
+          "verdict": "RUNNABLE",
+          "why": "ran clean, verdict PASS"
         },
         {
           "gate": "_validate_wiring.py",
@@ -1912,7 +1919,7 @@
       "title": "Runbooks"
     },
     {
-      "bytes": 14017002,
+      "bytes": 14018658,
       "files": 288,
       "group": "library",
       "key": "library.showroom",
@@ -2292,7 +2299,7 @@
         "knowledge/assets/fonts/_desktop/univers-next-pro/UniversNextProThin.ttf",
         "knowledge/assets/fonts/_desktop/univers-next-pro/UniversNextProThinItalic.ttf"
       ],
-      "plain": "The licensed desktop cut, so the library renders in the real face. LICENCE QUESTION — see the open questions.",
+      "plain": "The licensed desktop cut, so the library renders in the real face. LICENCE POSITION, settled at s219-D5: these ship — your designers are in-licence, the same licence that lets the desktop set be tracked in this private repo. The webfont packs stay out.",
       "title": "Desktop fonts"
     },
     {
@@ -2346,34 +2353,43 @@
       "title": "Memento Claude plugin"
     },
     {
-      "bytes": 32029,
+      "bytes": 31987,
       "files": 5,
       "group": "skills",
       "key": "skills",
       "paths": [
-        "designer-skills-v3/skills/check-against-design-system/SKILL.md",
-        "designer-skills-v3/skills/check-with-gates/SKILL.md",
-        "designer-skills-v3/skills/draft-a-new-pattern/SKILL.md",
-        "designer-skills-v3/skills/generate-from-canon/SKILL.md",
-        "designer-skills-v3/skills/usability-review/SKILL.md"
+        "apollo-spider/skills/check-against-design-system/SKILL.md",
+        "apollo-spider/skills/check-with-gates/SKILL.md",
+        "apollo-spider/skills/draft-a-new-pattern/SKILL.md",
+        "apollo-spider/skills/generate-from-canon/SKILL.md",
+        "apollo-spider/skills/usability-review/SKILL.md"
       ],
-      "plain": "The five v3 skills: four refreshed against this knowledge base and the new gate-runner that runs the packed gates on a designer's own work.",
+      "plain": "The five Spider skills: four refreshed against this knowledge base and the new gate-runner that runs the packed gates on a designer's own work.",
       "status": "refreshed at #219 R3 — four rewritten against this KB, one new",
       "title": "Skills"
     }
   ],
   "open_questions": [
     {
-      "body": "I checked, because the brief asked. memento-package ships five machinery files and a lexicon, and it ships no record at all — no chain, no rulings store, no task store, not even an empty one. Its own manifest says why: every adopting project grows its own chain.||Mirroring that exactly means a designer unzips v3, says good morning, and Memento has nowhere to write.||The proposal, if you want them productive on day one: ship three empty stores with the right shape and nothing inside. A task store holding an empty list. A rulings store holding an empty list. And no chain file at all — its absence is the signal the boot rule reads to know this is a new project.||An empty shape is machinery. A filled shape is your record. The line you drew holds either way. The only question is whether the designer types the first brace or we do.",
+      "answered": {
+        "position": "Empty stores ship, plus a starter _CHAIN.md explaining the first move — and the cold start itself is part of the release: “I think we need to work on the UX of Memento on a cold strts and really guide the designers through the first chat.”",
+        "ruling": "s219-D5 (Q1)"
+      },
+      "body": "I checked, because the brief asked. memento-package ships five machinery files and a lexicon, and it ships no record at all — no chain, no rulings store, no task store, not even an empty one. Its own manifest says why: every adopting project grows its own chain.||Mirroring that exactly means a designer unzips the pack, says good morning, and Memento has nowhere to write.||The proposal, if you want them productive on day one: ship three empty stores with the right shape and nothing inside. A task store holding an empty list. A rulings store holding an empty list. And no chain file at all — its absence is the signal the boot rule reads to know this is a new project.||An empty shape is machinery. A filled shape is your record. The line you drew holds either way. The only question is whether the designer types the first brace or we do.",
       "id": "Q1",
       "options": [
         "Mirror memento exactly — no stores, the pack's first run creates them",
         "Ship the three empty store shapes (recommended)",
         "Ship empty stores AND a starter _CHAIN.md explaining the first move"
       ],
-      "title": "Memento ships machinery with no store — does v3 hand designers an EMPTY record to fill?"
+      "title": "Memento ships machinery with no store — does the pack hand designers an EMPTY record to fill?"
     },
     {
+      "answered": {
+        "enacted": "Shipped by the library group's rule over knowledge/assets/fonts/_desktop/ — the count on this card is read out of the manifest, not typed, so it cannot drift from what the zip carries.",
+        "position": "The 54 licensed desktop fonts SHIP. His words: “designers are in-licence” — the same licence position that makes the desktop cut tracked in this private repo covers the designers the pack goes to. The webfont packs stay out; that fence is unmoved.",
+        "ruling": "s219-D5 (Q2)"
+      },
       "body": "The library only looks like Apollo in the real face. The desktop cut is tracked in this repo on purpose — the .gitignore says why: the repo is private and shared only in-licence.||A zip on GitHub is a wider audience than the repo. If your designers sit inside the same licence, the fonts ride along and the showroom renders correctly. If they do not, the pack ships without them and the library falls back to a stock face. It still works. It does not look right.||Eight of the thirty-four megabytes are the fonts, so this is also the single biggest lever on download size.",
       "id": "Q2",
       "options": [
@@ -2383,15 +2399,24 @@
       "title": "Do the licensed desktop fonts travel in the zip?"
     },
     {
+      "answered": {
+        "enacted": "The warning fires IN THE PACK ONLY. Each of the four canon generators asks _helpgate.pack_gate() whether it is running inside an unzipped pack (a _MANIFEST.json carrying this schema, sitting beside knowledge/). In this repo that marker does not exist and the call is a no-op, so nothing here changes. In the pack it prints his own framing — changing a token and re-minting canon can produce canon that never passed a gate — and refuses until the designer passes --i-understand. Nothing is injected at bake time: the file in the zip is byte-identical to the file in the repo, which is what keeps the pack audit able to check it at all.",
+        "position": "The canon generators SHIP — “v3 is the working engine, the gates are in the pack too” — WITH an explicit warning when a designer attempts one.",
+        "ruling": "s219-D5 (Q3)"
+      },
       "body": "The canon folder holds canon.css and type.css — and the four generators that mint them from the tokens.||v2 shipped the stylesheets only: a baked reference that nobody regenerates. You asked for as close to what you use as possible, and what you use is the generator.||Shipping them means a designer can change a token and re-mint canon. It also means they can produce canon that never passed a gate. The gates are in the pack too, which is why I lean towards shipping them.",
       "id": "Q3",
       "options": [
-        "Ship the generators (v3 is the working engine — recommended, the gates are in the pack too)",
+        "Ship the generators (the pack is the working engine — recommended, the gates are in the pack too)",
         "Ship the minted CSS only, v2-style"
       ],
       "title": "Do the canon GENERATORS ship, or only the canon they produce?"
     },
     {
+      "answered": {
+        "position": "capture-ritual AND context-gauge both cross — CUSTOMISED for the designers' environment. His words: “remember the designers will be running this in VS-code with co-pilot, I think we should ship this but customised for their environment.” That also sets the pack's target environment: VS Code + Copilot, on memento-package's copilot-instructions.md precedent.",
+        "ruling": "s219-D5 (Q4)"
+      },
       "body": "Eleven runbooks are proposed in, as design-facing. Seven are held out as your own working ritual: capture, git commit, the context gauge, the parallel conductor, the dream pass, decision audit, densify-adversarial.||memento-package itself ships no runbooks at all — machinery only — so mirroring it holds all seven out, and that is what the list currently does.||One is awkward. Capture is the ritual that makes Memento work. A designer with the machinery and no capture ritual has a chain that never grows.",
       "id": "Q4",
       "options": [
@@ -2402,31 +2427,46 @@
       "title": "Which runbooks are design-facing and which are yours?"
     },
     {
+      "answered": {
+        "position": "Fix the four BEFORE the bake — “cut v3 from a commit whose own gates are green”. Each at cause: a missing gate-state file in the stage is SHIPPED, not baselined away; a real defect is repaired; no baseline plaster. The baseline machinery stays built and stays unwired.",
+        "ruling": "s219-D5 (Q5)"
+      },
       "body": "Measured, not guessed — the gates were run out of an extracted pack from a directory that is not this repo, twice, by two different lanes: 32 pass, 4 fail. None of the four has anything to do with a designer's work. They are Apollo's own open reds at the commit the pack is cut from.||_validate_evidence.py — exits 2, which is bad arguments rather than a verdict. It needs a rows file handed to it and the pack's runner gives it none, so as the pack invokes it, it can never pass.||_validate_token_forks.py — three token forks are not in the ledger.||_validate_type_blast_radius.py — one selector, .search input, has escaped its declared radius.||_validate_type_composites.py — 664 composite violations inside the pack, 1,091 in this repo. That is the standing type-composite debt, which by your own ratchet may only ever shrink.||Why it matters more than the number looks: a designer unzips the pack, runs the gates exactly as the README and the new gate-runner skill tell them to, and is met with hundreds of violations they did not cause. The likely conclusion is that the gates are noise — and that conclusion is formed on day one and does not get revisited.||The middle option exists and works: a baseline file records today's reds so only the DIFFERENCE is the designer's, and the reds are still printed rather than hidden. It is built and mutation-tested, and it is deliberately NOT wired on, because switching it on is a decision about what the pack claims, not a mechanical default.",
       "id": "Q5",
       "options": [
-        "Fix the four before the bake — cut v3 from a commit whose own gates are green",
+        "Fix the four before the bake — cut the pack from a commit whose own gates are green",
         "Ship them with the baseline switched on — reds recorded, printed, and only new ones fail the designer's build",
         "Ship them red and documented — the pack README names the four, the skill tells designers to subtract them"
       ],
       "title": "Four of the packed gates are RED the day the pack is unzipped. Ship them anyway, or clear them first?"
+    },
+    {
+      "body": "This one is a consequence, not a proposal, and that is why it is on this page. Fixing the four red gates at cause meant classifying _validate_evidence.py honestly: it RUNS fine away from this repo, but everything it has an opinion about lives in notes/_claims — your session evidence — which s219-D4(1) permanently excludes from the pack. A gate whose subject the pack does not carry is REPO-BOUND, and REPO-BOUND gates do not ship.||So it falls out, and it takes its only local helper, _claimtable.py, with it. The gate group above is measured at 55 files where the earlier proposal said 57. Nothing broke and nothing is hidden: the pack's own runner is 35 pass, 0 fail, 0 could-not-ask, exit 0, from a directory that is not this repo.||The honest refusal did not disappear — it MOVED, from runtime to the ship list. Before, a designer ran the linter and it refused with a 77 that said “I cannot answer this here”. Now they never see it at all.||Which is better depends on what you want the roster to mean. If the roster is “checks that can tell you something about your work”, 55 is correct and the two were noise. If the roster is “the same gates Apollo runs”, then 57 with one of them refusing honestly is the truthful picture, and the refusal is a feature — it tells a designer the check exists and why it has nothing to say to them.||This is the same seam as two other open questions: the pack runner has three verdicts where the repo has four (there is no ADVISORY), and notes/_claims is named in three places. All three are the same argument about what an honest “cannot answer” looks like in a designer's project, and they want answering together.",
+      "id": "Q6",
+      "options": [
+        "Correct as it stands — 55 gates. A check with nothing to measure in a designer's project should not be in the zip at all",
+        "Ship them anyway — 57 gates, so the pack's roster matches Apollo's, and let the evidence linter refuse with its honest 77 in the designer's run"
+      ],
+      "title": "Answering Q5 quietly took two gates OUT of the pack. The roster is 55, not 57 — is that the cut you want?"
     }
   ],
-  "ruling": "s219-D4",
+  "pack": "Apollo — Spider",
+  "ruling": "s219-D8 (naming) · s219-D5 (the five cards) · s219-D4 (the cut)",
   "schema": "apollo-designer-pack-manifest/1",
+  "slug": "Apollo-Spider",
   "status": "PROPOSED — awaiting Dave's word (s219-D4(2): release = his word)",
   "totals": {
     "by_group": {
       "engine-canon": {
-        "bytes": 10473551,
+        "bytes": 10477523,
         "files": 1157
       },
       "gates": {
-        "bytes": 837419,
-        "files": 57
+        "bytes": 799319,
+        "files": 55
       },
       "library": {
-        "bytes": 22201050,
+        "bytes": 22202706,
         "files": 344
       },
       "memento-clean-cut": {
@@ -2438,12 +2478,12 @@
         "files": 11
       },
       "skills": {
-        "bytes": 32029,
+        "bytes": 31987,
         "files": 5
       }
     },
-    "bytes": 33885685,
-    "files": 1594
+    "bytes": 33853171,
+    "files": 1592
   },
-  "version": "v3.0.0"
+  "version": "v1.0.0"
 }

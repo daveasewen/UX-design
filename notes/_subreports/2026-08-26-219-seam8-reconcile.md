@@ -482,3 +482,258 @@ D7→D8 correction, because the row asserted "`s219-D7` enacted" about work that
 — declared here so the conductor can strike it. `W-192`'s pointers at N1's filed report are left
 exactly as they are: they name a real file. `_state.py --check` → **0 UNRESOLVABLE** (was 2),
 248 homes resolve by anchor; `--selftest` 57 bites green; `_gate_doc_rows.py` unrowed 0.
+
+---
+---
+
+# § STAGE 2 FINAL — the landing commit `416e1a6d3a07`, driven
+
+**Appended:** 2026-08-26 · **Model:** Opus · **Base:** `416e1a6d3a07b24425280d2186dac9a886179ca8`
+(stage 1, committed; working tree clean at start). Stage 2 replays § ⑧'s block against the real
+commit, so every number below replaces a prediction with a measurement.
+
+⛔ **NOTHING COMMITTED, NOTHING PUSHED.** Five tree lines are left for the conductor (§ S2-⑤).
+
+COUNTS: ship list **1,592 paths** (as § ⑧ predicted, not 1,594) · audit `--check` **GREEN**,
+`--selftest` **8/0** · page **124,124 bytes**, five answered cards + **one** open card · generator
+selftest **124 → 135 bites, 0 fail**, new bites **11**, mutations driven **3** (each RED by a
+named bite, control green either side) · survey over all 140 steps **56 pass · 6 FAIL** · reds
+**pre-existing at the landing commit, proved in a clean archive stage** (§ S2-④).
+
+---
+
+## S2-① THE THREE GENERATOR MODES, at the real commit
+
+| mode | result |
+|---|---|
+| `--probe --commit 416e1a6d…` (44.2s) | **35 RUNNABLE · 3 NEEDS-DEP · 9 REPO-BOUND** — exactly § ⑧'s figure. `_validate_evidence.py` → `REPO-BOUND`, `exit 77`, *"runs, but its verdict is about notes/_claims, which the pack does not ship"* |
+| `--manifest --commit 416e1a6d…` | **1,592 files**, 33,853,171 bytes, sha256 `9b7a4f49f0595cb3` (before the § S2-② card: `57f6616c3167b445`) |
+| `--page reviews/RELEASE-SPIDER-2026-08-26-v1.html` | 124,124 bytes |
+| `_review/_make_review.py <page>` | ✅ review copy rewritten — the pair is back in step |
+
+**The path count is the predicted one.** § ⑦'s arithmetic that produced 1,594 was superseded by
+§ ⑥'s measured bake, and the landing commit agrees with the measurement: **1,592**, unique, no
+duplicates. The byte total differs from § ⑥'s 33,851,515 by +1,656 — the landing commit carries
+the stage-1 files § ⑥'s synthetic commit did not, and the ship list is unchanged by them.
+
+**Group table, read out of the manifest, not typed:**
+
+| group | files |
+|---|---|
+| engine-canon | 1,157 (tokens 44 · components 139 · snippets 137 · canon 11 · compliance 46 · icons 667 · logos 13 · guidelines 100) |
+| gates | **55** — 47 probed gates + 5 local helpers + **3** `ci-template/` |
+| library | 344 (showroom 288 · rails 1 · render 1 · **fonts 54**) |
+| memento-clean-cut | 20 · runbooks 11 · **skills 5** |
+
+`_validate_evidence.py` and `knowledge/_claimtable.py` are **absent from the ship list**, proved
+by walking every `paths` array in the manifest (1,592 unique, both queries empty). They are still
+NAMED, in the honest `repo_bound` verdict table — the refusal moved to the ship list, it did not
+vanish. That is § ⑨ Q1, and § S2-② puts it where Dave can rule on it.
+
+---
+
+## S2-② ⚠ THE DEFECT STAGE 2 FOUND — the page had **no** open question card
+
+The brief's verification list asked for § ⑨ Q1 — *55 gates, not 57* — to be **the ONE open
+question card**. It was not on the page, and could not have been: `OPEN_QUESTIONS` held five
+entries and all five carried an `answered` block, so the renderer's derived headline read
+**"0 questions for you"** and the *"only you can settle"* section did not render at all.
+
+This is the seam-8 finding arriving one turn later than the report that named it. § ⑨ recorded
+Q1 as ruling-shaped and correctly declined to decide it — but recording a question in a filed
+report is not the same as putting it on the surface Dave rules from, and `s219-D4(2)` makes the
+cut **his word**. A −2 on his own gate roster that reaches him only through a subreport is the
+forgotten-document class aimed at a decision. [[forgotten-document-class]]
+
+**Fixed at cause, in the generator, as DATA:**
+
+- `OPEN_QUESTIONS` gains **Q6** — *"Answering Q5 quietly took two gates OUT of the pack. The
+  roster is 55, not 57 — is that the cut you want?"* Body states the mechanism (the gate runs,
+  but its subject `notes/_claims` is permanently excluded by `s219-D4(1)`), the measurement
+  (35 pass · 0 fail · 0 could-not-ask, exit 0), and the fact that the honest refusal **moved
+  from runtime to the ship list** rather than disappearing.
+- **Two readings, neither taken**, and **no option carries `recommended`** — the same discipline
+  seam 7 was held to on Q5. [[dont-launder-a-premise-into-a-ruling]]
+- The body names the sibling threads (`N2` HANDOFF 3's missing ADVISORY verdict, `notes/_claims`
+  named in three places) so the three can be answered together, as § ⑨ asked.
+- New module constant **`Q6_DROPPED_GATES`** — the two filenames held as data, never only as
+  prose in the card, for the same reason `Q5_RED_GATES` exists.
+
+**Eleven new selftest bites, and they were DRIVEN, not merely added:**
+
+| mutation | verdict |
+|---|---|
+| rename `_claimtable.py` → `_claimtable_RENAMED.py` in the constant | **RED ×2** — `questions/Q6-names:…` and `questions/Q6-gate-exists:…` |
+| add `(recommended)` to Q6's first option | **RED** — `questions/Q6-decides-nothing`, *"s219-D4(2) makes the cut Dave's"* |
+| give Q6 an `answered` block | **RED** — `questions/Q6-is-open`, *"answering it here would launder a premise"* |
+| control, either side of all three | **135 bites, 0 fail** |
+
+The premise itself is bitten too: `questions/Q6-premise-evidence-is-repo-bound` reads the probe
+on disk and asserts the verdict is still `REPO-BOUND`. If that classification ever moves, the
+card breaks instead of describing a cut that did not happen. [[premise-ages-faster-than-rule]]
+
+Generator selftest: **124 → 135 bites, 0 fail(s)**.
+
+---
+
+## S2-③ THE PAGE — verified clause by clause, against the brief's list
+
+`reviews/RELEASE-SPIDER-2026-08-26-v1.html` · `<title>` *Apollo — Spider — the release manifest
+— PROPOSED* · `<h1>` *Apollo — Spider — what ships* `[Proposed]`
+
+| the brief asked | measured on the page |
+|---|---|
+| Spider / Gumdrop naming | `Apollo — Spider` ×3, `Memento — Gumdrop` ×1, `Apollo 9` ×1 · **`snoopy` 0 · `Snoopy` 0 · `designer-skills-v3` 0** |
+| five cards as RECEIPTS, answered not asked | `<h2>` **Five things you settled** `[Ruled]` — Q1…Q5, each with `Ruled s219-D5 (Qn) — <his position>`, and **0 radio inputs on all five** (Q1 0 · Q2 0 · Q3 0 · Q4 0 · Q5 0) |
+| citing `s219-D5`'s clauses | `s219-D5 (Q1)` `(Q2)` `(Q3)` `(Q4)` `(Q5)` — one each, five distinct |
+| the fonts card states the licence position | Q2: *"The 54 licensed desktop fonts SHIP. His words: **“designers are in-licence”** … The webfont packs stay out; that fence is unmoved."* The group row repeats it, and its **54** is read out of the manifest, not typed |
+| § ⑨ Q1 as the ONE open question card | `<h2>` **One thing only you can settle** `[Ask]` — Q6 alone, **2 radio inputs, 0 marked recommended** |
+
+Headline metrics, all derived: **1,592** files in the pack · **33.9 MB** on disk · **38** gates
+that run anywhere (35 RUNNABLE + 3 NEEDS-DEP) · **1** questions for you · **5** you have settled.
+Seam 7's derived-count fix holds in both directions: the headline moved from 0 to 1 and the
+heading from nothing to *"One thing"* without a word being typed.
+
+---
+
+## S2-④ THE GREEN SWEEP — the bake precondition (`s219-D5` Q5)
+
+### The pack's gates and the release machinery — **all green**
+
+| check | verdict |
+|---|---|
+| `_gate_release_audit.py --check` | ✅ `PASS — the manifest … is byte-identical to a fresh generation at 416e1a6d3a07 (1592 files, sha256 9b7a4f49f0595cb3)` |
+| `_gate_release_audit.py --selftest` | ✅ **8 bites, 0 fail(s)** (was 8/1 by design at stage 1) |
+| `_gate_ci_template.py --check` | ✅ `PASS — the template parses, ships what it calls, and hides nothing` (2 jobs, 1 referenced script, README present; actionlint not installed, structural arms carry it) |
+| `_gate_ci_template.py --selftest` | ✅ 10 bites, 0 fail(s) |
+| `_gate_frozen_release.py --check` | ✅ `PASS — 3 arm(s) asked, no frozen surface moved` — `designer-skills-v1 v1 6f`, `designer-skills-v2 v2 849f`, `apollo-spider v1.0.0 0f` |
+| `_gate_frozen_release.py --selftest` | ✅ 14 bites, 0 fail(s) |
+| `_gen_pack_manifest.py --selftest` | ✅ 135 bites, 0 fail(s) |
+| the pack's own runner (§ ⑥, inherited) | 35 pass · 0 FAIL · 0 could-not-ask, exit 0 |
+
+**The four CI-drift checks — all green**, plus the library index:
+
+`[40]` `gen_token_ramp.py --check` → `0 file(s) DRIFTED … 147 already in sync` ·
+`[45]` `canon/gen_canon_components.py --check` → `135 components in sync` ·
+`[50]` `canon/gen_theme_cascade.py --check` → `230 override path(s), 387 component projection(s)
+in sync` · `[107]` `_build_memento_index.py --check` → `current (1791 records)` ·
+`_render/gen_library_214.py --check` → `143 component(s), index + index.json + stub in sync`.
+
+### `_build_survey.py --timeout 60` — all 140 steps, three consecutive ranges
+
+The sandbox kills a foreground call at the wall, so the pass was taken as consecutive ranges,
+which is the survey's own sanctioned form (*"only a full pass over all steps, or consecutive
+ranges covering them, says anything about the build"*). Coverage is exact: 45 + 45 + 50 = 140,
+and each range's own "outside" count agrees (95 · 95 · 90).
+
+```
+SURVEY --range 1:45    : 18 pass · 3 FAIL · 0 COULD-NOT-ASK · 0 unaskable · 24 not asked (mutating) · 95 outside
+SURVEY --range 46:90   : 13 pass · 0 FAIL · 2 COULD-NOT-ASK · 0 unaskable · 30 not asked (mutating) · 95 outside
+SURVEY --range 91:140  : 25 pass · 3 FAIL · 0 COULD-NOT-ASK · 0 unaskable · 22 not asked (mutating) · 90 outside
+────────────────────────────────────────────────────────────────────────────────────────────────
+FULL TREE (140 steps)  : 56 pass · 6 FAIL · 2 COULD-NOT-ASK · 0 unaskable · 76 not asked (mutating)
+```
+
+**The six reds, every one PRE-EXISTING at `416e1a6d3a07` — proved, not assumed.** A clean
+`git archive` stage of the landing commit under `/var/tmp` (4,491 files, none of this session's
+five tree lines present) reproduces all six, with byte-identical messages where the check does
+not need `.git`:
+
+| step | subject | in the pack? |
+|---|---|---|
+| `[13]` `_capture_gate.py --selftest` | `GOOD-MORNING.md`: no `pre-flight:` stamp; section markers not found | ⛔ no — Dave-adjacent, the brief's known item |
+| `[18]` `_gm_usage.py --selftest` | `#218 testifies DIFFERENTLY in GOOD-MORNING.md` | ⛔ no — the brief's known item |
+| `[119]` `_gen_chain.py --selftest` | chain is 50.7% of GM, floor `<40%` | ⛔ no — the brief's known item |
+| `[121]` `_gen_schematic.py --check` | `reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html` is STALE | ⛔ no — not in the ship list |
+| `[124]` `_validate_package_delta.py --selftest` | `memento-package/machinery/_gen_chain.py` DIFFERS from `knowledge/_gen_chain.py` | ⛔ no — the brief's known item |
+| `[3]` `tokens/_build_blast_radius.py --check` | 2 files out of sync with a fresh `compute()` | ⚠ **PARTLY — see below** |
+
+### ⚠ `[3]` IS NOT ON THE BRIEF'S KNOWN LIST, AND ONE OF ITS TWO OUTPUTS SHIPS
+
+```
+❌ _build_blast_radius --check FAILED — 2 file(s) out of sync with a fresh compute():
+  - knowledge/tokens/_blast-radius.json content differs from a fresh compute()
+    (disk 81547 bytes vs fresh 81547 bytes) — stale
+  - knowledge/_GRAPH-REPORT.md differs at line 5:
+      disk ='… 135 components · 1038 tokens defined · 131 tokens referenced …'
+      fresh='… 135 components · 1043 tokens defined · 131 tokens referenced …'
+  Fix: python3 knowledge/tokens/_build_blast_radius.py
+```
+
+`knowledge/tokens/_blast-radius.json` **is in the ship list**; `knowledge/_GRAPH-REPORT.md` is
+not. So the pack would carry a derived artefact that is five token definitions behind the tokens
+beside it — the +5 is #219's own minted defaults, not caught by the wave's regen serial.
+
+**Stated, not fixed, deliberately.** It is one command, but it is a member of the ORDERED regen
+serial and running one member out of sequence is the class that cost #210 six CI reds
+[[regen-serial-set-is-ordered]]. It also rewrites a file Dave's cut ships, which is his surface,
+not a sub's. **Two facts the conductor needs to price it:** the fix does **not** move the ship
+list (`_blast-radius.json` is 81,547 bytes before and after, so the manifest's totals and sha are
+untouched), and `_build_blast_radius.py` is **not** a `_validate_*` gate, so the pack's own runner
+never asks it — its red lives in the repo's build, not in a designer's.
+
+**Verdict on the precondition.** `s219-D5` Q5 asked for a commit *"whose own gates are green"*.
+**The pack's gates, the release machinery and the four CI-drift checks are green at
+`416e1a6d3a07`.** Six build steps are red; five are the known Dave-adjacent GM/chain/memento
+cluster and ship nothing. **`[3]` is the one that touches the zip, and it is the conductor's
+call whether the bake waits on the regen serial.**
+
+---
+
+## S2-⑤ `_gen_chain.py --check` and the tree lines
+
+```
+✅ _CHAIN.md is FRESH — byte-matches the live chain · GM header+LATEST 23644 tk ·
+   LS LATEST delta only (of 52 delta lines) 6330 tk ·
+   FILE 45,455 real = slice 29,974 + wrapper 15,481 · fixed point in 2 pass(es)
+```
+
+**Not stale — no regen run, `_CHAIN.md` not touched.** (`[119]` above is `--selftest`'s
+chain-size bite, a different arm and a standing one; `--check`, which is what the brief asked,
+is green.)
+
+**Tree lines for the conductor's stage-2 commit — six, all accounted for, 0 untracked
+(`git diff --numstat`, read out, not estimated):**
+
+```
+ M knowledge/_release/_gen_pack_manifest.py          +75  −0    § S2-② Q6 card + Q6_DROPPED_GATES + 11 bites
+ M knowledge/_release/_pack_gate_probe.json          +24  −23   --probe at 416e1a6d (was 801fe7c)
+ M knowledge/_release/_pack_manifest.json            +91  −51   --manifest at 416e1a6d, 1,592 paths, +Q6
+ M reviews/RELEASE-SPIDER-2026-08-26-v1.html         +80  −53   --page, Q6 + Spider naming
+ M reviews/RELEASE-SPIDER-2026-08-26-v1.REVIEW.html  +82  −55   _make_review.py, the pair back in step
+ M notes/_subreports/2026-08-26-219-seam8-reconcile.md  +N  −0    this § STAGE 2 FINAL addendum
+                          the five ARTEFACT lines: 352 insertions(+), 182 deletions(-), exactly
+```
+
+⚠ The sixth line's own count is deliberately left as `N`. It is this addendum, so any figure
+typed here changes the figure — a self-referential number that goes stale in the act of being
+written. Read it at commit time from `git diff --numstat`; the five artefact lines above are
+fixed and are the ones worth checking.
+
+`_gate_doc_rows.py --check` → ✅ `population 93 · unrowed 0` — no new document, no store row owed.
+
+⛔ Nothing else moved. `GOOD-MORNING.md`, `_LIVE-STATE.md`, `_CHAIN.md`, `_rulings.json`,
+`_state.json`, `_frozen-releases.json`, every constant/band/advisory/stop line, `designer-skills-v1/`,
+`designer-skills-v2/`, `memento-package/`, and all lane report BODIES are untouched. No new
+document, so no store row is owed — this is an append to a filed report that already has one.
+
+---
+
+## S2 — UNPROVEN, declared
+
+1. **No CI run exists.** Every verdict here was driven locally. R2's standing UNPROVEN — neither
+   workflow has ever run on GitHub Actions — is **unchanged**, and `_gate_ci_template.py` notes
+   `actionlint is not installed`, so the workflow's structure is asserted by the gate's own arms
+   rather than by a linter.
+2. **No pack was baked at `416e1a6d3a07`.** The audit's baked-pack arm is
+   `COULD-NOT-ASK — there is no zip in apollo-spider/dist/`, which is the designed resting state
+   until Dave says the word. § ⑥'s double dry-run bake stands as filed, at the synthetic commit.
+3. **The page was not render-probed.** Its content was verified by parsing the HTML — headings,
+   card ids, radio-input counts per card, name greps — not by looking at it in a browser.
+4. **`[121]` returns `77 (COULD-NOT-ASK)` in the archive stage**, not a FAIL, because the check
+   needs `.git`. Its red is real in the working tree and its subject is not in the ship list;
+   the archive proves only that it is not caused by this session's five lines.
+5. **`_build_all.py` was not run end to end** (call wall). The survey asked all 140 steps; the
+   76 mutating ones were LISTED and SKIPPED by the survey's own safety rule, not silently omitted.
+6. **Q6's wording has not been past Dave** — it is a question card, which is the point, but the
+   framing of the two readings is this session's, drawn from § ⑨.
