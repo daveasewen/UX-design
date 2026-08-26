@@ -1,0 +1,68 @@
+# Apollo design-system gates, running on your project.
+#
+# Copy this file to .github/workflows/gates.yml in your own repository, and unzip the Apollo
+# pack somewhere inside it. By default this workflow expects the pack at ./apollo — change
+# APOLLO_PACK below if you put it elsewhere.
+#
+# Two jobs, because they need different things installed:
+#   gates   — every gate that runs on plain Python. Fast, no browser.
+#   render  — the three gates that drive a real browser to measure what a page actually paints.
+#
+# Verdicts. A gate exits 0 when it passes and 1 when it finds something wrong. It exits 77 with
+# a line starting "COULD-NOT-ASK:" when it cannot reach something it needs — that is a refusal,
+# printed in full, and it does not fail the build. Only a real failure fails the build.
+#
+# To turn a check off, DELETE ITS STEP. Do not add continue-on-error to hide a red: a step that
+# runs, fails, and is ignored looks green on the summary page and teaches everyone to stop
+# reading it. Deleting the step is honest — anyone can see the check is gone.
+
+name: apollo-gates
+
+on:
+  push:
+  pull_request:
+
+env:
+  # Where you unzipped the pack, relative to the repo root.
+  APOLLO_PACK: apollo
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # No pip install here on purpose: every gate in this job is standard library only. That
+      # was measured by running them, not assumed — see _MANIFEST.json, where the only
+      # third-party import any shipped gate names is playwright, and those run in the job below.
+      - name: Run the Apollo gates
+        run: python3 $APOLLO_PACK/designer-skills-v3/ci-template/run-gates.py
+
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # Chromium plus the two libraries the pixel checks use. The 10-minute budget is here so
+      # that a slow package mirror names itself instead of eating the whole job.
+      - name: Install playwright + chromium
+        timeout-minutes: 10
+        run: |
+          pip install playwright jsonschema pillow
+          playwright install --with-deps chromium
+
+      # These three gates measure rendered geometry and colour: descender clipping, hit-area
+      # size, and the contrast of a control in every state. Without a browser they refuse
+      # (COULD-NOT-ASK) rather than guess, which is why they get their own job.
+      - name: Run the Apollo gates that need a browser
+        run: python3 $APOLLO_PACK/designer-skills-v3/ci-template/run-gates.py --browser

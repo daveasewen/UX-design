@@ -568,6 +568,50 @@ STEPS = [
     # spent a whole wave re-deriving exactly that diagnosis from a red [13].
     ("governs matcher selftest — the [12]/[13] trigger-index arm, named (#208 legibility)",
      "_governs.py", ["--selftest"]),
+    # ---- THE RELEASE LANE (#219 R2, s219-D4(3) "CI both halves") ------------------------------
+    # The survey asks the COMMITTED tree, which is exactly the right question for a freeze rule:
+    # `s114-D4` says a shipped release does not move, and until #219 NOTHING checked it. Three
+    # gates, and the blocking/advisory split is the house rule applied literally — a MECHANICAL
+    # determinism check BLOCKS; anything PROMOTION-flavoured advises, because promotion is Dave's
+    # word (`s219-D4(2)`: the release is his, not the script's, and not a gate's).
+    #
+    # ⚠ EACH OF THESE TAKES `--check` DELIBERATELY. `_build_survey.py` only RUNS a step whose
+    # every argument is in its NON_MUTATING set (`--check` / `--selftest`) — a step with NO
+    # arguments is treated as mutating and merely LISTED. These three write nothing, so they are
+    # spelled `--check` in order to be ASKED rather than listed. The same trap the W-44 note
+    # records one step above, from the other side.
+    ("frozen-release gate — v1/v2 and any baked v3 surface may not move without a version bump "
+     "(BLOCKING, s114-D4, built #219)",
+     "_release/_gate_frozen_release.py", ["--check"]),
+    ("frozen-release selftest — 11 bites on a fixture repo incl. the laundering mutant (#219)",
+     "_release/_gate_frozen_release.py", ["--selftest"]),
+    # The v2 receipt's own words for the class this ends: "v1's copy-list had gone stale — never
+    # shipped canon/type.css nor tokens/themes/". A generated ship list is only better than a
+    # typed one while something re-generates it and COMPARES.
+    ("v3 ship-list audit — the manifest is byte-identical to a fresh generation at its own "
+     "commit (BLOCKING, built #219)",
+     "_release/_gate_release_audit.py", ["--check"]),
+    ("release-audit selftest — manifest compare + the pack arm's resting refusal (#219)",
+     "_release/_gate_release_audit.py", ["--selftest"]),
+    # The pack-side half. It is never run here, which is precisely why it needs a gate here.
+    ("pack-side CI template — parses, ships what it calls, hides nothing (BLOCKING, built #219)",
+     "_release/_gate_ci_template.py", ["--check"]),
+    ("pack-side CI template selftest — 10 mutants incl. a smuggled continue-on-error (#219)",
+     "_release/_gate_ci_template.py", ["--selftest"]),
+    # A BAKED PACK is audited against the manifest and against the commit's own blobs. Its
+    # RESTING STATE is a REFUSAL (77 + the marked line): nothing is baked, because the release is
+    # Dave's word. The survey counts a refusal as the third verdict and excludes it from its exit
+    # code, which is how this can be BLOCKING today without being born red.
+    ("baked-pack audit — a zip in designer-skills-v3/dist/ must match the manifest (BLOCKING; "
+     "refuses while nothing is baked) (#219)",
+     "_release/_gate_release_audit.py", ["--pack"]),
+    # ADVISORY ON PURPOSE, and it must stay so. A manifest generated at an older commit than HEAD
+    # means a pack cut now would ship older content. That is a real fact and NOT a defect —
+    # cutting from an older commit is a legitimate choice, and ⬛ WHEN TO RE-CUT IS DAVE'S
+    # (s219-D4(2)). Blocking on it would be a gate making his release decision for him.
+    ("v3 ship-list drift — how far behind HEAD the manifest is (ADVISORY, ⬛ re-cutting is "
+     "Dave's) (#219)",
+     "_release/_gate_release_audit.py", ["--drift"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -896,6 +940,45 @@ ROUTE_ROWS = [
      ADVISORY, None),
     ("claim-table evidence linter — s182-D1 tokens + expected observations (W-44, advisory)",
      ADVISORY, None),
+    # ---- THE RELEASE LANE (#219 R2) — rows land in the SAME edit as the steps. A STEPS entry
+    # with no ROUTE_ROWS row aborts every build above step 1 (#119/#164), and that omission has
+    # now been recorded four times in this file; it is not going to be recorded a fifth.
+    ("frozen-release gate — v1/v2 and any baked v3 surface may not move without a version bump "
+     "(BLOCKING, s114-D4, built #219)", GATE,
+     "\n❌ frozen-release gate failed (exit {code}) — a SHIPPED release moved. s114-D4: a release "
+     "is explicit, versioned and Dave's word; you do not edit one, you cut a new one. The gate "
+     "names every path that changed. If the move is deliberate, re-seed the ledger AND bump that "
+     "release's `version` in the same commit — the laundering arm checks that you did. Run: "
+     "python3 knowledge/_release/_gate_frozen_release.py --check"),
+    ("frozen-release selftest — 11 bites on a fixture repo incl. the laundering mutant (#219)",
+     ABORT, None),
+    ("v3 ship-list audit — the manifest is byte-identical to a fresh generation at its own "
+     "commit (BLOCKING, built #219)", GATE,
+     "\n❌ v3 ship-list audit failed (exit {code}) — knowledge/_release/_v3_manifest.json is not "
+     "what its generator produces at the commit it names. Either it was hand-edited (never do "
+     "this — it is the stale-copy-list defect v3 exists to end) or the generator moved under it. "
+     "Regenerate: python3 knowledge/_release/_gen_v3_manifest.py --probe --commit <sha> && "
+     "python3 knowledge/_release/_gen_v3_manifest.py --manifest --commit <sha>"),
+    ("release-audit selftest — manifest compare + the pack arm's resting refusal (#219)",
+     ABORT, None),
+    ("pack-side CI template — parses, ships what it calls, hides nothing (BLOCKING, built #219)",
+     GATE,
+     "\n❌ pack-side CI template gate failed (exit {code}) — the workflow the pack hands a "
+     "designer does not parse, calls a script the pack does not carry, ships a "
+     "`continue-on-error`, or its README has lost the two promises it exists to make. This half "
+     "of the CI is never run in this repo, so this gate is the only thing that asks. Run: "
+     "python3 knowledge/_release/_gate_ci_template.py --check"),
+    ("pack-side CI template selftest — 10 mutants incl. a smuggled continue-on-error (#219)",
+     ABORT, None),
+    ("baked-pack audit — a zip in designer-skills-v3/dist/ must match the manifest (BLOCKING; "
+     "refuses while nothing is baked) (#219)", GATE,
+     "\n❌ baked-pack audit failed (exit {code}) — a zip in designer-skills-v3/dist/ does not "
+     "match the manifest or the commit's own blobs. The pack is what a designer downloads; if it "
+     "and the ship list disagree, the ship list is not a description of anything. Re-bake from "
+     "the named commit: bash designer-skills-v3/build-designer-pack.sh --check <zip> "
+     "--commit <sha>"),
+    ("v3 ship-list drift — how far behind HEAD the manifest is (ADVISORY, ⬛ re-cutting is "
+     "Dave's) (#219)", ADVISORY, None),
     ("governs matcher selftest — the [12]/[13] trigger-index arm, named (#208 legibility)", GATE,
      "\n❌ governs matcher selftest failed (exit {code}) — the ruling-to-path matcher that "
      "`_capture_gate.py --selftest` runs as its trigger-index arm ([12]/[13]) is broken or too "

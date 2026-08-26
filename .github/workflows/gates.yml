@@ -135,6 +135,51 @@ name: gates
 # step below. It is the consumer for the msgfile-prefix gate [[instrument-without-a-consumer]] —
 # the class behind 8 doubled/tripled commit subjects. See the `prefix_count` block in that file.
 #
+# ---- FOURTH ENTRY, 2026-08-26 (#219 R2, `s219-D4(3)` "CI both halves"). AN ADDITION, not a
+# correction: nothing above was found false. A new `release` job at the foot of this file, and
+# eight steps in `_build_all.STEPS`. Two things had no instrument at all.
+#   ① A RULE WITH NO GATE. `s114-D4` — a shipped release is FROZEN; you do not edit one, you cut a
+#     new one — has been the rule since #114 and NOTHING checked it. That is
+#     [[instrument-without-a-consumer]] inverted: a consumer with no instrument. The failure is
+#     quiet and permanent — someone "fixes" a typo inside `designer-skills-v2/`, and the zip a
+#     designer downloaded and the folder in this repo disagree with no version anywhere saying
+#     which they hold. `knowledge/_release/_gate_frozen_release.py` records each release's surface
+#     in a MEASURED ledger (`_frozen-releases.json`, seeded by the gate, never typed) and asks
+#     three things: did a recorded surface move at this commit; is one dirty in the working tree;
+#     and — the arm that makes the ledger more than a rubber stamp — was a row RE-RECORDED WITHOUT
+#     ITS `version` CHANGING, read out of the ledger blob at the PARENT commit. Moving a frozen
+#     surface is legal. Moving it silently is not.
+#   ② HALF A CI THAT IS NEVER RUN HERE. The pack ships a workflow template for a designer's own
+#     project (`designer-skills-v3/ci-template/`). A broken `on:` block or a step calling a script
+#     the zip does not carry would never show up in this repo's CI, and the first person to find
+#     out would be a designer. `_gate_ci_template.py` PARSES it as YAML — not with a regex over
+#     the text, the ds-039 lesson [[no-gate-parses-the-artefact]] — and refuses to let it ship a
+#     `continue-on-error`, because the README beside it tells designers the honest way to switch a
+#     check off is to DELETE THE STEP.
+#   THE POSTURE SPLIT IS THE HOUSE RULE APPLIED LITERALLY. Mechanical determinism BLOCKS: the
+#   frozen gate, the ship-list audit (the manifest must be byte-identical to a fresh generation at
+#   its own commit — the v2 receipt's stale-copy-list defect, gated), the baked-pack audit, the
+#   template gate, and all four selftests. ONE step advises: how far behind HEAD the ship list has
+#   fallen. That is a real fact and NOT a defect — ⬛ WHEN TO RE-CUT A RELEASE IS DAVE'S
+#   (`s219-D4(2)`), and blocking on it would be a gate making his release decision for him.
+#   ⚠ 77-AWARE STEPS, AND WHY THE `run:` BLOCKS BELOW LOOK LIKE THAT. `_could_not_ask` exists so a
+#   refusal is not a failure — but that only works for a consumer that has been TAUGHT the code,
+#   and a bare `run:` line has not. The baked-pack audit's RESTING STATE is a refusal (nothing is
+#   baked, because the release is Dave's word); a plain `run:` would paint the job red for exactly
+#   the reason #193 built the convention to stop. So each release step that can legitimately
+#   refuse captures the code, prints the refusal, and passes only on 77.
+#   MEASURED THIS LANE, not asserted: the frozen gate driven against a SYNTHETIC COMMIT built with
+#   `GIT_INDEX_FILE` (a temp index — the real index and HEAD untouched, verified after) with one
+#   real v2 file mutated → exit 1, `FROZEN RELEASE MOVED: designer-skills-v2 … 1 CHANGED:
+#   designer-skills-v2/README.md`. 11 bites on a throwaway fixture repo, including the laundering
+#   mutant and its escape hatch (bump the version → green). The template gate: 10 mutants, each
+#   RED by name. The ship-list audit: byte-identical, sha256 `ad0d985534457a1b`.
+#   ⚠ UNPROVEN AND DECLARED: this `release` job has never run on GitHub — it is written from a
+#   working tree and R2 does not commit. Every step was driven locally, in this repo, by hand.
+#   ⚠ ALSO DECLARED: `actionlint` is not installed here, so the template's validation is
+#   STRUCTURAL (parsed YAML + referenced-script + README-promise arms). The gate runs actionlint
+#   when it is present and says so when it is not.
+#
 # `fetch-depth: 0` on both checkouts is the SECOND, INDEPENDENT #173 cause:
 # `_gen_chain.build_verdict_line()` runs `git show 18c7789:…` (VERDICT_SHA), and
 # a depth-1 clone cannot resolve it, so the BUILD VERDICT line embedded at
@@ -285,3 +330,92 @@ jobs:
       - name: Probe registry — every historically-found defect class, re-driven (W-45, advisory)
         continue-on-error: true
         run: python3 knowledge/_probe_registry/_registry.py --run
+
+  # Release job — added #219 R2 (s219-D4(3), "CI both halves"). See the FOURTH ENTRY in the
+  # header for why these two things had no instrument until now.
+  #
+  # Its own job rather than steps in `gates`, for one measured reason: the pack-side template is
+  # PARSED as YAML, which needs PyYAML, and the `gates` job installs tiktoken + jsonschema only.
+  # Putting the install here keeps that job's dependency list exactly as it was. These checks are
+  # ALSO wired into `_build_all.STEPS`, so the survey asks the six of them whose argv is
+  # `--check`/`--selftest` against the COMMITTED tree before anything regenerates; the other two
+  # take a different flag and the survey LISTS them, which is why they get their own steps here.
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # THE FROZEN GATE'S THIRD ARM NEEDS HISTORY. It reads the ledger blob at the PARENT
+          # commit to ask whether a release was re-recorded without a version bump. A depth-1
+          # clone cannot reach that, and the gate would refuse (77) rather than guess — an
+          # honest refusal, but a refusal is not the check running.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML — the pack-side template is PARSED, never pattern-matched
+        run: pip install pyyaml
+
+      # BLOCKING. s114-D4 by machine at last. A refusal is possible (no ledger, no history) and
+      # is passed through as a refusal — never as green, and never as a red either.
+      - name: Frozen-release gate — v1, v2 and any baked v3 zip may not move without a version bump (BLOCKING)
+        run: |
+          rc=0; python3 knowledge/_release/_gate_frozen_release.py --check || rc=$?
+          if [ "$rc" = "77" ]; then echo "^ COULD-NOT-ASK — printed, not counted, not a verdict."; rc=0; fi
+          exit $rc
+
+      - name: Frozen-release selftest — 11 bites on a fixture repo, laundering mutant included (BLOCKING)
+        run: python3 knowledge/_release/_gate_frozen_release.py --selftest
+
+      # BLOCKING. The v2 receipt's own words for the class this ends: "v1's copy-list had gone
+      # stale — never shipped canon/type.css nor tokens/themes/".
+      - name: v3 ship-list audit — the manifest must be what its generator produces (BLOCKING)
+        run: |
+          rc=0; python3 knowledge/_release/_gate_release_audit.py --check || rc=$?
+          if [ "$rc" = "77" ]; then echo "^ COULD-NOT-ASK — printed, not counted, not a verdict."; rc=0; fi
+          exit $rc
+
+      - name: Release-audit selftest — manifest compare + the pack arm's resting refusal (BLOCKING)
+        run: python3 knowledge/_release/_gate_release_audit.py --selftest
+
+      # BLOCKING, and its RESTING STATE is a refusal: nothing is baked, because the release is
+      # ⬛ DAVE'S WORD (s219-D4(2)) and the manifest still reads PROPOSED. The moment a zip lands
+      # in dist/ this step starts biting, and it compares the pack against the manifest AND
+      # against the commit's own blobs.
+      - name: Baked-pack audit — a zip in dist/ must match the manifest (BLOCKING; refuses while nothing is baked)
+        run: |
+          rc=0; python3 knowledge/_release/_gate_release_audit.py --pack || rc=$?
+          if [ "$rc" = "77" ]; then echo "^ COULD-NOT-ASK — nothing is baked yet. Printed, not counted."; rc=0; fi
+          exit $rc
+
+      # BLOCKING. The half of the CI that never runs in this repo, checked on this side of the
+      # fence: it parses, every script it calls is in the ship list, and it ships no suppression.
+      - name: Pack-side CI template — parses, ships what it calls, hides nothing (BLOCKING)
+        run: |
+          rc=0; python3 knowledge/_release/_gate_ci_template.py --check || rc=$?
+          if [ "$rc" = "77" ]; then echo "^ COULD-NOT-ASK — printed, not counted, not a verdict."; rc=0; fi
+          exit $rc
+
+      - name: Pack-side CI template selftest — 10 mutants, a smuggled continue-on-error included (BLOCKING)
+        run: |
+          rc=0; python3 knowledge/_release/_gate_ci_template.py --selftest || rc=$?
+          if [ "$rc" = "77" ]; then echo "^ COULD-NOT-ASK — printed, not counted, not a verdict."; rc=0; fi
+          exit $rc
+
+      # BLOCKING. The build script's own refusals, driven: no --commit, --release on a dirty
+      # tree, --release while the manifest says PROPOSED. On a clean CI checkout the dirty-tree
+      # arm SELF-SKIPS and says so, rather than claiming a green it cannot have.
+      - name: Build-script selftest — the release refusals, driven (BLOCKING)
+        run: bash designer-skills-v3/build-designer-pack.sh --selftest
+
+      # ADVISORY, and it must stay so. A manifest generated at an older commit than HEAD means a
+      # pack cut now would ship older content. That is a real fact and NOT a defect — cutting
+      # from an older commit is a legitimate choice, and ⬛ WHEN TO RE-CUT IS DAVE'S (s219-D4(2)).
+      # `continue-on-error` MIRRORS the ADVISORY route in `_build_all.STEPS`, the same way the
+      # claim-table linter and the probe registry above do.
+      - name: v3 ship-list drift — how far behind HEAD the ship list is (ADVISORY; re-cutting is Dave's)
+        continue-on-error: true
+        run: python3 knowledge/_release/_gate_release_audit.py --drift

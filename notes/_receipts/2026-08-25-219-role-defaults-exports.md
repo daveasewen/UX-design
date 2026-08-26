@@ -434,3 +434,15 @@ framing readback (confirmed by Dave proceeding with defaults).
 
 **SET COMPLETE (three types × four themes = 12 exports, matching the s217-D5 matrix).**
 
+---
+
+## PARKED CORRECTION — 2026-08-26, Dave's words, NOT ENACTED
+
+Off the bento-rails page's "Capsule — White" card, Dave: **"almost right, this would never exist.
+its ether cohesive capsule or rounded full image if there is no background colour on the caption."**
+Reading: the capsule chord's ground ramp EXCLUDES white/no-ground — a ground-less caption belongs
+only to the rounded-full-image chord. Confirms lane C's own flagged nit (white member invisible on
+white page) from the defect side. ⛔ **PARKED by Dave in the same breath** ("i want to park this for
+now though") — the bento lane resumes after the Apollo designer-release task. ⚠ Until enacted, the
+bento-rails page carries one card he has said would never exist — known, accepted as parked.
+
